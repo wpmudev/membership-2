@@ -115,12 +115,12 @@ if(!class_exists('membershipcore')) {
 
 			$this->add_admin_header_core();
 
-			//wp_enqueue_script('');
-
 			wp_enqueue_script('levelsjs', plugins_url('/membership/membershipincludes/js/levels.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
 			wp_enqueue_style('levelscss', plugins_url('/membership/membershipincludes/css/levels.css'), array('widgets'), $this->build);
 
 			wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+
+			$this->handle_levels_updates();
 		}
 
 		function add_admin_header_membershipsubs() {
@@ -937,7 +937,7 @@ if(!class_exists('membershipcore')) {
 			<?php
 		}
 
-		function handle_levels_panel() {
+		function handle_levels_updates() {
 
 			global $action, $page;
 
@@ -959,12 +959,12 @@ if(!class_exists('membershipcore')) {
 								check_admin_referer('add-' . $id);
 								if($id) {
 									if($this->add_membership_level($id)) {
-										$usemsg = 1;
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
-										$usemsg = 4;
+										wp_safe_redirect( add_query_arg( 'msg', 4,  'admin.php?page=' . $page ) );
 									}
 								} else {
-									$usemsg = 4;
+									wp_safe_redirect( add_query_arg( 'msg', 4,  'admin.php?page=' . $page ) );
 								}
 
 								break;
@@ -972,14 +972,82 @@ if(!class_exists('membershipcore')) {
 								check_admin_referer('update-' . $id);
 								if($id) {
 									if($this->update_membership_level($id)) {
-										$usemsg = 3;
+										wp_safe_redirect( add_query_arg( 'msg', 3,  'admin.php?page=' . $page ) );
 									} else {
-										$usemsg = 5;
+										wp_safe_redirect( add_query_arg( 'msg', 5,  'admin.php?page=' . $page ) );
 									}
 								} else {
-									$usemsg = 5;
+									wp_safe_redirect( add_query_arg( 'msg', 5,  'admin.php?page=' . $page ) );
 								}
 								break;
+
+				case 'delete':	if(isset($_GET['level_id'])) {
+									$level_id = (int) $_GET['level_id'];
+
+									check_admin_referer('delete-level_' . $level_id);
+
+									if($this->delete_membership_level($level_id)) {
+										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'toggle':	if(isset($_GET['level_id'])) {
+									$level_id = (int) $_GET['level_id'];
+
+									check_admin_referer('toggle-level_' . $level_id);
+
+									if($this->toggle_membership_level($level_id)) {
+										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'bulk-delete':
+								check_admin_referer('bulk-levels');
+								foreach($_GET['levelcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$level_id = (int) $value;
+										if($this->delete_membership_level($level_id)) {
+											wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+										}
+									}
+
+								}
+								break;
+
+				case 'bulk-toggle':
+								check_admin_referer('bulk-levels');
+								foreach($_GET['levelcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$level_id = (int) $value;
+										if($this->toggle_membership_level($level_id)) {
+											wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
+										}
+									}
+
+								}
+								break;
+
+			}
+
+		}
+
+		function handle_levels_panel() {
+
+			global $action, $page;
+
+			switch(addslashes($action)) {
 
 				case 'edit':	if(isset($_GET['level_id'])) {
 									$level_id = (int) $_GET['level_id'];
@@ -994,65 +1062,6 @@ if(!class_exists('membershipcore')) {
 									return; // So we don't see the rest of this page
 								}
 								break;
-
-				case 'delete':	if(isset($_GET['level_id'])) {
-									$level_id = (int) $_GET['level_id'];
-
-									check_admin_referer('delete-level_' . $level_id);
-
-									if($this->delete_membership_level($level_id)) {
-										$usemsg = 2;
-									} else {
-										$usemsg = 6;
-									}
-
-								}
-								break;
-
-				case 'toggle':	if(isset($_GET['level_id'])) {
-									$level_id = (int) $_GET['level_id'];
-
-									check_admin_referer('toggle-level_' . $level_id);
-
-									if($this->toggle_membership_level($level_id)) {
-										$usemsg = 7;
-									} else {
-										$usemsg = 8;
-									}
-
-								}
-								break;
-
-				case 'bulk-delete':
-								check_admin_referer('bulk-levels');
-								foreach($_GET['levelcheck'] AS $value) {
-									if(is_numeric($value)) {
-										$level_id = (int) $value;
-										if($this->delete_membership_level($level_id)) {
-											$usemsg = 2;
-										} else {
-											$usemsg = 6;
-										}
-									}
-
-								}
-								break;
-
-				case 'bulk-toggle':
-								check_admin_referer('bulk-levels');
-								foreach($_GET['levelcheck'] AS $value) {
-									if(is_numeric($value)) {
-										$level_id = (int) $value;
-										if($this->toggle_membership_level($level_id)) {
-											$usemsg = 7;
-										} else {
-											$usemsg = 8;
-										}
-									}
-
-								}
-								break;
-
 			}
 
 			$filter = array();
@@ -1091,8 +1100,8 @@ if(!class_exists('membershipcore')) {
 				<h2><?php _e('Edit Membership Levels','membership'); ?></h2>
 
 				<?php
-				if ( isset($usemsg) ) {
-					echo '<div id="message" class="updated fade"><p>' . $messages[$usemsg] . '</p></div>';
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 				?>
