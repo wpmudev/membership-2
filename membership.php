@@ -1384,7 +1384,7 @@ if(!class_exists('membershipcore')) {
 
 								<div class='buttons'>
 									<?php
-									if($level->id > 0) {
+									if($sub->id > 0) {
 										wp_original_referer_field(true, 'previous'); wp_nonce_field('update-' . $sub->id);
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel edit'><?php _e('Cancel', 'membership'); ?></a>
@@ -1498,29 +1498,29 @@ if(!class_exists('membershipcore')) {
 
 			switch(addslashes($action)) {
 
-				case 'added':	$id = (int) $_POST['level_id'];
+				case 'added':	$id = (int) $_POST['sub_id'];
 								check_admin_referer('add-' . $id);
 								if($id) {
-									if($this->add_membership_level($id)) {
-										wp_safe_redirect( add_query_arg( 'msg', 1, wp_get_referer() ) );
+									if($this->add_subscription($id)) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
+										wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
 									}
 								} else {
-									wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
+									wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
 								}
 
 								break;
-				case 'updated':	$id = (int) $_POST['level_id'];
+				case 'updated':	$id = (int) $_POST['sub_id'];
 								check_admin_referer('update-' . $id);
 								if($id) {
-									if($this->update_membership_level($id)) {
-										wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
+									if($this->update_subscription($id)) {
+										wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
 									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+										wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
 									}
 								} else {
-									wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+									wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
 								}
 								break;
 
@@ -1553,7 +1553,7 @@ if(!class_exists('membershipcore')) {
 								break;
 
 				case 'bulk-delete':
-								check_admin_referer('bulk-subs');
+								check_admin_referer('bulk-subscriptions');
 								foreach($_GET['subcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
@@ -1568,7 +1568,7 @@ if(!class_exists('membershipcore')) {
 								break;
 
 				case 'bulk-toggle':
-								check_admin_referer('bulk-subs');
+								check_admin_referer('bulk-subscriptions');
 								foreach($_GET['subcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
@@ -1822,6 +1822,103 @@ if(!class_exists('membershipcore')) {
 			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_rules} WHERE level_id = %d AND rule_ive = %s ORDER BY rule_order ASC", $level_id, $type );
 
 			return $this->db->get_results( $sql );
+
+		}
+
+		function add_subscription($sub_id) {
+
+			if($sub_id > 0) {
+				$this->update_subscription($sub_id);
+			} else {
+
+				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name']));
+				$sub_id = $this->db->insert_id;
+
+				if(!empty($_POST['level-order'])) {
+
+					$levels = explode(',', $_POST['level-order']);
+					$count = 1;
+					foreach( (array) $levels as $level ) {
+						if(!empty($level)) {
+							// Check if the rule has any information for it.
+							if(isset($_POST['levelmode'][$level])) {
+								$levelmode = esc_attr($_POST['levelmode'][$level]);
+							} else {
+								$levelmode = 'indefinite';
+							}
+
+							if(isset($_POST['levelperiod'][$level])) {
+								$levelperiod = esc_attr($_POST['levelperiod'][$level]);
+							} else {
+								$levelperiod = '';
+							}
+
+							// Calculate the level id
+							$lev = explode('-', $level);
+							if($lev[0] == 'level') {
+								$level_id = (int) $lev[1];
+								// write it to the database
+								$this->db->insert($this->subscriptions_levels, array("sub_id" => $sub_id, "level_period" => $levelperiod, "sub_type" => $levelmode, "level_order" => $count++, "level_id" => $level_id));
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		function update_subscription($sub_id) {
+
+			if($sub_id < 0) {
+				$this->add_subscription($sub_id);
+			} else {
+
+				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name']), array('id' => $sub_id));
+
+				// Remove the existing rules for this subscription level
+				$this->db->query( $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $sub_id ) );
+
+				if(!empty($_POST['level-order'])) {
+
+					$levels = explode(',', $_POST['level-order']);
+					$count = 1;
+					foreach( (array) $levels as $level ) {
+						if(!empty($level)) {
+							// Check if the rule has any information for it.
+							if(isset($_POST['levelmode'][$level])) {
+								$levelmode = esc_attr($_POST['levelmode'][$level]);
+							} else {
+								$levelmode = 'indefinite';
+							}
+
+							if(isset($_POST['levelperiod'][$level])) {
+								$levelperiod = esc_attr($_POST['levelperiod'][$level]);
+							} else {
+								$levelperiod = '';
+							}
+
+							// Calculate the level id
+							$lev = explode('-', $level);
+							if($lev[0] == 'level') {
+								$level_id = (int) $lev[1];
+								// write it to the database
+								$this->db->insert($this->subscriptions_levels, array("sub_id" => $sub_id, "level_period" => $levelperiod, "sub_type" => $levelmode, "level_order" => $count++, "level_id" => $level_id));
+
+							}
+
+						}
+
+					}
+
+				}
+			}
+
+			return true; // for now
 
 		}
 
