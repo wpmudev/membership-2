@@ -63,21 +63,8 @@ function m_subsReady() {
 
 					jQuery('a.removelink').unbind('click').click(m_removesublevel);
 
-					jQuery('#level-order').val(',' + jQuery('#membership-levels-holder').sortable('toArray').join(','));
-					//alert(cloned);
+					jQuery('#level-order').val( jQuery('#level-order').val() + ',' + moving );
 
-
-					/*
-					ruleplace = jQuery(this).attr('id');
-					if(moving != '') {
-						jQuery('#main-' + moving).appendTo('#' + ruleplace + '-holder');
-						jQuery('#' + moving).hide();
-
-						// put the name in the relevant holding input field
-						jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
-
-					}
-					*/
 				}
 	});
 

@@ -60,9 +60,6 @@ function m_levelsReady() {
 						// put the name in the relevant holding input field
 						jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
 
-						//jQuery('#in-positive-rules').val(',' + jQuery('#positive-rules-holder').sortable('toArray').join(',').replace(/main-/gi, ''));
-						//jQuery('#in-negative-rules').val(',' + jQuery('#negative-rules-holder').sortable('toArray').join(',').replace(/main-/gi, ''));
-
 					}
 				}
 	});

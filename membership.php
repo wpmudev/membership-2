@@ -3,7 +3,7 @@
 Plugin Name: Membership system - core plugin
 Version: 0.1
 Plugin URI:
-Description:
+Description: A Membership system plugin
 Author:
 Author URI:
 
