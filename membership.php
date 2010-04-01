@@ -124,12 +124,16 @@ if(!class_exists('membershipcore')) {
 		}
 
 		function add_admin_header_membershipsubs() {
+			// Run the core header
 			$this->add_admin_header_core();
 
+			// Queue scripts and localise
 			wp_enqueue_script('subsjs', plugins_url('/membership/membershipincludes/js/subscriptions.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
 			wp_enqueue_style('subscss', plugins_url('/membership/membershipincludes/css/subscriptions.css'), array('widgets'), $this->build);
 
 			wp_localize_script( 'subsjs', 'membership', array( 'deletesub' => __('Are you sure you want to delete this subscription?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
+
+			$this->handle_subscriptions_updates();
 
 		}
 
@@ -1306,7 +1310,17 @@ if(!class_exists('membershipcore')) {
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php echo __('Edit ','membership') . " - " . esc_html($sub->sub_name); ?></h2>
+				<?php
+					if($sub->id < 0) {
+						?>
+						<h2><?php echo __('Add ','membership') . " - " . esc_html($sub->sub_name); ?></h2>
+						<?php
+					} else {
+						?>
+						<h2><?php echo __('Edit ','membership') . " - " . esc_html($sub->sub_name); ?></h2>
+						<?php
+					}
+				?>
 
 				<?php
 				if ( isset($usemsg) ) {
@@ -1457,9 +1471,8 @@ if(!class_exists('membershipcore')) {
 			<?php
 		}
 
-		function handle_subs_panel() {
+		function handle_subscriptions_updates() {
 
-			// Subscriptions panel
 			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
@@ -1474,20 +1487,18 @@ if(!class_exists('membershipcore')) {
 				}
 			}
 
-			print_r($_POST);
-
 			switch(addslashes($action)) {
 
 				case 'added':	$id = (int) $_POST['level_id'];
 								check_admin_referer('add-' . $id);
 								if($id) {
 									if($this->add_membership_level($id)) {
-										$usemsg = 1;
+										wp_safe_redirect( add_query_arg( 'msg', 1, wp_get_referer() ) );
 									} else {
-										$usemsg = 4;
+										wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
 									}
 								} else {
-									$usemsg = 4;
+									wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
 								}
 
 								break;
@@ -1495,19 +1506,12 @@ if(!class_exists('membershipcore')) {
 								check_admin_referer('update-' . $id);
 								if($id) {
 									if($this->update_membership_level($id)) {
-										$usemsg = 3;
+										wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
 									} else {
-										$usemsg = 5;
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
 									}
 								} else {
-									$usemsg = 5;
-								}
-								break;
-
-				case 'edit':	if(isset($_GET['sub_id'])) {
-									$sub_id = (int) $_GET['sub_id'];
-									$this->handle_sub_edit_form($sub_id);
-									return; // So we don't see the rest of this page
+									wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
 								}
 								break;
 
@@ -1517,9 +1521,9 @@ if(!class_exists('membershipcore')) {
 									check_admin_referer('delete-sub_' . $sub_id);
 
 									if($this->delete_membership_sub($sub_id)) {
-										$usemsg = 2;
+										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 									} else {
-										$usemsg = 6;
+										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
 									}
 
 								}
@@ -1531,9 +1535,9 @@ if(!class_exists('membershipcore')) {
 									check_admin_referer('toggle-sub_' . $sub_id);
 
 									if($this->toggle_membership_sub($sub_id)) {
-										$usemsg = 7;
+										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									} else {
-										$usemsg = 8;
+										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
 									}
 
 								}
@@ -1545,9 +1549,9 @@ if(!class_exists('membershipcore')) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
 										if($this->delete_membership_sub($sub_id)) {
-											$usemsg = 2;
+											wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 										} else {
-											$usemsg = 6;
+											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
 										}
 									}
 
@@ -1560,9 +1564,9 @@ if(!class_exists('membershipcore')) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
 										if($this->toggle_membership_sub($sub_id)) {
-											$usemsg = 7;
+											wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 										} else {
-											$usemsg = 8;
+											wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
 										}
 									}
 
@@ -1571,7 +1575,22 @@ if(!class_exists('membershipcore')) {
 
 			}
 
+		}
+
+		function handle_subs_panel() {
+
+			// Subscriptions panel
+			global $action, $page;
+
 			$filter = array();
+
+			if($action == 'edit') {
+				if(isset($_GET['sub_id'])) {
+					$sub_id = (int) $_GET['sub_id'];
+					$this->handle_sub_edit_form($sub_id);
+					return; // So we don't see the rest of this page
+				}
+			}
 
 			if(isset($_GET['s'])) {
 				$s = stripslashes($_GET['s']);
@@ -1607,8 +1626,8 @@ if(!class_exists('membershipcore')) {
 				<h2><?php _e('Edit Subscription Plans','membership'); ?></h2>
 
 				<?php
-				if ( isset($usemsg) ) {
-					echo '<div id="message" class="updated fade"><p>' . $messages[$usemsg] . '</p></div>';
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 				?>
