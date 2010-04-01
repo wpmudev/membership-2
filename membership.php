@@ -1297,25 +1297,8 @@ if(!class_exists('membershipcore')) {
 			}
 
 			// Get the relevant parts
-			//$positives = $this->get_membership_rules($level_id, 'positive');
-			//$negatives = $this->get_membership_rules($level_id, 'negative');
+			$levels = $this->get_subscription_levels($sub_id);
 
-			// Re-arrange the rules
-			/*
-			$rules = array(); $p = array(); $n = array();
-			if(!empty($positives)) {
-				foreach($positives as $positive) {
-					$rules[$positive->rule_area] = maybe_unserialize($positive->rule_value);
-					$p[$positive->rule_area] = maybe_unserialize($positive->rule_value);
-				}
-			}
-			if(!empty($negatives)) {
-				foreach($negatives as $negative) {
-					$rules[$negative->rule_area] = maybe_unserialize($negative->rule_value);
-					$n[$negative->rule_area] = maybe_unserialize($negative->rule_value);
-				}
-			}
-			*/
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
@@ -1344,9 +1327,6 @@ if(!class_exists('membershipcore')) {
 						<form action='?page=<?php echo $page; ?>' name='subedit' method='post'>
 							<input type='hidden' name='sub_id' id='sub_id' value='<?php echo $sub->id; ?>' />
 
-							<input type='hidden' name='beingdragged' id='beingdragged' value='' />
-							<input type='hidden' name='level-order' id='level-order' value='' />
-
 						<div id='edit-sub' class='sub-holder-wrap'>
 							<div class='sidebar-name'>
 								<h3><?php echo esc_html($sub->sub_name); ?></h3>
@@ -1371,9 +1351,46 @@ if(!class_exists('membershipcore')) {
 								<ul id='membership-levels-holder'>
 
 									<?php
-										if(!empty($p)) {
-											foreach($p as $key => $value) {
-												do_action('membership_level_action', $key, 'main', $value);
+										$levelorder = array();
+										if(!empty($levels)) {
+											$count = 1;
+											foreach($levels as $key => $level) {
+												$levelid = 'level-' . $level->level_id . '-' . $count++;
+												$levelorder[] = $levelid;
+												?>
+												<li class='sortable-levels' id="<?php echo $levelid; ?>" >
+													<div class='joiningline'>&nbsp;</div>
+													<div class="sub-operation" style="display: block;">
+														<h2 class="sidebar-name"><?php echo esc_html($level->level_title); ?><span><a href='#remove' class='removelink' title='<?php _e("Remove this level from the subscription.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+														<div class="inner-operation">
+															<div style='float: left;'>
+															<label for='levelmode[<?php echo $levelid; ?>]'><?php _e('Mode : ','membership'); ?></label>
+															<select name='levelmode[<?php echo $levelid; ?>]'>
+																<option value='trial' <?php if($level->sub_type == 'trial') echo "selected='selected'"; ?>>Trial</option>
+																<option value='finite' <?php if($level->sub_type == 'finite') echo "selected='selected'"; ?>>Finite</option>
+																<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>>Indefinite</option>
+																<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>>Serial</option>
+																<option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>>Sequential</option>
+															</select>
+															</div>
+															<div style='float: right;'>
+															<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
+															<select name='levelperiod[<?php echo $levelid; ?>]'>
+																<option value=''></option>
+																<?php
+																	for($n = 1; $n <= 365; $n++) {
+																		?>
+																		<option value='<?php echo $n; ?>' <?php if($level->level_period == $n) echo "selected='selected'"; ?>><?php echo $n; ?></option>
+																		<?php
+																	}
+																?>
+															</select>&nbsp;<?php _e('days','membership'); ?>
+															</div>
+														</div>
+													</div>
+												</li>
+
+												<?php
 											}
 										}
 									?>
@@ -1381,6 +1398,12 @@ if(!class_exists('membershipcore')) {
 								<div id='membership-levels' class='droppable-levels levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
 								</div>
+
+								<?php
+									// Hidden fields
+								?>
+								<input type='hidden' name='beingdragged' id='beingdragged' value='' />
+								<input type='hidden' name='level-order' id='level-order' value=',<?php echo implode(',', $levelorder); ?>' />
 
 								<div class='buttons'>
 									<?php
@@ -1825,6 +1848,14 @@ if(!class_exists('membershipcore')) {
 
 		}
 
+		function get_subscription_levels($sub_id) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d ORDER BY level_order ASC", $sub_id );
+
+			return $this->db->get_results( $sql );
+
+		}
+
 		function add_subscription($sub_id) {
 
 			if($sub_id > 0) {
@@ -1844,7 +1875,7 @@ if(!class_exists('membershipcore')) {
 							if(isset($_POST['levelmode'][$level])) {
 								$levelmode = esc_attr($_POST['levelmode'][$level]);
 							} else {
-								$levelmode = 'indefinite';
+								continue;
 							}
 
 							if(isset($_POST['levelperiod'][$level])) {
@@ -1868,7 +1899,11 @@ if(!class_exists('membershipcore')) {
 
 				}
 
+				return $sub_id; // for now
+
 			}
+
+
 
 		}
 
@@ -1893,7 +1928,7 @@ if(!class_exists('membershipcore')) {
 							if(isset($_POST['levelmode'][$level])) {
 								$levelmode = esc_attr($_POST['levelmode'][$level]);
 							} else {
-								$levelmode = 'indefinite';
+								continue;
 							}
 
 							if(isset($_POST['levelperiod'][$level])) {

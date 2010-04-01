@@ -1,8 +1,12 @@
 var m_levelcount = 1;
 
 function m_removesublevel() {
+	var level = jQuery(this).parents('li.sortable-levels').attr('id');
 
 	jQuery(this).parents('li.sortable-levels').remove();
+
+
+	jQuery('#level-order').val( jQuery('#level-order').val().replace(',' + level, ''));
 
 	return false;
 }
@@ -79,6 +83,8 @@ function m_subsReady() {
 
 	jQuery('.deactivate a').click(m_deactivatesub);
 	jQuery('.delete a').click(m_deletesub);
+
+	jQuery('a.removelink').click(m_removesublevel);
 
 }
 
