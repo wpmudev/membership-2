@@ -56,15 +56,13 @@ function m_subsReady() {
 					cloned = cloned.replace('%templateid%', moving + '-' + m_levelcount);
 					cloned = cloned.replace(/%level%/gi, moving + '-' + m_levelcount);
 
-					m_levelcount++;
-					//%level%
-
 					jQuery(cloned).appendTo('#membership-levels-holder');
 
 					jQuery('a.removelink').unbind('click').click(m_removesublevel);
 
-					jQuery('#level-order').val( jQuery('#level-order').val() + ',' + moving );
+					jQuery('#level-order').val( jQuery('#level-order').val() + ',' + moving + '-' + m_levelcount);
 
+					m_levelcount++;
 				}
 	});
 
