@@ -117,6 +117,20 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
+		function add_admin_header_members() {
+			// Run the core header
+			$this->add_admin_header_core();
+
+			// Queue scripts and localise
+			//wp_enqueue_script('membersjs', plugins_url('/membership/membershipincludes/js/members.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
+			//wp_enqueue_style('memberscss', plugins_url('/membership/membershipincludes/css/members.css'), array('widgets'), $this->build);
+
+			//wp_localize_script( 'membersjs', 'membership', array( 'deletemember' => __('Are you sure you want to delete this member?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
+
+			$this->handle_members_updates();
+
+		}
+
 		function add_admin_header_membershipgateways() {
 			$this->add_admin_header_core();
 		}
@@ -127,7 +141,275 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
+		function handle_members_updates() {
+
+		}
+
 		function handle_members_panel() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(isset($_GET['level_id'])) {
+									$level_id = (int) $_GET['level_id'];
+									$this->handle_level_edit_form($level_id);
+									return; // So we don't see the rest of this page
+								}
+								break;
+
+				case 'clone':	if(isset($_GET['clone_id'])) {
+									$level_id = (int) $_GET['clone_id'];
+									$this->handle_level_edit_form($level_id, true);
+									return; // So we don't see the rest of this page
+								}
+								break;
+			}
+
+			$filter = array();
+
+			if(isset($_GET['s'])) {
+				$s = stripslashes($_GET['s']);
+				$filter['s'] = $s;
+			} else {
+				$s = '';
+			}
+
+			if(isset($_GET['level_id'])) {
+				$filter['level_id'] = stripslashes($_GET['level_id']);
+			}
+
+			if(isset($_GET['order_by'])) {
+				$filter['order_by'] = stripslashes($_GET['order_by']);
+			}
+
+			$usersearch = isset($_GET['s']) ? $_GET['s'] : null;
+			$userspage = isset($_GET['paged']) ? $_GET['paged'] : null;
+			$role = null;
+
+			// Query the users
+			$wp_user_search = new WP_User_Search($usersearch, $userspage, $role);
+
+			print_r($wp_user_search);
+
+			$messages = array();
+			$messages[1] = __('Member added.');
+			$messages[2] = __('Member deleted.');
+			$messages[3] = __('Member updated.');
+			$messages[4] = __('Member not added.');
+			$messages[5] = __('Member not updated.');
+			$messages[6] = __('Member not deleted.');
+
+			$messages[7] = __('Member activation toggled.');
+			$messages[8] = __('Member activation not toggled.');
+
+			$messages[9] = __('Members updated.');
+
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-users"><br></div>
+				<h2><?php _e('Edit Members','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
+				<p class="search-box">
+					<input type='hidden' name='page' value='<? echo esc_attr($page); ?>' />
+					<label for="membership-search-input" class="screen-reader-text"><?php _e('Search Members','membership'); ?>:</label>
+					<input type="text" value="<?php echo esc_attr($s); ?>" name="s" id="membership-search-input">
+					<input type="submit" class="button" value="<?php _e('Search Members','membership'); ?>">
+				</p>
+				</form>
+
+				<br class='clear' />
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="members-filter">
+
+				<input type='hidden' name='page' value='<? echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<?php if ( $wp_user_search->results_are_paged() ) : ?>
+					<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
+				<?php endif; ?>
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+				<option value="delete"><?php _e('Delete'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+
+				<select name="level_id">
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Levels','membership'); ?></option>
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Levels','membership'); ?></option>
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Levels','membership'); ?></option>
+
+				</select>
+
+				<select name="order_by">
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by Level ID','membership'); ?></option>
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by Level Name','membership'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
+
+				</div>
+
+				<div class="alignright actions">
+					<!-- <input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel"> -->
+				</div>
+
+				<br class="clear">
+				</div>
+
+				<?php if ( is_wp_error( $wp_user_search->search_errors ) ) : ?>
+					<div class="error">
+						<ul>
+						<?php
+							foreach ( $wp_user_search->search_errors->get_error_messages() as $message )
+								echo "<li>$message</li>";
+						?>
+						</ul>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( $wp_user_search->is_search() ) : ?>
+					<p><a href="users.php"><?php _e('&larr; Back to All Users'); ?></a></p>
+				<?php endif; ?>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-levels');
+
+					$columns = array(	"username" 	=> 	__('Username','membership'),
+										"name" 		=> 	__('Name','membership'),
+										"email" 	=> 	__('E-mail','membership'),
+										"active"	=>	__('Active','membership'),
+										"sub"		=>	__('Subscription','membership'),
+										"level"		=>	__('Membership Level','membership')
+									);
+
+					$columns = apply_filters('members_columns', $columns);
+
+					//$levels = $this->get_membership_levels($filter);
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if($levels) {
+							foreach($levels as $key => $level) {
+								?>
+								<tr valign="middle" class="alternate" id="level-<?php echo $level->id; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $level->id; ?>" name="levelcheck[]"></th>
+									<td class="column-name">
+										<strong><a title="Edit “<?php echo esc_attr($level->level_title); ?>”" href="?page=<?php echo $page; ?>&amp;action=edit&amp;level_id=<?php echo $level->id; ?>" class="row-title"><?php echo esc_html($level->level_title); ?></a></strong>
+										<?php
+											$actions = array();
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;level_id=" . $level->id . "'>" . __('Edit') . "</a></span>";
+											if($level->level_active == 0) {
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Activate') . "</a></span>";
+											} else {
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Deactivate') . "</a></span>";
+											}
+											$actions['clone'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=clone&amp;clone_id=" . $level->id . "'>" . __('Clone') . "</a></span>";
+
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;level_id=" . $level->id . "", 'delete-level_' . $level->id) . "'>" . __('Delete') . "</a></span>";
+
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+									<td class="column-active">
+										<?php
+											switch($level->level_active) {
+												case 0:	echo __('Inactive', 'membership');
+														break;
+												case 1:	echo "<strong>" . __('Active', 'membership') . "</strong>";
+														break;
+											}
+										?>
+									</td>
+									<td class="column-users">
+										<strong>
+											<?php echo $level->level_count; ?>
+										</strong>
+									</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Membership levels where found, click above to add one.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="delete"><?php _e('Delete'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				</div>
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+				</div>
+				<br class="clear">
+				</div>
+
+
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
 
 		}
 
