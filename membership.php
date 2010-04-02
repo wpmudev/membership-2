@@ -73,7 +73,7 @@ if(!class_exists('membershipcore')) {
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
 
 			add_filter('membership_level_actions_main', array(&$this, 'default_main_membership_actions'));
-			add_filter('membership_level_actions_rss', array(&$this, 'default_rss_membership_actions'));
+			add_filter('membership_level_actions_feed', array(&$this, 'default_feed_membership_actions'));
 			add_filter('membership_level_actions_content', array(&$this, 'default_content_membership_actions'));
 
 			add_action('membership_level_action', array(&$this, 'default_membership_actions'), 10, 3);
@@ -94,9 +94,14 @@ if(!class_exists('membershipcore')) {
 			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'));
 
 			// Add the sub menu
+			add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'manage_options', "members", array(&$this,'handle_members_panel'));
+
 			add_submenu_page('membership', __('Membership Levels','membership'), __('Edit Levels','membership'), 'manage_options', "membershiplevels", array(&$this,'handle_levels_panel'));
 			add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Edit Subscriptions','membership'), 'manage_options', "membershipsubs", array(&$this,'handle_subs_panel'));
 			add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'manage_options', "membershipgateways", array(&$this,'handle_gateways_panel'));
+
+			add_submenu_page('membership', __('Membership Options','membership'), __('Plugin Options','membership'), 'manage_options', "membershipoptions", array(&$this,'handle_options_panel'));
+
 
 		}
 
@@ -147,13 +152,21 @@ if(!class_exists('membershipcore')) {
 
 		}
 
+		function handle_members_panel() {
+
+		}
+
+		function handle_options_panel() {
+
+		}
+
 		function default_membership_sections($sections) {
 
 			$sections['main'] = array(	"title" => __('Main rules','membership')
 
 									);
 
-			$sections['rss'] = array(	"title" => __('RSS rules','membership')
+			$sections['feed'] = array(	"title" => __('Feed rules','membership')
 
 								);
 
@@ -186,15 +199,16 @@ if(!class_exists('membershipcore')) {
 								$this->comments_action($section, $data);
 								break;
 
-				case 'rssposts':
-								$this->rssposts_action($section, $data);
+				case 'feedposts':
+								$this->feedposts_action($section, $data);
 								break;
 
-				case 'rsscategories':
-								$this->rsscategory_action($section, $data);
+				case 'feedcategories':
+								$this->feedcategory_action($section, $data);
 								break;
 
-				case 'rssmore':	$this->rssmore_action($section, $data);
+				case 'feedmore':
+								$this->feedmore_action($section, $data);
 								break;
 
 				case 'downloads':
@@ -217,11 +231,11 @@ if(!class_exists('membershipcore')) {
 			return $actions;
 		}
 
-		function default_rss_membership_actions($actions) {
+		function default_feed_membership_actions($actions) {
 
-			$actions['rssposts'] = array();
-			$actions['rsscategories'] = array();
-			$actions['rssmore'] = array();
+			$actions['feedposts'] = array();
+			$actions['feedcategories'] = array();
+			$actions['feedmore'] = array();
 
 			return $actions;
 		}
@@ -320,14 +334,14 @@ if(!class_exists('membershipcore')) {
 
 		}
 
-		function rssposts_action($section = 'right', $data = false) {
+		function feedposts_action($section = 'right', $data = false) {
 
 			switch($section) {
 				case 'right':	?>
-								<li class='level-draggable' id='rssposts' <?php if($data === true) echo "style='display:none;'"; ?>>
+								<li class='level-draggable' id='feedposts' <?php if($data === true) echo "style='display:none;'"; ?>>
 									<div class='action action-draggable'>
 										<div class='action-top'>
-										<?php _e('RSS Posts','membership'); ?>
+										<?php _e('Feed Posts','membership'); ?>
 										</div>
 									</div>
 								</li>
@@ -335,10 +349,10 @@ if(!class_exists('membershipcore')) {
 								break;
 				case 'main':	if(!$data) $data = array();
 								?>
-								<div class='level-operation' id='main-rssposts'>
-									<h2 class='sidebar-name'><?php _e('RSS Posts', 'membership');?><span><a href='#remove' id='remove-rssposts' class='removelink' title='<?php _e("Remove RSS Posts from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+								<div class='level-operation' id='main-feedposts'>
+									<h2 class='sidebar-name'><?php _e('Feed Posts', 'membership');?><span><a href='#remove' id='remove-feedposts' class='removelink' title='<?php _e("Remove Feed Posts from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 									<div class='inner-operation'>
-										<p><?php _e('Select the RSS posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
+										<p><?php _e('Select the Feed posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
 										<?php
 											$shownumber = $this->showposts;
 
@@ -377,7 +391,7 @@ if(!class_exists('membershipcore')) {
 													?>
 													<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
 														<th class="check-column" scope="row">
-															<input type="checkbox" value="<?php echo $post->ID; ?>" name="rssposts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+															<input type="checkbox" value="<?php echo $post->ID; ?>" name="feedposts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
 														</th>
 														<td class="column-name">
 															<strong><?php echo esc_html($post->post_title); ?></strong>
@@ -554,14 +568,14 @@ if(!class_exists('membershipcore')) {
 
 		}
 
-		function rsscategory_action($section = 'right', $data = false) {
+		function feedcategory_action($section = 'right', $data = false) {
 
 			switch($section) {
 				case 'right':	?>
-								<li class='level-draggable' id='rsscategories' <?php if($data === true) echo "style='display:none;'"; ?>>
+								<li class='level-draggable' id='feedcategories' <?php if($data === true) echo "style='display:none;'"; ?>>
 									<div class='action action-draggable'>
 										<div class='action-top'>
-										<?php _e('RSS Categories','membership'); ?>
+										<?php _e('Feed Categories','membership'); ?>
 										</div>
 									</div>
 								</li>
@@ -569,8 +583,8 @@ if(!class_exists('membershipcore')) {
 								break;
 				case 'main':	if(!$data) $data = array();
 							?>
-							<div class='level-operation' id='main-rsscategories'>
-								<h2 class='sidebar-name'><?php _e('RSS Categories', 'membership');?><span><a href='#remove' class='removelink' id='remove-rsscategories' title='<?php _e("Remove RSS Categories from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+							<div class='level-operation' id='main-feedcategories'>
+								<h2 class='sidebar-name'><?php _e('Feed Categories', 'membership');?><span><a href='#remove' class='removelink' id='remove-feedcategories' title='<?php _e("Remove Feed Categories from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 								<div class='inner-operation'>
 									<p><?php _e('Select the Categories to be covered by this rule by checking the box next to the relevant categories name.','membership'); ?></p>
 									<?php
@@ -599,7 +613,7 @@ if(!class_exists('membershipcore')) {
 												?>
 												<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
 													<th class="check-column" scope="row">
-														<input type="checkbox" value="<?php echo $category->term_id; ?>" name="rsscategories[]" <?php if(in_array($category->term_id, $data)) echo 'checked="checked"'; ?>>
+														<input type="checkbox" value="<?php echo $category->term_id; ?>" name="feedcategories[]" <?php if(in_array($category->term_id, $data)) echo 'checked="checked"'; ?>>
 													</th>
 													<td class="column-name">
 														<strong><?php echo esc_html($category->name); ?></strong>
@@ -655,14 +669,14 @@ if(!class_exists('membershipcore')) {
 
 		}
 
-		function rssmore_action($section = 'right', $data = false) {
+		function feedmore_action($section = 'right', $data = false) {
 
 			switch($section) {
 				case 'right':	?>
-								<li class='level-draggable' id='rssmore' <?php if($data === true) echo "style='display:none;'"; ?>>
+								<li class='level-draggable' id='feedmore' <?php if($data === true) echo "style='display:none;'"; ?>>
 									<div class='action action-draggable'>
 										<div class='action-top'>
-										<?php _e('RSS More tag','membership'); ?>
+										<?php _e('Feed More tag','membership'); ?>
 										</div>
 									</div>
 								</li>
@@ -670,12 +684,12 @@ if(!class_exists('membershipcore')) {
 								break;
 				case 'main':
 								?>
-								<div class='level-operation' id='main-rssmore'>
-									<h2 class='sidebar-name'><?php _e('RSS More tag', 'membership');?><span><a href='#remove' id='remove-rssmore' class='removelink' title='<?php _e("Remove RSS More tag from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+								<div class='level-operation' id='main-feedmore'>
+									<h2 class='sidebar-name'><?php _e('Feed More tag', 'membership');?><span><a href='#remove' id='remove-feedmore' class='removelink' title='<?php _e("Remove Feed More tag from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 									<div class='inner-operation'>
-										<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User gets content beyond the More tag in their RSS feed.','membership'); ?></p>
-										<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User only gets content upto the More tag in their RSS feed.','membership'); ?></p>
-										<input type='hidden' name='rssmore[]' value='yes' />
+										<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User gets content beyond the More tag in their feed.','membership'); ?></p>
+										<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User only gets content upto the More tag in their feed.','membership'); ?></p>
+										<input type='hidden' name='feedmore[]' value='yes' />
 									</div>
 								</div>
 
@@ -1372,8 +1386,6 @@ if(!class_exists('membershipcore')) {
 																<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>>Serial</option>
 																<option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>>Sequential</option>
 															</select>
-															</div>
-															<div style='float: right;'>
 															<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
 															<select name='levelperiod[<?php echo $levelid; ?>]'>
 																<option value=''></option>
@@ -1385,6 +1397,9 @@ if(!class_exists('membershipcore')) {
 																	}
 																?>
 															</select>&nbsp;<?php _e('days','membership'); ?>
+															</div>
+															<div style='float: right;'>
+																<p class='description'><?php _e('days','membership'); ?></p>
 															</div>
 														</div>
 													</div>
