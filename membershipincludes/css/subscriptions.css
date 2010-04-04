@@ -284,3 +284,14 @@ div.buttons a.cancellink {
 	clear: both;
 	min-height: 40px;
 }
+
+div.levelinformation {
+	border: 1px solid #ddd;
+	width: 45%;
+	min-height: 145px;
+	padding: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+}

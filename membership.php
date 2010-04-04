@@ -26,6 +26,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 if(is_admin()) {
 	// Administration interface
+	require_once('membershipincludes/classes/class.rule.php');
+	require_once('membershipincludes/classes/class.level.php');
+	require_once('membershipincludes/classes/class.subscription.php');
+	require_once('membershipincludes/classes/class.membership.php');
+
+	require_once('membershipincludes/includes/default.rules.php');
+
 	require_once('membershipincludes/classes/membershipadmin.php');
 
 	$membershipadmin =& new membershipadmin();

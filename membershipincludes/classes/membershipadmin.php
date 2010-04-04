@@ -38,20 +38,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
 
-			//load-
-			//toplevel_page_membership
-
-			//membership_page_membershiplevels
-			//membership_page_membershipsubs
-			//membership_page_membershipgateways
-
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
-
-			add_filter('membership_level_actions_main', array(&$this, 'default_main_membership_actions'));
-			add_filter('membership_level_actions_feed', array(&$this, 'default_feed_membership_actions'));
-			add_filter('membership_level_actions_content', array(&$this, 'default_content_membership_actions'));
-
-			add_action('membership_level_action', array(&$this, 'default_membership_actions'), 10, 3);
 
 		}
 
@@ -65,6 +52,8 @@ if(!class_exists('membershipadmin')) {
 
 		function add_admin_menu() {
 
+			global $menu;
+
 			// Add the menu page
 			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'));
 
@@ -75,8 +64,24 @@ if(!class_exists('membershipadmin')) {
 			add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Edit Subscriptions','membership'), 'manage_options', "membershipsubs", array(&$this,'handle_subs_panel'));
 			add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'manage_options', "membershipgateways", array(&$this,'handle_gateways_panel'));
 
-			add_submenu_page('membership', __('Membership Options','membership'), __('Plugin Options','membership'), 'manage_options', "membershipoptions", array(&$this,'handle_options_panel'));
+			add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'manage_options', "membershipoptions", array(&$this,'handle_options_panel'));
 
+			// Move the menu to the top of the page
+			foreach($menu as $key => $value) {
+				if($value[2] == 'membership') {
+					if(!isset($menu[-10])) {
+						$menu[-10] = $menu[$key];
+						$menu[-11] = $menu[1];
+
+						// CSS style for the menu
+						$menu[-10][4] .= ' menu-top-first menu-top-last';
+
+						unset($menu[$key]);
+						break;
+					}
+
+				}
+			}
 
 		}
 
@@ -120,12 +125,6 @@ if(!class_exists('membershipadmin')) {
 		function add_admin_header_members() {
 			// Run the core header
 			$this->add_admin_header_core();
-
-			// Queue scripts and localise
-			//wp_enqueue_script('membersjs', plugins_url('/membership/membershipincludes/js/members.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
-			//wp_enqueue_style('memberscss', plugins_url('/membership/membershipincludes/css/members.css'), array('widgets'), $this->build);
-
-			//wp_localize_script( 'membersjs', 'membership', array( 'deletemember' => __('Are you sure you want to delete this member?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
 
 			$this->handle_members_updates();
 
@@ -192,8 +191,6 @@ if(!class_exists('membershipadmin')) {
 			// Query the users
 			$wp_user_search = new WP_User_Search($usersearch, $userspage, $role);
 
-			print_r($wp_user_search);
-
 			$messages = array();
 			$messages[1] = __('Member added.');
 			$messages[2] = __('Member deleted.');
@@ -243,7 +240,6 @@ if(!class_exists('membershipadmin')) {
 				<div class="alignleft actions">
 				<select name="action">
 				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
 				<option value="toggle"><?php _e('Toggle activation'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
@@ -282,7 +278,7 @@ if(!class_exists('membershipadmin')) {
 				<?php endif; ?>
 
 				<?php if ( $wp_user_search->is_search() ) : ?>
-					<p><a href="users.php"><?php _e('&larr; Back to All Users'); ?></a></p>
+					<p><a href="?page=<?php echo $page; ?>"><?php _e('&larr; Back to All Users'); ?></a></p>
 				<?php endif; ?>
 
 				<div class="clear"></div>
@@ -334,56 +330,53 @@ if(!class_exists('membershipadmin')) {
 
 					<tbody>
 						<?php
-						if($levels) {
-							foreach($levels as $key => $level) {
-								?>
-								<tr valign="middle" class="alternate" id="level-<?php echo $level->id; ?>">
-									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $level->id; ?>" name="levelcheck[]"></th>
-									<td class="column-name">
-										<strong><a title="Edit “<?php echo esc_attr($level->level_title); ?>”" href="?page=<?php echo $page; ?>&amp;action=edit&amp;level_id=<?php echo $level->id; ?>" class="row-title"><?php echo esc_html($level->level_title); ?></a></strong>
-										<?php
-											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;level_id=" . $level->id . "'>" . __('Edit') . "</a></span>";
-											if($level->level_active == 0) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Activate') . "</a></span>";
-											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Deactivate') . "</a></span>";
-											}
-											$actions['clone'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=clone&amp;clone_id=" . $level->id . "'>" . __('Clone') . "</a></span>";
+						$style = '';
+						foreach ( $wp_user_search->get_results() as $userid ) {
+							$user_object = new M_Membership($userid);
+							$roles = $user_object->roles;
+							$role = array_shift($roles);
 
-											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;level_id=" . $level->id . "", 'delete-level_' . $level->id) . "'>" . __('Delete') . "</a></span>";
-
-										?>
-										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-										</td>
-									<td class="column-active">
-										<?php
-											switch($level->level_active) {
-												case 0:	echo __('Inactive', 'membership');
-														break;
-												case 1:	echo "<strong>" . __('Active', 'membership') . "</strong>";
-														break;
-											}
-										?>
-									</td>
-									<td class="column-users">
-										<strong>
-											<?php echo $level->level_count; ?>
-										</strong>
-									</td>
-							    </tr>
-								<?php
-							}
-						} else {
-							$columncount = count($columns) + 1;
+							$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
 							?>
-							<tr valign="middle" class="alternate" >
-								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Membership levels where found, click above to add one.','membership'); ?></td>
-						    </tr>
+							<tr id='user-<?php echo $user_object->ID; ?>' <?php echo $style; ?>>
+								<th scope='row' class='check-column'>
+									<input type='checkbox' name='users[]' id='user_<?php echo $user_object->ID; ?>' class='$role' value='<?php echo $user_object->ID; ?>' />
+								</th>
+								<td <?php echo $style; ?>>
+									<strong><a href=''><?php echo $user_object->user_login; ?></a></strong>
+									<?php
+										$actions = array();
+										$actions['edit'] = "<span class='edit'><a href=''>" . __('Edit', 'membership') . "</a></span>";
+										if($user_object->active_member()) {
+											$actions['activate'] = "<span class='edit'><a href=''>" . __('Deactivate', 'membership') . "</a></span>";
+										} else {
+											$actions['activate'] = "<span class='edit'><a href=''>" . __('Activate', 'membership') . "</a></span>";
+										}
+
+										//$actions['delete'] = "<span class='delete'><a href=''>" . __('Delete', 'membership') . "</a></span>";
+									?>
+									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+								</td>
+								<td <?php echo $style; ?>><?php echo $user_object->first_name . " " . $user_object->last_name; ?></td>
+								<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf( __('e-mail: %s' ), $user_object->user_email ); ?>'><?php echo $user_object->user_email; ?></a></td>
+								<td <?php echo $style; ?>>
+									<?php if($user_object->active_member()) {
+										echo "<strong>" . __('Active', 'membership') . "</strong>";
+									} else {
+										echo __('Inactive', 'membership');
+									}
+									?>
+								</td>
+								<td <?php echo $style; ?>>
+
+								</td>
+								<td <?php echo $style; ?>>
+
+								</td>
+							</tr>
 							<?php
 						}
 						?>
-
 					</tbody>
 				</table>
 
@@ -393,18 +386,15 @@ if(!class_exists('membershipadmin')) {
 				<div class="alignleft actions">
 				<select name="action2">
 					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
 					<option value="toggle"><?php _e('Toggle activation'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+
 				</div>
 				<br class="clear">
 				</div>
-
-
 
 				</form>
 
@@ -419,615 +409,28 @@ if(!class_exists('membershipadmin')) {
 
 		function default_membership_sections($sections) {
 
-			$sections['main'] = array(	"title" => __('Main rules','membership')
+			$sections['main'] = array(	"title" => __('Main rules','membership') );
 
-									);
+			$sections['feed'] = array(	"title" => __('Feed rules','membership') );
 
-			$sections['feed'] = array(	"title" => __('Feed rules','membership')
-
-								);
-
-			$sections['content'] = array(	"title" => __('Content rules','membership')
-
-									);
-
+			$sections['content'] = array(	"title" => __('Content rules','membership') );
 
 			return $sections;
 		}
 
-		function default_membership_actions($action, $section, $data = false) {
-
-			switch($action) {
-
-				case 'posts':	$this->posts_action($section, $data);
-								break;
-
-				case 'pages':	$this->pages_action($section, $data);
-								break;
-
-				case 'categories':
-								$this->category_action($section, $data);
-								break;
-
-				case 'more':	$this->more_action($section, $data);
-								break;
-
-				case 'comments':
-								$this->comments_action($section, $data);
-								break;
-
-				case 'feedposts':
-								$this->feedposts_action($section, $data);
-								break;
-
-				case 'feedcategories':
-								$this->feedcategory_action($section, $data);
-								break;
-
-				case 'feedmore':
-								$this->feedmore_action($section, $data);
-								break;
-
-				case 'downloads':
-								$this->downloads_action($section, $data);
-								break;
-
-			}
-
-
-		}
-
-		function default_main_membership_actions($actions) {
-
-			$actions['posts'] = array();
-			$actions['pages'] = array();
-			$actions['categories'] = array();
-			$actions['more'] = array();
-			$actions['comments'] = array();
-
-			return $actions;
-		}
-
-		function default_feed_membership_actions($actions) {
-
-			$actions['feedposts'] = array();
-			$actions['feedcategories'] = array();
-			$actions['feedmore'] = array();
-
-			return $actions;
-		}
-
-		function default_content_membership_actions($actions) {
-
-			$actions['downloads'] = array();
-			return $actions;
-		}
-
-		function posts_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='posts' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Posts','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':
-								if(!$data) $data = array();
-								?>
-								<div class='level-operation' id='main-posts'>
-									<h2 class='sidebar-name'><?php _e('Posts', 'membership');?><span><a href='#remove' id='remove-posts' class='removelink' title='<?php _e("Remove Posts from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><?php _e('Select the posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
-										<?php
-											$shownumber = $this->showposts;
-
-											$args = array(
-												'numberposts' => $shownumber,
-												'offset' => 0,
-												'orderby' => 'post_date',
-												'order' => 'DESC',
-												'post_type' => 'post',
-												'post_status' => 'publish'
-											);
-
-											$posts = get_posts($args);
-											if($posts) {
-												?>
-												<table cellspacing="0" class="widefat fixed">
-													<thead>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-														<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-													</tr>
-													</thead>
-
-													<tfoot>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-														<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-													</tr>
-													</tfoot>
-
-													<tbody>
-												<?php
-												foreach($posts as $key => $post) {
-													?>
-													<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
-														<th class="check-column" scope="row">
-															<input type="checkbox" value="<?php echo $post->ID; ?>" name="posts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
-														</th>
-														<td class="column-name">
-															<strong><?php echo esc_html($post->post_title); ?></strong>
-														</td>
-														<td class="column-date">
-															<?php
-																echo date("Y/m/d", strtotime($post->post_date));
-															?>
-														</td>
-												    </tr>
-													<?php
-												}
-												?>
-													</tbody>
-												</table>
-												<?php
-											}
-
-										?>
-										<p class='description'><?php _e("Only the most recent {$shownumber} posts are shown above, if you have more than that then you should consider using categories instead.",'membership'); ?></p>
-									</div>
-								</div>
-								<?php
-								break;
-
-			}
-
-		}
-
-		function feedposts_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='feedposts' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Feed Posts','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':	if(!$data) $data = array();
-								?>
-								<div class='level-operation' id='main-feedposts'>
-									<h2 class='sidebar-name'><?php _e('Feed Posts', 'membership');?><span><a href='#remove' id='remove-feedposts' class='removelink' title='<?php _e("Remove Feed Posts from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><?php _e('Select the Feed posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
-										<?php
-											$shownumber = $this->showposts;
-
-											$args = array(
-												'numberposts' => $shownumber,
-												'offset' => 0,
-												'orderby' => 'post_date',
-												'order' => 'DESC',
-												'post_type' => 'post',
-												'post_status' => 'publish'
-											);
-
-											$posts = get_posts($args);
-											if($posts) {
-												?>
-												<table cellspacing="0" class="widefat fixed">
-													<thead>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-														<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-													</tr>
-													</thead>
-
-													<tfoot>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-														<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-													</tr>
-													</tfoot>
-
-													<tbody>
-												<?php
-												foreach($posts as $key => $post) {
-													?>
-													<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
-														<th class="check-column" scope="row">
-															<input type="checkbox" value="<?php echo $post->ID; ?>" name="feedposts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
-														</th>
-														<td class="column-name">
-															<strong><?php echo esc_html($post->post_title); ?></strong>
-														</td>
-														<td class="column-date">
-															<?php
-																echo date("Y/m/d", strtotime($post->post_date));
-															?>
-														</td>
-												    </tr>
-													<?php
-												}
-												?>
-													</tbody>
-												</table>
-												<?php
-											}
-
-										?>
-										<p class='description'><?php _e("Only the most recent {$shownumber} posts are shown above, if you have more than that then you should consider using categories instead.",'membership'); ?></p>
-									</div>
-								</div>
-								<?php
-								break;
-
-			}
-		}
-
-		function pages_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='pages' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Pages','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':	if(!$data) $data = array();
-				?>
-				<div class='level-operation' id='main-pages'>
-					<h2 class='sidebar-name'><?php _e('Pages', 'membership');?><span><a href='#remove' id='remove-pages' class='removelink' title='<?php _e("Remove Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-					<div class='inner-operation'>
-						<p><?php _e('Select the Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
-						<?php
-							$shownumber = $this->showpages;
-
-							$args = array(
-								'numberposts' => $shownumber,
-								'offset' => 0,
-								'orderby' => 'post_date',
-								'order' => 'DESC',
-								'post_type' => 'page',
-								'post_status' => 'publish'
-							);
-
-							$posts = get_posts($args);
-							if($posts) {
-								?>
-								<table cellspacing="0" class="widefat fixed">
-									<thead>
-									<tr>
-										<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-										<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-										</tr>
-									</thead>
-
-									<tfoot>
-									<tr>
-										<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-										<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-										</tr>
-									</tfoot>
-
-									<tbody>
-								<?php
-								foreach($posts as $key => $post) {
-									?>
-									<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
-										<th class="check-column" scope="row">
-											<input type="checkbox" value="<?php echo $post->ID; ?>" name="pages[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
-										</th>
-										<td class="column-name">
-											<strong><?php echo esc_html($post->post_title); ?></strong>
-										</td>
-								    </tr>
-									<?php
-								}
-								?>
-									</tbody>
-								</table>
-								<?php
-							}
-
-						?>
-						<p class='description'><?php _e("Only the most recent {$shownumber} pages are shown above.",'membership'); ?></p>
-					</div>
-				</div>
-				<?php
-				break;
-
-			}
-		}
-
-		function category_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='categories' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Categories','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':	if(!$data) $data = array();
-								?>
-								<div class='level-operation' id='main-categories'>
-									<h2 class='sidebar-name'><?php _e('Categories', 'membership');?><span><a href='#remove' class='removelink' id='remove-categories' title='<?php _e("Remove Categories from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><?php _e('Select the Categories to be covered by this rule by checking the box next to the relevant categories name.','membership'); ?></p>
-										<?php
-											$categories = get_categories('get=all');
-
-											if($categories) {
-												?>
-												<table cellspacing="0" class="widefat fixed">
-													<thead>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Category name', 'membership'); ?></th>
-														</tr>
-													</thead>
-
-													<tfoot>
-													<tr>
-														<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-														<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Category name', 'membership'); ?></th>
-														</tr>
-													</tfoot>
-
-													<tbody>
-												<?php
-												foreach($categories as $key => $category) {
-													?>
-													<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
-														<th class="check-column" scope="row">
-															<input type="checkbox" value="<?php echo $category->term_id; ?>" name="categories[]" <?php if(in_array($category->term_id, $data)) echo 'checked="checked"'; ?>>
-														</th>
-														<td class="column-name">
-															<strong><?php echo esc_html($category->name); ?></strong>
-														</td>
-												    </tr>
-													<?php
-												}
-												?>
-													</tbody>
-												</table>
-												<?php
-											}
-
-										?>
-									</div>
-								</div>
-
-								<?php
-								break;
-			}
-
-		}
-
-		function feedcategory_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='feedcategories' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Feed Categories','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':	if(!$data) $data = array();
-							?>
-							<div class='level-operation' id='main-feedcategories'>
-								<h2 class='sidebar-name'><?php _e('Feed Categories', 'membership');?><span><a href='#remove' class='removelink' id='remove-feedcategories' title='<?php _e("Remove Feed Categories from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-								<div class='inner-operation'>
-									<p><?php _e('Select the Categories to be covered by this rule by checking the box next to the relevant categories name.','membership'); ?></p>
-									<?php
-										$categories = get_categories('get=all');
-
-										if($categories) {
-											?>
-											<table cellspacing="0" class="widefat fixed">
-												<thead>
-												<tr>
-													<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-													<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Category name', 'membership'); ?></th>
-													</tr>
-												</thead>
-
-												<tfoot>
-												<tr>
-													<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-													<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Category name', 'membership'); ?></th>
-													</tr>
-												</tfoot>
-
-												<tbody>
-											<?php
-											foreach($categories as $key => $category) {
-												?>
-												<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
-													<th class="check-column" scope="row">
-														<input type="checkbox" value="<?php echo $category->term_id; ?>" name="feedcategories[]" <?php if(in_array($category->term_id, $data)) echo 'checked="checked"'; ?>>
-													</th>
-													<td class="column-name">
-														<strong><?php echo esc_html($category->name); ?></strong>
-													</td>
-											    </tr>
-												<?php
-											}
-											?>
-												</tbody>
-											</table>
-											<?php
-										}
-
-									?>
-								</div>
-							</div>
-
-							<?php
-							break;
-
-			}
-
-		}
-
-		function more_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='more' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('More tag','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':
-								?>
-								<div class='level-operation' id='main-more'>
-									<h2 class='sidebar-name'><?php _e('More tag', 'membership');?><span><a href='#remove' class='removelink' id='remove-more' title='<?php _e("Remove More tag from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can read full post content beyond the More tag.','membership'); ?></p>
-										<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to read full post content beyond the More tag.','membership'); ?></p>
-										<input type='hidden' name='more[]' value='yes' />
-									</div>
-								</div>
-
-								<?php
-								break;
-
-			}
-
-		}
-
-		function feedmore_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='feedmore' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Feed More tag','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':
-								?>
-								<div class='level-operation' id='main-feedmore'>
-									<h2 class='sidebar-name'><?php _e('Feed More tag', 'membership');?><span><a href='#remove' id='remove-feedmore' class='removelink' title='<?php _e("Remove Feed More tag from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User gets content beyond the More tag in their feed.','membership'); ?></p>
-										<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User only gets content upto the More tag in their feed.','membership'); ?></p>
-										<input type='hidden' name='feedmore[]' value='yes' />
-									</div>
-								</div>
-
-								<?php
-								break;
-
-			}
-
-		}
-
-		function comments_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='comments' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Comments','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':
-								?>
-								<div class='level-operation' id='main-comments'>
-									<h2 class='sidebar-name'><?php _e('Comments', 'membership');?><span><a href='#remove' id='remove-comments' class='removelink' title='<?php _e("Remove Comments from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User gets read and make comments of posts.','membership'); ?></p>
-										<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User can not read or comment on posts.','membership'); ?></p>
-										<input type='hidden' name='comments[]' value='yes' />
-									</div>
-								</div>
-
-								<?php
-								break;
-
-			}
-
-		}
-
-		function downloads_action($section = 'right', $data = false) {
-
-			switch($section) {
-				case 'right':	?>
-								<li class='level-draggable' id='downloads' <?php if($data === true) echo "style='display:none;'"; ?>>
-									<div class='action action-draggable'>
-										<div class='action-top'>
-										<?php _e('Downloads','membership'); ?>
-										</div>
-									</div>
-								</li>
-								<?php
-								break;
-				case 'main':
-								?>
-								<div class='level-operation' id='main-downloads'>
-									<h2 class='sidebar-name'><?php _e('Downloads', 'membership');?><span><a href='#remove' id='remove-downloads' class='removelink' title='<?php _e("Remove Downloads from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class='inner-operation'>
-										<p><?php _e('Instructions here.','membership'); ?></p>
-										<input type='hidden' name='donwloads[]' value='yes' />
-									</div>
-								</div>
-
-								<?php
-								break;
-
-			}
-
-		}
-
 		function handle_level_edit_form($level_id = false, $clone = false) {
 
-			global $page;
+			global $page, $M_Rules, $M_SectionRules;
 
 			if($level_id && !$clone) {
-				$level = $this->get_membership_level($level_id);
+				$mlevel = new M_Level( $level_id );
+				$level = $mlevel->get();
 			} else {
 
 				if($clone) {
-					$level = $this->get_membership_level($level_id);
+					$mlevel = new M_Level( $level_id );
+					$level = $mlevel->get();
+
 					$level->level_title .= __(' clone','membership');
 				} else {
 					$level = new stdclass;
@@ -1038,8 +441,10 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Get the relevant parts
-			$positives = $this->get_membership_rules($level_id, 'positive');
-			$negatives = $this->get_membership_rules($level_id, 'negative');
+			if(isset($mlevel)) {
+				$positives = $mlevel->get_rules('positive');
+				$negatives = $mlevel->get_rules('negative');
+			}
 
 			// Re-arrange the rules
 			$rules = array(); $p = array(); $n = array();
@@ -1097,7 +502,12 @@ if(!class_exists('membershipadmin')) {
 									<?php
 										if(!empty($p)) {
 											foreach($p as $key => $value) {
-												do_action('membership_level_action', $key, 'main', $value);
+
+												if(isset($M_Rules[$key])) {
+														$rule = new $M_Rules[$key]();
+
+														$rule->admin_main($value);
+												}
 											}
 										}
 									?>
@@ -1112,7 +522,11 @@ if(!class_exists('membershipadmin')) {
 									<?php
 										if(!empty($n)) {
 											foreach($n as $key => $value) {
-												do_action('membership_level_action', $key, 'main', $value);
+												if(isset($M_Rules[$key])) {
+														$rule = new $M_Rules[$key]();
+
+														$rule->admin_main($value);
+												}
 											}
 										}
 									?>
@@ -1153,11 +567,14 @@ if(!class_exists('membershipadmin')) {
 						$sections = apply_filters('membership_level_sections', array());
 
 						foreach($sections as $key => $section) {
-							$actions = apply_filters('membership_level_actions_' . $key, array());
 
-							foreach( (array) $actions as $action => $value) {
-								if(!array_key_exists($action, $rules)) {
-									do_action('membership_level_action', $action, 'main');
+							if(isset($M_SectionRules[$key])) {
+								foreach($M_SectionRules[$key] as $mrule => $mclass) {
+									$rule = new $mclass();
+
+									if(!array_key_exists($mrule, $rules)) {
+										$rule->admin_main(false);
+									}
 								}
 							}
 
@@ -1183,15 +600,18 @@ if(!class_exists('membershipadmin')) {
 								<div class="section-holder" id="sidebar-<?php echo $key; ?>" style="min-height: 98px;">
 									<ul class='levels levels-draggable'>
 									<?php
-										$actions = apply_filters('membership_level_actions_' . $key , array());
 
-											foreach( (array) $actions as $action => $value) {
-												if(!array_key_exists($action, $rules)) {
-													do_action('membership_level_action', $action, 'right');
+										if(isset($M_SectionRules[$key])) {
+											foreach($M_SectionRules[$key] as $mrule => $mclass) {
+												$rule = new $mclass();
+
+												if(!array_key_exists($mrule, $rules)) {
+													$rule->admin_sidebar(false);
 												} else {
-													do_action('membership_level_action', $action, 'right', true);
+													$rule->admin_sidebar(true);
 												}
 											}
+										}
 
 									?>
 									</ul>
@@ -1229,7 +649,10 @@ if(!class_exists('membershipadmin')) {
 				case 'added':	$id = (int) $_POST['level_id'];
 								check_admin_referer('add-' . $id);
 								if($id) {
-									if($this->add_membership_level($id)) {
+
+									$level = new M_Level($id);
+
+									if($level->add()) {
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 4,  'admin.php?page=' . $page ) );
@@ -1242,7 +665,10 @@ if(!class_exists('membershipadmin')) {
 				case 'updated':	$id = (int) $_POST['level_id'];
 								check_admin_referer('update-' . $id);
 								if($id) {
-									if($this->update_membership_level($id)) {
+
+									$level = new M_Level($id);
+
+									if($level->update()) {
 										wp_safe_redirect( add_query_arg( 'msg', 3,  'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 5,  'admin.php?page=' . $page ) );
@@ -1257,7 +683,9 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('delete-level_' . $level_id);
 
-									if($this->delete_membership_level($level_id)) {
+									$level = new M_Level($level_id);
+
+									if($level->delete($level_id)) {
 										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
@@ -1271,7 +699,9 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('toggle-level_' . $level_id);
 
-									if($this->toggle_membership_level($level_id)) {
+									$level = new M_Level($level_id);
+
+									if( $level->toggleactivation() ) {
 										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
@@ -1285,14 +715,14 @@ if(!class_exists('membershipadmin')) {
 								foreach($_GET['levelcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$level_id = (int) $value;
-										if($this->delete_membership_level($level_id)) {
-											wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
-										}
-									}
 
+										$level = new M_Level($level_id);
+
+										$level->delete();
+									}
 								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 								break;
 
 				case 'bulk-toggle':
@@ -1300,14 +730,14 @@ if(!class_exists('membershipadmin')) {
 								foreach($_GET['levelcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$level_id = (int) $value;
-										if($this->toggle_membership_level($level_id)) {
-											wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
-										}
-									}
 
+										$level = new M_Level($level_id);
+
+										$level->toggleactivation();
+									}
 								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 								break;
 
 			}
@@ -1552,12 +982,12 @@ if(!class_exists('membershipadmin')) {
 
 			global $page;
 
+			$msub = new M_Subscription( $sub_id );
 			if($sub_id && !$clone) {
-				$sub = $this->get_membership_sub($sub_id);
+				$sub = $msub->get();
 			} else {
-
 				if($clone) {
-					$sub = $this->get_membership_sub($sub_id);
+					$sub = $msub->get();
 					$sub->sub_name .= __(' clone','membership');
 				} else {
 					$sub = new stdclass;
@@ -1568,7 +998,9 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Get the relevant parts
-			$levels = $this->get_subscription_levels($sub_id);
+			if(isset($msub)) {
+				$levels = $msub->get_levels();
+			}
 
 			?>
 			<div class='wrap nosubsub'>
@@ -1604,7 +1036,7 @@ if(!class_exists('membershipadmin')) {
 							</div>
 							<div class='sub-holder'>
 								<div class='sub-details'>
-								<label for='sub_name'><?php _e('Subscription name','management'); ?></label><br/>
+								<label for='sub_name'><?php _e('Subscription name','management'); ?></label>
 								<input class='wide' type='text' name='sub_name' id='sub_name' value='<?php echo esc_attr($sub->sub_name); ?>' />
 								</div>
 
@@ -1620,51 +1052,8 @@ if(!class_exists('membershipadmin')) {
 								</div>
 
 								<ul id='membership-levels-holder'>
-
 									<?php
-										$levelorder = array();
-										if(!empty($levels)) {
-											$count = 1;
-											foreach($levels as $key => $level) {
-												$levelid = 'level-' . $level->level_id . '-' . $count++;
-												$levelorder[] = $levelid;
-												?>
-												<li class='sortable-levels' id="<?php echo $levelid; ?>" >
-													<div class='joiningline'>&nbsp;</div>
-													<div class="sub-operation" style="display: block;">
-														<h2 class="sidebar-name"><?php echo esc_html($level->level_title); ?><span><a href='#remove' class='removelink' title='<?php _e("Remove this level from the subscription.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-														<div class="inner-operation">
-															<div style='float: left;'>
-															<label for='levelmode[<?php echo $levelid; ?>]'><?php _e('Mode : ','membership'); ?></label>
-															<select name='levelmode[<?php echo $levelid; ?>]'>
-																<option value='trial' <?php if($level->sub_type == 'trial') echo "selected='selected'"; ?>>Trial</option>
-																<option value='finite' <?php if($level->sub_type == 'finite') echo "selected='selected'"; ?>>Finite</option>
-																<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>>Indefinite</option>
-																<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>>Serial</option>
-																<option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>>Sequential</option>
-															</select>
-															<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
-															<select name='levelperiod[<?php echo $levelid; ?>]'>
-																<option value=''></option>
-																<?php
-																	for($n = 1; $n <= 365; $n++) {
-																		?>
-																		<option value='<?php echo $n; ?>' <?php if($level->level_period == $n) echo "selected='selected'"; ?>><?php echo $n; ?></option>
-																		<?php
-																	}
-																?>
-															</select>&nbsp;<?php _e('days','membership'); ?>
-															</div>
-															<div style='float: right;'>
-																<p class='description'><?php _e('days','membership'); ?></p>
-															</div>
-														</div>
-													</div>
-												</li>
-
-												<?php
-											}
-										}
+										$msub->sub_details();
 									?>
 								</ul>
 								<div id='membership-levels' class='droppable-levels levels-sortable'>
@@ -1675,7 +1064,7 @@ if(!class_exists('membershipadmin')) {
 									// Hidden fields
 								?>
 								<input type='hidden' name='beingdragged' id='beingdragged' value='' />
-								<input type='hidden' name='level-order' id='level-order' value=',<?php echo implode(',', $levelorder); ?>' />
+								<input type='hidden' name='level-order' id='level-order' value=',<?php echo implode(',', $msub->levelorder); ?>' />
 
 								<div class='buttons'>
 									<?php
@@ -1706,37 +1095,9 @@ if(!class_exists('membershipadmin')) {
 					<div id='hiden-actions'>
 
 						<div id='template-holder'>
-							<li class='sortable-levels' id="%templateid%" >
-								<div class='joiningline'>&nbsp;</div>
-								<div class="sub-operation" style="display: block;">
-									<h2 class="sidebar-name">%startingpoint%<span><a href='#remove' class='removelink' title='<?php _e("Remove this level from the subscription.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-									<div class="inner-operation">
-										<div style='float: left;'>
-										<label for='levelmode[%level%]'><?php _e('Mode : ','membership'); ?></label>
-										<select name='levelmode[%level%]'>
-											<option value='trial'>Trial</option>
-											<option value='finite'>Finite</option>
-											<option value='indefinite'>Indefinite</option>
-											<option value='serial'>Serial</option>
-											<option value='sequential'>Sequential</option>
-										</select>
-										</div>
-										<div style='float: right;'>
-										<label for='levelperiod[%level%]'><?php _e('Period : ','membership'); ?></label>
-										<select name='levelperiod[%level%]'>
-											<option value=''></option>
-											<?php
-												for($n = 1; $n <= 365; $n++) {
-													?>
-													<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
-													<?php
-												}
-											?>
-										</select>&nbsp;<?php _e('days','membership'); ?>
-										</div>
-									</div>
-								</div>
-							</li>
+							<?php
+								$msub->sub_template();
+							?>
 						</div>
 
 					</div> <!-- hidden-actions -->
@@ -1795,8 +1156,11 @@ if(!class_exists('membershipadmin')) {
 
 				case 'added':	$id = (int) $_POST['sub_id'];
 								check_admin_referer('add-' . $id);
+
 								if($id) {
-									if($this->add_subscription($id)) {
+									$sub = new M_Subscription( $id );
+
+									if($sub->add()) {
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
@@ -1809,7 +1173,9 @@ if(!class_exists('membershipadmin')) {
 				case 'updated':	$id = (int) $_POST['sub_id'];
 								check_admin_referer('update-' . $id);
 								if($id) {
-									if($this->update_subscription($id)) {
+									$sub = new M_Subscription( $id );
+
+									if($sub->update()) {
 										wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
@@ -1824,7 +1190,9 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('delete-sub_' . $sub_id);
 
-									if($this->delete_membership_sub($sub_id)) {
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->delete()) {
 										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
@@ -1838,7 +1206,9 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('toggle-sub_' . $sub_id);
 
-									if($this->toggle_membership_sub($sub_id)) {
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->toggleactivation()) {
 										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
@@ -1852,14 +1222,14 @@ if(!class_exists('membershipadmin')) {
 								foreach($_GET['subcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
-										if($this->delete_membership_sub($sub_id)) {
-											wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
-										}
-									}
 
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->delete();
+									}
 								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 								break;
 
 				case 'bulk-toggle':
@@ -1867,14 +1237,14 @@ if(!class_exists('membershipadmin')) {
 								foreach($_GET['subcheck'] AS $value) {
 									if(is_numeric($value)) {
 										$sub_id = (int) $value;
-										if($this->toggle_membership_sub($sub_id)) {
-											wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
-										}
-									}
 
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->toggleactivation();
+									}
 								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 								break;
 
 			}
@@ -2112,256 +1482,6 @@ if(!class_exists('membershipadmin')) {
 
 		// Database actions
 
-		function get_membership_rules($level_id, $type) {
-
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_rules} WHERE level_id = %d AND rule_ive = %s ORDER BY rule_order ASC", $level_id, $type );
-
-			return $this->db->get_results( $sql );
-
-		}
-
-		function get_subscription_levels($sub_id) {
-
-			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d ORDER BY level_order ASC", $sub_id );
-
-			return $this->db->get_results( $sql );
-
-		}
-
-		function add_subscription($sub_id) {
-
-			if($sub_id > 0) {
-				$this->update_subscription($sub_id);
-			} else {
-
-				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name']));
-				$sub_id = $this->db->insert_id;
-
-				if(!empty($_POST['level-order'])) {
-
-					$levels = explode(',', $_POST['level-order']);
-					$count = 1;
-					foreach( (array) $levels as $level ) {
-						if(!empty($level)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST['levelmode'][$level])) {
-								$levelmode = esc_attr($_POST['levelmode'][$level]);
-							} else {
-								continue;
-							}
-
-							if(isset($_POST['levelperiod'][$level])) {
-								$levelperiod = esc_attr($_POST['levelperiod'][$level]);
-							} else {
-								$levelperiod = '';
-							}
-
-							// Calculate the level id
-							$lev = explode('-', $level);
-							if($lev[0] == 'level') {
-								$level_id = (int) $lev[1];
-								// write it to the database
-								$this->db->insert($this->subscriptions_levels, array("sub_id" => $sub_id, "level_period" => $levelperiod, "sub_type" => $levelmode, "level_order" => $count++, "level_id" => $level_id));
-
-							}
-
-						}
-
-					}
-
-				}
-
-				return $sub_id; // for now
-
-			}
-
-
-
-		}
-
-		function update_subscription($sub_id) {
-
-			if($sub_id < 0) {
-				$this->add_subscription($sub_id);
-			} else {
-
-				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name']), array('id' => $sub_id));
-
-				// Remove the existing rules for this subscription level
-				$this->db->query( $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $sub_id ) );
-
-				if(!empty($_POST['level-order'])) {
-
-					$levels = explode(',', $_POST['level-order']);
-					$count = 1;
-					foreach( (array) $levels as $level ) {
-						if(!empty($level)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST['levelmode'][$level])) {
-								$levelmode = esc_attr($_POST['levelmode'][$level]);
-							} else {
-								continue;
-							}
-
-							if(isset($_POST['levelperiod'][$level])) {
-								$levelperiod = esc_attr($_POST['levelperiod'][$level]);
-							} else {
-								$levelperiod = '';
-							}
-
-							// Calculate the level id
-							$lev = explode('-', $level);
-							if($lev[0] == 'level') {
-								$level_id = (int) $lev[1];
-								// write it to the database
-								$this->db->insert($this->subscriptions_levels, array("sub_id" => $sub_id, "level_period" => $levelperiod, "sub_type" => $levelmode, "level_order" => $count++, "level_id" => $level_id));
-
-							}
-
-						}
-
-					}
-
-				}
-			}
-
-			return true; // for now
-
-		}
-
-		function add_membership_level($level_id) {
-
-			if($level_id > 0 ) {
-				return $this->update_level($level_id);
-			} else {
-				$return = $this->db->insert($this->membership_levels, array('level_title' => $_POST['level_title'], 'level_slug' => sanitize_title($_POST['level_title'])));
-
-				$level_id = $this->db->insert_id;
-
-				// Process the new rules
-				if(!empty($_POST['in-positive-rules'])) {
-					$rules = explode(',', $_POST['in-positive-rules']);
-					$count = 1;
-					foreach( (array) $rules as $rule ) {
-						if(!empty($rule)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST[$rule])) {
-								$ruleval = maybe_serialize($_POST[$rule]);
-								// write it to the database
-								$this->db->insert($this->membership_rules, array("level_id" => $level_id, "rule_ive" => 'positive', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
-							}
-						}
-
-					}
-				}
-
-				if(!empty($_POST['in-negative-rules'])) {
-					$rules = explode(',', $_POST['in-negative-rules']);
-					$count = 1;
-					foreach( (array) $rules as $rule ) {
-						if(!empty($rule)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST[$rule])) {
-								$ruleval = maybe_serialize($_POST[$rule]);
-								// write it to the database
-								$this->db->insert($this->membership_rules, array("level_id" => $level_id, "rule_ive" => 'negative', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
-							}
-						}
-					}
-				}
-
-			}
-
-			return true; // for now
-
-		}
-
-		function update_membership_level($level_id) {
-
-			if($level_id < 0 ) {
-				return $this->add_level($level_id);
-			} else {
-				$return = $this->db->update($this->membership_levels, array('level_title' => $_POST['level_title'], 'level_slug' => sanitize_title($_POST['level_title'])), array('id' => $level_id));
-
-				// Remove the existing rules for this membership level
-				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $level_id ) );
-
-				// Process the new rules
-				if(!empty($_POST['in-positive-rules'])) {
-					$rules = explode(',', $_POST['in-positive-rules']);
-					$count = 1;
-					foreach( (array) $rules as $rule ) {
-						if(!empty($rule)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST[$rule])) {
-								$ruleval = maybe_serialize($_POST[$rule]);
-								// write it to the database
-								$this->db->insert($this->membership_rules, array("level_id" => $level_id, "rule_ive" => 'positive', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
-							}
-						}
-
-					}
-				}
-
-				if(!empty($_POST['in-negative-rules'])) {
-					$rules = explode(',', $_POST['in-negative-rules']);
-					$count = 1;
-					foreach( (array) $rules as $rule ) {
-						if(!empty($rule)) {
-							// Check if the rule has any information for it.
-							if(isset($_POST[$rule])) {
-								$ruleval = maybe_serialize($_POST[$rule]);
-								// write it to the database
-								$this->db->insert($this->membership_rules, array("level_id" => $level_id, "rule_ive" => 'negative', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
-							}
-						}
-					}
-				}
-
-			}
-
-			return true; // for now
-
-		}
-
-		function toggle_membership_level($level_id) {
-
-			$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d AND level_count = 0", $level_id);
-
-			return $this->db->query($sql);
-
-
-		}
-
-		function delete_membership_level($level_id) {
-
-			$sql = $this->db->prepare( "DELETE FROM {$this->membership_levels} WHERE id = %d AND level_count = 0", $level_id);
-
-			$sql2 = $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $level_id);
-
-			$sql3 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE level_id = %d", $level_id);
-
-			if($this->db->query($sql)) {
-
-				$this->db->query($sql2);
-				$this->db->query($sql3);
-				return true;
-
-			} else {
-				return false;
-			}
-
-
-		}
-
-		function get_membership_level($level_id) {
-
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels} WHERE id = %d", $level_id);
-
-			return $this->db->get_row($sql);
-
-		}
-
 		function get_membership_levels($filter = false) {
 
 			if($filter) {
@@ -2460,42 +1580,6 @@ if(!class_exists('membershipadmin')) {
 
 			return $this->db->get_results($sql);
 
-
-		}
-
-		function toggle_membership_sub($sub_id) {
-
-			$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d AND sub_count = 0", $sub_id);
-
-			return $this->db->query($sql);
-
-
-		}
-
-		function delete_membership_sub($sub_id) {
-
-			$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d AND sub_count = 0", $sub_id);
-
-			$sql2 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $sub_id);
-
-			if($this->db->query($sql)) {
-
-				$this->db->query($sql2);
-				return true;
-
-			} else {
-				return false;
-			}
-
-
-
-		}
-
-		function get_membership_sub($sub_id) {
-
-			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions} WHERE id = %d", $sub_id);
-
-			return $this->db->get_row($sql);
 
 		}
 
