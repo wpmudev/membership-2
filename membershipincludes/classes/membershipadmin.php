@@ -1813,6 +1813,16 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 				case 'bulk-toggle':
+									check_admin_referer('bulk-gateways');
+									foreach($_GET['gatewaycheck'] AS $key) {
+										if(isset($M_Gateways[$key])) {
+
+											$M_Gateways[$key]->toggleactivation();
+
+										}
+									}
+
+									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									break;
 
 			}

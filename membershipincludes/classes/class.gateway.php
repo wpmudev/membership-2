@@ -28,6 +28,26 @@ if(!class_exists('M_Gateway')) {
 			return $gateways;
 
 		}
+		
+		function toggleactivation() {
+			
+			$active = get_option('M_active_gateways', array());
+
+			if(in_array($this->gateway, $active)) {
+				unset($active[$this->gateway]);
+
+				update_option('M_active_gateways', $active);
+
+				return true;
+			} else {
+				$active[$this->gateway] = true;
+
+				update_option('M_active_gateways', $active);
+
+				return true;
+			}
+			
+		}
 
 		function activate() {
 
