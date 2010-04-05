@@ -38,19 +38,25 @@ if(!class_exists('M_Level')) {
 			$this->__construct();
 		}
 
-		function toggleactivation($forced = false) {
+		// Fields
 
-			$this->dirty = true;
+		function level_title() {
 
-			if($forced) {
-				$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
+			if(empty($this->level)) {
+				$level = $this->get();
+
+				if($level) {
+					return $level->level_title;
+				} else {
+					return false;
+				}
 			} else {
-				$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d AND level_count = 0", $this->id);
+				return $this->level->level_title;
 			}
 
-			return $this->db->query($sql);
-
 		}
+
+		// Gets
 
 		function get() {
 
@@ -202,7 +208,19 @@ if(!class_exists('M_Level')) {
 
 		}
 
+			function toggleactivation($forced = false) {
 
+				$this->dirty = true;
+
+				if($forced) {
+					$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
+				} else {
+					$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d AND level_count = 0", $this->id);
+				}
+
+				return $this->db->query($sql);
+
+			}
 		// UI functions
 
 	}

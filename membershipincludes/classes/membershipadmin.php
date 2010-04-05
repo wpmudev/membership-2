@@ -10,10 +10,11 @@ if(!class_exists('membershipadmin')) {
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
 
 		var $membership_levels;
 		var $membership_rules;
+		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
 
@@ -34,9 +35,11 @@ if(!class_exists('membershipadmin')) {
 
 			// Header actions
 			add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
+			add_action('load-membership_page_members', array(&$this, 'add_admin_header_members'));
 			add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
+			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
 
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
 
@@ -55,7 +58,7 @@ if(!class_exists('membershipadmin')) {
 			global $menu;
 
 			// Add the menu page
-			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'));
+			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), plugins_url('membership/membershipincludes/images/members.png'));
 
 			// Add the sub menu
 			add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'manage_options', "members", array(&$this,'handle_members_panel'));
@@ -126,21 +129,87 @@ if(!class_exists('membershipadmin')) {
 			// Run the core header
 			$this->add_admin_header_core();
 
+			wp_enqueue_script('membersjs', plugins_url('/membership/membershipincludes/js/members.js'), array(), $this->build);
+
+			wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
+
+
 			$this->handle_members_updates();
 
 		}
 
 		function add_admin_header_membershipgateways() {
 			$this->add_admin_header_core();
+
+			$this->handle_gateways_panel_updates();
+		}
+
+		function add_admin_header_membershipoptions() {
+			$this->add_admin_header_core();
+
 		}
 
 		// Panel handling functions
 
 		function handle_membership_panel() {
 
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-index"><br></div>
+				<h2><?php _e('Membership dashboard','membership'); ?></h2>
+
+
+			</div> <!-- wrap -->
+			<?php
+
 		}
 
 		function handle_members_updates() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
+					$action = 'bulk-toggle';
+				}
+			}
+
+			switch(addslashes($action)) {
+
+				case 'toggle':	if(isset($_GET['user_id'])) {
+									$user_id = (int) $_GET['user_id'];
+
+									check_admin_referer('toggle-member_' . $user_id);
+
+									$member = new M_Membership($user_id);
+
+									if( $member->toggle_activation() ) {
+										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'bulk-toggle':
+								check_admin_referer('bulk-members');
+								foreach($_GET['users'] AS $value) {
+									if(is_numeric($value)) {
+										$user_id = (int) $value;
+
+										$member = new M_Membership($user_id);
+
+										$member->toggle_activation();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+								break;
+
+			}
 
 		}
 
@@ -149,6 +218,8 @@ if(!class_exists('membershipadmin')) {
 			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
+
+			require_once('class.membersearch.php');
 
 			switch(addslashes($action)) {
 
@@ -159,12 +230,6 @@ if(!class_exists('membershipadmin')) {
 								}
 								break;
 
-				case 'clone':	if(isset($_GET['clone_id'])) {
-									$level_id = (int) $_GET['clone_id'];
-									$this->handle_level_edit_form($level_id, true);
-									return; // So we don't see the rest of this page
-								}
-								break;
 			}
 
 			$filter = array();
@@ -176,20 +241,38 @@ if(!class_exists('membershipadmin')) {
 				$s = '';
 			}
 
-			if(isset($_GET['level_id'])) {
-				$filter['level_id'] = stripslashes($_GET['level_id']);
+			$sub_id = null; $level_id = null;
+
+			if(isset($_GET['doactionsub'])) {
+				if(addslashes($_GET['sub_op']) != '') {
+					$sub_id = addslashes($_GET['sub_op']);
+				}
 			}
 
-			if(isset($_GET['order_by'])) {
-				$filter['order_by'] = stripslashes($_GET['order_by']);
+			if(isset($_GET['doactionsub2'])) {
+				if(addslashes($_GET['sub_op2']) != '') {
+					$sub_id = addslashes($_GET['sub_op2']);
+				}
+			}
+
+			if(isset($_GET['doactionlevel'])) {
+				if(addslashes($_GET['level_op']) != '') {
+					$level_id = addslashes($_GET['level_op']);
+				}
+			}
+
+			if(isset($_GET['doactionlevel2'])) {
+				if(addslashes($_GET['level_op2']) != '') {
+					$level_id = addslashes($_GET['level_op2']);
+				}
 			}
 
 			$usersearch = isset($_GET['s']) ? $_GET['s'] : null;
-			$userspage = isset($_GET['paged']) ? $_GET['paged'] : null;
+			$userspage = isset($_GET['userspage']) ? $_GET['userspage'] : null;
 			$role = null;
 
 			// Query the users
-			$wp_user_search = new WP_User_Search($usersearch, $userspage, $role);
+			$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id);
 
 			$messages = array();
 			$messages[1] = __('Member added.');
@@ -239,23 +322,52 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+
+					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
+						<option value="addsub"><?php _e('Add subscription','membership'); ?></option>
+						<option value="movesub"><?php _e('Move subscription','membership'); ?></option>
+						<option value="dropsub"><?php _e('Drop subscription','membership'); ?></option>
+					</optgroup>
+
+					<optgroup label="<?php _e('Levels','membership'); ?>">
+						<option value="addlevel"><?php _e('Add level','membership'); ?></option>
+						<option value="movelevel"><?php _e('Move level','membership'); ?></option>
+						<option value="droplevel"><?php _e('Drop level','membership'); ?></option>
+					</optgroup>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
-				<select name="level_id">
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Levels','membership'); ?></option>
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Levels','membership'); ?></option>
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Levels','membership'); ?></option>
-
+				<select name="sub_op">
+					<option value=""><?php _e('Filter by subscription','membership'); ?></option>
+					<?php
+						$subs = $this->get_subscriptions();
+						if($subs) {
+							foreach($subs as $key => $sub) {
+								?>
+								<option value="<?php echo $sub->id; ?>" <?php if($_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
+								<?php
+							}
+						}
+					?>
 				</select>
+				<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter'); ?>">
 
-				<select name="order_by">
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by Level ID','membership'); ?></option>
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by Level Name','membership'); ?></option>
+				<select name="level_op">
+					<option value=""><?php _e('Filter by level','membership'); ?></option>
+					<?php
+						$levels = $this->get_membership_levels();
+						if($levels) {
+							foreach($levels as $key => $level) {
+								?>
+								<option value="<?php echo $level->id; ?>" <?php if($_GET['level_op'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
+								<?php
+							}
+						}
+					?>
 				</select>
-				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
+				<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter'); ?>">
 
 				</div>
 
@@ -284,7 +396,7 @@ if(!class_exists('membershipadmin')) {
 				<div class="clear"></div>
 
 				<?php
-					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-levels');
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-members');
 
 					$columns = array(	"username" 	=> 	__('Username','membership'),
 										"name" 		=> 	__('Name','membership'),
@@ -346,11 +458,11 @@ if(!class_exists('membershipadmin')) {
 									<strong><a href=''><?php echo $user_object->user_login; ?></a></strong>
 									<?php
 										$actions = array();
-										$actions['edit'] = "<span class='edit'><a href=''>" . __('Edit', 'membership') . "</a></span>";
+										$actions['edit'] = "<span class='edit'><a href='?page={$page}&amp;action=edit&amp;member_id={$user_object->ID}'>" . __('Edit', 'membership') . "</a></span>";
 										if($user_object->active_member()) {
-											$actions['activate'] = "<span class='edit'><a href=''>" . __('Deactivate', 'membership') . "</a></span>";
+											$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;user_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 										} else {
-											$actions['activate'] = "<span class='edit'><a href=''>" . __('Activate', 'membership') . "</a></span>";
+											$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;user_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
 										}
 
 										//$actions['delete'] = "<span class='delete'><a href=''>" . __('Delete', 'membership') . "</a></span>";
@@ -368,10 +480,35 @@ if(!class_exists('membershipadmin')) {
 									?>
 								</td>
 								<td <?php echo $style; ?>>
-
+									<?php
+									$subs = $user_object->get_subscription_ids();
+									if(!empty($subs)) {
+										$rows = array();
+										foreach((array) $subs as $key) {
+											$sub = new M_Subscription ( $key );
+											if(!empty($sub)) {
+												$rows[] = $sub->sub_name();
+											}
+										}
+										echo implode(", ", $rows);
+									}
+									//get_subscriptions
+									?>
 								</td>
 								<td <?php echo $style; ?>>
-
+									<?php
+									$levels = $user_object->get_level_ids();
+									if(!empty($levels)) {
+										$rows = array();
+										foreach((array) $levels as $key) {
+											$level = new M_Level ( $key );
+											if(!empty($level)) {
+												$rows[] = $level->level_title();
+											}
+										}
+										echo implode(", ", $rows);
+									}
+									?>
 								</td>
 							</tr>
 							<?php
@@ -387,8 +524,51 @@ if(!class_exists('membershipadmin')) {
 				<select name="action2">
 					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
 					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+
+					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
+						<option value="addsub"><?php _e('Add subscription','membership'); ?></option>
+						<option value="movesub"><?php _e('Move subscription','membership'); ?></option>
+						<option value="dropsub"><?php _e('Drop subscription','membership'); ?></option>
+					</optgroup>
+
+					<optgroup label="<?php _e('Levels','membership'); ?>">
+						<option value="addlevel"><?php _e('Add level','membership'); ?></option>
+						<option value="movelevel"><?php _e('Move level','membership'); ?></option>
+						<option value="droplevel"><?php _e('Drop level','membership'); ?></option>
+					</optgroup>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+
+				<select name="sub_op2">
+					<option value=""><?php _e('Filter by subscription','membership'); ?></option>
+					<?php
+						$subs = $this->get_subscriptions();
+						if($subs) {
+							foreach($subs as $key => $sub) {
+								?>
+								<option value="<?php echo $sub->id; ?>" <?php if($_GET['sub_op2'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
+								<?php
+							}
+						}
+					?>
+				</select>
+				<input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter'); ?>">
+
+				<select name="level_op2">
+					<option value=""><?php _e('Filter by level','membership'); ?></option>
+					<?php
+						$levels = $this->get_membership_levels();
+						if($levels) {
+							foreach($levels as $key => $level) {
+								?>
+								<option value="<?php echo $level->id; ?>" <?php if($_GET['level_op2'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
+								<?php
+							}
+						}
+					?>
+				</select>
+				<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter'); ?>">
+
 				</div>
 				<div class="alignright actions">
 
@@ -403,8 +583,76 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
+		function handle_options_panel_updates() {
+
+		}
+
 		function handle_options_panel() {
 
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Edit Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<h3><?php _e('Stranger settings','membership'); ?></h3>
+				<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
+
+				<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row"><?php _e('Use membership level','membership'); ?></th>
+						<td>
+							<select name='strangerlevel' id='strangerlevel'>
+								<option value="0"><?php _e('None','membership'); ?></option>
+							<?php
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										?>
+										<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
+										<?php
+									}
+								}
+							?>
+							</select>
+						</td>
+					</tr>
+
+					<tr valign="top">
+						<th scope="row"><?php _e('Access level','membership'); ?></th>
+						<td>
+							<select name='strangerlevel' id='strangerlevel'>
+								<option value="0"><?php _e('None','membership'); ?></option>
+							<?php
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										?>
+										<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
+										<?php
+									}
+								}
+							?>
+							</select>
+						</td>
+					</tr>
+
+				</tbody>
+				</table>
+
+				<h3><?php _e('Stranger settings','membership'); ?></h3>
+				<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
+
+
+			</div> <!-- wrap -->
+			<?php
 		}
 
 		function default_membership_sections($sections) {
@@ -1150,6 +1398,10 @@ if(!class_exists('membershipadmin')) {
 				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
 					$action = 'bulk-toggle';
 				}
+
+				if(addslashes($_GET['action']) == 'togglepublic' || addslashes($_GET['action2']) == 'togglepublic') {
+					$action = 'bulk-togglepublic';
+				}
 			}
 
 			switch(addslashes($action)) {
@@ -1217,6 +1469,23 @@ if(!class_exists('membershipadmin')) {
 								}
 								break;
 
+				case 'togglepublic':
+								if(isset($_GET['sub_id'])) {
+									$sub_id = (int) $_GET['sub_id'];
+
+									check_admin_referer('toggle-pubsub_' . $sub_id);
+
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->togglepublic()) {
+										wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
 				case 'bulk-delete':
 								check_admin_referer('bulk-subscriptions');
 								foreach($_GET['subcheck'] AS $value) {
@@ -1245,6 +1514,21 @@ if(!class_exists('membershipadmin')) {
 								}
 
 								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+								break;
+
+				case 'bulk-togglepublic':
+								check_admin_referer('bulk-subscriptions');
+								foreach($_GET['subcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$sub_id = (int) $value;
+
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->togglepublic();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
 								break;
 
 			}
@@ -1328,19 +1612,21 @@ if(!class_exists('membershipadmin')) {
 				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
 				<option value="delete"><?php _e('Delete'); ?></option>
 				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				<option value="togglepublic"><?php _e('Toggle public status'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
 				<select name="sub_id">
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Subscriptions','membership'); ?></option>
-
+				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'public') echo "selected='selected'"; ?> value="public"><?php _e('View public subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'private') echo "selected='selected'"; ?> value="private"><?php _e('View private subscriptions','membership'); ?></option>
 				</select>
 
 				<select name="order_by">
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by Subscription ID','membership'); ?></option>
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by Subscription Name','membership'); ?></option>
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by subscription ID','membership'); ?></option>
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by subscription name','membership'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
 
@@ -1360,6 +1646,7 @@ if(!class_exists('membershipadmin')) {
 
 					$columns = array(	"name" 		=> 	__('Subscription Name','membership'),
 										"active"	=>	__('Active','membership'),
+										"public"	=>	__('Public','membership'),
 										"users"		=>	__('Users','membership')
 									);
 
@@ -1414,6 +1701,11 @@ if(!class_exists('membershipadmin')) {
 											} else {
 												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Deactivate') . "</a></span>";
 											}
+											if($sub->sub_public == 0) {
+												$actions['public'] = "<span class='edit makeprivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make public') . "</a></span>";
+											} else {
+												$actions['public'] = "<span class='edit makepublic'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make private') . "</a></span>";
+											}
 											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;sub_id=" . $sub->id . "", 'delete-sub_' . $sub->id) . "'>" . __('Delete') . "</a></span>";
 
 										?>
@@ -1425,6 +1717,16 @@ if(!class_exists('membershipadmin')) {
 												case 0:	echo __('Inactive', 'membership');
 														break;
 												case 1:	echo "<strong>" . __('Active', 'membership') . "</strong>";
+														break;
+											}
+										?>
+									</td>
+									<td class="column-public">
+										<?php
+											switch($sub->sub_public) {
+												case 0:	echo __('Private', 'membership');
+														break;
+												case 1:	echo "<strong>" . __('Public', 'membership') . "</strong>";
 														break;
 											}
 										?>
@@ -1476,7 +1778,220 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
+		function handle_gateways_panel_updates() {
+
+			global $action, $page, $M_Gateways;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
+					$action = 'bulk-toggle';
+				}
+			}
+
+			switch(addslashes($action)) {
+
+				case 'deactivate':	$key = addslashes($_GET['gateway']);
+									if(isset($M_Gateways[$key])) {
+										if($M_Gateways[$key]->deactivate()) {
+											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+										}
+									}
+									break;
+
+				case 'activate':	$key = addslashes($_GET['gateway']);
+									if(isset($M_Gateways[$key])) {
+										if($M_Gateways[$key]->activate()) {
+											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
+										}
+									}
+									break;
+
+				case 'bulk-toggle':
+									break;
+
+			}
+
+		}
+
 		function handle_gateways_panel() {
+
+			global $action, $page, $M_Gateways;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Gateway updated.');
+			$messages[2] = __('Gateway not updated.');
+
+			$messages[3] = __('Gateway activated.');
+			$messages[4] = __('Gateway not activated.');
+
+			$messages[5] = __('Gateway deactivated.');
+			$messages[6] = __('Gateway not deactivated.');
+
+			$messages[7] = __('Gateway activation toggled.');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-plugins"><br></div>
+				<h2><?php _e('Edit Gateways','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
+
+				<input type='hidden' name='page' value='<? echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+
+				</div>
+
+				<div class="alignright actions"></div>
+
+				<br class="clear">
+				</div>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
+
+					$columns = array(	"name" 		=> 	__('Gateway Name','membership'),
+										"active"	=>	__('Active','membership')
+									);
+
+					$columns = apply_filters('membership_levelcolumns', $columns);
+
+					$gateways = apply_filters('M_gateways_list', array());
+
+					$active = get_option('M_active_gateways', array());
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if($gateways) {
+							foreach($gateways as $key => $gateway) {
+
+								if(!isset($M_Gateways[$key])) {
+									continue;
+								}
+
+								?>
+								<tr valign="middle" class="alternate" id="gateway-<?php echo $level->id; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($key); ?>" name="gatewaycheck[]"></th>
+									<td class="column-name">
+										<strong><a title="Edit <?php echo esc_attr($gateway); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;gateway=<?php echo $key; ?>" class="row-title"><?php echo esc_html($gateway); ?></a></strong>
+										<?php
+											$actions = array();
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $key . "'>" . __('Settings') . "</a></span>";
+											if(in_array($key, $active)) {
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate') . "</a></span>";
+											} else {
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate') . "</a></span>";
+											}
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+									<td class="column-active">
+										<?php
+											if(in_array($key, $active)) {
+												echo "<strong>" . __('Active', 'membership') . "</strong>";
+											} else {
+												echo __('Inactive', 'membership');
+											}
+										?>
+									</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Payment gateways where found for this install.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				</div>
+				<div class="alignright actions"></div>
+				<br class="clear">
+				</div>
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
 
 		}
 
@@ -1550,6 +2065,10 @@ if(!class_exists('membershipadmin')) {
 						case 'active':		$where[] = "sub_active = 1";
 											break;
 						case 'inactive':	$where[] = "sub_active = 0";
+											break;
+						case 'public':		$where[] = "sub_public = 1";
+											break;
+						case 'private':		$where[] = "sub_public = 0";
 											break;
 
 					}

@@ -39,6 +39,26 @@ if(!class_exists('M_Subscription')) {
 			$this->__construct();
 		}
 
+		// Fields
+
+		function sub_name() {
+
+			if(empty($this->subscription)) {
+				$sub = $this->get();
+
+				if($sub) {
+					return $sub->sub_name;
+				} else {
+					return false;
+				}
+			} else {
+				return $this->subscription->sub_name;
+			}
+
+		}
+
+		// Gets
+
 		function get() {
 
 			if($this->dirty) {
@@ -70,6 +90,17 @@ if(!class_exists('M_Subscription')) {
 			} else {
 				$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d AND sub_count = 0", $this->id);
 			}
+
+			$this->dirty = true;
+
+			return $this->db->query($sql);
+
+
+		}
+
+		function togglepublic( $force = false ) {
+
+			$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_public = NOT sub_public WHERE id = %d", $this->id);
 
 			$this->dirty = true;
 
