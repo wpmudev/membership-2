@@ -51,6 +51,16 @@ if(!class_exists('membershipadmin')) {
 
 		function initialiseplugin() {
 
+			$installed = get_option('M_Installed', false);
+
+			if($installed != $this->build) {
+				include_once(plugin_dir_path(__FILE__) . 'upgrade.php');
+
+				M_Upgrade($installed);
+
+				update_option('M_Installed', $this->build);
+			}
+
 		}
 
 		function add_admin_menu() {

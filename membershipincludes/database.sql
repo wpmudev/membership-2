@@ -36,12 +36,14 @@ CREATE TABLE `wp_1_subscriptions` (
   PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE `wp_1_subscriptions_levels` (
-  `sub_id` bigint(20) default NULL,
-  `level_id` bigint(20) default NULL,
-  `level_period` int(11) default NULL,
-  `sub_type` varchar(20) default NULL,
-  `level_price` int(11) default '0',
-  `level_currency` varchar(5) default NULL,
-  `level_order` bigint(20) default '0'
+CREATE TABLE `wp_1_membership_relationships` (
+  `rel_id` bigint(20) NOT NULL auto_increment,
+  `user_id` bigint(20) default '0',
+  `sub_id` bigint(20) default '0',
+  `level_id` bigint(20) default '0',
+  `startdate` datetime default NULL,
+  PRIMARY KEY  (`rel_id`),
+  KEY `user_id` (`user_id`),
+  KEY `sub_id` (`sub_id`),
+  KEY `level_id` (`level_id`)
 );
