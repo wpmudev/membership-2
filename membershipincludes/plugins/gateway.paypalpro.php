@@ -13,7 +13,7 @@ class paypalpro extends M_Gateway {
 
 	function mysettings() {
 
-		echo "<p>" . __('The settings for the PayPal Pro payment gateway will be here.','membership') . "</p>";
+		echo "<p>" . __('Placeholder : The settings for the PayPal Pro payment gateway will be here.','membership') . "</p>";
 
 	}
 
