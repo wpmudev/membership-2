@@ -1835,6 +1835,17 @@ if(!class_exists('membershipadmin')) {
 									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									break;
 
+				case 'updated':		$gateway = addslashes($_POST['gateway']);
+									check_admin_referer('updated-' . $gateway);
+
+									if($M_Gateways[$gateway]->update()) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+									}
+
+									break;
+
 			}
 
 		}
@@ -1847,7 +1858,9 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'edit':
+				case 'edit':	if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->settings();
+								}
 								return; // so we don't show the list below
 								break;
 

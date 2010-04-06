@@ -81,11 +81,40 @@ if(!class_exists('M_Gateway')) {
 
 		}
 
-		function settingsform() {
+		function settings() {
+
+			global $page, $action;
+
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-plugins"><br></div>
+				<h2><?php echo __('Edit &quot;','membership') . esc_html($this->title) . __('&quot; settings','membership'); ?></h2>
+
+				<form action='?page=<?php echo $page; ?>' method='post' name='gatewaysettingsform'>
+
+					<input type='hidden' name='action' id='action' value='updated' />
+					<input type='hidden' name='gateway' id='gateway' value='<?php echo $this->gateway; ?>' />
+					<?php
+					wp_nonce_field('updated-' . $this->gateway);
+
+					do_action('M_gateways_settings_' . $this->gateway);
+
+					?>
+
+					<p class="submit">
+					<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
+					</p>
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
 
 		}
 
-		function updatesettings() {
+		function update() {
+
+			// default action is to return true
+			return true;
 
 		}
 

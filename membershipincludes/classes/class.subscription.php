@@ -327,10 +327,11 @@ if(!class_exists('M_Subscription')) {
 						</div>
 						<div class='levelinformation' style='float: right;'>
 							<p class='description'>
-								<strong><?php _e('Mode details','membership'); ?></strong><br/><br/>
+								<strong><?php _e('Mode details','membership'); ?></strong><br/>
 								<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending');?><br/><br/>
-								<?php _e('<strong>Indefinite</strong> - user remains at this level.');?><br/><br/>
-								<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?>
+								<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.');?><br/><br/>
+								<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?><br/><br/>
+								<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.');?>
 							</p>
 						</div>
 					</div>
@@ -399,10 +400,11 @@ if(!class_exists('M_Subscription')) {
 								</div>
 								<div class='levelinformation' style='float: right;'>
 									<p class='description'>
-										<strong><?php _e('Mode details','membership'); ?></strong><br/><br/>
+										<strong><?php _e('Mode details','membership'); ?></strong><br/>
 										<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending');?><br/><br/>
-										<?php _e('<strong>Indefinite</strong> - user remains at this level.');?><br/><br/>
-										<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?>
+										<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.');?><br/><br/>
+										<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?><br/><br/>
+										<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.');?>
 									</p>
 								</div>
 							</div>
