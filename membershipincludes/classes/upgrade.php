@@ -62,6 +62,20 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
+	$sql = "CREATE TABLE `{$wpdb->prefix}subscriptions_levels` (
+	  `sub_id` bigint(20) default NULL,
+	  `level_id` bigint(20) default NULL,
+	  `level_period` int(11) default NULL,
+	  `sub_type` varchar(20) default NULL,
+	  `level_price` int(11) default '0',
+	  `level_currency` varchar(5) default NULL,
+	  `level_order` bigint(20) default '0',
+	  KEY `sub_id` (`sub_id`),
+	  KEY `level_id` (`level_id`)
+	);";
+
+	$wpdb->query($sql);
+
 	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}membership_relationships` (
 	  `rel_id` bigint(20) NOT NULL auto_increment,
 	  `user_id` bigint(20) default '0',
