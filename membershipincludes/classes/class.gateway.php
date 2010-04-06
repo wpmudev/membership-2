@@ -28,12 +28,12 @@ if(!class_exists('M_Gateway')) {
 			return $gateways;
 
 		}
-		
+
 		function toggleactivation() {
-			
+
 			$active = get_option('M_active_gateways', array());
 
-			if(in_array($this->gateway, $active)) {
+			if(array_key_exists($this->gateway, $active)) {
 				unset($active[$this->gateway]);
 
 				update_option('M_active_gateways', $active);
@@ -46,14 +46,14 @@ if(!class_exists('M_Gateway')) {
 
 				return true;
 			}
-			
+
 		}
 
 		function activate() {
 
 			$active = get_option('M_active_gateways', array());
 
-			if(in_array($this->gateway, $active)) {
+			if(array_key_exists($this->gateway, $active)) {
 				return true;
 			} else {
 				$active[$this->gateway] = true;
@@ -69,7 +69,7 @@ if(!class_exists('M_Gateway')) {
 
 			$active = get_option('M_active_gateways', array());
 
-			if(in_array($this->gateway, $active)) {
+			if(array_key_exists($this->gateway, $active)) {
 				unset($active[$this->gateway]);
 
 				update_option('M_active_gateways', $active);
