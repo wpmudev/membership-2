@@ -50,7 +50,6 @@ if(is_admin()) {
 	require_once('membershipincludes/classes/class.membership.php');
 	// Set up the default rules
 	require_once('membershipincludes/includes/default.rules.php');
-	require_once('membershipincludes/includes/default.gateways.php');
 
 	// Load secondary plugins
 	load_membership_plugins();

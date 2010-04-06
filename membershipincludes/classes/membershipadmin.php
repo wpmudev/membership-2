@@ -1951,7 +1951,8 @@ if(!class_exists('membershipadmin')) {
 										<?php
 											$actions = array();
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $key . "'>" . __('Settings') . "</a></span>";
-											if(in_array($key, $active)) {
+
+											if(array_key_exists($key, $active)) {
 												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate') . "</a></span>";
 											} else {
 												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate') . "</a></span>";
@@ -1961,7 +1962,7 @@ if(!class_exists('membershipadmin')) {
 										</td>
 									<td class="column-active">
 										<?php
-											if(in_array($key, $active)) {
+											if(array_key_exists($key, $active)) {
 												echo "<strong>" . __('Active', 'membership') . "</strong>";
 											} else {
 												echo __('Inactive', 'membership');
