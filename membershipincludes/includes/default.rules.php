@@ -591,6 +591,86 @@ class M_Downloads extends M_Rule {
 }
 M_register_rule('downloads', 'M_Downloads', 'content');
 
+//shortcode_tags
+class M_Shortcodes extends M_Rule {
+
+	function __construct() {
+
+	}
+
+	function M_Downloads() {
+
+	}
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='shortcodes' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('Shortcodes','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
+	}
+
+	function admin_main($data) {
+
+		global $shortcode_tags;
+
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-shortcodes'>
+			<h2 class='sidebar-name'><?php _e('Shortcodes', 'membership');?><span><a href='#remove' id='remove-shortcodes' class='removelink' title='<?php _e("Remove Shortcodes from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><?php _e('Select the Shortcodes to be covered by this rule by checking the box next to the relevant shortcode tag.','membership'); ?></p>
+				<?php
+					if($shortcode_tags) {
+						?>
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+								<tr>
+									<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+									<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Shortcode tag', 'membership'); ?></th>
+								</tr>
+							</thead>
+
+							<tfoot>
+								<tr>
+									<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+									<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Shortcode tag', 'membership'); ?></th>
+								</tr>
+							</tfoot>
+
+							<tbody>
+								<?php
+								foreach($shortcode_tags as $key => $function) {
+									?>
+									<tr valign="middle" class="alternate" id="post-<?php echo $key; ?>">
+										<th class="check-column" scope="row">
+											<input type="checkbox" value="<?php echo esc_attr($key); ?>" name="shortcodes[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+										</th>
+										<td class="column-name">
+											<strong>[<?php echo esc_html($key); ?>]</strong>
+										</td>
+								   </tr>
+									<?php
+									}
+									?>
+								</tbody>
+							</table>
+							<?php
+							}
+						?>
+			</div>
+		</div>
+		<?php
+	}
+
+}
+M_register_rule('shortcodes', 'M_Shortcodes', 'content');
+
+
 // Functions
 
 function M_register_rule($rule_name, $class_name, $section) {
