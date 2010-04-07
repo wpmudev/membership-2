@@ -598,7 +598,9 @@ class M_Shortcodes extends M_Rule {
 
 	}
 
-	function M_Downloads() {
+	function M_Shortcodes() {
+
+		add_filter('the_content', array(&$this, 'override_shortcodes'), 1);
 
 	}
 
@@ -665,6 +667,42 @@ class M_Shortcodes extends M_Rule {
 			</div>
 		</div>
 		<?php
+	}
+
+	// Internal functions
+
+	function override_shortcodes($content) {
+
+		global $member_shortcode_tags, $shortcode_tags;
+
+		$member_shortcode_tags = $shortcode_tags;
+
+		foreach($shortcode_tags as $key => $function) {
+			$shortcode_tags[$key] = array(&$this, 'do_shortcode');
+		}
+
+		return $content;
+	}
+
+	// Positive operation
+	function positive_action($data = false) {
+
+		global $member_shortcode_tags, $shortcode_tags;
+
+		if(!$data) $data = array();
+	}
+
+	// Negative operation
+	function negative_action($data = false) {
+
+		global $member_shortcode_tags, $shortcode_tags;
+
+		if(!$data) $data = array();
+
+	}
+
+	function do_shortcode() {
+
 	}
 
 }
