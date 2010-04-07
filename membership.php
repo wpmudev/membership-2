@@ -73,6 +73,10 @@ if(is_admin()) {
 	// Load secondary plugins
 	load_membership_plugins();
 
+	require_once('membershipincludes/classes/membershippublic.php');
+
+	$membershippublic =& new membershippublic();
+
 }
 
 ?>

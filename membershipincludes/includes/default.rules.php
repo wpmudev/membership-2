@@ -701,7 +701,9 @@ class M_Shortcodes extends M_Rule {
 
 	}
 
-	function do_shortcode() {
+	function do_shortcode($atts, $content = null) {
+
+		echo "boo";
 
 	}
 
