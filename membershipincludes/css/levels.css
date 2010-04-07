@@ -29,7 +29,6 @@ div.level-holder-wrap {
 	background-image: url(../images/ed-bg.gif);
 	text-shadow: #FFF 0 1px 0;
 	border-color: #dfdfdf;
-	cursor: auto !Important;
 	-moz-border-radius-topleft: 8px;
 	-moz-border-radius-topright: 8px;
 	-webkit-border-top-right-radius: 8px;
@@ -42,6 +41,7 @@ div.level-holder-wrap {
 
 .sidebar-name:hover {
 	color: #333 !Important;
+	cursor: move;
 }
 
 p.description {
@@ -177,6 +177,10 @@ input.wide {
 	border: 1px solid #ddd;
 	margin-bottom: 10px;
 	min-height: 20px;
+}
+
+.action-top:hover {
+	cursor: move;
 }
 
 .action-top-placeholder {

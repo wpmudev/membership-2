@@ -29,7 +29,6 @@ div.sub-holder-wrap {
 	background-image: url(../images/ed-bg.gif);
 	text-shadow: #FFF 0 1px 0;
 	border-color: #dfdfdf;
-	cursor: auto !Important;
 	-moz-border-radius-topleft: 8px;
 	-moz-border-radius-topright: 8px;
 	-webkit-border-top-right-radius: 8px;
@@ -42,6 +41,12 @@ div.sub-holder-wrap {
 
 .sidebar-name:hover {
 	color: #333 !Important;
+	cursor: move;
+}
+
+#main-start .sidebar-name:hover {
+	color: #333 !Important;
+	cursor: auto;
 }
 
 p.description {
@@ -167,6 +172,10 @@ input.wide {
 	min-height: 20px;
 }
 
+.action-top:hover {
+	cursor: move;
+}
+
 .action-top-placeholder {
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -269,6 +278,7 @@ div.buttons a.cancellink {
 
 .placeholder-levels {
 	width: 95%;
+	margin-top: 20px;
 	margin-left: 15px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -282,7 +292,7 @@ div.buttons a.cancellink {
 	padding-top: 15px;
 	padding-bottom: 15px;
 	clear: both;
-	min-height: 40px;
+	min-height: 150px;
 }
 
 div.levelinformation {
