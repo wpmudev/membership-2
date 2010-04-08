@@ -46,6 +46,7 @@ if(!class_exists('membershippublic')) {
 				$member = new M_Membership($user->ID);
 			} else {
 				// not logged in so limit based on stranger settings
+				// need to grab the stranger settings
 			}
 
 
