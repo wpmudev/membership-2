@@ -157,6 +157,7 @@ if(!class_exists('membershipadmin')) {
 		function add_admin_header_membershipoptions() {
 			$this->add_admin_header_core();
 
+			$this->handle_options_panel_updates();
 		}
 
 		// Panel handling functions
@@ -595,9 +596,17 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_options_panel_updates() {
 
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
 		}
 
 		function handle_options_panel() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
 
 			?>
 			<div class='wrap nosubsub'>
@@ -613,6 +622,10 @@ if(!class_exists('membershipadmin')) {
 
 				<h3><?php _e('Stranger settings','membership'); ?></h3>
 				<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
+
+				<form action='?page=<?php echo $page; ?>' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 
 				<table class="form-table">
 				<tbody>
@@ -656,10 +669,6 @@ if(!class_exists('membershipadmin')) {
 
 				</tbody>
 				</table>
-
-				<h3><?php _e('Stranger settings','membership'); ?></h3>
-				<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
-
 
 			</div> <!-- wrap -->
 			<?php
