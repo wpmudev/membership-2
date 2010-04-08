@@ -37,6 +37,18 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
+			global $user, $member;
+
+			$user = wp_get_current_user();
+
+			if($user) {
+				// Logged in - check there settings, if they have any.
+				$member = new M_Membership($user->ID);
+			} else {
+				// not logged in so limit based on stranger settings
+			}
+
+
 		}
 
 
