@@ -26,12 +26,17 @@ if(!class_exists('membershippublic')) {
 			}
 
 			// Set up Actions
+			add_action( 'init', array(&$this, 'initialise_plugin') );
 
 
 		}
 
 		function membershippublic() {
 			$this->__construct();
+		}
+
+		function initialise_plugin() {
+
 		}
 
 
