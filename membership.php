@@ -24,9 +24,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+require_once('membershipincludes/includes/functions.php');
+// Set up my location
+set_membership_url(__FILE__);
+set_membership_dir(__FILE__);
+
 if(is_admin()) {
 	// Administration interface
-	require_once('membershipincludes/includes/functions.php');
 
 	// Load required classes
 	require_once('membershipincludes/classes/class.rule.php');
@@ -36,9 +40,6 @@ if(is_admin()) {
 	require_once('membershipincludes/classes/class.membership.php');
 	// Set up the default rules
 	require_once('membershipincludes/includes/default.rules.php');
-
-	// Load secondary plugins
-	load_membership_plugins();
 
 	require_once('membershipincludes/classes/membershipadmin.php');
 
@@ -46,7 +47,6 @@ if(is_admin()) {
 
 } else {
 	// Public interface
-	require_once('membershipincludes/includes/functions.php');
 
 	// Load required classes
 	require_once('membershipincludes/classes/class.rule.php');
@@ -57,13 +57,13 @@ if(is_admin()) {
 	// Set up the default rules
 	require_once('membershipincludes/includes/default.rules.php');
 
-	// Load secondary plugins
-	load_membership_plugins();
-
 	require_once('membershipincludes/classes/membershippublic.php');
 
 	$membershippublic =& new membershippublic();
 
 }
+
+// Load secondary plugins
+load_membership_plugins();
 
 ?>
