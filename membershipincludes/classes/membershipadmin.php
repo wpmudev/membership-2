@@ -54,7 +54,7 @@ if(!class_exists('membershipadmin')) {
 			$installed = get_option('M_Installed', false);
 
 			if($installed != $this->build) {
-				include_once(plugin_dir_path(__FILE__) . 'upgrade.php');
+				include_once(membership_dir('membershipincludes/classes/upgrade.php') );
 
 				M_Upgrade($installed);
 
@@ -68,7 +68,7 @@ if(!class_exists('membershipadmin')) {
 			global $menu;
 
 			// Add the menu page
-			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), plugins_url('membership/membershipincludes/images/members.png'));
+			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
 
 			// Add the sub menu
 			add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'manage_options', "members", array(&$this,'handle_members_panel'));
@@ -113,8 +113,8 @@ if(!class_exists('membershipadmin')) {
 
 			$this->add_admin_header_core();
 
-			wp_enqueue_script('levelsjs', plugins_url('/membership/membershipincludes/js/levels.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
-			wp_enqueue_style('levelscss', plugins_url('/membership/membershipincludes/css/levels.css'), array('widgets'), $this->build);
+			wp_enqueue_script('levelsjs', membership_url('membershipincludes/js/levels.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
+			wp_enqueue_style('levelscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
 
 			wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
@@ -126,8 +126,8 @@ if(!class_exists('membershipadmin')) {
 			$this->add_admin_header_core();
 
 			// Queue scripts and localise
-			wp_enqueue_script('subsjs', plugins_url('/membership/membershipincludes/js/subscriptions.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
-			wp_enqueue_style('subscss', plugins_url('/membership/membershipincludes/css/subscriptions.css'), array('widgets'), $this->build);
+			wp_enqueue_script('subsjs', membership_url('membershipincludes/js/subscriptions.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
+			wp_enqueue_style('subscss', membership_url('membershipincludes/css/subscriptions.css'), array('widgets'), $this->build);
 
 			wp_localize_script( 'subsjs', 'membership', array( 'deletesub' => __('Are you sure you want to delete this subscription?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
 
@@ -139,7 +139,7 @@ if(!class_exists('membershipadmin')) {
 			// Run the core header
 			$this->add_admin_header_core();
 
-			wp_enqueue_script('membersjs', plugins_url('/membership/membershipincludes/js/members.js'), array(), $this->build);
+			wp_enqueue_script('membersjs', membership_url('membershipincludes/js/members.js'), array(), $this->build);
 
 			wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
 
