@@ -272,3 +272,7 @@ div.buttons a.cancellink {
 	text-decoration: underline;
 	color: #797979;
 }
+
+.no-movecursor {
+	cursor: auto !Important;
+}

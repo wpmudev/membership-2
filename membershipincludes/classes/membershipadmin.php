@@ -745,7 +745,7 @@ if(!class_exists('membershipadmin')) {
 							<input type='hidden' name='negative-rules-order' id='negative-rules-order' value='' />
 
 						<div id='edit-level' class='level-holder-wrap'>
-							<div class='sidebar-name'>
+							<div class='sidebar-name no-movecursor'>
 								<h3><?php echo esc_html($level->level_title); ?></h3>
 							</div>
 							<div class='level-holder'>
@@ -852,7 +852,7 @@ if(!class_exists('membershipadmin')) {
 							foreach($sections as $key => $section) {
 								?>
 
-								<div class="sidebar-name">
+								<div class="sidebar-name no-movecursor">
 									<h3><?php echo $section['title']; ?></h3>
 								</div>
 								<div class="section-holder" id="sidebar-<?php echo $key; ?>" style="min-height: 98px;">
@@ -1289,7 +1289,7 @@ if(!class_exists('membershipadmin')) {
 							<input type='hidden' name='sub_id' id='sub_id' value='<?php echo $sub->id; ?>' />
 
 						<div id='edit-sub' class='sub-holder-wrap'>
-							<div class='sidebar-name'>
+							<div class='sidebar-name no-movecursor'>
 								<h3><?php echo esc_html($sub->sub_name); ?></h3>
 							</div>
 							<div class='sub-holder'>
@@ -1364,7 +1364,7 @@ if(!class_exists('membershipadmin')) {
 
 				<div class='sub-liquid-right'>
 					<div class="sub-holder-wrap">
-								<div class="sidebar-name">
+								<div class="sidebar-name no-movecursor">
 									<h3><?php _e('Membership levels','membership'); ?></h3>
 								</div>
 								<div class="level-holder" id="sidebar-levels" style="min-height: 98px;">

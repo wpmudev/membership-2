@@ -305,3 +305,7 @@ div.levelinformation {
 	-khtml-border-radius: 5px;
 	border-radius: 5px;
 }
+
+.no-movecursor {
+	cursor: auto !Important;
+}
