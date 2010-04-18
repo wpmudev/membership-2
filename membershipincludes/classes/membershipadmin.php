@@ -388,7 +388,9 @@ if(!class_exists('membershipadmin')) {
 
 				<br class="clear">
 				</div>
-
+				<?php
+					print_r($wp_user_search);
+				?>
 				<?php if ( is_wp_error( $wp_user_search->search_errors ) ) : ?>
 					<div class="error">
 						<ul>
@@ -453,6 +455,8 @@ if(!class_exists('membershipadmin')) {
 
 					<tbody>
 						<?php
+						print_r($wp_user_search->get_results());
+						print_r($wp_user_search->query());
 						$style = '';
 						foreach ( $wp_user_search->get_results() as $userid ) {
 							$user_object = new M_Membership($userid);
