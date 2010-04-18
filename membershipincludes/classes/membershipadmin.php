@@ -84,7 +84,7 @@ if(!class_exists('membershipadmin')) {
 				if($value[2] == 'membership') {
 					if(!isset($menu[-10])) {
 						$menu[-10] = $menu[$key];
-						$menu[-11] = $menu[1];
+						$menu[-11] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
 						// CSS style for the menu
 						$menu[-10][4] .= ' menu-top-first menu-top-last';
