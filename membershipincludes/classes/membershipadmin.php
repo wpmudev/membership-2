@@ -232,7 +232,7 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function handle_member_level_op() {
+		function handle_member_level_op($operation = 'add', $member_id = false) {
 
 			global $action, $page;
 
@@ -408,7 +408,7 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function handle_member_subscription_op() {
+		function handle_member_subscription_op($operation = 'add', $member_id = false) {
 
 			global $action, $page;
 
@@ -424,7 +424,77 @@ if(!class_exists('membershipadmin')) {
 
 			require_once('class.membersearch.php');
 
+			// bulk actions
+			if(isset($_GET['doaction'])) {
+				$action = $_GET['action'];
+			} elseif(isset($_GET['doaction2'])) {
+				$action = $_GET['action2'];
+			}
+
+
 			switch(addslashes($action)) {
+
+				case 'addlevel':	if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										$this->handle_member_level_op('add', $member_id);
+										return;
+									}
+									break;
+
+				case 'movelevel':	if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										check_admin_referer('movelevel-membmer-' . $member_id);
+										$this->handle_member_level_op('move', $member_id);
+										return;
+									}
+									break;
+
+				case 'droplevel':	if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										check_admin_referer('droplevel-membmer-' . $member_id);
+										$this->handle_member_level_op('drop', $member_id);
+										return;
+									}
+									break;
+
+				case 'bulkaddlevel':
+									break;
+
+				case 'bulkmovelevel':
+									break;
+
+				case 'bulkdroplevel':
+									break;
+
+				case 'addsub':		if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										$this->handle_member_subscription_op('add', $member_id);
+										return;
+									}
+									break;
+
+				case 'movesub':		if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										check_admin_referer('movesub-membmer-' . $member_id);
+										$this->handle_member_subscription_op('move', $member_id);
+										return;
+									}
+									break;
+
+				case 'dropsub':		if(isset($_GET['member_id'])) {
+										$member_id = (int) $_GET['member_id'];
+										check_admin_referer('movesub-membmer-' . $member_id);
+										$this->handle_member_subscription_op('drop', $member_id);
+										return;
+									}
+									break;
+
+				case 'bulkaddsub':
+									break;
+				case 'bulkmovesub':
+									break;
+				case 'bulkdropsub':
+									break;
 
 				case 'edit':	if(isset($_GET['level_id'])) {
 									$level_id = (int) $_GET['level_id'];
@@ -529,15 +599,15 @@ if(!class_exists('membershipadmin')) {
 					<option value="toggle"><?php _e('Toggle activation'); ?></option>
 
 					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
-						<option value="addsub"><?php _e('Add subscription','membership'); ?></option>
-						<option value="movesub"><?php _e('Move subscription','membership'); ?></option>
-						<option value="dropsub"><?php _e('Drop subscription','membership'); ?></option>
+						<option value="bulkaddsub"><?php _e('Add subscription','membership'); ?></option>
+						<option value="bulkmovesub"><?php _e('Move subscription','membership'); ?></option>
+						<option value="bulkdropsub"><?php _e('Drop subscription','membership'); ?></option>
 					</optgroup>
 
 					<optgroup label="<?php _e('Levels','membership'); ?>">
-						<option value="addlevel"><?php _e('Add level','membership'); ?></option>
-						<option value="movelevel"><?php _e('Move level','membership'); ?></option>
-						<option value="droplevel"><?php _e('Drop level','membership'); ?></option>
+						<option value="bulkaddlevel"><?php _e('Add level','membership'); ?></option>
+						<option value="bulkmovelevel"><?php _e('Move level','membership'); ?></option>
+						<option value="bulkdroplevel"><?php _e('Drop level','membership'); ?></option>
 					</optgroup>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
@@ -700,8 +770,8 @@ if(!class_exists('membershipadmin')) {
 									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
 
 									if(!empty($subs)) {
-										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member_' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-										$actions['drop'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member_' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										$actions['drop'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
 									}
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -723,8 +793,8 @@ if(!class_exists('membershipadmin')) {
 									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
 
 									if(!empty($levels)) {
-										$actions['move'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member_' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-										$actions['drop'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member_' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										$actions['move'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										$actions['drop'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
 									}
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
