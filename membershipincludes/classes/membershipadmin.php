@@ -189,8 +189,8 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'toggle':	if(isset($_GET['user_id'])) {
-									$user_id = (int) $_GET['user_id'];
+				case 'toggle':	if(isset($_GET['member_id'])) {
+									$user_id = (int) $_GET['member_id'];
 
 									check_admin_referer('toggle-member_' . $user_id);
 
@@ -221,6 +221,198 @@ if(!class_exists('membershipadmin')) {
 								break;
 
 			}
+
+		}
+
+		function handle_edit_member() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+		}
+
+		function handle_member_level_op() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-link-manager"><br></div>
+				<h2><?php echo __('Edit ','membership') . " - " . esc_html($level->level_title); ?></h2>
+
+				<?php
+				if ( isset($usemsg) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[$usemsg] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<div class='level-liquid-left'>
+
+					<div id='level-left'>
+						<form action='?page=<?php echo $page; ?>' name='leveledit' method='post'>
+							<input type='hidden' name='level_id' id='level_id' value='<?php echo $level->id; ?>' />
+
+							<input type='hidden' name='beingdragged' id='beingdragged' value='' />
+							<input type='hidden' name='in-positive-rules' id='in-positive-rules' value=',<?php echo implode(',', array_keys($p)); ?>' />
+							<input type='hidden' name='in-negative-rules' id='in-negative-rules' value=',<?php echo implode(',', array_keys($n)); ?>' />
+
+							<input type='hidden' name='postive-rules-order' id='postive-rules-order' value='' />
+							<input type='hidden' name='negative-rules-order' id='negative-rules-order' value='' />
+
+						<div id='edit-level' class='level-holder-wrap'>
+							<div class='sidebar-name no-movecursor'>
+								<h3><?php echo esc_html($level->level_title); ?></h3>
+							</div>
+							<div class='level-holder'>
+								<div class='level-details'>
+								<label for='level_title'><?php _e('Level title','management'); ?></label><br/>
+								<input class='wide' type='text' name='level_title' id='level_title' value='<?php echo esc_attr($level->level_title); ?>' />
+								</div>
+
+								<h3><?php _e('Positive rules','membership'); ?></h3>
+								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
+								<div id='positive-rules-holder'>
+									<?php
+										if(!empty($p)) {
+											foreach($p as $key => $value) {
+
+												if(isset($M_Rules[$key])) {
+														$rule = new $M_Rules[$key]();
+
+														$rule->admin_main($value);
+												}
+											}
+										}
+									?>
+								</div>
+								<div id='positive-rules' class='droppable-rules levels-sortable'>
+									<?php _e('Drop here','membership'); ?>
+								</div>
+
+								<h3><?php _e('Negative rules','membership'); ?></h3>
+								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
+								<div id='negative-rules-holder'>
+									<?php
+										if(!empty($n)) {
+											foreach($n as $key => $value) {
+												if(isset($M_Rules[$key])) {
+														$rule = new $M_Rules[$key]();
+
+														$rule->admin_main($value);
+												}
+											}
+										}
+									?>
+								</div>
+								<div id='negative-rules' class='droppable-rules levels-sortable'>
+									<?php _e('Drop here','membership'); ?>
+								</div>
+
+								<div class='buttons'>
+									<?php
+									if($level->id > 0) {
+										wp_original_referer_field(true, 'previous'); wp_nonce_field('update-' . $level->id);
+										?>
+										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel edit'><?php _e('Cancel', 'membership'); ?></a>
+										<input type='submit' value='<?php _e('Update', 'membership'); ?>' class='button' />
+										<input type='hidden' name='action' value='updated' />
+										<?php
+									} else {
+										wp_original_referer_field(true, 'previous'); wp_nonce_field('add-' . $level->id);
+										?>
+										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
+										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button' />
+										<input type='hidden' name='action' value='added' />
+										<?php
+									}
+									?>
+								</div>
+
+							</div>
+						</div>
+						</form>
+					</div>
+
+
+					<div id='hiden-actions'>
+					<?php
+
+						$sections = apply_filters('membership_level_sections', array());
+
+						foreach($sections as $key => $section) {
+
+							if(isset($M_SectionRules[$key])) {
+								foreach($M_SectionRules[$key] as $mrule => $mclass) {
+									$rule = new $mclass();
+
+									if(!array_key_exists($mrule, $rules)) {
+										$rule->admin_main(false);
+									}
+								}
+							}
+
+						}
+
+					?>
+					</div> <!-- hidden-actions -->
+
+				</div> <!-- level-liquid-left -->
+
+				<div class='level-liquid-right'>
+					<div class="level-holder-wrap">
+						<?php
+
+							$sections = apply_filters('membership_level_sections', array());
+
+							foreach($sections as $key => $section) {
+								?>
+
+								<div class="sidebar-name no-movecursor">
+									<h3><?php echo $section['title']; ?></h3>
+								</div>
+								<div class="section-holder" id="sidebar-<?php echo $key; ?>" style="min-height: 98px;">
+									<ul class='levels levels-draggable'>
+									<?php
+
+										if(isset($M_SectionRules[$key])) {
+											foreach($M_SectionRules[$key] as $mrule => $mclass) {
+												$rule = new $mclass();
+
+												if(!array_key_exists($mrule, $rules)) {
+													$rule->admin_sidebar(false);
+												} else {
+													$rule->admin_sidebar(true);
+												}
+											}
+										}
+
+									?>
+									</ul>
+								</div>
+								<?php
+							}
+						?>
+					</div> <!-- level-holder-wrap -->
+
+				</div> <!-- level-liquid-left -->
+
+			</div> <!-- wrap -->
+
+			<?php
+
+
+
+		}
+
+		function handle_member_subscription_op() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
 
 		}
 
@@ -471,9 +663,9 @@ if(!class_exists('membershipadmin')) {
 										$actions = array();
 										$actions['edit'] = "<span class='edit'><a href='?page={$page}&amp;action=edit&amp;member_id={$user_object->ID}'>" . __('Edit', 'membership') . "</a></span>";
 										if($user_object->active_member()) {
-											$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;user_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
+											$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 										} else {
-											$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;user_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
+											$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
 										}
 
 										//$actions['delete'] = "<span class='delete'><a href=''>" . __('Delete', 'membership') . "</a></span>";
@@ -503,8 +695,16 @@ if(!class_exists('membershipadmin')) {
 										}
 										echo implode(", ", $rows);
 									}
-									//get_subscriptions
+
+									$actions = array();
+									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+
+									if(!empty($subs)) {
+										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member_' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										$actions['drop'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member_' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+									}
 									?>
+									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
 								<td <?php echo $style; ?>>
 									<?php
@@ -519,7 +719,15 @@ if(!class_exists('membershipadmin')) {
 										}
 										echo implode(", ", $rows);
 									}
+									$actions = array();
+									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+
+									if(!empty($levels)) {
+										$actions['move'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member_' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										$actions['drop'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member_' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+									}
 									?>
+									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
 							</tr>
 							<?php
