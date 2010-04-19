@@ -6,12 +6,18 @@ if(!class_exists('M_Member_Search')) {
 		var $sub_id = false;
 		var $level_id = false;
 
-		function M_Member_Search($search_term = '', $page = '', $sub_id = '', $level_id = '') {
+		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false) {
 			$this->search_term = $search_term;
 			$this->raw_page = ( '' == $page ) ? false : (int) $page;
 			$this->page = (int) ( '' == $page ) ? 1 : $page;
-			$this->sub_id = $sub_id;
-			$this->level_id = $level_id;
+
+			if(!empty($sub_id)) {
+				$this->sub_id = $sub_id;
+			}
+
+			if(!empty($level_id)) {
+				$this->level_id = $level_id;
+			}
 
 			$this->prepare_query();
 			$this->query();
@@ -56,11 +62,10 @@ if(!class_exists('M_Member_Search')) {
 				$subs = $wpdb->get_col( $sql );
 
 				if(!empty($subs)) {
-					$this->query_from_where .= " AND {$wpdb->users}.ID IN (" . implode(',', $subs) . ")";
+					$this->query_where .= " AND {$wpdb->users}.ID IN (" . implode(',', $subs) . ")";
 				} else {
-					$this->query_from_where .= " AND {$wpdb->users}.ID IN (0)";
+					$this->query_where .= " AND {$wpdb->users}.ID IN (0)";
 				}
-
 			}
 
 			if( $this->level_id ) {
@@ -69,9 +74,9 @@ if(!class_exists('M_Member_Search')) {
 				$levels = $wpdb->get_col( $sql );
 
 				if(!empty($levels)) {
-					$this->query_from_where .= " AND {$wpdb->users}.ID IN (" . implode(',', $levels) . ")";
+					$this->query_where .= " AND {$wpdb->users}.ID IN (" . implode(',', $levels) . ")";
 				} else {
-					$this->query_from_where .= " AND {$wpdb->users}.ID IN (0)";
+					$this->query_where .= " AND {$wpdb->users}.ID IN (0)";
 				}
 
 			}
