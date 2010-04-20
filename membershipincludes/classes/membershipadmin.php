@@ -157,6 +157,8 @@ if(!class_exists('membershipadmin')) {
 		function add_admin_header_membershipoptions() {
 			$this->add_admin_header_core();
 
+			wp_enqueue_style('optionscss', membership_url('membershipincludes/css/options.css'), array(), $this->build);
+
 			$this->handle_options_panel_updates();
 		}
 
@@ -898,55 +900,118 @@ if(!class_exists('membershipadmin')) {
 				}
 				?>
 
-				<h3><?php _e('Stranger settings','membership'); ?></h3>
-				<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
-
 				<form action='?page=<?php echo $page; ?>' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 
-				<table class="form-table">
-				<tbody>
-					<tr valign="top">
-						<th scope="row"><?php _e('Use membership level','membership'); ?></th>
-						<td>
-							<select name='strangerlevel' id='strangerlevel'>
-								<option value="0"><?php _e('None','membership'); ?></option>
-							<?php
-								$levels = $this->get_membership_levels();
-								if($levels) {
-									foreach($levels as $key => $level) {
-										?>
-										<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
-										<?php
-									}
-								}
-							?>
-							</select>
-						</td>
-					</tr>
+					<h3><?php _e('Stranger settings','membership'); ?></h3>
+					<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
 
-					<tr valign="top">
-						<th scope="row"><?php _e('Access level','membership'); ?></th>
-						<td>
-							<select name='strangerlevel' id='strangerlevel'>
-								<option value="0"><?php _e('None','membership'); ?></option>
-							<?php
-								$levels = $this->get_membership_levels();
-								if($levels) {
-									foreach($levels as $key => $level) {
-										?>
-										<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
-										<?php
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Use membership level','membership'); ?></th>
+							<td>
+								<select name='strangerlevel' id='strangerlevel'>
+									<option value="0"><?php _e('None - No access to content','membership'); ?></option>
+								<?php
+									$levels = $this->get_membership_levels();
+									if($levels) {
+										foreach($levels as $key => $level) {
+											?>
+											<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
+											<?php
+										}
 									}
-								}
-							?>
-							</select>
-						</td>
-					</tr>
+								?>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
 
-				</tbody>
-				</table>
+					<h3><?php _e('User registration','membership'); ?></h3>
+					<p><?php _e('If you have free user registration enabled on your site, select the subscription they will be assigned to initially.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Use subscription','membership'); ?></th>
+							<td>
+								<select name='freeusersubscription' id='freeusersubscription'>
+									<option value="0"><?php _e('None - No access to content','membership'); ?></option>
+								<?php
+									$subs = $this->get_subscriptions( array('sub_status' => 'active'));
+									if($subs) {
+										foreach($subs as $key => $sub) {
+											?>
+											<option value="<?php echo $sub->id; ?>"><?php echo esc_html($sub->sub_name); ?></option>
+											<?php
+										}
+									}
+								?>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Shortcode protected content','membership'); ?></h3>
+					<p><?php _e('You can protect parts of a post or pages content by enclosing it in WordPress shortcodes.','membership'); ?></p>
+					<p><?php _e('Create as many shortcodes as you want by entering them below, each shortcode should be on a separate line.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'></textarea>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('No access message','membership'); ?><br/>
+							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
+							<?php _e("Leave blank for no message.",'membership'); ?><br/>
+							<?php _e("HTML allowed.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'></textarea>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Protected posts / pages','membership'); ?></h3>
+					<p><?php _e('If a post / page is not available to a user, this is the message that will be displayed in its place.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'></textarea>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('No access message','membership'); ?><br/>
+							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
+							<?php _e("Leave blank for no message.",'membership'); ?><br/>
+							<?php _e("HTML allowed.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'></textarea>
+							</td>
+						</tr>
+					</tbody>
+					</table>
 
 			</div> <!-- wrap -->
 			<?php
@@ -1854,8 +1919,8 @@ if(!class_exists('membershipadmin')) {
 				$s = '';
 			}
 
-			if(isset($_GET['sub_id'])) {
-				$filter['sub_id'] = stripslashes($_GET['sub_id']);
+			if(isset($_GET['sub_status'])) {
+				$filter['sub_status'] = stripslashes($_GET['sub_status']);
 			}
 
 			if(isset($_GET['order_by'])) {
@@ -1913,12 +1978,12 @@ if(!class_exists('membershipadmin')) {
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
-				<select name="sub_id">
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'public') echo "selected='selected'"; ?> value="public"><?php _e('View public subscriptions','membership'); ?></option>
-				<option <?php if(isset($_GET['sub_id']) && addslashes($_GET['sub_id']) == 'private') echo "selected='selected'"; ?> value="private"><?php _e('View private subscriptions','membership'); ?></option>
+				<select name="sub_status">
+				<option <?php if(isset($_GET['sub_status']) && addslashes($_GET['sub_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_status']) && addslashes($_GET['sub_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_status']) && addslashes($_GET['sub_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_status']) && addslashes($_GET['sub_id']) == 'public') echo "selected='selected'"; ?> value="public"><?php _e('View public subscriptions','membership'); ?></option>
+				<option <?php if(isset($_GET['sub_status']) && addslashes($_GET['sub_id']) == 'private') echo "selected='selected'"; ?> value="private"><?php _e('View private subscriptions','membership'); ?></option>
 				</select>
 
 				<select name="order_by">
@@ -2380,8 +2445,8 @@ if(!class_exists('membershipadmin')) {
 					$where[] = "sub_name LIKE '%" . mysql_real_escape_string($filter['s']) . "%'";
 				}
 
-				if(isset($filter['sub_id'])) {
-					switch($filter['sub_id']) {
+				if(isset($filter['sub_status'])) {
+					switch($filter['sub_status']) {
 
 						case 'active':		$where[] = "sub_active = 1";
 											break;
