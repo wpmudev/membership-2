@@ -880,6 +880,14 @@ if(!class_exists('membershipadmin')) {
 
 			wp_reset_vars( array('action', 'page') );
 
+			if($action == 'updateoptions') {
+
+				check_admin_referer('update-membership-options');
+
+
+
+			}
+
 		}
 
 		function handle_options_panel() {
@@ -903,6 +911,11 @@ if(!class_exists('membershipadmin')) {
 				<form action='?page=<?php echo $page; ?>' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
 
 					<h3><?php _e('Stranger settings','membership'); ?></h3>
 					<p><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.','membership'); ?></p>
@@ -1045,6 +1058,12 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 					</tbody>
 					</table>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
+					</p>
+
+				</form>
 
 			</div> <!-- wrap -->
 			<?php
