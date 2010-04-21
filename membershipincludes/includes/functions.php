@@ -59,4 +59,15 @@ function membership_dir($extended) {
 
 
 }
+
+function membership_upload_path() {
+
+	// Get the fallback file location first
+	$path = trailingslashit(get_option('home')) . get_option('upload_path');
+	// if an override exists, then use that.
+	$path = get_option('fileupload_url', $path);
+	// return whatever we have left.
+	return $path;
+
+}
 ?>

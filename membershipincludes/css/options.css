@@ -8,6 +8,10 @@
 	text-shadow: #fffeff 1px 1px 0;
 }
 
+input.wide {
+	width: 80%;
+}
+
 #wpbody-content div.wrap.nosubsub form p {
 	padding-left: 10px;
 }

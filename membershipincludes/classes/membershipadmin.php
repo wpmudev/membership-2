@@ -1019,33 +1019,28 @@ if(!class_exists('membershipadmin')) {
 					</table>
 
 					<h3><?php _e('Downloads / Media protection','membership'); ?></h3>
-					<p><?php _e('If a post / page is not available to a user, this is the message that will be displayed in its place.','membership'); ?></p>
-					<p><?php _e('This message will only be displayed if the user has tried to access the post / page directly or via a link.','membership'); ?></p>
+					<p><?php _e('Downloads and media files can be protected by remapping their perceived location.','membership'); ?></p>
+					<p><?php _e('Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
 						<tr valign="top">
-							<th scope="row"><?php _e('Protected Message','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Enter the message that you want displayed when the content is not available.",'membership'); ?><br/>
-								<?php _e("HTML allowed.",'membership'); ?>
+							<th scope="row"><?php _e('Actual download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is a system generated URL, you shouldn't need to change this.",'membership'); ?>
 								</em>
 							</th>
 							<td>
-								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'></textarea>
+								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e(membership_upload_path());  ?>' class='wide' />
 							</td>
 						</tr>
 						<tr valign="top">
-							<th scope="row"><?php _e('Use page template','membership'); ?><br/>
-							<em style='font-size:smaller;'>
-							<?php _e("You can choose which template from your theme to use for this message.",'membership'); ?><br/>
-							<?php _e("If you don't know what this means, then leave it set as default.",'membership'); ?>
-							</em>
+							<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
+								<?php _e("Change the end part to something unique.",'membership'); ?>
+								</em>
 							</th>
 							<td>
-								<select name="page_template" id="page_template">
-								<option value='default'><?php _e('Default Template'); ?></option>
-								<?php page_template_dropdown($template); ?>
-								</select>
+								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='' />
 							</td>
 						</tr>
 					</tbody>
