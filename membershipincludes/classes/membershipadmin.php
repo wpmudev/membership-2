@@ -985,29 +985,67 @@ if(!class_exists('membershipadmin')) {
 					</tbody>
 					</table>
 
-					<h3><?php _e('Protected posts / pages','membership'); ?></h3>
+					<h3><?php _e('Posts / pages protection','membership'); ?></h3>
 					<p><?php _e('If a post / page is not available to a user, this is the message that will be displayed in its place.','membership'); ?></p>
+					<p><?php _e('This message will only be displayed if the user has tried to access the post / page directly or via a link.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
 						<tr valign="top">
-							<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
+							<th scope="row"><?php _e('Protected Message','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Enter the message that you want displayed when the content is not available.",'membership'); ?><br/>
+								<?php _e("HTML allowed.",'membership'); ?>
 								</em>
 							</th>
 							<td>
-								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'></textarea>
+								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'></textarea>
 							</td>
 						</tr>
 						<tr valign="top">
-							<th scope="row"><?php _e('No access message','membership'); ?><br/>
-							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
-							<?php _e("Leave blank for no message.",'membership'); ?><br/>
-							<?php _e("HTML allowed.",'membership'); ?>
+							<th scope="row"><?php _e('Use page template','membership'); ?><br/>
+							<em style='font-size:smaller;'>
+							<?php _e("You can choose which template from your theme to use for this message.",'membership'); ?><br/>
+							<?php _e("If you don't know what this means, then leave it set as default.",'membership'); ?>
 							</em>
 							</th>
 							<td>
-								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'></textarea>
+								<select name="page_template" id="page_template">
+								<option value='default'><?php _e('Default Template'); ?></option>
+								<?php page_template_dropdown($template); ?>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Downloads / Media protection','membership'); ?></h3>
+					<p><?php _e('If a post / page is not available to a user, this is the message that will be displayed in its place.','membership'); ?></p>
+					<p><?php _e('This message will only be displayed if the user has tried to access the post / page directly or via a link.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected Message','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Enter the message that you want displayed when the content is not available.",'membership'); ?><br/>
+								<?php _e("HTML allowed.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'></textarea>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Use page template','membership'); ?><br/>
+							<em style='font-size:smaller;'>
+							<?php _e("You can choose which template from your theme to use for this message.",'membership'); ?><br/>
+							<?php _e("If you don't know what this means, then leave it set as default.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<select name="page_template" id="page_template">
+								<option value='default'><?php _e('Default Template'); ?></option>
+								<?php page_template_dropdown($template); ?>
+								</select>
 							</td>
 						</tr>
 					</tbody>
