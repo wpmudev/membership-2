@@ -1024,7 +1024,7 @@ if(!class_exists('membershipadmin')) {
 								if(!empty($M_options['membershipshortcodes'])) {
 									foreach($M_options['membershipshortcodes'] as $key => $value) {
 										if(!empty($value)) {
-											esc_html_e(stripslashes(trim($value))) . "\n";
+											esc_html_e(stripslashes($value)) . "\n";
 										}
 									}
 								}
@@ -2528,7 +2528,9 @@ if(!class_exists('membershipadmin')) {
 		// Fake shortcode function for administration area - public class has the proper processing function
 		function do_fake_shortcode($atts, $content = null, $code = "") {
 
-			return __("The display of this shortcodes' content will be determined based on membership rules",'membership');
+			global $M_options;
+
+			return $M_options['shortcodemessage'];
 
 		}
 		// Database actions
