@@ -44,8 +44,8 @@ if(!class_exists('membershipadmin')) {
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
 
 			// Media management additional fields
-			//add_filter('attachment_fields_to_edit', array(&$this, 'add_media_credit'), 99, 2);
-			//add_filter('attachment_fields_to_save', array(&$this, 'save_media_credit'), 99, 2);
+			add_filter('attachment_fields_to_edit', array(&$this, 'add_media_protection_settings'), 99, 2);
+			add_filter('attachment_fields_to_save', array(&$this, 'save_media_protection_settings'), 99, 2);
 
 		}
 
@@ -2437,6 +2437,45 @@ if(!class_exists('membershipadmin')) {
 			</div> <!-- wrap -->
 			<?php
 
+		}
+
+		// Media extension options
+		/*
+		add_filter('attachment_fields_to_edit', array(&$this, 'add_media_protection_settings'), 99, 2);
+		add_filter('attachment_fields_to_save', array(&$this, 'save_media_protection_settings'), 99, 2);
+		*/
+		function add_media_protection_settings($fields, $post) {
+			$protected = get_post_meta($post->ID, '_membership_protected_content', true);
+			if(empty($protected)) {
+				$protected = 'no';
+			}
+			// add requirement for jquery ui core, jquery ui widgets, jquery ui position
+			$html = "<select name='attachments[" . $post->ID . "][protected-content]'>";
+			$html .= "<option value='no'";
+			$html .= ">" . __('No', 'membership') . "</option>";
+			$html .= "<option value='yes'";
+			if($protected == 'yes') {
+				$html .= " selected='selected'";
+			}
+			$html .= ">" . __('Yes', 'membership') . "</option>";
+			$html .= "</select>";
+
+			$fields['media-protected-content'] = array(
+				'label' 	=> __('Protected content', 'membership'),
+				'input' 	=> 'html',
+				'html' 		=> $html,
+				'helps'     => __('Is this an item you may want to restrict access to?', 'membership')
+			);
+			return $fields;
+		}
+
+		function save_media_protection_settings($post, $attachment) {
+			$key = "protected-content";
+			if ( empty( $attachment[$key] ) || addslashes( $attachment[$key] ) == 'no') {
+				delete_post_meta($post['ID'], '_membership_protected_content'); // delete any residual metadata from a free-form field (as inserted below)
+			} else // free-form text was entered, insert postmeta with credit
+				update_post_meta($post['ID'], '_membership_protected_content', $attachment['protected-content']); // insert 'media-credit' metadata field for image with free-form text
+			return $post;
 		}
 
 		// Database actions
