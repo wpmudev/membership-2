@@ -762,7 +762,7 @@ class M_Shortcodes extends M_Rule {
 
 	}
 
-	function do_shortcode($atts, $content = null) {
+	function do_shortcode($atts, $content = null, $code="") {
 
 		echo "boo";
 

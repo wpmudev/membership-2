@@ -29,7 +29,7 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Add administration actions
-			add_action('init', array(&$this, 'initialiseplugin'));
+			add_action('init', array(&$this, 'initialise_plugin'));
 
 			add_action('admin_menu', array(&$this, 'add_admin_menu'));
 
@@ -53,7 +53,9 @@ if(!class_exists('membershipadmin')) {
 			$this->__construct();
 		}
 
-		function initialiseplugin() {
+		function initialise_plugin() {
+
+			global $M_options;
 
 			$installed = get_option('M_Installed', false);
 
@@ -63,6 +65,17 @@ if(!class_exists('membershipadmin')) {
 				M_Upgrade($installed);
 
 				update_option('M_Installed', $this->build);
+			}
+
+			$M_options = get_option('membership_options', array());
+
+			// Short codes
+			if(!empty($M_options['membershipshortcodes'])) {
+				foreach($M_options['membershipshortcodes'] as $key => $value) {
+					if(!empty($value)) {
+						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_fake_shortcode') );
+					}
+				}
 			}
 
 		}
@@ -1011,7 +1024,7 @@ if(!class_exists('membershipadmin')) {
 								if(!empty($M_options['membershipshortcodes'])) {
 									foreach($M_options['membershipshortcodes'] as $key => $value) {
 										if(!empty($value)) {
-											esc_html_e(stripslashes($value)) . "\n";
+											esc_html_e(stripslashes(trim($value))) . "\n";
 										}
 									}
 								}
@@ -2512,6 +2525,12 @@ if(!class_exists('membershipadmin')) {
 			return $post;
 		}
 
+		// Fake shortcode function for administration area - public class has the proper processing function
+		function do_fake_shortcode($atts, $content = null, $code = "") {
+
+			return __("The display of this shortcodes' content will be determined based on membership rules",'membership');
+
+		}
 		// Database actions
 
 		function get_membership_levels($filter = false) {
