@@ -43,6 +43,10 @@ if(!class_exists('membershipadmin')) {
 
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
 
+			// Media management additional fields
+			//add_filter('attachment_fields_to_edit', array(&$this, 'add_media_credit'), 99, 2);
+			//add_filter('attachment_fields_to_save', array(&$this, 'save_media_credit'), 99, 2);
+
 		}
 
 		function membershipadmin() {
@@ -883,6 +887,8 @@ if(!class_exists('membershipadmin')) {
 			if($action == 'updateoptions') {
 
 				check_admin_referer('update-membership-options');
+
+				// Split up the membership options records into to descrete related chunks
 
 
 
