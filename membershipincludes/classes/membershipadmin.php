@@ -888,9 +888,24 @@ if(!class_exists('membershipadmin')) {
 
 				check_admin_referer('update-membership-options');
 
+				$M_options = array();
+
 				// Split up the membership options records into to descrete related chunks
+				$M_options['strangerlevel'] = (int) $_POST['strangerlevel'];
+				$M_options['freeusersubscription'] = (int) $_POST['freeusersubscription'];
 
+				$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
+				$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
 
+				$M_options['protectedmessage'] = $_POST['protectedmessage'];
+
+				$M_options['page_template'] = $_POST['page_template'];
+				$M_options['original_url'] = $_POST['original_url'];
+				$M_options['masked_url'] = $_POST['masked_url'];
+
+				update_option('membership_options', $M_options);
+
+				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
 
 			}
 
@@ -898,9 +913,14 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_options_panel() {
 
-			global $action, $page;
+			global $action, $page, $M_options;
 
 			wp_reset_vars( array('action', 'page') );
+
+			$M_options = get_option('membership_options', array());
+
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
 
 			?>
 			<div class='wrap nosubsub'>
@@ -938,7 +958,7 @@ if(!class_exists('membershipadmin')) {
 									if($levels) {
 										foreach($levels as $key => $level) {
 											?>
-											<option value="<?php echo $level->id; ?>"><?php echo esc_html($level->level_title); ?></option>
+											<option value="<?php echo $level->id; ?>" <?php if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] == $level->id) echo "selected='selected'"; ?>><?php echo esc_html($level->level_title); ?></option>
 											<?php
 										}
 									}
@@ -964,7 +984,7 @@ if(!class_exists('membershipadmin')) {
 									if($subs) {
 										foreach($subs as $key => $sub) {
 											?>
-											<option value="<?php echo $sub->id; ?>"><?php echo esc_html($sub->sub_name); ?></option>
+											<option value="<?php echo $sub->id; ?>" <?php if(isset($M_options['freeusersubscription']) && $M_options['freeusersubscription'] == $sub->id) echo "selected='selected'"; ?>><?php echo esc_html($sub->sub_name); ?></option>
 											<?php
 										}
 									}
@@ -987,7 +1007,15 @@ if(!class_exists('membershipadmin')) {
 								</em>
 							</th>
 							<td>
-								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'></textarea>
+								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'><?php
+								if(!empty($M_options['membershipshortcodes'])) {
+									foreach($M_options['membershipshortcodes'] as $key => $value) {
+										if(!empty($value)) {
+											esc_html_e(stripslashes($value)) . "\n";
+										}
+									}
+								}
+								?></textarea>
 							</td>
 						</tr>
 						<tr valign="top">
@@ -998,7 +1026,7 @@ if(!class_exists('membershipadmin')) {
 							</em>
 							</th>
 							<td>
-								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'></textarea>
+								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
 							</td>
 						</tr>
 					</tbody>
@@ -1017,7 +1045,7 @@ if(!class_exists('membershipadmin')) {
 								</em>
 							</th>
 							<td>
-								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'></textarea>
+								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'><?php esc_html_e(stripslashes($M_options['protectedmessage'])); ?></textarea>
 							</td>
 						</tr>
 						<tr valign="top">
@@ -1030,7 +1058,9 @@ if(!class_exists('membershipadmin')) {
 							<td>
 								<select name="page_template" id="page_template">
 								<option value='default'><?php _e('Default Template'); ?></option>
-								<?php page_template_dropdown($template); ?>
+								<?php
+									page_template_dropdown($M_options['page_template']);
+								?>
 								</select>
 							</td>
 						</tr>
@@ -1049,7 +1079,11 @@ if(!class_exists('membershipadmin')) {
 								</em>
 							</th>
 							<td>
-								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e(membership_upload_path());  ?>' class='wide' />
+								<?php
+								 	$membershipurl = $M_options['original_url'];
+									if(empty($membershipurl)) $membershipurl = membership_upload_path();
+								?>
+								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e($membershipurl);  ?>' class='wide' />
 							</td>
 						</tr>
 						<tr valign="top">
@@ -1059,7 +1093,7 @@ if(!class_exists('membershipadmin')) {
 								</em>
 							</th>
 							<td>
-								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='' />
+								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
 							</td>
 						</tr>
 					</tbody>
