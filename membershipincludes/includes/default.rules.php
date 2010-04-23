@@ -711,10 +711,10 @@ class M_Shortcodes extends M_Rule {
 									?>
 									<tr valign="middle" class="alternate" id="post-<?php echo $key; ?>">
 										<th class="check-column" scope="row">
-											<input type="checkbox" value="<?php echo esc_attr($key); ?>" name="shortcodes[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+											<input type="checkbox" value="<?php echo esc_attr(trim($key)); ?>" name="shortcodes[]" <?php if(in_array(trim($key), $data)) echo 'checked="checked"'; ?>>
 										</th>
 										<td class="column-name">
-											<strong>[<?php echo esc_html($key); ?>]</strong>
+											<strong>[<?php echo esc_html(trim($key)); ?>]</strong>
 										</td>
 								   </tr>
 									<?php
