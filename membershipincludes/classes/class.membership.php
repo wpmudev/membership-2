@@ -100,7 +100,7 @@ if(!class_exists('M_Membership')) {
 
 			if(!$this->on_level($tolevel_id)) {
 
-				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => time()));
+				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => current_time('mysql')));
 
 			}
 
@@ -119,6 +119,12 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function move_level($fromlevel_id, $tolevel_id) {
+
+			if(!$this->on_level($tolevel_id) && $this->on_level($fromlevel_id)) {
+
+				$this->db->update( $this->membership_relationships, array('level_id' => $tolevel_id, 'startdate' => current_time('mysql')), array('level_id' => $fromlevel_id, 'user_id' => $this->ID, 'sub_id' => 0) );
+
+			}
 
 		}
 
