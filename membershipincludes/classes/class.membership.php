@@ -54,9 +54,9 @@ if(!class_exists('M_Membership')) {
 
 			if(empty($this->levels)) {
 
-				$sql = $this->db->prepare( "SELECT level_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id > 0", $this->ID );
+				$sql = $this->db->prepare( "SELECT level_id, sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id > 0", $this->ID );
 
-				$this->levels = $this->db->get_col( $sql );
+				$this->levels = $this->db->get_results( $sql );
 
 			}
 

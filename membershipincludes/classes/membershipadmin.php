@@ -807,10 +807,14 @@ if(!class_exists('membershipadmin')) {
 									$levels = $user_object->get_level_ids();
 									if(!empty($levels)) {
 										$rows = array();
-										foreach((array) $levels as $key) {
-											$level = new M_Level ( $key );
+										foreach((array) $levels as $key => $value) {
+											$level = new M_Level ( $value->level_id );
 											if(!empty($level)) {
-												$rows[] = $level->level_title();
+												if((int) $value->sub_id != 0) {
+													$rows[] = "<strong>" . $level->level_title() . "</strong>";
+												} else {
+													$rows[] = $level->level_title();
+												}
 											}
 										}
 										echo implode(", ", $rows);
