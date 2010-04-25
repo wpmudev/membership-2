@@ -427,17 +427,121 @@ if(!class_exists('membershipadmin')) {
 
 			switch($operation) {
 
-				case 'add':		echo "add sub";
+				case 'add':		$title = __('Add member to a level','membership');
+								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+								$formdescription .= __('By adding a membership level, you may actually be removing existing access to content.','membership');
+
+								$html = "<h3>" . __('Level to add for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
+								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
+								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$button = "Add";
 								break;
 
-				case 'move':	echo "edit sub";
+				case 'move':	$title = __('Move member to another level','membership');
+								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+
+								$html = "<h3>" . __('Level to move from for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
+								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
+								$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$html .= "<h3>" . __('Level to move to for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
+								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
+								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
+								reset($levels);
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$button = "Move";
 								break;
 
-				case 'drop':	echo "drop sub";
+				case 'drop':	$title = __('Drop member from level','membership');
+
+								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+								$formdescription .= __('By removing a membership level, you may actually be increasing existing access to content.','membership');
+
+								$html = "<h3>" . __('Level to drop for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
+								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
+								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$button = "Drop";
 								break;
 
 
 			}
+
+			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-users"><br></div>
+				<h2><?php echo $title; ?></h2>
+				<form action='admin.php?page=<?php echo $page; ?>' method='post'>
+
+					<div class='level-liquid-left'>
+
+						<div id='level-left'>
+							<div id='edit-level' class='level-holder-wrap'>
+								<div class='sidebar-name no-movecursor'>
+									<h3><?php echo esc_html($title); ?></h3>
+								</div>
+								<div class='level-holder'>
+									<br />
+									<p class='description'><?php echo $formdescription;  ?></p>
+									<?php
+										echo $html;
+									?>
+
+									<div class='buttons'>
+										<?php
+											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-level-complete');
+										?>
+										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
+										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
+										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-level-complete'); ?>' />
+										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</div> <!-- level-liquid-left -->
+
+				</form>
+			</div> <!-- wrap -->
+			<?php
 
 
 		}
