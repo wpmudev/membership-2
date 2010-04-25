@@ -792,6 +792,8 @@ if(!class_exists('membershipadmin')) {
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 				$M_options['moretagdefault'] = $_POST['moretagdefault'];
 
+				$M_options['moretagmessage'] = $_POST['moretagmessage'];
+
 				update_option('membership_options', $M_options);
 
 				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
@@ -909,13 +911,13 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 						<tr valign="top">
 							<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Should the shortcodes above be visible or hidden by default.",'membership'); ?>
+								<em style='font-size:smaller;'><?php _e("Should the shortcodes above be visible or protected by default.",'membership'); ?>
 								</em>
 							</th>
 							<td>
 								<select name='shortcodedefault' id='shortcodedefault'>
 									<option value="yes" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - Shortcodes are visible by default','membership'); ?></option>
-									<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are hidden by default','membership'); ?></option>
+									<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are protected by default','membership'); ?></option>
 								</select>
 							</td>
 						</tr>
@@ -1012,6 +1014,18 @@ if(!class_exists('membershipadmin')) {
 									<option value="yes" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - More tag content is visible','membership'); ?></option>
 									<option value="no" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - More tag content not visible','membership'); ?></option>
 								</select>
+							</td>
+						</tr>
+
+						<tr valign="top">
+							<th scope="row"><?php _e('No access message','membership'); ?><br/>
+							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the moretag can't be shown.",'membership'); ?><br/>
+							<?php _e("Leave blank for no message.",'membership'); ?><br/>
+							<?php _e("HTML allowed.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<textarea name='moretagmessage' id='moretagmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['moretagmessage'])); ?></textarea>
 							</td>
 						</tr>
 					</tbody>
