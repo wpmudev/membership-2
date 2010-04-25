@@ -789,6 +789,9 @@ if(!class_exists('membershipadmin')) {
 				$M_options['original_url'] = $_POST['original_url'];
 				$M_options['masked_url'] = $_POST['masked_url'];
 
+				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
+				$M_options['moretagdefault'] = $_POST['moretagdefault'];
+
 				update_option('membership_options', $M_options);
 
 				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
@@ -905,6 +908,18 @@ if(!class_exists('membershipadmin')) {
 							</td>
 						</tr>
 						<tr valign="top">
+							<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Should the shortcodes above be visible or hidden by default.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<select name='shortcodedefault' id='shortcodedefault'>
+									<option value="yes" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - Shortcodes are visible by default','membership'); ?></option>
+									<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are hidden by default','membership'); ?></option>
+								</select>
+							</td>
+						</tr>
+						<tr valign="top">
 							<th scope="row"><?php _e('No access message','membership'); ?><br/>
 							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
 							<?php _e("Leave blank for no message.",'membership'); ?><br/>
@@ -980,6 +995,23 @@ if(!class_exists('membershipadmin')) {
 							</th>
 							<td>
 								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('More tag default','membership'); ?></h3>
+					<p><?php _e('Content placed after the More tag in a post or page can be protected by setting the visibility below. This setting can be overridden within each individual level.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Show content after the More tag','membership'); ?></th>
+							<td>
+								<select name='moretagdefault' id='moretagdefault'>
+									<option value="yes" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - More tag content is visible','membership'); ?></option>
+									<option value="no" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - More tag content not visible','membership'); ?></option>
+								</select>
 							</td>
 						</tr>
 					</tbody>
