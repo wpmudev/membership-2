@@ -157,6 +157,8 @@ if(!class_exists('membershipadmin')) {
 			$this->add_admin_header_core();
 
 			wp_enqueue_script('membersjs', membership_url('membershipincludes/js/members.js'), array(), $this->build);
+			// Using the level css file for now - maybe switch to a members specific one later
+			wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
 
 			wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
 
@@ -257,30 +259,82 @@ if(!class_exists('membershipadmin')) {
 
 			wp_reset_vars( array('action', 'page') );
 
-			?>
-			<div class='wrap nosubsub'>
-				<div class="icon32" id="icon-users"><br></div>
-				<form action='' method='post'>
-			<?php
-
 			switch($operation) {
 
-				case 'add':		$title = "<h2>" . __('Add member to a level','membership') . "</h2>";
+				case 'add':		$title = __('Add member to a level','membership');
+								$formdescription = __('This is a description.','membership');
+
+								$html = "<label for='tolevel_id'>" . __('Add level','management') . "</label><br/>";
+								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
+								$html .= "<option value=''>" . __('Select the level to add.','membership') . "</option>\n";
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+
 								break;
 
-				case 'move':	$title = "<h2>" . __('Move member to another level','membership') . "</h2>";
+				case 'move':	$title = __('Move member to another level','membership');
 								break;
 
-				case 'drop':	$title = "<h2>" . __('Drop member from level','membership') . "</h2>";
+				case 'drop':	$title = __('Drop member from level','membership');
+
+								$html = "<label for='tolevel_id'>" . __('Drop level','management') . "</label><br/>";
+								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
+								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
+								$levels = $this->get_membership_levels();
+								if($levels) {
+									foreach($levels as $key => $level) {
+										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+									}
+								}
+								$html .= "</select>\n";
+
 								break;
 
 
 			}
 
-			echo $title;
-			echo $html;
-
 			?>
+			<div class='wrap nosubsub'>
+				<div class="icon32" id="icon-users"><br></div>
+				<h2><?php echo $title; ?></h2>
+				<form action='admin.php?page=<?php echo $page; ?>' method='post'>
+
+					<div class='level-liquid-left'>
+
+						<div id='level-left'>
+							<div id='edit-level' class='level-holder-wrap'>
+								<div class='sidebar-name no-movecursor'>
+									<h3><?php echo esc_html($title); ?></h3>
+								</div>
+								<div class='level-holder'>
+									<br />
+									<p class='description'><?php esc_html_e($formdescription);  ?></p>
+									<div class='level-details'>
+										<?php
+											echo $html;
+										?>
+									</div>
+
+									<div class='buttons'>
+										<?php
+											wp_original_referer_field(true, 'previous'); wp_nonce_field('add-' . $level->id);
+										?>
+										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
+										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button' />
+										<input type='hidden' name='action' value='added' />
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</div> <!-- level-liquid-left -->
+
 				</form>
 			</div> <!-- wrap -->
 			<?php
