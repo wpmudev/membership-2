@@ -6,9 +6,9 @@ if(!class_exists('M_Membership')) {
 
 		var $db;
 
-		var $tables = array('membership_relationships');
+		var $tables = array('membership_relationships', 'membership_levels');
 
-		var $membership_relationships;
+		var $membership_relationships, $membership_levels;
 
 		var $subscriptions;
 		var $levels;
@@ -96,12 +96,26 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function increase_levelcount($level_id) {
+
+			$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_count = level_count + 1 WHERE id = %d", $level_id );
+			return $this->db->query( $sql );
+
+		}
+
+		function decrease_levelcount($level_id) {
+
+			$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_count = level_count - 1 WHERE id = %d", $level_id );
+			return $this->db->query( $sql );
+
+		}
+
 		function add_level($tolevel_id) {
 
 			if(!$this->on_level($tolevel_id)) {
 
 				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => current_time('mysql')));
-
+				$this->increase_levelcount($tolevel_id);
 			}
 
 		}
@@ -112,7 +126,7 @@ if(!class_exists('M_Membership')) {
 
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d AND sub_id = 0", $this->ID, $fromlevel_id);
 				$this->db->query( $sql );
-
+				$this->decrease_levelcount($fromlevel_id);
 			}
 
 
@@ -123,7 +137,8 @@ if(!class_exists('M_Membership')) {
 			if(!$this->on_level($tolevel_id) && $this->on_level($fromlevel_id)) {
 
 				$this->db->update( $this->membership_relationships, array('level_id' => $tolevel_id, 'startdate' => current_time('mysql')), array('level_id' => $fromlevel_id, 'user_id' => $this->ID, 'sub_id' => 0) );
-
+				$this->decrease_levelcount($fromlevel_id);
+				$this->increase_levelcount($tolevel_id);
 			}
 
 		}
