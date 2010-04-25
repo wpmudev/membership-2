@@ -241,6 +241,32 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 								break;
 
+				case 'addlevel-level-complete':
+								check_admin_referer('addlevel-level-complete');
+								$member_id = (int) $_POST['member_id'];
+								$member = new M_Membership($member_id);
+
+								$tolevel_id = (int) $_POST['tolevel_id'];
+								if($tolevel_id) {
+									$member->add_level($tolevel_id);
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
+								break;
+
+				case 'droplevel-level-complete':
+								check_admin_referer('droplevel-level-complete');
+								$member_id = (int) $_POST['member_id'];
+								$member = new M_Membership($member_id);
+
+								$fromlevel_id = (int) $_POST['fromlevel_id'];
+								if($fromlevel_id) {
+									$member->drop_level($fromlevel_id);
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
+								break;
+
 			}
 
 		}
@@ -262,11 +288,13 @@ if(!class_exists('membershipadmin')) {
 			switch($operation) {
 
 				case 'add':		$title = __('Add member to a level','membership');
-								$formdescription = __('This is a description.','membership');
+								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+								$formdescription .= __('By adding a membership level, you may actually be removing existing access to content.','membership');
 
-								$html = "<label for='tolevel_id'>" . __('Add level','management') . "</label><br/>";
+								$html = "<h3>" . __('Level to add for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
-								$html .= "<option value=''>" . __('Select the level to add.','membership') . "</option>\n";
+								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
 								$levels = $this->get_membership_levels();
 								if($levels) {
 									foreach($levels as $key => $level) {
@@ -274,6 +302,9 @@ if(!class_exists('membershipadmin')) {
 									}
 								}
 								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$button = "Add";
 
 								break;
 
@@ -282,7 +313,11 @@ if(!class_exists('membershipadmin')) {
 
 				case 'drop':	$title = __('Drop member from level','membership');
 
-								$html = "<label for='tolevel_id'>" . __('Drop level','management') . "</label><br/>";
+								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+								$formdescription .= __('By removing a membership level, you may actually be increasing existing access to content.','membership');
+
+								$html = "<h3>" . __('Level to drop for this / these member(s)','management') . "</h3>";
+								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
 								$levels = $this->get_membership_levels();
@@ -292,6 +327,9 @@ if(!class_exists('membershipadmin')) {
 									}
 								}
 								$html .= "</select>\n";
+								$html .= "</div>";
+
+								$button = "Drop";
 
 								break;
 
@@ -313,20 +351,19 @@ if(!class_exists('membershipadmin')) {
 								</div>
 								<div class='level-holder'>
 									<br />
-									<p class='description'><?php esc_html_e($formdescription);  ?></p>
-									<div class='level-details'>
-										<?php
-											echo $html;
-										?>
-									</div>
+									<p class='description'><?php echo $formdescription;  ?></p>
+									<?php
+										echo $html;
+									?>
 
 									<div class='buttons'>
 										<?php
-											wp_original_referer_field(true, 'previous'); wp_nonce_field('add-' . $level->id);
+											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-level-complete');
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button' />
-										<input type='hidden' name='action' value='added' />
+										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
+										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-level-complete'); ?>' />
+										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
 									</div>
 
 								</div>
@@ -389,7 +426,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'movelevel':	if(isset($_GET['member_id'])) {
 										$member_id = (int) $_GET['member_id'];
-										check_admin_referer('movelevel-membmer-' . $member_id);
+										check_admin_referer('movelevel-member-' . $member_id);
 										$this->handle_member_level_op('move', $member_id);
 										return;
 									}
@@ -397,7 +434,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'droplevel':	if(isset($_GET['member_id'])) {
 										$member_id = (int) $_GET['member_id'];
-										check_admin_referer('droplevel-membmer-' . $member_id);
+										check_admin_referer('droplevel-member-' . $member_id);
 										$this->handle_member_level_op('drop', $member_id);
 										return;
 									}
@@ -421,7 +458,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'movesub':		if(isset($_GET['member_id'])) {
 										$member_id = (int) $_GET['member_id'];
-										check_admin_referer('movesub-membmer-' . $member_id);
+										check_admin_referer('movesub-member-' . $member_id);
 										$this->handle_member_subscription_op('move', $member_id);
 										return;
 									}
@@ -429,7 +466,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'dropsub':		if(isset($_GET['member_id'])) {
 										$member_id = (int) $_GET['member_id'];
-										check_admin_referer('movesub-membmer-' . $member_id);
+										check_admin_referer('movesub-member-' . $member_id);
 										$this->handle_member_subscription_op('drop', $member_id);
 										return;
 									}

@@ -64,6 +64,76 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function on_level($level_id, $include_subs = false) {
+
+			$sql = $this->db->prepare( "SELECT rel_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d", $this->ID, $level_id );
+
+			if(!$include_subs) {
+				$sql .= $this->db->prepare( " AND sub_id = 0" );
+			}
+
+			$result = $this->db->get_col( $sql );
+
+			if(empty($result)) {
+				return false;
+			} else {
+				return true;
+			}
+
+		}
+
+		function on_sub($sub_id) {
+
+			$sql = $this->db->prepare( "SELECT rel_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
+
+			$result = $this->db->get_col( $sql );
+
+			if(empty($result)) {
+				return false;
+			} else {
+				return true;
+			}
+
+		}
+
+		function add_level($tolevel_id) {
+
+			if(!$this->on_level($tolevel_id)) {
+
+				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => time()));
+
+			}
+
+		}
+
+		function drop_level($fromlevel_id) {
+
+			if($this->on_level($fromlevel_id)) {
+
+				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d AND sub_id = 0", $this->ID, $fromlevel_id);
+				$this->db->query( $sql );
+
+			}
+
+
+		}
+
+		function move_level($fromlevel_id, $tolevel_id) {
+
+		}
+
+		function add_subscription($tosub_id, $tolevel_id = false) {
+
+		}
+
+		function drop_subscription($fromsub_id) {
+
+		}
+
+		function move_subscription($fromsub_id, $tosub_id, $tolevel_id = false) {
+
+		}
+
 		// Member operations
 
 		function toggle_activation() {
@@ -78,26 +148,6 @@ if(!class_exists('M_Membership')) {
 
 			return true; // for now
 
-
-		}
-
-		function move_subscription() {
-
-		}
-
-		function move_level() {
-
-		}
-
-		function add_level() {
-
-		}
-
-		function delete_level() {
-
-		}
-
-		function delete_subscription() {
 
 		}
 
