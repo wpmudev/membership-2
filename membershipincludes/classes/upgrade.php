@@ -82,6 +82,7 @@ function M_Createtables() {
 	  `sub_id` bigint(20) default '0',
 	  `level_id` bigint(20) default '0',
 	  `startdate` datetime default NULL,
+	  `updateddate` datetime default NULL,
 	  PRIMARY KEY  (`rel_id`),
 	  KEY `user_id` (`user_id`),
 	  KEY `sub_id` (`sub_id`),

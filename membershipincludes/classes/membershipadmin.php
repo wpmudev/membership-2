@@ -435,10 +435,20 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
-								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
-								if($levels) {
-									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+
+								$subs = $this->get_subscriptions_and_levels( array('sub_status' => 'active') );
+								if($subs) {
+									$sub_id = false;
+									foreach($subs as $key => $sub) {
+										if($sub_id != $sub->sub_id) {
+											$sub_id = $sub->sub_id;
+
+											$html .= "<optgroup label='";
+											$html .= $sub->sub_name;
+											$html .= "'>";
+
+										}
+										$html .= "<option value='" . esc_attr($sub->sub_id) . "-" . esc_attr($sub->level_id) . "'>" . $sub->level_order . " : " . esc_html($sub->sub_name . " - " . $sub->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -468,10 +478,19 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
-								//reset($subs);
-								if($levels) {
-									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+								$subs = $this->get_subscriptions_and_levels( array('sub_status' => 'active') );
+								if($subs) {
+									$sub_id = false;
+									foreach($subs as $key => $sub) {
+										if($sub_id != $sub->sub_id) {
+											$sub_id = $sub->sub_id;
+
+											$html .= "<optgroup label='";
+											$html .= $sub->sub_name;
+											$html .= "'>";
+
+										}
+										$html .= "<option value='" . esc_attr($sub->sub_id) . "-" . esc_attr($sub->level_id) . "'>" . $sub->level_order . " : " . esc_html($sub->sub_name . " - " . $sub->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -2802,9 +2821,45 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-	}
+		function get_subscriptions_and_levels($filter = false) {
 
-	function get_subscriptions_and_levels() {
+			if($filter) {
+
+				$where = array();
+				$orderby = array();
+
+				if(isset($filter['s'])) {
+					$where[] = "sub_name LIKE '%" . mysql_real_escape_string($filter['s']) . "%'";
+				}
+
+				if(isset($filter['sub_status'])) {
+					switch($filter['sub_status']) {
+
+						case 'active':		$where[] = "sub_active = 1";
+											break;
+						case 'inactive':	$where[] = "sub_active = 0";
+											break;
+						case 'public':		$where[] = "sub_public = 1";
+											break;
+						case 'private':		$where[] = "sub_public = 0";
+											break;
+
+					}
+				}
+
+			}
+
+			$sql = $this->db->prepare( "SELECT s.id as sub_id, ml.id as level_id, s.*, ml.*, sl.level_order FROM {$this->subscriptions} AS s, {$this->subscriptions_levels} AS sl, {$this->membership_levels} AS ml");
+
+			if(!empty($where)) {
+				$sql .= " WHERE " . implode(' AND ', $where);
+			}
+
+			$sql .= $this->db->prepare( " AND s.id = sl.sub_id AND sl.level_id = ml.id ORDER BY s.id ASC, sl.level_order ASC " );
+
+			return $this->db->get_results($sql);
+
+		}
 
 	}
 
