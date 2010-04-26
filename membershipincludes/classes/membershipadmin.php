@@ -309,7 +309,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
@@ -329,7 +329,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
@@ -363,7 +363,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
@@ -427,15 +427,15 @@ if(!class_exists('membershipadmin')) {
 
 			switch($operation) {
 
-				case 'add':		$title = __('Add member to a level','membership');
-								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
-								$formdescription .= __('By adding a membership level, you may actually be removing existing access to content.','membership');
+				case 'add':		$title = __('Add member to a subscription','membership');
+								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
+								$formdescription .= __('Depending on your payment gateway, adding a subscription here may not set up a payment subscription.','membership');
 
 								$html = "<h3>" . __('Level to add for this / these member(s)','management') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
@@ -448,13 +448,14 @@ if(!class_exists('membershipadmin')) {
 								break;
 
 				case 'move':	$title = __('Move member to another level','membership');
-								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
+								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
+								$formdescription .= __('Depending on your payment gateway, moving a subscription here may not alter a members existing payment subscription.','membership');
 
 								$html = "<h3>" . __('Level to move from for this / these member(s)','management') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
@@ -479,16 +480,16 @@ if(!class_exists('membershipadmin')) {
 								$button = "Move";
 								break;
 
-				case 'drop':	$title = __('Drop member from level','membership');
+				case 'drop':	$title = __('Drop member from subscription','membership');
 
-								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
-								$formdescription .= __('By removing a membership level, you may actually be increasing existing access to content.','membership');
+								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
+								$formdescription .= __('Depending on the payment gateway, removing a subscription will not automatically cancel a payment subscription.','membership');
 
 								$html = "<h3>" . __('Level to drop for this / these member(s)','management') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels();
+								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
