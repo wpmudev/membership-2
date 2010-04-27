@@ -10,7 +10,7 @@ if(!class_exists('M_Membership')) {
 
 		var $membership_relationships, $membership_levels, $subscriptions;
 
-		var $subscriptions;
+		var $subs;
 		var $levels;
 
 		function M_Membership( $id, $name = '' ) {
@@ -44,10 +44,10 @@ if(!class_exists('M_Membership')) {
 
 				$sql = $this->db->prepare( "SELECT sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id > 0", $this->ID );
 
-				$this->subscriptions = $this->db->get_col( $sql );
+				$this->subs = $this->db->get_col( $sql );
 			}
 
-			return $this->subscriptions;
+			return $this->subs;
 		}
 
 		function get_level_ids() {
