@@ -147,10 +147,10 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function move_subscription($fromsub_id, $tosub_id, $tolevel_id = false) {
+		function move_subscription($fromsub_id, $tosub_id, $tolevel_id) {
 
-			if(!$this->on_sub($tosub_id) && $this->on_sub($fromsub_id)) {
-
+			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
+				$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => current_time('mysql')), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 			}
 
 		}

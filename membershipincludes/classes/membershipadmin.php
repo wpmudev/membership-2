@@ -288,16 +288,20 @@ if(!class_exists('membershipadmin')) {
 								break;
 
 				case 'addsub-sub-complete':
-								check_admin_referer('addlevel-level-complete');
+								check_admin_referer('addsub-sub-complete');
 								$member_id = (int) $_POST['member_id'];
 								$member = new M_Membership($member_id);
 
-								$tolevel_id = (int) $_POST['tolevel_id'];
-								if($tolevel_id) {
-									$member->add_level($tolevel_id);
+								$tosub_id = $_POST['tosub_id'];
+								if($tosub_id) {
+									$subs = explode('-',$tosub_id);
+									if(count($subs) == 2) {
+										$member->add_subscription($subs[0], $subs[1]);
+									}
 								}
 
 								$this->update_levelcounts();
+								$this->update_subcounts();
 
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
@@ -310,6 +314,26 @@ if(!class_exists('membershipadmin')) {
 								$fromsub_id = (int) $_POST['fromsub_id'];
 								if($fromsub_id) {
 									$member->drop_subscription($fromsub_id);
+								}
+
+								$this->update_levelcounts();
+								$this->update_subcounts();
+
+								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
+								break;
+
+				case 'movesub-sub-complete':
+								check_admin_referer('movesub-sub-complete');
+								$member_id = (int) $_POST['member_id'];
+								$member = new M_Membership($member_id);
+
+								$fromsub_id = (int) $_POST['fromsub_id'];
+								$tosub_id = $_POST['tosub_id'];
+								if($fromsub_id && $tosub_id) {
+									$subs = explode('-',$tosub_id);
+									if(count($subs) == 2) {
+										$member->move_subscription($fromsub_id, $subs[0], $subs[1]);
+									}
 								}
 
 								$this->update_levelcounts();
@@ -587,7 +611,6 @@ if(!class_exists('membershipadmin')) {
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
 										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-sub-complete'); ?>' />
-										<?php esc_attr_e($action . '-sub-complete'); ?>
 										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
 									</div>
 
