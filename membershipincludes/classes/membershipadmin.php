@@ -433,7 +433,7 @@ if(!class_exists('membershipadmin')) {
 
 								$html = "<h3>" . __('Subscription and level to add for this / these member(s)','management') . "</h3>";
 								$html .= "<div class='level-details'>";
-								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
+								$html .= "<select name='tosub_id' id='tosub_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
 
 								$subs = $this->get_subscriptions_and_levels( array('sub_status' => 'active') );
@@ -476,7 +476,7 @@ if(!class_exists('membershipadmin')) {
 
 								$html .= "<h3>" . __('Subscription and Level to move to for this / these member(s)','management') . "</h3>";
 								$html .= "<div class='level-details'>";
-								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
+								$html .= "<select name='tosub_id' id='tosub_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
 								$subs = $this->get_subscriptions_and_levels( array('sub_status' => 'active') );
 								if($subs) {
@@ -549,7 +549,8 @@ if(!class_exists('membershipadmin')) {
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
 										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
-										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-level-complete'); ?>' />
+										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-sub-complete'); ?>' />
+										<?php esc_attr_e($action . '-sub-complete'); ?>
 										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
 									</div>
 
