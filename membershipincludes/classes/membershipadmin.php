@@ -251,6 +251,8 @@ if(!class_exists('membershipadmin')) {
 									$member->add_level($tolevel_id);
 								}
 
+								$this->update_levelcounts();
+
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
@@ -263,6 +265,8 @@ if(!class_exists('membershipadmin')) {
 								if($fromlevel_id) {
 									$member->drop_level($fromlevel_id);
 								}
+
+								$this->update_levelcounts();
 
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
@@ -277,6 +281,39 @@ if(!class_exists('membershipadmin')) {
 								if($fromlevel_id && $tolevel_id) {
 									$member->move_level($fromlevel_id, $tolevel_id);
 								}
+
+								$this->update_levelcounts();
+
+								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
+								break;
+
+				case 'addsub-sub-complete':
+								check_admin_referer('addlevel-level-complete');
+								$member_id = (int) $_POST['member_id'];
+								$member = new M_Membership($member_id);
+
+								$tolevel_id = (int) $_POST['tolevel_id'];
+								if($tolevel_id) {
+									$member->add_level($tolevel_id);
+								}
+
+								$this->update_levelcounts();
+
+								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
+								break;
+
+				case 'dropsub-sub-complete':
+								check_admin_referer('dropsub-sub-complete');
+								$member_id = (int) $_POST['member_id'];
+								$member = new M_Membership($member_id);
+
+								$fromsub_id = (int) $_POST['fromsub_id'];
+								if($fromsub_id) {
+									$member->drop_subscription($fromsub_id);
+								}
+
+								$this->update_levelcounts();
+								$this->update_subcounts();
 
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
@@ -545,7 +582,7 @@ if(!class_exists('membershipadmin')) {
 
 									<div class='buttons'>
 										<?php
-											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-level-complete');
+											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-sub-complete');
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
 										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
@@ -2716,6 +2753,35 @@ if(!class_exists('membershipadmin')) {
 
 		}
 		// Database actions
+
+		function update_levelcounts() {
+
+			$sql = $this->db->prepare( "SELECT level_id, count(*) AS number FROM {$this->membership_relationships} WHERE level_id != 0 GROUP BY level_id" );
+
+			$this->db->update( $this->membership_levels, array('level_count' => 0), array() );
+
+			$levels = $this->db->get_results($sql);
+			if($levels) {
+				foreach($levels as $key => $level) {
+					$this->db->update( $this->membership_levels, array('level_count' => $level->number), array('id' => $level->level_id) );
+				}
+			}
+
+		}
+
+		function update_subcounts() {
+
+			$sql = $this->db->prepare( "SELECT sub_id, count(*) AS number FROM {$this->membership_relationships} WHERE sub_id != 0 GROUP BY sub_id" );
+
+			$this->db->update( $this->subscriptions, array('sub_count' => 0), array() );
+
+			$subs = $this->db->get_results($sql);
+			if($subs) {
+				foreach($subs as $key => $sub) {
+					$this->db->update( $this->subscriptions, array('sub_count' => $sub->number), array('id' => $sub->sub_id) );
+				}
+			}
+		}
 
 		function get_membership_levels($filter = false) {
 
