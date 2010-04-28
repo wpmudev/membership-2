@@ -208,6 +208,8 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+
+
 			switch(addslashes($action)) {
 
 				case 'toggle':	if(isset($_GET['member_id'])) {
@@ -241,14 +243,21 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 								break;
 
+				case 'bulkaddlevel-level-complete':
 				case 'addlevel-level-complete':
-								check_admin_referer('addlevel-level-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$tolevel_id = (int) $_POST['tolevel_id'];
-								if($tolevel_id) {
-									$member->add_level($tolevel_id);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$tolevel_id = (int) $_POST['tolevel_id'];
+										if($tolevel_id) {
+											$member->add_level($tolevel_id);
+										}
+									}
 								}
 
 								$this->update_levelcounts();
@@ -256,14 +265,21 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
+				case 'bulkdroplevel-level-complete':
 				case 'droplevel-level-complete':
-								check_admin_referer('droplevel-level-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$fromlevel_id = (int) $_POST['fromlevel_id'];
-								if($fromlevel_id) {
-									$member->drop_level($fromlevel_id);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$fromlevel_id = (int) $_POST['fromlevel_id'];
+										if($fromlevel_id) {
+											$member->drop_level($fromlevel_id);
+										}
+									}
 								}
 
 								$this->update_levelcounts();
@@ -271,15 +287,22 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
+				case 'bulkmovelevel-level-complete':
 				case 'movelevel-level-complete':
-								check_admin_referer('movelevel-level-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$fromlevel_id = (int) $_POST['fromlevel_id'];
-								$tolevel_id = (int) $_POST['tolevel_id'];
-								if($fromlevel_id && $tolevel_id) {
-									$member->move_level($fromlevel_id, $tolevel_id);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$fromlevel_id = (int) $_POST['fromlevel_id'];
+										$tolevel_id = (int) $_POST['tolevel_id'];
+										if($fromlevel_id && $tolevel_id) {
+											$member->move_level($fromlevel_id, $tolevel_id);
+										}
+									}
 								}
 
 								$this->update_levelcounts();
@@ -287,16 +310,23 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
+				case 'bulkaddsub-sub-complete':
 				case 'addsub-sub-complete':
-								check_admin_referer('addsub-sub-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$tosub_id = $_POST['tosub_id'];
-								if($tosub_id) {
-									$subs = explode('-',$tosub_id);
-									if(count($subs) == 2) {
-										$member->add_subscription($subs[0], $subs[1]);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$tosub_id = $_POST['tosub_id'];
+										if($tosub_id) {
+											$subs = explode('-',$tosub_id);
+											if(count($subs) == 2) {
+												$member->add_subscription($subs[0], $subs[1]);
+											}
+										}
 									}
 								}
 
@@ -306,14 +336,21 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
+				case 'bulkdropsub-sub-complete':
 				case 'dropsub-sub-complete':
-								check_admin_referer('dropsub-sub-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$fromsub_id = (int) $_POST['fromsub_id'];
-								if($fromsub_id) {
-									$member->drop_subscription($fromsub_id);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										if($fromsub_id) {
+											$member->drop_subscription($fromsub_id);
+										}
+									}
 								}
 
 								$this->update_levelcounts();
@@ -322,17 +359,24 @@ if(!class_exists('membershipadmin')) {
 								wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_original_referer() ) );
 								break;
 
+				case 'bulkmovesub-sub-complete':
 				case 'movesub-sub-complete':
-								check_admin_referer('movesub-sub-complete');
-								$member_id = (int) $_POST['member_id'];
-								$member = new M_Membership($member_id);
+								check_admin_referer($action);
+								$members_id = $_POST['member_id'];
 
-								$fromsub_id = (int) $_POST['fromsub_id'];
-								$tosub_id = $_POST['tosub_id'];
-								if($fromsub_id && $tosub_id) {
-									$subs = explode('-',$tosub_id);
-									if(count($subs) == 2) {
-										$member->move_subscription($fromsub_id, $subs[0], $subs[1]);
+								$members = explode(',', $members_id);
+								if($members) {
+									foreach($members as $member_id) {
+										$member = new M_Membership($member_id);
+
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										$tosub_id = $_POST['tosub_id'];
+										if($fromsub_id && $tosub_id) {
+											$subs = explode('-',$tosub_id);
+											if(count($subs) == 2) {
+												$member->move_subscription($fromsub_id, $subs[0], $subs[1]);
+											}
+										}
 									}
 								}
 
@@ -467,7 +511,18 @@ if(!class_exists('membershipadmin')) {
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
 										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-level-complete'); ?>' />
-										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
+										<?php
+											if(is_array($member_id)) {
+												?>
+												<input type='hidden' name='member_id' value='<?php esc_attr_e(implode(',',$member_id)); ?>' />
+												<?php
+											} else {
+												?>
+												<input type='hidden' name='member_id' value='<?php esc_attr_e($member_id); ?>' />
+												<?php
+											}
+
+										?>
 									</div>
 
 								</div>
@@ -611,7 +666,18 @@ if(!class_exists('membershipadmin')) {
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
 										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-sub-complete'); ?>' />
-										<input type='hidden' name='member_id' value='<?php esc_attr_e($_GET['member_id']); ?>' />
+										<?php
+											if(is_array($member_id)) {
+												?>
+												<input type='hidden' name='member_id' value='<?php esc_attr_e(implode(',',$member_id)); ?>' />
+												<?php
+											} else {
+												?>
+												<input type='hidden' name='member_id' value='<?php esc_attr_e($member_id); ?>' />
+												<?php
+											}
+
+										?>
 									</div>
 
 								</div>
@@ -638,10 +704,10 @@ if(!class_exists('membershipadmin')) {
 			// bulk actions
 			if(isset($_GET['doaction'])) {
 				$action = $_GET['action'];
+
 			} elseif(isset($_GET['doaction2'])) {
 				$action = $_GET['action2'];
 			}
-
 
 			switch(addslashes($action)) {
 
@@ -669,12 +735,27 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 				case 'bulkaddlevel':
+									if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_level_op('add', $_GET['users']);
+										return;
+									}
 									break;
 
 				case 'bulkmovelevel':
+									if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_level_op('move', $_GET['users']);
+										return;
+									}
 									break;
 
 				case 'bulkdroplevel':
+									if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_level_op('drop', $_GET['users']);
+										return;
+									}
 									break;
 
 				case 'addsub':		if(isset($_GET['member_id'])) {
@@ -700,11 +781,25 @@ if(!class_exists('membershipadmin')) {
 									}
 									break;
 
-				case 'bulkaddsub':
+				case 'bulkaddsub':	if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_subscription_op('add', $_GET['users']);
+										return;
+									}
 									break;
 				case 'bulkmovesub':
+									if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_subscription_op('move', $_GET['users']);
+										return;
+									}
 									break;
 				case 'bulkdropsub':
+									if(isset($_GET['users'])) {
+										check_admin_referer('bulk-members');
+										$this->handle_member_subscription_op('drop', $_GET['users']);
+										return;
+									}
 									break;
 
 				case 'edit':	if(isset($_GET['level_id'])) {
@@ -879,7 +974,7 @@ if(!class_exists('membershipadmin')) {
 				<div class="clear"></div>
 
 				<?php
-					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-members');
+					wp_nonce_field('bulk-members');
 
 					$columns = array(	"username" 	=> 	__('Username','membership'),
 										"name" 		=> 	__('Name','membership'),
@@ -1030,15 +1125,15 @@ if(!class_exists('membershipadmin')) {
 					<option value="toggle"><?php _e('Toggle activation'); ?></option>
 
 					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
-						<option value="addsub"><?php _e('Add subscription','membership'); ?></option>
-						<option value="movesub"><?php _e('Move subscription','membership'); ?></option>
-						<option value="dropsub"><?php _e('Drop subscription','membership'); ?></option>
+						<option value="bulkaddsub"><?php _e('Add subscription','membership'); ?></option>
+						<option value="bulkmovesub"><?php _e('Move subscription','membership'); ?></option>
+						<option value="bulkdropsub"><?php _e('Drop subscription','membership'); ?></option>
 					</optgroup>
 
 					<optgroup label="<?php _e('Levels','membership'); ?>">
-						<option value="addlevel"><?php _e('Add level','membership'); ?></option>
-						<option value="movelevel"><?php _e('Move level','membership'); ?></option>
-						<option value="droplevel"><?php _e('Drop level','membership'); ?></option>
+						<option value="bulkaddlevel"><?php _e('Add level','membership'); ?></option>
+						<option value="bulkmovelevel"><?php _e('Move level','membership'); ?></option>
+						<option value="bulkdroplevel"><?php _e('Drop level','membership'); ?></option>
 					</optgroup>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
