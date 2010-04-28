@@ -400,9 +400,11 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_member_level_op($operation = 'add', $member_id = false) {
 
-			global $action, $page;
+			global $action, $page, $action2;
 
-			wp_reset_vars( array('action', 'page') );
+			wp_reset_vars( array('action', 'page', 'action2') );
+
+			if(empty($action) && !empty($action2)) $action = $action2;
 
 			switch($operation) {
 
@@ -539,7 +541,11 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_member_subscription_op($operation = 'add', $member_id = false) {
 
-			global $action, $page;
+			global $action, $page, $action2;
+
+			wp_reset_vars( array('action', 'page', 'action2') );
+
+			if(empty($action) && !empty($action2)) $action = $action2;
 
 			switch($operation) {
 
