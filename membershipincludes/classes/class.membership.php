@@ -10,14 +10,19 @@ if(!class_exists('M_Membership')) {
 
 		var $membership_relationships, $membership_levels, $subscriptions;
 
-		var $subs;
-		var $levels;
+		var $subids;
+		var $levids;
+
+		var $levels = array();
 
 		function M_Membership( $id, $name = '' ) {
 
 			global $wpdb;
 
-			parent::WP_User( $id, $name = '' );
+			if($id != 0) {
+				parent::WP_User( $id, $name = '' );
+			}
+
 
 			$this->db =& $wpdb;
 
@@ -40,27 +45,27 @@ if(!class_exists('M_Membership')) {
 
 		function get_subscription_ids() {
 
-			if(empty($this->subs)) {
+			if(empty($this->subids)) {
 
 				$sql = $this->db->prepare( "SELECT sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id > 0", $this->ID );
 
-				$this->subs = $this->db->get_col( $sql );
+				$this->subids = $this->db->get_col( $sql );
 			}
 
-			return $this->subs;
+			return $this->subids;
 		}
 
 		function get_level_ids() {
 
-			if(empty($this->levels)) {
+			if(empty($this->levids)) {
 
 				$sql = $this->db->prepare( "SELECT level_id, sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id > 0", $this->ID );
 
-				$this->levels = $this->db->get_results( $sql );
+				$this->levids = $this->db->get_results( $sql );
 
 			}
 
-			return $this->levels;
+			return $this->levids;
 
 		}
 
@@ -169,6 +174,25 @@ if(!class_exists('M_Membership')) {
 
 			return true; // for now
 
+
+		}
+
+		// Levels functions
+
+		function assign_level($level_id) {
+			// Used to force assign a level on a user - mainly for non logged in users
+			$this->levels[$level_id] = new M_Level( $level_id );
+
+		}
+
+		function has_level($level_id = false) {
+			// Returns true if the user has a level to process
+
+			if($level_id) {
+				return isset($this->levels[$level_id]);
+			} else {
+				return !empty($this->levels);
+			}
 
 		}
 

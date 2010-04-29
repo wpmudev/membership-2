@@ -37,16 +37,25 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member;
+			global $user, $member, $M_options;
+
+			$M_options = get_option('membership_options', array());
 
 			$user = wp_get_current_user();
 
-			if($user) {
+
+			if($user->ID > 0) {
 				// Logged in - check there settings, if they have any.
 				$member = new M_Membership($user->ID);
+
 			} else {
 				// not logged in so limit based on stranger settings
 				// need to grab the stranger settings
+				$member = new M_Membership($user->ID);
+				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+					$member->assign_level($M_options['strangerlevel']);
+				}
+
 			}
 
 

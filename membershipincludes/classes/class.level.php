@@ -20,7 +20,7 @@ if(!class_exists('M_Level')) {
 
 		var $lastlevelid;
 
-		function __construct( $id = false ) {
+		function __construct( $id = false , $load = false) {
 
 			global $wpdb;
 
@@ -35,7 +35,7 @@ if(!class_exists('M_Level')) {
 		}
 
 		function M_Level( $id = false ) {
-			$this->__construct();
+			$this->__construct( $id );
 		}
 
 		// Fields
