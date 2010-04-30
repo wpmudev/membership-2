@@ -16,7 +16,11 @@ if(!class_exists('M_Level')) {
 		var $dirty = true;
 
 		var $level;
-		var $rules = array();
+		var $ruledetails = array();
+
+		// Active rules
+		var $positiverules = array();
+		var $negativerules = array();
 
 		var $lastlevelid;
 
@@ -76,9 +80,9 @@ if(!class_exists('M_Level')) {
 
 			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_rules} WHERE level_id = %d AND rule_ive = %s ORDER BY rule_order ASC", $this->id, $type );
 
-			$this->rules[$type] = $this->db->get_results( $sql );
+			$this->ruledetails[$type] = $this->db->get_results( $sql );
 
-			return $this->rules[$type];
+			return $this->ruledetails[$type];
 
 		}
 
@@ -222,6 +226,34 @@ if(!class_exists('M_Level')) {
 
 			}
 		// UI functions
+
+
+		function load_rules() {
+
+			global $M_Rules;
+
+			//positiverules
+			$positive = $this->get_rules('positive');
+			//negativerules
+			$negative = $this->get_rules('negative');
+
+			if(!empty($positive)) {
+				foreach( (array) $positive as $key => $rule) {
+					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
+						$this->positiverules[] = new $M_Rules[$rule->rule_area];
+					}
+				}
+			}
+
+			if(!empty($negative)) {
+				foreach( (array) $negative as $key => $rule) {
+					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
+						$this->negativerules[] = new $M_Rules[$rule->rule_area];
+					}
+				}
+			}
+
+		}
 
 	}
 

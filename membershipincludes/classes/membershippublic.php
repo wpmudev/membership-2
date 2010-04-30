@@ -37,7 +37,7 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member, $M_options;
+			global $user, $member, $M_options, $M_Rules;
 
 			$M_options = get_option('membership_options', array());
 
@@ -55,8 +55,9 @@ if(!class_exists('membershippublic')) {
 				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
 					$member->assign_level($M_options['strangerlevel']);
 				}
-
 			}
+
+			//$member->load_rules();
 
 
 		}

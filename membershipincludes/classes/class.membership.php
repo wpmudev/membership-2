@@ -193,6 +193,9 @@ if(!class_exists('M_Membership')) {
 			} else {
 				return !empty($this->levels);
 			}
+		}
+
+		function load_levels() {
 
 		}
 
