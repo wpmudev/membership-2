@@ -197,6 +197,16 @@ if(!class_exists('M_Membership')) {
 
 		function load_levels() {
 
+			$levels = $this->get_level_ids();
+
+			if(!empty($levels)) {
+				foreach( (array) $levels as $key => $lev ) {
+					if(!isset( $this->levels[$lev->level_id] )) {
+						$this->levels[$lev->level_id] = new M_Level( $lev->level_id );
+					}
+				}
+			}
+
 		}
 
 
