@@ -1207,6 +1207,7 @@ if(!class_exists('membershipadmin')) {
 				$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
 				$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
 
+				$M_options['protectedmessagetitle'] = $_POST['protectedmessagetitle'];
 				$M_options['protectedmessage'] = $_POST['protectedmessage'];
 
 				$M_options['page_template'] = $_POST['page_template'];
@@ -1365,6 +1366,14 @@ if(!class_exists('membershipadmin')) {
 
 					<table class="form-table">
 					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected Message Title','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Enter the title for the message that you want displayed when the content is not available.",'membership'); ?></em>
+							</th>
+							<td>
+								<input type='text' name='protectedmessagetitle' id='protectedmessagetitle' value='<?php esc_attr_e(stripslashes($M_options['protectedmessagetitle']));  ?>' class='wide' />
+							</td>
+						</tr>
 						<tr valign="top">
 							<th scope="row"><?php _e('Protected Message','membership'); ?><br/>
 								<em style='font-size:smaller;'><?php _e("Enter the message that you want displayed when the content is not available.",'membership'); ?><br/>
