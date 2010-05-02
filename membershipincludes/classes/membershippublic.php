@@ -54,6 +54,21 @@ if(!class_exists('membershippublic')) {
 			//$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-$id\" class=\"more-link\">$more_link_text</a>", $more_link_text );
 			//the_content
 
+			// Shortcodes setup
+			if(!empty($M_options['membershipshortcodes'])) {
+				foreach($M_options['membershipshortcodes'] as $key => $value) {
+					if(!empty($value)) {
+						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
+					}
+				}
+			}
+
+			// Check the shortcodes default and override if needed
+			if($M_options['shortcodedefault'] == 'no' ) {
+				$this->override_shortcodes();
+
+			}
+
 			// Set up the user based defaults and load the levels
 			$user = wp_get_current_user();
 
@@ -109,6 +124,35 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		// Output the protected shortcode content
+		function do_membership_shortcode($atts, $content = null, $code = "") {
+
+			return $content;
+
+		}
+
+		// Show the protected shortcode message
+		function do_protected_shortcode($atts, $content = null, $code = "") {
+
+			global $M_options;
+
+			return stripslashes($M_options['shortcodemessage']);
+
+		}
+
+		// Override the shortcode to display a protected message instead
+		function override_shortcodes() {
+
+			global $M_shortcode_tags, $shortcode_tags;
+
+			$M_shortcode_tags = $shortcode_tags;
+
+			foreach($shortcode_tags as $key => $function) {
+				$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+			}
+
+			return $content;
+		}
 
 		function show_noaccess_page() {
 			global $wp_query, $M_options;
