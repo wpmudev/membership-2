@@ -43,8 +43,19 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
-			$user = wp_get_current_user();
+			// Set up some common defaults
 
+			// More tags
+			if($M_options['moretagdefault'] == 'no' ) {
+				// More tag content is not visible by default
+				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
+				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
+			}
+			//$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-$id\" class=\"more-link\">$more_link_text</a>", $more_link_text );
+			//the_content
+
+			// Set up the user based defaults and load the levels
+			$user = wp_get_current_user();
 
 			if($user->ID > 0) {
 				// Logged in - check there settings, if they have any.
@@ -75,6 +86,29 @@ if(!class_exists('membershippublic')) {
 			print_r($wp_query);
 		}
 
+		function show_moretag_protection($more_tag_link, $more_tag) {
+
+			global $M_options;
+
+			return stripslashes($M_options['moretagmessage']);
+
+		}
+
+		function replace_moretag_content($the_content) {
+
+			global $M_options;
+
+			$morestartsat = strpos($the_content, '<span id="more-');
+
+			if($morestartsat !== false) {
+				$the_content = substr($the_content, 0, $morestartsat);
+				$the_content .= stripslashes($M_options['moretagmessage']);
+			}
+
+			return $the_content;
+
+		}
+
 
 		function show_noaccess_page() {
 			global $wp_query, $M_options;
@@ -101,82 +135,23 @@ if(!class_exists('membershippublic')) {
 				$wp_query->posts = array();
 				$wp_query->post_count = 0;
 
-				/**
-				 * Create a fake post.
-				 */
 				$post = new stdClass;
-
-				/**
-				 * The author ID for the post.  Usually 1 is the sys admin.  Your
-				 * plugin can find out the real author ID without any trouble.
-				 */
 				$post->post_author = 1;
-
-				/**
-				 * The safe name for the post.  This is the post slug.
-				 */
 				$post->post_name = 'membershipnoaccess';
-
-				/**
-				 * Not sure if this is even important.  But gonna fill it up anyway.
-				 */
-
 				add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-
-
 				$post->guid = get_bloginfo('wpurl');
-
-
-				/**
-				 * The title of the page.
-				 */
 				$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-
-				/**
-				 * This is the content of the post.  This is where the output of
-				 * your plugin should go.  Just store the output from all your
-				 * plugin function calls, and put the output into this var.
-				 */
 				$post->post_content = stripslashes($M_options['protectedmessage']);
-				/**
-				 * Fake post ID to prevent WP from trying to show comments for
-				 * a post that doesn't really exist.
-				 */
 				$post->ID = -1;
-
-				/**
-				 * Static means a page, not a post.
-				 */
 				$post->post_status = 'publish';
 				$post->post_type = 'post';
-
-				/**
-				 * Turning off comments for the post.
-				 */
 				$post->comment_status = 'closed';
-
-				/**
-				 * Let people ping the post?  Probably doesn't matter since
-				 * comments are turned off, so not sure if WP would even
-				 * show the pings.
-				 */
 				$post->ping_status = 'open';
-
 				$post->comment_count = 0;
-
-				/**
-				 * You can pretty much fill these up with anything you want.  The
-				 * current date is fine.  It's a fake post right?  Maybe the date
-				 * the plugin was activated?
-				 */
 				$post->post_date = current_time('mysql');
 				$post->post_date_gmt = current_time('mysql', 1);
 
-				/**
-				 * Now add our fake post to the $wp_query->posts var.  When "The Loop"
-				 * begins, WordPress will find one post: The one fake post we just
-				 * created.
-				 */
+				// Reset $wp_query
 				$wp_query->posts[] = $post;
 				$wp_query->post_count = 1;
 				$wp_query->is_home = false;
@@ -185,9 +160,7 @@ if(!class_exists('membershippublic')) {
 				 * And load up the template file.
 				 */
 				ob_start('template');
-
 				load_template(TEMPLATEPATH . '/' . 'page.php');
-
 				ob_end_flush();
 
 				/**
