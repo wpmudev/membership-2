@@ -359,6 +359,40 @@ class M_Categories extends M_Rule {
 			<?php
 	}
 
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+	}
+
+	function add_viewable_posts($wp_query) {
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['category__in'][] = $value;
+		}
+
+		$wp_query->query_vars['category__in'] = array_unique($wp_query->query_vars['category__in']);
+
+	}
+
+	function add_unviewable_posts($wp_query) {
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['category__not_in'][] = $value;
+		}
+
+		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
+
+	}
+
 }
 M_register_rule('categories', 'M_Categories', 'main');
 
