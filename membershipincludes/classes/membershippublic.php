@@ -72,14 +72,14 @@ if(!class_exists('membershippublic')) {
 			if($user->ID > 0) {
 				// Logged in - check there settings, if they have any.
 				$member = new M_Membership($user->ID);
-				// Load the levels for this member
-				$member->load_levels();
+				// Load the levels for this member - and associated rules
+				$member->load_levels( true );
 			} else {
 				// not logged in so limit based on stranger settings
 				// need to grab the stranger settings
 				$member = new M_Membership($user->ID);
 				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-					$member->assign_level($M_options['strangerlevel']);
+					$member->assign_level($M_options['strangerlevel'], true );
 				} else {
 					// This user can't access anything on the site - redirect them to a signup page.
 					add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );

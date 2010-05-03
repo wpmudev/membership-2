@@ -24,7 +24,7 @@ if(!class_exists('M_Level')) {
 
 		var $lastlevelid;
 
-		function __construct( $id = false , $load = false) {
+		function __construct( $id = false , $fullload = false) {
 
 			global $wpdb;
 
@@ -36,10 +36,14 @@ if(!class_exists('M_Level')) {
 
 			$this->id = $id;
 
+			if($fullload) {
+				$this->load_rules();
+			}
+
 		}
 
-		function M_Level( $id = false ) {
-			$this->__construct( $id );
+		function M_Level( $id = false, $fullload = false ) {
+			$this->__construct( $id, $fullload );
 		}
 
 		// Fields
@@ -234,21 +238,28 @@ if(!class_exists('M_Level')) {
 
 			//positiverules
 			$positive = $this->get_rules('positive');
+
 			//negativerules
 			$negative = $this->get_rules('negative');
 
 			if(!empty($positive)) {
+				$key = 0;
 				foreach( (array) $positive as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
-						$this->positiverules[] = new $M_Rules[$rule->rule_area];
+						$this->positiverules[$key] = new $M_Rules[$rule->rule_area];
+						$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
+						$key++;
 					}
 				}
 			}
 
 			if(!empty($negative)) {
+				$key = 0;
 				foreach( (array) $negative as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
-						$this->negativerules[] = new $M_Rules[$rule->rule_area];
+						$this->negativerules[$key] = new $M_Rules[$rule->rule_area];
+						$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
+						$key++;
 					}
 				}
 			}

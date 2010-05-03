@@ -4,6 +4,7 @@ if(!class_exists('M_Rule')) {
 	class M_Rule {
 
 		function __construct() {
+			$this->on_creation();
 
 		}
 
@@ -16,6 +17,19 @@ if(!class_exists('M_Rule')) {
 		}
 
 		function admin_main($data) {
+
+		}
+
+		// Operations
+		function on_creation() {
+
+		}
+
+		function on_positive($data) {
+
+		}
+
+		function on_negative($data) {
 
 		}
 
