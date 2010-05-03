@@ -3,6 +3,8 @@ if(!class_exists('M_Rule')) {
 
 	class M_Rule {
 
+		var $data;
+
 		function __construct() {
 			$this->on_creation();
 

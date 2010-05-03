@@ -93,6 +93,28 @@ class M_Posts extends M_Rule {
 		<?php
 	}
 
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+	}
+
+	function add_viewable_posts($wp_query) {
+		$wp_query->query_vars['post__in'] = $this->data;
+	}
+
+	function add_unviewable_posts($wp_query) {
+		$wp_query->query_vars['post__not_in'] = $this->data;
+	}
+
 }
 M_register_rule('posts', 'M_Posts', 'main');
 
