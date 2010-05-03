@@ -221,6 +221,8 @@ class M_Pages extends M_Rule {
 		$this->data = $data;
 
 		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
+		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
+
 	}
 
 	function on_negative($data) {
@@ -228,9 +230,14 @@ class M_Pages extends M_Rule {
 		$this->data = $data;
 
 		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
+		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
 	}
 
 	function add_viewable_pages($wp_query) {
+
+		if(empty($wp_query->query_vars['pagename'])) {
+			return;
+		}
 
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['post__in'][] = $value;
@@ -240,7 +247,22 @@ class M_Pages extends M_Rule {
 
 	}
 
+	function add_viewable_pages_menu($pages) {
+		foreach( (array) $pages as $key => $page ) {
+			if(!in_array($page->ID, (array) $this->data)) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
+
+	}
+
 	function add_unviewable_pages($wp_query) {
+
+		if(empty($wp_query->query_vars['pagename'])) {
+			return;
+		}
 
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['post__not_in'][] = $value;
@@ -248,6 +270,16 @@ class M_Pages extends M_Rule {
 
 		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 
+	}
+
+	function add_unviewable_pages_menu($pages) {
+		foreach( (array) $pages as $key => $page ) {
+			if(in_array($page->ID, (array) $this->data)) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
 	}
 
 }
