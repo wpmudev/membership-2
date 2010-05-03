@@ -51,8 +51,6 @@ if(!class_exists('membershippublic')) {
 				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
 				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
 			}
-			//$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-$id\" class=\"more-link\">$more_link_text</a>", $more_link_text );
-			//the_content
 
 			// Shortcodes setup
 			if(!empty($M_options['membershipshortcodes'])) {
@@ -66,7 +64,6 @@ if(!class_exists('membershippublic')) {
 			// Check the shortcodes default and override if needed
 			if($M_options['shortcodedefault'] == 'no' ) {
 				$this->override_shortcodes();
-
 			}
 
 			// Set up the user based defaults and load the levels
