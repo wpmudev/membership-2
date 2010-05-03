@@ -108,11 +108,23 @@ class M_Posts extends M_Rule {
 	}
 
 	function add_viewable_posts($wp_query) {
-		$wp_query->query_vars['post__in'] = $this->data;
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+
 	}
 
 	function add_unviewable_posts($wp_query) {
-		$wp_query->query_vars['post__not_in'] = $this->data;
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__not_in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+
 	}
 
 }
@@ -202,6 +214,40 @@ class M_Pages extends M_Rule {
 			</div>
 		</div>
 		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
+	}
+
+	function add_viewable_pages($wp_query) {
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+
+	}
+
+	function add_unviewable_pages($wp_query) {
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__not_in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+
 	}
 
 }
