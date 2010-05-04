@@ -432,6 +432,54 @@ class M_More extends M_Rule {
 		<?php
 	}
 
+	function on_positive($data) {
+
+		global $M_options, $wp_filter;
+
+		$this->data = $data;
+
+		if($M_options['moretagdefault'] == 'no' ) {
+			// remove the filters - otherwise we don't need to do anything
+			if(isset($wp_filter['the_content_more_link'][99])) {
+				foreach($wp_filter['the_content_more_link'][99] as $key => $value) {
+					if(strstr($key, 'show_moretag_protection') !== false) {
+						unset($wp_filter['the_content_more_link'][99][$key]);
+					}
+					if(empty($wp_filter['the_content_more_link'][99])) {
+						unset($wp_filter['the_content_more_link'][99]);
+					}
+				}
+
+			}
+
+			if(isset($wp_filter['the_content'][1])) {
+				foreach($wp_filter['the_content'][1] as $key => $value) {
+					if(strstr($key, 'replace_moretag_content') !== false) {
+						unset($wp_filter['the_content'][1][$key]);
+					}
+					if(empty($wp_filter['the_content'][1])) {
+						unset($wp_filter['the_content'][1]);
+					}
+				}
+
+			}
+		}
+	}
+
+	function on_negative($data) {
+
+		global $M_options;
+
+		$this->data = $data;
+
+		if($M_options['moretagdefault'] != 'no' ) {
+			// add the filters - otherwise we don't need to do anything
+
+		}
+
+
+	}
+
 }
 M_register_rule('more', 'M_More', 'main');
 
