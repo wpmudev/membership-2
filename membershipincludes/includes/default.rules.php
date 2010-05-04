@@ -109,6 +109,10 @@ class M_Posts extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
+		if($wp_query->is_page) {
+			return;
+		}
+
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['post__in'][] = $value;
 		}
@@ -118,6 +122,10 @@ class M_Posts extends M_Rule {
 	}
 
 	function add_unviewable_posts($wp_query) {
+
+		if($wp_query->is_page) {
+			return;
+		}
 
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['post__not_in'][] = $value;
@@ -235,7 +243,7 @@ class M_Pages extends M_Rule {
 
 	function add_viewable_pages($wp_query) {
 
-		if(empty($wp_query->query_vars['pagename'])) {
+		if(!$wp_query->is_page) {
 			return;
 		}
 
@@ -260,7 +268,7 @@ class M_Pages extends M_Rule {
 
 	function add_unviewable_pages($wp_query) {
 
-		if(empty($wp_query->query_vars['pagename'])) {
+		if(!$wp_query->is_page) {
 			return;
 		}
 
@@ -375,6 +383,10 @@ class M_Categories extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
+		if($wp_query->is_page) {
+			return;
+		}
+
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['category__in'][] = $value;
 		}
@@ -384,6 +396,10 @@ class M_Categories extends M_Rule {
 	}
 
 	function add_unviewable_posts($wp_query) {
+
+		if($wp_query->is_page) {
+			return;
+		}
 
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['category__not_in'][] = $value;
@@ -936,12 +952,17 @@ class M_Shortcodes extends M_Rule {
 
 	function on_positive($data) {
 
-		global $M_options;
+		global $M_options, $M_shortcode_tags, $shortcode_tags;
 
 		$this->data = $data;
 
 		if($M_options['shortcodedefault'] == 'no' ) {
 			// Need to re-enable some shortcodes
+			foreach( (array) $data as $key => $code ) {
+				if(isset($M_shortcode_tags[$code]) && isset($shortcode_tags[$code])) {
+					$shortcode_tags[$code] = $M_shortcode_tags[$code];
+				}
+			}
 		}
 
 	}
@@ -956,7 +977,36 @@ class M_Shortcodes extends M_Rule {
 			// Need to disable some shortcodes
 		}
 
+	}
 
+	// Output the protected shortcode content
+	function do_membership_shortcode($atts, $content = null, $code = "") {
+
+		return $content;
+
+	}
+
+	// Show the protected shortcode message
+	function do_protected_shortcode($atts, $content = null, $code = "") {
+
+		global $M_options;
+
+		return stripslashes($M_options['shortcodemessage']);
+
+	}
+
+	// Override the shortcode to display a protected message instead
+	function override_shortcodes() {
+
+		global $M_shortcode_tags, $shortcode_tags;
+
+		$M_shortcode_tags = $shortcode_tags;
+
+		foreach($shortcode_tags as $key => $function) {
+			$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+		}
+
+		return $content;
 	}
 
 
