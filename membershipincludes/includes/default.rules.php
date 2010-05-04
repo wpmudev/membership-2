@@ -934,43 +934,31 @@ class M_Shortcodes extends M_Rule {
 		<?php
 	}
 
-	// Internal functions
+	function on_positive($data) {
 
-	function override_shortcodes($content) {
+		global $M_options;
 
-		global $member_shortcode_tags, $shortcode_tags;
+		$this->data = $data;
 
-		$member_shortcode_tags = $shortcode_tags;
-
-		foreach($shortcode_tags as $key => $function) {
-			$shortcode_tags[$key] = array(&$this, 'do_shortcode');
+		if($M_options['shortcodedefault'] == 'no' ) {
+			// Need to re-enable some shortcodes
 		}
 
-		return $content;
 	}
 
-	// Positive operation
-	function positive_action($data = false) {
+	function on_negative($data) {
 
-		global $member_shortcode_tags, $shortcode_tags;
+		global $M_options;
 
-		if(!$data) $data = array();
-	}
+		$this->data = $data;
 
-	// Negative operation
-	function negative_action($data = false) {
+		if($M_options['shortcodedefault'] != 'no' ) {
+			// Need to disable some shortcodes
+		}
 
-		global $member_shortcode_tags, $shortcode_tags;
-
-		if(!$data) $data = array();
 
 	}
 
-	function do_shortcode($atts, $content = null, $code="") {
-
-		echo "boo";
-
-	}
 
 }
 M_register_rule('shortcodes', 'M_Shortcodes', 'content');
