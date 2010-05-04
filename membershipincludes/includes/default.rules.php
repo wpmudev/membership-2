@@ -474,9 +474,31 @@ class M_More extends M_Rule {
 
 		if($M_options['moretagdefault'] != 'no' ) {
 			// add the filters - otherwise we don't need to do anything
+			add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
+			add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
+		}
+	}
 
+	function show_moretag_protection($more_tag_link, $more_tag) {
+
+		global $M_options;
+
+		return stripslashes($M_options['moretagmessage']);
+
+	}
+
+	function replace_moretag_content($the_content) {
+
+		global $M_options;
+
+		$morestartsat = strpos($the_content, '<span id="more-');
+
+		if($morestartsat !== false) {
+			$the_content = substr($the_content, 0, $morestartsat);
+			$the_content .= stripslashes($M_options['moretagmessage']);
 		}
 
+		return $the_content;
 
 	}
 
