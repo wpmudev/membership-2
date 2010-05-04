@@ -969,20 +969,20 @@ class M_Shortcodes extends M_Rule {
 
 	function on_negative($data) {
 
-		global $M_options;
+		global $M_options, $M_shortcode_tags, $shortcode_tags;
+
+		$M_shortcode_tags = $shortcode_tags;
 
 		$this->data = $data;
 
 		if($M_options['shortcodedefault'] != 'no' ) {
 			// Need to disable some shortcodes
+			foreach( (array) $data as $key => $code ) {
+				if(isset($M_shortcode_tags[$code]) && isset($shortcode_tags[$code])) {
+					$shortcode_tags[$code] = array(&$this, 'do_protected_shortcode');
+				}
+			}
 		}
-
-	}
-
-	// Output the protected shortcode content
-	function do_membership_shortcode($atts, $content = null, $code = "") {
-
-		return $content;
 
 	}
 
@@ -994,21 +994,6 @@ class M_Shortcodes extends M_Rule {
 		return stripslashes($M_options['shortcodemessage']);
 
 	}
-
-	// Override the shortcode to display a protected message instead
-	function override_shortcodes() {
-
-		global $M_shortcode_tags, $shortcode_tags;
-
-		$M_shortcode_tags = $shortcode_tags;
-
-		foreach($shortcode_tags as $key => $function) {
-			$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
-		}
-
-		return $content;
-	}
-
 
 }
 M_register_rule('shortcodes', 'M_Shortcodes', 'content');
