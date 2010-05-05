@@ -86,6 +86,10 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
+			//if($wp_query->is_feed) {
+			//	print_r($wp_query);
+			//}
+
 
 		}
 

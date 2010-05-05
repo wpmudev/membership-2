@@ -82,10 +82,15 @@ if(!class_exists('membershipadmin')) {
 
 		function add_admin_menu() {
 
-			global $menu;
+			global $menu, $admin_page_hooks;
 
 			// Add the menu page
 			add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
+
+			// Fix WP translation hook issue
+			if(isset($admin_page_hooks['membership'])) {
+				$admin_page_hooks['membership'] = 'membership';
+			}
 
 			// Add the sub menu
 			add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'manage_options', "members", array(&$this,'handle_members_panel'));
