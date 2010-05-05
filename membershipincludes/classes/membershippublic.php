@@ -28,8 +28,8 @@ if(!class_exists('membershippublic')) {
 			// Set up Actions
 			add_action( 'init', array(&$this, 'initialise_plugin') );
 
-
-
+			// add feed protection
+			add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
 
 		}
 
@@ -39,7 +39,7 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member, $M_options, $M_Rules;
+			global $user, $member, $M_options, $M_Rules, $wp_query;
 
 			$M_options = get_option('membership_options', array());
 
@@ -92,11 +92,6 @@ if(!class_exists('membershippublic')) {
 
 
 		// loop and page overrides
-		function process_posts_rules($wp_query) {
-			$wp_query->query_vars['s'] = 'should';
-
-			print_r($wp_query);
-		}
 
 		function show_moretag_protection($more_tag_link, $more_tag) {
 
@@ -151,8 +146,8 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
-		function show_noaccess_page() {
-			global $wp_query, $M_options;
+		function show_noaccess_page($wp_query) {
+			global $M_options;
 
 			if(!isset($M_options['page_template']) || $M_options['page_template'] == 'default') {
 				$M_options['page_template'] = 'page.php';
@@ -213,7 +208,11 @@ if(!class_exists('membershippublic')) {
 			return $post;
 		}
 
+		// Feeds
 
+		function validate_feed_user() {
+
+		}
 
 
 	}
