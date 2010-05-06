@@ -134,6 +134,26 @@ if(!class_exists('membershippublic')) {
 				// This is a feed access
 				// Set the feed rules
 				if(isset($_GET['k'])) {
+					$key = $_GET['k'];
+
+					$user_id = $this->find_user_from_key($key);
+					$user_id = (int) $user_id;
+					if($user_id > 0) {
+						// Logged in - check there settings, if they have any.
+						$member = new M_Membership($user_id);
+						// Load the levels for this member - and associated rules
+						$member->load_levels( true );
+					} else {
+						$member = new M_Membership(false);
+						if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+							$member->assign_level($M_options['strangerlevel'], true );
+						} else {
+							// This user can't access anything on the site - show a blank feed.
+							//add_action('pre_get_posts', array(&$this, 'show_noaccess_feed'), 1 );
+							//the_posts
+							add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
+						}
+					}
 
 				} else {
 					// not passing a key so limit based on stranger settings
@@ -199,6 +219,18 @@ if(!class_exists('membershippublic')) {
 			}
 
 
+
+		}
+
+		function find_user_from_key($key = false) {
+
+			global $wpdb;
+
+			$sql = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 0,1", 'M_Feedkey', $key );
+
+			$user_id = $wpdb->get_var($sql);
+
+			return $user_id;
 
 		}
 
