@@ -27,6 +27,8 @@ if(!class_exists('membershippublic')) {
 
 			// Set up Actions
 			add_action( 'init', array(&$this, 'initialise_plugin') );
+			//add_filter( 'query_vars', array(&$this, 'add_queryvars') );
+			//add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
 			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection') );
@@ -46,6 +48,81 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
+			//add_feed('rss2', array(&$this, 'dofeed'));
+			//add_feed('atom', array(&$this, 'dofeed'));
+
+			// Intercept the feeds rewrites to enable feedkeys - without flushing the rewrites
+			$rewrites = get_option('rewrite_rules');
+			if(!empty($rewrites)) {
+				//print_r($rewrites);
+			}
+
+		}
+
+		function dofeed() {
+			echo "feed";
+		}
+
+		function add_queryvars($vars) {
+			if(!in_array('feedkey',$vars)) $vars[] = 'feedkey';
+
+			return $vars;
+		}
+
+		function add_rewrites($wp_rewrite) {
+
+			/*
+			[.*wp-atom.php$] => index.php?feed=atom
+			    [.*wp-rdf.php$] => index.php?feed=rdf
+			    [.*wp-rss.php$] => index.php?feed=rss
+			    [.*wp-rss2.php$] => index.php?feed=rss2
+			    [.*wp-feed.php$] => index.php?feed=feed
+			    [.*wp-commentsrss2.php$] => index.php?feed=rss2&withcomments=1
+			    [feed/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]
+			    [(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]
+
+				[comments/feed/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]&withcomments=1
+				    [comments/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]&withcomments=1
+
+
+
+
+			*/
+
+
+			/*
+			$new_rules = array( 'properties/page-?([0-9]{1,})/?$' => 'index.php?namespace=staypress&paged=' . $wp_rewrite->preg_index(1) . '&type=list', 	// plugin list
+								'properties$' => 'index.php?namespace=staypress&type=list', 	// plugin list
+								'property/([0-9]{1,})/(.+)' => 'index.php?namespace=staypress&pluginid=' . $wp_rewrite->preg_index(1) . '&type=property',	// plugin details
+
+								'search/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&search=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=search',	// plugin search
+								'search/(.+)' => 'index.php?namespace=staypress&search=' . $wp_rewrite->preg_index(1) . '&type=search',	// plugin search
+								'search' => 'index.php?namespace=staypress&type=search',	// plugin search
+
+								'tag/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&tag=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=tag',	// plugin search
+								'tag/(.+)' => 'index.php?namespace=staypress&tag=' . $wp_rewrite->preg_index(1) . '&type=tag',	// plugin search
+
+								'agent/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=agent',	// plugin search
+								'agent/(.+)' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&type=agent',	// plugin search
+
+								'owner/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=owner',	// plugin search
+								'owner/(.+)' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&type=owner',	// plugin search
+
+								'destination/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&destination=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=dest',	// plugin search
+								'destination/(.+)' => 'index.php?namespace=staypress&destination=' . $wp_rewrite->preg_index(1) . '&type=dest',	// plugin search
+
+								'near/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&near=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=near',	// plugin search
+								'near/(.+)' => 'index.php?namespace=staypress&near=' . $wp_rewrite->preg_index(1) . '&type=near',	// plugin search
+
+
+								'tagcloud$' => 'index.php?namespace=staypress&type=tagcloud',
+
+							);
+			*/
+
+		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+
+			return $wp_rewrite;
 		}
 
 		function initialise_membership_protection($wp_query) {
@@ -53,12 +130,48 @@ if(!class_exists('membershippublic')) {
 			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 			// Set up some common defaults
 
-			if(isset($wp_query->query_vars['feed'])) {
+			if(!empty($wp_query->query_vars['feed'])) {
 				// This is a feed access
 				// Set the feed rules
+				if(isset($_GET['k'])) {
+
+				} else {
+					// not passing a key so limit based on stranger settings
+					// need to grab the stranger settings
+					$member = new M_Membership($user->ID);
+					if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+						$member->assign_level($M_options['strangerlevel'], true );
+					} else {
+						// This user can't access anything on the site - show a blank feed.
+						//add_action('pre_get_posts', array(&$this, 'show_noaccess_feed'), 1 );
+						//the_posts
+						add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
+					}
+				}
+
+
 			} else {
 				// This is a website access
 				// Set the website rules
+				// Set up the user based defaults and load the levels
+				$user = wp_get_current_user();
+
+				if($user->ID > 0) {
+					// Logged in - check there settings, if they have any.
+					$member = new M_Membership($user->ID);
+					// Load the levels for this member - and associated rules
+					$member->load_levels( true );
+				} else {
+					// not logged in so limit based on stranger settings
+					// need to grab the stranger settings
+					$member = new M_Membership($user->ID);
+					if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+						$member->assign_level($M_options['strangerlevel'], true );
+					} else {
+						// This user can't access anything on the site - redirect them to a signup page.
+						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+					}
+				}
 			}
 
 			// Set the common rules
@@ -85,25 +198,7 @@ if(!class_exists('membershippublic')) {
 				$this->override_shortcodes();
 			}
 
-			// Set up the user based defaults and load the levels
-			$user = wp_get_current_user();
 
-			if($user->ID > 0) {
-				// Logged in - check there settings, if they have any.
-				$member = new M_Membership($user->ID);
-				// Load the levels for this member - and associated rules
-				$member->load_levels( true );
-			} else {
-				// not logged in so limit based on stranger settings
-				// need to grab the stranger settings
-				$member = new M_Membership($user->ID);
-				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-					$member->assign_level($M_options['strangerlevel'], true );
-				} else {
-					// This user can't access anything on the site - redirect them to a signup page.
-					add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-				}
-			}
 
 		}
 
@@ -160,6 +255,43 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $content;
+		}
+
+		function show_noaccess_feed($wp_query) {
+
+			global $M_options;
+
+			//$wp_query->query_vars['post__in'] = array(0);
+
+			if(empty($M_options['protectedmessagetitle'])) {
+				$M_options['protectedmessagetitle'] = __('No access to this content','membership');
+			}
+
+			/**
+			 * What we are going to do here, is create a fake post.  A post
+			 * that doesn't actually exist. We're gonna fill it up with
+			 * whatever values you want.  The content of the post will be
+			 * the output from your plugin.  The questions and answers.
+			 */
+
+			$post = new stdClass;
+			$post->post_author = 1;
+			$post->post_name = 'membershipnoaccess';
+			add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
+			$post->guid = get_bloginfo('wpurl');
+			$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
+			$post->post_content = stripslashes($M_options['protectedmessage']);
+			$post->ID = -1;
+			$post->post_status = 'publish';
+			$post->post_type = 'post';
+			$post->comment_status = 'closed';
+			$post->ping_status = 'open';
+			$post->comment_count = 0;
+			$post->post_date = current_time('mysql');
+			$post->post_date_gmt = current_time('mysql', 1);
+
+			return array($post);
+
 		}
 
 		function show_noaccess_page($wp_query) {
