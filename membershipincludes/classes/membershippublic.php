@@ -28,8 +28,11 @@ if(!class_exists('membershippublic')) {
 			// Set up Actions
 			add_action( 'init', array(&$this, 'initialise_plugin') );
 
+			// Add protection
+			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection') );
 			// add feed protection
-			add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
+			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
+
 
 		}
 
@@ -39,17 +42,33 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member, $M_options, $M_Rules, $wp_query;
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 
 			$M_options = get_option('membership_options', array());
 
+		}
+
+		function initialise_membership_protection($wp_query) {
+
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 			// Set up some common defaults
+
+			if(isset($wp_query->query_vars['feed'])) {
+				// This is a feed access
+				// Set the feed rules
+			} else {
+				// This is a website access
+				// Set the website rules
+			}
+
+			// Set the common rules
 
 			// More tags
 			if($M_options['moretagdefault'] == 'no' ) {
-				// More tag content is not visible by default
+				// More tag content is not visible by default - works for both web and rss content - unfortunately
 				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
 				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
+				add_filter('the_content_feed', array(&$this, 'replace_moretag_content'), 1);
 			}
 
 			// Shortcodes setup
@@ -86,14 +105,7 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
-			//if($wp_query->is_feed) {
-			//	print_r($wp_query);
-			//}
-
-
 		}
-
-
 
 		// loop and page overrides
 
@@ -212,10 +224,10 @@ if(!class_exists('membershippublic')) {
 			return $post;
 		}
 
-		// Feeds
+		// Feeds protection
 
-		function validate_feed_user() {
-
+		function validate_feed_user($wp_query) {
+			//print_r($wp_query);
 		}
 
 
