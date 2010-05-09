@@ -195,6 +195,22 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function has_level_rule($rulename) {
+
+			if(!empty($this->levels)) {
+
+				foreach( $this->levels as $key => $level ) {
+					if($level->has_rule($rulename)) {
+						return true;
+					}
+				}
+
+			}
+
+			return false;
+
+		}
+
 		function load_levels($fullload = false) {
 
 			$levels = $this->get_level_ids();

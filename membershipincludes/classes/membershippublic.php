@@ -187,7 +187,7 @@ if(!class_exists('membershippublic')) {
 
 		function handle_download_protection($wp_query) {
 
-			global $wpdb, $M_options;
+			global $user, $member, $wpdb, $M_options;
 
 			if(!empty($wp_query->query_vars['protectedfile'])) {
 				$protected = explode("/", $wp_query->query_vars['protectedfile']);
@@ -200,6 +200,11 @@ if(!class_exists('membershippublic')) {
 					$protected = get_post_meta($fileid, '_membership_protected_content', true);
 					if($protected == 'yes') {
 						// check we can see it
+						if( $member->has_level_rule('downloads') ) {
+							echo "yep - have rule";
+						} else {
+							echo "nope - no rule";
+						}
 					} else {
 						// it's not protected so grab and display it
 						$file = $wp_query->query_vars['protectedfile'];
@@ -209,9 +214,6 @@ if(!class_exists('membershippublic')) {
 
 				exit();
 			}
-
-
-			//query_vars
 
 		}
 

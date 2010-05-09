@@ -266,6 +266,44 @@ if(!class_exists('M_Level')) {
 
 		}
 
+		function has_positive_rule($rulename) {
+
+			if(!empty($this->positiverules)) {
+				foreach($this->positiverules as $key => $rule) {
+					if($rule->name == $rulename) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+
+		}
+
+		function has_negative_rule($rulename) {
+
+			if(!empty($this->negativerules)) {
+				foreach($this->negativerules as $key => $rule) {
+					if($rule->name == $rulename) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+
+		}
+
+		function has_rule($rulename) {
+
+			if($this->has_negative_rule($rulename) || $this->has_positive_rule($rulename)) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+
 	}
 
 }

@@ -2,6 +2,8 @@
 
 class M_Posts extends M_Rule {
 
+	var $name = 'posts';
+
 	function __construct() {
 
 	}
@@ -139,6 +141,8 @@ class M_Posts extends M_Rule {
 M_register_rule('posts', 'M_Posts', 'main');
 
 class M_Pages extends M_Rule {
+
+	var $name = 'pages';
 
 	function __construct() {
 
@@ -295,6 +299,8 @@ M_register_rule('pages', 'M_Pages', 'main');
 
 class M_Categories extends M_Rule {
 
+	var $name = 'categories';
+
 	function __construct() {
 
 	}
@@ -413,6 +419,8 @@ class M_Categories extends M_Rule {
 M_register_rule('categories', 'M_Categories', 'main');
 
 class M_More extends M_Rule {
+
+	var $name = 'more';
 
 	function __construct() {
 
@@ -534,6 +542,8 @@ M_register_rule('more', 'M_More', 'main');
 
 class M_Comments extends M_Rule {
 
+	var $name = 'comments';
+
 	function __construct() {
 
 	}
@@ -572,6 +582,8 @@ class M_Comments extends M_Rule {
 M_register_rule('comments', 'M_Comments', 'main');
 
 class M_Feedposts extends M_Rule {
+
+	var $name = 'feedposts';
 
 	function __construct() {
 
@@ -669,6 +681,8 @@ M_register_rule('feedposts', 'M_Feedposts', 'feed');
 
 class M_Feedcategories extends M_Rule {
 
+	var $name = 'feedcategories';
+
 	function __construct() {
 
 	}
@@ -747,6 +761,8 @@ M_register_rule('feedcategories', 'M_Feedcategories', 'feed');
 
 class M_Feedmore extends M_Rule {
 
+	var $name = 'feedmore';
+
 	function __construct() {
 
 	}
@@ -785,6 +801,8 @@ class M_Feedmore extends M_Rule {
 M_register_rule('feedmore', 'M_Feedmore', 'feed');
 
 class M_Downloads extends M_Rule {
+
+	var $name = 'downloads';
 
 	function __construct() {
 
@@ -885,6 +903,8 @@ M_register_rule('downloads', 'M_Downloads', 'content');
 
 //shortcode_tags
 class M_Shortcodes extends M_Rule {
+
+	var $name = 'shortcodes';
 
 	function __construct() {
 
