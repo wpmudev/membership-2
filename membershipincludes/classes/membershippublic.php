@@ -197,9 +197,15 @@ if(!class_exists('membershippublic')) {
 
 				if(!empty($fileid)) {
 					// check for protection
+					$protected = get_post_meta($fileid, '_membership_protected_content', true);
+					if($protected == 'yes') {
+						// check we can see it
+					} else {
+						// it's not protected so grab and display it
+						echo "yep";
+					}
 				}
 
-				print_r($files);
 				die();
 			}
 

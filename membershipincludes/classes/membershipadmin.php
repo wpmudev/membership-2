@@ -3092,7 +3092,6 @@ if(!class_exists('membershipadmin')) {
 			if(!empty($M_options['masked_url'])) {
 
 				$new_rules = array( trailingslashit($M_options['masked_url']) . '(.+)' =>  'index.php?protectedfile=' . $wp_rewrite->preg_index(1) );
-				//[blog/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[^/]+/([^/]+)/?$] => index.php?attachment=$matches[1]
 
 			}
 
