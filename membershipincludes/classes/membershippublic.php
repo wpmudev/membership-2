@@ -27,14 +27,14 @@ if(!class_exists('membershippublic')) {
 
 			// Set up Actions
 			add_action( 'init', array(&$this, 'initialise_plugin') );
-			//add_filter( 'query_vars', array(&$this, 'add_queryvars') );
-			//add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
+			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
+			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
 
 			// Add protection
-			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection') );
+			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection'), 1 );
 			// add feed protection
 			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
-
+			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
 
 		}
 
@@ -48,77 +48,56 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
-			//add_feed('rss2', array(&$this, 'dofeed'));
-			//add_feed('atom', array(&$this, 'dofeed'));
+			// More tags
+			if($M_options['moretagdefault'] == 'no' ) {
+				// More tag content is not visible by default - works for both web and rss content - unfortunately
+				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
+				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
+				add_filter('the_content_feed', array(&$this, 'replace_moretag_content'), 1);
+			}
 
-			// Intercept the feeds rewrites to enable feedkeys - without flushing the rewrites
-			$rewrites = get_option('rewrite_rules');
-			if(!empty($rewrites)) {
-				//print_r($rewrites);
+			// Shortcodes setup
+			if(!empty($M_options['membershipshortcodes'])) {
+				foreach($M_options['membershipshortcodes'] as $key => $value) {
+					if(!empty($value)) {
+						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
+					}
+				}
+			}
+
+			// Check the shortcodes default and override if needed
+			if($M_options['shortcodedefault'] == 'no' ) {
+				$this->override_shortcodes();
+			}
+
+			// Downloads protection
+			if(!empty($M_options['masked_url'])) {
+				add_filter('the_content', array(&$this, 'protect_download_content') );
 			}
 
 		}
 
-		function dofeed() {
-			echo "feed";
-		}
-
 		function add_queryvars($vars) {
+
 			if(!in_array('feedkey',$vars)) $vars[] = 'feedkey';
+			if(!in_array('protectedfile',$vars)) $vars[] = 'protectedfile';
 
 			return $vars;
 		}
 
 		function add_rewrites($wp_rewrite) {
 
-			/*
-			[.*wp-atom.php$] => index.php?feed=atom
-			    [.*wp-rdf.php$] => index.php?feed=rdf
-			    [.*wp-rss.php$] => index.php?feed=rss
-			    [.*wp-rss2.php$] => index.php?feed=rss2
-			    [.*wp-feed.php$] => index.php?feed=feed
-			    [.*wp-commentsrss2.php$] => index.php?feed=rss2&withcomments=1
-			    [feed/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]
-			    [(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]
+			global $M_options;
 
-				[comments/feed/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]&withcomments=1
-				    [comments/(feed|rdf|rss|rss2|atom)/?$] => index.php?&feed=$matches[1]&withcomments=1
+			// This function adds in the api rewrite rules
+			// Note the addition of the namespace variable so that we know these are vent based
+			// calls
 
+			if(!empty($M_options['masked_url'])) {
+				$new_rules = array( trailingslashit($M_options['masked_url']) . '(.+)' =>  'index.php?protectedfile=' . $wp_rewrite->preg_index(1) );
+			}
 
-
-
-			*/
-
-
-			/*
-			$new_rules = array( 'properties/page-?([0-9]{1,})/?$' => 'index.php?namespace=staypress&paged=' . $wp_rewrite->preg_index(1) . '&type=list', 	// plugin list
-								'properties$' => 'index.php?namespace=staypress&type=list', 	// plugin list
-								'property/([0-9]{1,})/(.+)' => 'index.php?namespace=staypress&pluginid=' . $wp_rewrite->preg_index(1) . '&type=property',	// plugin details
-
-								'search/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&search=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=search',	// plugin search
-								'search/(.+)' => 'index.php?namespace=staypress&search=' . $wp_rewrite->preg_index(1) . '&type=search',	// plugin search
-								'search' => 'index.php?namespace=staypress&type=search',	// plugin search
-
-								'tag/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&tag=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=tag',	// plugin search
-								'tag/(.+)' => 'index.php?namespace=staypress&tag=' . $wp_rewrite->preg_index(1) . '&type=tag',	// plugin search
-
-								'agent/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=agent',	// plugin search
-								'agent/(.+)' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&type=agent',	// plugin search
-
-								'owner/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=owner',	// plugin search
-								'owner/(.+)' => 'index.php?namespace=staypress&agent=' . $wp_rewrite->preg_index(1) . '&type=owner',	// plugin search
-
-								'destination/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&destination=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=dest',	// plugin search
-								'destination/(.+)' => 'index.php?namespace=staypress&destination=' . $wp_rewrite->preg_index(1) . '&type=dest',	// plugin search
-
-								'near/(.+)/page-?([0-9]{1,})' => 'index.php?namespace=staypress&near=' . $wp_rewrite->preg_index(1) . '&paged=' . $wp_rewrite->preg_index(2) . '&type=near',	// plugin search
-								'near/(.+)' => 'index.php?namespace=staypress&near=' . $wp_rewrite->preg_index(1) . '&type=near',	// plugin search
-
-
-								'tagcloud$' => 'index.php?namespace=staypress&type=tagcloud',
-
-							);
-			*/
+			$new_rules = apply_filters('M_rewrite_rules', $new_rules);
 
 		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 
@@ -129,6 +108,13 @@ if(!class_exists('membershippublic')) {
 
 			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 			// Set up some common defaults
+
+			static $initialised = false;
+
+			if($initialised) {
+				// ensure that this is only called once, so return if we've been here already.
+				return;
+			}
 
 			if(!empty($wp_query->query_vars['feed'])) {
 				// This is a feed access
@@ -194,31 +180,31 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
-			// Set the common rules
+			// Set the initialisation status
+			$initialised = true;
 
-			// More tags
-			if($M_options['moretagdefault'] == 'no' ) {
-				// More tag content is not visible by default - works for both web and rss content - unfortunately
-				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
-				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
-				add_filter('the_content_feed', array(&$this, 'replace_moretag_content'), 1);
-			}
+		}
 
-			// Shortcodes setup
-			if(!empty($M_options['membershipshortcodes'])) {
-				foreach($M_options['membershipshortcodes'] as $key => $value) {
-					if(!empty($value)) {
-						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
-					}
+		function handle_download_protection($wp_query) {
+
+			global $wpdb;
+
+			if(!empty($wp_query->query_vars['protectedfile'])) {
+				$protected = explode("/", $wp_query->query_vars['protectedfile']);
+
+				$filename = array_pop($protected);
+				$fileid = $wpdb->get_var( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . mysql_real_escape_string($filename) . "%'" );
+
+				if(!empty($fileid)) {
+					// check for protection
 				}
+
+				print_r($files);
+				die();
 			}
 
-			// Check the shortcodes default and override if needed
-			if($M_options['shortcodedefault'] == 'no' ) {
-				$this->override_shortcodes();
-			}
 
-
+			//query_vars
 
 		}
 
@@ -327,6 +313,7 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function show_noaccess_page($wp_query) {
+
 			global $M_options;
 
 			if(!isset($M_options['page_template']) || $M_options['page_template'] == 'default') {
@@ -386,6 +373,17 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $post;
+		}
+
+		// Content / downloads protection
+		function protect_download_content($the_content) {
+
+			global $M_options;
+
+			$the_content = str_replace($M_options['original_url'], trailingslashit(get_option('home')) . $M_options['masked_url'], $the_content);
+
+			return $the_content;
+
 		}
 
 		// Feeds protection

@@ -455,6 +455,7 @@ class M_More extends M_Rule {
 		$this->data = $data;
 
 		if($M_options['moretagdefault'] == 'no' ) {
+
 			// remove the filters - otherwise we don't need to do anything
 			if(isset($wp_filter['the_content_more_link'][99])) {
 				foreach($wp_filter['the_content_more_link'][99] as $key => $value) {
@@ -465,7 +466,6 @@ class M_More extends M_Rule {
 						unset($wp_filter['the_content_more_link'][99]);
 					}
 				}
-
 			}
 
 			if(isset($wp_filter['the_content'][1])) {
@@ -477,8 +477,19 @@ class M_More extends M_Rule {
 						unset($wp_filter['the_content'][1]);
 					}
 				}
-
 			}
+
+			if(isset($wp_filter['the_content_feed'][1])) {
+				foreach($wp_filter['the_content_feed'][1] as $key => $value) {
+					if(strstr($key, 'replace_moretag_content') !== false) {
+						unset($wp_filter['the_content_feed'][1][$key]);
+					}
+					if(empty($wp_filter['the_content_feed'][1])) {
+						unset($wp_filter['the_content_feed'][1]);
+					}
+				}
+			}
+
 		}
 	}
 

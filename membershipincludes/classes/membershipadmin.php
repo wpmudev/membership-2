@@ -47,6 +47,10 @@ if(!class_exists('membershipadmin')) {
 			add_filter('attachment_fields_to_edit', array(&$this, 'add_media_protection_settings'), 99, 2);
 			add_filter('attachment_fields_to_save', array(&$this, 'save_media_protection_settings'), 99, 2);
 
+			// rewrites
+			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
+			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
+
 		}
 
 		function membershipadmin() {
@@ -1195,7 +1199,7 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_options_panel_updates() {
 
-			global $action, $page;
+			global $action, $page, $wp_rewrite;
 
 			wp_reset_vars( array('action', 'page') );
 
@@ -1225,6 +1229,12 @@ if(!class_exists('membershipadmin')) {
 				$M_options['moretagmessage'] = $_POST['moretagmessage'];
 
 				update_option('membership_options', $M_options);
+
+				// flush rewrites if required
+				if(!empty($M_options['masked_url'])) {
+					// need to update the rewrites
+					$wp_rewrite->flush_rules();
+				}
 
 				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
 
@@ -2732,7 +2742,8 @@ if(!class_exists('membershipadmin')) {
 					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
 
 					$columns = array(	"name" 		=> 	__('Gateway Name','membership'),
-										"active"	=>	__('Active','membership')
+										"active"	=>	__('Active','membership'),
+										"transactions" => __('Transactions','membership')
 									);
 
 					$columns = apply_filters('membership_levelcolumns', $columns);
@@ -2805,6 +2816,9 @@ if(!class_exists('membershipadmin')) {
 												echo __('Inactive', 'membership');
 											}
 										?>
+									</td>
+									<td class="column-transactions">
+										<a href=''><?php _e('View transactions','membership'); ?></a>
 									</td>
 							    </tr>
 								<?php
@@ -3064,6 +3078,36 @@ if(!class_exists('membershipadmin')) {
 
 			return $this->db->get_results($sql);
 
+		}
+
+		// Rewrites
+		function add_rewrites($wp_rewrite) {
+
+			global $M_options;
+
+			// This function adds in the api rewrite rules
+			// Note the addition of the namespace variable so that we know these are vent based
+			// calls
+
+			if(!empty($M_options['masked_url'])) {
+
+				$new_rules = array( trailingslashit($M_options['masked_url']) . '(.+)' =>  'index.php?protectedfile=' . $wp_rewrite->preg_index(1) );
+				//[blog/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[^/]+/([^/]+)/?$] => index.php?attachment=$matches[1]
+
+			}
+
+			$new_rules = apply_filters('M_rewrite_rules', $new_rules);
+
+		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+
+			return $wp_rewrite;
+		}
+
+		function add_queryvars($vars) {
+			if(!in_array('feedkey',$vars)) $vars[] = 'feedkey';
+			if(!in_array('protectedfile',$vars)) $vars[] = 'protectedfile';
+
+			return $vars;
 		}
 
 	}
