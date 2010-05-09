@@ -187,7 +187,7 @@ if(!class_exists('membershippublic')) {
 
 		function handle_download_protection($wp_query) {
 
-			global $wpdb;
+			global $wpdb, $M_options;
 
 			if(!empty($wp_query->query_vars['protectedfile'])) {
 				$protected = explode("/", $wp_query->query_vars['protectedfile']);
@@ -202,16 +202,76 @@ if(!class_exists('membershippublic')) {
 						// check we can see it
 					} else {
 						// it's not protected so grab and display it
-						echo "yep";
+						$file = $wp_query->query_vars['protectedfile'];
+						$this->output_file($file);
 					}
 				}
 
-				die();
+				exit();
 			}
 
 
 			//query_vars
 
+		}
+
+		function output_file($pathtofile) {
+
+			global $wpdb, $M_options;
+
+			$uploadpath = get_option('upload_path');
+
+			$file = trailingslashit(ABSPATH . $uploadpath) . $pathtofile;
+
+			$trueurl = trailingslashit($M_options['original_url']) . $pathtofile;
+
+			if ( !is_file( $file ) ) {
+				status_header( 404 );
+				die( '404 &#8212; File not found.' );
+			}
+
+			$mime = wp_check_filetype( $file );
+			if( false === $mime[ 'type' ] && function_exists( 'mime_content_type' ) )
+				$mime[ 'type' ] = mime_content_type( $file );
+
+			if( $mime[ 'type' ] )
+				$mimetype = $mime[ 'type' ];
+			else
+				$mimetype = 'image/' . substr( $trueurl, strrpos( $trueurl, '.' ) + 1 );
+
+			header( 'Content-type: ' . $mimetype ); // always send this
+			if ( false === strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) )
+				header( 'Content-Length: ' . filesize( $file ) );
+
+			$last_modified = gmdate( 'D, d M Y H:i:s', filemtime( $file ) );
+			$etag = '"' . md5( $last_modified ) . '"';
+			header( "Last-Modified: $last_modified GMT" );
+			header( 'ETag: ' . $etag );
+			header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
+
+			// Support for Conditional GET
+			$client_etag = isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ? stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) : false;
+
+			if( ! isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) )
+				$_SERVER['HTTP_IF_MODIFIED_SINCE'] = false;
+
+			$client_last_modified = trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
+			// If string is empty, return 0. If not, attempt to parse into a timestamp
+			$client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
+
+			// Make a timestamp for our most recent modification...
+			$modified_timestamp = strtotime($last_modified);
+
+			if ( ( $client_last_modified && $client_etag )
+				? ( ( $client_modified_timestamp >= $modified_timestamp) && ( $client_etag == $etag ) )
+				: ( ( $client_modified_timestamp >= $modified_timestamp) || ( $client_etag == $etag ) )
+				) {
+				status_header( 304 );
+				exit;
+			}
+
+			// If we made it this far, just serve the file
+			readfile( $file );
 		}
 
 		function find_user_from_key($key = false) {
