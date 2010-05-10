@@ -1411,14 +1411,14 @@ if(!class_exists('membershipadmin')) {
 					</table>
 
 					<h3><?php _e('Protected content message','membership'); ?></h3>
-					<p><?php _e('If a post / page / content is not available to a user, this is the message or page that will be displayed in its place.','membership'); ?></p>
+					<p><?php _e('If a post / page / content is not available to a user, this is the message or page content that will be displayed in its place.','membership'); ?></p>
 					<p><?php _e('This message will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
 						<tr valign="top">
 							<th scope="row"><?php _e('Protected content page','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Select a page to have a non-member redirected to so that they can sign up.",'membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Select a page to use for the content.",'membership'); ?><br/>
 								<?php _e("Alternatively complete the content below.",'membership'); ?>
 								</em>
 							</th>
