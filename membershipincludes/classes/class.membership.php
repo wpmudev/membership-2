@@ -195,6 +195,11 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function has_rule($rulename) {
+			// shortcut function
+			return $this->has_level_rule($rulename);
+		}
+
 		function has_level_rule($rulename) {
 
 			if(!empty($this->levels)) {
@@ -208,6 +213,9 @@ if(!class_exists('M_Membership')) {
 			}
 
 			return false;
+		}
+
+		function run_rule_function() {
 
 		}
 

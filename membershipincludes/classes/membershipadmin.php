@@ -1223,6 +1223,8 @@ if(!class_exists('membershipadmin')) {
 				$M_options['original_url'] = $_POST['original_url'];
 				$M_options['masked_url'] = $_POST['masked_url'];
 
+				$M_options['nocontent_page'] = $_POST['nocontent_page'];
+
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 				$M_options['moretagdefault'] = $_POST['moretagdefault'];
 
@@ -1375,12 +1377,59 @@ if(!class_exists('membershipadmin')) {
 					</tbody>
 					</table>
 
-					<h3><?php _e('Posts / pages protection','membership'); ?></h3>
-					<p><?php _e('If a post / page is not available to a user, this is the message that will be displayed in its place.','membership'); ?></p>
-					<p><?php _e('This message will only be displayed if the user has tried to access the post / page directly or via a link.','membership'); ?></p>
+					<h3><?php _e('Downloads / Media protection','membership'); ?></h3>
+					<p><?php _e('Downloads and media files can be protected by remapping their perceived location.','membership'); ?></p>
+					<p><?php _e('Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Actual download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is a system generated URL, you shouldn't need to change this.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<?php
+								 	$membershipurl = $M_options['original_url'];
+									if(empty($membershipurl)) $membershipurl = membership_upload_path();
+								?>
+								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e($membershipurl);  ?>' class='wide' />
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
+								<?php _e("Change the end part to something unique.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
+							</td>
+						</tr>
+
+					</tbody>
+					</table>
+
+					<h3><?php _e('Protected content message','membership'); ?></h3>
+					<p><?php _e('If a post / page / content is not available to a user, this is the message or page that will be displayed in its place.','membership'); ?></p>
+					<p><?php _e('This message will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected content page','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Select a page to have a non-member redirected to so that they can sign up.",'membership'); ?><br/>
+								<?php _e("Alternatively complete the content below.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('None (use settings below)'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+
 						<tr valign="top">
 							<th scope="row"><?php _e('Protected Message Title','membership'); ?><br/>
 								<em style='font-size:smaller;'><?php _e("Enter the title for the message that you want displayed when the content is not available.",'membership'); ?></em>
@@ -1413,38 +1462,6 @@ if(!class_exists('membershipadmin')) {
 									page_template_dropdown($M_options['page_template']);
 								?>
 								</select>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Downloads / Media protection','membership'); ?></h3>
-					<p><?php _e('Downloads and media files can be protected by remapping their perceived location.','membership'); ?></p>
-					<p><?php _e('Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Actual download URL','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("This is a system generated URL, you shouldn't need to change this.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<?php
-								 	$membershipurl = $M_options['original_url'];
-									if(empty($membershipurl)) $membershipurl = membership_upload_path();
-								?>
-								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e($membershipurl);  ?>' class='wide' />
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
-								<?php _e("Change the end part to something unique.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
 							</td>
 						</tr>
 					</tbody>

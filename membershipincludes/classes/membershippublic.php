@@ -32,9 +32,11 @@ if(!class_exists('membershippublic')) {
 
 			// Add protection
 			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection'), 1 );
+			// Download protection
+			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
+
 			// add feed protection
 			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
-			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
 
 		}
 
