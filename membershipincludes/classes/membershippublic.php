@@ -28,7 +28,7 @@ if(!class_exists('membershippublic')) {
 			// Set up Actions
 			add_action( 'init', array(&$this, 'initialise_plugin') );
 			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
-			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
+			add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
 			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection'), 1 );
@@ -115,7 +115,7 @@ if(!class_exists('membershippublic')) {
 
 			if($initialised) {
 				// ensure that this is only called once, so return if we've been here already.
-				return;
+				//return;
 			}
 
 			if(!empty($wp_query->query_vars['feed'])) {
@@ -178,7 +178,10 @@ if(!class_exists('membershippublic')) {
 						$member->assign_level($M_options['strangerlevel'], true );
 					} else {
 						// This user can't access anything on the site - redirect them to a signup page.
-						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+						//echo "boo";
+						$this->show_noaccess_page($wp_query);
+						//die();
+						//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
 					}
 				}
 			}
