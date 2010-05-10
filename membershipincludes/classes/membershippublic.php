@@ -31,7 +31,7 @@ if(!class_exists('membershippublic')) {
 			add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
-			add_action('pre_get_posts', array(&$this, 'initialise_membership_protection'), 1 );
+			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 1 );
 			// Download protection
 			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
 
@@ -106,7 +106,7 @@ if(!class_exists('membershippublic')) {
 			return $wp_rewrite;
 		}
 
-		function initialise_membership_protection($wp_query) {
+		function initialise_membership_protection($wp) {
 
 			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 			// Set up some common defaults
@@ -115,10 +115,10 @@ if(!class_exists('membershippublic')) {
 
 			if($initialised) {
 				// ensure that this is only called once, so return if we've been here already.
-				//return;
+				return;
 			}
 
-			if(!empty($wp_query->query_vars['feed'])) {
+			if(!empty($wp->query_vars['feed'])) {
 				// This is a feed access
 				// Set the feed rules
 				if(isset($_GET['k'])) {
@@ -157,12 +157,8 @@ if(!class_exists('membershippublic')) {
 						add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
 					}
 				}
-
-
 			} else {
-				// This is a website access
-				// Set the website rules
-				// Set up the user based defaults and load the levels
+				// Users
 				$user = wp_get_current_user();
 
 				if($user->ID > 0) {
@@ -178,10 +174,7 @@ if(!class_exists('membershippublic')) {
 						$member->assign_level($M_options['strangerlevel'], true );
 					} else {
 						// This user can't access anything on the site - redirect them to a signup page.
-						//echo "boo";
-						$this->show_noaccess_page($wp_query);
-						//die();
-						//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
 					}
 				}
 			}

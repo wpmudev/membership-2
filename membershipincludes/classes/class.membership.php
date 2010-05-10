@@ -179,12 +179,6 @@ if(!class_exists('M_Membership')) {
 
 		// Levels functions
 
-		function assign_level($level_id, $fullload) {
-			// Used to force assign a level on a user - mainly for non logged in users
-			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
-
-		}
-
 		function has_level($level_id = false) {
 			// Returns true if the user has a level to process
 
@@ -217,6 +211,11 @@ if(!class_exists('M_Membership')) {
 
 		function run_rule_function() {
 
+		}
+
+		function assign_level($level_id, $fullload) {
+			// Used to force assign a level on a user - mainly for non logged in users
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
 		}
 
 		function load_levels($fullload = false) {
