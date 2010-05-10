@@ -1426,7 +1426,8 @@ if(!class_exists('membershipadmin')) {
 								<?php
 								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('None (use settings below)'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
-								?>
+								?><br/>
+								<?php _e('Note: If you have set no content access, then the settings below will be used instead.','membership'); ?>
 							</td>
 						</tr>
 

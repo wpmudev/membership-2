@@ -139,6 +139,7 @@ if(!class_exists('membershippublic')) {
 							// This user can't access anything on the site - show a blank feed.
 							//add_action('pre_get_posts', array(&$this, 'show_noaccess_feed'), 1 );
 							//the_posts
+							//nocontent_page
 							add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
 						}
 					}
@@ -385,6 +386,15 @@ if(!class_exists('membershippublic')) {
 		function show_noaccess_page($wp_query) {
 
 			global $M_options;
+
+			if(!empty($M_options['nocontent_page']) && $M_options['strangerlevel'] != '0') {
+				// Do a redirect to the page instead
+				wp_safe_redirect( get_permalink( (int) $M_options['nocontent_page'] ) );
+				exit;
+			}
+
+			// We are still here so we will display the protected content page built using the
+			// options details.
 
 			if(!isset($M_options['page_template']) || $M_options['page_template'] == 'default') {
 				$M_options['page_template'] = 'page.php';
