@@ -223,7 +223,22 @@ if(!class_exists('M_Membership')) {
 			return false;
 		}
 
-		function run_rule_function() {
+		function pass_thru( $rulename, $args ) {
+
+			if(!empty($this->levels)) {
+
+				foreach( $this->levels as $key => $level ) {
+					if($level->has_positive_rule($rulename)) {
+						return $level->positive_pass_thru()
+					} elseif($level->has_negative_rule($rulename)) {
+						return $level->negative_pass_thru()
+					} else {
+						return false;
+					}
+				}
+
+
+			}
 
 		}
 

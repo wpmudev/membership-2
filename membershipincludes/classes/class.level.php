@@ -304,6 +304,16 @@ if(!class_exists('M_Level')) {
 
 		}
 
+		// pass thrus
+
+		function positive_pass_thru($function, $arg) {
+
+		}
+
+		function negative_pass_thru($function, $arg) {
+
+		}
+
 	}
 
 }
