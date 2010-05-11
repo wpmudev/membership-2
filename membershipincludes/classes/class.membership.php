@@ -179,6 +179,20 @@ if(!class_exists('M_Membership')) {
 
 		// Levels functions
 
+		function has_levels() {
+			if(!empty($this->levels)) {
+				return true;
+			} else {
+				$levels = $this->get_level_ids();
+
+				if(!empty($levels)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+
 		function has_level($level_id = false) {
 			// Returns true if the user has a level to process
 
