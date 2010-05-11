@@ -384,73 +384,66 @@ if(!class_exists('membershippublic')) {
 			global $M_options;
 
 			if(!empty($M_options['nocontent_page'])) {
-				// Do a redirect to the page instead
-				//wp_safe_redirect( get_permalink( (int) $M_options['nocontent_page'] ) );
-				exit;
+				// grab the content form the no content page
+				$post = get_post( $M_options['nocontent_page'] );
 			} else {
-
-				if(!isset($M_options['page_template']) || $M_options['page_template'] == 'default') {
-					$M_options['page_template'] = 'page.php';
-				}
-
-				if (file_exists(TEMPLATEPATH . '/' . $M_options['page_template'])) {
-
-					if(empty($M_options['protectedmessagetitle'])) {
-						$M_options['protectedmessagetitle'] = __('No access to this content','membership');
-					}
-
-					/**
-					 * What we are going to do here, is create a fake post.  A post
-					 * that doesn't actually exist. We're gonna fill it up with
-					 * whatever values you want.  The content of the post will be
-					 * the output from your plugin.  The questions and answers.
-					 */
-					/**
-					 * Clear out any posts already stored in the $wp_query->posts array.
-					 */
-					$wp_query->posts = array();
-					$wp_query->post_count = 0;
-
-					$post = new stdClass;
-					$post->post_author = 1;
-					$post->post_name = 'membershipnoaccess';
-					add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-					$post->guid = get_bloginfo('wpurl');
-					$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-					$post->post_content = stripslashes($M_options['protectedmessage']);
-					$post->ID = -1;
-					$post->post_status = 'publish';
-					$post->post_type = 'post';
-					$post->comment_status = 'closed';
-					$post->ping_status = 'open';
-					$post->comment_count = 0;
-					$post->post_date = current_time('mysql');
-					$post->post_date_gmt = current_time('mysql', 1);
-
-					// Reset $wp_query
-					$wp_query->posts[] = $post;
-					$wp_query->post_count = 1;
-					$wp_query->is_home = false;
-
-					/**
-					 * And load up the template file.
-					 */
-					ob_start('template');
-					load_template(TEMPLATEPATH . '/' . 'page.php');
-					ob_end_flush();
-
-					/**
-					 * YOU MUST DIE AT THE END.  BAD THINGS HAPPEN IF YOU DONT
-					 */
-					die();
-				}
-
+				$post = new stdClass;
+				$post->post_author = 1;
+				$post->post_name = 'membershipnoaccess';
+				add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
+				$post->guid = get_bloginfo('wpurl');
+				$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
+				$post->post_content = stripslashes($M_options['protectedmessage']);
+				$post->ID = -1;
+				$post->post_status = 'publish';
+				$post->post_type = 'post';
+				$post->comment_status = 'closed';
+				$post->ping_status = 'open';
+				$post->comment_count = 0;
+				$post->post_date = current_time('mysql');
+				$post->post_date_gmt = current_time('mysql', 1);
 			}
 
-			// We are still here so we will display the protected content page built using the
-			// options details.
+			if(!isset($M_options['page_template']) || $M_options['page_template'] == 'default') {
+				$M_options['page_template'] = 'page.php';
+			}
 
-			return $post;
+			if (file_exists(TEMPLATEPATH . '/' . $M_options['page_template'])) {
+
+				if(empty($M_options['protectedmessagetitle'])) {
+					$M_options['protectedmessagetitle'] = __('No access to this content','membership');
+				}
+
+				/**
+				 * What we are going to do here, is create a fake post.  A post
+				 * that doesn't actually exist. We're gonna fill it up with
+				 * whatever values you want.  The content of the post will be
+				 * the output from your plugin.  The questions and answers.
+				 */
+				/**
+				 * Clear out any posts already stored in the $wp_query->posts array.
+				 */
+				$wp_query->posts = array();
+				$wp_query->post_count = 0;
+
+				// Reset $wp_query
+				$wp_query->posts[] = $post;
+				$wp_query->post_count = 1;
+				$wp_query->is_home = false;
+
+				/**
+				 * And load up the template file.
+				 */
+				ob_start('template');
+				load_template(TEMPLATEPATH . '/' . 'page.php');
+				ob_end_flush();
+
+				/**
+				 * YOU MUST DIE AT THE END.  BAD THINGS HAPPEN IF YOU DONT
+				 */
+				die();
+			}
+
 		}
 
 		// Content / downloads protection
