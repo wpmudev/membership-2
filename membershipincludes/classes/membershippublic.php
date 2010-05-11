@@ -166,7 +166,6 @@ if(!class_exists('membershippublic')) {
 				if($user->ID > 0 && $member->has_levels()) {
 					// Load the levels for this member - and associated rules
 					$member->load_levels( true );
-
 				} else {
 					// not logged in so limit based on stranger settings
 					// need to grab the stranger settings
@@ -202,7 +201,7 @@ if(!class_exists('membershippublic')) {
 						if( $member->has_level_rule('downloads') ) {
 							echo "yep - have rule";
 						} else {
-							echo "nope - no rule";
+							$this->show_noaccess_page($wp_query);
 						}
 					} else {
 						// it's not protected so grab and display it
