@@ -898,9 +898,24 @@ class M_Downloads extends M_Rule {
 		<?php
 	}
 
-	function can_view_download($fileid) {
+	function can_view_download($area, $fileid) {
 
-		return true;
+		switch($area) {
+
+			case 'positive':	if(in_array($fileid, (array) $this->data)) {
+									return true;
+								}
+								break;
+
+			case 'negative':	if(in_array($fileid, (array) $this->data)) {
+									return false;
+								}
+								break;
+
+			default:			return false;
+
+		}
+
 	}
 
 }

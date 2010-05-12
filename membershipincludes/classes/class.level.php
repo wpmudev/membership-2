@@ -311,7 +311,7 @@ if(!class_exists('M_Level')) {
 			if(!empty($this->positiverules)) {
 				foreach($this->positiverules as $key => $rule) {
 					if($rule->name == $rulename) {
-						return $rule->$function($arg);
+						return $rule->$function('positive', $arg);
 					}
 				}
 			}
@@ -325,7 +325,7 @@ if(!class_exists('M_Level')) {
 			if(!empty($this->negativerules)) {
 				foreach($this->negativerules as $key => $rule) {
 					if($rule->name == $rulename) {
-						return $rule->$function($arg);
+						return $rule->$function('negative', $arg);
 					}
 				}
 			}

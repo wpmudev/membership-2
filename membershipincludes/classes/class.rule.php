@@ -28,11 +28,11 @@ if(!class_exists('M_Rule')) {
 		}
 
 		function on_positive($data) {
-
+			$this->data = $data;
 		}
 
 		function on_negative($data) {
-
+			$this->data = $data;
 		}
 
 
