@@ -198,6 +198,8 @@ if(!class_exists('membershippublic')) {
 					$protected = get_post_meta($fileid, '_membership_protected_content', true);
 					if($protected == 'yes') {
 						// check we can see it
+						echo $member->pass_thru( 'downloads', array( 'can_view_download' => $fileid ) );
+						die();
 						if( $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $fileid ) ) ) {
 							$file = $wp_query->query_vars['protectedfile'];
 							$this->output_file($file);

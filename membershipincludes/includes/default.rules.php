@@ -898,6 +898,11 @@ class M_Downloads extends M_Rule {
 		<?php
 	}
 
+	function can_view_download($fileid) {
+
+		return true;
+	}
+
 }
 M_register_rule('downloads', 'M_Downloads', 'content');
 

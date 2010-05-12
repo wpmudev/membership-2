@@ -306,11 +306,31 @@ if(!class_exists('M_Level')) {
 
 		// pass thrus
 
-		function positive_pass_thru($function, $arg) {
+		function positive_pass_thru($rulename, $function, $arg) {
+
+			if(!empty($this->positiverules)) {
+				foreach($this->positiverules as $key => $rule) {
+					if($rule->name == $rulename) {
+						return $rule->$function($arg);
+					}
+				}
+			}
+
+			return false;
 
 		}
 
-		function negative_pass_thru($function, $arg) {
+		function negative_pass_thru($rulename, $function, $arg) {
+
+			if(!empty($this->negativerules)) {
+				foreach($this->negativerules as $key => $rule) {
+					if($rule->name == $rulename) {
+						return $rule->$function($arg);
+					}
+				}
+			}
+
+			return false;
 
 		}
 

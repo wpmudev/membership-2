@@ -227,11 +227,14 @@ if(!class_exists('M_Membership')) {
 
 			if(!empty($this->levels)) {
 
+				$functions = array_keys($args);
+				$values = array_values($args);
+
 				foreach( $this->levels as $key => $level ) {
 					if($level->has_positive_rule($rulename)) {
-						return $level->positive_pass_thru()
+						return $level->positive_pass_thru($rulename, $functions[0], $values[0]);
 					} elseif($level->has_negative_rule($rulename)) {
-						return $level->negative_pass_thru()
+						return $level->negative_pass_thru($rulename, $functions[0], $values[0]);
 					} else {
 						return false;
 					}
