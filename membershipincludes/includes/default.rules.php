@@ -578,6 +578,34 @@ class M_Comments extends M_Rule {
 		<?php
 	}
 
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_filter('comments_open', array(&$this, 'open_comments'), 99, 2);
+
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
+		//closed
+	}
+
+	function close_comments($open, $postid) {
+
+		return false;
+
+	}
+
+	function open_comments($open, $postid) {
+
+		return $open;
+
+	}
+
 }
 M_register_rule('comments', 'M_Comments', 'main');
 
