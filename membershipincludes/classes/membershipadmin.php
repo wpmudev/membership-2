@@ -1514,8 +1514,6 @@ if(!class_exists('membershipadmin')) {
 
 			$sections['main'] = array(	"title" => __('Main rules','membership') );
 
-			$sections['feed'] = array(	"title" => __('Feed rules','membership') );
-
 			$sections['content'] = array(	"title" => __('Content rules','membership') );
 
 			return $sections;
