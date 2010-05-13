@@ -36,6 +36,7 @@ if(!class_exists('membershippublic')) {
 			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
 
 			// add feed protection
+			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
 			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
 
 		}
@@ -104,6 +105,26 @@ if(!class_exists('membershippublic')) {
 		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 
 			return $wp_rewrite;
+		}
+
+		function add_feed_key( $output, $feed ) {
+			global $user;
+
+			if($user->ID > 0) {
+				$key = get_usermeta($user->ID, '_membership_key');
+
+				if(empty($key)) {
+					$key = md5($user->ID . $user->user_pass . time());
+					update_usermeta($user->ID, '_membership_key', $key);
+				}
+
+				if(!empty($key)) {
+					$output = add_query_arg('k', $key, untrailingslashit($output));
+				}
+			}
+
+			return $output;
+
 		}
 
 		function initialise_membership_protection($wp) {
@@ -279,7 +300,8 @@ if(!class_exists('membershippublic')) {
 
 			global $wpdb;
 
-			$sql = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 0,1", 'M_Feedkey', $key );
+			//$key = get_usermeta($user->ID, '_membership_key');
+			$sql = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 0,1", '_membership_key', $key );
 
 			$user_id = $wpdb->get_var($sql);
 

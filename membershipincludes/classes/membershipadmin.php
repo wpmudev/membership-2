@@ -51,6 +51,9 @@ if(!class_exists('membershipadmin')) {
 			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
 			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
 
+			// profile field for feeds
+			add_action( 'show_user_profile', array(&$this, 'add_profile_feed_key') );
+
 		}
 
 		function membershipadmin() {
@@ -3125,6 +3128,31 @@ if(!class_exists('membershipadmin')) {
 			if(!in_array('protectedfile',$vars)) $vars[] = 'protectedfile';
 
 			return $vars;
+		}
+
+		// Profile
+		function add_profile_feed_key($profileuser) {
+			$id = $profileuser->ID;
+
+			$key = get_usermeta($id, '_membership_key');
+
+			if(empty($key)) {
+				$key = md5($id . $profileuser->user_pass . time());
+				update_usermeta($id, '_membership_key', $key);
+			}
+
+			?>
+			<h3><?php _e('Membership key'); ?></h3>
+
+			<table class="form-table">
+			<tr>
+				<th><label for="description"><?php _e('Membership key'); ?></label></th>
+				<td><?php esc_html_e($key); ?>
+					<br />
+				<span class="description"><?php _e('This key is used to give you access the the members RSS feed, keep it safe and secret.'); ?></span></td>
+			</tr>
+			</table>
+			<?php
 		}
 
 	}
