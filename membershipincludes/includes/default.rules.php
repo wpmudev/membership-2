@@ -591,7 +591,14 @@ class M_Comments extends M_Rule {
 		$this->data = $data;
 
 		add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
-		//closed
+		add_filter( 'comments_array', array(&$this, 'hide_comments'), 99, 2 );
+
+	}
+
+	function hide_comments($comments, $post_id) {
+
+		return array();
+
 	}
 
 	function close_comments($open, $postid) {
