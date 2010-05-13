@@ -10,11 +10,19 @@ if(!class_exists('M_Gateway')) {
 		var $gateway = 'Not Set';
 		var $title = 'Not Set';
 
+		// Tables
+		var $tables = array('subscription_transaction');
+		var $subscription_transaction;
+
 		function M_Gateway() {
 
 			global $wpdb;
 
 			$this->db =& $wpdb;
+
+			foreach($this->tables as $table) {
+				$this->$table = $wpdb->prefix . $table;
+			}
 
 			// Actions and Filters
 			add_filter('M_gateways_list', array(&$this, 'gateways_list'));
@@ -115,6 +123,33 @@ if(!class_exists('M_Gateway')) {
 
 			// default action is to return true
 			return true;
+
+		}
+
+		function transactions() {
+
+			global $page, $action, $type;
+
+			wp_reset_vars( array('type') );
+
+			if(empty($type)) $type = 'past';
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-plugins"><br></div>
+				<h2><?php echo esc_html($this->title) . __(' transactions','membership'); ?></h2>
+
+				<ul class="subsubsub">
+					<li><a href="<?php echo add_query_arg('type', 'past'); ?>" class="rbutton <?php if($type == 'past') echo 'current'; ?>"><?php  _e('Recent transactions', 'membership'); ?></a> | </li>
+					<li><a href="<?php echo add_query_arg('type', 'pending'); ?>" class="rbutton <?php if($type == 'pending') echo 'current'; ?>"><?php  _e('Pending transactions', 'membership'); ?></a> | </li>
+					<li><a href="<?php echo add_query_arg('type', 'future'); ?>" class="rbutton <?php if($type == 'future') echo 'current'; ?>"><?php  _e('Future transactions', 'membership'); ?></a></li>
+				</ul>
+
+				<?php
+					do_action('M_gateways_transactions_' . $this->gateway, $type);
+				?>
+			</div> <!-- wrap -->
+			<?php
 
 		}
 

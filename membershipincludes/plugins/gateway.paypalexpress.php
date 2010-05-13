@@ -9,11 +9,16 @@ class paypalexpress extends M_Gateway {
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
+		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 	}
 
 	function mysettings() {
-
 		echo "<p>" . __('Placeholder : The settings for the PayPal Express payment gateway will be here.','membership') . "</p>";
+	}
+
+	function mytransactions($type = 'past') {
+
+		echo "type";
 
 	}
 

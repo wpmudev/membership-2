@@ -2707,6 +2707,13 @@ if(!class_exists('membershipadmin')) {
 								return; // so we don't show the list below
 								break;
 
+				case 'transactions':
+								if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->transactions();
+								}
+								return; // so we don't show the list below
+								break;
+
 			}
 
 
@@ -2837,7 +2844,7 @@ if(!class_exists('membershipadmin')) {
 										?>
 									</td>
 									<td class="column-transactions">
-										<a href=''><?php _e('View transactions','membership'); ?></a>
+										<a href='?page=<?php echo $page; ?>&amp;action=transactions&amp;gateway=<?php echo $key; ?>'><?php _e('View transactions','membership'); ?></a>
 									</td>
 							    </tr>
 								<?php
