@@ -4,14 +4,6 @@ class M_Posts extends M_Rule {
 
 	var $name = 'posts';
 
-	function __construct() {
-
-	}
-
-	function M_Posts() {
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='posts' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -143,14 +135,6 @@ M_register_rule('posts', 'M_Posts', 'main');
 class M_Pages extends M_Rule {
 
 	var $name = 'pages';
-
-	function __construct() {
-
-	}
-
-	function M_Pages() {
-
-	}
 
 	function admin_sidebar($data) {
 		?>
@@ -301,14 +285,6 @@ class M_Categories extends M_Rule {
 
 	var $name = 'categories';
 
-	function __construct() {
-
-	}
-
-	function M_Categories() {
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='categories' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -421,14 +397,6 @@ M_register_rule('categories', 'M_Categories', 'main');
 class M_More extends M_Rule {
 
 	var $name = 'more';
-
-	function __construct() {
-
-	}
-
-	function M_More() {
-
-	}
 
 	function admin_sidebar($data) {
 		?>
@@ -544,14 +512,6 @@ class M_Comments extends M_Rule {
 
 	var $name = 'comments';
 
-	function __construct() {
-
-	}
-
-	function M_Comments() {
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='comments' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -619,14 +579,6 @@ M_register_rule('comments', 'M_Comments', 'main');
 class M_Feedposts extends M_Rule {
 
 	var $name = 'feedposts';
-
-	function __construct() {
-
-	}
-
-	function M_Feedposts() {
-
-	}
 
 	function admin_sidebar($data) {
 		?>
@@ -718,14 +670,6 @@ class M_Feedcategories extends M_Rule {
 
 	var $name = 'feedcategories';
 
-	function __construct() {
-
-	}
-
-	function M_Feedcategories() {
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='feedcategories' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -798,14 +742,6 @@ class M_Feedmore extends M_Rule {
 
 	var $name = 'feedmore';
 
-	function __construct() {
-
-	}
-
-	function M_Feedmore() {
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='feedmore' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -838,14 +774,6 @@ M_register_rule('feedmore', 'M_Feedmore', 'feed');
 class M_Downloads extends M_Rule {
 
 	var $name = 'downloads';
-
-	function __construct() {
-
-	}
-
-	function M_Downloads() {
-
-	}
 
 	function admin_sidebar($data) {
 		?>
@@ -961,16 +889,6 @@ class M_Shortcodes extends M_Rule {
 
 	var $name = 'shortcodes';
 
-	function __construct() {
-
-	}
-
-	function M_Shortcodes() {
-
-		add_filter('the_content', array(&$this, 'override_shortcodes'), 1);
-
-	}
-
 	function admin_sidebar($data) {
 		?>
 		<li class='level-draggable' id='shortcodes' <?php if($data === true) echo "style='display:none;'"; ?>>
@@ -1034,6 +952,10 @@ class M_Shortcodes extends M_Rule {
 			</div>
 		</div>
 		<?php
+	}
+
+	function on_creation() {
+		add_filter('the_content', array(&$this, 'override_shortcodes'), 1);
 	}
 
 	function on_positive($data) {
