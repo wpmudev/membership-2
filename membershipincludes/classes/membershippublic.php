@@ -223,7 +223,7 @@ if(!class_exists('membershippublic')) {
 							$file = $wp_query->query_vars['protectedfile'];
 							$this->output_file($file);
 						} else {
-							$this->show_noaccess_page($wp_query);
+							$this->show_noaccess_page($wp_query, true);
 						}
 					} else {
 						// it's not protected so grab and display it
@@ -401,9 +401,13 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function show_noaccess_page($wp_query) {
+		function show_noaccess_page($wp_query, $forceviewing = false) {
 
 			global $M_options;
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				return;
+			}
 
 			if(!empty($M_options['nocontent_page'])) {
 				// grab the content form the no content page
