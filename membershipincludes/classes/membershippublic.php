@@ -158,9 +158,6 @@ if(!class_exists('membershippublic')) {
 							$member->assign_level($M_options['strangerlevel'], true );
 						} else {
 							// This user can't access anything on the site - show a blank feed.
-							//add_action('pre_get_posts', array(&$this, 'show_noaccess_feed'), 1 );
-							//the_posts
-							//nocontent_page
 							add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
 						}
 					}
@@ -173,8 +170,6 @@ if(!class_exists('membershippublic')) {
 						$member->assign_level($M_options['strangerlevel'], true );
 					} else {
 						// This user can't access anything on the site - show a blank feed.
-						//add_action('pre_get_posts', array(&$this, 'show_noaccess_feed'), 1 );
-						//the_posts
 						add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
 					}
 				}
