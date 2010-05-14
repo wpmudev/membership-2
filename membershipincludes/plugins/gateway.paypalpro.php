@@ -179,6 +179,7 @@ class paypalpro extends M_Gateway {
 
 }
 
-M_register_gateway('paypalpro', 'paypalpro');
+// Register this payment gateway when completed
+//M_register_gateway('paypalpro', 'paypalpro');
 
 ?>

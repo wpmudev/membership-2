@@ -13,7 +13,108 @@ class paypalexpress extends M_Gateway {
 	}
 
 	function mysettings() {
-		echo "<p>" . __('Placeholder : The settings for the PayPal Express payment gateway will be here.','membership') . "</p>";
+
+		$paypal_key = get_option($this->gateway . '_paypal_key');
+
+		?>
+		<table class="form-table">
+		<tbody>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('PayPal Email', 'membership') ?></th>
+		  <td><input type="text" name="supporter_paypal_email" value="<?php esc_attr_e(get_option( $this->gateway . "_supporter_paypal_email" )); ?>" />
+		  <br />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('PayPal Site', 'membership') ?></th>
+		  <td><select name="supporter_paypal_site">
+		  <?php
+		      $supporter_paypal_site = get_option( $this->gateway . "_supporter_paypal_site" );
+		      $sel_locale = empty($supporter_paypal_site) ? 'US' : $supporter_paypal_site;
+		      $locales = array(
+		          'AU'	=> 'Australia',
+		          'AT'	=> 'Austria',
+		          'BE'	=> 'Belgium',
+		          'CA'	=> 'Canada',
+		          'CN'	=> 'China',
+		          'FR'	=> 'France',
+		          'DE'	=> 'Germany',
+		          'HK'	=> 'Hong Kong',
+		          'IT'	=> 'Italy',
+		          'MX'	=> 'Mexico',
+		          'NL'	=> 'Netherlands',
+		          'PL'	=> 'Poland',
+		          'SG'	=> 'Singapore',
+		          'ES'	=> 'Spain',
+		          'SE'	=> 'Sweden',
+		          'CH'	=> 'Switzerland',
+		          'GB'	=> 'United Kingdom',
+		          'US'	=> 'United States'
+		          );
+
+		      foreach ($locales as $key => $value) {
+					echo '<option value="' . esc_attr($key) . '"';
+		 			if($key == $sel_locale) echo 'selected="selected"';
+		 			echo '>' . esc_html($value) . '</option>' . "\n";
+		      }
+		  ?>
+		  </select>
+		  <br />
+		  <?php //_e('Format: 00.00 - Ex: 1.25', 'supporter') ?></td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Paypal Currency', 'membership') ?></th>
+		  <td><select name="supporter_currency">
+		  <?php
+		  $supporter_currency = get_option( $this->gateway . "_supporter_currency" );
+		      $sel_currency = empty($supporter_currency) ? 'USD' : $supporter_currency;
+		      $currencies = array(
+		          'AUD' => 'AUD - Australian Dollar',
+		          'BRL' => 'BRL - Brazilian Real',
+		          'CAD' => 'CAD - Canadian Dollar',
+		          'CHF' => 'CHF - Swiss Franc',
+		          'CZK' => 'CZK - Czech Koruna',
+		          'DKK' => 'DKK - Danish Krone',
+		          'EUR' => 'EUR - Euro',
+		          'GBP' => 'GBP - Pound Sterling',
+		          'ILS' => 'ILS - Israeli Shekel',
+		          'HKD' => 'HKD - Hong Kong Dollar',
+		          'HUF' => 'HUF - Hungarian Forint',
+		          'JPY' => 'JPY - Japanese Yen',
+		          'MYR' => 'MYR - Malaysian Ringgits',
+		          'MXN' => 'MXN - Mexican Peso',
+		          'NOK' => 'NOK - Norwegian Krone',
+		          'NZD' => 'NZD - New Zealand Dollar',
+		          'PHP' => 'PHP - Philippine Pesos',
+		          'PLN' => 'PLN - Polish Zloty',
+		          'SEK' => 'SEK - Swedish Krona',
+		          'SGD' => 'SGD - Singapore Dollar',
+		          'TWD' => 'TWD - Taiwan New Dollars',
+		          'THB' => 'THB - Thai Baht',
+		          'USD' => 'USD - U.S. Dollar'
+		      );
+
+		      foreach ($currencies as $key => $vvalue) {
+					echo '<option value="' . esc_attr($key) . '"';
+					if($key == $sel_locale) echo 'selected="selected"';
+					echo '>' . esc_html($value) . '</option>' . "\n";
+		      }
+		  ?>
+		  </select>
+		  <br /><?php //_e('') ?></td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('PayPal Mode', 'membership') ?></th>
+		  <td><select name="supporter_paypal_status">
+		  <option value="live" <?php if (get_option( $this->gateway . "_supporter_paypal_status" ) == 'live') echo 'selected="selected"'; ?>><?php _e('Live Site', 'membership') ?></option>
+		  <option value="test" <?php if (get_option( $this->gateway . "_supporter_paypal_status" ) == 'test') echo 'selected="selected"'; ?>><?php _e('Test Mode (Sandbox)', 'membership') ?></option>
+		  </select>
+		  <br />
+		  </td>
+		  </tr>
+		</tbody>
+		</table>
+		<?php
 	}
 
 	function get_transactions($type, $startat, $num) {
@@ -168,6 +269,10 @@ class paypalexpress extends M_Gateway {
 	}
 
 	function update() {
+
+		if(isset($_POST['paypal_key'])) {
+			update_option($this->gateway . '_paypal_key', $_POST['paypal_key']);
+		}
 
 		// default action is to return true
 		return true;
