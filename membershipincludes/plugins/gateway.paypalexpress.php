@@ -14,23 +14,21 @@ class paypalexpress extends M_Gateway {
 
 	function mysettings() {
 
-		$paypal_key = get_option($this->gateway . '_paypal_key');
-
 		?>
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('PayPal Email', 'membership') ?></th>
-		  <td><input type="text" name="supporter_paypal_email" value="<?php esc_attr_e(get_option( $this->gateway . "_supporter_paypal_email" )); ?>" />
+		  <td><input type="text" name="paypal_email" value="<?php esc_attr_e(get_option( $this->gateway . "_paypal_email" )); ?>" />
 		  <br />
 		  </td>
 		  </tr>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('PayPal Site', 'membership') ?></th>
-		  <td><select name="supporter_paypal_site">
+		  <td><select name="paypal_site">
 		  <?php
-		      $supporter_paypal_site = get_option( $this->gateway . "_supporter_paypal_site" );
-		      $sel_locale = empty($supporter_paypal_site) ? 'US' : $supporter_paypal_site;
+		      $paypal_site = get_option( $this->gateway . "_paypal_site" );
+		      $sel_locale = empty($paypal_site) ? 'US' : $paypal_site;
 		      $locales = array(
 		          'AU'	=> 'Australia',
 		          'AT'	=> 'Austria',
@@ -64,10 +62,10 @@ class paypalexpress extends M_Gateway {
 		  </tr>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Paypal Currency', 'membership') ?></th>
-		  <td><select name="supporter_currency">
+		  <td><select name="currency">
 		  <?php
-		  $supporter_currency = get_option( $this->gateway . "_supporter_currency" );
-		      $sel_currency = empty($supporter_currency) ? 'USD' : $supporter_currency;
+		  $currency = get_option( $this->gateway . "_currency" );
+		      $sel_currency = empty($currency) ? 'USD' : $currency;
 		      $currencies = array(
 		          'AUD' => 'AUD - Australian Dollar',
 		          'BRL' => 'BRL - Brazilian Real',
@@ -94,9 +92,9 @@ class paypalexpress extends M_Gateway {
 		          'USD' => 'USD - U.S. Dollar'
 		      );
 
-		      foreach ($currencies as $key => $vvalue) {
+		      foreach ($currencies as $key => $value) {
 					echo '<option value="' . esc_attr($key) . '"';
-					if($key == $sel_locale) echo 'selected="selected"';
+					if($key == $sel_currency) echo 'selected="selected"';
 					echo '>' . esc_html($value) . '</option>' . "\n";
 		      }
 		  ?>
@@ -105,9 +103,9 @@ class paypalexpress extends M_Gateway {
 		  </tr>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('PayPal Mode', 'membership') ?></th>
-		  <td><select name="supporter_paypal_status">
-		  <option value="live" <?php if (get_option( $this->gateway . "_supporter_paypal_status" ) == 'live') echo 'selected="selected"'; ?>><?php _e('Live Site', 'membership') ?></option>
-		  <option value="test" <?php if (get_option( $this->gateway . "_supporter_paypal_status" ) == 'test') echo 'selected="selected"'; ?>><?php _e('Test Mode (Sandbox)', 'membership') ?></option>
+		  <td><select name="paypal_status">
+		  <option value="live" <?php if (get_option( $this->gateway . "_paypal_status" ) == 'live') echo 'selected="selected"'; ?>><?php _e('Live Site', 'membership') ?></option>
+		  <option value="test" <?php if (get_option( $this->gateway . "_paypal_status" ) == 'test') echo 'selected="selected"'; ?>><?php _e('Test Mode (Sandbox)', 'membership') ?></option>
 		  </select>
 		  <br />
 		  </td>
@@ -270,8 +268,11 @@ class paypalexpress extends M_Gateway {
 
 	function update() {
 
-		if(isset($_POST['paypal_key'])) {
-			update_option($this->gateway . '_paypal_key', $_POST['paypal_key']);
+		if(isset($_POST['paypal_email'])) {
+			update_option( $this->gateway . "_paypal_email", $_POST[ 'paypal_email' ] );
+			update_option( $this->gateway . "_paypal_site", $_POST[ 'paypal_site' ] );
+			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
+			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
 		}
 
 		// default action is to return true
