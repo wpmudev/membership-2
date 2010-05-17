@@ -3123,7 +3123,7 @@ if(!class_exists('membershipadmin')) {
 
 			$new_rules = apply_filters('M_rewrite_rules', $new_rules);
 
-		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+		  	$wp_rewrite->rules = array_merge((array) $new_rules, (array) $wp_rewrite->rules);
 
 			return $wp_rewrite;
 		}
