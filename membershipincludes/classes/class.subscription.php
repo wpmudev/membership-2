@@ -57,6 +57,19 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function transition_from($level_id, $order_id) {
+
+			$next = $this->get_next_level($level_id, $order_id);
+
+			if($next) {
+
+			} else {
+				// no next level so we return false for an expire.
+				return false;
+			}
+
+		}
+
 		// Gets
 
 		function get_next_level($level_id, $order_id) {
@@ -87,14 +100,14 @@ if(!class_exists('M_Subscription')) {
 					switch($this->levels[$onkey]->sub_type) {
 						case 'finite':		// we attempt to move to the next level
 											if(isset($this->levels[(int) $onkey + 1])) {
-												return $this->levels[(int) $onkey + 1]->level_id;
+												return $this->levels[(int) $onkey + 1];
 											} else {
 												return false;
 											}
 						case 'indefinite':	// we stay at our current level
-											return $this->levels[$onkey]->level_id;
+											return $this->levels[$onkey];
 						case 'serial':		// we renew at our current level
-											return $this->levels[$onkey]->level_id;
+											return $this->levels[$onkey];
 					}
 
 

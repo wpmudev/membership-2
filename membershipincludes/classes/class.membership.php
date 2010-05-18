@@ -43,7 +43,36 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function transition_from($level_id, $order_id) {
+
+			$next = $this->get_next_level($level_id, $order_id);
+
+			if($next) {
+				// we have a next level
+			} else {
+				// no next level so we return false for an expire.
+				return false;
+			}
+
+		}
+
 		function transition_through_subscription() {
+
+			$relationships = $this->get_relationships();
+
+			if($relationships) {
+				foreach($relationships as $key => $rel) {
+
+					if(mysql2date("U", $rel->exprirydate) <= time()) {
+						// expired, we need to move forwards
+
+					} else {
+						// not expired we can ignore this for now
+						continue;
+					}
+
+				}
+			}
 
 		}
 
@@ -85,6 +114,20 @@ if(!class_exists('M_Membership')) {
 			}
 
 			return $this->levids;
+
+		}
+
+		function get_relationships() {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id != 0", $this->ID );
+
+			$result = $this->db->get_results( $sql );
+
+			if(empty($result)) {
+				return false;
+			} else {
+				return $result;
+			}
 
 		}
 
