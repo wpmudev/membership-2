@@ -179,6 +179,6 @@ class amazon extends M_Gateway {
 
 }
 
-M_register_gateway('amazon', 'amazon');
+//M_register_gateway('amazon', 'amazon');
 
 ?>
