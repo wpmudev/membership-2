@@ -43,6 +43,25 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function transition_through_subscription() {
+
+		}
+
+		function get_next_subscription_level($sub_id, $current_level) {
+
+		}
+
+		function expire_subscription($sub_id = false) {
+
+			if(!$sub_id) {
+				// expire all of the current subscriptions
+			} else {
+				// expire just the passed subscription
+
+			}
+
+		}
+
 		function get_subscription_ids() {
 
 			if(empty($this->subids)) {

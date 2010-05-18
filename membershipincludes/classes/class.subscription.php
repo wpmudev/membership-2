@@ -59,6 +59,55 @@ if(!class_exists('M_Subscription')) {
 
 		// Gets
 
+		function get_next_level($level_id, $order_id) {
+			// returns the next level - if there is one
+			if(empty($this->levels)) {
+				$this->levels = $this->get_levels();
+			}
+
+			if(!empty($this->levels)) {
+				$onkey = false;
+				foreach($this->levels as $key => $level) {
+					if($level->level_order == $order_id) {
+						// This is the order we are at - check the level_id
+						if($level->level_id == $level_id) {
+							// sweet - nobody has been messing around with the subscription
+							$onkey = $key;
+						} else {
+							// We're not on the right level, but this is location we should be at
+							// return the key for this level and hope for the best I guess
+							$onkey = $key;
+						}
+						break;
+					}
+				}
+
+				if($onkey) {
+					// we have a key for our current position, check it's mode / period and pos next level
+					switch($this->levels[$onkey]->sub_type) {
+						case 'finite':		// we attempt to move to the next level
+											if(isset($this->levels[(int) $onkey + 1])) {
+												return $this->levels[(int) $onkey + 1]->level_id;
+											} else {
+												return false;
+											}
+						case 'indefinite':	// we stay at our current level
+											return $this->levels[$onkey]->level_id;
+						case 'serial':		// we renew at our current level
+											return $this->levels[$onkey]->level_id;
+					}
+
+
+				} else {
+					return false;
+				}
+
+			} else {
+				return false;
+			}
+		}
+
+
 		function get() {
 
 			if($this->dirty) {
