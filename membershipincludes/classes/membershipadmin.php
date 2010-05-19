@@ -1235,6 +1235,8 @@ if(!class_exists('membershipadmin')) {
 
 				$M_options['moretagmessage'] = $_POST['moretagmessage'];
 
+				$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
+
 				update_option('membership_options', $M_options);
 
 				// flush rewrites if required
@@ -1503,73 +1505,56 @@ if(!class_exists('membershipadmin')) {
 					</table>
 
 					<h3><?php _e('Payments currency','membership'); ?></h3>
-					<p><?php _e('Content placed after the More tag in a post or page can be protected by setting the visibility below. This setting can be overridden within each individual level.','membership'); ?></p>
+					<p><?php _e('This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
 						<tr valign="top">
-							<th scope="row"><?php _e('Show content after the More tag','membership'); ?></th>
+							<th scope="row"><?php _e('Payment currencys','membership'); ?></th>
 							<td>
-								<select name='moretagdefault' id='moretagdefault'>
-									<option value="yes" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - More tag content is visible','membership'); ?></option>
-									<option value="no" <?php if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - More tag content not visible','membership'); ?></option>
-								</select>
-							</td>
-						</tr>
+								<select name="paymentcurrency">
+								  <?php
+								  	$currency = $M_options['paymentcurrency'];
+								    $sel_currency = empty($currency) ? 'USD' : $currency;
+								    $currencies = array(
+								          'AUD' => 'AUD - Australian Dollar',
+								          'BRL' => 'BRL - Brazilian Real',
+								          'CAD' => 'CAD - Canadian Dollar',
+								          'CHF' => 'CHF - Swiss Franc',
+								          'CZK' => 'CZK - Czech Koruna',
+								          'DKK' => 'DKK - Danish Krone',
+								          'EUR' => 'EUR - Euro',
+								          'GBP' => 'GBP - Pound Sterling',
+								          'ILS' => 'ILS - Israeli Shekel',
+								          'HKD' => 'HKD - Hong Kong Dollar',
+								          'HUF' => 'HUF - Hungarian Forint',
+								          'JPY' => 'JPY - Japanese Yen',
+								          'MYR' => 'MYR - Malaysian Ringgits',
+								          'MXN' => 'MXN - Mexican Peso',
+								          'NOK' => 'NOK - Norwegian Krone',
+								          'NZD' => 'NZD - New Zealand Dollar',
+								          'PHP' => 'PHP - Philippine Pesos',
+								          'PLN' => 'PLN - Polish Zloty',
+								          'SEK' => 'SEK - Swedish Krona',
+								          'SGD' => 'SGD - Singapore Dollar',
+								          'TWD' => 'TWD - Taiwan New Dollars',
+								          'THB' => 'THB - Thai Baht',
+								          'USD' => 'USD - U.S. Dollar'
+								      );
 
-						<tr valign="top">
-							<th scope="row"><?php _e('No access message','membership'); ?><br/>
-							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the moretag can't be shown.",'membership'); ?><br/>
-							<?php _e("Leave blank for no message.",'membership'); ?><br/>
-							<?php _e("HTML allowed.",'membership'); ?>
-							</em>
-							</th>
-							<td>
-								<textarea name='moretagmessage' id='moretagmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['moretagmessage'])); ?></textarea>
+										$currencies = apply_filters('membership_available_currencies', $currencies);
+
+								      foreach ($currencies as $key => $value) {
+											echo '<option value="' . esc_attr($key) . '"';
+											if($key == $sel_currency) echo 'selected="selected"';
+											echo '>' . esc_html($value) . '</option>' . "\n";
+								      }
+								  ?>
+								  </select>
 							</td>
 						</tr>
 					</tbody>
 					</table>
-
-					<!--
-					<select name="currency">
-					  <?php
-					  $currency = get_option( $this->gateway . "_currency" );
-					      $sel_currency = empty($currency) ? 'USD' : $currency;
-					      $currencies = array(
-					          'AUD' => 'AUD - Australian Dollar',
-					          'BRL' => 'BRL - Brazilian Real',
-					          'CAD' => 'CAD - Canadian Dollar',
-					          'CHF' => 'CHF - Swiss Franc',
-					          'CZK' => 'CZK - Czech Koruna',
-					          'DKK' => 'DKK - Danish Krone',
-					          'EUR' => 'EUR - Euro',
-					          'GBP' => 'GBP - Pound Sterling',
-					          'ILS' => 'ILS - Israeli Shekel',
-					          'HKD' => 'HKD - Hong Kong Dollar',
-					          'HUF' => 'HUF - Hungarian Forint',
-					          'JPY' => 'JPY - Japanese Yen',
-					          'MYR' => 'MYR - Malaysian Ringgits',
-					          'MXN' => 'MXN - Mexican Peso',
-					          'NOK' => 'NOK - Norwegian Krone',
-					          'NZD' => 'NZD - New Zealand Dollar',
-					          'PHP' => 'PHP - Philippine Pesos',
-					          'PLN' => 'PLN - Polish Zloty',
-					          'SEK' => 'SEK - Swedish Krona',
-					          'SGD' => 'SGD - Singapore Dollar',
-					          'TWD' => 'TWD - Taiwan New Dollars',
-					          'THB' => 'THB - Thai Baht',
-					          'USD' => 'USD - U.S. Dollar'
-					      );
-
-					      foreach ($currencies as $key => $value) {
-								echo '<option value="' . esc_attr($key) . '"';
-								if($key == $sel_currency) echo 'selected="selected"';
-								echo '>' . esc_html($value) . '</option>' . "\n";
-					      }
-					  ?>
-					  </select>
-					-->
 
 					<p class="submit">
 						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />

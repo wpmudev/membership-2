@@ -337,6 +337,9 @@ if(!class_exists('M_Subscription')) {
 		// For display
 
 		function sub_template() {
+
+			global $M_options;
+
 			?>
 			<li class='sortable-levels' id="%templateid%" >
 				<div class='joiningline'>&nbsp;</div>
@@ -374,6 +377,14 @@ if(!class_exists('M_Subscription')) {
 								}
 							?>
 						</select>&nbsp;
+						<?php
+							if(!empty($M_options['paymentcurrency'])) {
+								echo esc_html($M_options['paymentcurrency']);
+							} else {
+								$M_options['paymentcurrency'] = 'USD';
+								echo esc_html($M_options['paymentcurrency']);
+							}
+						?>
 						<!--
 						<select name='levelcurrency[%level%]'>
 							<option value=''></option>
@@ -399,6 +410,8 @@ if(!class_exists('M_Subscription')) {
 		}
 
 		function sub_details() {
+
+			global $M_options;
 
 			$count = 1;
 
@@ -448,6 +461,14 @@ if(!class_exists('M_Subscription')) {
 										}
 									?>
 								</select>&nbsp;
+								<?php
+									if(!empty($M_options['paymentcurrency'])) {
+										echo esc_html($M_options['paymentcurrency']);
+									} else {
+										$M_options['paymentcurrency'] = 'USD';
+										echo esc_html($M_options['paymentcurrency']);
+									}
+								?>
 								<!--
 								<select name='levelcurrency[<?php echo $levelid; ?>]'>
 									<option value=''></option>
