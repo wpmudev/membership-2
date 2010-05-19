@@ -385,14 +385,6 @@ if(!class_exists('M_Subscription')) {
 								echo esc_html($M_options['paymentcurrency']);
 							}
 						?>
-						<!--
-						<select name='levelcurrency[%level%]'>
-							<option value=''></option>
-							<option value='USD'>USD</option>
-							<option value='EURO'>EURO</option>
-							<option value='GBP'>GBP</option>
-						</select>
-						-->
 						</div>
 						<div class='levelinformation' style='float: right;'>
 							<p class='description'>
@@ -469,14 +461,6 @@ if(!class_exists('M_Subscription')) {
 										echo esc_html($M_options['paymentcurrency']);
 									}
 								?>
-								<!--
-								<select name='levelcurrency[<?php echo $levelid; ?>]'>
-									<option value=''></option>
-									<option value='USD' <?php if($level->level_currency == 'USD') echo "selected='selected'"; ?>>USD</option>
-									<option value='EURO' <?php if($level->level_currency == 'EURO') echo "selected='selected'"; ?>>EURO</option>
-									<option value='GBP' <?php if($level->level_currency == 'GBP') echo "selected='selected'"; ?>>GBP</option>
-								</select>
-								-->
 								</div>
 								<div class='levelinformation' style='float: right;'>
 									<p class='description'>

@@ -45,9 +45,18 @@ if(!class_exists('M_Membership')) {
 
 		function move_to($sub_id, $thislevel_id, $thislevel_order, $nextlevel) {
 
-			$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order),
-															   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
+			if($this->on_sub($fromsub_id)) {
 
+				if($nextlevel) {
+					$start = current_time('mysql');
+					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $nextlevel->level_period . ' days', strtotime($start) ));
+
+					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires),
+																	   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
+
+				}
+
+			}
 		}
 
 		function transition_through_subscription() {
@@ -87,9 +96,10 @@ if(!class_exists('M_Membership')) {
 
 			if(!$sub_id) {
 				// expire all of the current subscriptions
+				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d", $this->ID ));
 			} else {
 				// expire just the passed subscription
-
+				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
 			}
 
 		}
@@ -199,7 +209,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false) {
-			// TODO: need to add in expiry date
+
 			if(!$this->on_sub($tosub_id)) {
 
 				// grab the level information for this position
@@ -227,7 +237,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function move_subscription($fromsub_id, $tosub_id, $tolevel_id, $to_order) {
-			// TODO: need to add in expiry date
+
 			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
 
 				// grab the level information for this position
@@ -239,8 +249,6 @@ if(!class_exists('M_Membership')) {
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
-
-					//$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires));
 				}
 
 			}
