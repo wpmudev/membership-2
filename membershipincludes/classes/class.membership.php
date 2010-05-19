@@ -199,7 +199,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function add_subscription($tosub_id, $tolevel_id = false) {
-
+			// TODO: need to add in expiry date
 			if(!$this->on_sub($tosub_id)) {
 				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => current_time('mysql'), 'updateddate' => current_time('mysql')));
 
@@ -218,7 +218,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function move_subscription($fromsub_id, $tosub_id, $tolevel_id) {
-
+			// TODO: need to add in expiry date
 			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
 				$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => current_time('mysql')), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 			}
