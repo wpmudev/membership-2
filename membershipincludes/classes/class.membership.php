@@ -198,10 +198,19 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function add_subscription($tosub_id, $tolevel_id = false) {
+		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false) {
 			// TODO: need to add in expiry date
 			if(!$this->on_sub($tosub_id)) {
-				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => current_time('mysql'), 'updateddate' => current_time('mysql')));
+
+				// grab the level information for this position
+				$subscription = new M_Subscription( $tosub_id );
+				$level = $subscription->get_level_at($tolevel_id, $to_order);
+
+				if($level) {
+					$start = current_time('mysql');
+					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
+					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires));
+				}
 
 			}
 
@@ -217,10 +226,23 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function move_subscription($fromsub_id, $tosub_id, $tolevel_id) {
+		function move_subscription($fromsub_id, $tosub_id, $tolevel_id, $to_order) {
 			// TODO: need to add in expiry date
 			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
-				$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => current_time('mysql')), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
+
+				// grab the level information for this position
+				$subscription = new M_Subscription( $tosub_id );
+				$level = $subscription->get_level_at($tolevel_id, $to_order);
+
+				if($level) {
+					$start = current_time('mysql');
+					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
+
+					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
+
+					//$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires));
+				}
+
 			}
 
 		}

@@ -132,6 +132,14 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function get_level_at($level_id, $level_order) {
+			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d AND level_id = %d AND level_order = %d ORDER BY level_order ASC", $this->id, $level_id, $level_order );
+
+			$this->levels = $this->db->get_row( $sql );
+
+			return $this->levels;
+		}
+
 		function toggleactivation( $force = false ) {
 
 			if($force) {
@@ -346,7 +354,6 @@ if(!class_exists('M_Subscription')) {
 						</select>
 						<label for='levelperiod[%level%]'><?php _e('Period : ','membership'); ?></label>
 						<select name='levelperiod[%level%]'>
-							<option value=''></option>
 							<?php
 								for($n = 1; $n <= 365; $n++) {
 									?>
@@ -367,12 +374,14 @@ if(!class_exists('M_Subscription')) {
 								}
 							?>
 						</select>&nbsp;
+						<!--
 						<select name='levelcurrency[%level%]'>
 							<option value=''></option>
 							<option value='USD'>USD</option>
 							<option value='EURO'>EURO</option>
 							<option value='GBP'>GBP</option>
 						</select>
+						-->
 						</div>
 						<div class='levelinformation' style='float: right;'>
 							<p class='description'>
@@ -419,7 +428,6 @@ if(!class_exists('M_Subscription')) {
 								</select>
 								<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
 								<select name='levelperiod[<?php echo $levelid; ?>]'>
-									<option value=''></option>
 									<?php
 										for($n = 1; $n <= 365; $n++) {
 											?>
@@ -440,12 +448,14 @@ if(!class_exists('M_Subscription')) {
 										}
 									?>
 								</select>&nbsp;
+								<!--
 								<select name='levelcurrency[<?php echo $levelid; ?>]'>
 									<option value=''></option>
 									<option value='USD' <?php if($level->level_currency == 'USD') echo "selected='selected'"; ?>>USD</option>
 									<option value='EURO' <?php if($level->level_currency == 'EURO') echo "selected='selected'"; ?>>EURO</option>
 									<option value='GBP' <?php if($level->level_currency == 'GBP') echo "selected='selected'"; ?>>GBP</option>
 								</select>
+								-->
 								</div>
 								<div class='levelinformation' style='float: right;'>
 									<p class='description'>
