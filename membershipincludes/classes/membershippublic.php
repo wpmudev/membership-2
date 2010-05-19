@@ -189,6 +189,7 @@ if(!class_exists('membershippublic')) {
 						$member->assign_level($M_options['strangerlevel'], true );
 					} else {
 						// This user can't access anything on the site - redirect them to a signup page.
+						add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
 						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
 					}
 				}
@@ -464,6 +465,12 @@ if(!class_exists('membershippublic')) {
 				 */
 				die();
 			}
+
+		}
+
+		function close_comments($open, $postid) {
+
+			return false;
 
 		}
 
