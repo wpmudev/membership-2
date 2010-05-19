@@ -43,16 +43,10 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
-		function transition_from($level_id, $order_id) {
+		function move_to($sub_id, $thislevel_id, $thislevel_order, $nextlevel) {
 
-			$next = $this->get_next_level($level_id, $order_id);
-
-			if($next) {
-				// we have a next level
-			} else {
-				// no next level so we return false for an expire.
-				return false;
-			}
+			$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order),
+															   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
 
 		}
 
@@ -65,6 +59,19 @@ if(!class_exists('M_Membership')) {
 
 					if(mysql2date("U", $rel->exprirydate) <= time()) {
 						// expired, we need to move forwards
+						$subscription = new M_Subscription($rel->sub_id);
+						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
+						if($nextlevel){
+							if(empty($nextlevel->level_price)) {
+								// this is a non paid level transition so we can go head
+								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+							} else {
+								// This is a paid level transition so check for a payment
+							}
+						} else {
+							// there isn't a next level so expire this subscription
+							$this->expire_subscription($rel->sub_id);
+						}
 
 					} else {
 						// not expired we can ignore this for now
@@ -73,10 +80,6 @@ if(!class_exists('M_Membership')) {
 
 				}
 			}
-
-		}
-
-		function get_next_subscription_level($sub_id, $current_level) {
 
 		}
 

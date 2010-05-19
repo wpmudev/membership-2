@@ -57,19 +57,6 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
-		function transition_from($level_id, $order_id) {
-
-			$next = $this->get_next_level($level_id, $order_id);
-
-			if($next) {
-
-			} else {
-				// no next level so we return false for an expire.
-				return false;
-			}
-
-		}
-
 		// Gets
 
 		function get_next_level($level_id, $order_id) {
