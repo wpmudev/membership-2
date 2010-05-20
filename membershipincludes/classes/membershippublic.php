@@ -78,6 +78,12 @@ if(!class_exists('membershippublic')) {
 				add_filter('the_content', array(&$this, 'protect_download_content') );
 			}
 
+			// check for a no-access page and always filter it if needed
+			if(!empty($M_options['nocontent_page']) && $M_options['nocontent_page'] != $M_options['registration_page']) {
+				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
+				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
+			}
+
 		}
 
 		function add_queryvars($vars) {
@@ -399,6 +405,30 @@ if(!class_exists('membershippublic')) {
 
 			return array($post);
 
+		}
+
+		function hide_nocontent_page($wp_query) {
+
+			global $M_options;
+
+			// This function should remove the no access page from any menus
+			$wp_query->query_vars['post__not_in'][] = $M_options['nocontent_page'];
+			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+
+
+		}
+
+		function hide_nocontent_page_from_menu($pages) {
+
+			global $M_options;
+
+			foreach( (array) $pages as $key => $page ) {
+				if($page->ID == $M_options['nocontent_page']) {
+					unset($pages[$key]);
+				}
+			}
+
+			return $pages;
 		}
 
 		function show_noaccess_page($wp_query, $forceviewing = false) {
