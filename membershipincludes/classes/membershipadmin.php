@@ -240,7 +240,7 @@ if(!class_exists('membershipadmin')) {
 							</div>
 
 							<div class="postbox " id="dashboard_recent_comments">
-								<h3 class="hndle"><span>Recent Comments <span class="postbox-title-action"><a class="edit-box open-box" href="/wp-admin/index.php?edit=dashboard_recent_comments#dashboard_recent_comments">Configure</a></span></span></h3>
+								<h3 class="hndle"><span><?php _e('Shortcuts','membership'); ?></span></h3>
 								<div class="inside">
 									<br class="clear">
 								</div>
@@ -253,8 +253,16 @@ if(!class_exists('membershipadmin')) {
 						<div class="meta-box-sortables ui-sortable" id="side-sortables">
 
 							<div class="postbox " id="dashboard_quick_press">
-								<h3 class="hndle"><span>QuickPress</span></h3>
+								<h3 class="hndle"><span><?php _e('Statistics','membership'); ?></span></h3>
 								<div class="inside">
+									<br class="clear">
+								</div>
+							</div>
+
+							<div class="postbox " id="dashboard_quick_press">
+								<h3 class="hndle"><span><?php _e('News','membership'); ?></span></h3>
+								<div class="inside">
+									<br class="clear">
 								</div>
 							</div>
 
