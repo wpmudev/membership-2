@@ -33,6 +33,8 @@ if(!class_exists('membershipadmin')) {
 
 			add_action('admin_menu', array(&$this, 'add_admin_menu'));
 
+			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
+
 			// Header actions
 			add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
 			add_action('load-membership_page_members', array(&$this, 'add_admin_header_members'));
@@ -58,6 +60,16 @@ if(!class_exists('membershipadmin')) {
 
 		function membershipadmin() {
 			$this->__construct();
+		}
+
+		function load_textdomain() {
+
+			$locale = apply_filters( 'membership_locale', get_locale() );
+			$mofile = membership_dir( "membershipincludes/membership-$locale.mo" );
+
+			if ( file_exists( $mofile ) )
+				load_textdomain( 'membership', $mofile );
+
 		}
 
 		function initialise_plugin() {
@@ -136,8 +148,13 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function add_admin_header_membership() {
+			// The dashboard - top level menu
 
+			// Load the core first
 			$this->add_admin_header_core();
+
+
+
 		}
 
 		function add_admin_header_membershiplevels() {
