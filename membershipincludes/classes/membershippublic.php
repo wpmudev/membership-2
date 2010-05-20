@@ -98,11 +98,11 @@ if(!class_exists('membershippublic')) {
 
 			if(!empty($M_options['masked_url'])) {
 				$new_rules = array( trailingslashit($M_options['masked_url']) . '(.+)' =>  'index.php?protectedfile=' . $wp_rewrite->preg_index(1) );
+
+				$new_rules = apply_filters('M_rewrite_rules', $new_rules);
+
+			  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 			}
-
-			$new_rules = apply_filters('M_rewrite_rules', $new_rules);
-
-		  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 
 			return $wp_rewrite;
 		}

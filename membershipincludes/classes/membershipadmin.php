@@ -219,6 +219,10 @@ if(!class_exists('membershipadmin')) {
 		// Panel handling functions
 		function dashboard_members() {
 
+			$plugin = get_plugin_data(membership_dir('membership.php'));
+
+			echo __('You are running the membership plugin version ','membership') . "<strong>" . $plugin['Version'] . '</strong><br/><br/>';
+
 			echo "<strong>" . __('Member counts', 'membership') . "</strong><br/>";
 
 			$detail = $this->get_subscriptions_and_levels(array('sub_status' => 'active'));
@@ -226,33 +230,101 @@ if(!class_exists('membershipadmin')) {
 
 			$levels = $this->get_membership_levels(array('level_id' => 'active'));
 
+			echo "<table style='width: 100%;'>";
+			echo "<tbody>";
+			echo "<tr>";
+			echo "<td style='width: 48%' valign='top'>";
 			if($levels) {
-				echo "<table>";
+				$levelcount = 0;
+				echo "<table style='width: 100%;'>";
 				echo "<tbody>";
 					echo "<tr>";
-					echo "<td colspan='2'>" . __('Levels','membership') . "</td>";
+					echo "<td colspan='2'><strong>" . __('Levels','membership') . "</strong></td>";
 					echo "</tr>";
 					foreach($levels as $key => $level) {
-
+						echo "<tr>";
+							echo "<td><a href='" . admin_url('admin.php?page=membershiplevels&action=edit&level_id=') . $level->id . "'>" . esc_html($level->level_title) . "</a></td>";
+							echo "<td style='text-align: right;'>" . (int) $level->level_count . "</td>";
+							$levelcount += (int) $level->level_count;
+						echo "</tr>";
 					}
-
+					echo "<tr>";
+						echo "<td>". __('Total', 'membership') . "</td>";
+						echo "<td style='text-align: right;'><strong>" . (int) $levelcount . "</strong></td>";
+					echo "</tr>";
 				echo "</tbody>";
 				echo "</table>";
 			}
+			echo "</td>";
 
+			echo "<td style='width: 48%' valign='top'>";
+			if($subs) {
+				$subcount = 0;
+				echo "<table style='width: 100%;'>";
+				echo "<tbody>";
+					echo "<tr>";
+					echo "<td colspan='2'><strong>" . __('Subscriptions','membership') . "</strong></td>";
+					echo "</tr>";
+					foreach($subs as $key => $sub) {
+						echo "<tr>";
+							echo "<td><a href='" . admin_url('admin.php?page=membershipsubs&action=edit&sub_id=') . $sub->id . "'>" . $sub->sub_name . "</a></td>";
+							echo "<td style='text-align: right;'>" . (int) $sub->sub_count . "</td>";
+							$subcount += (int) $sub->sub_count;
+						echo "</tr>";
+					}
+					echo "<tr>";
+						echo "<td>". __('Total', 'membership') . "</td>";
+						echo "<td style='text-align: right;'><strong>" . (int) $subcount . "</strong></td>";
+					echo "</tr>";
+				echo "</tbody>";
+				echo "</table>";
+			}
+			echo "</td>";
 
-			print_r($detail);
-			print_r($subs);
-			print_r($levels);
+			echo "</tr>";
+			echo "</tbody>";
+			echo "</table>";
 
+			echo "<br/><strong>" . __('User counts', 'membership') . "</strong><br/>";
+
+			echo "<table style='width: 100%;'>";
+			echo "<tbody>";
+			echo "<tr>";
+			echo "<td style='width: 48%' valign='top'>";
+
+				echo "<table style='width: 100%;'>";
+				echo "<tbody>";
+
+					$usercount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->users}") );
+
+					echo "<tr>";
+						echo "<td>" . __('Total Users', 'membership') . "</td>";
+						echo "<td style='text-align: right;'>" . $usercount . "</td>";
+					echo "</tr>";
+
+					$activecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", 'wp_membership_active' , 'yes') );
+
+					echo "<tr>";
+						echo "<td>" . __('Active Users', 'membership') . "</td>";
+						echo "<td style='text-align: right;'>" . $activecount . "</td>";
+					echo "</tr>";
+
+				echo "</tbody>";
+				echo "</table>";
+
+			echo "</td>";
+
+			echo "<td style='width: 48%' valign='top'></td>";
+
+			echo "</tr>";
+			echo "</tbody>";
+			echo "</table>";
 
 		}
 
 		function dashboard_shortcuts() {
 
-			$plugin = get_plugin_data(membership_dir('membership.php'));
 
-			echo __('You are running the membership plugin version ','membership') . "<strong>" . $plugin['Version'] . '</strong><br/>';
 
 		}
 
@@ -285,7 +357,7 @@ if(!class_exists('membershipadmin')) {
 									<br class="clear">
 								</div>
 							</div>
-
+							<!--
 							<div class="postbox " id="dashboard_recent_comments">
 								<h3 class="hndle"><span><?php _e('Shortcuts','membership'); ?></span></h3>
 								<div class="inside">
@@ -293,7 +365,7 @@ if(!class_exists('membershipadmin')) {
 									<br class="clear">
 								</div>
 							</div>
-
+							-->
 						</div>
 					</div>
 

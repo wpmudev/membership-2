@@ -70,4 +70,22 @@ function membership_upload_path() {
 	return $path;
 
 }
+
+function membership_is_active($userdata, $password) {
+	// Checks if this member is an active one.
+	if(!empty($userdata) && !is_wp_error($userdata)) {
+		$id = $userdata->ID;
+
+		if(get_usermeta($id, 'wp_membership_active', true) != 'yes') {
+			return new WP_Error('member_inactive', __('Your account is not active.', 'membership'));
+		}
+
+	}
+
+	return $userdata;
+
+}
+
+add_filter('wp_authenticate_user', 'membership_is_active', 30, 2);
+
 ?>
