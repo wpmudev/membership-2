@@ -77,7 +77,7 @@ function membership_is_active($userdata, $password) {
 		$id = $userdata->ID;
 
 		if(get_usermeta($id, 'wp_membership_active', true) != 'yes') {
-			return new WP_Error('member_inactive', __('Your account is not active.', 'membership'));
+			return new WP_Error('member_inactive', __('Sorry, this account is not active.', 'membership'));
 		}
 
 	}
