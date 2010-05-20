@@ -365,11 +365,6 @@ if(!class_exists('membershippublic')) {
 			global $M_options;
 
 			//$wp_query->query_vars['post__in'] = array(0);
-
-			if(empty($M_options['protectedmessagetitle'])) {
-				$M_options['protectedmessagetitle'] = __('No access to this content','membership');
-			}
-
 			/**
 			 * What we are going to do here, is create a fake post.  A post
 			 * that doesn't actually exist. We're gonna fill it up with
@@ -377,21 +372,30 @@ if(!class_exists('membershippublic')) {
 			 * the output from your plugin.  The questions and answers.
 			 */
 
-			$post = new stdClass;
-			$post->post_author = 1;
-			$post->post_name = 'membershipnoaccess';
-			add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-			$post->guid = get_bloginfo('wpurl');
-			$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-			$post->post_content = stripslashes($M_options['protectedmessage']);
-			$post->ID = -1;
-			$post->post_status = 'publish';
-			$post->post_type = 'post';
-			$post->comment_status = 'closed';
-			$post->ping_status = 'open';
-			$post->comment_count = 0;
-			$post->post_date = current_time('mysql');
-			$post->post_date_gmt = current_time('mysql', 1);
+			if(!empty($M_options['nocontent_page'])) {
+				// grab the content form the no content page
+				$post = get_post( $M_options['nocontent_page'] );
+			} else {
+				if(empty($M_options['protectedmessagetitle'])) {
+					$M_options['protectedmessagetitle'] = __('No access to this content','membership');
+				}
+
+				$post = new stdClass;
+				$post->post_author = 1;
+				$post->post_name = 'membershipnoaccess';
+				add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
+				$post->guid = get_bloginfo('wpurl');
+				$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
+				$post->post_content = stripslashes($M_options['protectedmessage']);
+				$post->ID = -1;
+				$post->post_status = 'publish';
+				$post->post_type = 'post';
+				$post->comment_status = 'closed';
+				$post->ping_status = 'open';
+				$post->comment_count = 0;
+				$post->post_date = current_time('mysql');
+				$post->post_date_gmt = current_time('mysql', 1);
+			}
 
 			return array($post);
 
