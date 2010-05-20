@@ -51,7 +51,7 @@ if(!class_exists('M_Membership')) {
 					$start = current_time('mysql');
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $nextlevel->level_period . ' days', strtotime($start) ));
 
-					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires),
+					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'updateddate' => $start, 'expirydate' => $expires),
 																	   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
 
 				}
@@ -100,6 +100,16 @@ if(!class_exists('M_Membership')) {
 			} else {
 				// expire just the passed subscription
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
+			}
+
+		}
+
+		function has_active_payment($sub_id = false) {
+
+			if(!$sub_id) {
+
+			} else {
+
 			}
 
 		}
@@ -248,7 +258,7 @@ if(!class_exists('M_Membership')) {
 					$start = current_time('mysql');
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 
-					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
+					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 				}
 
 			}

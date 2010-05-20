@@ -217,6 +217,52 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		// Panel handling functions
+		function dashboard_members() {
+
+			echo "<strong>" . __('Member counts', 'membership') . "</strong><br/>";
+
+			$detail = $this->get_subscriptions_and_levels(array('sub_status' => 'active'));
+			$subs = $this->get_subscriptions(array('sub_status' => 'active'));
+
+			$levels = $this->get_membership_levels(array('level_id' => 'active'));
+
+			if($levels) {
+				echo "<table>";
+				echo "<tbody>";
+					echo "<tr>";
+					echo "<td colspan='2'>" . __('Levels','membership') . "</td>";
+					echo "</tr>";
+					foreach($levels as $key => $level) {
+
+					}
+
+				echo "</tbody>";
+				echo "</table>";
+			}
+
+
+			print_r($detail);
+			print_r($subs);
+			print_r($levels);
+
+
+		}
+
+		function dashboard_shortcuts() {
+
+			$plugin = get_plugin_data(membership_dir('membership.php'));
+
+			echo __('You are running the membership plugin version ','membership') . "<strong>" . $plugin['Version'] . '</strong><br/>';
+
+		}
+
+		function dashboard_statistics() {
+
+		}
+
+		function dashboard_news() {
+
+		}
 
 		function handle_membership_panel() {
 
@@ -235,6 +281,7 @@ if(!class_exists('membershipadmin')) {
 							<div class="postbox " id="dashboard_right_now">
 								<h3 class="hndle"><span><?php _e('Members','membership'); ?></span></h3>
 								<div class="inside">
+									<?php $this->dashboard_members(); ?>
 									<br class="clear">
 								</div>
 							</div>
@@ -242,6 +289,7 @@ if(!class_exists('membershipadmin')) {
 							<div class="postbox " id="dashboard_recent_comments">
 								<h3 class="hndle"><span><?php _e('Shortcuts','membership'); ?></span></h3>
 								<div class="inside">
+									<?php $this->dashboard_shortcuts(); ?>
 									<br class="clear">
 								</div>
 							</div>
@@ -255,6 +303,7 @@ if(!class_exists('membershipadmin')) {
 							<div class="postbox " id="dashboard_quick_press">
 								<h3 class="hndle"><span><?php _e('Statistics','membership'); ?></span></h3>
 								<div class="inside">
+									<?php $this->dashboard_statistics(); ?>
 									<br class="clear">
 								</div>
 							</div>
@@ -262,6 +311,7 @@ if(!class_exists('membershipadmin')) {
 							<div class="postbox " id="dashboard_quick_press">
 								<h3 class="hndle"><span><?php _e('News','membership'); ?></span></h3>
 								<div class="inside">
+									<?php $this->dashboard_news(); ?>
 									<br class="clear">
 								</div>
 							</div>
