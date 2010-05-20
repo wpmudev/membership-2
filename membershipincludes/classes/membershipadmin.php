@@ -153,6 +153,10 @@ if(!class_exists('membershipadmin')) {
 			// Load the core first
 			$this->add_admin_header_core();
 
+			wp_enqueue_script('dashjs', membership_url('membershipincludes/js/dashboard.js'), array( 'jquery' ), $this->build);
+			wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array('widgets'), $this->build);
+
+			//wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
 
 		}
@@ -221,6 +225,56 @@ if(!class_exists('membershipadmin')) {
 				<div class="icon32" id="icon-index"><br></div>
 				<h2><?php _e('Membership dashboard','membership'); ?></h2>
 
+				<!---->
+				<div id="dashboard-widgets-wrap">
+
+				<div class="metabox-holder" id="dashboard-widgets">
+					<div style="width: 49%;" class="postbox-container">
+						<div class="meta-box-sortables ui-sortable" id="normal-sortables">
+
+							<div class="postbox " id="dashboard_right_now">
+								<div title="Click to toggle" class="handlediv"><br></div><h3 class="hndle"><span>Right Now</span></h3>
+								<div class="inside">
+									<br class="clear">
+								</div>
+							</div>
+
+							<div class="postbox " id="dashboard_recent_comments">
+								<div title="Click to toggle" class="handlediv"><br></div><h3 class="hndle"><span>Recent Comments <span class="postbox-title-action"><a class="edit-box open-box" href="/wp-admin/index.php?edit=dashboard_recent_comments#dashboard_recent_comments">Configure</a></span></span></h3>
+								<div class="inside">
+									<br class="clear">
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div style="width: 49%;" class="postbox-container">
+						<div class="meta-box-sortables ui-sortable" id="side-sortables">
+
+							<div class="postbox " id="dashboard_quick_press">
+								<div title="Click to toggle" class="handlediv"><br></div><h3 class="hndle"><span>QuickPress</span></h3>
+								<div class="inside">
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div style="display: none; width: 49%;" class="postbox-container">
+						<div class="meta-box-sortables ui-sortable" id="column3-sortables" style="">
+						</div>
+					</div>
+
+					<div style="display: none; width: 49%;" class="postbox-container">
+						<div class="meta-box-sortables ui-sortable" id="column4-sortables" style="">
+						</div>
+					</div>
+				</div>
+
+				<div class="clear"></div>
+				</div>
+				<!---->
 
 			</div> <!-- wrap -->
 			<?php
