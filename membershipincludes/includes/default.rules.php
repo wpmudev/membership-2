@@ -792,7 +792,9 @@ class M_Shortcodes extends M_Rule {
 			// Need to disable some shortcodes
 			foreach( (array) $data as $key => $code ) {
 				if(isset($M_shortcode_tags[$code]) && isset($shortcode_tags[$code])) {
-					$shortcode_tags[$code] = array(&$this, 'do_protected_shortcode');
+					if($code != 'subscriptionform') {
+						$shortcode_tags[$code] = array(&$this, 'do_protected_shortcode');
+					}
 				}
 			}
 		}

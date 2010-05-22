@@ -36,10 +36,10 @@ if(!class_exists('M_Membership')) {
 
 			$active = get_usermeta( $this->ID, $this->db->prefix . 'membership_active');
 
-			if(empty($active) || $active == 'no') {
-				return false;
-			} else {
+			if(empty($active) || $active == 'yes') {
 				return true;
+			} else {
+				return false;
 			}
 		}
 
