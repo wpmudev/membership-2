@@ -1,0 +1,179 @@
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.0-beta2-14519 */
+
+#subscriptionwrap {
+	width: 100%;
+	min-height: 100px;
+	background-color: transparent;
+	margin: 10px auto;
+	overflow: hidden;
+	border: 1px solid #CCCCCC;
+}
+
+#reg-form .formleft td label {
+    display:inline;
+  }
+  
+  #reg-form table {
+    clear: both;
+  }
+  #reg-form .error {
+    background-color: #ffebe8;
+	  border-color: #c00;
+	  border-width: 1px;
+  	border-style: solid;
+  	padding: 0.5em !important;
+  	margin: 5px 15px 2px;
+  	clear: both;
+  	-moz-border-radius: 3px;
+  	-khtml-border-radius: 3px;
+  	-webkit-border-radius: 3px;
+  	border-radius: 3px;
+  }
+  #reg-form .error ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  #reg-form .discount {
+    background-color: #C6FFB4;
+	  border-color: #008000;
+	  border-width: 1px;
+  	border-style: solid;
+  	padding: 0.5em !important;
+  	margin: 5px 15px 2px;
+  	clear: both;
+  	-moz-border-radius: 3px;
+  	-khtml-border-radius: 3px;
+  	-webkit-border-radius: 3px;
+  	border-radius: 3px;
+  }
+  #reg-form a#login_right {
+    
+  }
+  #reg-form .cctext:hover {
+    background-color: #FCEC8F;
+    border:1px solid #DFBE06;
+  }
+  #reg-form span.subads {
+    margin-left: 30px;
+    display:block;
+  }
+  #reg-form span.sub_discount {
+    margin-left: 30px;
+    display:block;
+    color: #008000;
+  }
+  #reg-form div#reg_tos {
+    width: 95%;
+    height: 150px;
+    overflow: auto;
+    background-color: white;
+    padding: 10px;
+    border: 1px inset gray;
+    color: #353535;
+    clear: both;
+  }
+  #reg-form p.pass_hint {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    font-size: 10px;
+  }
+  #reg-form a.regbutton {
+    text-decoration: none;
+  }
+#reg-signup {
+	margin: 0px;
+	padding: 0px 0px 20px;
+	float: left;
+	width: 90%;
+}
+
+#reg-form {
+	margin: 0px 0px 2em;
+	float: left;
+	width: 95%;
+	background: transparent;
+	overflow: hidden;
+	padding: 10px;
+}
+
+#reg-form .formleft {
+	margin: 0px;
+	float: left;
+	background: #FFFFFF;
+	width: 100%;
+}
+#reg-form .formright {
+	margin: 0px;
+	float: right;
+	width: 250px;
+}
+#reg-form .formleft label {
+	font-size: 13px;
+	font-weight: bold;
+	color: #111;
+	font-family: Helvetica, Arial, sans-serif;
+	display: block;
+}
+#reg-form .formleft span {
+	color: #d74746;
+	text-decoration: none;
+}
+#reg-form .regtext {
+	padding: 3px !important;
+	width: 200px;
+	margin-bottom: 20px;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	color: #111;
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+}
+#reg-form .alignleft {
+	margin: 0px;
+	padding: 0px;
+	float: left;
+	width: 45%;
+}
+#reg-form .regarea {
+	padding: 1px;
+	width: 400px;
+	margin-bottom: 20px;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	float: left;
+	height: 100px;
+	color: #111;
+	line-height: 18px;
+}
+#reg-form .formleft h2 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0px 0px 15px;
+	padding: 0px;
+	font-family: Arial, sans-serif;
+	float: left;
+	width: 100%;
+}
+#reg-form .formleft p {
+	margin: 0px 0px 15px;
+	padding: 0px;
+	float: left;
+	width: 100%;
+	font-size: 12px;
+}
+#reg-form .formleft .regbutton {
+	font-size: 15px;
+	padding: 5px 12px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+}
+#reg-form .regtext:hover {
+	padding: 3px !important;
+	width: 200px;
+	margin-bottom: 20px;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	color: #111;
+	background: #fefdd8 url(none);
+	border: 1px solid #DFBE06;
+}

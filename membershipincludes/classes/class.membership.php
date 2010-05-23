@@ -43,6 +43,34 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function is_member() {
+
+			$sql = $this->db->prepare( "SELECT count(*) FROM {$this->membership_relationships} WHERE user_id = %d", $this->ID );
+
+			$res = $this->db->get_var($sql);
+
+			if($res > 0) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+
+		function has_subscription() {
+
+			$sql = $this->db->prepare( "SELECT count(*) FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id != 0", $this->ID );
+
+			$res = $this->db->get_var($sql);
+
+			if($res > 0) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+
 		function move_to($sub_id, $thislevel_id, $thislevel_order, $nextlevel) {
 
 			if($this->on_sub($fromsub_id)) {

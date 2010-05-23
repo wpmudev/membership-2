@@ -1431,6 +1431,7 @@ if(!class_exists('membershipadmin')) {
 
 				$M_options['nocontent_page'] = $_POST['nocontent_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
+				$M_options['registration_tos'] = $_POST['registration_tos'];
 
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 				$M_options['moretagdefault'] = $_POST['moretagdefault'];

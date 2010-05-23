@@ -98,6 +98,7 @@ if(!class_exists('membershippublic')) {
 
 			// Create our subscription page shortcode
 			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
+			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 		}
 
@@ -610,9 +611,110 @@ if(!class_exists('membershippublic')) {
 
 			$content = '';
 
+			if(!is_user_logged_in()) {
+				// User not logged, lets display a account creation form.
+
+				$content .= '<div id="subscriptionwrap">';
+				$content .= '<form id="reg-form" action="' . get_permalink() . '" method="post">';
+
+				// Form
+				$content .= '<div class="formleft">';
+
+				$content .= "<h2>" . __('Step 1. Create a New Account','membership') . "</h2>";
+
+				$content .= '<a title="Login »" href="' . wp_login_url( get_permalink() ) . '" class="alignright" id="login_right">' . __('Already have a user account?' ,'membership') . '</a>';
+
+				$content .= '<p><label>' . __('Choose a Username','membership') . ' <span>*</span></label>';
+				$content .= '<input type="text" value="" class="regtext" name="user_login"></p>';
+
+				$content .= '<div class="alignleft">';
+	            $content .= '<label>' . __('Email Address','membership') . ' <span>*</span></label>';
+	            $content .= '<input type="text" value="" class="regtext" name="user_email">';
+	            $content .= '</div>';
+
+				$content .= '<div class="alignleft">';
+	            $content .= '<label>' . __('Confirm Email Address','membership') . ' <span>*</span></label>';
+	            $content .= '<input type="text" value="" class="regtext" name="user_email2">';
+	            $content .= '</div>';
+
+				$content .= '<div class="alignleft">';
+	            $content .= '<label>' . __('Password','membership') . ' <span>*</span></label>';
+	            $content .= '<input type="password" autocomplete="off" class="regtext" name="password">';
+	            $content .= '</div>';
+
+				$content .= '<div class="alignleft">';
+	            $content .= '<label>' . __('Confirm Password','membership') . ' <span>*</span></label>';
+	            $content .= '<input type="password" autocomplete="off" class="regtext" name="password2">';
+	            $content .= '</div>';
+
+				$content .= '<p class="pass_hint">' . __('Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).','membership') . '</p>';
+
+				if(function_exists('get_site_option')) {
+					$terms = get_site_option('signup_tos_data');
+				} else {
+					$terms = '';
+				}
+
+				if(!empty($terms)) {
+					$content .= '<h2>' . __('Terms and Conditions','membership') . '</h2>';
+
+					$content .= '<div id="reg_tos">';
+					$content .= '';
+					$content .= '</div>';
+					$content .= '<p><label><input type="checkbox" value="1" name="tosagree">';
+					$content .= '<strong>' . __('I agree to the Terms of Use','membership') . '</strong></label></p>';
+				}
+
+				$content .= '<p><input type="submit" value="' . __('Register My Account »','membership') . '" class="regbutton" name="register"></p>';
+
+
+
+				$content .= '</div>';
+
+				/*
+
+
+
+
+
+
+				            <h2>2 - Terms and Conditions</h2>
+				            <div id="reg_tos">
+				              <p>After pressing the register button you will be asked to select your membership level and make your payment via PayPal or Credit Card (VISA, Mastercard, Amex, Discover).</p>
+				              <p>WPMU Dev users also receive the monthly WPMU links newsletter - from which you can easily opt out at any time should you wish.</p>
+				              <p>Please note that activation time is determined by how fast PayPal decides to get back to us with your payment details - this can happen immediately or take up to a couple of hours, so our apologies for any delay and please don't hesitate to contact us if it takes longer than 2 hours.</p>
+				              <p>WPMU Dev Premium is a service provided by Incsub, LLC. and provides WordPress MU and Buddypress plugins, themes, videos and support. Due to the electronic nature of the subscription and instant access to this material, refunds cannot be made. Subscriptions can be simply canceled at any time following the instructions on the footer of every page in the site. WPMU Dev will not cancel your subscription for you.</p>
+				              <p>All plugins, themes and extras provided on WPMU Dev Premium are licensed under the GPL.</p>
+				            </div>
+				            <p><label><input type="checkbox" value="1" name="tosagree">
+				            <strong>I agree to the WPMU Dev Terms of Use</strong></label></p>
+
+				            <p><input type="submit" value="Register My Account »" class="regbutton" name="register">
+				            </p>
+				          </div>
+				*/
+
+				$content .= "</form>";
+				$content .= '</div> <!-- subscriptionwrap -->';
+			}
+
+
 			$content = apply_filters('membership_subscriptionform', $content);
 
 			return $content;
+		}
+
+		function add_subscription_styles($posts) {
+
+			foreach($posts as $key => $post) {
+				if(strstr($post->post_content, '[subscriptionform]') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+				}
+			}
+
+			return $posts;
+
 		}
 
 
