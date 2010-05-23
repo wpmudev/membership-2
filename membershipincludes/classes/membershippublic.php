@@ -693,6 +693,33 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function show_subpage_member() {
+
+			$content = '';
+
+			$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+
+			$content .= '<div class="formleft">';
+
+			$content .= "<h2>" . __('Completed: Thank you for joining','membership') . "</h2>";
+
+			$content .= '<p>';
+			$content .= __('It looks like you are already a member of our site. Thank you very much for your support.','membership');
+			$content .= '</p>';
+
+			$content .= '<p>';
+			$content .= __('If you are at this page because you would like to create another account, then please log out first.','membership');
+			$content .= '</p>';
+
+
+			$content .= '</div>';
+
+			$content .= "</div>";
+
+			return $content;
+
+		}
+
 		function do_subscription_shortcode($atts, $content = null, $code = "") {
 
 			global $wp_query;
@@ -782,8 +809,10 @@ if(!class_exists('membershippublic')) {
 
 								if($member->is_member()) {
 									// This person is a member - display already registered stuff
+									$content .= $this->show_subpage_member();
 								} else {
 									// Show page two;
+									$content .= $this->show_subpage_two();
 								}
 							}
 							break;

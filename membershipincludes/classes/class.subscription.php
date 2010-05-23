@@ -198,7 +198,7 @@ if(!class_exists('M_Subscription')) {
 				$this->update();
 			} else {
 
-				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name']));
+				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description']));
 				$this->id = $this->db->insert_id;
 
 				if(!empty($_POST['level-order'])) {
@@ -270,7 +270,7 @@ if(!class_exists('M_Subscription')) {
 				$this->add();
 			} else {
 
-				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name']), array('id' => $this->id));
+				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description']), array('id' => $this->id));
 
 				// Remove the existing rules for this subscription level
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id ) );

@@ -2420,6 +2420,11 @@ if(!class_exists('membershipadmin')) {
 								<div class='sub-details'>
 								<label for='sub_name'><?php _e('Subscription name','management'); ?></label>
 								<input class='wide' type='text' name='sub_name' id='sub_name' value='<?php echo esc_attr($sub->sub_name); ?>' />
+
+								<label for='sub_name'><?php _e('Subscription description','management'); ?></label>
+								<textarea class='wide' name='sub_description' id='sub_description'><?php echo esc_html($sub->sub_description); ?></textarea>
+
+
 								</div>
 
 								<h3><?php _e('Membership levels','membership'); ?></h3>

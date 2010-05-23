@@ -105,7 +105,7 @@ div.sub-details {
 	margin-top: 0;
 }
 
-input.wide {
+input.wide, textarea.wide {
 	margin-top: 5px;
 	width: 98%;
 	margin-left: 0;
@@ -205,7 +205,7 @@ div.sub-operation {
 }
 
 h2.sidebar-name span {
-	float: right;	
+	float: right;
 }
 h2.sidebar-name span a {
 	text-decoration: none;
