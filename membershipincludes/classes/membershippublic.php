@@ -610,6 +610,7 @@ if(!class_exists('membershippublic')) {
 
 			$content = '';
 
+			$content .= '<form id="reg-form" action="' . get_permalink() . '" method="post">';
 			$content .= '<div class="formleft">';
 
 			$content .= "<h2>" . __('Step 1. Create a New Account','membership') . "</h2>";
@@ -672,6 +673,24 @@ if(!class_exists('membershippublic')) {
 
 		function show_subpage_two() {
 
+			$content = '';
+
+			$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+
+			$content .= '<div class="formleft">';
+
+			$content .= "<h2>" . __('Step 2. Select a subscription','membership') . "</h2>";
+
+
+
+
+
+			$content .= '</div>';
+
+			$content .= "</div>";
+
+			return $content;
+
 		}
 
 		function do_subscription_shortcode($atts, $content = null, $code = "") {
@@ -684,7 +703,6 @@ if(!class_exists('membershippublic')) {
 			$page = addslashes($_REQUEST['action']);
 
 			$content .= '<div id="subscriptionwrap">';
-			$content .= '<form id="reg-form" action="' . get_permalink() . '" method="post">';
 
 			switch($page) {
 
@@ -717,13 +735,35 @@ if(!class_exists('membershippublic')) {
 										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
+									if(function_exists('get_site_option')) {
+										$terms = get_site_option('signup_tos_data');
+									} else {
+										$terms = '';
+									}
+
+									if(!empty($terms)) {
+										if(empty($_POST['tosagree'])) {
+											$error[] = __('You need to agree to the terms of service to register.','membership');
+										}
+									}
+
+									if(empty($error)) {
+										// Pre - error reporting check for final add user
+										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+
+										if(is_wp_error($user_id)) {
+											$error[] = $userid->get_error_message();
+										}
+									}
+
 									if(!empty($error)) {
 										$content .= "<div class='error'>";
 										$content .= implode('<br/>', $error);
 										$content .= "</div>";
 										$content .= $this->show_subpage_one(true);
 									} else {
-
+										// everything seems fine (so far), so lets move to page 2
+										wp_new_user_notification( $user_id, $_POST['password'] );
 									}
 
 									break;
@@ -736,6 +776,15 @@ if(!class_exists('membershippublic')) {
 								$content .= $this->show_subpage_one();
 							} else {
 								// logged in check for sub
+								$user = wp_get_current_user();
+
+								$member = new M_Membership($user->ID);
+
+								if($member->is_member()) {
+									// This person is a member - display already registered stuff
+								} else {
+									// Show page two;
+								}
 							}
 							break;
 
