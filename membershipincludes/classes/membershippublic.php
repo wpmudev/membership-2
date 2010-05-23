@@ -96,6 +96,9 @@ if(!class_exists('membershippublic')) {
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 			}
 
+			// Create our subscription page shortcode
+			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
+
 		}
 
 		function add_queryvars($vars) {
@@ -321,7 +324,6 @@ if(!class_exists('membershippublic')) {
 				$trueurl = membership_url( "membershipincludes/images/noaccess/noaccess.png" );
 			}
 
-			//die( membership_dir( "membershipincludes/images/noaccess/noaccess.png" ) );
 
 			if(!empty($file)) {
 				if ( !is_file( $file ) ) {
@@ -512,6 +514,11 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
+			if(!empty($wp_query->queried_object_id) && !empty($M_options['registration_page']) && $wp_query->queried_object_id == $M_options['registration_page']) {
+				// We know what we are looking at, the registration page has been set and we are trying to access it
+				return;
+			}
+
 			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 				return;
 			}
@@ -596,10 +603,16 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		// Feeds protection
+		// Shortcodes
+		function do_subscription_shortcode($atts, $content = null, $code = "") {
 
-		function validate_feed_user($wp_query) {
-			//print_r($wp_query);
+			global $wp_query;
+
+			$content = '';
+
+			$content = apply_filters('membership_subscriptionform', $content);
+
+			return $content;
 		}
 
 
