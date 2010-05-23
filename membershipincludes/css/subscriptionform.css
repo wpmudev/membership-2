@@ -22,13 +22,11 @@
 	  border-width: 1px;
   	border-style: solid;
   	padding: 0.5em !important;
-  	margin: 5px 15px 2px;
+  	margin: 0 -10px 10px 0;
   	clear: both;
-  	-moz-border-radius: 3px;
-  	-khtml-border-radius: 3px;
-  	-webkit-border-radius: 3px;
-  	border-radius: 3px;
-  }
+	border-left-style: none;
+	border-right-style: none;
+}
   #reg-form .error ul {
     margin: 0;
     padding-left: 20px;
