@@ -159,6 +159,7 @@
 	width: 100%;
 	
 }
+
 #reg-form .formleft .regbutton {
 	font-size: 15px;
 	padding: 5px 12px;
@@ -174,4 +175,12 @@
 	color: #111;
 	background: #fefdd8 url(none);
 	border: 1px solid #DFBE06;
+}
+
+div.subscription {
+	overflow: hidden;
+	float: left;
+	width: 98%;
+	padding: 5px;
+	border: 1px solid #ddd;	
 }

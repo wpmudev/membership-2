@@ -57,6 +57,22 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function sub_description() {
+
+			if(empty($this->subscription)) {
+				$sub = $this->get();
+
+				if($sub) {
+					return $sub->sub_description;
+				} else {
+					return false;
+				}
+			} else {
+				return $this->subscription->sub_description;
+			}
+
+		}
+
 		// Gets
 
 		function get_next_level($level_id, $order_id) {

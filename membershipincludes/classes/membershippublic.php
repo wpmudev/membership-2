@@ -615,7 +615,7 @@ if(!class_exists('membershippublic')) {
 
 			$content .= "<h2>" . __('Step 1. Create a New Account','membership') . "</h2>";
 
-			$content .= '<a title="Login »" href="' . wp_login_url( get_permalink() ) . '" class="alignright" id="login_right">' . __('Already have a user account?' ,'membership') . '</a>';
+			$content .= '<a title="Login »" href="' . wp_login_url( add_query_arg('action', 'page2', get_permalink()) ) . '" class="alignright" id="login_right">' . __('Already have a user account?' ,'membership') . '</a>';
 
 			$content .= '<p><label>' . __('Choose a Username','membership') . ' <span>*</span></label>';
 			$content .= '<input type="text" value="' . esc_attr($_POST['user_login']) . '" class="regtext" name="user_login"></p>';
@@ -681,9 +681,28 @@ if(!class_exists('membershippublic')) {
 
 			$content .= "<h2>" . __('Step 2. Select a subscription','membership') . "</h2>";
 
+			$content .= "<p>";
+			$content .= __('Please select a subscription from the options below.','membership');
+			$content .= "</p>";
+
+			$subs = $this->get_subscriptions();
+
+			foreach((array) $subs as $key => $sub) {
+
+				$subscription = new M_Subscription($sub->id);
+
+				$content .= '<div class="subscription">';
+				$content .= '<h3>' . $subscription->sub_name() . '</h3>';
+				$content .= '<p>' . $subscription->sub_description() . '</p>';
+
+				// Add the purchase button
 
 
+				$content .= '</div>';
 
+			}
+
+			//$content .= print_r($subs, true);
 
 			$content .= '</div>';
 
@@ -796,8 +815,6 @@ if(!class_exists('membershippublic')) {
 									break;
 
 				case 'page2':
-							break;
-
 				case 'page1':
 				default:	if(!is_user_logged_in()) {
 								$content .= $this->show_subpage_one();
@@ -812,7 +829,7 @@ if(!class_exists('membershippublic')) {
 									$content .= $this->show_subpage_member();
 								} else {
 									// Show page two;
-									$content .= $this->show_subpage_two();
+									$content .= $this->show_subpage_two($user->ID);
 								}
 							}
 							break;
@@ -836,6 +853,30 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $posts;
+
+		}
+
+		//db stuff
+		function get_subscriptions() {
+
+			$where = array();
+			$orderby = array();
+
+			$where[] = "sub_public = 1";
+
+			$orderby[] = 'id ASC';
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions}");
+
+			if(!empty($where)) {
+				$sql .= " WHERE " . implode(' AND ', $where);
+			}
+
+			if(!empty($orderby)) {
+				$sql .= " ORDER BY " . implode(', ', $orderby);
+			}
+
+			return $this->db->get_results($sql);
 
 		}
 

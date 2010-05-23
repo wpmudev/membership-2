@@ -57,6 +57,7 @@ function M_Createtables() {
 	  `sub_active` int(11) default '0',
 	  `sub_public` int(11) default '0',
 	  `sub_count` bigint(20) default '0',
+	  `sub_description` text,
 	  PRIMARY KEY  (`id`)
 	);";
 
