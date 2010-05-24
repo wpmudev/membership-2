@@ -30,7 +30,7 @@ if(!class_exists('M_Membership')) {
 				$this->$table = $wpdb->prefix . $table;
 			}
 
-			$this->transition_through_subscription();
+			//$this->transition_through_subscription();
 
 		}
 
@@ -43,6 +43,10 @@ if(!class_exists('M_Membership')) {
 			} else {
 				return false;
 			}
+		}
+
+		function mark_for_expire() {
+			update_usermeta( $this->ID, '_membership_expire_next', 'yes');
 		}
 
 		function is_member() {
@@ -143,10 +147,13 @@ if(!class_exists('M_Membership')) {
 
 			if(!empty($levels)) {
 
-				$first = $levels[0]->level_id;
-				$order = $levels[0]->level_order;
+				foreach($levels as $key => $level) {
+					if($level->level_order == 1) {
 
-				$this->add_subscription($sub_id, $first, $order);
+						$this->add_subscription($sub_id, $level->level_id, $level->level_order);
+						break;
+					}
+				}
 
 				return true;
 
@@ -281,7 +288,9 @@ if(!class_exists('M_Membership')) {
 				if($level) {
 					$start = current_time('mysql');
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
-					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires));
+					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
+					//print_r($this->db->last_query);
+					//die();
 				}
 
 			}
@@ -310,7 +319,7 @@ if(!class_exists('M_Membership')) {
 					$start = current_time('mysql');
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 
-					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
+					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 				}
 
 			}

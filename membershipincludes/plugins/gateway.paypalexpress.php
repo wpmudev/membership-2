@@ -303,13 +303,13 @@ class paypalexpress extends M_Gateway {
 		switch($type) {
 
 			case 'past':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Completed', 'Processed') ORDER BY transaction_stamp DESC LIMIT %d, %d", $startat, $num );
+						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status NOT IN ('Pending', 'Future') ORDER BY transaction_ID DESC  LIMIT %d, %d", $startat, $num );
 						break;
 			case 'pending':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Pending') ORDER BY transaction_stamp DESC LIMIT %d, %d", $startat, $num );
+						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Pending') ORDER BY transaction_ID DESC LIMIT %d, %d", $startat, $num );
 						break;
 			case 'future':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Future') ORDER BY transaction_stamp DESC LIMIT %d, %d", $startat, $num );
+						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Future') ORDER BY transaction_ID DESC LIMIT %d, %d", $startat, $num );
 						break;
 
 		}
@@ -493,10 +493,8 @@ class paypalexpress extends M_Gateway {
 	// IPN stuff
 	function handle_paypal_return() {
 		// PayPal IPN handling code
+		@wp_mail('barry@caffeinatedb.com', __('Transaction'), print_r($_POST, true));
 		if ((isset($_POST['payment_status']) || isset($_POST['txn_type'])) && isset($_POST['custom'])) {
-
-			define('ABSPATH', dirname(__FILE__) . '/');
-			require_once(ABSPATH . 'wp-config.php');
 
 			if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
 				$domain = 'https://www.paypal.com';
@@ -572,7 +570,7 @@ class paypalexpress extends M_Gateway {
 				case 'Completed':
 				case 'Processed':
 					// case: successful payment
-					$amount = $_POST['payment_gross'];
+					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
@@ -585,7 +583,7 @@ class paypalexpress extends M_Gateway {
 				case 'Reversed':
 					// case: charge back
 					$note = 'Last transaction has been reversed. Reason: Payment has been reversed (charge back)';
-					$amount = $_POST['payment_gross'];
+					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
@@ -602,7 +600,7 @@ class paypalexpress extends M_Gateway {
 				case 'Refunded':
 					// case: refund
 					$note = 'Last transaction has been reversed. Reason: Payment has been refunded';
-					$amount = $_POST['payment_gross'];
+					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
@@ -618,7 +616,7 @@ class paypalexpress extends M_Gateway {
 				case 'Denied':
 					// case: denied
 					$note = 'Last transaction has been reversed. Reason: Payment Denied';
-					$amount = $_POST['payment_gross'];
+					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
@@ -647,7 +645,7 @@ class paypalexpress extends M_Gateway {
 						);
 					$reason = @$_POST['pending_reason'];
 					$note = 'Last transaction is pending. Reason: ' . (isset($pending_str[$reason]) ? $pending_str[$reason] : $pending_str['*']);
-					$amount = $_POST['payment_gross'];
+					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
@@ -663,8 +661,8 @@ class paypalexpress extends M_Gateway {
 			switch ($_POST['txn_type']) {
 				case 'subscr_signup':
 					// start the subscription
-				  	$amount = $_POST['payment_gross'];
-					$currency = $_POST['mc_currency'];
+				  	//$amount = $_POST['mc_gross'];
+					//$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					// create_subscription
@@ -677,9 +675,16 @@ class paypalexpress extends M_Gateway {
 
 				case 'subscr_cancel':
 					// mark for removal
-				  	$amount = $_POST['payment_gross'];
-					$currency = $_POST['mc_currency'];
+				  	//$amount = $_POST['mc_gross'];
+					//$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->mark_for_expire();
+					}
+
+					//mark_for_expire
 				  break;
 
 				case 'new_case':

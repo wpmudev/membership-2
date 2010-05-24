@@ -760,7 +760,20 @@ class M_Shortcodes extends M_Rule {
 	}
 
 	function on_creation() {
-		add_filter('the_content', array(&$this, 'override_shortcodes'), 1);
+		//add_filter('the_content', array(&$this, 'override_shortcodes'), 1);
+	}
+
+	function override_shortcodes() {
+
+		global $M_shortcode_tags, $shortcode_tags;
+
+		$M_shortcode_tags = $shortcode_tags;
+
+		foreach($shortcode_tags as $key => $function) {
+			$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+		}
+
+		return $content;
 	}
 
 	function on_positive($data) {
