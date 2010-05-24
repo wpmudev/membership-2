@@ -41,6 +41,22 @@ if(!class_exists('M_Subscription')) {
 
 		// Fields
 
+		function sub_id() {
+
+			if(empty($this->subscription)) {
+				$sub = $this->get();
+
+				if($sub) {
+					return $sub->id;
+				} else {
+					return false;
+				}
+			} else {
+				return $this->subscription->id;
+			}
+
+		}
+
 		function sub_name() {
 
 			if(empty($this->subscription)) {
@@ -84,7 +100,10 @@ if(!class_exists('M_Subscription')) {
 				if($level->sub_type == 'indefinite') {
 					// This will be the last item in any list
 					$prices[] = array( 'days' => 0, 'amount' => $level->level_price);
-
+					break;
+				} elseif($level->sub_type == 'serial') {
+					// This will be the last item in any list
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);
 					break;
 				} else {
 					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);

@@ -821,6 +821,7 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so lets move to page 2
 										wp_new_user_notification( $user_id, $_POST['password'] );
+										$content .= $this->show_subpage_two($user_id);
 									}
 
 									break;

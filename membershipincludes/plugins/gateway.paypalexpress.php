@@ -17,6 +17,8 @@ class paypalexpress extends M_Gateway {
 
 	function mysettings() {
 
+		global $M_options;
+
 		?>
 		<table class="form-table">
 		<tbody>
@@ -65,44 +67,11 @@ class paypalexpress extends M_Gateway {
 		  </tr>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Paypal Currency', 'membership') ?></th>
-		  <td><select name="currency">
-		  <?php
-		  $currency = get_option( $this->gateway . "_currency" );
-		      $sel_currency = empty($currency) ? 'USD' : $currency;
-		      $currencies = array(
-		          'AUD' => 'AUD - Australian Dollar',
-		          'BRL' => 'BRL - Brazilian Real',
-		          'CAD' => 'CAD - Canadian Dollar',
-		          'CHF' => 'CHF - Swiss Franc',
-		          'CZK' => 'CZK - Czech Koruna',
-		          'DKK' => 'DKK - Danish Krone',
-		          'EUR' => 'EUR - Euro',
-		          'GBP' => 'GBP - Pound Sterling',
-		          'ILS' => 'ILS - Israeli Shekel',
-		          'HKD' => 'HKD - Hong Kong Dollar',
-		          'HUF' => 'HUF - Hungarian Forint',
-		          'JPY' => 'JPY - Japanese Yen',
-		          'MYR' => 'MYR - Malaysian Ringgits',
-		          'MXN' => 'MXN - Mexican Peso',
-		          'NOK' => 'NOK - Norwegian Krone',
-		          'NZD' => 'NZD - New Zealand Dollar',
-		          'PHP' => 'PHP - Philippine Pesos',
-		          'PLN' => 'PLN - Polish Zloty',
-		          'SEK' => 'SEK - Swedish Krona',
-		          'SGD' => 'SGD - Singapore Dollar',
-		          'TWD' => 'TWD - Taiwan New Dollars',
-		          'THB' => 'THB - Thai Baht',
-		          'USD' => 'USD - U.S. Dollar'
-		      );
-
-		      foreach ($currencies as $key => $value) {
-					echo '<option value="' . esc_attr($key) . '"';
-					if($key == $sel_currency) echo 'selected="selected"';
-					echo '>' . esc_html($value) . '</option>' . "\n";
-		      }
-		  ?>
-		  </select>
-		  <br /><?php //_e('') ?></td>
+		  <td><?php
+			if(!empty($M_options['paymentcurrency'])) {
+				$M_options['paymentcurrency'] = 'USD';
+			}
+			echo esc_html($M_options['paymentcurrency']); ?></td>
 		  </tr>
 		  <tr valign="top">
 		  <th scope="row"><?php _e('PayPal Mode', 'membership') ?></th>
@@ -118,16 +87,86 @@ class paypalexpress extends M_Gateway {
 		<?php
 	}
 
+	function single_button($pricing, $subscription) {
+
+		global $M_options;
+
+		if(!empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
+			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
+		} else {
+			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
+		}
+		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
+		$form .= '<input type="hidden" name="cmd" value="_xclick">';
+		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
+		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
+		$form .= '<input type="hidden" name="amount" value="' . $pricing['amount'] . '.00">';
+		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
+		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">';
+		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
+		$form .= '</form>';
+
+		return $form;
+
+	}
+
+	function single_sub_button($pricing, $subscription) {
+
+		global $M_options;
+
+		if(!empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
+			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
+		} else {
+			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
+		}
+		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
+		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
+		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
+		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
+		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
+		$form .= '<input type="hidden" name="a3" value="' . $pricing['amount'] . '.00">';
+		$form .= '<input type="hidden" name="p3" value="' . $pricing['days'] . '.00">';
+		$form .= '<input type="hidden" name="t3" value="D"> <!-- Set recurring payments until canceled. -->';
+		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<input type="hidden" name="src" value="1">';
+		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
+		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
+		$form .= '</form>';
+
+		return $form;
+
+	}
+
 	function build_subscribe_button($subscription, $pricing) {
 
 		if(!empty($pricing)) {
 
-			if(count($pricing) == 1 && $pricing[0]['days'] == 0) {
-				// A basic price
+			if(count($pricing) == 1) {
+				// A basic price or a single subscription
+				if($pricing[0]['days'] == 0) {
+					// one-off payment
+					return $this->single_button($pricing, $subscription);
+				} else {
+					// simple subscription
+					return $this->single_sub_button($pricing, $subscription);
+				}
 			} else {
+				// something much more complex
 
 			}
-
 
 		}
 
