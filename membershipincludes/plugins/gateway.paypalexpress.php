@@ -13,6 +13,9 @@ class paypalexpress extends M_Gateway {
 
 		// Subscription form gateway
 		add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
+
+		// Payment return
+		add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
 	}
 
 	function mysettings() {
@@ -109,6 +112,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="amount" value="' . $pricing[0]['amount'] . '.00">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 		$form .= '<input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
 		$form .= '</form>';
@@ -141,6 +145,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['days'] . '">';
 		$form .= '<input type="hidden" name="t3" value="D"> <!-- Set recurring payments until canceled. -->';
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 		$form .= '<input type="hidden" name="src" value="1">';
 		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
@@ -218,6 +223,7 @@ class paypalexpress extends M_Gateway {
 
 		// Remainder of the easy bits
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
 		$form .= '</form>';
@@ -424,8 +430,189 @@ class paypalexpress extends M_Gateway {
 	}
 
 	// IPN stuff
-	function myIPN() {
+	function handle_paypal_return() {
+		// PayPal IPN handling code
+		if ((isset($_POST['payment_status']) || isset($_POST['txn_type'])) && isset($_POST['custom'])) {
 
+			define('ABSPATH', dirname(__FILE__) . '/');
+			require_once(ABSPATH . 'wp-config.php');
+
+			if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
+				$domain = 'https://www.paypal.com';
+			} else {
+				$domain = 'https://www.sandbox.paypal.com';
+			}
+
+			$req = 'cmd=_notify-validate';
+			if (!isset($_POST)) $_POST = $HTTP_POST_VARS;
+			foreach ($_POST as $k => $v) {
+				if (get_magic_quotes_gpc()) $v = stripslashes($v);
+				$req .= '&' . $k . '=' . $v;
+			}
+
+			$header = 'POST /cgi-bin/webscr HTTP/1.0' . "\r\n"
+					. 'Content-Type: application/x-www-form-urlencoded' . "\r\n"
+					. 'Content-Length: ' . strlen($req) . "\r\n"
+					. "\r\n";
+
+			@set_time_limit(60);
+			if ($conn = @fsockopen($domain, 80, $errno, $errstr, 30)) {
+				fputs($conn, $header . $req);
+				socket_set_timeout($conn, 30);
+
+				$response = '';
+				$close_connection = false;
+				while (true) {
+					if (feof($conn) || $close_connection) {
+						fclose($conn);
+						break;
+					}
+
+					$st = @fgets($conn, 4096);
+					if ($st === false) {
+						$close_connection = true;
+						continue;
+					}
+
+					$response .= $st;
+				}
+
+				$error = '';
+				$lines = explode("\n", str_replace("\r\n", "\n", $response));
+				// looking for: HTTP/1.1 200 OK
+				if (count($lines) == 0) $error = 'Response Error: Header not found';
+				else if (substr($lines[0], -7) != ' 200 OK') $error = 'Response Error: Unexpected HTTP response';
+				else {
+					// remove HTTP header
+					while (count($lines) > 0 && trim($lines[0]) != '') array_shift($lines);
+
+					// first line will be empty, second line will have the result
+					if (count($lines) < 2) $error = 'Response Error: No content found in transaction response';
+					else if (strtoupper(trim($lines[1])) != 'VERIFIED') $error = 'Response Error: Unexpected transaction response';
+				}
+
+				if ($error != '') {
+					echo $error;
+					exit;
+				}
+			}
+
+			// handle cases that the system must ignore
+			//if ($_POST['payment_status'] == 'In-Progress' || $_POST['payment_status'] == 'Partially-Refunded') exit;
+			$new_status = false;
+			// process PayPal response
+			switch ($_POST['payment_status']) {
+				case 'Partially-Refunded':
+					break;
+
+				case 'In-Progress':
+					break;
+
+				case 'Completed':
+				case 'Processed':
+					// case: successful payment
+					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+					supporter_extend($bid, $period, 'PayPal');
+					supporter_update_note($bid, '');
+
+					//if single payment update stats
+					if ($_POST['txn_type']=='web_accept')
+				    supporter_signup_stats($bid, 'single', 'signup', time());
+
+					// Added for affiliate system link
+					do_action('supporter_payment_processed', $bid, $amount, $period);
+					break;
+
+				case 'Reversed':
+					// case: charge back
+					$note = 'Last transaction has been reversed. Reason: Payment has been reversed (charge back)';
+					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+					supporter_withdraw($bid, $period);
+					supporter_update_note($bid, $note);
+
+					//if single payment update stats
+					if ($_POST['txn_type']=='web_accept')
+				    supporter_signup_stats($bid, 'single', 'cancel', time());
+
+					break;
+
+				case 'Refunded':
+					// case: refund
+					$note = 'Last transaction has been reversed. Reason: Payment has been refunded';
+					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+					supporter_withdraw($bid, $period);
+					supporter_update_note($bid, $note);
+
+					//if single payment update stats
+					if ($_POST['txn_type']=='web_accept')
+				    supporter_signup_stats($bid, 'single', 'cancel', time());
+
+					break;
+
+				case 'Denied':
+					// case: denied
+					$note = 'Last transaction has been reversed. Reason: Payment Denied';
+					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+					$paypal_ID = $_POST['parent_txn_id'];
+					if ( empty( $paypal_ID ) ) {
+						$paypal_ID = $_POST['txn_id'];
+					}
+					supporter_withdraw($bid, $period);
+					supporter_update_note($bid, $note);
+
+					//if single payment update stats
+					if ($_POST['txn_type']=='web_accept')
+				    supporter_signup_stats($bid, 'single', 'cancel', time());
+
+					break;
+
+				case 'Pending':
+					// case: payment is pending
+					$pending_str = array(
+						'address' => 'Customer did not include a confirmed shipping address',
+						'authorization' => 'Funds not captured yet',
+						'echeck' => 'eCheck that has not cleared yet',
+						'intl' => 'Payment waiting for aproval by service provider',
+						'multi-currency' => 'Payment waiting for service provider to handle multi-currency process',
+						'unilateral' => 'Customer did not register or confirm his/her email yet',
+						'upgrade' => 'Waiting for service provider to upgrade the PayPal account',
+						'verify' => 'Waiting for service provider to verify his/her PayPal account',
+						'*' => ''
+						);
+					$reason = @$_POST['pending_reason'];
+					$note = 'Last transaction is pending. Reason: ' . (isset($pending_str[$reason]) ? $pending_str[$reason] : $pending_str['*']);
+					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+					supporter_update_note($bid, $note);
+					break;
+
+				default:
+					// case: various error cases
+			}
+
+			//check for subscription details
+			switch ($_POST['txn_type']) {
+				case 'subscr_signup':
+				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+				  supporter_signup_stats($bid, 'recurring', 'signup', time());
+				  break;
+
+				case 'subscr_modify':
+				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+				  supporter_signup_stats($bid, 'recurring', 'modify', time());
+				  break;
+
+				case 'subscr_cancel':
+				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
+				  supporter_signup_stats($bid, 'recurring', 'cancel', time());
+				  break;
+			}
+
+		} else {
+			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
+			header('Status: 404 Not Found');
+			echo 'Error: Missing POST variables. Identification is not possible.';
+			exit;
+		}
 	}
 
 }

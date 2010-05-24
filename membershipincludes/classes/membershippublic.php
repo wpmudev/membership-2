@@ -33,12 +33,12 @@ if(!class_exists('membershippublic')) {
 			add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
-			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 1 );
+			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 2 );
 			// Download protection
-			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
+			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 3 );
 
 			// Payment return
-			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 2 );
+			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 1 );
 
 			// add feed protection
 			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
@@ -720,7 +720,6 @@ if(!class_exists('membershippublic')) {
 				if($pricing) {
 					$content .= "<div class='priceforms'>";
 					$content = apply_filters('membership_purchase_button', $content, $subscription, $pricing, $user_id);
-					$content .= print_r($pricing, true);
 					$content .= "</div>";
 				}
 
