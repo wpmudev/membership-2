@@ -423,6 +423,11 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	// IPN stuff
+	function myIPN() {
+
+	}
+
 }
 
 M_register_gateway('paypalexpress', 'paypalexpress');

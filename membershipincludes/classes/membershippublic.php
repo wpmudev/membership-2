@@ -106,6 +106,7 @@ if(!class_exists('membershippublic')) {
 
 			if(!in_array('feedkey',$vars)) $vars[] = 'feedkey';
 			if(!in_array('protectedfile',$vars)) $vars[] = 'protectedfile';
+			if(!in_array('paymentgateway',$vars)) $vars[] = 'paymentgateway';
 
 			return $vars;
 		}
@@ -118,13 +119,17 @@ if(!class_exists('membershippublic')) {
 			// Note the addition of the namespace variable so that we know these are vent based
 			// calls
 
+			$new_rules = array();
+
 			if(!empty($M_options['masked_url'])) {
-				$new_rules = array( trailingslashit($M_options['masked_url']) . '(.+)' =>  'index.php?protectedfile=' . $wp_rewrite->preg_index(1) );
-
-				$new_rules = apply_filters('M_rewrite_rules', $new_rules);
-
-			  	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+				$new_rules[trailingslashit($M_options['masked_url']) . '(.+)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index(1);
 			}
+
+			$new_rules['paymentreturn/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index(1);
+
+			$new_rules = apply_filters('M_rewrite_rules', $new_rules);
+
+		  	$wp_rewrite->rules = array_merge($new_rules, $wp_rewrite->rules);
 
 			return $wp_rewrite;
 		}
