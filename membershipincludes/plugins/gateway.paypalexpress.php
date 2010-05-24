@@ -591,6 +591,12 @@ class paypalexpress extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->expire_subscription($sub_id);
+						$member->deactivate();
+					}
+
 					break;
 
 				case 'Refunded':
@@ -602,6 +608,11 @@ class paypalexpress extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->expire_subscription($sub_id);
+					}
+
 					break;
 
 				case 'Denied':
@@ -612,6 +623,12 @@ class paypalexpress extends M_Gateway {
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->expire_subscription($sub_id);
+						$member->deactivate();
+					}
 
 					break;
 
@@ -649,6 +666,13 @@ class paypalexpress extends M_Gateway {
 				  	$amount = $_POST['payment_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
+					// create_subscription
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->create_subscription($sub_id);
+					}
+
 				  break;
 
 				case 'subscr_cancel':
@@ -662,6 +686,10 @@ class paypalexpress extends M_Gateway {
 					// a dispute
 					if($_POST['case_type'] == 'dispute') {
 						// immediately suspend the account
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->deactivate();
+						}
 					}
 			}
 

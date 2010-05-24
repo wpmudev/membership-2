@@ -132,6 +132,26 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function create_subscription($sub_id) {
+
+			$subscription = new M_Subscription( $sub_id );
+			$levels = $subscription->get_levels();
+
+			if(!empty($levels)) {
+
+				$first = $levels[0]->level_id;
+				$order = $levels[0]->level_order;
+
+				$this->add_subscription($sub_id, $first, $order);
+
+				return true;
+
+			} else {
+				return false;
+			}
+
+		}
+
 		function has_active_payment($sub_id = false) {
 
 			if(!$sub_id) {
@@ -306,8 +326,10 @@ if(!class_exists('M_Membership')) {
 			}
 
 			return true; // for now
+		}
 
-
+		function deactivate() {
+			update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'no');
 		}
 
 		// Levels functions
