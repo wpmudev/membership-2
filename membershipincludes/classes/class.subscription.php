@@ -122,6 +122,8 @@ if(!class_exists('M_Subscription')) {
 
 		function get_next_level($level_id, $order_id) {
 			// returns the next level - if there is one
+			$onkey = false;
+
 			if(empty($this->levels)) {
 				$this->levels = $this->get_levels();
 			}
@@ -143,7 +145,7 @@ if(!class_exists('M_Subscription')) {
 					}
 				}
 
-				if($onkey) {
+				if($onkey !== false) {
 					// we have a key for our current position, check it's mode / period and pos next level
 					switch($this->levels[$onkey]->sub_type) {
 						case 'finite':		// we attempt to move to the next level

@@ -30,7 +30,7 @@ if(!class_exists('M_Membership')) {
 				$this->$table = $wpdb->prefix . $table;
 			}
 
-			//$this->transition_through_subscription();
+			$this->transition_through_subscription();
 
 		}
 
@@ -45,8 +45,20 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
-		function mark_for_expire() {
-			update_usermeta( $this->ID, '_membership_expire_next', 'yes');
+		function mark_for_expire( $sub_id ) {
+			update_usermeta( $this->ID, '_membership_expire_next', $sub_id);
+		}
+
+		function is_marked_for_expire($sub_id) {
+
+			$markedsub_id = get_usermeta( $this->ID, '_membership_expire_next', true);
+
+			if(!empty($markedsub_id) && $markedsub_id == $sub_id) {
+				return true;
+			} else {
+				return false;
+			}
+
 		}
 
 		function is_member() {
@@ -79,10 +91,13 @@ if(!class_exists('M_Membership')) {
 
 		function move_to($sub_id, $thislevel_id, $thislevel_order, $nextlevel) {
 
-			if($this->on_sub($fromsub_id)) {
+			if($this->on_sub($sub_id)) {
 
 				if($nextlevel) {
 					$start = current_time('mysql');
+
+					if(empty($nextlevel->level_period) && $nextlevel->sub_type == 'indefinite') $nextlevel->level_period = 365;
+
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $nextlevel->level_period . ' days', strtotime($start) ));
 
 					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'updateddate' => $start, 'expirydate' => $expires),
@@ -99,16 +114,23 @@ if(!class_exists('M_Membership')) {
 
 			if($relationships) {
 				foreach($relationships as $key => $rel) {
-
-					if(mysql2date("U", $rel->exprirydate) <= time()) {
+					if(mysql2date("U", $rel->expirydate) <= time()) {
 						// expired, we need to move forwards
+						if($this->is_marked_for_expire($rel->sub_id)) {
+							$this->expire_subscription($rel->sub_id);
+							delete_usermeta($this->ID, '_membership_expire_next');
+							continue;
+						}
+
 						$subscription = new M_Subscription($rel->sub_id);
 						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
+
 						if($nextlevel){
 							if(empty($nextlevel->level_price)) {
 								// this is a non paid level transition so we can go head
 								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 							} else {
+
 								// This is a paid level transition so check for a payment
 								// Transition for now cos we are disabling everything when a payment fails
 								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
