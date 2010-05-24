@@ -150,13 +150,89 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	function complex_sub_button($pricing, $subscription, $user_id) {
+
+		global $M_options;
+
+		if(!empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
+			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
+		} else {
+			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
+		}
+		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
+		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
+		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
+		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
+		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
+
+		// complex bits here
+		$count = 1;
+		$ff = array();
+		foreach((array) $pricing as $key => $price) {
+
+			switch($price['type']) {
+
+				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
+								if($count < 3) {
+									$ff['a' . $count] = $price['amount'] . '.00';
+									$ff['p' . $count] = $price['days'];
+									$ff['t' . $count] = 'D';
+								} else {
+									// Or last finite is going to be the end of the subscription payments
+									$ff['a3'] = $price['amount'] . '.00';
+									$ff['p3'] = $price['days'];
+									$ff['t3'] = 'D';
+									$ff['src'] = '0';
+								}
+								$count++;
+								break;
+
+				case 'indefinite':
+								if(empty($price['amount'])) $price['amount'] = '0';
+								$ff['a3'] = $price['amount'] . '.00';
+								$ff['p3'] = 1;
+								$ff['t3'] = 'Y';
+								$ff['src'] = '0';
+								break;
+				case 'serial':
+								if(empty($price['amount'])) $price['amount'] = '0';
+								$ff['a3'] = $price['amount'] . '.00';
+								$ff['p3'] = $price['days'];
+								$ff['t3'] = 'D';
+								$ff['src'] = '1';
+								break;
+			}
+		}
+
+		if(!empty($ff)) {
+			foreach($ff as $key => $value) {
+				$form .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
+			}
+		}
+
+		// Remainder of the easy bits
+		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
+		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
+		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
+		$form .= '</form>';
+
+		return $form;
+
+	}
+
 	function build_subscribe_button($subscription, $pricing, $user_id) {
 
 		if(!empty($pricing)) {
 
 			if(count($pricing) == 1) {
 				// A basic price or a single subscription
-				if($pricing[0]['days'] == 0) {
+				if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 					// one-off payment
 					return $this->single_button($pricing, $subscription, $user_id);
 				} else {
@@ -165,6 +241,8 @@ class paypalexpress extends M_Gateway {
 				}
 			} else {
 				// something much more complex
+
+				return $this->complex_sub_button($pricing, $subscription, $user_id);
 
 			}
 

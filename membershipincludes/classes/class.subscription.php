@@ -99,14 +99,14 @@ if(!class_exists('M_Subscription')) {
 
 				if($level->sub_type == 'indefinite') {
 					// This will be the last item in any list
-					$prices[] = array( 'days' => 0, 'amount' => $level->level_price);
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type);
 					break;
 				} elseif($level->sub_type == 'serial') {
 					// This will be the last item in any list
-					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type);
 					break;
 				} else {
-					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type);
 				}
 			}
 
