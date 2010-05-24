@@ -692,11 +692,22 @@ if(!class_exists('membershippublic')) {
 				$subscription = new M_Subscription($sub->id);
 
 				$content .= '<div class="subscription">';
+				$content .= '<div class="description">';
 				$content .= '<h3>' . $subscription->sub_name() . '</h3>';
 				$content .= '<p>' . $subscription->sub_description() . '</p>';
+				$content .= "</div>";
 
 				// Add the purchase button
+				$pricing = $subscription->get_pricingarray();
 
+				if($pricing) {
+					$content .= "<div class='priceforms'>";
+					$content = apply_filters('membership_purchase_button', $content, $subscription, $pricing);
+					$content .= print_r($pricing, true);
+					$content .= "</div>";
+				}
+
+				//$content .= print_r($pricing, true);
 
 				$content .= '</div>';
 

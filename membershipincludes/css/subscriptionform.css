@@ -152,6 +152,17 @@
 	float: left;
 	width: 100%;
 }
+
+div.subscription h3 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0px 0px 5px !Important;
+	padding: 0px;
+	font-family: Arial, sans-serif;
+	float: left;
+	width: 100%;	
+}
+
 #reg-form .formleft p {
 	margin: 0px 0px 15px;
 	padding: 0px;
@@ -183,4 +194,22 @@ div.subscription {
 	width: 98%;
 	padding: 5px;
 	border: 1px solid #ddd;	
+}
+
+div.subscription p {
+	margin: 0px 0px 15px;
+	padding: 0px;
+	width: 100%;
+	font-size: smaller;
+}
+
+div.subscription div.description {
+	overflow: hidden;
+	float: left;	
+	width: 70%;
+}
+
+div.priceforms {
+	float: right;
+	width: 25%;
 }

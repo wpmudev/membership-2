@@ -73,6 +73,32 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function get_pricingarray() {
+
+			$levels = $this->get_levels();
+
+			$prices = array();
+
+			foreach( (array) $levels as $key => $level ) {
+
+				if($level->sub_type == 'indefinite') {
+					// This will be the last item in any list
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);
+
+					break;
+				} else {
+					$prices[] = array( 'days' => $level->level_period, 'amount' => $level->level_price);
+				}
+			}
+
+			if(!empty($prices)) {
+				return $prices;
+			} else {
+				return false;
+			}
+
+		}
+
 		// Gets
 
 		function get_next_level($level_id, $order_id) {
