@@ -33,6 +33,9 @@ function M_Createtables() {
 	  `sub_id` bigint(20) default '0',
 	  `level_id` bigint(20) default '0',
 	  `startdate` datetime default NULL,
+	  `updateddate` datetime default NULL,
+	  `expirydate` datetime default NULL,
+	  `order_instance` bigint(20) default '0',
 	  PRIMARY KEY  (`rel_id`)
 	);";
 
@@ -77,18 +80,24 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}membership_relationships` (
-	  `rel_id` bigint(20) NOT NULL auto_increment,
-	  `user_id` bigint(20) default '0',
-	  `sub_id` bigint(20) default '0',
-	  `level_id` bigint(20) default '0',
-	  `startdate` datetime default NULL,
-	  `updateddate` datetime default NULL,
-	  `order_instance` bigint(20) default '0',
-	  PRIMARY KEY  (`rel_id`),
-	  KEY `user_id` (`user_id`),
-	  KEY `sub_id` (`sub_id`),
-	  KEY `level_id` (`level_id`)
+	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}subscription_transaction` (
+	  `transaction_ID` bigint(20) unsigned NOT NULL auto_increment,
+	  `transaction_subscription_ID` bigint(20) NOT NULL default '0',
+	  `transaction_user_ID` bigint(20) NOT NULL default '0',
+	  `transaction_sub_ID` bigint(20) default '0',
+	  `transaction_paypal_ID` varchar(30) default NULL,
+	  `transaction_payment_type` varchar(20) default NULL,
+	  `transaction_stamp` bigint(35) NOT NULL default '0',
+	  `transaction_total_amount` bigint(20) default NULL,
+	  `transaction_currency` varchar(35) default NULL,
+	  `transaction_status` varchar(35) default NULL,
+	  `transaction_duedate` date default NULL,
+	  `transaction_gateway` varchar(50) default NULL,
+	  `transaction_note` text,
+	  `transaction_expires` datetime default NULL,
+	  PRIMARY KEY  (`transaction_ID`),
+	  KEY `transaction_gateway` (`transaction_gateway`),
+	  KEY `transaction_subscription_ID` (`transaction_subscription_ID`)
 	);";
 
 	$wpdb->query($sql);

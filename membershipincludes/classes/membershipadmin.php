@@ -3,7 +3,7 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 1;
+		var $build = 2;
 		var $db;
 
 		//
@@ -78,7 +78,7 @@ if(!class_exists('membershipadmin')) {
 
 			$installed = get_option('M_Installed', false);
 
-			if($installed != $this->build) {
+			if($installed === false || $installed != $this->build) {
 				include_once(membership_dir('membershipincludes/classes/upgrade.php') );
 
 				M_Upgrade($installed);
