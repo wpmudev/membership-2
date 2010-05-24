@@ -72,11 +72,14 @@ function membership_upload_path() {
 }
 
 function membership_is_active($userdata, $password) {
+
+	global $wpdb;
+
 	// Checks if this member is an active one.
 	if(!empty($userdata) && !is_wp_error($userdata)) {
 		$id = $userdata->ID;
 
-		if(get_usermeta($id, 'wp_membership_active', true) == 'no') {
+		if(get_usermeta($id, $wpdb->prefix . 'membership_active', true) == 'no') {
 			return new WP_Error('member_inactive', __('Sorry, this account is not active.', 'membership'));
 		}
 

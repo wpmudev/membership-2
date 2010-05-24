@@ -343,7 +343,6 @@ if(!class_exists('membershipadmin')) {
 				<div class="icon32" id="icon-index"><br></div>
 				<h2><?php _e('Membership dashboard','membership'); ?></h2>
 
-				<!---->
 				<div id="dashboard-widgets-wrap">
 
 				<div class="metabox-holder" id="dashboard-widgets">
@@ -404,7 +403,6 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="clear"></div>
 				</div>
-				<!---->
 
 			</div> <!-- wrap -->
 			<?php
