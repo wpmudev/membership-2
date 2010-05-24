@@ -37,6 +37,9 @@ if(!class_exists('membershippublic')) {
 			// Download protection
 			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 2 );
 
+			// Payment return
+			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 2 );
+
 			// add feed protection
 			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
 			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
@@ -224,6 +227,15 @@ if(!class_exists('membershippublic')) {
 
 			// Set the initialisation status
 			$initialised = true;
+
+		}
+
+		function handle_paymentgateways($wp_query) {
+
+			if(!empty($wp_query->query_vars['paymentgateway'])) {
+				do_action( 'membership_handle_payment_return_' . $wp_query->query_vars['paymentgateway']);
+				exit();
+			}
 
 		}
 
