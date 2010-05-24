@@ -170,6 +170,9 @@ class paypalexpress extends M_Gateway {
 
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
 
+		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
+		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
+
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 
@@ -256,6 +259,11 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $ff['a3']) .'">';
 
 		// Remainder of the easy bits
+
+		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
+		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
+
+
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
