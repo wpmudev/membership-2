@@ -350,6 +350,8 @@ class paypalexpress extends M_Gateway {
 		$columns['date'] = __('Date','membership');
 		$columns['amount'] = __('Amount','membership');
 		$columns['transid'] = __('Transaction id','membership');
+		$columns['status'] = __('Status','membership');
+		$columns['note'] = __('Notes','membership');
 
 		$trans_navigation = paginate_links( array(
 			'base' => add_query_arg( 'paged', '%#%' ),
@@ -439,6 +441,24 @@ class paypalexpress extends M_Gateway {
 										}
 									?>
 								</td>
+								<td class="column-transid">
+									<?php
+										if(!empty($transaction->transaction_status)) {
+											echo $transaction->transaction_status;
+										} else {
+											echo __('None yet','membership');
+										}
+									?>
+								</td>
+								<td class="column-transid">
+									<?php
+										if(!empty($transaction->transaction_note)) {
+											echo esc_html($transaction->transaction_note);
+										} else {
+											echo __('None','membership');
+										}
+									?>
+								</td>
 						    </tr>
 							<?php
 						}
@@ -501,7 +521,7 @@ class paypalexpress extends M_Gateway {
 	// IPN stuff
 	function handle_paypal_return() {
 		// PayPal IPN handling code
-		@wp_mail('barry@caffeinatedb.com', __('Transaction'), print_r($_POST, true));
+
 		if ((isset($_POST['payment_status']) || isset($_POST['txn_type'])) && isset($_POST['custom'])) {
 
 			if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
@@ -689,7 +709,7 @@ class paypalexpress extends M_Gateway {
 
 					$member = new M_Membership($user_id);
 					if($member) {
-						$member->mark_for_expire();
+						$member->mark_for_expire($sub_id);
 					}
 
 					//mark_for_expire

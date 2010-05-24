@@ -302,11 +302,11 @@ if(!class_exists('membershipadmin')) {
 						echo "<td style='text-align: right;'>" . $usercount . "</td>";
 					echo "</tr>";
 
-					$activecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", 'wp_membership_active' , 'yes') );
+					$deactivecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", 'wp_membership_active' , 'no') );
 
 					echo "<tr>";
-						echo "<td>" . __('Active Users', 'membership') . "</td>";
-						echo "<td style='text-align: right;'>" . $activecount . "</td>";
+						echo "<td>" . __('Deactivated Users', 'membership') . "</td>";
+						echo "<td style='text-align: right;'>" . $deactivecount . "</td>";
 					echo "</tr>";
 
 				echo "</tbody>";
@@ -329,11 +329,11 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function dashboard_statistics() {
-
+			echo "<p>" . __('There will be some nice statistics here.','membership') . "</p>";
 		}
 
 		function dashboard_news() {
-
+			echo "<p>" . __('There will be some interesting news here.','membership') . "</p>";
 		}
 
 		function handle_membership_panel() {
