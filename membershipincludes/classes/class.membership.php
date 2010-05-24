@@ -30,6 +30,8 @@ if(!class_exists('M_Membership')) {
 				$this->$table = $wpdb->prefix . $table;
 			}
 
+			$this->transition_through_subscription();
+
 		}
 
 		function active_member() {
@@ -104,6 +106,8 @@ if(!class_exists('M_Membership')) {
 								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 							} else {
 								// This is a paid level transition so check for a payment
+								// Transition for now cos we are disabling everything when a payment fails
+								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 							}
 						} else {
 							// there isn't a next level so expire this subscription
