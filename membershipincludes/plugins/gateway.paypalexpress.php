@@ -90,6 +90,21 @@ class paypalexpress extends M_Gateway {
 		<?php
 	}
 
+	function build_custom($user_id, $sub_id, $amount) {
+
+		$custom = '';
+
+		//fake:user:sub:key
+
+		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
+		$key = md5('MEMBERSHIP' . $amount);
+
+		$custom .= $key;
+
+		return $custom;
+
+	}
+
 	function single_button($pricing, $subscription, $user_id) {
 
 		global $M_options;
