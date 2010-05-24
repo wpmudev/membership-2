@@ -671,7 +671,7 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function show_subpage_two() {
+		function show_subpage_two($user_id) {
 
 			$content = '';
 
@@ -702,7 +702,7 @@ if(!class_exists('membershippublic')) {
 
 				if($pricing) {
 					$content .= "<div class='priceforms'>";
-					$content = apply_filters('membership_purchase_button', $content, $subscription, $pricing);
+					$content = apply_filters('membership_purchase_button', $content, $subscription, $pricing, $user_id);
 					$content .= print_r($pricing, true);
 					$content .= "</div>";
 				}

@@ -12,7 +12,7 @@ class paypalexpress extends M_Gateway {
 		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
 		// Subscription form gateway
-		add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
+		add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
 	}
 
 	function mysettings() {
@@ -87,7 +87,7 @@ class paypalexpress extends M_Gateway {
 		<?php
 	}
 
-	function single_button($pricing, $subscription) {
+	function single_button($pricing, $subscription, $user_id) {
 
 		global $M_options;
 
@@ -106,7 +106,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="cmd" value="_xclick">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="amount" value="' . $pricing['amount'] . '.00">';
+		$form .= '<input type="hidden" name="amount" value="' . $pricing[0]['amount'] . '.00">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">';
@@ -117,7 +117,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function single_sub_button($pricing, $subscription) {
+	function single_sub_button($pricing, $subscription, $user_id) {
 
 		global $M_options;
 
@@ -137,8 +137,8 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-		$form .= '<input type="hidden" name="a3" value="' . $pricing['amount'] . '.00">';
-		$form .= '<input type="hidden" name="p3" value="' . $pricing['days'] . '.00">';
+		$form .= '<input type="hidden" name="a3" value="' . $pricing[0]['amount'] . '.00">';
+		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['days'] . '">';
 		$form .= '<input type="hidden" name="t3" value="D"> <!-- Set recurring payments until canceled. -->';
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="src" value="1">';
@@ -150,7 +150,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function build_subscribe_button($subscription, $pricing) {
+	function build_subscribe_button($subscription, $pricing, $user_id) {
 
 		if(!empty($pricing)) {
 
@@ -158,10 +158,10 @@ class paypalexpress extends M_Gateway {
 				// A basic price or a single subscription
 				if($pricing[0]['days'] == 0) {
 					// one-off payment
-					return $this->single_button($pricing, $subscription);
+					return $this->single_button($pricing, $subscription, $user_id);
 				} else {
 					// simple subscription
-					return $this->single_sub_button($pricing, $subscription);
+					return $this->single_sub_button($pricing, $subscription, $user_id);
 				}
 			} else {
 				// something much more complex
@@ -172,7 +172,11 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function display_subscribe_button($content, $subscription, $pricing) {
+	function display_subscribe_button($content, $subscription, $pricing, $user_id) {
+
+		$content .= $this->build_subscribe_button($subscription, $pricing, $user_id);
+
+		return $content;
 
 	}
 
