@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: Membership system - core plugin
-Version: 0.1
-Plugin URI:
+Version: 0.1 beta
+Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
-Author:
-Author URI:
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
 
-Copyright 2010  (email: )
+Copyright 2010  (email: admin@incsub.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

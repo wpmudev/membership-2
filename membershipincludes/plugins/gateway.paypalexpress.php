@@ -129,6 +129,9 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="amount" value="' . $pricing[0]['amount'] . '.00">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
+
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
+
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 		$form .= '<input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">';
@@ -139,7 +142,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function single_sub_button($pricing, $subscription, $user_id) {
+	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 
 		global $M_options;
 
@@ -148,6 +151,8 @@ class paypalexpress extends M_Gateway {
 		}
 
 		$form = '';
+
+		//if($pricing[0]['type'] == 'indefinite') $pricing[0]['days'] = 365;
 
 		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
 			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
@@ -162,9 +167,18 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="a3" value="' . $pricing[0]['amount'] . '.00">';
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['days'] . '">';
 		$form .= '<input type="hidden" name="t3" value="D"> <!-- Set recurring payments until canceled. -->';
+
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
+
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
-		$form .= '<input type="hidden" name="src" value="1">';
+
+		if($norepeat) {
+			$form .= '<input type="hidden" name="src" value="0">';
+		} else {
+			$form .= '<input type="hidden" name="src" value="1">';
+		}
+
 		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
 		$form .= '</form>';
@@ -239,6 +253,8 @@ class paypalexpress extends M_Gateway {
 			}
 		}
 
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $ff['a3']) .'">';
+
 		// Remainder of the easy bits
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
@@ -258,7 +274,7 @@ class paypalexpress extends M_Gateway {
 				// A basic price or a single subscription
 				if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 					// one-off payment
-					return $this->single_button($pricing, $subscription, $user_id);
+					return $this->single_sub_button($pricing, $subscription, $user_id, true);
 				} else {
 					// simple subscription
 					return $this->single_sub_button($pricing, $subscription, $user_id);
@@ -447,6 +463,33 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	function record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $paypal_ID, $status, $note) {
+
+		$data = array();
+		$data['transaction_subscription_ID'] = $sub_id;
+		$data['transaction_user_ID'] = $user_id;
+		$data['transaction_paypal_ID'] = $paypal_ID;
+		$data['transaction_stamp'] = $timestamp;
+		$data['transaction_currency'] = $currency;
+		$data['transaction_status'] = $status;
+		$data['transaction_total_amount'] = (int) ($amount * 100);
+		$data['transaction_note'] = $note;
+		$data['transaction_gateway'] = $this->gateway;
+
+		$existing_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_ID FROM {$this->subscription_transaction} WHERE transaction_paypal_ID = %s", $paypal_ID ) );
+
+		if(!empty($existing_id)) {
+			// Update
+			$this->db->update( $this->subscription_transaction, $data, array('transaction_ID' => $existing_id) );
+		} else {
+			// Insert
+			$this->db->insert( $this->subscription_transaction, $data );
+		}
+
+
+
+	}
+
 	// IPN stuff
 	function handle_paypal_return() {
 		// PayPal IPN handling code
@@ -529,58 +572,46 @@ class paypalexpress extends M_Gateway {
 				case 'Completed':
 				case 'Processed':
 					// case: successful payment
-					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-					supporter_extend($bid, $period, 'PayPal');
-					supporter_update_note($bid, '');
+					$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					//if single payment update stats
-					if ($_POST['txn_type']=='web_accept')
-				    supporter_signup_stats($bid, 'single', 'signup', time());
+					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
 
 					// Added for affiliate system link
-					do_action('supporter_payment_processed', $bid, $amount, $period);
+					do_action('membership_payment_processed', $user_id, $amount, $sub_id);
 					break;
 
 				case 'Reversed':
 					// case: charge back
 					$note = 'Last transaction has been reversed. Reason: Payment has been reversed (charge back)';
-					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-					supporter_withdraw($bid, $period);
-					supporter_update_note($bid, $note);
+					$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					//if single payment update stats
-					if ($_POST['txn_type']=='web_accept')
-				    supporter_signup_stats($bid, 'single', 'cancel', time());
+					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					break;
 
 				case 'Refunded':
 					// case: refund
 					$note = 'Last transaction has been reversed. Reason: Payment has been refunded';
-					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-					supporter_withdraw($bid, $period);
-					supporter_update_note($bid, $note);
+					$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					//if single payment update stats
-					if ($_POST['txn_type']=='web_accept')
-				    supporter_signup_stats($bid, 'single', 'cancel', time());
+					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					break;
 
 				case 'Denied':
 					// case: denied
 					$note = 'Last transaction has been reversed. Reason: Payment Denied';
-					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-					$paypal_ID = $_POST['parent_txn_id'];
-					if ( empty( $paypal_ID ) ) {
-						$paypal_ID = $_POST['txn_id'];
-					}
-					supporter_withdraw($bid, $period);
-					supporter_update_note($bid, $note);
+					$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					//if single payment update stats
-					if ($_POST['txn_type']=='web_accept')
-				    supporter_signup_stats($bid, 'single', 'cancel', time());
+					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					break;
 
@@ -599,8 +630,12 @@ class paypalexpress extends M_Gateway {
 						);
 					$reason = @$_POST['pending_reason'];
 					$note = 'Last transaction is pending. Reason: ' . (isset($pending_str[$reason]) ? $pending_str[$reason] : $pending_str['*']);
-					list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-					supporter_update_note($bid, $note);
+					$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
+					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
 					break;
 
 				default:
@@ -610,19 +645,24 @@ class paypalexpress extends M_Gateway {
 			//check for subscription details
 			switch ($_POST['txn_type']) {
 				case 'subscr_signup':
-				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-				  supporter_signup_stats($bid, 'recurring', 'signup', time());
-				  break;
-
-				case 'subscr_modify':
-				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-				  supporter_signup_stats($bid, 'recurring', 'modify', time());
+					// start the subscription
+				  	$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 				  break;
 
 				case 'subscr_cancel':
-				  list($bid, $period, $amount, $currency, $stamp) = explode('_', $_POST['custom']);
-				  supporter_signup_stats($bid, 'recurring', 'cancel', time());
+					// mark for removal
+				  	$amount = $_POST['payment_gross'];
+					$currency = $_POST['mc_currency'];
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 				  break;
+
+				case 'new_case':
+					// a dispute
+					if($_POST['case_type'] == 'dispute') {
+						// immediately suspend the account
+					}
 			}
 
 		} else {
