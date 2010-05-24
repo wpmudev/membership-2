@@ -89,6 +89,16 @@ if(!class_exists('M_Gateway')) {
 
 		}
 
+		function is_active() {
+
+			$active = get_option('M_active_gateways', array());
+			if(array_key_exists($this->gateway, $active)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		function settings() {
 
 			global $page, $action;

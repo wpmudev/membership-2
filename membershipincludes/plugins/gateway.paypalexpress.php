@@ -11,11 +11,14 @@ class paypalexpress extends M_Gateway {
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
 		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
-		// Subscription form gateway
-		add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
+		if($this->is_active()) {
+			// Subscription form gateway
+			add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
 
-		// Payment return
-		add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
+			// Payment return
+			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
+		}
+
 	}
 
 	function mysettings() {

@@ -1258,7 +1258,7 @@ if(!class_exists('membershipadmin')) {
 									<strong><a href=''><?php echo $user_object->user_login; ?></a></strong>
 									<?php
 										$actions = array();
-										$actions['edit'] = "<span class='edit'><a href='?page={$page}&amp;action=edit&amp;member_id={$user_object->ID}'>" . __('Edit', 'membership') . "</a></span>";
+										$actions['edit'] = "<span class='edit'><a href='" . admin_url('user-edit.php?user_id=' . $user_object->ID) . "'>" . __('Edit', 'membership') . "</a></span>";
 										if($user_object->active_member()) {
 											$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 										} else {
