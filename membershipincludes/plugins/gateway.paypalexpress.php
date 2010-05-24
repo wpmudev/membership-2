@@ -10,6 +10,9 @@ class paypalexpress extends M_Gateway {
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
 		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
+
+		// Subscription form gateway
+		add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
 	}
 
 	function mysettings() {
@@ -113,6 +116,25 @@ class paypalexpress extends M_Gateway {
 		</tbody>
 		</table>
 		<?php
+	}
+
+	function build_subscribe_button($subscription, $pricing) {
+
+		if(!empty($pricing)) {
+
+			if(count($pricing) == 1 && $pricing[0]['days'] == 0) {
+				// A basic price
+			} else {
+
+			}
+
+
+		}
+
+	}
+
+	function display_subscribe_button($content, $subscription, $pricing) {
+
 	}
 
 	function get_transactions($type, $startat, $num) {
