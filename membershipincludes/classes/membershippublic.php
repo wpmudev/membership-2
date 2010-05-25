@@ -141,16 +141,22 @@ if(!class_exists('membershippublic')) {
 			global $user;
 
 			if($user->ID > 0) {
-				$key = get_usermeta($user->ID, '_membership_key');
 
-				if(empty($key)) {
-					$key = md5($user->ID . $user->user_pass . time());
-					update_usermeta($user->ID, '_membership_key', $key);
+				$member = new M_Membership($user->ID);
+
+				if($member->is_member()) {
+					$key = get_usermeta($user->ID, '_membership_key');
+
+					if(empty($key)) {
+						$key = md5($user->ID . $user->user_pass . time());
+						update_usermeta($user->ID, '_membership_key', $key);
+					}
+
+					if(!empty($key)) {
+						$output = add_query_arg('k', $key, untrailingslashit($output));
+					}
 				}
 
-				if(!empty($key)) {
-					$output = add_query_arg('k', $key, untrailingslashit($output));
-				}
 			}
 
 			return $output;

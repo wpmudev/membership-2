@@ -3423,27 +3423,34 @@ if(!class_exists('membershipadmin')) {
 
 		// Profile
 		function add_profile_feed_key($profileuser) {
+
 			$id = $profileuser->ID;
 
-			$key = get_usermeta($id, '_membership_key');
+			$member = new M_Membership($id);
 
-			if(empty($key)) {
-				$key = md5($id . $profileuser->user_pass . time());
-				update_usermeta($id, '_membership_key', $key);
+			if($member->is_member()) {
+				$key = get_usermeta($id, '_membership_key');
+
+				if(empty($key)) {
+					$key = md5($id . $profileuser->user_pass . time());
+					update_usermeta($id, '_membership_key', $key);
+				}
+
+				?>
+				<h3><?php _e('Membership key'); ?></h3>
+
+				<table class="form-table">
+				<tr>
+					<th><label for="description"><?php _e('Membership key'); ?></label></th>
+					<td><?php esc_html_e($key); ?>
+						<br />
+					<span class="description"><?php _e('This key is used to give you access the the members RSS feed, keep it safe and secret.'); ?></span></td>
+				</tr>
+				</table>
+				<?php
 			}
 
-			?>
-			<h3><?php _e('Membership key'); ?></h3>
 
-			<table class="form-table">
-			<tr>
-				<th><label for="description"><?php _e('Membership key'); ?></label></th>
-				<td><?php esc_html_e($key); ?>
-					<br />
-				<span class="description"><?php _e('This key is used to give you access the the members RSS feed, keep it safe and secret.'); ?></span></td>
-			</tr>
-			</table>
-			<?php
 		}
 
 	}
