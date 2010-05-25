@@ -675,7 +675,7 @@ if(!class_exists('membershippublic')) {
 				$content .= '<h2>' . __('Terms and Conditions','membership') . '</h2>';
 
 				$content .= '<div id="reg_tos">';
-				$content .= '';
+				$content .= stripslashes($terms);
 				$content .= '</div>';
 				$content .= '<p><label><input type="checkbox" value="1" name="tosagree">';
 				$content .= '<strong>' . __('I agree to the Terms of Use','membership') . '</strong></label></p>';
