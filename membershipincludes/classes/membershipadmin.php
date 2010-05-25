@@ -1876,7 +1876,7 @@ if(!class_exists('membershipadmin')) {
 								<input class='wide' type='text' name='level_title' id='level_title' value='<?php echo esc_attr($level->level_title); ?>' />
 								</div>
 
-								<h3><?php _e('Positive rules','membership'); ?></h3>
+								<h3 class='positive'><?php _e('Positive rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 								<div id='positive-rules-holder'>
 									<?php
@@ -1896,7 +1896,7 @@ if(!class_exists('membershipadmin')) {
 									<?php _e('Drop here','membership'); ?>
 								</div>
 
-								<h3><?php _e('Negative rules','membership'); ?></h3>
+								<h3 class='negative'><?php _e('Negative rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 								<div id='negative-rules-holder'>
 									<?php

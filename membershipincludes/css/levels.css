@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=2 */
 
 div.level-liquid-left {
 	float: left;
@@ -111,6 +111,10 @@ input.wide {
 	padding-left: 10px;
 	padding-top: 2px;
 	padding-bottom: 2px;
+}
+
+.level-holder h3.negative {
+	background-color: #ffd6d6;
 }
 
 .placeholder-rules {
