@@ -302,7 +302,7 @@ if(!class_exists('membershipadmin')) {
 						echo "<td style='text-align: right;'>" . $usercount . "</td>";
 					echo "</tr>";
 
-					$deactivecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", 'wp_membership_active' , 'no') );
+					$deactivecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", $this->db->prefix . 'membership_active' , 'no') );
 
 					echo "<tr>";
 						echo "<td>" . __('Deactivated Users', 'membership') . "</td>";
