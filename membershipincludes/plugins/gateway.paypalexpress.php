@@ -9,7 +9,9 @@ class paypalexpress extends M_Gateway {
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
-		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
+
+		// If I want to override the transactions output - then I can use this action
+		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
 		if($this->is_active()) {
 			// Subscription form gateway
@@ -306,177 +308,6 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function get_transactions($type, $startat, $num) {
-
-		switch($type) {
-
-			case 'past':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status NOT IN ('Pending', 'Future') ORDER BY transaction_ID DESC  LIMIT %d, %d", $startat, $num );
-						break;
-			case 'pending':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Pending') ORDER BY transaction_ID DESC LIMIT %d, %d", $startat, $num );
-						break;
-			case 'future':
-						$sql = $this->db->prepare( "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->subscription_transaction} WHERE transaction_status IN ('Future') ORDER BY transaction_ID DESC LIMIT %d, %d", $startat, $num );
-						break;
-
-		}
-
-		return $this->db->get_results( $sql );
-
-	}
-
-	function get_total() {
-		return $this->db->get_var( "SELECT FOUND_ROWS();" );
-	}
-
-	function mytransactions($type = 'past') {
-
-		if(empty($_GET['paged'])) {
-			$paged = 1;
-		} else {
-			$paged = ((int) $_GET['paged']);
-		}
-
-		$startat = ($paged - 1) * 50;
-
-		$transactions = $this->get_transactions($type, $startat, 50);
-		$total = $this->get_total();
-
-		$columns = array();
-
-		$columns['subscription'] = __('Subscription','membership');
-		$columns['user'] = __('User','membership');
-		$columns['date'] = __('Date','membership');
-		$columns['amount'] = __('Amount','membership');
-		$columns['transid'] = __('Transaction id','membership');
-		$columns['status'] = __('Status','membership');
-		$columns['note'] = __('Notes','membership');
-
-		$trans_navigation = paginate_links( array(
-			'base' => add_query_arg( 'paged', '%#%' ),
-			'format' => '',
-			'total' => ceil($total / 50),
-			'current' => $paged
-		));
-
-		echo '<div class="tablenav">';
-		if ( $trans_navigation ) echo "<div class='tablenav-pages'>$trans_navigation</div>";
-		echo '</div>';
-		?>
-
-
-			<table cellspacing="0" class="widefat fixed">
-				<thead>
-				<tr>
-				<?php
-					foreach($columns as $key => $col) {
-						?>
-						<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-						<?php
-					}
-				?>
-				</tr>
-				</thead>
-
-				<tfoot>
-				<tr>
-				<?php
-					reset($columns);
-					foreach($columns as $key => $col) {
-						?>
-						<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-						<?php
-					}
-				?>
-				</tr>
-				</tfoot>
-
-				<tbody>
-					<?php
-					if($transactions) {
-						foreach($transactions as $key => $transaction) {
-							?>
-							<tr valign="middle" class="alternate">
-								<td class="column-subscription">
-									<?php
-										if(class_exists('M_Subscription')) {
-											$subscription = new M_Subscription($transaction->transaction_subscription_ID);
-											echo $subscription->sub_name();
-										} else {
-											echo __('Subscription not found','membership');
-										}
-									?>
-								</td>
-								<td class="column-user">
-									<?php
-										if(class_exists('M_Membership')) {
-											$member = new M_Membership($transaction->transaction_user_ID);
-											echo $member->user_login;
-										} else {
-											echo __('User not found','membership');
-										}
-									?>
-								</td>
-								<td class="column-date">
-									<?php
-										echo mysql2date("d-m-Y", $transaction->transaction_stamp);
-
-									?>
-								</td>
-								<td class="column-amount">
-									<?php
-										$amount = $transaction->transaction_total_amount / 100;
-
-										echo $transaction->transaction_currency;
-										echo "&nbsp;" . number_format($amount, 2, '.', ',');
-									?>
-								</td>
-								<td class="column-transid">
-									<?php
-										if(!empty($transaction->transaction_paypal_ID)) {
-											echo $transaction->transaction_paypal_ID;
-										} else {
-											echo __('None yet','membership');
-										}
-									?>
-								</td>
-								<td class="column-transid">
-									<?php
-										if(!empty($transaction->transaction_status)) {
-											echo $transaction->transaction_status;
-										} else {
-											echo __('None yet','membership');
-										}
-									?>
-								</td>
-								<td class="column-transid">
-									<?php
-										if(!empty($transaction->transaction_note)) {
-											echo esc_html($transaction->transaction_note);
-										} else {
-											echo __('None','membership');
-										}
-									?>
-								</td>
-						    </tr>
-							<?php
-						}
-					} else {
-						$columncount = count($columns);
-						?>
-						<tr valign="middle" class="alternate" >
-							<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Transactions have been found, patience is a virtue.','membership'); ?></td>
-					    </tr>
-						<?php
-					}
-					?>
-
-				</tbody>
-			</table>
-		<?php
-	}
-
 	function update() {
 
 		if(isset($_POST['paypal_email'])) {
@@ -488,33 +319,6 @@ class paypalexpress extends M_Gateway {
 
 		// default action is to return true
 		return true;
-
-	}
-
-	function record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $paypal_ID, $status, $note) {
-
-		$data = array();
-		$data['transaction_subscription_ID'] = $sub_id;
-		$data['transaction_user_ID'] = $user_id;
-		$data['transaction_paypal_ID'] = $paypal_ID;
-		$data['transaction_stamp'] = $timestamp;
-		$data['transaction_currency'] = $currency;
-		$data['transaction_status'] = $status;
-		$data['transaction_total_amount'] = (int) ($amount * 100);
-		$data['transaction_note'] = $note;
-		$data['transaction_gateway'] = $this->gateway;
-
-		$existing_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_ID FROM {$this->subscription_transaction} WHERE transaction_paypal_ID = %s", $paypal_ID ) );
-
-		if(!empty($existing_id)) {
-			// Update
-			$this->db->update( $this->subscription_transaction, $data, array('transaction_ID' => $existing_id) );
-		} else {
-			// Insert
-			$this->db->insert( $this->subscription_transaction, $data );
-		}
-
-
 
 	}
 
