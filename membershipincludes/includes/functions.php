@@ -33,7 +33,7 @@ function set_membership_dir($base) {
 	global $M_membership_dir;
 
 	if(defined('WPMU_PLUGIN_DIR') && file_exists(WPMU_PLUGIN_DIR . '/' . basename($base))) {
-		$M_membership_dir = trailingslashit(WPMU_PLUGIN_URL);
+		$M_membership_dir = trailingslashit(WPMU_PLUGIN_DIR);
 	} elseif(defined('WP_PLUGIN_DIR') && file_exists(WP_PLUGIN_DIR . '/membership/' . basename($base))) {
 		$M_membership_dir = trailingslashit(WP_PLUGIN_DIR . '/membership');
 	} else {

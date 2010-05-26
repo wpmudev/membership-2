@@ -66,6 +66,16 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
+			// Create our subscription page shortcode
+			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
+			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
+
+			$user = wp_get_current_user();
+			if($user->has_cap('administrator')) {
+				// Admins can see everything
+				return;
+			}
+
 			// More tags
 			if($M_options['moretagdefault'] == 'no' ) {
 				// More tag content is not visible by default - works for both web and rss content - unfortunately
@@ -98,10 +108,6 @@ if(!class_exists('membershippublic')) {
 				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 			}
-
-			// Create our subscription page shortcode
-			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
-			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 		}
 
@@ -172,6 +178,12 @@ if(!class_exists('membershippublic')) {
 
 			if($initialised) {
 				// ensure that this is only called once, so return if we've been here already.
+				return;
+			}
+
+			//$user = wp_get_current_user();
+			if($user->has_cap('administrator')) {
+				// Admins can see everything
 				return;
 			}
 

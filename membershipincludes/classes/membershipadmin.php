@@ -1510,7 +1510,6 @@ if(!class_exists('membershipadmin')) {
 					</tbody>
 					</table>
 
-					<!--
 					<h3><?php _e('User registration','membership'); ?></h3>
 					<p><?php _e('If you have free user registration enabled on your site, select the subscription they will be assigned to initially.','membership'); ?></p>
 
@@ -1536,7 +1535,6 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 					</tbody>
 					</table>
-					-->
 
 					<h3><?php _e('Registration page','membership'); ?></h3>
 					<p><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
@@ -1550,7 +1548,7 @@ if(!class_exists('membershipadmin')) {
 							</th>
 							<td>
 								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None (use settings below)'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
 								?>
 							</td>
