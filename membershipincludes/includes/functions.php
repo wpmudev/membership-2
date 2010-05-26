@@ -91,4 +91,19 @@ function membership_is_active($userdata, $password) {
 
 add_filter('wp_authenticate_user', 'membership_is_active', 30, 2);
 
+function membership_assign_subscription($user_id) {
+
+	global $M_options;
+
+	if(!empty($M_options['freeusersubscription'])) {
+		$member = new M_Membership($user_id);
+		if($member) {
+			$member->create_subscription($M_options['freeusersubscription']);
+		}
+	}
+
+}
+
+add_action('user_register', 'membership_assign_subscription', 30);
+
 ?>

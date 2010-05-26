@@ -1512,6 +1512,7 @@ if(!class_exists('membershipadmin')) {
 
 					<h3><?php _e('User registration','membership'); ?></h3>
 					<p><?php _e('If you have free user registration enabled on your site, select the subscription they will be assigned to initially.','membership'); ?></p>
+					<p><?php _e('If you are using a paid subscription model - it is probably best to set this to &quot;none&quot;.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
@@ -1519,7 +1520,7 @@ if(!class_exists('membershipadmin')) {
 							<th scope="row"><?php _e('Use subscription','membership'); ?></th>
 							<td>
 								<select name='freeusersubscription' id='freeusersubscription'>
-									<option value="0"><?php _e('None - No access to content','membership'); ?></option>
+									<option value="0"><?php _e('None','membership'); ?></option>
 								<?php
 									$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 									if($subs) {

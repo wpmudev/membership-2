@@ -181,7 +181,6 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
-			//$user = wp_get_current_user();
 			if($user->has_cap('administrator')) {
 				// Admins can see everything
 				return;
