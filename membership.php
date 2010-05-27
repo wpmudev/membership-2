@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership system - core plugin
-Version: 0.1 beta
+Version: 0.1.2 beta
 Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
 Author: Barry (Incsub)
