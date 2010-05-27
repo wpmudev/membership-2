@@ -62,16 +62,19 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
 
 			$M_options = get_option('membership_options', array());
+
+			// Check if the membership plugin is active
+			$M_active = get_option('membership_active', 'no');
 
 			// Create our subscription page shortcode
 			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
-			if($user->has_cap('administrator')) {
+			if($user->has_cap('administrator') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}
@@ -171,7 +174,7 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_membership_protection($wp) {
 
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
 			// Set up some common defaults
 
 			static $initialised = false;
@@ -181,7 +184,7 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
-			if($user->has_cap('administrator')) {
+			if($user->has_cap('administrator') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}

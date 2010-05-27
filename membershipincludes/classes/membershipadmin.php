@@ -158,7 +158,7 @@ if(!class_exists('membershipadmin')) {
 
 			//wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
-
+			$this->handle_membership_dashboard_updates();
 		}
 
 		function add_admin_header_membershiplevels() {
@@ -217,11 +217,46 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		// Panel handling functions
+		function handle_membership_dashboard_updates() {
+
+			global $page, $action;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch($action) {
+
+				case 'activate':	check_admin_referer('toggle-plugin');
+									update_option('membership_active', 'yes');
+									wp_safe_redirect( wp_get_referer() );
+									break;
+
+				case 'deactivate':	check_admin_referer('toggle-plugin');
+									update_option('membership_active', 'no');
+									wp_safe_redirect( wp_get_referer() );
+									break;
+			}
+
+		}
+
 		function dashboard_members() {
+
+			global $page, $action;
 
 			$plugin = get_plugin_data(membership_dir('membership.php'));
 
-			echo __('You are running the membership plugin version ','membership') . "<strong>" . $plugin['Version'] . '</strong><br/><br/>';
+			$membershipactive = get_option('membership_active', 'no');
+
+			echo __('The membership plugin version ','membership') . "<strong>" . $plugin['Version'] . '</strong>';
+			echo __(' is ', 'membership');
+
+			// Membership active toggle
+			if($membershipactive == 'no') {
+				echo '<a href="' . wp_nonce_url("?page=" . $page. "&amp;action=activate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('Disabled','membership') . '</a>';
+			} else {
+				echo '<a href="' . wp_nonce_url("?page=" . $page. "&amp;action=deactivate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('Enabled','membership') . '</a>';
+			}
+
+			echo '<br/><br/>';
 
 			echo "<strong>" . __('Member counts', 'membership') . "</strong><br/>";
 
