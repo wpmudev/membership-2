@@ -409,7 +409,7 @@ class paypalexpress extends M_Gateway {
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
 
 					// Added for affiliate system link
-					do_action('membership_payment_processed', $user_id, $amount, $sub_id);
+					do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				case 'Reversed':
@@ -427,6 +427,7 @@ class paypalexpress extends M_Gateway {
 						$member->deactivate();
 					}
 
+					do_action('membership_payment_reversed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				case 'Refunded':
@@ -443,6 +444,7 @@ class paypalexpress extends M_Gateway {
 						$member->expire_subscription($sub_id);
 					}
 
+					do_action('membership_payment_refunded', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				case 'Denied':
@@ -460,6 +462,7 @@ class paypalexpress extends M_Gateway {
 						$member->deactivate();
 					}
 
+					do_action('membership_payment_denied', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				case 'Pending':
@@ -483,6 +486,7 @@ class paypalexpress extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					do_action('membership_payment_pending', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				default:
@@ -503,6 +507,7 @@ class paypalexpress extends M_Gateway {
 						$member->create_subscription($sub_id);
 					}
 
+					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				  break;
 
 				case 'subscr_cancel':
@@ -516,7 +521,7 @@ class paypalexpress extends M_Gateway {
 						$member->mark_for_expire($sub_id);
 					}
 
-					//mark_for_expire
+					do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
 				  break;
 
 				case 'new_case':
@@ -528,6 +533,9 @@ class paypalexpress extends M_Gateway {
 							$member->deactivate();
 						}
 					}
+
+					do_action('membership_payment_new_case', $user_id, $sub_id, $_POST['case_type']);
+					break;
 			}
 
 		} else {
