@@ -47,6 +47,9 @@ if(!class_exists('M_Membership')) {
 
 		function mark_for_expire( $sub_id ) {
 			update_usermeta( $this->ID, '_membership_expire_next', $sub_id);
+
+			do_action('membership_mark_for_expire', $sub_id, $this->ID);
+
 		}
 
 		function is_marked_for_expire($sub_id) {
@@ -103,6 +106,7 @@ if(!class_exists('M_Membership')) {
 					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'updateddate' => $start, 'expirydate' => $expires),
 																	   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
 
+					do_action( 'membership_move_subscription', $nextlevel, $sub_id, $thislevel_id, $thislevel_order);
 				}
 
 			}
@@ -159,6 +163,8 @@ if(!class_exists('M_Membership')) {
 				// expire just the passed subscription
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
 			}
+
+			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
 
 		}
 
@@ -311,8 +317,8 @@ if(!class_exists('M_Membership')) {
 					$start = current_time('mysql');
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
-					//print_r($this->db->last_query);
-					//die();
+
+					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order);
 				}
 
 			}
@@ -325,6 +331,7 @@ if(!class_exists('M_Membership')) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
 				$this->db->query( $sql );
 
+				do_action( 'membership_drop_subscription', $fromsub_id);
 			}
 
 		}
@@ -342,6 +349,8 @@ if(!class_exists('M_Membership')) {
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
+
+					do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order);
 				}
 
 			}
@@ -356,8 +365,14 @@ if(!class_exists('M_Membership')) {
 
 			if(empty($active) || $active == 'yes') {
 				update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'no');
+
+				do_action('membership_deactivate_user', $this->ID);
+
 			} else {
 				update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'yes');
+
+				do_action('membership_activate_user', $this->ID);
+
 			}
 
 			return true; // for now
@@ -438,6 +453,7 @@ if(!class_exists('M_Membership')) {
 		function assign_level($level_id, $fullload) {
 			// Used to force assign a level on a user - mainly for non logged in users
 			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
+
 		}
 
 		function load_levels($fullload = false) {
