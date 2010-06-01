@@ -97,6 +97,10 @@ if(!class_exists('M_Membership')) {
 			if($this->on_sub($sub_id)) {
 
 				if($nextlevel) {
+
+					$this->move_subscription($sub_id, $sub_id, $nextlevel->level_id, $nextlevel->level_order);
+
+					/*
 					$start = current_time('mysql');
 
 					if(empty($nextlevel->level_period) && $nextlevel->sub_type == 'indefinite') $nextlevel->level_period = 365;
@@ -106,7 +110,7 @@ if(!class_exists('M_Membership')) {
 					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'updateddate' => $start, 'expirydate' => $expires),
 																	   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
 
-					do_action( 'membership_move_subscription', $nextlevel, $sub_id, $thislevel_id, $thislevel_order);
+					*/
 				}
 
 			}
@@ -279,20 +283,31 @@ if(!class_exists('M_Membership')) {
 
 		function add_level($tolevel_id) {
 
+			if(!apply_filters( 'pre_membership_add_level', true, $tolevel_id )) {
+				return false;
+			}
+
 			if(!$this->on_level($tolevel_id)) {
 
 				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => current_time('mysql'), 'updateddate' => current_time('mysql')));
 
+				do_action( 'membership_add_level', $tolevel_id );
 			}
 
 		}
 
 		function drop_level($fromlevel_id) {
 
+			if(!apply_filters( 'pre_membership_drop_level', true, $fromlevel_id )) {
+				return false;
+			}
+
 			if($this->on_level($fromlevel_id)) {
 
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d AND sub_id = 0", $this->ID, $fromlevel_id);
 				$this->db->query( $sql );
+
+				do_action( 'membership_drop_level', $fromlevel_id );
 
 			}
 
@@ -301,10 +316,15 @@ if(!class_exists('M_Membership')) {
 
 		function move_level($fromlevel_id, $tolevel_id) {
 
+			if(!apply_filters( 'pre_membership_move_level', true, $fromlevel_id, $tolevel_id )) {
+				return false;
+			}
+
 			if(!$this->on_level($tolevel_id) && $this->on_level($fromlevel_id)) {
 
 				$this->db->update( $this->membership_relationships, array('level_id' => $tolevel_id, 'updateddate' => current_time('mysql')), array('level_id' => $fromlevel_id, 'user_id' => $this->ID, 'sub_id' => 0) );
 
+				do_action( 'membership_move_level', $fromlevel_id, $tolevel_id );
 			}
 
 		}
