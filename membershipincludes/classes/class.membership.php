@@ -156,6 +156,10 @@ if(!class_exists('M_Membership')) {
 
 		function expire_subscription($sub_id = false) {
 
+			if(!apply_filters( 'pre_membership_expire_subscription', true, $sub_id, $this->ID )) {
+				return false;
+			}
+
 			if(!$sub_id) {
 				// expire all of the current subscriptions
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d", $this->ID ));
@@ -307,6 +311,10 @@ if(!class_exists('M_Membership')) {
 
 		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false) {
 
+			if(!apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order )) {
+				return false;
+			}
+
 			if(!$this->on_sub($tosub_id)) {
 
 				// grab the level information for this position
@@ -327,6 +335,10 @@ if(!class_exists('M_Membership')) {
 
 		function drop_subscription($fromsub_id) {
 
+			if(!apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id )) {
+				return false;
+			}
+
 			if($this->on_sub($fromsub_id)) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
 				$this->db->query( $sql );
@@ -337,6 +349,10 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function move_subscription($fromsub_id, $tosub_id, $tolevel_id, $to_order) {
+
+			if(!apply_filters( 'pre_membership_move_subscription', true, $fromsub_id, $tosub_id, $tolevel_id, $to_order )) {
+				return false;
+			}
 
 			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
 
@@ -360,6 +376,10 @@ if(!class_exists('M_Membership')) {
 		// Member operations
 
 		function toggle_activation() {
+
+			if(!apply_filters( 'pre_membership_toggleactive_user', true, $this->ID )) {
+				return false;
+			}
 
 			$active = get_usermeta( $this->ID, $this->db->prefix . 'membership_active');
 

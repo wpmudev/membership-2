@@ -205,6 +205,10 @@ if(!class_exists('M_Subscription')) {
 
 		function toggleactivation( $force = false ) {
 
+			if(!apply_filters( 'pre_membership_toggleactivate_subscription', true, $this->id )) {
+				return false;
+			}
+
 			if($force) {
 				$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d", $this->id);
 			} else {
@@ -213,23 +217,37 @@ if(!class_exists('M_Subscription')) {
 
 			$this->dirty = true;
 
-			return $this->db->query($sql);
+			$result = $this->db->query($sql);
 
+			do_action( 'membership_toggleactivate_subscription', $this->id, $result );
 
+			return $result;
 		}
 
 		function togglepublic( $force = false ) {
+
+			if(!apply_filters( 'pre_membership_togglepublic_subscription', true, $this->id )) {
+				return false;
+			}
 
 			$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_public = NOT sub_public WHERE id = %d", $this->id);
 
 			$this->dirty = true;
 
-			return $this->db->query($sql);
+			$result = $this->db->query($sql);
+
+			do_action( 'membership_togglepublic_subscription', $this->id, $result );
+
+			return $result;
 
 
 		}
 
 		function delete( $force = false ) {
+
+			if(!apply_filters( 'pre_membership_delete_subscription', true, $this->id )) {
+				return false;
+			}
 
 			if($force) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d", $this->id);
@@ -244,6 +262,8 @@ if(!class_exists('M_Subscription')) {
 				$this->db->query($sql2);
 
 				$this->dirty = true;
+
+				do_action( 'membership_delete_subscription', $this->id );
 
 				return true;
 
