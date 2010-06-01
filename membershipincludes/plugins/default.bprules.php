@@ -107,7 +107,7 @@ class M_Groups extends M_Rule {
 	}
 
 }
-//M_register_rule('groups', 'M_Groups', 'bp');
+M_register_rule('groups', 'M_Groups', 'bp');
 
 // Add the buddypress section
 function M_AddBuddyPressSection($sections) {
@@ -116,6 +116,6 @@ function M_AddBuddyPressSection($sections) {
 	return $sections;
 }
 
-//add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+add_filter('membership_level_sections', 'M_AddBuddyPressSection');
 
 ?>

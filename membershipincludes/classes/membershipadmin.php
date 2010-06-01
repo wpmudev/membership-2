@@ -1462,6 +1462,8 @@ if(!class_exists('membershipadmin')) {
 				$M_options['original_url'] = $_POST['original_url'];
 				$M_options['masked_url'] = $_POST['masked_url'];
 
+				$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
+
 				$M_options['nocontent_page'] = $_POST['nocontent_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
 				$M_options['registration_tos'] = $_POST['registration_tos'];
@@ -1668,6 +1670,24 @@ if(!class_exists('membershipadmin')) {
 							</th>
 							<td>
 								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
+							</td>
+						</tr>
+
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected groups','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Place each download group name on a new line, removing used groups will leave content visible to all users/members.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='membershipdownloadgroups' id='membershipdownloadgroups' rows='10' cols='40'><?php
+								if(!empty($M_options['membershipdownloadgroups'])) {
+									foreach($M_options['membershipdownloadgroups'] as $key => $value) {
+										if(!empty($value)) {
+											esc_html_e(stripslashes($value)) . "\n";
+										}
+									}
+								}
+								?></textarea>
 							</td>
 						</tr>
 
@@ -3207,23 +3227,34 @@ if(!class_exists('membershipadmin')) {
 		add_filter('attachment_fields_to_save', array(&$this, 'save_media_protection_settings'), 99, 2);
 		*/
 		function add_media_protection_settings($fields, $post) {
-			$protected = get_post_meta($post->ID, '_membership_protected_content', true);
+
+			global $M_options;
+
+			$protected = get_post_meta($post->ID, '_membership_protected_content_group', true);
 			if(empty($protected)) {
 				$protected = 'no';
 			}
-			// add requirement for jquery ui core, jquery ui widgets, jquery ui position
+
 			$html = "<select name='attachments[" . $post->ID . "][protected-content]'>";
+
 			$html .= "<option value='no'";
-			$html .= ">" . __('No', 'membership') . "</option>";
-			$html .= "<option value='yes'";
-			if($protected == 'yes') {
-				$html .= " selected='selected'";
+			$html .= ">" . __('None', 'membership') . "</option>";
+
+			if(!empty($M_options['membershipdownloadgroups'])) {
+				foreach($M_options['membershipdownloadgroups'] as $key => $value) {
+					if(!empty($value)) {
+						$html .= "<option value='" . esc_attr(trim(stripslashes($value))) . "'";
+						if($protected == esc_attr(trim(stripslashes($value)))) {
+							$html .= " selected='selected'";
+						}
+						$html .= ">" . esc_html(trim(stripslashes($value))) . "</option>";
+					}
+				}
 			}
-			$html .= ">" . __('Yes', 'membership') . "</option>";
 			$html .= "</select>";
 
 			$fields['media-protected-content'] = array(
-				'label' 	=> __('Protected content', 'membership'),
+				'label' 	=> __('Protected content group', 'membership'),
 				'input' 	=> 'html',
 				'html' 		=> $html,
 				'helps'     => __('Is this an item you may want to restrict access to?', 'membership')
@@ -3234,9 +3265,9 @@ if(!class_exists('membershipadmin')) {
 		function save_media_protection_settings($post, $attachment) {
 			$key = "protected-content";
 			if ( empty( $attachment[$key] ) || addslashes( $attachment[$key] ) == 'no') {
-				delete_post_meta($post['ID'], '_membership_protected_content'); // delete any residual metadata from a free-form field (as inserted below)
+				delete_post_meta($post['ID'], '_membership_protected_content_group'); // delete any residual metadata from a free-form field (as inserted below)
 			} else // free-form text was entered, insert postmeta with credit
-				update_post_meta($post['ID'], '_membership_protected_content', $attachment['protected-content']); // insert 'media-credit' metadata field for image with free-form text
+				update_post_meta($post['ID'], '_membership_protected_content_group', $attachment['protected-content']); // insert 'media-credit' metadata field for image with free-form text
 			return $post;
 		}
 
