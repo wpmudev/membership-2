@@ -271,19 +271,19 @@ if(!class_exists('membershippublic')) {
 
 				if(!empty($fileid)) {
 					// check for protection
-					$protected = get_post_meta($fileid, '_membership_protected_content', true);
-					if($protected == 'yes') {
+					$protected = get_post_meta($fileid, '_membership_protected_content_group', true);
+					if(empty($protected) || $protected == 'no') {
+						// it's not protected so grab and display it
+						$file = $wp_query->query_vars['protectedfile'];
+						$this->output_file($file);
+					} else {
 						// check we can see it
-						if( $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $fileid ) ) ) {
+						if( $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $protected ) ) ) {
 							$file = $wp_query->query_vars['protectedfile'];
 							$this->output_file($file);
 						} else {
 							$this->show_noaccess_image($wp_query);
 						}
-					} else {
-						// it's not protected so grab and display it
-						$file = $wp_query->query_vars['protectedfile'];
-						$this->output_file($file);
 					}
 				}
 

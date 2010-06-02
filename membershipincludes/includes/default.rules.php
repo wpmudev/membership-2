@@ -576,119 +576,6 @@ class M_Comments extends M_Rule {
 }
 M_register_rule('comments', 'M_Comments', 'main');
 
-class M_Downloadsold extends M_Rule {
-
-	var $name = 'downloads';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='downloads' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Downloads','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
-
-	function admin_main($data) {
-
-		global $wpdb;
-
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-downloads'>
-			<h2 class='sidebar-name'><?php _e('Downloads', 'membership');?><span><a href='#remove' id='remove-downloads' class='removelink' title='<?php _e("Remove Downloads from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-			<div class='inner-operation'>
-				<p><?php _e('Select the Downloads / Media to be covered by this rule by checking the box next to the relevant items name.','membership'); ?></p>
-				<?php
-					$mediasql = $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s", '_membership_protected_content' );
-					$mediaids = $wpdb->get_col( $mediasql );
-
-					if(!empty($mediaids)) {
-						// We have some ids so grab the information
-						$attachmentsql = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE post_type = 'attachment' AND post_status != 'trash' AND ID IN(" . implode(",", $mediaids) . ")" );
-
-						$attachments = $wpdb->get_results( $attachmentsql );
-					}
-					?>
-					<table cellspacing="0" class="widefat fixed">
-						<thead>
-						<tr>
-							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Download / Item name', 'membership'); ?></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('File type', 'membership'); ?></th>
-						</tr>
-						</thead>
-						<tfoot>
-						<tr>
-							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Download / Item name', 'membership'); ?></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('File type', 'membership'); ?></th>
-						</tr>
-						</tfoot>
-
-						<tbody>
-						<?php
-						if(!empty($attachments)) {
-							foreach($attachments as $key => $attachment) {
-								?>
-								<tr valign="middle" class="alternate" id="post-<?php echo $attachment->ID; ?>">
-									<th class="check-column" scope="row">
-										<input type="checkbox" value="<?php echo $attachment->ID; ?>" name="downloads[]" <?php if(in_array($attachment->ID, $data)) echo 'checked="checked"'; ?>>
-									</th>
-									<td class="column-name">
-										<strong><?php echo esc_html($attachment->post_title); ?></strong>
-									</td>
-									<td class="column-name">
-										<?php echo esc_html($attachment->post_mime_type); ?>
-									</td>
-							    </tr>
-								<?php
-							}
-						} else {
-							?>
-							<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
-								<td class="column-name" colspan='3'>
-									<?php echo __('You have no protectable files available.','membership'); ?>
-								</td>
-						    </tr>
-							<?php
-						}
-
-						?>
-						</tbody>
-					</table>
-
-			</div>
-		</div>
-		<?php
-	}
-
-	function can_view_download($area, $fileid) {
-
-		switch($area) {
-
-			case 'positive':	if(in_array($fileid, (array) $this->data)) {
-									return true;
-								}
-								break;
-
-			case 'negative':	if(in_array($fileid, (array) $this->data)) {
-									return false;
-								}
-								break;
-
-			default:			return false;
-
-		}
-
-	}
-
-}
-
-
 class M_Downloads extends M_Rule {
 
 	var $name = 'downloads';
@@ -794,16 +681,16 @@ class M_Downloads extends M_Rule {
 		<?php
 	}
 
-	function can_view_download($area, $fileid) {
+	function can_view_download($area, $group) {
 
 		switch($area) {
 
-			case 'positive':	if(in_array($fileid, (array) $this->data)) {
+			case 'positive':	if(in_array($group, (array) $this->data)) {
 									return true;
 								}
 								break;
 
-			case 'negative':	if(in_array($fileid, (array) $this->data)) {
+			case 'negative':	if(in_array($group, (array) $this->data)) {
 									return false;
 								}
 								break;
