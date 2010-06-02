@@ -629,14 +629,12 @@ class M_Downloads extends M_Rule {
 						<tr>
 							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
 							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Download / Group name', 'membership'); ?></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Item count', 'membership'); ?></th>
 						</tr>
 						</thead>
 						<tfoot>
 						<tr>
 							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
 							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Download / Group name', 'membership'); ?></th>
-							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Item count', 'membership'); ?></th>
 						</tr>
 						</tfoot>
 
@@ -653,9 +651,6 @@ class M_Downloads extends M_Rule {
 										</th>
 										<td class="column-name">
 											<strong><?php echo esc_html(stripslashes(trim($value))); ?></strong>
-										</td>
-										<td class="column-name">
-											<?php echo "0"; ?>
 										</td>
 								    </tr>
 									<?php
