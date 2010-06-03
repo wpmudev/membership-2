@@ -6,9 +6,9 @@ if(!class_exists('M_Membership')) {
 
 		var $db;
 
-		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions', 'membership_news');
+		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions');
 
-		var $membership_relationships, $membership_levels, $subscriptions, $membership_news;
+		var $membership_relationships, $membership_levels, $subscriptions;
 
 		var $subids;
 		var $levids;
