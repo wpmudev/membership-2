@@ -283,7 +283,7 @@ if(!class_exists('M_Membership')) {
 
 		function add_level($tolevel_id) {
 
-			if(!apply_filters( 'pre_membership_add_level', true, $tolevel_id )) {
+			if(!apply_filters( 'pre_membership_add_level', true, $tolevel_id, $this->ID )) {
 				return false;
 			}
 
@@ -291,14 +291,14 @@ if(!class_exists('M_Membership')) {
 
 				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => current_time('mysql'), 'updateddate' => current_time('mysql')));
 
-				do_action( 'membership_add_level', $tolevel_id );
+				do_action( 'membership_add_level', $tolevel_id, $this->ID );
 			}
 
 		}
 
 		function drop_level($fromlevel_id) {
 
-			if(!apply_filters( 'pre_membership_drop_level', true, $fromlevel_id )) {
+			if(!apply_filters( 'pre_membership_drop_level', true, $fromlevel_id, $this->ID )) {
 				return false;
 			}
 
@@ -307,7 +307,7 @@ if(!class_exists('M_Membership')) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d AND sub_id = 0", $this->ID, $fromlevel_id);
 				$this->db->query( $sql );
 
-				do_action( 'membership_drop_level', $fromlevel_id );
+				do_action( 'membership_drop_level', $fromlevel_id, $this->ID );
 
 			}
 
@@ -316,7 +316,7 @@ if(!class_exists('M_Membership')) {
 
 		function move_level($fromlevel_id, $tolevel_id) {
 
-			if(!apply_filters( 'pre_membership_move_level', true, $fromlevel_id, $tolevel_id )) {
+			if(!apply_filters( 'pre_membership_move_level', true, $fromlevel_id, $tolevel_id, $this->ID )) {
 				return false;
 			}
 
@@ -324,7 +324,7 @@ if(!class_exists('M_Membership')) {
 
 				$this->db->update( $this->membership_relationships, array('level_id' => $tolevel_id, 'updateddate' => current_time('mysql')), array('level_id' => $fromlevel_id, 'user_id' => $this->ID, 'sub_id' => 0) );
 
-				do_action( 'membership_move_level', $fromlevel_id, $tolevel_id );
+				do_action( 'membership_move_level', $fromlevel_id, $tolevel_id, $this->ID );
 			}
 
 		}

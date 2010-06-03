@@ -12,6 +12,7 @@ function load_membership_plugins() {
 				include_once( membership_dir('membershipincludes/plugins/' . $mem_plugin) );
 		}
 	}
+
 }
 
 function set_membership_url($base) {
