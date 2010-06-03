@@ -101,6 +101,16 @@ function M_Createtables() {
 	);";
 
 	$wpdb->query($sql);
+
+	// Added for RC
+	$sql = "CREATE TABLE `{$wpdb->prefix}membership_news` (
+	  `id` bigint(11) NOT NULL auto_increment,
+	  `newsitem` text,
+	  `newsdate` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+	  PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
 }
 
 ?>

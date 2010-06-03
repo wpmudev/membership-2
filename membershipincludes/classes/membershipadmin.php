@@ -367,10 +367,6 @@ if(!class_exists('membershipadmin')) {
 			echo "<p>" . __('There will be some nice statistics here.','membership') . "</p>";
 		}
 
-		function dashboard_news() {
-			echo "<p>" . __('There will be some interesting news here.','membership') . "</p>";
-		}
-
 		function handle_membership_panel() {
 
 			?>
@@ -391,6 +387,10 @@ if(!class_exists('membershipadmin')) {
 									<br class="clear">
 								</div>
 							</div>
+
+							<?php
+							do_action( 'membership_dashboard_left' );
+							?>
 							<!--
 							<div class="postbox " id="dashboard_recent_comments">
 								<h3 class="hndle"><span><?php _e('Shortcuts','membership'); ?></span></h3>
@@ -410,14 +410,6 @@ if(!class_exists('membershipadmin')) {
 								<h3 class="hndle"><span><?php _e('Statistics','membership'); ?></span></h3>
 								<div class="inside">
 									<?php $this->dashboard_statistics(); ?>
-									<br class="clear">
-								</div>
-							</div>
-
-							<div class="postbox " id="dashboard_quick_press">
-								<h3 class="hndle"><span><?php _e('News','membership'); ?></span></h3>
-								<div class="inside">
-									<?php $this->dashboard_news(); ?>
 									<br class="clear">
 								</div>
 							</div>
