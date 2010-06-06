@@ -1,4 +1,5 @@
 <?php
+
 class M_BPGroups extends M_Rule {
 
 	var $name = 'bpgroups';
@@ -24,7 +25,9 @@ class M_BPGroups extends M_Rule {
 				<p><?php _e('Select the groups to be covered by this rule by checking the box next to the relevant groups title.','membership'); ?></p>
 				<?php
 
-					$groups = groups_get_groups(array('per_page' => 50));
+					if(function_exists('groups_get_groups')) {
+						$groups = groups_get_groups(array('per_page' => 50));
+					}
 
 					if($groups) {
 						?>
@@ -262,7 +265,9 @@ class M_BPBlogs extends M_Rule {
 				<p><?php _e('Select the blogs to be covered by this rule by checking the box next to the relevant blogs name.','membership'); ?></p>
 				<?php
 
-					$blogs = bp_blogs_get_blogs(array('per_page' => 50));
+					if(function_exists('bp_blogs_get_blogs')) {
+						$blogs = bp_blogs_get_blogs(array('per_page' => 50));
+					}
 
 					if($blogs) {
 						?>
@@ -494,13 +499,17 @@ class M_BPBlogs extends M_Rule {
 }
 M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
 
-// Add the buddypress section
-function M_AddBuddyPressSection($sections) {
-	$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
+if(defined('BP_CORE_DB_VERSION')) {
+	// Add the buddypress section
+	function M_AddBuddyPressSection($sections) {
+		$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
 
-	return $sections;
+		return $sections;
+	}
+
+	add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+
+
 }
-
-add_filter('membership_level_sections', 'M_AddBuddyPressSection');
 
 ?>

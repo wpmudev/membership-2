@@ -598,16 +598,6 @@ class M_Downloads extends M_Rule {
 
 		if(!$data) $data = array();
 
-		/*
-		if(!empty($M_options['membershipdownloadgroups'])) {
-			foreach($M_options['membershipdownloadgroups'] as $key => $value) {
-				if(!empty($value)) {
-					esc_html_e(stripslashes($value)) . "\n";
-				}
-			}
-		}
-		*/
-
 		?>
 		<div class='level-operation' id='main-downloads'>
 			<h2 class='sidebar-name'><?php _e('Downloads', 'membership');?><span><a href='#remove' id='remove-downloads' class='removelink' title='<?php _e("Remove Downloads from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
@@ -660,8 +650,8 @@ class M_Downloads extends M_Rule {
 						} else {
 							?>
 							<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
-								<td class="column-name" colspan='3'>
-									<?php echo __('You have no protectable files available.','membership'); ?>
+								<td class="column-name" colspan='2'>
+									<?php echo __('You have no download groups set, please visit the membership options page to set them up.','membership'); ?>
 								</td>
 						    </tr>
 							<?php
