@@ -1421,8 +1421,6 @@ if(!class_exists('membershipadmin')) {
 										} else {
 											$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
 										}
-
-										//$actions['delete'] = "<span class='delete'><a href=''>" . __('Delete', 'membership') . "</a></span>";
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
