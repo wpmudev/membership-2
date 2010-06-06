@@ -341,6 +341,9 @@ if(!class_exists('membershipadmin')) {
 			wp_enqueue_script('flot_js', membership_url('membershipincludes/js/jquery.flot.min.js'), array('jquery'));
 			wp_enqueue_script('mdash_js', membership_url('membershipincludes/js/dashboard.js'), array('jquery'));
 
+			wp_localize_script( 'mdash_js', 'membership', array( 'signups' => __('Signups','membership'), 'members' => __('Members','membership') ) );
+
+
 			add_action ('admin_head', array(&$this, 'dashboard_iehead'));
 			add_action ('admin_head', array(&$this, 'dashboard_chartdata'));
 
