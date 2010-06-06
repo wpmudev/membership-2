@@ -1,17 +1,19 @@
 <?php
-class M_Groups extends M_Rule {
+class M_BPGroups extends M_Rule {
+
+	var $name = 'bpgroups';
 
 	function __construct() {
 
 	}
 
-	function M_Groups() {
+	function M_BPGroups() {
 
 	}
 
 	function admin_sidebar($data) {
 		?>
-		<li class='level-draggable' id='groups' <?php if($data === true) echo "style='display:none;'"; ?>>
+		<li class='level-draggable' id='bpgroups' <?php if($data === true) echo "style='display:none;'"; ?>>
 			<div class='action action-draggable'>
 				<div class='action-top'>
 				<?php _e('Groups','membership'); ?>
@@ -24,56 +26,47 @@ class M_Groups extends M_Rule {
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
-		<div class='level-operation' id='main-groups'>
-			<h2 class='sidebar-name'><?php _e('Groups', 'membership');?><span><a href='#remove' id='remove-groups' class='removelink' title='<?php _e("Remove Groups from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+		<div class='level-operation' id='main-bpgroups'>
+			<h2 class='sidebar-name'><?php _e('Groups', 'membership');?><span><a href='#remove' id='remove-bpgroups' class='removelink' title='<?php _e("Remove Groups from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><?php _e('Select the posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
+				<p><?php _e('Select the groups to be covered by this rule by checking the box next to the relevant groups title.','membership'); ?></p>
 				<?php
-					$shownumber = $this->showposts;
 
-					$args = array(
-						'numberposts' => $shownumber,
-						'offset' => 0,
-						'orderby' => 'post_date',
-						'order' => 'DESC',
-						'post_type' => 'post',
-						'post_status' => 'publish'
-					);
+					$groups = groups_get_groups(array('per_page' => 50));
 
-					$posts = get_posts($args);
-					if($posts) {
+					if($groups) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
 							<thead>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Group title', 'membership'); ?></th>
+								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Group created', 'membership'); ?></th>
 							</tr>
 							</thead>
 
 							<tfoot>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Group title', 'membership'); ?></th>
+								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Group created', 'membership'); ?></th>
 							</tr>
 							</tfoot>
 
 							<tbody>
 						<?php
-						foreach($posts as $key => $post) {
+						foreach($groups['groups'] as $key => $group) {
 							?>
-							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
+							<tr valign="middle" class="alternate" id="bpgroup-<?php echo $group->id; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $post->ID; ?>" name="posts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $group->id; ?>" name="bpgroups[]" <?php if(in_array($group->id, $data)) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
-									<strong><?php echo esc_html($post->post_title); ?></strong>
+									<strong><?php echo esc_html($group->name); ?></strong>
 								</td>
 								<td class="column-date">
 									<?php
-										echo date("Y/m/d", strtotime($post->post_date));
+										echo date("Y/m/d", strtotime($group->date_created));
 									?>
 								</td>
 						    </tr>
@@ -85,8 +78,14 @@ class M_Groups extends M_Rule {
 						<?php
 					}
 
+					if($groups['total'] > 50) {
+						?>
+						<p class='description'><?php _e("Only the most recent 50 groups are shown above.",'membership'); ?></p>
+						<?php
+					}
+
 				?>
-				<p class='description'><?php _e("Only the most recent {$shownumber} posts are shown above, if you have more than that then you should consider using categories instead.",'membership'); ?></p>
+
 			</div>
 		</div>
 		<?php
@@ -96,18 +95,107 @@ class M_Groups extends M_Rule {
 
 		$this->data = $data;
 
-		//add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+		add_filter('groups_get_groups', array(&$this, 'add_viewable_groups'), 10, 2 );
+		add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2); //$groups_template->has_groups(), &$groups_template );
+
+	}
+
+	function add_has_groups( $one, $groups) {
+
+		$innergroups = $groups->groups;
+
+		foreach( (array) $innergroups as $key => $group ) {
+			if(!in_array($group->group_id, $this->data)) {
+				unset($innergroups[$key]);
+				$groups->total_group_count--;
+			}
+		}
+
+		$groups->groups = array();
+		foreach( (array) $innergroups as $key => $group ) {
+			$groups->groups[] = $group;
+		}
+
+		if(empty($groups->groups)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function add_unhas_groups( $one, $groups) {
+
+		$innergroups = $groups->groups;
+
+		foreach( (array) $innergroups as $key => $group ) {
+			if(in_array($group->group_id, $this->data)) {
+				unset($innergroups[$key]);
+				$groups->total_group_count--;
+			}
+		}
+
+		$groups->groups = array();
+		foreach( (array) $innergroups as $key => $group ) {
+			$groups->groups[] = $group;
+		}
+
+		if(empty($groups->groups)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
 
-		//add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+		add_filter('groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
+		add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2); //$groups_template->has_groups(), &$groups_template );
+	}
+
+	function add_viewable_groups($groups, $params) {
+
+		$innergroups = $groups['groups'];
+
+		foreach( (array) $innergroups as $key => $group ) {
+			if(!in_array($group->id, $this->data)) {
+				unset($innergroups[$key]);
+				$groups['total']--;
+			}
+		}
+
+		$groups['groups'] = array();
+		foreach( (array) $innergroups as $key => $group ) {
+			$groups['groups'][] = $group;
+		}
+
+		return $groups;
+
+	}
+
+	function add_unviewable_groups($groups, $params) {
+
+		$innergroups = $groups['groups'];
+
+		foreach( (array) $innergroups as $key => $group ) {
+			if(in_array($group->id, $this->data)) {
+				unset($innergroups[$key]);
+				$groups['total']--;
+			}
+		}
+
+		$groups['groups'] = array();
+		foreach( (array) $innergroups as $key => $group ) {
+			$groups['groups'][] = $group;
+		}
+
+		return $groups;
+
 	}
 
 }
-M_register_rule('groups', 'M_Groups', 'bp');
+M_register_rule('bpgroups', 'M_BPGroups', 'bp');
 
 // Add the buddypress section
 function M_AddBuddyPressSection($sections) {
