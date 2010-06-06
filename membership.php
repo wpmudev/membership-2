@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: Membership system - core plugin
-Version: 0.1.2 beta
+Version: 1.0 RC1
 Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
+WDP ID: 140
 
 Copyright 2010  (email: admin@incsub.com)
 
