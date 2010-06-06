@@ -311,7 +311,7 @@ if(!class_exists('membershipadmin')) {
 
 			$data = array();
 
-			foreach($results as $key => $res) {
+			foreach( (array) $results as $key => $res) {
 				$data[] = "[ " . $key . ", " . $res . " ]";
 			}
 
