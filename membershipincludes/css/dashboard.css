@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=2 */
 
 h3.hndle {
 	cursor: auto !Important;
@@ -18,3 +18,31 @@ div.inside td a {
 	text-decoration: none;
 }
 
+div.inside p {
+	margin-top: 5px;
+	margin-bottom: 10px;	
+}
+
+#memchartone {
+	width: 100%;
+	min-height: 250px;
+	background: #fafafa;
+	margin-bottom: 30px;
+	margin-left: 5px;
+}
+
+#memcharttwo {
+	width: 100%;
+	min-height: 250px;
+	background: #fafafa;
+	margin-bottom: 30px;
+	margin-left: 5px;
+}
+
+#memchartthree {
+	width: 100%;
+	min-height: 250px;
+	background: #fafafa;
+	margin-bottom: 30px;
+	margin-left: 5px;
+}

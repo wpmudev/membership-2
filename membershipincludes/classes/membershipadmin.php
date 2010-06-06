@@ -217,6 +217,108 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		// Panel handling functions
+
+		function build_signup_stats() {
+
+			$sql = $this->db->prepare( "SELECT YEAR(startdate) as year, MONTH(startdate)as month, DAY(startdate) as day, count(*) AS signedup FROM {$this->membership_relationships} WHERE startdate > DATE_SUB(CURDATE(), INTERVAL 10 DAY) GROUP BY YEAR(startdate), MONTH(startdate), DAY(startdate) ORDER BY startdate DESC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+
+				$stats = array();
+				$ticks = array();
+				$data = array();
+				foreach($results as $key => $res) {
+
+					$stats[strtotime($res->year . "-" . $res->month . "-" . $res->day)] = (int) $res->signedup;
+
+				}
+
+				$startat = time();
+				for($n = 0; $n < 11; $n++) {
+					$switch = 10 - $n;
+					$rdate = strtotime('-' . $switch . ' DAYS', $startat);
+
+					$ticks[$n] = '"' . date('n', $rdate) . "/" . date('j', $rdate) . '"';
+
+					if(isset($stats[strtotime(date("Y", $rdate) . "-" . date("n", $rdate) . "-" . date("j", $rdate))])) {
+						$data[$n] = $stats[strtotime(date("Y", $rdate) . "-" . date("n", $rdate) . "-" . date("j", $rdate))];
+					} else {
+						$data[$n] = 0;
+					}
+				}
+
+				$stats = $data;
+
+				return compact('stats', 'ticks');
+
+			} else {
+				return false;
+			}
+
+		}
+
+		function build_levels_stats() {
+
+			$sql = $this->db->prepare( "SELECT l.id, l.level_title, count(m.rel_id) as users FROM {$this->membership_levels} as l, {$this->membership_relationships} as m WHERE l.id = m.level_id GROUP BY l.id, l.level_title ORDER BY users DESC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+
+				$stats = array();
+				$ticks = array();
+				foreach($results as $key => $res) {
+
+					$stats[] = (int) $res->users;
+					$ticks[] = '"' . esc_html($res->level_title) . '"';
+				}
+
+				return compact('stats', 'ticks');
+
+			} else {
+				return false;
+			}
+
+		}
+
+		function build_subs_stats() {
+
+			$sql = $this->db->prepare( "SELECT s.id, s.sub_name, count(m.rel_id) as users FROM {$this->subscriptions} as s, {$this->membership_relationships} as m WHERE s.id = m.sub_id GROUP BY s.id, s.sub_name ORDER BY users DESC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+
+				$stats = array();
+				$ticks = array();
+				foreach($results as $key => $res) {
+
+					$stats[] = (int) $res->users;
+					$ticks[] = '"' . esc_html($res->sub_name) . '"';
+				}
+
+				return compact('stats', 'ticks');
+
+			} else {
+				return false;
+			}
+
+		}
+
+		function get_data($results) {
+
+			$data = array();
+
+			foreach($results as $key => $res) {
+				$data[] = "[ " . $key . ", " . $res . " ]";
+			}
+
+			return "[ " . implode(", ", $data) . " ]";
+
+		}
+
 		function handle_membership_dashboard_updates() {
 
 			global $page, $action;
@@ -236,6 +338,39 @@ if(!class_exists('membershipadmin')) {
 									break;
 			}
 
+			wp_enqueue_script('flot_js', membership_url('membershipincludes/js/jquery.flot.min.js'), array('jquery'));
+			wp_enqueue_script('mdash_js', membership_url('membershipincludes/js/dashboard.js'), array('jquery'));
+
+			add_action ('admin_head', array(&$this, 'dashboard_iehead'));
+			add_action ('admin_head', array(&$this, 'dashboard_chartdata'));
+
+		}
+
+		function dashboard_chartdata() {
+			$returned = $this->build_signup_stats();
+			$levels = $this->build_levels_stats();
+			$subs = $this->build_subs_stats();
+
+			echo "\n" . '<script type="text/javascript">';
+			echo "\n" . '/* <![CDATA[ */ ' . "\n";
+
+			echo "var membershipdata = {\n";
+				echo "chartonestats : " . $this->get_data($returned['stats']) . ",\n";
+				echo "chartoneticks : " . $this->get_data($returned['ticks']) . ",\n";
+
+				echo "charttwostats : " . $this->get_data($levels['stats']) . ",\n";
+				echo "charttwoticks : " . $this->get_data($levels['ticks']) . ",\n";
+
+				echo "chartthreestats : " . $this->get_data($subs['stats']) . ",\n";
+				echo "chartthreeticks : " . $this->get_data($subs['ticks']) . "\n";
+			echo "};\n";
+
+			echo "\n" . '/* ]]> */ ';
+			echo '</script>';
+		}
+
+		function dashboard_iehead() {
+			echo '<!--[if IE]><script language="javascript" type="text/javascript" src="' . membership_url('membershipincludes/js/excanvas.min.js') . '"></script><![endif]-->';
 		}
 
 		function dashboard_members() {
@@ -357,14 +492,13 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function dashboard_shortcuts() {
-
-
-
-		}
-
 		function dashboard_statistics() {
-			echo "<p>" . __('There will be some nice statistics here.','membership') . "</p>";
+
+			echo "<div id='memchartone'></div>";
+			echo "<div id='memcharttwo'></div>";
+			echo "<div id='memchartthree'></div>";
+
+			do_action( 'membership_dashboard_statistics' );
 		}
 
 		function handle_membership_panel() {
@@ -391,15 +525,6 @@ if(!class_exists('membershipadmin')) {
 							<?php
 							do_action( 'membership_dashboard_left' );
 							?>
-							<!--
-							<div class="postbox " id="dashboard_recent_comments">
-								<h3 class="hndle"><span><?php _e('Shortcuts','membership'); ?></span></h3>
-								<div class="inside">
-									<?php $this->dashboard_shortcuts(); ?>
-									<br class="clear">
-								</div>
-							</div>
-							-->
 						</div>
 					</div>
 
@@ -413,6 +538,10 @@ if(!class_exists('membershipadmin')) {
 									<br class="clear">
 								</div>
 							</div>
+
+							<?php
+							do_action( 'membership_dashboard_right' );
+							?>
 
 						</div>
 					</div>

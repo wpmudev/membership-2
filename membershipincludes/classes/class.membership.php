@@ -331,7 +331,7 @@ if(!class_exists('M_Membership')) {
 
 		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false) {
 
-			if(!apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order )) {
+			if(!apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order, $this->ID )) {
 				return false;
 			}
 
@@ -346,7 +346,7 @@ if(!class_exists('M_Membership')) {
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
 					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
 
-					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order);
+					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
 				}
 
 			}
@@ -355,7 +355,7 @@ if(!class_exists('M_Membership')) {
 
 		function drop_subscription($fromsub_id) {
 
-			if(!apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id )) {
+			if(!apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id, $this->ID )) {
 				return false;
 			}
 
@@ -363,14 +363,14 @@ if(!class_exists('M_Membership')) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
 				$this->db->query( $sql );
 
-				do_action( 'membership_drop_subscription', $fromsub_id);
+				do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
 			}
 
 		}
 
 		function move_subscription($fromsub_id, $tosub_id, $tolevel_id, $to_order) {
 
-			if(!apply_filters( 'pre_membership_move_subscription', true, $fromsub_id, $tosub_id, $tolevel_id, $to_order )) {
+			if(!apply_filters( 'pre_membership_move_subscription', true, $fromsub_id, $tosub_id, $tolevel_id, $to_order, $this->ID )) {
 				return false;
 			}
 
@@ -386,7 +386,7 @@ if(!class_exists('M_Membership')) {
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 
-					do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order);
+					do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
 				}
 
 			}
