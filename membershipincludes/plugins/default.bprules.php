@@ -95,9 +95,33 @@ class M_BPGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_filter('groups_get_groups', array(&$this, 'add_viewable_groups'), 10, 2 );
-		add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2); //$groups_template->has_groups(), &$groups_template );
+		add_filter( 'groups_get_groups', array(&$this, 'add_viewable_groups'), 10, 2 );
+		add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2);
 
+		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 ); //$activity, &$r );
+
+	}
+
+	function add_has_activity($activities, $two) {
+
+		$inneracts = $activities['activities'];
+
+		foreach( (array) $inneracts as $key => $act ) {
+
+			if($act->component == 'groups') {
+				if(!in_array($act->item_id, $this->data)) {
+					unset($inneracts[$key]);
+					$activities['total']--;
+				}
+			}
+		}
+
+		$activities['activities'] = array();
+		foreach( (array) $inneracts as $key => $act ) {
+			$activities['activities'][] = $act;
+		}
+
+		return $activities;
 	}
 
 	function add_has_groups( $one, $groups) {
@@ -151,7 +175,31 @@ class M_BPGroups extends M_Rule {
 		$this->data = $data;
 
 		add_filter('groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
-		add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2); //$groups_template->has_groups(), &$groups_template );
+		add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
+
+		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 ); //$activity, &$r );
+	}
+
+	function add_unhas_activity($activities, $two) {
+
+		$inneracts = $activities['activities'];
+
+		foreach( (array) $inneracts as $key => $act ) {
+
+			if($act->component == 'groups') {
+				if(in_array($act->item_id, $this->data)) {
+					unset($inneracts[$key]);
+					$activities['total']--;
+				}
+			}
+		}
+
+		$activities['activities'] = array();
+		foreach( (array) $inneracts as $key => $act ) {
+			$activities['activities'][] = $act;
+		}
+
+		return $activities;
 	}
 
 	function add_viewable_groups($groups, $params) {

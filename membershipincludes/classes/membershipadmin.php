@@ -1412,7 +1412,7 @@ if(!class_exists('membershipadmin')) {
 									<input type='checkbox' name='users[]' id='user_<?php echo $user_object->ID; ?>' class='$role' value='<?php echo $user_object->ID; ?>' />
 								</th>
 								<td <?php echo $style; ?>>
-									<strong><a href=''><?php echo $user_object->user_login; ?></a></strong>
+									<strong><a href='<?php echo admin_url('user-edit.php?user_id=' . $user_object->ID); ?>'><?php echo $user_object->user_login; ?></a></strong>
 									<?php
 										$actions = array();
 										$actions['edit'] = "<span class='edit'><a href='" . admin_url('user-edit.php?user_id=' . $user_object->ID) . "'>" . __('Edit', 'membership') . "</a></span>";
