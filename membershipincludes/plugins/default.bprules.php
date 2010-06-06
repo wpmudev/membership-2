@@ -330,6 +330,8 @@ class M_BPBlogs extends M_Rule {
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
 
+		add_filter( 'bp_get_total_blog_count', array(&$this, 'fix_blog_count'));
+
 	}
 
 	function on_negative($data) {
@@ -340,7 +342,24 @@ class M_BPBlogs extends M_Rule {
 		add_filter( 'bp_has_blogs', array(&$this, 'add_unhas_blogs'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
+
+		add_filter( 'bp_get_total_blog_count', array(&$this, 'fix_unblog_count'));
 	}
+
+	function fix_blog_count($count) {
+
+		$count = count($this->data);
+
+		return $count;
+	}
+
+	function fix_unblog_count($count) {
+
+		$count -= count($this->data);
+
+		return $count;
+	}
+
 
 	function add_has_activity($activities, $two) {
 
