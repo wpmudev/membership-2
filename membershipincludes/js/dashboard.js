@@ -5,6 +5,9 @@ function memSetWidth() {
 	//affvisitgraph
 	var colwidth = jQuery('#memcharttwo').parents('div.inner').width();
 	jQuery('#memcharttwo').width((colwidth - 10) + 'px');
+
+	var colwidth = jQuery('#memchartthree').parents('div.inner').width();
+	jQuery('#memchartthree').width((colwidth - 10) + 'px');
 }
 
 function memReBuildCharts() {

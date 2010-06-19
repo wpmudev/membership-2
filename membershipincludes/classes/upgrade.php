@@ -12,6 +12,9 @@ function M_Upgrade($from = false) {
 
 }
 
+///* 23:03:44 root@dev.site */ ALTER TABLE `wp_subscriptions_levels` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;
+
+
 function M_Createtables() {
 
 	global $wpdb;
