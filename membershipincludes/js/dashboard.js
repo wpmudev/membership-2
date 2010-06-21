@@ -23,7 +23,7 @@ function memReBuildChartOne() {
 		lines: { show: true, barWidth: 1.0 },
 		grid: { hoverable: true, backgroundColor: { colors: ["#fff", "#eee"] } },
 		xaxis: { ticks: membershipdata.chartoneticks },
-		yaxis: { tickDecimals: 0},
+		yaxis: { tickDecimals: 0, min: 0},
 		legend: {
 		    show: true,
 		    position: "nw" }
@@ -44,7 +44,7 @@ function memReBuildChartTwo() {
 	    bars: { show: true, barWidth: 1.0, align: "center" },
 		grid: { hoverable: true, backgroundColor: { colors: ["#fff", "#eee"] } },
 		xaxis: { ticks: membershipdata.charttwoticks },
-		yaxis: { tickDecimals: 0},
+		yaxis: { tickDecimals: 0, min: 0},
 		legend: {
 		    show: true,
 		    position: "ne" }
@@ -64,7 +64,7 @@ function memReBuildChartThree() {
 	    bars: { show: true, barWidth: 1.0, align: "center" },
 		grid: { hoverable: true, backgroundColor: { colors: ["#fff", "#eee"] } },
 		xaxis: { ticks: membershipdata.chartthreeticks },
-		yaxis: { tickDecimals: 0},
+		yaxis: { tickDecimals: 0, min: 0},
 		legend: {
 		    show: true,
 		    position: "ne" }

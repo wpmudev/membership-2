@@ -24,10 +24,8 @@ class M_Posts extends M_Rule {
 			<div class='inner-operation'>
 				<p><?php _e('Select the posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
 				<?php
-					$shownumber = $this->showposts;
-
 					$args = array(
-						'numberposts' => $shownumber,
+						'numberposts' => MEMBERSHIP_POST_COUNT,
 						'offset' => 0,
 						'orderby' => 'post_date',
 						'order' => 'DESC',
@@ -81,7 +79,7 @@ class M_Posts extends M_Rule {
 					}
 
 				?>
-				<p class='description'><?php _e("Only the most recent {$shownumber} posts are shown above, if you have more than that then you should consider using categories instead.",'membership'); ?></p>
+				<p class='description'><?php echo sprintf(__("Only the most recent %d posts are shown above, if you have more than that then you should consider using categories instead.",'membership'), MEMBERSHIP_POST_COUNT); ?></p>
 			</div>
 		</div>
 		<?php
@@ -156,10 +154,8 @@ class M_Pages extends M_Rule {
 			<div class='inner-operation'>
 				<p><?php _e('Select the Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
 				<?php
-					$shownumber = $this->showpages;
-
 					$args = array(
-						'numberposts' => $shownumber,
+						'numberposts' => MEMBERSHIP_PAGE_COUNT,
 						'offset' => 0,
 						'orderby' => 'post_date',
 						'order' => 'DESC',
@@ -206,7 +202,7 @@ class M_Pages extends M_Rule {
 					}
 
 				?>
-				<p class='description'><?php _e("Only the most recent {$shownumber} pages are shown above.",'membership'); ?></p>
+				<p class='description'><?php echo sprintf(__("Only the most recent %d pages are shown above.",'membership'), MEMBERSHIP_PAGE_COUNT); ?></p>
 			</div>
 		</div>
 		<?php
