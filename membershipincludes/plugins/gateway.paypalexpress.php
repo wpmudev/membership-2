@@ -54,6 +54,7 @@ class paypalexpress extends M_Gateway {
 		          'IT'	=> 'Italy',
 		          'MX'	=> 'Mexico',
 		          'NL'	=> 'Netherlands',
+				  'NZ'	=>	'New Zealand',
 		          'PL'	=> 'Poland',
 		          'SG'	=> 'Singapore',
 		          'ES'	=> 'Spain',
@@ -167,8 +168,8 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 		$form .= '<input type="hidden" name="a3" value="' . $pricing[0]['amount'] . '.00">';
-		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['days'] . '">';
-		$form .= '<input type="hidden" name="t3" value="D"> <!-- Set recurring payments until canceled. -->';
+		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
+		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
 
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
 
@@ -223,13 +224,13 @@ class paypalexpress extends M_Gateway {
 				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
 								if($count < 3) {
 									$ff['a' . $count] = $price['amount'] . '.00';
-									$ff['p' . $count] = $price['days'];
-									$ff['t' . $count] = 'D';
+									$ff['p' . $count] = $price['period'];
+									$ff['t' . $count] = strtoupper($price['unit']);
 								} else {
 									// Or last finite is going to be the end of the subscription payments
 									$ff['a3'] = $price['amount'] . '.00';
-									$ff['p3'] = $price['days'];
-									$ff['t3'] = 'D';
+									$ff['p3'] = $price['period'];
+									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '0';
 								}
 								$count++;
@@ -245,8 +246,8 @@ class paypalexpress extends M_Gateway {
 				case 'serial':
 								if(empty($price['amount'])) $price['amount'] = '0';
 								$ff['a3'] = $price['amount'] . '.00';
-								$ff['p3'] = $price['days'];
-								$ff['t3'] = 'D';
+								$ff['p3'] = $price['period'];
+								$ff['t3'] = strtoupper($price['unit']);
 								$ff['src'] = '1';
 								break;
 			}
