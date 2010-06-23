@@ -303,6 +303,12 @@ if(!class_exists('M_Subscription')) {
 								$levelperiod = '';
 							}
 
+							if(isset($_POST['levelperiodunit'][$level])) {
+								$levelperiodunit = esc_attr($_POST['levelperiodunit'][$level]);
+							} else {
+								$levelperiodunit = '';
+							}
+
 							if(isset($_POST['levelprice'][$level])) {
 								$levelprice = esc_attr($_POST['levelprice'][$level]);
 							} else {
@@ -328,7 +334,8 @@ if(!class_exists('M_Subscription')) {
 																						"level_price" => $levelprice,
 																						"level_currency" => $levelcurrency,
 																						"level_order" => $count++,
-																						"level_id" => $level_id
+																						"level_id" => $level_id,
+																						"level_period_unit" => $levelperiodunit
 																						));
 
 							}
@@ -377,6 +384,12 @@ if(!class_exists('M_Subscription')) {
 								$levelperiod = '';
 							}
 
+							if(isset($_POST['levelperiodunit'][$level])) {
+								$levelperiodunit = esc_attr($_POST['levelperiodunit'][$level]);
+							} else {
+								$levelperiodunit = '';
+							}
+
 							if(isset($_POST['levelprice'][$level])) {
 								$levelprice = esc_attr($_POST['levelprice'][$level]);
 							} else {
@@ -400,7 +413,8 @@ if(!class_exists('M_Subscription')) {
 																						"level_price" => $levelprice,
 																						"level_currency" => $levelcurrency,
 																						"level_order" => $count++,
-																						"level_id" => $level_id
+																						"level_id" => $level_id,
+																						"level_period_unit" => $levelperiodunit
 																						));
 
 							}
@@ -447,13 +461,19 @@ if(!class_exists('M_Subscription')) {
 									<?php
 								}
 							?>
-						</select>&nbsp;<?php _e('days','membership'); ?>
+						</select>	&nbsp;
+							<select name="levelperiodunit[%level%]">
+								<option value='d'><?php _e('day(s)','membership'); ?></option>
+								<option value='w'><?php _e('week(s)','membership'); ?></option>
+								<option value='m'><?php _e('month(s)','membership'); ?></option>
+								<option value='y'><?php _e('year(s)','membership'); ?></option>
+							</select>
 
 						<label for='levelprice[%level%]'><?php _e('Price : ','membership'); ?></label>
 						<select name='levelprice[%level%]'>
 							<option value=''></option>
 							<?php
-								for($n = 1; $n <= 300; $n++) {
+								for($n = 1; $n <= (int) MEMBERSHIP_MAX_CHARGE; $n++) {
 									?>
 									<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
 									<?php
@@ -523,13 +543,19 @@ if(!class_exists('M_Subscription')) {
 											<?php
 										}
 									?>
-								</select>&nbsp;<?php _e('days','membership'); ?>
+								</select>&nbsp;
+								<select name="levelperiodunit[<?php echo $levelid; ?>]">
+									<option value='d' <?php if($level->level_period_unit == 'd') echo "selected='selected'"; ?>><?php _e('day(s)','membership'); ?></option>
+									<option value='w' <?php if($level->level_period_unit == 'w') echo "selected='selected'"; ?>><?php _e('week(s)','membership'); ?></option>
+									<option value='m' <?php if($level->level_period_unit == 'm') echo "selected='selected'"; ?>><?php _e('month(s)','membership'); ?></option>
+									<option value='y' <?php if($level->level_period_unit == 'y') echo "selected='selected'"; ?>><?php _e('year(s)','membership'); ?></option>
+								</select>
 
 								<label for='levelprice[<?php echo $levelid; ?>]'><?php _e('Price : ','membership'); ?></label>
 								<select name='levelprice[<?php echo $levelid; ?>]'>
 									<option value=''></option>
 									<?php
-										for($n = 1; $n <= 300; $n++) {
+										for($n = 1; $n <= (int) MEMBERSHIP_MAX_CHARGE; $n++) {
 											?>
 											<option value='<?php echo $n; ?>' <?php if($level->level_price == $n) echo "selected='selected'"; ?>><?php echo $n; ?></option>
 											<?php
