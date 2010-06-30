@@ -43,6 +43,8 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
 			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
 
+			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
+
 			add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
 
 			// Media management additional fields
@@ -139,6 +141,8 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			add_submenu_page('users.php', __('Member details','membership'), __('Member details','membership'), 'read', "membershipuser", array(&$this,'handle_profile_member_page'));
+
 		}
 
 		// Add admin headers
@@ -214,6 +218,12 @@ if(!class_exists('membershipadmin')) {
 			wp_enqueue_style('optionscss', membership_url('membershipincludes/css/options.css'), array(), $this->build);
 
 			$this->handle_options_panel_updates();
+		}
+
+		function add_admin_header_membershipuser() {
+			$this->add_admin_header_core();
+
+			wp_enqueue_style('optionscss', membership_url('membershipincludes/css/options.css'), array(), $this->build);
 		}
 
 		// Panel handling functions
@@ -3341,6 +3351,26 @@ if(!class_exists('membershipadmin')) {
 			</div> <!-- wrap -->
 			<?php
 
+		}
+
+		function handle_profile_member_page() {
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-users"><br></div>
+				<h2><?php _e('Membership details','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				?>
+
+
+
+			</div> <!-- wrap -->
+			<?php
 		}
 
 		// Media extension options
