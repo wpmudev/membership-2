@@ -19,7 +19,7 @@ function M_Createtables() {
 
 	global $wpdb;
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}membership_levels` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_levels') . "` (
 	  `id` bigint(20) NOT NULL auto_increment,
 	  `level_title` varchar(250) default NULL,
 	  `level_slug` varchar(250) default NULL,
@@ -30,7 +30,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}membership_relationships` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_relationships') . "` (
 	  `rel_id` bigint(20) NOT NULL auto_increment,
 	  `user_id` bigint(20) default '0',
 	  `sub_id` bigint(20) default '0',
@@ -44,7 +44,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}membership_rules` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_rules') . "` (
 	  `level_id` bigint(20) NOT NULL default '0',
 	  `rule_ive` varchar(20) NOT NULL default '',
 	  `rule_area` varchar(20) NOT NULL default '',
@@ -57,7 +57,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}subscriptions` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptions') . "` (
 	  `id` bigint(20) NOT NULL auto_increment,
 	  `sub_name` varchar(200) default NULL,
 	  `sub_active` int(11) default '0',
@@ -69,7 +69,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE `{$wpdb->prefix}subscriptions_levels` (
+	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` (
 	  `sub_id` bigint(20) default NULL,
 	  `level_id` bigint(20) default NULL,
 	  `level_period` int(11) default NULL,
@@ -83,7 +83,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}subscription_transaction` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscription_transaction') . "` (
 	  `transaction_ID` bigint(20) unsigned NOT NULL auto_increment,
 	  `transaction_subscription_ID` bigint(20) NOT NULL default '0',
 	  `transaction_user_ID` bigint(20) NOT NULL default '0',

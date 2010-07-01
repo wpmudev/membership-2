@@ -21,7 +21,7 @@ if(!class_exists('M_Gateway')) {
 			$this->db =& $wpdb;
 
 			foreach($this->tables as $table) {
-				$this->$table = $wpdb->prefix . $table;
+				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
 			// Actions and Filters

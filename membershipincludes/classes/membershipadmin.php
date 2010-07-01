@@ -25,7 +25,7 @@ if(!class_exists('membershipadmin')) {
 			$this->db =& $wpdb;
 
 			foreach($this->tables as $table) {
-				$this->$table = $wpdb->prefix . $table;
+				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
 			// Add administration actions

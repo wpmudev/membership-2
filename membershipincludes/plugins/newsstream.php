@@ -20,7 +20,7 @@ function membership_newsstreamcreatetables($installed = false) {
 	global $wpdb;
 
 	// Added for RC
-	$sql = "CREATE TABLE `{$wpdb->prefix}membership_news` (
+	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'membership_news') . "` (
 	  `id` bigint(11) NOT NULL auto_increment,
 	  `newsitem` text,
 	  `newsdate` datetime default NULL,
@@ -35,7 +35,7 @@ function membership_record_user_subscribe($tosub_id, $tolevel_id, $to_order, $us
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -53,7 +53,7 @@ function membership_record_user_level($tolevel_id, $user_id) {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -70,7 +70,7 @@ function membership_record_user_expire($sub_id, $user_id) {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -87,7 +87,7 @@ function membership_record_sub_drop($sub_id, $user_id) {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -104,7 +104,7 @@ function membership_record_level_drop($level_id, $user_id) {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -121,7 +121,7 @@ function membership_record_sub_move($fromsub_id, $tosub_id, $tolevel_id, $to_ord
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -140,7 +140,7 @@ function membership_record_level_move($fromlevel_id, $tolevel_id, $user_id) {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
 	$user = new WP_User( $user_id );
@@ -159,7 +159,7 @@ function membership_news_stream() {
 
 	global $wpdb;
 
-	$table = $wpdb->prefix . 'membership_news';
+	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	$news = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} ORDER BY newsdate DESC LIMIT 0, 50") );
 

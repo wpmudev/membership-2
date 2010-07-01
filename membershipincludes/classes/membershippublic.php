@@ -22,7 +22,7 @@ if(!class_exists('membershippublic')) {
 			$this->db =& $wpdb;
 
 			foreach($this->tables as $table) {
-				$this->$table = $wpdb->prefix . $table;
+				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));

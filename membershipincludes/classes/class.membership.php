@@ -27,7 +27,7 @@ if(!class_exists('M_Membership')) {
 			$this->db =& $wpdb;
 
 			foreach($this->tables as $table) {
-				$this->$table = $wpdb->prefix . $table;
+				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
 			$this->transition_through_subscription();

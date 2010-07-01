@@ -13,4 +13,6 @@ define( 'MEMBERSHIP_PAGE_COUNT', 25);
 // Determines the maximum charge listed in the charges drop down
 define( 'MEMBERSHIP_MAX_CHARGE', 300);
 
+define( 'MEMBERSHIP_GLOBAL_TABLES', false);
+
 ?>

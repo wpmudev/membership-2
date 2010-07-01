@@ -107,4 +107,18 @@ function membership_assign_subscription($user_id) {
 
 add_action('user_register', 'membership_assign_subscription', 30);
 
+function membership_db_prefix(&$wpdb, $table) {
+
+	if( defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES == true ) {
+		if(!empty($wpdb->base_prefix)) {
+			return $wpdb->base_prefix . $table;
+		} else {
+			return $wpdb->prefix . $table;
+		}
+	} else {
+		return $wpdb->prefix . $table;
+	}
+
+}
+
 ?>

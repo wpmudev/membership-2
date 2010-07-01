@@ -171,7 +171,7 @@ class membershipwidget extends WP_Widget {
 	}
 }
 
-function adlitewidget_register() {
+function membershipwidget_register() {
 	register_widget( 'membershipwidget' );
 }
 
