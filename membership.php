@@ -25,7 +25,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Load the config file
 require_once('membershipincludes/includes/membership-config.php');
+// Load the common functions
 require_once('membershipincludes/includes/functions.php');
 // Set up my location
 set_membership_url(__FILE__);
