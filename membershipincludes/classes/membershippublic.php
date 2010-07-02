@@ -456,7 +456,7 @@ if(!class_exists('membershippublic')) {
 		// Output the protected shortcode content
 		function do_membership_shortcode($atts, $content = null, $code = "") {
 
-			return $content;
+			return do_shortcode($content);
 
 		}
 
