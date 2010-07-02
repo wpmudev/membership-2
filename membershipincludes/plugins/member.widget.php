@@ -30,15 +30,15 @@ class membershipwidget extends WP_Widget {
 	function membershipwidget() {
 
 		// Load the text-domain
-		$locale = apply_filters( 'adlitewidget_locale', get_locale() );
-		$mofile = dirname(__FILE__) . "/adlitewidget-$locale.mo";
+		$locale = apply_filters( 'membership_locale', get_locale() );
+		$mofile = membership_dir( "membershipincludes/membership-$locale.mo" );
 
 		if ( file_exists( $mofile ) )
-			load_textdomain( 'adlitewidget', $mofile );
+			load_textdomain( 'membership', $mofile );
 
-		$widget_ops = array( 'classname' => 'adlitewidget', 'description' => __('Display HTML selectively based on simple rules', 'adlitewidget') );
-		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'adlitewidget');
-		$this->WP_Widget( 'adlitewidget', __('AD lite Widget', 'adlitewidget'), $widget_ops, $control_ops );
+		$widget_ops = array( 'classname' => 'membershipwidget', 'description' => __('Membership widget', 'membership') );
+		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipwidget');
+		$this->WP_Widget( 'membershipwidget', __('Membership Widget', 'membership'), $widget_ops, $control_ops );
 	}
 
 	function widget( $args, $instance ) {
