@@ -575,7 +575,12 @@ class M_Comments extends M_Rule {
 		$this->data = $data;
 
 		add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
-		add_filter( 'comments_array', array(&$this, 'hide_comments'), 99, 2 );
+
+		if(defined('MEMBERSHIP_VIEW_COMMENTS') && MEMBERSHIP_VIEW_COMMENTS == true) {
+			// We want users to be able to see the comments but not add to them
+		} else {
+			add_filter( 'comments_array', array(&$this, 'hide_comments'), 99, 2 );
+		}
 
 	}
 

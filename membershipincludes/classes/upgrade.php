@@ -3,6 +3,11 @@
 function M_Upgrade($from = false) {
 
 	switch($from) {
+
+		case 1:
+		case 2:		M_Alterfor2();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
@@ -14,6 +19,13 @@ function M_Upgrade($from = false) {
 
 ///* 23:03:44 root@dev.site */ ALTER TABLE `wp_subscriptions_levels` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;
 
+function M_Alterfor2() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;";
+
+	$wpdb->query($sql);
+}
 
 function M_Createtables() {
 
@@ -70,15 +82,16 @@ function M_Createtables() {
 	$wpdb->query($sql);
 
 	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` (
-	  `sub_id` bigint(20) default NULL,
-	  `level_id` bigint(20) default NULL,
-	  `level_period` int(11) default NULL,
-	  `sub_type` varchar(20) default NULL,
-	  `level_price` int(11) default '0',
-	  `level_currency` varchar(5) default NULL,
-	  `level_order` bigint(20) default '0',
-	  KEY `sub_id` (`sub_id`),
-	  KEY `level_id` (`level_id`)
+	  	`sub_id` bigint(20) default NULL,
+		`level_id` bigint(20) default NULL,
+		`level_period` int(11) default NULL,
+		`sub_type` varchar(20) default NULL,
+		`level_price` int(11) default '0',
+		`level_currency` varchar(5) default NULL,
+		`level_order` bigint(20) default '0',
+		`level_period_unit` varchar(1) default 'd',
+		KEY `sub_id` (`sub_id`),
+	 	KEY `level_id` (`level_id`)
 	);";
 
 	$wpdb->query($sql);
