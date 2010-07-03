@@ -507,7 +507,9 @@ if(!class_exists('membershippublic')) {
 			$M_shortcode_tags = $shortcode_tags;
 
 			foreach($shortcode_tags as $key => $function) {
-				$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+				if($key != 'subscriptionform') {
+					$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+				}
 			}
 
 			return $content;
