@@ -241,8 +241,10 @@ if(!class_exists('membershippublic')) {
 						// This user can't access anything on the site - .
 						add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
 						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-						// Need to hide menu and categories as well
-
+						// Hide all pages from menus
+						add_filter('get_pages', array(&$this, 'remove_pages_menu'));
+						// Hide all categories from lists
+						add_filter( 'get_terms', array(&$this, 'remove_categories'), 1, 3 );
 					}
 				}
 			}
@@ -250,6 +252,25 @@ if(!class_exists('membershippublic')) {
 			// Set the initialisation status
 			$initialised = true;
 
+		}
+
+		function remove_categories($terms, $taxonomies, $args) {
+
+			foreach( (array) $terms as $key => $value ) {
+				if($value->taxonomy == 'category') {
+					unset($terms[$key]);
+				}
+			}
+
+			return $terms;
+		}
+
+		function remove_pages_menu($pages) {
+			foreach( (array) $pages as $key => $page ) {
+					unset($pages[$key]);
+			}
+
+			return $pages;
 		}
 
 		function handle_paymentgateways($wp_query) {
