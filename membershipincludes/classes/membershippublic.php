@@ -241,7 +241,7 @@ if(!class_exists('membershippublic')) {
 						// This user can't access anything on the site - .
 						add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
 						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-						// Hide all pages from menus
+						// Hide all pages from menus - except the signup one
 						add_filter('get_pages', array(&$this, 'remove_pages_menu'));
 						// Hide all categories from lists
 						add_filter( 'get_terms', array(&$this, 'remove_categories'), 1, 3 );
@@ -266,8 +266,15 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function remove_pages_menu($pages) {
+
+			global $M_options;
+
 			foreach( (array) $pages as $key => $page ) {
+				if(!empty($M_options['registration_page']) && $page->ID == $M_options['registration_page']) {
+					// We want to keep this page available
+				} else {
 					unset($pages[$key]);
+				}
 			}
 
 			return $pages;
