@@ -238,9 +238,11 @@ if(!class_exists('membershippublic')) {
 					if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
 						$member->assign_level($M_options['strangerlevel'], true );
 					} else {
-						// This user can't access anything on the site - redirect them to a signup page.
+						// This user can't access anything on the site - .
 						add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
 						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+						// Need to hide menu and categories as well
+
 					}
 				}
 			}

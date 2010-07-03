@@ -349,7 +349,8 @@ class M_Categories extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+		add_filter( 'get_terms', array(&$this, 'add_viewable_categories'), 1, 3 );
 	}
 
 	function on_negative($data) {
@@ -357,6 +358,7 @@ class M_Categories extends M_Rule {
 		$this->data = $data;
 
 		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+		add_filter( 'get_terms', array(&$this, 'add_unviewable_categories'), 1, 3 );
 	}
 
 	function add_viewable_posts($wp_query) {
@@ -385,6 +387,32 @@ class M_Categories extends M_Rule {
 
 		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
 
+	}
+
+	function add_viewable_categories($terms, $taxonomies, $args) {
+
+		foreach( (array) $terms as $key => $value ) {
+			if($value->taxonomy == 'category') {
+				if(!in_array($value->term_id, $this->data)) {
+					unset($terms[$key]);
+				}
+			}
+		}
+
+		return $terms;
+	}
+
+	function add_unviewable_categories($terms, $taxonomies, $args) {
+
+		foreach( (array) $terms as $key => $value ) {
+			if($value->taxonomy == 'category') {
+				if(in_array($value->term_id, $this->data)) {
+					unset($terms[$key]);
+				}
+			}
+		}
+
+		return $terms;
 	}
 
 }
