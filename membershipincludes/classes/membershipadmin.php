@@ -141,7 +141,7 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
-			add_submenu_page('users.php', __('Member details','membership'), __('Member details','membership'), 'read', "membershipuser", array(&$this,'handle_profile_member_page'));
+			//add_submenu_page('users.php', __('Member details','membership'), __('Member details','membership'), 'read', "membershipuser", array(&$this,'handle_profile_member_page'));
 
 		}
 

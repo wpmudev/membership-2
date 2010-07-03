@@ -175,7 +175,7 @@ function membershipwidget_register() {
 	register_widget( 'membershipwidget' );
 }
 
-add_action( 'widgets_init', 'membershipwidget_register' );
+//add_action( 'widgets_init', 'membershipwidget_register' );
 
 
 ?>
