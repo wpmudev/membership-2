@@ -100,17 +100,6 @@ if(!class_exists('M_Membership')) {
 
 					$this->move_subscription($sub_id, $sub_id, $nextlevel->level_id, $nextlevel->level_order);
 
-					/*
-					$start = current_time('mysql');
-
-					if(empty($nextlevel->level_period) && $nextlevel->sub_type == 'indefinite') $nextlevel->level_period = 365;
-
-					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $nextlevel->level_period . ' days', strtotime($start) ));
-
-					$this->db->update($this->membership_relationships, array("level_id" => $nextlevel->level_id, "order_instance" => $nextlevel->level_order, 'updateddate' => $start, 'expirydate' => $expires),
-																	   array("user_id" => $this->ID, "sub_id" => $sub_id, "level_id" => $thislevel_id, "order_instance" => $thislevel_order));
-
-					*/
 				}
 
 			}
@@ -170,6 +159,8 @@ if(!class_exists('M_Membership')) {
 			} else {
 				// expire just the passed subscription
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
+				// Implementing a secondary data system with capabilities
+				$this->remove_cap( 'subscription-' . $sub_id );
 			}
 
 			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
