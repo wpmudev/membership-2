@@ -107,6 +107,7 @@ class M_Posts extends M_Rule {
 
 		if(is_singular()) {
 			echo "pos";
+			//the_posts
 		} else {
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__in'][] = $value;

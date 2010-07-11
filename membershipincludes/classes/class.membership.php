@@ -159,8 +159,7 @@ if(!class_exists('M_Membership')) {
 			} else {
 				// expire just the passed subscription
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
-				// Implementing a secondary data system with capabilities
-				$this->remove_cap( 'subscription-' . $sub_id );
+
 			}
 
 			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
@@ -279,7 +278,7 @@ if(!class_exists('M_Membership')) {
 			}
 
 			if(!$this->on_level($tolevel_id)) {
-
+				// Add into membership tables
 				$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'startdate' => current_time('mysql'), 'updateddate' => current_time('mysql')));
 
 				do_action( 'membership_add_level', $tolevel_id, $this->ID );
