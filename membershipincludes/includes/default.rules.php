@@ -105,75 +105,11 @@ class M_Posts extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			add_filter( 'the_posts', array(&$this, 'check_allowed_post'));
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__in'][] = $value;
 		}
 
-	}
-
-	function get_thepost() {
-		global $M_options;
-
-		if(!empty($M_options['nocontent_page'])) {
-			// grab the content form the no content page
-			$post = get_post( $M_options['nocontent_page'] );
-		} else {
-			$post = new stdClass;
-			$post->post_author = 1;
-			$post->post_name = 'membershipnoaccess';
-			add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-			$post->guid = get_bloginfo('wpurl');
-			$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-			$post->post_content = stripslashes($M_options['protectedmessage']);
-			$post->ID = -1;
-			$post->post_status = 'publish';
-			$post->post_type = 'page';
-			$post->comment_status = 'closed';
-			$post->ping_status = 'open';
-			$post->comment_count = 0;
-			$post->post_date = current_time('mysql');
-			$post->post_date_gmt = current_time('mysql', 1);
-		}
-
-		return $post;
-
-	}
-
-	function check_allowed_post( $posts ) {
-
-		if(count($posts) > 1) {
-			return $posts;
-		} else {
-			$thepost = $posts[0];
-			if(!in_array($thepost->ID, $this->data)) {
-				// This is a non allowed post
-				$posts[0] = $this->get_thepost();
-			}
-
-			return $posts;
-		}
-
-	}
-
-	function check_unallowed_post( $posts ) {
-
-		if(count($posts) > 1) {
-			return $posts;
-		} else {
-			$thepost = $posts[0];
-			if(in_array($thepost->ID, $this->data)) {
-				// This is a non allowed post
-				$posts[0] = $this->get_thepost();
-			}
-
-			return $posts;
-		}
+		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 
 	}
 
@@ -183,16 +119,11 @@ class M_Posts extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			add_filter( 'the_posts', array(&$this, 'check_unallowed_post'));
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__not_in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__not_in'][] = $value;
 		}
 
+		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 
 	}
 
@@ -300,16 +231,11 @@ class M_Pages extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			echo "pos";
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
-
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__in'][] = $value;
 		}
+
+		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 
 	}
 
@@ -330,15 +256,11 @@ class M_Pages extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			echo "neg";
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__not_in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__not_in'][] = $value;
 		}
+
+		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 
 	}
 
@@ -350,34 +272,6 @@ class M_Pages extends M_Rule {
 		}
 
 		return $pages;
-	}
-
-	function get_thepost() {
-		global $M_options;
-
-		if(!empty($M_options['nocontent_page'])) {
-			// grab the content form the no content page
-			$post = get_post( $M_options['nocontent_page'] );
-		} else {
-			$post = new stdClass;
-			$post->post_author = 1;
-			$post->post_name = 'membershipnoaccess';
-			add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-			$post->guid = get_bloginfo('wpurl');
-			$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-			$post->post_content = stripslashes($M_options['protectedmessage']);
-			$post->ID = -1;
-			$post->post_status = 'publish';
-			$post->post_type = 'page';
-			$post->comment_status = 'closed';
-			$post->ping_status = 'open';
-			$post->comment_count = 0;
-			$post->post_date = current_time('mysql');
-			$post->post_date_gmt = current_time('mysql', 1);
-		}
-
-		return $post;
-
 	}
 
 }
@@ -473,15 +367,11 @@ class M_Categories extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			echo "pos";
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['category__in'][] = $value;
-			}
-
-			$wp_query->query_vars['category__in'] = array_unique($wp_query->query_vars['category__in']);
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['category__in'][] = $value;
 		}
+
+		$wp_query->query_vars['category__in'] = array_unique($wp_query->query_vars['category__in']);
 
 	}
 
@@ -491,15 +381,11 @@ class M_Categories extends M_Rule {
 			return;
 		}
 
-		if(is_singular()) {
-			echo "neg";
-		} else {
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['category__not_in'][] = $value;
-			}
-
-			$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['category__not_in'][] = $value;
 		}
+
+		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
 
 	}
 

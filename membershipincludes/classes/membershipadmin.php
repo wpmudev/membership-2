@@ -1829,6 +1829,8 @@ if(!class_exists('membershipadmin')) {
 					<h3><?php _e('Protected content message','membership'); ?></h3>
 					<p><?php _e('If a post / page / content is not available to a user, this is the message or page content that will be displayed in its place.','membership'); ?></p>
 					<p><?php _e('This message will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
+					<p><?php _e('Note: This message will override the 404 page for none members.','membership'); ?></p>
+
 
 					<table class="form-table">
 					<tbody>
