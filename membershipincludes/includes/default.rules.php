@@ -106,7 +106,9 @@ class M_Posts extends M_Rule {
 		}
 
 		if(is_singular()) {
-			echo "pos";
+			//$posts
+			add_filter( 'the_posts', array(&$this, 'check_allowed_post'));
+			//echo "pos";
 			//the_posts
 		} else {
 			foreach( (array) $this->data as $key => $value ) {
@@ -114,6 +116,51 @@ class M_Posts extends M_Rule {
 			}
 
 			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		}
+
+	}
+
+	function get_thepost() {
+		global $M_options;
+
+		if(!empty($M_options['nocontent_page'])) {
+			// grab the content form the no content page
+			$post = get_post( $M_options['nocontent_page'] );
+		} else {
+			$post = new stdClass;
+			$post->post_author = 1;
+			$post->post_name = 'membershipnoaccess';
+			add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
+			$post->guid = get_bloginfo('wpurl');
+			$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
+			$post->post_content = stripslashes($M_options['protectedmessage']);
+			$post->ID = -1;
+			$post->post_status = 'publish';
+			$post->post_type = 'post';
+			$post->comment_status = 'closed';
+			$post->ping_status = 'open';
+			$post->comment_count = 0;
+			$post->post_date = current_time('mysql');
+			$post->post_date_gmt = current_time('mysql', 1);
+		}
+
+		return $post;
+
+	}
+
+	function check_allowed_post( $posts ) {
+
+		if(count($posts) > 1) {
+			return $posts;
+		} else {
+			$thepost = $posts[0];
+			if(!in_array($thepost->ID, $this->data)) {
+				// This is a non allowed post
+
+				$posts[0] = $this->get_thepost();
+			}
+
+			return $posts;
 		}
 
 	}

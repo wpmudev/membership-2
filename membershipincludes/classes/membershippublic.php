@@ -42,7 +42,6 @@ if(!class_exists('membershippublic')) {
 
 			// add feed protection
 			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
-			//add_action( 'do_feed_rss', array(&$this, 'validate_feed_user'), 1 );
 
 		}
 
@@ -53,7 +52,7 @@ if(!class_exists('membershippublic')) {
 		function load_textdomain() {
 
 			$locale = apply_filters( 'membership_locale', get_locale() );
-			$mofile = membership_dir( "membershipincludes/membership-$locale.mo" );
+			$mofile = membership_dir( "membershipincludes/locale/membership-$locale.mo" );
 
 			if ( file_exists( $mofile ) )
 				load_textdomain( 'membership', $mofile );
