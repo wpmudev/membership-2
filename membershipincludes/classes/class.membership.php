@@ -333,7 +333,14 @@ if(!class_exists('M_Membership')) {
 
 				if($level) {
 					$start = current_time('mysql');
-					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
+					switch($level->level_period_unit) {
+						case 'd': $period = 'days'; break;
+						case 'w': $period = 'weeks'; break;
+						case 'm': $period = 'months'; break;
+						case 'y': $period = 'years'; break;
+						default: $period = 'days'; break;
+					}
+					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
 					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
 
 					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
@@ -372,7 +379,14 @@ if(!class_exists('M_Membership')) {
 
 				if($level) {
 					$start = current_time('mysql');
-					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' days', strtotime($start) ));
+					switch($level->level_period_unit) {
+						case 'd': $period = 'days'; break;
+						case 'w': $period = 'weeks'; break;
+						case 'm': $period = 'months'; break;
+						case 'y': $period = 'years'; break;
+						default: $period = 'days'; break;
+					}
+					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 
