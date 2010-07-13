@@ -1425,6 +1425,7 @@ if(!class_exists('membershipadmin')) {
 									<strong><a href='<?php echo admin_url('user-edit.php?user_id=' . $user_object->ID); ?>'><?php echo $user_object->user_login; ?></a></strong>
 									<?php
 										$actions = array();
+										$actions['id'] = "<strong>" . __('ID : ', 'membership') . $user_object->ID . "</strong>";
 										$actions['edit'] = "<span class='edit'><a href='" . admin_url('user-edit.php?user_id=' . $user_object->ID) . "'>" . __('Edit', 'membership') . "</a></span>";
 										if($user_object->active_member()) {
 											$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
@@ -2477,6 +2478,7 @@ if(!class_exists('membershipadmin')) {
 										<strong><a title="Edit “<?php echo esc_attr($level->level_title); ?>”" href="?page=<?php echo $page; ?>&amp;action=edit&amp;level_id=<?php echo $level->id; ?>" class="row-title"><?php echo esc_html($level->level_title); ?></a></strong>
 										<?php
 											$actions = array();
+											$actions['id'] = "<strong>" . __('ID : ', 'membership') . $level->id . "</strong>";
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;level_id=" . $level->id . "'>" . __('Edit') . "</a></span>";
 											if($level->level_active == 0) {
 												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Activate') . "</a></span>";
@@ -3020,6 +3022,7 @@ if(!class_exists('membershipadmin')) {
 										<strong><a title="Edit “<?php echo esc_attr($sub->sub_name); ?>”" href="?page=<?php echo $page; ?>&amp;action=edit&amp;sub_id=<?php echo $sub->id; ?>" class="row-title"><?php echo esc_html($sub->sub_name); ?></a></strong>
 										<?php
 											$actions = array();
+											$actions['id'] = "<strong>" . __('ID : ', 'membership') . $sub->id . "</strong>";
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;sub_id=" . $sub->id . "'>" . __('Edit') . "</a></span>";
 											if($sub->sub_active == 0) {
 												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Activate') . "</a></span>";
