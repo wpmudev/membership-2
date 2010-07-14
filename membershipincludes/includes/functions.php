@@ -128,7 +128,7 @@ function membership_db_prefix(&$wpdb, $table) {
 function current_user_is_member() {
 
 	$user = wp_get_current_user();
-	$member = new M_M_Membership( $user->ID );
+	$member = new M_Membership( $user->ID );
 
 	if(!empty($member)) {
 		return $member->is_member();
@@ -141,7 +141,7 @@ function current_user_is_member() {
 function current_user_has_subscription() {
 
 	$user = wp_get_current_user();
-	$member = new M_M_Membership( $user->ID );
+	$member = new M_Membership( $user->ID );
 
 	if(!empty($member)) {
 		return $member->has_subscription();
@@ -154,7 +154,7 @@ function current_user_has_subscription() {
 function current_user_on_level( $level_id ) {
 
 	$user = wp_get_current_user();
-	$member = new M_M_Membership( $user->ID );
+	$member = new M_Membership( $user->ID );
 
 	if(!empty($member)) {
 		return $member->on_level( $level_id, true );
@@ -167,7 +167,7 @@ function current_user_on_level( $level_id ) {
 function current_user_on_subscription( $sub_id ) {
 
 	$user = wp_get_current_user();
-	$member = new M_M_Membership( $user->ID );
+	$member = new M_Membership( $user->ID );
 
 	if(!empty($member)) {
 		return $member->on_sub( $sub_id );
