@@ -110,7 +110,7 @@ if(!class_exists('membershippublic')) {
 				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 				// add in a no posts thing
-				add_filter('the_posts', array(&$this, 'check_for_posts_existance'));
+				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 99, 2);
 			}
 
 		}
@@ -518,9 +518,10 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
-		function check_for_posts_existance($posts) {
+		function check_for_posts_existance($posts, $wp_query) {
 			if(empty($posts)) {
 				// we have nothing to see because it either doesn't exist or it's protected - move to no access page.
+				$this->show_noaccess_page($wp_query);
 			} else {
 				return $posts;
 			}
@@ -655,6 +656,7 @@ if(!class_exists('membershippublic')) {
 				/**
 				 * And load up the template file.
 				 */
+				status_header('404');
 				ob_start('template');
 				load_template(TEMPLATEPATH . '/' . 'page.php');
 				ob_end_flush();
