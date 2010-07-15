@@ -109,6 +109,8 @@ if(!class_exists('membershippublic')) {
 			if(!empty($M_options['nocontent_page']) && $M_options['nocontent_page'] != $M_options['registration_page']) {
 				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
+				// add in a no posts thing
+				add_filter('the_posts', array(&$this, 'check_for_posts_existance'));
 			}
 
 		}
@@ -183,6 +185,10 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+
 			if($user->has_cap('administrator') || $M_active == 'no') {
 				// Admins can see everything
 				return;
@@ -224,8 +230,6 @@ if(!class_exists('membershippublic')) {
 				}
 			} else {
 				// Users
-				$user = wp_get_current_user();
-
 				$member = new M_Membership($user->ID);
 
 				if($user->ID > 0 && $member->has_levels()) {
@@ -512,6 +516,14 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $content;
+		}
+
+		function check_for_posts_existance($posts) {
+			if(empty($posts)) {
+				// we have nothing to see because it either doesn't exist or it's protected - move to no access page.
+			} else {
+				return $posts;
+			}
 		}
 
 		function show_noaccess_feed($wp_query) {
@@ -875,7 +887,7 @@ if(!class_exists('membershippublic')) {
 										// Pre - error reporting check for final add user
 										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 
-										if(is_wp_error($user_id)) {
+										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
 									}
