@@ -8,6 +8,9 @@ function M_Upgrade($from = false) {
 		case 2:		M_Alterfor2();
 					break;
 
+		case 3:		M_Alterfor3();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
@@ -18,6 +21,29 @@ function M_Upgrade($from = false) {
 }
 
 ///* 23:03:44 root@dev.site */ ALTER TABLE `wp_subscriptions_levels` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;
+
+function M_Alterfor3() {
+	global $wpdb;
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'membership_levels', false) . " TO " . membership_db_prefix($wpdb, 'membership_levels') . ";";
+	$wpdb->query($sql);
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'membership_relationships', false) . " TO " . membership_db_prefix($wpdb, 'membership_relationships') . ";";
+	$wpdb->query($sql);
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'membership_rules', false) . " TO " . membership_db_prefix($wpdb, 'membership_rules') . ";";
+	$wpdb->query($sql);
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'subscriptions', false) . " TO " . membership_db_prefix($wpdb, 'subscriptions') . ";";
+	$wpdb->query($sql);
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'subscriptions_levels', false) . " TO " . membership_db_prefix($wpdb, 'subscriptions_levels') . ";";
+	$wpdb->query($sql);
+
+	$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'subscription_transaction', false) . " TO " . membership_db_prefix($wpdb, 'subscription_transaction') . ";";
+	$wpdb->query($sql);
+
+}
 
 function M_Alterfor2() {
 	global $wpdb;

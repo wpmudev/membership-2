@@ -3,7 +3,7 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 3;
+		var $build = 4;
 		var $db;
 
 		//
