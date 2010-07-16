@@ -499,7 +499,8 @@ class M_BPBlogs extends M_Rule {
 }
 M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
 
-if(defined('BP_CORE_DB_VERSION')) {
+// Removed check for BP1.2.5 issues
+//if(defined('BP_CORE_DB_VERSION')) {
 	// Add the buddypress section
 	function M_AddBuddyPressSection($sections) {
 		$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
@@ -510,6 +511,6 @@ if(defined('BP_CORE_DB_VERSION')) {
 	add_filter('membership_level_sections', 'M_AddBuddyPressSection');
 
 
-}
+//}
 
 ?>
