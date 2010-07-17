@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.0-beta2-14519 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.0 */
 
 #subscriptionwrap {
 	width: 100%;
@@ -16,18 +16,16 @@
   #reg-form table {
     clear: both;
   }
-  #reg-form .error {
+  #subscriptionwrap .error {
     background-color: #ffebe8;
-	  border-color: #c00;
-	  border-width: 1px;
+	border-color: #c00;
+	border-width: 1px;
   	border-style: solid;
   	padding: 0.5em !important;
-  	margin: 0 -10px 10px 0;
+  	margin: 5px;
   	clear: both;
-	border-left-style: none;
-	border-right-style: none;
 }
-  #reg-form .error ul {
+  #subscriptionwrap .error ul {
     margin: 0;
     padding-left: 20px;
   }
