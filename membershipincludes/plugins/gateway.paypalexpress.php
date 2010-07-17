@@ -77,7 +77,7 @@ class paypalexpress extends M_Gateway {
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Paypal Currency', 'membership') ?></th>
 		  <td><?php
-			if(!empty($M_options['paymentcurrency'])) {
+			if(empty($M_options['paymentcurrency'])) {
 				$M_options['paymentcurrency'] = 'USD';
 			}
 			echo esc_html($M_options['paymentcurrency']); ?></td>
@@ -115,7 +115,7 @@ class paypalexpress extends M_Gateway {
 
 		global $M_options;
 
-		if(!empty($M_options['paymentcurrency'])) {
+		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 
@@ -149,7 +149,7 @@ class paypalexpress extends M_Gateway {
 
 		global $M_options;
 
-		if(!empty($M_options['paymentcurrency'])) {
+		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 
@@ -197,7 +197,7 @@ class paypalexpress extends M_Gateway {
 
 		global $M_options;
 
-		if(!empty($M_options['paymentcurrency'])) {
+		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 
@@ -238,17 +238,45 @@ class paypalexpress extends M_Gateway {
 
 				case 'indefinite':
 								if(empty($price['amount'])) $price['amount'] = '0';
-								$ff['a3'] = $price['amount'] . '.00';
-								$ff['p3'] = 1;
-								$ff['t3'] = 'Y';
-								$ff['src'] = '0';
+
+								if($price['amount'] == '0') {
+									// The indefinite rule is free, we need to move any previous
+									// steps up to this one as we can't have a free a3
+									if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
+										// we have some other earlier rule so move it up
+
+									} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
+
+									}
+									$ff['a3'] = $price['amount'] . '.00';
+									$ff['p3'] = 1;
+									$ff['t3'] = 'Y';
+									$ff['src'] = '0';
+
+								} else {
+									$ff['a3'] = $price['amount'] . '.00';
+									$ff['p3'] = 1;
+									$ff['t3'] = 'Y';
+									$ff['src'] = '0';
+								}
 								break;
 				case 'serial':
 								if(empty($price['amount'])) $price['amount'] = '0';
-								$ff['a3'] = $price['amount'] . '.00';
-								$ff['p3'] = $price['period'];
-								$ff['t3'] = strtoupper($price['unit']);
-								$ff['src'] = '1';
+
+								if($price['amount'] == '0') {
+									// The serial rule is free, we need to move any previous
+									// steps up to this one as we can't have a free a3
+									$ff['a3'] = $price['amount'] . '.00';
+									$ff['p3'] = $price['period'];
+									$ff['t3'] = strtoupper($price['unit']);
+									$ff['src'] = '1';
+								} else {
+									$ff['a3'] = $price['amount'] . '.00';
+									$ff['p3'] = $price['period'];
+									$ff['t3'] = strtoupper($price['unit']);
+									$ff['src'] = '1';
+								}
+
 								break;
 			}
 		}
