@@ -724,6 +724,8 @@ if(!class_exists('membershippublic')) {
 
 			$content .= '<p class="pass_hint">' . __('Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).','membership') . '</p>';
 
+			$content = apply_filters('membership_subscriptionform_registration', $content);
+
 			if(function_exists('get_site_option')) {
 				$terms = get_site_option('signup_tos_data');
 			} else {
@@ -767,6 +769,8 @@ if(!class_exists('membershippublic')) {
 			$content .= __('Please select a subscription from the options below.','membership');
 			$content .= "</p>";
 
+			$content = apply_filters( 'membership_subscriptionform_presubscriptions', $content );
+
 			$subs = $this->get_subscriptions();
 
 			foreach((array) $subs as $key => $sub) {
@@ -794,11 +798,17 @@ if(!class_exists('membershippublic')) {
 
 			}
 
+			$content = apply_filters( '', $content );
+
 			//$content .= print_r($subs, true);
 
 			$content .= '</div>';
 
 			$content .= "</div>";
+
+			// Adding in the following form element (and form :) ) will allow the second page validation to be fired
+			//<input type="hidden" name="action" value="validatepage2" />
+			$content = apply_filters('membership_subscriptionform_postsubscriptions', $content);
 
 			return $content;
 
@@ -826,6 +836,8 @@ if(!class_exists('membershippublic')) {
 			$content .= '</div>';
 
 			$content .= "</div>";
+
+			$content = apply_filters('membership_subscriptionform_member', $content);
 
 			return $content;
 
@@ -873,6 +885,10 @@ if(!class_exists('membershippublic')) {
 										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
+									if(email_exists($_POST['user_email'])) {
+										$error[] = __('That email address is already taken, sorry.','membership');
+									}
+
 									if(function_exists('get_site_option')) {
 										$terms = get_site_option('signup_tos_data');
 									} else {
@@ -894,6 +910,8 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
+									do_action( 'membership_subscriptionform_registration_process', $error );
+
 									if(!empty($error)) {
 										$content .= "<div class='error'>";
 										$content .= implode('<br/>', $error);
@@ -907,6 +925,9 @@ if(!class_exists('membershippublic')) {
 
 									break;
 
+				case 'validatepage2':
+									do_action( 'membership_subscriptionform_subscription_process', $error );
+									break;
 				case 'page2':
 				case 'page1':
 				default:	if(!is_user_logged_in()) {
