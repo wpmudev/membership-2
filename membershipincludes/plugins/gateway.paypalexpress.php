@@ -244,15 +244,22 @@ class paypalexpress extends M_Gateway {
 									// steps up to this one as we can't have a free a3
 									if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
 										// we have some other earlier rule so move it up
-
+										$ff['a3'] = $ff['a2'];
+										$ff['p3'] = $ff['p2'];
+										$ff['t3'] = $ff['t2'];
+										unset($ff['a2']);
+										unset($ff['p2']);
+										unset($ff['t2']);
+										$ff['src'] = '0';
 									} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
-
+										$ff['a3'] = $ff['a1'];
+										$ff['p3'] = $ff['p1'];
+										$ff['t3'] = $ff['t1'];
+										unset($ff['a1']);
+										unset($ff['p1']);
+										unset($ff['t1']);
+										$ff['src'] = '0';
 									}
-									$ff['a3'] = $price['amount'] . '.00';
-									$ff['p3'] = 1;
-									$ff['t3'] = 'Y';
-									$ff['src'] = '0';
-
 								} else {
 									$ff['a3'] = $price['amount'] . '.00';
 									$ff['p3'] = 1;
@@ -266,10 +273,24 @@ class paypalexpress extends M_Gateway {
 								if($price['amount'] == '0') {
 									// The serial rule is free, we need to move any previous
 									// steps up to this one as we can't have a free a3
-									$ff['a3'] = $price['amount'] . '.00';
-									$ff['p3'] = $price['period'];
-									$ff['t3'] = strtoupper($price['unit']);
-									$ff['src'] = '1';
+									if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
+										// we have some other earlier rule so move it up
+										$ff['a3'] = $ff['a2'];
+										$ff['p3'] = $ff['p2'];
+										$ff['t3'] = $ff['t2'];
+										unset($ff['a2']);
+										unset($ff['p2']);
+										unset($ff['t2']);
+										$ff['src'] = '1';
+									} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
+										$ff['a3'] = $ff['a1'];
+										$ff['p3'] = $ff['p1'];
+										$ff['t3'] = $ff['t1'];
+										unset($ff['a1']);
+										unset($ff['p1']);
+										unset($ff['t1']);
+										$ff['src'] = '1';
+									}
 								} else {
 									$ff['a3'] = $price['amount'] . '.00';
 									$ff['p3'] = $price['period'];
