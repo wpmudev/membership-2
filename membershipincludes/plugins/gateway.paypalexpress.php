@@ -393,6 +393,7 @@ class paypalexpress extends M_Gateway {
 			update_option( $this->gateway . "_paypal_site", $_POST[ 'paypal_site' ] );
 			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
 			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
+			update_option( $this->gateway . "_paypal_button", $_POST[ 'paypal_button' ] );
 		}
 
 		// default action is to return true

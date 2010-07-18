@@ -36,7 +36,13 @@ class freesubscriptions extends M_Gateway {
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
-		  <th scope="row">hello</th>
+		  <th scope="row"><?php _e('Subscription button', 'membership') ?></th>
+		  <?php
+		  	$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		  ?>
+		  <td><input type="text" name="payment_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <br />
+		  </td>
 		  </tr>
 		</tbody>
 		</table>
@@ -316,11 +322,8 @@ class freesubscriptions extends M_Gateway {
 
 	function update() {
 
-		if(isset($_POST['paypal_email'])) {
-			update_option( $this->gateway . "_paypal_email", $_POST[ 'paypal_email' ] );
-			update_option( $this->gateway . "_paypal_site", $_POST[ 'paypal_site' ] );
-			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
-			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
+		if(isset($_POST['payment_button'])) {
+			update_option( $this->gateway . "_payment_button", $_POST[ 'payment_button' ] );
 		}
 
 		// default action is to return true
