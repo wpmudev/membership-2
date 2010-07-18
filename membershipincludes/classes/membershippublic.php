@@ -773,6 +773,8 @@ if(!class_exists('membershippublic')) {
 
 			$subs = $this->get_subscriptions();
 
+			$content = apply_filters( 'membership_subscriptionform_beforepaidsubscriptions', $content );
+
 			foreach((array) $subs as $key => $sub) {
 
 				$subscription = new M_Subscription($sub->id);
@@ -798,7 +800,7 @@ if(!class_exists('membershippublic')) {
 
 			}
 
-			$content = apply_filters( '', $content );
+			$content = apply_filters( 'membership_subscriptionform_afterpaidsubscriptions', $content );
 
 			//$content .= print_r($subs, true);
 
