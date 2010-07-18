@@ -794,15 +794,11 @@ if(!class_exists('membershippublic')) {
 					$content .= "</div>";
 				}
 
-				//$content .= print_r($pricing, true);
-
 				$content .= '</div>';
 
 			}
 
 			$content = apply_filters( 'membership_subscriptionform_afterpaidsubscriptions', $content );
-
-			//$content .= print_r($subs, true);
 
 			$content .= '</div>';
 
@@ -979,6 +975,7 @@ if(!class_exists('membershippublic')) {
 			$orderby = array();
 
 			$where[] = "sub_public = 1";
+			$where[] = "sub_active = 1";
 
 			$orderby[] = 'id ASC';
 

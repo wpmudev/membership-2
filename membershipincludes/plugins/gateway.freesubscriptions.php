@@ -1,9 +1,9 @@
 <?php
 
-class paypalexpress extends M_Gateway {
+class freesubscriptions extends M_Gateway {
 
-	var $gateway = 'paypalexpress';
-	var $title = 'PayPal Express';
+	var $gateway = 'freesubscriptions';
+	var $title = 'Free Subscriptions';
 
 	function paypalexpress() {
 		parent::M_Gateway();
@@ -11,16 +11,21 @@ class paypalexpress extends M_Gateway {
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
 
 		// If I want to override the transactions output - then I can use this action
-		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
+		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
-
-			// Payment return
-			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
 		}
 
+	}
+
+	function mytransactions() {
+
+		echo '<div class="tablenav">';
+		echo '</div>';
+
+		echo "<p>" . __('No transactions data for the Free gateway','membership') . "</p>";
 	}
 
 	function mysettings() {
@@ -31,78 +36,12 @@ class paypalexpress extends M_Gateway {
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
-		  <th scope="row"><?php _e('PayPal Email', 'membership') ?></th>
-		  <td><input type="text" name="paypal_email" value="<?php esc_attr_e(get_option( $this->gateway . "_paypal_email" )); ?>" />
-		  <br />
-		  </td>
-		  </tr>
-		  <tr valign="top">
-		  <th scope="row"><?php _e('PayPal Site', 'membership') ?></th>
-		  <td><select name="paypal_site">
-		  <?php
-		      $paypal_site = get_option( $this->gateway . "_paypal_site" );
-		      $sel_locale = empty($paypal_site) ? 'US' : $paypal_site;
-		      $locales = array(
-		          'AU'	=> 'Australia',
-		          'AT'	=> 'Austria',
-		          'BE'	=> 'Belgium',
-		          'CA'	=> 'Canada',
-		          'CN'	=> 'China',
-		          'FR'	=> 'France',
-		          'DE'	=> 'Germany',
-		          'HK'	=> 'Hong Kong',
-		          'IT'	=> 'Italy',
-		          'MX'	=> 'Mexico',
-		          'NL'	=> 'Netherlands',
-				  'NZ'	=>	'New Zealand',
-		          'PL'	=> 'Poland',
-		          'SG'	=> 'Singapore',
-		          'ES'	=> 'Spain',
-		          'SE'	=> 'Sweden',
-		          'CH'	=> 'Switzerland',
-		          'GB'	=> 'United Kingdom',
-		          'US'	=> 'United States'
-		          );
-
-		      foreach ($locales as $key => $value) {
-					echo '<option value="' . esc_attr($key) . '"';
-		 			if($key == $sel_locale) echo 'selected="selected"';
-		 			echo '>' . esc_html($value) . '</option>' . "\n";
-		      }
-		  ?>
-		  </select>
-		  <br />
-		  <?php //_e('Format: 00.00 - Ex: 1.25', 'supporter') ?></td>
-		  </tr>
-		  <tr valign="top">
-		  <th scope="row"><?php _e('Paypal Currency', 'membership') ?></th>
-		  <td><?php
-			if(empty($M_options['paymentcurrency'])) {
-				$M_options['paymentcurrency'] = 'USD';
-			}
-			echo esc_html($M_options['paymentcurrency']); ?></td>
-		  </tr>
-		  <tr valign="top">
-		  <th scope="row"><?php _e('PayPal Mode', 'membership') ?></th>
-		  <td><select name="paypal_status">
-		  <option value="live" <?php if (get_option( $this->gateway . "_paypal_status" ) == 'live') echo 'selected="selected"'; ?>><?php _e('Live Site', 'membership') ?></option>
-		  <option value="test" <?php if (get_option( $this->gateway . "_paypal_status" ) == 'test') echo 'selected="selected"'; ?>><?php _e('Test Mode (Sandbox)', 'membership') ?></option>
-		  </select>
-		  <br />
-		  </td>
-		  </tr>
-		  <tr valign="top">
-		  <th scope="row"><?php _e('Subscription button', 'membership') ?></th>
-		  <?php
-		  	$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
-		  ?>
-		  <td><input type="text" name="paypal_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
-		  <br />
-		  </td>
+		  <th scope="row">hello</th>
 		  </tr>
 		</tbody>
 		</table>
 		<?php
+
 	}
 
 	function build_custom($user_id, $sub_id, $amount) {
@@ -347,31 +286,20 @@ class paypalexpress extends M_Gateway {
 
 		if(!empty($pricing)) {
 
-			// check to make sure there is a price in the subscription
-			// we don't want to display free ones for a payment system
-			$free = true;
-			foreach($pricing as $key => $price) {
-				if(!empty($price['amount']) && $price['amount'] > 0 ) {
-					$free = false;
-				}
-			}
-
-			if(!$free) {
-				if(count($pricing) == 1) {
-					// A basic price or a single subscription
-					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
-						// one-off payment
-						return $this->single_sub_button($pricing, $subscription, $user_id, true);
-					} else {
-						// simple subscription
-						return $this->single_sub_button($pricing, $subscription, $user_id);
-					}
+			if(count($pricing) == 1) {
+				// A basic price or a single subscription
+				if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
+					// one-off payment
+					return $this->single_sub_button($pricing, $subscription, $user_id, true);
 				} else {
-					// something much more complex
-
-					return $this->complex_sub_button($pricing, $subscription, $user_id);
-
+					// simple subscription
+					return $this->single_sub_button($pricing, $subscription, $user_id);
 				}
+			} else {
+				// something much more complex
+
+				return $this->complex_sub_button($pricing, $subscription, $user_id);
+
 			}
 
 		}
@@ -626,6 +554,6 @@ class paypalexpress extends M_Gateway {
 
 }
 
-M_register_gateway('paypalexpress', 'paypalexpress');
+M_register_gateway('freesubscriptions', 'freesubscriptions');
 
 ?>
