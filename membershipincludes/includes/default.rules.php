@@ -907,11 +907,8 @@ class M_Menu extends M_Rule {
 						foreach($navs as $key => $nav) {
 							?>
 							<tr valign="middle" class="alternate" id="menu-<?php echo $nav->term_id; ?>-0">
-								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $nav->term_id; ?>-0" name="menu[]" <?php if(in_array($nav->term_id . '-0', $data)) echo 'checked="checked"'; ?>>
-								</th>
-								<td class="column-name">
-									<strong><?php echo esc_html($nav->name); ?></strong>
+								<td class="column-name" colspan='2'>
+									<strong><?php echo __('MENU','membership') . " - " . esc_html($nav->name); ?></strong>
 								</td>
 						    </tr>
 							<?php
@@ -919,12 +916,13 @@ class M_Menu extends M_Rule {
 							if(!empty($items)) {
 								foreach($items as $ikey => $item) {
 									?>
-									<tr valign="middle" class="alternate" id="menu-<?php echo $nav->term_id; ?>-<?php echo $item->ID; ?>">
+									<tr valign="middle" class="alternate" id="menu-<?php //echo $nav->term_id . '-'; ?><?php echo $item->ID; ?>">
 										<th class="check-column" scope="row">
-											<input type="checkbox" value="<?php echo $nav->term_id; ?>-<?php echo $item->ID; ?>" name="menu[]" <?php if(in_array($nav->term_id . '-' . $item->ID, $data)) echo 'checked="checked"'; ?>>
+											<input type="checkbox" value="<?php //echo $nav->term_id . '-'; ?><?php echo $item->ID; ?>" name="menu[]" <?php if(in_array($item->ID, $data)) echo 'checked="checked"'; ?>>
 										</th>
 										<td class="column-name">
-											<strong>&nbsp;&#8211;&nbsp;<?php echo esc_html($item->title); ?></strong>
+
+											<strong>&nbsp;&#8211;&nbsp;<?php if($item->menu_item_parent != 0) echo "&#8211;&nbsp;"; ?><?php echo esc_html($item->title); ?></strong>
 										</td>
 								    </tr>
 									<?php
@@ -946,7 +944,7 @@ class M_Menu extends M_Rule {
 
 		$this->data = $data;
 
-
+		add_filter( 'wp_get_nav_menu_items', array(&$this, 'filter_viewable_menus'), 10, 3 );
 
 	}
 
@@ -954,9 +952,38 @@ class M_Menu extends M_Rule {
 
 		$this->data = $data;
 
+		add_filter( 'wp_get_nav_menu_items', array(&$this, 'filter_unviewable_menus'), 10, 3 );
+	}
+
+	function filter_viewable_menus($items, $menu, $args) {
+
+		if(!empty($items)) {
+			foreach($items as $key => $item) {
+				if(!in_array($item->ID, $this->data) || ($item->menu_item_parent != 0 && !in_array($item->menu_item_parent, $this->data))) {
+					unset($items[$key]);
+				}
+
+			}
+		}
+
+		return $items;
 
 	}
 
+	function filter_unviewable_menus($items, $menu, $args) {
+
+		if(!empty($items)) {
+			foreach($items as $key => $item) {
+				if(in_array($item->ID, $this->data) || ($item->menu_item_parent != 0 && in_array($item->menu_item_parent, $this->data))) {
+					unset($items[$key]);
+				}
+
+			}
+		}
+
+		return $items;
+
+	}
 
 }
 M_register_rule('menu', 'M_Menu', 'main');
