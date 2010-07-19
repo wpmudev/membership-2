@@ -16,7 +16,7 @@ class freesubscriptions extends M_Gateway {
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
-			add_action( 'membership_subscriptionform_subscription_process', array(&$this, 'signup_free_subscription') );
+			add_filter( 'membership_subscriptionform_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
 		}
 
 
@@ -65,7 +65,37 @@ class freesubscriptions extends M_Gateway {
 
 	}
 
-	function signup_free_subscription() {
+	function signup_free_subscription($content, $error) {
+
+		if(isset($_POST['custom'])) {
+			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+		}
+
+		// create_subscription
+		$member = new M_Membership($user_id);
+		if($member) {
+			$member->create_subscription($sub_id);
+		}
+
+		do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+
+		$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+
+		$content .= '<div class="formleft">';
+
+		$content .= "<h2>" . __('Completed: Thank you for signing up','membership') . "</h2>";
+
+		$content .= '<p>';
+		$content .= __('Your subscription to our site is now set up and you should be able to visit the members only content.','membership');
+		$content .= '</p>';
+
+		$content .= '</div>';
+
+		$content .= "</div>";
+
+		$content = apply_filters('membership_subscriptionform_signedup', $content, $user_id, $sub_id);
+
+		return $content;
 
 	}
 

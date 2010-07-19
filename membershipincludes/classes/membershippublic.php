@@ -924,7 +924,7 @@ if(!class_exists('membershippublic')) {
 									break;
 
 				case 'validatepage2':
-									do_action( 'membership_subscriptionform_subscription_process', $error );
+									$content = apply_filters( 'membership_subscriptionform_subscription_process', $content, $error );
 									break;
 				case 'page2':
 				case 'page1':
