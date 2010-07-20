@@ -5,6 +5,8 @@ class freesubscriptions extends M_Gateway {
 	var $gateway = 'freesubscriptions';
 	var $title = 'Free Subscriptions';
 
+	var $defaultmessage = "<h2>Completed: Thank you for signing up</h2>\n<p>\nYour subscription to our site is now set up and you should be able to visit the members only content.\n</p>\n";
+
 	function freesubscriptions() {
 		parent::M_Gateway();
 
@@ -45,6 +47,25 @@ class freesubscriptions extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
+
+		  	<tr valign="top">
+				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
+					<em style='font-size:smaller;'><?php _e("The message that is displayed to a user once they are signed up. HTML allowed",'membership'); ?>
+					</em>
+				</th>
+				<td>
+					<textarea name='completed_message' id='completed_message' rows='10' cols='40'><?php
+
+
+
+
+					$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
+					echo stripslashes($message);
+					?>
+					</textarea>
+				</td>
+			</tr>
+
 		</tbody>
 		</table>
 		<?php
@@ -83,11 +104,8 @@ class freesubscriptions extends M_Gateway {
 
 		$content .= '<div class="formleft">';
 
-		$content .= "<h2>" . __('Completed: Thank you for signing up','membership') . "</h2>";
-
-		$content .= '<p>';
-		$content .= __('Your subscription to our site is now set up and you should be able to visit the members only content.','membership');
-		$content .= '</p>';
+		$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
+		echo stripslashes($message);
 
 		$content .= '</div>';
 
@@ -154,6 +172,7 @@ class freesubscriptions extends M_Gateway {
 
 		if(isset($_POST['payment_button'])) {
 			update_option( $this->gateway . "_payment_button", $_POST[ 'payment_button' ] );
+			update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
 		}
 
 		// default action is to return true
