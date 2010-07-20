@@ -25,6 +25,32 @@ if(!class_exists('M_Member_Search')) {
 			$this->do_paging();
 		}
 
+		function do_paging() {
+			if ( $this->total_users_for_query > $this->users_per_page ) { // have to page the results
+				$args = array();
+				if( ! empty($this->search_term) )
+					$args['usersearch'] = urlencode($this->search_term);
+				if( ! empty($this->role) )
+					$args['role'] = urlencode($this->role);
+
+				$this->paging_text = paginate_links( array(
+					'total' => ceil($this->total_users_for_query / $this->users_per_page),
+					'current' => $this->page,
+					'base' => 'admin.php?page=members&%_%',
+					'format' => 'userspage=%#%',
+					'add_args' => $args
+				) );
+				if ( $this->paging_text ) {
+					$this->paging_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s' ) . '</span>%s',
+						number_format_i18n( ( $this->page - 1 ) * $this->users_per_page + 1 ),
+						number_format_i18n( min( $this->page * $this->users_per_page, $this->total_users_for_query ) ),
+						number_format_i18n( $this->total_users_for_query ),
+						$this->paging_text
+					);
+				}
+			}
+		}
+
 		function prepare_query() {
 
 
