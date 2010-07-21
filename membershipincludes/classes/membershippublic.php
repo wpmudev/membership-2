@@ -744,12 +744,13 @@ if(!class_exists('membershippublic')) {
 
 			$content .= '<p><input type="submit" value="' . __('Register My Account »','membership') . '" class="regbutton" name="register"></p>';
 
-
 			$content .= '<input type="hidden" name="action" value="validatepage1" />';
 
 			$content .= '</div>';
 
 			$content .= "</form>";
+
+			$content = apply_filters('membership_subscriptionform_registrationfull', $content);
 
 			return $content;
 
@@ -820,22 +821,21 @@ if(!class_exists('membershippublic')) {
 
 			$content .= '<div class="formleft">';
 
-			$content .= "<h2>" . __('Completed: Thank you for joining','membership') . "</h2>";
+			$inner = "<h2>" . __('Completed: Thank you for joining','membership') . "</h2>";
+			$inner .= '<p>';
+			$inner .= __('It looks like you are already a member of our site. Thank you very much for your support.','membership');
+			$inner .= '</p>';
+			$inner .= '<p>';
+			$inner .= __('If you are at this page because you would like to create another account, then please log out first.','membership');
+			$inner .= '</p>';
 
-			$content .= '<p>';
-			$content .= __('It looks like you are already a member of our site. Thank you very much for your support.','membership');
-			$content .= '</p>';
-
-			$content .= '<p>';
-			$content .= __('If you are at this page because you would like to create another account, then please log out first.','membership');
-			$content .= '</p>';
-
+			$content .= apply_filters('membership_subscriptionform_membercontent', $inner);
 
 			$content .= '</div>';
 
 			$content .= "</div>";
 
-			$content = apply_filters('membership_subscriptionform_member', $content);
+			$content = apply_filters('membership_subscriptionform_memberfull', $content);
 
 			return $content;
 
