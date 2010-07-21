@@ -19,15 +19,20 @@ function membership_newsstreamcreatetables($installed = false) {
 
 	global $wpdb;
 
-	// Added for RC
-	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'membership_news') . "` (
-	  `id` bigint(11) NOT NULL auto_increment,
-	  `newsitem` text,
-	  `newsdate` datetime default NULL,
-	  PRIMARY KEY  (`id`)
-	);";
+	if($installed !== false) {
+		$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'membership_news', false) . " TO " . membership_db_prefix($wpdb, 'membership_news') . ";";
+		$wpdb->query($sql);
+	} else {
+		// Added for RC
+		$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'membership_news') . "` (
+		  `id` bigint(11) NOT NULL auto_increment,
+		  `newsitem` text,
+		  `newsdate` datetime default NULL,
+		  PRIMARY KEY  (`id`)
+		);";
 
-	$wpdb->query($sql);
+		$wpdb->query($sql);
+	}
 
 }
 
