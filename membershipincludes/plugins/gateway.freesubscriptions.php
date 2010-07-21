@@ -105,7 +105,7 @@ class freesubscriptions extends M_Gateway {
 		$content .= '<div class="formleft">';
 
 		$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
-		echo stripslashes($message);
+		$content .= stripslashes($message);
 
 		$content .= '</div>';
 
