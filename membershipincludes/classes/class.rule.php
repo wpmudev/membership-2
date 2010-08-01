@@ -5,6 +5,9 @@ if(!class_exists('M_Rule')) {
 
 		var $data;
 
+		// Is this an admin side rule?
+		var $adminside = false;
+
 		function __construct() {
 			$this->on_creation();
 
@@ -33,6 +36,11 @@ if(!class_exists('M_Rule')) {
 
 		function on_negative($data) {
 			$this->data = $data;
+		}
+
+		// Getters and Setters
+		function is_adminside() {
+			return $this->adminside;
 		}
 
 
