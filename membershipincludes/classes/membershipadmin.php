@@ -31,6 +31,9 @@ if(!class_exists('membershipadmin')) {
 			// Add administration actions
 			add_action('init', array(&$this, 'initialise_plugin'));
 
+			// Add in admin area membership levels
+			add_action('init', array(&$this, 'initialise_membership_protection'), 999);
+
 			add_action('admin_menu', array(&$this, 'add_admin_menu'));
 
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
@@ -142,6 +145,52 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			//add_submenu_page('users.php', __('Member details','membership'), __('Member details','membership'), 'read', "membershipuser", array(&$this,'handle_profile_member_page'));
+
+		}
+
+		// Admin area protection
+		function initialise_membership_protection() {
+
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
+			// Set up some common defaults
+
+			static $initialised = false;
+
+			if($initialised) {
+				// ensure that this is only called once, so return if we've been here already.
+				return;
+			}
+
+			$M_options = get_option('membership_options', array());
+			// Check if the membership plugin is active
+			$M_active = get_option('membership_active', 'no');
+
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+
+			if($user->has_cap('administrator') || $M_active == 'no') {
+				// Admins can see everything
+				return;
+			}
+
+
+			// Users
+			$member = new M_Membership($user->ID);
+
+			if($user->ID > 0 && $member->has_levels()) {
+				// Load the levels for this member - and associated rules
+				$member->load_admin_levels( true );
+			} else {
+				// not logged in so limit based on stranger settings
+				// need to grab the stranger settings
+				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+					$member->assign_admin_level($M_options['strangerlevel'], true );
+				}
+			}
+
+			// Set the initialisation status
+			$initialised = true;
 
 		}
 

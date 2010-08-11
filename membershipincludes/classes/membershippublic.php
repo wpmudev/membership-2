@@ -899,6 +899,8 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
+									$error = apply_filters( 'membership_subscriptionform_preregistration_process', $error );
+
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
 										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);

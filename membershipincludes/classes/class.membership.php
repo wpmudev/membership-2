@@ -500,7 +500,27 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function assign_admin_level($level_id, $fullload) {
+			// Used to force assign a level on a user - mainly for non logged in users
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
+
+		}
+
 		function load_levels($fullload = false) {
+
+			$levels = $this->get_level_ids();
+
+			if(!empty($levels)) {
+				foreach( (array) $levels as $key => $lev ) {
+					if(!isset( $this->levels[$lev->level_id] )) {
+						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload );
+					}
+				}
+			}
+
+		}
+
+		function load_admin_levels($fullload = false) {
 
 			$levels = $this->get_level_ids();
 
