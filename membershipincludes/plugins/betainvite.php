@@ -17,7 +17,7 @@ add_filter( 'membership_subscriptionform_preregistration_process', 'check_beta_i
 
 function check_beta_invite( $error ) {
 
-	$availablekeys = array('beta-0937-afa1' => 'emailaddress',
+	$availablekeys = array('beta-0937-afa1' => 'barry+beta@mapinated.com',
 	'beta-df2c-d710' => 'barry@mapinated.com',
 	'beta-b6a9-bd10' => 'garri.rayner@gmail.com',
 	'beta-d3b0-4942' => 'jamie@clearboxit.com',
@@ -133,10 +133,38 @@ function check_beta_invite( $error ) {
 		}
 	}
 
-
-
-
 	return $error;
 
 }
+
+add_filter( 'membership_subscriptionform_postsubscriptions', 'override_membership_page_two', 10, 2 );
+
+function override_membership_page_two( $content, $user_id ) {
+
+	$content = '';
+
+	$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+	$content .= '<div class="formleft">';
+
+	$content .= "<h2>" . __('Thank you for electing to be a beta tester','membership') . "</h2>";
+	$content .= '<p>';
+	$content .= __('If you now <a href="http://staypress.com/wp-login.php?redirect_to=http://staypress.com/download/">login and then pop on over to the download page</a>, then you will get access to the files.','membership');
+	$content .= '</p>';
+	$content .= '<p>';
+	$content .= __('If you have any problems download the beta files, then please let us know - we are still testing this invite system.','membership');
+	$content .= '</p>';
+
+	$content .= '</div>';
+	$content .= "</div>";
+
+	if($user_id && function_exists('wp_set_auth_cookie')) {
+		wp_set_auth_cookie($user_id);
+	}
+
+
+	return $content;
+
+}
+
+
 ?>

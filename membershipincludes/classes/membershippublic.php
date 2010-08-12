@@ -770,11 +770,11 @@ if(!class_exists('membershippublic')) {
 			$content .= __('Please select a subscription from the options below.','membership');
 			$content .= "</p>";
 
-			$content = apply_filters( 'membership_subscriptionform_presubscriptions', $content );
+			$content = apply_filters( 'membership_subscriptionform_presubscriptions', $content, $user_id );
 
 			$subs = $this->get_subscriptions();
 
-			$content = apply_filters( 'membership_subscriptionform_beforepaidsubscriptions', $content );
+			$content = apply_filters( 'membership_subscriptionform_beforepaidsubscriptions', $content, $user_id );
 
 			foreach((array) $subs as $key => $sub) {
 
@@ -799,7 +799,7 @@ if(!class_exists('membershippublic')) {
 
 			}
 
-			$content = apply_filters( 'membership_subscriptionform_afterpaidsubscriptions', $content );
+			$content = apply_filters( 'membership_subscriptionform_afterpaidsubscriptions', $content, $user_id );
 
 			$content .= '</div>';
 
@@ -807,7 +807,7 @@ if(!class_exists('membershippublic')) {
 
 			// Adding in the following form element (and form :) ) will allow the second page validation to be fired
 			//<input type="hidden" name="action" value="validatepage2" />
-			$content = apply_filters('membership_subscriptionform_postsubscriptions', $content);
+			$content = apply_filters('membership_subscriptionform_postsubscriptions', $content, $user_id );
 
 			return $content;
 
