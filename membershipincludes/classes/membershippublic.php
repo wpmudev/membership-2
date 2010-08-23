@@ -882,7 +882,7 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} elseif( $this->pending_username_exists( sanitize_user($_POST['user_login']) ) ) {
+									} elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'], $_POST['user_email'] ) ) ) {
 										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
@@ -906,6 +906,7 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
+										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
@@ -973,7 +974,28 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function pending_username_exists( $username ) {
+		function pending_username_exists( $username, $email ) {
+
+			// Initial delete of pending subscriptions
+			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('- 30 mins') );
+			$thid->db->query( $sql );
+
+			// Now check for a pending username that doesn't have the same email address
+			$sql = $this->db->prepare( "SELECT id FROM {$this->user_queue} WHERE user_login = %s AND user_email != %s LIMIT 0,1", $username, $email );
+
+			$res = $thid->db->get_var( $sql );
+			if(!empty($res)) {
+				return true;
+			} else {
+				// because even though the username could exist - if the email address is the same it could just be that they hit the back button.
+				return false;
+			}
+
+		}
+
+		function queue_user( $user_login, $user_pass, $user_email ) {
+
+
 
 		}
 
