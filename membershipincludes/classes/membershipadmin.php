@@ -10,13 +10,14 @@ if(!class_exists('membershipadmin')) {
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'user_queue');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
+		var $user_queue;
 
 		function __construct() {
 
@@ -180,12 +181,12 @@ if(!class_exists('membershipadmin')) {
 
 			if($user->ID > 0 && $member->has_levels()) {
 				// Load the levels for this member - and associated rules
-				$member->load_admin_levels( true );
+				//$member->load_admin_levels( true );
 			} else {
 				// not logged in so limit based on stranger settings
 				// need to grab the stranger settings
 				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-					$member->assign_admin_level($M_options['strangerlevel'], true );
+					//$member->assign_admin_level($M_options['strangerlevel'], true );
 				}
 			}
 
@@ -1311,7 +1312,7 @@ if(!class_exists('membershipadmin')) {
 				<?php
 				if ( isset($_GET['msg']) ) {
 					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
-					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('msg'), $_SERVER['REQUEST_URI']);
 				}
 				?>
 

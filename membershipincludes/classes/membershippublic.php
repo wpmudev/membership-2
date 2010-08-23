@@ -7,13 +7,14 @@ if(!class_exists('membershippublic')) {
 
 		var $db;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'user_queue');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
+		var $user_queue;
 
 		function __construct() {
 
@@ -73,7 +74,7 @@ if(!class_exists('membershippublic')) {
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
-			if($user->has_cap('administrator') || $M_active == 'no') {
+			if(!method_exists($user, 'has_cap') || $user->has_cap('administrator') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}
@@ -881,6 +882,8 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
+									} elseif( $this->pending_username_exists( sanitize_user($_POST['user_login']) ) ) {
+										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
 									if(email_exists($_POST['user_email'])) {
@@ -967,6 +970,10 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $posts;
+
+		}
+
+		function pending_username_exists( $username ) {
 
 		}
 
