@@ -907,7 +907,6 @@ if(!class_exists('membershippublic')) {
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
 										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
-										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
@@ -922,8 +921,9 @@ if(!class_exists('membershippublic')) {
 										$content .= "</div>";
 										$content .= $this->show_subpage_one(true);
 									} else {
-										// everything seems fine (so far), so lets move to page 2
-										wp_new_user_notification( $user_id, $_POST['password'] );
+										// everything seems fine (so far), so we have our queued user so let's
+										// look at picking a subscription.
+										// wp_new_user_notification( $user_id, $_POST['password'] );
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -977,7 +977,7 @@ if(!class_exists('membershippublic')) {
 		function pending_username_exists( $username, $email ) {
 
 			// Initial delete of pending subscriptions
-			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('- 30 mins') );
+			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('-30 mins') );
 			$thid->db->query( $sql );
 
 			// Now check for a pending username that doesn't have the same email address
@@ -995,6 +995,15 @@ if(!class_exists('membershippublic')) {
 
 		function queue_user( $user_login, $user_pass, $user_email ) {
 
+			$sql = $this->db->prepare( "INSERT INTO {$this->user_queue} (user_login, user_pass, user_email, user_timestamp) VALUES " );
+			$sql .= $this->db->prepare( "( %s, %s, %s, %d )", $user_login, wp_hash_password( $user_pass ), $user_email, time() );
+			$sql .= $this->db->prepare( " ON DUPLICATE KEY UPDATE user_timestamp = %d", time());
+
+			if( $this->db->query( $sql ) ) {
+				return $this->db->insert_id;
+			} else {
+				return new WP_Error('queueerror', __('Could not create your user account.', 'membership'));
+			}
 
 
 		}
