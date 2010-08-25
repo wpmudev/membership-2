@@ -882,9 +882,9 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'], $_POST['user_email'] ) ) ) {
+									} /* elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'], $_POST['user_email'] ) ) ) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									}
+									} */
 
 									if(email_exists($_POST['user_email'])) {
 										$error[] = __('That email address is already taken, sorry.','membership');
@@ -906,8 +906,8 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
-										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
-
+										//$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
@@ -923,7 +923,7 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										// wp_new_user_notification( $user_id, $_POST['password'] );
+										wp_new_user_notification( $user_id, $_POST['password'] );
 										$content .= $this->show_subpage_two($user_id);
 									}
 

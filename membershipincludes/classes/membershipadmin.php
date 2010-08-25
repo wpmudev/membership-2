@@ -2115,9 +2115,14 @@ if(!class_exists('membershipadmin')) {
 								<input class='wide' type='text' name='level_title' id='level_title' value='<?php echo esc_attr($level->level_title); ?>' />
 								</div>
 
+								<?php do_action('membership_level_form_before_rules', $level->id); ?>
+
 								<h3 class='positive'><?php _e('Positive rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 								<div id='positive-rules-holder'>
+
+									<?php do_action('membership_level_form_before_positive_rules', $level->id); ?>
+
 									<?php
 										if(!empty($p)) {
 											foreach($p as $key => $value) {
@@ -2130,6 +2135,9 @@ if(!class_exists('membershipadmin')) {
 											}
 										}
 									?>
+
+									<?php do_action('membership_level_form_after_positive_rules', $level->id); ?>
+
 								</div>
 								<div id='positive-rules' class='droppable-rules levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
@@ -2138,6 +2146,9 @@ if(!class_exists('membershipadmin')) {
 								<h3 class='negative'><?php _e('Negative rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 								<div id='negative-rules-holder'>
+
+									<?php do_action('membership_level_form_before_negative_rules', $level->id); ?>
+
 									<?php
 										if(!empty($n)) {
 											foreach($n as $key => $value) {
@@ -2149,10 +2160,15 @@ if(!class_exists('membershipadmin')) {
 											}
 										}
 									?>
+
+									<?php do_action('membership_level_form_after_negative_rules', $level->id); ?>
+
 								</div>
 								<div id='negative-rules' class='droppable-rules levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
 								</div>
+
+								<?php do_action('membership_level_form_after_rules', $level->id); ?>
 
 								<div class='buttons'>
 									<?php
@@ -2662,8 +2678,11 @@ if(!class_exists('membershipadmin')) {
 								<label for='sub_name'><?php _e('Subscription description','management'); ?></label>
 								<textarea class='wide' name='sub_description' id='sub_description'><?php echo esc_html($sub->sub_description); ?></textarea>
 
+								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
 
 								</div>
+
+								<?php do_action('membership_subscription_form_before_levels', $sub->id); ?>
 
 								<h3><?php _e('Membership levels','membership'); ?></h3>
 								<p class='description'><?php _e('These are the levels that are part of this subscription and the order a user will travel through them.','membership'); ?></p>
@@ -2677,9 +2696,11 @@ if(!class_exists('membershipadmin')) {
 								</div>
 
 								<ul id='membership-levels-holder'>
+									<?php do_action('membership_subscription_form_before_level_list', $sub->id); ?>
 									<?php
 										$msub->sub_details();
 									?>
+									<?php do_action('membership_subscription_form_after_level_list', $sub->id); ?>
 								</ul>
 								<div id='membership-levels' class='droppable-levels levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
@@ -2690,6 +2711,8 @@ if(!class_exists('membershipadmin')) {
 								?>
 								<input type='hidden' name='beingdragged' id='beingdragged' value='' />
 								<input type='hidden' name='level-order' id='level-order' value=',<?php echo implode(',', $msub->levelorder); ?>' />
+
+								<?php do_action('membership_subscription_form_after_levels', $sub->id); ?>
 
 								<div class='buttons'>
 									<?php

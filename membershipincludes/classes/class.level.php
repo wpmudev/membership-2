@@ -161,6 +161,8 @@ if(!class_exists('M_Level')) {
 					}
 				}
 
+				do_action('membership_level_update', $this->id);
+
 			}
 
 			return true; // for now
@@ -211,6 +213,8 @@ if(!class_exists('M_Level')) {
 				}
 
 			}
+
+			do_action('membership_level_add', $this->id);
 
 			return true; // for now
 

@@ -346,6 +346,8 @@ if(!class_exists('M_Subscription')) {
 
 				}
 
+				do_action('membership_subscription_add', $this->id);
+
 				return $this->id; // for now
 
 			}
@@ -424,6 +426,8 @@ if(!class_exists('M_Subscription')) {
 					}
 
 				}
+
+				do_action('membership_subscription_update', $this->id);
 			}
 
 			return true; // for now
