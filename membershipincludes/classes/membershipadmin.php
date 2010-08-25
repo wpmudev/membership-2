@@ -534,8 +534,12 @@ if(!class_exists('membershipadmin')) {
 				echo "<table style='width: 100%;'>";
 				echo "<tbody>";
 
-					$usercount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->users}") );
-
+					$usercount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->users} INNER JOIN {$this->db->usermeta} ON {$this->db->users}.ID = {$this->db->usermeta}.user_id WHERE {$this->db->usermeta}.meta_key = '{$this->db->prefix}capabilities'") );
+					/*
+					FROM $wpdb->users";
+					if ( $this->role )
+						$this->query_from_where .= $wpdb->prepare(" INNER JOIN $wpdb->usermeta ON $wpdb->users.ID = $wpdb->usermeta.user_id WHERE $wpdb->usermeta.meta_key = '{$wpdb->prefix}capabilities'
+					*/
 					echo "<tr>";
 						echo "<td>" . __('Total Users', 'membership') . "</td>";
 						echo "<td style='text-align: right;'>" . $usercount . "</td>";
