@@ -477,8 +477,11 @@ if(!class_exists('membershipadmin')) {
 					foreach($levels as $key => $level) {
 						echo "<tr>";
 							echo "<td><a href='" . admin_url('admin.php?page=membershiplevels&action=edit&level_id=') . $level->id . "'>" . esc_html($level->level_title) . "</a></td>";
-							echo "<td style='text-align: right;'>" . (int) $level->level_count . "</td>";
-							$levelcount += (int) $level->level_count;
+							// find out how many people are in this level
+							$thiscount = $this->count_on_level( $level->id );
+
+							echo "<td style='text-align: right;'>" . (int) $thiscount . "</td>";
+							$levelcount += (int) $thiscount;
 						echo "</tr>";
 					}
 					echo "<tr>";
@@ -501,8 +504,11 @@ if(!class_exists('membershipadmin')) {
 					foreach($subs as $key => $sub) {
 						echo "<tr>";
 							echo "<td><a href='" . admin_url('admin.php?page=membershipsubs&action=edit&sub_id=') . $sub->id . "'>" . $sub->sub_name . "</a></td>";
-							echo "<td style='text-align: right;'>" . (int) $sub->sub_count . "</td>";
-							$subcount += (int) $sub->sub_count;
+							// find out how many people are in this sub
+							$thiscount = $this->count_on_sub( $sub->id );
+
+							echo "<td style='text-align: right;'>" . (int) $thiscount . "</td>";
+							$subcount += (int) $thiscount;
 						echo "</tr>";
 					}
 					echo "<tr>";
@@ -2570,7 +2576,7 @@ if(!class_exists('membershipadmin')) {
 									</td>
 									<td class="column-users">
 										<strong>
-											<?php echo $level->level_count; ?>
+											<?php echo $this->count_on_level( $level->id ); ?>
 										</strong>
 									</td>
 							    </tr>
@@ -3134,7 +3140,7 @@ if(!class_exists('membershipadmin')) {
 									</td>
 									<td class="column-users">
 										<strong>
-											<?php echo $sub->sub_count; ?>
+											<?php echo $this->count_on_sub( $sub->id ); ?>
 										</strong>
 									</td>
 							    </tr>
@@ -3682,6 +3688,22 @@ if(!class_exists('membershipadmin')) {
 			$sql .= $this->db->prepare( " AND s.id = sl.sub_id AND sl.level_id = ml.id ORDER BY s.id ASC, sl.level_order ASC " );
 
 			return $this->db->get_results($sql);
+
+		}
+
+		function count_on_level( $level_id ) {
+
+			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE level_id = %d", $level_id );
+
+			return $this->db->get_var( $sql );
+
+		}
+
+		function count_on_sub( $sub_id ) {
+
+			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE sub_id = %d", $sub_id );
+
+			return $this->db->get_var( $sql );
 
 		}
 

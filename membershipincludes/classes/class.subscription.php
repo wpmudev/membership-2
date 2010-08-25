@@ -6,12 +6,13 @@ if(!class_exists('M_Subscription')) {
 		var $id = false;
 
 		var $db;
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $subscriptions;
 		var $subscriptions_levels;
+		var $membership_relationships;
 
 		// if the data needs reloaded, or hasn't been loaded yet
 		var $dirty = true;
@@ -209,19 +210,22 @@ if(!class_exists('M_Subscription')) {
 				return false;
 			}
 
-			if($force) {
+			if($this->count() == 0 || $force) {
+
 				$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d", $this->id);
+
+				$this->dirty = true;
+
+				$result = $this->db->query($sql);
+
+				do_action( 'membership_toggleactivate_subscription', $this->id, $result );
+
+				return $result;
 			} else {
-				$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d AND sub_count = 0", $this->id);
+				return false;
 			}
 
-			$this->dirty = true;
 
-			$result = $this->db->query($sql);
-
-			do_action( 'membership_toggleactivate_subscription', $this->id, $result );
-
-			return $result;
 		}
 
 		function togglepublic( $force = false ) {
@@ -249,21 +253,19 @@ if(!class_exists('M_Subscription')) {
 				return false;
 			}
 
-			if($force) {
+			if($this->count() == 0 || $force) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d", $this->id);
-			} else {
-				$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d AND sub_count = 0", $this->id);
-			}
 
-			$sql2 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id);
+				$sql2 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id);
 
-			if($this->db->query($sql)) {
+				if($this->db->query($sql)) {
 
-				$this->db->query($sql2);
+					$this->db->query($sql2);
 
-				$this->dirty = true;
+					$this->dirty = true;
 
-				do_action( 'membership_delete_subscription', $this->id );
+					do_action( 'membership_delete_subscription', $this->id );
+				}
 
 				return true;
 
@@ -590,6 +592,15 @@ if(!class_exists('M_Subscription')) {
 					<?php
 				}
 			}
+
+		}
+
+		// Counting
+		function count() {
+
+			$sql = $this->db->prepare( "SELECT count(*) as subcount FROM {$this->membership_relationships} WHERE sub_id = %d", $this->id );
+
+			return $this->db->get_var( $sql );
 
 		}
 

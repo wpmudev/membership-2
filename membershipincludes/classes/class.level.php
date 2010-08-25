@@ -6,11 +6,12 @@ if(!class_exists('M_Level')) {
 		var $id = false;
 
 		var $db;
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions_levels');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions_levels', 'membership_relationships');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $subscriptions_levels;
+		var $membership_relationships;
 
 		// if the data needs reloaded, or hasn't been loaded yet
 		var $dirty = true;
@@ -92,24 +93,25 @@ if(!class_exists('M_Level')) {
 
 		function delete($forced = false) {
 
-			if($forced) {
+			if($this->count() == 0 || $forced) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_levels} WHERE id = %d", $this->id);
-			} else {
-				$sql = $this->db->prepare( "DELETE FROM {$this->membership_levels} WHERE id = %d AND level_count = 0", $this->id);
-			}
 
-			$sql2 = $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $this->id);
+				$sql2 = $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $this->id);
 
-			$sql3 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE level_id = %d", $this->id);
+				$sql3 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE level_id = %d", $this->id);
 
-			if($this->db->query($sql)) {
+				if($this->db->query($sql)) {
 
-				$this->db->query($sql2);
-				$this->db->query($sql3);
+					$this->db->query($sql2);
+					$this->db->query($sql3);
 
-				$this->dirty = true;
+					$this->dirty = true;
 
-				return true;
+					return true;
+
+				} else {
+					return false;
+				}
 
 			} else {
 				return false;
@@ -220,19 +222,19 @@ if(!class_exists('M_Level')) {
 
 		}
 
-			function toggleactivation($forced = false) {
+		function toggleactivation($forced = false) {
 
-				$this->dirty = true;
+			$this->dirty = true;
 
-				if($forced) {
-					$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
-				} else {
-					$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d AND level_count = 0", $this->id);
-				}
+			if($this->count() == 0 || $forced) {
+				$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
 
 				return $this->db->query($sql);
-
+			} else {
+				return false;
 			}
+
+		}
 		// UI functions
 
 
@@ -335,6 +337,15 @@ if(!class_exists('M_Level')) {
 			}
 
 			return false;
+
+		}
+
+		// Counting
+		function count( ) {
+
+			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE level_id = %d", $this->id );
+
+			return $this->db->get_var( $sql );
 
 		}
 
