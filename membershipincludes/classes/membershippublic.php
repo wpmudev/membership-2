@@ -725,7 +725,7 @@ if(!class_exists('membershippublic')) {
 
 			$content .= '<p class="pass_hint">' . __('Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).','membership') . '</p>';
 
-			$content = apply_filters('membership_subscriptionform_registration', $content);
+			$content = apply_filters('membership_subscription_form_registration_presubmit_content', $content);
 
 			if(function_exists('get_site_option')) {
 				$terms = get_site_option('signup_tos_data');
@@ -751,7 +751,7 @@ if(!class_exists('membershippublic')) {
 
 			$content .= "</form>";
 
-			$content = apply_filters('membership_subscriptionform_registrationfull', $content);
+			$content = apply_filters('membership_subscription_form_registration_content', $content);
 
 			return $content;
 
@@ -771,11 +771,11 @@ if(!class_exists('membershippublic')) {
 			$content .= __('Please select a subscription from the options below.','membership');
 			$content .= "</p>";
 
-			$content = apply_filters( 'membership_subscriptionform_presubscriptions', $content, $user_id );
+			$content = apply_filters( 'membership_subscription_form_before_subscriptions', $content, $user_id );
 
 			$subs = $this->get_subscriptions();
 
-			$content = apply_filters( 'membership_subscriptionform_beforepaidsubscriptions', $content, $user_id );
+			$content = apply_filters( 'membership_subscription_form_before_paid_subscriptions', $content, $user_id );
 
 			foreach((array) $subs as $key => $sub) {
 
@@ -800,7 +800,7 @@ if(!class_exists('membershippublic')) {
 
 			}
 
-			$content = apply_filters( 'membership_subscriptionform_afterpaidsubscriptions', $content, $user_id );
+			$content = apply_filters( 'membership_subscription_form_after_paid_subscriptions', $content, $user_id );
 
 			$content .= '</div>';
 
@@ -808,7 +808,7 @@ if(!class_exists('membershippublic')) {
 
 			// Adding in the following form element (and form :) ) will allow the second page validation to be fired
 			//<input type="hidden" name="action" value="validatepage2" />
-			$content = apply_filters('membership_subscriptionform_postsubscriptions', $content, $user_id );
+			$content = apply_filters('membership_subscription_form_after_subscriptions', $content, $user_id );
 
 			return $content;
 
@@ -830,13 +830,13 @@ if(!class_exists('membershippublic')) {
 			$inner .= __('If you are at this page because you would like to create another account, then please log out first.','membership');
 			$inner .= '</p>';
 
-			$content .= apply_filters('membership_subscriptionform_membercontent', $inner);
+			$content .= apply_filters('membership_subscription_form_member_inner_content', $inner);
 
 			$content .= '</div>';
 
 			$content .= "</div>";
 
-			$content = apply_filters('membership_subscriptionform_memberfull', $content);
+			$content = apply_filters('membership_subscription_form_member_content', $content);
 
 			return $content;
 
@@ -902,7 +902,7 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
-									$error = apply_filters( 'membership_subscriptionform_preregistration_process', $error );
+									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
@@ -913,7 +913,7 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
-									do_action( 'membership_subscriptionform_registration_process', $error );
+									do_action( 'membership_subscription_form_registration_process', $error );
 
 									if(!empty($error)) {
 										$content .= "<div class='error'>";
@@ -930,7 +930,7 @@ if(!class_exists('membershippublic')) {
 									break;
 
 				case 'validatepage2':
-									$content = apply_filters( 'membership_subscriptionform_subscription_process', $content, $error );
+									$content = apply_filters( 'membership_subscription_form_subscription_process', $content, $error );
 									break;
 				case 'page2':
 				case 'page1':
@@ -956,7 +956,7 @@ if(!class_exists('membershippublic')) {
 
 			$content .= '</div> <!-- subscriptionwrap -->';
 
-			$content = apply_filters('membership_subscriptionform', $content);
+			$content = apply_filters('membership_subscription_form', $content);
 
 			return $content;
 		}
