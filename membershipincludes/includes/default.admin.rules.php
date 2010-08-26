@@ -122,6 +122,155 @@ class M_Mainmenus extends M_Rule {
 
 M_register_rule('mainmenus', 'M_Mainmenus', 'admin');
 
+class M_Submenus extends M_Rule {
+
+	var $name = 'submenus';
+	var $adminside = true;
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='submenus' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('Sub Menus','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
+	}
+
+	function get_mainmenu_for_file($file) {
+
+		global $menu;
+
+		foreach($menu as $key => $m) {
+
+			if($m[2] == $file) {
+				return $m[0];
+			}
+
+		}
+
+	}
+
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-submenus'>
+			<h2 class='sidebar-name'><?php _e('Sub Menus', 'membership');?><span><a href='#remove' class='removelink' id='remove-submenus' title='<?php _e("Remove Sub Menus from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><?php _e('Select the Sub menu items to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
+				<?php
+
+					global $menu, $submenu;
+					//print_r($menu);
+
+					if(!empty($submenu)) {
+						?>
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								</tr>
+							</thead>
+
+							<tfoot>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								</tr>
+							</tfoot>
+
+							<tbody>
+						<?php
+						foreach($submenu as $key => $m) {
+							if(!empty($m)) {
+								?>
+								<tr valign="middle" class="alternate">
+									<th class="check-column" scope="row" style="background: #efefef;">
+										&nbsp;
+									</th>
+									<td class="column-name" style="background: #efefef;">
+										<strong><?php echo esc_html(strip_tags($this->get_mainmenu_for_file($key))); ?></strong>
+									</td>
+							    </tr>
+								<?php
+								foreach($m as $skey => $s) {
+									?>
+									<tr valign="middle" class="alternate" id="submenus-<?php echo $key . '-' . $skey; ?>">
+										<th class="check-column" scope="row">
+											<input type="checkbox" value="<?php echo $key . '-' . $skey; ?>" name="submenus[]" <?php if(in_array($key . '-' . $skey, $data)) echo 'checked="checked"'; ?>>
+										</th>
+										<td class="column-name">
+											<?php echo esc_html(strip_tags($s[0])); ?>
+										</td>
+								    </tr>
+									<?php
+								}
+							}
+						}
+						?>
+							</tbody>
+						</table>
+						<?php
+					}
+
+				?>
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_action('admin_menu', array(&$this, 'pos_admin_menu'), 999);
+
+
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_action('admin_menu', array(&$this, 'neg_admin_menu'), 999);
+
+	}
+
+	function pos_admin_menu() {
+
+		global $submenu;
+
+		foreach($submenu as $key => $m) {
+			foreach($m as $skey => $s) {
+				if(!in_array($key . '-' . $skey, (array) $this->data)) {
+					unset($submenu[$key][$skey]);
+				}
+			}
+		}
+
+	}
+
+	function neg_admin_menu() {
+
+		global $submenu;
+
+		foreach($submenu as $key => $m) {
+			foreach($m as $skey => $s) {
+				if(in_array($key . '-' . $skey, (array) $this->data)) {
+					unset($submenu[$key][$skey]);
+				}
+			}
+		}
+
+	}
+
+}
+
+M_register_rule('submenus', 'M_Submenus', 'admin');
+
 class M_Dashboardwidgets extends M_Rule {
 
 	var $name = 'dashboard';
@@ -145,7 +294,7 @@ class M_Dashboardwidgets extends M_Rule {
 		<div class='level-operation' id='main-dashboard'>
 			<h2 class='sidebar-name'><?php _e('Dashboard Widgets', 'membership');?><span><a href='#remove' class='removelink' id='remove-dashboard' title='<?php _e("Remove Dashboard Widgets from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><?php _e('Select the Main menus to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
+				<p><?php _e('Select the Dashboard widgets to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
 				<?php
 
 					include_once(ABSPATH . '/wp-admin/includes/dashboard.php');
