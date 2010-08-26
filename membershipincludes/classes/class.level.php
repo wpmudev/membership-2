@@ -25,7 +25,7 @@ if(!class_exists('M_Level')) {
 
 		var $lastlevelid;
 
-		function __construct( $id = false , $fullload = false) {
+		function __construct( $id = false , $fullload = false, $admin = false) {
 
 			global $wpdb;
 
@@ -38,13 +38,13 @@ if(!class_exists('M_Level')) {
 			$this->id = $id;
 
 			if($fullload) {
-				$this->load_rules();
+				$this->load_rules( $admin );
 			}
 
 		}
 
-		function M_Level( $id = false, $fullload = false ) {
-			$this->__construct( $id, $fullload );
+		function M_Level( $id = false, $fullload = false, $admin = false ) {
+			$this->__construct( $id, $fullload, $admin );
 		}
 
 		// Fields
@@ -238,7 +238,7 @@ if(!class_exists('M_Level')) {
 		// UI functions
 
 
-		function load_rules() {
+		function load_rules( $admin = false ) {
 
 			global $M_Rules;
 
@@ -253,8 +253,14 @@ if(!class_exists('M_Level')) {
 				foreach( (array) $positive as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
 						$this->positiverules[$key] = new $M_Rules[$rule->rule_area];
-						$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
-						$key++;
+
+						if( $this->positiverules[$key]->adminside == $admin ) {
+							$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
+							$key++;
+						} else {
+							unset($this->positiverules[$key]);
+						}
+
 					}
 				}
 			}
@@ -264,8 +270,14 @@ if(!class_exists('M_Level')) {
 				foreach( (array) $negative as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
 						$this->negativerules[$key] = new $M_Rules[$rule->rule_area];
-						$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
-						$key++;
+
+						if( $this->negativerules[$key]->adminside == $admin ) {
+							$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
+							$key++;
+						} else {
+							unset($this->negativerules[$key]);
+						}
+
 					}
 				}
 			}

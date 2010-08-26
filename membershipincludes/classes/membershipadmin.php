@@ -170,23 +170,21 @@ if(!class_exists('membershipadmin')) {
 				$user = wp_get_current_user();
 			}
 
-			if($user->has_cap('administrator') || $M_active == 'no') {
+			if(!method_exists($user, 'has_cap') || $user->has_cap('administrator') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}
-
 
 			// Users
 			$member = new M_Membership($user->ID);
 
 			if($user->ID > 0 && $member->has_levels()) {
 				// Load the levels for this member - and associated rules
-				//$member->load_admin_levels( true );
+				$member->load_admin_levels( true );
 			} else {
-				// not logged in so limit based on stranger settings
 				// need to grab the stranger settings
 				if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-					//$member->assign_admin_level($M_options['strangerlevel'], true );
+					$member->assign_admin_level($M_options['strangerlevel'], true );
 				}
 			}
 
@@ -535,11 +533,7 @@ if(!class_exists('membershipadmin')) {
 				echo "<tbody>";
 
 					$usercount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->users} INNER JOIN {$this->db->usermeta} ON {$this->db->users}.ID = {$this->db->usermeta}.user_id WHERE {$this->db->usermeta}.meta_key = '{$this->db->prefix}capabilities'") );
-					/*
-					FROM $wpdb->users";
-					if ( $this->role )
-						$this->query_from_where .= $wpdb->prepare(" INNER JOIN $wpdb->usermeta ON $wpdb->users.ID = $wpdb->usermeta.user_id WHERE $wpdb->usermeta.meta_key = '{$wpdb->prefix}capabilities'
-					*/
+
 					echo "<tr>";
 						echo "<td>" . __('Total Users', 'membership') . "</td>";
 						echo "<td style='text-align: right;'>" . $usercount . "</td>";
