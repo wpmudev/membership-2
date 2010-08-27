@@ -121,7 +121,7 @@ if(!class_exists('membershipadmin')) {
 
 			global $menu, $admin_page_hooks;
 
-			if(current_user_can('manage_options')) {
+			if(current_user_can('membershipadmin')) {
 				// Add the menu page
 				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
 
