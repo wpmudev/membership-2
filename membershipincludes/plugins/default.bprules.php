@@ -240,6 +240,82 @@ class M_BPGroups extends M_Rule {
 }
 M_register_rule('bpgroups', 'M_BPGroups', 'bp');
 
+class M_BPGroupcreation extends M_Rule {
+
+	var $name = 'bpgroupcreation';
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='bpgroupcreation' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('Group Creation','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
+	}
+
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-bpgroupcreation'>
+			<h2 class='sidebar-name'><?php _e('Group Creation', 'membership');?><span><a href='#remove' id='remove-bpgroupcreation' class='removelink' title='<?php _e("Remove Groups from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create groups.','membership'); ?></p>
+				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to create groups.','membership'); ?></p>
+				<input type='hidden' name='bpgroupcreation[]' value='yes' />
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_filter('groups_template_create_group', array(&$this, 'pos_bp_groups_template'));
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_filter('groups_template_create_group', array(&$this, 'neg_bp_groups_template'));
+
+	}
+
+	function pos_bp_groups_template($template) {
+	  global $bp;
+
+	  // Positive - do nothiing really.
+	  return $template;
+
+	}
+
+	function neg_bp_groups_template($template) {
+	  global $bp;
+
+	  //hack template steps to hide creation form elements
+	  $bp->action_variables[1] = 'disabled'; //nonsensical value, hide all group steps
+	  $bp->avatar_admin->step = 'crop-image'; //hides submit button
+	  add_action( 'template_notices', array(&$this, 'neg_bp_message') );
+
+	  return $template;
+	}
+
+	function neg_bp_message() {
+	  global $current_user;
+
+	  echo '<div id="message" class="error"><p>' . __('Group creation is not available.','membership') . '</p></div>';
+
+	}
+
+
+
+}
+M_register_rule('bpgroupcreation', 'M_BPGroupcreation', 'bp');
+
 class M_BPBlogs extends M_Rule {
 
 	var $name = 'bpblogs';
