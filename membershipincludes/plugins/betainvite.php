@@ -1,6 +1,6 @@
 <?php
 
-add_filter('membership_subscriptionform_registration', 'show_beta_invite');
+add_filter('membership_subscription_form_registration_presubmit_content', 'show_beta_invite');
 
 function show_beta_invite( $content ) {
 
@@ -13,7 +13,7 @@ function show_beta_invite( $content ) {
 
 }
 
-add_filter( 'membership_subscriptionform_preregistration_process', 'check_beta_invite' );
+add_filter( 'membership_subscription_form_before_registration_process', 'check_beta_invite' );
 
 function check_beta_invite( $error ) {
 
@@ -137,7 +137,7 @@ function check_beta_invite( $error ) {
 
 }
 
-add_filter( 'membership_subscriptionform_postsubscriptions', 'override_membership_page_two', 10, 2 );
+add_filter( 'membership_subscription_form_after_subscriptions', 'override_membership_page_two', 10, 2 );
 
 function override_membership_page_two( $content, $user_id ) {
 

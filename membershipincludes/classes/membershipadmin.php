@@ -80,7 +80,7 @@ if(!class_exists('membershipadmin')) {
 
 		function initialise_plugin() {
 
-			global $M_options;
+			global $user, $M_options;
 
 			$installed = get_option('M_Installed', false);
 
@@ -90,6 +90,18 @@ if(!class_exists('membershipadmin')) {
 				M_Upgrade($installed);
 
 				update_option('M_Installed', $this->build);
+			}
+
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+			// Add in our new capability
+			if($user->user_login == 'admin' && !$user->has_cap('membershipadmin')) {
+				$user->add_cap('membershipadmin');
+			}
+
+			if($user->has_cap('membershipadmin')) {
+
 			}
 
 			$M_options = get_option('membership_options', array());
@@ -170,7 +182,7 @@ if(!class_exists('membershipadmin')) {
 				$user = wp_get_current_user();
 			}
 
-			if(!method_exists($user, 'has_cap') || $user->has_cap('administrator') || $M_active == 'no') {
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}

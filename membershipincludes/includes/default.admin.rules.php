@@ -452,36 +452,35 @@ class M_Plugins extends M_Rule {
 
 					$plugins = get_plugins();
 
-					print_r($plugins);
-
-					if(!empty($menu)) {
+					if(!empty($plugins)) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
 							<thead>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Plugin', 'membership'); ?></th>
 								</tr>
 							</thead>
 
 							<tfoot>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Plugin', 'membership'); ?></th>
 								</tr>
 							</tfoot>
 
 							<tbody>
 						<?php
-						foreach($menu as $key => $m) {
-							if(!empty($m[0])) {
+						foreach($plugins as $key => $plugin) {
+							if(!empty($plugin['Name'])) {
 							?>
 							<tr valign="middle" class="alternate" id="mainmenus-<?php echo $key; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $key; ?>" name="mainmenus[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $key; ?>" name="plugins[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
-									<strong><?php echo esc_html(strip_tags($m[0])); ?></strong>
+									<strong><?php echo esc_html(strip_tags($plugin['Name'])); ?></strong><br/>
+									<?php echo esc_html(strip_tags($plugin['Version'])); ?>
 								</td>
 						    </tr>
 							<?php
@@ -501,47 +500,42 @@ class M_Plugins extends M_Rule {
 
 	function on_positive($data) {
 
-		global $menu;
-
 		$this->data = $data;
 
-		add_action('admin_menu', array(&$this, 'pos_admin_menu'), 999);
+		add_filter('all_plugins', array(&$this, 'pos_all_plugins'), 999);
 
 
 	}
 
 	function on_negative($data) {
 
-		global $menu;
-
 		$this->data = $data;
 
-		add_action('admin_menu', array(&$this, 'neg_admin_menu'), 999);
+		add_filter('all_plugins', array(&$this, 'neg_all_plugins'), 999);
 
 	}
 
-	function pos_admin_menu() {
+	function pos_all_plugins( $plugins ) {
 
-		global $menu;
-
-		foreach($menu as $key => $m) {
+		foreach($plugins as $key => $plugin) {
 			if(!in_array($key, (array) $this->data)) {
-				unset($menu[$key]);
+				unset($plugins[$key]);
 			}
 		}
+
+		return $plugins;
 
 	}
 
-	function neg_admin_menu() {
+	function neg_all_plugins( $plugins ) {
 
-		global $menu;
-
-		foreach($menu as $key => $m) {
+		foreach($plugins as $key => $plugin) {
 			if(in_array($key, (array) $this->data)) {
-				unset($menu[$key]);
+				unset($plugins[$key]);
 			}
 		}
 
+		return $plugins;
 
 	}
 

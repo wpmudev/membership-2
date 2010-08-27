@@ -74,7 +74,7 @@ if(!class_exists('membershippublic')) {
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
-			if(!method_exists($user, 'has_cap') || $user->has_cap('administrator') || $M_active == 'no') {
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}
@@ -190,7 +190,7 @@ if(!class_exists('membershippublic')) {
 				$user = wp_get_current_user();
 			}
 
-			if($user->has_cap('administrator') || $M_active == 'no') {
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
 				// Admins can see everything
 				return;
 			}
