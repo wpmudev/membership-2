@@ -260,7 +260,7 @@ class M_BPGroupcreation extends M_Rule {
 		if(!$data) $data = array();
 		?>
 		<div class='level-operation' id='main-bpgroupcreation'>
-			<h2 class='sidebar-name'><?php _e('Group Creation', 'membership');?><span><a href='#remove' id='remove-bpgroupcreation' class='removelink' title='<?php _e("Remove Groups from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<h2 class='sidebar-name'><?php _e('Group Creation', 'membership');?><span><a href='#remove' id='remove-bpgroupcreation' class='removelink' title='<?php _e("Remove Group Creation from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
 				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create groups.','membership'); ?></p>
 				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to create groups.','membership'); ?></p>
@@ -575,18 +575,82 @@ class M_BPBlogs extends M_Rule {
 }
 M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
 
-// Removed check for BP1.2.5 issues
-//if(defined('BP_CORE_DB_VERSION')) {
-	// Add the buddypress section
-	function M_AddBuddyPressSection($sections) {
-		$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
+class M_BPPrivatemessage extends M_Rule {
 
-		return $sections;
+	var $name = 'bpprivatemessage';
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='bpprivatemessage' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('Private Messaging','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
 	}
 
-	add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-bpprivatemessage'>
+			<h2 class='sidebar-name'><?php _e('Private Messaging', 'membership');?><span><a href='#remove' id='remove-bpprivatemessage' class='removelink' title='<?php _e("Remove Private Messaging from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can send messages.','membership'); ?></p>
+				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to send messages.','membership'); ?></p>
+				<input type='hidden' name='bpprivatemessage[]' value='yes' />
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_filter('messages_template_compose', array(&$this, 'pos_bp_messages_template') );
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_filter('messages_template_compose', array(&$this, 'neg_bp_messages_template') );
+
+	}
+
+	function pos_bp_messages_template($template) {
+
+	  return $template;
+	}
+
+	function neg_bp_messages_template($template) {
+
+	  add_action( 'bp_template_content', array(&$this, 'neg_bp_message') );
+
+	  return 'members/single/plugins';
+	}
+
+	function neg_bp_message() {
+	  global $current_user;
+
+	  echo '<div id="message" class="error"><p>' . __('Group creation is not available.','membership') . '</p></div>';
+
+	}
 
 
-//}
+
+}
+M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
+
+
+function M_AddBuddyPressSection($sections) {
+	$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
+
+	return $sections;
+}
+
+add_filter('membership_level_sections', 'M_AddBuddyPressSection');
 
 ?>
