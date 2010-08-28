@@ -111,7 +111,7 @@ if(!class_exists('membershippublic')) {
 				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 				// add in a no posts thing
-				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 99, 2);
+				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 999, 2);
 			}
 
 		}
@@ -520,12 +520,32 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function check_for_posts_existance($posts, $wp_query) {
-			if(empty($posts)) {
+
+			global $bp;
+
+			if(!empty($bp)) {
+				// BuddyPress exists so we have to handle "pretend" pages.
+				print_r($bp);
+			}
+
+			if(empty($posts) && $this->posts_actually_exist()) {
 				// we have nothing to see because it either doesn't exist or it's protected - move to no access page.
 				$this->show_noaccess_page($wp_query);
 			} else {
 				return $posts;
 			}
+		}
+
+		function posts_actually_exist() {
+
+			$sql = $this->db->prepare( "SELECT count(*) FROM {$this->db->posts} WHERE post_type = 'post' AND post_status = 'publish'" );
+
+			if($this->db->get_var( $sql ) > 0) {
+				return true;
+			} else {
+				return false;
+			}
+
 		}
 
 		function show_noaccess_feed($wp_query) {
@@ -605,6 +625,9 @@ if(!class_exists('membershippublic')) {
 			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 				return;
 			}
+
+			print_r($M_options);
+			print_r($wp_query);
 
 			if(!empty($M_options['nocontent_page'])) {
 				// grab the content form the no content page

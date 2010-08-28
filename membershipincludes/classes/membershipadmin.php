@@ -1676,6 +1676,8 @@ if(!class_exists('membershipadmin')) {
 
 				update_option('membership_options', $M_options);
 
+				do_action( 'membership_options_page_process' );
+
 				// flush rewrites if required
 				if(!empty($M_options['masked_url'])) {
 					// need to update the rewrites
@@ -2033,6 +2035,10 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 					</tbody>
 					</table>
+
+					<?php
+						do_action( 'membership_options_page' );
+					?>
 
 					<p class="submit">
 						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />

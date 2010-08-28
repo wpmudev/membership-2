@@ -305,9 +305,10 @@ class M_BPGroupcreation extends M_Rule {
 	}
 
 	function neg_bp_message() {
-	  global $current_user;
 
-	  echo '<div id="message" class="error"><p>' . __('Group creation is not available.','membership') . '</p></div>';
+		$MBP_options = get_option('membership_bp_options', array());
+
+	 	echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
 
 	}
 
@@ -633,9 +634,9 @@ class M_BPPrivatemessage extends M_Rule {
 	}
 
 	function neg_bp_message() {
-	  global $current_user;
+	  $MBP_options = get_option('membership_bp_options', array());
 
-	  echo '<div id="message" class="error"><p>' . __('Group creation is not available.','membership') . '</p></div>';
+	  echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
 
 	}
 
@@ -643,6 +644,148 @@ class M_BPPrivatemessage extends M_Rule {
 
 }
 M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
+
+//BuddyPress Pages
+class M_BPPages extends M_Rule {
+
+	var $name = 'bppages';
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='bppages' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('BuddyPress Pages','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
+	}
+
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-bppages'>
+			<h2 class='sidebar-name'><?php _e('BuddyPress Pages', 'membership');?><span><a href='#remove' id='remove-bppages' class='removelink' title='<?php _e("Remove BuddyPress Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><?php _e('Select the BuddyPress Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
+				<?php
+
+
+					$posts = get_posts($args);
+					if($posts) {
+						?>
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+								</tr>
+							</thead>
+
+							<tfoot>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+								</tr>
+							</tfoot>
+
+							<tbody>
+						<?php
+						foreach($posts as $key => $post) {
+							?>
+							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
+								<th class="check-column" scope="row">
+									<input type="checkbox" value="<?php echo $post->ID; ?>" name="pages[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+								</th>
+								<td class="column-name">
+									<strong><?php echo esc_html($post->post_title); ?></strong>
+								</td>
+						    </tr>
+							<?php
+						}
+						?>
+							</tbody>
+						</table>
+						<?php
+					}
+
+				?>
+				<p class='description'><?php echo sprintf(__("Only the most recent %d pages are shown above.",'membership'), MEMBERSHIP_PAGE_COUNT); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
+		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
+
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
+		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
+	}
+
+	function add_viewable_pages($wp_query) {
+
+		if(!is_page()) {
+			return;
+		}
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+
+	}
+
+	function add_viewable_pages_menu($pages) {
+		foreach( (array) $pages as $key => $page ) {
+			if(!in_array($page->ID, (array) $this->data)) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
+
+	}
+
+	function add_unviewable_pages($wp_query) {
+
+		if(!is_page()) {
+			return;
+		}
+
+		foreach( (array) $this->data as $key => $value ) {
+			$wp_query->query_vars['post__not_in'][] = $value;
+		}
+
+		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+
+	}
+
+	function add_unviewable_pages_menu($pages) {
+		foreach( (array) $pages as $key => $page ) {
+			if(in_array($page->ID, (array) $this->data)) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
+	}
+
+}
+M_register_rule('bppages', 'M_BPPages', 'bp');
+
 
 
 function M_AddBuddyPressSection($sections) {
@@ -652,5 +795,44 @@ function M_AddBuddyPressSection($sections) {
 }
 
 add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+
+// BuddyPress options
+function M_AddBuddyPressOptions() {
+
+	$MBP_options = get_option('membership_bp_options', array());
+	?>
+	<h3><?php _e('BuddyPress protected content message','membership'); ?></h3>
+	<p><?php _e('This is the message that is displayed when a BuddyPress related operation is restricted. Depending on your theme this is displayed in a red bar, and so should be short and concise.','membership'); ?></p>
+
+	<table class="form-table">
+	<tbody>
+		<tr valign="top">
+			<th scope="row"><?php _e('BuddyPress No access message','membership'); ?><br/>
+			<em style='font-size:smaller;'><?php _e("This is the message that is displayed when a BuddyPress related operation is restricted.",'membership'); ?><br/>
+			<?php _e("Leave blank for no message.",'membership'); ?><br/>
+			<?php _e("HTML allowed.",'membership'); ?>
+			</em>
+			</th>
+			<td>
+				<textarea name='buddypressmessage' id='buddypressmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($MBP_options['buddypressmessage'])); ?></textarea>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<?php
+}
+add_action( 'membership_options_page', 'M_AddBuddyPressOptions' );
+
+function M_AddBuddyPressOptionsProcess() {
+
+	$MBP_options = get_option('membership_bp_options', array());
+
+	$MBP_options['buddypressmessage'] = $_POST['buddypressmessage'];
+
+	update_option('membership_bp_options', $MBP_options);
+
+}
+add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
+
 
 ?>
