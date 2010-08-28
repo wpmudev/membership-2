@@ -551,15 +551,7 @@ class M_Favouriteactions extends M_Rule {
 	var $favouriteactions = array();
 
 	function on_creation() {
-		//add_filter('favorite_actions', array(&$this, 'get_the_actions'), 999 );
-	}
 
-	function get_the_actions($actions) {
-
-		print_r($actions);
-		$this->favouriteactions = $actions;
-
-		return $actions;
 	}
 
 	function admin_sidebar($data) {
@@ -580,36 +572,36 @@ class M_Favouriteactions extends M_Rule {
 		<div class='level-operation' id='main-favactions'>
 			<h2 class='sidebar-name'><?php _e('Favorite Actions', 'membership');?><span><a href='#remove' class='removelink' id='remove-favactions' title='<?php _e("Remove Favorite Actions from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><?php _e('Select the Main menus to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
+				<p><?php _e('Select the Favourite Actions to be covered by this rule by checking the box next to the relevant title.','membership'); ?></p>
 				<?php
 
-					print_r($this->favouriteactions);
+					$actions = M_cache_favourite_actions();
 
-					if(!empty($menu)) {
+					if(!empty($actions)) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
 							<thead>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Actions', 'membership'); ?></th>
 								</tr>
 							</thead>
 
 							<tfoot>
 							<tr>
 								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Actions', 'membership'); ?></th>
 								</tr>
 							</tfoot>
 
 							<tbody>
 						<?php
-						foreach($menu as $key => $m) {
+						foreach($actions as $key => $m) {
 							if(!empty($m[0])) {
 							?>
 							<tr valign="middle" class="alternate" id="mainmenus-<?php echo $key; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $key; ?>" name="mainmenus[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $key; ?>" name="favactions[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
 									<strong><?php echo esc_html(strip_tags($m[0])); ?></strong>
@@ -636,8 +628,7 @@ class M_Favouriteactions extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('admin_menu', array(&$this, 'pos_admin_menu'), 999);
-
+		add_filter('favorite_actions', array(&$this, 'pos_fav_actions'), 1000 );
 
 	}
 
@@ -647,38 +638,53 @@ class M_Favouriteactions extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('admin_menu', array(&$this, 'neg_admin_menu'), 999);
+		add_filter('favorite_actions', array(&$this, 'neg_fav_actions'), 1000 );
 
 	}
 
-	function pos_admin_menu() {
+	function pos_fav_actions( $actions ) {
 
-		global $menu;
-
-		foreach($menu as $key => $m) {
+		foreach($actions as $key => $m) {
 			if(!in_array($key, (array) $this->data)) {
-				unset($menu[$key]);
+				unset($actions[$key]);
 			}
 		}
+
+		return $actions;
 
 	}
 
-	function neg_admin_menu() {
+	function neg_fav_actions( $actions ) {
 
-		global $menu;
-
-		foreach($menu as $key => $m) {
+		foreach($actions as $key => $m) {
 			if(in_array($key, (array) $this->data)) {
-				unset($menu[$key]);
+				unset($actions[$key]);
 			}
 		}
 
+		return $actions;
 
 	}
 
 }
 
 M_register_rule('favactions', 'M_Favouriteactions', 'admin');
+
+function M_cache_favourite_actions( $actions = false ) {
+
+	static $M_actions;
+
+	if( $actions !== false ){
+		$M_actions = $actions;
+	} else {
+		$actions = $M_actions;
+	}
+
+	return $actions;
+
+}
+
+add_filter('favorite_actions', 'M_cache_favourite_actions', 999 );
 
 function M_AddAdminSection($sections) {
 	$sections['admin'] = array(	"title" => __('Administration','membership') );
