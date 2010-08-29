@@ -114,6 +114,8 @@ if(!class_exists('membershippublic')) {
 				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 999, 2);
 			}
 
+
+
 		}
 
 		function add_queryvars($vars) {
@@ -527,9 +529,9 @@ if(!class_exists('membershippublic')) {
 				// BuddyPress exists so we have to handle "pretend" pages.
 				$thepage = substr($wp_query->query['pagename'], 0 , strpos($wp_query->query['pagename'], '/'));
 				if(empty($thepage)) $thepage = $wp_query->query['pagename'];
-				
+
 				$bppages = apply_filters('membership_buddypress_pages', (array) $bp->root_components );
-				
+
 				if(in_array($thepage, $bppages)) {
 					return $posts;
 				}
