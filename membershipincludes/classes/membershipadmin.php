@@ -1682,11 +1682,8 @@ if(!class_exists('membershipadmin')) {
 
 				do_action( 'membership_options_page_process' );
 
-				// flush rewrites if required
-				if(!empty($M_options['masked_url'])) {
-					// need to update the rewrites
-					$wp_rewrite->flush_rules();
-				}
+				// Always flush the rewrite rules
+				$wp_rewrite->flush_rules();
 
 				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
 
