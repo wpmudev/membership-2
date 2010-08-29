@@ -667,7 +667,6 @@ class M_Favouriteactions extends M_Rule {
 	}
 
 }
-
 M_register_rule('favactions', 'M_Favouriteactions', 'admin');
 
 function M_cache_favourite_actions( $actions = false ) {
@@ -683,8 +682,8 @@ function M_cache_favourite_actions( $actions = false ) {
 	return $actions;
 
 }
-
 add_filter('favorite_actions', 'M_cache_favourite_actions', 999 );
+
 
 function M_AddAdminSection($sections) {
 	$sections['admin'] = array(	"title" => __('Administration','membership') );
