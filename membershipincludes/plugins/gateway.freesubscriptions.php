@@ -55,10 +55,6 @@ class freesubscriptions extends M_Gateway {
 				</th>
 				<td>
 					<textarea name='completed_message' id='completed_message' rows='10' cols='40'><?php
-
-
-
-
 					$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
 					echo stripslashes($message);
 					?>
@@ -127,12 +123,11 @@ class freesubscriptions extends M_Gateway {
 
 		$form = '';
 
-		$form .= '<form id="reg-form" action="' . get_permalink() . '" method="post">';
+		$form .= '<form action="' . get_permalink() . '" method="post">';
 		$form .= '<input type="hidden" name="action" value="validatepage2" />';
-
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
 
-		$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '</form>';
