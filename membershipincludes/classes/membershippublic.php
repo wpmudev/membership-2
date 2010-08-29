@@ -525,7 +525,14 @@ if(!class_exists('membershippublic')) {
 
 			if(!empty($bp)) {
 				// BuddyPress exists so we have to handle "pretend" pages.
-				print_r($bp);
+				$thepage = substr($wp_query->query['pagename'], 0 , strpos($wp_query->query['pagename'], '/'));
+				if(empty($thepage)) $thepage = $wp_query->query['pagename'];
+				
+				$bppages = apply_filters('membership_buddypress_pages', (array) $bp->root_components );
+				
+				if(in_array($thepage, $bppages)) {
+					return $posts;
+				}
 			}
 
 			if(empty($posts) && $this->posts_actually_exist()) {
@@ -625,9 +632,6 @@ if(!class_exists('membershippublic')) {
 			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 				return;
 			}
-
-			print_r($M_options);
-			print_r($wp_query);
 
 			if(!empty($M_options['nocontent_page'])) {
 				// grab the content form the no content page

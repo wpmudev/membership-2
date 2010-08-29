@@ -262,8 +262,8 @@ class M_BPGroupcreation extends M_Rule {
 		<div class='level-operation' id='main-bpgroupcreation'>
 			<h2 class='sidebar-name'><?php _e('Group Creation', 'membership');?><span><a href='#remove' id='remove-bpgroupcreation' class='removelink' title='<?php _e("Remove Group Creation from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create groups.','membership'); ?></p>
-				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to create groups.','membership'); ?></p>
+				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create ','membership'); ?><input type='text' name='bpgroupcreation[number]' value='<?php echo esc_attr($data['number']); ?>' /><?php _e(' groups.','membership'); ?><br/><em><?php _e('Leave blanks for unlimited groups.','membership'); ?></em></p>
+				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to create any groups.','membership'); ?></p>
 				<input type='hidden' name='bpgroupcreation[]' value='yes' />
 			</div>
 		</div>
@@ -286,11 +286,31 @@ class M_BPGroupcreation extends M_Rule {
 	}
 
 	function pos_bp_groups_template($template) {
-	  global $bp;
+	  	global $bp;
 
-	  // Positive - do nothiing really.
-	  return $template;
+	  	// Positive - check if the count is set
+	  	if(empty($this->data['number'])) {
+			return $template;
+		} else {
+			if(is_numeric($this->data['number']) && (int) $this->data['number'] > $this->users_group_count() ) {
+				return $template;
+			} else {
+				return $this->neg_bp_groups_template($template);
+			}
+		}
+	}
 
+	function users_group_count() {
+		global $member, $wpdb, $bp;
+
+		if(!empty($member) && method_exists($member, 'has_cap')) {
+			// We have a member and it is a correct object
+			$count = $wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM {$bp->activity->table_name} WHERE component = 'groups' AND type = 'created_group' AND user_id = %d", $member->ID) );
+
+			return (int) $count;
+		} else {
+			return 0;
+		}
 	}
 
 	function neg_bp_groups_template($template) {
@@ -671,9 +691,14 @@ class M_BPPages extends M_Rule {
 				<p><?php _e('Select the BuddyPress Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
 				<?php
 
+					$pages = array(	'members' 	=> __('Members', 'buddypress'),
+									'activity' 	=> __('Activity', 'buddypress'),
+									'blogs' 	=> __('Blogs', 'buddypress'),
+									'forums'	=> __('Forums', 'buddypress'),
+									'groups'	=> __('Groups', 'buddypress')
+									);
 
-					$posts = get_posts($args);
-					if($posts) {
+					if($pages) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
 							<thead>
@@ -692,14 +717,14 @@ class M_BPPages extends M_Rule {
 
 							<tbody>
 						<?php
-						foreach($posts as $key => $post) {
+						foreach($pages as $key => $page) {
 							?>
 							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $post->ID; ?>" name="pages[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $key; ?>" name="bppages[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
-									<strong><?php echo esc_html($post->post_title); ?></strong>
+									<strong><?php echo esc_html($page); ?></strong>
 								</td>
 						    </tr>
 							<?php
@@ -711,7 +736,6 @@ class M_BPPages extends M_Rule {
 					}
 
 				?>
-				<p class='description'><?php echo sprintf(__("Only the most recent %d pages are shown above.",'membership'), MEMBERSHIP_PAGE_COUNT); ?></p>
 			</div>
 		</div>
 		<?php
@@ -721,8 +745,10 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
-		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
+		add_filter('membership_buddypress_pages', array(&$this, 'pos_bppage_access') );
+		//do_action( 'bp_before_header' )
+		//<?php do_action( 'bp_header' )
+
 
 	}
 
@@ -730,62 +756,80 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
-		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
-	}
-
-	function add_viewable_pages($wp_query) {
-
-		if(!is_page()) {
-			return;
-		}
-
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__in'][] = $value;
-		}
-
-		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		add_filter('membership_buddypress_pages', array(&$this, 'neg_bppage_access') );
 
 	}
 
-	function add_viewable_pages_menu($pages) {
-		foreach( (array) $pages as $key => $page ) {
-			if(!in_array($page->ID, (array) $this->data)) {
+	function pos_bppage_access( $pages ) {
+		/*
+		[root_components] => Array
+		        (
+		            [0] => members
+		            [1] => register
+		            [2] => activate
+		            [3] => search
+		            [4] => activity
+		            [5] => blogs
+		            [6] => forums
+		            [7] => groups
+		        )
+		*/
+
+		foreach($pages as $key => $page) {
+			if(!in_array($page, (array) $this->data)) {
 				unset($pages[$key]);
 			}
 		}
 
 		return $pages;
-
 	}
 
-	function add_unviewable_pages($wp_query) {
+	function neg_bppage_access( $pages ) {
 
-		if(!is_page()) {
-			return;
-		}
-
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__not_in'][] = $value;
-		}
-
-		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
-
-	}
-
-	function add_unviewable_pages_menu($pages) {
-		foreach( (array) $pages as $key => $page ) {
-			if(in_array($page->ID, (array) $this->data)) {
+		foreach($pages as $key => $page) {
+			if(in_array($page, (array) $this->data)) {
 				unset($pages[$key]);
 			}
 		}
 
 		return $pages;
+	}
+
+	function can_access_page( $posneg, $page ) {
+
+		switch($posneg) {
+
+			case 'positive':	if(in_array($page, (array) $this->data)) {
+									return true;
+								} else {
+									return false;
+								}
+								break;
+
+			case 'negative':	if(in_array($page, (array) $this->data)) {
+									return false;
+								} else {
+									return true;
+								}
+								break;
+
+		}
+
 	}
 
 }
 M_register_rule('bppages', 'M_BPPages', 'bp');
 
+// Pass thru function
+function MBP_can_access_page( $page ) {
+
+	global $user, $member;
+
+	if(!empty($member) && method_exists($member, 'pass_thru')) {
+		return $member->pass_thru( 'bppages', array( 'can_access_page' => $page ) );
+	}
+
+}
 
 
 function M_AddBuddyPressSection($sections) {
