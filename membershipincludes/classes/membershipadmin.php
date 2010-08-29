@@ -62,6 +62,10 @@ if(!class_exists('membershipadmin')) {
 			// profile field for feeds
 			add_action( 'show_user_profile', array(&$this, 'add_profile_feed_key') );
 
+			// profile field for capabilities
+			add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
+			add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
+
 		}
 
 		function membershipadmin() {
@@ -3782,6 +3786,39 @@ if(!class_exists('membershipadmin')) {
 				</table>
 				<?php
 			}
+
+
+		}
+
+		function update_membershipadmin_capability($user_id) {
+
+			$user = new WP_User( $user_id );
+
+			if(!empty($_POST['membershipadmin']) && $_POST['membershipadmin'] == 'yes') {
+				$user->add_cap('membershipadmin');
+			} else {
+				$user->remove_cap('membershipadmin');
+			}
+
+		}
+
+		function add_membershipadmin_capability($profileuser) {
+
+			$id = $profileuser->ID;
+
+			?>
+			<h3><?php _e('Membership Administration'); ?></h3>
+
+			<table class="form-table">
+			<tr>
+				<th><label for="description"><?php _e('Membership Administration'); ?></label></th>
+				<td>
+				<input type='checkbox' name='membershipadmin' value='yes' <?php if($profileuser->has_cap('membershipadmin')) echo "checked='checked'"; ?>/>
+				&nbsp;
+				<span class="description"><?php _e('This user has access to administer the Membership system.'); ?></span></td>
+			</tr>
+			</table>
+			<?php
 
 
 		}
