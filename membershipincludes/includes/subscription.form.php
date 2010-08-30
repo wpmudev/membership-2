@@ -1,5 +1,4 @@
 <?php
-global $user_id;
 ?>
 <div id="reg-form">
 	<div class="formleft">

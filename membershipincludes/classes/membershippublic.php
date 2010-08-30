@@ -750,7 +750,7 @@ if(!class_exists('membershippublic')) {
 			$content = '';
 
 			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
-
+			echo $user_id;
 			ob_start();
 			if( defined('membership_subscription_form') && file_exists( membership_subscription_form ) ) {
 				include_once( membership_subscription_form );
@@ -850,7 +850,7 @@ if(!class_exists('membershippublic')) {
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
 										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
-										//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
@@ -866,7 +866,6 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										//wp_new_user_notification( $user_id, $_POST['password'] );
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -942,7 +941,7 @@ if(!class_exists('membershippublic')) {
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
 										$user_id = $this->queue_user(sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'], $meta_array);
-										//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
@@ -958,7 +957,6 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										//wp_new_user_notification( $user_id, $_POST['password'] );
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -992,6 +990,11 @@ if(!class_exists('membershippublic')) {
 			$content = apply_filters('membership_subscription_form', $content);
 
 			return $content;
+		}
+
+		function create_the_user_and_notify() {
+			//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+			//wp_new_user_notification( $user_id, $_POST['password'] );
 		}
 
 		function add_subscription_styles($posts) {

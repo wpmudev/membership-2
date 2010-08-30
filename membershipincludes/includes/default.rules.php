@@ -3,18 +3,7 @@
 class M_Posts extends M_Rule {
 
 	var $name = 'posts';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='posts' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Posts','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Posts';
 
 	function admin_main($data) {
 		if(!$data) $data = array();

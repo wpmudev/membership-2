@@ -4,6 +4,8 @@ if(!class_exists('M_Rule')) {
 	class M_Rule {
 
 		var $data;
+		var $name = 'none';
+		var $label = 'None Set';
 
 		// Is this an admin side rule?
 		var $adminside = false;
@@ -18,7 +20,15 @@ if(!class_exists('M_Rule')) {
 		}
 
 		function admin_sidebar($data) {
-
+			?>
+			<li class='level-draggable' id='<?php echo $this->name; ?>' <?php if($data === true) echo "style='display:none;'"; ?>>
+				<div class='action action-draggable'>
+					<div class='action-top'>
+					<?php _e($this->label,'membership'); ?>
+					</div>
+				</div>
+			</li>
+			<?php
 		}
 
 		function admin_main($data) {
