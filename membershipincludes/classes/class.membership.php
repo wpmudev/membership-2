@@ -20,6 +20,13 @@ if(!class_exists('M_Membership')) {
 			global $wpdb;
 
 			if($id != 0) {
+				if(strpos($id, 'q') !== false) {
+					// identify queued id's
+					$queued = $this->_find_real_id( $queued_id );
+					if($queued > 0) {
+						$id = $queued;
+					}
+				}
 				parent::WP_User( $id, $name = '' );
 			}
 
@@ -31,6 +38,10 @@ if(!class_exists('M_Membership')) {
 			}
 
 			$this->transition_through_subscription();
+
+		}
+
+		function _find_real_id( $queued_id ) {
 
 		}
 

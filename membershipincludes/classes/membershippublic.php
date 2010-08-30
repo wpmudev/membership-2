@@ -750,7 +750,7 @@ if(!class_exists('membershippublic')) {
 			$content = '';
 
 			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
-			echo $user_id;
+
 			ob_start();
 			if( defined('membership_subscription_form') && file_exists( membership_subscription_form ) ) {
 				include_once( membership_subscription_form );
@@ -866,6 +866,9 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
+										// Add a queue to the front end to denote that it's a queued id
+										$user_id = 'q' . $user_id;
+
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -957,6 +960,9 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
+										// Add a queue to the front end to denote that it's a queued id
+										$user_id = 'q' . $user_id;
+
 										$content .= $this->show_subpage_two($user_id);
 									}
 
