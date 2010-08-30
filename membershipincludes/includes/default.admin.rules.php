@@ -51,7 +51,7 @@ class M_Mainmenus extends M_Rule {
 							?>
 							<tr valign="middle" class="alternate" id="mainmenus-<?php echo $key; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $key; ?>" name="mainmenus[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $m[2]; ?>" name="mainmenus[]" <?php if(in_array($m[2], $data)) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
 									<strong><?php echo esc_html(strip_tags($m[0])); ?></strong>
@@ -98,7 +98,7 @@ class M_Mainmenus extends M_Rule {
 		global $menu;
 
 		foreach($menu as $key => $m) {
-			if(!in_array($key, (array) $this->data)) {
+			if(!in_array($m[2], (array) $this->data)) {
 				unset($menu[$key]);
 			}
 		}
@@ -110,7 +110,7 @@ class M_Mainmenus extends M_Rule {
 		global $menu;
 
 		foreach($menu as $key => $m) {
-			if(in_array($key, (array) $this->data)) {
+			if(in_array($m[2], (array) $this->data)) {
 				unset($menu[$key]);
 			}
 		}
@@ -163,7 +163,6 @@ class M_Submenus extends M_Rule {
 				<?php
 
 					global $menu, $submenu;
-					//print_r($menu);
 
 					if(!empty($submenu)) {
 						?>
@@ -200,7 +199,7 @@ class M_Submenus extends M_Rule {
 									?>
 									<tr valign="middle" class="alternate" id="submenus-<?php echo $key . '-' . $skey; ?>">
 										<th class="check-column" scope="row">
-											<input type="checkbox" value="<?php echo $key . '-' . $skey; ?>" name="submenus[]" <?php if(in_array($key . '-' . $skey, $data)) echo 'checked="checked"'; ?>>
+											<input type="checkbox" value="<?php echo $s[2]; ?>" name="submenus[]" <?php if(in_array($s[2], $data)) echo 'checked="checked"'; ?>>
 										</th>
 										<td class="column-name">
 											<?php echo esc_html(strip_tags($s[0])); ?>
@@ -245,7 +244,7 @@ class M_Submenus extends M_Rule {
 
 		foreach($submenu as $key => $m) {
 			foreach($m as $skey => $s) {
-				if(!in_array($key . '-' . $skey, (array) $this->data)) {
+				if(!in_array($s[2], (array) $this->data)) {
 					unset($submenu[$key][$skey]);
 				}
 			}
@@ -259,7 +258,7 @@ class M_Submenus extends M_Rule {
 
 		foreach($submenu as $key => $m) {
 			foreach($m as $skey => $s) {
-				if(in_array($key . '-' . $skey, (array) $this->data)) {
+				if(in_array($s[2], (array) $this->data)) {
 					unset($submenu[$key][$skey]);
 				}
 			}

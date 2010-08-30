@@ -62,7 +62,7 @@ if(!class_exists('membershippublic')) {
 
 		function initialise_plugin() {
 
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active, $bp;
 
 			$M_options = get_option('membership_options', array());
 
@@ -78,6 +78,8 @@ if(!class_exists('membershippublic')) {
 				// Admins can see everything
 				return;
 			}
+
+			//print_r($bp);
 
 			// More tags
 			if($M_options['moretagdefault'] == 'no' ) {
@@ -720,67 +722,24 @@ if(!class_exists('membershippublic')) {
 
 		function show_subpage_one($error = false) {
 
+			global $bp;
+
 			$content = '';
 
-			$content .= '<form id="reg-form" action="' . get_permalink() . '" method="post">';
-			$content .= '<div class="formleft">';
+			$content = apply_filters('membership_subscription_form_registration_before_content', $content);
 
-			$content .= "<h2>" . __('Step 1. Create a New Account','membership') . "</h2>";
-
-			$content .= '<a title="Login »" href="' . wp_login_url( add_query_arg('action', 'page2', get_permalink()) ) . '" class="alignright" id="login_right">' . __('Already have a user account?' ,'membership') . '</a>';
-
-			$content .= '<p><label>' . __('Choose a Username','membership') . ' <span>*</span></label>';
-			$content .= '<input type="text" value="' . esc_attr($_POST['user_login']) . '" class="regtext" name="user_login"></p>';
-
-			$content .= '<div class="alignleft">';
-            $content .= '<label>' . __('Email Address','membership') . ' <span>*</span></label>';
-            $content .= '<input type="text" value="' . esc_attr($_POST['user_email']) . '" class="regtext" name="user_email">';
-            $content .= '</div>';
-
-			$content .= '<div class="alignleft">';
-            $content .= '<label>' . __('Confirm Email Address','membership') . ' <span>*</span></label>';
-            $content .= '<input type="text" value="' . esc_attr($_POST['user_email2']) . '" class="regtext" name="user_email2">';
-            $content .= '</div>';
-
-			$content .= '<div class="alignleft">';
-            $content .= '<label>' . __('Password','membership') . ' <span>*</span></label>';
-            $content .= '<input type="password" autocomplete="off" class="regtext" name="password">';
-            $content .= '</div>';
-
-			$content .= '<div class="alignleft">';
-            $content .= '<label>' . __('Confirm Password','membership') . ' <span>*</span></label>';
-            $content .= '<input type="password" autocomplete="off" class="regtext" name="password2">';
-            $content .= '</div>';
-
-			$content .= '<p class="pass_hint">' . __('Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).','membership') . '</p>';
-
-			$content = apply_filters('membership_subscription_form_registration_presubmit_content', $content);
-
-			if(function_exists('get_site_option')) {
-				$terms = get_site_option('signup_tos_data');
-			} else {
-				$terms = '';
+			ob_start();
+			if( defined('membership_registration_form') && file_exists( membership_registration_form ) ) {
+				include_once( membership_registration_form );
+			} elseif(!empty($bp) && file_exists( membership_dir('membershipincludes/includes/bp.registration.form.php') )) {
+				include_once( membership_dir('membershipincludes/includes/bp.registration.form.php') );
+			} elseif( file_exists( membership_dir('membershipincludes/includes/registration.form.php') ) ) {
+				include_once( membership_dir('membershipincludes/includes/registration.form.php') );
 			}
+			$content .= ob_get_contents();
+			ob_end_clean();
 
-			if(!empty($terms)) {
-				$content .= '<h2>' . __('Terms and Conditions','membership') . '</h2>';
-
-				$content .= '<div id="reg_tos">';
-				$content .= stripslashes($terms);
-				$content .= '</div>';
-				$content .= '<p><label><input type="checkbox" value="1" name="tosagree">';
-				$content .= '<strong>' . __('I agree to the Terms of Use','membership') . '</strong></label></p>';
-			}
-
-			$content .= '<p><input type="submit" value="' . __('Register My Account »','membership') . '" class="regbutton" name="register"></p>';
-
-			$content .= '<input type="hidden" name="action" value="validatepage1" />';
-
-			$content .= '</div>';
-
-			$content .= "</form>";
-
-			$content = apply_filters('membership_subscription_form_registration_content', $content);
+			$content = apply_filters('membership_subscription_form_registration_after_content', $content);
 
 			return $content;
 
@@ -790,54 +749,18 @@ if(!class_exists('membershippublic')) {
 
 			$content = '';
 
-			$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
 
-			$content .= '<div class="formleft">';
-
-			$content .= "<h2>" . __('Step 2. Select a subscription','membership') . "</h2>";
-
-			$content .= "<p>";
-			$content .= __('Please select a subscription from the options below.','membership');
-			$content .= "</p>";
-
-			$content = apply_filters( 'membership_subscription_form_before_subscriptions', $content, $user_id );
-
-			$subs = $this->get_subscriptions();
-
-			$content = apply_filters( 'membership_subscription_form_before_paid_subscriptions', $content, $user_id );
-
-			foreach((array) $subs as $key => $sub) {
-
-				$subscription = new M_Subscription($sub->id);
-
-				$content .= '<div class="subscription">';
-				$content .= '<div class="description">';
-				$content .= '<h3>' . $subscription->sub_name() . '</h3>';
-				$content .= '<p>' . $subscription->sub_description() . '</p>';
-				$content .= "</div>";
-
-				// Add the purchase button
-				$pricing = $subscription->get_pricingarray();
-
-				if($pricing) {
-					$content .= "<div class='priceforms'>";
-					$content = apply_filters('membership_purchase_button', $content, $subscription, $pricing, $user_id);
-					$content .= "</div>";
-				}
-
-				$content .= '</div>';
-
+			ob_start();
+			if( defined('membership_subscription_form') && file_exists( membership_subscription_form ) ) {
+				include_once( membership_subscription_form );
+			} elseif(file_exists( membership_dir('membershipincludes/includes/subscription.form.php') )) {
+				include_once( membership_dir('membershipincludes/includes/subscription.form.php') );
 			}
+			$content .= ob_get_contents();
+			ob_end_clean();
 
-			$content = apply_filters( 'membership_subscription_form_after_paid_subscriptions', $content, $user_id );
-
-			$content .= '</div>';
-
-			$content .= "</div>";
-
-			// Adding in the following form element (and form :) ) will allow the second page validation to be fired
-			//<input type="hidden" name="action" value="validatepage2" />
-			$content = apply_filters('membership_subscription_form_after_subscriptions', $content, $user_id );
+			$content = apply_filters('membership_subscription_form_after_content', $content, $user_id );
 
 			return $content;
 
@@ -847,25 +770,18 @@ if(!class_exists('membershippublic')) {
 
 			$content = '';
 
-			$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+			$content = apply_filters('membership_subscription_form_member_before_content', $content, $user_id);
 
-			$content .= '<div class="formleft">';
+			ob_start();
+			if( defined('membership_member_form') && file_exists( membership_member_form ) ) {
+				include_once( membership_member_form );
+			} elseif(file_exists( membership_dir('membershipincludes/includes/member.form.php') )) {
+				include_once( membership_dir('membershipincludes/includes/member.form.php') );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
 
-			$inner = "<h2>" . __('Completed: Thank you for joining','membership') . "</h2>";
-			$inner .= '<p>';
-			$inner .= __('It looks like you are already a member of our site. Thank you very much for your support.','membership');
-			$inner .= '</p>';
-			$inner .= '<p>';
-			$inner .= __('If you are at this page because you would like to create another account, then please log out first.','membership');
-			$inner .= '</p>';
-
-			$content .= apply_filters('membership_subscription_form_member_inner_content', $inner);
-
-			$content .= '</div>';
-
-			$content .= "</div>";
-
-			$content = apply_filters('membership_subscription_form_member_content', $content);
+			$content = apply_filters('membership_subscription_form_member_after_content', $content, $user_id );
 
 			return $content;
 
@@ -879,8 +795,6 @@ if(!class_exists('membershippublic')) {
 			$error = array();
 
 			$page = addslashes($_REQUEST['action']);
-
-			$content .= '<div id="subscriptionwrap">';
 
 			switch($page) {
 
@@ -911,9 +825,9 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} /* elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'], $_POST['user_email'] ) ) ) {
+									} elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'] ), $_POST['user_email'] ) ) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} */
+									}
 
 									if(email_exists($_POST['user_email'])) {
 										$error[] = __('That email address is already taken, sorry.','membership');
@@ -935,8 +849,8 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
-										//$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
-										$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+										//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
@@ -952,7 +866,99 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										wp_new_user_notification( $user_id, $_POST['password'] );
+										//wp_new_user_notification( $user_id, $_POST['password'] );
+										$content .= $this->show_subpage_two($user_id);
+									}
+
+									break;
+
+				case 'validatepage1bp':
+									global $bp;
+
+									include_once(ABSPATH . WPINC . '/registration.php');
+
+									$required = array(	'signup_username' => __('Username', 'membership'),
+														'signup_email' => __('Email address','membership'),
+														'signup_password' => __('Password','membership'),
+														'signup_password_confirm' => __('Password confirmation','membership'),
+													);
+
+									$error = array();
+
+									foreach($required as $key => $message) {
+										if(empty($_POST[$key])) {
+											$error[] = __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership');
+										}
+									}
+
+									if($_POST['signup_password'] != $_POST['signup_password_confirm']) {
+										$error[] = __('Please ensure the passwords match.','membership');
+									}
+
+									if(username_exists(sanitize_user($_POST['signup_username']))) {
+										$error[] = __('That username is already taken, sorry.','membership');
+									} elseif( $this->pending_username_exists( sanitize_user( $_POST['signup_username'] ), $_POST['signup_email'] ) ) {
+										$error[] = __('That username is already taken, sorry.','membership');
+									}
+
+									if(email_exists($_POST['signup_email'])) {
+										$error[] = __('That email address is already taken, sorry.','membership');
+									}
+
+									$meta_array = array();
+
+									// xprofile required fields
+									/* Now we've checked account details, we can check profile information */
+									if ( function_exists( 'xprofile_check_is_required_field' ) ) {
+
+										/* Make sure hidden field is passed and populated */
+										if ( isset( $_POST['signup_profile_field_ids'] ) && !empty( $_POST['signup_profile_field_ids'] ) ) {
+
+											/* Let's compact any profile field info into an array */
+											$profile_field_ids = explode( ',', $_POST['signup_profile_field_ids'] );
+
+											/* Loop through the posted fields formatting any datebox values then validate the field */
+											foreach ( (array) $profile_field_ids as $field_id ) {
+												if ( !isset( $_POST['field_' . $field_id] ) ) {
+													if ( isset( $_POST['field_' . $field_id . '_day'] ) )
+														$_POST['field_' . $field_id] = strtotime( $_POST['field_' . $field_id . '_day'] . $_POST['field_' . $field_id . '_month'] . $_POST['field_' . $field_id . '_year'] );
+												}
+
+												/* Create errors for required fields without values */
+												if ( xprofile_check_is_required_field( $field_id ) && empty( $_POST['field_' . $field_id] ) ) {
+													$field = new BP_Xprofile_Field( $field_id );
+													$error[] = __('Please ensure that the ', 'membership') . "<strong>" . $field->name . "</strong>" . __(' information is completed.','membership');
+												}
+
+												$meta_array[ $field_id ] = $_POST['field_' . $field_id];
+
+											}
+
+										}
+									}
+
+									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
+
+									if(empty($error)) {
+										// Pre - error reporting check for final add user
+										$user_id = $this->queue_user(sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'], $meta_array);
+										//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
+											$error[] = $userid->get_error_message();
+										}
+									}
+
+									do_action( 'membership_subscription_form_registration_process', $error );
+
+									if(!empty($error)) {
+										$content .= "<div class='error'>";
+										$content .= implode('<br/>', $error);
+										$content .= "</div>";
+										$content .= $this->show_subpage_one(true);
+									} else {
+										// everything seems fine (so far), so we have our queued user so let's
+										// look at picking a subscription.
+										//wp_new_user_notification( $user_id, $_POST['password'] );
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -983,8 +989,6 @@ if(!class_exists('membershippublic')) {
 
 			}
 
-			$content .= '</div> <!-- subscriptionwrap -->';
-
 			$content = apply_filters('membership_subscription_form', $content);
 
 			return $content;
@@ -1007,12 +1011,12 @@ if(!class_exists('membershippublic')) {
 
 			// Initial delete of pending subscriptions
 			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('-30 mins') );
-			$thid->db->query( $sql );
+			$this->db->query( $sql );
 
 			// Now check for a pending username that doesn't have the same email address
 			$sql = $this->db->prepare( "SELECT id FROM {$this->user_queue} WHERE user_login = %s AND user_email != %s LIMIT 0,1", $username, $email );
 
-			$res = $thid->db->get_var( $sql );
+			$res = $this->db->get_var( $sql );
 			if(!empty($res)) {
 				return true;
 			} else {
@@ -1022,10 +1026,10 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function queue_user( $user_login, $user_pass, $user_email ) {
+		function queue_user( $user_login, $user_pass, $user_email, $user_meta = '' ) {
 
-			$sql = $this->db->prepare( "INSERT INTO {$this->user_queue} (user_login, user_pass, user_email, user_timestamp) VALUES " );
-			$sql .= $this->db->prepare( "( %s, %s, %s, %d )", $user_login, wp_hash_password( $user_pass ), $user_email, time() );
+			$sql = $this->db->prepare( "INSERT INTO {$this->user_queue} (user_login, user_pass, user_email, user_timestamp, user_meta) VALUES " );
+			$sql .= $this->db->prepare( "( %s, %s, %s, %d, %s )", $user_login, wp_hash_password( $user_pass ), $user_email, time(), serialize($user_meta) );
 			$sql .= $this->db->prepare( " ON DUPLICATE KEY UPDATE user_timestamp = %d", time());
 
 			if( $this->db->query( $sql ) ) {

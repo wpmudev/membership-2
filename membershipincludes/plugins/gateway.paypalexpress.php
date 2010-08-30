@@ -15,7 +15,7 @@ class paypalexpress extends M_Gateway {
 
 		if($this->is_active()) {
 			// Subscription form gateway
-			add_filter('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 4);
+			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
@@ -378,11 +378,9 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function display_subscribe_button($content, $subscription, $pricing, $user_id) {
+	function display_subscribe_button($subscription, $pricing, $user_id) {
 
-		$content .= $this->build_subscribe_button($subscription, $pricing, $user_id);
-
-		return $content;
+		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
 
 	}
 
@@ -576,8 +574,6 @@ class paypalexpress extends M_Gateway {
 			switch ($_POST['txn_type']) {
 				case 'subscr_signup':
 					// start the subscription
-				  	//$amount = $_POST['mc_gross'];
-					//$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					// create_subscription
@@ -591,8 +587,6 @@ class paypalexpress extends M_Gateway {
 
 				case 'subscr_cancel':
 					// mark for removal
-				  	//$amount = $_POST['mc_gross'];
-					//$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					$member = new M_Membership($user_id);

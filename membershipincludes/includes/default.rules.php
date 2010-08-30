@@ -1114,6 +1114,6 @@ class M_Blogcreation extends M_Rule {
 	}
 
 }
-M_register_rule('blogcreation', 'M_Blogcreation', 'main');
+M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
 
 ?>
