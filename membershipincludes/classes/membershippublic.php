@@ -3,18 +3,17 @@ if(!class_exists('membershippublic')) {
 
 	class membershippublic {
 
-		var $build = 1;
+		var $build = 2;
 
 		var $db;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'user_queue');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
-		var $user_queue;
 
 		function __construct() {
 

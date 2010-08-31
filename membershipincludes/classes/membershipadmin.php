@@ -3,21 +3,20 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 4;
+		var $build = 5;
 		var $db;
 
 		//
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'user_queue');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
-		var $user_queue;
 
 		function __construct() {
 
