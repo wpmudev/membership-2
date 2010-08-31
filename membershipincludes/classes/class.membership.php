@@ -167,6 +167,10 @@ if(!class_exists('M_Membership')) {
 
 		function create_subscription($sub_id) {
 
+			if(!$this->active_member()) {
+				$this->toggle_activation();
+			}
+
 			$subscription = new M_Subscription( $sub_id );
 			$levels = $subscription->get_levels();
 

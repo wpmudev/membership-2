@@ -825,8 +825,6 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} elseif( $this->pending_username_exists( sanitize_user( $_POST['user_login'] ), $_POST['user_email'] ) ) {
-										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
 									if(email_exists($_POST['user_email'])) {
@@ -853,6 +851,9 @@ if(!class_exists('membershippublic')) {
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
+										} else {
+											$member = new M_Membership( $user_id );
+											$member->deactivate();
 										}
 									}
 
@@ -896,8 +897,6 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['signup_username']))) {
 										$error[] = __('That username is already taken, sorry.','membership');
-									} elseif( $this->pending_username_exists( sanitize_user( $_POST['signup_username'] ), $_POST['signup_email'] ) ) {
-										$error[] = __('That username is already taken, sorry.','membership');
 									}
 
 									if(email_exists($_POST['signup_email'])) {
@@ -930,7 +929,6 @@ if(!class_exists('membershippublic')) {
 												}
 
 												$meta_array[ $field_id ] = $_POST['field_' . $field_id];
-
 											}
 
 										}
@@ -941,8 +939,19 @@ if(!class_exists('membershippublic')) {
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
+
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
+										} else {
+											$member = new M_Membership( $user_id );
+											$member->deactivate();
+
+											foreach((array) $meta_array as $field_id => $field_content) {
+												if(function_exists('xprofile_set_field_data')) {
+													xprofile_set_field_data( $field_id, $user_id, $field_content );
+												}
+											}
+
 										}
 									}
 
