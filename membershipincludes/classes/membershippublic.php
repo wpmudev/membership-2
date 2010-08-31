@@ -847,7 +847,7 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
-										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
+										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
@@ -945,6 +945,7 @@ if(!class_exists('membershippublic')) {
 										} else {
 											$member = new M_Membership( $user_id );
 											$member->deactivate();
+
 
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
