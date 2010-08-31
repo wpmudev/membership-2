@@ -126,7 +126,7 @@ if(!class_exists('membershipadmin')) {
 
 			if(current_user_can('membershipadmin')) {
 				// Add the menu page
-				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'manage_options',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
+				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'membershipadmin',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
 
 				// Fix WP translation hook issue
 				if(isset($admin_page_hooks['membership'])) {
@@ -134,13 +134,13 @@ if(!class_exists('membershipadmin')) {
 				}
 
 				// Add the sub menu
-				add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'manage_options', "members", array(&$this,'handle_members_panel'));
+				add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'membershipadmin', "members", array(&$this,'handle_members_panel'));
 
-				add_submenu_page('membership', __('Membership Levels','membership'), __('Edit Levels','membership'), 'manage_options', "membershiplevels", array(&$this,'handle_levels_panel'));
-				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Edit Subscriptions','membership'), 'manage_options', "membershipsubs", array(&$this,'handle_subs_panel'));
-				add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'manage_options', "membershipgateways", array(&$this,'handle_gateways_panel'));
+				add_submenu_page('membership', __('Membership Levels','membership'), __('Edit Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
+				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Edit Subscriptions','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
+				add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
 
-				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'manage_options', "membershipoptions", array(&$this,'handle_options_panel'));
+				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
 				// Move the menu to the top of the page
 				foreach($menu as $key => $value) {
