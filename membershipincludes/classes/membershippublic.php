@@ -854,6 +854,8 @@ if(!class_exists('membershippublic')) {
 										} else {
 											$member = new M_Membership( $user_id );
 											$member->deactivate();
+
+											wp_new_user_notification($user_id, $_POST['password']);
 										}
 									}
 
@@ -946,6 +948,7 @@ if(!class_exists('membershippublic')) {
 											$member = new M_Membership( $user_id );
 											$member->deactivate();
 
+											wp_new_user_notification($user_id, $_POST['signup_password']);
 
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
