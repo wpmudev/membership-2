@@ -849,7 +849,7 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
-										$user_id = $this->queue_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
+										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
@@ -866,9 +866,6 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										// Add a queue to the front end to denote that it's a queued id
-										$user_id = 'q' . $user_id;
-
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -943,8 +940,7 @@ if(!class_exists('membershippublic')) {
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
-										$user_id = $this->queue_user(sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'], $meta_array);
-
+										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 											$error[] = $userid->get_error_message();
 										}
@@ -960,9 +956,6 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// look at picking a subscription.
-										// Add a queue to the front end to denote that it's a queued id
-										$user_id = 'q' . $user_id;
-
 										$content .= $this->show_subpage_two($user_id);
 									}
 
@@ -1019,7 +1012,7 @@ if(!class_exists('membershippublic')) {
 		function pending_username_exists( $username, $email ) {
 
 			// Initial delete of pending subscriptions
-			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('-30 mins') );
+			$sql = $this->db->prepare( "DELETE FROM {$this->user_queue} WHERE user_timestamp < %d", strtotime('-3 hours') );
 			$this->db->query( $sql );
 
 			// Now check for a pending username that doesn't have the same email address

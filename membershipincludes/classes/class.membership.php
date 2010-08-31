@@ -6,9 +6,9 @@ if(!class_exists('M_Membership')) {
 
 		var $db;
 
-		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions');
+		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions', 'user_queue');
 
-		var $membership_relationships, $membership_levels, $subscriptions;
+		var $membership_relationships, $membership_levels, $subscriptions, $user_queue;
 
 		var $subids;
 		var $levids;
@@ -20,16 +20,8 @@ if(!class_exists('M_Membership')) {
 			global $wpdb;
 
 			if($id != 0) {
-				if(strpos($id, 'q') !== false) {
-					// identify queued id's
-					$queued = $this->_find_real_id( $queued_id );
-					if($queued > 0) {
-						$id = $queued;
-					}
-				}
-				parent::WP_User( $id, $name = '' );
+				parent::WP_User( $id, $name );
 			}
-
 
 			$this->db =& $wpdb;
 
@@ -38,10 +30,6 @@ if(!class_exists('M_Membership')) {
 			}
 
 			$this->transition_through_subscription();
-
-		}
-
-		function _find_real_id( $queued_id ) {
 
 		}
 

@@ -18,7 +18,7 @@ class freesubscriptions extends M_Gateway {
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
-			add_filter( 'membership_subscriptionform_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
+			add_filter( 'membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
 		}
 
 
