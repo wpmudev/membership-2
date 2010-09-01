@@ -61,10 +61,6 @@ if(!class_exists('membershipadmin')) {
 			// profile field for feeds
 			add_action( 'show_user_profile', array(&$this, 'add_profile_feed_key') );
 
-			// profile field for capabilities
-			add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
-			add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
-
 		}
 
 		function membershipadmin() {
@@ -99,12 +95,14 @@ if(!class_exists('membershipadmin')) {
 				$user = wp_get_current_user();
 			}
 			// Add in our new capability
-			if($user->user_login == 'admin' && !$user->has_cap('membershipadmin')) {
+			if($user->user_login == MEMBERSHIP_MASTER_ADMIN && !$user->has_cap('membershipadmin')) {
 				$user->add_cap('membershipadmin');
 			}
 
 			if($user->has_cap('membershipadmin')) {
-
+				// profile field for capabilities
+				add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
+				add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
 			}
 
 			$M_options = get_option('membership_options', array());
