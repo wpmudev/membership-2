@@ -858,7 +858,7 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
-									do_action( 'membership_subscription_form_registration_process', $error );
+									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
 									if(!empty($error)) {
 										$content .= "<div class='error'>";
