@@ -3312,7 +3312,7 @@ if(!class_exists('membershipadmin')) {
 
 				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
 
-				<input type='hidden' name='page' value='<?phpecho esc_attr($page); ?>' />
+				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
 
 				<div class="tablenav">
 
