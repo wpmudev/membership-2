@@ -854,7 +854,12 @@ if(!class_exists('membershippublic')) {
 											$member = new M_Membership( $user_id );
 											$member->deactivate();
 
-											wp_new_user_notification($user_id, $_POST['password']);
+											if( has_action('membership_susbcription_form_registration_notification') ) {
+												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+											} else {
+												wp_new_user_notification($user_id, $_POST['password']);
+											}
+
 										}
 									}
 
@@ -947,7 +952,11 @@ if(!class_exists('membershippublic')) {
 											$member = new M_Membership( $user_id );
 											$member->deactivate();
 
-											wp_new_user_notification($user_id, $_POST['signup_password']);
+											if( has_action('membership_susbcription_form_registration_notification') ) {
+												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+											} else {
+												wp_new_user_notification($user_id, $_POST['signup_password']);
+											}
 
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
@@ -958,7 +967,7 @@ if(!class_exists('membershippublic')) {
 										}
 									}
 
-									do_action( 'membership_subscription_form_registration_process', $error );
+									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
 									if(!empty($error)) {
 										$content .= "<div class='error'>";
