@@ -70,7 +70,7 @@ if(!class_exists('membershipadmin')) {
 		function load_textdomain() {
 
 			$locale = apply_filters( 'membership_locale', get_locale() );
-			$mofile = membership_dir( "membershipincludes/membership-$locale.mo" );
+			$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
 			if ( file_exists( $mofile ) )
 				load_textdomain( 'membership', $mofile );
