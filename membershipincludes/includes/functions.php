@@ -205,4 +205,13 @@ if(!function_exists('M_register_rule')) {
 	}
 }
 
+function M_remove_old_plugin( $plugins ) {
+
+	if(array_key_exists('membership/membership.php', $plugins) && !in_array('membership.php', (array) array_map('basename', wp_get_active_and_valid_plugins() ))) {
+		unset($plugins['membership/membership.php']);
+	}
+
+	return $plugins;
+}
+
 ?>
