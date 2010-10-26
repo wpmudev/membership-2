@@ -315,7 +315,12 @@ if(!class_exists('membershippublic')) {
 						$this->output_file($file);
 					} else {
 						// check we can see it
-						if( $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $protected ) ) ) {
+						if(empty($member) || !method_exists($member, 'has_level_rule')) {
+							$user = wp_get_current_user();
+							$member = new M_Membership( $user->ID );
+						}
+
+						if( method_exists($member, 'has_level_rule') && $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $protected ) ) ) {
 							$file = $wp_query->query_vars['protectedfile'];
 							$this->output_file($file);
 						} else {

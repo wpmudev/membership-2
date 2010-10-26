@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium Old version
-Version: 1.0.2
+Version: 1.0.3
 Plugin URI: http://premium.wpmudev.org
 Description: After you have activated the new Premium version you can deactivate this version and it will disappear from this list.
 Author: Barry (Incsub)

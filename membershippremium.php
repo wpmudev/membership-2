@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 1.0.2
+Version: 1.0.3
 Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
 Author: Barry (Incsub)
