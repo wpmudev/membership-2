@@ -139,10 +139,10 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="cmd" value="_xclick">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="amount" value="' . $pricing[0]['amount'] . '.00">';
+		$form .= '<input type="hidden" name="amount" value="' . number_format($pricing[0]['amount'], 2) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) .'">';
 
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
@@ -179,11 +179,11 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-		$form .= '<input type="hidden" name="a3" value="' . $pricing[0]['amount'] . '.00">';
+		$form .= '<input type="hidden" name="a3" value="' . number_format($pricing[0]['amount'], 2) . '">';
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
 		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $pricing[0]['amount'] . '.00') .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) .'">';
 
 		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
 		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
@@ -237,12 +237,12 @@ class paypalexpress extends M_Gateway {
 
 				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
 								if($count < 3) {
-									$ff['a' . $count] = $price['amount'] . '.00';
+									$ff['a' . $count] = number_format($price['amount'], 2);
 									$ff['p' . $count] = $price['period'];
 									$ff['t' . $count] = strtoupper($price['unit']);
 								} else {
 									// Or last finite is going to be the end of the subscription payments
-									$ff['a3'] = $price['amount'] . '.00';
+									$ff['a3'] = number_format($price['amount'], 2);
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '0';
@@ -275,7 +275,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '0';
 									}
 								} else {
-									$ff['a3'] = $price['amount'] . '.00';
+									$ff['a3'] = number_format($price['amount'], 2);
 									$ff['p3'] = 1;
 									$ff['t3'] = 'Y';
 									$ff['src'] = '0';
@@ -306,7 +306,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '1';
 									}
 								} else {
-									$ff['a3'] = $price['amount'] . '.00';
+									$ff['a3'] = number_format($price['amount'], 2);
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '1';
