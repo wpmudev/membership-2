@@ -373,27 +373,35 @@ class twocheckout extends M_Gateway {
 	function handle_2checkout_return() {
 		// Return handling code
 
-		$timestamp = time();
-		$total = $_POST['total'];
-		
-		if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
-			$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
-		} else {
-			$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_POST['order_number'] . $total));
-		}
-		
-		if ($_POST['key'] == $hash && $_POST['credit_card_processed'] == 'Y') {
-			$this->record_transaction($_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $timestamp, $_POST['order_number'], 'Processed', '');
+		if (isset($_POST['key'])) {
+			$timestamp = time();
+			$total = $_POST['total'];
 			
-			// Added for affiliate system link
-			do_action('membership_payment_processed', $_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $_POST['order_number']);
-			
-			$member = new M_Membership($_POST['user_id']);
-			if($member) {
-				$member->create_subscription($_POST['merchant_product_id']);
+			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
+				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
+			} else {
+				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_POST['order_number'] . $total));
 			}
 			
-			do_action('membership_payment_subscr_signup', $_POST['user_id'], $_POST['merchant_product_id']);
+			if ($_POST['key'] == $hash && $_POST['credit_card_processed'] == 'Y') {
+				$this->record_transaction($_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $timestamp, $_POST['order_number'], 'Processed', '');
+				
+				// Added for affiliate system link
+				do_action('membership_payment_processed', $_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $_POST['order_number']);
+				
+				$member = new M_Membership($_POST['user_id']);
+				if($member) {
+					$member->create_subscription($_POST['merchant_product_id']);
+				}
+				
+				do_action('membership_payment_subscr_signup', $_POST['user_id'], $_POST['merchant_product_id']);
+			}
+			wp_redirect(get_option('home'));
+		} else {
+			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
+			header('Status: 404 Not Found');
+			echo 'Error: Missing POST variables. Identification is not possible.';
+			exit;
 		}
 	}
 
