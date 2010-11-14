@@ -394,9 +394,9 @@ class twocheckout extends M_Gateway {
 					$member->create_subscription($_POST['merchant_product_id']);
 				}
 				
-				do_action('membership_payment_subscr_signup', $_POST['user_id'], $_POST['merchant_product_id']);
+				do_action('membership_payment_subscr_signup', $_POST['user_id'], $_POST['merchant_product_id']);	
+				wp_redirect(get_option('home'));
 			}
-			wp_redirect(get_option('home'));
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 404 Not Found');
