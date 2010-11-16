@@ -373,28 +373,28 @@ class twocheckout extends M_Gateway {
 	function handle_2checkout_return() {
 		// Return handling code
 
-		if (isset($_POST['key'])) {
+		if (isset($_REQUEST['key'])) {
 			$timestamp = time();
-			$total = $_POST['total'];
+			$total = $_REQUEST['total'];
 			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
 			} else {
-				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_POST['order_number'] . $total));
+				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_REQUEST['order_number'] . $total));
 			}
 			
-			if ($_POST['key'] == $hash && $_POST['credit_card_processed'] == 'Y') {
-				$this->record_transaction($_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $timestamp, $_POST['order_number'], 'Processed', '');
+			if ($_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
+				$this->record_transaction($_REQUEST['user_id'], $_REQUEST['merchant_product_id'], $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 				
 				// Added for affiliate system link
-				do_action('membership_payment_processed', $_POST['user_id'], $_POST['merchant_product_id'], $_POST['total'], $_POST['currency'], $_POST['order_number']);
+				do_action('membership_payment_processed', $_REQUEST['user_id'], $_REQUEST['merchant_product_id'], $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
 				
-				$member = new M_Membership($_POST['user_id']);
+				$member = new M_Membership($_REQUEST['user_id']);
 				if($member) {
-					$member->create_subscription($_POST['merchant_product_id']);
+					$member->create_subscription($_REQUEST['merchant_product_id']);
 				}
 				
-				do_action('membership_payment_subscr_signup', $_POST['user_id'], $_POST['merchant_product_id']);	
+				do_action('membership_payment_subscr_signup', $_REQUEST['user_id'], $_REQUEST['merchant_product_id']);	
 				wp_redirect(get_option('home'));
 			}
 		} else {
