@@ -352,7 +352,7 @@ class M_Categories extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
-		if(is_page()) {
+		if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
@@ -366,7 +366,7 @@ class M_Categories extends M_Rule {
 
 	function add_unviewable_posts($wp_query) {
 
-		if(is_page()) {
+		if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
@@ -1081,7 +1081,7 @@ class M_Blogcreation extends M_Rule {
 	function is_user_blog_admin( $user_id, $blog_id ) {
 		global $wpdb;
 
-	    $meta_key = "wp_" . $blog_id . "_capabilities";
+	    $meta_key = $wpdb->base_prefix . $blog_id . "_capabilities";
 
 		$role_sql = $wpdb->prepare( "SELECT user_id, meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s", $meta_key );
 

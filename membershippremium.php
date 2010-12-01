@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 1.0.3
+Version: 1.0.4
 Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
 Author: Barry (Incsub)
@@ -35,7 +35,7 @@ set_membership_dir(__FILE__);
 
 if(is_admin()) {
 	// Administration interface
-	add_filter( 'all_plugins', 'M_remove_old_plugin' );
+	//add_filter( 'all_plugins', 'M_remove_old_plugin' );
 
 	// Load required classes
 	require_once('membershipincludes/classes/class.rule.php');
