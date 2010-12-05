@@ -288,12 +288,10 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function handle_paymentgateways($wp_query) {
-
 			if(!empty($wp_query->query_vars['paymentgateway'])) {
 				do_action( 'membership_handle_payment_return_' . $wp_query->query_vars['paymentgateway']);
 				exit();
 			}
-
 		}
 
 		function handle_download_protection($wp_query) {

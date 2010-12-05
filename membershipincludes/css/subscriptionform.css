@@ -204,3 +204,33 @@ div.priceforms {
 	float: right;
 	width: 25%;
 }
+
+.cardimage {
+	height: 23px;
+	width: 157px;
+	display: inline-table;
+}
+
+.nocard {
+	background-position: 0px 0px !important;
+}
+
+.visa_card {
+	background-position: 0px -23px !important;
+}
+
+.mastercard {
+	background-position: 0px -46px !important;
+}
+
+.discover_card {
+	background-position: 0px -69px !important;
+}
+
+.amex {
+	background-position: 0px -92px !important;
+}
+
+div.message.hidden {
+    display: none;
+}

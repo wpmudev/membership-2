@@ -379,7 +379,6 @@ class paypalexpress extends M_Gateway {
 	}
 
 	function display_subscribe_button($subscription, $pricing, $user_id) {
-
 		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
 
 	}

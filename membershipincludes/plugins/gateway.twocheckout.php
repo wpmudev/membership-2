@@ -182,7 +182,7 @@ class twocheckout extends M_Gateway {
 				$product_id = $product->assigned_product_id;
 			}
 		}
-		// print_r($response_obj);
+		
 		return $product_id;
 	}
 
@@ -225,6 +225,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
 			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
+			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
@@ -261,6 +262,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
 			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
+			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
@@ -298,6 +300,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
 			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
+			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
