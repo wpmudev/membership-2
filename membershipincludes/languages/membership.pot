@@ -1,0 +1,2403 @@
+# Translation of the WordPress plugin Membership Premium Old version 1.0.5a2 by Barry (Incsub).
+# Copyright (C) 2010 Barry (Incsub)
+# This file is distributed under the same license as the Membership Premium Old version package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Membership Premium Old version 1.0.5a2\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/membership\n"
+"POT-Creation-Date: 2010-12-07 18:30+0530\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: membershipincludes/classes/class.gateway.php:109
+msgid "Edit &quot;"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:109
+msgid "&quot; settings"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:123
+#: membershipincludes/classes/membershipadmin.php:2042
+msgid "Save Changes"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:201
+msgid " transactions"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:204
+msgid "Recent transactions"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:205
+msgid "Pending transactions"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:206
+msgid "Future transactions"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:237
+#: membershipincludes/classes/membershipadmin.php:1438
+#: membershipincludes/plugins/gateway.amazon.php:61
+#: membershipincludes/plugins/gateway.paypalpro.php:61
+msgid "Subscription"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:238
+#: membershipincludes/plugins/gateway.amazon.php:62
+#: membershipincludes/plugins/gateway.paypalpro.php:62
+msgid "User"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:239
+#: membershipincludes/plugins/gateway.amazon.php:63
+#: membershipincludes/plugins/gateway.paypalpro.php:63
+msgid "Date"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:240
+#: membershipincludes/plugins/gateway.amazon.php:64
+#: membershipincludes/plugins/gateway.paypalpro.php:64
+msgid "Amount"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:241
+#: membershipincludes/plugins/gateway.amazon.php:65
+#: membershipincludes/plugins/gateway.paypalpro.php:65
+msgid "Transaction id"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:242
+msgid "Status"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:243
+msgid "Notes"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:296
+#: membershipincludes/plugins/gateway.amazon.php:118
+#: membershipincludes/plugins/gateway.paypalpro.php:118
+msgid "Subscription not found"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:306
+#: membershipincludes/plugins/gateway.amazon.php:128
+#: membershipincludes/plugins/gateway.paypalpro.php:128
+msgid "User not found"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:329
+#: membershipincludes/classes/class.gateway.php:338
+#: membershipincludes/plugins/gateway.amazon.php:151
+#: membershipincludes/plugins/gateway.paypalpro.php:151
+msgid "None yet"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:347
+#: membershipincludes/classes/membershipadmin.php:1759
+#: membershipincludes/classes/membershipadmin.php:1788
+#: membershipincludes/classes/membershipadmin.php:3491
+msgid "None"
+msgstr ""
+
+#: membershipincludes/classes/class.gateway.php:358
+#: membershipincludes/plugins/gateway.amazon.php:162
+#: membershipincludes/plugins/gateway.paypalpro.php:162
+msgid "No Transactions have been found, patience is a virtue."
+msgstr ""
+
+#: membershipincludes/classes/class.membersearch.php:44
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:450
+#: membershipincludes/classes/class.subscription.php:532
+msgid "Remove this level from the subscription."
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:450
+#: membershipincludes/classes/class.subscription.php:532
+#: membershipincludes/includes/default.admin.rules.php:23
+#: membershipincludes/includes/default.admin.rules.php:160
+#: membershipincludes/includes/default.admin.rules.php:294
+#: membershipincludes/includes/default.admin.rules.php:447
+#: membershipincludes/includes/default.admin.rules.php:572
+#: membershipincludes/includes/default.rules.php:12
+#: membershipincludes/includes/default.rules.php:142
+#: membershipincludes/includes/default.rules.php:289
+#: membershipincludes/includes/default.rules.php:430
+#: membershipincludes/includes/default.rules.php:544
+#: membershipincludes/includes/default.rules.php:621
+#: membershipincludes/includes/default.rules.php:735
+#: membershipincludes/includes/default.rules.php:870
+#: membershipincludes/includes/default.rules.php:1000
+#: membershipincludes/plugins/capitalp.rule.php:22
+#: membershipincludes/plugins/default.bprules.php:23
+#: membershipincludes/plugins/default.bprules.php:263
+#: membershipincludes/plugins/default.bprules.php:360
+#: membershipincludes/plugins/default.bprules.php:619
+#: membershipincludes/plugins/default.bprules.php:689
+#: membershipincludes/plugins/ignorehome.php:22
+msgid "Remove"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:453
+#: membershipincludes/classes/class.subscription.php:535
+msgid "Mode : "
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:461
+#: membershipincludes/classes/class.subscription.php:543
+msgid "Period : "
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:472
+#: membershipincludes/classes/class.subscription.php:554
+msgid "day(s)"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:473
+#: membershipincludes/classes/class.subscription.php:555
+msgid "week(s)"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:474
+#: membershipincludes/classes/class.subscription.php:556
+msgid "month(s)"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:475
+#: membershipincludes/classes/class.subscription.php:557
+msgid "year(s)"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:478
+#: membershipincludes/classes/class.subscription.php:560
+msgid "Price : "
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:500
+#: membershipincludes/classes/class.subscription.php:582
+msgid "Mode details"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:501
+#: membershipincludes/classes/class.subscription.php:583
+msgid ""
+"<strong>Finite</strong> - user remains at this level for a set period of "
+"time before ending"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:502
+#: membershipincludes/classes/class.subscription.php:584
+msgid "<strong>Indefinite</strong> - user remains at this level for ever."
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:503
+#: membershipincludes/classes/class.subscription.php:585
+msgid ""
+"<strong>Serial</strong> - user remains at this level for a set period of "
+"time and is then renewed at the same level"
+msgstr ""
+
+#: membershipincludes/classes/class.subscription.php:504
+#: membershipincludes/classes/class.subscription.php:586
+msgid ""
+"<strong>Note:</strong> - depending on the payment gateway used, changing the "
+"price will not alter subscriptions charged to existing members."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:127
+msgid "Membership"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:135
+#: membershipincludes/classes/membershipadmin.php:415
+#: membershipincludes/classes/membershipadmin.php:598
+#: membershipincludes/plugins/default.bprules.php:694
+msgid "Members"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:135
+#: membershipincludes/classes/membershipadmin.php:1327
+msgid "Edit Members"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:137
+msgid "Membership Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:137
+msgid "Edit Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:138
+msgid "Membership Subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:138
+msgid "Edit Subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:139
+msgid "Membership Gateways"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:139
+#: membershipincludes/classes/membershipadmin.php:3303
+msgid "Edit Gateways"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:141
+msgid "Membership Options"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:141
+#: membershipincludes/classes/membershipadmin.php:1705
+msgid "Edit Options"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:236
+msgid "Are you sure you want to delete this level?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:236
+msgid "Are you sure you want to deactivate this level?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:249
+msgid "Are you sure you want to delete this subscription?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:249
+msgid "Are you sure you want to deactivate this subscription?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:263
+msgid "Are you sure you want to deactivate this member?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:415
+msgid "Signups"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:458
+msgid "The membership plugin version "
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:459
+msgid " is "
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:463
+#: membershipincludes/classes/membershipadmin.php:465
+msgid "Click here to enable the plugin"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:463
+msgid "Disabled"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:465
+msgid "Enabled"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:470
+msgid "Member counts"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:486
+#: membershipincludes/classes/membershipadmin.php:1368
+#: membershipincludes/classes/membershipadmin.php:1587
+msgid "Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:499
+#: membershipincludes/classes/membershipadmin.php:526
+msgid "Total"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:513
+#: membershipincludes/classes/membershipadmin.php:1362
+#: membershipincludes/classes/membershipadmin.php:1581
+msgid "Subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:538
+msgid "User counts"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:551
+msgid "Total Users"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:558
+msgid "Deactivated Users"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:589
+msgid "Membership dashboard"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:615
+msgid "Statistics"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:860
+msgid "Add member to a level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:861
+#: membershipincludes/classes/membershipadmin.php:882
+#: membershipincludes/classes/membershipadmin.php:915
+msgid ""
+"A membership level controls the amount of access to the sites content this "
+"member will have."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:862
+msgid ""
+"By adding a membership level, you may actually be removing existing access "
+"to content."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:864
+msgid "Level to add for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:867
+#: membershipincludes/classes/membershipadmin.php:1008
+msgid "Select the level to add."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:881
+msgid "Move member to another level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:884
+msgid "Level to move from for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:887
+msgid "Select the level to move from."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:897
+msgid "Level to move to for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:900
+#: membershipincludes/classes/membershipadmin.php:1051
+msgid "Select the level to move to."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:913
+msgid "Drop member from level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:916
+msgid ""
+"By removing a membership level, you may actually be increasing existing "
+"access to content."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:918
+msgid "Level to drop for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:921
+msgid "Select the level to remove."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:962
+#: membershipincludes/classes/membershipadmin.php:1121
+#: membershipincludes/classes/membershipadmin.php:2198
+#: membershipincludes/classes/membershipadmin.php:2205
+#: membershipincludes/classes/membershipadmin.php:2742
+#: membershipincludes/classes/membershipadmin.php:2749
+msgid "Cancel"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:964
+msgid "-level-complete"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1001
+msgid "Add member to a subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1002
+#: membershipincludes/classes/membershipadmin.php:1032
+#: membershipincludes/classes/membershipadmin.php:1075
+msgid ""
+"A subscription controls the levels a site member has access to / passes "
+"through."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1003
+msgid ""
+"Depending on your payment gateway, adding a subscription here may not set up "
+"a payment subscription."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1005
+msgid "Subscription and level to add for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1031
+msgid "Move member to another subscription level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1033
+msgid ""
+"Depending on your payment gateway, moving a subscription here may not alter "
+"a members existing payment subscription."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1035
+msgid "Subscription to move from for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1038
+msgid "Select the subscription to move from."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1048
+msgid "Subscription and Level to move to for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1073
+msgid "Drop member from subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1076
+msgid ""
+"Depending on the payment gateway, removing a subscription will not "
+"automatically cancel a payment subscription."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1078
+msgid "Subscription to drop for this / these member(s)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1081
+msgid "Select the subscription to remove."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1123
+msgid "-sub-complete"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1312
+msgid "Member added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1313
+msgid "Member deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1314
+msgid "Member updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1315
+msgid "Member not added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1316
+msgid "Member not updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1317
+msgid "Member not deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1319
+msgid "Member activation toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1320
+msgid "Member activation not toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1322
+msgid "Members updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1339
+#: membershipincludes/classes/membershipadmin.php:1341
+msgid "Search Members"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1359
+#: membershipincludes/classes/membershipadmin.php:1578
+#: membershipincludes/classes/membershipadmin.php:2484
+#: membershipincludes/classes/membershipadmin.php:2617
+#: membershipincludes/classes/membershipadmin.php:3032
+#: membershipincludes/classes/membershipadmin.php:3181
+#: membershipincludes/classes/membershipadmin.php:3321
+#: membershipincludes/classes/membershipadmin.php:3438
+msgid "Bulk Actions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1360
+#: membershipincludes/classes/membershipadmin.php:1579
+#: membershipincludes/classes/membershipadmin.php:2486
+#: membershipincludes/classes/membershipadmin.php:2619
+#: membershipincludes/classes/membershipadmin.php:3034
+#: membershipincludes/classes/membershipadmin.php:3183
+#: membershipincludes/classes/membershipadmin.php:3322
+#: membershipincludes/classes/membershipadmin.php:3439
+msgid "Toggle activation"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1363
+#: membershipincludes/classes/membershipadmin.php:1582
+msgid "Add subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1364
+#: membershipincludes/classes/membershipadmin.php:1583
+msgid "Move subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1365
+#: membershipincludes/classes/membershipadmin.php:1584
+msgid "Drop subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1369
+#: membershipincludes/classes/membershipadmin.php:1588
+msgid "Add level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1370
+#: membershipincludes/classes/membershipadmin.php:1589
+msgid "Move level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1371
+#: membershipincludes/classes/membershipadmin.php:1590
+msgid "Drop level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1374
+#: membershipincludes/classes/membershipadmin.php:2488
+#: membershipincludes/classes/membershipadmin.php:3037
+#: membershipincludes/classes/membershipadmin.php:3324
+msgid "Apply"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1377
+#: membershipincludes/classes/membershipadmin.php:1596
+msgid "Filter by subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1389
+#: membershipincludes/classes/membershipadmin.php:1404
+#: membershipincludes/classes/membershipadmin.php:1608
+#: membershipincludes/classes/membershipadmin.php:1623
+#: membershipincludes/classes/membershipadmin.php:2501
+#: membershipincludes/classes/membershipadmin.php:3051
+msgid "Filter"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1392
+#: membershipincludes/classes/membershipadmin.php:1611
+msgid "Filter by level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1409
+#: membershipincludes/classes/membershipadmin.php:2506
+#: membershipincludes/classes/membershipadmin.php:2624
+#: membershipincludes/classes/membershipadmin.php:3056
+#: membershipincludes/classes/membershipadmin.php:3188
+msgid "Add New"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1426
+msgid "&larr; Back to All Users"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1434
+#: membershipincludes/classes/membershippublic.php:806
+#: membershipincludes/classes/membershippublic.php:889
+#: membershipincludes/includes/bp.registration.form.php:19
+msgid "Username"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1435
+msgid "Name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1436
+msgid "E-mail"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1437
+#: membershipincludes/classes/membershipadmin.php:1509
+#: membershipincludes/classes/membershipadmin.php:2518
+#: membershipincludes/classes/membershipadmin.php:2586
+#: membershipincludes/classes/membershipadmin.php:3068
+#: membershipincludes/classes/membershipadmin.php:3140
+#: membershipincludes/classes/membershipadmin.php:3339
+#: membershipincludes/classes/membershipadmin.php:3408
+msgid "Active"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1439
+msgid "Membership Level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1495
+#: membershipincludes/classes/membershipadmin.php:2567
+#: membershipincludes/classes/membershipadmin.php:3118
+msgid "ID : "
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1496
+#: membershipincludes/classes/membershipadmin.php:2568
+#: membershipincludes/classes/membershipadmin.php:3119
+msgid "Edit"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1498
+#: membershipincludes/classes/membershipadmin.php:2572
+#: membershipincludes/classes/membershipadmin.php:3123
+#: membershipincludes/classes/membershipadmin.php:3398
+msgid "Deactivate"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1500
+#: membershipincludes/classes/membershipadmin.php:2570
+#: membershipincludes/classes/membershipadmin.php:3121
+#: membershipincludes/classes/membershipadmin.php:3400
+msgid "Activate"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1506
+#, php-format
+msgid "e-mail: %s"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1511
+#: membershipincludes/classes/membershipadmin.php:2584
+#: membershipincludes/classes/membershipadmin.php:3138
+#: membershipincludes/classes/membershipadmin.php:3410
+msgid "Inactive"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1530
+#: membershipincludes/classes/membershipadmin.php:1557
+#: membershipincludes/classes/membershipadmin.php:2206
+#: membershipincludes/classes/membershipadmin.php:2750
+msgid "Add"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1533
+#: membershipincludes/classes/membershipadmin.php:1560
+msgid "Move"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1534
+#: membershipincludes/classes/membershipadmin.php:1561
+msgid "Drop"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1700
+msgid "Your options have been updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1723
+msgid "Stranger settings"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1724
+msgid ""
+"A &quot;stranger&quot; is a visitor to your website who is either not logged "
+"in, or does not have an active membership or subscription to your website."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1729
+msgid "Use membership level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1732
+msgid "None - No access to content"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1749
+msgid "User registration"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1750
+msgid ""
+"If you have free user registration enabled on your site, select the "
+"subscription they will be assigned to initially."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1751
+msgid ""
+"If you are using a paid subscription model - it is probably best to set this "
+"to &quot;none&quot;."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1756
+msgid "Use subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1776
+#: membershipincludes/classes/membershipadmin.php:1783
+msgid "Registration page"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1777
+msgid ""
+"This is the page a new user will be redirected to when they want to register "
+"on your site."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1778
+msgid ""
+"It can contain any content you want but <strong>must</strong> contain the "
+"[subscriptionform] shortcode in some location."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1784
+msgid "Select a page to use for the registration form."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1796
+msgid "Shortcode protected content"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1797
+msgid ""
+"You can protect parts of a post or pages content by enclosing it in "
+"WordPress shortcodes."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1798
+msgid ""
+"Create as many shortcodes as you want by entering them below, each shortcode "
+"should be on a separate line."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1803
+#: membershipincludes/includes/default.rules.php:721
+#: membershipincludes/includes/default.rules.php:735
+msgid "Shortcodes"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1804
+msgid ""
+"Place each shortcode on a new line, removing used shortcodes will leave "
+"content visible to all users/members."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1820
+msgid "Shortcode visibility default"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1821
+msgid "Should the shortcodes above be visible or protected by default."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1826
+msgid "Yes - Shortcodes are visible by default"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1827
+msgid "No - Shortcodes are protected by default"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1832
+#: membershipincludes/classes/membershipadmin.php:1972
+msgid "No access message"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1833
+msgid ""
+"This is the message that is displayed when the content protected by the "
+"shortcode can't be shown."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1834
+#: membershipincludes/classes/membershipadmin.php:1974
+#: membershipincludes/plugins/default.bprules.php:856
+msgid "Leave blank for no message."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1835
+#: membershipincludes/classes/membershipadmin.php:1930
+#: membershipincludes/classes/membershipadmin.php:1975
+#: membershipincludes/plugins/default.bprules.php:857
+msgid "HTML allowed."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1845
+msgid "Downloads / Media protection"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1846
+msgid ""
+"Downloads and media files can be protected by remapping their perceived "
+"location."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1847
+msgid ""
+"Note: If a user determines a files actual location on your server, there is "
+"very little we can do to prevent its download, so please be careful about "
+"giving out URLs."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1852
+msgid "Actual download URL"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1853
+msgid "This is a system generated URL, you shouldn't need to change this."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1865
+msgid "Masked download URL"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1866
+msgid "This is the URL that the user will see."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1867
+msgid "Change the end part to something unique."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1876
+msgid "Protected groups"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1877
+msgid ""
+"Place each download group name on a new line, removing used groups will "
+"leave content visible to all users/members."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1896
+msgid "Protected content message"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1897
+msgid ""
+"If a post / page / content is not available to a user, this is the message "
+"or page content that will be displayed in its place."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1898
+msgid ""
+"This message will only be displayed if the user has tried to access the "
+"post / page / content directly or via a link."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1899
+msgid "Note: This message will override the 404 page for none members."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1905
+msgid "Protected content page"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1906
+msgid "Select a page to use for the content."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1907
+msgid "Alternatively complete the content below."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1912
+msgid "None (use settings below)"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1915
+msgid ""
+"Note: If you have set no content access, then the settings below will be "
+"used instead."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1920
+msgid "Protected Message Title"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1921
+msgid ""
+"Enter the title for the message that you want displayed when the content is "
+"not available."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1928
+msgid "Protected Message"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1929
+msgid ""
+"Enter the message that you want displayed when the content is not available."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1938
+msgid "Use page template"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1940
+msgid "You can choose which template from your theme to use for this message."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1941
+msgid "If you don't know what this means, then leave it set as default."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1946
+msgid "Default Template"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1956
+msgid "More tag default"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1957
+msgid ""
+"Content placed after the More tag in a post or page can be protected by "
+"setting the visibility below. This setting can be overridden within each "
+"individual level."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1962
+msgid "Show content after the More tag"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1965
+msgid "Yes - More tag content is visible"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1966
+msgid "No - More tag content not visible"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1973
+msgid ""
+"This is the message that is displayed when the content protected by the "
+"moretag can't be shown."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1985
+msgid "Payments currency"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1986
+msgid ""
+"This is the currency that will be used across all gateways. Note: Some "
+"gateways have a limited number of currencies available."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:1991
+msgid "Payment currencys"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2053
+msgid "Main rules"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2055
+msgid "Content rules"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2073
+#: membershipincludes/classes/membershipadmin.php:2647
+msgid " clone"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2076
+msgid "new level"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2106
+#: membershipincludes/classes/membershipadmin.php:2671
+msgid "Edit "
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2134
+msgid "Level title"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2140
+msgid "Positive rules"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2141
+msgid "These are the areas / elements that a member of this level can access."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2163
+#: membershipincludes/classes/membershipadmin.php:2188
+#: membershipincludes/classes/membershipadmin.php:2726
+msgid "Drop here"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2166
+msgid "Negative rules"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2167
+msgid ""
+"These are the areas / elements that a member of this level doesn't have "
+"access to."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2199
+#: membershipincludes/classes/membershipadmin.php:2743
+msgid "Update"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2441
+msgid "Membership Level added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2442
+msgid "Membership Level deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2443
+msgid "Membership Level updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2444
+msgid "Membership Level not added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2445
+msgid "Membership Level not updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2446
+msgid "Membership Level not deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2448
+msgid "Membership Level activation toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2449
+msgid "Membership Level activation not toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2451
+msgid "Membership Levels updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2456
+msgid "Edit Membership Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2468
+#: membershipincludes/classes/membershipadmin.php:2470
+#: membershipincludes/classes/membershipadmin.php:3016
+msgid "Search Memberships"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2485
+#: membershipincludes/classes/membershipadmin.php:2576
+#: membershipincludes/classes/membershipadmin.php:2618
+#: membershipincludes/classes/membershipadmin.php:3033
+#: membershipincludes/classes/membershipadmin.php:3130
+#: membershipincludes/classes/membershipadmin.php:3182
+msgid "Delete"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2491
+msgid "View all Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2492
+msgid "View active Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2493
+msgid "View inactive Levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2498
+msgid "Order by Level ID"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2499
+msgid "Order by Level Name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2517
+msgid "Level Name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2519
+#: membershipincludes/classes/membershipadmin.php:3070
+msgid "Users"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2574
+msgid "Clone"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2603
+msgid "No Membership levels where found, click above to add one."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2650
+msgid "new subscription"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2667
+msgid "Add "
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2695
+msgid "Subscription name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2698
+msgid "Subscription description"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2707
+#: membershipincludes/classes/membershipadmin.php:2778
+msgid "Membership levels"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2708
+msgid ""
+"These are the levels that are part of this subscription and the order a user "
+"will travel through them."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2713
+msgid ""
+"A new signup for this subscription will start here and immediately pass to "
+"the next membership level listed below."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2989
+msgid "Subscription added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2990
+msgid "Subscription deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2991
+msgid "Subscription updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2992
+msgid "Subscription not added."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2993
+msgid "Subscription not updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2994
+msgid "Subscription not deleted."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2996
+msgid "Subscription activation toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2997
+msgid "Subscription activation not toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:2999
+msgid "Subscriptions updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3004
+msgid "Edit Subscription Plans"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3018
+msgid "Search Subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3035
+msgid "Toggle public status"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3040
+msgid "View all subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3041
+msgid "View active subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3042
+msgid "View inactive subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3043
+msgid "View public subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3044
+msgid "View private subscriptions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3048
+msgid "Order by subscription ID"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3049
+msgid "Order by subscription name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3067
+msgid "Subscription Name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3069
+#: membershipincludes/classes/membershipadmin.php:3150
+msgid "Public"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3126
+msgid "Make public"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3128
+msgid "Make private"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3148
+msgid "Private"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3167
+msgid "No Subscriptions where found, click above to add one."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3289
+msgid "Gateway updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3290
+msgid "Gateway not updated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3292
+msgid "Gateway activated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3293
+msgid "Gateway not activated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3295
+msgid "Gateway deactivated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3296
+msgid "Gateway not deactivated."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3298
+msgid "Gateway activation toggled."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3338
+msgid "Gateway Name"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3340
+msgid "Transactions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3395
+msgid "Settings"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3415
+msgid "View transactions"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3424
+msgid "No Payment gateways where found for this install."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3458
+msgid "Membership details"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3507
+msgid "Protected content group"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3510
+msgid "Is this an item you may want to restrict access to?"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3771
+#: membershipincludes/classes/membershipadmin.php:3775
+msgid "Membership key"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3778
+msgid ""
+"This key is used to give you access the the members RSS feed, keep it safe "
+"and secret."
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3804
+#: membershipincludes/classes/membershipadmin.php:3808
+msgid "Membership Administration"
+msgstr ""
+
+#: membershipincludes/classes/membershipadmin.php:3812
+msgid "This user has access to administer the Membership system."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:581
+#: membershipincludes/classes/membershippublic.php:670
+msgid "No access to this content"
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:807
+#: membershipincludes/classes/membershippublic.php:890
+msgid "Email address"
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:808
+msgid "Email address confirmation"
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:809
+#: membershipincludes/classes/membershippublic.php:891
+#: membershipincludes/includes/registration.form.php:22
+msgid "Password"
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:810
+#: membershipincludes/classes/membershippublic.php:892
+msgid "Password confirmation"
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:817
+#: membershipincludes/classes/membershippublic.php:899
+#: membershipincludes/classes/membershippublic.php:937
+msgid "Please ensure that the "
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:817
+#: membershipincludes/classes/membershippublic.php:899
+#: membershipincludes/classes/membershippublic.php:937
+msgid " information is completed."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:822
+msgid "Please ensure the email addresses match."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:825
+#: membershipincludes/classes/membershippublic.php:904
+msgid "Please ensure the passwords match."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:829
+#: membershipincludes/classes/membershippublic.php:908
+msgid "That username is already taken, sorry."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:833
+#: membershipincludes/classes/membershippublic.php:912
+msgid "That email address is already taken, sorry."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:844
+msgid "You need to agree to the terms of service to register."
+msgstr ""
+
+#: membershipincludes/classes/membershippublic.php:1064
+msgid "Could not create your user account."
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:5
+msgid "Create an Account"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:9
+msgid ""
+"Registering for this site is easy, just fill in the fields below and we'll "
+"get a new account set up for you in no time."
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:17
+msgid "Account Details"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:19
+#: membershipincludes/includes/bp.registration.form.php:23
+#: membershipincludes/includes/bp.registration.form.php:27
+#: membershipincludes/includes/bp.registration.form.php:31
+#: membershipincludes/includes/bp.registration.form.php:58
+#: membershipincludes/includes/bp.registration.form.php:66
+#: membershipincludes/includes/bp.registration.form.php:74
+#: membershipincludes/includes/bp.registration.form.php:84
+#: membershipincludes/includes/bp.registration.form.php:95
+#: membershipincludes/includes/bp.registration.form.php:110
+#: membershipincludes/includes/bp.registration.form.php:121
+msgid "(required)"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:23
+#: membershipincludes/includes/registration.form.php:12
+msgid "Email Address"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:27
+msgid "Choose a Password"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:31
+#: membershipincludes/includes/registration.form.php:27
+msgid "Confirm Password"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:47
+msgid "Profile Details"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:101
+msgid "Clear"
+msgstr ""
+
+#: membershipincludes/includes/bp.registration.form.php:160
+msgid "Sign Up"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:12
+#: membershipincludes/includes/default.admin.rules.php:23
+msgid "Main Menus"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:23
+#: membershipincludes/includes/default.admin.rules.php:447
+msgid "Remove Main Menus from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:25
+msgid ""
+"Select the Main menus to be covered by this rule by checking the box next to "
+"the relevant pages title."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:36
+#: membershipincludes/includes/default.admin.rules.php:43
+#: membershipincludes/includes/default.admin.rules.php:173
+#: membershipincludes/includes/default.admin.rules.php:180
+msgid "Menu title"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:135
+#: membershipincludes/includes/default.admin.rules.php:160
+msgid "Sub Menus"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:160
+msgid "Remove Sub Menus from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:162
+msgid ""
+"Select the Sub menu items to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:283
+#: membershipincludes/includes/default.admin.rules.php:294
+msgid "Dashboard Widgets"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:294
+msgid "Remove Dashboard Widgets from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:296
+msgid ""
+"Select the Dashboard widgets to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:310
+#: membershipincludes/includes/default.admin.rules.php:317
+msgid "Dashboard Widget"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:436
+#: membershipincludes/includes/default.admin.rules.php:447
+msgid "Plugins"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:449
+msgid ""
+"Select the Plugins to be covered by this rule by checking the box next to "
+"the relevant pages title."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:460
+#: membershipincludes/includes/default.admin.rules.php:467
+msgid "Plugin"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:561
+#: membershipincludes/includes/default.admin.rules.php:572
+msgid "Favorite Actions"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:572
+msgid "Remove Favorite Actions from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:574
+msgid ""
+"Select the Favourite Actions to be covered by this rule by checking the box "
+"next to the relevant title."
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:585
+#: membershipincludes/includes/default.admin.rules.php:592
+msgid "Actions"
+msgstr ""
+
+#: membershipincludes/includes/default.admin.rules.php:688
+msgid "Administration"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:12
+msgid "Posts"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:12
+msgid "Remove Posts from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:14
+msgid ""
+"Select the posts to be covered by this rule by checking the box next to the "
+"relevant posts title."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:32
+#: membershipincludes/includes/default.rules.php:40
+msgid "Post title"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:33
+#: membershipincludes/includes/default.rules.php:41
+msgid "Post date"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:71
+#, php-format
+msgid ""
+"Only the most recent %d posts are shown above, if you have more than that "
+"then you should consider using categories instead."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:131
+#: membershipincludes/includes/default.rules.php:142
+msgid "Pages"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:142
+msgid "Remove Pages from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:144
+msgid ""
+"Select the Pages to be covered by this rule by checking the box next to the "
+"relevant pages title."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:162
+#: membershipincludes/includes/default.rules.php:169
+#: membershipincludes/plugins/default.bprules.php:707
+#: membershipincludes/plugins/default.bprules.php:714
+msgid "Page title"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:194
+#, php-format
+msgid "Only the most recent %d pages are shown above."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:278
+#: membershipincludes/includes/default.rules.php:289
+msgid "Categories"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:289
+msgid "Remove Categories from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:291
+msgid ""
+"Select the Categories to be covered by this rule by checking the box next to "
+"the relevant categories name."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:301
+#: membershipincludes/includes/default.rules.php:308
+msgid "Category name"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:419
+#: membershipincludes/includes/default.rules.php:430
+msgid "More tag"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:430
+msgid "Remove More tag from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:432
+#: membershipincludes/includes/default.rules.php:546
+#: membershipincludes/includes/default.rules.php:1002
+#: membershipincludes/plugins/capitalp.rule.php:24
+#: membershipincludes/plugins/default.bprules.php:265
+#: membershipincludes/plugins/default.bprules.php:621
+#: membershipincludes/plugins/ignorehome.php:24
+msgid "Positive : "
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:432
+msgid "User can read full post content beyond the More tag."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:433
+#: membershipincludes/includes/default.rules.php:547
+#: membershipincludes/includes/default.rules.php:1003
+#: membershipincludes/plugins/capitalp.rule.php:25
+#: membershipincludes/plugins/default.bprules.php:266
+#: membershipincludes/plugins/default.bprules.php:622
+#: membershipincludes/plugins/ignorehome.php:25
+msgid "Negative : "
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:433
+msgid "User is unable to read full post content beyond the More tag."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:533
+#: membershipincludes/includes/default.rules.php:544
+msgid "Comments"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:544
+msgid "Remove Comments from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:546
+msgid "User gets read and make comments of posts."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:547
+msgid "User can not read or comment on posts."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:606
+#: membershipincludes/includes/default.rules.php:621
+msgid "Downloads"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:621
+msgid "Remove Downloads from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:623
+msgid ""
+"Select the Downloads / Media to be covered by this rule by checking the box "
+"next to the relevant group name."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:639
+#: membershipincludes/includes/default.rules.php:645
+msgid "Download / Group name"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:672
+msgid ""
+"You have no download groups set, please visit the membership options page to "
+"set them up."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:735
+msgid "Remove Shortcodes from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:737
+msgid ""
+"Select the Shortcodes to be covered by this rule by checking the box next to "
+"the relevant shortcode tag."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:745
+#: membershipincludes/includes/default.rules.php:752
+msgid "Shortcode tag"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:859
+#: membershipincludes/includes/default.rules.php:870
+msgid "Menu"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:870
+msgid "Remove Menu from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:872
+msgid ""
+"Select the Menu items to be covered by this rule by checking the box next to "
+"the relevant menu labels."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:883
+#: membershipincludes/includes/default.rules.php:890
+msgid "Menu / Item title"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:900
+msgid "MENU"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:989
+#: membershipincludes/includes/default.rules.php:1000
+msgid "Blog Creation"
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:1000
+msgid "Remove Blog Creation from this rules area."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:1002
+#: membershipincludes/plugins/default.bprules.php:265
+msgid "User can create "
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:1002
+msgid " blogs."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:1002
+msgid "Leave blanks for unlimited blogs."
+msgstr ""
+
+#: membershipincludes/includes/default.rules.php:1003
+msgid "User is unable to create any blogs."
+msgstr ""
+
+#: membershipincludes/includes/functions.php:84
+msgid "Sorry, this account is not active."
+msgstr ""
+
+#: membershipincludes/includes/member.form.php:5
+msgid "Completed: Thank you for joining"
+msgstr ""
+
+#: membershipincludes/includes/member.form.php:6
+msgid ""
+"It looks like you are already a member of our site. Thank you very much for "
+"your support."
+msgstr ""
+
+#: membershipincludes/includes/member.form.php:7
+msgid ""
+"If you are at this page because you would like to create another account, "
+"then please log out first."
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:5
+msgid "Step 1. Create a New Account"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:6
+msgid "Already have a user account?"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:8
+msgid "Choose a Username"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:17
+msgid "Confirm Email Address"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:31
+msgid ""
+"Hint: The password should be at least 5 characters long. To make it "
+"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
+"$ % ^ &amp; )."
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:44
+msgid "Terms and Conditions"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:49
+msgid "I agree to the Terms of Use"
+msgstr ""
+
+#: membershipincludes/includes/registration.form.php:54
+msgid "Register My Account »"
+msgstr ""
+
+#: membershipincludes/includes/subscription.form.php:6
+msgid "Step 2. Select a subscription"
+msgstr ""
+
+#: membershipincludes/includes/subscription.form.php:8
+msgid "Please select a subscription from the options below."
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:8
+msgid "Beta invite key"
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:125
+msgid "You need to enter an invite key in order to register."
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:128
+msgid "Sorry, but we do not seem to have that key on file, please try another."
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:131
+msgid ""
+"Sorry, but that key does not seem to be linked to your email address, please "
+"try another."
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:149
+msgid "Thank you for electing to be a beta tester"
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:151
+msgid ""
+"If you now <a href=\"http://staypress.com/wp-login.php?redirect_to=http://"
+"staypress.com/download/\">login and then pop on over to the download page</"
+"a>, then you will get access to the files."
+msgstr ""
+
+#: membershipincludes/plugins/betainvite.php:154
+msgid ""
+"If you have any problems download the beta files, then please let us know - "
+"we are still testing this invite system."
+msgstr ""
+
+#: membershipincludes/plugins/capitalp.rule.php:11
+#: membershipincludes/plugins/capitalp.rule.php:22
+msgid "Capital P filter"
+msgstr ""
+
+#: membershipincludes/plugins/capitalp.rule.php:22
+#: membershipincludes/plugins/ignorehome.php:22
+msgid "Remove Capital P filter from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/capitalp.rule.php:24
+msgid "Leaves the WP3 Capital P filter in place."
+msgstr ""
+
+#: membershipincludes/plugins/capitalp.rule.php:25
+msgid ""
+"Removes the WP3 Capital P filter so Wordpress is not automatically replaced "
+"with WordPress in your content."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:12
+#: membershipincludes/plugins/default.bprules.php:23
+#: membershipincludes/plugins/default.bprules.php:698
+msgid "Groups"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:23
+msgid "Remove Groups from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:25
+msgid ""
+"Select the groups to be covered by this rule by checking the box next to the "
+"relevant groups title."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:38
+#: membershipincludes/plugins/default.bprules.php:46
+msgid "Group title"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:39
+#: membershipincludes/plugins/default.bprules.php:47
+msgid "Group created"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:78
+msgid "Only the most recent 50 groups are shown above."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:252
+#: membershipincludes/plugins/default.bprules.php:263
+msgid "Group Creation"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:263
+msgid "Remove Group Creation from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:265
+msgid " groups."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:265
+msgid "Leave blanks for unlimited groups."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:266
+msgid "User is unable to create any groups."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:349
+#: membershipincludes/plugins/default.bprules.php:360
+#: membershipincludes/plugins/default.bprules.php:696
+msgid "Blogs"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:360
+msgid "Remove Blogs from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:362
+msgid ""
+"Select the blogs to be covered by this rule by checking the box next to the "
+"relevant blogs name."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:375
+#: membershipincludes/plugins/default.bprules.php:383
+msgid "Blog title"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:376
+#: membershipincludes/plugins/default.bprules.php:384
+msgid "Last activity"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:415
+msgid "Only the most recently updated 50 blogs are shown above."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:608
+#: membershipincludes/plugins/default.bprules.php:619
+msgid "Private Messaging"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:619
+msgid "Remove Private Messaging from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:621
+msgid "User can send messages."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:622
+msgid "User is unable to send messages."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:678
+#: membershipincludes/plugins/default.bprules.php:689
+msgid "BuddyPress Pages"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:689
+msgid "Remove BuddyPress Pages from this rules area."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:691
+msgid ""
+"Select the BuddyPress Pages to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:695
+msgid "Activity"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:697
+msgid "Forums"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:836
+msgid "BuddyPress"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:848
+msgid "BuddyPress protected content message"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:849
+msgid ""
+"This is the message that is displayed when a BuddyPress related operation is "
+"restricted. Depending on your theme this is displayed in a red bar, and so "
+"should be short and concise."
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:854
+msgid "BuddyPress No access message"
+msgstr ""
+
+#: membershipincludes/plugins/default.bprules.php:855
+msgid ""
+"This is the message that is displayed when a BuddyPress related operation is "
+"restricted."
+msgstr ""
+
+#: membershipincludes/plugins/gateway.amazon.php:18
+msgid "Placeholder : The settings for the Amazon payment gateway will be here."
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:42
+msgid "Mode"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:47
+msgid "Sandbox"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:48
+msgid "Live"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:60
+msgid "Login ID"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:64
+msgid "Transaction key"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:69
+msgid "Advanced Settings"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:73
+msgid "Delimiter Character"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:77
+msgid "Encapsulation Character"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:81
+msgid "Email Customer (on success)"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:86
+#: membershipincludes/plugins/gateway.authorizenetaim.php:117
+msgid "Yes"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:87
+#: membershipincludes/plugins/gateway.authorizenetaim.php:118
+msgid "No"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:100
+msgid "Customer Receipt Email Header"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:101
+msgid "Thanks for your payment!"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:104
+msgid "Customer Receipt Email Footer"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:108
+msgid "Security: MD5 Hash"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:112
+msgid "Request a delimited response from the payment gateway"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:205
+msgid "Enter Your Credit Card Information:"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:206
+msgid "Credit Card Number:"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:211
+msgid "Expiration Date:"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:212
+msgid "Month"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:214
+msgid "Year"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:216
+msgid "Security Code:"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:219
+msgid "Pay with Credit Card"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:374
+msgid ""
+"The payment has been completed, and the funds have been added successfully "
+"to your account balance."
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:385
+msgid "There was a problem processing your purchase. Please try again"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.authorizenetaim.php:388
+#: membershipincludes/plugins/gateway.authorizenetaim.php:391
+msgid "Payment method not supported for the payment"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.freesubscriptions.php:33
+msgid "No transactions data for the Free gateway"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.freesubscriptions.php:42
+#: membershipincludes/plugins/gateway.paypalexpress.php:95
+#: membershipincludes/plugins/gateway.twocheckout.php:76
+msgid "Subscription button"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.freesubscriptions.php:52
+msgid "Completed message"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.freesubscriptions.php:53
+msgid ""
+"The message that is displayed to a user once they are signed up. HTML allowed"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:34
+msgid "PayPal Email"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:40
+msgid "PayPal Site"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:78
+msgid "Paypal Currency"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:86
+msgid "PayPal Mode"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:88
+#: membershipincludes/plugins/gateway.twocheckout.php:69
+msgid "Live Site"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalexpress.php:89
+msgid "Test Mode (Sandbox)"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.paypalpro.php:18
+msgid ""
+"Placeholder : The settings for the PayPal Pro payment gateway will be here."
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:39
+msgid "2Checkout Username"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:44
+msgid "2Checkout Password"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:49
+msgid "2Checkout Seller ID"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:54
+msgid "2Checkout Secret Word"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:59
+msgid "2Checkout Currency"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:67
+msgid "2Checkout Mode"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:70
+msgid "Test Mode"
+msgstr ""
+
+#: membershipincludes/plugins/gateway.twocheckout.php:128
+#: membershipincludes/plugins/gateway.twocheckout.php:172
+msgid "There was a problem connecting to 2CO. Please try again."
+msgstr ""
+
+#: membershipincludes/plugins/ignorehome.php:11
+#: membershipincludes/plugins/ignorehome.php:22
+msgid "Ignore Home"
+msgstr ""
+
+#: membershipincludes/plugins/ignorehome.php:24
+msgid "Removes all page and post rule processing for the home page"
+msgstr ""
+
+#: membershipincludes/plugins/ignorehome.php:25
+msgid "Leaves all page and post rule processing in place for the home page."
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:39
+msgid "Membership widget"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:41
+msgid "Membership Widget"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:136
+msgid "User isn't logged in"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:137
+msgid "User is logged in"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:138
+msgid "User hasn't commented before"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:139
+msgid "User arrived via a search engine"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:140
+msgid "User arrived via a link"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:141
+msgid "User is using Internet Explorer"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:145
+msgid "User isn't a supporter"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:150
+msgid ""
+"Show the content below if one of the checked items is true (or no items are "
+"checked):"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:163
+msgid "Content Title"
+msgstr ""
+
+#: membershipincludes/plugins/member.widget.php:167
+msgid "Content to display"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:50
+#, php-format
+msgid ""
+"<strong>%s</strong> has joined level <strong>%s</strong> on subscription "
+"<strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:67
+#, php-format
+msgid "<strong>%s</strong> has joined level <strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:84
+#: membershipincludes/plugins/newsstream.php:101
+#, php-format
+msgid "<strong>%s</strong> has left subscription <strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:118
+#, php-format
+msgid "<strong>%s</strong> has left level <strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:137
+#, php-format
+msgid ""
+"<strong>%s</strong> has moved from subscription <strong>%s</strong> to level "
+"<strong>%s</strong> on subscription <strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:155
+#, php-format
+msgid ""
+"<strong>%s</strong> has moved from level <strong>%s</strong> to level "
+"<strong>%s</strong>"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:174
+msgid "News"
+msgstr ""
+
+#: membershipincludes/plugins/newsstream.php:187
+msgid "There will be some interesting news here when your site gets going."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Membership Premium Old version"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://premium.wpmudev.org"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"After you have activated the new Premium version you can deactivate this "
+"version and it will disappear from this list."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Barry (Incsub)"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://mapinated.com"
+msgstr ""
