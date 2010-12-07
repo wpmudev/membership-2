@@ -8,8 +8,6 @@ class authorizenetaim extends M_Gateway {
 	function authorizenetaim() {
 		global $M_membership_url;
 		
-		$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
-		
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
@@ -25,7 +23,11 @@ class authorizenetaim extends M_Gateway {
 			
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
-			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );		
+			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
+			
+			if (!is_admin()) {
+				$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
+			}
 		}
 
 	}
