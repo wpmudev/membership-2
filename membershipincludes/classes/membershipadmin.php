@@ -1651,6 +1651,7 @@ if(!class_exists('membershipadmin')) {
 				// Split up the membership options records into to descrete related chunks
 				$M_options['strangerlevel'] = (int) $_POST['strangerlevel'];
 				$M_options['freeusersubscription'] = (int) $_POST['freeusersubscription'];
+				$M_options['enableincompletesignups'] = $_POST['enableincompletesignups'];
 
 				$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
 				$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
@@ -1768,6 +1769,22 @@ if(!class_exists('membershipadmin')) {
 									}
 								?>
 								</select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<p><?php _e('The default setting for the membership plugin is to disable user accounts that do not complete their subscription signup.','membership'); ?></p>
+					<p><?php _e('If you want to change this, then use the option below.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Enable incomplete signup accounts','membership'); ?>
+							</em>
+							</th>
+							<td>
+								<input type='checkbox' name='enableincompletesignups' id='enableincompletesignups' value='yes' <?php checked('yes', $M_options['enableincompletesignups']); ?> />
 							</td>
 						</tr>
 					</tbody>

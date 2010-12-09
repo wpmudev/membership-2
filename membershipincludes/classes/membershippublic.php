@@ -798,6 +798,8 @@ if(!class_exists('membershippublic')) {
 
 			$page = addslashes($_REQUEST['action']);
 
+			$M_options = get_option('membership_options', array());
+
 			switch($page) {
 
 				case 'validatepage1':	// Page 1 of the form has been submitted - validate
@@ -855,7 +857,9 @@ if(!class_exists('membershippublic')) {
 											$error[] = $userid->get_error_message();
 										} else {
 											$member = new M_Membership( $user_id );
-											$member->deactivate();
+											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+												$member->deactivate();
+											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
@@ -953,7 +957,9 @@ if(!class_exists('membershippublic')) {
 											$error[] = $userid->get_error_message();
 										} else {
 											$member = new M_Membership( $user_id );
-											$member->deactivate();
+											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+												$member->deactivate();
+											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);

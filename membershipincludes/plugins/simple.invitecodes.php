@@ -1,5 +1,6 @@
 <?php
-// BuddyPress options
+// A simple invitation code system for the membership plugin
+// Written by: Barry Getty (Incsub)
 function M_AddSimpleInviteOptions() {
 
 	$Msi_options = get_option('membership_simpleinvite_options', array());
