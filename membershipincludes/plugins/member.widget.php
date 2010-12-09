@@ -2,7 +2,7 @@
 /*
 Plugin Name: Membership widget
 Plugin URI: http://incsub.com
-Description: This plugin adds a simple membership widget.
+Description: This plugin adds a simple membership message widget.
 Author: Barry
 Version: 1.0
 Author URI: http://caffeinatedb.com
@@ -25,20 +25,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-class membershipwidget extends WP_Widget {
+class membershipleveltext extends WP_Widget {
 
-	function membershipwidget() {
+	function membershipleveltext() {
 
-		// Load the text-domain
 		$locale = apply_filters( 'membership_locale', get_locale() );
-		$mofile = membership_dir( "membershipincludes/membership-$locale.mo" );
+		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
 		if ( file_exists( $mofile ) )
 			load_textdomain( 'membership', $mofile );
 
-		$widget_ops = array( 'classname' => 'membershipwidget', 'description' => __('Membership widget', 'membership') );
-		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipwidget');
-		$this->WP_Widget( 'membershipwidget', __('Membership Widget', 'membership'), $widget_ops, $control_ops );
+		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __('Membership Level Text', 'membership') );
+		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipleveltext');
+		$this->WP_Widget( 'membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops );
 	}
 
 	function widget( $args, $instance ) {
@@ -46,44 +45,48 @@ class membershipwidget extends WP_Widget {
 		extract( $args );
 
 		// build the check array
-		$options = array(
-			'notloggedin' 	=> '0',
-			'isloggedin' 	=> '0',
-			'notcommented' 	=> '0',
-			'issearched'	=> '0',
-			'isexternal'	=> '0',
-			'isie'			=> '0',
-			'notsupporter'	=> '0'
+		$defaults = array(
+			'title' 		=> '',
+			'content' 		=> '',
+			'level'		 	=> 'none'
 		);
 
-		foreach($options as $key => $value) {
+		foreach($defaults as $key => $value) {
 			if(isset($instance[$key])) {
-				$options[$key] = $instance[$key];
-			} else {
-				unset($options[$key]);
+				$defaults[$key] = $instance[$key];
 			}
 		}
 
-		if($this->hit_selective($options) || empty($options)) {
-			echo $before_widget;
-			$title = apply_filters('widget_title', $instance['title'] );
+		extract($defaults);
 
-			if ( $title ) {
+		$show = false;
+
+		switch($level) {
+
+			case 'none':	if(!is_user_logged_in() || !current_user_is_member()) {
+								$show = true;
+							}
+							break;
+
+			default:		if(current_user_on_level($level)) {
+								$show = true;
+							}
+							break;
+
+		}
+
+		if($show) {
+			echo $before_widget;
+			$title = apply_filters('widget_title', $title );
+
+			if ( !empty($title) ) {
 				echo $before_title . $title . $after_title;
 			}
 
-			if ( !empty( $instance['content'] ) ) {
-				echo '<div class="textwidget">';
-				if(defined('ADLITE_IAMAPRO') && ADLITE_IAMAPRO == 'yes') {
-					eval(" ?> " . stripslashes($instance['content']) . " <?php ");
-				} else {
-					echo stripslashes($instance['content']);
-				}
-				echo '</div>';
-			}
+			echo apply_filters('the_content', $content);
+
 			echo $after_widget;
 		}
-
 
 	}
 
@@ -93,27 +96,28 @@ class membershipwidget extends WP_Widget {
 		$defaults = array(
 			'title' 		=> '',
 			'content' 		=> '',
-			'none' 			=> '1',
-			'notloggedin' 	=> '0',
-			'isloggedin' 	=> '0',
-			'notcommented' 	=> '0',
-			'issearched'	=> '0',
-			'isexternal'	=> '0',
-			'isie'			=> '0',
-			'notsupporter'	=> '0'
+			'level'		 	=> 'none'
 		);
 
 		foreach ( $defaults as $key => $val ) {
 			$instance[$key] = $new_instance[$key];
 		}
 
-		if ( current_user_can('unfiltered_html') ) {
-			$instance['content'] =  $instance['content'];
-		} else {
+		if ( !current_user_can('unfiltered_html') ) {
 			$instance['content'] = stripslashes( wp_filter_post_kses( addslashes($instance['content']) ) ); // wp_filter_post_kses() expects slashed
 		}
 
 		return $instance;
+	}
+
+	function get_membership_levels() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'membership_levels') . " WHERE level_active = 1;");
+
+		return $wpdb->get_results($sql);
+
 	}
 
 	function form( $instance ) {
@@ -121,50 +125,172 @@ class membershipwidget extends WP_Widget {
 		$defaults = array(
 			'title' 		=> '',
 			'content' 		=> '',
-			'none' 			=> '1',
-			'notloggedin' 	=> '0',
-			'isloggedin' 	=> '0',
-			'notcommented' 	=> '0',
-			'issearched'	=> '0',
-			'isexternal'	=> '0',
-			'isie'			=> '0',
-			'notsupporter'	=> '0'
+			'level'		 	=> 'none'
 		);
 		$instance = wp_parse_args( (array) $instance, $defaults );
 
-		$selections = array(
-								"notloggedin"	=>	__("User isn't logged in",'adlitewidget'),
-								"isloggedin"	=>	__("User is logged in",'adlitewidget'),
-								"notcommented"	=>	__("User hasn't commented before",'adlitewidget'),
-								"issearched"	=>	__("User arrived via a search engine",'adlitewidget'),
-								"isexternal"	=>	__("User arrived via a link",'adlitewidget'),
-								"isie"		=>	__("User is using Internet Explorer",'adlitewidget')
-								);
-
-		if(function_exists('is_supporter')) {
-			$selections['notsupporter'] = __("User isn't a supporter",'adlitewidget');
-		}
+		extract($instance);
 
 		?>
 			<p>
-				<?php _e('Show the content below if one of the checked items is true (or no items are checked):','adlitewidget'); ?>
+				<?php _e('Show the content below if the user is on the following level:','membership'); ?>
 			</p>
 			<p>
-				<?php
-					echo "<input type='hidden' value='1' name='" . $this->get_field_name( 'none' ) . "' id='" . $this->get_field_name( 'none' ) . "' />";
-					foreach($selections as $key => $value) {
-						echo "<input type='checkbox' value='1' name='" . $this->get_field_name( $key ) . "' id='" . $this->get_field_name( $key ) . "' ";
-						if($instance[$key] == '1') echo "checked='checked' ";
-						echo "/>&nbsp;" . $value . "<br/>";
+				<select name='<?php echo $this->get_field_name( 'level' ); ?>' id='<?php echo $this->get_field_id( 'level' ); ?>'>
+					<option value='none' <?php selected($level, 'none'); ?>><?php _e('Non-member or not logged in','membership'); ?></option>
+					<?php
+					$levels = $this->get_membership_levels();
+
+					foreach($levels as $alevel) {
+						?>
+						<option value='<?php echo $alevel->id; ?>' <?php selected($level, $alevel->id); ?>><?php echo $alevel->level_title; ?></option>
+						<?php
 					}
 				?>
+				</select>
 			</p>
 			<p>
-				<?php _e('Content Title','adlitewidget'); ?><br/>
+				<?php _e('Title','membership'); ?><br/>
 				<input type='text' class='widefat' name='<?php echo $this->get_field_name( 'title' ); ?>' id='<?php echo $this->get_field_id( 'title' ); ?>' value='<?php echo esc_attr(stripslashes($instance['title'])); ?>' />
 			</p>
 			<p>
-				<?php _e('Content to display','adlitewidget'); ?><br/>
+				<?php _e('Content','membership'); ?><br/>
+				<textarea class='widefat' name='<?php echo $this->get_field_name( 'content' ); ?>' id='<?php echo $this->get_field_id( 'content' ); ?>' rows='5' cols='40'><?php echo stripslashes($instance['content']); ?></textarea>
+			</p>
+	<?php
+	}
+}
+
+class membershipsubtext extends WP_Widget {
+
+	function membershipsubtext() {
+
+		$locale = apply_filters( 'membership_locale', get_locale() );
+		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
+
+		if ( file_exists( $mofile ) )
+			load_textdomain( 'membership', $mofile );
+
+		$widget_ops = array( 'classname' => 'membershipsubtext', 'description' => __('Membership Subscription Text', 'membership') );
+		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipsubtext');
+		$this->WP_Widget( 'membershipsubtext', __('Membership Subscription Text', 'membership'), $widget_ops, $control_ops );
+	}
+
+	function widget( $args, $instance ) {
+
+		extract( $args );
+
+		// build the check array
+		$defaults = array(
+			'title' 		=> '',
+			'content' 		=> '',
+			'sub'		 	=> 'none'
+		);
+
+		foreach($defaults as $key => $value) {
+			if(isset($instance[$key])) {
+				$defaults[$key] = $instance[$key];
+			}
+		}
+
+		extract($defaults);
+
+		$show = false;
+
+		switch($sub) {
+
+			case 'none':	if(!is_user_logged_in() || !current_user_is_member()) {
+								$show = true;
+							}
+							break;
+
+			default:		if(current_user_on_subscription($sub)) {
+								$show = true;
+							}
+							break;
+
+		}
+
+		if($show) {
+			echo $before_widget;
+			$title = apply_filters('widget_title', $title );
+
+			if ( !empty($title) ) {
+				echo $before_title . $title . $after_title;
+			}
+
+			echo apply_filters('the_content', $content);
+
+			echo $after_widget;
+		}
+
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+
+		$defaults = array(
+			'title' 		=> '',
+			'content' 		=> '',
+			'sub'		 	=> 'none'
+		);
+
+		foreach ( $defaults as $key => $val ) {
+			$instance[$key] = $new_instance[$key];
+		}
+
+		if ( !current_user_can('unfiltered_html') ) {
+			$instance['content'] = stripslashes( wp_filter_post_kses( addslashes($instance['content']) ) ); // wp_filter_post_kses() expects slashed
+		}
+
+		return $instance;
+	}
+
+	function get_subscriptions() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'subscriptions') . " WHERE sub_active = 1");
+
+		return $wpdb->get_results($sql);
+
+	}
+
+	function form( $instance ) {
+
+		$defaults = array(
+			'title' 		=> '',
+			'content' 		=> '',
+			'sub'		 	=> 'none'
+		);
+		$instance = wp_parse_args( (array) $instance, $defaults );
+
+		extract($instance);
+
+		?>
+			<p>
+				<?php _e('Show the content below if the user is on the following subscription:','membership'); ?>
+			</p>
+			<p>
+				<select name='<?php echo $this->get_field_name( 'sub' ); ?>' id='<?php echo $this->get_field_id( 'sub' ); ?>'>
+					<option value='none' <?php selected($sub, 'none'); ?>><?php _e('Non-member or not logged in','membership'); ?></option>
+					<?php
+					$subs = $this->get_subscriptions();
+
+					foreach($subs as $asub) {
+						?>
+						<option value='<?php echo $asub->id; ?>' <?php selected($sub, $asub->id); ?>><?php echo $asub->sub_name; ?></option>
+						<?php
+					}
+				?>
+				</select>
+			</p>
+			<p>
+				<?php _e('Title','membership'); ?><br/>
+				<input type='text' class='widefat' name='<?php echo $this->get_field_name( 'title' ); ?>' id='<?php echo $this->get_field_id( 'title' ); ?>' value='<?php echo esc_attr(stripslashes($instance['title'])); ?>' />
+			</p>
+			<p>
+				<?php _e('Content','membership'); ?><br/>
 				<textarea class='widefat' name='<?php echo $this->get_field_name( 'content' ); ?>' id='<?php echo $this->get_field_id( 'content' ); ?>' rows='5' cols='40'><?php echo stripslashes($instance['content']); ?></textarea>
 			</p>
 	<?php
@@ -172,10 +298,11 @@ class membershipwidget extends WP_Widget {
 }
 
 function membershipwidget_register() {
-	register_widget( 'membershipwidget' );
+	register_widget( 'membershipleveltext' );
+	register_widget( 'membershipsubtext' );
 }
 
-//add_action( 'widgets_init', 'membershipwidget_register' );
+add_action( 'widgets_init', 'membershipwidget_register' );
 
 
 ?>
