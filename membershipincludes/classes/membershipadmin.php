@@ -451,7 +451,7 @@ if(!class_exists('membershipadmin')) {
 
 			global $page, $action;
 
-			$plugin = get_plugin_data(membership_dir('membership.php'));
+			$plugin = get_plugin_data(membership_dir('membershippremium.php'));
 
 			$membershipactive = get_option('membership_active', 'no');
 
