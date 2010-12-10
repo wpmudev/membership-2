@@ -128,7 +128,6 @@ function membership_db_prefix(&$wpdb, $table, $useprefix = true) {
 }
 
 // Template based functions
-
 function current_user_is_member() {
 
 	$user = wp_get_current_user();

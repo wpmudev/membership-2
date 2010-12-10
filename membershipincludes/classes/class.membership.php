@@ -38,9 +38,9 @@ if(!class_exists('M_Membership')) {
 			$active = get_usermeta( $this->ID, $this->db->prefix . 'membership_active');
 
 			if(empty($active) || $active == 'yes') {
-				return true;
+				return apply_filters( 'membership_active_member', true, $this->ID);
 			} else {
-				return false;
+				return apply_filters( 'membership_active_member', false, $this->ID);
 			}
 		}
 
@@ -56,9 +56,9 @@ if(!class_exists('M_Membership')) {
 			$markedsub_id = get_usermeta( $this->ID, '_membership_expire_next', true);
 
 			if(!empty($markedsub_id) && $markedsub_id == $sub_id) {
-				return true;
+				return apply_filters('membership_is_marked_for_expire', true, $this->ID);
 			} else {
-				return false;
+				return apply_filters('membership_is_marked_for_expire', false, $this->ID);
 			}
 
 		}
@@ -70,9 +70,9 @@ if(!class_exists('M_Membership')) {
 			$res = $this->db->get_var($sql);
 
 			if($res > 0) {
-				return true;
+				return apply_filters('membership_is_member', true, $this->ID);
 			} else {
-				return false;
+				return apply_filters('membership_is_member', false, $this->ID);
 			}
 
 		}
@@ -84,9 +84,9 @@ if(!class_exists('M_Membership')) {
 			$res = $this->db->get_var($sql);
 
 			if($res > 0) {
-				return true;
+				return apply_filters('membership_has_subscription', true, $this->ID);
 			} else {
-				return false;
+				return apply_filters('membership_has_subscription', false, $this->ID);
 			}
 
 		}
@@ -253,9 +253,9 @@ if(!class_exists('M_Membership')) {
 			$result = $this->db->get_col( $sql );
 
 			if(empty($result)) {
-				return false;
+				return apply_filters('membership_on_level', false, $level_id, $this->ID);
 			} else {
-				return true;
+				return apply_filters('membership_on_level', true, $level_id, $this->ID);
 			}
 
 		}
@@ -267,9 +267,9 @@ if(!class_exists('M_Membership')) {
 			$result = $this->db->get_col( $sql );
 
 			if(empty($result)) {
-				return false;
+				return apply_filters('membership_on_sub', false, $sub_id, $this->ID);
 			} else {
-				return true;
+				return apply_filters('membership_on_sub', true, $sub_id, $this->ID);
 			}
 
 		}
