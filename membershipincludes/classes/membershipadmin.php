@@ -158,7 +158,7 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
-			add_users_page( __('Membership details','membership'), __('Membership details','membership'), 'read', "mymembership", array(&$this,'handle_profile_member_page'));
+			//add_users_page( __('Membership details','membership'), __('Membership details','membership'), 'read', "mymembership", array(&$this,'handle_profile_member_page'));
 
 		}
 
@@ -3480,10 +3480,69 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
+				if(!current_user_is_member()) {
+					// Not a member so show the message and signup forms
+					?>
+						<div class='nonmembermessage'>
+						<h3><?php _e('','membership'); ?></h3>
+						<?php _e('','membership'); ?>
+						</div>
+						<div class='signups'>
+						<h3><?php _e('Select a subscription','membership'); ?></h3>
+						<p>
+							<?php _e('Please select a subscription from the options below.','membership'); ?>
+						</p>
+						<?php
+							do_action( 'membership_subscription_form_before_subscriptions', $user_id );
+
+							$subs = $this->get_subscriptions();
+
+							do_action( 'membership_subscription_form_before_paid_subscriptions', $user_id );
+
+							foreach((array) $subs as $key => $sub) {
+
+								$subscription = new M_Subscription($sub->id);
+
+								?>
+								<div class="subscription">
+									<div class="description">
+										<h3><?php echo $subscription->sub_name(); ?></h3>
+										<p><?php echo $subscription->sub_description(); ?></p>
+									</div>
+
+								<?php
+									$pricing = $subscription->get_pricingarray();
+
+									if($pricing) {
+										?>
+										<div class='priceforms'>
+											<?php do_action('membership_purchase_button', $subscription, $pricing, $user_id); ?>
+										</div>
+										<?php
+									}
+								?>
+								</div>
+								<?php
+							}
+
+							do_action( 'membership_subscription_form_after_paid_subscriptions', $user_id );
+							do_action( 'membership_subscription_form_after_subscriptions', $user_id );
+							?>
+						</div>
+					<?php
+				} else {
+					if(current_user_has_subscription()) {
+						// User has a subscription already. Display the details - and an action to enable upgrading / not upgrading to take place.
+						?>
+							<div class='nonmembermessage'>
+							<h3><?php _e('','membership'); ?></h3>
+							<?php _e('','membership'); ?>
+							</div>
+						<?php
+					}
+				}
+
 				?>
-				<p>Hello</p>
-
-
 			</div> <!-- wrap -->
 			<?php
 		}
