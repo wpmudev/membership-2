@@ -1,5 +1,8 @@
 <?php
 
+// Supporter membership integration
+// Verion 0.1 alpha - by Barry (barry@incsub.com)
+
 add_action( 'membership_subscription_form_after_levels', 'supporter_membership_subscription_settings' );
 add_action( 'membership_subscription_update', 'supporter_membership_subscription_update');
 add_action( 'membership_subscription_add', 'supporter_membership_subscription_update');
@@ -13,9 +16,7 @@ add_action('edit_user_profile_update', 'supporter_membership_update_user_section
 add_action('personal_options_update', 'supporter_membership_update_user_section');
 
 function supporter_membership_subscription_update( $sub_id ) {
-
 	update_option( "membership_supporter_integration_" . $sub_id, $_POST['membership_supporter_integration'] );
-
 }
 
 function supporter_membership_subscription_settings( $sub_id ) {

@@ -80,6 +80,16 @@ function M_AddSimpleInviteFieldProcess($error) {
 
 		if(!in_array( $thekey, $codes )) {
 			$error[] = __('Sorry, but we do not seem to have that code on file, please try another.','membership');
+		} else {
+			//if($Msi_options['invitecodesonetimeonly'] == 'yes') {
+				$key = array_search( $thekey, $codes);
+				if($key !== false) {
+					unset($codes[$key]);
+					$Msi_options['invitecodes'] = implode("\n", $codes);
+
+					update_option('membership_simpleinvite_options', $Msi_options);
+				}
+			//}
 		}
 	}
 
