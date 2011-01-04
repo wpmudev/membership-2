@@ -3484,8 +3484,8 @@ if(!class_exists('membershipadmin')) {
 					// Not a member so show the message and signup forms
 					?>
 						<div class='nonmembermessage'>
-						<h3><?php _e('','membership'); ?></h3>
-						<?php _e('','membership'); ?>
+						<h3><?php _e('Not called yet','membership'); ?></h3>
+						<?php _e('Not called yet','membership'); ?>
 						</div>
 						<div class='signups'>
 						<h3><?php _e('Select a subscription','membership'); ?></h3>
@@ -3535,8 +3535,8 @@ if(!class_exists('membershipadmin')) {
 						// User has a subscription already. Display the details - and an action to enable upgrading / not upgrading to take place.
 						?>
 							<div class='nonmembermessage'>
-							<h3><?php _e('','membership'); ?></h3>
-							<?php _e('','membership'); ?>
+							<h3><?php _e('Not called yet','membership'); ?></h3>
+							<?php _e('Not called yet','membership'); ?>
 							</div>
 						<?php
 					}

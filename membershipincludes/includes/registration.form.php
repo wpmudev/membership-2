@@ -51,7 +51,7 @@
 			}
 		?>
 
-		<p><input type="submit" value="<?php _e('Register My Account »','membership'); ?>" class="regbutton" name="register"></p>
+		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="regbutton" name="register"></p>
 		<input type="hidden" name="action" value="validatepage1" />
 	</div>
 </form>

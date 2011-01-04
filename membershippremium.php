@@ -1,12 +1,13 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 1.0.5
+Version: 1.0.6
 Plugin URI: http://premium.wpmudev.org
 Description: A Membership system plugin
 Author: Barry (Incsub)
 Author URI: http://mapinated.com
 WDP ID: 140
+Network: true
 
 Copyright 2010  (email: admin@incsub.com)
 
