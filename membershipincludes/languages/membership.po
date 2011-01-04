@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-04 02:48+0100\n"
-"PO-Revision-Date: 2011-01-04 02:48+0100\n"
+"POT-Creation-Date: 2011-01-04 02:53+0100\n"
+"PO-Revision-Date: 2011-01-04 02:53+0100\n"
 "Last-Translator: Barry <barry@mapinated.com>\n"
 "Language-Team: Incsub <barry@incsub.com>\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgid "Future transactions"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.gateway.php:237
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1438
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1451
 msgid "Subscription"
 msgstr ""
 
@@ -80,9 +80,9 @@ msgid "None yet"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.gateway.php:347
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1760
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1805
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3567
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1773
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1818
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3580
 msgid "None"
 msgstr ""
 
@@ -184,13 +184,13 @@ msgid "Membership"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:135
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:415
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:598
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:428
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:611
 msgid "Members"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:135
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1327
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1340
 msgid "Edit Members"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgid "Membership Gateways"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:139
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3320
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3333
 msgid "Edit Gateways"
 msgstr ""
 
@@ -224,1067 +224,1071 @@ msgid "Membership Options"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:141
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1706
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1719
 msgid "Edit Options"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:236
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:218
+msgid "Please install the latest version of <a href=\"http://premium.wpmudev.org/project/update-notifications/\" title=\"Download Now &raquo;\">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href=\"http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/\">More information &raquo;</a>"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:249
 msgid "Are you sure you want to delete this level?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:236
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:249
 msgid "Are you sure you want to deactivate this level?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:249
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:262
 msgid "Are you sure you want to delete this subscription?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:249
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:262
 msgid "Are you sure you want to deactivate this subscription?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:263
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:276
 msgid "Are you sure you want to deactivate this member?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:415
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:428
 msgid "Signups"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:458
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:471
 msgid "The membership plugin version "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:459
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:472
 msgid " is "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:463
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:465
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:476
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:478
 msgid "Click here to enable the plugin"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:463
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:476
 msgid "Disabled"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:465
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:478
 msgid "Enabled"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:470
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:483
 msgid "Member counts"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:486
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1368
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1587
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:499
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1381
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1600
 msgid "Levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:499
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:526
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:512
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:539
 msgid "Total"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:513
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1362
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1581
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:526
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1375
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1594
 msgid "Subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:538
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:551
 msgid "User counts"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:551
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:564
 msgid "Total Users"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:558
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:571
 msgid "Deactivated Users"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:589
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:602
 msgid "Membership dashboard"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:615
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:628
 msgid "Statistics"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:860
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:873
 msgid "Add member to a level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:861
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:882
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:915
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:874
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:895
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:928
 msgid "A membership level controls the amount of access to the sites content this member will have."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:862
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:875
 msgid "By adding a membership level, you may actually be removing existing access to content."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:864
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:877
 msgid "Level to add for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:867
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1008
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:880
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1021
 msgid "Select the level to add."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:881
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:894
 msgid "Move member to another level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:884
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:897
 msgid "Level to move from for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:887
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:900
 msgid "Select the level to move from."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:897
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:910
 msgid "Level to move to for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:900
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1051
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:913
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1064
 msgid "Select the level to move to."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:913
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:926
 msgid "Drop member from level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:916
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:929
 msgid "By removing a membership level, you may actually be increasing existing access to content."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:918
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:931
 msgid "Level to drop for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:921
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:934
 msgid "Select the level to remove."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:962
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1121
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2215
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2222
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2759
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2766
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:975
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1134
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2228
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2235
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2772
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2779
 msgid "Cancel"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1001
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1014
 msgid "Add member to a subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1002
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1032
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1075
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1015
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1045
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1088
 msgid "A subscription controls the levels a site member has access to / passes through."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1003
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1016
 msgid "Depending on your payment gateway, adding a subscription here may not set up a payment subscription."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1005
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1018
 msgid "Subscription and level to add for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1031
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1044
 msgid "Move member to another subscription level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1033
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1046
 msgid "Depending on your payment gateway, moving a subscription here may not alter a members existing payment subscription."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1035
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1048
 msgid "Subscription to move from for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1038
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1051
 msgid "Select the subscription to move from."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1048
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1061
 msgid "Subscription and Level to move to for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1073
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1086
 msgid "Drop member from subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1076
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1089
 msgid "Depending on the payment gateway, removing a subscription will not automatically cancel a payment subscription."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1078
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1091
 msgid "Subscription to drop for this / these member(s)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1081
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1094
 msgid "Select the subscription to remove."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1312
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1325
 msgid "Member added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1313
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1326
 msgid "Member deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1314
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1327
 msgid "Member updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1315
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1328
 msgid "Member not added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1316
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1329
 msgid "Member not updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1317
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1330
 msgid "Member not deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1319
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1332
 msgid "Member activation toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1320
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1333
 msgid "Member activation not toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1322
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1335
 msgid "Members updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1339
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1341
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1352
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1354
 msgid "Search Members"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1359
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1578
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2501
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2634
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3049
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3198
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3338
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3455
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1372
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1591
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2514
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2647
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3062
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3211
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3351
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3468
 msgid "Bulk Actions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1360
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1579
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2503
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2636
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3051
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3200
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3339
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3456
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1373
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1592
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2516
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2649
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3064
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3213
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3352
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3469
 msgid "Toggle activation"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1363
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1582
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1376
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1595
 msgid "Add subscription"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1364
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1583
-msgid "Move subscription"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1365
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1584
-msgid "Drop subscription"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1369
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1588
-msgid "Add level"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1370
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1589
-msgid "Move level"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1371
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1590
-msgid "Drop level"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1374
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2505
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3054
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3341
-msgid "Apply"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1377
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1596
+msgid "Move subscription"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1378
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1597
+msgid "Drop subscription"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1382
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1601
+msgid "Add level"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1383
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1602
+msgid "Move level"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1384
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1603
+msgid "Drop level"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1387
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2518
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3067
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3354
+msgid "Apply"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1390
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1609
 msgid "Filter by subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1389
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1404
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1608
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1623
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2518
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3068
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1402
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1417
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1621
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1636
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2531
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3081
 msgid "Filter"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1392
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1611
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1405
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1624
 msgid "Filter by level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1409
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2523
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2641
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3073
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3205
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1422
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2536
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2654
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3086
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3218
 msgid "Add New"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1426
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1439
 msgid "&larr; Back to All Users"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1434
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1447
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:808
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:893
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/bp.registration.form.php:19
 msgid "Username"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1435
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1448
 msgid "Name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1436
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1449
 msgid "E-mail"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1437
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1509
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2535
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2603
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3085
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3157
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3356
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3425
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1450
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1522
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2548
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2616
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3098
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3170
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3369
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3438
 msgid "Active"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1439
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1452
 msgid "Membership Level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1495
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2584
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3135
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1508
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2597
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3148
 msgid "ID : "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1496
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2585
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3136
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1509
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2598
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3149
 msgid "Edit"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1498
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2589
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3140
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3415
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1511
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2602
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3153
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3428
 msgid "Deactivate"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1500
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2587
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3138
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3417
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1513
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2600
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3151
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3430
 msgid "Activate"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1506
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1519
 #, php-format
 msgid "e-mail: %s"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1511
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2601
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3155
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3427
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1524
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2614
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3168
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3440
 msgid "Inactive"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1530
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1557
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2223
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2767
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1543
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1570
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2236
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2780
 msgid "Add"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1533
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1560
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1546
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1573
 msgid "Move"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1534
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1561
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1547
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1574
 msgid "Drop"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1701
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1714
 msgid "Your options have been updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1724
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1737
 msgid "Stranger settings"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1725
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1738
 msgid "A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1730
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1743
 msgid "Use membership level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1733
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1746
 msgid "None - No access to content"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1750
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1763
 msgid "User registration"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1751
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1764
 msgid "If you have free user registration enabled on your site, select the subscription they will be assigned to initially."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1752
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1765
 msgid "If you are using a paid subscription model - it is probably best to set this to &quot;none&quot;."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1757
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1770
 msgid "Use subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1777
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1790
 msgid "The default setting for the membership plugin is to disable user accounts that do not complete their subscription signup."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1778
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1791
 msgid "If you want to change this, then use the option below."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1783
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1796
 msgid "Enable incomplete signup accounts"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1793
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1800
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1806
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1813
 msgid "Registration page"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1794
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1807
 msgid "This is the page a new user will be redirected to when they want to register on your site."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1795
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1808
 msgid "It can contain any content you want but <strong>must</strong> contain the [subscriptionform] shortcode in some location."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1801
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1814
 msgid "Select a page to use for the registration form."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1813
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1826
 msgid "Shortcode protected content"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1814
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1827
 msgid "You can protect parts of a post or pages content by enclosing it in WordPress shortcodes."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1815
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1828
 msgid "Create as many shortcodes as you want by entering them below, each shortcode should be on a separate line."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1820
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1833
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:721
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:735
 msgid "Shortcodes"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1821
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1834
 msgid "Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1837
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1850
 msgid "Shortcode visibility default"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1838
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1851
 msgid "Should the shortcodes above be visible or protected by default."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1843
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1856
 msgid "Yes - Shortcodes are visible by default"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1844
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1857
 msgid "No - Shortcodes are protected by default"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1849
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1989
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1862
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2002
 msgid "No access message"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1850
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1863
 msgid "This is the message that is displayed when the content protected by the shortcode can't be shown."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1851
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1991
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1864
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2004
 msgid "Leave blank for no message."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1852
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1947
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1992
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1865
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1960
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2005
 msgid "HTML allowed."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1862
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1875
 msgid "Downloads / Media protection"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1863
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1876
 msgid "Downloads and media files can be protected by remapping their perceived location."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1864
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1877
 msgid "Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1869
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1882
 msgid "Actual download URL"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1870
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1883
 msgid "This is a system generated URL, you shouldn't need to change this."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1882
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1895
 msgid "Masked download URL"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1883
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1896
 msgid "This is the URL that the user will see."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1884
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1897
 msgid "Change the end part to something unique."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1893
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1906
 msgid "Protected groups"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1894
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1907
 msgid "Place each download group name on a new line, removing used groups will leave content visible to all users/members."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1913
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1926
 msgid "Protected content message"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1914
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1927
 msgid "If a post / page / content is not available to a user, this is the message or page content that will be displayed in its place."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1915
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1928
 msgid "This message will only be displayed if the user has tried to access the post / page / content directly or via a link."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1916
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1929
 msgid "Note: This message will override the 404 page for none members."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1922
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1935
 msgid "Protected content page"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1923
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1936
 msgid "Select a page to use for the content."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1924
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1937
 msgid "Alternatively complete the content below."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1929
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1942
 msgid "None (use settings below)"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1932
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1945
 msgid "Note: If you have set no content access, then the settings below will be used instead."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1937
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1950
 msgid "Protected Message Title"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1938
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1951
 msgid "Enter the title for the message that you want displayed when the content is not available."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1945
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1958
 msgid "Protected Message"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1946
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1959
 msgid "Enter the message that you want displayed when the content is not available."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1955
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1968
 msgid "Use page template"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1957
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1970
 msgid "You can choose which template from your theme to use for this message."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1958
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1971
 msgid "If you don't know what this means, then leave it set as default."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1963
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1976
 msgid "Default Template"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1973
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1986
 msgid "More tag default"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1974
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1987
 msgid "Content placed after the More tag in a post or page can be protected by setting the visibility below. This setting can be overridden within each individual level."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1979
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1992
 msgid "Show content after the More tag"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1982
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1995
 msgid "Yes - More tag content is visible"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1983
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1996
 msgid "No - More tag content not visible"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1990
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2003
 msgid "This is the message that is displayed when the content protected by the moretag can't be shown."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2002
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2015
 msgid "Payments currency"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2003
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2016
 msgid "This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2008
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2021
 msgid "Payment currencys"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2070
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2083
 msgid "Main rules"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2072
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2085
 msgid "Content rules"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2090
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2664
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2103
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2677
 msgid " clone"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2093
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2106
 msgid "new level"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2123
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2688
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2136
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2701
 msgid "Edit "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2151
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2164
 msgid "Level title"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2157
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2170
 msgid "Positive rules"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2158
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2171
 msgid "These are the areas / elements that a member of this level can access."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2180
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2205
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2743
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2193
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2218
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2756
 msgid "Drop here"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2183
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2196
 msgid "Negative rules"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2184
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2197
 msgid "These are the areas / elements that a member of this level doesn't have access to."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2216
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2760
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2229
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2773
 msgid "Update"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2458
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2471
 msgid "Membership Level added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2459
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2472
 msgid "Membership Level deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2460
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2473
 msgid "Membership Level updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2461
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2474
 msgid "Membership Level not added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2462
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2475
 msgid "Membership Level not updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2463
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2476
 msgid "Membership Level not deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2465
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2478
 msgid "Membership Level activation toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2466
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2479
 msgid "Membership Level activation not toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2468
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2481
 msgid "Membership Levels updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2473
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2486
 msgid "Edit Membership Levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2485
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2487
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3033
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2498
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2500
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3046
 msgid "Search Memberships"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2502
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2593
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2635
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3050
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3147
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3199
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2515
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2606
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2648
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3063
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3160
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3212
 msgid "Delete"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2508
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2521
 msgid "View all Levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2509
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2522
 msgid "View active Levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2510
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2523
 msgid "View inactive Levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2515
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2528
 msgid "Order by Level ID"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2516
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2529
 msgid "Order by Level Name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2534
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2547
 msgid "Level Name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2536
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3087
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2549
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3100
 msgid "Users"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2591
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2604
 msgid "Clone"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2620
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2633
 msgid "No Membership levels where found, click above to add one."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2667
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2680
 msgid "new subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2684
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2697
 msgid "Add "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2712
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2725
 msgid "Subscription name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2715
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2728
 msgid "Subscription description"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2724
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2795
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2737
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2808
 msgid "Membership levels"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2725
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2738
 msgid "These are the levels that are part of this subscription and the order a user will travel through them."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2730
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2743
 msgid "A new signup for this subscription will start here and immediately pass to the next membership level listed below."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3006
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3019
 msgid "Subscription added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3007
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3020
 msgid "Subscription deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3008
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3021
 msgid "Subscription updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3009
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3022
 msgid "Subscription not added."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3010
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3023
 msgid "Subscription not updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3011
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3024
 msgid "Subscription not deleted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3013
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3026
 msgid "Subscription activation toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3014
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3027
 msgid "Subscription activation not toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3016
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3029
 msgid "Subscriptions updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3021
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3034
 msgid "Edit Subscription Plans"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3035
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3048
 msgid "Search Subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3052
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3065
 msgid "Toggle public status"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3057
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3070
 msgid "View all subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3058
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3071
 msgid "View active subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3059
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3072
 msgid "View inactive subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3060
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3073
 msgid "View public subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3061
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3074
 msgid "View private subscriptions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3065
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3078
 msgid "Order by subscription ID"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3066
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3079
 msgid "Order by subscription name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3084
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3097
 msgid "Subscription Name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3086
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3167
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3099
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3180
 msgid "Public"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3143
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3156
 msgid "Make public"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3145
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3158
 msgid "Make private"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3165
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3178
 msgid "Private"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3184
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3197
 msgid "No Subscriptions where found, click above to add one."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3306
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3319
 msgid "Gateway updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3307
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3320
 msgid "Gateway not updated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3309
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3322
 msgid "Gateway activated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3310
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3323
 msgid "Gateway not activated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3312
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3325
 msgid "Gateway deactivated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3313
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3326
 msgid "Gateway not deactivated."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3315
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3328
 msgid "Gateway activation toggled."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3355
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3368
 msgid "Gateway Name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3357
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3370
 msgid "Transactions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3412
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3425
 msgid "Settings"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3432
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3445
 msgid "View transactions"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3441
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3454
 msgid "No Payment gateways where found for this install."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3475
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3488
 msgid "Membership details"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3487
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3488
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3538
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3539
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3500
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3501
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3551
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3552
 msgid "Not called yet"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3491
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3504
 msgid "Select a subscription"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3493
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3506
 msgid "Please select a subscription from the options below."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3583
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3596
 msgid "Protected content group"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3586
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3599
 msgid "Is this an item you may want to restrict access to?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3847
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3851
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3860
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3864
 msgid "Membership key"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3854
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3867
 msgid "This key is used to give you access the the members RSS feed, keep it safe and secret."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3880
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3884
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3893
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3897
 msgid "Membership Administration"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3888
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3901
 msgid "This user has access to administer the Membership system."
 msgstr ""
 
