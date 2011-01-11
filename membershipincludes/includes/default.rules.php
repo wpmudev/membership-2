@@ -90,7 +90,8 @@ class M_Posts extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
-		if(is_page()) {
+		// if(is_page()) {
+		if(!in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
@@ -104,7 +105,8 @@ class M_Posts extends M_Rule {
 
 	function add_unviewable_posts($wp_query) {
 
-		if(is_page()) {
+		// if(is_page()) {
+		if(!in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
@@ -216,7 +218,8 @@ class M_Pages extends M_Rule {
 
 	function add_viewable_pages($wp_query) {
 
-		if(!is_page()) {
+		// if(!is_page()) {
+		if(!in_array($wp_query->query_vars['post_type'], array('page'))) {
 			return;
 		}
 
@@ -241,7 +244,8 @@ class M_Pages extends M_Rule {
 
 	function add_unviewable_pages($wp_query) {
 
-		if(!is_page()) {
+		//if(!is_page()) {
+		if(!in_array($wp_query->query_vars['post_type'], array('page'))) {
 			return;
 		}
 
@@ -352,7 +356,8 @@ class M_Categories extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
-		if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
+		// if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
+		if(!in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
@@ -366,7 +371,8 @@ class M_Categories extends M_Rule {
 
 	function add_unviewable_posts($wp_query) {
 
-		if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
+		// if(is_page() || !in_array($wp_query->query_vars['post_type'], array('post'))) {
+		if(!in_array($wp_query->query_vars['post_type'], array('post'))) {
 			return;
 		}
 
