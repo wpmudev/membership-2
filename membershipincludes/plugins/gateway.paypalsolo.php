@@ -1,11 +1,11 @@
 <?php
 
-class paypalexpress extends M_Gateway {
+class paypalsolo extends M_Gateway {
 
-	var $gateway = 'paypalexpress';
-	var $title = 'PayPal Express - with subscriptions';
+	var $gateway = 'paypalsolo';
+	var $title = 'PayPal Express - single payments';
 
-	function paypalexpress() {
+	function paypalsolo() {
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
@@ -620,6 +620,6 @@ class paypalexpress extends M_Gateway {
 
 }
 
-M_register_gateway('paypalexpress', 'paypalexpress');
+M_register_gateway('paypalsolo', 'paypalsolo');
 
 ?>
