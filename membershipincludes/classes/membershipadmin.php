@@ -10,13 +10,15 @@ if(!class_exists('membershipadmin')) {
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $membership_relationships;
 		var $subscriptions;
 		var $subscriptions_levels;
+		var $membermeta;
+		var $communications;
 
 		function __construct() {
 
@@ -45,6 +47,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
 			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
+			add_action('load-membership_page_membercommunication', array(&$this, 'add_admin_header_membershipcommunication'));
 
 			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
 
@@ -139,6 +142,8 @@ if(!class_exists('membershipadmin')) {
 				add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
 
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
+
+				add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
 
 				// Move the menu to the top of the page
 				foreach($menu as $key => $value) {
@@ -298,6 +303,21 @@ if(!class_exists('membershipadmin')) {
 			$this->add_admin_header_core();
 
 			wp_enqueue_style('optionscss', membership_url('membershipincludes/css/options.css'), array(), $this->build);
+		}
+
+		function add_admin_header_membershipcommunication() {
+			// Run the core header
+			$this->add_admin_header_core();
+
+			//wp_enqueue_script('membersjs', membership_url('membershipincludes/js/members.js'), array(), $this->build);
+			// Using the level css file for now - maybe switch to a members specific one later
+			//wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
+
+			//wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
+
+
+			$this->handle_communication_updates();
+
 		}
 
 		// Panel handling functions
@@ -3371,7 +3391,7 @@ if(!class_exists('membershipadmin')) {
 										"transactions" => __('Transactions','membership')
 									);
 
-					$columns = apply_filters('membership_levelcolumns', $columns);
+					$columns = apply_filters('membership_gatewaycolumns', $columns);
 
 					$gateways = apply_filters('M_gateways_list', array());
 
@@ -3481,6 +3501,255 @@ if(!class_exists('membershipadmin')) {
 			<?php
 
 		}
+
+		function handle_communication_updates() {
+
+		}
+
+		function handle_communication_panel() {
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->settings();
+								}
+								return; // so we don't show the list below
+								break;
+
+				case 'transactions':
+								if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->transactions();
+								}
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Gateway updated.');
+			$messages[2] = __('Gateway not updated.');
+
+			$messages[3] = __('Gateway activated.');
+			$messages[4] = __('Gateway not activated.');
+
+			$messages[5] = __('Gateway deactivated.');
+			$messages[6] = __('Gateway not deactivated.');
+
+			$messages[7] = __('Gateway activation toggled.');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-edit-comments"><br></div>
+				<h2><?php _e('Edit Communication','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				$comms = $this->get_communications();
+
+				$comms = apply_filters('M_communications_list', $comms);
+
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
+
+				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+				<option value="delete"><?php _e('Delete'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+
+				<select name="level_id">
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Levels','membership'); ?></option>
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Levels','membership'); ?></option>
+				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Levels','membership'); ?></option>
+
+				</select>
+
+				<select name="order_by">
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by Level ID','membership'); ?></option>
+				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by Level Name','membership'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
+
+				</div>
+
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel">
+				</div>
+
+				<br class="clear">
+				</div>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-comms');
+
+					$columns = array(	"name" 		=> 	__('Message Subject','membership'),
+										"active"	=>	__('Active','membership'),
+										"transactions" => __('Pre-expiry period','membership')
+									);
+
+					$columns = apply_filters('membership_communicationcolumns', $columns);
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if($comms) {
+							foreach($comms as $key => $comm) {
+								?>
+								<tr valign="middle" class="alternate" id="comm-<?php echo $comm->id; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($comm->id); ?>" name="commcheck[]"></th>
+									<td class="column-name">
+										<strong><a title="Edit <?php echo esc_attr($comm->subject); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html($comm->subject); ?></a></strong>
+										<?php
+											$actions = array();
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;comm=" . $comm->id . "'>" . __('Edit') . "</a></span>";
+
+											if($comm->active == 1) {
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Deactivate') . "</a></span>";
+											} else {
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Activate') . "</a></span>";
+											}
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+									<td class="column-active">
+										<?php
+											if($comm->active == 1) {
+												echo "<strong>" . __('Active', 'membership') . "</strong>";
+											} else {
+												echo __('Inactive', 'membership');
+											}
+										?>
+									</td>
+									<td class="column-transactions">
+										<?php
+										if($comm->periodstamp == 0) {
+											echo "Signup message";
+										} else {
+											// Show pre or post
+											if($comm->periodprepost == 'pre') {
+												echo "-&nbsp;";
+											} else {
+												echo "+&nbsp;";
+											}
+											// Show period
+											echo $comm->periodunit . "&nbsp;";
+											// Show unit
+											switch($comm->periodtype) {
+												case 'n':	echo "Minute(s)";
+															break;
+												case 'h':	echo "Hour(s)";
+															break;
+												case 'd':	echo "Day(s)";
+															break;
+												case 'w':	echo "Week(s)";
+															break;
+												case 'm':	echo "Month(s)";
+															break;
+												case 'y':	echo "Year(s)";
+															break;
+											}
+										}
+										?>
+									</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No communication messages have been set up.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="delete"><?php _e('Delete'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				</div>
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+				</div>
+				<br class="clear">
+				</div>
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
+		}
+
+		function get_communications() {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->communications} ORDER BY periodstamp ASC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+				return $results;
+			} else {
+				return false;
+			}
+
+		}
+
 
 		function handle_profile_member_page() {
 			?>
