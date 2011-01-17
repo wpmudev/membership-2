@@ -6,24 +6,18 @@ if(!class_exists('M_Communication')) {
 		var $build = 1;
 
 		var $db;
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions_levels', 'membership_relationships');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications');
 
 		var $membership_levels;
 		var $membership_rules;
-		var $subscriptions_levels;
 		var $membership_relationships;
+		var $subscriptions;
+		var $subscriptions_levels;
+		var $membermeta;
+		var $communications;
 
 		// if the data needs reloaded, or hasn't been loaded yet
 		var $dirty = true;
-
-		var $level;
-		var $ruledetails = array();
-
-		// Active rules
-		var $positiverules = array();
-		var $negativerules = array();
-
-		var $lastlevelid;
 
 		function __construct( $id = false) {
 
@@ -43,7 +37,17 @@ if(!class_exists('M_Communication')) {
 			$this->__construct( $id );
 		}
 
+		function editform() {
 
+		}
+
+		function add() {
+
+		}
+
+		function update() {
+
+		}
 
 	}
 }
