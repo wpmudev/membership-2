@@ -41,6 +41,7 @@ if(is_admin()) {
 	require_once('membershipincludes/classes/class.level.php');
 	require_once('membershipincludes/classes/class.subscription.php');
 	require_once('membershipincludes/classes/class.membership.php');
+	require_once('membershipincludes/classes/class.communication.php');
 	// Set up the default rules
 	require_once('membershipincludes/includes/default.rules.php');
 	require_once('membershipincludes/includes/default.admin.rules.php');
@@ -57,6 +58,7 @@ if(is_admin()) {
 	require_once('membershipincludes/classes/class.level.php');
 	require_once('membershipincludes/classes/class.subscription.php');
 	require_once('membershipincludes/classes/class.membership.php');
+	require_once('membershipincludes/classes/class.communication.php');
 	// Set up the default rules
 	require_once('membershipincludes/includes/default.rules.php');
 

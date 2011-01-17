@@ -3513,15 +3513,10 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'edit':	if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
-									$M_Gateways[addslashes($_GET['gateway'])]->settings();
-								}
-								return; // so we don't show the list below
-								break;
-
-				case 'transactions':
-								if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
-									$M_Gateways[addslashes($_GET['gateway'])]->transactions();
+				case 'edit':	if(isset($_GET['comm'])) {
+									// Make a communication
+									$editcomm =& new M_Communication( (int) $_GET['comm'] );
+									$editcomm->editform();
 								}
 								return; // so we don't show the list below
 								break;
@@ -3530,16 +3525,16 @@ if(!class_exists('membershipadmin')) {
 
 
 			$messages = array();
-			$messages[1] = __('Gateway updated.');
-			$messages[2] = __('Gateway not updated.');
+			$messages[1] = __('Message updated.');
+			$messages[2] = __('Message not updated.');
 
-			$messages[3] = __('Gateway activated.');
-			$messages[4] = __('Gateway not activated.');
+			$messages[3] = __('Message activated.');
+			$messages[4] = __('Message not activated.');
 
-			$messages[5] = __('Gateway deactivated.');
-			$messages[6] = __('Gateway not deactivated.');
+			$messages[5] = __('Message deactivated.');
+			$messages[6] = __('Message not deactivated.');
 
-			$messages[7] = __('Gateway activation toggled.');
+			$messages[7] = __('Message activation toggled.');
 
 			?>
 			<div class='wrap'>
@@ -3572,23 +3567,19 @@ if(!class_exists('membershipadmin')) {
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
-				<select name="level_id">
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Levels','membership'); ?></option>
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Levels','membership'); ?></option>
-				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Levels','membership'); ?></option>
+				<select name="comm_id">
+				<option <?php if(isset($_GET['comm_id']) && addslashes($_GET['comm_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Messages','membership'); ?></option>
+				<option <?php if(isset($_GET['comm_id']) && addslashes($_GET['comm_id']) == 'active') echo "selected='selected'"; ?> value="active"><?php _e('View active Messages','membership'); ?></option>
+				<option <?php if(isset($_GET['comm_id']) && addslashes($_GET['comm_id']) == 'inactive') echo "selected='selected'"; ?> value="inactive"><?php _e('View inactive Messages','membership'); ?></option>
 
 				</select>
 
-				<select name="order_by">
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by Level ID','membership'); ?></option>
-				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by Level Name','membership'); ?></option>
-				</select>
 				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
 
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel">
+					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New'); ?>" name="addnewmessage">
 				</div>
 
 				<br class="clear">
@@ -3725,7 +3716,7 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New'); ?>" name="addnewmessage2">
 				</div>
 				<br class="clear">
 				</div>
