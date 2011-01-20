@@ -223,9 +223,10 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
 			$form .= '<input type="hidden" name="fixed" value="Y">';
+			$form .= '<input type="hidden" name="merchant_order_id" value="'.$product_id.':'.$user_id.'" />';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
@@ -260,9 +261,10 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
-			$form .= '<input type="hidden" name="quantity" value="1">';
-			$form .= '<input type="hidden" name="fixed" value="Y">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '" />';
+			$form .= '<input type="hidden" name="quantity" value="1" />';
+			$form .= '<input type="hidden" name="fixed" value="Y" />';
+			$form .= '<input type="hidden" name="merchant_order_id" value="'.$product_id.':'.$user_id.'" />';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
@@ -298,9 +300,10 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
 			$form .= '<input type="hidden" name="fixed" value="Y">';
+			$form .= '<input type="hidden" name="merchant_order_id" value="'.$product_id.':'.$user_id.'" />';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
@@ -380,12 +383,8 @@ class twocheckout extends M_Gateway {
 			$product_id = false;
 			$user_id = false;
 			
-			$product_id_parts = explode(':', $_REQUEST['merchant_product_id']);
-			
-			if (is_array($product_id_parts) && count($product_id_parts) == 2) {
-				$product_id = $product_id_parts[0];
-				$user_id = $product_id_parts[1];
-			}
+			$product_id = $_REQUEST['merchant_product_id'];
+			list($tmp, $user_id) = explode(':', $_REQUEST['cart_order_id']);
 			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
@@ -413,7 +412,8 @@ class twocheckout extends M_Gateway {
 			$product_id = false;
 			$user_id = false;
 			
-			list($product_id, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
+			$product_id = $_REQUEST['item_id_1'];
+			list($tmp, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
 			
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
