@@ -223,7 +223,7 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
 			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
@@ -260,7 +260,7 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
 			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
@@ -298,7 +298,7 @@ class twocheckout extends M_Gateway {
 			}
 			
 			$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
-			$form .= '<input type="hidden" name="product_id" value="' . $product_id . '">';
+			$form .= '<input type="hidden" name="product_id" value="' . $product_id . ':' . $user_id . '">';
 			$form .= '<input type="hidden" name="quantity" value="1">';
 			$form .= '<input type="hidden" name="fixed" value="Y">';
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
@@ -324,7 +324,7 @@ class twocheckout extends M_Gateway {
 					$free = false;
 				}
 			}
-
+			
 			if(!$free) {
 				if(count($pricing) == 1) {
 					// A basic price or a single subscription
@@ -337,9 +337,7 @@ class twocheckout extends M_Gateway {
 					}
 				} else {
 					// something much more complex
-
 					return $this->complex_sub_button($pricing, $subscription, $user_id);
-
 				}
 			}
 
@@ -375,10 +373,19 @@ class twocheckout extends M_Gateway {
 	// Return stuff
 	function handle_2checkout_return() {
 		// Return handling code
-
+		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
-			$timestamp = time();
 			$total = $_REQUEST['total'];
+			
+			$product_id = false;
+			$user_id = false;
+			
+			$product_id_parts = explode(':', $_REQUEST['merchant_product_id']);
+			
+			if (is_array($product_id_parts) && count($product_id_parts) == 2) {
+				$product_id = $product_id_parts[0];
+				$user_id = $product_id_parts[1];
+			}
 			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
@@ -386,20 +393,56 @@ class twocheckout extends M_Gateway {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_REQUEST['order_number'] . $total));
 			}
 			
-			if ($_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
-				$this->record_transaction($_REQUEST['user_id'], $_REQUEST['merchant_product_id'], $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
+			if ($product_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
+				$this->record_transaction($user_id, $product_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 				
 				// Added for affiliate system link
-				do_action('membership_payment_processed', $_REQUEST['user_id'], $_REQUEST['merchant_product_id'], $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
+				do_action('membership_payment_processed', $user_id, $product_id, $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
 				
-				$member = new M_Membership($_REQUEST['user_id']);
+				$member = new M_Membership($user_id);
 				if($member) {
-					$member->create_subscription($_REQUEST['merchant_product_id']);
+					$member->create_subscription($product_id);
 				}
 				
-				do_action('membership_payment_subscr_signup', $_REQUEST['user_id'], $_REQUEST['merchant_product_id']);	
+				do_action('membership_payment_subscr_signup', $user_id, $product_id);	
 				wp_redirect(get_option('home'));
 			}
+		} else if (isset($_REQUEST['message_type'])) {
+			$md5_hash = strtoupper(md5("{$_REQUEST['sale_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_sid" ))."{$_REQUEST['invoice_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" ))));
+			
+			$product_id = false;
+			$user_id = false;
+			
+			$product_id_parts = explode(':', $_REQUEST['vendor_order_id']);
+			
+			if (is_array($product_id_parts) && count($product_id_parts) == 2) {
+				$product_id = $product_id_parts[0];
+				$user_id = $product_id_parts[1];
+			}
+			
+			if ($md5_hash == $_REQUEST['md5_hash']) {
+				switch ($_REQUEST['message_type']) {
+					case 'RECURRING_INSTALLMENT_SUCCESS ':
+					case 'RECURRING_RESTARTED':
+						$this->record_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+						// Added for affiliate system link
+						do_action('membership_payment_processed', $user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
+						break;
+					case 'RECURRING_STOPPED':
+					case 'RECURRING_COMPLETE':
+					case 'RECURRING_INSTALLMENT_FAILED':
+					default:
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->mark_for_expire($product_id);
+						}
+	
+						do_action('membership_payment_subscr_cancel', $user_id, $product_id);
+						break;
+				}
+			}
+			echo  "OK";
+			exit();
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 404 Not Found');
