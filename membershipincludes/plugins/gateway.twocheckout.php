@@ -413,12 +413,7 @@ class twocheckout extends M_Gateway {
 			$product_id = false;
 			$user_id = false;
 			
-			$product_id_parts = explode(':', $_REQUEST['vendor_order_id']);
-			
-			if (is_array($product_id_parts) && count($product_id_parts) == 2) {
-				$product_id = $product_id_parts[0];
-				$user_id = $product_id_parts[1];
-			}
+			list($product_id, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
 			
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
@@ -434,7 +429,8 @@ class twocheckout extends M_Gateway {
 					default:
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->mark_for_expire($product_id);
+							$member->expire_subscription($product_id);
+							$member->deactivate();
 						}
 	
 						do_action('membership_payment_subscr_cancel', $user_id, $product_id);
