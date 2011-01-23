@@ -525,6 +525,16 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
+		function may_be_singular($wp_query) {
+
+			if( is_archive() || is_author() || is_category() || is_tag() || is_tax() || is_search() ) {
+				return false;
+			} else {
+				return true;
+			}
+
+		}
+
 		function check_for_posts_existance($posts, $wp_query) {
 
 			global $bp;
@@ -541,7 +551,7 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
-			if(empty($posts) && $this->posts_actually_exist()) {
+			if(empty($posts) && $this->posts_actually_exist() && $this->may_be_singular($wp_query)) {
 				// we have nothing to see because it either doesn't exist or it's protected - move to no access page.
 				$this->show_noaccess_page($wp_query);
 			} else {
