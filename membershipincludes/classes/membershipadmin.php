@@ -3506,6 +3506,31 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
+		function show_communication_edit( $comm_id ) {
+
+			global $page;
+
+			$editcomm =& new M_Communication( (int) $comm_id );
+
+			echo "<div class='wrap'>";
+			echo "<h2>" . __('Edit Message','membership') . "</h2>";
+
+			echo '<form method="post" action="?page=' . $page . '">';
+			echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
+			echo "<input type='hidden' name='action' value='updatecomm' />";
+			wp_nonce_field('update-comm');
+
+			$editcomm->editform();
+
+			echo '<p class="submit">';
+			echo '<input class="button" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
+			echo '</form>';
+
+			echo "</div>";
+
+
+		}
+
 		function handle_communication_panel() {
 			global $action, $page;
 
@@ -3515,8 +3540,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'edit':	if(isset($_GET['comm'])) {
 									// Make a communication
-									$editcomm =& new M_Communication( (int) $_GET['comm'] );
-									$editcomm->editform();
+									$this->show_communication_edit( $_GET['comm'] );
 								}
 								return; // so we don't show the list below
 								break;
@@ -3525,16 +3549,16 @@ if(!class_exists('membershipadmin')) {
 
 
 			$messages = array();
-			$messages[1] = __('Message updated.');
-			$messages[2] = __('Message not updated.');
+			$messages[1] = __('Message updated.','membership');
+			$messages[2] = __('Message not updated.','membership');
 
-			$messages[3] = __('Message activated.');
-			$messages[4] = __('Message not activated.');
+			$messages[3] = __('Message activated.','membership');
+			$messages[4] = __('Message not activated.','membership');
 
-			$messages[5] = __('Message deactivated.');
-			$messages[6] = __('Message not deactivated.');
+			$messages[5] = __('Message deactivated.','membership');
+			$messages[6] = __('Message not deactivated.','membership');
 
-			$messages[7] = __('Message activation toggled.');
+			$messages[7] = __('Message activation toggled.','membership');
 
 			?>
 			<div class='wrap'>

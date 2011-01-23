@@ -497,7 +497,7 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function assign_level($level_id, $fullload) {
+		function assign_level($level_id, $fullload = true) {
 			// Used to force assign a level on a user - mainly for non logged in users
 			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
 
