@@ -88,6 +88,10 @@ if(!class_exists('membershipadmin')) {
 
 			$installed = get_option('M_Installed', false);
 
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+
 			if($installed === false || $installed != $this->build) {
 				include_once(membership_dir('membershipincludes/classes/upgrade.php') );
 
@@ -98,10 +102,6 @@ if(!class_exists('membershipadmin')) {
 				if(!$user->has_cap('membershipadmin')) {
 					$user->add_cap('membershipadmin');
 				}
-			}
-
-			if(empty($user) || !method_exists($user, 'has_cap')) {
-				$user = wp_get_current_user();
 			}
 
 			// Add in our new capability
@@ -3521,137 +3521,113 @@ if(!class_exists('membershipadmin')) {
 				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
 					$action = 'bulk-toggle';
 				}
-
-				if(addslashes($_GET['action']) == 'togglepublic' || addslashes($_GET['action2']) == 'togglepublic') {
-					$action = 'bulk-togglepublic';
-				}
 			}
 
 			switch(addslashes($action)) {
 
-				case 'added':	$id = (int) $_POST['sub_id'];
-								check_admin_referer('add-' . $id);
+				case 'added':	check_admin_referer('add-comm');
 
+								$comm = new M_Communication( false );
+
+								if($comm->add()) {
+									wp_safe_redirect( add_query_arg( 'msg', 8, 'admin.php?page=' . $page ) );
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 9, 'admin.php?page=' . $page ) );
+								}
+
+								break;
+				case 'updated':	$id = (int) $_POST['ID'];
+								check_admin_referer('update-comm_' . $id);
 								if($id) {
-									$sub = new M_Subscription( $id );
+									$comm = new M_Communication( $id );
 
-									if($sub->add()) {
+									if($comm->update()) {
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
 									}
 								} else {
-									wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+									wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
 								}
-
 								break;
-				case 'updated':	$id = (int) $_POST['sub_id'];
-								check_admin_referer('update-' . $id);
-								if($id) {
-									$sub = new M_Subscription( $id );
 
-									if($sub->update()) {
-										wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
+				case 'delete':	if(isset($_GET['comm'])) {
+									$id = (int) $_GET['comm'];
+
+									check_admin_referer('delete-comm_' . $id);
+
+									$comm = new M_Communication( $id );
+
+									if($comm->delete()) {
+										wp_safe_redirect( add_query_arg( 'msg', 10, wp_get_referer() ) );
 									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+										wp_safe_redirect( add_query_arg( 'msg', 11, wp_get_referer() ) );
 									}
-								} else {
-									wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+
 								}
 								break;
 
-				case 'delete':	if(isset($_GET['sub_id'])) {
-									$sub_id = (int) $_GET['sub_id'];
+				case 'deactivate':
+								if(isset($_GET['comm'])) {
+									$id = (int) $_GET['comm'];
 
-									check_admin_referer('delete-sub_' . $sub_id);
+									check_admin_referer('toggle-comm_' . $id);
 
-									$sub = new M_Subscription( $sub_id );
+									$comm = new M_Communication( $id );
 
-									if($sub->delete()) {
-										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+									if($comm->toggle()) {
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
 									}
 
 								}
 								break;
+				case 'activate':
+								if(isset($_GET['comm'])) {
+									$id = (int) $_GET['comm'];
 
-				case 'toggle':	if(isset($_GET['sub_id'])) {
-									$sub_id = (int) $_GET['sub_id'];
+									check_admin_referer('toggle-comm_' . $id);
 
-									check_admin_referer('toggle-sub_' . $sub_id);
+									$comm = new M_Communication( $id );
 
-									$sub = new M_Subscription( $sub_id );
-
-									if($sub->toggleactivation()) {
-										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									if($comm->toggle()) {
+										wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
 									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
-									}
-
-								}
-								break;
-
-				case 'togglepublic':
-								if(isset($_GET['sub_id'])) {
-									$sub_id = (int) $_GET['sub_id'];
-
-									check_admin_referer('toggle-pubsub_' . $sub_id);
-
-									$sub = new M_Subscription( $sub_id );
-
-									if($sub->togglepublic()) {
-										wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
-									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+										wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
 									}
 
 								}
 								break;
 
 				case 'bulk-delete':
-								check_admin_referer('bulk-subscriptions');
-								foreach($_GET['subcheck'] AS $value) {
+								check_admin_referer('bulk-comms');
+								foreach($_GET['commcheck'] AS $value) {
 									if(is_numeric($value)) {
-										$sub_id = (int) $value;
+										$id = (int) $value;
 
-										$sub = new M_Subscription( $sub_id );
+										$comm = new M_Communication( $id );
 
-										$sub->delete();
+										$comm->delete();
 									}
 								}
 
-								wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+								wp_safe_redirect( add_query_arg( 'msg', 10, wp_get_referer() ) );
 								break;
 
 				case 'bulk-toggle':
-								check_admin_referer('bulk-subscriptions');
-								foreach($_GET['subcheck'] AS $value) {
+								check_admin_referer('bulk-comms');
+								foreach($_GET['commcheck'] AS $value) {
 									if(is_numeric($value)) {
-										$sub_id = (int) $value;
+										$id = (int) $value;
 
-										$sub = new M_Subscription( $sub_id );
+										$comm = new M_Communication( $id );
 
-										$sub->toggleactivation();
+										$comm->toggle();
 									}
 								}
 
 								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
-								break;
-
-				case 'bulk-togglepublic':
-								check_admin_referer('bulk-subscriptions');
-								foreach($_GET['subcheck'] AS $value) {
-									if(is_numeric($value)) {
-										$sub_id = (int) $value;
-
-										$sub = new M_Subscription( $sub_id );
-
-										$sub->togglepublic();
-									}
-								}
-
-								wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
 								break;
 
 			}
@@ -3670,8 +3646,8 @@ if(!class_exists('membershipadmin')) {
 
 				echo '<form method="post" action="?page=' . $page . '">';
 				echo '<input type="hidden" name="ID" value="" />';
-				echo "<input type='hidden' name='action' value='updatecomm' />";
-				wp_nonce_field('update-comm');
+				echo "<input type='hidden' name='action' value='added' />";
+				wp_nonce_field('add-comm');
 				$addcomm->addform();
 				echo '<p class="submit">';
 				echo '<input class="button" type="submit" name="go" value="' . __('Add message', 'membership') . '" /></p>';
@@ -3686,8 +3662,8 @@ if(!class_exists('membershipadmin')) {
 
 				echo '<form method="post" action="?page=' . $page . '">';
 				echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
-				echo "<input type='hidden' name='action' value='updatecomm' />";
-				wp_nonce_field('update-comm');
+				echo "<input type='hidden' name='action' value='updated' />";
+				wp_nonce_field('update-comm_' . $comm_id);
 				$editcomm->editform();
 				echo '<p class="submit">';
 				echo '<input class="button" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
@@ -3729,6 +3705,12 @@ if(!class_exists('membershipadmin')) {
 			$messages[6] = __('Message not deactivated.','membership');
 
 			$messages[7] = __('Message activation toggled.','membership');
+
+			$messages[8] = __('Message added.','membership');
+			$messages[9] = __('Message not added.','membership');
+
+			$messages[10] = __('Message deleted.','membership');
+			$messages[11] = __('Message not deleted.','membership');
 
 			?>
 			<div class='wrap'>
@@ -3829,7 +3811,7 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="comm-<?php echo $comm->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($comm->id); ?>" name="commcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr($comm->subject); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html($comm->subject); ?></a></strong>
+										<strong><a title="Edit <?php echo esc_attr(stripslashes($comm->subject)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html(stripslashes($comm->subject)); ?></a></strong>
 										<?php
 											$actions = array();
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;comm=" . $comm->id . "'>" . __('Edit', 'membership') . "</a></span>";
@@ -4185,7 +4167,7 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="group-<?php echo $group->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($group->id); ?>" name="groupcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr($group->groupname); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;group=<?php echo $group->id; ?>" class="row-title"><?php echo esc_html($group->groupname); ?></a></strong>
+										<strong><a title="Edit <?php echo esc_attr(stripslashes($group->groupname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;group=<?php echo $group->id; ?>" class="row-title"><?php echo esc_html(stripslashes($group->groupname)); ?></a></strong>
 										<?php
 											$actions = array();
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;group=" . $group->id . "'>" . __('Edit') . "</a></span>";

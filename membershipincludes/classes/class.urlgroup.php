@@ -54,12 +54,12 @@ if(!class_exists('M_Urlgroup')) {
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Group name','membership') . '</th>';
-			echo '<td valign="top"><input name="groupname" type="text" size="50" title="' . __('Group name') . '" style="width: 50%;" value="' . esc_attr($this->group->groupname) . '" /></td>';
+			echo '<td valign="top"><input name="groupname" type="text" size="50" title="' . __('Group name') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->group->groupname)) . '" /></td>';
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Page URLs','automessage') . '</th>';
-			echo '<td valign="top"><textarea name="groupurls" rows="15" cols="40">' . esc_html($this->group->groupurls) . '</textarea>';
+			echo '<td valign="top"><textarea name="groupurls" rows="15" cols="40">' . esc_html(stripslashes($this->group->groupurls)) . '</textarea>';
 			// Display some instructions for the message.
 			echo "<br/><em style='font-size:smaller;'>" . __("You should place each page URL or expression on a new line.",'membership') . "</em>";
 			echo '</td>';
