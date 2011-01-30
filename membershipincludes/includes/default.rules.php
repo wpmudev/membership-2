@@ -1105,4 +1105,104 @@ class M_Blogcreation extends M_Rule {
 }
 M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
 
+class M_URLGroups extends M_Rule {
+
+	var $name = 'urlgroups';
+
+	function admin_sidebar($data) {
+		?>
+		<li class='level-draggable' id='urlgroups' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<div class='action action-draggable'>
+				<div class='action-top'>
+				<?php _e('URL Groups','membership'); ?>
+				</div>
+			</div>
+		</li>
+		<?php
+	}
+
+	function get_groups() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " ORDER BY id ASC" );
+
+		$results = $wpdb->get_results( $sql );
+
+		if(!empty($results)) {
+			return $results;
+		} else {
+			return false;
+		}
+	}
+
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-urlgroups'>
+			<h2 class='sidebar-name'><?php _e('URL Groups', 'membership');?><span><a href='#remove' id='remove-urlgroups' class='removelink' title='<?php _e("Remove URL Groups from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><?php _e('Select the URL Groups to be covered by this rule by checking the box next to the relevant URL Group name.','membership'); ?></p>
+				<?php
+					$urlgroups = $this->get_groups();
+
+					if(!empty($urlgroups)) {
+						?>
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('URL Group', 'membership'); ?></th>
+								</tr>
+							</thead>
+
+							<tfoot>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('URL Group', 'membership'); ?></th>
+								</tr>
+							</tfoot>
+
+							<tbody>
+						<?php
+						foreach($urlgroups as $key => $urlgroup) {
+							?>
+							<tr valign="middle" class="alternate" id="urlgroup-<?php echo $urlgroup->id; ?>">
+								<th class="check-column" scope="row">
+									<input type="checkbox" value="<?php echo $urlgroup->id; ?>" name="urlgroups[]" <?php if(in_array($urlgroup->id, $data)) echo 'checked="checked"'; ?>>
+								</th>
+								<td class="column-name">
+									<strong><?php echo esc_html($urlgroup->groupname); ?></strong>
+								</td>
+						    </tr>
+							<?php
+						}
+						?>
+							</tbody>
+						</table>
+						<?php
+					}
+
+				?>
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+	}
+
+}
+M_register_rule('urlgroups', 'M_URLGroups', 'main');
+
 ?>

@@ -10,7 +10,7 @@ if(!class_exists('membershipadmin')) {
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications', 'urlgroups');
 
 		var $membership_levels;
 		var $membership_rules;
@@ -19,6 +19,7 @@ if(!class_exists('membershipadmin')) {
 		var $subscriptions_levels;
 		var $membermeta;
 		var $communications;
+		var $urlgroups;
 
 		function __construct() {
 
@@ -31,7 +32,7 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Add administration actions
-			add_action('init', array(&$this, 'initialise_plugin'));
+			add_action('init', array(&$this, 'initialise_plugin'), 1);
 
 			// Add in admin area membership levels
 			add_action('init', array(&$this, 'initialise_membership_protection'), 999);
@@ -47,7 +48,8 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
 			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
-			add_action('load-membership_page_membercommunication', array(&$this, 'add_admin_header_membershipcommunication'));
+			add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
+			add_action('load-membership_page_membershipurlgroups', array(&$this, 'add_admin_header_membershipurlgroups'));
 
 			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
 
@@ -90,17 +92,23 @@ if(!class_exists('membershipadmin')) {
 				include_once(membership_dir('membershipincludes/classes/upgrade.php') );
 
 				M_Upgrade($installed);
-
 				update_option('M_Installed', $this->build);
+
+				// Add in our new capability
+				if(!$user->has_cap('membershipadmin')) {
+					$user->add_cap('membershipadmin');
+				}
 			}
 
 			if(empty($user) || !method_exists($user, 'has_cap')) {
 				$user = wp_get_current_user();
 			}
+
 			// Add in our new capability
 			if($user->user_login == MEMBERSHIP_MASTER_ADMIN && !$user->has_cap('membershipadmin')) {
 				$user->add_cap('membershipadmin');
 			}
+
 
 			if($user->has_cap('membershipadmin')) {
 				// profile field for capabilities
@@ -144,6 +152,8 @@ if(!class_exists('membershipadmin')) {
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
 				add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
+
+				add_submenu_page('membership', __('Membership URL Groups','membership'), __('Edit URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
 
 				// Move the menu to the top of the page
 				foreach($menu as $key => $value) {
@@ -213,21 +223,8 @@ if(!class_exists('membershipadmin')) {
 
 		// Add admin headers
 
-		function add_update_check() {
-			/* -------------------- Update Notifications Notice -------------------- */
-			if ( !function_exists( 'wdp_un_check' ) ) {
-			  add_action( 'admin_notices', 'wdp_un_check', 5 );
-			  add_action( 'network_admin_notices', 'wdp_un_check', 5 );
-			  function wdp_un_check() {
-			    if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
-			      echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
-			  }
-			}
-			/* --------------------------------------------------------------------- */
-		}
-
 		function add_admin_header_core() {
-			$this->add_update_check();
+
 		}
 
 		function add_admin_header_membership() {
@@ -309,15 +306,21 @@ if(!class_exists('membershipadmin')) {
 			// Run the core header
 			$this->add_admin_header_core();
 
-			//wp_enqueue_script('membersjs', membership_url('membershipincludes/js/members.js'), array(), $this->build);
-			// Using the level css file for now - maybe switch to a members specific one later
-			//wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
-
-			//wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
-
+			wp_enqueue_script('commsjs', membership_url('membershipincludes/js/communication.js'), array(), $this->build);
+			wp_localize_script( 'commsjs', 'membership', array( 'deletecomm' => __('Are you sure you want to delete this message?','membership'), 'deactivatecomm' => __('Are you sure you want to deactivate this message?','membership') ) );
 
 			$this->handle_communication_updates();
+		}
 
+		function add_admin_header_membershipurlgroups() {
+			// Run the core header
+			$this->add_admin_header_core();
+
+			wp_enqueue_script('groupsjs', membership_url('membershipincludes/js/urlgroup.js'), array(), $this->build);
+			wp_localize_script( 'groupsjs', 'membership', array( 'deletegroup' => __('Are you sure you want to delete this url group?','membership') ) );
+
+
+			$this->handle_urlgroups_updates();
 		}
 
 		// Panel handling functions
@@ -1780,6 +1783,8 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 					</tbody>
 					</table>
+					<p><?php _e('If the above is set to &quot;None&quot; then you can pick the page you want strangers directed to below.','membership'); ?></p>
+
 
 					<h3><?php _e('User registration','membership'); ?></h3>
 					<p><?php _e('If you have free user registration enabled on your site, select the subscription they will be assigned to initially.','membership'); ?></p>
@@ -3504,30 +3509,192 @@ if(!class_exists('membershipadmin')) {
 
 		function handle_communication_updates() {
 
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'delete' || addslashes($_GET['action2']) == 'delete') {
+					$action = 'bulk-delete';
+				}
+
+				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
+					$action = 'bulk-toggle';
+				}
+
+				if(addslashes($_GET['action']) == 'togglepublic' || addslashes($_GET['action2']) == 'togglepublic') {
+					$action = 'bulk-togglepublic';
+				}
+			}
+
+			switch(addslashes($action)) {
+
+				case 'added':	$id = (int) $_POST['sub_id'];
+								check_admin_referer('add-' . $id);
+
+								if($id) {
+									$sub = new M_Subscription( $id );
+
+									if($sub->add()) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+									}
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+								}
+
+								break;
+				case 'updated':	$id = (int) $_POST['sub_id'];
+								check_admin_referer('update-' . $id);
+								if($id) {
+									$sub = new M_Subscription( $id );
+
+									if($sub->update()) {
+										wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+									}
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+								}
+								break;
+
+				case 'delete':	if(isset($_GET['sub_id'])) {
+									$sub_id = (int) $_GET['sub_id'];
+
+									check_admin_referer('delete-sub_' . $sub_id);
+
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->delete()) {
+										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'toggle':	if(isset($_GET['sub_id'])) {
+									$sub_id = (int) $_GET['sub_id'];
+
+									check_admin_referer('toggle-sub_' . $sub_id);
+
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->toggleactivation()) {
+										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'togglepublic':
+								if(isset($_GET['sub_id'])) {
+									$sub_id = (int) $_GET['sub_id'];
+
+									check_admin_referer('toggle-pubsub_' . $sub_id);
+
+									$sub = new M_Subscription( $sub_id );
+
+									if($sub->togglepublic()) {
+										wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'bulk-delete':
+								check_admin_referer('bulk-subscriptions');
+								foreach($_GET['subcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$sub_id = (int) $value;
+
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->delete();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+								break;
+
+				case 'bulk-toggle':
+								check_admin_referer('bulk-subscriptions');
+								foreach($_GET['subcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$sub_id = (int) $value;
+
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->toggleactivation();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+								break;
+
+				case 'bulk-togglepublic':
+								check_admin_referer('bulk-subscriptions');
+								foreach($_GET['subcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$sub_id = (int) $value;
+
+										$sub = new M_Subscription( $sub_id );
+
+										$sub->togglepublic();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 9, wp_get_referer() ) );
+								break;
+
+			}
+
 		}
 
 		function show_communication_edit( $comm_id ) {
 
 			global $page;
 
-			$editcomm =& new M_Communication( (int) $comm_id );
+			if( $comm_id === false ) {
+				$addcomm =& new M_Communication( 0 );
 
-			echo "<div class='wrap'>";
-			echo "<h2>" . __('Edit Message','membership') . "</h2>";
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Add Message','membership') . "</h2>";
 
-			echo '<form method="post" action="?page=' . $page . '">';
-			echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
-			echo "<input type='hidden' name='action' value='updatecomm' />";
-			wp_nonce_field('update-comm');
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="" />';
+				echo "<input type='hidden' name='action' value='updatecomm' />";
+				wp_nonce_field('update-comm');
+				$addcomm->addform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Add message', 'membership') . '" /></p>';
+				echo '</form>';
 
-			$editcomm->editform();
+				echo "</div>";
+			} else {
+				$editcomm =& new M_Communication( (int) $comm_id );
 
-			echo '<p class="submit">';
-			echo '<input class="button" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
-			echo '</form>';
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Edit Message','membership') . "</h2>";
 
-			echo "</div>";
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
+				echo "<input type='hidden' name='action' value='updatecomm' />";
+				wp_nonce_field('update-comm');
+				$editcomm->editform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
+				echo '</form>';
 
+				echo "</div>";
+			}
 
 		}
 
@@ -3538,9 +3705,12 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'edit':	if(isset($_GET['comm'])) {
+				case 'edit':	if(!empty($_GET['comm'])) {
 									// Make a communication
 									$this->show_communication_edit( $_GET['comm'] );
+								} else {
+									// Add a communication
+									$this->show_communication_edit( false );
 								}
 								return; // so we don't show the list below
 								break;
@@ -3662,13 +3832,16 @@ if(!class_exists('membershipadmin')) {
 										<strong><a title="Edit <?php echo esc_attr($comm->subject); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html($comm->subject); ?></a></strong>
 										<?php
 											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;comm=" . $comm->id . "'>" . __('Edit') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;comm=" . $comm->id . "'>" . __('Edit', 'membership') . "</a></span>";
 
 											if($comm->active == 1) {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Activate', 'membership') . "</a></span>";
 											}
+
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;comm=" . $comm->id . "", 'delete-comm_' . $comm->id) . "'>" . __('Delete', 'membership') . "</a></span>";
+
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 										</td>
@@ -3763,6 +3936,298 @@ if(!class_exists('membershipadmin')) {
 				return false;
 			}
 
+		}
+
+		function handle_urlgroups_updates() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'delete' || addslashes($_GET['action2']) == 'delete') {
+					$action = 'bulk-delete';
+				}
+			}
+
+			switch(addslashes($action)) {
+
+				case 'added':	check_admin_referer('add-group');
+
+								$group =& new M_Urlgroup( 0 );
+
+								if($group->add()) {
+									wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+								}
+
+								break;
+				case 'updated':	$id = (int) $_POST['ID'];
+								check_admin_referer('update-group-' . $id);
+								if($id) {
+									$group =& new M_Urlgroup( $id );
+
+									if($group->update()) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+									}
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+								}
+								break;
+
+				case 'delete':	if(isset($_GET['group'])) {
+									$id = (int) $_GET['group'];
+
+									check_admin_referer('delete-group_' . $id);
+
+									$group =& new M_Urlgroup( $id );
+
+									if($group->delete()) {
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'bulk-delete':
+								check_admin_referer('bulk-groups');
+								foreach($_GET['groupcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$id = (int) $value;
+
+										$group =& new M_Urlgroup( $id );
+
+										$group->delete();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+								break;
+			}
+
+		}
+
+		function get_urlgroups() {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->urlgroups} ORDER BY id ASC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+				return $results;
+			} else {
+				return false;
+			}
+
+		}
+
+		function show_urlgroup_edit( $group_id ) {
+
+			global $page;
+
+			if( $group_id === false ) {
+				$add =& new M_Urlgroup( 0 );
+
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Add Message','membership') . "</h2>";
+
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="" />';
+				echo "<input type='hidden' name='action' value='added' />";
+				wp_nonce_field('add-group');
+				$add->addform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Add group', 'membership') . '" /></p>';
+				echo '</form>';
+
+				echo "</div>";
+			} else {
+				$edit =& new M_Urlgroup( (int) $group_id );
+
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Edit Message','membership') . "</h2>";
+
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="' . $group_id . '" />';
+				echo "<input type='hidden' name='action' value='updated' />";
+				wp_nonce_field('update-group-' . $group_id);
+				$edit->editform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Update group', 'membership') . '" /></p>';
+				echo '</form>';
+
+				echo "</div>";
+			}
+
+		}
+
+		function handle_urlgroups_panel() {
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(!empty($_GET['group'])) {
+									// Make a communication
+									$this->show_urlgroup_edit( $_GET['group'] );
+								} else {
+									$this->show_urlgroup_edit( false );
+								}
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Group updated.','membership');
+			$messages[2] = __('Group not updated.','membership');
+
+			$messages[3] = __('Group added.','membership');
+			$messages[4] = __('Group not added.','membership');
+
+			$messages[5] = __('Group deleted.','membership');
+			$messages[6] = __('Group not deleted.','membership');
+
+			$messages[7] = __('Groups deleted.','membership');
+
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-edit-comments"><br></div>
+				<h2><?php _e('Edit URL Groups','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				$groups = $this->get_urlgroups();
+
+				$groups = apply_filters('M_urlgroups_list', $groups);
+
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
+
+				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+				<option value="delete"><?php _e('Delete'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+
+				</div>
+
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New'); ?>" name="addnewgroup">
+				</div>
+
+				<br class="clear">
+				</div>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-groups');
+
+					$columns = array(	"name" 		=> 	__('Group Name','membership')
+									);
+
+					$columns = apply_filters('membership_groupscolumns', $columns);
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if(!empty($groups)) {
+							foreach($groups as $key => $group) {
+								?>
+								<tr valign="middle" class="alternate" id="group-<?php echo $group->id; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($group->id); ?>" name="groupcheck[]"></th>
+									<td class="column-name">
+										<strong><a title="Edit <?php echo esc_attr($group->groupname); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;group=<?php echo $group->id; ?>" class="row-title"><?php echo esc_html($group->groupname); ?></a></strong>
+										<?php
+											$actions = array();
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;group=" . $group->id . "'>" . __('Edit') . "</a></span>";
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;group=" . $group->id . "", 'delete-group_' . $group->id) . "'>" . __('Delete', 'membership') . "</a></span>";
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No URL groups have been set up.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="delete"><?php _e('Delete'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				</div>
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New'); ?>" name="addnewgroup2">
+				</div>
+				<br class="clear">
+				</div>
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
 		}
 
 

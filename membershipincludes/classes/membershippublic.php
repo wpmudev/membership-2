@@ -28,7 +28,7 @@ if(!class_exists('membershippublic')) {
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
 
 			// Set up Actions
-			add_action( 'init', array(&$this, 'initialise_plugin') );
+			add_action( 'init', array(&$this, 'initialise_plugin'), 1 );
 			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
 			add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
@@ -114,8 +114,6 @@ if(!class_exists('membershippublic')) {
 				// add in a no posts thing
 				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 999, 2);
 			}
-
-
 
 		}
 
