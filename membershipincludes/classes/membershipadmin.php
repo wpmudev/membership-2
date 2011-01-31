@@ -3723,7 +3723,7 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
-				$comms = $this->get_communications();
+				$comms = $this->get_communications( $_GET['comm_id'] );
 
 				$comms = apply_filters('M_communications_list', $comms);
 
@@ -3906,9 +3906,19 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
-		function get_communications() {
+		function get_communications( $type = 'all') {
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->communications} ORDER BY periodstamp ASC" );
+			switch($type) {
+				case 'active':		$sql = $this->db->prepare( "SELECT * FROM {$this->communications} WHERE active = 1 ORDER BY periodstamp ASC" );
+									break;
+
+				case 'inactive':	$sql = $this->db->prepare( "SELECT * FROM {$this->communications} WHERE active = 0 ORDER BY periodstamp ASC" );
+									break;
+
+				case 'all':
+				default:			$sql = $this->db->prepare( "SELECT * FROM {$this->communications} ORDER BY periodstamp ASC" );
+									break;
+			}
 
 			$results = $this->db->get_results( $sql );
 
