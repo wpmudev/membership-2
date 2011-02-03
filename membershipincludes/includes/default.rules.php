@@ -1193,12 +1193,31 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
+		add_action( 'parse_request', array(&$this, 'positive_check_request'), 99 );
+
 
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
+
+	}
+
+	function positive_check_request($wp) {
+
+		$host = '';
+		if(is_ssl()) {
+			$host = "https://";
+		} else {
+			$host = "http://";
+		}
+
+		print_r($_SERVER);
+
+	}
+
+	function is_url_selected($url) {
 
 	}
 

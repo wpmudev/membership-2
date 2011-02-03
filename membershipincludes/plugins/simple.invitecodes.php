@@ -27,6 +27,14 @@ function M_AddSimpleInviteOptions() {
 				<textarea name='invitecodes' id='invitecodes' rows='15' cols='40'><?php esc_html_e(stripslashes($Msi_options['invitecodes'])); ?></textarea>
 			</td>
 		</tr>
+		<tr valign="top">
+			<th scope="row"><?php _e('Remove Code once used','membership'); ?>
+			</em>
+			</th>
+			<td>
+				<input type='checkbox' name='inviteremove' id='inviteremove' value='yes' <?php checked('yes', $Msi_options['inviteremove']); ?> />
+			</td>
+		</tr>
 	</tbody>
 	</table>
 	<?php
@@ -39,6 +47,7 @@ function M_AddSimpleInviteOptionsProcess() {
 
 	$Msi_options['invitecodes'] = $_POST['invitecodes'];
 	$Msi_options['inviterequired'] = $_POST['inviterequired'];
+	$Msi_options['inviteremove'] = $_POST['inviteremove'];
 
 	update_option('membership_simpleinvite_options', $Msi_options);
 
@@ -81,7 +90,7 @@ function M_AddSimpleInviteFieldProcess($error) {
 		if(!in_array( $thekey, $codes )) {
 			$error[] = __('Sorry, but we do not seem to have that code on file, please try another.','membership');
 		} else {
-			//if($Msi_options['invitecodesonetimeonly'] == 'yes') {
+			if($Msi_options['inviteremove'] == 'yes') {
 				$key = array_search( $thekey, $codes);
 				if($key !== false) {
 					unset($codes[$key]);
@@ -89,7 +98,7 @@ function M_AddSimpleInviteFieldProcess($error) {
 
 					update_option('membership_simpleinvite_options', $Msi_options);
 				}
-			//}
+			}
 		}
 	}
 

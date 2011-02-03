@@ -1783,7 +1783,7 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 					</tbody>
 					</table>
-					<p><?php _e('If the above is set to &quot;None&quot; then you can pick the page you want strangers directed to below.','membership'); ?></p>
+					<p><?php _e('If the above is set to &quot;None&quot; then you can pick the page you want strangers directed to below under the &quot;Protected content page&quot; heading.','membership'); ?></p>
 
 
 					<h3><?php _e('User registration','membership'); ?></h3>
@@ -1841,7 +1841,45 @@ if(!class_exists('membershipadmin')) {
 							</th>
 							<td>
 								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Protected content page','membership'); ?></h3>
+					<p><?php _e('If a post / page / content is not available to a user, this is the page that they user will be directed to.','membership'); ?></p>
+					<p><?php _e('This page will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected content page','membership'); ?>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Account page','membership'); ?></h3>
+					<p><?php _e('This is the page a user will be redirected to when they want to view their account or upgrade a subscription.','membership'); ?></p>
+					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [accountform] shortcode in some location.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Account page','membership'); ?>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
 								?>
 							</td>
@@ -1946,66 +1984,6 @@ if(!class_exists('membershipadmin')) {
 							</td>
 						</tr>
 
-					</tbody>
-					</table>
-
-					<h3><?php _e('Protected content message','membership'); ?></h3>
-					<p><?php _e('If a post / page / content is not available to a user, this is the message or page content that will be displayed in its place.','membership'); ?></p>
-					<p><?php _e('This message will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
-					<p><?php _e('Note: This message will override the 404 page for none members.','membership'); ?></p>
-
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Protected content page','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Select a page to use for the content.",'membership'); ?><br/>
-								<?php _e("Alternatively complete the content below.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('None (use settings below)'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-								echo $pages;
-								?><br/>
-								<?php _e('Note: If you have set no content access, then the settings below will be used instead.','membership'); ?>
-							</td>
-						</tr>
-
-						<tr valign="top">
-							<th scope="row"><?php _e('Protected Message Title','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Enter the title for the message that you want displayed when the content is not available.",'membership'); ?></em>
-							</th>
-							<td>
-								<input type='text' name='protectedmessagetitle' id='protectedmessagetitle' value='<?php esc_attr_e(stripslashes($M_options['protectedmessagetitle']));  ?>' class='wide' />
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('Protected Message','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Enter the message that you want displayed when the content is not available.",'membership'); ?><br/>
-								<?php _e("HTML allowed.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<textarea name='protectedmessage' id='protectedmessage' rows='15' cols='40'><?php esc_html_e(stripslashes($M_options['protectedmessage'])); ?></textarea>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('Use page template','membership'); ?><br/>
-							<em style='font-size:smaller;'>
-							<?php _e("You can choose which template from your theme to use for this message.",'membership'); ?><br/>
-							<?php _e("If you don't know what this means, then leave it set as default.",'membership'); ?>
-							</em>
-							</th>
-							<td>
-								<select name="page_template" id="page_template">
-								<option value='default'><?php _e('Default Template'); ?></option>
-								<?php
-									page_template_dropdown($M_options['page_template']);
-								?>
-								</select>
-							</td>
-						</tr>
 					</tbody>
 					</table>
 
