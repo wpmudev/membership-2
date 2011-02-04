@@ -646,7 +646,12 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
-			if(!empty($M_options['nocontent_page']) && !empty($M_options['nocontent_page']) && $wp_query->queried_object_id == $M_options['nocontent_page']) {
+			if(!empty($wp_query->queried_object_id) && !empty($M_options['account_page']) && $wp_query->queried_object_id == $M_options['account_page']) {
+				// We know what we are looking at, the registration page has been set and we are trying to access it
+				return;
+			}
+
+			if(!empty($wp_query->queried_object_id) && !empty($M_options['nocontent_page']) && $wp_query->queried_object_id == $M_options['nocontent_page']) {
 				return;
 			}
 

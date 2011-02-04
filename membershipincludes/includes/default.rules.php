@@ -1193,7 +1193,7 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_action( 'parse_request', array(&$this, 'positive_check_request'), 99 );
+		add_action( 'pre_get_posts', array(&$this, 'positive_check_request'), 1 );
 
 
 	}
@@ -1202,10 +1202,12 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_action( 'parse_request', array(&$this, 'negative_check_request'), 99 );
+		add_action( 'pre_get_posts', array(&$this, 'negative_check_request'), 1 );
 	}
 
 	function positive_check_request($wp) {
+
+		global $M_options, $wp_query;
 
 		$redirect = false;
 		$host = '';
@@ -1216,11 +1218,28 @@ class M_URLGroups extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
+		$exclude = array();
+		if(!empty($M_options['registration_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+		}
+
+		if(!empty($M_options['account_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['account_page'] );
+		}
+
+		if(!empty($M_options['nocontent_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+		}
+
+		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+			$exclude[] = $host;
+		}
+
 		// we have the current page / url - get the groups selected
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if(!$group->url_matches( $host )) {
+			if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
 				$redirect = true;
 			}
 		}
@@ -1247,7 +1266,7 @@ class M_URLGroups extends M_Rule {
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if($group->url_matches( $host )) {
+			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
 				$redirect = true;
 			}
 		}
@@ -1260,6 +1279,13 @@ class M_URLGroups extends M_Rule {
 	}
 
 	function redirect() {
+
+		global $M_options;
+
+		$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+		wp_safe_redirect( $url );
+		exit;
 
 	}
 

@@ -149,7 +149,7 @@ if(!class_exists('M_Urlgroup')) {
 		}
 
 		// processing
-		function url_matches( $host ) {
+		function url_matches( $host, $exclude = array() ) {
 
 			$this->group = $this->get_group();
 
@@ -157,7 +157,7 @@ if(!class_exists('M_Urlgroup')) {
 
 			if($this->group->isregexp == 0) {
 				// straight match
-				if(in_array( strtolower($host), $groups )) {
+				if(in_array( strtolower($host), $groups ) ) {
 					return true;
 				} else {
 					return false;
@@ -171,7 +171,7 @@ if(!class_exists('M_Urlgroup')) {
 				}
 				$matchstring = "/(" . $matchstring . ")/";
 
-				if(preg_match($matchstring,$host, $matches)) {
+				if(preg_match($matchstring,$host, $matches) ) {
 					return true;
 				} else {
 					return false;
