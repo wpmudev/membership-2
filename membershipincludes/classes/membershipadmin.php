@@ -2174,6 +2174,11 @@ if(!class_exists('membershipadmin')) {
 
 								<h3 class='positive'><?php _e('Positive rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
+
+								<div id='positive-rules' class='droppable-rules levels-sortable'>
+									<?php _e('Drop here','membership'); ?>
+								</div>
+
 								<div id='positive-rules-holder'>
 
 									<?php do_action('membership_level_form_before_positive_rules', $level->id); ?>
@@ -2194,14 +2199,15 @@ if(!class_exists('membershipadmin')) {
 									<?php do_action('membership_level_form_after_positive_rules', $level->id); ?>
 
 								</div>
-								<div id='positive-rules' class='droppable-rules levels-sortable'>
-									<?php _e('Drop here','membership'); ?>
-								</div>
 
 								<h3 class='negative'><?php _e('Negative rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
-								<div id='negative-rules-holder'>
 
+								<div id='negative-rules' class='droppable-rules levels-sortable'>
+									<?php _e('Drop here','membership'); ?>
+								</div>
+
+								<div id='negative-rules-holder'>
 									<?php do_action('membership_level_form_before_negative_rules', $level->id); ?>
 
 									<?php
@@ -2218,9 +2224,6 @@ if(!class_exists('membershipadmin')) {
 
 									<?php do_action('membership_level_form_after_negative_rules', $level->id); ?>
 
-								</div>
-								<div id='negative-rules' class='droppable-rules levels-sortable'>
-									<?php _e('Drop here','membership'); ?>
 								</div>
 
 								<?php do_action('membership_level_form_after_rules', $level->id); ?>

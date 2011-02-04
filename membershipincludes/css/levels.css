@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=2 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=5 */
 
 div.level-liquid-left {
 	float: left;
@@ -264,6 +264,7 @@ div.level-operation .inner-operation p.description {
 
 #positive-rules-holder, #negative-rules-holder {
 	clear: both;
+	overflow: hidden;
 }
 
 div.buttons {

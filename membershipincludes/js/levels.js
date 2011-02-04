@@ -54,7 +54,7 @@ function m_levelsReady() {
 					moving = jQuery('input#beingdragged').val();
 					ruleplace = jQuery(this).attr('id');
 					if(moving != '') {
-						jQuery('#main-' + moving).appendTo('#' + ruleplace + '-holder');
+						jQuery('#main-' + moving).prependTo('#' + ruleplace + '-holder');
 						jQuery('#' + moving).hide();
 
 						// put the name in the relevant holding input field
