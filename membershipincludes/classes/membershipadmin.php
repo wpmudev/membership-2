@@ -647,6 +647,10 @@ if(!class_exists('membershipadmin')) {
 					<div style="width: 49%;" class="postbox-container">
 						<div class="meta-box-sortables ui-sortable" id="side-sortables">
 
+							<?php
+							do_action( 'membership_dashboard_right_top' );
+							?>
+
 							<div class="postbox " id="dashboard_quick_press">
 								<h3 class="hndle"><span><?php _e('Statistics','membership'); ?></span></h3>
 								<div class="inside">
@@ -1693,16 +1697,13 @@ if(!class_exists('membershipadmin')) {
 				$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
 				$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
 
-				$M_options['protectedmessagetitle'] = $_POST['protectedmessagetitle'];
-				$M_options['protectedmessage'] = $_POST['protectedmessage'];
-
-				$M_options['page_template'] = $_POST['page_template'];
 				$M_options['original_url'] = $_POST['original_url'];
 				$M_options['masked_url'] = $_POST['masked_url'];
 
 				$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
 
 				$M_options['nocontent_page'] = $_POST['nocontent_page'];
+				$M_options['account_page'] = $_POST['account_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
 				$M_options['registration_tos'] = $_POST['registration_tos'];
 

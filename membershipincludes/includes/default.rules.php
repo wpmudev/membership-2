@@ -1213,7 +1213,7 @@ class M_URLGroups extends M_Rule {
 			$host = "http://";
 		}
 
-		print_r($_SERVER);
+		//print_r($_SERVER);
 
 	}
 
