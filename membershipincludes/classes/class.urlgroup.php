@@ -157,6 +157,8 @@ if(!class_exists('M_Urlgroup')) {
 
 			if($this->group->isregexp == 0) {
 				// straight match
+				$newgroups = array_map('untrailingslashit', $groups);
+				$groups = array_merge($groups,$newgroups);
 				if(in_array( strtolower($host), $groups ) ) {
 					return true;
 				} else {

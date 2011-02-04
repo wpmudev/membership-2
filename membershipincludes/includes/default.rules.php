@@ -1221,18 +1221,22 @@ class M_URLGroups extends M_Rule {
 		$exclude = array();
 		if(!empty($M_options['registration_page'])) {
 			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
 		}
 
 		if(!empty($M_options['account_page'])) {
 			$exclude[] = get_permalink( (int) $M_options['account_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
 		}
 
 		if(!empty($M_options['nocontent_page'])) {
 			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
 		}
 
 		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 			$exclude[] = $host;
+			$exclude[] = untrailingslashit($host);
 		}
 
 		// we have the current page / url - get the groups selected
@@ -1261,6 +1265,27 @@ class M_URLGroups extends M_Rule {
 			$host = "http://";
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		$exclude = array();
+		if(!empty($M_options['registration_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+		}
+
+		if(!empty($M_options['account_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['account_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+		}
+
+		if(!empty($M_options['nocontent_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+		}
+
+		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+			$exclude[] = $host;
+			$exclude[] = untrailingslashit($host);
+		}
 
 		// we have the current page / url - get the groups selected
 		foreach((array) $this->data as $group_id) {
