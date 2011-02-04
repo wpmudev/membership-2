@@ -1202,22 +1202,64 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
+		add_action( 'parse_request', array(&$this, 'negative_check_request'), 99 );
 	}
 
 	function positive_check_request($wp) {
 
+		$redirect = false;
 		$host = '';
 		if(is_ssl()) {
 			$host = "https://";
 		} else {
 			$host = "http://";
 		}
+		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		//print_r($_SERVER);
+		// we have the current page / url - get the groups selected
+		foreach((array) $this->data as $group_id) {
+			$group = new M_Urlgroup( $group_id );
+
+			if(!$group->url_matches( $host )) {
+				$redirect = true;
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		}
 
 	}
 
-	function is_url_selected($url) {
+	function negative_check_request($wp) {
+
+		$redirect = false;
+		$host = '';
+		if(is_ssl()) {
+			$host = "https://";
+		} else {
+			$host = "http://";
+		}
+		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		// we have the current page / url - get the groups selected
+		foreach((array) $this->data as $group_id) {
+			$group = new M_Urlgroup( $group_id );
+
+			if($group->url_matches( $host )) {
+				$redirect = true;
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		}
+
+	}
+
+	function redirect() {
 
 	}
 

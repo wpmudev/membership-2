@@ -148,6 +148,38 @@ if(!class_exists('M_Urlgroup')) {
 
 		}
 
+		// processing
+		function url_matches( $host ) {
+
+			$this->group = $this->get_group();
+
+			$groups = array_map('strtolower', array_map('trim', explode("\n", $this->group->groupurls)));
+
+			if($this->group->isregexp == 0) {
+				// straight match
+				if(in_array( strtolower($host), $groups )) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				//reg expression match
+				$matchstring = "";
+				foreach($groups as $key => $value) {
+					if($matchstring != "") $matchstring .= "|";
+					$matchstring .= addcslashes($value,"/");
+				}
+				$matchstring = "/(" . $matchstring . ")/";
+
+				if(preg_match($matchstring,$host, $matches)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+		}
+
 	}
 }
 ?>
