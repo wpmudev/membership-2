@@ -116,7 +116,7 @@ class twocheckout extends M_Gateway {
 		);
 		
 		$args['user-agent'] = "Membership/1.0.3: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.0";
-		$args['body'] = 'product_name='.$subscription->sub_name();
+		$args['body'] = 'product_id='.$subscription->sub_id();
 		$args['sslverify'] = false;
 		$args['timeout'] = 10;
 		
@@ -384,7 +384,7 @@ class twocheckout extends M_Gateway {
 			$user_id = false;
 			
 			$product_id = $_REQUEST['merchant_product_id'];
-			list($tmp, $user_id) = explode(':', $_REQUEST['cart_order_id']);
+			list($tmp, $user_id) = explode(':', $_REQUEST['merchant_order_id']);
 			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
@@ -405,6 +405,7 @@ class twocheckout extends M_Gateway {
 				
 				do_action('membership_payment_subscr_signup', $user_id, $product_id);	
 				wp_redirect(get_option('home'));
+				exit();
 			}
 		} else if (isset($_REQUEST['message_type'])) {
 			$md5_hash = strtoupper(md5("{$_REQUEST['sale_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_sid" ))."{$_REQUEST['invoice_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" ))));
