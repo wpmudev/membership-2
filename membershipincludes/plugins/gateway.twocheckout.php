@@ -125,7 +125,7 @@ class twocheckout extends M_Gateway {
 		$response = wp_remote_post($endpoint."list_products", $args);
 		
 		if (is_wp_error($response) || (wp_remote_retrieve_response_code($response) != 200 && wp_remote_retrieve_response_code($response) != 400)) {
-			print __('There was a problem connecting to 2CO. Please try again.', 'membership');
+			print __('There was a problem connecting to 2CO. Please try again. REF:'.wp_remote_retrieve_response_code($response), 'membership');
 		} else {
 			$response_obj = json_decode($response['body']);
 			
