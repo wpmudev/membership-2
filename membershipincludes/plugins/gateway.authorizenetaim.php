@@ -179,8 +179,10 @@ class authorizenetaim extends M_Gateway {
 		  if ($_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0)
 		  {
 		    $host_x = preg_split('/\//', get_option('siteurl'));
-		    $host = $host_x[2];  
-		    header("Location: https://". $host . $_SERVER['REQUEST_URI']); 
+		    $host = $host_x[2];
+		    echo '<script type="text/javascript">';
+		    echo 'window.location = "https://'. $host . $_SERVER['REQUEST_URI'].'"';
+		    echo '</script>';
 		    exit(0);
 		  }
 		}
