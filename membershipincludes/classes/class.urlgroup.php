@@ -66,6 +66,20 @@ if(!class_exists('M_Urlgroup')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('Strip query strings from URL','membership') . '</th>';
+			echo '<td valign="top" align="left">';
+			echo '<select name="stripquerystring">';
+				echo '<option value="0"';
+				if($this->group->stripquerystring == 0) echo ' selected="selected"';
+				echo '>' . __('No', 'membership') . '</option>';
+				echo '<option value="1"';
+				if($this->group->stripquerystring == 1) echo ' selected="selected"';
+				echo '>' . __('Yes', 'membership') . '</option>';
+			echo '</select>';
+			echo "<br/><em style='font-size:smaller;'>" . __("Remove any query string values prior to checking URL.",'membership') . "</em>";
+			echo '</td></tr>';
+
+			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Regular Expression','membership') . '</th>';
 			echo '<td valign="top" align="left">';
 			echo '<select name="isregexp">';
@@ -101,6 +115,18 @@ if(!class_exists('M_Urlgroup')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('Strip query strings from URL','membership') . '</th>';
+			echo '<td valign="top" align="left">';
+			echo '<select name="stripquerystring">';
+				echo '<option value="0"';
+				echo '>' . __('No', 'membership') . '</option>';
+				echo '<option value="1"';
+				echo '>' . __('Yes', 'membership') . '</option>';
+			echo '</select>';
+			echo "<br/><em style='font-size:smaller;'>" . __("Remove any query string values prior to checking URL.",'membership') . "</em>";
+			echo '</td></tr>';
+
+			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Regular Expression','membership') . '</th>';
 			echo '<td valign="top" align="left">';
 			echo '<select name="isregexp">';
@@ -121,7 +147,8 @@ if(!class_exists('M_Urlgroup')) {
 			$insert = array(
 								"groupname"	=> 	$_POST['groupname'],
 								"groupurls"	=>	$_POST['groupurls'],
-								"isregexp"	=>	$_POST['isregexp']
+								"isregexp"	=>	$_POST['isregexp'],
+								"stripquerystring"	=> $_POST['stripquerystring']
 							);
 
 			return $this->db->insert( $this->urlgroups, $insert );
@@ -133,7 +160,8 @@ if(!class_exists('M_Urlgroup')) {
 			$updates = array(
 								"groupname"	=> 	$_POST['groupname'],
 								"groupurls"	=>	$_POST['groupurls'],
-								"isregexp"	=>	$_POST['isregexp']
+								"isregexp"	=>	$_POST['isregexp'],
+								"stripquerystring"	=> $_POST['stripquerystring']
 							);
 
 			return $this->db->update( $this->urlgroups, $updates, array( "id" => $this->id) );
@@ -154,6 +182,10 @@ if(!class_exists('M_Urlgroup')) {
 			$this->group = $this->get_group();
 
 			$groups = array_map('strtolower', array_map('trim', explode("\n", $this->group->groupurls)));
+
+			if($this->group->stripquerystring == 1) {
+				$host = substr( $host, 0, strpos($host, '?'));
+			}
 
 			if($this->group->isregexp == 0) {
 				// straight match
