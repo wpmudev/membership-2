@@ -151,7 +151,7 @@ if(!class_exists('membershipadmin')) {
 
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
-				add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
+				//add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
 
 				add_submenu_page('membership', __('Membership URL Groups','membership'), __('Edit URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
 
