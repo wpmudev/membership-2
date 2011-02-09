@@ -99,7 +99,7 @@ if(!class_exists('membershipadmin')) {
 				update_option('M_Installed', $this->build);
 
 				// Add in our new capability
-				if(!$user->has_cap('membershipadmin')) {
+				if(!$user->has_cap('membershipadmin') && defined('MEMBERSHIP_SETACTIVATORAS_ADMIN') && MEMBERSHIP_SETACTIVATORAS_ADMIN == 'yes') {
 					$user->add_cap('membershipadmin');
 				}
 			}

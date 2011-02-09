@@ -22,4 +22,6 @@ if(!defined('MEMBERSHIP_GLOBAL_TABLES')) define( 'MEMBERSHIP_GLOBAL_TABLES', fal
 // Use a global table system - experimental
 if(!defined('MEMBERSHIP_MASTER_ADMIN')) define( 'MEMBERSHIP_MASTER_ADMIN', 'admin');
 
+if(!defined('MEMBERSHIP_SETACTIVATORAS_ADMIN')) define( 'MEMBERSHIP_SETACTIVATORAS_ADMIN', 'yes');
+
 ?>
