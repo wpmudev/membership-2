@@ -183,9 +183,10 @@ if(!class_exists('M_Urlgroup')) {
 
 			$groups = array_map('strtolower', array_map('trim', explode("\n", $this->group->groupurls)));
 
-			if($this->group->stripquerystring == 1) {
+			if($this->group->stripquerystring == 1 && strpos($host, '?') !== false) {
 				$host = substr( $host, 0, strpos($host, '?'));
 			}
+
 
 			if($this->group->isregexp == 0) {
 				// straight match
@@ -203,9 +204,9 @@ if(!class_exists('M_Urlgroup')) {
 					if($matchstring != "") $matchstring .= "|";
 					$matchstring .= addcslashes($value,"/");
 				}
-				$matchstring = "/(" . $matchstring . ")/";
+				$matchstring = "/" . $matchstring . "/";
 
-				if(preg_match($matchstring,$host, $matches) ) {
+				if(preg_match($matchstring, $host, $matches) ) {
 					return true;
 				} else {
 					return false;

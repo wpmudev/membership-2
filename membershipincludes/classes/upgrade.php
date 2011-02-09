@@ -11,6 +11,10 @@ function M_Upgrade($from = false) {
 		case 3:		M_Alterfor3();
 					break;
 
+		case 4:
+		case 5:		M_Alterfor4();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
@@ -21,6 +25,35 @@ function M_Upgrade($from = false) {
 }
 
 ///* 23:03:44 root@dev.site */ ALTER TABLE `wp_subscriptions_levels` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;
+function M_Alterfor4() {
+	global $wpdb;
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'urlgroups') . "` (
+	  `id` bigint(20) NOT NULL auto_increment,
+	  `groupname` varchar(250) default NULL,
+	  `groupurls` text,
+	  `isregexp` int(11) default '0',
+	  `stripquerystring` int(11) default '0',
+	  PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
+	  `id` bigint(11) NOT NULL auto_increment,
+	  `subject` varchar(250) default NULL,
+	  `message` text,
+	  `periodunit` int(11) default NULL,
+	  `periodtype` varchar(5) default NULL,
+	  `periodprepost` varchar(5) default NULL,
+	  `lastupdated` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+	  `active` int(11) default '0',
+	  `periodstamp` bigint(20) default '0',
+	  PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+}
 
 function M_Alterfor3() {
 	global $wpdb;
@@ -107,7 +140,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` (
 	  	`sub_id` bigint(20) default NULL,
 		`level_id` bigint(20) default NULL,
 		`level_period` int(11) default NULL,
@@ -140,6 +173,32 @@ function M_Createtables() {
 	  PRIMARY KEY  (`transaction_ID`),
 	  KEY `transaction_gateway` (`transaction_gateway`),
 	  KEY `transaction_subscription_ID` (`transaction_subscription_ID`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'urlgroups') . "` (
+	  `id` bigint(20) NOT NULL auto_increment,
+	  `groupname` varchar(250) default NULL,
+	  `groupurls` text,
+	  `isregexp` int(11) default '0',
+	  `stripquerystring` int(11) default '0',
+	  PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
+	  `id` bigint(11) NOT NULL auto_increment,
+	  `subject` varchar(250) default NULL,
+	  `message` text,
+	  `periodunit` int(11) default NULL,
+	  `periodtype` varchar(5) default NULL,
+	  `periodprepost` varchar(5) default NULL,
+	  `lastupdated` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+	  `active` int(11) default '0',
+	  `periodstamp` bigint(20) default '0',
+	  PRIMARY KEY  (`id`)
 	);";
 
 	$wpdb->query($sql);
