@@ -375,6 +375,7 @@ class twocheckout extends M_Gateway {
 
 	// Return stuff
 	function handle_2checkout_return() {
+		
 		// Return handling code
 		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
@@ -440,16 +441,14 @@ class twocheckout extends M_Gateway {
 			}
 			echo  "OK";
 			exit();
-		} else {
+		}/* else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 404 Not Found');
 			echo 'Error: Missing POST variables. Identification is not possible.';
 			exit;
-		}
+		}*/
 	}
 
 }
 
 M_register_gateway('twocheckout', 'twocheckout');
-
-?>
