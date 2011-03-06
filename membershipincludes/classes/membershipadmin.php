@@ -142,6 +142,9 @@ if(!class_exists('membershipadmin')) {
 					$admin_page_hooks['membership'] = 'membership';
 				}
 
+				add_submenu_page('membership', __('Quick Start','membership'), __('Quick Start','membership'), 'membershipquickstart', "members", array(&$this,'handle_members_quickstart'));
+
+
 				// Add the sub menu
 				add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'membershipadmin', "members", array(&$this,'handle_members_panel'));
 
@@ -151,9 +154,11 @@ if(!class_exists('membershipadmin')) {
 
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
-				//add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
+				add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
 
 				add_submenu_page('membership', __('Membership URL Groups','membership'), __('Edit URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
+
+				add_submenu_page('membership', __('Membership Pings','membership'), __('Edit Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
 
 				// Move the menu to the top of the page
 				foreach($menu as $key => $value) {
