@@ -21,7 +21,7 @@ if(!class_exists('M_Rule')) {
 
 		function admin_sidebar($data) {
 			?>
-			<li class='level-draggable' id='<?php echo $this->name; ?>' <?php if($data === true) echo "style='display:none;'"; ?>>
+			<li class='draggable-level' id='<?php echo $this->name; ?>' <?php if($data === true) echo "style='display:none;'"; ?>>
 				<div class='action action-draggable'>
 					<div class='action-top'>
 					<?php _e($this->label,'membership'); ?>

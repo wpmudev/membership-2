@@ -10,7 +10,7 @@ if(!class_exists('membershipadmin')) {
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications', 'urlgroups');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications', 'urlgroups', 'ping_history', 'pings');
 
 		var $membership_levels;
 		var $membership_rules;
@@ -20,6 +20,9 @@ if(!class_exists('membershipadmin')) {
 		var $membermeta;
 		var $communications;
 		var $urlgroups;
+		var $ping_history;
+		var $pings;
+
 
 		function __construct() {
 
@@ -50,6 +53,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
 			add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
 			add_action('load-membership_page_membershipurlgroups', array(&$this, 'add_admin_header_membershipurlgroups'));
+			add_action('load-membership_page_membershippings', array(&$this, 'add_admin_header_membershippings'));
 
 			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
 
@@ -326,6 +330,16 @@ if(!class_exists('membershipadmin')) {
 
 
 			$this->handle_urlgroups_updates();
+		}
+
+		function add_admin_header_membershippings() {
+			// Run the core header
+			$this->add_admin_header_core();
+
+			wp_enqueue_script('pingsjs', membership_url('membershipincludes/js/ping.js'), array(), $this->build);
+			wp_localize_script( 'pingsjs', 'membership', array( 'deleteping' => __('Are you sure you want to delete this ping and the associated history?','membership') ) );
+
+			$this->handle_ping_updates();
 		}
 
 		// Panel handling functions
@@ -2180,7 +2194,7 @@ if(!class_exists('membershipadmin')) {
 								<h3 class='positive'><?php _e('Positive rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
-								<div id='positive-rules' class='droppable-rules levels-sortable'>
+								<div id='positive-rules' class='level-droppable-rules levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
 								</div>
 
@@ -2208,7 +2222,7 @@ if(!class_exists('membershipadmin')) {
 								<h3 class='negative'><?php _e('Negative rules','membership'); ?></h3>
 								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 
-								<div id='negative-rules' class='droppable-rules levels-sortable'>
+								<div id='negative-rules' class='level-droppable-rules levels-sortable'>
 									<?php _e('Drop here','membership'); ?>
 								</div>
 
@@ -2296,7 +2310,7 @@ if(!class_exists('membershipadmin')) {
 									<h3><?php echo $section['title']; ?></h3>
 								</div>
 								<div class="section-holder" id="sidebar-<?php echo $key; ?>" style="min-height: 98px;">
-									<ul class='levels levels-draggable'>
+									<ul class='levels level-levels-draggable'>
 									<?php
 
 										if(isset($M_SectionRules[$key])) {
@@ -4013,7 +4027,7 @@ if(!class_exists('membershipadmin')) {
 				$add =& new M_Urlgroup( 0 );
 
 				echo "<div class='wrap'>";
-				echo "<h2>" . __('Add Message','membership') . "</h2>";
+				echo "<h2>" . __('Add URL group','membership') . "</h2>";
 
 				echo '<form method="post" action="?page=' . $page . '">';
 				echo '<input type="hidden" name="ID" value="" />';
@@ -4029,7 +4043,7 @@ if(!class_exists('membershipadmin')) {
 				$edit =& new M_Urlgroup( (int) $group_id );
 
 				echo "<div class='wrap'>";
-				echo "<h2>" . __('Edit Message','membership') . "</h2>";
+				echo "<h2>" . __('Edit URL group','membership') . "</h2>";
 
 				echo '<form method="post" action="?page=' . $page . '">';
 				echo '<input type="hidden" name="ID" value="' . $group_id . '" />';
@@ -4079,7 +4093,7 @@ if(!class_exists('membershipadmin')) {
 
 			?>
 			<div class='wrap'>
-				<div class="icon32" id="icon-edit-comments"><br></div>
+				<div class="icon32" id="icon-edit-pages"><br></div>
 				<h2><?php _e('Edit URL Groups','membership'); ?></h2>
 
 				<?php
@@ -4199,6 +4213,296 @@ if(!class_exists('membershipadmin')) {
 				</div>
 				<div class="alignright actions">
 					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New'); ?>" name="addnewgroup2">
+				</div>
+				<br class="clear">
+				</div>
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
+		}
+
+		function handle_ping_updates() {
+
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'delete' || addslashes($_GET['action2']) == 'delete') {
+					$action = 'bulk-delete';
+				}
+			}
+
+			switch(addslashes($action)) {
+
+				case 'added':	check_admin_referer('add-ping');
+
+								$ping =& new M_Ping( 0 );
+
+								if($ping->add()) {
+									wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+								}
+
+								break;
+				case 'updated':	$id = (int) $_POST['ID'];
+								check_admin_referer('update-ping-' . $id);
+								if($id) {
+									$ping =& new M_Ping( $id );
+
+									if($ping->update()) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+									}
+								} else {
+									wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+								}
+								break;
+
+				case 'delete':	if(isset($_GET['ping'])) {
+									$id = (int) $_GET['ping'];
+
+									check_admin_referer('delete-ping_' . $id);
+
+									$ping =& new M_Ping( $id );
+
+									if($ping->delete()) {
+										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
+				case 'bulk-delete':
+								check_admin_referer('bulk-pings');
+								foreach($_GET['pingcheck'] AS $value) {
+									if(is_numeric($value)) {
+										$id = (int) $value;
+
+										$ping =& new M_Ping( $id );
+
+										$ping->delete();
+									}
+								}
+
+								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+								break;
+			}
+
+		}
+
+		function show_ping_edit( $ping_id ) {
+
+			global $page;
+
+			if( $ping_id === false ) {
+				$add =& new M_Ping( 0 );
+
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Add Ping details','membership') . "</h2>";
+
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="" />';
+				echo "<input type='hidden' name='action' value='added' />";
+				wp_nonce_field('add-ping');
+				$add->addform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Add ping details', 'membership') . '" /></p>';
+				echo '</form>';
+
+				echo "</div>";
+			} else {
+				$edit =& new M_Ping( (int) $ping_id );
+
+				echo "<div class='wrap'>";
+				echo "<h2>" . __('Edit Ping details','membership') . "</h2>";
+
+				echo '<form method="post" action="?page=' . $page . '">';
+				echo '<input type="hidden" name="ID" value="' . $ping_id . '" />';
+				echo "<input type='hidden' name='action' value='updated' />";
+				wp_nonce_field('update-ping-' . $ping_id);
+				$edit->editform();
+				echo '<p class="submit">';
+				echo '<input class="button" type="submit" name="go" value="' . __('Update ping details', 'membership') . '" /></p>';
+				echo '</form>';
+
+				echo "</div>";
+			}
+
+		}
+
+		function get_pings() {
+			$sql = $this->db->prepare( "SELECT * FROM {$this->pings} ORDER BY id ASC" );
+
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+				return $results;
+			} else {
+				return false;
+			}
+		}
+
+		function handle_pings_panel() {
+			global $action, $page;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(!empty($_GET['ping'])) {
+									// Make a communication
+									$this->show_ping_edit( $_GET['ping'] );
+								} else {
+									$this->show_ping_edit( false );
+								}
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Ping details updated.','membership');
+			$messages[2] = __('Ping details not updated.','membership');
+
+			$messages[3] = __('Ping details added.','membership');
+			$messages[4] = __('Ping details not added.','membership');
+
+			$messages[5] = __('Ping details deleted.','membership');
+			$messages[6] = __('Ping details not deleted.','membership');
+
+			$messages[7] = __('Ping details deleted.','membership');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-link-manager"><br></div>
+				<h2><?php _e('Edit Pings','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				$pings = $this->get_pings();
+
+				$pings = apply_filters('M_pings_list', $pings);
+
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
+
+				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+				<option value="delete"><?php _e('Delete'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+
+				</div>
+
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New'); ?>" name="addnewgroup">
+				</div>
+
+				<br class="clear">
+				</div>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-pings');
+
+					$columns = array(	"name" 		=> 	__('Ping Name','membership')
+									);
+
+					$columns = apply_filters('membership_pingscolumns', $columns);
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if(!empty($pings)) {
+							foreach($pings as $key => $ping) {
+								?>
+								<tr valign="middle" class="alternate" id="ping-<?php echo $ping->id; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($ping->id); ?>" name="pingcheck[]"></th>
+									<td class="column-name">
+										<strong><a title="Edit <?php echo esc_attr(stripslashes($ping->pingname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;ping=<?php echo $ping->id; ?>" class="row-title"><?php echo esc_html(stripslashes($ping->pingname)); ?></a></strong>
+										<?php
+											$actions = array();
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Edit') . "</a></span>";
+											$actions['trans'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=history&amp;ping=" . $ping->id . "'>" . __('History') . "</a></span>";
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;ping=" . $ping->id . "", 'delete-ping_' . $ping->id) . "'>" . __('Delete', 'membership') . "</a></span>";
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Pings have been set up.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="delete"><?php _e('Delete'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				</div>
+				<div class="alignright actions">
+					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New'); ?>" name="addnewping2">
 				</div>
 				<br class="clear">
 				</div>

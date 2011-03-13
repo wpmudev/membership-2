@@ -37,7 +37,7 @@ function m_deletelevel() {
 function m_levelsReady() {
 
 
-	jQuery('.level-draggable').draggable({
+	jQuery('.draggable-level').draggable({
 			opacity: 0.7,
 			helper: 'clone',
 			start: function(event, ui) {
@@ -48,7 +48,7 @@ function m_levelsReady() {
 				}
 				});
 
-	jQuery('.droppable-rules').droppable({
+	jQuery('.level-droppable-rules').droppable({
 			hoverClass: 'hoveringover',
 			drop: function(event, ui) {
 					moving = jQuery('input#beingdragged').val();

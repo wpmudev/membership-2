@@ -136,7 +136,7 @@ input.wide {
 	min-height: 80px;
 }
 
-.droppable-rules {
+.level-droppable-rules {
 	width: 95%;
 	margin-left: 15px;
 	margin-bottom: 20px;
@@ -154,7 +154,7 @@ input.wide {
 	clear: both;
 }
 
-.droppable-rules.hoveringover {
+.level-droppable-rules.hoveringover {
 	border: 3px dashed #78aad3;
 	color: #78aad3;
 }
@@ -216,7 +216,7 @@ div.level-operation {
 }
 
 h2.sidebar-name span {
-	float: right;	
+	float: right;
 }
 h2.sidebar-name span a {
 	text-decoration: none;

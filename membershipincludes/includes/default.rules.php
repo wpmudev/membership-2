@@ -122,18 +122,7 @@ M_register_rule('posts', 'M_Posts', 'main');
 class M_Pages extends M_Rule {
 
 	var $name = 'pages';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='pages' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Pages','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Pages';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -269,18 +258,7 @@ M_register_rule('pages', 'M_Pages', 'main');
 class M_Categories extends M_Rule {
 
 	var $name = 'categories';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='categories' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Categories','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Categories';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -410,18 +388,7 @@ M_register_rule('categories', 'M_Categories', 'main');
 class M_More extends M_Rule {
 
 	var $name = 'more';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='more' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('More tag','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'More tag';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -524,18 +491,7 @@ M_register_rule('more', 'M_More', 'main');
 class M_Comments extends M_Rule {
 
 	var $name = 'comments';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='comments' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Comments','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Comments';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -597,18 +553,7 @@ M_register_rule('comments', 'M_Comments', 'main');
 class M_Downloads extends M_Rule {
 
 	var $name = 'downloads';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='downloads' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Downloads','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Downloads';
 
 	function admin_main($data) {
 
@@ -712,18 +657,7 @@ M_register_rule('downloads', 'M_Downloads', 'content');
 class M_Shortcodes extends M_Rule {
 
 	var $name = 'shortcodes';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='shortcodes' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Shortcodes','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Shortcodes';
 
 	function admin_main($data) {
 
@@ -850,18 +784,7 @@ M_register_rule('shortcodes', 'M_Shortcodes', 'content');
 class M_Menu extends M_Rule {
 
 	var $name = 'menu';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='menu' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Menu','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Menu';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -980,18 +903,7 @@ M_register_rule('menu', 'M_Menu', 'main');
 class M_Blogcreation extends M_Rule {
 
 	var $name = 'blogcreation';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='blogcreation' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Blog Creation','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Blog Creation';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -1108,18 +1020,7 @@ M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
 class M_URLGroups extends M_Rule {
 
 	var $name = 'urlgroups';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='urlgroups' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('URL Groups','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'URL Groups';
 
 	function get_groups() {
 

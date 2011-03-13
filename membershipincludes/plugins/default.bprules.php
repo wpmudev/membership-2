@@ -3,18 +3,7 @@
 class M_BPGroups extends M_Rule {
 
 	var $name = 'bpgroups';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='bpgroups' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Groups','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Groups';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -243,18 +232,7 @@ M_register_rule('bpgroups', 'M_BPGroups', 'bp');
 class M_BPGroupcreation extends M_Rule {
 
 	var $name = 'bpgroupcreation';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='bpgroupcreation' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Group Creation','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Group Creation';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -340,18 +318,7 @@ M_register_rule('bpgroupcreation', 'M_BPGroupcreation', 'bp');
 class M_BPBlogs extends M_Rule {
 
 	var $name = 'bpblogs';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='bpblogs' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Blogs','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Blogs';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -599,18 +566,7 @@ M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
 class M_BPPrivatemessage extends M_Rule {
 
 	var $name = 'bpprivatemessage';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='bpprivatemessage' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Private Messaging','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Private Messaging';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -669,18 +625,7 @@ M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
 class M_BPPages extends M_Rule {
 
 	var $name = 'bppages';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='bppages' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('BuddyPress Pages','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'BuddyPress Pages';
 
 	function admin_main($data) {
 		if(!$data) $data = array();

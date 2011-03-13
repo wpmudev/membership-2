@@ -3,18 +3,7 @@ class M_Mainmenus extends M_Rule {
 
 	var $name = 'mainmenus';
 	var $adminside = true;
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='mainmenus' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Main Menus','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Main Menus';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -126,18 +115,7 @@ class M_Submenus extends M_Rule {
 
 	var $name = 'submenus';
 	var $adminside = true;
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='submenus' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Sub Menus','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Sub Menus';
 
 	function get_mainmenu_for_file($file) {
 
@@ -274,18 +252,7 @@ class M_Dashboardwidgets extends M_Rule {
 
 	var $name = 'dashboard';
 	var $adminside = true;
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='dashboard' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Dashboard Widgets','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Dashboard Widgets';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -427,18 +394,7 @@ class M_Plugins extends M_Rule {
 
 	var $name = 'plugins';
 	var $adminside = true;
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='plugins' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Plugins','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Plugins';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -546,23 +502,12 @@ class M_Favouriteactions extends M_Rule {
 
 	var $name = 'favactions';
 	var $adminside = true;
+	var $label = 'Favorite Actions';
 
 	var $favouriteactions = array();
 
 	function on_creation() {
 
-	}
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='favactions' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Favorite Actions','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
 	}
 
 	function admin_main($data) {
