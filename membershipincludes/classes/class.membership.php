@@ -35,7 +35,7 @@ if(!class_exists('M_Membership')) {
 
 		function active_member() {
 
-			$active = get_usermeta( $this->ID, $this->db->prefix . 'membership_active');
+			$active = get_usermeta( $this->ID, membership_db_prefix($this->db, 'membership_active', false));
 
 			if(empty($active) || $active == 'yes') {
 				return apply_filters( 'membership_active_member', true, $this->ID);
@@ -408,15 +408,15 @@ if(!class_exists('M_Membership')) {
 				return false;
 			}
 
-			$active = get_usermeta( $this->ID, $this->db->prefix . 'membership_active');
+			$active = get_usermeta( $this->ID, membership_db_prefix($this->db, 'membership_active', false) );
 
 			if(empty($active) || $active == 'yes') {
-				update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'no');
+				update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
 
 				do_action('membership_deactivate_user', $this->ID);
 
 			} else {
-				update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'yes');
+				update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'yes');
 
 				do_action('membership_activate_user', $this->ID);
 
@@ -426,7 +426,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function deactivate() {
-			update_usermeta($this->ID, $this->db->prefix . 'membership_active', 'no');
+			update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
 		}
 
 		// Levels functions

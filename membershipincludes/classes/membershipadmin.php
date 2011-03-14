@@ -1360,12 +1360,24 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			if(isset($_GET['doactionactive'])) {
+				if(addslashes($_GET['active_op']) != '') {
+					$active_op = addslashes($_GET['active_op']);
+				}
+			}
+
+			if(isset($_GET['doactionactive2'])) {
+				if(addslashes($_GET['active_op2']) != '') {
+					$active_op = addslashes($_GET['active_op2']);
+				}
+			}
+
 			$usersearch = isset($_GET['s']) ? $_GET['s'] : null;
 			$userspage = isset($_GET['userspage']) ? $_GET['userspage'] : null;
 			$role = null;
 
 			// Query the users
-			$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id);
+			$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id, $active_op);
 
 			$messages = array();
 			$messages[1] = __('Member added.');
@@ -1461,6 +1473,14 @@ if(!class_exists('membershipadmin')) {
 					?>
 				</select>
 				<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter'); ?>">
+
+				<select name="active_op">
+					<option value=""><?php _e('Filter by status','membership'); ?></option>
+					<option value="yes" <?php if($_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
+					<option value="no" <?php if($_GET['active_op'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter'); ?>">
+
 
 				</div>
 
@@ -1681,6 +1701,14 @@ if(!class_exists('membershipadmin')) {
 					?>
 				</select>
 				<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter'); ?>">
+
+				<select name="active_op2">
+					<option value=""><?php _e('Filter by status','membership'); ?></option>
+					<option value="yes" <?php if($_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
+					<option value="no" <?php if($_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter'); ?>">
+
 
 				</div>
 				<div class="alignright actions">
