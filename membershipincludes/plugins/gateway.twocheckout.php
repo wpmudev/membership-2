@@ -218,7 +218,7 @@ class twocheckout extends M_Gateway {
 			
 			$form .= '<form action="https://www.2checkout.com/cgi-bin/sbuyers/purchase.2c" method="post">';
 			
-			if (get_option( $this->gateway . "_2checkout_status" ) != 'live') {
+			if (get_option( $this->gateway . "_twocheckout_status" ) != 'live') {
 				$form .= '<input type="hidden" name="demo" value="Y">';
 			}
 			
@@ -230,7 +230,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
-			$button = get_option( $this->gateway . "_2checkout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
+			$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
 			
 			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="Pay via 2Checkout">';
 			$form .= '</form>';
@@ -256,7 +256,7 @@ class twocheckout extends M_Gateway {
 			
 			$form .= '<form action="https://www.2checkout.com/cgi-bin/sbuyers/purchase.2c" method="post">';
 			
-			if (get_option( $this->gateway . "_2checkout_status" ) != 'live') {
+			if (get_option( $this->gateway . "_twocheckout_status" ) != 'live') {
 				$form .= '<input type="hidden" name="demo" value="Y">';
 			}
 			
@@ -268,7 +268,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
-			$button = get_option( $this->gateway . "_2checkout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
+			$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
 			
 			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="Pay via 2Checkout">';
 			$form .= '</form>';
@@ -295,7 +295,7 @@ class twocheckout extends M_Gateway {
 			
 			$form .= '<form action="https://www.2checkout.com/cgi-bin/sbuyers/purchase.2c" method="post">';
 			
-			if (get_option( $this->gateway . "_2checkout_status" ) != 'live') {
+			if (get_option( $this->gateway . "_twocheckout_status" ) != 'live') {
 				$form .= '<input type="hidden" name="demo" value="Y">';
 			}
 			
@@ -307,7 +307,7 @@ class twocheckout extends M_Gateway {
 			$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 			$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 			
-			$button = get_option( $this->gateway . "_2checkout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
+			$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
 			
 			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="Pay via 2Checkout">';
 			$form .= '</form>';
