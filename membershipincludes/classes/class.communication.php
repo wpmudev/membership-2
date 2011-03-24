@@ -109,9 +109,11 @@ if(!class_exists('M_Communication')) {
 			echo '%blogurl%<br />';
 			echo '%username%<br />';
 			echo '%usernicename%<br/>';
-			echo '%sitename%<br/>';
-			echo "%siteurl%<br/>";
+			echo '%networkname%<br/>';
+			echo "%networkurl%<br/>";
 			echo "%upgradeurl%<br/>";
+			echo "%subscriptionname%<br/>";
+			echo "%levelname%<br/>";
 
 			echo '</div>';
 			echo '</td>';
@@ -192,9 +194,11 @@ if(!class_exists('M_Communication')) {
 			echo '%blogurl%<br />';
 			echo '%username%<br />';
 			echo '%usernicename%<br/>';
-			echo '%sitename%<br/>';
-			echo "%siteurl%<br/>";
+			echo '%networkname%<br/>';
+			echo "%networkurl%<br/>";
 			echo "%upgradeurl%<br/>";
+			echo "%subscriptionname%<br/>";
+			echo "%levelname%<br/>";
 
 			echo '</div>';
 			echo '</td>';

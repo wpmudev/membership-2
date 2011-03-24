@@ -15,6 +15,9 @@ function M_Upgrade($from = false) {
 		case 5:		M_Alterfor4();
 					break;
 
+		case 6:		M_Alterfor5();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
@@ -24,7 +27,32 @@ function M_Upgrade($from = false) {
 
 }
 
-///* 23:03:44 root@dev.site */ ALTER TABLE `wp_subscriptions_levels` ADD `level_period_unit` varchar(1) NULL DEFAULT 'd'  AFTER `level_order`;
+function M_Alterfor5() {
+	global $wpdb;
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`pingname` varchar(250) default NULL,
+		`pinginfo` text,
+		`pingtype` varchar(10) default NULL,
+		PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'ping_history') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`ping_id` bigint(20) default NULL,
+		`ping_sent` timestamp NULL default NULL,
+		`ping_info` text,
+		`ping_return` text,
+		PRIMARY KEY  (`id`),
+		KEY `ping_id` (`ping_id`)
+	);";
+
+	$wpdb->query($sql);
+}
+
 function M_Alterfor4() {
 	global $wpdb;
 
@@ -202,6 +230,30 @@ function M_Createtables() {
 	);";
 
 	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`pingname` varchar(250) default NULL,
+		`pinginfo` text,
+		`pingtype` varchar(10) default NULL,
+		PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'ping_history') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`ping_id` bigint(20) default NULL,
+		`ping_sent` timestamp NULL default NULL,
+		`ping_info` text,
+		`ping_return` text,
+		PRIMARY KEY  (`id`),
+		KEY `ping_id` (`ping_id`)
+	);";
+
+	$wpdb->query($sql);
+	
+	do_action( 'membership_create_new_tables' );
 }
 
 ?>

@@ -13,6 +13,8 @@ function load_membership_plugins() {
 		}
 	}
 
+	do_action( 'membership_plugins_loaded' );
+
 }
 
 function set_membership_url($base) {

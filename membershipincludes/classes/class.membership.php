@@ -35,7 +35,7 @@ if(!class_exists('M_Membership')) {
 
 		function active_member() {
 
-			$active = get_usermeta( $this->ID, membership_db_prefix($this->db, 'membership_active', false));
+			$active = get_user_meta( $this->ID, membership_db_prefix($this->db, 'membership_active', false), true);
 
 			if(empty($active) || $active == 'yes') {
 				return apply_filters( 'membership_active_member', true, $this->ID);
@@ -45,7 +45,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function mark_for_expire( $sub_id ) {
-			update_usermeta( $this->ID, '_membership_expire_next', $sub_id);
+			update_user_meta( $this->ID, '_membership_expire_next', $sub_id);
 
 			do_action('membership_mark_for_expire', $sub_id, $this->ID);
 
@@ -53,7 +53,7 @@ if(!class_exists('M_Membership')) {
 
 		function is_marked_for_expire($sub_id) {
 
-			$markedsub_id = get_usermeta( $this->ID, '_membership_expire_next', true);
+			$markedsub_id = get_user_meta( $this->ID, '_membership_expire_next', true);
 
 			if(!empty($markedsub_id) && $markedsub_id == $sub_id) {
 				return apply_filters('membership_is_marked_for_expire', true, $this->ID);
@@ -104,7 +104,49 @@ if(!class_exists('M_Membership')) {
 			}
 		}
 
+		function current_subscription() {
+
+			$sql = $this->db->prepare( "SELECT sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id != 0", $this->ID );
+
+			$res = $this->db->get_results($sql);
+
+			if(!empty($res)) {
+				return apply_filters('membership_current_subscription', $res, $this->ID);
+			} else {
+				return apply_filters('membership_current_subscription', false, $this->ID);
+			}
+
+		}
+
+		function started_on_level_in_sub( $sub_id ) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+				foreach($results as $key => $r) {
+					return apply_filter('membership_started_on_level_in_sub', $sub_id, mysql2date("U", $rel->updateddate));
+				}
+			}
+
+		}
+
+		function ends_on_level_in_sub( $sub_id ) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
+			$results = $this->db->get_results( $sql );
+
+			if(!empty($results)) {
+				foreach($results as $key => $r) {
+					return apply_filter('membership_ends_on_level_in_sub', $sub_id, mysql2date("U", $rel->expirydate));
+				}
+			}
+
+		}
+
 		function transition_through_subscription() {
+
+			do_action('membership_start_transition', $this->ID);
 
 			$relationships = $this->get_relationships();
 
@@ -114,7 +156,7 @@ if(!class_exists('M_Membership')) {
 						// expired, we need to move forwards
 						if($this->is_marked_for_expire($rel->sub_id)) {
 							$this->expire_subscription($rel->sub_id);
-							delete_usermeta($this->ID, '_membership_expire_next');
+							delete_user_meta($this->ID, '_membership_expire_next');
 							continue;
 						}
 
@@ -143,6 +185,8 @@ if(!class_exists('M_Membership')) {
 
 				}
 			}
+
+			do_action('membership_end_transition', $this->ID);
 
 		}
 
@@ -408,15 +452,15 @@ if(!class_exists('M_Membership')) {
 				return false;
 			}
 
-			$active = get_usermeta( $this->ID, membership_db_prefix($this->db, 'membership_active', false) );
+			$active = get_user_meta( $this->ID, membership_db_prefix($this->db, 'membership_active', false), true );
 
 			if(empty($active) || $active == 'yes') {
-				update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
+				update_user_meta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
 
 				do_action('membership_deactivate_user', $this->ID);
 
 			} else {
-				update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'yes');
+				update_user_meta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'yes');
 
 				do_action('membership_activate_user', $this->ID);
 
@@ -426,7 +470,7 @@ if(!class_exists('M_Membership')) {
 		}
 
 		function deactivate() {
-			update_usermeta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
+			update_user_meta($this->ID, membership_db_prefix($this->db, 'membership_active', false), 'no');
 		}
 
 		// Levels functions

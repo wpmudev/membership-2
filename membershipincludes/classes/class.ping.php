@@ -24,6 +24,17 @@ if(!class_exists('M_Ping')) {
 
 		var $ping;
 
+		var $pingconstants = array(	'%blogname%' => '',
+									'%blogurl%' => '',
+									'%username%' => '',
+									'%usernicename%' => '',
+									'%networkname%' => '',
+									'%networkurl%' => '',
+									'%subscriptionname%' => '',
+									'%levelname%' => '',
+									'%timestamp%' => ''
+									);
+
 		function __construct( $id = false) {
 
 			global $wpdb;
@@ -61,9 +72,16 @@ if(!class_exists('M_Ping')) {
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
-			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40">' . esc_html(stripslashes($this->ping->pinginfo)) . '</textarea>';
+			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;">' . esc_html(stripslashes($this->ping->pinginfo)) . '</textarea>';
 			// Display some instructions for the message.
-			echo "<br/><em style='font-size:smaller;'>" . __("You should place each element or expression on a new line.",'membership') . "</em>";
+			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
+			echo __('You can use the following constants within the message body to embed database information.','membership');
+			echo '<br />';
+
+			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
+
+			echo '</div>';
+
 			echo '</td>';
 			echo '</tr>';
 
@@ -95,9 +113,15 @@ if(!class_exists('M_Ping')) {
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
-			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40"></textarea>';
+			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;"></textarea>';
 			// Display some instructions for the message.
-			echo "<br/><em style='font-size:smaller;'>" . __("You should place each element or expression on a new line.",'membership') . "</em>";
+			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
+			echo __('You can use the following constants within the message body to embed database information.','membership');
+			echo '<br />';
+
+			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
+
+			echo '</div>';
 			echo '</td>';
 			echo '</tr>';
 
@@ -148,8 +172,19 @@ if(!class_exists('M_Ping')) {
 
 		}
 
-		// processing
+		// History
+		function get_history() {
 
+		}
+
+		// processing
+		function send_ping() {
+
+		}
+
+		function resend_historic_ping( $history_id, $rewrite = false ) {
+
+		}
 
 	}
 }
