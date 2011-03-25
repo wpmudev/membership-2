@@ -23,6 +23,7 @@ if(!class_exists('M_Ping')) {
 		var $dirty = true;
 
 		var $ping;
+		var $id;
 
 		var $pingconstants = array(	'%blogname%' => '',
 									'%blogurl%' => '',
@@ -177,12 +178,101 @@ if(!class_exists('M_Ping')) {
 
 		}
 
-		// processing
-		function send_ping() {
+		function add_history( $sent, $return ) {
+
+			$insert = array(
+							"ping_id"		=> 	$this->id,
+							"ping_sent"		=>	gmdate( 'Y-m-d H:i:s' ),
+							"ping_info"		=>	$sent,
+							"ping_return"	=>	$return
+						);
+
+			return $this->db->insert( $this->ping_history, $insert );
+		}
+
+		function update_history( $history_id, $sent, $return ) {
 
 		}
 
-		function resend_historic_ping( $history_id, $rewrite = false ) {
+		// processing
+		function send_ping() {
+
+			$this->ping = $this->get_ping();
+
+			if( !class_exists( 'WP_Http' ) ) {
+			    include_once( ABSPATH . WPINC. '/class-http.php' );
+			}
+
+			$pingtosend = $this->pingconstants;
+
+			$user = wp_get_current_user();
+			$member = new M_Membership( $user->ID );
+
+			foreach($pingtosend as $key => $value) {
+				switch($key) {
+					case '%blogname%':			$pingtosend[$key] = get_option('blogname');
+												break;
+
+					case '%blogurl%':			$pingtosend[$key] = get_option('home');
+												break;
+
+					case '%username%':			$pingtosend[$key] = $user->user_login;
+												break;
+
+					case '%usernicename%':		$pingtosend[$key] = $user->user_nicename;
+												break;
+
+					case '%networkname%':		$pingtosend[$key] = get_site_option('site_name');
+												break;
+
+					case '%networkurl%':		$pingtosend[$key] = get_site_option('siteurl');
+												break;
+
+					case '%subscriptionname%':	$ids = $member->get_subscription_ids();
+												if(!empty($ids)) {
+													$firstid = $ids[0];
+
+												}
+												$pingtosend[$key] = $user->user_nicename;
+												break;
+
+					case '%levelname%':			$ids = $member->get_level_ids();
+												if(!empty($ids)) {
+													$firstid = $ids[0];
+
+												}
+												$pingtosend[$key] = $user->user_nicename;
+												break;
+
+					case '%timestamp%':			$pingtosend[$key] = time();
+												break;
+
+					default:					$pingtosend[$key] = apply_filter( 'membership_pingfield_' . $key, '' );
+												break;
+				}
+			}
+
+			$url = $this->ping->pingurl;
+
+			// Globally replace the values in the ping and then make it into an array to send
+			$pingmessage = str_replace(array_keys($pingtosend), array_values($pingtosend), $this->ping->pinginfo);
+			$pingmessage = array_map( 'trim', explode("\n", $pingmessage) );
+
+			// Send the request
+			$request = new WP_Http;
+			$result = $request->request( $url, array( 'method' => $this->ping->pingtype, 'body' => $pingtosend ) );
+
+			/*
+			'headers': an array of response headers, such as "x-powered-by" => "PHP/5.2.1"
+			'body': the response string sent by the server, as you would see it with you web browser
+			'response': an array of HTTP response codes. Typically, you'll want to have array('code'=>200, 'message'=>'OK')
+			'cookies': an array of cookie information
+			*/
+			$this->add_history( $pingtosend, $result );
+
+		}
+
+		function resend_historic_ping( $history_id, $recreateinformation = false, $rewrite = false ) {
 
 		}
 

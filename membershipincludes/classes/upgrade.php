@@ -234,6 +234,7 @@ function M_Createtables() {
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
 	  	`id` bigint(20) NOT NULL auto_increment,
 		`pingname` varchar(250) default NULL,
+		`pingurl` varchar(250) default NULL,
 		`pinginfo` text,
 		`pingtype` varchar(10) default NULL,
 		PRIMARY KEY  (`id`)
@@ -252,7 +253,7 @@ function M_Createtables() {
 	);";
 
 	$wpdb->query($sql);
-	
+
 	do_action( 'membership_create_new_tables' );
 }
 

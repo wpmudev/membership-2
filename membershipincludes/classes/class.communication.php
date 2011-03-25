@@ -22,6 +22,17 @@ if(!class_exists('M_Communication')) {
 
 		var $comm;
 
+		var $commconstants = array(	'%blogname%' => '',
+									'%blogurl%' => '',
+									'%username%' => '',
+									'%usernicename%' => '',
+									'%networkname%' => '',
+									'%networkurl%' => '',
+									'%subscriptionname%' => '',
+									'%levelname%' => '',
+									'%upgradeurl%' => ''
+									);
+
 		function __construct( $id = false) {
 
 			global $wpdb;
@@ -104,16 +115,9 @@ if(!class_exists('M_Communication')) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br /><br />';
-			echo '%blogname%<br />';
-			echo '%blogurl%<br />';
-			echo '%username%<br />';
-			echo '%usernicename%<br/>';
-			echo '%networkname%<br/>';
-			echo "%networkurl%<br/>";
-			echo "%upgradeurl%<br/>";
-			echo "%subscriptionname%<br/>";
-			echo "%levelname%<br/>";
+			echo '<br />';
+
+			echo implode('<br/>', array_keys(apply_filters('membership_comm_constants_list', $this->commconstants)) );
 
 			echo '</div>';
 			echo '</td>';
@@ -189,16 +193,9 @@ if(!class_exists('M_Communication')) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br /><br />';
-			echo '%blogname%<br />';
-			echo '%blogurl%<br />';
-			echo '%username%<br />';
-			echo '%usernicename%<br/>';
-			echo '%networkname%<br/>';
-			echo "%networkurl%<br/>";
-			echo "%upgradeurl%<br/>";
-			echo "%subscriptionname%<br/>";
-			echo "%levelname%<br/>";
+			echo '<br />';
+
+			echo implode('<br/>', array_keys(apply_filters('membership_comm_constants_list', $this->commconstants)) );
 
 			echo '</div>';
 			echo '</td>';
