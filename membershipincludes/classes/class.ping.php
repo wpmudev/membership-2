@@ -72,6 +72,11 @@ if(!class_exists('M_Ping')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('Ping URL','membership') . '</th>';
+			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->ping->pingurl)) . '" /></td>';
+			echo '</tr>';
+
+			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
 			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;">' . esc_html(stripslashes($this->ping->pinginfo)) . '</textarea>';
 			// Display some instructions for the message.
@@ -113,6 +118,11 @@ if(!class_exists('M_Ping')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('Ping URL','membership') . '</th>';
+			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL') . '" style="width: 50%;" value="" /></td>';
+			echo '</tr>';
+
+			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
 			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;"></textarea>';
 			// Display some instructions for the message.
@@ -145,6 +155,7 @@ if(!class_exists('M_Ping')) {
 
 			$insert = array(
 								"pingname"	=> 	$_POST['pingname'],
+								"pingurl"	=>	$_POST['pingurl'],
 								"pinginfo"	=>	$_POST['pinginfo'],
 								"pingtype"	=>	$_POST['pingtype']
 							);
@@ -157,6 +168,7 @@ if(!class_exists('M_Ping')) {
 
 			$updates = array(
 								"pingname"	=> 	$_POST['pingname'],
+								"pingurl"	=>	$_POST['pingurl'],
 								"pinginfo"	=>	$_POST['pinginfo'],
 								"pingtype"	=>	$_POST['pingtype']
 							);
@@ -175,7 +187,15 @@ if(!class_exists('M_Ping')) {
 
 		// History
 		function get_history() {
+			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE ping_id = %d ", $this->id );
 
+			return $this->db->get_results( $sql );
+		}
+
+		function get_history_item( $history_id ) {
+			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE id = %d ", $history_id );
+
+			return $this->db->get_row( $sql );
 		}
 
 		function add_history( $sent, $return ) {
@@ -191,7 +211,14 @@ if(!class_exists('M_Ping')) {
 		}
 
 		function update_history( $history_id, $sent, $return ) {
+			$update = array(
+							"ping_id"		=> 	$this->id,
+							"ping_sent"		=>	gmdate( 'Y-m-d H:i:s' ),
+							"ping_info"		=>	$sent,
+							"ping_return"	=>	$return
+						);
 
+			return $this->db->update( $this->ping_history, $update, array( "id" => $history_id ) );
 		}
 
 		// processing
