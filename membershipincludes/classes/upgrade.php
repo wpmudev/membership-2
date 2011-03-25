@@ -51,6 +51,30 @@ function M_Alterfor5() {
 	);";
 
 	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'levelmeta') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`level_id` bigint(20) default NULL,
+		`meta_key` varchar(250) default NULL,
+		`meta_value` text,
+		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+		PRIMARY KEY  (`id`),
+		UNIQUE KEY `level_id` (`level_id`,`meta_key`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptionmeta') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`sub_id` bigint(20) default NULL,
+		`meta_key` varchar(250) default NULL,
+		`meta_value` text,
+		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+		PRIMARY KEY  (`id`),
+		UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
+	);";
+
+	$wpdb->query($sql);
 }
 
 function M_Alterfor4() {
@@ -250,6 +274,30 @@ function M_Createtables() {
 		`ping_return` text,
 		PRIMARY KEY  (`id`),
 		KEY `ping_id` (`ping_id`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'levelmeta') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`level_id` bigint(20) default NULL,
+		`meta_key` varchar(250) default NULL,
+		`meta_value` text,
+		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+		PRIMARY KEY  (`id`),
+		UNIQUE KEY `level_id` (`level_id`,`meta_key`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptionmeta') . "` (
+	  	`id` bigint(20) NOT NULL auto_increment,
+		`sub_id` bigint(20) default NULL,
+		`meta_key` varchar(250) default NULL,
+		`meta_value` text,
+		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+		PRIMARY KEY  (`id`),
+		UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
 	);";
 
 	$wpdb->query($sql);

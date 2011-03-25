@@ -6,13 +6,14 @@ if(!class_exists('M_Subscription')) {
 		var $id = false;
 
 		var $db;
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'subscriptionmeta');
 
 		var $membership_levels;
 		var $membership_rules;
 		var $subscriptions;
 		var $subscriptions_levels;
 		var $membership_relationships;
+		var $subscriptionmeta;
 
 		// if the data needs reloaded, or hasn't been loaded yet
 		var $dirty = true;
@@ -601,6 +602,63 @@ if(!class_exists('M_Subscription')) {
 			$sql = $this->db->prepare( "SELECT count(*) as subcount FROM {$this->membership_relationships} WHERE sub_id = %d", $this->id );
 
 			return $this->db->get_var( $sql );
+
+		}
+
+		// Meta information
+		function get_meta($key, $default = false) {
+
+			$sql = $this->db->prepare( "SELECT meta_value FROM {$this->subscriptionmeta} WHERE meta_key = %s AND sub_id = %d", $key, $this->id);
+
+			$row = $this->db->get_var( $sql );
+
+			if(empty($row)) {
+				return $default;
+			} else {
+				return $row;
+			}
+
+		}
+
+		function add_meta($key, $value) {
+
+			return $this->insertorupdate( $this->subscriptionmeta, array( 'sub_id' => $this->id, 'meta_key' => $key, 'meta_value' => $value) );
+
+		}
+
+		function update_meta($key, $value) {
+
+			return $this->insertorupdate( $this->subscriptionmeta, array( 'sub_id' => $this->id, 'meta_key' => $key, 'meta_value' => $value) );
+
+		}
+
+		function delete_meta($key) {
+
+			$sql = $this->db->prepare( "DELETE FROM {$this->subscriptionmeta} WHERE meta_key = %s AND sub_id = %d", $key, $this->id);
+
+			return $this->db->query( $sql );
+
+		}
+
+		function insertorupdate( $table, $query ) {
+
+				$fields = array_keys($query);
+				$formatted_fields = array();
+				foreach ( $fields as $field ) {
+					$form = '%s';
+					$formatted_fields[] = $form;
+				}
+				$sql = "INSERT INTO `$table` (`" . implode( '`,`', $fields ) . "`) VALUES ('" . implode( "','", $formatted_fields ) . "')";
+				$sql .= " ON DUPLICATE KEY UPDATE ";
+
+				$dup = array();
+				foreach($fields as $field) {
+					$dup[] = "`" . $field . "` = VALUES(`" . $field . "`)";
+				}
+
+				$sql .= implode(',', $dup);
+
+				return $this->db->query( $this->db->prepare( $sql, $query ) );
 
 		}
 

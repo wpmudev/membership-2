@@ -70,6 +70,10 @@ if(!class_exists('membershipadmin')) {
 			// profile field for feeds
 			add_action( 'show_user_profile', array(&$this, 'add_profile_feed_key') );
 
+			// Pings
+			add_action('membership_subscription_form_after_levels', array(&$this, 'show_subscription_ping_information'));
+			add_action('membership_level_form_after_rules', array(&$this, 'show_level_ping_information'));
+
 		}
 
 		function membershipadmin() {
@@ -2213,7 +2217,7 @@ if(!class_exists('membershipadmin')) {
 							</div>
 							<div class='level-holder'>
 								<div class='level-details'>
-								<label for='level_title'><?php _e('Level title','management'); ?></label><br/>
+								<label for='level_title'><?php _e('Level title','membership'); ?></label><br/>
 								<input class='wide' type='text' name='level_title' id='level_title' value='<?php echo esc_attr($level->level_title); ?>' />
 								</div>
 
@@ -2777,10 +2781,10 @@ if(!class_exists('membershipadmin')) {
 							</div>
 							<div class='sub-holder'>
 								<div class='sub-details'>
-								<label for='sub_name'><?php _e('Subscription name','management'); ?></label>
+								<label for='sub_name'><?php _e('Subscription name','membership'); ?></label>
 								<input class='wide' type='text' name='sub_name' id='sub_name' value='<?php echo esc_attr($sub->sub_name); ?>' />
 
-								<label for='sub_name'><?php _e('Subscription description','management'); ?></label>
+								<label for='sub_name'><?php _e('Subscription description','membership'); ?></label>
 								<textarea class='wide' name='sub_description' id='sub_description'><?php echo esc_html($sub->sub_description); ?></textarea>
 
 								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
@@ -4963,6 +4967,61 @@ if(!class_exists('membershipadmin')) {
 			</tr>
 			</table>
 			<?php
+
+
+		}
+
+		/* Ping interface */
+
+
+		function show_subscription_ping_information( $sub_id ) {
+
+			// Get all the pings
+			$pings = $this->get_pings();
+
+			// Get the currentlt set ping for each level
+
+
+			?>
+				<h3><?php _e('Subscription Pings','membership'); ?></h3>
+				<p class='description'><?php _e('If you want any pings to be sent when a member joins and/or leaves this subscription then set them below.','membership'); ?></p>
+
+				<div class='sub-details'>
+
+				<label for='sub_name'><?php _e('Joining Ping','membership'); ?></label>
+				<select name='joininggping'>
+					<option value='' <?php selected('',''); ?>><?php _e('None', 'membership'); ?></option>
+					<?php
+						foreach($pings as $ping) {
+							?>
+							<option value='<?php echo $ping->id; ?>'><?php echo stripslashes($ping->pingname); ?></option>
+							<?php
+						}
+					?>
+				</select>
+
+				<label for='sub_name'><?php _e('Leaving Ping','membership'); ?></label>
+				<select name='joininggping'>
+					<option value='' <?php selected('',''); ?>><?php _e('None', 'membership'); ?></option>
+					<?php
+						foreach($pings as $ping) {
+							?>
+							<option value='<?php echo $ping->id; ?>'><?php echo stripslashes($ping->pingname); ?></option>
+							<?php
+						}
+					?>
+				</select>
+				</div>
+			<?php
+		}
+
+		function show_level_ping_information( $level_id ) {
+			?>
+				<h3><?php _e('Level Pings','membership'); ?></h3>
+				<p class='description'><?php _e('If you want any pings to be sent when a member joins and/or leaves this level then set them below.','membership'); ?></p>
+			<?php
+
+			$pings = $this->get_pings();
 
 
 		}
