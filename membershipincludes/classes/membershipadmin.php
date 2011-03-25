@@ -72,7 +72,12 @@ if(!class_exists('membershipadmin')) {
 
 			// Pings
 			add_action('membership_subscription_form_after_levels', array(&$this, 'show_subscription_ping_information'));
+			add_action('membership_subscription_add', array(&$this, 'update_subscription_ping_information'));
+			add_action('membership_subscription_update', array(&$this, 'update_subscription_ping_information'));
+
 			add_action('membership_level_form_after_rules', array(&$this, 'show_level_ping_information'));
+			add_action('membership_level_add', array(&$this, 'update_level_ping_information'));
+			add_action('membership_level_update', array(&$this, 'update_level_ping_information'));
 
 		}
 
@@ -4973,6 +4978,14 @@ if(!class_exists('membershipadmin')) {
 
 		/* Ping interface */
 
+		function update_subscription_ping_information( $sub_id ) {
+
+			$subscription =& new M_Subscription( $sub_id );
+
+			$subscription->update_meta( 'joining_ping', $_POST['joiningping'] );
+			$subscription->update_meta( 'leaving_ping', $_POST['leavingping'] );
+
+		}
 
 		function show_subscription_ping_information( $sub_id ) {
 
@@ -4980,7 +4993,10 @@ if(!class_exists('membershipadmin')) {
 			$pings = $this->get_pings();
 
 			// Get the currentlt set ping for each level
+			$subscription =& new M_Subscription( $sub_id );
 
+			$joinping = $subscription->get_meta( 'joining_ping', '' );
+			$leaveping = $subscription->get_meta( 'leaving_ping', '' );
 
 			?>
 				<h3><?php _e('Subscription Pings','membership'); ?></h3>
@@ -4988,25 +5004,25 @@ if(!class_exists('membershipadmin')) {
 
 				<div class='sub-details'>
 
-				<label for='sub_name'><?php _e('Joining Ping','membership'); ?></label>
-				<select name='joininggping'>
-					<option value='' <?php selected('',''); ?>><?php _e('None', 'membership'); ?></option>
+				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label>
+				<select name='joiningping'>
+					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
 						foreach($pings as $ping) {
 							?>
-							<option value='<?php echo $ping->id; ?>'><?php echo stripslashes($ping->pingname); ?></option>
+							<option value='<?php echo $ping->id; ?>' <?php selected($joinping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
 						}
 					?>
-				</select>
+				</select><br/>
 
-				<label for='sub_name'><?php _e('Leaving Ping','membership'); ?></label>
-				<select name='joininggping'>
-					<option value='' <?php selected('',''); ?>><?php _e('None', 'membership'); ?></option>
+				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label>
+				<select name='leavingping'>
+					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
 						foreach($pings as $ping) {
 							?>
-							<option value='<?php echo $ping->id; ?>'><?php echo stripslashes($ping->pingname); ?></option>
+							<option value='<?php echo $ping->id; ?>' <?php selected($leaveping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
 						}
 					?>
@@ -5015,14 +5031,56 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
+		function update_level_ping_information( $level_id ) {
+
+			$level =& new M_Level( $level_id );
+
+			$level->update_meta( 'joining_ping', $_POST['joiningping'] );
+			$level->update_meta( 'leaving_ping', $_POST['leavingping'] );
+
+		}
+
 		function show_level_ping_information( $level_id ) {
+			// Get all the pings
+			$pings = $this->get_pings();
+
+			// Get the currentlt set ping for each level
+			$level =& new M_Level( $level_id );
+
+			$joinping = $level->get_meta( 'joining_ping', '' );
+			$leaveping = $level->get_meta( 'leaving_ping', '' );
+
 			?>
 				<h3><?php _e('Level Pings','membership'); ?></h3>
 				<p class='description'><?php _e('If you want any pings to be sent when a member joins and/or leaves this level then set them below.','membership'); ?></p>
+
+				<div class='level-details'>
+
+				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label>
+				<select name='joiningping'>
+					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
+					<?php
+						foreach($pings as $ping) {
+							?>
+							<option value='<?php echo $ping->id; ?>' <?php selected($joinping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
+							<?php
+						}
+					?>
+				</select><br/><br/>
+
+				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label>
+				<select name='leavingping'>
+					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
+					<?php
+						foreach($pings as $ping) {
+							?>
+							<option value='<?php echo $ping->id; ?>' <?php selected($leaveping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
+							<?php
+						}
+					?>
+				</select>
+				</div>
 			<?php
-
-			$pings = $this->get_pings();
-
 
 		}
 
