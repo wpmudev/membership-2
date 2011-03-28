@@ -27,6 +27,8 @@ if(!class_exists('M_Gateway')) {
 			// Actions and Filters
 			add_filter('M_gateways_list', array(&$this, 'gateways_list'));
 
+			add_action( 'membership_process_payment_return', array(&$this, 'process_payment_return') );
+
 		}
 
 		function gateways_list($gateways) {
@@ -178,8 +180,6 @@ if(!class_exists('M_Gateway')) {
 				// Insert
 				$this->db->insert( $this->subscription_transaction, $data );
 			}
-
-
 
 		}
 
@@ -364,6 +364,15 @@ if(!class_exists('M_Gateway')) {
 					</tbody>
 				</table>
 			<?php
+		}
+
+		function process_payment_return( $gateway ) {
+			if( apply_filters( 'membership_override_payment_return_' . $gateway, false ) ) {
+				return;
+			}
+
+			// Payment return
+			do_action( 'membership_handle_payment_return_' . $gateway );
 		}
 
 	}
