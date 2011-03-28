@@ -222,7 +222,7 @@ if(!class_exists('M_Ping')) {
 		}
 
 		// processing
-		function send_ping() {
+		function send_ping( $sub_id = false, $level_id = false ) {
 
 			$this->ping = $this->get_ping();
 
@@ -255,20 +255,35 @@ if(!class_exists('M_Ping')) {
 					case '%networkurl%':		$pingtosend[$key] = get_site_option('siteurl');
 												break;
 
-					case '%subscriptionname%':	$ids = $member->get_subscription_ids();
-												if(!empty($ids)) {
-													$firstid = $ids[0];
-
+					case '%subscriptionname%':	if(!$sub_id) {
+													$ids = $member->get_subscription_ids();
+													if(!empty($ids)) {
+														$sub_id = $ids[0];
+													}
 												}
-												$pingtosend[$key] = $user->user_nicename;
+
+												if(!empty($sub_id)) {
+													$sub =& new M_Subscription( $sub_id );
+													$pingtosend[$key] = $sub->sub_name();
+												} else {
+													$pingtosend[$key] = '';
+												}
+
 												break;
 
-					case '%levelname%':			$ids = $member->get_level_ids();
-												if(!empty($ids)) {
-													$firstid = $ids[0];
-
+					case '%levelname%':			if(!$level_id) {
+													$ids = $member->get_level_ids();
+													if(!empty($ids)) {
+														$level_id = $ids[0];
+													}
 												}
-												$pingtosend[$key] = $user->user_nicename;
+
+												if(!empty($level_id)) {
+													$level =& new M_Level( $level_id );
+													$pingtosend[$key] = $level->level_title();
+												} else {
+													$pingtosend[$key] = '';
+												}
 												break;
 
 					case '%timestamp%':			$pingtosend[$key] = time();
@@ -305,4 +320,89 @@ if(!class_exists('M_Ping')) {
 
 	}
 }
+
+// Ping integration functions and hooks
+/*
+do_action( 'membership_add_level', $tolevel_id, $this->ID );
+do_action( 'membership_drop_level', $fromlevel_id, $this->ID );
+do_action( 'membership_move_level', $fromlevel_id, $tolevel_id, $this->ID );
+
+do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
+do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
+do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
+*/
+
+function M_ping_joinedlevel( $tolevel_id, $user_id ) {
+
+	// Set up the level and find out if it has a joining ping
+	$level =& new M_Level( $tolevel_id );
+
+	$joingping_id = $level->get_meta( 'joining_ping' );
+	if(!empty($joiningping_id)) {
+		$ping =& new M_Ping( $joiningping_id );
+
+		$ping->send_ping( false, $tolevel_id );
+	}
+
+
+}
+add_action( 'membership_add_level', 'M_ping_joinedlevel', 10, 2 );
+
+function M_ping_leftlevel( $fromlevel_id, $user_id ) {
+
+	// Set up the level and find out if it has a leaving ping
+	$level =& new M_Level( $fromlevel_id );
+
+	$leavingping_id = $level->get_meta( 'leaving_ping' );
+	if(!empty($leavingping_id)) {
+		$ping =& new M_Ping( $leavingping_id );
+
+		$ping->send_ping( false, $fromlevel_id );
+	}
+
+}
+add_action( 'membership_drop_level', 'M_ping_leftlevel', 10, 2 );
+
+function M_ping_movedlevel( $fromlevel_id, $tolevel_id, $user_id ) {
+
+	// Set up the level and find out if it has a leaving ping
+	$level =& new M_Level( $fromlevel_id );
+
+	$joingping_id = $level->get_meta( 'joining_ping' );
+	if(!empty($joiningping_id)) {
+		$ping =& new M_Ping( $joiningping_id );
+
+		$ping->send_ping( false, $tolevel_id );
+	}
+
+
+	// Set up the level and find out if it has a joining ping
+	$level =& new M_Level( $tolevel_id );
+
+	$leavingping_id = $level->get_meta( 'leaving_ping' );
+	if(!empty($leavingping_id)) {
+		$ping =& new M_Ping( $leavingping_id );
+
+		$ping->send_ping( false, $fromlevel_id );
+	}
+
+}
+add_action( 'membership_move_level', 'M_ping_movedlevel', 10, 3 );
+
+function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
+
+}
+add_action( 'membership_add_subscription', 'M_ping_joinedsub', 10, 4 );
+
+function M_ping_leftsub( $fromsub_id, $user_id ) {
+
+}
+add_action( 'membership_drop_subscription', 'M_ping_leftsub', 10, 2 );
+
+function M_ping_movedsub( $fromsub_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
+
+}
+add_action( 'membership_move_subscription', 'M_ping_movedsub', 10, 5 );
+
+
 ?>
