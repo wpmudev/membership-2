@@ -2,18 +2,7 @@
 class M_Capitalp extends M_Rule {
 
 	var $name = 'capitalp';
-
-	function admin_sidebar($data) {
-		?>
-		<li class='level-draggable' id='capitalp' <?php if($data === true) echo "style='display:none;'"; ?>>
-			<div class='action action-draggable'>
-				<div class='action-top'>
-				<?php _e('Capital P filter','membership'); ?>
-				</div>
-			</div>
-		</li>
-		<?php
-	}
+	var $label = 'Capital P filter';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
