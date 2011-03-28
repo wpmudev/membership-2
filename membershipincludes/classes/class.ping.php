@@ -230,7 +230,7 @@ if(!class_exists('M_Ping')) {
 			    include_once( ABSPATH . WPINC. '/class-http.php' );
 			}
 
-			$pingtosend = $this->pingconstants;
+			$pingdata = $this->pingconstants;
 
 			if(empty($user_id)) {
 				$user = wp_get_current_user();
@@ -239,24 +239,24 @@ if(!class_exists('M_Ping')) {
 				$member = new M_Membership( $user_id );
 			}
 
-			foreach($pingtosend as $key => $value) {
+			foreach($pingdata as $key => $value) {
 				switch($key) {
-					case '%blogname%':			$pingtosend[$key] = get_option('blogname');
+					case '%blogname%':			$pingdata[$key] = get_option('blogname');
 												break;
 
-					case '%blogurl%':			$pingtosend[$key] = get_option('home');
+					case '%blogurl%':			$pingdata[$key] = get_option('home');
 												break;
 
-					case '%username%':			$pingtosend[$key] = $member->user_login;
+					case '%username%':			$pingdata[$key] = $member->user_login;
 												break;
 
-					case '%usernicename%':		$pingtosend[$key] = $member->user_nicename;
+					case '%usernicename%':		$pingdata[$key] = $member->user_nicename;
 												break;
 
-					case '%networkname%':		$pingtosend[$key] = get_site_option('site_name');
+					case '%networkname%':		$pingdata[$key] = get_site_option('site_name');
 												break;
 
-					case '%networkurl%':		$pingtosend[$key] = get_site_option('siteurl');
+					case '%networkurl%':		$pingdata[$key] = get_site_option('siteurl');
 												break;
 
 					case '%subscriptionname%':	if(!$sub_id) {
@@ -268,9 +268,9 @@ if(!class_exists('M_Ping')) {
 
 												if(!empty($sub_id)) {
 													$sub =& new M_Subscription( $sub_id );
-													$pingtosend[$key] = $sub->sub_name();
+													$pingdata[$key] = $sub->sub_name();
 												} else {
-													$pingtosend[$key] = '';
+													$pingdata[$key] = '';
 												}
 
 												break;
@@ -284,16 +284,16 @@ if(!class_exists('M_Ping')) {
 
 												if(!empty($level_id)) {
 													$level =& new M_Level( $level_id );
-													$pingtosend[$key] = $level->level_title();
+													$pingdata[$key] = $level->level_title();
 												} else {
-													$pingtosend[$key] = '';
+													$pingdata[$key] = '';
 												}
 												break;
 
-					case '%timestamp%':			$pingtosend[$key] = time();
+					case '%timestamp%':			$pingdata[$key] = time();
 												break;
 
-					default:					$pingtosend[$key] = apply_filter( 'membership_pingfield_' . $key, '' );
+					default:					$pingdata[$key] = apply_filter( 'membership_pingfield_' . $key, '' );
 												break;
 				}
 			}
@@ -301,19 +301,30 @@ if(!class_exists('M_Ping')) {
 			$url = $this->ping->pingurl;
 
 			// Globally replace the values in the ping and then make it into an array to send
-			$pingmessage = str_replace(array_keys($pingtosend), array_values($pingtosend), $this->ping->pinginfo);
+			$pingmessage = str_replace(array_keys($pingdata), array_values($pingdata), $this->ping->pinginfo);
 			$pingmessage = array_map( 'trim', explode("\n", $pingmessage) );
+
+			// make the ping message into a sendable bit of text
+			$pingtosend = array();
+			foreach($pingmessage as $key => $value) {
+				$temp = explode("=", $value);
+				$pingtosend[$temp[0]] = $temp[1];
+			}
 
 			// Send the request
 			if( class_exists( 'WP_Http' ) ) {
 				$request = new WP_Http;
 
 				switch( $this->ping->pingtype ) {
-					case 'GET':		$url = untrailingslashit($url) . "?" . implode("&", array_map('urlencode', $pingmessage) );
-									$result = $request->get( $url );
+					case 'GET':		$url = untrailingslashit($url) . "?";
+					 				foreach($pingtosend as $key => $val) {
+										if(substr($url, -1) != '?') $url .= "&";
+										$url .= $key . "=" . urlencode($val);
+									}
+									$result = $request->request( $url, array( 'method' => 'GET', 'body' => '' ) );
 									break;
 
-					case 'POST':	$result = $request->post( $url, array( 'body' => $pingmessage ) );
+					case 'POST':	$result = $request->request( $url, array( 'method' => 'POST', 'body' => $pingtosend ) );
 									break;
 				}
 

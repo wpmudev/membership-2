@@ -5060,7 +5060,7 @@ if(!class_exists('membershipadmin')) {
 
 				<div class='level-details'>
 
-				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label>
+				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label><br/>
 				<select name='joiningping'>
 					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
@@ -5072,7 +5072,7 @@ if(!class_exists('membershipadmin')) {
 					?>
 				</select><br/><br/>
 
-				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label>
+				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label><br/>
 				<select name='leavingping'>
 					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
