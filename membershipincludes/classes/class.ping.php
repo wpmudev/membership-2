@@ -54,10 +54,28 @@ if(!class_exists('M_Ping')) {
 			$this->__construct( $id );
 		}
 
-		function get_ping() {
-			$sql = $this->db->prepare( "SELECT * FROM {$this->pings} WHERE id = %d ", $this->id );
+		function ping_name() {
+			$this->ping = $this->get_ping();
 
-			return $this->db->get_row( $sql );
+			return $this->ping->pingname;
+		}
+
+		function ping_url() {
+			$this->ping = $this->get_ping();
+
+			return $this->ping->pingurl;
+		}
+
+		function get_ping( $force = false ) {
+
+			if(!empty($this->ping) && !$force) {
+				return $this->ping;
+			} else {
+				$sql = $this->db->prepare( "SELECT * FROM {$this->pings} WHERE id = %d ", $this->id );
+
+				return $this->db->get_row( $sql );
+			}
+
 		}
 
 		function editform() {
@@ -187,7 +205,7 @@ if(!class_exists('M_Ping')) {
 
 		// History
 		function get_history() {
-			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE ping_id = %d ", $this->id );
+			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE ping_id = %d ORDER BY ping_sent DESC LIMIT 0, 25 ", $this->id );
 
 			return $this->db->get_results( $sql );
 		}

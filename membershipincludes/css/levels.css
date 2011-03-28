@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=5 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=6 */
 
 div.level-liquid-left {
 	float: left;
@@ -99,6 +99,11 @@ input.wide {
 	width: 98%;
 	margin-left: 0;
 	margin-bottom: 5px;
+}
+
+div.level-details select {
+	display: block;
+	margin-top: 5px;	
 }
 
 .level-holder h3 {

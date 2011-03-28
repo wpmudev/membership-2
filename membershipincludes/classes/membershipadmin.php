@@ -4386,8 +4386,121 @@ if(!class_exists('membershipadmin')) {
 			}
 		}
 
-		function handle_ping_history_panel() {
+		function handle_ping_history_panel( $ping_id ) {
+			global $action, $page;
 
+			wp_reset_vars( array('action', 'page') );
+
+			$messages = array();
+			$messages[1] = __('Ping resent.','membership');
+			$messages[2] = __('Ping not resent.','membership');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-link-manager"><br></div>
+				<h2><?php _e('Pings Histry','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				$ping = new M_Ping( $ping_id );
+
+				$history = $ping->get_history();
+
+				$columns = array(	"name" 		=> 	__('Ping Name','membership'),
+									"url"		=>	__('URL','membership'),
+									"status"	=>	__('Status', 'membership')
+								);
+
+				$columns = apply_filters('membership_pingscolumns', $columns);
+
+				?>
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if(!empty($history)) {
+							foreach($history as $key => $h) {
+								?>
+								<tr valign="middle" class="alternate" id="history-<?php echo $h->id; ?>">
+									<td class="column-name">
+										<strong><?php echo esc_html(stripslashes($ping->ping_name() )); ?></strong>
+										<?php
+											$actions = array();
+											$actions['resendnew'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Resend as new ping') . "</a></span>";
+											$actions['resendover'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Resend and overwrite') . "</a></span>";
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+									</td>
+									<td class="column-name">
+										<?php
+										echo $ping->ping_url();
+										?>
+									</td>
+									<td class="column-name">
+										<?php
+										// Status
+										$status = unserialize($h->ping_return);
+										if(is_wp_error($status)) {
+											// WP error
+											echo "<span style='color: red;'>" . implode("<br/>", $status->get_error_messages() ) . "</span>";
+										} else {
+											if(!empty($status['response'])) {
+												if($status['response']['code'] == '200') {
+													echo "<span style='color: green;'>" . $status['response']['code'] . " - " . $status['response']['message'] . "</span>";
+												} else {
+													echo "<span style='color: red;'>" . $status['response']['code'] . " - " . $status['response']['message'] . "</span>";
+												}
+											}
+										}
+										//echo $ping->ping_url();
+										?>
+									</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No History available for this ping.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+			</div> <!-- wrap -->
+			<?php
 		}
 
 		function handle_pings_panel() {
@@ -4399,11 +4512,18 @@ if(!class_exists('membershipadmin')) {
 
 				case 'edit':	if(!empty($_GET['ping'])) {
 									// Make a communication
-									$this->show_ping_edit( $_GET['ping'] );
+									$this->show_ping_edit( (int) $_GET['ping'] );
 								} else {
 									$this->show_ping_edit( false );
 								}
 								return; // so we don't show the list below
+								break;
+
+				case 'history':
+								if(!empty($_GET['ping'])) {
+									$this->handle_ping_history_panel( (int) $_GET['ping'] );
+								}
+								return;
 								break;
 
 			}
@@ -4981,7 +5101,6 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		/* Ping interface */
-
 		function update_subscription_ping_information( $sub_id ) {
 
 			$subscription =& new M_Subscription( $sub_id );
@@ -5060,7 +5179,7 @@ if(!class_exists('membershipadmin')) {
 
 				<div class='level-details'>
 
-				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label><br/>
+				<label for='joiningping'><?php _e('Joining Ping','membership'); ?></label>
 				<select name='joiningping'>
 					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
@@ -5072,7 +5191,7 @@ if(!class_exists('membershipadmin')) {
 					?>
 				</select><br/><br/>
 
-				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label><br/>
+				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label>
 				<select name='leavingping'>
 					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
