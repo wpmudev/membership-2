@@ -4386,6 +4386,10 @@ if(!class_exists('membershipadmin')) {
 			}
 		}
 
+		function handle_ping_history_panel() {
+
+		}
+
 		function handle_pings_panel() {
 			global $action, $page;
 

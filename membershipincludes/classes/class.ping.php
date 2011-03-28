@@ -203,8 +203,8 @@ if(!class_exists('M_Ping')) {
 			$insert = array(
 							"ping_id"		=> 	$this->id,
 							"ping_sent"		=>	gmdate( 'Y-m-d H:i:s' ),
-							"ping_info"		=>	$sent,
-							"ping_return"	=>	$return
+							"ping_info"		=>	serialize($sent),
+							"ping_return"	=>	serialize($return)
 						);
 
 			return $this->db->insert( $this->ping_history, $insert );
@@ -214,15 +214,15 @@ if(!class_exists('M_Ping')) {
 			$update = array(
 							"ping_id"		=> 	$this->id,
 							"ping_sent"		=>	gmdate( 'Y-m-d H:i:s' ),
-							"ping_info"		=>	$sent,
-							"ping_return"	=>	$return
+							"ping_info"		=>	serialize($sent),
+							"ping_return"	=>	serialize($return)
 						);
 
 			return $this->db->update( $this->ping_history, $update, array( "id" => $history_id ) );
 		}
 
 		// processing
-		function send_ping( $sub_id = false, $level_id = false ) {
+		function send_ping( $sub_id = false, $level_id = false, $user_id = false ) {
 
 			$this->ping = $this->get_ping();
 
@@ -232,8 +232,12 @@ if(!class_exists('M_Ping')) {
 
 			$pingtosend = $this->pingconstants;
 
-			$user = wp_get_current_user();
-			$member = new M_Membership( $user->ID );
+			if(empty($user_id)) {
+				$user = wp_get_current_user();
+				$member = new M_Membership( $user->ID );
+			} else {
+				$member = new M_Membership( $user_id );
+			}
 
 			foreach($pingtosend as $key => $value) {
 				switch($key) {
@@ -243,10 +247,10 @@ if(!class_exists('M_Ping')) {
 					case '%blogurl%':			$pingtosend[$key] = get_option('home');
 												break;
 
-					case '%username%':			$pingtosend[$key] = $user->user_login;
+					case '%username%':			$pingtosend[$key] = $member->user_login;
 												break;
 
-					case '%usernicename%':		$pingtosend[$key] = $user->user_nicename;
+					case '%usernicename%':		$pingtosend[$key] = $member->user_nicename;
 												break;
 
 					case '%networkname%':		$pingtosend[$key] = get_site_option('site_name');
@@ -301,16 +305,28 @@ if(!class_exists('M_Ping')) {
 			$pingmessage = array_map( 'trim', explode("\n", $pingmessage) );
 
 			// Send the request
-			$request = new WP_Http;
-			$result = $request->request( $url, array( 'method' => $this->ping->pingtype, 'body' => $pingtosend ) );
+			if( class_exists( 'WP_Http' ) ) {
+				$request = new WP_Http;
 
-			/*
-			'headers': an array of response headers, such as "x-powered-by" => "PHP/5.2.1"
-			'body': the response string sent by the server, as you would see it with you web browser
-			'response': an array of HTTP response codes. Typically, you'll want to have array('code'=>200, 'message'=>'OK')
-			'cookies': an array of cookie information
-			*/
-			$this->add_history( $pingtosend, $result );
+				switch( $this->ping->pingtype ) {
+					case 'GET':		$url = untrailingslashit($url) . "?" . implode("&", array_map('urlencode', $pingmessage) );
+									$result = $request->get( $url );
+									break;
+
+					case 'POST':	$result = $request->post( $url, array( 'body' => $pingmessage ) );
+									break;
+				}
+
+				/*
+				'headers': an array of response headers, such as "x-powered-by" => "PHP/5.2.1"
+				'body': the response string sent by the server, as you would see it with you web browser
+				'response': an array of HTTP response codes. Typically, you'll want to have array('code'=>200, 'message'=>'OK')
+				'cookies': an array of cookie information
+				*/
+
+				$this->add_history( $pingmessage, $result );
+			}
+
 
 		}
 
@@ -341,7 +357,7 @@ function M_ping_joinedlevel( $tolevel_id, $user_id ) {
 	if(!empty($joiningping_id)) {
 		$ping =& new M_Ping( $joiningping_id );
 
-		$ping->send_ping( false, $tolevel_id );
+		$ping->send_ping( false, $tolevel_id, $user_id );
 	}
 
 
@@ -357,7 +373,7 @@ function M_ping_leftlevel( $fromlevel_id, $user_id ) {
 	if(!empty($leavingping_id)) {
 		$ping =& new M_Ping( $leavingping_id );
 
-		$ping->send_ping( false, $fromlevel_id );
+		$ping->send_ping( false, $fromlevel_id, $user_id );
 	}
 
 }
@@ -379,7 +395,7 @@ function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 	if(!empty($subjoiningping_id)) {
 		$ping =& new M_Ping( $subjoiningping_id );
 
-		$ping->send_ping( $tosub_id, $tolevel_id );
+		$ping->send_ping( $tosub_id, $tolevel_id, $user_id );
 	}
 
 	$level =& new M_Level( $tolevel_id );
@@ -388,7 +404,7 @@ function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 	if(!empty($joiningping_id)) {
 		$ping =& new M_Ping( $joiningping_id );
 
-		$ping->send_ping( $tosub_id, $tolevel_id );
+		$ping->send_ping( $tosub_id, $tolevel_id, $user_id );
 	}
 
 }
@@ -402,7 +418,7 @@ function M_ping_leftsub( $fromsub_id, $user_id ) {
 	if(!empty($subleavingping_id)) {
 		$ping =& new M_Ping( $subleavingping_id );
 
-		$ping->send_ping( $fromsub_id );
+		$ping->send_ping( $fromsub_id, false, $user_id );
 	}
 
 }
