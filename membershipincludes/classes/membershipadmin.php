@@ -4330,7 +4330,25 @@ if(!class_exists('membershipadmin')) {
 
 								wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 								break;
+
+				case 'history':
+								$history = (int) $_GET['history'];
+								if(isset($_GET['resend'])) {
+									switch($_GET['resend']) {
+										case 'new':		$ping = new M_Ping( false );
+														$ping->resend_historic_ping( $history, true );
+														wp_safe_redirect( add_query_arg( 'msg', 1, wp_get_referer() ) );
+														break;
+										case 'over':	$ping = new M_Ping( false );
+														$ping->resend_historic_ping( $history, false );
+														wp_safe_redirect( add_query_arg( 'msg', 1, wp_get_referer() ) );
+														break;
+									}
+								}
+								break;
 			}
+
+
 
 		}
 
@@ -4454,8 +4472,8 @@ if(!class_exists('membershipadmin')) {
 										<strong><?php echo esc_html(stripslashes($ping->ping_name() )); ?></strong>
 										<?php
 											$actions = array();
-											$actions['resendnew'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Resend as new ping') . "</a></span>";
-											$actions['resendover'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Resend and overwrite') . "</a></span>";
+											$actions['resendnew'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=new&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend as new ping') . "</a></span>";
+											$actions['resendover'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=over&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend and overwrite') . "</a></span>";
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 									</td>

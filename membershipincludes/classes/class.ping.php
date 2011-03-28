@@ -78,6 +78,14 @@ if(!class_exists('M_Ping')) {
 
 		}
 
+		function get_specifc_ping( $id ) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->pings} WHERE id = %d ", $id );
+
+			return $this->db->get_row( $sql );
+
+		}
+
 		function editform() {
 
 			$this->ping = $this->get_ping();
@@ -353,14 +361,57 @@ if(!class_exists('M_Ping')) {
 				'cookies': an array of cookie information
 				*/
 
-				$this->add_history( $pingmessage, $result );
+				$this->add_history( $pingtosend, $result );
 			}
 
 
 		}
 
-		function resend_historic_ping( $history_id, $recreateinformation = false, $rewrite = false ) {
+		function resend_historic_ping( $history_id, $rewrite ) {
+			$history = $this->get_history_item( $history_id );
 
+			if(!empty($history)) {
+				$this->id = $history->ping_id;
+				$ping = $this->get_specifc_ping( $history->ping_id );
+
+				if( !class_exists( 'WP_Http' ) ) {
+				    include_once( ABSPATH . WPINC. '/class-http.php' );
+				}
+
+				$url = $ping->pingurl;
+				$pingtosend = unserialize($history->ping_info);
+
+				// Send the request
+				if( class_exists( 'WP_Http' ) ) {
+					$request = new WP_Http;
+
+					switch( $ping->pingtype ) {
+						case 'GET':		$url = untrailingslashit($url) . "?";
+						 				foreach($pingtosend as $key => $val) {
+											if(substr($url, -1) != '?') $url .= "&";
+											$url .= $key . "=" . urlencode($val);
+										}
+										$result = $request->request( $url, array( 'method' => 'GET', 'body' => '' ) );
+										break;
+
+						case 'POST':	$result = $request->request( $url, array( 'method' => 'POST', 'body' => $pingtosend ) );
+										break;
+					}
+
+					/*
+					'headers': an array of response headers, such as "x-powered-by" => "PHP/5.2.1"
+					'body': the response string sent by the server, as you would see it with you web browser
+					'response': an array of HTTP response codes. Typically, you'll want to have array('code'=>200, 'message'=>'OK')
+					'cookies': an array of cookie information
+					*/
+
+					if($rewrite) {
+						$this->add_history( $pingtosend, $result );
+					} else {
+						$this->update_history( $history_id, $pingtosend, $result );
+					}
+				}
+			}
 		}
 
 	}
