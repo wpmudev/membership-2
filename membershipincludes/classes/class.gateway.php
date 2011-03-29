@@ -28,6 +28,7 @@ if(!class_exists('M_Gateway')) {
 			add_filter('M_gateways_list', array(&$this, 'gateways_list'));
 
 			add_action( 'membership_process_payment_return', array(&$this, 'process_payment_return') );
+			add_action( 'membership_record_user_gateway', array(&$this, 'record_user_gateway') );
 
 		}
 
@@ -373,6 +374,10 @@ if(!class_exists('M_Gateway')) {
 
 			// Payment return
 			do_action( 'membership_handle_payment_return_' . $gateway );
+		}
+
+		function record_user_gateway( $user_id ) {
+			update_user_meta( $user_id, 'membership_signup_gateway', $this->gateway );
 		}
 
 	}

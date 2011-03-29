@@ -152,6 +152,9 @@ if(!class_exists('M_Membership')) {
 
 			if($relationships) {
 				foreach($relationships as $key => $rel) {
+
+					do_action( 'membership_transition_expiry_date', mysql2date("U", $rel->expirydate), $this->ID, $rel );
+
 					if(mysql2date("U", $rel->expirydate) <= time()) {
 						// expired, we need to move forwards
 						if($this->is_marked_for_expire($rel->sub_id)) {
@@ -204,6 +207,11 @@ if(!class_exists('M_Membership')) {
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
 
 			}
+
+			// Update users start and expiry meta
+			delete_user_meta( $this->ID, 'start_current_' . $sub_id );
+			delete_user_meta( $this->ID, 'expire_current_' . $sub_id );
+			delete_user_meta( $this->ID, 'last_sent_msg_' . $sub_id );
 
 			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
 
@@ -390,6 +398,10 @@ if(!class_exists('M_Membership')) {
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
 					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
 
+					// Update users start and expiry meta
+					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
+					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
+
 					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
 				}
 
@@ -406,6 +418,11 @@ if(!class_exists('M_Membership')) {
 			if($this->on_sub($fromsub_id)) {
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
 				$this->db->query( $sql );
+
+				// Update users start and expiry meta
+				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
+				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
+				delete_user_meta( $this->ID, 'last_sent_msg_' . $fromsub_id );
 
 				do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
 			}
@@ -434,6 +451,14 @@ if(!class_exists('M_Membership')) {
 						default: $period = 'days'; break;
 					}
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
+
+					// Update users start and expiry meta
+					delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
+					delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
+					delete_user_meta( $this->ID, 'last_sent_msg_' . $fromsub_id );
+
+					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
+					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 
