@@ -209,7 +209,7 @@ if(!class_exists('M_Membership')) {
 			// Update users start and expiry meta
 			delete_user_meta( $this->ID, 'start_current_' . $sub_id );
 			delete_user_meta( $this->ID, 'expire_current_' . $sub_id );
-			delete_user_meta( $this->ID, 'last_sent_msg_' . $sub_id );
+			delete_user_meta( $this->ID, 'sent_msgs_' . $sub_id );
 
 			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
 
@@ -420,7 +420,7 @@ if(!class_exists('M_Membership')) {
 				// Update users start and expiry meta
 				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
-				delete_user_meta( $this->ID, 'last_sent_msg_' . $fromsub_id );
+				delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
 
 				do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
 			}
@@ -453,7 +453,7 @@ if(!class_exists('M_Membership')) {
 					// Update users start and expiry meta
 					delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
 					delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
-					delete_user_meta( $this->ID, 'last_sent_msg_' . $fromsub_id );
+					delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
 
 					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
 					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
