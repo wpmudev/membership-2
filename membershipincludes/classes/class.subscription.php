@@ -38,7 +38,7 @@ if(!class_exists('M_Subscription')) {
 		}
 
 		function M_Subscription( $id = false ) {
-			$this->__construct();
+			$this->__construct( $id );
 		}
 
 		// Fields

@@ -153,8 +153,6 @@ if(!class_exists('M_Membership')) {
 			if($relationships) {
 				foreach($relationships as $key => $rel) {
 
-					do_action( 'membership_transition_expiry_date', mysql2date("U", $rel->expirydate), $this->ID, $rel );
-
 					if(mysql2date("U", $rel->expirydate) <= time()) {
 						// expired, we need to move forwards
 						if($this->is_marked_for_expire($rel->sub_id)) {

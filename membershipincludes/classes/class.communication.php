@@ -284,4 +284,94 @@ if(!class_exists('M_Communication')) {
 
 	}
 }
+
+function M_Communication_get_startstamps( $user_id ) {
+
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->usermeta} WHERE user_id = %d AND user_meta LIKE 'start_current_" . '%' ."'", $user_id );
+
+	$results = $wpdb->get_results( $sql );
+
+	if(!empty($results)) {
+		return $results;
+	} else {
+		return false;
+	}
+
+}
+
+function M_Communication_get_endstamps( $user_id ) {
+
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT * FROM {$wpdb->usermeta} WHERE user_id = %d AND user_meta LIKE 'expire_current_" . '%' ."'", $user_id );
+
+	$results = $wpdb->get_results( $sql );
+
+	if(!empty($results)) {
+		return $results;
+	} else {
+		return false;
+	}
+}
+
+function M_Communication_get_pre_messages( ) {
+
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp < 0 ORDER BY periodstamp ASC " );
+
+	return $wpdb->get_results( $sql );
+
+}
+
+function M_Communication_get_post_messages( ) {
+
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp >= 0 ORDER BY periodstamp ASC " );
+
+	return $wpdb->get_results( $sql );
+}
+
+function M_Communication_process( $user_id ) {
+	// This function checks for any communication messages that need to be sent for this user and sends them
+
+	$communicationlive = get_user_meta( $user_id, 'membership_signup_gateway_is_single', 'no' );
+
+	if( apply_filters( 'membership_force_communication', $communicationlive) == 'yes' ) {
+
+		$starts = M_Communication_get_startstamps( $user_id );
+		$comms = M_Communication_get_post_messages();
+
+		if(!empty($starts) && !empty($comms)) {
+			foreach($starts as $start) {
+				$starttime = $start->meta_value;
+				// Get 24 hour previous and after so we have a range in which to fit a communication
+				$onedaybefore = strtotime('-1 day', strtotime( $starttime ));
+				$onedayafter = strtotime('+1 day', strtotime( $starttime ));
+
+
+
+
+			}
+		}
+
+		$ends = M_Communication_get_endstamps( $user_id );
+		$comms = M_Communication_get_pre_messages();
+
+		if(!empty($ends) && !empty($comms)) {
+			foreach($ends as $end) {
+				$endtime = $end->meta_value;
+				// Get 24 hour previous and after so we have a range in which to fit a communication
+				$onedaybefore = strtotime('-1 day', strtotime( $endtime ));
+				$onedayafter = strtotime('+1 day', strtotime( $endtime ));
+			}
+		}
+
+	}
+
+}
+add_action('membership_end_transition', 'M_Communication_process', 10, 1);
 ?>

@@ -9,6 +9,7 @@ if(!class_exists('M_Gateway')) {
 		// Class Identification
 		var $gateway = 'Not Set';
 		var $title = 'Not Set';
+		var $issingle = false;
 
 		// Tables
 		var $tables = array('subscription_transaction');
@@ -378,6 +379,12 @@ if(!class_exists('M_Gateway')) {
 
 		function record_user_gateway( $user_id ) {
 			update_user_meta( $user_id, 'membership_signup_gateway', $this->gateway );
+			if($this->issingle) {
+				update_user_meta( $user_id, 'membership_signup_gateway_is_single', 'yes' );
+			} else {
+				update_user_meta( $user_id, 'membership_signup_gateway_is_single', 'no' );
+			}
+
 		}
 
 	}

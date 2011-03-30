@@ -4,6 +4,7 @@ class paypalsolo extends M_Gateway {
 
 	var $gateway = 'paypalsolo';
 	var $title = 'PayPal Express - single payments';
+	var $issingle = true;
 
 	function paypalsolo() {
 		parent::M_Gateway();
