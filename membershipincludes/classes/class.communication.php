@@ -441,9 +441,7 @@ function M_Communication_process( ) {
 			if(!empty($starts) && !empty($comms)) {
 				foreach($starts as $start) {
 					$starttime = $start->meta_value;
-					// Get 24 hour previous and after so we have a range in which to fit a communication
-					$onedaybefore = strtotime('-6 hours', $starttime );
-					$onedayafter = strtotime('+6 hours', $starttime );
+					$now = time();
 
 					$sub_id = str_replace( 'start_current_', '', $start->meta_key );
 					$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
@@ -457,15 +455,20 @@ function M_Communication_process( ) {
 							continue;
 						}
 
-						if( (($starttime + $comm->periodstamp) > $onedaybefore) && (($starttime + $comm->periodstamp) < $onedayafter) ) {
+						$withperiod = ($starttime + $comm->periodstamp);
+						// Get 24 hour previous and after so we have a range in which to fit a communication
+						$onedaybefore = strtotime('-6 hours', $withperiod );
+						$onedayafter = strtotime('+6 hours', $withperiod );
+
+						if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
 							$message = new M_Communication( $comm->id );
 							$sentalready[$comm->id] = $comm->id;
 							$message->send_message( $user_id, $sub_id );
-							update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
 							break;
 						}
 					}
 
+					update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
 				}
 			}
 
@@ -475,9 +478,35 @@ function M_Communication_process( ) {
 			if(!empty($ends) && !empty($comms)) {
 				foreach($ends as $end) {
 					$endtime = $end->meta_value;
-					// Get 24 hour previous and after so we have a range in which to fit a communication
-					$onedaybefore = strtotime('-1 day', strtotime( $endtime ));
-					$onedayafter = strtotime('+1 day', strtotime( $endtime ));
+					$now = time();
+
+					$sub_id = str_replace( 'expire_current_', '', $end->meta_key );
+					$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
+
+					if(empty($sentalready) || !is_array($sentalready)) {
+						$sentalready = array();
+					}
+
+					foreach( (array) $comms as $comm ) {
+						if(in_array( $comm->id, $sentalready )) {
+							continue;
+						}
+
+						$withperiod = ($endtime + $comm->periodstamp);
+						// Get 24 hour previous and after so we have a range in which to fit a communication
+						$onedaybefore = strtotime('-6 hours', $withperiod );
+						$onedayafter = strtotime('+6 hours', $withperiod );
+
+						if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
+							echo 'yep';
+							$message = new M_Communication( $comm->id );
+							$sentalready[$comm->id] = $comm->id;
+							$message->send_message( $user_id, $sub_id );
+							break;
+						}
+					}
+
+					update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
 				}
 			}
 
