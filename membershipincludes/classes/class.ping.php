@@ -108,10 +108,11 @@ if(!class_exists('M_Ping')) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br />';
+			echo '<br /><em>';
 
 			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
 
+			echo '</em><br/>' . __('One entry per line. e.g. key=value','membership');
 			echo '</div>';
 
 			echo '</td>';
@@ -154,9 +155,11 @@ if(!class_exists('M_Ping')) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br />';
+			echo '<br /><em>';
 
 			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
+
+			echo '</em><br/>' . __('One entry per line. e.g. key=value','membership');
 
 			echo '</div>';
 			echo '</td>';
