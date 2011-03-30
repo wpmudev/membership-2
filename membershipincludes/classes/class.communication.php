@@ -433,7 +433,7 @@ function M_Communication_process( ) {
 
 	foreach( (array) $members as $user_id ) {
 
-		if( apply_filters( 'membership_force_communication', get_user_meta( $user_id, 'membership_signup_gateway_is_single', 'no' ) ) == 'yes' ) {
+		if( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
 
 			$starts = M_Communication_get_startstamps( $user_id );
 			$comms = M_Communication_get_post_messages();

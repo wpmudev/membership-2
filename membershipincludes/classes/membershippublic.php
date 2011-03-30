@@ -71,6 +71,7 @@ if(!class_exists('membershippublic')) {
 			// Create our subscription page shortcode
 			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
+			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
@@ -516,7 +517,7 @@ if(!class_exists('membershippublic')) {
 			$M_shortcode_tags = $shortcode_tags;
 
 			foreach($shortcode_tags as $key => $function) {
-				if(!in_array($key, array('subscriptionform','accountform'))) {
+				if(!in_array($key, array('subscriptionform','accountform', 'upgradeform'))) {
 					$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
 				}
 			}
@@ -708,8 +709,8 @@ if(!class_exists('membershippublic')) {
 			$content = apply_filters('membership_account_form_before_content', $content);
 
 			ob_start();
-			if( defined('MEMBERSHIP_ACOUNT_FORM') && file_exists( MEMBERSHIP_ACOUNT_FORM ) ) {
-				include_once( MEMBERSHIP_ACOUNT_FORM );
+			if( defined('MEMBERSHIP_ACCOUNT_FORM') && file_exists( MEMBERSHIP_ACCOUNT_FORM ) ) {
+				include_once( MEMBERSHIP_ACCOUNT_FORM );
 			} elseif(!empty($bp) && file_exists( membership_dir('membershipincludes/includes/bp.account.form.php') )) {
 				include_once( membership_dir('membershipincludes/includes/bp.account.form.php') );
 			} elseif( file_exists( membership_dir('membershipincludes/includes/account.form.php') ) ) {
@@ -733,8 +734,8 @@ if(!class_exists('membershippublic')) {
 			$content = apply_filters('membership_subscription_form_registration_before_content', $content);
 
 			ob_start();
-			if( defined('membership_registration_form') && file_exists( membership_registration_form ) ) {
-				include_once( membership_registration_form );
+			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
+				include_once( MEMBERSHIP_REGISTRATION_FORM );
 			} elseif(!empty($bp) && file_exists( membership_dir('membershipincludes/includes/bp.registration.form.php') )) {
 				include_once( membership_dir('membershipincludes/includes/bp.registration.form.php') );
 			} elseif( file_exists( membership_dir('membershipincludes/includes/registration.form.php') ) ) {
@@ -756,8 +757,8 @@ if(!class_exists('membershippublic')) {
 			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
 
 			ob_start();
-			if( defined('membership_subscription_form') && file_exists( membership_subscription_form ) ) {
-				include_once( membership_subscription_form );
+			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
+				include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
 			} elseif(file_exists( membership_dir('membershipincludes/includes/subscription.form.php') )) {
 				include_once( membership_dir('membershipincludes/includes/subscription.form.php') );
 			}
@@ -777,8 +778,8 @@ if(!class_exists('membershippublic')) {
 			$content = apply_filters('membership_subscription_form_member_before_content', $content, $user_id);
 
 			ob_start();
-			if( defined('membership_member_form') && file_exists( membership_member_form ) ) {
-				include_once( membership_member_form );
+			if( defined('MEMBERSHIP_MEMBER_FORM') && file_exists( MEMBERSHIP_MEMBER_FORM ) ) {
+				include_once( MEMBERSHIP_MEMBER_FORM );
 			} elseif(file_exists( membership_dir('membershipincludes/includes/member.form.php') )) {
 				include_once( membership_dir('membershipincludes/includes/member.form.php') );
 			}
@@ -786,6 +787,46 @@ if(!class_exists('membershippublic')) {
 			ob_end_clean();
 
 			$content = apply_filters('membership_subscription_form_member_after_content', $content, $user_id );
+
+			return $content;
+
+		}
+
+		function show_upgrade_page() {
+
+			$content = '';
+
+			$content = apply_filters('membership_upgrade_form_member_before_content', $content, $user_id);
+
+			ob_start();
+			if( defined('MEMBERSHIP_UPGRADE_FORM') && file_exists( MEMBERSHIP_UPGRADE_FORM ) ) {
+				include_once( MEMBERSHIP_UPGRADE_FORM );
+			} elseif(file_exists( membership_dir('membershipincludes/includes/upgrade.form.php') )) {
+				include_once( membership_dir('membershipincludes/includes/upgrade.form.php') );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_upgrade_form_member_after_content', $content, $user_id );
+
+			return $content;
+
+		}
+
+		function do_upgrade_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$content = '';
+			$error = array();
+
+			$page = addslashes($_REQUEST['action']);
+
+			$M_options = get_option('membership_options', array());
+
+			$content = $this->show_upgrade_page();
+
+			$content = apply_filters('membership_upgrade_form', $content);
 
 			return $content;
 
