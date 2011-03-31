@@ -58,6 +58,23 @@ do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
 do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
 */
 
+function M_Roles_backupstart( $user_id ) {
+
+	global $wpdb;
+
+	$start = get_user_meta( $user_id, $wpdb->prefix . 'capabilities');
+	update_user_meta( $user_id, $wpdb->prefix . 'm_backup_capabilites', $start);
+}
+
+function M_Roles_restoresart( $user_id ) {
+
+	global $wpdb;
+
+	$start = get_user_meta( $user_id, $wpdb->prefix . 'm_backup_capabilites');
+	update_user_meta( $user_id, $wpdb->prefix . 'capabilites', $start);
+
+}
+
 function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 
 	// Set up the level and find out if it has a joining ping
@@ -66,7 +83,7 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
-		$member->add_role( $wprole );
+		$member->set_role( $wprole );
 	}
 
 
@@ -101,9 +118,11 @@ function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 	$member =& new M_Membership( $user_id );
 	$wprole = $level->get_meta( 'associated_wp_role' );
 
-	$wprole = $level->get_meta( 'associated_wp_role' );
+	print_r($member->get_role());
+	die();
+
 	if(!empty($wprole)) {
-		$member->add_role( $wprole );
+		$member->set_role( $wprole );
 	}
 
 }
