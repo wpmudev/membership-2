@@ -101,6 +101,10 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 		$member->remove_role( $wprole );
 	}
 
+	if(!$member->has_levels()) {
+		$member->set_role( '' );
+	}
+
 }
 add_action( 'membership_drop_level', 'M_Roles_leftlevel', 10, 2 );
 
@@ -118,9 +122,6 @@ function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 	$member =& new M_Membership( $user_id );
 	$wprole = $level->get_meta( 'associated_wp_role' );
 
-	print_r($member->get_role());
-	die();
-
 	if(!empty($wprole)) {
 		$member->set_role( $wprole );
 	}
@@ -132,7 +133,9 @@ function M_Roles_leftsub( $fromsub_id, $user_id ) {
 
 	$member =& new M_Membership( $user_id );
 
-	//$member->set_role( '' );
+	if(!$member->has_levels()) {
+		$member->set_role( '' );
+	}
 
 }
 add_action( 'membership_drop_subscription', 'M_Roles_leftsub', 10, 2 );
