@@ -102,7 +102,7 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 	}
 
 	if(!$member->has_levels()) {
-		$member->set_role( '' );
+		$member->set_role( get_option('default_role') );
 	}
 
 }
@@ -134,7 +134,7 @@ function M_Roles_leftsub( $fromsub_id, $user_id ) {
 	$member =& new M_Membership( $user_id );
 
 	if(!$member->has_levels()) {
-		$member->set_role( '' );
+		$member->set_role( get_option('default_role') );
 	}
 
 }
