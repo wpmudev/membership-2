@@ -15,7 +15,8 @@ function M_Upgrade($from = false) {
 		case 5:		M_Alterfor4();
 					break;
 
-		case 6:		M_Alterfor5();
+		case 6:		M_Alterfor4();
+					M_Alterfor5();
 					break;
 
 		case false:	M_Createtables();
