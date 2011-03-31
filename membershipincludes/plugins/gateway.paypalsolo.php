@@ -621,6 +621,6 @@ class paypalsolo extends M_Gateway {
 
 }
 
-M_register_gateway('paypalsolo', 'paypalsolo');
+//M_register_gateway('paypalsolo', 'paypalsolo');
 
 ?>
