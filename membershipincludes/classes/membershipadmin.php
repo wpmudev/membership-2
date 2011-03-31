@@ -5207,7 +5207,7 @@ if(!class_exists('membershipadmin')) {
 							<?php
 						}
 					?>
-				</select><br/><br/>
+				</select><br/>
 
 				<label for='leavingping'><?php _e('Leaving Ping','membership'); ?></label>
 				<select name='leavingping'>

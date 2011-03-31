@@ -14,6 +14,7 @@
 
 			do_action( 'membership_subscription_form_before_paid_subscriptions', $user_id );
 
+			$subs = apply_filters( 'membership_override_subscriptions', $subs );
 			foreach((array) $subs as $key => $sub) {
 
 				$subscription = new M_Subscription($sub->id);
