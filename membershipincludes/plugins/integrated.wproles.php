@@ -131,8 +131,9 @@ add_action( 'membership_add_subscription', 'M_Roles_joinedsub', 10, 4 );
 
 function M_Roles_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
-	$member =& new M_Membership( $user_id );
+	M_Roles_leftlevel( $fromlevel_id, $user_id );
 
+	$member =& new M_Membership( $user_id );
 	if(!$member->has_levels()) {
 		$member->set_role( get_option('default_role') );
 	}

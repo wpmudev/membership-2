@@ -409,7 +409,7 @@ if(!class_exists('M_Membership')) {
 
 		function get_level_for_sub( $sub_id ) {
 
-			$sql = $this->db->prepare( "SELECT level_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id );
+			$sql = $this->db->prepare( "SELECT level_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
 
 			return $this->db->get_var( $sql );
 

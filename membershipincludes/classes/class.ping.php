@@ -495,6 +495,10 @@ add_action( 'membership_add_subscription', 'M_ping_joinedsub', 10, 4 );
 
 function M_ping_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
+	// Leaving the level
+	M_ping_leftlevel( $fromlevel_id, $user_id );
+
+	// Leaving the sub
 	$sub =& new M_Subscription( $fromsub_id );
 	$subleavingping_id = $sub->get_meta( 'leaving_ping' );
 
