@@ -620,6 +620,6 @@ class paypalnosignup extends M_Gateway {
 
 }
 
-//M_register_gateway('paypalnosignup', 'paypalnosignup');
+M_register_gateway('paypalnosignup', 'paypalnosignup');
 
 ?>

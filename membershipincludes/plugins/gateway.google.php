@@ -1,12 +1,12 @@
 <?php
 
-class paypalsolo extends M_Gateway {
+class google extends M_Gateway {
 
-	var $gateway = 'paypalsolo';
-	var $title = 'PayPal Express - single payments';
+	var $gateway = 'google';
+	var $title = 'Google Checkout - single payments';
 	var $issingle = true;
 
-	function paypalsolo() {
+	function google() {
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
@@ -621,6 +621,6 @@ class paypalsolo extends M_Gateway {
 
 }
 
-M_register_gateway('paypalsolo', 'paypalsolo');
+M_register_gateway('google', 'google');
 
 ?>
