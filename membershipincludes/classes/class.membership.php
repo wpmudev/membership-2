@@ -407,6 +407,14 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function get_level_for_sub( $sub_id ) {
+
+			$sql = $this->db->prepare( "SELECT level_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id );
+
+			return $this->db->get_var( $sql );
+
+		}
+
 		function drop_subscription($fromsub_id) {
 
 			if(!apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id, $this->ID )) {
@@ -414,6 +422,9 @@ if(!class_exists('M_Membership')) {
 			}
 
 			if($this->on_sub($fromsub_id)) {
+				// Get the level for this subscription before removing it
+				$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
+
 				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
 				$this->db->query( $sql );
 
@@ -422,7 +433,7 @@ if(!class_exists('M_Membership')) {
 				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
 
-				do_action( 'membership_drop_subscription', $fromsub_id, $this->ID );
+				do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
 			}
 
 		}
@@ -434,6 +445,8 @@ if(!class_exists('M_Membership')) {
 			}
 
 			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
+				// Get the level for this subscription before removing it
+				$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
 
 				// grab the level information for this position
 				$subscription = new M_Subscription( $tosub_id );
@@ -460,7 +473,7 @@ if(!class_exists('M_Membership')) {
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 
-					do_action( 'membership_move_subscription', $fromsub_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
+					do_action( 'membership_move_subscription', $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
 				}
 
 			}

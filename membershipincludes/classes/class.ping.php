@@ -493,7 +493,7 @@ function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 }
 add_action( 'membership_add_subscription', 'M_ping_joinedsub', 10, 4 );
 
-function M_ping_leftsub( $fromsub_id, $user_id ) {
+function M_ping_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
 	$sub =& new M_Subscription( $fromsub_id );
 	$subleavingping_id = $sub->get_meta( 'leaving_ping' );
@@ -505,15 +505,15 @@ function M_ping_leftsub( $fromsub_id, $user_id ) {
 	}
 
 }
-add_action( 'membership_drop_subscription', 'M_ping_leftsub', 10, 2 );
+add_action( 'membership_drop_subscription', 'M_ping_leftsub', 10, 3 );
 
-function M_ping_movedsub( $fromsub_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
+function M_ping_movedsub( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
 	M_ping_leftsub( $fromsub_id, $user_id );
 	M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id );
 
 }
-add_action( 'membership_move_subscription', 'M_ping_movedsub', 10, 5 );
+add_action( 'membership_move_subscription', 'M_ping_movedsub', 10, 6 );
 
 
 ?>

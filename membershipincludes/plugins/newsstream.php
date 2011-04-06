@@ -88,7 +88,7 @@ function membership_record_user_expire($sub_id, $user_id) {
 }
 add_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
 
-function membership_record_sub_drop($sub_id, $user_id) {
+function membership_record_sub_drop($sub_id, $level_id, $user_id) {
 
 	global $wpdb;
 
@@ -103,7 +103,7 @@ function membership_record_sub_drop($sub_id, $user_id) {
 	$wpdb->insert( $table, array( 'newsitem' => $message, 'newsdate' => current_time('mysql') ) );
 
 }
-add_action( 'membership_drop_subscription', 'membership_record_sub_drop', 10, 2 );
+add_action( 'membership_drop_subscription', 'membership_record_sub_drop', 10, 3 );
 
 function membership_record_level_drop($level_id, $user_id) {
 
@@ -122,7 +122,7 @@ function membership_record_level_drop($level_id, $user_id) {
 }
 add_action( 'membership_drop_level', 'membership_record_level_drop', 10, 2 );
 
-function membership_record_sub_move($fromsub_id, $tosub_id, $tolevel_id, $to_order, $user_id) {
+function membership_record_sub_move($fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id) {
 
 	global $wpdb;
 
@@ -139,7 +139,7 @@ function membership_record_sub_move($fromsub_id, $tosub_id, $tolevel_id, $to_ord
 	$wpdb->insert( $table, array( 'newsitem' => $message, 'newsdate' => current_time('mysql') ) );
 
 }
-add_action( 'membership_move_subscription', 'membership_record_sub_move', 10, 5 );
+add_action( 'membership_move_subscription', 'membership_record_sub_move', 10, 6 );
 
 function membership_record_level_move($fromlevel_id, $tolevel_id, $user_id) {
 

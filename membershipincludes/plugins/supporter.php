@@ -6,7 +6,7 @@
 add_action( 'membership_subscription_form_after_levels', 'supporter_membership_subscription_settings' );
 add_action( 'membership_subscription_update', 'supporter_membership_subscription_update');
 add_action( 'membership_subscription_add', 'supporter_membership_subscription_update');
-add_action( 'membership_move_subscription', 'supporter_membership_move_subscription', 10, 5 );
+add_action( 'membership_move_subscription', 'supporter_membership_move_subscription', 10, 6 );
 add_action( 'membership_add_subscription', 'supporter_membership_add_subscription', 10, 4);
 
 // Add in parts to allow a user to select which blog/site is their main one
@@ -88,10 +88,10 @@ function supporter_membership_update_user_section( $user_id ) {
 }
 
 function supporter_membership_add_subscription($tosub_id, $tolevel_id, $to_order, $user_id) {
-	return supporter_membership_move_subscription(0, $tosub_id, $tolevel_id, $to_order, $user_id);
+	return supporter_membership_move_subscription(0, 0, $tosub_id, $tolevel_id, $to_order, $user_id);
 }
 
-function supporter_membership_move_subscription( $fromsub_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
+function supporter_membership_move_subscription( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
 	global $wpdb;
 
