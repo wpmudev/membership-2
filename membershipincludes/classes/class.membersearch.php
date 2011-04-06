@@ -131,7 +131,7 @@ if(!class_exists('M_Member_Search')) {
 			}
 
 			if($this->active) {
-				$sql = $wpdb->prepare( "SELECT user_id FROM " . $wpdb->usermeta . " WHERE meta_key = '" . membership_db_prefix($wpdb, 'membership_active') . "' AND meta_value = 'no'" );
+				$sql = $wpdb->prepare( "SELECT user_id FROM " . $wpdb->usermeta . " WHERE meta_key = '" . membership_db_prefix($wpdb, 'membership_active', false) . "' AND meta_value = 'no'" );
 				$actives = $wpdb->get_col( $sql );
 
 				if(!empty($actives)) {
