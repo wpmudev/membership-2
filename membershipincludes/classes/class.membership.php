@@ -161,6 +161,11 @@ if(!class_exists('M_Membership')) {
 							continue;
 						}
 
+						// Need to check if we are on a solo payment and have a valid payment or the next level is free.
+
+
+						// Otherwise we should expire this subscription
+
 						$subscription = new M_Subscription($rel->sub_id);
 						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
