@@ -3,7 +3,7 @@
 class paypalnosignup extends M_Gateway {
 
 	var $gateway = 'paypalnosignup';
-	var $title = 'PayPal Express - no signup';
+	var $title = 'PayPal Express - with No Initial Sign up';
 
 	function paypalnosignup() {
 		parent::M_Gateway();
@@ -620,6 +620,6 @@ class paypalnosignup extends M_Gateway {
 
 }
 
-//M_register_gateway('paypalnosignup', 'paypalnosignup');
+M_register_gateway('paypalnosignup', 'paypalnosignup');
 
 ?>

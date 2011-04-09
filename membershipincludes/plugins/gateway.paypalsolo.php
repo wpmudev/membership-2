@@ -3,7 +3,7 @@
 class paypalsolo extends M_Gateway {
 
 	var $gateway = 'paypalsolo';
-	var $title = 'PayPal Express - single payments';
+	var $title = 'PayPal Express - with Single Payments';
 	var $issingle = true;
 
 	function paypalsolo() {

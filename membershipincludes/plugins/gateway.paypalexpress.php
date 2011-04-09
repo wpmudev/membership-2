@@ -3,7 +3,7 @@
 class paypalexpress extends M_Gateway {
 
 	var $gateway = 'paypalexpress';
-	var $title = 'PayPal Express - with subscriptions';
+	var $title = 'PayPal Express - with Subscriptions';
 
 	function paypalexpress() {
 		parent::M_Gateway();

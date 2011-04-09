@@ -3,7 +3,7 @@
 class google extends M_Gateway {
 
 	var $gateway = 'google';
-	var $title = 'Google Checkout - single payments';
+	var $title = 'Google Checkout - with Single Payments';
 	var $issingle = true;
 
 	function google() {

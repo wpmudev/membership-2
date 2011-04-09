@@ -152,9 +152,9 @@ if(!class_exists('M_Membership')) {
 
 			if($relationships) {
 				foreach($relationships as $key => $rel) {
-
-					if(mysql2date("U", $rel->expirydate) <= time()) {
-						// expired, we need to move forwards
+					// Add 6 hours to the expiry date to give a grace period?
+					if( strtotime("+ 6 hours", mysql2date("U", $rel->expirydate)) <= time() ) {
+						// expired, we need to remove the subscription
 						if($this->is_marked_for_expire($rel->sub_id)) {
 							$this->expire_subscription($rel->sub_id);
 							delete_user_meta($this->ID, '_membership_expire_next');
@@ -162,26 +162,46 @@ if(!class_exists('M_Membership')) {
 						}
 
 						// Need to check if we are on a solo payment and have a valid payment or the next level is free.
+						$onsolo = get_user_meta( $user_id, 'membership_signup_gateway_is_single', true );
+						if(!empty($onsolo) && $onsolo == 'yes') {
+							// We are on a solo gateway so need some extra checks
+							// Grab the subscription
+							$subscription = new M_Subscription($rel->sub_id);
+							// Get the next level we will be moving onto
+							$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
+							if($nextlevel) {
+								// We have a level to move to - let's check it
+								if(empty($nextlevel->level_price) || $nextlevel->level_price == 0 ) {
+									// The next level is a free one, so I guess we just move to it
+									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+								} else {
+									// The next level is a charged one so we need to make sure we have a payment
 
-						// Otherwise we should expire this subscription
-
-						$subscription = new M_Subscription($rel->sub_id);
-						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
-
-						if($nextlevel){
-							if(empty($nextlevel->level_price)) {
-								// this is a non paid level transition so we can go head
-								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+								}
 							} else {
-
-								// This is a paid level transition so check for a payment
-								// Transition for now cos we are disabling everything when a payment fails
-								$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+								// We're at the end so need to expire this subscription
+								$this->expire_subscription($rel->sub_id);
 							}
+
 						} else {
-							// there isn't a next level so expire this subscription
-							$this->expire_subscription($rel->sub_id);
+							$subscription = new M_Subscription($rel->sub_id);
+							$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
+
+							if($nextlevel){
+								if(empty($nextlevel->level_price)) {
+									// this is a non paid level transition so we can go head
+									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+								} else {
+
+									// This is a paid level transition so check for a payment
+									// Transition for now cos we are disabling everything when a payment fails
+									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+								}
+							} else {
+								// there isn't a next level so expire this subscription
+								$this->expire_subscription($rel->sub_id);
+							}
 						}
 
 					} else {
