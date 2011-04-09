@@ -177,7 +177,13 @@ if(!class_exists('M_Membership')) {
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 								} else {
 									// The next level is a charged one so we need to make sure we have a payment
-
+									if( $this->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order ) ) {
+										// We have a current payment for the level we are going to move to
+										$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+									} else {
+										// We don't have a payment for this next level so we have to expire it.
+										$this->expire_subscription($rel->sub_id);
+									}
 								}
 							} else {
 								// We're at the end so need to expire this subscription
@@ -267,13 +273,9 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function has_active_payment($sub_id = false) {
+		function has_active_payment( $sub_id, $nextlevel_id, $nextlevel_order ) {
 
-			if(!$sub_id) {
 
-			} else {
-
-			}
 
 		}
 
