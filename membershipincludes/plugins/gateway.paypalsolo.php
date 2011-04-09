@@ -101,6 +101,20 @@ class paypalsolo extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
+					<em style='font-size:smaller;'><?php _e("The message that is displayed to a user once they are signed up on a Free level. HTML allowed",'membership'); ?>
+					</em>
+				</th>
+				<td>
+					<textarea name='completed_message' id='completed_message' rows='10' cols='40'><?php
+					$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
+					echo stripslashes($message);
+					?>
+					</textarea>
+				</td>
+			</tr>
 		</tbody>
 		</table>
 		<?php
@@ -344,6 +358,60 @@ class paypalsolo extends M_Gateway {
 
 	}
 
+	function signup_free_subscription($content, $error) {
+
+		if(isset($_POST['custom'])) {
+			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+		}
+
+		// create_subscription
+		$member = new M_Membership($user_id);
+		if($member) {
+			$member->create_subscription($sub_id);
+		}
+
+		do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+
+		$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+
+		$content .= '<div class="formleft">';
+
+		$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
+		$content .= stripslashes($message);
+
+		$content .= '</div>';
+
+		$content .= "</div>";
+
+		$content = apply_filters('membership_subscriptionform_signedup', $content, $user_id, $sub_id);
+
+		return $content;
+
+	}
+
+	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
+
+		global $M_options;
+
+		if(empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		$form .= '<form action="' . get_permalink() . '" method="post">';
+		$form .= '<input type="hidden" name="action" value="validatepage2" />';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+
+		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+
+		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+		$form .= '</form>';
+
+		return $form;
+
+	}
+
 	function build_subscribe_button($subscription, $pricing, $user_id) {
 
 		if(!empty($pricing)) {
@@ -373,6 +441,9 @@ class paypalsolo extends M_Gateway {
 					return $this->complex_sub_button($pricing, $subscription, $user_id);
 
 				}
+			} else {
+				// Free part
+				return $this->single_free_button($pricing, $subscription, $user_id, true);
 			}
 
 		}
@@ -392,6 +463,7 @@ class paypalsolo extends M_Gateway {
 			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
 			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
 			update_option( $this->gateway . "_paypal_button", $_POST[ 'paypal_button' ] );
+			update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
 		}
 
 		// default action is to return true

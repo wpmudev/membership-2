@@ -43,6 +43,9 @@ if(!class_exists('membershippublic')) {
 			// add feed protection
 			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
 
+			// Register
+			add_filter('register', array(&$this, 'override_register') );
+
 		}
 
 		function membershippublic() {
@@ -149,6 +152,30 @@ if(!class_exists('membershippublic')) {
 		  	$wp_rewrite->rules = array_merge($new_rules, $wp_rewrite->rules);
 
 			return $wp_rewrite;
+		}
+
+		function override_register( $link ) {
+
+			global $M_options;
+
+			if ( ! is_user_logged_in() ) {
+				if ( get_option('users_can_register') ) {
+					// get the new registration stuff.
+					if(!empty($M_options['registration_page'])) {
+						$url = get_permalink( $M_options['registration_page'] );
+						$link = preg_replace('/<a href(.+)a>/', '<a href="' . $url . '">' . __('Register', 'membership') . '</a>', $link);
+					}
+
+				}
+			} else {
+				// change to account page?
+				if(!empty($M_options['account_page'])) {
+					$url = get_permalink( $M_options['account_page'] );
+					$link = preg_replace('/<a href(.+)a>/', '<a href="' . $url . '">' . __('My Account', 'membership') . '</a>', $link);
+				}
+			}
+
+			return $link;
 		}
 
 		function add_feed_key( $output, $feed ) {
