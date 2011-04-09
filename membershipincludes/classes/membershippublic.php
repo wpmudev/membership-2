@@ -1122,6 +1122,14 @@ if(!class_exists('membershippublic')) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
 				}
+				if(strstr($post->post_content, '[accountform]') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+				}
+				if(strstr($post->post_content, '[upgradeform]') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+				}
 			}
 
 			return $posts;
