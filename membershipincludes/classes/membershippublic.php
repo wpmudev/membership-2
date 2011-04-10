@@ -727,9 +727,21 @@ if(!class_exists('membershippublic')) {
 
 		// Shortcodes
 
-		function show_account_page() {
+		function show_account_page( $content ) {
 
-			global $bp;
+			global $bp, $profileuser;
+
+			if(!is_user_logged_in()) {
+				return apply_filters('membership_account_form_not_logged_in', $content );
+			}
+
+			require_once(ABSPATH . 'wp-admin/includes/user.php');
+
+			$current_user = wp_get_current_user();
+
+			$user_id = $current_user->ID;
+
+			$profileuser = get_user_to_edit($user_id);
 
 			$content = '';
 
@@ -870,7 +882,7 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
-			$content = $this->show_account_page();
+			$content = $this->show_account_page( $content );
 
 			$content = apply_filters('membership_account_form', $content);
 

@@ -21,6 +21,28 @@ div#account-form table.form-table th {
 	color: #000;
 }
 
+#account-form div.formleft table.form-table tbody tr td input, #account-form div.formleft table.form-table tbody tr td select {
+	width: 60%;
+	border: 1px solid #ccc;
+	margin: 0;
+	padding: 3px;
+	font-size: 14px;
+}
+
+#account-form div.formleft form table.form-table tbody tr td span.description {
+	color: #666;
+	font-size: 12px;
+	font-style: italic;
+}
+
+div#message {
+	border: 1px solid #ffd13b;
+	padding: 5px;
+	font: 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	background-color: #fefdd6;
+	margin-bottom: 10px;
+}
+
 div#account-form table.form-table th label {
 	color: #000;
 }
