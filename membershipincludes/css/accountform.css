@@ -43,6 +43,10 @@ div#message {
 	margin-bottom: 10px;
 }
 
+#message p {
+	margin: 0;
+}
+
 div#account-form table.form-table th label {
 	color: #000;
 }

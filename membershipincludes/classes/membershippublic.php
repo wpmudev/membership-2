@@ -729,7 +729,7 @@ if(!class_exists('membershippublic')) {
 
 		function show_account_page( $content ) {
 
-			global $bp, $profileuser, $user;
+			global $bp, $profileuser, $user, $user_id;
 
 			if(!is_user_logged_in()) {
 				return apply_filters('membership_account_form_not_logged_in', $content );

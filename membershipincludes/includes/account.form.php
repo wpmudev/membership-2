@@ -2,9 +2,37 @@
 	global $profileuser, $user_id, $user;
 
 	if(isset($_POST['action']) && $_POST['action'] == 'update') {
-		check_admin_referer('update-user_' . $user_id);
 
-		wp_update_user( get_object_vars( $user ) );
+		if( wp_verify_nonce($_REQUEST['_wpnonce'], 'update-user_' . $user_id) ) {
+			$msg = __('Your details have been updated.','membership');
+
+			$user = array( 	'ID'			=>	$_POST['user_id'],
+							'first_name'	=>	$_POST['first_name'],
+							'last_name'		=>	$_POST['last_name'],
+							'nickname'		=>	$_POST['nickname'],
+							'display_name'	=>	$_POST['display_name'],
+							'user_email'	=>	$_POST['email'],
+							'user_url'		=>	$_POST['url']
+						);
+
+			if(!empty($_POST['pass1'])) {
+				if(($_POST['pass1'] == $_POST['pass2'])) {
+					$user['user_pass'] = $_POST['pass1'];
+				} else {
+					$msg = __('Your password settings do not match','membership');
+				}
+			}
+
+			$errors = edit_user( $user['ID'] );
+			$profileuser = get_user_to_edit($user_id);
+
+			if ( isset( $errors ) && is_wp_error( $errors ) ) {
+				$msg = implode( "</p>\n<p>", $errors->get_error_messages() );
+			}
+
+		} else {
+			$msg = __('Your details could not be updated.','membership');
+		}
 
 		do_action('edit_user_profile_update', $user_id);
 	}
@@ -14,7 +42,11 @@
 <div id="account-form">
 	<div class="formleft">
 
-		<div id='message'>Hello</div>
+	<?php if(!empty($msg)) {
+	?>
+		<div id='message'><p><?php echo $msg; ?></p></div>
+	<?php
+	} ?>
 
 		<form action='' method='POST'>
 
