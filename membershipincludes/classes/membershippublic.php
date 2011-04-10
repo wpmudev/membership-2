@@ -728,7 +728,7 @@ if(!class_exists('membershippublic')) {
 
 		// Shortcodes
 
-		function show_account_page( $content ) {
+		function show_account_page( $content = null ) {
 
 			global $bp, $profileuser, $user, $user_id;
 
@@ -878,7 +878,6 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query;
 
-			$content = '';
 			$error = array();
 
 			$page = addslashes($_REQUEST['action']);
@@ -897,7 +896,6 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query;
 
-			$content = '';
 			$error = array();
 
 			$page = addslashes($_REQUEST['action']);
@@ -916,7 +914,6 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query;
 
-			$content = '';
 			$error = array();
 
 			$page = addslashes($_REQUEST['action']);
@@ -935,7 +932,6 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query;
 
-			$content = '';
 			$error = array();
 
 			$page = addslashes($_REQUEST['action']);
