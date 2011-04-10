@@ -1762,7 +1762,6 @@ if(!class_exists('membershipadmin')) {
 				$M_options['account_page'] = $_POST['account_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
 				$M_options['registration_tos'] = $_POST['registration_tos'];
-				$M_options['upgrade_page'] = $_POST['upgrade_page'];
 
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 				$M_options['moretagdefault'] = $_POST['moretagdefault'];
@@ -1919,25 +1918,6 @@ if(!class_exists('membershipadmin')) {
 							<td>
 								<?php
 								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-								echo $pages;
-								?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Upgrades page','membership'); ?></h3>
-					<p><?php _e('This is the page a user will be redirected to when they want to upgrade their subscription.','membership'); ?></p>
-					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [upgradeform] shortcode in some location.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Upgrade page','membership'); ?>
-							</th>
-							<td>
-								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['upgrade_page'], 'name' => 'upgrade_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
 								?>
 							</td>

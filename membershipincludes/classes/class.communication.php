@@ -30,7 +30,7 @@ if(!class_exists('M_Communication')) {
 									'%networkurl%' => '',
 									'%subscriptionname%' => '',
 									'%levelname%' => '',
-									'%upgradeurl%' => ''
+									'%accounturl%' => ''
 									);
 
 		function __construct( $id = false) {
@@ -343,7 +343,7 @@ if(!class_exists('M_Communication')) {
 												}
 												break;
 
-					case '%upgradeurl%':		$commdata[$key] = get_permalink( $M_options['account_page'] );
+					case '%accounturl%':		$commdata[$key] = get_permalink( $M_options['account_page'] );
 												break;
 
 					default:					$commdata[$key] = apply_filter( 'membership_commfield_' . $key, '' );
