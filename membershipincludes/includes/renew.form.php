@@ -6,12 +6,15 @@
 
 			$member = current_member();
 
+			$signupgateway = get_user_meta( $user_id, 'membership_signup_gateway', true );
+			$gatewayissingle = get_user_meta( $user_id, 'membership_signup_gateway_is_single', true );
+
 			$rels = $member->get_relationships();
 			foreach( (array) $rels as $rel ) {
 
 				$sub = new M_Subscription( $rel->sub_id );
 
-				$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
+				$nextlevel = $sub->get_next_level($rel->level_id, $rel->order_instance);
 
 				?>
 					<div class="renew-form">
@@ -30,6 +33,7 @@
 						</div>
 					</div>
 				<?php
+				print_r($nextlevel);
 			}
 
 		} else {
