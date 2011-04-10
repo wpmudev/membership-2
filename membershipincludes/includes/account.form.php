@@ -1,5 +1,15 @@
 <?php
-	global $profileuser, $user_id;
+	global $profileuser, $user_id, $user;
+
+	if(isset($_POST['action']) && $_POST['action'] == 'update') {
+		check_admin_referer('update-user_' . $user_id);
+
+		wp_update_user( get_object_vars( $user ) );
+
+		do_action('edit_user_profile_update', $user_id);
+	}
+
+
 ?>
 <div id="account-form">
 	<div class="formleft">

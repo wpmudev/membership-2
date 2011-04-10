@@ -729,7 +729,7 @@ if(!class_exists('membershippublic')) {
 
 		function show_account_page( $content ) {
 
-			global $bp, $profileuser;
+			global $bp, $profileuser, $user;
 
 			if(!is_user_logged_in()) {
 				return apply_filters('membership_account_form_not_logged_in', $content );
@@ -737,9 +737,9 @@ if(!class_exists('membershippublic')) {
 
 			require_once(ABSPATH . 'wp-admin/includes/user.php');
 
-			$current_user = wp_get_current_user();
+			$user = wp_get_current_user();
 
-			$user_id = $current_user->ID;
+			$user_id = $user->ID;
 
 			$profileuser = get_user_to_edit($user_id);
 
