@@ -1137,6 +1137,7 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[accountform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+					wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'));
 				}
 				if(strstr($post->post_content, '[upgradeform]') !== false) {
 					// The shortcode is in a post on this page, add the header

@@ -47,6 +47,19 @@ div#message {
 	margin: 0;
 }
 
+#account-form div.formleft p {
+	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	margin-bottom: 5px;
+}
+
+#account-form div.formleft form {
+	display: none;
+}
+
+#account-form div.formleft p span a {
+	float: right;
+}
+
 div#account-form table.form-table th label {
 	color: #000;
 }
