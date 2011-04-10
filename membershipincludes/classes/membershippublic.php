@@ -75,6 +75,7 @@ if(!class_exists('membershippublic')) {
 			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
+			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
@@ -544,7 +545,7 @@ if(!class_exists('membershippublic')) {
 			$M_shortcode_tags = $shortcode_tags;
 
 			foreach($shortcode_tags as $key => $function) {
-				if(!in_array($key, array('subscriptionform','accountform', 'upgradeform'))) {
+				if(!in_array($key, array('subscriptionform','accountform', 'upgradeform', 'renewform'))) {
 					$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
 				}
 			}
@@ -852,6 +853,46 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function show_renew_page() {
+
+			$content = '';
+
+			$content = apply_filters('membership_renew_form_member_before_content', $content, $user_id);
+
+			ob_start();
+			if( defined('MEMBERSHIP_RENEW_FORM') && file_exists( MEMBERSHIP_RENEW_FORM ) ) {
+				include_once( MEMBERSHIP_RENEW_FORM );
+			} elseif(file_exists( apply_filters('membership_override_renew_form', membership_dir('membershipincludes/includes/renew.form.php')) )) {
+				include_once( apply_filters('membership_override_renew_form', membership_dir('membershipincludes/includes/renew.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_renew_form_member_after_content', $content, $user_id );
+
+			return $content;
+
+		}
+
+		function do_renew_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$content = '';
+			$error = array();
+
+			$page = addslashes($_REQUEST['action']);
+
+			$M_options = get_option('membership_options', array());
+
+			$content = $this->show_renew_page();
+
+			$content = apply_filters('membership_renew_form', $content);
+
+			return $content;
+
+		}
+
 		function do_upgrade_shortcode($atts, $content = null, $code = "") {
 
 			global $wp_query;
@@ -1142,6 +1183,10 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[upgradeform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+				}
+				if(strstr($post->post_content, '[renewform]') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
 				}
 			}
 
