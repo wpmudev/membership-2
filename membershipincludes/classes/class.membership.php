@@ -246,7 +246,7 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function create_subscription($sub_id) {
+		function create_subscription($sub_id, $gateway = 'admin') {
 
 			if(!$this->active_member()) {
 				$this->toggle_activation();
@@ -260,7 +260,7 @@ if(!class_exists('M_Membership')) {
 				foreach($levels as $key => $level) {
 					if($level->level_order == 1) {
 
-						$this->add_subscription($sub_id, $level->level_id, $level->level_order);
+						$this->add_subscription($sub_id, $level->level_id, $level->level_order, $gateway);
 						break;
 					}
 				}

@@ -7,7 +7,7 @@ class authorizenetaim extends M_Gateway {
 
 	function authorizenetaim() {
 		global $M_membership_url;
-		
+
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
@@ -18,13 +18,13 @@ class authorizenetaim extends M_Gateway {
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
-			
+
 			wp_enqueue_script('jquery');
-			
+
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
-			
+
 			if (!is_admin()) {
 				$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
 			}
@@ -86,7 +86,7 @@ class authorizenetaim extends M_Gateway {
 							'yes'	=> __('Yes', 'membership'),
 							'no'	=> __('No', 'membership')
 							);
-			      
+
 						    foreach ($modes as $key => $value) {
 								      echo '<option value="' . esc_attr($key) . '"';
 								      if($key == $sel_mode) echo 'selected="selected"';
@@ -117,7 +117,7 @@ class authorizenetaim extends M_Gateway {
 							'yes'	=> __('Yes', 'membership'),
 							'no'	=> __('No', 'membership')
 							);
-			      
+
 						    foreach ($modes as $key => $value) {
 								      echo '<option value="' . esc_attr($key) . '"';
 								      if($key == $sel_mode) echo 'selected="selected"';
@@ -134,15 +134,15 @@ class authorizenetaim extends M_Gateway {
 
 	function build_custom($user_id, $sub_id, $amount) {
 		$custom = '';
-		
+
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
 		$key = md5('MEMBERSHIP' . $amount);
-		
+
 		$custom .= $key;
-		
+
 		return $custom;
 	}
-	
+
 	function signup_subscription($content, $error) {
 
 		if(isset($_POST['custom'])) {
@@ -168,12 +168,12 @@ class authorizenetaim extends M_Gateway {
 
 	function single_button($pricing, $subscription, $user_id) {
 		global $M_options, $M_membership_url;
-		
+
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 		$form = '';
-		
+
 		if (!function_exists('wp_https_redirect'))
 		{
 		  if ($_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0)
@@ -186,16 +186,16 @@ class authorizenetaim extends M_Gateway {
 		    exit(0);
 		  }
 		}
-		
+
 		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-		
+
 		$form .= '<script type="text/javascript">';
 		$form .= '_aim_return_url = "'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'";';
 		$form .= '_permalink_url = "'.get_permalink().'";';
 		$form .= '</script>';
-		
+
 		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
-		
+
 		$form .= '<style type="text/css">';
 		$form .= 'div.subscription div.priceforms { width: 400px; }';
 		$form .= '</style>';
@@ -220,19 +220,19 @@ class authorizenetaim extends M_Gateway {
 		$form .= 'type="text" size="4" maxlength="4" /></td></tr>';
 		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/credit_card_64.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
 		$form .= '</tbody></table></form>';
-		
+
 		return $form;
 	}
 
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
-		
+
 		// No ARB yet
 	}
 
 	function complex_sub_button($pricing, $subscription, $user_id) {
 		global $M_options, $M_membership_url;
-		
+
 		// No ARB yet
 	}
 
@@ -282,12 +282,12 @@ class authorizenetaim extends M_Gateway {
 		// default action is to return true
 		return true;
 	}
-	
+
 	function _print_year_dropdown($sel='', $pfp = false) {
 		$localDate=getdate();
 		$minYear = $localDate["year"];
 		$maxYear = $minYear + 15;
-	
+
 		$output =  "<option value=''>--</option>";
 		for($i=$minYear; $i<$maxYear; $i++) {
 			if ($pfp) {
@@ -300,7 +300,7 @@ class authorizenetaim extends M_Gateway {
 		}
 		return($output);
 	}
-	
+
 	function _print_month_dropdown($sel='') {
 		$output =  "<option value=''>--</option>";
 		$output .=  "<option " . ($sel==1?' selected':'') . " value='01'>01 - Jan</option>";
@@ -315,34 +315,34 @@ class authorizenetaim extends M_Gateway {
 		$output .=  "<option " . ($sel==10?' selected':'') . "  value='10'>10 - Oct</option>";
 		$output .=  "<option " . ($sel==11?' selected':'') . "  value='11'>11 - Nov</option>";
 		$output .=  "<option " . ($sel==12?' selected':'') . "  value='12'>12 - Doc</option>";
-	
+
 		return($output);
 	}
-	
+
 	function handle_payment_return() {
 		global $M_options, $M_membership_url;
-		
+
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
-		
+
 		$subscription = new M_Subscription($_POST['subscription_id']);
 		$pricing = $subscription->get_pricingarray();
-		
+
 		$user_id = $_POST['user_id'];
 		$sub_id = $subscription->id;
-		
+
 		if ($M_options['paymentcurrency'] == 'USD' && count($pricing) == 1) {
 			// A basic price or a single subscription
 			if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 				$timestamp = time();
-				
+
 				if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
 					$endpoint = "https://test.authorize.net/gateway/transact.dll";
 				} else {
 					$endpoint = "https://secure.authorize.net/gateway/transact.dll";
 				}
-				
+
 				$payment = new M_Gateway_Worker_AuthorizeNet_AIM($endpoint,
 				  get_option( $this->gateway . "_delim_data", 'yes' ),
 				  get_option( $this->gateway . "_delim_char", ',' ),
@@ -350,36 +350,36 @@ class authorizenetaim extends M_Gateway {
 				  get_option( $this->gateway . "_api_user", '' ),
 				  get_option( $this->gateway . "_api_key", '' ),
 				  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
-				
+
 				$payment->transaction($_POST['card_num']);
-				
+
 				// Billing Info
 				$payment->setParameter("x_card_code", $_POST['card_code']);
 				$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
 				$payment->setParameter("x_amount", number_format($pricing[0]['amount'], 2));
-				
+
 				// Order Info
 				$payment->setParameter("x_description", $subscription->sub_name());
-				
+
 				$payment->setParameter("x_duplicate_window", 30);
-				
+
 				// E-mail
 				$payment->setParameter("x_header_email_receipt", get_option( $this->gateway . "_header_email_receipt", '' ));
 				$payment->setParameter("x_footer_email_receipt", get_option( $this->gateway . "_footer_email_receipt", '' ));
 				$payment->setParameter("x_email_customer", strtoupper(get_option( $this->gateway . "_email_customer", '' )));
-				
+
 				$payment->setParameter("x_customer_ip", $_SERVER['REMOTE_ADDR']);
-				
+
 				$payment->process();
-				
+
 				if ($payment->isApproved()) {
 				  $status = __('The payment has been completed, and the funds have been added successfully to your account balance.', 'membership');
-				  
+
 				  $member = new M_Membership($user_id);
 				  if($member) {
-					$member->create_subscription($sub_id);
+					$member->create_subscription($sub_id, $this->gateway);
 				  }
-					
+
 				  print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));
 				  do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				} else {
@@ -443,7 +443,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
     {
       $this->params['x_card_num']  = trim($cardnum);
     }
-    
+
     function addLineItem($id, $name, $description, $quantity, $price, $taxable = 0)
     {
       $this->line_items[] = "{$id}<|>{$name}<|>{$description}<|>{$quantity}<|>{$price}<|>{$taxable}";
@@ -452,20 +452,20 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
     function process($retries = 1)
     {
       global $mp;
-      
+
       $this->_prepareParameters();
       $query_string = rtrim($this->fields, "&");
-      
+
       $count = 0;
       while ($count < $retries)
       {
         $args['user-agent'] = "MarketPress/{$mp->version}: http://premium.wpmudev.org/project/e-commerce | Authorize.net AIM Plugin/{$mp->version}";
         $args['body'] = $query_string;
         $args['sslverify'] = false;
-        
+
         //use built in WP http class to work with most server setups
         $response = wp_remote_post($this->url, $args);
-        
+
         if (is_array($response) && isset($response['body'])) {
           $this->response = $response['body'];
         } else {
@@ -473,9 +473,9 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
           $this->error = true;
           return;
         }
-        
+
 	$this->parseResults();
-        
+
 	if ($this->getResultResponseFull() == "Approved")
 	{
           $this->approved = true;
@@ -521,7 +521,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
         $this->fields .= "x_line_item={$this->line_items[$i]}&";
       }
     }
-    
+
     function getMethod()
     {
       if (isset($this->results[51]))
