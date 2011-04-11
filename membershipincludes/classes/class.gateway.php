@@ -408,4 +408,16 @@ function M_register_gateway($gateway, $class) {
 
 }
 
+function M_get_class_for_gateway($gateway) {
+
+	global $M_Gateways;
+
+	if(isset($M_Gateways[$gateway])) {
+		return $M_Gateways[$gateway];
+	} else {
+		return false;
+	}
+
+}
+
 ?>

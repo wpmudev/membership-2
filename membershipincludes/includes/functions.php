@@ -228,4 +228,14 @@ function M_remove_old_plugin( $plugins ) {
 	return $plugins;
 }
 
+function get_last_transaction_for_user_and_sub($user_id, $sub_id) {
+
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'subscription_transaction') . " WHERE transaction_user_ID = %d and transaction_subscription_ID = %d ORDER BY transaction_stamp DESC LIMIT 0,1", $user_id, $sub_id );
+
+	return $wpdb->get_row( $sql );
+
+}
+
 ?>

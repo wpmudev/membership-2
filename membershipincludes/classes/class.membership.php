@@ -399,7 +399,7 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false) {
+		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false, $gateway = 'admin') {
 
 			if(!apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order, $this->ID )) {
 				return false;
@@ -421,11 +421,12 @@ if(!class_exists('M_Membership')) {
 						default: $period = 'days'; break;
 					}
 					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
-					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order));
+					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order, 'usinggateway' => $gateway ));
 
 					// Update users start and expiry meta
 					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
 					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
+					update_user_meta( $this->ID, 'using_gateway' . $tosub_id, $gateway );
 
 					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
 				}
@@ -459,6 +460,7 @@ if(!class_exists('M_Membership')) {
 				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
+				delete_user_meta( $this->ID, 'using_gateway' . $tosub_id );
 
 				do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
 			}
@@ -494,9 +496,13 @@ if(!class_exists('M_Membership')) {
 					delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
 					delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
 					delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
+					// get the gateway and then remove it from the usermeta
+					$gateway = get_user_meta( $this->ID, 'using_gateway' . $fromsub_id, true );
+					delete_user_meta( $this->ID, 'using_gateway' . $fromsub_id );
 
 					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
 					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
+					update_user_meta( $this->ID, 'using_gateway' . $tosub_id, $gateway );
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 

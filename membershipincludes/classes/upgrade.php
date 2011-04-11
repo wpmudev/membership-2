@@ -19,12 +19,34 @@ function M_Upgrade($from = false) {
 					M_Alterfor5();
 					break;
 
+		case 7:		M_Alterfor4();
+					M_Alterfor5();
+					M_Alterfor6();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
 		default:	M_Createtables();
 					break;
 	}
+
+}
+
+function M_Alterfor6() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD `usinggateway` varchar(50) NULL DEFAULT 'admin'  AFTER `order_instance`;";
+	$wpdb->query( $sql );
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD INDEX  (`user_id`);";
+	$wpdb->query( $sql );
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD INDEX  (`sub_id`);";
+	$wpdb->query( $sql );
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD INDEX  (`usinggateway`)";;
+	$wpdb->query( $sql );
 
 }
 
@@ -155,15 +177,19 @@ function M_Createtables() {
 	$wpdb->query($sql);
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_relationships') . "` (
-	  `rel_id` bigint(20) NOT NULL auto_increment,
-	  `user_id` bigint(20) default '0',
-	  `sub_id` bigint(20) default '0',
-	  `level_id` bigint(20) default '0',
-	  `startdate` datetime default NULL,
-	  `updateddate` datetime default NULL,
-	  `expirydate` datetime default NULL,
-	  `order_instance` bigint(20) default '0',
-	  PRIMARY KEY  (`rel_id`)
+	  	`rel_id` bigint(20) NOT NULL auto_increment,
+		`user_id` bigint(20) default '0',
+		`sub_id` bigint(20) default '0',
+		`level_id` bigint(20) default '0',
+		`startdate` datetime default NULL,
+		`updateddate` datetime default NULL,
+		`expirydate` datetime default NULL,
+		`order_instance` bigint(20) default '0',
+		`usinggateway` varchar(50) default 'admin',
+		PRIMARY KEY  (`rel_id`),
+		KEY `user_id` (`user_id`),
+		KEY `sub_id` (`sub_id`),
+		KEY `usinggateway` (`usinggateway`)
 	);";
 
 	$wpdb->query($sql);
