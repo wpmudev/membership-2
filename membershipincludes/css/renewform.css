@@ -34,6 +34,14 @@ div.renew-form .unsubbutton input {
 	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
 
+div.renew-form div.formleft form {
+	float: right;	
+}
+
+div.renew-form div.formleft form input {
+	margin-bottom: 5px;	
+}
+
 div.subscription div.description h3 {
 	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 	margin-bottom: 5px !Important;
