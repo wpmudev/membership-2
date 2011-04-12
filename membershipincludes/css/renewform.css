@@ -7,6 +7,7 @@ div.renew-form {
 	border: 1px solid #d4d4d4;
 	background-color: #f3f3f3;
 	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	overflow: hidden;
 }
 
 div.renew-form div.formleft p {
@@ -23,13 +24,18 @@ div.subscription {
 	overflow: hidden;
 }
 
-div.subscription div.priceforms .unsubbutton {
+div.renew-form .unsubbutton {
 	float: right;	
+	text-decoration: none;
+}
+
+div.renew-form .unsubbutton input {
+	margin-bottom: 5px !Important;
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
 
 div.subscription div.description h3 {
 	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
-	font-weight: bold;
 	margin-bottom: 5px !Important;
 }
 
@@ -44,6 +50,6 @@ div.subscription div.priceforms form input {
 	margin-bottom: 5px;	
 }
 
-div.subscription div.priceforms a.unsubbutton input {
+div.subscription div.priceforms .unsubbutton input {
 	margin-bottom: 5px;	
 }

@@ -621,6 +621,6 @@ class google extends M_Gateway {
 
 }
 
-M_register_gateway('google', 'google');
+//M_register_gateway('google', 'google');
 
 ?>

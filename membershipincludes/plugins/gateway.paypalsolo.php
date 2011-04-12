@@ -101,6 +101,24 @@ class paypalsolo extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Upgrade button', 'membership') ?></th>
+		  <?php
+		  	$button = get_option( $this->gateway . "_paypal_upgrade_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		  ?>
+		  <td><input type="text" name="_paypal_upgrade_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <br />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Cancel button', 'membership') ?></th>
+		  <?php
+		  	$button = get_option( $this->gateway . "_paypal_cancel_button", 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif' );
+		  ?>
+		  <td><input type="text" name="_paypal_cancel_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <br />
+		  </td>
+		  </tr>
 
 			<tr valign="top">
 				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
@@ -463,6 +481,8 @@ class paypalsolo extends M_Gateway {
 			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
 			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
 			update_option( $this->gateway . "_paypal_button", $_POST[ 'paypal_button' ] );
+			update_option( $this->gateway . "_paypal_upgrade_button", $_POST[ '_paypal_upgrade_button' ] );
+			update_option( $this->gateway . "_paypal_cancel_button", $_POST[ '_paypal_cancel_button' ] );
 			update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
 		}
 
