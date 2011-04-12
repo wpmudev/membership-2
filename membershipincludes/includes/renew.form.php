@@ -13,21 +13,19 @@
 
 				$sub = new M_Subscription( $rel->sub_id );
 				$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
-				// try to find out if the gateway is single.
-				$trans = get_last_transaction_for_user_and_sub( $member->ID, $rel->sub_id );
 
-				if( !empty( $trans ) && !empty( $trans->transaction_gateway ) ) {
-					$lastgateway = $trans->transaction_gateway;
-					$gateway = M_get_class_for_gateway( $lastgateway );
+				if( !empty( $rel->usinggateway ) && ($rel->usinggateway != 'admin') ) {
+					$gateway = M_get_class_for_gateway( $rel->usinggateway );
 
 					if( !empty( $gateway ) && $gateway->issingle ) {
 						$gatewayissingle = 'yes';
 					} else {
 						$gatewayissingle = 'no';
 					}
-
-					$signupgateway = $lastgateway;
+				} else {
+					$gatewayissingle = 'admin';
 				}
+
 			?>
 					<div class="renew-form">
 						<div class="formleft">
@@ -39,18 +37,52 @@
 								if($gatewayissingle == 'yes') {
 									echo __('Your membership is due to expire on : ', 'membership');
 									echo date( "jS F Y", mysql2date("U", $rel->expirydate));
+								} elseif($gatewayissingle == 'admin') {
+									echo __('Your membership is set to automatically renew', 'membership');
 								} else {
 									echo __('Your membership is set to automatically renew', 'membership');
 								}
 						?>
-
 						</p>
-
-
 						</div>
 					</div>
 				<?php
-				print_r($nextlevel);
+
+					if($gatewayissingle == 'no') {
+						// If it exists display we'll display the gateways upgrade forms.
+						$upgradesubs = $this->get_subscriptions();
+						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
+						foreach((array) $upgradesubs as $key => $upgradesub) {
+							$subscription = new M_Subscription($upgradesub->id);
+							?>
+							<div class="subscription">
+								<div class="description">
+									<h3><?php echo $subscription->sub_name(); ?></h3>
+									<p><?php echo $subscription->sub_description(); ?></p>
+								</div>
+
+							<?php
+								if($upgradesub->id == $rel->sub_id ) {
+									// do a cancel button
+								} else {
+									// do an upgrade button
+									$pricing = $subscription->get_pricingarray();
+									if($pricing) {
+										?>
+										<div class='priceforms'>
+											<?php
+												$gateway->display_subscribe_button( $subscription, $pricing, $user_id );
+												//do_action('membership_purchase_button', $subscription, $pricing, $user_id);
+											?>
+										</div>
+										<?php
+									}
+								}
+							?>
+							</div>
+							<?php
+						}
+					}
 			}
 
 		} else {

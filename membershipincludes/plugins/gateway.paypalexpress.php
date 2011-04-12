@@ -383,6 +383,14 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	function display_upgrade_button($subscription, $pricing, $user_id) {
+
+	}
+
+	function display_cancel_button($subscription, $pricing, $user_id) {
+
+	}
+
 	function update() {
 
 		if(isset($_POST['paypal_email'])) {
