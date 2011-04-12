@@ -64,6 +64,16 @@
 							<?php
 								if($upgradesub->id == $rel->sub_id ) {
 									// do a cancel button
+									$pricing = $subscription->get_pricingarray();
+									if($pricing) {
+										?>
+										<div class='priceforms'>
+											<?php
+												$gateway->display_cancel_button( $subscription, $pricing, $user_id );
+											?>
+										</div>
+										<?php
+									}
 								} else {
 									// do an upgrade button
 									$pricing = $subscription->get_pricingarray();
@@ -71,8 +81,7 @@
 										?>
 										<div class='priceforms'>
 											<?php
-												$gateway->display_subscribe_button( $subscription, $pricing, $user_id );
-												//do_action('membership_purchase_button', $subscription, $pricing, $user_id);
+												$gateway->display_upgrade_button( $subscription, $pricing, $user_id );
 											?>
 										</div>
 										<?php
