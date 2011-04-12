@@ -69,7 +69,7 @@
 										?>
 										<div class='priceforms'>
 											<?php
-												$gateway->display_cancel_button( $subscription, $pricing, $user_id );
+												$gateway->display_cancel_button( $subscription, $pricing, $member->ID );
 											?>
 										</div>
 										<?php
@@ -81,7 +81,7 @@
 										?>
 										<div class='priceforms'>
 											<?php
-												$gateway->display_upgrade_button( $subscription, $pricing, $user_id );
+												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID );
 											?>
 										</div>
 										<?php
