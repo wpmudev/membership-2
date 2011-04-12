@@ -8,6 +8,20 @@
 			//$gatewayissingle = get_user_meta( $user_id, 'membership_signup_gateway_is_single', true );
 
 			$member = current_member();
+
+			if(isset($_POST['action'])) {
+				switch(addslashes($_POST['action'])) {
+					case 'unsubscribe':	// Unsubscribe button has been clicked for solo gateways
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'cancel-sub_' . $sub_id) && $user == $member->ID ) {
+											$member->mark_for_expire( $sub_id );
+										}
+										break;
+
+				}
+			}
+
 			$rels = $member->get_relationships();
 			foreach( (array) $rels as $rel ) {
 
@@ -103,7 +117,7 @@
 									?>
 									<div class="subscription">
 										<div class="description">
-											<h3><?php echo $subscription->sub_name(); ?></h3>
+											<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
 											<p><?php echo $subscription->sub_description(); ?></p>
 										</div>
 
