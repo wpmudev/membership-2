@@ -271,7 +271,7 @@ class paypalsolo extends M_Gateway {
 			// we don't want to display free ones for a payment system
 
 			if( isset($pricing[$sublevel - 1]) ) {
-				if( empty($pricing[$sublevel - 1]) || $price['amount'] == 0 ) {
+				if( empty($pricing[$sublevel - 1]) || $pricing[$sublevel - 1]['amount'] == 0 ) {
 					// It's a free level
 					return $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 				} else {
