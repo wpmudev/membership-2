@@ -102,6 +102,15 @@ class paypalsolo extends M_Gateway {
 		  </td>
 		  </tr>
 		  <tr valign="top">
+		  <th scope="row"><?php _e('Renew button', 'membership') ?></th>
+		  <?php
+		  	$button = get_option( $this->gateway . "_paypal_renew_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+		  ?>
+		  <td><input type="text" name="_paypal_cancel_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <br />
+		  </td>
+		  </tr>
+		  <tr valign="top">
 		  <th scope="row"><?php _e('Upgrade button', 'membership') ?></th>
 		  <?php
 		  	$button = get_option( $this->gateway . "_paypal_upgrade_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
@@ -119,6 +128,7 @@ class paypalsolo extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
+
 
 			<tr valign="top">
 				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
@@ -138,7 +148,7 @@ class paypalsolo extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
+	function build_custom($user_id, $sub_id, $amount, $sublevel = 0) {
 
 		$custom = '';
 
@@ -148,12 +158,13 @@ class paypalsolo extends M_Gateway {
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
+		$custom .= ":" . $sublevel;
 
 		return $custom;
 
 	}
 
-	function single_button($pricing, $subscription, $user_id) {
+	function single_button($pricing, $subscription, $user_id, $sublevel = 0) {
 
 		global $M_options;
 
@@ -172,203 +183,21 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="cmd" value="_xclick">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="amount" value="' . number_format($pricing[0]['amount'], 2) . '">';
+		$form .= '<input type="hidden" name="amount" value="' . number_format($pricing[$sublevel -1]['amount'], 2) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2), $sublevel) .'">';
 
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 
-		$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		if($sublevel == 1) {
+			$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		} else {
+			$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+		}
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
-		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
-		$form .= '</form>';
-
-		return $form;
-
-	}
-
-	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
-
-		global $M_options;
-
-		if(empty($M_options['paymentcurrency'])) {
-			$M_options['paymentcurrency'] = 'USD';
-		}
-
-		$form = '';
-
-		//if($pricing[0]['type'] == 'indefinite') $pricing[0]['days'] = 365;
-
-		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
-			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
-		} else {
-			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
-		}
-		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
-		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
-		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
-		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-		$form .= '<input type="hidden" name="a3" value="' . number_format($pricing[0]['amount'], 2) . '">';
-		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
-		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
-
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) .'">';
-
-		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
-		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
-
-		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
-		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
-
-		if($norepeat) {
-			$form .= '<input type="hidden" name="src" value="0">';
-		} else {
-			$form .= '<input type="hidden" name="src" value="1">';
-		}
-
-		$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
-
-		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
-		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
-		$form .= '</form>';
-
-		return $form;
-
-	}
-
-	function complex_sub_button($pricing, $subscription, $user_id) {
-
-		global $M_options;
-
-		if(empty($M_options['paymentcurrency'])) {
-			$M_options['paymentcurrency'] = 'USD';
-		}
-
-		$form = '';
-
-		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
-			$form .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">';
-		} else {
-			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
-		}
-		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
-		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
-		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
-		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-
-		// complex bits here
-		$count = 1;
-		$ff = array();
-		foreach((array) $pricing as $key => $price) {
-
-			switch($price['type']) {
-
-				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
-								if($count < 3) {
-									$ff['a' . $count] = number_format($price['amount'], 2);
-									$ff['p' . $count] = $price['period'];
-									$ff['t' . $count] = strtoupper($price['unit']);
-								} else {
-									// Or last finite is going to be the end of the subscription payments
-									$ff['a3'] = number_format($price['amount'], 2);
-									$ff['p3'] = $price['period'];
-									$ff['t3'] = strtoupper($price['unit']);
-									$ff['src'] = '0';
-								}
-								$count++;
-								break;
-
-				case 'indefinite':
-								if(empty($price['amount'])) $price['amount'] = '0';
-
-								if($price['amount'] == '0') {
-									// The indefinite rule is free, we need to move any previous
-									// steps up to this one as we can't have a free a3
-									if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
-										// we have some other earlier rule so move it up
-										$ff['a3'] = $ff['a2'];
-										$ff['p3'] = $ff['p2'];
-										$ff['t3'] = $ff['t2'];
-										unset($ff['a2']);
-										unset($ff['p2']);
-										unset($ff['t2']);
-										$ff['src'] = '0';
-									} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
-										$ff['a3'] = $ff['a1'];
-										$ff['p3'] = $ff['p1'];
-										$ff['t3'] = $ff['t1'];
-										unset($ff['a1']);
-										unset($ff['p1']);
-										unset($ff['t1']);
-										$ff['src'] = '0';
-									}
-								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
-									$ff['p3'] = 1;
-									$ff['t3'] = 'Y';
-									$ff['src'] = '0';
-								}
-								break;
-				case 'serial':
-								if(empty($price['amount'])) $price['amount'] = '0';
-
-								if($price['amount'] == '0') {
-									// The serial rule is free, we need to move any previous
-									// steps up to this one as we can't have a free a3
-									if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
-										// we have some other earlier rule so move it up
-										$ff['a3'] = $ff['a2'];
-										$ff['p3'] = $ff['p2'];
-										$ff['t3'] = $ff['t2'];
-										unset($ff['a2']);
-										unset($ff['p2']);
-										unset($ff['t2']);
-										$ff['src'] = '1';
-									} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
-										$ff['a3'] = $ff['a1'];
-										$ff['p3'] = $ff['p1'];
-										$ff['t3'] = $ff['t1'];
-										unset($ff['a1']);
-										unset($ff['p1']);
-										unset($ff['t1']);
-										$ff['src'] = '1';
-									}
-								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
-									$ff['p3'] = $price['period'];
-									$ff['t3'] = strtoupper($price['unit']);
-									$ff['src'] = '1';
-								}
-
-								break;
-			}
-		}
-
-		if(!empty($ff)) {
-			foreach($ff as $key => $value) {
-				$form .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
-			}
-		}
-
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $ff['a3']) .'">';
-
-		// Remainder of the easy bits
-
-		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
-		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
-
-
-		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
-		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
-
-		$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
-
-		$form .= '<!-- Display the payment button. --> <input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >';
 		$form .= '</form>';
 
@@ -407,7 +236,7 @@ class paypalsolo extends M_Gateway {
 
 	}
 
-	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
+	function single_free_button($pricing, $subscription, $user_id, $sublevel = 0) {
 
 		global $M_options;
 
@@ -419,9 +248,14 @@ class paypalsolo extends M_Gateway {
 
 		$form .= '<form action="' . get_permalink() . '" method="post">';
 		$form .= '<input type="hidden" name="action" value="validatepage2" />';
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0', $sublevel) .'">';
 
-		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		if($sublevel == 1) {
+			$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		} else {
+			$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+		}
+
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '</form>';
@@ -430,38 +264,20 @@ class paypalsolo extends M_Gateway {
 
 	}
 
-	function build_subscribe_button($subscription, $pricing, $user_id) {
+	function build_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
 
 		if(!empty($pricing)) {
-
 			// check to make sure there is a price in the subscription
 			// we don't want to display free ones for a payment system
-			$free = true;
-			foreach($pricing as $key => $price) {
-				if(!empty($price['amount']) && $price['amount'] > 0 ) {
-					$free = false;
-				}
-			}
 
-			if(!$free) {
-				if(count($pricing) == 1) {
-					// A basic price or a single subscription
-					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
-						// one-off payment
-						return $this->single_sub_button($pricing, $subscription, $user_id, true);
-					} else {
-						// simple subscription
-						return $this->single_sub_button($pricing, $subscription, $user_id);
-					}
+			if( isset($pricing[$sublevel - 1]) ) {
+				if( empty($pricing[$sublevel - 1]) || $price['amount'] == 0 ) {
+					// It's a free level
+					return $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 				} else {
-					// something much more complex
-
-					return $this->complex_sub_button($pricing, $subscription, $user_id);
-
+					// It's a paid level
+					return $this->single_button($pricing, $subscription, $user_id, $sublevel);
 				}
-			} else {
-				// Free part
-				return $this->single_free_button($pricing, $subscription, $user_id, true);
 			}
 
 		}
@@ -480,9 +296,8 @@ class paypalsolo extends M_Gateway {
 		echo "</form>";
 	}
 
-	function display_subscribe_button($subscription, $pricing, $user_id) {
-		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
-
+	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+		echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
 	}
 
 	function update() {
@@ -495,6 +310,7 @@ class paypalsolo extends M_Gateway {
 			update_option( $this->gateway . "_paypal_button", $_POST[ 'paypal_button' ] );
 			update_option( $this->gateway . "_paypal_upgrade_button", $_POST[ '_paypal_upgrade_button' ] );
 			update_option( $this->gateway . "_paypal_cancel_button", $_POST[ '_paypal_cancel_button' ] );
+			update_option( $this->gateway . "_paypal_renew_button", $_POST[ '_paypal_renew_button' ] );
 			update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
 		}
 

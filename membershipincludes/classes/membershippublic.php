@@ -855,6 +855,8 @@ if(!class_exists('membershippublic')) {
 
 		function show_renew_page() {
 
+			global $M_options;
+
 			$content = '';
 
 			$content = apply_filters('membership_renew_form_member_before_content', $content, $user_id);
@@ -1183,6 +1185,9 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[renewform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
+					wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'));
+					wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+
 				}
 			}
 
