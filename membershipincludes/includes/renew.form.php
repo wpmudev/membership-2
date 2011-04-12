@@ -81,7 +81,7 @@
 										?>
 										<div class='priceforms'>
 											<?php
-												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID );
+												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
 											?>
 										</div>
 										<?php

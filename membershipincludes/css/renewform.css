@@ -23,7 +23,7 @@ div.subscription {
 	overflow: hidden;
 }
 
-div.subscription div.priceforms a.unsubbutton img {
+div.subscription div.priceforms .unsubbutton {
 	float: right;	
 }
 
@@ -41,5 +41,9 @@ div.subscription div.description p {
 
 div.subscription div.priceforms form input {
 	float: right;
+	margin-bottom: 5px;	
+}
+
+div.subscription div.priceforms a.unsubbutton input {
 	margin-bottom: 5px;	
 }

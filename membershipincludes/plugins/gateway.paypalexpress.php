@@ -123,7 +123,7 @@ class paypalexpress extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
+	function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
 
 		$custom = '';
 
@@ -133,6 +133,10 @@ class paypalexpress extends M_Gateway {
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
+
+		if($fromsub_id !== false) {
+			$custom .= ":" . $fromsub_id;
+		}
 
 		return $custom;
 
@@ -359,7 +363,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false) {
+	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
 
 		global $M_options;
 
@@ -385,7 +389,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
 		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2), $fromsub_id) .'">';
 
 		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
 		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
@@ -411,7 +415,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function complex_upgrade_button($pricing, $subscription, $user_id) {
+	function complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 
 		global $M_options;
 
@@ -526,7 +530,7 @@ class paypalexpress extends M_Gateway {
 			}
 		}
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $ff['a3']) .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, $ff['a3'], $fromsub_id) .'">';
 
 		// Remainder of the easy bits
 
@@ -549,7 +553,7 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function build_upgrade_button($subscription, $pricing, $user_id) {
+	function build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 
 		if(!empty($pricing)) {
 
@@ -567,14 +571,14 @@ class paypalexpress extends M_Gateway {
 					// A basic price or a single subscription
 					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 						// one-off payment
-						return $this->single_upgrade_button($pricing, $subscription, $user_id, true);
+						return $this->single_upgrade_button($pricing, $subscription, $user_id, true, $fromsub_id);
 					} else {
 						// simple subscription
-						return $this->single_upgrade_button($pricing, $subscription, $user_id);
+						return $this->single_upgrade_button($pricing, $subscription, $user_id, false, $fromsub_id);
 					}
 				} else {
 					// something much more complex
-					return $this->complex_upgrade_button($pricing, $subscription, $user_id);
+					return $this->complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id);
 
 				}
 			}
@@ -588,8 +592,8 @@ class paypalexpress extends M_Gateway {
 
 	}
 
-	function display_upgrade_button($subscription, $pricing, $user_id) {
-		echo $this->build_upgrade_button($subscription, $pricing, $user_id);
+	function display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+		echo $this->build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 	}
 
 	function display_cancel_button($subscription, $pricing, $user_id) {
@@ -817,12 +821,15 @@ class paypalexpress extends M_Gateway {
 
 				case 'subscr_modify':
 					// modify the subscription
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $fromsub_id) = explode(':', $_POST['custom']);
 
 					// create_subscription
 					$member = new M_Membership($user_id);
 					if($member) {
-						//$member->create_subscription($sub_id, $this->gateway);
+						// Join the new subscription
+						$member->create_subscription($sub_id, $this->gateway);
+						// Remove the old subscription
+						$member->drop_subscription($fromsub_id);
 					}
 
 					do_action('membership_payment_subscr_signup', $user_id, $sub_id);

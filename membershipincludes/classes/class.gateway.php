@@ -387,14 +387,18 @@ if(!class_exists('M_Gateway')) {
 
 		}
 
-		function display_upgrade_button($pricing, $subscription, $user_id) {
+		function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 			// By default there is no default button available
-			echo __('There is no upgrade capability available with this gateway.', 'membership');
+			echo "<form class=''>";
+			echo "<input type='submit' value=' " . __('Not available', 'membership') . " ' disabled='disabled' />";
+			echo "</form>";
 		}
 
 		function display_cancel_button($subscription, $pricing, $user_id) {
 			// By default there is no default button available
-			echo __('There is no cancel capability available with this gateway.', 'membership');
+			echo '<a class="unsubbutton" href="">';
+			echo "<input type='submit' value=' " . __('Not available', 'membership') . " ' disabled='disabled' />";
+			echo "</a>";
 		}
 
 	}
