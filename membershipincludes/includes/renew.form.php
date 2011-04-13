@@ -24,8 +24,7 @@
 										$user = (int)	$_POST['user'];
 										$level = (int) $_POST['level'];
 										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
-											//$member->mark_for_expire( $sub_id );
-											echo "here";
+											$member->record_active_payment( $sub_id, $level, time() );
 										}
 										//update_user_meta( $member->ID, '_membership_last_upgraded', time());
 										break;
