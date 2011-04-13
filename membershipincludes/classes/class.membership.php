@@ -319,8 +319,6 @@ if(!class_exists('M_Membership')) {
 					}
 					$payment['paymentexpires'] = gmdate( 'Y-m-d H:i:s',  $paymentexpires);
 
-					@wp_mail('barry@caffeinatedb.com', 'inserting', print_r($payment, true));
-
 					$this->db->insert( $this->member_payments, $payment);
 
 				}
