@@ -435,6 +435,7 @@ class paypalsolo extends M_Gateway {
 						$member = new M_Membership($user_id);
 						if($member) {
 							// Mark the payment so that we can move through ok
+							$member->record_active_payment( $sub_id, $sublevel, $timestamp );
 						}
 					}
 

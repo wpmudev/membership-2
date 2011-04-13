@@ -205,6 +205,14 @@ if(!class_exists('M_Subscription')) {
 			return $this->levels;
 		}
 
+		function get_level_at_position($level_order) {
+			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d AND level_order = %d ORDER BY level_order ASC", $this->id, $level_order );
+
+			$this->levels = $this->db->get_row( $sql );
+
+			return $this->levels;
+		}
+
 		function toggleactivation( $force = false ) {
 
 			if(!apply_filters( 'pre_membership_toggleactivate_subscription', true, $this->id )) {

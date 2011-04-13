@@ -273,30 +273,34 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function remove_active_payment( $sub_id, $level_id, $level_order, $stamp ) {
+		function remove_active_payment( $sub_id, $level_order, $stamp ) {
 
-			$sql = $this->db->prepare( "DELETE FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentmade = %d", $this->ID, $sub_id, $level_id, $level_order, $stamp);
+			$subscription = new M_Subscription($sub_id);
+			$level = $subscription->get_level_at_position($level_order);
+
+			$sql = $this->db->prepare( "DELETE FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentmade = %d", $this->ID, $sub_id, $level->id, $level_order, $stamp);
 
 			return $this->db->query( $sql );
 
 		}
 
-		function record_active_payment( $sub_id, $level_id, $level_order, $stamp ) {
+		function record_active_payment( $sub_id, $level_order, $stamp ) {
 
-			$payment = array( 	'member_id'		=> $this->ID,
-								'sub_id'		=>	$sub_id,
-								'level_id'		=>	$level_id,
-								'level_order'	=>	$level_order,
-								'paymentmade'	=>	gmdate( 'Y-m-d H:i:s', $stamp )
-							);
 
 			$rel = $this->get_relationship( $sub_id );
 
 			if($rel) {
 				$subscription = new M_Subscription($sub_id);
-				$level = $subscription->get_level_at($level_id, $level_order);
+				$level = $subscription->get_level_at_position($level_order);
 
 				if($level) {
+					$payment = array( 	'member_id'		=> $this->ID,
+										'sub_id'		=>	$sub_id,
+										'level_id'		=>	$level->id,
+										'level_order'	=>	$level_order,
+										'paymentmade'	=>	gmdate( 'Y-m-d H:i:s', $stamp )
+									);
+
 					$expires = mysql2date("U", $rel->expirydate);
 					switch($level->level_period_unit) {
 						case 'd': 	$paymentexpires = strtotime('+' . $level->level_period . ' days', $expires);
