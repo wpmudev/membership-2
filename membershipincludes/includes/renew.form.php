@@ -143,8 +143,33 @@
 						$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
 
 
-						if($nextlevel && time() >= $renewalperiod && !$member->has_active_payment( $res->sub_id, $nextlevel->id, $nextlevel->level_order ) ) {
+						if($nextlevel && time() >= $renewalperiod ) {
 							// we have a next level so we can display the details and form for it
+							if( $member->has_active_payment( $res->sub_id, $nextlevel->level_id, $nextlevel->level_order )) {
+								?>
+								<div class='renew-form'>
+									<div class="formleft">
+										<p><?php
+											echo __('Renewal for the ','membership') . "<strong>" . $nextlevel->level_period;
+											switch($nextlevel->level_period_unit) {
+												case 'd':	_e(' day(s)', 'membership');
+															break;
+												case 'w':	_e(' week(s)', 'membership');
+															break;
+												case 'm':	_e(' month(s)', 'membership');
+															break;
+												case 'y':	_e(' year(s)', 'membership');
+															break;
+											}
+											echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
+											_e('has been completed.', 'membership');
+											$pricing = $sub->get_pricingarray();
+											$gateway->display_subscribe_button($sub, $pricing, $member->ID, $nextlevel->level_order);
+										?></p>
+									</div>
+								</div> <!-- renew-form -->
+								<?php
+							} else {
 							?>
 							<div class='renew-form'>
 								<div class="formleft">
@@ -173,6 +198,7 @@
 								</div>
 							</div> <!-- renew-form -->
 							<?php
+							}
 						} else {
 							// No next level so nothing to do - the subscription will end at the end of this one.
 						}
