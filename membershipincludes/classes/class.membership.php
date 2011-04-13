@@ -329,7 +329,7 @@ if(!class_exists('M_Membership')) {
 
 		function has_active_payment( $sub_id, $nextlevel_id, $nextlevel_order ) {
 
-			$sql = $this->db->prepare( "SELECT id FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentexpires >= CURTIME()", $this->ID, $sub_id, $nextlevel_id, $nextlevel_order);
+			$sql = $this->db->prepare( "SELECT id FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentexpires >= CURTIME() ORDER BY paymentexpires DESC LIMIT 0,1", $this->ID, $sub_id, $nextlevel_id, $nextlevel_order);
 
 			$row = $this->db->get_var( $sql );
 
