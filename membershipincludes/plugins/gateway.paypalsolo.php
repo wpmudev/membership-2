@@ -20,6 +20,7 @@ class paypalsolo extends M_Gateway {
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
+			add_filter( 'membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
 		}
 
 	}
@@ -206,6 +207,10 @@ class paypalsolo extends M_Gateway {
 	}
 
 	function signup_free_subscription($content, $error) {
+
+		if(!isset($_POST['action']) || $_POST['action'] != 'validatepage2') {
+			return $content;
+		}
 
 		if(isset($_POST['custom'])) {
 			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
