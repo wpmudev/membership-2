@@ -821,16 +821,15 @@ class paypalexpress extends M_Gateway {
 
 				case 'subscr_modify':
 					// modify the subscription
-					@wp_mail('barry@caffeinatedb.com', 'test', print_r($_POST, true));
-					list($timestamp, $user_id, $sub_id, $key, $fromsub_id) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					// create_subscription
 					$member = new M_Membership($user_id);
 					if($member) {
 						// Remove the old subscription
-						$member->drop_subscription($fromsub_id);
+						$member->drop_subscription($sub_id);
 						// Join the new subscription
-						$member->create_subscription($sub_id, $this->gateway);
+						$member->create_subscription((int) $_POST['item_number'], $this->gateway);
 						// Timestamp the update
 						update_user_meta( $user_id, '_membership_last_upgraded', time());
 					}
