@@ -290,8 +290,21 @@ class paypalsolo extends M_Gateway {
 
 	}
 
+	function display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+
+		echo '<form class="upgradebutton" action="" method="post">';
+		wp_nonce_field('upgrade-sub_' . $subscription->sub_id());
+		echo "<input type='hidden' name='action' value='upgradesolo' />";
+		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+		echo "<input type='hidden' name='fromsub_id' value='" . $fromsub_id . "' />";
+		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' />";
+		echo "</form>";
+	}
+
 	function display_cancel_button($subscription, $pricing, $user_id) {
-		// By default there is no default button available
+
 		echo '<form class="unsubbutton" action="" method="post">';
 		wp_nonce_field('cancel-sub_' . $subscription->sub_id());
 		echo "<input type='hidden' name='action' value='unsubscribe' />";
@@ -407,9 +420,23 @@ class paypalsolo extends M_Gateway {
 					// case: successful payment
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
+
+					if($sublevel == '1') {
+						// This is the first level of a subscription so we need to create one if it doesn't already exist
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->create_subscription($sub_id, $this->gateway);
+							do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+						}
+					} else {
+						$member = new M_Membership($user_id);
+						if($member) {
+							// Mark the payment so that we can move through ok
+						}
+					}
 
 					// Added for affiliate system link
 					do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
@@ -420,7 +447,7 @@ class paypalsolo extends M_Gateway {
 					$note = 'Last transaction has been reversed. Reason: Payment has been reversed (charge back)';
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
@@ -438,7 +465,7 @@ class paypalsolo extends M_Gateway {
 					$note = 'Last transaction has been reversed. Reason: Payment has been refunded';
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
@@ -455,7 +482,7 @@ class paypalsolo extends M_Gateway {
 					$note = 'Last transaction has been reversed. Reason: Payment Denied';
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
@@ -485,7 +512,7 @@ class paypalsolo extends M_Gateway {
 					$note = 'Last transaction is pending. Reason: ' . (isset($pending_str[$reason]) ? $pending_str[$reason] : $pending_str['*']);
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
@@ -498,34 +525,11 @@ class paypalsolo extends M_Gateway {
 
 			//check for subscription details
 			switch ($_POST['txn_type']) {
-				case 'subscr_signup':
-					// start the subscription
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
-
-					// create_subscription
-					$member = new M_Membership($user_id);
-					if($member) {
-						$member->create_subscription($sub_id);
-					}
-
-					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				  break;
-
-				case 'subscr_cancel':
-					// mark for removal
-					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
-
-					$member = new M_Membership($user_id);
-					if($member) {
-						$member->mark_for_expire($sub_id);
-					}
-
-					do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
-				  break;
 
 				case 'new_case':
 					// a dispute
 					if($_POST['case_type'] == 'dispute') {
+						list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 						// immediately suspend the account
 						$member = new M_Membership($user_id);
 						if($member) {

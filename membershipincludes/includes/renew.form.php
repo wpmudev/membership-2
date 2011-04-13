@@ -30,6 +30,21 @@
 										//update_user_meta( $member->ID, '_membership_last_upgraded', time());
 										break;
 
+					case 'upgradesolo':	// Upgrade a solo subscription
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										$gateway = $_POST['gateway'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+											// Join the new subscription
+											$member->create_subscription($sub_id, $gateway);
+											// Remove the old subscription
+											$member->drop_subscription($fromsub_id);
+											// Timestamp the update
+											update_user_meta( $user, '_membership_last_upgraded', time());
+										}
+										break;
+
 				}
 			}
 
@@ -122,7 +137,7 @@
 									</div> <!-- subscription -->
 							<?php
 						}
-					} elseif($gatewayissingle == 'yes' && !$member->is_marked_for_expire($rel->sub_id) && $upgradedat <= strtotime('-' . $period . ' days')) {
+					} elseif($gatewayissingle == 'yes' && !$member->is_marked_for_expire($rel->sub_id)) {
 						// We are on a single pay gateway so need to show the form for the next payment due.
 						if($nextlevel) {
 							// we have a next level so we can display the details and form for it
@@ -157,38 +172,40 @@
 						} else {
 							// No next level so nothing to do - the subscription will end at the end of this one.
 						}
-
-						// Show upgrades
-						$upgradesubs = $this->get_subscriptions();
-						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
-						foreach((array) $upgradesubs as $key => $upgradesub) {
-								if($upgradesub->id == $rel->sub_id ) {
-									// Don't want to show our current subscription as we will display this above.
-								} else {
-									$subscription = new M_Subscription($upgradesub->id);
-									?>
-									<div class="subscription">
-										<div class="description">
-											<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
-											<p><?php echo $subscription->sub_description(); ?></p>
-										</div>
-									<?php
-									// do an upgrade button
-									$pricing = $subscription->get_pricingarray();
-									if($pricing) {
+						if( $upgradedat <= strtotime('-' . $period . ' days') ) {
+							// Show upgrades
+							$upgradesubs = $this->get_subscriptions();
+							$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
+							foreach((array) $upgradesubs as $key => $upgradesub) {
+									if($upgradesub->id == $rel->sub_id ) {
+										// Don't want to show our current subscription as we will display this above.
+									} else {
+										$subscription = new M_Subscription($upgradesub->id);
 										?>
-										<div class='priceforms'>
-											<?php
-												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
-											?>
-										</div>
+										<div class="subscription">
+											<div class="description">
+												<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
+												<p><?php echo $subscription->sub_description(); ?></p>
+											</div>
 										<?php
+										// do an upgrade button
+										$pricing = $subscription->get_pricingarray();
+										if($pricing) {
+											?>
+											<div class='priceforms'>
+												<?php
+													$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+												?>
+											</div>
+											<?php
+										}
+										?>
+										</div> <!-- subscription -->
+									<?php
 									}
-									?>
-									</div> <!-- subscription -->
-								<?php
-								}
+							}
 						}
+
 					}
 			}
 
