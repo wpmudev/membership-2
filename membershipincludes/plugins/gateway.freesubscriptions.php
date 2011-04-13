@@ -91,7 +91,7 @@ class freesubscriptions extends M_Gateway {
 		// create_subscription
 		$member = new M_Membership($user_id);
 		if($member) {
-			$member->create_subscription($sub_id);
+			$member->create_subscription($sub_id, $this->gateway);
 		}
 
 		do_action('membership_payment_subscr_signup', $user_id, $sub_id);
