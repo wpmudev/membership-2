@@ -144,7 +144,7 @@
 						$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
 
 
-						if($nextlevel && time() >= $renewalperiod) {
+						if($nextlevel && time() >= $renewalperiod && !$member->has_active_payment( $res->sub_id, $nextlevel->id, $nextlevel->level_order ) ) {
 							// we have a next level so we can display the details and form for it
 							?>
 							<div class='renew-form'>
