@@ -1912,6 +1912,7 @@ if(!class_exists('membershipadmin')) {
 					<h3><?php _e('Account page','membership'); ?></h3>
 					<p><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
 					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [accountform] shortcode in some location.','membership'); ?></p>
+					<p><?php _e('If you would like your users to be able to see their subscription details and upgrade / renew them then also add the shortcode [renewform] on this or a linked page.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
