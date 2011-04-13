@@ -139,7 +139,12 @@
 						}
 					} elseif($gatewayissingle == 'yes' && !$member->is_marked_for_expire($rel->sub_id)) {
 						// We are on a single pay gateway so need to show the form for the next payment due.
-						if($nextlevel) {
+						// Set default renewal period to 7 days
+						if(empty($M_options['renewalperiod'])) $M_options['renewalperiod'] = 7;
+						$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
+
+
+						if($nextlevel && time() >= $renewalperiod) {
 							// we have a next level so we can display the details and form for it
 							?>
 							<div class='renew-form'>

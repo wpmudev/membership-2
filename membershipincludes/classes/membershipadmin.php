@@ -1771,6 +1771,7 @@ if(!class_exists('membershipadmin')) {
 				$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
 
 				$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
+				$M_options['renewalperiod'] = $_POST['renewalperiod'];
 
 				update_option('membership_options', $M_options);
 
@@ -2122,6 +2123,31 @@ if(!class_exists('membershipadmin')) {
 								      }
 								  ?>
 								  </select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Membership renewal','membership'); ?></h3>
+					<p><?php _e('If you are using single payment gateways, then you should set the number of days before expiry that the renewal form is displayed on the Account page.','membership'); ?></p>
+
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Renewal period limit','membership'); ?></th>
+							<td>
+								<select name="renewalperiod">
+								  <?php
+								  	$renewalperiod = $M_options['renewalperiod'];
+
+								      for($n=1; $n <= 365; $n++) {
+											echo '<option value="' . esc_attr($n) . '"';
+											if($n == $renewalperiod) echo 'selected="selected"';
+											echo '>' . esc_html($n) . '</option>' . "\n";
+								      }
+								  ?>
+								  </select>&nbsp;<?php _e('day(s)','membership'); ?>
 							</td>
 						</tr>
 					</tbody>
