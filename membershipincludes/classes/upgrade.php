@@ -48,6 +48,19 @@ function M_Alterfor6() {
 	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD INDEX  (`usinggateway`)";;
 	$wpdb->query( $sql );
 
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'member_payments') . "` (
+	  	`id` bigint(11) NOT NULL auto_increment,
+		`member_id` bigint(20) default NULL,
+		`sub_id` bigint(20) default NULL,
+		`level_id` bigint(20) default NULL,
+		`level_order` int(11) default NULL,
+		`paymentmade` datetime default NULL,
+		`paymentexpires` datetime default NULL,
+		PRIMARY KEY  (`id`)
+	);";
+
+	$wpdb->query($sql);
+
 }
 
 function M_Alterfor5() {
@@ -325,6 +338,19 @@ function M_Createtables() {
 		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 		PRIMARY KEY  (`id`),
 		UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
+	);";
+
+	$wpdb->query($sql);
+
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'member_payments') . "` (
+	  	`id` bigint(11) NOT NULL auto_increment,
+		`member_id` bigint(20) default NULL,
+		`sub_id` bigint(20) default NULL,
+		`level_id` bigint(20) default NULL,
+		`level_order` int(11) default NULL,
+		`paymentmade` datetime default NULL,
+		`paymentexpires` datetime default NULL,
+		PRIMARY KEY  (`id`)
 	);";
 
 	$wpdb->query($sql);
