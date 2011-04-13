@@ -1770,6 +1770,8 @@ if(!class_exists('membershipadmin')) {
 
 				$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
 
+				$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
+
 				update_option('membership_options', $M_options);
 
 				do_action( 'membership_options_page_process' );
@@ -2120,6 +2122,31 @@ if(!class_exists('membershipadmin')) {
 								      }
 								  ?>
 								  </select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Membership upgrades','membership'); ?></h3>
+					<p><?php _e('You should limit the amount of time allowed between membership upgrades in order to prevent members abusing the upgrade process.','membership'); ?></p>
+
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Upgrades period limit','membership'); ?></th>
+							<td>
+								<select name="upgradeperiod">
+								  <?php
+								  	$upgradeperiod = $M_options['upgradeperiod'];
+
+								      for($n=1; $n <= 365; $n++) {
+											echo '<option value="' . esc_attr($n) . '"';
+											if($n == $upgradeperiod) echo 'selected="selected"';
+											echo '>' . esc_html($n) . '</option>' . "\n";
+								      }
+								  ?>
+								  </select>&nbsp;<?php _e('day(s)','membership'); ?>
 							</td>
 						</tr>
 					</tbody>

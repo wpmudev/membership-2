@@ -390,7 +390,7 @@ if(!class_exists('M_Gateway')) {
 		function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 			// By default there is no default button available
 			echo "<form class=''>";
-			echo "<input type='submit' value=' " . __('Upgrade not available', 'membership') . " ' disabled='disabled' />";
+			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' />";
 			echo "</form>";
 		}
 

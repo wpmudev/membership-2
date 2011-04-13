@@ -20,6 +20,14 @@
 										break;
 
 					case 'renewfree':	// Renew a free level on this subscription
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$level = (int) $_POST['level'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
+											//$member->mark_for_expire( $sub_id );
+											echo "here";
+										}
+										//update_user_meta( $member->ID, '_membership_last_upgraded', time());
 										break;
 
 				}
@@ -74,7 +82,13 @@
 					</div> <!-- renew-form -->
 
 					<?php
-					if($gatewayissingle == 'no' && !$member->is_marked_for_expire($rel->sub_id)) {
+					// Get the last upgrade time
+					$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
+					if(empty($upgradedat)) $upgradedat = strtotime('-1 year');
+					$period = $M_options['upgradeperiod'];
+					if(empty($period)) $period = 1;
+
+					if($gatewayissingle == 'no' && !$member->is_marked_for_expire($rel->sub_id) && $upgradedat <= strtotime('-' . $period . ' days')) {
 						// If it exists display we'll display the gateways upgrade forms.
 						$upgradesubs = $this->get_subscriptions();
 						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
@@ -108,7 +122,7 @@
 									</div> <!-- subscription -->
 							<?php
 						}
-					} elseif($gatewayissingle == 'yes' && !$member->is_marked_for_expire($rel->sub_id)) {
+					} elseif($gatewayissingle == 'yes' && !$member->is_marked_for_expire($rel->sub_id) && $upgradedat <= strtotime('-' . $period . ' days')) {
 						// We are on a single pay gateway so need to show the form for the next payment due.
 						if($nextlevel) {
 							// we have a next level so we can display the details and form for it

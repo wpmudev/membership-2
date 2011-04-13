@@ -830,6 +830,8 @@ class paypalexpress extends M_Gateway {
 						$member->create_subscription($sub_id, $this->gateway);
 						// Remove the old subscription
 						$member->drop_subscription($fromsub_id);
+						// Timestamp the update
+						update_user_meta( $user_id, '_membership_last_upgraded', time());
 					}
 
 					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
