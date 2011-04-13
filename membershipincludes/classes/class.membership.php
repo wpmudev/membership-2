@@ -242,6 +242,11 @@ if(!class_exists('M_Membership')) {
 			delete_user_meta( $this->ID, 'expire_current_' . $sub_id );
 			delete_user_meta( $this->ID, 'sent_msgs_' . $sub_id );
 
+			$expiring = get_user_meta( $this->ID, '_membership_expire_next', true);
+			if($expiring = $sub_id) {
+				delete_user_meta( $this->ID, '_membership_expire_next' );
+			}
+
 			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
 
 		}
@@ -531,7 +536,12 @@ if(!class_exists('M_Membership')) {
 				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
 				delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
-				delete_user_meta( $this->ID, 'using_gateway_' . $tosub_id );
+				delete_user_meta( $this->ID, 'using_gateway_' . $fromsub_id );
+
+				$expiring = get_user_meta( $this->ID, '_membership_expire_next', true);
+				if($expiring = $fromsub_id) {
+					delete_user_meta( $this->ID, '_membership_expire_next' );
+				}
 
 				do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
 			}
