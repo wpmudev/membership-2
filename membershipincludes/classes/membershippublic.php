@@ -1176,7 +1176,7 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[accountform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-					wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'));
+					wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
 				}
 				if(strstr($post->post_content, '[upgradeform]') !== false) {
 					// The shortcode is in a post on this page, add the header
@@ -1185,7 +1185,7 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[renewform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
-					wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'));
+					wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 					wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
 				}
