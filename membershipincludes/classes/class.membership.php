@@ -6,9 +6,9 @@ if(!class_exists('M_Membership')) {
 
 		var $db;
 
-		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions', 'user_queue');
+		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions', 'user_queue', 'member_payments');
 
-		var $membership_relationships, $membership_levels, $subscriptions, $user_queue;
+		var $membership_relationships, $membership_levels, $subscriptions, $user_queue, $member_payments;
 
 		var $subids;
 		var $levids;
@@ -273,9 +273,62 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function remove_active_payment( $sub_id, $level_id, $level_order, $stamp ) {
+
+			$sql = $this->db->prepare( "DELETE FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentmade = %d", $this->ID, $sub_id, $level_id, $level_order, $stamp);
+
+			return $this->db->query( $sql );
+
+		}
+
+		function record_active_payment( $sub_id, $level_id, $level_order, $stamp ) {
+
+			$payment = array( 	'member_id'		=> $this->ID,
+								'sub_id'		=>	$sub_id,
+								'level_id'		=>	$level_id,
+								'level_order'	=>	$level_order,
+								'paymentmade'	=>	gmdate( 'Y-m-d H:i:s', $stamp )
+							);
+
+			$rel = $this->get_relationship( $sub_id );
+
+			if($rel) {
+				$subscription = new M_Subscription($sub_id);
+				$level = $subscription->get_level_at($level_id, $level_order);
+
+				if($level) {
+					$expires = mysql2date("U", $rel->expirydate);
+					switch($level->level_period_unit) {
+						case 'd': 	$paymentexpires = strtotime('+' . $level->level_period . ' days', $expires);
+									break;
+						case 'w':	$paymentexpires = strtotime('+' . $level->level_period . ' weeks', $expires);
+									break;
+						case 'm':	$paymentexpires = strtotime('+' . $level->level_period . ' months', $expires);
+									break;
+						case 'y':	$paymentexpires = strtotime('+' . $level->level_period . ' years', $expires);
+									break;
+					}
+					$payment['paymentexpires'] = gmdate( 'Y-m-d H:i:s',  $paymentexpires);
+
+					$this->db->insert( $this->member_payments, $payment);
+
+				}
+
+			}
+
+		}
+
 		function has_active_payment( $sub_id, $nextlevel_id, $nextlevel_order ) {
 
+			$sql = $this->db->prepare( "SELECT id FROM {$this->member_payments} WHERE member_id = %d AND sub_id = %d AND level_id = %d AND level_order = %d AND paymentexpires >= CURTIME()", $this->ID, $sub_id, $nextlevel_id, $nextlevel_order);
 
+			$row = $this->db->get_var( $sql );
+
+			if(!empty($row)) {
+				return true;
+			} else {
+				return false;
+			}
 
 		}
 
@@ -302,6 +355,20 @@ if(!class_exists('M_Membership')) {
 			}
 
 			return $this->levids;
+
+		}
+
+		function get_relationship( $sub_id ) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
+
+			$result = $this->db->get_row( $sql );
+
+			if(empty($result)) {
+				return false;
+			} else {
+				return $result;
+			}
 
 		}
 
