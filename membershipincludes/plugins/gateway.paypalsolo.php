@@ -187,6 +187,9 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="amount" value="' . number_format($pricing[$sublevel -1]['amount'], 2) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 
+		$form .= '<input type="hidden" name="return" value="' . get_option('home') . '">';
+		$form .= '<input type="hidden" name="cancel_return" value="' . get_option('home') . '">';
+
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2), $sublevel) .'">';
 
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
