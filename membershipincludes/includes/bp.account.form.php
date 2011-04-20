@@ -47,6 +47,11 @@
 		<div id='message'><p><?php echo $msg; ?></p></div>
 	<?php
 	} ?>
+		<p><?php echo sprintf(__('<strong>Hello %s</strong>, to edit your account details click on the edit link.','membership'),$profileuser->display_name) ; ?>
+		<span>
+		<a href='#edit' id='membershipaccounttoggle'><?php _e('edit','membership'); ?></a>
+		</span>
+		</p>
 
 		<form action='' method='POST'>
 

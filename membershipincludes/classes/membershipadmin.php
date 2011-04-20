@@ -1615,13 +1615,18 @@ if(!class_exists('membershipadmin')) {
 										echo implode(", ", $rows);
 									}
 
-									$actions = array();
-									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									if($user_object->has_cap('membershipadmin')) {
+										$actions = array();
+									} else {
+										$actions = array();
+										$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
 
-									if(!empty($subs)) {
-										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-										$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										if(!empty($subs)) {
+											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										}
 									}
+
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
@@ -1642,13 +1647,19 @@ if(!class_exists('membershipadmin')) {
 										}
 										echo implode(", ", $rows);
 									}
-									$actions = array();
-									$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
 
-									if(!empty($levels)) {
-										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-										$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+									if($user_object->has_cap('membershipadmin')) {
+										$actions = array();
+									} else {
+										$actions = array();
+										$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+
+										if(!empty($levels)) {
+											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										}
 									}
+
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
