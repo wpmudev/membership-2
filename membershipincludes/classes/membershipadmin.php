@@ -4481,7 +4481,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Pings Histry','membership'); ?></h2>
+				<h2><?php _e('Pings History','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
