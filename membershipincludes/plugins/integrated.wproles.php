@@ -143,7 +143,7 @@ add_action( 'membership_drop_subscription', 'M_Roles_leftsub', 10, 3 );
 
 function M_Roles_movedsub( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
-	M_Roles_leftsub( $fromsub_id, $user_id );
+	M_Roles_leftsub( $fromsub_id, $fromlevel_id, $user_id );
 	M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id );
 
 }

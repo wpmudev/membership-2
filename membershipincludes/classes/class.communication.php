@@ -498,7 +498,6 @@ function M_Communication_process( ) {
 						$onedayafter = strtotime('+6 hours', $withperiod );
 
 						if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
-							echo 'yep';
 							$message = new M_Communication( $comm->id );
 							$sentalready[$comm->id] = $comm->id;
 							$message->send_message( $user_id, $sub_id );

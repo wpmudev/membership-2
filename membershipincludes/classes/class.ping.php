@@ -216,7 +216,7 @@ if(!class_exists('M_Ping')) {
 
 		// History
 		function get_history() {
-			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE ping_id = %d ORDER BY ping_sent DESC LIMIT 0, 25 ", $this->id );
+			$sql = $this->db->prepare( "SELECT * FROM {$this->ping_history} WHERE ping_id = %d ORDER BY ping_sent DESC LIMIT 0, 50 ", $this->id );
 
 			return $this->db->get_results( $sql );
 		}
@@ -307,12 +307,12 @@ if(!class_exists('M_Ping')) {
 					case '%levelname%':			if(!$level_id) {
 													$ids = $member->get_level_ids();
 													if(!empty($ids)) {
-														$level_id = $ids[0];
+														$levels = $ids[0];
 													}
 												}
 
-												if(!empty($level_id)) {
-													$level =& new M_Level( $level_id );
+												if(!empty($levels->level_id)) {
+													$level =& new M_Level( $levels->level_id );
 													$pingdata[$key] = $level->level_title();
 												} else {
 													$pingdata[$key] = '';
@@ -513,7 +513,7 @@ add_action( 'membership_drop_subscription', 'M_ping_leftsub', 10, 3 );
 
 function M_ping_movedsub( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
-	M_ping_leftsub( $fromsub_id, $user_id );
+	M_ping_leftsub( $fromsub_id, $fromlevel_id, $user_id );
 	M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id );
 
 }
