@@ -4,6 +4,7 @@ class freesubscriptions extends M_Gateway {
 
 	var $gateway = 'freesubscriptions';
 	var $title = 'Free Subscriptions';
+	var $issingle = true;
 
 	var $defaultmessage = "<h2>Completed: Thank you for signing up</h2>\n<p>\nYour subscription to our site is now set up and you should be able to visit the members only content.\n</p>\n";
 
