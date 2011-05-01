@@ -266,7 +266,7 @@ if(!class_exists('membershippublic')) {
 
 				if($user->ID > 0 && $member->has_levels()) {
 					// Load the levels for this member - and associated rules
-					$member->load_public_levels( true );
+					$member->load_levels( true );
 				} else {
 					// not logged in so limit based on stranger settings
 					// need to grab the stranger settings

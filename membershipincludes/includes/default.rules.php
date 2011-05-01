@@ -953,8 +953,6 @@ class M_Blogcreation extends M_Rule {
 
 		$this->data = $data;
 
-		print_r($data);
-
 		add_filter( 'site_option_registration', array(&$this, 'neg_blog_creation'));
 		add_filter( 'wpmu_active_signup', array(&$this, 'neg_blog_creation') );
 
@@ -962,7 +960,6 @@ class M_Blogcreation extends M_Rule {
 
 	function neg_blog_creation( $active = 'all' ) {
 
-		echo $active;
 		if($active == 'user' || $active == 'none') {
 			return $active;
 		} else {

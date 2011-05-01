@@ -239,7 +239,7 @@ if(!class_exists('M_Level')) {
 		// UI functions
 
 
-		function load_rules( $loadtype = 'public' ) {
+		function load_rules( $loadtype = array('public','core') ) {
 
 			global $M_Rules;
 
@@ -273,7 +273,7 @@ if(!class_exists('M_Level')) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
 						$this->negativerules[$key] = new $M_Rules[$rule->rule_area];
 
-						if( in_array($this->positiverules[$key]->rulearea, $loadtype) ) {
+						if( in_array($this->negativerules[$key]->rulearea, $loadtype) ) {
 							$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
 							$key++;
 						} else {

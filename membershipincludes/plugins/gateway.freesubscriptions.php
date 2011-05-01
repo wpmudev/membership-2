@@ -82,6 +82,18 @@ class freesubscriptions extends M_Gateway {
 
 	}
 
+	function display_cancel_button($subscription, $pricing, $user_id) {
+
+		echo '<form class="unsubbutton" action="" method="post">';
+		wp_nonce_field('cancel-sub_' . $subscription->sub_id());
+		echo "<input type='hidden' name='action' value='unsubscribe' />";
+		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+		echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' />";
+		echo "</form>";
+	}
+
 	function signup_free_subscription($content, $error) {
 
 		if(isset($_POST['custom'])) {
