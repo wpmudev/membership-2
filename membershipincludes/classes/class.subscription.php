@@ -65,12 +65,12 @@ if(!class_exists('M_Subscription')) {
 				$sub = $this->get();
 
 				if($sub) {
-					return $sub->sub_name;
+					return stripslashes($sub->sub_name);
 				} else {
 					return false;
 				}
 			} else {
-				return $this->subscription->sub_name;
+				return stripslashes($this->subscription->sub_name);
 			}
 
 		}
@@ -86,7 +86,7 @@ if(!class_exists('M_Subscription')) {
 					return false;
 				}
 			} else {
-				return $this->subscription->sub_description;
+				return stripslashes($this->subscription->sub_description);
 			}
 
 		}

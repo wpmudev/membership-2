@@ -5,6 +5,8 @@ class M_BPGroups extends M_Rule {
 	var $name = 'bpgroups';
 	var $label = 'Groups';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -234,6 +236,8 @@ class M_BPGroupcreation extends M_Rule {
 	var $name = 'bpgroupcreation';
 	var $label = 'Group Creation';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -319,6 +323,8 @@ class M_BPBlogs extends M_Rule {
 
 	var $name = 'bpblogs';
 	var $label = 'Blogs';
+
+	var $rulearea = 'public';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -568,6 +574,8 @@ class M_BPPrivatemessage extends M_Rule {
 	var $name = 'bpprivatemessage';
 	var $label = 'Private Messaging';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -626,6 +634,8 @@ class M_BPPages extends M_Rule {
 
 	var $name = 'bppages';
 	var $label = 'BuddyPress Pages';
+
+	var $rulearea = 'public';
 
 	function admin_main($data) {
 		if(!$data) $data = array();

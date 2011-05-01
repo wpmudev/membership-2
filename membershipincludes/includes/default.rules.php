@@ -5,6 +5,8 @@ class M_Posts extends M_Rule {
 	var $name = 'posts';
 	var $label = 'Posts';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -123,6 +125,8 @@ class M_Pages extends M_Rule {
 
 	var $name = 'pages';
 	var $label = 'Pages';
+
+	var $rulearea = 'public';
 
 	function admin_main($data) {
 		if(!$data) $data = array();
@@ -260,6 +264,8 @@ class M_Categories extends M_Rule {
 	var $name = 'categories';
 	var $label = 'Categories';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 			?>
@@ -390,6 +396,8 @@ class M_More extends M_Rule {
 	var $name = 'more';
 	var $label = 'More tag';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -493,6 +501,8 @@ class M_Comments extends M_Rule {
 	var $name = 'comments';
 	var $label = 'Comments';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -554,6 +564,8 @@ class M_Downloads extends M_Rule {
 
 	var $name = 'downloads';
 	var $label = 'Downloads';
+
+	var $rulearea = 'public';
 
 	function admin_main($data) {
 
@@ -658,6 +670,8 @@ class M_Shortcodes extends M_Rule {
 
 	var $name = 'shortcodes';
 	var $label = 'Shortcodes';
+
+	var $rulearea = 'public';
 
 	function admin_main($data) {
 
@@ -786,6 +800,8 @@ class M_Menu extends M_Rule {
 	var $name = 'menu';
 	var $label = 'Menu';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -905,6 +921,8 @@ class M_Blogcreation extends M_Rule {
 	var $name = 'blogcreation';
 	var $label = 'Blog Creation';
 
+	var $rulearea = 'core';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -919,6 +937,10 @@ class M_Blogcreation extends M_Rule {
 		<?php
 	}
 
+	function on_creation() {
+
+	}
+
 	function on_positive($data) {
 
 		$this->data = $data;
@@ -931,6 +953,8 @@ class M_Blogcreation extends M_Rule {
 
 		$this->data = $data;
 
+		print_r($data);
+
 		add_filter( 'site_option_registration', array(&$this, 'neg_blog_creation'));
 		add_filter( 'wpmu_active_signup', array(&$this, 'neg_blog_creation') );
 
@@ -938,6 +962,7 @@ class M_Blogcreation extends M_Rule {
 
 	function neg_blog_creation( $active = 'all' ) {
 
+		echo $active;
 		if($active == 'user' || $active == 'none') {
 			return $active;
 		} else {
@@ -1021,6 +1046,8 @@ class M_URLGroups extends M_Rule {
 
 	var $name = 'urlgroups';
 	var $label = 'URL Groups';
+
+	var $rulearea = 'core';
 
 	function get_groups() {
 

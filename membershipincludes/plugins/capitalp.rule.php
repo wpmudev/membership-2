@@ -4,6 +4,8 @@ class M_Capitalp extends M_Rule {
 	var $name = 'capitalp';
 	var $label = 'Capital P filter';
 
+	var $rulearea = 'public';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>

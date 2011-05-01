@@ -367,6 +367,16 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function update_relationship_gateway( $rel_id, $fromgateway, $togateway ) {
+
+			if(!empty($rel_id)) {
+				$sql = $this->db->prepare( "UPDATE {$this->membership_relationships} SET usinggateway = %s WHERE rel_id = %d AND usinggateway = %s", $togateway, $rel_id, $fromgateway );
+
+				$this->db->query( $sql );
+			}
+
+		}
+
 		function get_relationship( $sub_id ) {
 
 			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id );
@@ -693,14 +703,24 @@ if(!class_exists('M_Membership')) {
 
 		function assign_level($level_id, $fullload = true) {
 			// Used to force assign a level on a user - mainly for non logged in users
-			$this->levels[$level_id] = new M_Level( $level_id, $fullload );
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('public', 'core') );
+
+		}
+
+		function assign_public_level($level_id, $fullload = true) {
+			// Used to force assign a level on a user - mainly for non logged in users
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('public', 'core') );
 
 		}
 
 		function assign_admin_level($level_id, $fullload) {
 			// Used to force assign a level on a user - mainly for non logged in users
-			$this->levels[$level_id] = new M_Level( $level_id, $fullload, true );
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('admin','core') );
+		}
 
+		function assign_core_level($level_id, $fullload) {
+			// Used to force assign a level on a user - mainly for non logged in users
+			$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('core') );
 		}
 
 		function load_levels($fullload = false) {
@@ -710,10 +730,16 @@ if(!class_exists('M_Membership')) {
 			if(!empty($levels)) {
 				foreach( (array) $levels as $key => $lev ) {
 					if(!isset( $this->levels[$lev->level_id] )) {
-						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload );
+						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('public', 'core') );
 					}
 				}
 			}
+
+		}
+
+		function load_public_levels($fullload = false) {
+
+			$this->load_levels( $fullload );
 
 		}
 
@@ -724,7 +750,21 @@ if(!class_exists('M_Membership')) {
 			if(!empty($levels)) {
 				foreach( (array) $levels as $key => $lev ) {
 					if(!isset( $this->levels[$lev->level_id] )) {
-						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, true );
+						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('admin','core') );
+					}
+				}
+			}
+
+		}
+
+		function load_core_levels($fullload = false) {
+
+			$levels = $this->get_level_ids();
+
+			if(!empty($levels)) {
+				foreach( (array) $levels as $key => $lev ) {
+					if(!isset( $this->levels[$lev->level_id] )) {
+						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('core') );
 					}
 				}
 			}

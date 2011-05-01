@@ -5,6 +5,8 @@ class M_Mainmenus extends M_Rule {
 	var $adminside = true;
 	var $label = 'Main Menus';
 
+	var $rulearea = 'admin';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -116,6 +118,8 @@ class M_Submenus extends M_Rule {
 	var $name = 'submenus';
 	var $adminside = true;
 	var $label = 'Sub Menus';
+
+	var $rulearea = 'admin';
 
 	function get_mainmenu_for_file($file) {
 
@@ -254,7 +258,12 @@ class M_Dashboardwidgets extends M_Rule {
 	var $adminside = true;
 	var $label = 'Dashboard Widgets';
 
+	var $rulearea = 'admin';
+
 	function admin_main($data) {
+
+		global $wp_meta_boxes, $wp_dashboard_control_callbacks;
+
 		if(!$data) $data = array();
 		?>
 		<div class='level-operation' id='main-dashboard'>
@@ -266,7 +275,8 @@ class M_Dashboardwidgets extends M_Rule {
 					include_once(ABSPATH . '/wp-admin/includes/dashboard.php');
 					wp_dashboard_setup();
 
-					global $wp_meta_boxes;
+					//print_r($wp_meta_boxes);
+					print_r($wp_dashboard_control_callbacks);
 
 					if(!empty($wp_meta_boxes['dashboard']['normal']['core']) || !empty($wp_meta_boxes['dashboard']['side']['core'])) {
 						?>
@@ -396,6 +406,8 @@ class M_Plugins extends M_Rule {
 	var $adminside = true;
 	var $label = 'Plugins';
 
+	var $rulearea = 'admin';
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -503,6 +515,8 @@ class M_Favouriteactions extends M_Rule {
 	var $name = 'favactions';
 	var $adminside = true;
 	var $label = 'Favorite Actions';
+
+	var $rulearea = 'admin';
 
 	var $favouriteactions = array();
 

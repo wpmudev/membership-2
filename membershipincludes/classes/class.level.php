@@ -26,7 +26,7 @@ if(!class_exists('M_Level')) {
 
 		var $lastlevelid;
 
-		function __construct( $id = false , $fullload = false, $admin = false) {
+		function __construct( $id = false , $fullload = false, $loadtype = array('public', 'core') ) {
 
 			global $wpdb;
 
@@ -39,7 +39,7 @@ if(!class_exists('M_Level')) {
 			$this->id = $id;
 
 			if($fullload) {
-				$this->load_rules( $admin );
+				$this->load_rules( $loadtype );
 			}
 
 		}
@@ -239,7 +239,7 @@ if(!class_exists('M_Level')) {
 		// UI functions
 
 
-		function load_rules( $admin = false ) {
+		function load_rules( $loadtype = 'public' ) {
 
 			global $M_Rules;
 
@@ -255,7 +255,7 @@ if(!class_exists('M_Level')) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
 						$this->positiverules[$key] = new $M_Rules[$rule->rule_area];
 
-						if( $this->positiverules[$key]->adminside == $admin ) {
+						if( in_array($this->positiverules[$key]->rulearea, $loadtype) ) {
 							$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
 							$key++;
 						} else {
@@ -273,7 +273,7 @@ if(!class_exists('M_Level')) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
 						$this->negativerules[$key] = new $M_Rules[$rule->rule_area];
 
-						if( $this->negativerules[$key]->adminside == $admin ) {
+						if( in_array($this->positiverules[$key]->rulearea, $loadtype) ) {
 							$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
 							$key++;
 						} else {
