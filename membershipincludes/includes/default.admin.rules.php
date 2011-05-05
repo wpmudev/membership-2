@@ -275,10 +275,7 @@ class M_Dashboardwidgets extends M_Rule {
 					include_once(ABSPATH . '/wp-admin/includes/dashboard.php');
 					wp_dashboard_setup();
 
-					//print_r($wp_meta_boxes);
-					print_r($wp_dashboard_control_callbacks);
-
-					if(!empty($wp_meta_boxes['dashboard']['normal']['core']) || !empty($wp_meta_boxes['dashboard']['side']['core'])) {
+					if(!empty($wp_meta_boxes['membership_page_membershiplevels']['normal']['core']) || !empty($wp_meta_boxes['membership_page_membershiplevels']['side']['core'])) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
 							<thead>
@@ -297,7 +294,7 @@ class M_Dashboardwidgets extends M_Rule {
 
 							<tbody>
 						<?php
-						foreach($wp_meta_boxes['dashboard']['normal']['core'] as $key => $m) {
+						foreach($wp_meta_boxes['membership_page_membershiplevels']['normal']['core'] as $key => $m) {
 							if(!empty($m['title'])) {
 							?>
 							<tr valign="middle" class="alternate" id="dashboard-<?php echo $key; ?>">
@@ -313,7 +310,7 @@ class M_Dashboardwidgets extends M_Rule {
 						}
 						?>
 						<?php
-						foreach($wp_meta_boxes['dashboard']['side']['core'] as $key => $m) {
+						foreach($wp_meta_boxes['membership_page_membershiplevels']['side']['core'] as $key => $m) {
 							if(!empty($m['title'])) {
 							?>
 							<tr valign="middle" class="alternate" id="dashboard-<?php echo $key; ?>">
