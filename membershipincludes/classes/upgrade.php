@@ -554,7 +554,7 @@ function M_add_possible_missing_fields( $table, $name, $type, $after, $key = fal
 	global $wpdb;
 
 	switch($name) {
-		case 'usinggateway':	$defaults = $name . " " . $type . " AFTER " . $after;
+		case 'usinggateway':	$defaults = $name . " " . $type . " default 'admin' AFTER " . $after;
 								$sql = "ALTER TABLE " . $table . " ADD COLUMN " . $defaults;
 								$wpdb->query( $sql );
 								// Add the key
