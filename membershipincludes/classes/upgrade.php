@@ -360,6 +360,221 @@ function M_Createtables() {
 	do_action( 'membership_create_new_tables' );
 }
 
+function M_Create_single_table( $name ) {
+
+	global $wpdb;
+
+	switch( $name ) {
+
+		case membership_db_prefix($wpdb, 'membership_levels'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_levels') . "` (
+					  `id` bigint(20) NOT NULL auto_increment,
+					  `level_title` varchar(250) default NULL,
+					  `level_slug` varchar(250) default NULL,
+					  `level_active` int(11) default '0',
+					  `level_count` bigint(20) default '0',
+					  PRIMARY KEY  (`id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'membership_relationships'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_relationships') . "` (
+					  	`rel_id` bigint(20) NOT NULL auto_increment,
+						`user_id` bigint(20) default '0',
+						`sub_id` bigint(20) default '0',
+						`level_id` bigint(20) default '0',
+						`startdate` datetime default NULL,
+						`updateddate` datetime default NULL,
+						`expirydate` datetime default NULL,
+						`order_instance` bigint(20) default '0',
+						`usinggateway` varchar(50) default 'admin',
+						PRIMARY KEY  (`rel_id`),
+						KEY `user_id` (`user_id`),
+						KEY `sub_id` (`sub_id`),
+						KEY `usinggateway` (`usinggateway`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'membership_rules'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_rules') . "` (
+					  `level_id` bigint(20) NOT NULL default '0',
+					  `rule_ive` varchar(20) NOT NULL default '',
+					  `rule_area` varchar(20) NOT NULL default '',
+					  `rule_value` text,
+					  `rule_order` int(11) default '0',
+					  PRIMARY KEY  (`level_id`,`rule_ive`,`rule_area`),
+					  KEY `rule_area` (`rule_area`),
+					  KEY `rule_ive` (`rule_ive`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'subscriptions'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptions') . "` (
+					  `id` bigint(20) NOT NULL auto_increment,
+					  `sub_name` varchar(200) default NULL,
+					  `sub_active` int(11) default '0',
+					  `sub_public` int(11) default '0',
+					  `sub_count` bigint(20) default '0',
+					  `sub_description` text,
+					  PRIMARY KEY  (`id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'subscriptions_levels'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptions_levels') . "` (
+					  	`sub_id` bigint(20) default NULL,
+						`level_id` bigint(20) default NULL,
+						`level_period` int(11) default NULL,
+						`sub_type` varchar(20) default NULL,
+						`level_price` int(11) default '0',
+						`level_currency` varchar(5) default NULL,
+						`level_order` bigint(20) default '0',
+						`level_period_unit` varchar(1) default 'd',
+						KEY `sub_id` (`sub_id`),
+					 	KEY `level_id` (`level_id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'subscription_transaction'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscription_transaction') . "` (
+					  `transaction_ID` bigint(20) unsigned NOT NULL auto_increment,
+					  `transaction_subscription_ID` bigint(20) NOT NULL default '0',
+					  `transaction_user_ID` bigint(20) NOT NULL default '0',
+					  `transaction_sub_ID` bigint(20) default '0',
+					  `transaction_paypal_ID` varchar(30) default NULL,
+					  `transaction_payment_type` varchar(20) default NULL,
+					  `transaction_stamp` bigint(35) NOT NULL default '0',
+					  `transaction_total_amount` bigint(20) default NULL,
+					  `transaction_currency` varchar(35) default NULL,
+					  `transaction_status` varchar(35) default NULL,
+					  `transaction_duedate` date default NULL,
+					  `transaction_gateway` varchar(50) default NULL,
+					  `transaction_note` text,
+					  `transaction_expires` datetime default NULL,
+					  PRIMARY KEY  (`transaction_ID`),
+					  KEY `transaction_gateway` (`transaction_gateway`),
+					  KEY `transaction_subscription_ID` (`transaction_subscription_ID`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'urlgroups'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'urlgroups') . "` (
+					  `id` bigint(20) NOT NULL auto_increment,
+					  `groupname` varchar(250) default NULL,
+					  `groupurls` text,
+					  `isregexp` int(11) default '0',
+					  `stripquerystring` int(11) default '0',
+					  PRIMARY KEY  (`id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'communications'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
+					  `id` bigint(11) NOT NULL auto_increment,
+					  `subject` varchar(250) default NULL,
+					  `message` text,
+					  `periodunit` int(11) default NULL,
+					  `periodtype` varchar(5) default NULL,
+					  `periodprepost` varchar(5) default NULL,
+					  `lastupdated` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+					  `active` int(11) default '0',
+					  `periodstamp` bigint(20) default '0',
+					  PRIMARY KEY  (`id`)
+					);";
+
+		case membership_db_prefix($wpdb, 'pings'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
+					  	`id` bigint(20) NOT NULL auto_increment,
+						`pingname` varchar(250) default NULL,
+						`pingurl` varchar(250) default NULL,
+						`pinginfo` text,
+						`pingtype` varchar(10) default NULL,
+						PRIMARY KEY  (`id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'ping_history'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'ping_history') . "` (
+					  	`id` bigint(20) NOT NULL auto_increment,
+						`ping_id` bigint(20) default NULL,
+						`ping_sent` timestamp NULL default NULL,
+						`ping_info` text,
+						`ping_return` text,
+						PRIMARY KEY  (`id`),
+						KEY `ping_id` (`ping_id`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'levelmeta'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'levelmeta') . "` (
+					  	`id` bigint(20) NOT NULL auto_increment,
+						`level_id` bigint(20) default NULL,
+						`meta_key` varchar(250) default NULL,
+						`meta_value` text,
+						`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+						PRIMARY KEY  (`id`),
+						UNIQUE KEY `level_id` (`level_id`,`meta_key`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'subscriptionmeta'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'subscriptionmeta') . "` (
+					  	`id` bigint(20) NOT NULL auto_increment,
+						`sub_id` bigint(20) default NULL,
+						`meta_key` varchar(250) default NULL,
+						`meta_value` text,
+						`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+						PRIMARY KEY  (`id`),
+						UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
+					);";
+					break;
+
+		case membership_db_prefix($wpdb, 'member_payments'):
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'member_payments') . "` (
+					  	`id` bigint(11) NOT NULL auto_increment,
+						`member_id` bigint(20) default NULL,
+						`sub_id` bigint(20) default NULL,
+						`level_id` bigint(20) default NULL,
+						`level_order` int(11) default NULL,
+						`paymentmade` datetime default NULL,
+						`paymentexpires` datetime default NULL,
+						PRIMARY KEY  (`id`)
+					);";
+					break;
+
+
+	}
+
+	$wpdb->query($sql);
+
+}
+
+function M_add_possible_missing_fields( $table, $name, $type, $after, $key = false ) {
+
+	global $wpdb;
+
+	switch($name) {
+		case 'usinggateway':	$defaults = $name . " " . $type . " AFTER " . $after;
+								$sql = "ALTER TABLE " . $table . " ADD COLUMN " . $defaults;
+								$wpdb->query( $sql );
+								// Add the key
+								$sql = "ALTER TABLE " . $table . " ADD INDEX  (`" . $name . "`)";
+								$wpdb->query( $sql );
+								break;
+
+		default:				$defaults = $name . " " . $type . " AFTER " . $after;
+								$sql = "ALTER TABLE " . $table . " ADD COLUMN " . $defaults;
+								$wpdb->query( $sql );
+								if($key) {
+									$sql = "ALTER TABLE " . $table . " ADD INDEX  (`" . $name . "`)";
+									$wpdb->query( $sql );
+								}
+								break;
+	}
+
+}
+
+
 function M_verify_tables() {
 
 	global $wpdb;
@@ -374,7 +589,7 @@ function M_verify_tables() {
 		$t = $wpdb->get_var( $sql );
 
 		if($t == $name) {
-			echo __('Ok', 'membership');
+			echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
 			echo "</p>";
 
 			echo "<p>" . __('Checking fields in table : ', 'membership') . $name . " - ";
@@ -392,26 +607,78 @@ function M_verify_tables() {
 					}
 				}
 				if($found) {
-					echo __('Ok', 'membership');
+					echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
 				} else {
-					echo __('Missing or Incorrect', 'membership');
+					echo "<span style='color: red;'>" . __('Missing or Incorrect', 'membership') . "</span>";
 				}
 			}
 
 			echo "</p>";
 
 		} else {
-			echo __('Missing', 'membership');
+			echo "<span style='color: red;'>" . __('Missing', 'membership') . "</span>";
 			echo "</p>";
 		}
-
-
 
 	}
 
 }
 
 function M_repair_tables() {
+
+	global $wpdb;
+
+	$tables = M_build_database_structure();
+
+	foreach( $tables as $name => $fields ) {
+
+		echo "<p>" . __('Checking table : ', 'membership') . $name . " - ";
+
+		$sql = "SHOW TABLES LIKE '{$name}';";
+		$t = $wpdb->get_var( $sql );
+
+		if($t == $name) {
+			echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
+			echo "</p>";
+
+			echo "<p>" . __('Checking fields in table : ', 'membership') . $name . " - ";
+
+			$sql = "SHOW COLUMNS FROM {$name};";
+			$t = $wpdb->get_results( $sql );
+
+			$pfield = '';
+			foreach( $fields as $fieldname => $type ) {
+				$found = false;
+				echo "<br/>" . $fieldname . " - ";
+				foreach($t as $dbf) {
+					//print_r($dbf);
+					if($dbf->Field == $fieldname && $dbf->Type == $type) {
+						$found = true;
+						break;
+					}
+				}
+				if($found) {
+					echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
+				} else {
+
+					M_add_possible_missing_fields( $name, $fieldname, $type, $pfield );
+
+					echo "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
+				}
+				$pfield = $fieldname;
+			}
+
+			echo "</p>";
+
+		} else {
+
+			M_Create_single_table( $name );
+
+			echo "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
+			echo "</p>";
+		}
+
+	}
 
 }
 
@@ -438,21 +705,21 @@ function M_build_database_structure() {
 	$d = 'datetime';
 	$ts = 'timestamp';
 
-	$structure = array( membership_db_prefix($wpdb, 'membership_levels') => array(	'id'	=>			'bigint(20)',
-																					'level_title'	=>	'varchar(250)',
-																					'level_slug'	=>	'varchar(250)',
-																					'level_active'	=>	'int(11)',
-																					'level_count'	=>	'bigint(20)'
+	$structure = array( membership_db_prefix($wpdb, 'membership_levels') => array(	'id'	=>			$bi,
+																					'level_title'	=>	$v250,
+																					'level_slug'	=>	$v250,
+																					'level_active'	=>	$i,
+																					'level_count'	=>	$bi
 																				),
-						membership_db_prefix($wpdb, 'membership_relationships')	=>	array(	'rel_id'	=>	'bigint(20)',
-																							'user_id'	=>	'bigint(20)',
-																							'sub_id'	=>	'bigint(20)',
-																							'level_id'	=>	'bigint(20)',
-																							'startdate'	=>	'datetime',
-																							'updateddate'	=>	'datetime',
-																							'expirydate'	=>	'datetime',
-																							'order_instance'	=>	'bigint(20)',
-																							'usinggateway'	=>	'varchar(50)'
+						membership_db_prefix($wpdb, 'membership_relationships')	=>	array(	'rel_id'	=>	$bi,
+																							'user_id'	=>	$bi,
+																							'sub_id'	=>	$bi,
+																							'level_id'	=>	$bi,
+																							'startdate'	=>	$d,
+																							'updateddate'	=>	$d,
+																							'expirydate'	=>	$d,
+																							'order_instance'	=>	$bi,
+																							'usinggateway'	=>	$v50
 																				),
 						membership_db_prefix($wpdb, 'membership_rules')	=> array(	'level_id'	=>	$bi,
 																					'rule_ive'	=>	$v20,

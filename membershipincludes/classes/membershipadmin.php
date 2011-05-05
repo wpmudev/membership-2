@@ -1746,7 +1746,7 @@ if(!class_exists('membershipadmin')) {
 										} else {
 											$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
 										}
-										$actions['history'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=history&amp;member_id=" . $user_object->ID . "", 'history-member_' . $user_object->ID) . "'>" . __('History', 'membership') . "</a></span>";
+										//$actions['history'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=history&amp;member_id=" . $user_object->ID . "", 'history-member_' . $user_object->ID) . "'>" . __('History', 'membership') . "</a></span>";
 									?>
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
@@ -5535,6 +5535,12 @@ if(!class_exists('membershipadmin')) {
 					if(isset($_GET['repair'])) {
 						check_admin_referer('repair-membership');
 						include_once(membership_dir('membershipincludes/classes/upgrade.php') );
+
+						?>
+						<p><strong><?php _e('Verifying and Repairing','membership'); ?></strong></p>
+						<?php
+
+						M_repair_tables();
 					}
 
 				?>
