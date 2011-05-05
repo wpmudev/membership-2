@@ -3,7 +3,7 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 7;
+		var $build = 8;
 		var $db;
 
 		//
@@ -5522,11 +5522,19 @@ if(!class_exists('membershipadmin')) {
 
 				<?php
 					if(isset($_GET['verify'])) {
-						check_admin_referrer('verify-membership');
+						check_admin_referer('verify-membership');
+						include_once(membership_dir('membershipincludes/classes/upgrade.php') );
+
+						?>
+						<p><strong><?php _e('Verifying','membership'); ?></strong></p>
+						<?php
+
+						M_verify_tables();
 					}
 
 					if(isset($_GET['repair'])) {
-						check_admin_referrer('repair-membership');
+						check_admin_referer('repair-membership');
+						include_once(membership_dir('membershipincludes/classes/upgrade.php') );
 					}
 
 				?>

@@ -24,6 +24,8 @@ function M_Upgrade($from = false) {
 					M_Alterfor6();
 					break;
 
+		case 8:		break;
+
 		case false:	M_Createtables();
 					break;
 
@@ -356,6 +358,190 @@ function M_Createtables() {
 	$wpdb->query($sql);
 
 	do_action( 'membership_create_new_tables' );
+}
+
+function M_verify_tables() {
+
+	global $wpdb;
+
+	$tables = M_build_database_structure();
+
+	foreach( $tables as $name => $fields ) {
+
+		echo "<p>" . __('Checking table : ', 'membership') . $name . " - ";
+
+		$sql = "SHOW TABLES LIKE '{$name}';";
+		$t = $wpdb->get_var( $sql );
+
+		if($t == $name) {
+			echo __('Ok', 'membership');
+			echo "</p>";
+
+			echo "<p>" . __('Checking fields in table : ', 'membership') . $name . " - ";
+
+			$sql = "SHOW COLUMNS FROM {$name};";
+			$t = $wpdb->get_results( $sql );
+
+			foreach( $fields as $fieldname => $type ) {
+				$found = false;
+				echo "<br/>" . $fieldname . " - ";
+				foreach($t as $dbf) {
+					if($dbf->Field == $fieldname && $dbf->Type == $type) {
+						$found = true;
+						break;
+					}
+				}
+				if($found) {
+					echo __('Ok', 'membership');
+				} else {
+					echo __('Missing or Incorrect', 'membership');
+				}
+			}
+
+			echo "</p>";
+
+		} else {
+			echo __('Missing', 'membership');
+			echo "</p>";
+		}
+
+
+
+	}
+
+}
+
+function M_repair_tables() {
+
+}
+
+function M_build_database_structure() {
+
+	global $wpdb;
+
+	$bi = 'bigint(20)';
+	$biu = 'bigint(20) unsigned';
+	$bi11 = 'bigint(11)';
+	$bi35 = 'bigint(35)';
+	$i = 'int(11)';
+	$v1 = 'varchar(1)';
+	$v5 = 'varchar(5)';
+	$v10 = 'varchar(10)';
+	$v30 = 'varchar(30)';
+	$v35 = 'varchar(35)';
+	$v50 = 'varchar(50)';
+	$v20 = 'varchar(20)';
+	$v200 = 'varchar(200)';
+	$v250 = 'varchar(250)';
+	$t = 'text';
+	$jd = 'date';
+	$d = 'datetime';
+	$ts = 'timestamp';
+
+	$structure = array( membership_db_prefix($wpdb, 'membership_levels') => array(	'id'	=>			'bigint(20)',
+																					'level_title'	=>	'varchar(250)',
+																					'level_slug'	=>	'varchar(250)',
+																					'level_active'	=>	'int(11)',
+																					'level_count'	=>	'bigint(20)'
+																				),
+						membership_db_prefix($wpdb, 'membership_relationships')	=>	array(	'rel_id'	=>	'bigint(20)',
+																							'user_id'	=>	'bigint(20)',
+																							'sub_id'	=>	'bigint(20)',
+																							'level_id'	=>	'bigint(20)',
+																							'startdate'	=>	'datetime',
+																							'updateddate'	=>	'datetime',
+																							'expirydate'	=>	'datetime',
+																							'order_instance'	=>	'bigint(20)',
+																							'usinggateway'	=>	'varchar(50)'
+																				),
+						membership_db_prefix($wpdb, 'membership_rules')	=> array(	'level_id'	=>	$bi,
+																					'rule_ive'	=>	$v20,
+																					'rule_area'	=>	$v20,
+																					'rule_value'	=>	$t,
+																					'rule_order'	=>	$i
+																				),
+						membership_db_prefix($wpdb, 'subscriptions')	=>	array(	'id'	=>	$bi,
+																					'sub_name'	=>	$v200,
+																					'sub_active'	=>	$i,
+																					'sub_public'	=>	$i,
+																					'sub_count'		=>	$bi,
+																					'sub_description'	=>	$t
+																					),
+						membership_db_prefix($wpdb, 'subscriptions_levels')	=>	array(	'sub_id'	=>	$bi,
+																						'level_id'	=>	$bi,
+																						'level_period'	=>	$i,
+																						'sub_type'	=>	$v20,
+																						'level_price'	=>	$i,
+																						'level_currency'	=>	$v5,
+																						'level_order'	=>	$bi,
+																						'level_period_unit'	=>	$v1
+																					),
+						membership_db_prefix($wpdb, 'subscription_transaction')	=>	array(	'transaction_ID'	=>	$biu,
+																							'transaction_subscription_ID'	=>	$bi,
+																							'transaction_user_ID'	=>	$bi,
+																							'transaction_sub_ID'	=>	$bi,
+																							'transaction_paypal_ID'	=>	$v30,
+																							'transaction_payment_type'	=>	$v20,
+																							'transaction_stamp'	=>	$bi35,
+																							'transaction_total_amount'	=>	$bi,
+																							'transaction_currency'	=>	$v35,
+																							'transaction_duedate'	=>	$jd,
+																							'transaction_gateway'	=>	$v50,
+																							'transaction_note'		=>	$t,
+																							'transaction_expires'	=>	$d
+																					),
+						membership_db_prefix($wpdb, 'urlgroups')	=>	array(	'id'	=>	$bi,
+																				'groupname'	=>	$v250,
+																				'groupurls'	=>	$t,
+																				'isregexp'	=>	$i,
+																				'stripquerystring'	=>	$i
+																			),
+						membership_db_prefix($wpdb, 'communications')	=>	array(	'id'	=>	$bi11,
+																					'subject'	=>	$v250,
+																					'message'	=>	$t,
+																					'periodunit'	=>	$i,
+																					'periodtype'	=>	$v5,
+																					'periodprepost'	=>	$v5,
+																					'lastupdated'	=>	$ts,
+																					'active'		=>	$i,
+																					'periodstamp'	=>	$bi
+																					),
+						membership_db_prefix($wpdb, 'pings')	=>	array(	'id'	=>	$bi,
+																			'pingname'	=>	$v250,
+																			'pingurl'	=>	$v250,
+																			'pinginfo'	=>	$t,
+																			'pingtype'	=>	$v10
+																		),
+						membership_db_prefix($wpdb, 'ping_history')	=>	array(	'id'	=>	$bi,
+																				'ping_id'	=>	$bi,
+																				'ping_sent'	=>	$ts,
+																				'ping_info'	=>	$t,
+																				'ping_return'	=>	$t
+																		),
+						membership_db_prefix($wpdb, 'levelmeta')	=>	array(	'id'	=>	$bi,
+																				'level_id'	=>	$bi,
+																				'meta_key'	=>	$v250,
+																				'meta_value'	=>	$t,
+																				'meta_stamp'	=>	$ts
+																		),
+						membership_db_prefix($wpdb, 'subscriptionmeta')	=>	array( 	'id'	=>	$bi,
+																					'sub_id'	=>	$bi,
+																					'meta_key'	=>	$v250,
+																					'meta_value'	=>	$t,
+																					'meta_stamp'	=>	$ts
+																			),
+						membership_db_prefix($wpdb, 'member_payments')	=>	array(	'id'	=>	$bi11,
+																					'member_id'	=>	$bi,
+																					'sub_id'	=>	$bi,
+																					'level_id'	=>	$bi,
+																					'level_order'	=>	$i,
+																					'paymentmade'	=>	$d,
+																					'paymentexpires'	=>	$d
+																			)
+						);
+
+	return $structure;
+
 }
 
 ?>
