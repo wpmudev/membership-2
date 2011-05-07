@@ -5420,10 +5420,12 @@ if(!class_exists('membershipadmin')) {
 				<select name='joiningping'>
 					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
-						foreach($pings as $ping) {
+						if(!empty($pings)) {
+							foreach($pings as $ping) {
 							?>
 							<option value='<?php echo $ping->id; ?>' <?php selected($joinping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
+							}
 						}
 					?>
 				</select><br/>
@@ -5432,10 +5434,12 @@ if(!class_exists('membershipadmin')) {
 				<select name='leavingping'>
 					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
-						foreach($pings as $ping) {
+						if(!empty($pings)) {
+							foreach($pings as $ping) {
 							?>
 							<option value='<?php echo $ping->id; ?>' <?php selected($leaveping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
+							}
 						}
 					?>
 				</select>
@@ -5472,10 +5476,12 @@ if(!class_exists('membershipadmin')) {
 				<select name='joiningping'>
 					<option value='' <?php selected($joinping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
-						foreach($pings as $ping) {
+						if(!empty($pings)) {
+							foreach($pings as $ping) {
 							?>
 							<option value='<?php echo $ping->id; ?>' <?php selected($joinping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
+							}
 						}
 					?>
 				</select><br/>
@@ -5484,10 +5490,12 @@ if(!class_exists('membershipadmin')) {
 				<select name='leavingping'>
 					<option value='' <?php selected($leaveping,''); ?>><?php _e('None', 'membership'); ?></option>
 					<?php
-						foreach($pings as $ping) {
+						if(!empty($pings)) {
+							foreach($pings as $ping) {
 							?>
 							<option value='<?php echo $ping->id; ?>' <?php selected($leaveping, $ping->id); ?>><?php echo stripslashes($ping->pingname); ?></option>
 							<?php
+							}
 						}
 					?>
 				</select>
