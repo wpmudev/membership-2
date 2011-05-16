@@ -430,8 +430,8 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '' ) ) {
-						$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
+					if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '' ) ) {
+						$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '');
 
 						if($sublevel == '1') {
 							// This is the first level of a subscription so we need to create one if it doesn't already exist
