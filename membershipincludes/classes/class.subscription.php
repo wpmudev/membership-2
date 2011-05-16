@@ -81,7 +81,7 @@ if(!class_exists('M_Subscription')) {
 				$sub = $this->get();
 
 				if($sub) {
-					return $sub->sub_description;
+					return stripslashes($sub->sub_description);
 				} else {
 					return false;
 				}

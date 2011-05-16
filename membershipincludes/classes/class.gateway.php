@@ -160,6 +160,17 @@ if(!class_exists('M_Gateway')) {
 
 		}
 
+		function duplicate_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $paypal_ID, $status, $note) {
+			$sql = $this->db->prepare( "SELECT transaction_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %d AND transaction_user_ID = %d AND transaction_paypal_ID = %s AND transaction_stamp = %d LIMIT 1 ", $sub_id, $user_id, $paypal_ID, $timestamp );
+
+			$trans = $this->db->get_var( $sql );
+			if(!empty($trans)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		function record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $paypal_ID, $status, $note) {
 
 			$data = array();
@@ -173,7 +184,7 @@ if(!class_exists('M_Gateway')) {
 			$data['transaction_note'] = $note;
 			$data['transaction_gateway'] = $this->gateway;
 
-			$existing_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_ID FROM {$this->subscription_transaction} WHERE transaction_paypal_ID = %s", $paypal_ID ) );
+			$existing_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_ID FROM {$this->subscription_transaction} WHERE transaction_paypal_ID = %s LIMIT 1", $paypal_ID ) );
 
 			if(!empty($existing_id)) {
 				// Update

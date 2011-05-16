@@ -107,7 +107,7 @@ class paypalsolo extends M_Gateway {
 		  <?php
 		  	$button = get_option( $this->gateway . "_paypal_renew_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
 		  ?>
-		  <td><input type="text" name="_paypal_cancel_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <td><input type="text" name="_paypal_renew_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
 		  <br />
 		  </td>
 		  </tr>
@@ -196,9 +196,9 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="notify_url" value="' . trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway) . '">';
 
 		if($sublevel == 1) {
-			$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+			$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
 		} else {
-			$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+			$button = get_option( $this->gateway . "_paypal_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
 		}
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
@@ -267,7 +267,7 @@ class paypalsolo extends M_Gateway {
 			$form .=  "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 			$form .=  "<input type='hidden' name='user' value='" . $user_id . "' />";
 			$form .=  "<input type='hidden' name='level' value='" . $sublevel . "' />";
-			$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+			$button = get_option( $this->gateway . "_paypal_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
 		}
 
 
@@ -430,25 +430,27 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
+					if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '' ) ) {
+						$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
 
-					if($sublevel == '1') {
-						// This is the first level of a subscription so we need to create one if it doesn't already exist
-						$member = new M_Membership($user_id);
-						if($member) {
-							$member->create_subscription($sub_id, $this->gateway);
-							do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+						if($sublevel == '1') {
+							// This is the first level of a subscription so we need to create one if it doesn't already exist
+							$member = new M_Membership($user_id);
+							if($member) {
+								$member->create_subscription($sub_id, $this->gateway);
+								do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+							}
+						} else {
+							$member = new M_Membership($user_id);
+							if($member) {
+								// Mark the payment so that we can move through ok
+								$member->record_active_payment( $sub_id, $sublevel, $timestamp );
+							}
 						}
-					} else {
-						$member = new M_Membership($user_id);
-						if($member) {
-							// Mark the payment so that we can move through ok
-							$member->record_active_payment( $sub_id, $sublevel, $timestamp );
-						}
+
+						// Added for affiliate system link
+						do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					}
-
-					// Added for affiliate system link
-					do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
 				case 'Reversed':
