@@ -234,7 +234,7 @@ class M_Pages extends M_Rule {
 
 	function add_unviewable_pages($wp_query) {
 
-		if(!in_array($wp_query->query_vars['post_type'], array('page')) || empty($wp_query->query_vars['pagename'])) {
+		if(!in_array($wp_query->query_vars['post_type'], array('page','')) || empty($wp_query->query_vars['pagename'])) {
 			return;
 		}
 

@@ -84,8 +84,6 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
-			//print_r($bp);
-
 			// More tags
 			if($M_options['moretagdefault'] == 'no' ) {
 				// More tag content is not visible by default - works for both web and rss content - unfortunately
@@ -565,7 +563,7 @@ if(!class_exists('membershippublic')) {
 
 		function check_for_posts_existance($posts, $wp_query) {
 
-			global $bp;
+			global $bp, $wp_query;
 
 			if(!empty($bp)) {
 				// BuddyPress exists so we have to handle "pretend" pages.
@@ -579,8 +577,17 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
+			if(empty($posts) && !empty( $wp_query->query['pagename'] )) {
+				// we have a potentially fake page that a plugin is creating or using.
+				if( !in_array( $wp_query->query['pagename'], apply_filters( 'membership_notallowed_pagenames', array() ) ) ) {
+					return $posts;
+				} else {
+					$this->show_noaccess_page($wp_query);
+				}
+			}
+
 			if(empty($posts) && $this->posts_actually_exist() && $this->may_be_singular($wp_query)) {
-				// we have nothing to see because it either doesn't exist or it's protected - move to no access page.
+				// we have nothing to see because it either doesn't exist, is a pretend or it's protected - move to no access page.
 				$this->show_noaccess_page($wp_query);
 			} else {
 				return $posts;

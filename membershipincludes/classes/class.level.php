@@ -249,6 +249,9 @@ if(!class_exists('M_Level')) {
 			//negativerules
 			$negative = $this->get_rules('negative');
 
+			//print_r($positive);
+			//print_r($negative);
+
 			if(!empty($positive)) {
 				$key = 0;
 				foreach( (array) $positive as $key => $rule) {
@@ -267,7 +270,6 @@ if(!class_exists('M_Level')) {
 			}
 
 			if(!empty($negative)) {
-
 				$key = 0;
 				foreach( (array) $negative as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
