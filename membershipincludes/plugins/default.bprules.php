@@ -643,54 +643,7 @@ class M_BPPages extends M_Rule {
 		<div class='level-operation' id='main-bppages'>
 			<h2 class='sidebar-name'><?php _e('BuddyPress Pages', 'membership');?><span><a href='#remove' id='remove-bppages' class='removelink' title='<?php _e("Remove BuddyPress Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><?php _e('Select the BuddyPress Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
-				<?php
-
-					$pages = array(	'members' 	=> __('Members', 'buddypress'),
-									'activity' 	=> __('Activity', 'buddypress'),
-									'blogs' 	=> __('Blogs', 'buddypress'),
-									'forums'	=> __('Forums', 'buddypress'),
-									'groups'	=> __('Groups', 'buddypress')
-									);
-
-					if($pages) {
-						?>
-						<table cellspacing="0" class="widefat fixed">
-							<thead>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-								</tr>
-							</thead>
-
-							<tfoot>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-								</tr>
-							</tfoot>
-
-							<tbody>
-						<?php
-						foreach($pages as $key => $page) {
-							?>
-							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
-								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $key; ?>" name="bppages[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
-								</th>
-								<td class="column-name">
-									<strong><?php echo esc_html($page); ?></strong>
-								</td>
-						    </tr>
-							<?php
-						}
-						?>
-							</tbody>
-						</table>
-						<?php
-					}
-
-				?>
+				<p><?php _e('Please use the URL Groups for a more reliable method of restricting access to BuddyPress pages.','membership'); ?></p>
 			</div>
 		</div>
 		<?php
@@ -700,78 +653,13 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
-		add_filter('membership_buddypress_pages', array(&$this, 'pos_bppage_access') );
-		//do_action( 'bp_before_header' )
-		//<?php do_action( 'bp_header' )
-
-
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
 
-		add_filter('membership_buddypress_pages', array(&$this, 'neg_bppage_access') );
-
 	}
-
-	function pos_bppage_access( $pages ) {
-		/*
-		[root_components] => Array
-		        (
-		            [0] => members
-		            [1] => register
-		            [2] => activate
-		            [3] => search
-		            [4] => activity
-		            [5] => blogs
-		            [6] => forums
-		            [7] => groups
-		        )
-		*/
-
-		foreach($pages as $key => $page) {
-			if(!in_array($page, (array) $this->data)) {
-				unset($pages[$key]);
-			}
-		}
-
-		return $pages;
-	}
-
-	function neg_bppage_access( $pages ) {
-
-		foreach($pages as $key => $page) {
-			if(in_array($page, (array) $this->data)) {
-				unset($pages[$key]);
-			}
-		}
-
-		return $pages;
-	}
-
-	function can_access_page( $posneg, $page ) {
-
-		switch($posneg) {
-
-			case 'positive':	if(in_array($page, (array) $this->data)) {
-									return true;
-								} else {
-									return false;
-								}
-								break;
-
-			case 'negative':	if(in_array($page, (array) $this->data)) {
-									return false;
-								} else {
-									return true;
-								}
-								break;
-
-		}
-
-	}
-
 }
 M_register_rule('bppages', 'M_BPPages', 'bp');
 
