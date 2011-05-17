@@ -355,8 +355,7 @@ if(!class_exists('M_Communication')) {
 			$commmessage = str_replace(array_keys($commdata), array_values($commdata), stripslashes($this->comm->message) );
 
 			if( !empty($member->user_email) ) {
-				$header = 'From: "' . $commdata['%networkname%'] . '" <noreply@' . str_replace('http://', '', untrailingslashit($commdata['%networkurl%'])) . '>';
-				$res = @wp_mail( $member->user_email, stripslashes($this->comm->subject), stripslashes($commmessage), $header );
+				$res = @wp_mail( $member->user_email, stripslashes($this->comm->subject), stripslashes($commmessage) );
 			}
 
 		}
