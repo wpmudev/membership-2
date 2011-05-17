@@ -288,7 +288,7 @@ if(!class_exists('M_Communication')) {
 
 			$M_options = get_option('membership_options');
 
-			$commdata = $this->commconstants;
+			$commdata = apply_filters('membership_comm_constants_list', $this->commconstants);
 
 			$member = new M_Membership( $user_id );
 
@@ -346,7 +346,7 @@ if(!class_exists('M_Communication')) {
 					case '%accounturl%':		$commdata[$key] = get_permalink( $M_options['account_page'] );
 												break;
 
-					default:					$commdata[$key] = apply_filter( 'membership_commfield_' . $key, '' );
+					default:					$commdata[$key] = apply_filters( 'membership_commfield_' . $key, '', $user_id );
 												break;
 				}
 			}
