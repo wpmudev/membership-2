@@ -577,6 +577,8 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
+			$M_options = get_option('membership_options', array());
+
 			if(empty($posts) && !empty( $wp_query->query['pagename'] )) {
 				// we have a potentially fake page that a plugin is creating or using.
 				if( !in_array( $wp_query->query['pagename'], apply_filters( 'membership_notallowed_pagenames', array() ) ) ) {
@@ -584,6 +586,9 @@ if(!class_exists('membershippublic')) {
 				} else {
 					$this->show_noaccess_page($wp_query);
 				}
+			} elseif(empty($posts) && empty( $wp_query->query['pagename'] ) && $M_options['override_404'] == 'yes') {
+				// empty posts
+				$this->show_noaccess_page($wp_query);
 			}
 
 			if(empty($posts) && $this->posts_actually_exist() && $this->may_be_singular($wp_query)) {
