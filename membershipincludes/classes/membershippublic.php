@@ -989,7 +989,10 @@ if(!class_exists('membershippublic')) {
 									}
 
 									if(!empty($terms)) {
-										if(empty($_POST['tosagree'])) {
+										$tos_agree = (int) $_POST['tos_agree'];
+										if($tos_agree == '1') {
+											//correct answer!
+										} else {
 											$error[] = __('You need to agree to the terms of service to register.','membership');
 										}
 									}

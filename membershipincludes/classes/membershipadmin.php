@@ -1970,6 +1970,7 @@ if(!class_exists('membershipadmin')) {
 				$M_options['account_page'] = $_POST['account_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
 				$M_options['registration_tos'] = $_POST['registration_tos'];
+				$M_options['override_404'] = $_POST['override_404'];
 
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 				$M_options['moretagdefault'] = $_POST['moretagdefault'];
@@ -2151,6 +2152,16 @@ if(!class_exists('membershipadmin')) {
 								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
 								?>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Override 404 with protected content page','membership'); ?>
+							</th>
+							<td>
+								<select name='override_404'>
+									<option value='no' <?php selected($M_options['override_404'], 'no'); ?>><?php _e('No', 'membership'); ?></option>
+									<option value='yes' <?php selected($M_options['override_404'], 'yes'); ?>><?php _e('Yes', 'membership'); ?></option>
+								</select>
 							</td>
 						</tr>
 					</tbody>
