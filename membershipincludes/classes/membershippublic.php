@@ -579,24 +579,37 @@ if(!class_exists('membershippublic')) {
 
 			$M_options = get_option('membership_options', array());
 
-			if(empty($posts) && !empty( $wp_query->query['pagename'] )) {
-				// we have a potentially fake page that a plugin is creating or using.
-				if( !in_array( $wp_query->query['pagename'], apply_filters( 'membership_notallowed_pagenames', array() ) ) ) {
-					return $posts;
+			if(empty($posts)) {
+
+				if( !empty( $wp_query->query['pagename'] )) {
+					// we have a potentially fake page that a plugin is creating or using.
+					if( !in_array( $wp_query->query['pagename'], apply_filters( 'membership_notallowed_pagenames', array() ) ) ) {
+						return $posts;
+					} else {
+						$this->show_noaccess_page($wp_query);
+					}
 				} else {
-					$this->show_noaccess_page($wp_query);
+
+					if($M_options['override_404'] == 'yes') {
+
+						// empty posts
+						$this->show_noaccess_page($wp_query);
+					} else {
+						return $posts;
+					}
 				}
-			} elseif(empty($posts) && empty( $wp_query->query['pagename'] ) && $M_options['override_404'] == 'yes') {
-				// empty posts
-				$this->show_noaccess_page($wp_query);
+
+				if($this->posts_actually_exist() && $this->may_be_singular($wp_query)) {
+					// we have nothing to see because it either doesn't exist, is a pretend or it's protected - move to no access page.
+					$this->show_noaccess_page($wp_query);
+				} else {
+					return $posts;
+				}
+
 			}
 
-			if(empty($posts) && $this->posts_actually_exist() && $this->may_be_singular($wp_query)) {
-				// we have nothing to see because it either doesn't exist, is a pretend or it's protected - move to no access page.
-				$this->show_noaccess_page($wp_query);
-			} else {
-				return $posts;
-			}
+			return $posts;
+
 		}
 
 		function posts_actually_exist() {
