@@ -382,15 +382,19 @@ class authorizenetaim extends M_Gateway {
 
 				  print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));
 				  do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+				  exit();
 				} else {
 				  $error = $payment->getResponseText();
 				  print json_encode(array('status' => 'error', 'message' => __('There was a problem processing your purchase. Please try again', 'membership'), 'more' => $error));
+				  exit();
 				}
 			} else {
 				print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
+				exit();
 			}
 		} else {
 			print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
+			exit();
 		}
 	}
 }
