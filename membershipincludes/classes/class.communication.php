@@ -363,11 +363,11 @@ if(!class_exists('M_Communication')) {
 	}
 }
 
-function M_Communication_get_members() {
+function M_Communication_get_members( $startatid = 0, $limit = 25 ) {
 
 	global $wpdb;
 
-	$sql = $wpdb->prepare( "SELECT user_id FROM " . membership_db_prefix($wpdb, 'membership_relationships') . " WHERE sub_id != 0" );
+	$sql = $wpdb->prepare( "SELECT user_id FROM " . membership_db_prefix($wpdb, 'membership_relationships') . " WHERE sub_id != 0 AND user_id > %d ORDER BY user_id ASC LIMIT 0, %d", $startatid, $limit );
 
 	return $wpdb->get_col( $sql );
 
@@ -428,9 +428,29 @@ function M_Communication_get_post_messages( ) {
 function M_Communication_process( ) {
 	// This function checks for any communication messages that need to be sent for this user and sends them
 
-	$members = M_Communication_get_members();
+	$lastatid = get_option('membership_communication_last_user_processed', 0);
+
+	if(empty($lastatid))
+		$lastat = 0;
+
+	$members = M_Communication_get_members($lastatid);
+	if(empty($members)) {
+		// reset the counter for the next round of processing
+		update_option('membership_communication_last_user_processed', 0);
+	}
+
+	// Our starting time
+	$timestart = time();
+
+	//Or processing limit
+	$timelimit = 3; // max seconds for processing
 
 	foreach( (array) $members as $user_id ) {
+
+		if(time() > $timestart + $timelimit) {
+			update_option('membership_communication_last_user_processed', $user_id);
+			break;
+		}
 
 		if( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
 
@@ -510,6 +530,8 @@ function M_Communication_process( ) {
 
 		}
 	}
+
+	update_option('membership_communication_last_user_processed', $user_id);
 
 }
 add_action('init', 'M_Communication_process', 10 );
