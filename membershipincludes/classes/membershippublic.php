@@ -66,7 +66,15 @@ if(!class_exists('membershippublic')) {
 
 			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active, $bp;
 
-			$M_options = get_option('membership_options', array());
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					$M_options = get_blog_option(1, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
 
 			// Check if the membership plugin is active
 			$M_active = get_option('membership_active', 'no');

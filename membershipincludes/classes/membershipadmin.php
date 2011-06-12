@@ -129,7 +129,15 @@ if(!class_exists('membershipadmin')) {
 				add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
 			}
 
-			$M_options = get_option('membership_options', array());
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					$M_options = get_blog_option(1, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
 
 			// Short codes
 			if(!empty($M_options['membershipshortcodes'])) {
