@@ -1990,7 +1990,16 @@ if(!class_exists('membershipadmin')) {
 				$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
 				$M_options['renewalperiod'] = $_POST['renewalperiod'];
 
-				update_option('membership_options', $M_options);
+
+				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+					if(function_exists('update_blog_option')) {
+						update_blog_option(1, 'membership_options', $M_options);
+					} else {
+						update_option('membership_options', $M_options);
+					}
+				} else {
+					update_option('membership_options', $M_options);
+				}
 
 				do_action( 'membership_options_page_process' );
 
@@ -2009,7 +2018,15 @@ if(!class_exists('membershipadmin')) {
 
 			wp_reset_vars( array('action', 'page') );
 
-			$M_options = get_option('membership_options', array());
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					$M_options = get_blog_option(1, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
 
 			$messages = array();
 			$messages[1] = __('Your options have been updated.','membership');
