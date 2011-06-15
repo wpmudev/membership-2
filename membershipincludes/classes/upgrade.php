@@ -24,7 +24,13 @@ function M_Upgrade($from = false) {
 					M_Alterfor6();
 					break;
 
-		case 8:		break;
+		case 8:
+		case 9:
+					M_Alterfor10();
+					break;
+
+		case 10:
+					break;
 
 		case false:	M_Createtables();
 					break;
@@ -32,6 +38,15 @@ function M_Upgrade($from = false) {
 		default:	M_Createtables();
 					break;
 	}
+
+}
+
+function M_Alterfor10() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'subscriptions_levels') . " CHANGE `level_price` `level_price` decimal(11,2) NULL DEFAULT '0.00';";
+
+	$wpdb->query( $sql );
 
 }
 
@@ -239,13 +254,13 @@ function M_Createtables() {
 		`level_id` bigint(20) default NULL,
 		`level_period` int(11) default NULL,
 		`sub_type` varchar(20) default NULL,
-		`level_price` int(11) default '0',
+		`level_price` decimal(11,2) default '0.00',
 		`level_currency` varchar(5) default NULL,
 		`level_order` bigint(20) default '0',
 		`level_period_unit` varchar(1) default 'd',
 		KEY `sub_id` (`sub_id`),
-	 	KEY `level_id` (`level_id`)
-	);";
+		KEY `level_id` (`level_id`)
+		);";
 
 	$wpdb->query($sql);
 
@@ -426,13 +441,13 @@ function M_Create_single_table( $name ) {
 						`level_id` bigint(20) default NULL,
 						`level_period` int(11) default NULL,
 						`sub_type` varchar(20) default NULL,
-						`level_price` int(11) default '0',
+						`level_price` decimal(11,2) default '0.00',
 						`level_currency` varchar(5) default NULL,
 						`level_order` bigint(20) default '0',
 						`level_period_unit` varchar(1) default 'd',
 						KEY `sub_id` (`sub_id`),
-					 	KEY `level_id` (`level_id`)
-					);";
+						KEY `level_id` (`level_id`)
+						);";
 					break;
 
 		case membership_db_prefix($wpdb, 'subscription_transaction'):
@@ -704,6 +719,7 @@ function M_build_database_structure() {
 	$jd = 'date';
 	$d = 'datetime';
 	$ts = 'timestamp';
+	$dc = 'decimal(11,2)';
 
 	$structure = array( membership_db_prefix($wpdb, 'membership_levels') => array(	'id'	=>			$bi,
 																					'level_title'	=>	$v250,
@@ -738,7 +754,7 @@ function M_build_database_structure() {
 																						'level_id'	=>	$bi,
 																						'level_period'	=>	$i,
 																						'sub_type'	=>	$v20,
-																						'level_price'	=>	$i,
+																						'level_price'	=>	$dc,
 																						'level_currency'	=>	$v5,
 																						'level_order'	=>	$bi,
 																						'level_period_unit'	=>	$v1
