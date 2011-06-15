@@ -99,6 +99,10 @@ if(!class_exists('M_Subscription')) {
 
 			foreach( (array) $levels as $key => $level ) {
 
+				if(!empty($level->level_price)) {
+					$level->level_price = ($level->level_price / 100);
+				}
+
 				if($level->sub_type == 'indefinite') {
 					// This will be the last item in any list
 					$prices[] = array( 'period' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type, 'unit' => $level->level_period_unit);
@@ -192,6 +196,8 @@ if(!class_exists('M_Subscription')) {
 			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d ORDER BY level_order ASC", $this->id );
 
 			$this->levels = $this->db->get_results( $sql );
+
+			// maybe loop and update pricing here?
 
 			return $this->levels;
 
@@ -321,7 +327,7 @@ if(!class_exists('M_Subscription')) {
 							}
 
 							if(isset($_POST['levelprice'][$level])) {
-								$levelprice = esc_attr($_POST['levelprice'][$level]);
+								$levelprice = (int) (floatval(esc_attr($_POST['levelprice'][$level])) * 100);
 							} else {
 								$levelprice = '';
 							}
@@ -404,7 +410,7 @@ if(!class_exists('M_Subscription')) {
 							}
 
 							if(isset($_POST['levelprice'][$level])) {
-								$levelprice = esc_attr($_POST['levelprice'][$level]);
+								$levelprice = (int) (floatval(esc_attr($_POST['levelprice'][$level])) * 100);
 							} else {
 								$levelprice = '';
 							}
@@ -485,6 +491,8 @@ if(!class_exists('M_Subscription')) {
 							</select>
 
 						<label for='levelprice[%level%]'><?php _e('Price : ','membership'); ?></label>
+						<input type='text' name='levelprice[%level%]' value='' class='narrow' />
+						<?php /* ?>
 						<select name='levelprice[%level%]'>
 							<option value=''></option>
 							<?php
@@ -494,7 +502,7 @@ if(!class_exists('M_Subscription')) {
 									<?php
 								}
 							?>
-						</select>&nbsp;
+						</select><?php */ ?>&nbsp;
 						<?php
 							if(!empty($M_options['paymentcurrency'])) {
 								echo esc_html($M_options['paymentcurrency']);
@@ -566,7 +574,14 @@ if(!class_exists('M_Subscription')) {
 									<option value='y' <?php if($level->level_period_unit == 'y') echo "selected='selected'"; ?>><?php _e('year(s)','membership'); ?></option>
 								</select>
 
+								<?php
+									if(!empty($level->level_price)) {
+										$level->level_price = ($level->level_price / 100);
+									}
+								?>
 								<label for='levelprice[<?php echo $levelid; ?>]'><?php _e('Price : ','membership'); ?></label>
+								<input type='text' name='levelprice[<?php echo $levelid; ?>]' value='<?php echo number_format($level->level_price, 2, '.', ','); ?>' class='narrow' />
+								<?php /* ?>
 								<select name='levelprice[<?php echo $levelid; ?>]'>
 									<option value=''></option>
 									<?php
@@ -576,7 +591,7 @@ if(!class_exists('M_Subscription')) {
 											<?php
 										}
 									?>
-								</select>&nbsp;
+								</select><?php */ ?>&nbsp;
 								<?php
 									if(!empty($M_options['paymentcurrency'])) {
 										echo esc_html($M_options['paymentcurrency']);

@@ -298,6 +298,10 @@ class paypalsolo extends M_Gateway {
 
 	}
 
+	function display_upgrade_from_free_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+
+	}
+
 	function display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 
 		echo '<form class="upgradebutton" action="" method="post">';

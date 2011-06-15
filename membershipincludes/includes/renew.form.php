@@ -35,6 +35,8 @@
 										$fromsub_id = (int) $_POST['fromsub_id'];
 										$gateway = $_POST['gateway'];
 										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+
+
 											// Join the new subscription
 											$member->create_subscription($sub_id, $gateway);
 											// Remove the old subscription
@@ -42,6 +44,21 @@
 											// Timestamp the update
 											update_user_meta( $user, '_membership_last_upgraded', time());
 										}
+										break;
+					case 'upgradefromfree':
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										$gateway = $_POST['gateway'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+											// Join the new subscription
+											$member->create_subscription($sub_id, $gateway);
+											// Remove the old subscription
+											$member->drop_subscription($fromsub_id);
+											// Timestamp the update
+											update_user_meta( $user, '_membership_last_upgraded', time());
+										}
+										break;
 										break;
 
 				}
