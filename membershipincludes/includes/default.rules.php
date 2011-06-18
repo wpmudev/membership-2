@@ -1239,7 +1239,7 @@ class M_URLGroups extends M_Rule {
 		}
 
 		$url = get_permalink( (int) $M_options['nocontent_page'] );
-
+		die($url);
 		wp_safe_redirect( $url );
 		exit;
 

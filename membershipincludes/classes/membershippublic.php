@@ -1008,7 +1008,7 @@ if(!class_exists('membershippublic')) {
 										$error[] = __('That email address is already taken, sorry.','membership');
 									}
 
-									if(function_exists('get_site_option')) {
+									if(is_plugin_active('signup-tos/signup-tos.php') && function_exists('get_site_option')) {
 										$terms = get_site_option('signup_tos_data');
 									} else {
 										$terms = '';
@@ -1023,6 +1023,8 @@ if(!class_exists('membershippublic')) {
 									}
 
 									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
+
+
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
