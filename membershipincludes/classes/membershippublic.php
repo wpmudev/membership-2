@@ -1024,7 +1024,10 @@ if(!class_exists('membershippublic')) {
 
 									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
+									//$result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
 
+									//return apply_filters('wpmu_validate_user_signup', $result);
+									//
 
 									if(empty($error)) {
 										// Pre - error reporting check for final add user
