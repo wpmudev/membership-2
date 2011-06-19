@@ -148,6 +148,8 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			do_action('membership_register_shortcodes');
+
 		}
 
 		function add_admin_menu() {
@@ -1993,7 +1995,7 @@ if(!class_exists('membershipadmin')) {
 
 				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 					if(function_exists('update_blog_option')) {
-						update_blog_option(1, 'membership_options', $M_options);
+						update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
 					} else {
 						update_option('membership_options', $M_options);
 					}
@@ -2020,7 +2022,11 @@ if(!class_exists('membershipadmin')) {
 
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 				if(function_exists('get_blog_option')) {
-					$M_options = get_blog_option(1, 'membership_options', array());
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
 				} else {
 					$M_options = get_option('membership_options', array());
 				}
@@ -2217,7 +2223,7 @@ if(!class_exists('membershipadmin')) {
 						</tr>
 						<tr valign="top">
 							<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Should the shortcodes above be visible or protected by default.",'membership'); ?>
+								<em style='font-size:smaller;'><?php _e("Should all shortcodes be visible or protected by default.",'membership'); ?>
 								</em>
 							</th>
 							<td>
@@ -2425,6 +2431,12 @@ if(!class_exists('membershipadmin')) {
 
 					<?php
 						do_action( 'membership_options_page' );
+
+						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+							if(function_exists('restore_current_blog')) {
+								restore_current_blog();
+							}
+						}
 					?>
 
 					<p class="submit">

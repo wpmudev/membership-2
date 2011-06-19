@@ -18,6 +18,7 @@ if(!defined('MEMBERSHIP_VIEW_COMMENTS')) define( 'MEMBERSHIP_VIEW_COMMENTS', fal
 
 // Use a global table system - experimental
 if(!defined('MEMBERSHIP_GLOBAL_TABLES')) define( 'MEMBERSHIP_GLOBAL_TABLES', false);
+if(!defined('MEMBERSHIP_GLOBAL_MAINSITE')) define( 'MEMBERSHIP_GLOBAL_MAINSITE', 1);
 
 if(!defined('MEMBERSHIP_MASTER_ADMIN')) define( 'MEMBERSHIP_MASTER_ADMIN', 'admin');
 

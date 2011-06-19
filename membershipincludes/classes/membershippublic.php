@@ -84,6 +84,9 @@ if(!class_exists('membershippublic')) {
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
+			
+			do_action('membership_register_shortcodes');
+			
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
