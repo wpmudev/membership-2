@@ -68,7 +68,7 @@ if(!class_exists('membershippublic')) {
 
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
 				if(function_exists('get_blog_option')) {
-					$M_options = get_blog_option(1, 'membership_options', array());
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
 				} else {
 					$M_options = get_option('membership_options', array());
 				}
@@ -84,9 +84,9 @@ if(!class_exists('membershippublic')) {
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
-			
+
 			do_action('membership_register_shortcodes');
-			
+
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();

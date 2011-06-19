@@ -23,6 +23,14 @@ class M_Membership_coupons {
 
 	}
 
+	function handle_coupons_updates() {
+
+	}
+
+	function handle_coupons_panel() {
+
+	}
+
 
 }
 

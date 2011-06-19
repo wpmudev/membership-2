@@ -131,7 +131,7 @@ if(!class_exists('membershipadmin')) {
 
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 				if(function_exists('get_blog_option')) {
-					$M_options = get_blog_option(1, 'membership_options', array());
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
 				} else {
 					$M_options = get_option('membership_options', array());
 				}

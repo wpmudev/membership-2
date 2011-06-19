@@ -1234,12 +1234,12 @@ class M_URLGroups extends M_Rule {
 
 		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
 			if(function_exists('switch_to_blog')) {
-				switch_to_blog(1);
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
 			}
 		}
 
 		$url = get_permalink( (int) $M_options['nocontent_page'] );
-		die($url);
+
 		wp_safe_redirect( $url );
 		exit;
 
