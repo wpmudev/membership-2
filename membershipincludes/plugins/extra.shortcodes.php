@@ -1,184 +1,208 @@
 <?php
-function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
 
-	global $wp_query;
+class M_Extra_shortcodes {
 
-	$defaults = array(	"holder"				=>	'',
-						"holderclass"			=>	'',
-						"item"					=>	'',
-						"itemclass"				=>	'',
-						"postfix"				=>	'',
-						"prefix"				=>	'',
-						"wrapwith"				=>	'',
-						"wrapwithclass"			=>	'',
-						"subscription"			=>	''
-					);
-
-	extract(shortcode_atts($defaults, $atts));
-
-	if(empty($subscription)) {
-		return '';
+	function __construct() {
+		add_action('membership_register_shortcodes', array(&$this, 'register_shortcodes'));
 	}
 
-	if(!empty($holder)) {
-		$html .= "<{$holder} class='{$holderclass}'>";
-	}
-	if(!empty($item)) {
-		$html .= "<{$item} class='{$itemclass}'>";
-	}
-	$html .= $prefix;
-
-	// The title
-	if(!empty($wrapwith)) {
-		$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+	function M_Extra_shortcodes() {
+		$this->__construct();
 	}
 
-	$sub = new M_Subscription( (int) $subscription );
-	$html .= $sub->sub_name();
+	function register_shortcodes() {
 
-	if(!empty($wrapwith)) {
-		$html .= "</{$wrapwith}>";
+		add_shortcode('subscriptiontitle', array(&$this, 'do_subscriptiontitle_shortcode') );
+		add_shortcode('subscriptiondetails', array(&$this, 'do_subscriptiondetails_shortcode') );
+		add_shortcode('subscriptionprice', array(&$this, 'do_subscriptionprice_shortcode') );
+
 	}
 
-	$html .= $postfix;
-	if(!empty($item)) {
-		$html .= "</{$item}>";
-	}
-	if(!empty($holder)) {
-		$html .= "</{$holder}>";
-	}
+	function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
+
+		global $wp_query;
+
+		$defaults = array(	"holder"				=>	'',
+							"holderclass"			=>	'',
+							"item"					=>	'',
+							"itemclass"				=>	'',
+							"postfix"				=>	'',
+							"prefix"				=>	'',
+							"wrapwith"				=>	'',
+							"wrapwithclass"			=>	'',
+							"subscription"			=>	''
+						);
+
+		extract(shortcode_atts($defaults, $atts));
+
+		if(empty($subscription)) {
+			return '';
+		}
+
+		if(!empty($holder)) {
+			$html .= "<{$holder} class='{$holderclass}'>";
+		}
+		if(!empty($item)) {
+			$html .= "<{$item} class='{$itemclass}'>";
+		}
+		$html .= $prefix;
+
+		// The title
+		if(!empty($wrapwith)) {
+			$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+		}
+
+		$sub = new M_Subscription( (int) $subscription );
+		$html .= $sub->sub_name();
+
+		if(!empty($wrapwith)) {
+			$html .= "</{$wrapwith}>";
+		}
+
+		$html .= $postfix;
+		if(!empty($item)) {
+			$html .= "</{$item}>";
+		}
+		if(!empty($holder)) {
+			$html .= "</{$holder}>";
+		}
 
 
-	return $html;
-}
-
-function do_subscriptiondetails_shortcode($atts, $content = null, $code = "") {
-
-	global $wp_query;
-
-	$defaults = array(	"holder"				=>	'',
-						"holderclass"			=>	'',
-						"item"					=>	'',
-						"itemclass"				=>	'',
-						"postfix"				=>	'',
-						"prefix"				=>	'',
-						"wrapwith"				=>	'',
-						"wrapwithclass"			=>	'',
-						"subscription"			=>	''
-					);
-
-	extract(shortcode_atts($defaults, $atts));
-
-	if(empty($subscription)) {
-		return '';
-	}
-
-	if(!empty($holder)) {
-		$html .= "<{$holder} class='{$holderclass}'>";
-	}
-	if(!empty($item)) {
-		$html .= "<{$item} class='{$itemclass}'>";
-	}
-	$html .= $prefix;
-
-	// The title
-	if(!empty($wrapwith)) {
-		$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-	}
-
-	$sub = new M_Subscription( (int) $subscription );
-	$html .= stripslashes($sub->sub_description());
-
-	if(!empty($wrapwith)) {
-		$html .= "</{$wrapwith}>";
-	}
-
-	$html .= $postfix;
-	if(!empty($item)) {
-		$html .= "</{$item}>";
-	}
-	if(!empty($holder)) {
-		$html .= "</{$holder}>";
+		return $html;
 	}
 
-	return $html;
-}
+	function do_subscriptiondetails_shortcode($atts, $content = null, $code = "") {
 
-function do_subscriptionprice_shortcode($atts, $content = null, $code = "") {
+		global $wp_query;
 
-	global $wp_query;
+		$defaults = array(	"holder"				=>	'',
+							"holderclass"			=>	'',
+							"item"					=>	'',
+							"itemclass"				=>	'',
+							"postfix"				=>	'',
+							"prefix"				=>	'',
+							"wrapwith"				=>	'',
+							"wrapwithclass"			=>	'',
+							"subscription"			=>	''
+						);
 
-	$defaults = array(	"holder"				=>	'',
-						"holderclass"			=>	'',
-						"item"					=>	'',
-						"itemclass"				=>	'',
-						"postfix"				=>	'',
-						"prefix"				=>	'',
-						"wrapwith"				=>	'',
-						"wrapwithclass"			=>	'',
-						"subscription"			=>	''
-					);
+		extract(shortcode_atts($defaults, $atts));
 
-	extract(shortcode_atts($defaults, $atts));
+		if(empty($subscription)) {
+			return '';
+		}
 
-	if(empty($subscription)) {
-		return '';
+		if(!empty($holder)) {
+			$html .= "<{$holder} class='{$holderclass}'>";
+		}
+		if(!empty($item)) {
+			$html .= "<{$item} class='{$itemclass}'>";
+		}
+		$html .= $prefix;
+
+		// The title
+		if(!empty($wrapwith)) {
+			$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+		}
+
+		$sub = new M_Subscription( (int) $subscription );
+		$html .= stripslashes($sub->sub_description());
+
+		if(!empty($wrapwith)) {
+			$html .= "</{$wrapwith}>";
+		}
+
+		$html .= $postfix;
+		if(!empty($item)) {
+			$html .= "</{$item}>";
+		}
+		if(!empty($holder)) {
+			$html .= "</{$holder}>";
+		}
+
+		return $html;
 	}
 
-	if(!empty($holder)) {
-		$html .= "<{$holder} class='{$holderclass}'>";
-	}
-	if(!empty($item)) {
-		$html .= "<{$item} class='{$itemclass}'>";
-	}
-	$html .= $prefix;
+	function do_subscriptionprice_shortcode($atts, $content = null, $code = "") {
 
-	// The title
-	if(!empty($wrapwith)) {
-		$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-	}
+		global $wp_query;
 
-	$sub = new M_Subscription( (int) $subscription );
-	$first = $sub->get_level_at_position(1);
+		$defaults = array(	"holder"				=>	'',
+							"holderclass"			=>	'',
+							"item"					=>	'',
+							"itemclass"				=>	'',
+							"postfix"				=>	'',
+							"prefix"				=>	'',
+							"wrapwith"				=>	'',
+							"wrapwithclass"			=>	'',
+							"subscription"			=>	''
+						);
 
-	if(!empty($first)) {
-		$price = $first->level_price;
-		if($price == 0) {
-			$price = "Free";
-		} else {
+		extract(shortcode_atts($defaults, $atts));
 
-			$M_options = get_option('membership_options', array());
+		if(empty($subscription)) {
+			return '';
+		}
 
-			switch( $M_options['paymentcurrency'] ) {
-				case "USD": $price = "$" . $price;
-							break;
+		if(!empty($holder)) {
+			$html .= "<{$holder} class='{$holderclass}'>";
+		}
+		if(!empty($item)) {
+			$html .= "<{$item} class='{$itemclass}'>";
+		}
+		$html .= $prefix;
 
-				case "GBP":	$price = "&pound;" . $price;
-							break;
+		// The title
+		if(!empty($wrapwith)) {
+			$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+		}
 
-				case "EUR":	$price = "&euro;" . $price;
-							break;
+		$sub = new M_Subscription( (int) $subscription );
+		$first = $sub->get_level_at_position(1);
 
-				default:	$price = apply_filters('membership_currency_symbol_' . $M_options['paymentcurrency'], $M_options['paymentcurrency']) . $price;
+		if(!empty($first)) {
+			$price = $first->level_price;
+			if($price == 0) {
+				$price = "Free";
+			} else {
+
+				$M_options = get_option('membership_options', array());
+
+				switch( $M_options['paymentcurrency'] ) {
+					case "USD": $price = "$" . $price;
+								break;
+
+					case "GBP":	$price = "&pound;" . $price;
+								break;
+
+					case "EUR":	$price = "&euro;" . $price;
+								break;
+
+					default:	$price = apply_filters('membership_currency_symbol_' . $M_options['paymentcurrency'], $M_options['paymentcurrency']) . $price;
+				}
 			}
 		}
+
+
+		$html .= $price;
+
+		if(!empty($wrapwith)) {
+			$html .= "</{$wrapwith}>";
+		}
+
+		$html .= $postfix;
+		if(!empty($item)) {
+			$html .= "</{$item}>";
+		}
+		if(!empty($holder)) {
+			$html .= "</{$holder}>";
+		}
+
+		return $html;
 	}
 
-
-	$html .= $price;
-
-	if(!empty($wrapwith)) {
-		$html .= "</{$wrapwith}>";
-	}
-
-	$html .= $postfix;
-	if(!empty($item)) {
-		$html .= "</{$item}>";
-	}
-	if(!empty($holder)) {
-		$html .= "</{$holder}>";
-	}
-
-	return $html;
 }
+
+$M_Extra_shortcodes = new M_Extra_shortcodes();
+
 ?>
