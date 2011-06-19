@@ -5552,7 +5552,7 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function handle_plugins_panel_updates() {
-			global $action, $page, $M_Gateways;
+			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
 
@@ -5562,9 +5562,11 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			$active = get_option('membership_activated_plugins', array());
+
 			switch(addslashes($action)) {
 
-				case 'deactivate':	$key = addslashes($_GET['gateway']);
+				case 'deactivate':	$key = addslashes($_GET['plugin']);
 									if(isset($M_Gateways[$key])) {
 										if($M_Gateways[$key]->deactivate()) {
 											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
@@ -5574,7 +5576,7 @@ if(!class_exists('membershipadmin')) {
 									}
 									break;
 
-				case 'activate':	$key = addslashes($_GET['gateway']);
+				case 'activate':	$key = addslashes($_GET['plugin']);
 									if(isset($M_Gateways[$key])) {
 										if($M_Gateways[$key]->activate()) {
 											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
@@ -5585,8 +5587,8 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 				case 'bulk-toggle':
-									check_admin_referer('bulk-gateways');
-									foreach($_GET['gatewaycheck'] AS $key) {
+									check_admin_referer('bulk-plugins');
+									foreach($_GET['plugincheck'] AS $key) {
 										if(isset($M_Gateways[$key])) {
 
 											$M_Gateways[$key]->toggleactivation();
@@ -5664,7 +5666,7 @@ if(!class_exists('membershipadmin')) {
 				<div class="clear"></div>
 
 				<?php
-					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-plugins');
 
 					$columns = array(	"name"		=>	__('Plugin Name', 'membership'),
 										"file" 		=> 	__('Plugin File','membership'),
@@ -5732,9 +5734,9 @@ if(!class_exists('membershipadmin')) {
 											$actions = array();
 
 											if(in_array($plugin, $active)) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;plugin=" . $plugin . "", 'toggle-plugin-' . $plugin) . "'>" . __('Deactivate') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;plugin=" . $plugin . "", 'toggle-plugin-' . $plugin) . "'>" . __('Activate') . "</a></span>";
 											}
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
