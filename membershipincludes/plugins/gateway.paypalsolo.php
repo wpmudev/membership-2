@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: PayPal Single Payments Gateway
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 class paypalsolo extends M_Gateway {
 

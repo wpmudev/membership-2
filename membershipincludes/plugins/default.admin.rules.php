@@ -1,4 +1,10 @@
 <?php
+/*
+Plugin Name: Default Admin Rules
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
+
 class M_Mainmenus extends M_Rule {
 
 	var $name = 'mainmenus';

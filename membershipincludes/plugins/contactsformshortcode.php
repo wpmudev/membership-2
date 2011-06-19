@@ -1,9 +1,9 @@
 <?php
-// Membership plugin add-on: Contacts form 7 shortcode
-// Version: 1.0
-// Author: Barry
-// Description:
-// This fix adds in the Contacts form 7 shortcode to the admin area of the membership plugin
+/*
+Plugin Name: Contacts form 7 shortcode
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 add_action('init', 'M_setup_contactform_shortcode');
 

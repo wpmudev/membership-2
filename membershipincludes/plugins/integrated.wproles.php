@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: Integrated WP Roles
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 function M_Roles_show_information( $level_id ) {
 

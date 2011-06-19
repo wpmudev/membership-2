@@ -1,5 +1,9 @@
 <?php
-// This plugin generates a news stream for the membership plugin dashboard
+/*
+Plugin Name: Dashboard News Stream
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 function membership_news_install() {
 

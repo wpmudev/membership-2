@@ -1,11 +1,10 @@
 <?php
+/*
+Plugin Name: 2Checkout payment plugin
+Author: S H Mohanjith (Incsub)
+Author URI: http://premium.wpmudev.org
+*/
 
-/**
- * 2Checkout payment plugin
- *
- * @todo Figure out a way to get the user id accross with INS such that
- * cancellations can be tracked
- */
 class twocheckout extends M_Gateway {
 
 	var $gateway = 'twocheckout';

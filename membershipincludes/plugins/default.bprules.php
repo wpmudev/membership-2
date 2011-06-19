@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: Default BuddyPress Rules
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 class M_BPGroups extends M_Rule {
 

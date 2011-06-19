@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: Authorise.net gateway
+Author: S H Mohanjith (Incsub)
+Author URI: http://premium.wpmudev.org
+*/
 
 class authorizenetaim extends M_Gateway {
 

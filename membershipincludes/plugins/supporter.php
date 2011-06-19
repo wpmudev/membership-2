@@ -1,7 +1,9 @@
 <?php
-
-// Supporter membership integration
-// Verion 0.1 alpha - by Barry (barry@incsub.com)
+/*
+Plugin Name: Supporter Integration
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 add_action( 'membership_subscription_form_after_levels', 'supporter_membership_subscription_settings' );
 add_action( 'membership_subscription_update', 'supporter_membership_subscription_update');

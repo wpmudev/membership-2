@@ -19,7 +19,48 @@ if ( !function_exists( 'wdp_un_check' ) ) {
 }
 /* --------------------------------------------------------------------- */
 
+function get_membership_plugins() {
+	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
+			$mem_plugins = array ();
+			while ( ( $plugin = readdir( $dh ) ) !== false )
+				if ( substr( $plugin, -4 ) == '.php' )
+					$mem_plugins[] = $plugin;
+			closedir( $dh );
+			sort( $mem_plugins );
+
+			return apply_filters('membership_available_plugins', $mem_plugins);
+		}
+	}
+
+	return false;
+
+}
+
 function load_membership_plugins() {
+
+	$plugins = get_option('membership_activated_plugins', array());
+
+	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
+			$mem_plugins = array ();
+			while ( ( $plugin = readdir( $dh ) ) !== false )
+				if ( substr( $plugin, -4 ) == '.php' )
+					$mem_plugins[] = $plugin;
+			closedir( $dh );
+			sort( $mem_plugins );
+			foreach( $mem_plugins as $mem_plugin ) {
+				if(in_array($mem_plugin, $plugins)) {
+					include_once( membership_dir('membershipincludes/plugins/' . $mem_plugin) );
+				}
+			}
+		}
+	}
+
+	do_action( 'membership_plugins_loaded' );
+}
+
+function load_all_membership_plugins() {
 	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
 		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
 			$mem_plugins = array ();
@@ -34,7 +75,6 @@ function load_membership_plugins() {
 	}
 
 	do_action( 'membership_plugins_loaded' );
-
 }
 
 function set_membership_url($base) {

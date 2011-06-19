@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: PayPal Express Gateway
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 class paypalexpress extends M_Gateway {
 

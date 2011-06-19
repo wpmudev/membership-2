@@ -1,5 +1,9 @@
 <?php
-// Membership dashboard - help window
+/*
+Plugin Name: Quick start Quide
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 function M_help_widget() {
 	?>

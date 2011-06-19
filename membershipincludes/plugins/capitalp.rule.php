@@ -1,4 +1,10 @@
 <?php
+/*
+Plugin Name: Capital P Rule
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
+
 class M_Capitalp extends M_Rule {
 
 	var $name = 'capitalp';

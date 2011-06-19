@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: Free subscriptions gateway
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 class freesubscriptions extends M_Gateway {
 

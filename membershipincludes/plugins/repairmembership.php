@@ -1,4 +1,9 @@
 <?php
+/*
+Plugin Name: Membership Verify and Repair
+Author: Barry (Incsub)
+Author URI: http://caffeinatedb.com
+*/
 
 class M_Membershiprepair {
 
