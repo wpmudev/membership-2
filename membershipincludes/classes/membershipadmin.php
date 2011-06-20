@@ -54,6 +54,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
 			add_action('load-membership_page_membershipurlgroups', array(&$this, 'add_admin_header_membershipurlgroups'));
 			add_action('load-membership_page_membershippings', array(&$this, 'add_admin_header_membershippings'));
+			add_action('load-membership_page_membershipplugins', array(&$this, 'add_admin_header_membershipplugins'));
 
 			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
 
@@ -361,6 +362,13 @@ if(!class_exists('membershipadmin')) {
 			wp_localize_script( 'pingsjs', 'membership', array( 'deleteping' => __('Are you sure you want to delete this ping and the associated history?','membership') ) );
 
 			$this->handle_ping_updates();
+		}
+
+		function add_admin_header_membershipplugins() {
+			// Run the core header
+			$this->add_admin_header_core();
+
+			$this->handle_plugins_panel_updates();
 		}
 
 		// Panel handling functions
@@ -5567,8 +5575,13 @@ if(!class_exists('membershipadmin')) {
 			switch(addslashes($action)) {
 
 				case 'deactivate':	$key = addslashes($_GET['plugin']);
-									if(isset($M_Gateways[$key])) {
-										if($M_Gateways[$key]->deactivate()) {
+									if(!empty($key)) {
+										check_admin_referer('toggle-plugin-' . $key);
+
+										$found = array_search($key, $active);
+										if($found !== false) {
+											unset($active[$found]);
+											update_option('membership_activated_plugins', array_unique($active));
 											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
 										} else {
 											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
@@ -5577,8 +5590,12 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 				case 'activate':	$key = addslashes($_GET['plugin']);
-									if(isset($M_Gateways[$key])) {
-										if($M_Gateways[$key]->activate()) {
+									if(!empty($key)) {
+										check_admin_referer('toggle-plugin-' . $key);
+
+										if(!in_array($key, $active)) {
+											$active[] = $key;
+											update_option('membership_activated_plugins', array_unique($active));
 											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
 										} else {
 											wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
@@ -5589,25 +5606,15 @@ if(!class_exists('membershipadmin')) {
 				case 'bulk-toggle':
 									check_admin_referer('bulk-plugins');
 									foreach($_GET['plugincheck'] AS $key) {
-										if(isset($M_Gateways[$key])) {
-
-											$M_Gateways[$key]->toggleactivation();
-
+										$found = array_search($key, $active);
+										if($found !== false) {
+											unset($active[$found]);
+										} else {
+											$active[] = $key;
 										}
 									}
-
+									update_option('membership_activated_plugins', array_unique($active));
 									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
-									break;
-
-				case 'updated':		$gateway = addslashes($_POST['gateway']);
-									check_admin_referer('updated-' . $gateway);
-
-									if($M_Gateways[$gateway]->update()) {
-										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
-									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
-									}
-
 									break;
 
 			}
