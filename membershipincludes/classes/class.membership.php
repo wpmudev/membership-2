@@ -20,7 +20,7 @@ if(!class_exists('M_Membership')) {
 			global $wpdb;
 
 			if($id != 0) {
-				parent::WP_User( $id, $name );
+				parent::__construct( $id, $name );
 			}
 
 			$this->db =& $wpdb;
