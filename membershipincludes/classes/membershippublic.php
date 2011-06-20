@@ -970,7 +970,8 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query;
 
-			$error = array();
+			//$error = array();
+			$error = new WP_Error();
 
 			$page = addslashes($_REQUEST['action']);
 
@@ -988,27 +989,27 @@ if(!class_exists('membershippublic')) {
 														'password2' => __('Password confirmation','membership'),
 													);
 
-									$error = array();
+									$error = new WP_Error();
 
 									foreach($required as $key => $message) {
 										if(empty($_POST[$key])) {
-											$error[] = __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership');
+											$error->add($key, __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership'));
 										}
 									}
 
 									if($_POST['user_email'] != $_POST['user_email2']) {
-										$error[] = __('Please ensure the email addresses match.','membership');
+										$error->add('emailmatch', __('Please ensure the email addresses match.','membership'));
 									}
 									if($_POST['password'] != $_POST['password2']) {
-										$error[] = __('Please ensure the passwords match.','membership');
+										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
 									}
 
 									if(username_exists(sanitize_user($_POST['user_login']))) {
-										$error[] = __('That username is already taken, sorry.','membership');
+										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 									}
 
 									if(email_exists($_POST['user_email'])) {
-										$error[] = __('That email address is already taken, sorry.','membership');
+										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 									}
 
 									if(is_plugin_active('signup-tos/signup-tos.php') && function_exists('get_site_option')) {
@@ -1017,27 +1018,22 @@ if(!class_exists('membershippublic')) {
 										$terms = '';
 									}
 
-									if(!empty($terms)) {
-										$tos_agree = (int) $_POST['tos_agree'];
-										if($tos_agree == '1') {
-										} else {
-											$error[] = __('You need to agree to the terms of service to register.','membership');
-										}
-									}
-
 									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
-									//$result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
+									$result = array('user_name' => $_POST['user_login'], 'orig_username' => $_POST['user_login'], 'user_email' => $_POST['user_email'], 'errors' => $error);
 
-									//return apply_filters('wpmu_validate_user_signup', $result);
-									//
+									$result = apply_filters('wpmu_validate_user_signup', $result);
 
-									if(empty($error)) {
+									$error = $result['errors'];
+
+									// Hack for now - eeek
+									$anyerrors = $error->get_error_code();
+									if(is_wp_error($error) && empty($anyerrors)) {
 										// Pre - error reporting check for final add user
 										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error[] = $userid->get_error_message();
+											$error->add('userid', $userid->get_error_message());
 										} else {
 											$member = new M_Membership( $user_id );
 											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
@@ -1055,9 +1051,12 @@ if(!class_exists('membershippublic')) {
 
 									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
-									if(!empty($error)) {
+									// Hack for now - eeek
+									$anyerrors = $error->get_error_code();
+									if(is_wp_error($error) && !empty($anyerrors)) {
+										$messages = $error->get_error_messages();
 										$content .= "<div class='error'>";
-										$content .= implode('<br/>', $error);
+										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
 										$content .= $this->show_subpage_one(true);
 									} else {
@@ -1079,24 +1078,24 @@ if(!class_exists('membershippublic')) {
 														'signup_password_confirm' => __('Password confirmation','membership'),
 													);
 
-									$error = array();
+									$error = new WP_Error();
 
 									foreach($required as $key => $message) {
 										if(empty($_POST[$key])) {
-											$error[] = __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership');
+											$error->add($key, __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership'));
 										}
 									}
 
 									if($_POST['signup_password'] != $_POST['signup_password_confirm']) {
-										$error[] = __('Please ensure the passwords match.','membership');
+										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
 									}
 
 									if(username_exists(sanitize_user($_POST['signup_username']))) {
-										$error[] = __('That username is already taken, sorry.','membership');
+										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 									}
 
 									if(email_exists($_POST['signup_email'])) {
-										$error[] = __('That email address is already taken, sorry.','membership');
+										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 									}
 
 									$meta_array = array();
@@ -1121,7 +1120,7 @@ if(!class_exists('membershippublic')) {
 												/* Create errors for required fields without values */
 												if ( xprofile_check_is_required_field( $field_id ) && empty( $_POST['field_' . $field_id] ) ) {
 													$field = new BP_Xprofile_Field( $field_id );
-													$error[] = __('Please ensure that the ', 'membership') . "<strong>" . $field->name . "</strong>" . __(' information is completed.','membership');
+													$error->add($field->name, __('Please ensure that the ', 'membership') . "<strong>" . $field->name . "</strong>" . __(' information is completed.','membership'));
 												}
 
 												$meta_array[ $field_id ] = $_POST['field_' . $field_id];
@@ -1132,12 +1131,14 @@ if(!class_exists('membershippublic')) {
 
 									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
-									if(empty($error)) {
+									// Hack for now - eeek
+									$anyerrors = $error->get_error_code();
+									if(is_wp_error($error) && empty($anyerrors)) {
 										// Pre - error reporting check for final add user
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error[] = $userid->get_error_message();
+											$error->add('userid', $userid->get_error_message());
 										} else {
 											$member = new M_Membership( $user_id );
 											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
@@ -1161,9 +1162,12 @@ if(!class_exists('membershippublic')) {
 
 									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
-									if(!empty($error)) {
+									// Hack for now - eeek
+									$anyerrors = $error->get_error_code();
+									if(is_wp_error($error) && !empty($anyerrors)) {
+										$messages = $error->get_error_messages();
 										$content .= "<div class='error'>";
-										$content .= implode('<br/>', $error);
+										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
 										$content .= $this->show_subpage_one(true);
 									} else {
