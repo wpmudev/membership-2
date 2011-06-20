@@ -36,23 +36,6 @@
 		<?php
 			do_action('membership_subscription_form_registration_presubmit_content');
 
-			if(is_plugin_active('signup-tos/signup-tos.php') && function_exists('get_site_option') ) {
-				$terms = get_site_option('signup_tos_data');
-			} else {
-				$terms = '';
-			}
-
-			if(!empty($terms)) {
-				?>
-				<h2><?php _e('Terms and Conditions','membership'); ?></h2>
-				<div id="reg_tos">
-				<?php echo stripslashes($terms); ?>
-				</div>
-				<p><label><input type="checkbox" value="1" name="tos_agree">
-				<strong><?php _e('I agree to the Terms of Use','membership'); ?></strong></label></p>
-				<?php
-			}
-
 			do_action( 'signup_extra_fields', $errors );
 		?>
 

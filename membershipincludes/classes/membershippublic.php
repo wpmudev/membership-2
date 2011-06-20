@@ -1012,12 +1012,6 @@ if(!class_exists('membershippublic')) {
 										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 									}
 
-									if(is_plugin_active('signup-tos/signup-tos.php') && function_exists('get_site_option')) {
-										$terms = get_site_option('signup_tos_data');
-									} else {
-										$terms = '';
-									}
-
 									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
 									$result = array('user_name' => $_POST['user_login'], 'orig_username' => $_POST['user_login'], 'user_email' => $_POST['user_email'], 'errors' => $error);
