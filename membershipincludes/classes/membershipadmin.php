@@ -182,7 +182,13 @@ if(!class_exists('membershipadmin')) {
 
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
-				add_submenu_page('membership', __('Membership Plugins','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipplugins", array(&$this,'handle_plugins_panel'));
+				if(defined('MEMBERSHIP_PLUGINS_ONLY_SUPERADMIN') && MEMBERSHIP_PLUGINS_ONLY_SUPERADMIN == true) {
+					if(is_super_admin()) {
+						add_submenu_page('membership', __('Membership Plugins','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipplugins", array(&$this,'handle_plugins_panel'));
+					}
+				} else {
+					add_submenu_page('membership', __('Membership Plugins','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipplugins", array(&$this,'handle_plugins_panel'));
+				}
 
 				do_action('membership_add_menu_items_bottom');
 
