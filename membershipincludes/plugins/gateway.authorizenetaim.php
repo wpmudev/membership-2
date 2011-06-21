@@ -1,6 +1,7 @@
 <?php
 /*
-Plugin Name: Authorise.net gateway
+Plugin Name: Authorize.net gateway
+Description: The Payment gateway for Authorize.net
 Author: S H Mohanjith (Incsub)
 Author URI: http://premium.wpmudev.org
 */

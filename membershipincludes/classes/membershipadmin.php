@@ -5627,21 +5627,21 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function handle_plugins_panel() {
-			global $action, $page, $M_Gateways;
+			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
 
 			$messages = array();
-			$messages[1] = __('Plugin updated.');
-			$messages[2] = __('Plugin not updated.');
+			$messages[1] = __('Plugin updated.','membership');
+			$messages[2] = __('Plugin not updated.','membership');
 
-			$messages[3] = __('Plugin activated.');
-			$messages[4] = __('Plugin not activated.');
+			$messages[3] = __('Plugin activated.','membership');
+			$messages[4] = __('Plugin not activated.','membership');
 
-			$messages[5] = __('Plugin deactivated.');
-			$messages[6] = __('Plugin not deactivated.');
+			$messages[5] = __('Plugin deactivated.','membership');
+			$messages[6] = __('Plugin not deactivated.','membership');
 
-			$messages[7] = __('Plugin activation toggled.');
+			$messages[7] = __('Plugin activation toggled.','membership');
 
 			?>
 			<div class='wrap'>
@@ -5729,6 +5729,7 @@ if(!class_exists('membershipadmin')) {
 								$default_headers = array(
 									                'Name' => 'Plugin Name',
 													'Author' => 'Author',
+													'Description'	=>	'Description',
 													'AuthorURI' => 'Author URI'
 									        );
 
@@ -5743,7 +5744,10 @@ if(!class_exists('membershipadmin')) {
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($plugin); ?>" name="plugincheck[]"></th>
 									<td class="column-name">
 										<strong><?php echo esc_html($plugin_data['Name']) . "</strong>" . __(' by ', 'membership') . "<a href='" . esc_attr($plugin_data['AuthorURI']) . "'>" . esc_html($plugin_data['Author']) . "</a>"; ?>
-										<?php
+										<?php if(!empty($plugin_data['Description'])) {
+											?><br/><?php echo esc_html($plugin_data['Description']);
+											}
+
 											$actions = array();
 
 											if(in_array($plugin, $active)) {
@@ -5756,7 +5760,7 @@ if(!class_exists('membershipadmin')) {
 										</td>
 
 									<td class="column-name">
-										<strong><?php echo esc_html($plugin); ?></strong>
+										<?php echo esc_html($plugin); ?>
 										</td>
 									<td class="column-active">
 										<?php
