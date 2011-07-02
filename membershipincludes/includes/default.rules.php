@@ -336,6 +336,8 @@ class M_Categories extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
+		print_r($wp_query);
+
 		if(!in_array($wp_query->query_vars['post_type'], array('post','')) || !empty($wp_query->query_vars['pagename'])) {
 			return;
 		}
@@ -350,15 +352,18 @@ class M_Categories extends M_Rule {
 
 	function add_unviewable_posts($wp_query) {
 
-		if(!in_array($wp_query->query_vars['post_type'], array('post','')) || !empty($wp_query->query_vars['pagename'])) {
+		if(in_array($wp_query->query_vars['post_type'], array('page')) || !empty($wp_query->query_vars['pagename'])) {
 			return;
 		}
+
 
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['category__not_in'][] = $value;
 		}
 
 		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
+
+		//print_r($wp_query);
 
 	}
 

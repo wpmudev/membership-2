@@ -99,10 +99,6 @@ if(!class_exists('M_Subscription')) {
 
 			foreach( (array) $levels as $key => $level ) {
 
-				if(!empty($level->level_price)) {
-					$level->level_price = ($level->level_price / 100);
-				}
-
 				if($level->sub_type == 'indefinite') {
 					// This will be the last item in any list
 					$prices[] = array( 'period' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type, 'unit' => $level->level_period_unit);
