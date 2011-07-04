@@ -6,12 +6,12 @@ h3.hndle {
 
 div.inside {
 	overflow: hidden;
-	padding: 10px;
+	padding: 10px !Important;
 }
 
 div.inside td {
 	padding: 3px 5px;
-	
+
 }
 
 div.inside td a {
@@ -20,7 +20,7 @@ div.inside td a {
 
 div.inside p {
 	margin-top: 5px;
-	margin-bottom: 10px;	
+	margin-bottom: 10px;
 }
 
 #memchartone {
