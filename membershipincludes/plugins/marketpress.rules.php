@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Default MarketPress Rules
+Description: Main MarketPress rules
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

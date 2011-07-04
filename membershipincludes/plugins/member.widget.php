@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Widget
+Description: Membership widgets
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

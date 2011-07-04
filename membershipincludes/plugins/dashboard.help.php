@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Quick start Quide
+Description: Show the quickstart page and dashboard widget
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

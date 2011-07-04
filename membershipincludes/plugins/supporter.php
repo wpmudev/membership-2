@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Supporter Integration
+Description: Experimental Support integration
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

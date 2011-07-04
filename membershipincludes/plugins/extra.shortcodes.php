@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Handy Subscription shortcodes
+Description: Some extra membership shortcodes for the frontend
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */
