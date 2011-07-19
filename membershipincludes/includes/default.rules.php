@@ -336,7 +336,7 @@ class M_Categories extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
-		print_r($wp_query);
+		//print_r($wp_query);
 
 		if(!in_array($wp_query->query_vars['post_type'], array('post','')) || !empty($wp_query->query_vars['pagename'])) {
 			return;
