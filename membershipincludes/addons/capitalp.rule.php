@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Capital P Rule
+Addon Name: Capital P Rule
 Description: Disables the WordPress enforced capitalisation
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

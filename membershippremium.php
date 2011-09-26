@@ -72,5 +72,5 @@ if(is_admin()) {
 }
 
 // Load secondary plugins
-load_membership_plugins();
+load_membership_addons();
 

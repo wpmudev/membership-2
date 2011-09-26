@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Contacts form 7 shortcode
+Addon Name: Contacts form 7 shortcode
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

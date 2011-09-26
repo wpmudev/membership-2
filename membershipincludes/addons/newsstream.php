@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Dashboard News Stream
+Addon Name: Dashboard News Stream
 Description: Members newstream dashboard widget
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

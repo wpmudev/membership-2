@@ -54,7 +54,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
 			add_action('load-membership_page_membershipurlgroups', array(&$this, 'add_admin_header_membershipurlgroups'));
 			add_action('load-membership_page_membershippings', array(&$this, 'add_admin_header_membershippings'));
-			add_action('load-membership_page_membershipplugins', array(&$this, 'add_admin_header_membershipplugins'));
+			add_action('load-membership_page_membershipaddons', array(&$this, 'add_admin_header_membershipaddons'));
 
 			add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
 
@@ -185,12 +185,12 @@ if(!class_exists('membershipadmin')) {
 
 				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
-				if(defined('MEMBERSHIP_PLUGINS_ONLY_SUPERADMIN') && MEMBERSHIP_PLUGINS_ONLY_SUPERADMIN == true) {
+				if(defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN') && MEMBERSHIP_ADDONS_ONLY_SUPERADMIN == true) {
 					if(is_super_admin()) {
-						add_submenu_page('membership', __('Membership Plugins','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipplugins", array(&$this,'handle_plugins_panel'));
+						add_submenu_page('membership', __('Membership Addons','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 					}
 				} else {
-					add_submenu_page('membership', __('Membership Plugins','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipplugins", array(&$this,'handle_plugins_panel'));
+					add_submenu_page('membership', __('Membership Addons','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 				}
 
 				do_action('membership_add_menu_items_bottom');
@@ -373,11 +373,11 @@ if(!class_exists('membershipadmin')) {
 			$this->handle_ping_updates();
 		}
 
-		function add_admin_header_membershipplugins() {
+		function add_admin_header_membershipaddons() {
 			// Run the core header
 			$this->add_admin_header_core();
 
-			$this->handle_plugins_panel_updates();
+			$this->handle_addons_panel_updates();
 		}
 
 		// Panel handling functions
@@ -5568,7 +5568,7 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function handle_plugins_panel_updates() {
+		function handle_addons_panel_updates() {
 			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
@@ -5579,18 +5579,18 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
-			$active = get_option('membership_activated_plugins', array());
+			$active = get_option('membership_activated_addons', array());
 
 			switch(addslashes($action)) {
 
-				case 'deactivate':	$key = addslashes($_GET['plugin']);
+				case 'deactivate':	$key = addslashes($_GET['addon']);
 									if(!empty($key)) {
-										check_admin_referer('toggle-plugin-' . $key);
+										check_admin_referer('toggle-addon-' . $key);
 
 										$found = array_search($key, $active);
 										if($found !== false) {
 											unset($active[$found]);
-											update_option('membership_activated_plugins', array_unique($active));
+											update_option('membership_activated_addons', array_unique($active));
 											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
 										} else {
 											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
@@ -5598,13 +5598,13 @@ if(!class_exists('membershipadmin')) {
 									}
 									break;
 
-				case 'activate':	$key = addslashes($_GET['plugin']);
+				case 'activate':	$key = addslashes($_GET['addon']);
 									if(!empty($key)) {
-										check_admin_referer('toggle-plugin-' . $key);
+										check_admin_referer('toggle-addon-' . $key);
 
 										if(!in_array($key, $active)) {
 											$active[] = $key;
-											update_option('membership_activated_plugins', array_unique($active));
+											update_option('membership_activated_addons', array_unique($active));
 											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
 										} else {
 											wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
@@ -5613,8 +5613,8 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 				case 'bulk-toggle':
-									check_admin_referer('bulk-plugins');
-									foreach($_GET['plugincheck'] AS $key) {
+									check_admin_referer('bulk-addons');
+									foreach($_GET['addoncheck'] AS $key) {
 										$found = array_search($key, $active);
 										if($found !== false) {
 											unset($active[$found]);
@@ -5622,34 +5622,34 @@ if(!class_exists('membershipadmin')) {
 											$active[] = $key;
 										}
 									}
-									update_option('membership_activated_plugins', array_unique($active));
+									update_option('membership_activated_addons', array_unique($active));
 									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
 									break;
 
 			}
 		}
 
-		function handle_plugins_panel() {
+		function handle_addons_panel() {
 			global $action, $page;
 
 			wp_reset_vars( array('action', 'page') );
 
 			$messages = array();
-			$messages[1] = __('Plugin updated.','membership');
-			$messages[2] = __('Plugin not updated.','membership');
+			$messages[1] = __('Addon updated.','membership');
+			$messages[2] = __('Addon not updated.','membership');
 
-			$messages[3] = __('Plugin activated.','membership');
-			$messages[4] = __('Plugin not activated.','membership');
+			$messages[3] = __('Addon activated.','membership');
+			$messages[4] = __('Addon not activated.','membership');
 
-			$messages[5] = __('Plugin deactivated.','membership');
-			$messages[6] = __('Plugin not deactivated.','membership');
+			$messages[5] = __('Addon deactivated.','membership');
+			$messages[6] = __('Addon not deactivated.','membership');
 
-			$messages[7] = __('Plugin activation toggled.','membership');
+			$messages[7] = __('Addon activation toggled.','membership');
 
 			?>
 			<div class='wrap'>
 				<div class="icon32" id="icon-plugins"><br></div>
-				<h2><?php _e('Edit Plugins','membership'); ?></h2>
+				<h2><?php _e('Edit Addons','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -5667,10 +5667,10 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>">
 
 				</div>
 
@@ -5682,18 +5682,18 @@ if(!class_exists('membershipadmin')) {
 				<div class="clear"></div>
 
 				<?php
-					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-plugins');
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-addons');
 
-					$columns = array(	"name"		=>	__('Plugin Name', 'membership'),
-										"file" 		=> 	__('Plugin File','membership'),
+					$columns = array(	"name"		=>	__('Addon Name', 'membership'),
+										"file" 		=> 	__('Addon File','membership'),
 										"active"	=>	__('Active','membership')
 									);
 
-					$columns = apply_filters('membership_plugincolumns', $columns);
+					$columns = apply_filters('membership_addoncolumns', $columns);
 
-					$plugins = get_membership_plugins();
+					$plugins = get_membership_addons();
 
-					$active = get_option('membership_activated_plugins', array());
+					$active = get_option('membership_activated_addons', array());
 
 				?>
 
@@ -5730,13 +5730,13 @@ if(!class_exists('membershipadmin')) {
 						if($plugins) {
 							foreach($plugins as $key => $plugin) {
 								$default_headers = array(
-									                'Name' => 'Plugin Name',
+									                'Name' => 'Addon Name',
 													'Author' => 'Author',
 													'Description'	=>	'Description',
 													'AuthorURI' => 'Author URI'
 									        );
 
-								$plugin_data = get_file_data( membership_dir('membershipincludes/plugins/' . $plugin), $default_headers, 'plugin' );
+								$plugin_data = get_file_data( membership_dir('membershipincludes/addons/' . $plugin), $default_headers, 'plugin' );
 
 								if(empty($plugin_data['Name'])) {
 									continue;
@@ -5744,7 +5744,7 @@ if(!class_exists('membershipadmin')) {
 
 								?>
 								<tr valign="middle" class="alternate" id="plugin-<?php echo $plugin; ?>">
-									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($plugin); ?>" name="plugincheck[]"></th>
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($plugin); ?>" name="addoncheck[]"></th>
 									<td class="column-name">
 										<strong><?php echo esc_html($plugin_data['Name']) . "</strong>" . __(' by ', 'membership') . "<a href='" . esc_attr($plugin_data['AuthorURI']) . "'>" . esc_html($plugin_data['Author']) . "</a>"; ?>
 										<?php if(!empty($plugin_data['Description'])) {
@@ -5754,9 +5754,9 @@ if(!class_exists('membershipadmin')) {
 											$actions = array();
 
 											if(in_array($plugin, $active)) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;plugin=" . $plugin . "", 'toggle-plugin-' . $plugin) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;addon=" . $plugin . "", 'toggle-addon-' . $plugin) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;plugin=" . $plugin . "", 'toggle-plugin-' . $plugin) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;addon=" . $plugin . "", 'toggle-addon-' . $plugin) . "'>" . __('Activate', 'membership') . "</a></span>";
 											}
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -5781,7 +5781,7 @@ if(!class_exists('membershipadmin')) {
 							$columncount = count($columns) + 1;
 							?>
 							<tr valign="middle" class="alternate" >
-								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Plugns where found for this install.','membership'); ?></td>
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Addons where found for this install.','membership'); ?></td>
 						    </tr>
 							<?php
 						}

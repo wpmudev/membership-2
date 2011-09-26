@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Integrated WP Roles
+Addon Name: Integrated WP Roles
 Description: Allows members to be assigned different roles based on their levels
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

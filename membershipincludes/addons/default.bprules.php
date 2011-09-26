@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Default BuddyPress Rules
+Addon Name: Default BuddyPress Rules
 Description: Main BuddyPress rules
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

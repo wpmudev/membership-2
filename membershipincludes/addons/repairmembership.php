@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Membership Verify and Repair
+Addon Name: Membership Verify and Repair
 Description: Checks and repairs the membership plugins tables
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

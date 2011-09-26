@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Gravity Forms Shortcode
+Addon Name: Gravity Forms Shortcode
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: 2Checkout payment plugin
+Addon Name: 2Checkout payment plugin
 Author: S H Mohanjith (Incsub)
 Author URI: http://premium.wpmudev.org
 */

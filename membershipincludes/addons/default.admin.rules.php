@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Default Admin Rules
+Addon Name: Default Admin Rules
 Description: Main admin side rules
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

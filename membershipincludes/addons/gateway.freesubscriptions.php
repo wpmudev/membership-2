@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Free subscriptions gateway
+Addon Name: Free subscriptions gateway
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

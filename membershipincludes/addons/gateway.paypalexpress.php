@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: PayPal Express Gateway
+Addon Name: PayPal Express Gateway
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

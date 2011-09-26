@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: PayPal Single Payments Gateway
+Addon Name: PayPal Single Payments Gateway
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

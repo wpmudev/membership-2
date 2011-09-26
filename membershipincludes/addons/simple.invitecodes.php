@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Simple Invites Codes
+Addon Name: Simple Invites Codes
 Description: Force invite codes for membership signups
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
