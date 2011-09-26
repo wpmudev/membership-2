@@ -2667,6 +2667,9 @@ if(!class_exists('membershipadmin')) {
 					<div class="level-holder-wrap">
 						<?php
 
+							do_action( 'membership_sidebar_top_level' );
+							do_action( 'membership_sidebar_top', 'level' );
+
 							$sections = apply_filters('membership_level_sections', array());
 
 							foreach($sections as $key => $section) {
@@ -2876,7 +2879,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Edit Membership Levels','membership'); ?></h2>
+				<h2><?php _e('Access Levels','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -3197,6 +3200,12 @@ if(!class_exists('membershipadmin')) {
 
 				<div class='sub-liquid-right'>
 					<div class="sub-holder-wrap">
+
+								<?php
+									do_action( 'membership_sidebar_top_subscription' );
+									do_action( 'membership_sidebar_top', 'subscription' );
+								?>
+
 								<div class="sidebar-name no-movecursor">
 									<h3><?php _e('Membership levels','membership'); ?></h3>
 								</div>
@@ -3424,7 +3433,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Edit Subscription Plans','membership'); ?></h2>
+				<h2><?php _e('Subscription Plans','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
