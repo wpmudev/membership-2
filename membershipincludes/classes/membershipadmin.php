@@ -168,29 +168,29 @@ if(!class_exists('membershipadmin')) {
 
 				do_action('membership_add_menu_items_top');
 				// Add the sub menu
-				add_submenu_page('membership', __('Members','membership'), __('Edit Members','membership'), 'membershipadmin', "members", array(&$this,'handle_members_panel'));
+				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadmin', "members", array(&$this,'handle_members_panel'));
 
-				add_submenu_page('membership', __('Membership Levels','membership'), __('Edit Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
-				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Edit Subscriptions','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
+				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
+				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
 
-				add_submenu_page('membership', __('Membership Purchases','membership'), __('Edit Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
+				add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
 
-				add_submenu_page('membership', __('Membership Gateways','membership'), __('Edit Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
+				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
 
-				add_submenu_page('membership', __('Membership Communication','membership'), __('Edit Communication','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
+				add_submenu_page('membership', __('Membership Communication','membership'), __('Communications','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
 
-				add_submenu_page('membership', __('Membership URL Groups','membership'), __('Edit URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
+				add_submenu_page('membership', __('Membership URL Groups','membership'), __('URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
 
-				add_submenu_page('membership', __('Membership Pings','membership'), __('Edit Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
+				add_submenu_page('membership', __('Membership Pings','membership'), __('Remote Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
 
-				add_submenu_page('membership', __('Membership Options','membership'), __('Edit Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
+				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
 				if(defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN') && MEMBERSHIP_ADDONS_ONLY_SUPERADMIN == true) {
 					if(is_super_admin()) {
-						add_submenu_page('membership', __('Membership Addons','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
+						add_submenu_page('membership', __('Membership Addons','membership'), __('Add-ons','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 					}
 				} else {
-					add_submenu_page('membership', __('Membership Addons','membership'), __('Edit Plugins','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
+					add_submenu_page('membership', __('Membership Addons','membership'), __('Add-ons','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 				}
 
 				do_action('membership_add_menu_items_bottom');
