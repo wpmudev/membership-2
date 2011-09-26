@@ -217,4 +217,65 @@ if(!class_exists('M_Urlgroup')) {
 
 	}
 }
+
+function M_create_internal_URL_group( $rule, $post, $id ) {
+
+	global $wpdb;
+
+	switch( $rule ) {
+		case 'posts':		$permalinks = array();
+							foreach( $_POST[$rule] as $rule ) {
+								$permalinks[] = get_permalink( $rule );
+							}
+
+							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts');
+							$id = $wpdb->get_var( $sql );
+
+							$data = array( 	"groupname"	=> 	'_posts',
+											"groupurls"	=>	implode("\n", $permalinks),
+											"isregexp"	=>	0,
+											"stripquerystring"	=> 1
+											);
+
+							if(!empty($id)) {
+								// exists so we're going to do an update
+								$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $id) );
+							} else {
+								// doesn't exist so we're going to do an add.
+								$wpdb->insert( membership_db_prefix($wpdb, 'urlgroups'), $data );
+							}
+
+							break;
+
+		case 'pages':		$permalinks = array();
+							foreach( $_POST[$rule] as $rule ) {
+								$permalinks[] = get_permalink( $rule );
+							}
+
+							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_pages');
+							$id = $wpdb->get_var( $sql );
+
+							$data = array( 	"groupname"	=> 	'_pages',
+											"groupurls"	=>	implode("\n", $permalinks),
+											"isregexp"	=>	0,
+											"stripquerystring"	=> 1
+											);
+
+							if(!empty($id)) {
+								// exists so we're going to do an update
+								$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $id) );
+							} else {
+								// doesn't exist so we're going to do an add.
+								$wpdb->insert( membership_db_prefix($wpdb, 'urlgroups'), $data );
+							}
+
+							break;
+
+	}
+
+}
+
+add_action( 'membership_update_positive_rule', 'M_create_internal_URL_group', 10, 3 );
+add_action( 'membership_update_negative_rule', 'M_create_internal_URL_group', 10, 3 );
+
 ?>

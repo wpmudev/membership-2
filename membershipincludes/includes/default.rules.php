@@ -76,6 +76,21 @@ class M_Posts extends M_Rule {
 		<?php
 	}
 
+	function get_group() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id ASC", '_posts' );
+
+		$results = $wpdb->get_results( $sql );
+
+		if(!empty($results)) {
+			return $results;
+		} else {
+			return false;
+		}
+	}
+
 	function on_positive($data) {
 
 		$this->data = $data;
@@ -1055,7 +1070,7 @@ class M_URLGroups extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " ORDER BY id ASC" );
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname NOT LIKE (%s) ORDER BY id ASC", '\_%' );
 
 		$results = $wpdb->get_results( $sql );
 
@@ -1221,7 +1236,7 @@ class M_URLGroups extends M_Rule {
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+			if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
 				$redirect = true;
 			}
 		}

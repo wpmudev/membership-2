@@ -143,6 +143,9 @@ if(!class_exists('M_Level')) {
 								$ruleval = maybe_serialize($_POST[$rule]);
 								// write it to the database
 								$this->db->insert($this->membership_rules, array("level_id" => $this->id, "rule_ive" => 'positive', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
+								// Hit an action - two methods of hooking
+								do_action('membership_update_positive_rule', $rule, $_POST, $this->id);
+								do_action('membership_update_positive_rule_' . $rule, $_POST, $this->id);
 							}
 						}
 
@@ -159,6 +162,9 @@ if(!class_exists('M_Level')) {
 								$ruleval = maybe_serialize($_POST[$rule]);
 								// write it to the database
 								$this->db->insert($this->membership_rules, array("level_id" => $this->id, "rule_ive" => 'negative', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
+								// Hit an action - two methods of hooking
+								do_action('membership_update_negative_rule', $rule, $_POST, $this->id);
+								do_action('membership_update_negative_rule_' . $rule, $_POST, $this->id);
 							}
 						}
 					}

@@ -19,9 +19,9 @@ if ( !function_exists( 'wdp_un_check' ) ) {
 }
 /* --------------------------------------------------------------------- */
 
-function get_membership_plugins() {
-	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
-		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
+function get_membership_addons() {
+	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
 			$mem_plugins = array ();
 			while ( ( $plugin = readdir( $dh ) ) !== false )
 				if ( substr( $plugin, -4 ) == '.php' )
@@ -29,7 +29,7 @@ function get_membership_plugins() {
 			closedir( $dh );
 			sort( $mem_plugins );
 
-			return apply_filters('membership_available_plugins', $mem_plugins);
+			return apply_filters('membership_available_addons', $mem_plugins);
 		}
 	}
 
@@ -37,44 +37,50 @@ function get_membership_plugins() {
 
 }
 
-function load_membership_plugins() {
+function load_membership_addons() {
 
-	$plugins = get_option('membership_activated_plugins', array());
+	$plugins = get_option('membership_activated_addons', array());
 
-	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
-		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
+	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
 			$mem_plugins = array ();
 			while ( ( $plugin = readdir( $dh ) ) !== false )
 				if ( substr( $plugin, -4 ) == '.php' )
 					$mem_plugins[] = $plugin;
 			closedir( $dh );
 			sort( $mem_plugins );
+
+			$mem_plugins = apply_filters('membership_available_addons', $mem_plugins);
+
 			foreach( $mem_plugins as $mem_plugin ) {
 				if(in_array($mem_plugin, $plugins)) {
-					include_once( membership_dir('membershipincludes/plugins/' . $mem_plugin) );
+					include_once( membership_dir('membershipincludes/addons/' . $mem_plugin) );
 				}
 			}
 		}
 	}
 
-	do_action( 'membership_plugins_loaded' );
+	do_action( 'membership_addons_loaded' );
 }
 
-function load_all_membership_plugins() {
-	if ( is_dir( membership_dir('membershipincludes/plugins') ) ) {
-		if ( $dh = opendir( membership_dir('membershipincludes/plugins') ) ) {
+function load_all_membership_addons() {
+	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
 			$mem_plugins = array ();
 			while ( ( $plugin = readdir( $dh ) ) !== false )
 				if ( substr( $plugin, -4 ) == '.php' )
 					$mem_plugins[] = $plugin;
 			closedir( $dh );
 			sort( $mem_plugins );
+
+			$mem_plugins = apply_filters('membership_available_addons', $mem_plugins);
+
 			foreach( $mem_plugins as $mem_plugin )
-				include_once( membership_dir('membershipincludes/plugins/' . $mem_plugin) );
+				include_once( membership_dir('membershipincludes/addons/' . $mem_plugin) );
 		}
 	}
 
-	do_action( 'membership_plugins_loaded' );
+	do_action( 'membership_addons_loaded' );
 }
 
 function set_membership_url($base) {
@@ -142,7 +148,7 @@ function membership_is_active($userdata, $password) {
 	if(!empty($userdata) && !is_wp_error($userdata)) {
 		$id = $userdata->ID;
 
-		if(get_usermeta($id, $wpdb->prefix . 'membership_active', true) == 'no') {
+		if(get_user_meta($id, $wpdb->prefix . 'membership_active', true) == 'no') {
 			return new WP_Error('member_inactive', __('Sorry, this account is not active.', 'membership'));
 		}
 
