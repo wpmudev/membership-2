@@ -76,13 +76,30 @@ class M_Posts extends M_Rule {
 		<?php
 	}
 
+	function redirect() {
+
+		global $M_options;
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+		}
+
+		$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+		wp_safe_redirect( $url );
+		exit;
+
+	}
+
 	function get_group() {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id ASC", '_posts' );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts' );
 
-		$results = $wpdb->get_results( $sql );
+		$results = $wpdb->get_var( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -107,29 +124,117 @@ class M_Posts extends M_Rule {
 
 	function add_viewable_posts($wp_query) {
 
-		if(!in_array($wp_query->query_vars['post_type'], array('post','')) || !empty($wp_query->query_vars['pagename'])) {
-			return;
+		global $M_options;
+
+		$redirect = false;
+		$host = '';
+		if(is_ssl()) {
+			$host = "https://";
+		} else {
+			$host = "http://";
+		}
+		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		$exclude = array();
+		if(!empty($M_options['registration_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
 		}
 
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__in'][] = $value;
+		if(!empty($M_options['account_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['account_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
 		}
 
-		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		if(!empty($M_options['nocontent_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+		}
+
+		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+			$exclude[] = $host;
+			$exclude[] = untrailingslashit($host);
+		}
+
+		// we have the current page / url - get the groups selected
+		$group_id = $this->get_group();
+
+		if($group_id) {
+			$group = new M_Urlgroup( $group_id );
+
+			if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+				$redirect = true;
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		} else {
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		}
 
 	}
 
 	function add_unviewable_posts($wp_query) {
 
-		if(!in_array($wp_query->query_vars['post_type'], array('post','')) || !empty($wp_query->query_vars['pagename'])) {
-			return;
+		global $M_options;
+
+		$redirect = false;
+		$host = '';
+		if(is_ssl()) {
+			$host = "https://";
+		} else {
+			$host = "http://";
+		}
+		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		$exclude = array();
+		if(!empty($M_options['registration_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
 		}
 
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__not_in'][] = $value;
+		if(!empty($M_options['account_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['account_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
 		}
 
-		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		if(!empty($M_options['nocontent_page'])) {
+			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+		}
+
+		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+			$exclude[] = $host;
+			$exclude[] = untrailingslashit($host);
+		}
+
+		// we have the current page / url - get the groups selected
+		$group_id = $this->get_group();
+
+		if($group_id) {
+			$group = new M_Urlgroup( $group_id );
+
+			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+				$redirect = true;
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		} else {
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__not_in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		}
 
 	}
 
