@@ -127,7 +127,7 @@ if(!class_exists('membershippublic')) {
 				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 				// add in a no posts thing - change this?
-				add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 999, 2);
+				//add_filter('the_posts', array(&$this, 'check_for_posts_existance'), 999, 2);
 			}
 
 		}

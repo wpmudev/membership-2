@@ -552,6 +552,8 @@ class M_Categories extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
 		add_filter( 'get_terms', array(&$this, 'add_viewable_categories'), 1, 3 );
+
+		add_filter( 'the_posts', array(&$this, 'check_positive_posts'));
 	}
 
 	function on_negative($data) {
@@ -560,6 +562,89 @@ class M_Categories extends M_Rule {
 
 		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
 		add_filter( 'get_terms', array(&$this, 'add_unviewable_categories'), 1, 3 );
+
+		add_filter( 'the_posts', array(&$this, 'check_negative_posts'));
+	}
+
+	function redirect() {
+
+		global $M_options;
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+		}
+
+		$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+		wp_safe_redirect( $url );
+		exit;
+
+	}
+
+	function check_negative_posts( $posts ) {
+
+		global $wp_query;
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		foreach($posts as $post) {
+			// should only be one as otherwise the single check above didn't work very well.
+			if($post->post_type != 'post') {
+				// Not a post so ignore
+				return $posts;
+			} else {
+				// Cycle the categories
+				foreach($this->data as $cat_id) {
+					if(has_category( $cat_id, $post )) {
+						$redirect = true;
+					}
+				}
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		} else {
+			return $posts;
+		}
+
+	}
+
+	function check_positive_posts( $posts ) {
+
+		global $wp_query;
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		foreach($posts as $post) {
+			// should only be one as otherwise the single check above didn't work very well.
+			if($post->post_type != 'post') {
+				// Not a post so ignore
+				return $posts;
+			} else {
+				// Cycle the categories
+				foreach($this->data as $cat_id) {
+					if(!has_category( $cat_id, $post )) {
+						$redirect = true;
+					}
+				}
+			}
+		}
+
+		if($redirect === true) {
+			// we need to redirect
+			$this->redirect();
+		} else {
+			return $posts;
+		}
+
 	}
 
 	function add_viewable_posts($wp_query) {
@@ -584,14 +669,11 @@ class M_Categories extends M_Rule {
 			return;
 		}
 
-
 		foreach( (array) $this->data as $key => $value ) {
 			$wp_query->query_vars['category__not_in'][] = $value;
 		}
 
 		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
-
-		//print_r($wp_query);
 
 	}
 
