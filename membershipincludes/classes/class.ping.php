@@ -121,7 +121,7 @@ if(!class_exists('M_Ping')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __('Strip query strings from URL','membership') . '</th>';
+			echo '<th style="" scope="row" valign="top">' . __('Ping method','membership') . '</th>';
 			echo '<td valign="top" align="left">';
 			echo '<select name="pingtype">';
 				echo '<option value="GET"';
@@ -168,7 +168,7 @@ if(!class_exists('M_Ping')) {
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __('Strip query strings from URL','membership') . '</th>';
+			echo '<th style="" scope="row" valign="top">' . __('Ping method','membership') . '</th>';
 			echo '<td valign="top" align="left">';
 			echo '<select name="pingtype">';
 				echo '<option value="GET"';

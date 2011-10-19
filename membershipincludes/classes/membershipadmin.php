@@ -186,7 +186,7 @@ if(!class_exists('membershipadmin')) {
 				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
 				if(defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN') && MEMBERSHIP_ADDONS_ONLY_SUPERADMIN == true) {
-					if(is_super_admin()) {
+					if(is_multisite() && is_super_admin()) {
 						add_submenu_page('membership', __('Membership Addons','membership'), __('Add-ons','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 					}
 				} else {
