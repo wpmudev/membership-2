@@ -173,7 +173,7 @@ if(!class_exists('membershipadmin')) {
 				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
 				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
 
-				add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
+				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
 
 				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
 

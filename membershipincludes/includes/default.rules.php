@@ -167,7 +167,7 @@ class M_Posts extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		} else {
@@ -225,7 +225,7 @@ class M_Posts extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		} else {
@@ -404,7 +404,7 @@ class M_Pages extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		}
@@ -467,7 +467,7 @@ class M_Pages extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		}
@@ -585,7 +585,7 @@ class M_Categories extends M_Rule {
 
 	function check_negative_posts( $posts ) {
 
-		global $wp_query;
+		global $wp_query, $M_options;
 
 		if(!$wp_query->is_single || count($posts) > 1) {
 			return $posts;
@@ -606,7 +606,7 @@ class M_Categories extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		} else {
@@ -638,7 +638,7 @@ class M_Categories extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect === true && !empty($M_options['nocontent_page'])) {
 			// we need to redirect
 			$this->redirect();
 		} else {
