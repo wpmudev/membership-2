@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-20 14:42+0100\n"
-"PO-Revision-Date: 2011-10-20 14:42+0100\n"
+"POT-Creation-Date: 2011-10-26 13:29+0100\n"
+"PO-Revision-Date: 2011-10-26 13:29+0100\n"
 "Last-Translator: Barry <barry@mapinated.com>\n"
 "Language-Team: Incsub <barry@incsub.com>\n"
 "MIME-Version: 1.0\n"
@@ -557,12 +557,155 @@ msgstr ""
 msgid "Test Mode (Sandbox)"
 msgstr ""
 
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:51
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:46
+msgid "Australia"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:52
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:47
+msgid "Austria"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:53
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:48
+msgid "Belgium"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:54
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:49
+msgid "Canada"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:55
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:50
+msgid "China"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:56
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:51
+msgid "France"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:57
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:52
+msgid "Germany"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:58
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:53
+msgid "Hong Kong"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:59
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:54
+msgid "Italy"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:60
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:55
+msgid "Mexico"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:61
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:56
+msgid "Netherlands"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:62
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:57
+msgid "New Zealand"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:63
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:58
+msgid "Poland"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:64
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:59
+msgid "Singapore"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:65
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:60
+msgid "Spain"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:66
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:61
+msgid "Sweden"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:67
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:62
+msgid "Switzerland"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:68
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:63
+msgid "United Kingdom"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:69
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalnosignup.php:64
+msgid "United States"
+msgstr ""
+
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:109
 msgid "Upgrade button"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:118
 msgid "Cancel button"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:733
+msgid "Last transaction has been reversed. Reason: Payment has been reversed (charge back)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:751
+msgid "Last transaction has been reversed. Reason: Payment has been refunded"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:768
+msgid "Last transaction has been reversed. Reason: Payment Denied"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:787
+msgid "Customer did not include a confirmed shipping address"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:788
+msgid "Funds not captured yet"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:789
+msgid "eCheck that has not cleared yet"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:790
+msgid "Payment waiting for aproval by service provider"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:791
+msgid "Payment waiting for service provider to handle multi-currency process"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:792
+msgid "Customer did not register or confirm his/her email yet"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:793
+msgid "Waiting for service provider to upgrade the PayPal account"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:794
+msgid "Waiting for service provider to verify his/her PayPal account"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalexpress.php:798
+msgid "Last transaction is pending. Reason: "
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/gateway.paypalpro.php:18
@@ -1031,6 +1174,26 @@ msgstr ""
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:515
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:599
 msgid "<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:548
+msgid "Trial"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:549
+msgid "Finite"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:550
+msgid "Indefinite"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:551
+msgid "Serial"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.subscription.php:552
+msgid "Sequential"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/class.urlgroup.php:56
@@ -1533,12 +1696,19 @@ msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1637
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2903
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3036
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3458
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3606
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3745
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3862
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4109
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4260
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4486
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4576
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4923
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:5014
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:5671
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:5799
 msgid "Apply"
 msgstr ""
 
@@ -1647,8 +1817,12 @@ msgstr ""
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1769
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2983
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3540
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3813
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4179
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4182
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4545
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4548
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4982
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4985
 msgid "Edit"
 msgstr ""
@@ -1924,6 +2098,98 @@ msgstr ""
 msgid "Payment currencys"
 msgstr ""
 
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2351
+msgid "AUD - Australian Dollar"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2352
+msgid "BRL - Brazilian Real"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2353
+msgid "CAD - Canadian Dollar"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2354
+msgid "CHF - Swiss Franc"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2355
+msgid "CZK - Czech Koruna"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2356
+msgid "DKK - Danish Krone"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2357
+msgid "EUR - Euro"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2358
+msgid "GBP - Pound Sterling"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2359
+msgid "ILS - Israeli Shekel"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2360
+msgid "HKD - Hong Kong Dollar"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2361
+msgid "HUF - Hungarian Forint"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2362
+msgid "JPY - Japanese Yen"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2363
+msgid "MYR - Malaysian Ringgits"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2364
+msgid "MXN - Mexican Peso"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2365
+msgid "NOK - Norwegian Krone"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2366
+msgid "NZD - New Zealand Dollar"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2367
+msgid "PHP - Philippine Pesos"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2368
+msgid "PLN - Polish Zloty"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2369
+msgid "SEK - Swedish Krona"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2370
+msgid "SGD - Singapore Dollar"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2371
+msgid "TWD - Taiwan New Dollars"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2372
+msgid "THB - Thai Baht"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2373
+msgid "USD - U.S. Dollar"
+msgstr ""
+
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2390
 msgid "Membership renewal"
 msgstr ""
@@ -2090,6 +2356,10 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2979
+msgid "Level ID:"
+msgstr ""
+
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2989
 msgid "Clone"
 msgstr ""
@@ -2206,6 +2476,10 @@ msgstr ""
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3490
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3571
 msgid "Public"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3536
+msgid "Subscription ID:"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:3547
@@ -2354,6 +2628,34 @@ msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4136
 msgid "Pre-expiry period"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4207
+msgid "Signup message"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4219
+msgid "Minute(s)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4221
+msgid "Hour(s)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4223
+msgid "Day(s)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4225
+msgid "Week(s)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4227
+msgid "Month(s)"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4229
+msgid "Year(s)"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:4242
