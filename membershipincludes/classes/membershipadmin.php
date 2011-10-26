@@ -988,7 +988,7 @@ if(!class_exists('membershipadmin')) {
 				case 'move':	$title = __('Move subscription to another gateway','membership');
 								$formdescription = __('A subscription gateway handles the payment and renewal forms displayed for a subscription. Changing this should not be undertaken lightly, it can seriously mess up the subscriptions of your members.','membership') . "<br/><br/>";
 
-								$html = "<h3>" . __('Gateway to move from for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Gateway to move from for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromgateway' id='fromgateway' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the gateway to move from.','membership') . "</option>\n";
@@ -1003,7 +1003,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "</select>\n";
 								$html .= "</div>";
 
-								$html .= "<h3>" . __('Gateway to move to for this / these member(s)','management') . "</h3>";
+								$html .= "<h3>" . __('Gateway to move to for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='togateway' id='togateway' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the gateway to move to.','membership') . "</option>\n";
@@ -1091,7 +1091,7 @@ if(!class_exists('membershipadmin')) {
 								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
 								$formdescription .= __('By adding a membership level, you may actually be removing existing access to content.','membership');
 
-								$html = "<h3>" . __('Level to add for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Level to add for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
@@ -1111,7 +1111,7 @@ if(!class_exists('membershipadmin')) {
 				case 'move':	$title = __('Move member to another level','membership');
 								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
 
-								$html = "<h3>" . __('Level to move from for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Level to move from for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
@@ -1124,7 +1124,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "</select>\n";
 								$html .= "</div>";
 
-								$html .= "<h3>" . __('Level to move to for this / these member(s)','management') . "</h3>";
+								$html .= "<h3>" . __('Level to move to for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
@@ -1145,7 +1145,7 @@ if(!class_exists('membershipadmin')) {
 								$formdescription = __('A membership level controls the amount of access to the sites content this member will have.','membership') . "<br/><br/>";
 								$formdescription .= __('By removing a membership level, you may actually be increasing existing access to content.','membership');
 
-								$html = "<h3>" . __('Level to drop for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Level to drop for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
 								$html .= "<option value=''>" . __('Select the level to remove.','membership') . "</option>\n";
@@ -1232,7 +1232,7 @@ if(!class_exists('membershipadmin')) {
 								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
 								$formdescription .= __('Depending on your payment gateway, adding a subscription here may not set up a payment subscription.','membership');
 
-								$html = "<h3>" . __('Subscription and level to add for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Subscription and level to add for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tosub_id' id='tosub_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to add.','membership') . "</option>\n";
@@ -1262,7 +1262,7 @@ if(!class_exists('membershipadmin')) {
 								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
 								$formdescription .= __('Depending on your payment gateway, moving a subscription here may not alter a members existing payment subscription.','membership');
 
-								$html = "<h3>" . __('Subscription to move from for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Subscription to move from for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromsub_id' id='fromsub_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the subscription to move from.','membership') . "</option>\n";
@@ -1275,7 +1275,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "</select>\n";
 								$html .= "</div>";
 
-								$html .= "<h3>" . __('Subscription and Level to move to for this / these member(s)','management') . "</h3>";
+								$html .= "<h3>" . __('Subscription and Level to move to for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tosub_id' id='tosub_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
@@ -1305,7 +1305,7 @@ if(!class_exists('membershipadmin')) {
 								$formdescription = __('A subscription controls the levels a site member has access to / passes through.','membership') . "<br/><br/>";
 								$formdescription .= __('Depending on the payment gateway, removing a subscription will not automatically cancel a payment subscription.','membership');
 
-								$html = "<h3>" . __('Subscription to drop for this / these member(s)','management') . "</h3>";
+								$html = "<h3>" . __('Subscription to drop for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='fromsub_id' id='fromsub_id' class='wide'>\n";
 								$html .= "<option value=''>" . __('Select the subscription to remove.','membership') . "</option>\n";
@@ -1568,17 +1568,17 @@ if(!class_exists('membershipadmin')) {
 			$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id, $active_op);
 
 			$messages = array();
-			$messages[1] = __('Member added.');
-			$messages[2] = __('Member deleted.');
-			$messages[3] = __('Member updated.');
-			$messages[4] = __('Member not added.');
-			$messages[5] = __('Member not updated.');
-			$messages[6] = __('Member not deleted.');
+			$messages[1] = __('Member added.','membership');
+			$messages[2] = __('Member deleted.','membership');
+			$messages[3] = __('Member updated.','membership');
+			$messages[4] = __('Member not added.','membership');
+			$messages[5] = __('Member not updated.','membership');
+			$messages[6] = __('Member not deleted.','membership');
 
-			$messages[7] = __('Member activation toggled.');
-			$messages[8] = __('Member activation not toggled.');
+			$messages[7] = __('Member activation toggled.','membership');
+			$messages[8] = __('Member activation not toggled.','membership');
 
-			$messages[9] = __('Members updated.');
+			$messages[9] = __('Members updated.','membership');
 
 			?>
 			<div class='wrap nosubsub'>
@@ -1615,8 +1615,8 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation','membership'); ?></option>
 
 					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
 						<option value="bulkaddsub"><?php _e('Add subscription','membership'); ?></option>
@@ -1634,7 +1634,7 @@ if(!class_exists('membershipadmin')) {
 						<option value="bulkmovegateway"><?php _e('Move gateway','membership'); ?></option>
 					</optgroup>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>">
 
 				<select name="sub_op">
 					<option value=""><?php _e('Filter by subscription','membership'); ?></option>
@@ -1649,7 +1649,7 @@ if(!class_exists('membershipadmin')) {
 						}
 					?>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter','membership'); ?>">
 
 				<select name="level_op">
 					<option value=""><?php _e('Filter by level','membership'); ?></option>
@@ -1664,20 +1664,20 @@ if(!class_exists('membershipadmin')) {
 						}
 					?>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter','membership'); ?>">
 
 				<select name="active_op">
 					<option value=""><?php _e('Filter by status','membership'); ?></option>
 					<option value="yes" <?php if($_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
 					<option value="no" <?php if($_GET['active_op'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter','membership'); ?>">
 
 
 				</div>
 
 				<div class="alignright actions">
-					<!-- <input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel"> -->
+					<!-- <input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New','membership'); ?>" name="addnewlevel"> -->
 				</div>
 
 				<br class="clear">
@@ -1694,7 +1694,7 @@ if(!class_exists('membershipadmin')) {
 				<?php endif; ?>
 
 				<?php if ( $wp_user_search->is_search() ) : ?>
-					<p><a href="?page=<?php echo $page; ?>"><?php _e('&larr; Back to All Users'); ?></a></p>
+					<p><a href="?page=<?php echo $page; ?>"><?php _e('&larr; Back to All Users','membership'); ?></a></p>
 				<?php endif; ?>
 
 				<div class="clear"></div>
@@ -1777,7 +1777,7 @@ if(!class_exists('membershipadmin')) {
 									<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 								</td>
 								<td <?php echo $style; ?>><?php echo $user_object->first_name . " " . $user_object->last_name; ?></td>
-								<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf( __('e-mail: %s' ), $user_object->user_email ); ?>'><?php echo $user_object->user_email; ?></a></td>
+								<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf( __('e-mail: %s','membership' ), $user_object->user_email ); ?>'><?php echo $user_object->user_email; ?></a></td>
 								<td <?php echo $style; ?>>
 									<?php if($user_object->active_member()) {
 										echo "<strong>" . __('Active', 'membership') . "</strong>";
@@ -1897,8 +1897,8 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation','membership'); ?></option>
 
 					<optgroup label="<?php _e('Subscriptions','membership'); ?>">
 						<option value="bulkaddsub"><?php _e('Add subscription','membership'); ?></option>
@@ -1931,7 +1931,7 @@ if(!class_exists('membershipadmin')) {
 						}
 					?>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter','membership'); ?>">
 
 				<select name="level_op2">
 					<option value=""><?php _e('Filter by level','membership'); ?></option>
@@ -1946,14 +1946,14 @@ if(!class_exists('membershipadmin')) {
 						}
 					?>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter','membership'); ?>">
 
 				<select name="active_op2">
 					<option value=""><?php _e('Filter by status','membership'); ?></option>
 					<option value="yes" <?php if($_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
 					<option value="no" <?php if($_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter'); ?>">
+				<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter','membership'); ?>">
 
 
 				</div>
@@ -2348,29 +2348,29 @@ if(!class_exists('membershipadmin')) {
 								  	$currency = $M_options['paymentcurrency'];
 								    $sel_currency = empty($currency) ? 'USD' : $currency;
 								    $currencies = array(
-								          'AUD' => 'AUD - Australian Dollar',
-								          'BRL' => 'BRL - Brazilian Real',
-								          'CAD' => 'CAD - Canadian Dollar',
-								          'CHF' => 'CHF - Swiss Franc',
-								          'CZK' => 'CZK - Czech Koruna',
-								          'DKK' => 'DKK - Danish Krone',
-								          'EUR' => 'EUR - Euro',
-								          'GBP' => 'GBP - Pound Sterling',
-								          'ILS' => 'ILS - Israeli Shekel',
-								          'HKD' => 'HKD - Hong Kong Dollar',
-								          'HUF' => 'HUF - Hungarian Forint',
-								          'JPY' => 'JPY - Japanese Yen',
-								          'MYR' => 'MYR - Malaysian Ringgits',
-								          'MXN' => 'MXN - Mexican Peso',
-								          'NOK' => 'NOK - Norwegian Krone',
-								          'NZD' => 'NZD - New Zealand Dollar',
-								          'PHP' => 'PHP - Philippine Pesos',
-								          'PLN' => 'PLN - Polish Zloty',
-								          'SEK' => 'SEK - Swedish Krona',
-								          'SGD' => 'SGD - Singapore Dollar',
-								          'TWD' => 'TWD - Taiwan New Dollars',
-								          'THB' => 'THB - Thai Baht',
-								          'USD' => 'USD - U.S. Dollar'
+								          'AUD' => __('AUD - Australian Dollar','membership'),
+								          'BRL' => __('BRL - Brazilian Real','membership'),
+								          'CAD' => __('CAD - Canadian Dollar','membership'),
+								          'CHF' => __('CHF - Swiss Franc','membership'),
+								          'CZK' => __('CZK - Czech Koruna','membership'),
+								          'DKK' => __('DKK - Danish Krone','membership'),
+								          'EUR' => __('EUR - Euro','membership'),
+								          'GBP' => __('GBP - Pound Sterling','membership'),
+								          'ILS' => __('ILS - Israeli Shekel','membership'),
+								          'HKD' => __('HKD - Hong Kong Dollar','membership'),
+								          'HUF' => __('HUF - Hungarian Forint','membership'),
+								          'JPY' => __('JPY - Japanese Yen','membership'),
+								          'MYR' => __('MYR - Malaysian Ringgits','membership'),
+								          'MXN' => __('MXN - Mexican Peso','membership'),
+								          'NOK' => __('NOK - Norwegian Krone','membership'),
+								          'NZD' => __('NZD - New Zealand Dollar','membership'),
+								          'PHP' => __('PHP - Philippine Pesos','membership'),
+								          'PLN' => __('PLN - Polish Zloty','membership'),
+								          'SEK' => __('SEK - Swedish Krona','membership'),
+								          'SGD' => __('SGD - Singapore Dollar','membership'),
+								          'TWD' => __('TWD - Taiwan New Dollars','membership'),
+								          'THB' => __('THB - Thai Baht','membership'),
+								          'USD' => __('USD - U.S. Dollar','membership')
 								      );
 
 										$currencies = apply_filters('membership_available_currencies', $currencies);
@@ -2448,7 +2448,7 @@ if(!class_exists('membershipadmin')) {
 					?>
 
 					<p class="submit">
-						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
 					</p>
 
 				</form>
@@ -2853,17 +2853,17 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			$messages = array();
-			$messages[1] = __('Membership Level added.');
-			$messages[2] = __('Membership Level deleted.');
-			$messages[3] = __('Membership Level updated.');
-			$messages[4] = __('Membership Level not added.');
-			$messages[5] = __('Membership Level not updated.');
-			$messages[6] = __('Membership Level not deleted.');
+			$messages[1] = __('Membership Level added.', 'membership');
+			$messages[2] = __('Membership Level deleted.', 'membership');
+			$messages[3] = __('Membership Level updated.', 'membership');
+			$messages[4] = __('Membership Level not added.', 'membership');
+			$messages[5] = __('Membership Level not updated.', 'membership');
+			$messages[6] = __('Membership Level not deleted.', 'membership');
 
-			$messages[7] = __('Membership Level activation toggled.');
-			$messages[8] = __('Membership Level activation not toggled.');
+			$messages[7] = __('Membership Level activation toggled.', 'membership');
+			$messages[8] = __('Membership Level activation not toggled.', 'membership');
 
-			$messages[9] = __('Membership Levels updated.');
+			$messages[9] = __('Membership Levels updated.', 'membership');
 
 			?>
 			<div class='wrap nosubsub'>
@@ -2896,11 +2896,11 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+				<option value="delete"><?php _e('Delete', 'membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>">
 
 				<select name="level_id">
 				<option <?php if(isset($_GET['level_id']) && addslashes($_GET['level_id']) == 'all') echo "selected='selected'"; ?> value="all"><?php _e('View all Levels','membership'); ?></option>
@@ -2918,7 +2918,7 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel">
+					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel">
 				</div>
 
 				<br class="clear">
@@ -2976,19 +2976,19 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="level-<?php echo $level->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $level->id; ?>" name="levelcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Level ID: <?php echo esc_attr($level->id); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;level_id=<?php echo $level->id; ?>" class="row-title"><?php echo esc_html($level->level_title); ?></a></strong>
+										<strong><a title="<?php _e('Level ID:', 'membership'); ?> <?php echo esc_attr($level->id); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;level_id=<?php echo $level->id; ?>" class="row-title"><?php echo esc_html($level->level_title); ?></a></strong>
 										<?php
 											$actions = array();
 											//$actions['id'] = "<strong>" . __('ID : ', 'membership') . $level->id . "</strong>";
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;level_id=" . $level->id . "'>" . __('Edit') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;level_id=" . $level->id . "'>" . __('Edit', 'membership') . "</a></span>";
 											if($level->level_active == 0) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Activate', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;level_id=" . $level->id . "", 'toggle-level_' . $level->id) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 											}
-											$actions['clone'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=clone&amp;clone_id=" . $level->id . "'>" . __('Clone') . "</a></span>";
+											$actions['clone'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=clone&amp;clone_id=" . $level->id . "'>" . __('Clone', 'membership') . "</a></span>";
 
-											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;level_id=" . $level->id . "", 'delete-level_' . $level->id) . "'>" . __('Delete') . "</a></span>";
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;level_id=" . $level->id . "", 'delete-level_' . $level->id) . "'>" . __('Delete', 'membership') . "</a></span>";
 
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -3029,14 +3029,14 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+					<option value="delete"><?php _e('Delete', 'membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel2">
 				</div>
 				<br class="clear">
 				</div>
@@ -3407,17 +3407,17 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			$messages = array();
-			$messages[1] = __('Subscription added.');
-			$messages[2] = __('Subscription deleted.');
-			$messages[3] = __('Subscription updated.');
-			$messages[4] = __('Subscription not added.');
-			$messages[5] = __('Subscription not updated.');
-			$messages[6] = __('Subscription not deleted.');
+			$messages[1] = __('Subscription added.', 'membership');
+			$messages[2] = __('Subscription deleted.', 'membership');
+			$messages[3] = __('Subscription updated.', 'membership');
+			$messages[4] = __('Subscription not added.', 'membership');
+			$messages[5] = __('Subscription not updated.', 'membership');
+			$messages[6] = __('Subscription not deleted.', 'membership');
 
-			$messages[7] = __('Subscription activation toggled.');
-			$messages[8] = __('Subscription activation not toggled.');
+			$messages[7] = __('Subscription activation toggled.', 'membership');
+			$messages[8] = __('Subscription activation not toggled.', 'membership');
 
-			$messages[9] = __('Subscriptions updated.');
+			$messages[9] = __('Subscriptions updated.', 'membership');
 
 			?>
 			<div class='wrap nosubsub'>
@@ -3450,10 +3450,10 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
-				<option value="togglepublic"><?php _e('Toggle public status'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+				<option value="delete"><?php _e('Delete', 'membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
+				<option value="togglepublic"><?php _e('Toggle public status', 'membership'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
@@ -3469,12 +3469,12 @@ if(!class_exists('membershipadmin')) {
 				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_id') echo "selected='selected'"; ?> value="order_id"><?php _e('Order by subscription ID','membership'); ?></option>
 				<option <?php if(isset($_GET['order_by']) && addslashes($_GET['order_by']) == 'order_name') echo "selected='selected'"; ?> value="order_name"><?php _e('Order by subscription name','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
+				<input type="submit" class="button-secondary" value="<?php _e('Filter', 'membership'); ?>" id="post-query-submit">
 
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New'); ?>" name="addnewlevel">
+					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel">
 				</div>
 
 				<br class="clear">
@@ -3533,22 +3533,22 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="sub-<?php echo $sub->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $sub->id; ?>" name="subcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Subscription ID: <?php echo esc_attr($sub->id); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;sub_id=<?php echo $sub->id; ?>" class="row-title"><?php echo esc_html(stripslashes($sub->sub_name)); ?></a></strong>
+										<strong><a title="<?php _e('Subscription ID:', 'membership'); ?> <?php echo esc_attr($sub->id); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;sub_id=<?php echo $sub->id; ?>" class="row-title"><?php echo esc_html(stripslashes($sub->sub_name)); ?></a></strong>
 										<?php
 											$actions = array();
 											//$actions['id'] = "<strong>" . __('ID : ', 'membership') . $sub->id . "</strong>";
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;sub_id=" . $sub->id . "'>" . __('Edit') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;sub_id=" . $sub->id . "'>" . __('Edit', 'membership') . "</a></span>";
 											if($sub->sub_active == 0) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Activate', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 											}
 											if($sub->sub_public == 0) {
-												$actions['public'] = "<span class='edit makeprivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make public') . "</a></span>";
+												$actions['public'] = "<span class='edit makeprivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make public', 'membership') . "</a></span>";
 											} else {
-												$actions['public'] = "<span class='edit makepublic'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make private') . "</a></span>";
+												$actions['public'] = "<span class='edit makepublic'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make private', 'membership') . "</a></span>";
 											}
-											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;sub_id=" . $sub->id . "", 'delete-sub_' . $sub->id) . "'>" . __('Delete') . "</a></span>";
+											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;sub_id=" . $sub->id . "", 'delete-sub_' . $sub->id) . "'>" . __('Delete', 'membership') . "</a></span>";
 
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -3599,14 +3599,14 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+					<option value="delete"><?php _e('Delete', 'membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New'); ?>" name="addnewlevel2">
+					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel2">
 				</div>
 				<br class="clear">
 				</div>
@@ -3707,16 +3707,16 @@ if(!class_exists('membershipadmin')) {
 
 
 			$messages = array();
-			$messages[1] = __('Gateway updated.');
-			$messages[2] = __('Gateway not updated.');
+			$messages[1] = __('Gateway updated.', 'membership');
+			$messages[2] = __('Gateway not updated.', 'membership');
 
-			$messages[3] = __('Gateway activated.');
-			$messages[4] = __('Gateway not activated.');
+			$messages[3] = __('Gateway activated.', 'membership');
+			$messages[4] = __('Gateway not activated.', 'membership');
 
-			$messages[5] = __('Gateway deactivated.');
-			$messages[6] = __('Gateway not deactivated.');
+			$messages[5] = __('Gateway deactivated.', 'membership');
+			$messages[6] = __('Gateway not deactivated.', 'membership');
 
-			$messages[7] = __('Gateway activation toggled.');
+			$messages[7] = __('Gateway activation toggled.', 'membership');
 
 			?>
 			<div class='wrap'>
@@ -3739,10 +3739,10 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>">
 
 				</div>
 
@@ -3810,15 +3810,15 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="gateway-<?php echo $level->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($key); ?>" name="gatewaycheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr($gateway); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;gateway=<?php echo $key; ?>" class="row-title"><?php echo esc_html($gateway); ?></a></strong>
+										<strong><a title="<?php _e('Edit', 'membership'); ?> <?php echo esc_attr($gateway); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;gateway=<?php echo $key; ?>" class="row-title"><?php echo esc_html($gateway); ?></a></strong>
 										<?php
 											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $key . "'>" . __('Settings') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $key . "'>" . __('Settings', 'membership') . "</a></span>";
 
 											if(array_key_exists($key, $active)) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate', 'membership') . "</a></span>";
 											}
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -3856,10 +3856,10 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
 				</div>
 				<div class="alignright actions"></div>
 				<br class="clear">
@@ -4102,9 +4102,9 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+				<option value="delete"><?php _e('Delete','membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation','membership'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
 
@@ -4115,12 +4115,12 @@ if(!class_exists('membershipadmin')) {
 
 				</select>
 
-				<input type="submit" class="button-secondary" value="<?php _e('Filter'); ?>" id="post-query-submit">
+				<input type="submit" class="button-secondary" value="<?php _e('Filter','membership'); ?>" id="post-query-submit">
 
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New'); ?>" name="addnewmessage">
+					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New','membership'); ?>" name="addnewmessage">
 				</div>
 
 				<br class="clear">
@@ -4176,7 +4176,7 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="comm-<?php echo $comm->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($comm->id); ?>" name="commcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr(stripslashes($comm->subject)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html(stripslashes($comm->subject)); ?></a></strong>
+										<strong><a title="<?php _e('Edit','membership'); ?> <?php echo esc_attr(stripslashes($comm->subject)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;comm=<?php echo $comm->id; ?>" class="row-title"><?php echo esc_html(stripslashes($comm->subject)); ?></a></strong>
 										<?php
 											$actions = array();
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;comm=" . $comm->id . "'>" . __('Edit', 'membership') . "</a></span>";
@@ -4204,7 +4204,7 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-transactions">
 										<?php
 										if($comm->periodstamp == 0) {
-											echo "Signup message";
+											echo __("Signup message",'membership');
 										} else {
 											// Show pre or post
 											if($comm->periodprepost == 'pre') {
@@ -4216,17 +4216,17 @@ if(!class_exists('membershipadmin')) {
 											echo $comm->periodunit . "&nbsp;";
 											// Show unit
 											switch($comm->periodtype) {
-												case 'n':	echo "Minute(s)";
+												case 'n':	echo __("Minute(s)",'membership');
 															break;
-												case 'h':	echo "Hour(s)";
+												case 'h':	echo __("Hour(s)",'membership');
 															break;
-												case 'd':	echo "Day(s)";
+												case 'd':	echo __("Day(s)",'membership');
 															break;
-												case 'w':	echo "Week(s)";
+												case 'w':	echo __("Week(s)",'membership');
 															break;
-												case 'm':	echo "Month(s)";
+												case 'm':	echo __("Month(s)",'membership');
 															break;
-												case 'y':	echo "Year(s)";
+												case 'y':	echo __("Year(s)",'membership');
 															break;
 											}
 										}
@@ -4253,14 +4253,14 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+					<option value="delete"><?php _e('Delete','membership'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New'); ?>" name="addnewmessage2">
+					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New','membership'); ?>" name="addnewmessage2">
 				</div>
 				<br class="clear">
 				</div>
@@ -4480,15 +4480,15 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+				<option value="delete"><?php _e('Delete','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>">
 
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New'); ?>" name="addnewgroup">
+					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup">
 				</div>
 
 				<br class="clear">
@@ -4542,10 +4542,10 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="group-<?php echo $group->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($group->id); ?>" name="groupcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr(stripslashes($group->groupname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;group=<?php echo $group->id; ?>" class="row-title"><?php echo esc_html(stripslashes($group->groupname)); ?></a></strong>
+										<strong><a title="<?php _e('Edit','membership'); ?> <?php echo esc_attr(stripslashes($group->groupname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;group=<?php echo $group->id; ?>" class="row-title"><?php echo esc_html(stripslashes($group->groupname)); ?></a></strong>
 										<?php
 											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;group=" . $group->id . "'>" . __('Edit') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;group=" . $group->id . "'>" . __('Edit','membership') . "</a></span>";
 											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;group=" . $group->id . "", 'delete-group_' . $group->id) . "'>" . __('Delete', 'membership') . "</a></span>";
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -4570,13 +4570,13 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+					<option value="delete"><?php _e('Delete','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New'); ?>" name="addnewgroup2">
+					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup2">
 				</div>
 				<br class="clear">
 				</div>
@@ -4800,8 +4800,8 @@ if(!class_exists('membershipadmin')) {
 										<strong><?php echo esc_html(stripslashes($ping->ping_name() )); ?></strong>
 										<?php
 											$actions = array();
-											$actions['resendnew'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=new&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend as new ping') . "</a></span>";
-											$actions['resendover'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=over&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend and overwrite') . "</a></span>";
+											$actions['resendnew'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=new&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend as new ping','membership') . "</a></span>";
+											$actions['resendover'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=history&amp;resend=over&amp;history=" . $h->id, 'membership_resend_ping_' . $h->id ) . "'>" . __('Resend and overwrite','membership') . "</a></span>";
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 									</td>
@@ -4917,15 +4917,15 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-				<option value="delete"><?php _e('Delete'); ?></option>
+				<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+				<option value="delete"><?php _e('Delete','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply'); ?>">
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>">
 
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New'); ?>" name="addnewgroup">
+					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup">
 				</div>
 
 				<br class="clear">
@@ -4979,11 +4979,11 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="ping-<?php echo $ping->id; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($ping->id); ?>" name="pingcheck[]"></th>
 									<td class="column-name">
-										<strong><a title="Edit <?php echo esc_attr(stripslashes($ping->pingname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;ping=<?php echo $ping->id; ?>" class="row-title"><?php echo esc_html(stripslashes($ping->pingname)); ?></a></strong>
+										<strong><a title="<?php _e('Edit','membership'); ?> <?php echo esc_attr(stripslashes($ping->pingname)); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;ping=<?php echo $ping->id; ?>" class="row-title"><?php echo esc_html(stripslashes($ping->pingname)); ?></a></strong>
 										<?php
 											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Edit') . "</a></span>";
-											$actions['trans'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=history&amp;ping=" . $ping->id . "'>" . __('History') . "</a></span>";
+											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;ping=" . $ping->id . "'>" . __('Edit','membership') . "</a></span>";
+											$actions['trans'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=history&amp;ping=" . $ping->id . "'>" . __('History','membership') . "</a></span>";
 											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;ping=" . $ping->id . "", 'delete-ping_' . $ping->id) . "'>" . __('Delete', 'membership') . "</a></span>";
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -5008,13 +5008,13 @@ if(!class_exists('membershipadmin')) {
 
 				<div class="alignleft actions">
 				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
-					<option value="delete"><?php _e('Delete'); ?></option>
+					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+					<option value="delete"><?php _e('Delete','membership'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New'); ?>" name="addnewping2">
+					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New','membership'); ?>" name="addnewping2">
 				</div>
 				<br class="clear">
 				</div>
@@ -5402,14 +5402,14 @@ if(!class_exists('membershipadmin')) {
 				}
 
 				?>
-				<h3><?php _e('Membership key'); ?></h3>
+				<h3><?php _e('Membership key','membership'); ?></h3>
 
 				<table class="form-table">
 				<tr>
-					<th><label for="description"><?php _e('Membership key'); ?></label></th>
+					<th><label for="description"><?php _e('Membership key','membership'); ?></label></th>
 					<td><?php esc_html_e($key); ?>
 						<br />
-					<span class="description"><?php _e('This key is used to give you access the the members RSS feed, keep it safe and secret.'); ?></span></td>
+					<span class="description"><?php _e('This key is used to give you access the the members RSS feed, keep it safe and secret.','membership'); ?></span></td>
 				</tr>
 				</table>
 				<?php
@@ -5435,15 +5435,15 @@ if(!class_exists('membershipadmin')) {
 			$id = $profileuser->ID;
 
 			?>
-			<h3><?php _e('Membership Administration'); ?></h3>
+			<h3><?php _e('Membership Administration','membership'); ?></h3>
 
 			<table class="form-table">
 			<tr>
-				<th><label for="description"><?php _e('Membership Administration'); ?></label></th>
+				<th><label for="description"><?php _e('Membership Administration','membership'); ?></label></th>
 				<td>
 				<input type='checkbox' name='membershipadmin' value='yes' <?php if($profileuser->has_cap('membershipadmin')) echo "checked='checked'"; ?>/>
 				&nbsp;
-				<span class="description"><?php _e('This user has access to administer the Membership system.'); ?></span></td>
+				<span class="description"><?php _e('This user has access to administer the Membership system.','membership'); ?></span></td>
 			</tr>
 			</table>
 			<?php
@@ -5796,7 +5796,7 @@ if(!class_exists('membershipadmin')) {
 					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
 					<option value="toggle"><?php _e('Toggle activation'); ?></option>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions"></div>
 				<br class="clear">

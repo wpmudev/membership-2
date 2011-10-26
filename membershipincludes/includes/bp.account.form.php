@@ -64,7 +64,7 @@
 			<tr style='background: transparent;'>
 				<th><label for="enable_affiliate"><?php _e('Username', 'membership'); ?></label></th>
 				<td>
-					<input type="text" name="user_login" id="user_login" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" class="regular-text" /><br/><span class="description"><?php _e('Usernames cannot be changed.'); ?></span>
+					<input type="text" name="user_login" id="user_login" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" class="regular-text" /><br/><span class="description"><?php _e('Usernames cannot be changed.','membership'); ?></span>
 				</td>
 			</tr>
 			<tr style='background: transparent;'>

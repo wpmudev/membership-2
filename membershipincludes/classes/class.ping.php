@@ -96,16 +96,16 @@ if(!class_exists('M_Ping')) {
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping name','membership') . '</th>';
-			echo '<td valign="top"><input name="pingname" type="text" size="50" title="' . __('Ping name') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->ping->pingname)) . '" /></td>';
+			echo '<td valign="top"><input name="pingname" type="text" size="50" title="' . __('Ping name', 'membership') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->ping->pingname)) . '" /></td>';
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping URL','membership') . '</th>';
-			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->ping->pingurl)) . '" /></td>';
+			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL', 'membership') . '" style="width: 50%;" value="' . esc_attr(stripslashes($this->ping->pingurl)) . '" /></td>';
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
+			echo '<th style="" scope="row" valign="top">' . __('Ping data', 'membership') . '</th>';
 			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;">' . esc_html(stripslashes($this->ping->pinginfo)) . '</textarea>';
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
@@ -143,16 +143,16 @@ if(!class_exists('M_Ping')) {
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping name','membership') . '</th>';
-			echo '<td valign="top"><input name="pingname" type="text" size="50" title="' . __('Ping name') . '" style="width: 50%;" value="" /></td>';
+			echo '<td valign="top"><input name="pingname" type="text" size="50" title="' . __('Ping name', 'membership') . '" style="width: 50%;" value="" /></td>';
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping URL','membership') . '</th>';
-			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL') . '" style="width: 50%;" value="" /></td>';
+			echo '<td valign="top"><input name="pingurl" type="text" size="50" title="' . __('Ping URL', 'membership') . '" style="width: 50%;" value="" /></td>';
 			echo '</tr>';
 
 			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __('Ping data','automessage') . '</th>';
+			echo '<th style="" scope="row" valign="top">' . __('Ping data', 'membership') . '</th>';
 			echo '<td valign="top"><textarea name="pinginfo" rows="15" cols="40" style="float: left; width: 40%;"></textarea>';
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';

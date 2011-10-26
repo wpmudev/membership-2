@@ -509,10 +509,10 @@ if(!class_exists('M_Subscription')) {
 						<div class='levelinformation' style='float: right;'>
 							<p class='description'>
 								<strong><?php _e('Mode details','membership'); ?></strong><br/>
-								<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending');?><br/><br/>
-								<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.');?><br/><br/>
-								<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?><br/><br/>
-								<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.');?>
+								<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending','membership');?><br/><br/>
+								<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.','membership');?><br/><br/>
+								<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level','membership');?><br/><br/>
+								<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.','membership');?>
 							</p>
 						</div>
 					</div>
@@ -545,11 +545,11 @@ if(!class_exists('M_Subscription')) {
 								<div class='levelfields' style='float: left;'>
 								<label for='levelmode[<?php echo $levelid; ?>]'><?php _e('Mode : ','membership'); ?></label>
 								<select name='levelmode[<?php echo $levelid; ?>]'>
-									<!-- <option value='trial' <?php if($level->sub_type == 'trial') echo "selected='selected'"; ?>>Trial</option> -->
-									<option value='finite' <?php if($level->sub_type == 'finite') echo "selected='selected'"; ?>>Finite</option>
-									<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>>Indefinite</option>
-									<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>>Serial</option>
-									<!-- <option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>>Sequential</option> -->
+									<!-- <option value='trial' <?php if($level->sub_type == 'trial') echo "selected='selected'"; ?>><?php _e('Trial','membership'); ?></option> -->
+									<option value='finite' <?php if($level->sub_type == 'finite') echo "selected='selected'"; ?>><?php _e('Finite','membership'); ?></option>
+									<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>><?php _e('Indefinite','membership'); ?></option>
+									<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>><?php _e('Serial','membership'); ?></option>
+									<!-- <option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>><?php _e('Sequential','membership'); ?></option> -->
 								</select>
 								<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
 								<select name='levelperiod[<?php echo $levelid; ?>]'>
@@ -593,10 +593,10 @@ if(!class_exists('M_Subscription')) {
 								<div class='levelinformation' style='float: right;'>
 									<p class='description'>
 										<strong><?php _e('Mode details','membership'); ?></strong><br/>
-										<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending');?><br/><br/>
-										<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.');?><br/><br/>
-										<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level');?><br/><br/>
-										<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.');?>
+										<?php _e('<strong>Finite</strong> - user remains at this level for a set period of time before ending','membership');?><br/><br/>
+										<?php _e('<strong>Indefinite</strong> - user remains at this level for ever.','membership');?><br/><br/>
+										<?php _e('<strong>Serial</strong> - user remains at this level for a set period of time and is then renewed at the same level','membership');?><br/><br/>
+										<?php _e('<strong>Note:</strong> - depending on the payment gateway used, changing the price will not alter subscriptions charged to existing members.','membership');?>
 									</p>
 								</div>
 							</div>

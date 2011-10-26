@@ -50,25 +50,25 @@ class paypalsolo extends M_Gateway {
 		      $paypal_site = get_option( $this->gateway . "_paypal_site" );
 		      $sel_locale = empty($paypal_site) ? 'US' : $paypal_site;
 		      $locales = array(
-		          'AU'	=> 'Australia',
-		          'AT'	=> 'Austria',
-		          'BE'	=> 'Belgium',
-		          'CA'	=> 'Canada',
-		          'CN'	=> 'China',
-		          'FR'	=> 'France',
-		          'DE'	=> 'Germany',
-		          'HK'	=> 'Hong Kong',
-		          'IT'	=> 'Italy',
-		          'MX'	=> 'Mexico',
-		          'NL'	=> 'Netherlands',
-				  'NZ'	=>	'New Zealand',
-		          'PL'	=> 'Poland',
-		          'SG'	=> 'Singapore',
-		          'ES'	=> 'Spain',
-		          'SE'	=> 'Sweden',
-		          'CH'	=> 'Switzerland',
-		          'GB'	=> 'United Kingdom',
-		          'US'	=> 'United States'
+		          'AU'	=> __('Australia', 'membership'),
+		          'AT'	=> __('Austria', 'membership'),
+		          'BE'	=> __('Belgium', 'membership'),
+		          'CA'	=> __('Canada', 'membership'),
+		          'CN'	=> __('China', 'membership'),
+		          'FR'	=> __('France', 'membership'),
+		          'DE'	=> __('Germany', 'membership'),
+		          'HK'	=> __('Hong Kong', 'membership'),
+		          'IT'	=> __('Italy', 'membership'),
+		          'MX'	=> __('Mexico', 'membership'),
+		          'NL'	=> __('Netherlands', 'membership'),
+				  'NZ'	=> __('New Zealand', 'membership'),
+		          'PL'	=> __('Poland', 'membership'),
+		          'SG'	=> __('Singapore', 'membership'),
+		          'ES'	=> __('Spain', 'membership'),
+		          'SE'	=> __('Sweden', 'membership'),
+		          'CH'	=> __('Switzerland', 'membership'),
+		          'GB'	=> __('United Kingdom', 'membership'),
+		          'US'	=> __('United States', 'membership')
 		          );
 
 		      foreach ($locales as $key => $value) {
@@ -464,7 +464,7 @@ class paypalsolo extends M_Gateway {
 
 				case 'Reversed':
 					// case: charge back
-					$note = 'Last transaction has been reversed. Reason: Payment has been reversed (charge back)';
+					$note = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back)', 'membership');
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
@@ -482,7 +482,7 @@ class paypalsolo extends M_Gateway {
 
 				case 'Refunded':
 					// case: refund
-					$note = 'Last transaction has been reversed. Reason: Payment has been refunded';
+					$note = __('Last transaction has been reversed. Reason: Payment has been refunded', 'membership');
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
@@ -499,7 +499,7 @@ class paypalsolo extends M_Gateway {
 
 				case 'Denied':
 					// case: denied
-					$note = 'Last transaction has been reversed. Reason: Payment Denied';
+					$note = __('Last transaction has been reversed. Reason: Payment Denied', 'membership');
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
@@ -517,17 +517,17 @@ class paypalsolo extends M_Gateway {
 
 				case 'Pending':
 					// case: payment is pending
-					$pending_str = array(
-						'address' => 'Customer did not include a confirmed shipping address',
-						'authorization' => 'Funds not captured yet',
-						'echeck' => 'eCheck that has not cleared yet',
-						'intl' => 'Payment waiting for aproval by service provider',
-						'multi-currency' => 'Payment waiting for service provider to handle multi-currency process',
-						'unilateral' => 'Customer did not register or confirm his/her email yet',
-						'upgrade' => 'Waiting for service provider to upgrade the PayPal account',
-						'verify' => 'Waiting for service provider to verify his/her PayPal account',
-						'*' => ''
-						);
+						$pending_str = array(
+							'address' => __('Customer did not include a confirmed shipping address', 'membership'),
+							'authorization' => __('Funds not captured yet', 'membership'),
+							'echeck' => __('eCheck that has not cleared yet', 'membership'),
+							'intl' => __('Payment waiting for aproval by service provider', 'membership'),
+							'multi-currency' => __('Payment waiting for service provider to handle multi-currency process', 'membership'),
+							'unilateral' => __('Customer did not register or confirm his/her email yet', 'membership'),
+							'upgrade' => __('Waiting for service provider to upgrade the PayPal account', 'membership'),
+							'verify' => __('Waiting for service provider to verify his/her PayPal account', 'membership'),
+							'*' => ''
+							);
 					$reason = @$_POST['pending_reason'];
 					$note = 'Last transaction is pending. Reason: ' . (isset($pending_str[$reason]) ? $pending_str[$reason] : $pending_str['*']);
 					$amount = $_POST['mc_gross'];
