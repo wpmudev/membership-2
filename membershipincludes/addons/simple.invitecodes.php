@@ -76,7 +76,7 @@ function M_AddSimpleInviteField() {
 add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField');
 add_action( 'bp_after_account_details_fields', 'M_AddSimpleInviteField');
 
-function M_AddSimpleInviteFieldProcess($error) {
+function M_AddSimpleInviteFieldProcess( $error ) {
 
 	$Msi_options = get_option('membership_simpleinvite_options', array());
 	if(empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
@@ -86,14 +86,26 @@ function M_AddSimpleInviteFieldProcess($error) {
 	$thekey = $_POST['invitecode'];
 
 	if(empty($thekey)) {
-		$error[] = __('You need to enter an invite code in order to register.','membership');
+
+		if(empty($error)) {
+			$error = new WP_Error();
+		}
+
+		$error->add('enterinvitecode', __('You need to enter an invite code in order to register.','membership'));
+
 	} else {
 
 		$codes = explode("\n", $Msi_options['invitecodes']);
 		$codes = array_map('trim', $codes);
 
 		if(!in_array( $thekey, $codes )) {
-			$error[] = __('Sorry, but we do not seem to have that code on file, please try another.','membership');
+
+			if(empty($error)) {
+				$error = new WP_Error();
+			}
+
+			$error->add('incorrectinvitecode', __('Sorry, but we do not seem to have that code on file, please try another.','membership'));
+
 		} else {
 			if($Msi_options['inviteremove'] == 'yes') {
 				$key = array_search( $thekey, $codes);
