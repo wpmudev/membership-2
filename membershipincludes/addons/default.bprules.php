@@ -6,6 +6,40 @@ Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */
 
+// Buddypress pages - $directory_pages = apply_filters( 'bp_directory_pages', $directory_pages );
+class M_BPPages extends M_Rule {
+
+	var $name = 'bppages';
+	var $label = 'BuddyPress Pages';
+
+	var $rulearea = 'public';
+
+	function admin_main($data) {
+		if(!$data) $data = array();
+		?>
+		<div class='level-operation' id='main-bppages'>
+			<h2 class='sidebar-name'><?php _e('BuddyPress Pages', 'membership');?><span><a href='#remove' id='remove-bppages' class='removelink' title='<?php _e("Remove BuddyPress Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+			<div class='inner-operation'>
+				<p><?php _e('Please use the URL Groups for a more reliable method of restricting access to BuddyPress pages.','membership'); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	function on_positive($data) {
+
+		$this->data = $data;
+
+	}
+
+	function on_negative($data) {
+
+		$this->data = $data;
+
+	}
+}
+M_register_rule('bppages', 'M_BPPages', 'bp');
+
 class M_BPGroups extends M_Rule {
 
 	var $name = 'bpgroups';
@@ -635,39 +669,6 @@ class M_BPPrivatemessage extends M_Rule {
 }
 M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
 
-//BuddyPress Pages
-class M_BPPages extends M_Rule {
-
-	var $name = 'bppages';
-	var $label = 'BuddyPress Pages';
-
-	var $rulearea = 'public';
-
-	function admin_main($data) {
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-bppages'>
-			<h2 class='sidebar-name'><?php _e('BuddyPress Pages', 'membership');?><span><a href='#remove' id='remove-bppages' class='removelink' title='<?php _e("Remove BuddyPress Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-			<div class='inner-operation'>
-				<p><?php _e('Please use the URL Groups for a more reliable method of restricting access to BuddyPress pages.','membership'); ?></p>
-			</div>
-		</div>
-		<?php
-	}
-
-	function on_positive($data) {
-
-		$this->data = $data;
-
-	}
-
-	function on_negative($data) {
-
-		$this->data = $data;
-
-	}
-}
-M_register_rule('bppages', 'M_BPPages', 'bp');
 
 // Pass thru function
 function MBP_can_access_page( $page ) {
