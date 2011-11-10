@@ -130,11 +130,17 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__in'][] = $value;
+		if(!$wp_query->is_single) {
+			// We are in a list rather than on a single post
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		} else {
+			// We are on a single post
 		}
 
-		$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 
 
 	}
@@ -143,17 +149,24 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['post__not_in'][] = $value;
+		if(!$wp_query->is_single) {
+			// We are on a list rather than on a single post
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__not_in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		} else {
+			// We are on a single post
 		}
 
-		$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 
 	}
 
 	function check_negative_posts( $posts ) {
 
 		global $wp_query, $M_options;
+
 
 		if(!$wp_query->is_single || count($posts) > 1) {
 			return $posts;
@@ -398,6 +411,18 @@ class M_Pages extends M_Rule {
 
 		global $M_options;
 
+		if(!$wp_query->is_single) {
+			// We are not on a single page
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		} else {
+			// We are on a single page
+		}
+
+
 		$redirect = false;
 		$host = '';
 		if(is_ssl()) {
@@ -460,6 +485,17 @@ class M_Pages extends M_Rule {
 	function add_unviewable_pages($wp_query) {
 
 		global $M_options;
+
+		if(!$wp_query->is_single) {
+			// We are on a list rather than on a single post
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__not_in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		} else {
+			// We are on a single post
+		}
 
 		$redirect = false;
 		$host = '';
