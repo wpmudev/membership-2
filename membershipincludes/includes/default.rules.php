@@ -217,7 +217,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( !empty($url) && $group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -285,7 +285,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
+				if( !empty($url) && !$group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -536,7 +536,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( !empty($url) && $group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -605,7 +605,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
+				if( !empty($url) && !$group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
