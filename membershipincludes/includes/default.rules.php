@@ -221,13 +221,13 @@ class M_Posts extends M_Rule {
 					$redirect = true;
 				}
 			}
-		}
 
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
-		} else {
-			return $posts;
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
 		}
 
 	}
@@ -289,13 +289,14 @@ class M_Posts extends M_Rule {
 					$redirect = true;
 				}
 			}
-		}
 
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
-		} else {
-			return $posts;
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
 		}
 
 	}
@@ -379,6 +380,8 @@ class M_Pages extends M_Rule {
 		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
 		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
 
+		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
+
 	}
 
 	function on_negative($data) {
@@ -387,6 +390,9 @@ class M_Pages extends M_Rule {
 
 		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
 		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
+
+		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
+
 	}
 
 	function redirect() {
@@ -426,61 +432,14 @@ class M_Pages extends M_Rule {
 		global $M_options;
 
 		if(!$wp_query->is_single) {
-			// We are not on a single page
+			// We are not on a single page - so just limit the viewing
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__in'][] = $value;
 			}
 
 			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 		} else {
-			// We are on a single page
-		}
-
-
-		$redirect = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
-
-		// we have the current page / url - get the groups selected
-		$group_id = $this->get_group();
-
-		if($group_id) {
-			$group = new M_Urlgroup( $group_id );
-
-			if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
-				$redirect = true;
-			}
-		}
-
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
+			// We are on a single page - so check for restriction on the_posts
 		}
 
 	}
@@ -501,60 +460,14 @@ class M_Pages extends M_Rule {
 		global $M_options;
 
 		if(!$wp_query->is_single) {
-			// We are on a list rather than on a single post
+			// We are not on a single page - so just limit the viewing
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__not_in'][] = $value;
 			}
 
 			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 		} else {
-			// We are on a single post
-		}
-
-		$redirect = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
-
-		// we have the current page / url - get the groups selected
-		$group_id = $this->get_group();
-
-		if($group_id) {
-			$group = new M_Urlgroup( $group_id );
-
-			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
-				$redirect = true;
-			}
-		}
-
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
+			// We are on a single page - so check for restriction on the_posts
 		}
 
 	}
@@ -568,6 +481,146 @@ class M_Pages extends M_Rule {
 
 		return $pages;
 	}
+
+	function check_negative_pages( $posts ) {
+
+		global $wp_query, $M_options;
+
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($posts) && count($posts) == 1) {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			foreach($posts as $post) {
+
+				if($post->post_type != 'page') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( $group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+	}
+
+	function check_positive_pages( $posts ) {
+
+		global $wp_query, $M_options;
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($posts) && count($posts) == 1) {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			foreach($posts as $post) {
+
+				if($post->post_type != 'page') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( !$group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+	}
+
 
 }
 M_register_rule('pages', 'M_Pages', 'main');
