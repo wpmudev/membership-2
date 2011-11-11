@@ -138,7 +138,7 @@ class M_Posts extends M_Rule {
 
 			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 		} else {
-			// We are on a single post
+			// We are on a single post - wait until we get to the_posts
 		}
 
 
@@ -157,7 +157,7 @@ class M_Posts extends M_Rule {
 
 			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
 		} else {
-			// We are on a single post
+			// We are on a single post - wait until we get to the_posts
 		}
 
 
@@ -172,16 +172,11 @@ class M_Posts extends M_Rule {
 			return $posts;
 		}
 
-		if(empty($posts)) {
+		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
+
 			$redirect = false;
-			$host = '';
-			if(is_ssl()) {
-				$host = "https://";
-			} else {
-				$host = "http://";
-			}
-			$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$url = '';
 
 			$exclude = array();
 			if(!empty($M_options['registration_page'])) {
@@ -204,13 +199,25 @@ class M_Posts extends M_Rule {
 				$exclude[] = untrailingslashit($host);
 			}
 
+			foreach($posts as $post) {
+
+				if($post->post_type != 'post') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+
+			}
+
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
 
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+				if( $group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -233,16 +240,11 @@ class M_Posts extends M_Rule {
 			return $posts;
 		}
 
-		if(empty($posts)) {
+		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
+
 			$redirect = false;
-			$host = '';
-			if(is_ssl()) {
-				$host = "https://";
-			} else {
-				$host = "http://";
-			}
-			$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$url = '';
 
 			$exclude = array();
 			if(!empty($M_options['registration_page'])) {
@@ -265,13 +267,25 @@ class M_Posts extends M_Rule {
 				$exclude[] = untrailingslashit($host);
 			}
 
+			foreach($posts as $post) {
+
+				if($post->post_type != 'post') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+
+			}
+
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
 
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+				if( !$group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
