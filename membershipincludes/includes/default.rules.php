@@ -200,7 +200,6 @@ class M_Posts extends M_Rule {
 			}
 
 			foreach($posts as $post) {
-
 				if($post->post_type != 'post') {
 					continue;
 				}
@@ -208,7 +207,11 @@ class M_Posts extends M_Rule {
 				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
 					$url = get_permalink($post->ID);
 				}
+			}
 
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -268,7 +271,6 @@ class M_Posts extends M_Rule {
 			}
 
 			foreach($posts as $post) {
-
 				if($post->post_type != 'post') {
 					continue;
 				}
@@ -276,7 +278,11 @@ class M_Posts extends M_Rule {
 				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
 					$url = get_permalink($post->ID);
 				}
+			}
 
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -285,7 +291,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !empty($url) && !$group->url_matches( $url ) ) {
+				if( !$group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -519,7 +525,6 @@ class M_Pages extends M_Rule {
 			}
 
 			foreach($posts as $post) {
-
 				if($post->post_type != 'page') {
 					continue;
 				}
@@ -527,7 +532,11 @@ class M_Pages extends M_Rule {
 				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
 					$url = get_permalink($post->ID);
 				}
+			}
 
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -536,7 +545,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !empty($url) && $group->url_matches( $url ) ) {
+				if( $group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
@@ -588,7 +597,6 @@ class M_Pages extends M_Rule {
 			}
 
 			foreach($posts as $post) {
-
 				if($post->post_type != 'page') {
 					continue;
 				}
@@ -596,7 +604,11 @@ class M_Pages extends M_Rule {
 				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
 					$url = get_permalink($post->ID);
 				}
+			}
 
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -605,7 +617,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !empty($url) && !$group->url_matches( $url ) ) {
+				if( !$group->url_matches( $url ) ) {
 					$redirect = true;
 				}
 			}
