@@ -9,7 +9,7 @@
 // Determines the number of posts to show in the posts rule
 if(!defined('MEMBERSHIP_POST_COUNT')) define( 'MEMBERSHIP_POST_COUNT', 25);
 // Determines the number of pages to show in the pages rule
-if(!defined('MEMBERSHIP_PAGE_COUNT')) define( 'MEMBERSHIP_PAGE_COUNT', 25);
+if(!defined('MEMBERSHIP_PAGE_COUNT')) define( 'MEMBERSHIP_PAGE_COUNT', 50);
 // Determines the maximum charge listed in the charges drop down
 if(!defined('MEMBERSHIP_MAX_CHARGE')) define( 'MEMBERSHIP_MAX_CHARGE', 300);
 
