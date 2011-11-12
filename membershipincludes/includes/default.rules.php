@@ -233,6 +233,8 @@ class M_Posts extends M_Rule {
 			}
 		}
 
+		return $posts;
+
 	}
 
 	function check_positive_posts( $posts ) {
@@ -304,6 +306,8 @@ class M_Posts extends M_Rule {
 			}
 
 		}
+
+		return $posts;
 
 	}
 
@@ -559,6 +563,8 @@ class M_Pages extends M_Rule {
 
 		}
 
+		return $posts;
+
 	}
 
 	function check_positive_pages( $posts ) {
@@ -630,6 +636,8 @@ class M_Pages extends M_Rule {
 			}
 
 		}
+
+		return $posts;
 
 	}
 
