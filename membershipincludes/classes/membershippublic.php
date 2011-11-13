@@ -122,9 +122,10 @@ if(!class_exists('membershippublic')) {
 				add_filter('the_content', array(&$this, 'protect_download_content') );
 			}
 
+			// Makes sure that despite other rules, the pages set in the options panel are available to the user
+			add_action('pre_get_posts', array(&$this, 'ensure_option_pages_visible'), 999 );
 			// check for a no-access page and always filter it if needed
 			if(!empty($M_options['nocontent_page']) && $M_options['nocontent_page'] != $M_options['registration_page']) {
-				add_action('pre_get_posts', array(&$this, 'hide_nocontent_page'), 99 );
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
 			}
 
@@ -674,16 +675,46 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function hide_nocontent_page($wp_query) {
+		function ensure_option_pages_visible($wp_query) {
 
 			global $M_options;
 
-			if(!empty($M_options['nocontent_page']) && $wp_query->queried_object_id != $M_options['nocontent_page']) {
-			// This function should remove the no access page from any menus
-			$wp_query->query_vars['post__not_in'][] = $M_options['nocontent_page'];
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+			if(empty($wp_query->query_vars['post__in']) && empty($wp_query->query_vars['post__not_in'])) {
+				return;
 			}
 
+			$forchecking = array();
+
+			if(!empty($M_options['registration_page'])) {
+				$wp_query->query_vars['post__in'][] = $M_options['registration_page'];
+				$forchecking[] = $M_options['registration_page'];
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$wp_query->query_vars['post__in'][] = $M_options['account_page'];
+				$forchecking[] = $M_options['account_page'];
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$wp_query->query_vars['post__in'][] = $M_options['nocontent_page'];
+				$forchecking[] = $M_options['nocontent_page'];
+			}
+
+			if(is_array($wp_query->query_vars['post__not_in'])) {
+				foreach($wp_query->query_vars['post__not_in'] as $key => $value) {
+					if(in_array( $value, (array) $forchecking ) ) {
+						unset($wp_query->query_vars['post__not_in'][$key]);
+					}
+				}
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+
+			if(!empty($M_options['nocontent_page']) && $wp_query->queried_object_id != $M_options['nocontent_page']) {
+				// This function should remove the no access page from any menus
+				//$wp_query->query_vars['post__not_in'][] = $M_options['nocontent_page'];
+				$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+			}
 
 		}
 
