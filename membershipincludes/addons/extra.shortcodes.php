@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: Handy Subscription shortcodes
-Description: Some extra membership shortcodes for the frontend
+Description: DEPRECIATED : Some extra membership shortcodes for the frontend
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */
@@ -209,6 +209,6 @@ class M_Extra_shortcodes {
 
 }
 
-$M_Extra_shortcodes = new M_Extra_shortcodes();
+//$M_Extra_shortcodes = new M_Extra_shortcodes();
 
 ?>

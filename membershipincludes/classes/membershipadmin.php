@@ -66,10 +66,10 @@ if(!class_exists('membershipadmin')) {
 
 			// rewrites
 			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
-			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
+			add_filter('query_vars', array(&$this, 'add_queryvars') );
 
 			// profile field for feeds
-			add_action( 'show_user_profile', array(&$this, 'add_profile_feed_key') );
+			add_action('show_user_profile', array(&$this, 'add_profile_feed_key') );
 
 			// Pings
 			add_action('membership_subscription_form_after_levels', array(&$this, 'show_subscription_ping_information'));

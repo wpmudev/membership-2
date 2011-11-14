@@ -25,12 +25,12 @@ if(!class_exists('membershippublic')) {
 				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
-			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
+			add_action('plugins_loaded', array(&$this, 'load_textdomain'));
 
 			// Set up Actions
-			add_action( 'init', array(&$this, 'initialise_plugin'), 1 );
-			add_filter( 'query_vars', array(&$this, 'add_queryvars') );
-			add_action( 'generate_rewrite_rules', array(&$this, 'add_rewrites') );
+			add_action('init', array(&$this, 'initialise_plugin'), 1 );
+			add_filter('query_vars', array(&$this, 'add_queryvars') );
+			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
 			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 2 );
@@ -84,6 +84,12 @@ if(!class_exists('membershippublic')) {
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
+
+			// Moved extra shortcodes over to the main plugin for new registration forms
+			add_shortcode('subscriptiontitle', array(&$this, 'do_subscriptiontitle_shortcode') );
+			add_shortcode('subscriptiondetails', array(&$this, 'do_subscriptiondetails_shortcode') );
+			add_shortcode('subscriptionprice', array(&$this, 'do_subscriptionprice_shortcode') );
+			add_shortcode('subscriptionbutton', array(&$this, 'do_subscriptionbutton_shortcode') );
 
 			do_action('membership_register_shortcodes');
 
@@ -1231,6 +1237,215 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
+		function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$defaults = array(	"holder"				=>	'',
+								"holderclass"			=>	'',
+								"item"					=>	'',
+								"itemclass"				=>	'',
+								"postfix"				=>	'',
+								"prefix"				=>	'',
+								"wrapwith"				=>	'',
+								"wrapwithclass"			=>	'',
+								"subscription"			=>	''
+							);
+
+			extract(shortcode_atts($defaults, $atts));
+
+			if(empty($subscription)) {
+				return '';
+			}
+
+			if(!empty($holder)) {
+				$html .= "<{$holder} class='{$holderclass}'>";
+			}
+			if(!empty($item)) {
+				$html .= "<{$item} class='{$itemclass}'>";
+			}
+			$html .= $prefix;
+
+			// The title
+			if(!empty($wrapwith)) {
+				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+			}
+
+			$sub = new M_Subscription( (int) $subscription );
+			$html .= $sub->sub_name();
+
+			if(!empty($wrapwith)) {
+				$html .= "</{$wrapwith}>";
+			}
+
+			$html .= $postfix;
+			if(!empty($item)) {
+				$html .= "</{$item}>";
+			}
+			if(!empty($holder)) {
+				$html .= "</{$holder}>";
+			}
+
+
+			return $html;
+		}
+
+		function do_subscriptiondetails_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$defaults = array(	"holder"				=>	'',
+								"holderclass"			=>	'',
+								"item"					=>	'',
+								"itemclass"				=>	'',
+								"postfix"				=>	'',
+								"prefix"				=>	'',
+								"wrapwith"				=>	'',
+								"wrapwithclass"			=>	'',
+								"subscription"			=>	''
+							);
+
+			extract(shortcode_atts($defaults, $atts));
+
+			if(empty($subscription)) {
+				return '';
+			}
+
+			if(!empty($holder)) {
+				$html .= "<{$holder} class='{$holderclass}'>";
+			}
+			if(!empty($item)) {
+				$html .= "<{$item} class='{$itemclass}'>";
+			}
+			$html .= $prefix;
+
+			// The title
+			if(!empty($wrapwith)) {
+				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+			}
+
+			$sub = new M_Subscription( (int) $subscription );
+			$html .= stripslashes($sub->sub_description());
+
+			if(!empty($wrapwith)) {
+				$html .= "</{$wrapwith}>";
+			}
+
+			$html .= $postfix;
+			if(!empty($item)) {
+				$html .= "</{$item}>";
+			}
+			if(!empty($holder)) {
+				$html .= "</{$holder}>";
+			}
+
+			return $html;
+		}
+
+		function do_subscriptionprice_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$defaults = array(	"holder"				=>	'',
+								"holderclass"			=>	'',
+								"item"					=>	'',
+								"itemclass"				=>	'',
+								"postfix"				=>	'',
+								"prefix"				=>	'',
+								"wrapwith"				=>	'',
+								"wrapwithclass"			=>	'',
+								"subscription"			=>	''
+							);
+
+			extract(shortcode_atts($defaults, $atts));
+
+			if(empty($subscription)) {
+				return '';
+			}
+
+			if(!empty($holder)) {
+				$html .= "<{$holder} class='{$holderclass}'>";
+			}
+			if(!empty($item)) {
+				$html .= "<{$item} class='{$itemclass}'>";
+			}
+			$html .= $prefix;
+
+			// The title
+			if(!empty($wrapwith)) {
+				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+			}
+
+			$sub = new M_Subscription( (int) $subscription );
+			$first = $sub->get_level_at_position(1);
+
+			if(!empty($first)) {
+				$price = $first->level_price;
+				if($price == 0) {
+					$price = "Free";
+				} else {
+
+					$M_options = get_option('membership_options', array());
+
+					switch( $M_options['paymentcurrency'] ) {
+						case "USD": $price = "$" . $price;
+									break;
+
+						case "GBP":	$price = "&pound;" . $price;
+									break;
+
+						case "EUR":	$price = "&euro;" . $price;
+									break;
+
+						default:	$price = apply_filters('membership_currency_symbol_' . $M_options['paymentcurrency'], $M_options['paymentcurrency']) . $price;
+					}
+				}
+			}
+
+
+			$html .= $price;
+
+			if(!empty($wrapwith)) {
+				$html .= "</{$wrapwith}>";
+			}
+
+			$html .= $postfix;
+			if(!empty($item)) {
+				$html .= "</{$item}>";
+			}
+			if(!empty($holder)) {
+				$html .= "</{$holder}>";
+			}
+
+			return $html;
+		}
+
+		function do_subscriptionbutton_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$defaults = array(	"holder"				=>	'',
+								"holderclass"			=>	'',
+								"item"					=>	'',
+								"itemclass"				=>	'',
+								"postfix"				=>	'',
+								"prefix"				=>	'',
+								"wrapwith"				=>	'',
+								"wrapwithclass"			=>	'',
+								"subscription"			=>	''
+							);
+
+			extract(shortcode_atts($defaults, $atts));
+
+			$link = admin_url( 'admin-ajax.php' );
+			$link .= '?action=buynow&amp;subscription=' . (int) $subscription;
+
+			$html = do_shortcode("[button class='popover' link='{$link}']Buy Now[/button]");
+
+
+			return $html;
+		}
+
 		function create_the_user_and_notify() {
 			//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 			//wp_new_user_notification( $user_id, $_POST['password'] );
@@ -1258,6 +1473,42 @@ if(!class_exists('membershippublic')) {
 					wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 					wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
+				}
+
+				// New subscription styles
+				if(strstr($post->post_content, '[subscriptiontitle') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('fancyboxcss', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.css'));
+					wp_enqueue_script('fancyboxjs', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
+				}
+				if(strstr($post->post_content, '[subscriptiondetails') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('fancyboxcss', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.css'));
+					wp_enqueue_script('fancyboxjs', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
+					//wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+					//wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+				}
+				if(strstr($post->post_content, '[subscriptionbutton') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('fancyboxcss', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.css'));
+					wp_enqueue_script('fancyboxjs', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					wp_enqueue_script('spmemjs', plugins_url('sp_membership/js/sp_membership.js'), array('jquery'), false, true);
+					wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
+
+					wp_localize_script('spmemjs', 'spmembership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+					 														'registernonce'	=>	wp_create_nonce('staypress_register'),
+																			'loginnonce'	=>	wp_create_nonce('staypress_login')
+																		));
+					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+				}
+				if(strstr($post->post_content, '[subscriptionprice') !== false) {
+					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('fancyboxcss', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.css'));
+					wp_enqueue_script('fancyboxjs', plugins_url('sp_membership/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
+					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 				}
 			}
 
