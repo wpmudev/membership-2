@@ -4371,7 +4371,7 @@ if(!class_exists('membershipadmin')) {
 
 		function get_urlgroups() {
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->urlgroups} ORDER BY id ASC" );
+			$sql = $this->db->prepare( "SELECT * FROM {$this->urlgroups} WHERE groupname NOT LIKE (%s) ORDER BY id ASC", '\_%' );
 
 			$results = $this->db->get_results( $sql );
 
