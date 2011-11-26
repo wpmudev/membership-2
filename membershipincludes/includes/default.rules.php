@@ -323,6 +323,7 @@ class M_Pages extends M_Rule {
 
 	function admin_main($data) {
 		if(!$data) $data = array();
+
 		?>
 		<div class='level-operation' id='main-pages'>
 			<h2 class='sidebar-name'><?php _e('Pages', 'membership');?><span><a href='#remove' id='remove-pages' class='removelink' title='<?php _e("Remove Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
@@ -339,6 +340,10 @@ class M_Pages extends M_Rule {
 					);
 
 					$posts = get_posts($args);
+
+					// to remove bp specified pages - should be listed on the bp pages group
+					$posts = apply_filters( 'staypress_hide_protectable_pages', $posts );
+
 					if($posts) {
 						?>
 						<table cellspacing="0" class="widefat fixed">
@@ -359,6 +364,7 @@ class M_Pages extends M_Rule {
 							<tbody>
 						<?php
 						foreach($posts as $key => $post) {
+
 							?>
 							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
 								<th class="check-column" scope="row">
@@ -387,7 +393,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
+		//add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
 		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
@@ -398,7 +404,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
+		//add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
 		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
@@ -496,7 +502,6 @@ class M_Pages extends M_Rule {
 
 		global $wp_query, $M_options;
 
-
 		if(!$wp_query->is_single || count($posts) > 1) {
 			return $posts;
 		}
@@ -570,11 +575,11 @@ class M_Pages extends M_Rule {
 	function check_positive_pages( $posts ) {
 
 		global $wp_query, $M_options;
-
+		echo "oo";
 		if(!$wp_query->is_single || count($posts) > 1) {
 			return $posts;
 		}
-
+		echo "oo";
 		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
 

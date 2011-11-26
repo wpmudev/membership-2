@@ -14,6 +14,10 @@ class M_BPPages extends M_Rule {
 
 	var $rulearea = 'public';
 
+	function get_pages() {
+
+	}
+
 	function admin_main($data) {
 		if(!$data) $data = array();
 		?>
@@ -728,5 +732,22 @@ function M_AddBuddyPressOptionsProcess() {
 }
 add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
 
+
+function M_HideBuddyPressPages( $pages ) {
+
+	if(function_exists('bp_core_get_directory_page_ids')) {
+		$existing_pages = bp_core_get_directory_page_ids();
+	}
+
+	foreach( $pages as $key => $page ) {
+		if( in_array( $page->ID, (array) $existing_pages ) ) {
+			unset( $pages[$key] );
+		}
+	}
+
+	return $pages;
+
+}
+add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
 
 ?>
