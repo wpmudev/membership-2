@@ -393,7 +393,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		//add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 1 );
+		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 2 );
 		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
@@ -404,7 +404,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		//add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 1 );
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 2 );
 		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
@@ -447,7 +447,7 @@ class M_Pages extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_single) {
+		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
 			// We are not on a single page - so just limit the viewing
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__in'][] = $value;
@@ -575,11 +575,11 @@ class M_Pages extends M_Rule {
 	function check_positive_pages( $posts ) {
 
 		global $wp_query, $M_options;
-		echo "oo";
+
 		if(!$wp_query->is_single || count($posts) > 1) {
 			return $posts;
 		}
-		echo "oo";
+
 		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
 
