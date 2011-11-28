@@ -452,7 +452,7 @@ class M_BPGroups extends M_Rule {
 		$this->data = $data;
 
 		add_filter( 'groups_get_groups', array(&$this, 'add_viewable_groups'), 10, 2 );
-		add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2);
+		//add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
 
@@ -533,7 +533,7 @@ class M_BPGroups extends M_Rule {
 		$this->data = $data;
 
 		add_filter('groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
-		add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
+		//add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
 
@@ -564,19 +564,15 @@ class M_BPGroups extends M_Rule {
 
 	function add_viewable_groups($groups, $params) {
 
-		$innergroups = $groups['groups'];
+		foreach( (array) $groups['groups'] as $key => $group ) {
 
-		foreach( (array) $innergroups as $key => $group ) {
 			if(!in_array($group->id, $this->data)) {
-				unset($innergroups[$key]);
+				unset($groups['groups'][$key]);
 				$groups['total']--;
 			}
 		}
 
-		$groups['groups'] = array();
-		foreach( (array) $innergroups as $key => $group ) {
-			$groups['groups'][] = $group;
-		}
+		sort($groups['groups']);
 
 		return $groups;
 
@@ -584,19 +580,15 @@ class M_BPGroups extends M_Rule {
 
 	function add_unviewable_groups($groups, $params) {
 
-		$innergroups = $groups['groups'];
+		foreach( (array) $groups['groups'] as $key => $group ) {
 
-		foreach( (array) $innergroups as $key => $group ) {
 			if(in_array($group->id, $this->data)) {
-				unset($innergroups[$key]);
+				unset($groups['groups'][$key]);
 				$groups['total']--;
 			}
 		}
 
-		$groups['groups'] = array();
-		foreach( (array) $innergroups as $key => $group ) {
-			$groups['groups'][] = $group;
-		}
+		sort($groups['groups']);
 
 		return $groups;
 
@@ -619,7 +611,7 @@ class M_BPGroups extends M_Rule {
 
 	function check_negative_groups( $posts ) {
 
-		global $wp_query, $M_options;
+		global $wp_query, $M_options, $bp;
 
 		$component = bp_current_component();
 
@@ -629,6 +621,11 @@ class M_BPGroups extends M_Rule {
 
 		if(!empty($component) && $component == 'groups') {
 			// we may be on a restricted post so check the URL and redirect if needed
+
+			// If we aren't on a group then return
+			if($bp->groups->current_group == 0) {
+				return $posts;
+			}
 
 			$redirect = false;
 			$url = '';
@@ -692,7 +689,7 @@ class M_BPGroups extends M_Rule {
 
 	function check_positive_groups( $posts ) {
 
-		global $wp_query, $M_options;
+		global $wp_query, $M_options, $bp;
 
 		$component = bp_current_component();
 
@@ -700,8 +697,13 @@ class M_BPGroups extends M_Rule {
 			return $posts;
 		}
 
-		if(!empty($component)) {
+		if(!empty($component) && $component == 'groups') {
 			// we may be on a restricted post so check the URL and redirect if needed
+
+			// If we aren't on a group then return
+			if($bp->groups->current_group == 0) {
+				return $posts;
+			}
 
 			$redirect = false;
 			$url = '';
@@ -727,14 +729,15 @@ class M_BPGroups extends M_Rule {
 				$exclude[] = untrailingslashit($host);
 			}
 
-			$existing_pages = bp_core_get_directory_page_ids();
-
-			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
-				$url = get_permalink($existing_pages[$component]);
+			$url = '';
+			if(is_ssl()) {
+				$url = "https://";
+			} else {
+				$url = "http://";
 			}
+			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-			// Check if we have a url available to check
-			if(empty($url)) {
+			if(in_array(strtolower( $url ), $exclude)) {
 				return $posts;
 			}
 
