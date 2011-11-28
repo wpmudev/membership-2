@@ -387,7 +387,7 @@ class M_BPGroups extends M_Rule {
 				<?php
 
 					if(function_exists('groups_get_groups')) {
-						$groups = groups_get_groups(array('per_page' => 50));
+						$groups = groups_get_groups(array('per_page' => MEMBERSHIP_GROUP_COUNT));
 					}
 
 					if($groups) {
@@ -434,9 +434,9 @@ class M_BPGroups extends M_Rule {
 						<?php
 					}
 
-					if($groups['total'] > 50) {
+					if($groups['total'] > MEMBERSHIP_GROUP_COUNT) {
 						?>
-						<p class='description'><?php _e("Only the most recent 50 groups are shown above.",'membership'); ?></p>
+						<p class='description'><?php echo __("Only the most recent ", 'membership') . MEMBERSHIP_GROUP_COUNT . __(" groups are shown above.",'membership'); ?></p>
 						<?php
 					}
 
@@ -455,6 +455,8 @@ class M_BPGroups extends M_Rule {
 		add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
+
+		add_filter( 'the_posts', array(&$this, 'check_positive_groups'));
 
 	}
 
@@ -534,6 +536,8 @@ class M_BPGroups extends M_Rule {
 		add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
+
+		add_filter( 'the_posts', array(&$this, 'check_negative_groups'));
 	}
 
 	function add_unhas_activity($activities, $two) {
@@ -595,6 +599,183 @@ class M_BPGroups extends M_Rule {
 		}
 
 		return $groups;
+
+	}
+
+	function get_group() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups' );
+
+		$results = $wpdb->get_var( $sql );
+
+		if(!empty($results)) {
+			return $results;
+		} else {
+			return false;
+		}
+	}
+
+	function check_negative_groups( $posts ) {
+
+		global $wp_query, $M_options;
+
+		$component = bp_current_component();
+
+		if(count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($component) && $component == 'groups') {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			$url = '';
+			if(is_ssl()) {
+				$url = "https://";
+			} else {
+				$url = "http://";
+			}
+			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+			if(in_array(strtolower( $url ), $exclude)) {
+				return $posts;
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( $group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+		return $posts;
+
+	}
+
+	function check_positive_groups( $posts ) {
+
+		global $wp_query, $M_options;
+
+		$component = bp_current_component();
+
+		if(count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($component)) {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			$existing_pages = bp_core_get_directory_page_ids();
+
+			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
+				$url = get_permalink($existing_pages[$component]);
+			}
+
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( !$group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+		return $posts;
+
+	}
+
+	function redirect() {
+
+		global $M_options;
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+		}
+
+		$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+		wp_safe_redirect( $url );
+		exit;
 
 	}
 

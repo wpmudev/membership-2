@@ -295,6 +295,35 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 
 								break;
 
+			case 'bpgroups':	$permalinks = array();
+								if(function_exists('bp_get_group_permalink')) {
+									//bp_get_group_permalink( $group )
+									foreach( $_POST[$rule] as $rule ) {
+										$group = new BP_Groups_Group( $rule );
+										$permalinks[] = untrailingslashit(bp_get_group_permalink( $group )) . '(.*)';
+									}
+								}
+
+
+								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups');
+								$id = $wpdb->get_var( $sql );
+
+								$data = array( 	"groupname"	=> 	'_bpgroups',
+												"groupurls"	=>	implode("\n", $permalinks),
+												"isregexp"	=>	1,
+												"stripquerystring"	=> 1
+												);
+
+								if(!empty($id)) {
+									// exists so we're going to do an update
+									$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $id) );
+								} else {
+									// doesn't exist so we're going to do an add.
+									$wpdb->insert( membership_db_prefix($wpdb, 'urlgroups'), $data );
+								}
+
+								break;
+
 	}
 
 }
