@@ -122,7 +122,7 @@ class M_BPPages extends M_Rule {
 
 		add_filter( 'membership_override_viewable_pages_menu', array(&$this, 'keep_bp_pages') );
 
-		echo bp_current_component();
+		//echo bp_current_component();
 
 	}
 
@@ -243,11 +243,13 @@ class M_BPPages extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		$component = bp_current_component();
+
+		if(count($posts) > 1) {
 			return $posts;
 		}
 
-		if(!empty($posts) && count($posts) == 1) {
+		if(!empty($component)) {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			$redirect = false;
@@ -274,14 +276,10 @@ class M_BPPages extends M_Rule {
 				$exclude[] = untrailingslashit($host);
 			}
 
-			foreach($posts as $post) {
-				if($post->post_type != 'page') {
-					continue;
-				}
+			$existing_pages = bp_core_get_directory_page_ids();
 
-				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
-					$url = get_permalink($post->ID);
-				}
+			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
+				$url = get_permalink($existing_pages[$component]);
 			}
 
 			// Check if we have a url available to check
@@ -317,11 +315,13 @@ class M_BPPages extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		$component = bp_current_component();
+
+		if(count($posts) > 1) {
 			return $posts;
 		}
 
-		if(!empty($posts) && count($posts) == 1) {
+		if(!empty($component)) {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			$redirect = false;
@@ -348,14 +348,10 @@ class M_BPPages extends M_Rule {
 				$exclude[] = untrailingslashit($host);
 			}
 
-			foreach($posts as $post) {
-				if($post->post_type != 'page') {
-					continue;
-				}
+			$existing_pages = bp_core_get_directory_page_ids();
 
-				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
-					$url = get_permalink($post->ID);
-				}
+			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
+				$url = get_permalink($existing_pages[$component]);
 			}
 
 			// Check if we have a url available to check
