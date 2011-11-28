@@ -122,7 +122,6 @@ class M_BPPages extends M_Rule {
 
 		add_filter( 'membership_override_viewable_pages_menu', array(&$this, 'keep_bp_pages') );
 
-		//echo bp_current_component();
 
 	}
 
