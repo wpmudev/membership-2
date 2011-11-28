@@ -120,9 +120,6 @@ class M_BPPages extends M_Rule {
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
 
-		add_filter( 'membership_override_viewable_pages_menu', array(&$this, 'keep_bp_pages') );
-
-
 	}
 
 	function on_negative($data) {
@@ -182,18 +179,6 @@ class M_BPPages extends M_Rule {
 		} else {
 			// We are on a single page - so check for restriction on the_posts
 		}
-
-	}
-
-	function keep_bp_pages( $pages ) {
-
-		$existing_pages = bp_core_get_directory_page_ids();
-
-		if(!empty($existing_pages)) {
-			$pages = array_merge( $pages, $existing_pages );
-		}
-
-		return $pages;
 
 	}
 
@@ -1090,5 +1075,19 @@ function M_HideBuddyPressPages( $pages ) {
 
 }
 add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
+
+function M_KeepBuddyPressPages( $pages ) {
+
+	$existing_pages = bp_core_get_directory_page_ids();
+
+	if(!empty($existing_pages)) {
+		$pages = array_merge( $pages, $existing_pages );
+	}
+
+	return $pages;
+
+}
+
+add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
 
 ?>
