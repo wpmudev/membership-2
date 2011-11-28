@@ -394,7 +394,7 @@ class M_Pages extends M_Rule {
 		$this->data = $data;
 
 		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 2 );
-		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'));
+		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
 
@@ -405,7 +405,7 @@ class M_Pages extends M_Rule {
 		$this->data = $data;
 
 		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 2 );
-		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'));
+		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
 
@@ -461,8 +461,11 @@ class M_Pages extends M_Rule {
 	}
 
 	function add_viewable_pages_menu($pages) {
+
+		$override_pages = apply_filters( 'membership_override_viewable_pages_menu', array() );
+
 		foreach( (array) $pages as $key => $page ) {
-			if(!in_array($page->ID, (array) $this->data)) {
+			if(!in_array($page->ID, (array) $this->data) && !in_array($page->ID, (array) $override_pages)) {
 				unset($pages[$key]);
 			}
 		}

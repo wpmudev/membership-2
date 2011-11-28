@@ -271,6 +271,30 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 
 							break;
 
+			case 'bppages':		$permalinks = array();
+								foreach( $_POST[$rule] as $rule ) {
+									$permalinks[] = untrailingslashit(get_permalink( $rule )) . '(.*)';
+								}
+
+								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages');
+								$id = $wpdb->get_var( $sql );
+
+								$data = array( 	"groupname"	=> 	'_bppages',
+												"groupurls"	=>	implode("\n", $permalinks),
+												"isregexp"	=>	1,
+												"stripquerystring"	=> 1
+												);
+
+								if(!empty($id)) {
+									// exists so we're going to do an update
+									$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $id) );
+								} else {
+									// doesn't exist so we're going to do an add.
+									$wpdb->insert( membership_db_prefix($wpdb, 'urlgroups'), $data );
+								}
+
+								break;
+
 	}
 
 }

@@ -14,17 +14,98 @@ class M_BPPages extends M_Rule {
 
 	var $rulearea = 'public';
 
+	function on_bp_page() {
+
+	}
+
 	function get_pages() {
+
+		global $bp;
+
+		$directory_pages = array();
+
+		foreach( $bp->loaded_components as $component_slug => $component_id ) {
+
+			// Only components that need directories should be listed here
+			if ( isset( $bp->{$component_id} ) && !empty( $bp->{$component_id}->has_directory ) ) {
+
+				// component->name was introduced in BP 1.5, so we must provide a fallback
+				$component_name = !empty( $bp->{$component_id}->name ) ? $bp->{$component_id}->name : ucwords( $component_id );
+
+				$directory_pages[$component_id] = $component_name;
+			}
+		}
+
+		$directory_pages = apply_filters( 'bp_directory_pages', $directory_pages );
+
+		return $directory_pages;
 
 	}
 
 	function admin_main($data) {
+
+		global $bp;
+
 		if(!$data) $data = array();
+
+		$existing_pages = bp_core_get_directory_page_ids();
+
+		$directory_pages = $this->get_pages();
+
 		?>
 		<div class='level-operation' id='main-bppages'>
 			<h2 class='sidebar-name'><?php _e('BuddyPress Pages', 'membership');?><span><a href='#remove' id='remove-bppages' class='removelink' title='<?php _e("Remove BuddyPress Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><?php _e('Please use the URL Groups for a more reliable method of restricting access to BuddyPress pages.','membership'); ?></p>
+				<p><?php _e('Select the BuddyPress Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
+				<?php
+
+					//print_r($existing_pages);
+
+					//print_r($directory_pages);
+
+					if($directory_pages) {
+						?>
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+								</tr>
+							</thead>
+
+							<tfoot>
+							<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+								</tr>
+							</tfoot>
+
+							<tbody>
+						<?php
+
+
+						foreach($directory_pages as $key => $page) {
+
+							if ( !empty( $existing_pages[$key] ) ) { ?>
+
+							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
+								<th class="check-column" scope="row">
+									<input type="checkbox" value="<?php echo $existing_pages[$key]; ?>" name="bppages[]" <?php if(in_array($existing_pages[$key], $data)) echo 'checked="checked"'; ?>>
+								</th>
+								<td class="column-name">
+									<strong><?php echo esc_html($page); ?></strong>
+								</td>
+						    </tr>
+							<?php
+							}
+						}
+						?>
+							</tbody>
+						</table>
+						<?php
+					}
+
+				?>
 			</div>
 		</div>
 		<?php
@@ -34,13 +115,278 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
+		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 3 );
+		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'), 2 );
+
+		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
+
+		add_filter( 'membership_override_viewable_pages_menu', array(&$this, 'keep_bp_pages') );
+
+		echo bp_current_component();
+
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
 
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 3 );
+		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
+
+		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
+
 	}
+
+	function redirect() {
+
+		global $M_options;
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+		}
+
+		$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+		wp_safe_redirect( $url );
+		exit;
+
+	}
+
+	function get_group() {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages' );
+
+		$results = $wpdb->get_var( $sql );
+
+		if(!empty($results)) {
+			return $results;
+		} else {
+			return false;
+		}
+	}
+
+	function add_viewable_pages($wp_query) {
+
+		global $M_options;
+
+		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
+			// We are not on a single page - so just limit the viewing
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
+		} else {
+			// We are on a single page - so check for restriction on the_posts
+		}
+
+	}
+
+	function keep_bp_pages( $pages ) {
+
+		$existing_pages = bp_core_get_directory_page_ids();
+
+		if(!empty($existing_pages)) {
+			$pages = array_merge( $pages, $existing_pages );
+		}
+
+		return $pages;
+
+	}
+
+	function add_viewable_pages_menu($pages) {
+
+		$existing_pages = bp_core_get_directory_page_ids();
+
+		foreach( (array) $pages as $key => $page ) {
+			if(!in_array($page->ID, (array) $this->data) && in_array( $page->ID, (array) $existing_pages )) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
+
+	}
+
+	function add_unviewable_pages($wp_query) {
+
+		global $M_options;
+
+		if(!$wp_query->is_single) {
+			// We are not on a single page - so just limit the viewing
+			foreach( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__not_in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+		} else {
+			// We are on a single page - so check for restriction on the_posts
+		}
+
+	}
+
+	function add_unviewable_pages_menu($pages) {
+		foreach( (array) $pages as $key => $page ) {
+			if(in_array($page->ID, (array) $this->data)) {
+				unset($pages[$key]);
+			}
+		}
+
+		return $pages;
+	}
+
+	function check_negative_pages( $posts ) {
+
+		global $wp_query, $M_options;
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($posts) && count($posts) == 1) {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			foreach($posts as $post) {
+				if($post->post_type != 'page') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+			}
+
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( $group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+		return $posts;
+
+	}
+
+	function check_positive_pages( $posts ) {
+
+		global $wp_query, $M_options;
+
+		if(!$wp_query->is_single || count($posts) > 1) {
+			return $posts;
+		}
+
+		if(!empty($posts) && count($posts) == 1) {
+			// we may be on a restricted post so check the URL and redirect if needed
+
+			$redirect = false;
+			$url = '';
+
+			$exclude = array();
+			if(!empty($M_options['registration_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+			}
+
+			if(!empty($M_options['account_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['account_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+			}
+
+			if(!empty($M_options['nocontent_page'])) {
+				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
+				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+			}
+
+			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
+				$exclude[] = $host;
+				$exclude[] = untrailingslashit($host);
+			}
+
+			foreach($posts as $post) {
+				if($post->post_type != 'page') {
+					continue;
+				}
+
+				if(!in_array(strtolower( get_permalink($post->ID) ), $exclude)) {
+					$url = get_permalink($post->ID);
+				}
+			}
+
+			// Check if we have a url available to check
+			if(empty($url)) {
+				return $posts;
+			}
+
+			// we have the current page / url - get the groups selected
+			$group_id = $this->get_group();
+
+			if($group_id) {
+				$group = new M_Urlgroup( $group_id );
+
+				if( !$group->url_matches( $url ) ) {
+					$redirect = true;
+				}
+			}
+
+			if($redirect === true && !empty($M_options['nocontent_page'])) {
+				// we need to redirect
+				$this->redirect();
+			} else {
+				return $posts;
+			}
+
+		}
+
+		return $posts;
+
+	}
+
 }
 M_register_rule('bppages', 'M_BPPages', 'bp');
 
