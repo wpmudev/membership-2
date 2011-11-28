@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-26 13:29+0100\n"
-"PO-Revision-Date: 2011-10-26 13:29+0100\n"
+"POT-Creation-Date: 2011-11-29 00:14+0100\n"
+"PO-Revision-Date: 2011-11-29 00:14+0100\n"
 "Last-Translator: Barry <barry@mapinated.com>\n"
 "Language-Team: Incsub <barry@incsub.com>\n"
 "MIME-Version: 1.0\n"
@@ -27,17 +27,17 @@ msgstr ""
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.admin.rules.php:277
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.admin.rules.php:419
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.admin.rules.php:535
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:20
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:251
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:339
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:589
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:650
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:57
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:384
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:799
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:887
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1137
 msgid "Remove"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/capitalp.rule.php:22
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:253
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:591
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:801
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1139
 msgid "Positive : "
 msgstr ""
 
@@ -46,8 +46,8 @@ msgid "Leaves the WP3 Capital P filter in place."
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/capitalp.rule.php:23
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:254
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:592
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:802
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1140
 msgid "Negative : "
 msgstr ""
 
@@ -206,135 +206,144 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:20
-msgid "Groups"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:20
-msgid "Remove Groups from this rules area."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:22
-msgid "Select the groups to be covered by this rule by checking the box next to the relevant groups title."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:35
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:43
-msgid "Group title"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:36
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:44
-msgid "Group created"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:75
-msgid "Only the most recent 50 groups are shown above."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:251
-msgid "Group Creation"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:251
-msgid "Remove Group Creation from this rules area."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:253
-msgid "User can create "
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:253
-msgid " groups."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:253
-msgid "Leave blanks for unlimited groups."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:254
-msgid "User is unable to create any groups."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:339
-msgid "Blogs"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:339
-msgid "Remove Blogs from this rules area."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:341
-msgid "Select the blogs to be covered by this rule by checking the box next to the relevant blogs name."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:354
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:362
-msgid "Blog title"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:355
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:363
-msgid "Last activity"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:394
-msgid "Only the most recently updated 50 blogs are shown above."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:589
-msgid "Private Messaging"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:589
-msgid "Remove Private Messaging from this rules area."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:591
-msgid "User can send messages."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:592
-msgid "User is unable to send messages."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:650
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:57
 msgid "BuddyPress Pages"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:650
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:57
 msgid "Remove BuddyPress Pages from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:652
-msgid "Please use the URL Groups for a more reliable method of restricting access to BuddyPress pages."
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:59
+msgid "Select the BuddyPress Pages to be covered by this rule by checking the box next to the relevant pages title."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:685
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:72
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:79
+msgid "Page title"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:384
+msgid "Groups"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:384
+msgid "Remove Groups from this rules area."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:386
+msgid "Select the groups to be covered by this rule by checking the box next to the relevant groups title."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:399
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:407
+msgid "Group title"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:400
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:408
+msgid "Group created"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:439
+msgid "Only the most recent "
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:439
+msgid " groups are shown above."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:799
+msgid "Group Creation"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:799
+msgid "Remove Group Creation from this rules area."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:801
+msgid "User can create "
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:801
+msgid " groups."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:801
+msgid "Leave blanks for unlimited groups."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:802
+msgid "User is unable to create any groups."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:887
+msgid "Blogs"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:887
+msgid "Remove Blogs from this rules area."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:889
+msgid "Select the blogs to be covered by this rule by checking the box next to the relevant blogs name."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:902
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:910
+msgid "Blog title"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:903
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:911
+msgid "Last activity"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:942
+msgid "Only the most recently updated 50 blogs are shown above."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1137
+msgid "Private Messaging"
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1137
+msgid "Remove Private Messaging from this rules area."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1139
+msgid "User can send messages."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1140
+msgid "User is unable to send messages."
+msgstr ""
+
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1200
 msgid "BuddyPress"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:697
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1212
 msgid "BuddyPress protected content message"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:698
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1213
 msgid "This is the message that is displayed when a BuddyPress related operation is restricted. Depending on your theme this is displayed in a red bar, and so should be short and concise."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:703
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1218
 msgid "BuddyPress No access message"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:704
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1219
 msgid "This is the message that is displayed when a BuddyPress related operation is restricted."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:705
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1220
 msgid "Leave blank for no message."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:706
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/default.bprules.php:1221
 msgid "HTML allowed."
 msgstr ""
 
@@ -955,11 +964,11 @@ msgstr ""
 msgid "Invite Code"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/simple.invitecodes.php:89
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/simple.invitecodes.php:94
 msgid "You need to enter an invite code in order to register."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/simple.invitecodes.php:96
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/addons/simple.invitecodes.php:107
 msgid "Sorry, but we do not seem to have that code on file, please try another."
 msgstr ""
 
@@ -1286,7 +1295,7 @@ msgid "Membership URL Groups"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:182
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1383
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1549
 msgid "URL Groups"
 msgstr ""
 
@@ -1321,7 +1330,7 @@ msgid "Are you sure you want to delete this level?"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:291
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1230
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1476
 msgid "Are you sure you want to deactivate this level?"
 msgstr ""
 
@@ -1786,8 +1795,8 @@ msgid "&larr; Back to All Users"
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:1705
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:985
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1069
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1020
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1104
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/account.form.php:65
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/bp.account.form.php:65
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/bp.registration.form.php:19
@@ -1989,7 +1998,7 @@ msgid "Create as many shortcodes as you want by entering them below, each shortc
 msgstr ""
 
 #: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershipadmin.php:2216
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:998
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1164
 msgid "Shortcodes"
 msgstr ""
 
@@ -2923,73 +2932,73 @@ msgstr ""
 msgid "No Addons where found for this install."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:176
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:181
 msgid "Register"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:184
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:189
 msgid "My Account"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:655
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:660
 msgid "No access to this content"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:986
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1070
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1021
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1105
 msgid "Email address"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:987
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1022
 msgid "Email address confirmation"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:988
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1071
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1023
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1106
 msgid "Password"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:989
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1072
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1024
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1107
 msgid "Password confirmation"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:996
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1079
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1117
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1031
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1114
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1153
 msgid "Please ensure that the "
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:996
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1079
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1117
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1031
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1114
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1153
 msgid " information is completed."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1001
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1036
 msgid "Please ensure the email addresses match."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1004
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1084
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1039
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1119
 msgid "Please ensure the passwords match."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1008
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1088
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1043
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1123
 msgid "That username is already taken, sorry."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1012
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1092
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1047
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1127
 msgid "That email address is already taken, sorry."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1230
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1476
 msgid "Are you sure you want to unsubscribe from this subscription?"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1267
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/classes/membershippublic.php:1549
 msgid "Could not create your user account."
 msgstr ""
 
@@ -3171,162 +3180,157 @@ msgstr ""
 msgid "Only the most recent %d posts are shown above, if you have more than that then you should consider using categories instead."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:255
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:329
 msgid "Pages"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:255
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:329
 msgid "Remove Pages from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:257
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:331
 msgid "Select the Pages to be covered by this rule by checking the box next to the relevant pages title."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:275
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:282
-msgid "Page title"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:307
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:386
 #, php-format
 msgid "Only the most recent %d pages are shown above."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:501
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:667
 msgid "Categories"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:501
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:667
 msgid "Remove Categories from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:503
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:669
 msgid "Select the Categories to be covered by this rule by checking the box next to the relevant categories name."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:513
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:520
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:679
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:686
 msgid "Category name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:720
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:886
 msgid "More tag"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:720
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:886
 msgid "Remove More tag from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:722
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:888
 msgid "User can read full post content beyond the More tag."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:723
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:889
 msgid "User is unable to read full post content beyond the More tag."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:825
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:991
 msgid "Comments"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:825
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:991
 msgid "Remove Comments from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:827
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:993
 msgid "User gets read and make comments of posts."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:828
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:994
 msgid "User can not read or comment on posts."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:893
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1059
 msgid "Downloads"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:893
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1059
 msgid "Remove Downloads from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:895
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1061
 msgid "Select the Downloads / Media to be covered by this rule by checking the box next to the relevant group name."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:911
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:917
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1077
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1083
 msgid "Download / Group name"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:944
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1110
 msgid "You have no download groups set, please visit the membership options page to set them up."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:998
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1164
 msgid "Remove Shortcodes from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1000
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1166
 msgid "Select the Shortcodes to be covered by this rule by checking the box next to the relevant shortcode tag."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1008
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1015
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1174
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1181
 msgid "Shortcode tag"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1124
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1290
 msgid "Menu"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1124
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1290
 msgid "Remove Menu from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1126
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1292
 msgid "Select the Menu items to be covered by this rule by checking the box next to the relevant menu labels."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1137
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1144
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1303
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1310
 msgid "Menu / Item title"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1154
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1320
 msgid "MENU"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1245
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1411
 msgid "Blog Creation"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1245
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1411
 msgid "Remove Blog Creation from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1247
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1413
 msgid " blogs."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1247
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1413
 msgid "Leave blanks for unlimited blogs."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1248
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1414
 msgid "User is unable to create any blogs."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1383
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1549
 msgid "Remove URL Groups from this rules area."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1385
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1551
 msgid "Select the URL Groups to be covered by this rule by checking the box next to the relevant URL Group name."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1395
-#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1402
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1561
+#: /Users/barrygetty/Work/wordpress/plugins/membership/membershipincludes/includes/default.rules.php:1568
 msgid "URL Group"
 msgstr ""
 
