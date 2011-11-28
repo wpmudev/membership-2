@@ -1,7 +1,7 @@
 /* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/renewform.css?ver=3.1.1 */
 
 div.renew-form {
-	width: 100%;
+	width: 90%;
 	padding: 10px;
 	margin-top: 10px;
 	border: 1px solid #d4d4d4;
@@ -11,11 +11,11 @@ div.renew-form {
 }
 
 div.renew-form div.formleft p {
-	margin-bottom: 5px !Important;	
+	margin-bottom: 5px !Important;
 }
 
 div.subscription {
-	width: 100%;
+	width: 90%;
 	padding: 10px;
 	margin-top: 10px;
 	border: 1px solid #cccc66;
@@ -25,7 +25,7 @@ div.subscription {
 }
 
 div.renew-form .unsubbutton {
-	float: right;	
+	float: right;
 	text-decoration: none;
 }
 
@@ -35,11 +35,11 @@ div.renew-form .unsubbutton input {
 }
 
 div.renew-form div.formleft form {
-	float: right;	
+	float: right;
 }
 
 div.renew-form div.formleft form input {
-	margin-bottom: 5px;	
+	margin-bottom: 5px;
 }
 
 div.subscription div.description h3 {
@@ -55,9 +55,9 @@ div.subscription div.description p {
 
 div.subscription div.priceforms form input {
 	float: right;
-	margin-bottom: 5px;	
+	margin-bottom: 5px;
 }
 
 div.subscription div.priceforms .unsubbutton input {
-	margin-bottom: 5px;	
+	margin-bottom: 5px;
 }

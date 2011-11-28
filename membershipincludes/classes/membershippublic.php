@@ -1131,7 +1131,8 @@ if(!class_exists('membershippublic')) {
 
 									// xprofile required fields
 									/* Now we've checked account details, we can check profile information */
-									if ( function_exists( 'xprofile_check_is_required_field' ) ) {
+									//if ( function_exists( 'xprofile_check_is_required_field' ) ) {
+									if ( function_exists('bp_is_active') && bp_is_active( 'xprofile' ) ) {
 
 										/* Make sure hidden field is passed and populated */
 										if ( isset( $_POST['signup_profile_field_ids'] ) && !empty( $_POST['signup_profile_field_ids'] ) ) {
@@ -1164,6 +1165,7 @@ if(!class_exists('membershippublic')) {
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && empty($anyerrors)) {
 										// Pre - error reporting check for final add user
+
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
@@ -1478,14 +1480,14 @@ if(!class_exists('membershippublic')) {
 				// New subscription styles
 				if(strstr($post->post_content, '[subscriptiontitle') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
 				}
 				if(strstr($post->post_content, '[subscriptiondetails') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
 					//wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
 					//wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
@@ -1505,8 +1507,8 @@ if(!class_exists('membershippublic')) {
 				}
 				if(strstr($post->post_content, '[subscriptionprice') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
 					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 				}

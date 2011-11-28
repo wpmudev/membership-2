@@ -1,7 +1,7 @@
 /* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/accountform.css?ver=3.1.1 */
 
 div#account-form {
-	width: 100%;
+	width: 90%;
 	padding: 10px;
 	border: 1px solid #d4d4d4;
 	background-color: #f3f3f3;
@@ -65,6 +65,6 @@ div#account-form table.form-table th label {
 }
 
 #account-form div.formleft table.form-table tbody tr td {
-	border: none;	
+	border: none;
 }
 
