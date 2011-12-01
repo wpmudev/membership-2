@@ -270,11 +270,18 @@ if(!class_exists('membershipadmin')) {
 		function add_admin_header_membership() {
 			// The dashboard - top level menu
 
+			global $wp_version;
+
 			// Load the core first
 			$this->add_admin_header_core();
 
 			wp_enqueue_script('dashjs', membership_url('membershipincludes/js/dashboard.js'), array( 'jquery' ), $this->build);
-			wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array('widgets'), $this->build);
+
+			if(version_compare( preg_replace('/-.*$/', '', $wp_version), "3.3", '<')) {
+				wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array('widgets'), $this->build);
+			} else {
+				wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array(), $this->build);
+			}
 
 			//wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
@@ -283,10 +290,17 @@ if(!class_exists('membershipadmin')) {
 
 		function add_admin_header_membershiplevels() {
 
+			global $wp_version;
+
 			$this->add_admin_header_core();
 
 			wp_enqueue_script('levelsjs', membership_url('membershipincludes/js/levels.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
-			wp_enqueue_style('levelscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
+
+			if(version_compare( preg_replace('/-.*$/', '', $wp_version), "3.3", '<')) {
+				wp_enqueue_style('levelscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
+			} else {
+				wp_enqueue_style('levelscss', membership_url('membershipincludes/css/levels.css'), array(), $this->build);
+			}
 
 			wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
@@ -294,12 +308,19 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function add_admin_header_membershipsubs() {
+
+			global $wp_version;
 			// Run the core header
 			$this->add_admin_header_core();
 
 			// Queue scripts and localise
 			wp_enqueue_script('subsjs', membership_url('membershipincludes/js/subscriptions.js'), array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable' ), $this->build);
-			wp_enqueue_style('subscss', membership_url('membershipincludes/css/subscriptions.css'), array('widgets'), $this->build);
+
+			if(version_compare( preg_replace('/-.*$/', '', $wp_version), "3.3", '<')) {
+				wp_enqueue_style('subscss', membership_url('membershipincludes/css/subscriptions.css'), array('widgets'), $this->build);
+			} else {
+				wp_enqueue_style('subscss', membership_url('membershipincludes/css/subscriptions.css'), array(), $this->build);
+			}
 
 			wp_localize_script( 'subsjs', 'membership', array( 'deletesub' => __('Are you sure you want to delete this subscription?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
 
@@ -308,12 +329,20 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function add_admin_header_members() {
+
+			global $wp_version;
 			// Run the core header
 			$this->add_admin_header_core();
 
 			wp_enqueue_script('membersjs', membership_url('membershipincludes/js/members.js'), array(), $this->build);
-			// Using the level css file for now - maybe switch to a members specific one later
-			wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
+
+			if(version_compare( preg_replace('/-.*$/', '', $wp_version), "3.3", '<')) {
+				// Using the level css file for now - maybe switch to a members specific one later
+				wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array('widgets'), $this->build);
+			} else {
+				// Using the level css file for now - maybe switch to a members specific one later
+				wp_enqueue_style('memberscss', membership_url('membershipincludes/css/levels.css'), array(), $this->build);
+			}
 
 			wp_localize_script( 'membersjs', 'membership', array( 'deactivatemember' => __('Are you sure you want to deactivate this member?','membership') ) );
 
