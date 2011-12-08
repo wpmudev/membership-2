@@ -154,7 +154,7 @@ class M_BPPages extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages' );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages-' . $this->level_id );
 
 		$results = $wpdb->get_var( $sql );
 
@@ -598,7 +598,7 @@ class M_BPGroups extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups' );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups-' . $this->level_id );
 
 		$results = $wpdb->get_var( $sql );
 
