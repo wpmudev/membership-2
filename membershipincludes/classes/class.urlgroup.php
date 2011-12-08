@@ -231,7 +231,7 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts-' . $level_id );
 							$id = $wpdb->get_var( $sql );
 
-							$data = array( 	"groupname"	=> 	'_posts-' . $id,
+							$data = array( 	"groupname"	=> 	'_posts-' . $level_id,
 											"groupurls"	=>	implode("\n", $permalinks),
 											"isregexp"	=>	0,
 											"stripquerystring"	=> 1
