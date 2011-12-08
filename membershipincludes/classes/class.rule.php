@@ -10,12 +10,16 @@ if(!class_exists('M_Rule')) {
 		// The area of the rule - public, admin or core
 		var $rulearea = 'public';
 
-		function __construct() {
-			$this->on_creation();
+		var $level_id = false;
 
+		function __construct( $level_id = false ) {
+			// Store the level this rule is for
+			$this->level_id = $level_id;
+
+			$this->on_creation();
 		}
 
-		function M_Rule() {
+		function M_Rule( $tst ) {
 			$this->__construct();
 		}
 

@@ -180,7 +180,7 @@ if(!class_exists('M_Gateway')) {
 			$data['transaction_stamp'] = $timestamp;
 			$data['transaction_currency'] = $currency;
 			$data['transaction_status'] = $status;
-			$data['transaction_total_amount'] = (int) ($amount * 100);
+			$data['transaction_total_amount'] = (int) round($amount * 100);
 			$data['transaction_note'] = $note;
 			$data['transaction_gateway'] = $this->gateway;
 

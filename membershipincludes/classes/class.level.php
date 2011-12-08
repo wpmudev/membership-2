@@ -200,6 +200,9 @@ if(!class_exists('M_Level')) {
 								$ruleval = maybe_serialize($_POST[$rule]);
 								// write it to the database
 								$this->db->insert($this->membership_rules, array("level_id" => $this->id, "rule_ive" => 'positive', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
+								// Hit an action - two methods of hooking
+								do_action('membership_add_positive_rule', $rule, $_POST, $this->id);
+								do_action('membership_add_positive_rule_' . $rule, $_POST, $this->id);
 							}
 						}
 
@@ -216,6 +219,9 @@ if(!class_exists('M_Level')) {
 								$ruleval = maybe_serialize($_POST[$rule]);
 								// write it to the database
 								$this->db->insert($this->membership_rules, array("level_id" => $this->id, "rule_ive" => 'negative', "rule_area" => $rule, "rule_value" => $ruleval, "rule_order" => $count++));
+								// Hit an action - two methods of hooking
+								do_action('membership_add_negative_rule', $rule, $_POST, $this->id);
+								do_action('membership_add_negative_rule_' . $rule, $_POST, $this->id);
 							}
 						}
 					}
@@ -262,7 +268,7 @@ if(!class_exists('M_Level')) {
 				$key = 0;
 				foreach( (array) $positive as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
-						$this->positiverules[$key] = new $M_Rules[$rule->rule_area];
+						$this->positiverules[$key] = new $M_Rules[$rule->rule_area]( $this->id );
 
 						if( in_array($this->positiverules[$key]->rulearea, $loadtype) ) {
 							$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
@@ -279,7 +285,7 @@ if(!class_exists('M_Level')) {
 				$key = 0;
 				foreach( (array) $negative as $key => $rule) {
 					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
-						$this->negativerules[$key] = new $M_Rules[$rule->rule_area];
+						$this->negativerules[$key] = new $M_Rules[$rule->rule_area]( $this->id );
 
 						if( in_array($this->negativerules[$key]->rulearea, $loadtype) ) {
 							$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));

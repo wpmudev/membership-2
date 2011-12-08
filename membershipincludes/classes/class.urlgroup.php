@@ -218,7 +218,7 @@ if(!class_exists('M_Urlgroup')) {
 	}
 }
 
-function M_create_internal_URL_group( $rule, $post, $id ) {
+function M_create_internal_URL_group( $rule, $post, $level_id ) {
 
 	global $wpdb;
 
@@ -228,10 +228,10 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 								$permalinks[] = get_permalink( $rule );
 							}
 
-							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts');
+							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts-' . $level_id );
 							$id = $wpdb->get_var( $sql );
 
-							$data = array( 	"groupname"	=> 	'_posts',
+							$data = array( 	"groupname"	=> 	'_posts-' . $id,
 											"groupurls"	=>	implode("\n", $permalinks),
 											"isregexp"	=>	0,
 											"stripquerystring"	=> 1
@@ -239,7 +239,7 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 
 							if(!empty($id)) {
 								// exists so we're going to do an update
-								$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $id) );
+								$wpdb->update( membership_db_prefix($wpdb, 'urlgroups'), $data, array( "id" => $level_id) );
 							} else {
 								// doesn't exist so we're going to do an add.
 								$wpdb->insert( membership_db_prefix($wpdb, 'urlgroups'), $data );
@@ -252,10 +252,10 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 								$permalinks[] = get_permalink( $rule );
 							}
 
-							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_pages');
+							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_pages-' . $level_id );
 							$id = $wpdb->get_var( $sql );
 
-							$data = array( 	"groupname"	=> 	'_pages',
+							$data = array( 	"groupname"	=> 	'_pages-' . $level_id,
 											"groupurls"	=>	implode("\n", $permalinks),
 											"isregexp"	=>	0,
 											"stripquerystring"	=> 1
@@ -276,10 +276,10 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 									$permalinks[] = untrailingslashit(get_permalink( $rule )) . '(.*)';
 								}
 
-								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages');
+								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bppages-' . $level_id);
 								$id = $wpdb->get_var( $sql );
 
-								$data = array( 	"groupname"	=> 	'_bppages',
+								$data = array( 	"groupname"	=> 	'_bppages-' . $level_id,
 												"groupurls"	=>	implode("\n", $permalinks),
 												"isregexp"	=>	1,
 												"stripquerystring"	=> 1
@@ -305,10 +305,10 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 								}
 
 
-								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups');
+								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_bpgroups-' . $level_id);
 								$id = $wpdb->get_var( $sql );
 
-								$data = array( 	"groupname"	=> 	'_bpgroups',
+								$data = array( 	"groupname"	=> 	'_bpgroups-' . $level_id,
 												"groupurls"	=>	implode("\n", $permalinks),
 												"isregexp"	=>	1,
 												"stripquerystring"	=> 1
@@ -330,5 +330,7 @@ function M_create_internal_URL_group( $rule, $post, $id ) {
 
 add_action( 'membership_update_positive_rule', 'M_create_internal_URL_group', 10, 3 );
 add_action( 'membership_update_negative_rule', 'M_create_internal_URL_group', 10, 3 );
+add_action( 'membership_add_positive_rule', 'M_create_internal_URL_group', 10, 3 );
+add_action( 'membership_add_negative_rule', 'M_create_internal_URL_group', 10, 3 );
 
 ?>
