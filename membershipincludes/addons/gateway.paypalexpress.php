@@ -813,16 +813,25 @@ class paypalexpress extends M_Gateway {
 			switch ($_POST['txn_type']) {
 				case 'subscr_signup':
 					// start the subscription
+					$amount = $_POST['mc_amount3'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					// create_subscription
-					$member = new M_Membership($user_id);
-					if($member) {
-						$member->create_subscription($sub_id, $this->gateway);
-					}
+					$newkey = md5('MEMBERSHIP' . $amount);
+					if($key != $newkey) {
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->deactivate();
+						}
+					} else {
+						// create_subscription
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->create_subscription($sub_id, $this->gateway);
+						}
 
-					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				  break;
+						do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+					}
+				  	break;
 
 				case 'subscr_modify':
 					// modify the subscription

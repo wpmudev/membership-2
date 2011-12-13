@@ -135,7 +135,6 @@ class paypalsolo extends M_Gateway {
 		  </td>
 		  </tr>
 
-
 			<tr valign="top">
 				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
 					<em style='font-size:smaller;'><?php _e("The message that is displayed to a user once they are signed up on a Free level. HTML allowed",'membership'); ?>
@@ -439,26 +438,34 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '' ) ) {
-						$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '');
-
-						if($sublevel == '1') {
-							// This is the first level of a subscription so we need to create one if it doesn't already exist
-							$member = new M_Membership($user_id);
-							if($member) {
-								$member->create_subscription($sub_id, $this->gateway);
-								do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-							}
-						} else {
-							$member = new M_Membership($user_id);
-							if($member) {
-								// Mark the payment so that we can move through ok
-								$member->record_active_payment( $sub_id, $sublevel, $timestamp );
-							}
+					$newkey = md5('MEMBERSHIP' . $amount);
+					if($key != $newkey) {
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->deactivate();
 						}
+					} else {
+						if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '' ) ) {
+							$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '');
 
-						// Added for affiliate system link
-						do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
+							if($sublevel == '1') {
+								// This is the first level of a subscription so we need to create one if it doesn't already exist
+								$member = new M_Membership($user_id);
+								if($member) {
+									$member->create_subscription($sub_id, $this->gateway);
+									do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+								}
+							} else {
+								$member = new M_Membership($user_id);
+								if($member) {
+									// Mark the payment so that we can move through ok
+									$member->record_active_payment( $sub_id, $sublevel, $timestamp );
+								}
+							}
+
+							// Added for affiliate system link
+							do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
+						}
 					}
 					break;
 
