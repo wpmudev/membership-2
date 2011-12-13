@@ -685,7 +685,7 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
-			if(empty($wp_query->query_vars['post__in']) && empty($wp_query->query_vars['post__not_in'])) {
+			if(empty($wp_query->query_vars['post__in'])) {
 				return;
 			}
 
@@ -715,12 +715,6 @@ if(!class_exists('membershippublic')) {
 			}
 
 			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
-
-			if(!empty($M_options['nocontent_page']) && $wp_query->queried_object_id != $M_options['nocontent_page']) {
-				// This function should remove the no access page from any menus
-				//$wp_query->query_vars['post__not_in'][] = $M_options['nocontent_page'];
-				$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
-			}
 
 		}
 

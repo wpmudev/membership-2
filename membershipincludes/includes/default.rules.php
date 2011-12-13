@@ -130,7 +130,7 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_single) {
+		if(!$wp_query->is_singlular && empty($wp_query->query_vars['pagename'])) {
 			// We are in a list rather than on a single post
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__in'][] = $value;
@@ -149,13 +149,14 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_single) {
+		if(!$wp_query->is_singlular && empty($wp_query->query_vars['pagename'])) {
 			// We are on a list rather than on a single post
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__not_in'][] = $value;
 			}
 
 			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
+
 		} else {
 			// We are on a single post - wait until we get to the_posts
 		}
@@ -168,7 +169,7 @@ class M_Posts extends M_Rule {
 		global $wp_query, $M_options;
 
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singlular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -241,7 +242,7 @@ class M_Posts extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singlular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -478,16 +479,7 @@ class M_Pages extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_single) {
-			// We are not on a single page - so just limit the viewing
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__not_in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
-		} else {
-			// We are on a single page - so check for restriction on the_posts
-		}
+		return;
 
 	}
 
@@ -505,9 +497,11 @@ class M_Pages extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
+
+		//print_r($wp_query);
 
 		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
@@ -579,7 +573,7 @@ class M_Pages extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -753,7 +747,7 @@ class M_Categories extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -783,9 +777,9 @@ class M_Categories extends M_Rule {
 
 	function check_positive_posts( $posts ) {
 
-		global $wp_query;
+		global $wp_query, $M_options;
 
-		if(!$wp_query->is_single || count($posts) > 1) {
+		if(!$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
 
