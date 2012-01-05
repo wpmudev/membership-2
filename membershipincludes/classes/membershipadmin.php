@@ -2027,6 +2027,7 @@ if(!class_exists('membershipadmin')) {
 				$M_options['nocontent_page'] = $_POST['nocontent_page'];
 				$M_options['account_page'] = $_POST['account_page'];
 				$M_options['registration_page'] = $_POST['registration_page'];
+				$M_options['formtype'] = $_POST['formtype'];
 				$M_options['registration_tos'] = $_POST['registration_tos'];
 
 				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
@@ -2178,7 +2179,7 @@ if(!class_exists('membershipadmin')) {
 
 					<h3><?php _e('Registration page','membership'); ?></h3>
 					<p><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
-					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [subscriptionform] shortcode in some location.','membership'); ?></p>
+					<p><?php _e('It can contain any content you want but <strong>should</strong> contain the [subscriptionform] shortcode in some location if you want to use the standard Membership plugin sign-up interface.','membership'); ?></p>
 
 					<table class="form-table">
 					<tbody>
@@ -2191,6 +2192,23 @@ if(!class_exists('membershipadmin')) {
 								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 								echo $pages;
 								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<p><?php _e('There are two forms of registration form available, if you are using the [subscriptionform] shortcode then select the one you would like to use on your site below.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Form type','membership'); ?>
+							</th>
+							<td>
+								<select name='formtype' id='formtype'>
+									<option value="original" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'original') echo "selected='selected'"; ?>><?php _e('Original membership form','membership'); ?></option>
+									<option value="new" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') echo "selected='selected'"; ?>><?php _e('Popup registration form','membership'); ?></option>
+								</select>
 							</td>
 						</tr>
 					</tbody>

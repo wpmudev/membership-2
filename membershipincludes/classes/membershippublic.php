@@ -1488,15 +1488,24 @@ if(!class_exists('membershippublic')) {
 				}
 				if(strstr($post->post_content, '[subscriptionbutton') !== false) {
 					// The shortcode is in a post on this page, add the header
+					wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+
 					wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
 					wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-					//wp_enqueue_script('spmemjs', plugins_url('sp_membership/js/sp_membership.js'), array('jquery'), false, true);
-					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
 
-					wp_localize_script('spmemjs', 'spmembership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-					 														'registernonce'	=>	wp_create_nonce('staypress_register'),
-																			'loginnonce'	=>	wp_create_nonce('staypress_login')
+					wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
+					wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+
+					wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+					 														'registernonce'	=>	wp_create_nonce('membership_register'),
+																			'loginnonce'	=>	wp_create_nonce('membership_login'),
+																			'regproblem'	=>	__('Problem with registration.', 'membership'),
+																			'logpropblem'	=>	__('Problem with Login.', 'membership'),
+																			'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
+																			'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
+																			'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
 																		));
+
 					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 				}
 				if(strstr($post->post_content, '[subscriptionprice') !== false) {
