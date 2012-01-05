@@ -1473,19 +1473,13 @@ if(!class_exists('membershippublic')) {
 
 				// New subscription styles
 				if(strstr($post->post_content, '[subscriptiontitle') !== false) {
-					// The shortcode is in a post on this page, add the header
-					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
+					do_action('membership_subscriptiontitle_onpage');
 				}
+
 				if(strstr($post->post_content, '[subscriptiondetails') !== false) {
-					// The shortcode is in a post on this page, add the header
-					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
-					//wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-					//wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+					do_action('membership_subscriptiondetails_onpage');
 				}
+
 				if(strstr($post->post_content, '[subscriptionbutton') !== false) {
 					// The shortcode is in a post on this page, add the header
 					wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
@@ -1506,14 +1500,13 @@ if(!class_exists('membershippublic')) {
 																			'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
 																		));
 
+					do_action('membership_subscriptionbutton_onpage');
+
 					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 				}
+
 				if(strstr($post->post_content, '[subscriptionprice') !== false) {
-					// The shortcode is in a post on this page, add the header
-					//wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					//wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-					//wp_enqueue_style('spmemcss', plugins_url('sp_membership/css/spmember.css'));
-					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+					do_action('membership_subscriptionprice_onpage');
 				}
 			}
 
