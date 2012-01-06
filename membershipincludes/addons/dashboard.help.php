@@ -1,6 +1,6 @@
 <?php
 /*
-Addon Name: Quick start Quide
+Addon Name: Quick Gtart Guide
 Description: Show the quickstart page and dashboard widget
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com

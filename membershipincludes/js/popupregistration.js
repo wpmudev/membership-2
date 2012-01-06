@@ -27,13 +27,13 @@ function m_registersuccess(data) {
 	}
 }
 
-function sp_registererror(data) {
+function m_registererror(data) {
 	jQuery.fancybox.hideActivity();
 
-	jQuery("#reg-error").html('Problem with registration.').show();
+	jQuery("#reg-error").html(membership.regproblem).show();
 }
 
-function sp_loginsuccess(data) {
+function m_loginsuccess(data) {
 
 	jQuery.fancybox.hideActivity();
 
@@ -58,22 +58,22 @@ function sp_loginsuccess(data) {
 
 }
 
-function sp_loginerror(data) {
+function m_loginerror(data) {
 	jQuery.fancybox.hideActivity();
 
-	jQuery("#login-error").html('Problem with Login.').show();
+	jQuery("#login-error").html(membership.logpropblem).show();
 }
 
-function sp_registersubmit() {
+function m_registersubmit() {
 
 	if (jQuery("#reg_user_email").val().length < 1 || jQuery("#reg_password").val().length < 1) {
-		    jQuery("#reg-error").html('Please enter an email address or password').show();
+		    jQuery("#reg-error").html(membership.regmissing).show();
 		    jQuery.fancybox.resize();
 		    return false;
 	}
 
 	if (jQuery("#reg_password").val() != jQuery("#reg_password2").val()) {
-		    jQuery("#reg-error").html('Please ensure passwords match').show();
+		    jQuery("#reg-error").html(membership.regnomatch).show();
 		    jQuery.fancybox.resize();
 		    return false;
 	}
@@ -92,10 +92,10 @@ function sp_registersubmit() {
 	return false;
 }
 
-function sp_loginsubmit() {
+function m_loginsubmit() {
 
 	if (jQuery("#login_user_email").val().length < 1 || jQuery("#login_password").val().length < 1) {
-		    jQuery("#login-error").html('Please enter an email address or password').show();
+		    jQuery("#login-error").html(membership.logmissing).show();
 		    jQuery.fancybox.resize();
 		    return false;
 	}

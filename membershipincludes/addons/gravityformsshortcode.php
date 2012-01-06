@@ -1,6 +1,7 @@
 <?php
 /*
 Addon Name: Gravity Forms Shortcode
+Description: If you want to protect the Gravity forms shortcode then activate this to ensure it shows in the shortcodes list.
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

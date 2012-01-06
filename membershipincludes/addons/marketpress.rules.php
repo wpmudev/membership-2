@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: Default MarketPress Rules
-Description: Main MarketPress rules
+Description: If you are using MarketPress then activate this add-on for specific MarketPress rules.
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

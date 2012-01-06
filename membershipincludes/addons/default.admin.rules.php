@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: Default Admin Rules
-Description: Main admin side rules
+Description: If you want to protect admin area elements then activate this add-on
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */
