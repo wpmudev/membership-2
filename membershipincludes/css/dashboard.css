@@ -1,4 +1,8 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=2 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=10 */
+
+div#full-sortables {
+	min-height: 50px;
+}
 
 h3.hndle {
 	cursor: auto !Important;

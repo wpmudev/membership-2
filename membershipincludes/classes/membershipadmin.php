@@ -713,6 +713,28 @@ if(!class_exists('membershipadmin')) {
 				<div id="dashboard-widgets-wrap">
 
 				<div class="metabox-holder" id="dashboard-widgets">
+
+					<div style="width: 98%;" class="postbox-container">
+						<div class="meta-box-sortables ui-sortable" id="full-sortables">
+
+							<div class="postbox " id="dashboard_right_now">
+								<h3 class="hndle"><span><?php _e('Welcome to Membership','membership'); ?></span></h3>
+								<div class="inside">
+									Hello
+									<br class="clear">
+								</div>
+							</div>
+
+							<?php
+							do_action( 'membership_dashboard_top' );
+							?>
+						</div>
+					</div>
+					<?php
+
+					?>
+
+
 					<div style="width: 49%;" class="postbox-container">
 						<div class="meta-box-sortables ui-sortable" id="normal-sortables">
 
