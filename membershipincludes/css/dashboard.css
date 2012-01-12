@@ -4,6 +4,10 @@ div#full-sortables {
 	min-height: 50px;
 }
 
+#wizarddismisslink {
+	float: right;
+}
+
 h3.hndle {
 	cursor: auto !Important;
 }
@@ -49,4 +53,30 @@ div.inside p {
 	background: #fafafa;
 	margin-bottom: 30px;
 	margin-left: 5px;
+}
+
+#welcome-panel div.welcome-panel-content h3 {
+	font: 32px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+#welcome-panel div.welcome-panel-content div.welcome-panel-column-container div.welcome-panel-column h4 {
+	font: bold 14px sans-serif;
+}
+
+#welcome-panel div.welcome-panel-content div.welcome-panel-column-container div.welcome-panel-column h4 span.icon16 {
+	
+}
+
+#welcome-panel div.welcome-panel-content p.about-description {
+	margin-left: 0;
+	margin-top: 5px;
+	padding: 7px 10px;
+}
+
+#welcome-panel div.welcome-panel-content p.welcome-panel-dismiss {
+	padding: 7px 10px;
+}
+
+#welcome-panel {
+	background: #00b2d9 url(../images/wizardbackground.png) repeat-x right bottom;
 }
