@@ -2140,54 +2140,12 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function handle_options_panel() {
-
+		function show_general_options() {
 			global $action, $page, $M_options;
 
-			wp_reset_vars( array('action', 'page') );
-
-			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-				if(function_exists('get_blog_option')) {
-					if(function_exists('switch_to_blog')) {
-						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
-					}
-
-					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
-				} else {
-					$M_options = get_option('membership_options', array());
-				}
-			} else {
-				$M_options = get_option('membership_options', array());
-			}
-
-			$messages = array();
-			$messages[1] = __('Your options have been updated.','membership');
-
 			?>
-			<div class='wrap nosubsub'>
-				<?php
-					$menus = array();
-					$menus['general'] = __('General', 'membership');
-					$menus['pages'] = __('Pages', 'membership');
-					$menus['shortcodes'] = __('Shortcodes', 'membership');
-					$menus['downloads'] = __('Downloads', 'membership');
-					$menus['extras'] = __('Extras', 'membership');
-				?>
-
-				<h3 class="nav-tab-wrapper">
-					<?php
-						foreach($menus as $key => $menu) {
-							//<a class="nav-tab nav-tab-active" href="http://dev.site/wp-admin/edit.php?post_type=product&amp;page=marketpress">General</a>
-							?>
-							<a class="nav-tab" href="admin.php?page=<?php echo $page; ?>&amp;tab=<?php echo $key; ?>"><?php echo $menu; ?></a>
-							<?php
-						}
-
-					?>
-				</h3>
-
 				<div class="icon32" id="icon-options-general"><br></div>
-				<h2><?php _e('Edit Options','membership'); ?></h2>
+				<h2><?php _e('General Options','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -2271,131 +2229,6 @@ if(!class_exists('membershipadmin')) {
 							</th>
 							<td>
 								<input type='checkbox' name='enableincompletesignups' id='enableincompletesignups' value='yes' <?php checked('yes', $M_options['enableincompletesignups']); ?> />
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Registration page','membership'); ?></h3>
-					<p><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
-					<p><?php _e('It can contain any content you want but <strong>should</strong> contain the [subscriptionform] shortcode in some location if you want to use the standard Membership plugin sign-up interface.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Registration page','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Select a page to use for the registration form.",'membership'); ?></em>
-							</th>
-							<td>
-								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-								echo $pages;
-								?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<p><?php _e('There are two forms of registration form available, if you are using the [subscriptionform] shortcode then select the one you would like to use on your site below.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Form type','membership'); ?>
-							</th>
-							<td>
-								<select name='formtype' id='formtype'>
-									<option value="original" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'original') echo "selected='selected'"; ?>><?php _e('Original membership form','membership'); ?></option>
-									<option value="new" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') echo "selected='selected'"; ?>><?php _e('Popup registration form','membership'); ?></option>
-								</select>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Account page','membership'); ?></h3>
-					<p><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
-					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [accountform] shortcode in some location.','membership'); ?></p>
-					<p><?php _e('If you would like your users to be able to see their subscription details and upgrade / renew them then also add the shortcode [renewform] on this or a linked page.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Account page','membership'); ?>
-							</th>
-							<td>
-								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-								echo $pages;
-								?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Protected content page','membership'); ?></h3>
-					<p><?php _e('If a post / page / content is not available to a user, this is the page that they user will be directed to.','membership'); ?></p>
-					<p><?php _e('This page will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Protected content page','membership'); ?>
-							</th>
-							<td>
-								<?php
-								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-								echo $pages;
-								?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Shortcode protected content','membership'); ?></h3>
-					<p><?php _e('You can protect parts of a post or pages content by enclosing it in WordPress shortcodes.','membership'); ?></p>
-					<p><?php _e('Create as many shortcodes as you want by entering them below, each shortcode should be on a separate line.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'><?php
-								if(!empty($M_options['membershipshortcodes'])) {
-									foreach($M_options['membershipshortcodes'] as $key => $value) {
-										if(!empty($value)) {
-											esc_html_e(stripslashes($value)) . "\n";
-										}
-									}
-								}
-								?></textarea>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
-								<em style='font-size:smaller;'><?php _e("Should all shortcodes be visible or protected by default.",'membership'); ?>
-								</em>
-							</th>
-							<td>
-								<select name='shortcodedefault' id='shortcodedefault'>
-									<option value="yes" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - Shortcodes are visible by default','membership'); ?></option>
-									<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are protected by default','membership'); ?></option>
-								</select>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('No access message','membership'); ?><br/>
-							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
-							<?php _e("Leave blank for no message.",'membership'); ?><br/>
-							<?php _e("HTML allowed.",'membership'); ?>
-							</em>
-							</th>
-							<td>
-								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
 							</td>
 						</tr>
 					</tbody>
@@ -2584,7 +2417,7 @@ if(!class_exists('membershipadmin')) {
 					</table>
 
 					<?php
-						do_action( 'membership_options_page' );
+						do_action( 'membership_generaloptions_page' );
 
 						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 							if(function_exists('restore_current_blog')) {
@@ -2598,6 +2431,388 @@ if(!class_exists('membershipadmin')) {
 					</p>
 
 				</form>
+			<?php
+		}
+
+		function show_page_options() {
+			global $action, $page, $M_options;
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Membership Page Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<form action='?page=<?php echo $page; ?>' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
+
+					<h3><?php _e('Registration page','membership'); ?></h3>
+					<p><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
+					<p><?php _e('It can contain any content you want but <strong>should</strong> contain the [subscriptionform] shortcode in some location if you want to use the standard Membership plugin sign-up interface.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Registration page','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Select a page to use for the registration form.",'membership'); ?></em>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<p><?php _e('There are two forms of registration form available, if you are using the [subscriptionform] shortcode then select the one you would like to use on your site below.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Form type','membership'); ?>
+							</th>
+							<td>
+								<select name='formtype' id='formtype'>
+									<option value="original" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'original') echo "selected='selected'"; ?>><?php _e('Original membership form','membership'); ?></option>
+									<option value="new" <?php if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') echo "selected='selected'"; ?>><?php _e('Popup registration form','membership'); ?></option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Account page','membership'); ?></h3>
+					<p><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
+					<p><?php _e('It can contain any content you want but <strong>must</strong> contain the [accountform] shortcode in some location.','membership'); ?></p>
+					<p><?php _e('If you would like your users to be able to see their subscription details and upgrade / renew them then also add the shortcode [renewform] on this or a linked page.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Account page','membership'); ?>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h3><?php _e('Protected content page','membership'); ?></h3>
+					<p><?php _e('If a post / page / content is not available to a user, this is the page that they user will be directed to.','membership'); ?></p>
+					<p><?php _e('This page will only be displayed if the user has tried to access the post / page / content directly or via a link.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected content page','membership'); ?>
+							</th>
+							<td>
+								<?php
+								$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+								echo $pages;
+								?>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<?php
+						do_action( 'membership_pageoptions_page' );
+
+						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+							if(function_exists('restore_current_blog')) {
+								restore_current_blog();
+							}
+						}
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+			<?php
+		}
+
+		function show_shortcode_options() {
+			global $action, $page, $M_options;
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Shortcode Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<form action='?page=<?php echo $page; ?>' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
+
+					<h3><?php _e('Shortcode protected content','membership'); ?></h3>
+					<p><?php _e('You can protect parts of a post or pages content by enclosing it in WordPress shortcodes.','membership'); ?></p>
+					<p><?php _e('Create as many shortcodes as you want by entering them below, each shortcode should be on a separate line.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'><?php
+								if(!empty($M_options['membershipshortcodes'])) {
+									foreach($M_options['membershipshortcodes'] as $key => $value) {
+										if(!empty($value)) {
+											esc_html_e(stripslashes($value)) . "\n";
+										}
+									}
+								}
+								?></textarea>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Should all shortcodes be visible or protected by default.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<select name='shortcodedefault' id='shortcodedefault'>
+									<option value="yes" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - Shortcodes are visible by default','membership'); ?></option>
+									<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are protected by default','membership'); ?></option>
+								</select>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('No access message','membership'); ?><br/>
+							<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
+							<?php _e("Leave blank for no message.",'membership'); ?><br/>
+							<?php _e("HTML allowed.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<?php
+						do_action( 'membership_shortcodeoptions_page' );
+
+						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+							if(function_exists('restore_current_blog')) {
+								restore_current_blog();
+							}
+						}
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+			<?php
+		}
+
+		function show_downloads_options() {
+			global $action, $page, $M_options;
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Download / Media Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+
+				<form action='?page=<?php echo $page; ?>' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
+
+					<h3><?php _e('Downloads / Media protection','membership'); ?></h3>
+					<p><?php _e('Downloads and media files can be protected by remapping their perceived location.','membership'); ?></p>
+					<p><?php _e('Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs.','membership'); ?></p>
+
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Actual download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is a system generated URL, you shouldn't need to change this.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<?php
+								 	$membershipurl = $M_options['original_url'];
+									if(empty($membershipurl)) $membershipurl = membership_upload_path();
+								?>
+								<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e($membershipurl);  ?>' class='wide' />
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
+								<?php _e("Change the end part to something unique.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
+							</td>
+						</tr>
+
+						<tr valign="top">
+							<th scope="row"><?php _e('Protected groups','membership'); ?><br/>
+								<em style='font-size:smaller;'><?php _e("Place each download group name on a new line, removing used groups will leave content visible to all users/members.",'membership'); ?>
+								</em>
+							</th>
+							<td>
+								<textarea name='membershipdownloadgroups' id='membershipdownloadgroups' rows='10' cols='40'><?php
+								if(!empty($M_options['membershipdownloadgroups'])) {
+									foreach($M_options['membershipdownloadgroups'] as $key => $value) {
+										if(!empty($value)) {
+											esc_html_e(stripslashes($value)) . "\n";
+										}
+									}
+								}
+								?></textarea>
+							</td>
+						</tr>
+
+					</tbody>
+					</table>
+
+					<?php
+						do_action( 'membership_downloadsoptions_page' );
+
+						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+							if(function_exists('restore_current_blog')) {
+								restore_current_blog();
+							}
+						}
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+			<?php
+		}
+
+		function handle_options_panel() {
+
+			global $action, $page, $M_options;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
+
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
+			$tab = $_GET['tab'];
+			if(empty($tab)) {
+				$tab = 'general';
+			}
+
+
+			?>
+			<div class='wrap nosubsub'>
+				<?php
+					$menus = array();
+					$menus['general'] = __('General', 'membership');
+					$menus['pages'] = __('Membership Pages', 'membership');
+					$menus['shortcodes'] = __('Shortcodes', 'membership');
+					$menus['downloads'] = __('Downloads / Media', 'membership');
+					$menus['posts'] = __('Posts / Pages', 'membership');
+					$menus['extras'] = __('Extras', 'membership');
+				?>
+
+				<h3 class="nav-tab-wrapper">
+					<?php
+						foreach($menus as $key => $menu) {
+							?>
+							<a class="nav-tab<?php if($tab == $key) echo ' nav-tab-active'; ?>" href="admin.php?page=<?php echo $page; ?>&amp;tab=<?php echo $key; ?>"><?php echo $menu; ?></a>
+							<?php
+						}
+
+					?>
+				</h3>
+
+				<?php
+
+				switch($tab) {
+
+					case 'general':			$this->show_general_options();
+											break;
+
+					case 'pages':			$this->show_page_options();
+											break;
+
+					case 'shortcodes':		$this->show_shortcode_options();
+											break;
+
+					case 'downloads':		$this->show_downloads_options();
+											break;
+
+					case 'posts':			$this->show_posts_options();
+											break;
+
+					case 'extras':			$this->show_extras_options();
+											break;
+
+				}
+
+				?>
+
+
+
 
 			</div> <!-- wrap -->
 			<?php
