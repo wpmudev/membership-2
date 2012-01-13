@@ -128,6 +128,10 @@ if(!class_exists('membershipadmin')) {
 				// profile field for capabilities
 				add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
 				add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
+
+				// If the user is a membershipadmin user then we can add in notices
+				add_action('all_admin_notices', array(&$this, 'show_membership_status_notice'));
+
 			}
 
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
@@ -151,6 +155,44 @@ if(!class_exists('membershipadmin')) {
 
 			do_action('membership_register_shortcodes');
 
+			// Initialise help screens
+			add_filter('contextual_help', array(&$this, 'show_admin_help_panel'), 10, 3);
+
+		}
+
+		function get_membership_active() {
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+					$membershipactive = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'no');
+					if(function_exists('restore_current_blog')) {
+						restore_current_blog();
+					}
+				} else {
+					$membershipactive = get_option('membership_active', 'no');
+				}
+			} else {
+				$membershipactive = get_option('membership_active', 'no');
+			}
+
+			return $membershipactive;
+
+		}
+
+		function show_membership_status_notice() {
+
+			// Membership active check
+			$membershipactive = $this->get_membership_active();
+			if($membershipactive == 'no') {
+				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To protect your content you should enable it <a href='%s'>here</a>", 'membership'), 'admin.php?page=membership') . '</p></div>';
+			}
+
+			// Membership admin check
+
+
 		}
 
 		function add_admin_menu() {
@@ -160,7 +202,7 @@ if(!class_exists('membershipadmin')) {
 			if(current_user_can('membershipadmin')) {
 				// Add the menu page
 				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'membershipadmin',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
-
+				//echo $hook;
 				// Fix WP translation hook issue
 				if(isset($admin_page_hooks['membership'])) {
 					$admin_page_hooks['membership'] = 'membership';
@@ -2770,7 +2812,7 @@ if(!class_exists('membershipadmin')) {
 					$menus['pages'] = __('Membership Pages', 'membership');
 					$menus['shortcodes'] = __('Shortcodes', 'membership');
 					$menus['downloads'] = __('Downloads / Media', 'membership');
-					$menus['posts'] = __('Posts / Pages', 'membership');
+					$menus['posts'] = __('Content Protection', 'membership');
 					$menus['extras'] = __('Extras', 'membership');
 				?>
 
@@ -2807,6 +2849,12 @@ if(!class_exists('membershipadmin')) {
 					case 'extras':			$this->show_extras_options();
 											break;
 
+				}
+
+				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+					if(function_exists('restore_current_blog')) {
+						restore_current_blog();
+					}
 				}
 
 				?>
@@ -6169,6 +6217,14 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
+		function show_admin_help_panel($contextual_help, $screen_id, $screen) {
+
+			$help = new M_Help( $screen_id );
+			$contextual_help = $help->get();
+
+			return $contextual_help;
+
+		}
 
 	}
 
