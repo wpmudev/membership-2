@@ -11,6 +11,10 @@ if(!class_exists('M_Wizard')) {
 			$this->__construct();
 		}
 
+		function conditional_show() {
+
+		}
+
 	}
 
 }

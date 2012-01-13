@@ -48,6 +48,8 @@ if(is_admin()) {
 	require_once('membershipincludes/includes/default.rules.php');
 	// Add in the contextual help
 	require_once('membershipincludes/classes/class.help.php');
+	// Add in the wizard help
+	require_once('membershipincludes/classes/class.wizard.php');
 
 	require_once('membershipincludes/classes/membershipadmin.php');
 

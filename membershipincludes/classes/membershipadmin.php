@@ -155,9 +155,6 @@ if(!class_exists('membershipadmin')) {
 
 			do_action('membership_register_shortcodes');
 
-			// Initialise help screens
-			//add_filter('contextual_help', array(&$this, 'show_admin_help_panel'), 10, 3);
-
 		}
 
 		function get_membership_active() {
@@ -317,10 +314,12 @@ if(!class_exists('membershipadmin')) {
 		// Add admin headers
 
 		function add_admin_header_core() {
+
 			// Add in help pages
 			$screen = get_current_screen();
-			$help = new M_Help( &$screen );
+			$help = new M_Help( $screen );
 			$help->attach();
+
 		}
 
 		function add_admin_header_membership() {
@@ -769,6 +768,10 @@ if(!class_exists('membershipadmin')) {
 				<div class="metabox-holder" id="dashboard-widgets">
 
 					<?php
+
+						$wizard = new M_Wizard();
+						$wizard->conditional_show();
+
 					?>
 						<div class="welcome-panel" id="welcome-panel">
 							<input type="hidden" value="ab89e0eb4e" name="membershippanelnonce" id="membershippanelnonce">	<a href="http://dev.site/wp-admin/?welcome=0" class="welcome-panel-close">Dismiss</a>
