@@ -184,13 +184,23 @@ if(!class_exists('membershipadmin')) {
 
 		function show_membership_status_notice() {
 
+			global $user, $M_options;
+
 			// Membership active check
 			$membershipactive = $this->get_membership_active();
 			if($membershipactive == 'no') {
-				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To protect your content you should enable it <a href='%s'>here</a>", 'membership'), 'admin.php?page=membership') . '</p></div>';
+				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To ensure your content is protected you should enable it <a href='%s'>here</a>", 'membership'), 'admin.php?page=membership') . '</p></div>';
 			}
 
 			// Membership admin check
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+
+			if($user->has_cap('membershipadmin')) {
+				// Show a notice to say that they are logged in as the membership admin user and protection isn't enabled on the front end
+				echo '<div class="update-nag">' . __("You are logged in as a <strong>Membership Admin</strong> user, you will therefore see all protected content on this site.", 'membership') . '</div>';
+			}
 
 
 		}
