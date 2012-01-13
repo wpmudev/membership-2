@@ -227,15 +227,13 @@ if(!class_exists('membershipadmin')) {
 
 				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
 
-				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
-
 				add_submenu_page('membership', __('Membership Communication','membership'), __('Communications','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
 
 				add_submenu_page('membership', __('Membership URL Groups','membership'), __('URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
 
 				add_submenu_page('membership', __('Membership Pings','membership'), __('Remote Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
 
-				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
+				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
 
 				if(is_multisite() && (defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN') && MEMBERSHIP_ADDONS_ONLY_SUPERADMIN == true)) {
 					if(is_super_admin()) {
@@ -244,6 +242,9 @@ if(!class_exists('membershipadmin')) {
 				} else {
 					add_submenu_page('membership', __('Membership Addons','membership'), __('Add-ons','membership'), 'membershipadmin', "membershipaddons", array(&$this,'handle_addons_panel'));
 				}
+
+				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
+
 
 				do_action('membership_add_menu_items_bottom');
 
