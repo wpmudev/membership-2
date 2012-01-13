@@ -19,17 +19,19 @@ if ( !function_exists( 'wdp_un_check' ) ) {
 }
 /* --------------------------------------------------------------------- */
 
+// Addons loading code
+
 function get_membership_addons() {
 	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
 		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
-			$mem_plugins = array ();
-			while ( ( $plugin = readdir( $dh ) ) !== false )
-				if ( substr( $plugin, -4 ) == '.php' )
-					$mem_plugins[] = $plugin;
+			$mem_addons = array();
+			while ( ( $addon = readdir( $dh ) ) !== false )
+				if ( substr( $addon, -4 ) == '.php' )
+					$mem_addons[] = $addon;
 			closedir( $dh );
-			sort( $mem_plugins );
+			sort( $mem_addons );
 
-			return apply_filters('membership_available_addons', $mem_plugins);
+			return apply_filters('membership_available_addons', $mem_addons);
 		}
 	}
 
@@ -39,22 +41,22 @@ function get_membership_addons() {
 
 function load_membership_addons() {
 
-	$plugins = get_option('membership_activated_addons', array());
+	$addons = get_option('membership_activated_addons', array());
 
 	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
 		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
-			$mem_plugins = array ();
-			while ( ( $plugin = readdir( $dh ) ) !== false )
-				if ( substr( $plugin, -4 ) == '.php' )
-					$mem_plugins[] = $plugin;
+			$mem_addons = array();
+			while ( ( $addon = readdir( $dh ) ) !== false )
+				if ( substr( $addon, -4 ) == '.php' )
+					$mem_addons[] = $addon;
 			closedir( $dh );
-			sort( $mem_plugins );
+			sort( $mem_addons );
 
-			$mem_plugins = apply_filters('membership_available_addons', $mem_plugins);
+			$mem_addons = apply_filters('membership_available_addons', $mem_addons);
 
-			foreach( $mem_plugins as $mem_plugin ) {
-				if(in_array($mem_plugin, $plugins)) {
-					include_once( membership_dir('membershipincludes/addons/' . $mem_plugin) );
+			foreach( $mem_addons as $mem_addon ) {
+				if(in_array($mem_addon, $addons)) {
+					include_once( membership_dir('membershipincludes/addons/' . $mem_addon) );
 				}
 			}
 		}
@@ -66,21 +68,87 @@ function load_membership_addons() {
 function load_all_membership_addons() {
 	if ( is_dir( membership_dir('membershipincludes/addons') ) ) {
 		if ( $dh = opendir( membership_dir('membershipincludes/addons') ) ) {
-			$mem_plugins = array ();
-			while ( ( $plugin = readdir( $dh ) ) !== false )
-				if ( substr( $plugin, -4 ) == '.php' )
-					$mem_plugins[] = $plugin;
+			$mem_addons = array();
+			while ( ( $addon = readdir( $dh ) ) !== false )
+				if ( substr( $addon, -4 ) == '.php' )
+					$mem_addons[] = $addon;
 			closedir( $dh );
-			sort( $mem_plugins );
+			sort( $mem_addons );
 
-			$mem_plugins = apply_filters('membership_available_addons', $mem_plugins);
+			$mem_addons = apply_filters('membership_available_addons', $mem_addons);
 
-			foreach( $mem_plugins as $mem_plugin )
-				include_once( membership_dir('membershipincludes/addons/' . $mem_plugin) );
+			foreach( $mem_addons as $mem_addon )
+				include_once( membership_dir('membershipincludes/addons/' . $mem_addon) );
 		}
 	}
 
 	do_action( 'membership_addons_loaded' );
+}
+
+// Gateways loading code
+
+function get_membership_gateways() {
+	if ( is_dir( membership_dir('membershipincludes/gateways') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/gateways') ) ) {
+			$mem_gateways = array();
+			while ( ( $gateway = readdir( $dh ) ) !== false )
+				if ( substr( $gateway, -4 ) == '.php' )
+					$mem_gateways[] = $gateway;
+			closedir( $dh );
+			sort( $mem_gateways );
+
+			return apply_filters('membership_available_gateways', $mem_gateways);
+		}
+	}
+
+	return false;
+
+}
+
+function load_membership_gateways() {
+
+	$gateways = get_option('membership_activated_gateways', array());
+
+	if ( is_dir( membership_dir('membershipincludes/gateways') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/gateways') ) ) {
+			$mem_gateways = array();
+			while ( ( $gateway = readdir( $dh ) ) !== false )
+				if ( substr( $gateway, -4 ) == '.php' )
+					$mem_gateways[] = $gateway;
+			closedir( $dh );
+			sort( $mem_gateways );
+
+			$mem_gateways = apply_filters('membership_available_gateways', $mem_gateways);
+
+			foreach( $mem_gateways as $mem_gateway ) {
+				if(in_array($mem_gateway, $gateways)) {
+					include_once( membership_dir('membershipincludes/gateways/' . $mem_gateway) );
+				}
+			}
+		}
+	}
+
+	do_action( 'membership_gateways_loaded' );
+}
+
+function load_all_membership_gateways() {
+	if ( is_dir( membership_dir('membershipincludes/gateways') ) ) {
+		if ( $dh = opendir( membership_dir('membershipincludes/gateways') ) ) {
+			$mem_gateways = array();
+			while ( ( $gateway = readdir( $dh ) ) !== false )
+				if ( substr( $gateway, -4 ) == '.php' )
+					$mem_gateways[] = $gateway;
+			closedir( $dh );
+			sort( $mem_gateways );
+
+			$mem_gateways = apply_filters('membership_available_gateways', $mem_gateways);
+
+			foreach( $mem_gateways as $mem_gateway )
+				include_once( membership_dir('membershipincludes/gateways/' . $mem_gateway) );
+		}
+	}
+
+	do_action( 'membership_gateways_loaded' );
 }
 
 function set_membership_url($base) {

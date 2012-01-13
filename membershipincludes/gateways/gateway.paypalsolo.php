@@ -3,6 +3,7 @@
 Addon Name: PayPal Single Payments Gateway
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
+Gateway ID: paypalsolo
 */
 
 class paypalsolo extends M_Gateway {

@@ -3,6 +3,7 @@
 Addon Name: Free subscriptions gateway
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
+Gateway ID: freesubscriptions
 */
 
 class freesubscriptions extends M_Gateway {

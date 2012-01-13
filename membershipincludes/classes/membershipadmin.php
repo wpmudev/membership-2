@@ -4039,258 +4039,6 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function handle_gateways_panel_updates() {
-
-			global $action, $page, $M_Gateways;
-
-			wp_reset_vars( array('action', 'page') );
-
-			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
-				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
-					$action = 'bulk-toggle';
-				}
-			}
-
-			switch(addslashes($action)) {
-
-				case 'deactivate':	$key = addslashes($_GET['gateway']);
-									if(isset($M_Gateways[$key])) {
-										if($M_Gateways[$key]->deactivate()) {
-											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
-										}
-									}
-									break;
-
-				case 'activate':	$key = addslashes($_GET['gateway']);
-									if(isset($M_Gateways[$key])) {
-										if($M_Gateways[$key]->activate()) {
-											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
-										} else {
-											wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
-										}
-									}
-									break;
-
-				case 'bulk-toggle':
-									check_admin_referer('bulk-gateways');
-									foreach($_GET['gatewaycheck'] AS $key) {
-										if(isset($M_Gateways[$key])) {
-
-											$M_Gateways[$key]->toggleactivation();
-
-										}
-									}
-
-									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
-									break;
-
-				case 'updated':		$gateway = addslashes($_POST['gateway']);
-									check_admin_referer('updated-' . $gateway);
-
-									if($M_Gateways[$gateway]->update()) {
-										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
-									} else {
-										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
-									}
-
-									break;
-
-			}
-
-		}
-
-		function handle_gateways_panel() {
-
-			global $action, $page, $M_Gateways;
-
-			wp_reset_vars( array('action', 'page') );
-
-			switch(addslashes($action)) {
-
-				case 'edit':	if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
-									$M_Gateways[addslashes($_GET['gateway'])]->settings();
-								}
-								return; // so we don't show the list below
-								break;
-
-				case 'transactions':
-								if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
-									$M_Gateways[addslashes($_GET['gateway'])]->transactions();
-								}
-								return; // so we don't show the list below
-								break;
-
-			}
-
-
-			$messages = array();
-			$messages[1] = __('Gateway updated.', 'membership');
-			$messages[2] = __('Gateway not updated.', 'membership');
-
-			$messages[3] = __('Gateway activated.', 'membership');
-			$messages[4] = __('Gateway not activated.', 'membership');
-
-			$messages[5] = __('Gateway deactivated.', 'membership');
-			$messages[6] = __('Gateway not deactivated.', 'membership');
-
-			$messages[7] = __('Gateway activation toggled.', 'membership');
-
-			?>
-			<div class='wrap'>
-				<div class="icon32" id="icon-plugins"><br></div>
-				<h2><?php _e('Edit Gateways','membership'); ?></h2>
-
-				<?php
-				if ( isset($_GET['msg']) ) {
-					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
-					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
-				}
-
-				?>
-
-				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
-
-				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
-
-				<div class="tablenav">
-
-				<div class="alignleft actions">
-				<select name="action">
-				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
-				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
-				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>">
-
-				</div>
-
-				<div class="alignright actions"></div>
-
-				<br class="clear">
-				</div>
-
-				<div class="clear"></div>
-
-				<?php
-					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
-
-					$columns = array(	"name" 		=> 	__('Gateway Name','membership'),
-										"active"	=>	__('Active','membership'),
-										"transactions" => __('Transactions','membership')
-									);
-
-					$columns = apply_filters('membership_gatewaycolumns', $columns);
-
-					$gateways = apply_filters('M_gateways_list', array());
-
-					$active = get_option('M_active_gateways', array());
-
-				?>
-
-				<table cellspacing="0" class="widefat fixed">
-					<thead>
-					<tr>
-					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-					<?php
-						foreach($columns as $key => $col) {
-							?>
-							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-							<?php
-						}
-					?>
-					</tr>
-					</thead>
-
-					<tfoot>
-					<tr>
-					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
-					<?php
-						reset($columns);
-						foreach($columns as $key => $col) {
-							?>
-							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-							<?php
-						}
-					?>
-					</tr>
-					</tfoot>
-
-					<tbody>
-						<?php
-						if($gateways) {
-							foreach($gateways as $key => $gateway) {
-
-								if(!isset($M_Gateways[$key])) {
-									continue;
-								}
-
-								?>
-								<tr valign="middle" class="alternate" id="gateway-<?php echo $level->id; ?>">
-									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($key); ?>" name="gatewaycheck[]"></th>
-									<td class="column-name">
-										<strong><a title="<?php _e('Edit', 'membership'); ?> <?php echo esc_attr($gateway); ?>" href="?page=<?php echo $page; ?>&amp;action=edit&amp;gateway=<?php echo $key; ?>" class="row-title"><?php echo esc_html($gateway); ?></a></strong>
-										<?php
-											$actions = array();
-											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $key . "'>" . __('Settings', 'membership') . "</a></span>";
-
-											if(array_key_exists($key, $active)) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Deactivate', 'membership') . "</a></span>";
-											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $key . "", 'toggle-gateway_' . $key) . "'>" . __('Activate', 'membership') . "</a></span>";
-											}
-										?>
-										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-										</td>
-									<td class="column-active">
-										<?php
-											if(array_key_exists($key, $active)) {
-												echo "<strong>" . __('Active', 'membership') . "</strong>";
-											} else {
-												echo __('Inactive', 'membership');
-											}
-										?>
-									</td>
-									<td class="column-transactions">
-										<a href='?page=<?php echo $page; ?>&amp;action=transactions&amp;gateway=<?php echo $key; ?>'><?php _e('View transactions','membership'); ?></a>
-									</td>
-							    </tr>
-								<?php
-							}
-						} else {
-							$columncount = count($columns) + 1;
-							?>
-							<tr valign="middle" class="alternate" >
-								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Payment gateways where found for this install.','membership'); ?></td>
-						    </tr>
-							<?php
-						}
-						?>
-
-					</tbody>
-				</table>
-
-
-				<div class="tablenav">
-
-				<div class="alignleft actions">
-				<select name="action2">
-					<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
-					<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
-				</select>
-				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
-				</div>
-				<div class="alignright actions"></div>
-				<br class="clear">
-				</div>
-
-				</form>
-
-			</div> <!-- wrap -->
-			<?php
-
-		}
-
 		function handle_communication_updates() {
 
 			global $action, $page;
@@ -5983,6 +5731,285 @@ if(!class_exists('membershipadmin')) {
 				</div>
 			<?php
 
+		}
+
+		function handle_gateways_panel_updates() {
+
+			global $action, $page, $M_Gateways;
+
+			wp_reset_vars( array('action', 'page') );
+
+			if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+				if(addslashes($_GET['action']) == 'toggle' || addslashes($_GET['action2']) == 'toggle') {
+					$action = 'bulk-toggle';
+				}
+			}
+
+			$active = get_option('membership_activated_gateways', array());
+
+			switch(addslashes($action)) {
+
+				case 'deactivate':	$key = addslashes($_GET['gateway']);
+									if(!empty($key)) {
+										check_admin_referer('toggle-gateway-' . $key);
+
+										$found = array_search($key, $active);
+										if($found !== false) {
+											unset($active[$found]);
+											update_option('membership_activated_gateways', array_unique($active));
+											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+										}
+									}
+									break;
+
+				case 'activate':	$key = addslashes($_GET['gateway']);
+									if(!empty($key)) {
+										check_admin_referer('toggle-gateway-' . $key);
+
+										if(!in_array($key, $active)) {
+											$active[] = $key;
+											update_option('membership_activated_gateways', array_unique($active));
+											wp_safe_redirect( add_query_arg( 'msg', 3, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 4, wp_get_referer() ) );
+										}
+									}
+									break;
+
+				case 'bulk-toggle':
+									check_admin_referer('bulk-gateways');
+									foreach($_GET['gatewaycheck'] AS $key) {
+										$found = array_search($key, $active);
+										if($found !== false) {
+											unset($active[$found]);
+										} else {
+											$active[] = $key;
+										}
+									}
+									update_option('membership_activated_gateways', array_unique($active));
+									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									break;
+
+				case 'updated':		$gateway = addslashes($_POST['gateway']);
+									check_admin_referer('updated-' . $gateway);
+									if($M_Gateways[$gateway]->update()) {
+										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+									}
+
+									break;
+
+			}
+
+		}
+
+		function handle_gateways_panel() {
+
+			global $action, $page, $M_Gateways;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->settings();
+								}
+								return; // so we don't show the list below
+								break;
+
+				case 'transactions':
+								if(isset($M_Gateways[addslashes($_GET['gateway'])])) {
+									$M_Gateways[addslashes($_GET['gateway'])]->transactions();
+								}
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Gateway updated.', 'membership');
+			$messages[2] = __('Gateway not updated.', 'membership');
+
+			$messages[3] = __('Gateway activated.', 'membership');
+			$messages[4] = __('Gateway not activated.', 'membership');
+
+			$messages[5] = __('Gateway deactivated.', 'membership');
+			$messages[6] = __('Gateway not deactivated.', 'membership');
+
+			$messages[7] = __('Gateway activation toggled.', 'membership');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-plugins"><br></div>
+				<h2><?php _e('Edit Gateways','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				?>
+
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
+
+				<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action">
+				<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+				<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>">
+
+				</div>
+
+				<div class="alignright actions"></div>
+
+				<br class="clear">
+				</div>
+
+				<div class="clear"></div>
+
+				<?php
+					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
+
+					$columns = array(	"name"		=>	__('Gateway Name', 'membership'),
+										"file" 		=> 	__('Gateway File','membership'),
+										"active"	=>	__('Active','membership')
+									);
+
+					$columns = apply_filters('membership_gatewaycolumns', $columns);
+
+					$gateways = get_membership_gateways();
+
+					$active = get_option('membership_activated_gateways', array());
+
+				?>
+
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+					<?php
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</thead>
+
+					<tfoot>
+					<tr>
+					<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+					<?php
+						reset($columns);
+						foreach($columns as $key => $col) {
+							?>
+							<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+							<?php
+						}
+					?>
+					</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						if($gateways) {
+							foreach($gateways as $key => $gateway) {
+								$default_headers = array(
+									                'Name' => 'Addon Name',
+													'Author' => 'Author',
+													'Description'	=>	'Description',
+													'AuthorURI' => 'Author URI',
+													'gateway_id' => 'Gateway ID'
+									        );
+
+								$gateway_data = get_file_data( membership_dir('membershipincludes/gateways/' . $gateway), $default_headers, 'plugin' );
+
+								if(empty($gateway_data['Name'])) {
+									continue;
+								}
+
+								?>
+								<tr valign="middle" class="alternate" id="gateway-<?php echo $gateway_data['gateway_id']; ?>">
+									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($gateway_data['gateway_id']); ?>" name="gatewaycheck[]"></th>
+									<td class="column-name">
+										<strong><?php echo esc_html($gateway_data['Name']) . "</strong>" . __(' by ', 'membership') . "<a href='" . esc_attr($gateway_data['AuthorURI']) . "'>" . esc_html($gateway_data['Author']) . "</a>"; ?>
+										<?php if(!empty($gateway_data['Description'])) {
+											?><br/><?php echo esc_html($gateway_data['Description']);
+											}
+
+											$actions = array();
+
+											if(in_array($gateway_data['gateway_id'], $active)) {
+												$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;gateway=" . $gateway_data['gateway_id'] . "'>" . __('Settings', 'membership') . "</a></span>";
+												$actions['transactions'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=transactions&amp;gateway=" . $gateway_data['gateway_id'] . "'>" . __('View transactions','membership') . "</a></span>";
+												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=deactivate&amp;gateway=" . $gateway_data['gateway_id'] . "", 'toggle-gateway-' . $gateway_data['gateway_id']) . "'>" . __('Deactivate', 'membership') . "</a></span>";
+
+											} else {
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $gateway_data['gateway_id'] . "", 'toggle-gateway-' . $gateway_data['gateway_id']) . "'>" . __('Activate', 'membership') . "</a></span>";
+											}
+
+
+										?>
+										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+
+									<td class="column-name">
+										<?php echo esc_html($gateway); ?>
+										</td>
+									<td class="column-active">
+										<?php
+											if(in_array($gateway_data['gateway_id'], $active)) {
+												echo "<strong>" . __('Active', 'membership') . "</strong>";
+											} else {
+												echo __('Inactive', 'membership');
+											}
+										?>
+									</td>
+							    </tr>
+								<?php
+							}
+						} else {
+							$columncount = count($columns) + 1;
+							?>
+							<tr valign="middle" class="alternate" >
+								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No Gateways where found for this install.','membership'); ?></td>
+						    </tr>
+							<?php
+						}
+						?>
+
+					</tbody>
+				</table>
+
+
+				<div class="tablenav">
+
+				<div class="alignleft actions">
+				<select name="action2">
+					<option selected="selected" value=""><?php _e('Bulk Actions'); ?></option>
+					<option value="toggle"><?php _e('Toggle activation'); ?></option>
+				</select>
+				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
+				</div>
+				<div class="alignright actions"></div>
+				<br class="clear">
+				</div>
+
+				</form>
+
+			</div> <!-- wrap -->
+			<?php
 		}
 
 		function handle_addons_panel_updates() {

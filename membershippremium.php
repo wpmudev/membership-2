@@ -75,4 +75,5 @@ if(is_admin()) {
 
 // Load secondary plugins
 load_membership_addons();
+load_membership_gateways();
 

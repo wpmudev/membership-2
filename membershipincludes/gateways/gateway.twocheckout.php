@@ -3,6 +3,7 @@
 Addon Name: 2Checkout payment plugin
 Author: S H Mohanjith (Incsub)
 Author URI: http://premium.wpmudev.org
+Gateway ID: twocheckout
 */
 
 class twocheckout extends M_Gateway {
