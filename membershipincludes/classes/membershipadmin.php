@@ -156,7 +156,7 @@ if(!class_exists('membershipadmin')) {
 			do_action('membership_register_shortcodes');
 
 			// Initialise help screens
-			add_filter('contextual_help', array(&$this, 'show_admin_help_panel'), 10, 3);
+			//add_filter('contextual_help', array(&$this, 'show_admin_help_panel'), 10, 3);
 
 		}
 
@@ -317,7 +317,10 @@ if(!class_exists('membershipadmin')) {
 		// Add admin headers
 
 		function add_admin_header_core() {
-
+			// Add in help pages
+			$screen = get_current_screen();
+			$help = new M_Help( &$screen );
+			$help->attach();
 		}
 
 		function add_admin_header_membership() {
@@ -335,8 +338,6 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array(), $this->build);
 			}
-
-			//wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
 			$this->handle_membership_dashboard_updates();
 		}

@@ -3,63 +3,61 @@ if(!class_exists('M_Help')) {
 
 	class M_Help {
 		// The screen we want to access help for
-		var $screen_id = false;
+		var $screen = false;
 
-		function __construct( $screen_id = false ) {
+		function __construct( &$screen = false ) {
 
-			$this->screen_id = $screen_id;
+			$this->screen = $screen;
+
+			//print_r($screen);
+
 		}
 
-		function M_Help( $screen_id = false ) {
-			$this->__construct();
+		function M_Help( &$screen = false ) {
+			$this->__construct( $screen );
 		}
 
 		function show() {
 
-			$html = $this->get();
 
-			echo $html;
 
 		}
 
-		function get() {
+		function attach() {
 
-			switch($this->screen_id) {
+			switch($this->screen->id) {
 
-				case 'toplevel_page_membership':					$help = $this->dashboard_help();
+				case 'toplevel_page_membership':					$this->dashboard_help();
 																	break;
 
-				case 'membership_page_members':						$help = $this->members_help();
+				case 'membership_page_members':						$this->members_help();
 																	break;
 
-				case 'membership_page_membershiplevels':			$help = $this->levels_help();
+				case 'membership_page_membershiplevels':			$this->levels_help();
 																	break;
 
-				case 'membership_page_membershipsubs':				$help = $this->subs_help();
+				case 'membership_page_membershipsubs':				$this->subs_help();
 																	break;
 
-				case 'membership_page_membershipgateways':			$help = $this->gateways_help();
+				case 'membership_page_membershipgateways':			$this->gateways_help();
 																	break;
 
-				case 'membership_page_membershipcommunication':		$help = $this->communication_help();
+				case 'membership_page_membershipcommunication':		$this->communication_help();
 																	break;
 
-				case 'membership_page_membershipurlgroups':			$help = $this->urlgroups_help();
+				case 'membership_page_membershipurlgroups':			$this->urlgroups_help();
 																	break;
 
-				case 'membership_page_membershippings':				$help = $this->pings_help();
+				case 'membership_page_membershippings':				$this->pings_help();
 																	break;
 
-				case 'membership_page_membershipoptions':			$help = $this->options_help();
+				case 'membership_page_membershipoptions':			$this->options_help();
 																	break;
 
-				case 'membership_page_membershipaddons':			$help = $this->addons_help();
+				case 'membership_page_membershipaddons':			$this->addons_help();
 																	break;
 
 			}
-
-			return $help;
-
 
 		}
 
@@ -69,7 +67,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.dashboard.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -77,7 +81,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.members.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -85,7 +95,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.levels.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -93,7 +109,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.subs.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -101,7 +123,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.gateways.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -109,7 +137,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.communication.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -117,7 +151,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.urlgroups.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -125,7 +165,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.pings.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -133,7 +179,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.options.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
@@ -141,7 +193,13 @@ if(!class_exists('M_Help')) {
 
 			ob_start();
 			include_once(membership_dir('membershipincludes/help/help.addons.php'));
-			return ob_get_clean();
+			$help = ob_get_clean();
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview' ),
+				'content' => $help,
+			) );
 
 		}
 
