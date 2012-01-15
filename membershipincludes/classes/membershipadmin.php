@@ -2102,6 +2102,7 @@ if(!class_exists('membershipadmin')) {
 											break;
 
 					case 'posts':			$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
+											$M_options['membershipadminshortcodes'] = explode("\n", $_POST['membershipadminshortcodes']);
 											$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
 											$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 											$M_options['moretagdefault'] = $_POST['moretagdefault'];
@@ -2151,6 +2152,9 @@ if(!class_exists('membershipadmin')) {
 		function show_general_options() {
 			global $action, $page, $M_options;
 
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
 				<h2><?php _e('General Options','membership'); ?></h2>
@@ -2162,7 +2166,7 @@ if(!class_exists('membershipadmin')) {
 				}
 				?>
 				<div id="poststuff" class="metabox-holder m-settings">
-				<form action='?page=<?php echo $page; ?>' method='post'>
+				<form action='' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 					<input type='hidden' name='action' value='updateoptions' />
@@ -2264,6 +2268,9 @@ if(!class_exists('membershipadmin')) {
 		function show_page_options() {
 			global $action, $page, $M_options;
 
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
 				<h2><?php _e('Membership Page Options','membership'); ?></h2>
@@ -2275,7 +2282,7 @@ if(!class_exists('membershipadmin')) {
 				}
 				?>
 				<div id="poststuff" class="metabox-holder m-settings">
-				<form action='?page=<?php echo $page; ?>' method='post'>
+				<form action='' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 					<input type='hidden' name='action' value='updateoptions' />
@@ -2388,6 +2395,9 @@ if(!class_exists('membershipadmin')) {
 		function show_downloads_options() {
 			global $action, $page, $M_options;
 
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
 				<h2><?php _e('Download / Media Options','membership'); ?></h2>
@@ -2400,7 +2410,7 @@ if(!class_exists('membershipadmin')) {
 				?>
 
 				<div id="poststuff" class="metabox-holder m-settings">
-				<form action='?page=<?php echo $page; ?>' method='post'>
+				<form action='' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 					<input type='hidden' name='action' value='updateoptions' />
@@ -2480,6 +2490,9 @@ if(!class_exists('membershipadmin')) {
 		function show_posts_options() {
 			global $action, $page, $M_options;
 
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
 				<h2><?php _e('Content Protection Options','membership'); ?></h2>
@@ -2492,7 +2505,7 @@ if(!class_exists('membershipadmin')) {
 				?>
 
 				<div id="poststuff" class="metabox-holder m-settings">
-				<form action='?page=<?php echo $page; ?>' method='post'>
+				<form action='' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 					<input type='hidden' name='action' value='updateoptions' />
@@ -2546,7 +2559,15 @@ if(!class_exists('membershipadmin')) {
 									</em>
 									</th>
 									<td>
-										<textarea name='shortcodemessage' id='shortcodemessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
+										<?php
+										$args = array("textarea_name" => "shortcodemessage");
+										wp_editor( stripslashes($M_options['shortcodemessage']), "shortcodemessage", $args );
+										/*
+										?>
+										<textarea name='shortcodemessage' id='shortcodemessage' rows='10' cols='80'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
+										<?php
+										*/
+										?>
 									</td>
 								</tr>
 							</tbody>
@@ -2555,9 +2576,32 @@ if(!class_exists('membershipadmin')) {
 					</div>
 
 					<div class="postbox">
-						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Protected content page','membership'); ?></span></h3>
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Admin only shortcodes','membership'); ?></span></h3>
 						<div class="inside">
+							<p class='description'><?php _e('Sometimes plugins create custom shortcodes but only register them in the public part of your site. This means that the Membership plugin admin interface will not be able to show them in the Shortcode rule.','membership'); ?></p>
+							<p class='description'><?php _e('If you find that a shortcode you want to protect is missing from the shortcode rule, then you can add it here.','membership'); ?></p>
 
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Admin Only Shortcodes','membership'); ?><br/>
+										<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes could leave content visible to all users/members.",'membership'); ?>
+										</em>
+									</th>
+									<td>
+										<textarea name='membershipadminshortcodes' id='membershipadminshortcodes' rows='10' cols='40'><?php
+										if(!empty($M_options['membershipadminshortcodes'])) {
+											foreach($M_options['membershipadminshortcodes'] as $key => $value) {
+												if(!empty($value)) {
+													esc_html_e(stripslashes($value)) . "\n";
+												}
+											}
+										}
+										?></textarea>
+									</td>
+								</tr>
+							</tbody>
+							</table>
 						</div>
 					</div>
 
@@ -2586,7 +2630,15 @@ if(!class_exists('membershipadmin')) {
 									</em>
 									</th>
 									<td>
+										<?php
+										$args = array("textarea_name" => "moretagmessage");
+										wp_editor( stripslashes($M_options['moretagmessage']), "moretagmessage", $args );
+										/*
+										?>
 										<textarea name='moretagmessage' id='moretagmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['moretagmessage'])); ?></textarea>
+										<?php
+										*/
+										?>
 									</td>
 								</tr>
 							</tbody>
@@ -2610,6 +2662,9 @@ if(!class_exists('membershipadmin')) {
 		function show_extras_options() {
 			global $action, $page, $M_options;
 
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
 				<h2><?php _e('Extra Options','membership'); ?></h2>
@@ -2621,7 +2676,7 @@ if(!class_exists('membershipadmin')) {
 				}
 				?>
 				<div id="poststuff" class="metabox-holder m-settings">
-				<form action='?page=<?php echo $page; ?>' method='post'>
+				<form action='' method='post'>
 
 					<input type='hidden' name='page' value='<?php echo $page; ?>' />
 					<input type='hidden' name='action' value='updateoptions' />
@@ -2776,14 +2831,10 @@ if(!class_exists('membershipadmin')) {
 				$M_options = get_option('membership_options', array());
 			}
 
-			$messages = array();
-			$messages[1] = __('Your options have been updated.','membership');
-
 			$tab = $_GET['tab'];
 			if(empty($tab)) {
 				$tab = 'general';
 			}
-
 
 			?>
 			<div class='wrap nosubsub'>
