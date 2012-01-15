@@ -2144,37 +2144,63 @@ if(!class_exists('membershipadmin')) {
 
 				check_admin_referer('update-membership-options');
 
-				$M_options = array();
+				$tab = $_GET['tab'];
+				if(empty($tab)) {
+					$tab = 'general';
+				}
 
-				// Split up the membership options records into to descrete related chunks
-				$M_options['strangerlevel'] = (int) $_POST['strangerlevel'];
-				$M_options['freeusersubscription'] = (int) $_POST['freeusersubscription'];
-				$M_options['enableincompletesignups'] = $_POST['enableincompletesignups'];
+				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+					if(function_exists('get_blog_option')) {
+						if(function_exists('switch_to_blog')) {
+							switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+						}
 
-				$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
-				$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
+						$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+					} else {
+						$M_options = get_option('membership_options', array());
+					}
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
 
-				$M_options['original_url'] = $_POST['original_url'];
-				$M_options['masked_url'] = $_POST['masked_url'];
+				switch($tab) {
 
-				$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
+					case 'general':			$M_options['strangerlevel'] = (int) $_POST['strangerlevel'];
+											$M_options['freeusersubscription'] = (int) $_POST['freeusersubscription'];
+											$M_options['enableincompletesignups'] = $_POST['enableincompletesignups'];
+											break;
 
-				$M_options['nocontent_page'] = $_POST['nocontent_page'];
-				$M_options['account_page'] = $_POST['account_page'];
-				$M_options['registration_page'] = $_POST['registration_page'];
-				$M_options['formtype'] = $_POST['formtype'];
+					case 'pages':			$M_options['nocontent_page'] = $_POST['nocontent_page'];
+											$M_options['account_page'] = $_POST['account_page'];
+											$M_options['registration_page'] = $_POST['registration_page'];
+											$M_options['formtype'] = $_POST['formtype'];
+											break;
+
+					case 'posts':			$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
+											$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
+											$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
+											$M_options['moretagdefault'] = $_POST['moretagdefault'];
+											$M_options['moretagmessage'] = $_POST['moretagmessage'];
+											break;
+
+					case 'downloads':		$M_options['original_url'] = $_POST['original_url'];
+											$M_options['masked_url'] = $_POST['masked_url'];
+											$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
+											break;
+
+					case 'extras':			$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
+											$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
+											$M_options['renewalperiod'] = $_POST['renewalperiod'];
+											break;
+
+					default:				do_action('membership_option_menu_' . $tab);
+											break;
+
+
+				}
+
+				// For future upgrades
 				$M_options['registration_tos'] = $_POST['registration_tos'];
-
-				$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
-				$M_options['moretagdefault'] = $_POST['moretagdefault'];
-
-				$M_options['moretagmessage'] = $_POST['moretagmessage'];
-
-				$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
-
-				$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
-				$M_options['renewalperiod'] = $_POST['renewalperiod'];
-
 
 				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 					if(function_exists('update_blog_option')) {
@@ -2296,109 +2322,6 @@ if(!class_exists('membershipadmin')) {
 							</table>
 						</div>
 					</div>
-
-
-					<h3><?php _e('Payments currency','membership'); ?></h3>
-					<p><?php _e('This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.','membership'); ?></p>
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Payment currencys','membership'); ?></th>
-							<td>
-								<select name="paymentcurrency">
-								  <?php
-								  	$currency = $M_options['paymentcurrency'];
-								    $sel_currency = empty($currency) ? 'USD' : $currency;
-								    $currencies = array(
-								          'AUD' => __('AUD - Australian Dollar','membership'),
-								          'BRL' => __('BRL - Brazilian Real','membership'),
-								          'CAD' => __('CAD - Canadian Dollar','membership'),
-								          'CHF' => __('CHF - Swiss Franc','membership'),
-								          'CZK' => __('CZK - Czech Koruna','membership'),
-								          'DKK' => __('DKK - Danish Krone','membership'),
-								          'EUR' => __('EUR - Euro','membership'),
-								          'GBP' => __('GBP - Pound Sterling','membership'),
-								          'ILS' => __('ILS - Israeli Shekel','membership'),
-								          'HKD' => __('HKD - Hong Kong Dollar','membership'),
-								          'HUF' => __('HUF - Hungarian Forint','membership'),
-								          'JPY' => __('JPY - Japanese Yen','membership'),
-								          'MYR' => __('MYR - Malaysian Ringgits','membership'),
-								          'MXN' => __('MXN - Mexican Peso','membership'),
-								          'NOK' => __('NOK - Norwegian Krone','membership'),
-								          'NZD' => __('NZD - New Zealand Dollar','membership'),
-								          'PHP' => __('PHP - Philippine Pesos','membership'),
-								          'PLN' => __('PLN - Polish Zloty','membership'),
-								          'SEK' => __('SEK - Swedish Krona','membership'),
-								          'SGD' => __('SGD - Singapore Dollar','membership'),
-								          'TWD' => __('TWD - Taiwan New Dollars','membership'),
-								          'THB' => __('THB - Thai Baht','membership'),
-								          'USD' => __('USD - U.S. Dollar','membership')
-								      );
-
-										$currencies = apply_filters('membership_available_currencies', $currencies);
-
-								      foreach ($currencies as $key => $value) {
-											echo '<option value="' . esc_attr($key) . '"';
-											if($key == $sel_currency) echo 'selected="selected"';
-											echo '>' . esc_html($value) . '</option>' . "\n";
-								      }
-								  ?>
-								  </select>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Membership renewal','membership'); ?></h3>
-					<p><?php _e('If you are using single payment gateways, then you should set the number of days before expiry that the renewal form is displayed on the Account page.','membership'); ?></p>
-
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Renewal period limit','membership'); ?></th>
-							<td>
-								<select name="renewalperiod">
-								  <?php
-								  	$renewalperiod = $M_options['renewalperiod'];
-
-								      for($n=1; $n <= 365; $n++) {
-											echo '<option value="' . esc_attr($n) . '"';
-											if($n == $renewalperiod) echo 'selected="selected"';
-											echo '>' . esc_html($n) . '</option>' . "\n";
-								      }
-								  ?>
-								  </select>&nbsp;<?php _e('day(s)','membership'); ?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
-
-					<h3><?php _e('Membership upgrades','membership'); ?></h3>
-					<p><?php _e('You should limit the amount of time allowed between membership upgrades in order to prevent members abusing the upgrade process.','membership'); ?></p>
-
-
-					<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><?php _e('Upgrades period limit','membership'); ?></th>
-							<td>
-								<select name="upgradeperiod">
-								  <?php
-								  	$upgradeperiod = $M_options['upgradeperiod'];
-
-								      for($n=1; $n <= 365; $n++) {
-											echo '<option value="' . esc_attr($n) . '"';
-											if($n == $upgradeperiod) echo 'selected="selected"';
-											echo '>' . esc_html($n) . '</option>' . "\n";
-								      }
-								  ?>
-								  </select>&nbsp;<?php _e('day(s)','membership'); ?>
-							</td>
-						</tr>
-					</tbody>
-					</table>
 
 					<?php
 						do_action( 'membership_generaloptions_page' );
@@ -2748,6 +2671,155 @@ if(!class_exists('membershipadmin')) {
 
 					<?php
 						do_action( 'membership_postoptions_page' );
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+				</div>
+			<?php
+		}
+
+		function show_extras_options() {
+			global $action, $page, $M_options;
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Extra Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+				<div id="poststuff" class="metabox-holder m-settings">
+				<form action='?page=<?php echo $page; ?>' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Payments currency','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Payment currencys','membership'); ?></th>
+									<td>
+										<select name="paymentcurrency">
+										  <?php
+										  	$currency = $M_options['paymentcurrency'];
+										    $sel_currency = empty($currency) ? 'USD' : $currency;
+										    $currencies = array(
+										          'AUD' => __('AUD - Australian Dollar','membership'),
+										          'BRL' => __('BRL - Brazilian Real','membership'),
+										          'CAD' => __('CAD - Canadian Dollar','membership'),
+										          'CHF' => __('CHF - Swiss Franc','membership'),
+										          'CZK' => __('CZK - Czech Koruna','membership'),
+										          'DKK' => __('DKK - Danish Krone','membership'),
+										          'EUR' => __('EUR - Euro','membership'),
+										          'GBP' => __('GBP - Pound Sterling','membership'),
+										          'ILS' => __('ILS - Israeli Shekel','membership'),
+										          'HKD' => __('HKD - Hong Kong Dollar','membership'),
+										          'HUF' => __('HUF - Hungarian Forint','membership'),
+										          'JPY' => __('JPY - Japanese Yen','membership'),
+										          'MYR' => __('MYR - Malaysian Ringgits','membership'),
+										          'MXN' => __('MXN - Mexican Peso','membership'),
+										          'NOK' => __('NOK - Norwegian Krone','membership'),
+										          'NZD' => __('NZD - New Zealand Dollar','membership'),
+										          'PHP' => __('PHP - Philippine Pesos','membership'),
+										          'PLN' => __('PLN - Polish Zloty','membership'),
+										          'SEK' => __('SEK - Swedish Krona','membership'),
+										          'SGD' => __('SGD - Singapore Dollar','membership'),
+										          'TWD' => __('TWD - Taiwan New Dollars','membership'),
+										          'THB' => __('THB - Thai Baht','membership'),
+										          'USD' => __('USD - U.S. Dollar','membership')
+										      );
+
+												$currencies = apply_filters('membership_available_currencies', $currencies);
+
+										      foreach ($currencies as $key => $value) {
+													echo '<option value="' . esc_attr($key) . '"';
+													if($key == $sel_currency) echo 'selected="selected"';
+													echo '>' . esc_html($value) . '</option>' . "\n";
+										      }
+										  ?>
+										  </select>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Membership renewal','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('If you are using single payment gateways, then you should set the number of days before expiry that the renewal form is displayed on the Account page.','membership'); ?></p>
+
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Renewal period limit','membership'); ?></th>
+									<td>
+										<select name="renewalperiod">
+										  <?php
+										  	$renewalperiod = $M_options['renewalperiod'];
+
+										      for($n=1; $n <= 365; $n++) {
+													echo '<option value="' . esc_attr($n) . '"';
+													if($n == $renewalperiod) echo 'selected="selected"';
+													echo '>' . esc_html($n) . '</option>' . "\n";
+										      }
+										  ?>
+										  </select>&nbsp;<?php _e('day(s)','membership'); ?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Membership upgrades','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('You should limit the amount of time allowed between membership upgrades in order to prevent members abusing the upgrade process.','membership'); ?></p>
+
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Upgrades period limit','membership'); ?></th>
+									<td>
+										<select name="upgradeperiod">
+										  <?php
+										  	$upgradeperiod = $M_options['upgradeperiod'];
+
+										      for($n=1; $n <= 365; $n++) {
+													echo '<option value="' . esc_attr($n) . '"';
+													if($n == $upgradeperiod) echo 'selected="selected"';
+													echo '>' . esc_html($n) . '</option>' . "\n";
+										      }
+										  ?>
+										  </select>&nbsp;<?php _e('day(s)','membership'); ?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<?php
+						do_action( 'membership_extrasoptions_page' );
 					?>
 
 					<p class="submit">
