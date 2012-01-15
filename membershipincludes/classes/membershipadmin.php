@@ -153,6 +153,15 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			// Admin only Shortcodes setup
+			if(!empty($M_options['membershipadminshortcodes'])) {
+				foreach($M_options['membershipadminshortcodes'] as $key => $value) {
+					if(!empty($value)) {
+						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
+					}
+				}
+			}
+
 			do_action('membership_register_shortcodes');
 
 		}
