@@ -11,21 +11,32 @@ if(!class_exists('M_Wizard')) {
 			$this->__construct();
 		}
 
+		function process_visibility() {
+
+			if(isset($_GET['action']) && $_GET['action'] == 'deactivatewelcome') {
+
+				check_admin_referer('deactivate-weclome');
+
+				$this->hide_wizard();
+			}
+
+		}
+
 		function wizard_visible() {
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 				if(function_exists('get_blog_option')) {
 					if(function_exists('switch_to_blog')) {
 						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
 					}
-					$wizard_visible = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', true);
+					$wizard_visible = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', 'yes');
 					if(function_exists('restore_current_blog')) {
 						restore_current_blog();
 					}
 				} else {
-					$wizard_visible = get_option('membership_wizard_visible', true);
+					$wizard_visible = get_option('membership_wizard_visible', 'yes');
 				}
 			} else {
-				$wizard_visible = get_option('membership_wizard_visible', true);
+				$wizard_visible = get_option('membership_wizard_visible', 'yes');
 			}
 
 			return $wizard_visible;
@@ -34,12 +45,12 @@ if(!class_exists('M_Wizard')) {
 		function hide_wizard() {
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 				if(function_exists('update_blog_option')) {
-					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', false);
+					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', 'no');
 				} else {
-					update_option('membership_wizard_visible', false);
+					update_option('membership_wizard_visible', 'no');
 				}
 			} else {
-				update_option('membership_wizard_visible', false);
+				update_option('membership_wizard_visible', 'no');
 			}
 		}
 
@@ -49,14 +60,19 @@ if(!class_exists('M_Wizard')) {
 
 			wp_reset_vars( array('action', 'page', 'step') );
 
-			if($this->wizard_visible()) {
+			// process any deactivate calls
+			$this->process_visibility();
+
+			// carry on and see if we should display the wizard and then what we should display
+			if($this->wizard_visible() != 'no') {
 
 				$current_step = (int) $_GET['step'];
 				if(empty($current_step)) $current_step = 1;
 
 				switch($current_step) {
 
-					case 1:		$this->show_with_wrap( $this->page_one() );
+					case 1:		$step2 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=2", 'step-two');
+								$this->show_with_wrap( $this->page_one( $step2 ) );
 								break;
 
 				}
@@ -86,7 +102,7 @@ if(!class_exists('M_Wizard')) {
 					<?php
 		}
 
-		function page_one() {
+		function page_one( $nextsteplink = false ) {
 
 			ob_start();
 			?>
@@ -94,9 +110,11 @@ if(!class_exists('M_Wizard')) {
 				<p class="about-description">
 					<?php _e('If you need help getting started, check out our documentation over on <a href="http://premium.wpmudev.org/project/membership">WPMUDEV</a>.','membership'); ?>
 					<?php _e('If you need help at any point then use the Help tabs in the upper right corner to get information on how to use your current screen.','membership'); ?>
-					<?php _e('If you would like us to set up some basic things for you then click <strong>Get Started</strong> below.','membership'); ?>
+					<?php _e('If you would like us to set up some basic things for you then click <strong>Next Step</strong> below.','membership'); ?>
 					<br/>
-					<a href='' class='button-primary alignright'><?php _e('Get Started', 'membership'); ?></a>
+					<?php if($nextsteplink) { ?>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<?php } ?>
 				</p>
 
 			<?php
