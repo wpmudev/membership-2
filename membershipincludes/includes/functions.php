@@ -372,4 +372,60 @@ function get_last_transaction_for_user_and_sub($user_id, $sub_id) {
 
 }
 
+function M_get_membership_active() {
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+			$membershipactive = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'no');
+			if(function_exists('restore_current_blog')) {
+				restore_current_blog();
+			}
+		} else {
+			$membershipactive = get_option('membership_active', 'no');
+		}
+	} else {
+		$membershipactive = get_option('membership_active', 'no');
+	}
+
+	return $membershipactive;
+
+}
+
+// Add the admin bar menu item
+function M_add_admin_bar_enabled_item( $wp_admin_bar ) {
+
+	global $M_options;
+
+	$active = M_get_membership_active();
+
+	if($active == 'yes') {
+		$title = __('Membership', 'membership') . " : <span style='color:green;'>" . __('Enabled', 'membership') . "</span>";
+		$metatitle = __('Click to Disable the Membership protection', 'membership');
+		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=deactivate"), 'toggle-plugin');
+	} else {
+		$title = __('Membership', 'membership') . " : <span style='color:red;'>" . __('Disabled', 'membership') . "</span>";
+		$metatitle = __('Click to Enable the Membership protection', 'membership');
+		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=activate"), 'toggle-plugin');
+	}
+
+	$wp_admin_bar->add_menu( array(
+		'id'        => 'membership',
+		'parent'    => 'top-secondary',
+		'title'     => $title,
+		'href'      => $linkurl,
+		'meta'      => array(
+			'class'     => $class,
+			'title'     => $metatitle,
+		),
+	) );
+}
+
+function M_add_admin_bar_items() {
+	add_action( 'admin_bar_menu', 'M_add_admin_bar_enabled_item', 8 );
+}
+add_action( 'add_admin_bar_menus', 'M_add_admin_bar_items' );
+
 ?>

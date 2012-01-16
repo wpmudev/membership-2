@@ -6339,15 +6339,6 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
-		function show_admin_help_panel($contextual_help, $screen_id, $screen) {
-
-			$help = new M_Help( $screen_id );
-			$contextual_help = $help->get();
-
-			return $contextual_help;
-
-		}
-
 	}
 
 }
