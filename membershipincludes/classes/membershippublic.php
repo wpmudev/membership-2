@@ -1626,6 +1626,37 @@ if(!class_exists('membershippublic')) {
 
 		function check_for_membership_pages($posts) {
 
+			global $M_options;
+
+			if(count($posts) == 1) {
+				// We have only the one post, so check if it's one of our pages
+				$post = $posts[0];
+				if($post->post_type == 'page') {
+					if($post->ID == $M_options['registration_page']) {
+						// registration page found - check if page contains a shortcode
+						if(strstr($post->post_content, '[subscriptionform]') !== false) {
+							// There is content in there with the shortcode so just return it
+							return $posts;
+						} else {
+							// There is no shortcode content in there, so override
+						}
+					}
+					if($post->ID == $M_options['account_page']) {
+						// account page - check if page contains a shortcode
+						if(strstr($post->post_content, '[accountform]') !== false || strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
+							// There is content in there with the shortcode so just return it
+							return $posts;
+						} else {
+							// There is no shortcode in there, so override
+						}
+					}
+					if($post->ID == $M_options['nocontent_page']) {
+						// no access page - we must return the content entered by the user so just return it
+						return $posts;
+					}
+				}
+			}
+			// If nothing else is hit, just return the content
 			return $posts;
 		}
 
