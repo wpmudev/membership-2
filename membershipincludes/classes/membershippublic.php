@@ -104,6 +104,9 @@ if(!class_exists('membershippublic')) {
 
 			do_action('membership_register_shortcodes');
 
+			// Check if we are on a membership specific page
+			add_filter('the_posts', array(&$this, 'check_for_membership_pages'), 1);
+			// Check for subscription shortcodes - and if needed queue styles
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
 			$user = wp_get_current_user();
@@ -1619,6 +1622,11 @@ if(!class_exists('membershippublic')) {
 		function create_the_user_and_notify() {
 			//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 			//wp_new_user_notification( $user_id, $_POST['password'] );
+		}
+
+		function check_for_membership_pages($posts) {
+
+			return $posts;
 		}
 
 		function add_subscription_styles($posts) {

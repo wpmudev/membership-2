@@ -15,7 +15,7 @@ if(!class_exists('M_Wizard')) {
 
 			if(isset($_GET['action']) && $_GET['action'] == 'deactivatewelcome') {
 
-				check_admin_referer('deactivate-weclome');
+				check_admin_referer('deactivate-welcome');
 
 				$this->hide_wizard();
 			}
@@ -86,7 +86,7 @@ if(!class_exists('M_Wizard')) {
 
 			global $page, $action, $step;
 
-			$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-weclome');
+			$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
 			?>
 				<div class="welcome-panel" id="welcome-panel">
 					<a href="<?php echo $deactivateurl;  ?>" class="welcome-panel-close">Dismiss</a>

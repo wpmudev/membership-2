@@ -2154,6 +2154,57 @@ if(!class_exists('membershipadmin')) {
 
 				wp_safe_redirect( add_query_arg('msg', 1, wp_get_referer()) );
 
+			} elseif( !empty($action) ) {
+
+				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+					if(function_exists('get_blog_option')) {
+						if(function_exists('switch_to_blog')) {
+							switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+						}
+
+						$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+					} else {
+						$M_options = get_option('membership_options', array());
+					}
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+
+				switch($action) {
+					case 'createregistrationpage':	check_admin_referer('create-registrationpage');
+													$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+													$id = wp_insert_post( $pagedetails );
+													$M_options['registration_page'] = $id;
+													break;
+
+					case 'createaccountpage':		check_admin_referer('create-accountpage');
+													$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+													$id = wp_insert_post( $pagedetails );
+													$M_options['account_page'] = $id;
+													break;
+
+					case 'createnoaccesspage':		check_admin_referer('create-noaccesspage');
+													$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
+													$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+													$id = wp_insert_post( $pagedetails );
+													$M_options['nocontent_page'] = $id;
+													break;
+				}
+
+				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+					if(function_exists('update_blog_option')) {
+						update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+					} else {
+						update_option('membership_options', $M_options);
+					}
+				} else {
+					update_option('membership_options', $M_options);
+				}
+
+				do_action( 'membership_options_pagecreation_process' );
+
+				wp_safe_redirect( add_query_arg('msg', 2, wp_get_referer()) );
+
 			}
 
 		}
@@ -2279,6 +2330,7 @@ if(!class_exists('membershipadmin')) {
 
 			$messages = array();
 			$messages[1] = __('Your options have been updated.','membership');
+			$messages[2] = __('Your page has been created.','membership');
 
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
@@ -2317,6 +2369,7 @@ if(!class_exists('membershipadmin')) {
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
+										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createregistrationpage", 'create-registrationpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
 									</td>
 								</tr>
 							</tbody>
@@ -2358,6 +2411,7 @@ if(!class_exists('membershipadmin')) {
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
+										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createaccountpage", 'create-accountpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the account page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
 									</td>
 								</tr>
 							</tbody>
@@ -2381,6 +2435,7 @@ if(!class_exists('membershipadmin')) {
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
+										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createnoaccesspage", 'create-noaccesspage'); ?>' class='button-primary' title='<?php _e('Create a default page for the protected content page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
 									</td>
 								</tr>
 							</tbody>
