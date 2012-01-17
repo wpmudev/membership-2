@@ -3615,7 +3615,15 @@ if(!class_exists('membershipadmin')) {
 								<input class='wide' type='text' name='sub_name' id='sub_name' value='<?php echo esc_attr(stripslashes($sub->sub_name)); ?>' />
 
 								<label for='sub_name'><?php _e('Subscription description','membership'); ?></label>
+								<?php
+								$args = array("textarea_name" => "sub_description", "textarea_rows" => 5);
+								wp_editor( stripslashes($sub->sub_description), "sub_description", $args );
+								/*
+								?>
 								<textarea class='wide' name='sub_description' id='sub_description'><?php echo esc_html(stripslashes($sub->sub_description)); ?></textarea>
+								<?php
+								*/
+								?>
 
 								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
 

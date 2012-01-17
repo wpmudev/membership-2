@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptions.css?ver=1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptions.css?ver=10 */
 
 div.sub-liquid-left {
 	float: left;
@@ -308,4 +308,8 @@ div.levelinformation {
 
 .no-movecursor {
 	cursor: auto !Important;
+}
+
+#wp-sub_description-wrap {
+	width: 98%;
 }

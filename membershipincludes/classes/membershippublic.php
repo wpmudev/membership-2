@@ -1023,6 +1023,45 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function do_account_form() {
+
+		}
+
+		function do_subscription_form() {
+
+
+			global $wp_query, $M_options;
+
+			$page = addslashes($_REQUEST['action']);
+			if(empty($page)) {
+				$page = 'subscriptionform';
+			}
+
+			$content = '';
+
+			switch($page) {
+
+				case 'subscriptionform':	$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
+											ob_start();
+											if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
+												include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
+											} elseif(file_exists( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) ) ) {
+												include_once( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
+											}
+											$content .= ob_get_contents();
+											ob_end_clean();
+
+											$content = apply_filters('membership_subscription_form_after_content', $content, $user_id );
+											break;
+
+
+
+			}
+
+			return $content;
+
+		}
+
 		function do_subscription_shortcode($atts, $content = null, $code = "") {
 
 			global $wp_query;
@@ -1639,6 +1678,7 @@ if(!class_exists('membershippublic')) {
 							return $posts;
 						} else {
 							// There is no shortcode content in there, so override
+							$post->post_content = $this->do_subscription_form();
 						}
 					}
 					if($post->ID == $M_options['account_page']) {
@@ -1648,6 +1688,7 @@ if(!class_exists('membershippublic')) {
 							return $posts;
 						} else {
 							// There is no shortcode in there, so override
+							$post->post_content = $this->do_account_form();
 						}
 					}
 					if($post->ID == $M_options['nocontent_page']) {
