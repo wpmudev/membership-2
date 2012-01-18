@@ -57,15 +57,16 @@
 		$subscription = new M_Subscription($sub->id);
 
 		?>
-		<div class="subscription">
-			<div class="description">
-				<h3><?php echo $subscription->sub_name(); ?></h3>
-				<p><?php echo $subscription->sub_description(); ?></p>
+		<div class="pricebox">
+			<div class="topbar"><span class='title'><?php echo $subscription->sub_name(); ?></span><span class="price">$39.00</span></div>
+			<div class="pricedetails">
+			<?php echo $subscription->sub_description(); ?>
 			</div>
+		</div>
 
 		<?php
 			$pricing = $subscription->get_pricingarray();
-
+			/*
 			if($pricing) {
 				?>
 				<div class='priceforms'>
@@ -73,13 +74,12 @@
 				</div>
 				<?php
 			}
+			*/
 		?>
-		</div>
 		<?php
 	}
 
-	do_action( 'membership_subscription_form_after_paid_subscriptions', $user_id );
-	do_action( 'membership_subscription_form_after_subscriptions', $user_id );
+	do_action( 'membership_subscription_form_after_subscriptions' );
 	?>
 </div> <!-- price boxes -->
 <?php

@@ -29,7 +29,7 @@ function M_Upgrade($from = false) {
 					M_Alterfor10();
 					break;
 
-		case 10:
+		case 10:	M_Alterfor11();
 					break;
 
 		case false:	M_Createtables();
@@ -39,6 +39,14 @@ function M_Upgrade($from = false) {
 					break;
 	}
 
+}
+
+function M_Alterfor11() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'subscriptions') . " ADD `sub_pricetext` VARCHAR(200)  NULL  DEFAULT NULL  AFTER `sub_description`;";
+
+	$wpdb->query( $sql );
 }
 
 function M_Alterfor10() {
@@ -244,6 +252,7 @@ function M_Createtables() {
 	  `sub_public` int(11) default '0',
 	  `sub_count` bigint(20) default '0',
 	  `sub_description` text,
+	  `sub_pricetext` varchar(200) DEFAULT NULL,
 	  PRIMARY KEY  (`id`)
 	);";
 
@@ -748,7 +757,8 @@ function M_build_database_structure() {
 																					'sub_active'	=>	$i,
 																					'sub_public'	=>	$i,
 																					'sub_count'		=>	$bi,
-																					'sub_description'	=>	$t
+																					'sub_description'	=>	$t,
+																					'sub_pricetext'	=> $v200
 																					),
 						membership_db_prefix($wpdb, 'subscriptions_levels')	=>	array(	'sub_id'	=>	$bi,
 																						'level_id'	=>	$bi,
