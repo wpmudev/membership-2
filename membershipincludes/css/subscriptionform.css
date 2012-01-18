@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.0.1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.3.1 */
 
 
 #reg-form .formleft td label {
@@ -233,4 +233,86 @@ div.priceforms {
 
 div.message.hidden {
     display: none;
+}
+
+/* Price boxes */
+div.priceboxes {
+	position: relative;
+	width: 99%;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	padding: 5px 10px 0;
+}
+
+div.pricebox {
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	float: left;
+	background: #ffffff;
+	width: 95%;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1); 
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
+}
+
+div.topbar {
+	position: relative;
+	top: 0;
+	width: 100%;
+	background: #eee;
+	border-top-left-radius: 10px;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-radius-topleft: 10px;
+	border-top-right-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-radius-topright: 10px;
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: #434343;
+	font: bold 19px Verdana, Geneva, sans-serif;
+	overflow: hidden;
+}
+
+div.bottombar {
+	position: relative;
+	bottom: 0;
+	width: 100%;
+	background: #ffffff;
+	border-bottom-left-radius: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	-webkit-border-radius-bottomleft: 10px;
+	border-bottom-right-radius: 10px;
+	-moz-border-radius-bottomright: 10px;
+	-webkit-border-radius-bottomright: 10px;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: #434343;
+	font: bold 19px Verdana, Geneva, sans-serif;
+	overflow: hidden;
+}
+
+div.pricebox div.topbar span.title {
+	margin-left: 10px;
+	float: left;
+}
+
+div.priceboxes div.topbar span.price {
+	color: #000;	
+	float: right;
+	margin-right: 10px;
+}
+
+.pricedetails {
+	position: relative;
+	list-style-type: none;
+	text-align: left;
+	margin-right: 0;
+	margin-left: 0;
+	padding: 10px;
 }
