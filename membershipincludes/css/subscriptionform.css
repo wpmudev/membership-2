@@ -292,8 +292,8 @@ div.bottombar {
 	padding-top: 10px;
 	padding-bottom: 10px;
 	color: #434343;
-	font: bold 19px Verdana, Geneva, sans-serif;
-	overflow: visible;
+	font: 15px Verdana, Geneva, sans-serif;
+	overflow: hidden;
 	margin-top: 0px;
 }
 
@@ -304,6 +304,16 @@ div.pricebox div.topbar span.title {
 
 div.priceboxes div.topbar span.price {
 	color: #000;	
+	float: right;
+	margin-right: 10px;
+}
+
+div.pricebox div.bottombar span.price {
+	margin-left: 10px;
+	float: left;
+}
+
+div.priceboxes div.bottombar span.link {	
 	float: right;
 	margin-right: 10px;
 }

@@ -3112,14 +3112,14 @@ if(!class_exists('membershipadmin')) {
 										wp_original_referer_field(true, 'previous'); wp_nonce_field('update-' . $level->id);
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel edit'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e('Update', 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e('Update', 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='updated' />
 										<?php
 									} else {
 										wp_original_referer_field(true, 'previous'); wp_nonce_field('add-' . $level->id);
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='added' />
 										<?php
 									}
@@ -3613,7 +3613,7 @@ if(!class_exists('membershipadmin')) {
 								<div class='sub-details'>
 								<label for='sub_name'><?php _e('Subscription name','membership'); ?></label>
 								<input class='wide' type='text' name='sub_name' id='sub_name' value='<?php echo esc_attr(stripslashes($sub->sub_name)); ?>' />
-
+								<br/><br/>
 								<label for='sub_name'><?php _e('Subscription description','membership'); ?></label>
 								<?php
 								$args = array("textarea_name" => "sub_description", "textarea_rows" => 5);
@@ -3624,7 +3624,10 @@ if(!class_exists('membershipadmin')) {
 								<?php
 								*/
 								?>
-
+								<br/>
+								<label for='sub_pricetext'><?php _e('Subscription price text','membership'); ?></label>
+								<input class='wide' type='text' name='sub_pricetext' id='sub_pricetext' value='<?php echo esc_attr(stripslashes($sub->sub_pricetext)); ?>' />
+								<p class='description'><?php _e('The text you want to show as the price on the subscription form. E.G. Only $25 per month.','membership'); ?></p>
 								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
 
 								</div>
@@ -3667,14 +3670,14 @@ if(!class_exists('membershipadmin')) {
 										wp_original_referer_field(true, 'previous'); wp_nonce_field('update-' . $sub->id);
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel edit'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e('Update', 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e('Update', 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='updated' />
 										<?php
 									} else {
 										wp_original_referer_field(true, 'previous'); wp_nonce_field('add-' . $sub->id);
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e('Add', 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='added' />
 										<?php
 									}

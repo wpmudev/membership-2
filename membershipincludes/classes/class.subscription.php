@@ -91,6 +91,22 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function sub_pricetext() {
+
+			if(empty($this->subscription)) {
+				$sub = $this->get();
+
+				if($sub) {
+					return stripslashes($sub->sub_pricetext);
+				} else {
+					return false;
+				}
+			} else {
+				return stripslashes($this->subscription->sub_pricetext);
+			}
+
+		}
+
 		function get_pricingarray() {
 
 			$levels = $this->get_levels();
@@ -292,7 +308,7 @@ if(!class_exists('M_Subscription')) {
 				$this->update();
 			} else {
 
-				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description']));
+				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description'], 'sub_pricetext' => $_POST['sub_pricetext']));
 				$this->id = $this->db->insert_id;
 
 				if(!empty($_POST['level-order'])) {
@@ -373,7 +389,7 @@ if(!class_exists('M_Subscription')) {
 				$this->add();
 			} else {
 
-				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description']), array('id' => $this->id));
+				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description'], 'sub_pricetext' => $_POST['sub_pricetext']), array('id' => $this->id));
 
 				// Remove the existing rules for this subscription level
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id ) );

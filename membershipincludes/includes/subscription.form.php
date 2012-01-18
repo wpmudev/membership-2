@@ -1,4 +1,5 @@
 <?php
+	global $M_options;
 ?>
 <div class="priceboxes">
 <?php
@@ -14,22 +15,46 @@
 
 		?>
 		<div class="pricebox">
-			<div class="topbar"><span class='title'><?php echo $subscription->sub_name(); ?></span><span class="price">$39.00</span></div>
+			<div class="topbar"><span class='title'><?php echo $subscription->sub_name(); ?></span></div>
 			<div class="pricedetails"><?php echo $subscription->sub_description(); ?></div>
-			<div class="bottombar">Hello;</div>
-		</div><?php
-			$pricing = $subscription->get_pricingarray();
-			/*
-			if($pricing) {
-				?>
-				<div class='priceforms'>
-					<?php do_action('membership_purchase_button', $subscription, $pricing, $user_id); ?>
-				</div>
-				<?php
-			}
-			*/
-	}
+			<div class="bottombar"><span class='price'><?php echo $subscription->sub_pricetext(); ?></span>
+			<?php
+				$pricing = $subscription->get_pricingarray();
 
+				if($pricing) {
+					?>
+					<span class='link'>
+						<?php
+
+							if($M_options['formtype'] == 'new') {
+								// pop up form
+								$link = admin_url( 'admin-ajax.php' );
+								$link .= '?action=buynow&amp;subscription=' . (int) $sub->id;
+								$class = 'popover';
+							} else {
+								// original form
+								$link = '?action=registeruser&amp;subscription=' . (int) $sub->id;
+								$class = '';
+							}
+
+							if(empty($linktext)) {
+								$linktext = apply_filters('membership_subscription_signup_text', __('Sign Up', 'membership'));
+							}
+
+							$html = "<a href='" . $link . "' class='button " . $class . " " . apply_filters('membership_subscription_button_color', 'blue') . "'>" . $linktext . "</a>";
+							echo $html;
+						?>
+						<?php //do_action('membership_purchase_button', $subscription, $pricing, $user_id); ?>
+					</span>
+					<?php
+				}
+				?>
+			</div>
+		</div>
+
+
+	<?php
+	}
 	do_action( 'membership_subscription_form_after_subscriptions' );
 	?>
 </div> <!-- price boxes -->
