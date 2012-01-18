@@ -1680,6 +1680,7 @@ if(!class_exists('membershippublic')) {
 							// registration page found - add in the styles
 							wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
 							// There is no shortcode content in there, so override
+							remove_filter( 'the_content', 'wpautop' );
 							$post->post_content = $this->do_subscription_form();
 						}
 					}
@@ -1697,6 +1698,7 @@ if(!class_exists('membershippublic')) {
 							wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 							wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 							// There is no shortcode in there, so override
+							remove_filter( 'the_content', 'wpautop' );
 							$post->post_content = $this->do_account_form();
 						}
 					}

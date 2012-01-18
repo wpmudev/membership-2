@@ -282,19 +282,19 @@ div.bottombar {
 	position: relative;
 	bottom: 0;
 	width: 100%;
-	background: #ffffff;
+	background: #f6f6f6;
 	border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomleft: 10px;
 	-webkit-border-radius-bottomleft: 10px;
 	border-bottom-right-radius: 10px;
 	-moz-border-radius-bottomright: 10px;
 	-webkit-border-radius-bottomright: 10px;
-	text-align: center;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	color: #434343;
 	font: bold 19px Verdana, Geneva, sans-serif;
-	overflow: hidden;
+	overflow: visible;
+	margin-top: 0px;
 }
 
 div.pricebox div.topbar span.title {
