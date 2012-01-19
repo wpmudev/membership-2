@@ -84,7 +84,7 @@ function m_registersubmit() {
 		type	: 'POST',
 		cache	: false,
 		url		: membership.ajaxurl,
-		data	: {	action : 'register_user', email : jQuery("#reg_user_email").val(), password : jQuery("#reg_password").val(), nonce : membership.registernonce, subscription: jQuery('#reg_subscription').val() },
+		data	: {	action : 'register_user', user_login: jQuery("#reg_user_login").val(), email : jQuery("#reg_user_email").val(), password : jQuery("#reg_password").val(), nonce : membership.registernonce, subscription: jQuery('#reg_subscription').val() },
 		success	: m_registersuccess,
 		error	: m_registererror
 	});
@@ -94,7 +94,7 @@ function m_registersubmit() {
 
 function m_loginsubmit() {
 
-	if (jQuery("#login_user_email").val().length < 1 || jQuery("#login_password").val().length < 1) {
+	if (jQuery("#login_user_login").val().length < 1 || jQuery("#login_password").val().length < 1) {
 		    jQuery("#login-error").html(membership.logmissing).show();
 		    jQuery.fancybox.resize();
 		    return false;
@@ -106,7 +106,7 @@ function m_loginsubmit() {
 		type	: 'POST',
 		cache	: false,
 		url		: membership.ajaxurl,
-		data	: {	action : 'login_user', email : jQuery("#login_user_email").val(), password : jQuery("#login_password").val(), nonce : membership.loginnonce, subscription: jQuery('#login_subscription').val() },
+		data	: {	action : 'login_user', user_login : jQuery("#login_user_login").val(), password : jQuery("#login_password").val(), nonce : membership.loginnonce, subscription: jQuery('#login_subscription').val() },
 		success	: m_loginsuccess,
 		error	: m_loginerror
 	});
@@ -119,8 +119,8 @@ jQuery(document).ready(function() {
 	/* This is basic - uses default settings */
 
 	jQuery("a.popover").fancybox({
-			'transitionIn'	:	'fade',
-			'transitionOut'	:	'fade',
+			'transitionIn'	:	'elastic',
+			'transitionOut'	:	'elastic',
 			'speedIn'		:	200,
 			'speedOut'		:	200,
 			'overlayShow'	:	false,

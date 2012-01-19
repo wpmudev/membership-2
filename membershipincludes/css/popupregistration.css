@@ -129,3 +129,7 @@ td.buynowcolumn {
 	border-bottom: 1px dashed #ddd;
 }
 
+#fancybox-content {
+	min-height: 400px;
+}
+

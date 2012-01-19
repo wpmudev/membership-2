@@ -6365,56 +6365,18 @@ if(!class_exists('membershipadmin')) {
 		// The popover registration functions added to the bottom of this class until a new more suitable home can be found
 		function popover_signup_form() {
 
-			?>
-			<div class='header' style='width: 750px'>
-			<h1><?php _e('Register or Login to purchase','membership'); ?></h1>
-			</div>
-			<div class='leftside'>
-			<p><?php _e('Enter your details below to create a new account.','membership'); ?></p>
-			<p class='error' id='reg-error'><?php _e('This is an error','membership'); ?></p>
-			<form id="reg-form" action="<?php echo get_permalink(); ?>" method="post">
-				<div class="">
-					<label><?php _e('Username','membership'); ?> <span>*</span></label>
-					<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='reg_user_login'>
-				</div>
-				<div class="">
-					<label><?php _e('Email Address','membership'); ?> <span>*</span></label>
-					<input type="text" value="<?php echo esc_attr($_POST['user_email']); ?>" class="regtext" name="user_email" id='reg_user_email'>
-				</div>
-				<div class="">
-					<label><?php _e('Password','membership'); ?> <span>*</span></label>
-					<input type="password" autocomplete="off" class="regtext" name="password" id='reg_password'>
-				</div>
+			$content = apply_filters('membership_popover_signup_form_before_content', $content );
+			ob_start();
+			if( defined('MEMBERSHIP_POPOVER_SIGNUP_FORM') && file_exists( MEMBERSHIP_POPOVER_SIGNUP_FORM ) ) {
+				include_once( MEMBERSHIP_POPOVER_SIGNUP_FORM );
+			} elseif(file_exists( apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')) ) ) {
+				include_once( apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
 
-				<div class="">
-					<label><?php _e('Confirm Password','membership'); ?> <span>*</span></label>
-					<input type="password" autocomplete="off" class="regtext" name="password2" id='reg_password2'>
-				</div>
-
-				<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button blue" name="register"></p>
-				<input type="hidden" name="action" value="validatepage1" />
-				<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='reg_subscription' />
-			</form>
-			</div>
-			<div class='rightside'>
-			<p><?php _e("Login below if you're already registered.",'membership'); ?></p>
-			<p class='error' id='login-error'><?php _e('This is an error','membership'); ?></p>
-			<form id="login-form" action="<?php echo get_permalink(); ?>" method="post">
-				<div class="">
-					<label><?php _e('Username','membership'); ?></label>
-					<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='login_user_login'>
-				</div>
-				<div class="">
-					<label><?php _e('Password','membership'); ?></label>
-					<input type="password" autocomplete="off" class="regtext" name="password" id='login_password'>
-				</div>
-
-				<p><input type="submit" value="<?php _e('Login &raquo;','membership'); ?>" class="button blue" name="register"></p>
-				<input type="hidden" name="action" value="loginaccount" />
-				<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='login_subscription' />
-			</form>
-			</div>
-			<?php
+			$content = apply_filters('membership_popover_signup_form_after_content', $content );
+			echo $content;
 
 			die();
 		}
@@ -6424,11 +6386,11 @@ if(!class_exists('membershipadmin')) {
 
 			$error = array();
 
-			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_register')) {
+			if(!wp_verify_nonce( $_POST['nonce'], 'membership_register')) {
 				$error[] = __('Invalid form submission.','membership');
 			}
 
-			if(username_exists(sanitize_user($_POST['email']))) {
+			if(username_exists(sanitize_user($_POST['user_login']))) {
 				$error[] = __('That username is already taken, sorry.','membership');
 			}
 
@@ -6440,7 +6402,7 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($error)) {
 				// Pre - error reporting check for final add user
-				$user_id = wp_create_user( sanitize_user($_POST['email']), $_POST['password'], $_POST['email'] );
+				$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
 
 				if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
 					$error[] = $userid->get_error_message();
@@ -6482,14 +6444,14 @@ if(!class_exists('membershipadmin')) {
 
 			$error = array();
 
-			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_login')) {
+			if(!wp_verify_nonce( $_POST['nonce'], 'membership_login')) {
 				$error[] = __('Invalid form submission.','membership');
 			}
 
-			$userbyemail = get_user_by_email( $_POST['email'] );
+			$userbylogin = get_user_by( 'login', $_POST['user_login'] );
 
-			if(!empty($userbyemail)) {
-				$user = wp_authenticate( $userbyemail->user_login, $_POST['password'] );
+			if(!empty($userbylogin)) {
+				$user = wp_authenticate( $userbylogin->user_login, $_POST['password'] );
 				if(is_wp_error($user)) {
 					$error[] = __('User not found.','membership');
 				} else {
@@ -6511,7 +6473,8 @@ if(!class_exists('membershipadmin')) {
 
 				$membershippublic =& new membershippublic();
 
-				echo $membershippublic->show_subpage_two( $user->ID );
+				//echo $membershippublic->show_subpage_two( $user->ID );
+				echo $this->popover_sendpayment_form();
 			}
 
 			exit;
@@ -6535,10 +6498,10 @@ if(!class_exists('membershipadmin')) {
 					$sub =  new M_Subscription( $subscription );
 				?>
 					<div class='header' style='width: 750px'>
-					<h1><?php echo __('Purchase','membership') . " " . $sub->sub_name(); ?></h1>
+					<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
 					</div>
 					<div class='fullwidth'>
-						<p class='alreadybought'><?php echo __('You currently have a purchase on file for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to purchase a different subscription then you can do below.','membership'); ?></p>
+						<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
 
 						<table class='purchasetable'>
 							<?php $subs = $this->get_subscriptions();
@@ -6603,10 +6566,10 @@ if(!class_exists('membershipadmin')) {
 
 				?>
 					<div class='header' style='width: 750px'>
-					<h1><?php echo __('Purchase','membership') . " " . $sub->sub_name(); ?></h1>
+					<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
 					</div>
 					<div class='fullwidth'>
-						<p><?php echo __('Please check the details of your subscription below and click on the purchase button to complete the payment.','membership'); ?></p>
+						<p><?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?></p>
 
 						<table class='purchasetable'>
 							<tr>
