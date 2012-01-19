@@ -6427,13 +6427,7 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				global $membershippublic;
-
-				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-				$membershippublic =& new membershippublic();
-
-				echo $membershippublic->show_subpage_two( $user_id );
+				echo $this->popover_sendpayment_form();
 			}
 
 			exit;
@@ -6467,13 +6461,6 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				global $membershippublic;
-
-				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-				$membershippublic =& new membershippublic();
-
-				//echo $membershippublic->show_subpage_two( $user->ID );
 				echo $this->popover_sendpayment_form();
 			}
 
