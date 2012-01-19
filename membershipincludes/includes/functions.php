@@ -121,7 +121,8 @@ function load_membership_gateways() {
 			$mem_gateways = apply_filters('membership_available_gateways', $mem_gateways);
 
 			foreach( $mem_gateways as $mem_gateway ) {
-				if(in_array($mem_gateway, $gateways)) {
+				$check_gateway = str_replace('gateway.', '', str_replace('.php', '', $mem_gateway));
+				if(in_array($check_gateway, $gateways)) {
 					include_once( membership_dir('membershipincludes/gateways/' . $mem_gateway) );
 				}
 			}
