@@ -119,15 +119,15 @@ jQuery(document).ready(function() {
 	/* This is basic - uses default settings */
 
 	jQuery("a.popover").fancybox({
-			'transitionIn'	:	'elastic',
-			'transitionOut'	:	'elastic',
-			'speedIn'		:	600,
+			'transitionIn'	:	'fade',
+			'transitionOut'	:	'fade',
+			'speedIn'		:	200,
 			'speedOut'		:	200,
 			'overlayShow'	:	false,
 			'padding'		: 	0,
 			'scrolling'		:   'no',
 			'width'			: 	750,
-			'autoDimensions': 	false,
+			'autoDimensions': 	true,
 			'onComplete'	:   m_register_events
 		});
 

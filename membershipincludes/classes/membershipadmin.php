@@ -80,6 +80,18 @@ if(!class_exists('membershipadmin')) {
 			add_action('membership_level_add', array(&$this, 'update_level_ping_information'));
 			add_action('membership_level_update', array(&$this, 'update_level_ping_information'));
 
+			// Ajax calls have to go here because admin-ajax.php is an admin call even though we're calling it from the front end.
+			add_action( 'wp_ajax_nopriv_buynow', array(&$this, 'popover_signup_form') );
+
+			//login and register are no-priv only because, well they aren't logged in or registered
+			add_action( 'wp_ajax_nopriv_register_user', array(&$this, 'popover_register_process') );
+			add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
+
+			// if logged in:
+			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
+			add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
+			add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
+
 		}
 
 		function membershipadmin() {
@@ -6348,6 +6360,303 @@ if(!class_exists('membershipadmin')) {
 
 			</div> <!-- wrap -->
 			<?php
+		}
+
+		// The popover registration functions added to the bottom of this class until a new more suitable home can be found
+		function popover_signup_form() {
+
+			?>
+			<div class='header' style='width: 750px'>
+			<h1><?php _e('Register or Login to purchase','membership'); ?></h1>
+			</div>
+			<div class='leftside'>
+			<p><?php _e('Enter your details below to create a new account.','membership'); ?></p>
+			<p class='error' id='reg-error'><?php _e('This is an error','membership'); ?></p>
+			<form id="reg-form" action="<?php echo get_permalink(); ?>" method="post">
+				<div class="">
+					<label><?php _e('Username','membership'); ?> <span>*</span></label>
+					<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='reg_user_login'>
+				</div>
+				<div class="">
+					<label><?php _e('Email Address','membership'); ?> <span>*</span></label>
+					<input type="text" value="<?php echo esc_attr($_POST['user_email']); ?>" class="regtext" name="user_email" id='reg_user_email'>
+				</div>
+				<div class="">
+					<label><?php _e('Password','membership'); ?> <span>*</span></label>
+					<input type="password" autocomplete="off" class="regtext" name="password" id='reg_password'>
+				</div>
+
+				<div class="">
+					<label><?php _e('Confirm Password','membership'); ?> <span>*</span></label>
+					<input type="password" autocomplete="off" class="regtext" name="password2" id='reg_password2'>
+				</div>
+
+				<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button blue" name="register"></p>
+				<input type="hidden" name="action" value="validatepage1" />
+				<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='reg_subscription' />
+			</form>
+			</div>
+			<div class='rightside'>
+			<p><?php _e("Login below if you're already registered.",'membership'); ?></p>
+			<p class='error' id='login-error'><?php _e('This is an error','membership'); ?></p>
+			<form id="login-form" action="<?php echo get_permalink(); ?>" method="post">
+				<div class="">
+					<label><?php _e('Username','membership'); ?></label>
+					<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='login_user_login'>
+				</div>
+				<div class="">
+					<label><?php _e('Password','membership'); ?></label>
+					<input type="password" autocomplete="off" class="regtext" name="password" id='login_password'>
+				</div>
+
+				<p><input type="submit" value="<?php _e('Login &raquo;','membership'); ?>" class="button blue" name="register"></p>
+				<input type="hidden" name="action" value="loginaccount" />
+				<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='login_subscription' />
+			</form>
+			</div>
+			<?php
+
+			die();
+		}
+
+		function popover_register_process() {
+			include_once(ABSPATH . WPINC . '/registration.php');
+
+			$error = array();
+
+			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_register')) {
+				$error[] = __('Invalid form submission.','membership');
+			}
+
+			if(username_exists(sanitize_user($_POST['email']))) {
+				$error[] = __('That username is already taken, sorry.','membership');
+			}
+
+			if(email_exists($_POST['email'])) {
+				$error[] = __('That email address is already taken, sorry.','membership');
+			}
+
+			$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
+
+			if(empty($error)) {
+				// Pre - error reporting check for final add user
+				$user_id = wp_create_user( sanitize_user($_POST['email']), $_POST['password'], $_POST['email'] );
+
+				if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
+					$error[] = $userid->get_error_message();
+				} else {
+					$member = new M_Membership( $user_id );
+
+					if( has_action('membership_susbcription_form_registration_notification') ) {
+						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+					} else {
+						wp_new_user_notification($user_id, $_POST['password']);
+					}
+
+					wp_set_auth_cookie($user_id);
+				}
+			}
+
+			do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+
+			if(!empty($error)) {
+				//sendback error
+				echo json_encode( array('errormsg' => $error[0]) );
+			} else {
+				// everything seems fine (so far), so we have our queued user so let's
+				// move to picking a subscription - so send back the form.
+				global $membershippublic;
+
+				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
+
+				$membershippublic =& new membershippublic();
+
+				echo $membershippublic->show_subpage_two( $user_id );
+			}
+
+			exit;
+
+		}
+
+		function popover_login_process() {
+
+			$error = array();
+
+			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_login')) {
+				$error[] = __('Invalid form submission.','membership');
+			}
+
+			$userbyemail = get_user_by_email( $_POST['email'] );
+
+			if(!empty($userbyemail)) {
+				$user = wp_authenticate( $userbyemail->user_login, $_POST['password'] );
+				if(is_wp_error($user)) {
+					$error[] = __('User not found.','membership');
+				} else {
+					wp_set_auth_cookie($user->ID);
+				}
+			} else {
+				$error[] = __('User not found.','membership');
+			}
+
+			if(!empty($error)) {
+				//sendback error
+				echo json_encode( array('errormsg' => $error[0]) );
+			} else {
+				// everything seems fine (so far), so we have our queued user so let's
+				// move to picking a subscription - so send back the form.
+				global $membershippublic;
+
+				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
+
+				$membershippublic =& new membershippublic();
+
+				echo $membershippublic->show_subpage_two( $user->ID );
+			}
+
+			exit;
+
+		}
+
+		function popover_sendpayment_form() {
+
+			$user = wp_get_current_user();
+
+			$spmemuserid = $user->ID;
+			$subscription = (int) $_REQUEST['subscription'];
+
+			if(!empty($user->ID) && is_numeric($user->ID) ) {
+				$member = new M_Membership( $user->ID);
+			} else {
+				$member = current_member();
+			}
+
+			if($member->on_sub( $subscription )) {
+					$sub =  new M_Subscription( $subscription );
+				?>
+					<div class='header' style='width: 750px'>
+					<h1><?php echo __('Purchase','membership') . " " . $sub->sub_name(); ?></h1>
+					</div>
+					<div class='fullwidth'>
+						<p class='alreadybought'><?php echo __('You currently have a purchase on file for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to purchase a different subscription then you can do below.','membership'); ?></p>
+
+						<table class='purchasetable'>
+							<?php $subs = $this->get_subscriptions();
+
+									foreach($subs as $s) {
+										if($s->id == $subscription) {
+											continue;
+										}
+										$sub =  new M_Subscription( $s->id );
+										?>
+											<tr>
+												<td class='detailscolumn'>
+												<?php echo $sub->sub_name(); ?>
+												</td>
+												<td class='pricecolumn'>
+												<?php
+													$first = $sub->get_level_at_position(1);
+
+													if(!empty($first)) {
+														$price = $first->level_price;
+														if($price == 0) {
+															$price = "Free";
+														} else {
+
+															$M_options = get_option('membership_options', array());
+
+															switch( $M_options['paymentcurrency'] ) {
+																case "USD": $price = "$" . $price;
+																			break;
+
+																case "GBP":	$price = "&pound;" . $price;
+																			break;
+
+																case "EUR":	$price = "&euro;" . $price;
+																			break;
+															}
+														}
+													}
+													echo $price;
+												?>
+												</td>
+												<td class='buynowcolumn'>
+												<?php
+												$pricing = $sub->get_pricingarray();
+
+												if($pricing) {
+													do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+												}
+												?>
+												</td>
+											</tr>
+										<?php
+									}
+							?>
+						</table>
+					</div>
+
+				<?php
+			} else {
+
+				$sub =  new M_Subscription( $subscription );
+
+				?>
+					<div class='header' style='width: 750px'>
+					<h1><?php echo __('Purchase','membership') . " " . $sub->sub_name(); ?></h1>
+					</div>
+					<div class='fullwidth'>
+						<p><?php echo __('Please check the details of your subscription below and click on the purchase button to complete the payment.','membership'); ?></p>
+
+						<table class='purchasetable'>
+							<tr>
+								<td class='detailscolumn'>
+								<?php echo $sub->sub_name(); ?>
+								</td>
+								<td class='pricecolumn'>
+								<?php
+									$first = $sub->get_level_at_position(1);
+
+									if(!empty($first)) {
+										$price = $first->level_price;
+										if($price == 0) {
+											$price = "Free";
+										} else {
+
+											$M_options = get_option('membership_options', array());
+
+											switch( $M_options['paymentcurrency'] ) {
+												case "USD": $price = "$" . $price;
+															break;
+
+												case "GBP":	$price = "&pound;" . $price;
+															break;
+
+												case "EUR":	$price = "&euro;" . $price;
+															break;
+											}
+										}
+									}
+									echo $price;
+								?>
+								</td>
+								<td class='buynowcolumn'>
+								<?php
+								$pricing = $sub->get_pricingarray();
+
+								if($pricing) {
+									do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+								}
+								?>
+								</td>
+							</tr>
+						</table>
+
+					</div>
+				<?php
+			}
+
+			exit;
 		}
 
 	}

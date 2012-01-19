@@ -4,7 +4,7 @@
 #reg-form .formleft td label {
     display:inline;
   }
-  
+
   #reg-form table {
     clear: both;
   }
@@ -36,7 +36,7 @@
   	border-radius: 3px;
   }
   #reg-form a#login_right {
-    
+
   }
   #reg-form .cctext:hover {
     background-color: #FCEC8F;
@@ -151,7 +151,7 @@ div.subscription h3 {
 	padding: 0px;
 	font-family: Arial, sans-serif;
 	float: left;
-	width: 100%;	
+	width: 100%;
 }
 
 #reg-form .formleft p {
@@ -159,7 +159,7 @@ div.subscription h3 {
 	padding: 0px;
 	float: left;
 	width: 100%;
-	
+
 }
 
 #reg-form .formleft .regbutton {
@@ -168,23 +168,13 @@ div.subscription h3 {
 	font-family: Helvetica, Arial, sans-serif;
 	font-weight: bold;
 }
-#reg-form .regtext:hover {
-	padding: 3px !important;
-	width: 200px;
-	margin-bottom: 20px;
-	font-family: Arial, sans-serif;
-	font-size: 13px;
-	color: #111;
-	background: #fefdd8 url(none);
-	border: 1px solid #DFBE06;
-}
 
 div.subscription {
 	overflow: hidden;
 	float: left;
 	width: 98%;
 	padding: 5px;
-	border: 1px solid #ddd;	
+	border: 1px solid #ddd;
 }
 
 div.subscription p {
@@ -196,7 +186,7 @@ div.subscription p {
 
 div.subscription div.description {
 	overflow: hidden;
-	float: left;	
+	float: left;
 	width: 70%;
 }
 
@@ -255,7 +245,7 @@ div.pricebox {
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1); 
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1);
 	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
 }
 
@@ -303,7 +293,7 @@ div.pricebox div.topbar span.title {
 }
 
 div.priceboxes div.topbar span.price {
-	color: #000;	
+	color: #000;
 	float: right;
 	margin-right: 10px;
 }
@@ -313,7 +303,7 @@ div.pricebox div.bottombar span.price {
 	float: left;
 }
 
-div.priceboxes div.bottombar span.link {	
+div.priceboxes div.bottombar span.link {
 	float: right;
 	margin-right: 10px;
 }

@@ -46,6 +46,7 @@ if(!class_exists('membershippublic')) {
 			// Register
 			add_filter('register', array(&$this, 'override_register') );
 
+			/*
 			add_action( 'wp_ajax_nopriv_buynow', array(&$this, 'popover_signup_form') );
 
 			//login and register are no-priv only because, well they aren't logged in or registered
@@ -56,7 +57,7 @@ if(!class_exists('membershippublic')) {
 			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
 			add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
 			add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
-
+			*/
 		}
 
 		function membershippublic() {
@@ -1329,134 +1330,8 @@ if(!class_exists('membershippublic')) {
 
 			}
 
-
-
-
 		}
 
-		function popover_signup_form() {
-			global $membershippublic;
-
-			//require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-			//$membershippublic =& new membershippublic();
-
-
-			echo "fred";
-			//echo $this->do_subscription_shortcode(array());
-
-			exit;
-		}
-
-		function popover_register_process() {
-			include_once(ABSPATH . WPINC . '/registration.php');
-
-			$error = array();
-
-			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_register')) {
-				$error[] = __('Invalid form submission.','membership');
-			}
-
-			if(username_exists(sanitize_user($_POST['email']))) {
-				$error[] = __('That username is already taken, sorry.','membership');
-			}
-
-			if(email_exists($_POST['email'])) {
-				$error[] = __('That email address is already taken, sorry.','membership');
-			}
-
-			$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
-
-			if(empty($error)) {
-				// Pre - error reporting check for final add user
-				$user_id = wp_create_user( sanitize_user($_POST['email']), $_POST['password'], $_POST['email'] );
-
-				if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-					$error[] = $userid->get_error_message();
-				} else {
-					$member = new M_Membership( $user_id );
-
-					if( has_action('membership_susbcription_form_registration_notification') ) {
-						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
-					} else {
-						wp_new_user_notification($user_id, $_POST['password']);
-					}
-
-					wp_set_auth_cookie($user_id);
-				}
-			}
-
-			do_action( 'membership_subscription_form_registration_process', $error, $user_id );
-
-			if(!empty($error)) {
-				//sendback error
-				echo json_encode( array('errormsg' => $error[0]) );
-			} else {
-				// everything seems fine (so far), so we have our queued user so let's
-				// move to picking a subscription - so send back the form.
-				global $membershippublic;
-
-				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-				$membershippublic =& new membershippublic();
-
-				echo $membershippublic->show_subpage_two( $user_id );
-			}
-
-			exit;
-
-		}
-
-		function popover_login_process() {
-
-			$error = array();
-
-			if(!wp_verify_nonce( $_POST['nonce'], 'staypress_login')) {
-				$error[] = __('Invalid form submission.','membership');
-			}
-
-			$userbyemail = get_user_by_email( $_POST['email'] );
-
-			if(!empty($userbyemail)) {
-				$user = wp_authenticate( $userbyemail->user_login, $_POST['password'] );
-				if(is_wp_error($user)) {
-					$error[] = __('User not found.','membership');
-				} else {
-					wp_set_auth_cookie($user->ID);
-				}
-			} else {
-				$error[] = __('User not found.','membership');
-			}
-
-			if(!empty($error)) {
-				//sendback error
-				echo json_encode( array('errormsg' => $error[0]) );
-			} else {
-				// everything seems fine (so far), so we have our queued user so let's
-				// move to picking a subscription - so send back the form.
-				global $membershippublic;
-
-				require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-				$membershippublic =& new membershippublic();
-
-				echo $membershippublic->show_subpage_two( $user->ID );
-			}
-
-			exit;
-
-		}
-
-		function popover_sendpayment_form() {
-			global $membershippublic;
-
-			require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
-
-			$membershippublic =& new membershippublic();
-
-			echo $membershippublic->do_subscription_shortcode(array());
-			exit;
-		}
 
 		function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
 
