@@ -169,7 +169,7 @@ if(!class_exists('membershipadmin')) {
 			if(!empty($M_options['membershipadminshortcodes'])) {
 				foreach($M_options['membershipadminshortcodes'] as $key => $value) {
 					if(!empty($value)) {
-						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
+						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_fake_shortcode') );
 					}
 				}
 			}
@@ -3384,7 +3384,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Access Levels','membership'); ?></h2>
+				<h2><?php _e('Access Levels','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;level_id="><?php _e('Add New','membership'); ?></a></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -3949,7 +3949,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Subscription Plans','membership'); ?></h2>
+				<h2><?php _e('Subscription Plans','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;sub_id="><?php _e('Add New','membership'); ?></a></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -4355,7 +4355,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap'>
 				<div class="icon32" id="icon-edit-comments"><br></div>
-				<h2><?php _e('Edit Communication','membership'); ?></h2>
+				<h2><?php _e('Edit Communication','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;comm="><?php _e('Add New','membership'); ?></a></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -4733,7 +4733,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap'>
 				<div class="icon32" id="icon-edit-pages"><br></div>
-				<h2><?php _e('Edit URL Groups','membership'); ?></h2>
+				<h2><?php _e('Edit URL Groups','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;group="><?php _e('Add New','membership'); ?></a></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -5170,7 +5170,7 @@ if(!class_exists('membershipadmin')) {
 			?>
 			<div class='wrap'>
 				<div class="icon32" id="icon-link-manager"><br></div>
-				<h2><?php _e('Edit Pings','membership'); ?></h2>
+				<h2><?php _e('Edit Pings','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;ping="><?php _e('Add New','membership'); ?></a></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -6066,8 +6066,6 @@ if(!class_exists('membershipadmin')) {
 											} else {
 												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=activate&amp;gateway=" . $gateway_data['gateway_id'] . "", 'toggle-gateway-' . $gateway_data['gateway_id']) . "'>" . __('Activate', 'membership') . "</a></span>";
 											}
-
-
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 										</td>
