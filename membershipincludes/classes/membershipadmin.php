@@ -4283,16 +4283,26 @@ if(!class_exists('membershipadmin')) {
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add Message','membership') . "</h2>";
-
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="" />';
-				echo "<input type='hidden' name='action' value='added' />";
-				wp_nonce_field('add-comm');
-				$addcomm->addform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Add message', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Add message','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="" />';
+						echo "<input type='hidden' name='action' value='added' />";
+						wp_nonce_field('add-comm');
+						$addcomm->addform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add message', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+						?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			} else {
 				$editcomm =& new M_Communication( (int) $comm_id );
@@ -4300,15 +4310,26 @@ if(!class_exists('membershipadmin')) {
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit Message','membership') . "</h2>";
 
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
-				echo "<input type='hidden' name='action' value='updated' />";
-				wp_nonce_field('update-comm_' . $comm_id);
-				$editcomm->editform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Edit message','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="' . $comm_id . '" />';
+						echo "<input type='hidden' name='action' value='updated' />";
+						wp_nonce_field('update-comm_' . $comm_id);
+						$editcomm->editform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+					?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			}
 
@@ -4668,15 +4689,26 @@ if(!class_exists('membershipadmin')) {
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add URL group','membership') . "</h2>";
 
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="" />';
-				echo "<input type='hidden' name='action' value='added' />";
-				wp_nonce_field('add-group');
-				$add->addform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Add group', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Add URL group','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="" />';
+						echo "<input type='hidden' name='action' value='added' />";
+						wp_nonce_field('add-group');
+						$add->addform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add group', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+						?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			} else {
 				$edit =& new M_Urlgroup( (int) $group_id );
@@ -4684,15 +4716,26 @@ if(!class_exists('membershipadmin')) {
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit URL group','membership') . "</h2>";
 
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="' . $group_id . '" />';
-				echo "<input type='hidden' name='action' value='updated' />";
-				wp_nonce_field('update-group-' . $group_id);
-				$edit->editform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Update group', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Edit URL group','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="' . $group_id . '" />';
+						echo "<input type='hidden' name='action' value='updated' />";
+						wp_nonce_field('update-group-' . $group_id);
+						$edit->editform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update group', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+						?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			}
 
@@ -4964,15 +5007,26 @@ if(!class_exists('membershipadmin')) {
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add Ping details','membership') . "</h2>";
 
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="" />';
-				echo "<input type='hidden' name='action' value='added' />";
-				wp_nonce_field('add-ping');
-				$add->addform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Add ping details', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Add ping details','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="" />';
+						echo "<input type='hidden' name='action' value='added' />";
+						wp_nonce_field('add-ping');
+						$add->addform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add ping details', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+						?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			} else {
 				$edit =& new M_Ping( (int) $ping_id );
@@ -4980,15 +5034,26 @@ if(!class_exists('membershipadmin')) {
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit Ping details','membership') . "</h2>";
 
-				echo '<form method="post" action="?page=' . $page . '">';
-				echo '<input type="hidden" name="ID" value="' . $ping_id . '" />';
-				echo "<input type='hidden' name='action' value='updated' />";
-				wp_nonce_field('update-ping-' . $ping_id);
-				$edit->editform();
-				echo '<p class="submit">';
-				echo '<input class="button" type="submit" name="go" value="' . __('Update ping details', 'membership') . '" /></p>';
-				echo '</form>';
-
+				echo '<div id="poststuff" class="metabox-holder">';
+				?>
+				<div class="postbox">
+					<h3 class="hndle" style='cursor:auto;'><span><?php _e('Edit ping details','membership'); ?></span></h3>
+					<div class="inside">
+						<?php
+						echo '<form method="post" action="?page=' . $page . '">';
+						echo '<input type="hidden" name="ID" value="' . $ping_id . '" />';
+						echo "<input type='hidden' name='action' value='updated' />";
+						wp_nonce_field('update-ping-' . $ping_id);
+						$edit->editform();
+						echo '<p class="submit">';
+						echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update ping details', 'membership') . '" /></p>';
+						echo '</form>';
+						echo '<br/>';
+						?>
+					</div>
+				</div>
+				<?php
+				echo "</div>";
 				echo "</div>";
 			}
 
@@ -5113,7 +5178,7 @@ if(!class_exists('membershipadmin')) {
 								<?php
 							}
 						} else {
-							$columncount = count($columns) + 1;
+							$columncount = count($columns);
 							?>
 							<tr valign="middle" class="alternate" >
 								<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('No History available for this ping.','membership'); ?></td>
