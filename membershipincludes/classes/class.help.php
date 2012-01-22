@@ -84,8 +84,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'members',
+				'title'   => __( 'Members', 'membership' ),
 				'content' => $help,
 			) );
 
@@ -98,8 +98,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'levels',
+				'title'   => __( 'Levels', 'membership' ),
 				'content' => $help,
 			) );
 
@@ -112,8 +112,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'subscriptions',
+				'title'   => __( 'Subscriptions' , 'membership' ),
 				'content' => $help,
 			) );
 
@@ -126,8 +126,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'gateways',
+				'title'   => __( 'Gateways', 'membership' ),
 				'content' => $help,
 			) );
 
@@ -222,8 +222,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'options',
+				'title'   => __( 'Options', 'membership' ),
 				'content' => $help,
 			) );
 
@@ -236,8 +236,8 @@ if(!class_exists('M_Help')) {
 			$help = ob_get_clean();
 
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'addons',
+				'title'   => __( 'Add-ons', 'membership' ),
 				'content' => $help,
 			) );
 
