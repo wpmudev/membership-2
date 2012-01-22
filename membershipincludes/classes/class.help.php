@@ -139,10 +139,20 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.communication.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.communicationedit.php'));
+			$helpedit = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'communications',
+				'title'   => __( 'Communications', 'membership' ),
 				'content' => $help,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'edit',
+				'title'   => __( 'Adding / Editing', 'membership' ),
+				'content' => $helpedit,
 			) );
 
 		}
@@ -153,10 +163,20 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.urlgroups.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.urlgroupsedit.php'));
+			$helpedit = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'urlgroups',
+				'title'   => __( 'URL Groups', 'membership' ),
 				'content' => $help,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'edit',
+				'title'   => __( 'Adding / Editing', 'membership' ),
+				'content' => $helpedit,
 			) );
 
 		}
@@ -167,10 +187,30 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.pings.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.pingsedit.php'));
+			$helpedit = ob_get_clean();
+
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.pingshistory.php'));
+			$helphistory = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview' ),
+				'id'      => 'pings',
+				'title'   => __( 'Pings', 'membership' ),
 				'content' => $help,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'edit',
+				'title'   => __( 'Adding / Editing', 'membership' ),
+				'content' => $helpedit,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'history',
+				'title'   => __( 'Ping History', 'membership' ),
+				'content' => $helphistory,
 			) );
 
 		}

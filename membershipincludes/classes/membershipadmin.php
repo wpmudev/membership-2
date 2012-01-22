@@ -341,6 +341,9 @@ if(!class_exists('membershipadmin')) {
 			$help = new M_Help( $screen );
 			$help->attach();
 
+			// Add in default style sheet with common styling elements
+			wp_enqueue_style('defaultcss', membership_url('membershipincludes/css/default.css'), array(), $this->build);
+
 		}
 
 		function add_admin_header_membership() {
@@ -3434,7 +3437,6 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel">
 				</div>
 
 				<br class="clear">
@@ -3552,7 +3554,6 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel2">
 				</div>
 				<br class="clear">
 				</div>
@@ -4001,7 +4002,6 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel">
 				</div>
 
 				<br class="clear">
@@ -4133,7 +4133,6 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply', 'membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewsubbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel2">
 				</div>
 				<br class="clear">
 				</div>
@@ -4416,7 +4415,6 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New','membership'); ?>" name="addnewmessage">
 				</div>
 
 				<br class="clear">
@@ -4556,7 +4554,6 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewmessagebutton" value="<?php _e('Add New','membership'); ?>" name="addnewmessage2">
 				</div>
 				<br class="clear">
 				</div>
@@ -4806,7 +4803,6 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup">
 				</div>
 
 				<br class="clear">
@@ -4894,7 +4890,6 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewgroupbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup2">
 				</div>
 				<br class="clear">
 				</div>
@@ -5265,7 +5260,6 @@ if(!class_exists('membershipadmin')) {
 				</div>
 
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New','membership'); ?>" name="addnewgroup">
 				</div>
 
 				<br class="clear">
@@ -5354,7 +5348,6 @@ if(!class_exists('membershipadmin')) {
 				<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="<?php _e('Apply','membership'); ?>">
 				</div>
 				<div class="alignright actions">
-					<input type="button" class="button-secondary addnewpingbutton" value="<?php _e('Add New','membership'); ?>" name="addnewping2">
 				</div>
 				<br class="clear">
 				</div>
