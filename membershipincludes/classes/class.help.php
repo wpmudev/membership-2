@@ -97,11 +97,23 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.levels.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.levelsedit.php'));
+			$helpedit = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
 				'id'      => 'levels',
 				'title'   => __( 'Levels', 'membership' ),
 				'content' => $help,
 			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'edit',
+				'title'   => __( 'Adding / Editing', 'membership' ),
+				'content' => $helpedit,
+			) );
+
+
 
 		}
 
@@ -111,10 +123,20 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.subs.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.subsedit.php'));
+			$helpedit = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
 				'id'      => 'subscriptions',
 				'title'   => __( 'Subscriptions' , 'membership' ),
 				'content' => $help,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'edit',
+				'title'   => __( 'Adding / Editing' , 'membership' ),
+				'content' => $helpedit,
 			) );
 
 		}
@@ -221,10 +243,50 @@ if(!class_exists('M_Help')) {
 			include_once(membership_dir('membershipincludes/help/help.options.php'));
 			$help = ob_get_clean();
 
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.optionspages.php'));
+			$helppages = ob_get_clean();
+
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.optionscontent.php'));
+			$helpcontent = ob_get_clean();
+
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.optionsdownloads.php'));
+			$helpdownloads = ob_get_clean();
+
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.optionsextras.php'));
+			$helpextras = ob_get_clean();
+
 			$this->screen->add_help_tab( array(
 				'id'      => 'options',
-				'title'   => __( 'Options', 'membership' ),
+				'title'   => __( 'General Options', 'membership' ),
 				'content' => $help,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'pages',
+				'title'   => __( 'Membership Pages', 'membership' ),
+				'content' => $helppages,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'content',
+				'title'   => __( 'Content Protection', 'membership' ),
+				'content' => $helpcontent,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'downloads',
+				'title'   => __( 'Downloads / Media', 'membership' ),
+				'content' => $helpdownloads,
+			) );
+
+			$this->screen->add_help_tab( array(
+				'id'      => 'extras',
+				'title'   => __( 'Extras', 'membership' ),
+				'content' => $helpextras,
 			) );
 
 		}
