@@ -1028,6 +1028,43 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function output_subscriptionform() {
+
+			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
+			ob_start();
+			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
+				include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
+			} elseif(file_exists( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) ) ) {
+				include_once( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_subscription_form_after_content', $content, $user_id );
+
+			return $content;
+		}
+
+		function output_registeruser() {
+
+			$subscription = (int) $_GET['subscription'];
+			$content = apply_filters('membership_subscription_form_registration_before_content', $content, $error);
+			ob_start();
+			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
+				include_once( MEMBERSHIP_REGISTRATION_FORM );
+			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
+				include_once( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
+			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
+				include_once( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_subscription_form_registration_after_content', $content, $error);
+
+			return $content;
+		}
+
 		function do_subscription_form() {
 
 
@@ -1042,33 +1079,10 @@ if(!class_exists('membershippublic')) {
 
 			switch($page) {
 
-				case 'subscriptionform':	$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
-											ob_start();
-											if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
-												include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
-											} elseif(file_exists( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) ) ) {
-												include_once( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
-											}
-											$content .= ob_get_contents();
-											ob_end_clean();
-
-											$content = apply_filters('membership_subscription_form_after_content', $content, $user_id );
+				case 'subscriptionform':	$content = $this->output_subscriptionform();
 											break;
 
-				case 'registeruser':		$subscription = (int) $_GET['subscription'];
-											$content = apply_filters('membership_subscription_form_registration_before_content', $content, $error);
-											ob_start();
-											if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-												include_once( MEMBERSHIP_REGISTRATION_FORM );
-											} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-												include_once( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
-											} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-												include_once( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
-											}
-											$content .= ob_get_contents();
-											ob_end_clean();
-
-											$content = apply_filters('membership_subscription_form_registration_after_content', $content, $error);
+				case 'registeruser':		$content = $this->output_registeruser();
 											break;
 
 				case 'validatepage1':	// Page 1 of the form has been submitted - validate
