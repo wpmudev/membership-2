@@ -23,7 +23,9 @@
 		<input type="password" autocomplete="off" class="regtext" name="password2" id='reg_password2'>
 	</div>
 
-	<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button blue" name="register"></p>
+	<?php do_action('membership_popover_extend_registration_form'); ?>
+
+	<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 	<input type="hidden" name="action" value="validatepage1" />
 	<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='reg_subscription' />
 </form>
@@ -41,7 +43,9 @@
 		<input type="password" autocomplete="off" class="regtext" name="password" id='login_password'>
 	</div>
 
-	<p><input type="submit" value="<?php _e('Login &raquo;','membership'); ?>" class="button blue" name="register"></p>
+	<?php do_action('membership_popover_extend_login_form'); ?>
+
+	<p><input type="submit" value="<?php _e('Login &raquo;','membership'); ?>" class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 	<input type="hidden" name="action" value="loginaccount" />
 	<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='login_subscription' />
 </form>

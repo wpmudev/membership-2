@@ -54,7 +54,17 @@ form#reg-form, form#login-form  {
 
 #reg-form div input.regtext, #login-form div input.regtext {
 	width: 280px;
-	margin-bottom: 10px;
+	background: none repeat scroll 0 0 #FBFBFB;
+    border: 1px solid #E5E5E5;
+    box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.2) inset;
+    font-size: 24px;
+    font-weight: 200;
+    line-height: 1;
+    margin-bottom: 16px;
+    margin-right: 6px;
+    margin-top: 2px;
+    outline: medium none;
+    padding: 3px;
 }
 
 #reg-form p, #login-form p {
