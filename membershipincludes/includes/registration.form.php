@@ -1,10 +1,12 @@
 <?php
 ?>
-<h2><?php _e( 'Create an Account', 'buddypress' ) ?></h2>
+<h2><?php _e( 'Create an Account', 'membership' ) ?></h2>
 
 <form id="reg-form" action="<?php echo get_permalink(); ?>" method="post">
 
 	<?php do_action( "signup_hidden_fields" ); ?>
+	
+	<input type='hidden' name='subscription' value='<?php echo esc_attr($_REQUEST['subscription']); ?>' />
 
 	<div class="formleft">
 		<a title="Login »" href="<?php echo wp_login_url( add_query_arg('action', 'page2', get_permalink()) ); ?>" class="alignright" id="login_right"><?php _e('Already have a user account?' ,'membership'); ?></a>

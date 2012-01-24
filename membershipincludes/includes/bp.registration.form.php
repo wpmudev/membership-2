@@ -2,6 +2,8 @@
 ?>
 	<form action="" name="signup_form" id="signup_form" class="standard-form" method="post" enctype="multipart/form-data">
 
+	<input type='hidden' name='subscription' value='<?php echo esc_attr($_REQUEST['subscription']); ?>' />
+
 	<h2><?php _e( 'Create an Account', 'membership' ) ?></h2>
 
 	<?php do_action( 'template_notices' ) ?>
