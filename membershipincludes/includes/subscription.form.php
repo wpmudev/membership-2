@@ -1,6 +1,7 @@
 <?php
 	global $M_options;
 ?>
+<h2><?php _e( 'Select a Subscription', 'membership' ) ?></h2>
 <div class="priceboxes">
 <?php
 	do_action( 'membership_subscription_form_before_subscriptions' );

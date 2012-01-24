@@ -1,5 +1,7 @@
 <?php
 ?>
+<h2><?php _e( 'Create an Account', 'buddypress' ) ?></h2>
+
 <form id="reg-form" action="<?php echo get_permalink(); ?>" method="post">
 
 	<?php do_action( "signup_hidden_fields" ); ?>
