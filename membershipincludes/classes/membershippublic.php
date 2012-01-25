@@ -1030,6 +1030,8 @@ if(!class_exists('membershippublic')) {
 
 		function output_subscriptionform() {
 
+			global $wp_query, $M_options, $bp;
+
 			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
 			ob_start();
 			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
@@ -1046,6 +1048,8 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function output_registeruser() {
+
+			global $wp_query, $M_options, $bp;
 
 			$subscription = (int) $_GET['subscription'];
 			$content = apply_filters('membership_subscription_form_registration_before_content', $content, $error);
@@ -1066,7 +1070,6 @@ if(!class_exists('membershippublic')) {
 		}
 
 		function do_subscription_form() {
-
 
 			global $wp_query, $M_options, $bp;
 
