@@ -92,6 +92,10 @@ if(!class_exists('membershipadmin')) {
 			add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
 			add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
 
+			// Helper actions
+			add_action( 'membership_activate_addon', array(&$this, 'activate_addon'), 10, 1 );
+			add_action( 'membership_deactivate_addon', array(&$this, 'deactivate_addon'), 10, 1 );
+
 		}
 
 		function membershipadmin() {
@@ -6181,6 +6185,25 @@ if(!class_exists('membershipadmin')) {
 
 			</div> <!-- wrap -->
 			<?php
+		}
+
+		function activate_addon( $addon ) {
+			$active = get_option('membership_activated_addons', array());
+
+			if(!in_array($key, $active)) {
+				$active[] = $key;
+				update_option('membership_activated_addons', array_unique($active));
+			}
+		}
+
+		function deactivate_addon( $addon ) {
+			$active = get_option('membership_activated_addons', array());
+
+			$found = array_search($key, $active);
+			if($found !== false) {
+				unset($active[$found]);
+				update_option('membership_activated_addons', array_unique($active));
+			}
 		}
 
 		function handle_addons_panel_updates() {

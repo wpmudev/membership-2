@@ -75,6 +75,10 @@ if(!class_exists('M_Wizard')) {
 								$this->show_with_wrap( $this->page_one( $step2 ) );
 								break;
 
+					case 2:		$step3 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=3", 'step-three');
+								$this->show_with_wrap( $this->page_two( $step3 ) );
+								break;
+
 				}
 
 
@@ -114,6 +118,26 @@ if(!class_exists('M_Wizard')) {
 						}
 						_e('You can use the Help tabs in the upper right corner to get information on how to use your current screen.','membership');
 						_e('If you would like us to set up some basic things for you then click <strong>Next Step</strong> below.','membership');
+					?>
+					<br/>
+					<?php if($nextsteplink) { ?>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<?php } ?>
+				</p>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		function page_two( $nextsteplink = false ) {
+
+			ob_start();
+			?>
+				<h3><?php _e('Create some pages', 'membership'); ?></h3>
+				<p class="about-description">
+					<?php
+						_e('You need to create some pages for Membership to use for the registration and account forms and the no access message. ','membership');
+						_e('You can create these yourself, or click the <strong>Create Pages</strong> button below to have them created now.','membership');
 					?>
 					<br/>
 					<?php if($nextsteplink) { ?>
