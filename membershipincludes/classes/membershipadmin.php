@@ -6363,7 +6363,7 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-name">
 										<strong><?php echo esc_html($plugin_data['Name']) . "</strong>" . __(' by ', 'membership') . "<a href='" . esc_attr($plugin_data['AuthorURI']) . "'>" . esc_html($plugin_data['Author']) . "</a>"; ?>
 										<?php if(!empty($plugin_data['Description'])) {
-											?><br/><?php echo esc_html($plugin_data['Description']);
+											?><br/><?php echo $plugin_data['Description'];
 											}
 
 											$actions = array();

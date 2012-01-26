@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: WPAudio shortcode
-Description: DEPRECIATED : If you want to protect the WPAudio shortcode then activate this to ensure it shows in the shortcodes list.
+Description: DEPRECIATED : you can now place wpaudio in the Admin only shortcode setting <a href='admin.php?page=membershipoptions&tab=posts'>here</a>.
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

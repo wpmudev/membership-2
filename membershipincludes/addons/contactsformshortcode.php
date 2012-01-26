@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: Contacts form 7 shortcode
-Description: DEPRECIATED : If you are using the Contacts form 7 plugin then enable this to protect the form shortcode.
+Description: DEPRECIATED : you can now place contact-form in the Admin only shortcode setting <a href='admin.php?page=membershipoptions&tab=posts'>here</a>.
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */
