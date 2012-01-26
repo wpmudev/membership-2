@@ -95,7 +95,7 @@ if(!class_exists('M_Wizard')) {
 					<?php
 						echo $content;
 					?>
-					<p class="welcome-panel-dismiss">Already know what you’re doing? <a href="<?php echo $deactivateurl;  ?>">Dismiss this message</a>.</p>
+					<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 					</div>
 
 					</div>
@@ -108,9 +108,13 @@ if(!class_exists('M_Wizard')) {
 			?>
 				<h3><?php _e('Welcome to Membership', 'membership'); ?></h3>
 				<p class="about-description">
-					<?php _e('If you need help getting started, check out our documentation over on <a href="http://premium.wpmudev.org/project/membership">WPMUDEV</a>.','membership'); ?>
-					<?php _e('If you need help at any point then use the Help tabs in the upper right corner to get information on how to use your current screen.','membership'); ?>
-					<?php _e('If you would like us to set up some basic things for you then click <strong>Next Step</strong> below.','membership'); ?>
+					<?php
+						if ( !defined('WPMUDEV_REMOVE_BRANDING') ) {
+							_e('If you need help getting started, check out our documentation over on <a href="http://premium.wpmudev.org/project/membership">WPMUDEV</a>. ','membership');
+						}
+						_e('You can use the Help tabs in the upper right corner to get information on how to use your current screen.','membership');
+						_e('If you would like us to set up some basic things for you then click <strong>Next Step</strong> below.','membership');
+					?>
 					<br/>
 					<?php if($nextsteplink) { ?>
 					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
