@@ -34,6 +34,16 @@ function m_deletelevel() {
 	}
 }
 
+function m_clickactiontoggle() {
+	if(jQuery(this).parent().hasClass('open')) {
+		jQuery(this).parent().removeClass('open').addClass('closed');
+		jQuery(this).parents('.action').find('.action-body').removeClass('open').addClass('closed');
+	} else {
+		jQuery(this).parent().removeClass('closed').addClass('open');
+		jQuery(this).parents('.action').find('.action-body').removeClass('closed').addClass('open');
+	}
+}
+
 function m_levelsReady() {
 
 
@@ -87,6 +97,8 @@ function m_levelsReady() {
 
 	jQuery('.deactivate a').click(m_deactivatelevel);
 	jQuery('.delete a').click(m_deletelevel);
+
+	jQuery('.action .action-top .action-button').click(m_clickactiontoggle);
 
 }
 

@@ -27,8 +27,12 @@ if(!class_exists('M_Rule')) {
 			?>
 			<li class='draggable-level' id='<?php echo $this->name; ?>' <?php if($data === true) echo "style='display:none;'"; ?>>
 				<div class='action action-draggable'>
-					<div class='action-top'>
+					<div class='action-top open'>
+					<a href="#available-actions" class="action-button hide-if-no-js"></a>
 					<?php _e($this->label,'membership'); ?>
+					</div>
+					<div class='action-body open'>
+					<?php _e('content','membership'); ?>
 					</div>
 				</div>
 			</li>
