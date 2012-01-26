@@ -3733,9 +3733,16 @@ if(!class_exists('membershipadmin')) {
 										foreach( (array) $levels as $key => $level) {
 										?>
 											<li class='level-draggable' id='level-<?php echo $level->id; ?>'>
+
 												<div class='action action-draggable'>
-													<div class='action-top'>
-														<?php echo esc_html($level->level_title); ?>
+													<div class='action-top closed'>
+													<a href="#available-actions" class="action-button hide-if-no-js"></a>
+													<?php echo esc_html($level->level_title); ?>
+													</div>
+													<div class='action-body closed'>
+														<p>
+															<a href='#addtosubscription' class='action-to-subscription' title="<?php _e('Add this level to the bottom of the membership levels list.','membership'); ?>"><?php _e('Add to Subscription','membership'); ?></a>
+														</p>
 													</div>
 												</div>
 											</li>
