@@ -4,6 +4,7 @@ class M_Posts extends M_Rule {
 
 	var $name = 'posts';
 	var $label = 'Posts';
+	var $description = 'Allows specific posts to be protected.';
 
 	var $rulearea = 'public';
 
@@ -319,6 +320,7 @@ class M_Pages extends M_Rule {
 
 	var $name = 'pages';
 	var $label = 'Pages';
+	var $description = 'Allows specific pages to be protected.';
 
 	var $rulearea = 'public';
 
@@ -651,6 +653,7 @@ class M_Categories extends M_Rule {
 
 	var $name = 'categories';
 	var $label = 'Categories';
+	var $description = 'Allows posts to be protected based on their assigned categories.';
 
 	var $rulearea = 'public';
 
@@ -870,6 +873,7 @@ class M_More extends M_Rule {
 
 	var $name = 'more';
 	var $label = 'More tag';
+	var $description = 'Allows content placed after the More tag to be protected.';
 
 	var $rulearea = 'public';
 
@@ -975,6 +979,7 @@ class M_Comments extends M_Rule {
 
 	var $name = 'comments';
 	var $label = 'Comments';
+	var $description = 'Allows the display of, or ability to comment on posts to be protected.';
 
 	var $rulearea = 'public';
 
@@ -1039,6 +1044,7 @@ class M_Downloads extends M_Rule {
 
 	var $name = 'downloads';
 	var $label = 'Downloads';
+	var $description = 'Allows media uploaded to the WordPress media library to be protected.';
 
 	var $rulearea = 'public';
 
@@ -1145,6 +1151,7 @@ class M_Shortcodes extends M_Rule {
 
 	var $name = 'shortcodes';
 	var $label = 'Shortcodes';
+	var $description = 'Allows specific shortcodes and contained content to be protected.';
 
 	var $rulearea = 'public';
 
@@ -1274,6 +1281,7 @@ class M_Menu extends M_Rule {
 
 	var $name = 'menu';
 	var $label = 'Menu';
+	var $description = 'Allows specific menu items to be protected.';
 
 	var $rulearea = 'public';
 
@@ -1395,6 +1403,7 @@ class M_Blogcreation extends M_Rule {
 
 	var $name = 'blogcreation';
 	var $label = 'Blog Creation';
+	var $description = 'Allows the creation of blogs to be limited to members.';
 
 	var $rulearea = 'core';
 
@@ -1518,6 +1527,7 @@ class M_URLGroups extends M_Rule {
 
 	var $name = 'urlgroups';
 	var $label = 'URL Groups';
+	var $description = "Allows specific URL's to be protected (includes ability to protect using regular expressions).";
 
 	var $rulearea = 'core';
 

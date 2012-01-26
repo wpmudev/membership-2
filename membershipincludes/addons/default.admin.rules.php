@@ -11,6 +11,7 @@ class M_Mainmenus extends M_Rule {
 	var $name = 'mainmenus';
 	var $adminside = true;
 	var $label = 'Main Menus';
+	var $description = 'Allows admin side main menus to be protected.';
 
 	var $rulearea = 'admin';
 
@@ -125,6 +126,7 @@ class M_Submenus extends M_Rule {
 	var $name = 'submenus';
 	var $adminside = true;
 	var $label = 'Sub Menus';
+	var $description = 'Allows admin side sub menus to be protected.';
 
 	var $rulearea = 'admin';
 
@@ -264,6 +266,7 @@ class M_Dashboardwidgets extends M_Rule {
 	var $name = 'dashboard';
 	var $adminside = true;
 	var $label = 'Dashboard Widgets';
+	var $description = 'Allows admin side dashboard widgets to be protected.';
 
 	var $rulearea = 'admin';
 
@@ -409,6 +412,7 @@ class M_Plugins extends M_Rule {
 	var $name = 'plugins';
 	var $adminside = true;
 	var $label = 'Plugins';
+	var $description = 'Allows activation of specific plugins to be protected.';
 
 	var $rulearea = 'admin';
 
@@ -519,6 +523,7 @@ class M_Favouriteactions extends M_Rule {
 	var $name = 'favactions';
 	var $adminside = true;
 	var $label = 'Favorite Actions';
+	var $description = 'Allows protection of favourite actions (pre WP3.3).';
 
 	var $rulearea = 'admin';
 

@@ -10,6 +10,7 @@ class M_Marketpress extends M_Rule {
 
 	var $name = 'marketpress';
 	var $label = 'MarketPress Pages';
+	var $description = 'Allows MarketPress pages to be protected.';
 
 	var $rulearea = 'public';
 

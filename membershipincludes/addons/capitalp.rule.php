@@ -10,6 +10,7 @@ class M_Capitalp extends M_Rule {
 
 	var $name = 'capitalp';
 	var $label = 'Capital P filter';
+	var $description = 'Allows the Capital P filter to be disabled for members.';
 
 	var $rulearea = 'public';
 

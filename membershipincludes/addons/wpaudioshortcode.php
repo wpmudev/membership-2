@@ -1,7 +1,7 @@
 <?php
 /*
 Addon Name: WPAudio shortcode
-Description: If you want to protect the WPAudio shortcode then activate this to ensure it shows in the shortcodes list.
+Description: DEPRECIATED : If you want to protect the WPAudio shortcode then activate this to ensure it shows in the shortcodes list.
 Author: Barry (Incsub)
 Author URI: http://caffeinatedb.com
 */

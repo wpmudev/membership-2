@@ -11,6 +11,7 @@ class M_BPPages extends M_Rule {
 
 	var $name = 'bppages';
 	var $label = 'BuddyPress Pages';
+	var $description = 'Allows specific BuddyPress pages to be protected.';
 
 	var $rulearea = 'public';
 
@@ -374,6 +375,7 @@ class M_BPGroups extends M_Rule {
 
 	var $name = 'bpgroups';
 	var $label = 'Groups';
+	var $description = 'Allows specific BuddyPress groups to be protected.';
 
 	var $rulearea = 'public';
 
@@ -789,6 +791,7 @@ class M_BPGroupcreation extends M_Rule {
 
 	var $name = 'bpgroupcreation';
 	var $label = 'Group Creation';
+	var $description = 'Allows group creation to be allowed to members only.';
 
 	var $rulearea = 'public';
 
@@ -877,6 +880,7 @@ class M_BPBlogs extends M_Rule {
 
 	var $name = 'bpblogs';
 	var $label = 'Blogs';
+	var $description = 'Allows the protection of specific blogs.';
 
 	var $rulearea = 'public';
 
@@ -1127,6 +1131,7 @@ class M_BPPrivatemessage extends M_Rule {
 
 	var $name = 'bpprivatemessage';
 	var $label = 'Private Messaging';
+	var $description = 'Allows the sending of private messages to be limited to members.';
 
 	var $rulearea = 'public';
 
