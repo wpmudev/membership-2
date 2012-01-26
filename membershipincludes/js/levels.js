@@ -44,6 +44,38 @@ function m_clickactiontoggle() {
 	}
 }
 
+function m_addtopositive() {
+
+	moving = jQuery(this).parents('.draggable-level').attr('id');
+	ruleplace = 'positive-rules';
+	if(moving != '') {
+		jQuery('#main-' + moving).prependTo('#' + ruleplace + '-holder');
+		jQuery('#' + moving).hide();
+
+		// put the name in the relevant holding input field
+		jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
+
+	}
+
+	return false;
+}
+
+function m_addtonegative() {
+
+	moving = jQuery(this).parents('.draggable-level').attr('id');
+	ruleplace = 'negative-rules';
+	if(moving != '') {
+		jQuery('#main-' + moving).prependTo('#' + ruleplace + '-holder');
+		jQuery('#' + moving).hide();
+
+		// put the name in the relevant holding input field
+		jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
+
+	}
+
+	return false;
+}
+
 function m_levelsReady() {
 
 
@@ -99,6 +131,9 @@ function m_levelsReady() {
 	jQuery('.delete a').click(m_deletelevel);
 
 	jQuery('.action .action-top .action-button').click(m_clickactiontoggle);
+
+	jQuery('a.action-to-positive').click(m_addtopositive);
+	jQuery('a.action-to-negative').click(m_addtonegative);
 
 }
 

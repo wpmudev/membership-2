@@ -32,7 +32,10 @@ if(!class_exists('M_Rule')) {
 					<?php _e($this->label,'membership'); ?>
 					</div>
 					<div class='action-body open'>
-					<?php _e('content','membership'); ?>
+						<p></p>
+						<p>
+							<a href='' class='action-to-positive'><?php _e('Add to Positive rules','membership'); ?></a> | <a href='' class='action-to-negative'><?php _e('Add to Negative rules','membership'); ?></a>
+						</p>
 					</div>
 				</div>
 			</li>
