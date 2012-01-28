@@ -6188,18 +6188,20 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function activate_addon( $addon ) {
+
 			$active = get_option('membership_activated_addons', array());
 
-			if(!in_array($key, $active)) {
-				$active[] = $key;
+			if(!in_array($addon, $active)) {
+				$active[] = $addon;
 				update_option('membership_activated_addons', array_unique($active));
 			}
 		}
 
 		function deactivate_addon( $addon ) {
+
 			$active = get_option('membership_activated_addons', array());
 
-			$found = array_search($key, $active);
+			$found = array_search($addon, $active);
 			if($found !== false) {
 				unset($active[$found]);
 				update_option('membership_activated_addons', array_unique($active));

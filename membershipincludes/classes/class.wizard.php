@@ -220,7 +220,7 @@ if(!class_exists('M_Wizard')) {
 
 		function page_two( $nextsteplink = false ) {
 
-			global $M_options;
+			global $M_options, $page, $action, $step;
 
 			ob_start();
 			?>
@@ -266,7 +266,7 @@ if(!class_exists('M_Wizard')) {
 
 		function page_three( $nextsteplink = false ) {
 
-			global $M_options;
+			global $M_options, $page, $action, $step;
 
 			ob_start();
 			?>
@@ -299,7 +299,7 @@ if(!class_exists('M_Wizard')) {
 
 		function page_four( $nextsteplink = false ) {
 
-			global $M_options;
+			global $M_options, $page, $action, $step;
 
 			ob_start();
 			?>
@@ -373,7 +373,7 @@ if(!class_exists('M_Wizard')) {
 
 		function page_five( $nextsteplink = false ) {
 
-			global $M_options;
+			global $M_options, $page, $action, $step;
 
 			ob_start();
 			?>
@@ -400,7 +400,7 @@ if(!class_exists('M_Wizard')) {
 
 		function page_end( $nextsteplink = false ) {
 
-			global $M_options;
+			global $M_options, $page, $action, $step;
 
 			ob_start();
 			?>
