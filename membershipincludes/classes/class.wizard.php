@@ -75,8 +75,55 @@ if(!class_exists('M_Wizard')) {
 								$this->show_with_wrap( $this->page_one( $step2 ) );
 								break;
 
-					case 2:		$step3 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=3", 'step-three');
-								$this->show_with_wrap( $this->page_two( $step3 ) );
+					case 2:		$this->show_with_wrap( $this->page_two( ) );
+								break;
+
+					case 3:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
+									// create the pages
+									check_admin_referer('step-three');
+									$this->create_step_two_pages();
+								}
+								if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
+									// BP is isntalled so ask about activating rules
+									$this->show_with_wrap( $this->page_three( ) );
+								} else {
+									// BP not installed so check for MarketPress
+									if(class_exists('MarketPress')) {
+										// MarketPress is installed so ask about activating rules
+										$this->show_with_wrap( $this->page_four( ) );
+									} else {
+										$this->show_with_wrap( $this->page_five( ) );
+									}
+								}
+								break;
+
+					case 4:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
+									// activate the addon
+									check_admin_referer( 'step-four' );
+									$this->activate_buddypress_addon();
+								}
+								if(class_exists('MarketPress')) {
+									// MarketPress is installed so ask about activating rules
+									$this->show_with_wrap( $this->page_four( ) );
+								} else {
+									$this->show_with_wrap( $this->page_five( ) );
+								}
+								break;
+
+					case 5:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
+									// activate the addon
+									check_admin_referer( 'step-five' );
+									$this->activate_marketpress_addon();
+								}
+								$this->show_with_wrap( $this->page_five( ) );
+								break;
+
+					case 6:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
+									// activate the addon
+									check_admin_referer( 'step-six' );
+									$this->activate_admin_shortcodes();
+								}
+								$this->show_with_wrap( $this->page_end( ) );
 								break;
 
 				}
@@ -129,20 +176,246 @@ if(!class_exists('M_Wizard')) {
 			return ob_get_clean();
 		}
 
+		function create_step_two_pages() {
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
+
+			$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+			$id = wp_insert_post( $pagedetails );
+			$M_options['registration_page'] = $id;
+
+			$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+			$id = wp_insert_post( $pagedetails );
+			$M_options['account_page'] = $id;
+
+			$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
+			$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+			$id = wp_insert_post( $pagedetails );
+			$M_options['nocontent_page'] = $id;
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('update_blog_option')) {
+					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+				} else {
+					update_option('membership_options', $M_options);
+				}
+			} else {
+				update_option('membership_options', $M_options);
+			}
+
+
+		}
+
 		function page_two( $nextsteplink = false ) {
+
+			global $M_options;
 
 			ob_start();
 			?>
 				<h3><?php _e('Create some pages', 'membership'); ?></h3>
 				<p class="about-description">
 					<?php
-						_e('You need to create some pages for Membership to use for the registration and account forms and the no access message. ','membership');
-						_e('You can create these yourself, or click the <strong>Create Pages</strong> button below to have them created now.','membership');
+						if(empty($M_options['registration_page'])) {
+							// No pages set up - ask if they want any set up
+								$step3 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=3", 'step-three');
+								$step3skip = wp_nonce_url("admin.php?page=" . $page. "&amp;step=3&amp;skip=yes", 'step-three');
+
+								_e('You need to create some pages for Membership to use for the registration and account forms and the no access message. ','membership');
+								_e('If you want to create these yourself later then click on the <strong>Skip to next step</strong> button, or click the <strong>Create Pages</strong> button below to have them created now. ','membership');
+								?>
+								<br/>
+								<a href='<?php echo $step3; ?>' class='button-primary alignright'><?php _e('Create Pages &raquo;', 'membership'); ?></a>
+								<a href='<?php echo $step3skip; ?>' class='button alignright' style='margin-right: 10px;'><?php _e('Skip to next step &raquo;', 'membership'); ?></a>
+								<?php
+						} else {
+							// We have pages set up so display message ready for next page
+							$step3skip = wp_nonce_url("admin.php?page=" . $page. "&amp;step=3&amp;skip=yes", 'step-three');
+
+							_e('It looks like you have already created some pages for your Membership system. If you need to change them then you can do so in the <a href="admin.php?page=membershipoptions&tab=pages">options page</a>. ','membership');
+							_e('Click on the <strong>Next Step</strong> button to carry on.','membership');
+							?>
+								<br/>
+								<a href='<?php echo $step3skip; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+								<?php
+						}
 					?>
-					<br/>
-					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
-					<?php } ?>
+
+				</p>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		function activate_buddypress_addon() {
+
+			do_action( 'membership_activate_addon', 'default.bprules.php' );
+
+		}
+
+		function page_three( $nextsteplink = false ) {
+
+			global $M_options;
+
+			ob_start();
+			?>
+				<h3><?php _e('Enable BuddyPress rules', 'membership'); ?></h3>
+				<p class="about-description">
+					<?php
+
+						$step4 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=4", 'step-four');
+						$step4skip = wp_nonce_url("admin.php?page=" . $page. "&amp;step=4&amp;skip=yes", 'step-four');
+
+						_e('It looks like you have BuddyPress enabled. Did you know that Membership has extra rules for use with BuddyPress? ','membership');
+						_e('If you would like to enable the BuddyPress then click on the <strong>Activate BuddyPress Rules</strong> button. If you would rather do this yourself later then click on the <strong>Skip to next step</strong> button. ','membership');
+
+						?>
+						<br/>
+						<a href='<?php echo $step4; ?>' class='button-primary alignright'><?php _e('Activate BuddyPress Rules &raquo;', 'membership'); ?></a>
+						<a href='<?php echo $step4skip; ?>' class='button alignright' style='margin-right: 10px;'><?php _e('Skip to next step &raquo;', 'membership'); ?></a>
+
+				</p>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		function activate_marketpress_addon() {
+
+			do_action( 'membership_activate_addon', 'marketpress.rules.php' );
+
+		}
+
+		function page_four( $nextsteplink = false ) {
+
+			global $M_options;
+
+			ob_start();
+			?>
+				<h3><?php _e('Enable MarketPress rules', 'membership'); ?></h3>
+				<p class="about-description">
+					<?php
+
+						$step5 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=5", 'step-five');
+						$step5skip = wp_nonce_url("admin.php?page=" . $page. "&amp;step=5&amp;skip=yes", 'step-five');
+
+						_e('It looks like you have MarketPress enabled. Did you know that Membership has extra rules for use with MarketPress? ','membership');
+						_e('If you would like to enable the MarketPress then click on the <strong>Activate MarketPress Rules</strong> button. If you would rather do this yourself later then click on the <strong>Skip to next step</strong> button. ','membership');
+
+						?>
+						<br/>
+						<a href='<?php echo $step5; ?>' class='button-primary alignright'><?php _e('Activate MarketPress Rules &raquo;', 'membership'); ?></a>
+						<a href='<?php echo $step5skip; ?>' class='button alignright' style='margin-right: 10px;'><?php _e('Skip to next step &raquo;', 'membership'); ?></a>
+
+				</p>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		function activate_admin_shortcodes() {
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
+
+			if(!is_array($M_options['membershipadminshortcodes'])) {
+				$M_options['membershipadminshortcodes'] = array();
+			}
+
+			if(class_exists('RGForms')) {
+				// Gravity Forms exists
+				$M_options['membershipadminshortcodes'][] = 'gravityform';
+			}
+
+			if(defined('WPCF7_VERSION')) {
+				// Contact Form 7 exists
+				$M_options['membershipadminshortcodes'][] = 'contact-form';
+			}
+
+			if(defined('WPAUDIO_URL')) {
+				// WPAudio exists
+				$M_options['membershipadminshortcodes'][] = 'wpaudio';
+			}
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('update_blog_option')) {
+					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+				} else {
+					update_option('membership_options', $M_options);
+				}
+			} else {
+				update_option('membership_options', $M_options);
+			}
+
+		}
+
+		function page_five( $nextsteplink = false ) {
+
+			global $M_options;
+
+			ob_start();
+			?>
+				<h3><?php _e('Plugin shortcodes', 'membership'); ?></h3>
+				<p class="about-description">
+					<?php
+
+						$step6 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=6", 'step-six');
+						$step6skip = wp_nonce_url("admin.php?page=" . $page. "&amp;step=6&amp;skip=yes", 'step-six');
+
+						_e('Some plugins, such as GravityForms and WP Audio create shortcodes for their content in a way that Membership can not protect. ','membership');
+						_e('If you would like Membership to check for these plugins and set up special shortcodes for them then click on the <strong>Create Plugin Shortcodes</strong> button. If you would rather do this yourself later then you can use the <a href="admin.php?page=membershipoptions&tab=posts">Options area</a> settings and click on the <strong>Skip to next step</strong> button for now. ','membership');
+
+						?>
+						<br/>
+						<a href='<?php echo $step6; ?>' class='button-primary alignright'><?php _e('Create Plugin Shortcodes &raquo;', 'membership'); ?></a>
+						<a href='<?php echo $step6skip; ?>' class='button alignright' style='margin-right: 10px;'><?php _e('Skip to next step &raquo;', 'membership'); ?></a>
+
+				</p>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		function page_end( $nextsteplink = false ) {
+
+			global $M_options;
+
+			ob_start();
+			?>
+				<h3><?php _e('Thank you', 'membership'); ?></h3>
+				<p class="about-description">
+					<?php
+
+						$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
+
+						_e('Thank you, we have now set up some of the initial Membership options. ','membership');
+						_e('You can now carry on and set up your levels and subscriptions and get ready for your visitors. ','membership');
+
+						?>
+						<br/>
+						<a href='<?php echo $deactivateurl; ?>' class='button-primary alignright'><?php _e('Finish', 'membership'); ?></a>
 				</p>
 
 			<?php
