@@ -180,6 +180,64 @@ if(!class_exists('membershipadmin')) {
 
 			do_action('membership_register_shortcodes');
 
+			// Call the pointer tutorial setup function
+			$this->setup_pointer_tutorial();
+
+		}
+
+		function setup_pointer_tutorial() {
+
+			//create our tutorial, with default redirect prefs
+			$tutorial = new Pointer_Tutorial('membership', __('Membership', 'membership'), true, false);
+
+			//add our textdomain that matches the current plugin
+			$tutorial->set_textdomain = 'membership';
+
+			//add the capability a user must have to view the tutorial
+			$tutorial->set_capability = 'membershipadmin';
+
+			//optionally add some custom css. This example give our title a red background and loads up our modified pointer image sprite to the up arrow will be red too
+			$tutorial->add_style('.membership-pointer .wp-pointer-content h3 {	background-color: #b12c15; }
+														.membership-pointer .wp-pointer-arrow { background-image: url("'.plugins_url( 'includes/images/arrow-pointer-red.png' , __FILE__ ).'"); }');
+
+			//optional shortcut to add a custom icon, just pass a url
+			//$tutorial->add_icon( plugins_url( 'includes/images/my-logo-white.png' , __FILE__ ) );
+
+			//start registering steps. Note the 'content' argument is very important, and should be escaped with esc_js() as it will go in JSON
+			$tutorial->add_step(admin_url('index.php'), 'index.php', '#wpmudev_widget', __('Step Number One', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'bottom', 'align' => 'left' ),
+				));
+			$tutorial->add_step(admin_url('index.php'), 'index.php', '#toplevel_page_wpmudev', __('Step Number Two', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'top', 'align' => 'right' ),
+				));
+			$tutorial->add_step(admin_url('index.php'), 'index.php', '#wdv-release-install', __('Step Number Three', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'left', 'align' => 'top' ),
+				));
+
+			//second page steps
+			$tutorial->add_step(admin_url('admin.php?page=my-plugin'), 'toplevel_page_wpmudev', '.nav-tab-wrapper', __('Step Number Four', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'top', 'align' => 'center' ),
+				));
+			$tutorial->add_step(admin_url('admin.php?page=my-plugin'), 'toplevel_page_wpmudev', '.wdv-grid-wrap .themepost:not(.installed):first', __('Step Number Five', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'left', 'align' => 'center' ),
+				));
+			$tutorial->add_step(admin_url('admin.php?page=my-plugin'), 'toplevel_page_wpmudev', '.wdv-grid-wrap .themepost:not(.installed):first .themescreens .metainfo a', __('Step Number Six', 'mytextdomain'), array(
+					'content'  => '<p>' . esc_js( __('On each category page, plugins and themes are listed in an easy to read grid format.', 'mytextdomain') ) . '</p>',
+					'position' => array( 'edge' => 'top', 'align' => 'left' ),
+				));
+
+			//start the tutorial
+			$tutorial->initialize();
+
+			//You may want to later show a link to restart the tutorial, or start at a certain step. You can grab a link for that via start_link($step).
+			//$step = 0; //Note that steps start at 0, then 1,2,3 etc.
+			//$link = $tutorial->start_link($step);
+
 		}
 
 		function get_membership_active() {
