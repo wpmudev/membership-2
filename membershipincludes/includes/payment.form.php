@@ -12,10 +12,9 @@ if(!empty($user->ID) && is_numeric($user->ID) ) {
 if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );
 	?>
-		<div class='header' style='width: 750px'>
-		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
-		</div>
-		<div class='fullwidth'>
+		<h2><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h2>
+
+		<div class='paymentfullwidth'>
 			<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
 
 			<table class='purchasetable'>
@@ -80,10 +79,8 @@ if($member->on_sub( $subscription )) {
 	$sub =  new M_Subscription( $subscription );
 
 	?>
-		<div class='header' style='width: 750px'>
-		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
-		</div>
-		<div class='fullwidth'>
+		<h2><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h2>
+		<div class='paymentfullwidth'>
 			<p><?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?></p>
 
 			<table class='purchasetable'>

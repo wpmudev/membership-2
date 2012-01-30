@@ -1,6 +1,5 @@
 /* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.3.1 */
 
-
 #reg-form .formleft td label {
     display:inline;
   }
@@ -74,6 +73,67 @@
 	padding: 0px 0px 20px;
 	float: left;
 	width: 90%;
+}
+
+.paymentfullwidth {
+	margin: 0px 0px 2em;
+	float: left;
+	width: 95%;
+	background: transparent;
+	overflow: hidden;
+	padding: 10px;
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	float: left;
+	background: #ffffff;
+	width: 95%;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1);
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
+}
+
+.paymentfullwidth table.purchasetable {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+}
+
+.paymentfullwidth table.purchasetable td {
+	padding: 10px;
+	vertical-align: top;
+}
+
+.paymentfullwidth td.detailscolumn {
+	width: 375px;
+	border-right: 1px dashed #ddd;
+}
+
+.paymentfullwidth td.pricecolumn {
+	width: 150px;
+	text-align: right;
+	border-right: 1px dashed #ddd;
+	font-weight: bold;
+}
+
+.paymentfullwidth td.buynowcolumn {
+	text-align: right;
+}
+
+.paymentfullwidth table.purchasetable tbody tr td.buynowcolumn form input {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.paymentfullwidth p {
+	font-size: 14px;
+}
+
+.paymentfullwidth table.purchasetable tbody tr {
+	border-bottom: 1px dashed #ddd;
 }
 
 #reg-form {
