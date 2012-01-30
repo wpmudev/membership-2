@@ -7,6 +7,11 @@
 	<h2><?php _e( 'Create an Account', 'membership' ) ?></h2>
 
 	<?php do_action( 'template_notices' ) ?>
+	<?php
+		if(!empty($errormessages)) {
+			echo $errormessages;
+		}
+	?>
 
 	<p><?php _e( 'Registering for this site is easy, just fill in the fields below and we\'ll get a new account set up for you in no time.', 'membership' ) ?></p>
 

@@ -1047,7 +1047,7 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
-		function output_registeruser() {
+		function output_registeruser( $errormessages = false ) {
 
 			global $wp_query, $M_options, $bp;
 
@@ -1069,6 +1069,27 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
+		function output_paymentpage() {
+
+			global $wp_query, $M_options;
+
+			$subscription = (int) $_REQUEST['subscription'];
+			$content = apply_filters('membership_subscription_form_payment_before_content', $content, $error);
+			ob_start();
+			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
+				include_once( MEMBERSHIP_PAYMENT_FORM );
+			} elseif( file_exists( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) ) ) {
+				include_once( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_subscription_form_payment_after_content', $content, $error);
+
+			return $content;
+
+		}
+
 		function do_subscription_form() {
 
 			global $wp_query, $M_options, $bp;
@@ -1085,7 +1106,11 @@ if(!class_exists('membershippublic')) {
 				case 'subscriptionform':	$content = $this->output_subscriptionform();
 											break;
 
-				case 'registeruser':		$content = $this->output_registeruser();
+				case 'registeruser':		if(!is_user_logged_in()) {
+												$content = $this->output_registeruser();
+											} else {
+												$content = $this->output_paymentpage();
+											}
 											break;
 
 				case 'validatepage1':	// Page 1 of the form has been submitted - validate
@@ -1157,12 +1182,14 @@ if(!class_exists('membershippublic')) {
 										$content .= "<div class='error'>";
 										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
-										// Show the page again so that it can display the errors
 
-										//$content .= $this->show_subpage_one(true);
+										// Show the page again so that it can display the errors
+										$content = $this->output_registeruser( $content );
+
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// add do the payment and completion page
+										$content = $this->output_paymentpage();
 									}
 
 									break;
@@ -1272,11 +1299,11 @@ if(!class_exists('membershippublic')) {
 										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
 										// Show the page so that it can display the errors
-
-										//$content .= $this->show_subpage_one(true);
+										$content = $this->output_registeruser( $content, $_POST );
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// display the payment forms
+										$content = $this->output_paymentpage();
 									}
 
 									break;
