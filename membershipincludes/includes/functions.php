@@ -403,11 +403,11 @@ function M_add_admin_bar_enabled_item( $wp_admin_bar ) {
 	$active = M_get_membership_active();
 
 	if($active == 'yes') {
-		$title = __('Membership', 'membership') . " : <span style='color:green;'>" . __('Enabled', 'membership') . "</span>";
+		$title = __('Membership', 'membership') . " : <span style='color:green; text-shadow: 1px 1px 0 #000;'>" . __('Enabled', 'membership') . "</span>";
 		$metatitle = __('Click to Disable the Membership protection', 'membership');
 		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=deactivate"), 'toggle-plugin');
 	} else {
-		$title = __('Membership', 'membership') . " : <span style='color:red;'>" . __('Disabled', 'membership') . "</span>";
+		$title = __('Membership', 'membership') . " : <span style='color:red; text-shadow: 1px 1px 0 #000;'>" . __('Disabled', 'membership') . "</span>";
 		$metatitle = __('Click to Enable the Membership protection', 'membership');
 		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=activate"), 'toggle-plugin');
 	}
@@ -422,6 +422,30 @@ function M_add_admin_bar_enabled_item( $wp_admin_bar ) {
 			'title'     => $metatitle,
 		),
 	) );
+
+	if($active == 'yes') {
+		// If enabled
+		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=deactivate"), 'toggle-plugin');
+		$wp_admin_bar->add_menu( array(
+			'parent'    => 'membership',
+			'id'        => 'membershipdisable',
+			'title'     => __('Disable Membership', 'membership'),
+			'href'      => $linkurl,
+		) );
+
+	} else {
+		// If disabled
+		$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=activate"), 'toggle-plugin');
+		$wp_admin_bar->add_menu( array(
+			'parent'    => 'membership',
+			'id'        => 'membershipenable',
+			'title'     => __('Enable Membership', 'membership'),
+			'href'      => $linkurl,
+		) );
+
+	}
+
+
 }
 
 function M_add_admin_bar_items() {

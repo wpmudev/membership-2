@@ -1561,29 +1561,28 @@ if(!class_exists('membershippublic')) {
 							return $posts;
 						} else {
 							// registration page found - add in the styles
-							wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-							wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+							if(!current_theme_supports('membership_subscription_form')) {
+								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
 
-							if($M_options['formtype'] == 'new') {
-								// pop up registration form
-								wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-								wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+								if($M_options['formtype'] == 'new') {
+									// pop up registration form
+									wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+									wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 
-								wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
-								wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+									wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
+									wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
 
-								wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-								 														'registernonce'	=>	wp_create_nonce('membership_register'),
-																						'loginnonce'	=>	wp_create_nonce('membership_login'),
-																						'regproblem'	=>	__('Problem with registration.', 'membership'),
-																						'logpropblem'	=>	__('Problem with Login.', 'membership'),
-																						'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
-																						'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
-																						'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
-																					));
-							} else {
-								// original registration form
-
+									wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+									 														'registernonce'	=>	wp_create_nonce('membership_register'),
+																							'loginnonce'	=>	wp_create_nonce('membership_login'),
+																							'regproblem'	=>	__('Problem with registration.', 'membership'),
+																							'logpropblem'	=>	__('Problem with Login.', 'membership'),
+																							'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
+																							'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
+																							'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
+																						));
+								}
 							}
 
 							do_action('membership_subscriptionbutton_onpage');
@@ -1599,12 +1598,14 @@ if(!class_exists('membershippublic')) {
 							return $posts;
 						} else {
 							// account page found - add in the styles
-							wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-							wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
-							wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
-							wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
-							wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
-							wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+							if(!current_theme_supports('membership_account_form')) {
+								wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+								wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+								wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+								wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
+								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
+								wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
 							$post->post_content = $this->do_account_form();
@@ -1625,23 +1626,30 @@ if(!class_exists('membershippublic')) {
 			foreach($posts as $key => $post) {
 				if(strstr($post->post_content, '[subscriptionform]') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+					if(!current_theme_supports('membership_subscription_form')) {
+						wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+					}
 				}
 				if(strstr($post->post_content, '[accountform]') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-					wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+					if(!current_theme_supports('membership_account_form')) {
+						wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+						wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+					}
 				}
 				if(strstr($post->post_content, '[upgradeform]') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+					if(!current_theme_supports('membership_account_form')) {
+						wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+					}
 				}
 				if(strstr($post->post_content, '[renewform]') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
-					wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
-					wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
-
+					if(!current_theme_supports('membership_account_form')) {
+						wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
+						wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
+						wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+					}
 				}
 
 				// New subscription styles
@@ -1655,24 +1663,25 @@ if(!class_exists('membershippublic')) {
 
 				if(strstr($post->post_content, '[subscriptionbutton') !== false) {
 					// The shortcode is in a post on this page, add the header
-					wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+					if(!current_theme_supports('membership_subscription_form')) {
+						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
 
-					wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-					wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+						wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+						wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 
-					wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
-					wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+						wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
+						wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
 
-					wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-					 														'registernonce'	=>	wp_create_nonce('membership_register'),
-																			'loginnonce'	=>	wp_create_nonce('membership_login'),
-																			'regproblem'	=>	__('Problem with registration.', 'membership'),
-																			'logpropblem'	=>	__('Problem with Login.', 'membership'),
-																			'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
-																			'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
-																			'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
-																		));
-
+						wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+						 														'registernonce'	=>	wp_create_nonce('membership_register'),
+																				'loginnonce'	=>	wp_create_nonce('membership_login'),
+																				'regproblem'	=>	__('Problem with registration.', 'membership'),
+																				'logpropblem'	=>	__('Problem with Login.', 'membership'),
+																				'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
+																				'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
+																				'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
+																			));
+}
 					do_action('membership_subscriptionbutton_onpage');
 
 					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));

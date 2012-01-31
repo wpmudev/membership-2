@@ -46,7 +46,7 @@ if(!class_exists('membershipadmin')) {
 
 			// Header actions
 			add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
-			add_action('load-membership_page_members', array(&$this, 'add_admin_header_members'));
+			add_action('load-membership_page_membershipmembers', array(&$this, 'add_admin_header_members'));
 			add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
@@ -300,7 +300,7 @@ if(!class_exists('membershipadmin')) {
 
 				do_action('membership_add_menu_items_top');
 				// Add the sub menu
-				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadmin', "members", array(&$this,'handle_members_panel'));
+				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadmin', "membershipmembers", array(&$this,'handle_members_panel'));
 
 				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
 				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
