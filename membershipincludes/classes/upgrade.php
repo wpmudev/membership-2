@@ -216,27 +216,31 @@ function M_CreatePages() {
 		$M_options = get_option('membership_options', array());
 	}
 
-	$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
-	$id = wp_insert_post( $pagedetails );
-	$M_options['registration_page'] = $id;
+	if(empty($M_options['registration_page'])) {
 
-	$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
-	$id = wp_insert_post( $pagedetails );
-	$M_options['account_page'] = $id;
+		$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+		$id = wp_insert_post( $pagedetails );
+		$M_options['registration_page'] = $id;
 
-	$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
-	$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
-	$id = wp_insert_post( $pagedetails );
-	$M_options['nocontent_page'] = $id;
+		$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+		$id = wp_insert_post( $pagedetails );
+		$M_options['account_page'] = $id;
 
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('update_blog_option')) {
-			update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+		$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
+		$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$M_options['nocontent_page'] = $id;
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('update_blog_option')) {
+				update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+			} else {
+				update_option('membership_options', $M_options);
+			}
 		} else {
 			update_option('membership_options', $M_options);
 		}
-	} else {
-		update_option('membership_options', $M_options);
+
 	}
 
 }
