@@ -2945,6 +2945,64 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
+		function show_users_options() {
+			global $action, $page, $M_options;
+
+			$messages = array();
+			$messages[1] = __('Membership admins have been updated.','membership');
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Membership Admin Users','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+				<div id="poststuff" class="metabox-holder m-settings">
+				<form action='' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+					?>
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Membership Admin Users','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('You can add or remove the ability for specific admin user accounts to manage the Membership plugin by checking or unchecking the boxes next to the relevant username.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Membership Admins','membership'); ?></th>
+									<td>
+										<?php
+
+										?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<?php
+						do_action( 'membership_extrasoptions_page' );
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+				</div>
+			<?php
+		}
+
 		function handle_options_panel() {
 
 			global $action, $page, $M_options;
@@ -2978,6 +3036,7 @@ if(!class_exists('membershipadmin')) {
 					$menus['pages'] = __('Membership Pages', 'membership');
 					$menus['posts'] = __('Content Protection', 'membership');
 					$menus['downloads'] = __('Downloads / Media', 'membership');
+					$menus['users'] = __('Admin Users','membership');
 					$menus['extras'] = __('Extras', 'membership');
 
 					$menus = apply_filters('membership_options_menus', $menus);
@@ -3011,6 +3070,9 @@ if(!class_exists('membershipadmin')) {
 											break;
 
 					case 'extras':			$this->show_extras_options();
+											break;
+
+					case 'users':			$this->show_users_options();
 											break;
 
 					default:				do_action('membership_option_menu_' . $tab);
