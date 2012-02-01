@@ -844,13 +844,6 @@ if(!class_exists('membershipadmin')) {
 				<div id="dashboard-widgets-wrap">
 
 				<div class="metabox-holder" id="dashboard-widgets">
-
-					<?php
-
-						$wizard = new M_Wizard();
-						$wizard->conditional_show();
-
-					?>
 					<div style="width: 49%;" class="postbox-container">
 						<div class="meta-box-sortables ui-sortable" id="normal-sortables">
 
