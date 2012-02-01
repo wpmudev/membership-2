@@ -907,6 +907,11 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
+
 				case 'toggle':	if(isset($_GET['member_id'])) {
 									$user_id = (int) $_GET['member_id'];
 
@@ -1740,6 +1745,20 @@ if(!class_exists('membershipadmin')) {
 				if ( isset($_GET['msg']) ) {
 					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('msg'), $_SERVER['REQUEST_URI']);
+				}
+
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.members.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
 				}
 				?>
 
@@ -3273,6 +3292,11 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
+
 				case 'added':	$id = (int) $_POST['level_id'];
 								check_admin_referer('add-' . $id);
 								if($id) {
@@ -3432,6 +3456,21 @@ if(!class_exists('membershipadmin')) {
 					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
+
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.levels.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
+
 				?>
 
 				<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
@@ -3820,6 +3859,11 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
+
 				case 'added':	$id = (int) $_POST['sub_id'];
 								check_admin_referer('add-' . $id);
 
@@ -4002,6 +4046,21 @@ if(!class_exists('membershipadmin')) {
 					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
+
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.subscriptions.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
+
 				?>
 
 				<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
@@ -4437,8 +4496,8 @@ if(!class_exists('membershipadmin')) {
 				$comms = apply_filters('M_communications_list', $comms);
 
 
-				$showcommsheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showcommsheader == 'yes') {
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -4666,6 +4725,11 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
+
 				case 'added':	check_admin_referer('add-group');
 
 								$group =& new M_Urlgroup( 0 );
@@ -4846,8 +4910,21 @@ if(!class_exists('membershipadmin')) {
 				}
 
 				$groups = $this->get_urlgroups();
-
 				$groups = apply_filters('M_urlgroups_list', $groups);
+
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.urlgroups.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
 
 				?>
 
@@ -4977,6 +5054,11 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			switch(addslashes($action)) {
+
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
 
 				case 'added':	check_admin_referer('add-ping');
 
@@ -5303,8 +5385,21 @@ if(!class_exists('membershipadmin')) {
 				}
 
 				$pings = $this->get_pings();
-
 				$pings = apply_filters('M_pings_list', $pings);
+
+				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.pings.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
 
 				?>
 
