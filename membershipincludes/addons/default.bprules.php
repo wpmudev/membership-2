@@ -369,7 +369,7 @@ class M_BPPages extends M_Rule {
 	}
 
 }
-M_register_rule('bppages', 'M_BPPages', 'bp');
+
 
 class M_BPGroups extends M_Rule {
 
@@ -785,7 +785,6 @@ class M_BPGroups extends M_Rule {
 	}
 
 }
-M_register_rule('bpgroups', 'M_BPGroups', 'bp');
 
 class M_BPGroupcreation extends M_Rule {
 
@@ -874,7 +873,6 @@ class M_BPGroupcreation extends M_Rule {
 
 
 }
-M_register_rule('bpgroupcreation', 'M_BPGroupcreation', 'bp');
 
 class M_BPBlogs extends M_Rule {
 
@@ -1125,7 +1123,6 @@ class M_BPBlogs extends M_Rule {
 	}
 
 }
-M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
 
 class M_BPPrivatemessage extends M_Rule {
 
@@ -1186,8 +1183,6 @@ class M_BPPrivatemessage extends M_Rule {
 
 
 }
-M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
-
 
 // Pass thru function
 function MBP_can_access_page( $page ) {
@@ -1200,14 +1195,11 @@ function MBP_can_access_page( $page ) {
 
 }
 
-
 function M_AddBuddyPressSection($sections) {
 	$sections['bp'] = array(	"title" => __('BuddyPress','membership') );
 
 	return $sections;
 }
-
-add_filter('membership_level_sections', 'M_AddBuddyPressSection');
 
 // BuddyPress options
 function M_AddBuddyPressOptions() {
@@ -1234,7 +1226,6 @@ function M_AddBuddyPressOptions() {
 	</table>
 	<?php
 }
-add_action( 'membership_options_page', 'M_AddBuddyPressOptions' );
 
 function M_AddBuddyPressOptionsProcess() {
 
@@ -1245,8 +1236,6 @@ function M_AddBuddyPressOptionsProcess() {
 	update_option('membership_bp_options', $MBP_options);
 
 }
-add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
-
 
 function M_HideBuddyPressPages( $pages ) {
 
@@ -1263,7 +1252,6 @@ function M_HideBuddyPressPages( $pages ) {
 	return $pages;
 
 }
-add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
 
 function M_KeepBuddyPressPages( $pages ) {
 
@@ -1277,6 +1265,22 @@ function M_KeepBuddyPressPages( $pages ) {
 
 }
 
-add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
+function M_setup_BP_addons() {
+	if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
+		M_register_rule('bppages', 'M_BPPages', 'bp');
+		M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
+		M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
+		M_register_rule('bpgroupcreation', 'M_BPGroupcreation', 'bp');
+		M_register_rule('bpgroups', 'M_BPGroups', 'bp');
+
+		add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+		add_action( 'membership_options_page', 'M_AddBuddyPressOptions' );
+		add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
+		add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
+		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
+	}
+
+}
+add_action('plugins_loaded', 'M_setup_BP_addons', 99);
 
 ?>

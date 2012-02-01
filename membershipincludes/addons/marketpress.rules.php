@@ -146,9 +146,15 @@ class M_Marketpress extends M_Rule {
 			return $pages;
 
 	}
-
 }
 
-M_register_rule('marketpress', 'M_Marketpress', 'content');
+
+function M_setup_MP_addons() {
+	if(class_exists('MarketPress')) {
+		M_register_rule('marketpress', 'M_Marketpress', 'content');
+	}
+
+}
+add_action('plugins_loaded', 'M_setup_MP_addons', 99);
 
 ?>
