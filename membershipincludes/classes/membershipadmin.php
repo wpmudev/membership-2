@@ -3130,7 +3130,7 @@ if(!class_exists('membershipadmin')) {
 					$menus['pages'] = __('Membership Pages', 'membership');
 					$menus['posts'] = __('Content Protection', 'membership');
 					$menus['downloads'] = __('Downloads / Media', 'membership');
-					$menus['users'] = __('Admin Users','membership');
+					$menus['users'] = __('Membership Admins','membership');
 					$menus['extras'] = __('Extras', 'membership');
 
 					$menus = apply_filters('membership_options_menus', $menus);
