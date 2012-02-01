@@ -4209,6 +4209,11 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
+				case 'removeheader':
+										update_option('membership_show_help_header_' . $page, 'no');
+										wp_safe_redirect( remove_query_arg( 'action' ) );
+										break;
+
 				case 'added':	check_admin_referer('add-comm');
 
 								$comm = new M_Communication( false );
@@ -4429,8 +4434,23 @@ if(!class_exists('membershipadmin')) {
 				}
 
 				$comms = $this->get_communications( $_GET['comm_id'] );
-
 				$comms = apply_filters('M_communications_list', $comms);
+
+
+				$showcommsheader = get_option('membership_show_help_header_' . $page, 'yes');
+				if($showcommsheader == 'yes') {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.communications.php'));
+						$help = ob_get_clean();
+						echo __($help, 'membership');
+						?>
+					</div>
+					<?php
+				}
 
 				?>
 

@@ -15,3 +15,32 @@
 	padding: 0;
 }
 
+div.screenhelpheader {
+	position: relative;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 5px solid #dfdfdf;
+	color: #464646;
+}
+
+div.screenhelpheader .welcome-panel-close:before {
+    background: transparent url("../images/xit.gif") no-repeat scroll 0 14%;
+    content: " ";
+    height: 100%;
+    left: -12px;
+    position: absolute;
+    width: 10px;
+}
+
+div.screenhelpheader .welcome-panel-close {
+    font-size: 13px;
+    position: absolute;
+    right: 10px;
+    text-decoration: none;
+    top: 0;
+	padding: 8px 3px;
+}
+
+
+
