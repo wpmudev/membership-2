@@ -907,8 +907,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -1747,8 +1746,7 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('msg'), $_SERVER['REQUEST_URI']);
 				}
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -3292,8 +3290,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -3457,8 +3454,7 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -3859,8 +3855,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -4047,8 +4042,7 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -4268,8 +4262,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -4496,8 +4489,7 @@ if(!class_exists('membershipadmin')) {
 				$comms = apply_filters('M_communications_list', $comms);
 
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -4725,8 +4717,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -4912,8 +4903,7 @@ if(!class_exists('membershipadmin')) {
 				$groups = $this->get_urlgroups();
 				$groups = apply_filters('M_urlgroups_list', $groups);
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -5055,8 +5045,7 @@ if(!class_exists('membershipadmin')) {
 
 			switch(addslashes($action)) {
 
-				case 'removeheader':
-										update_option('membership_show_help_header_' . $page, 'no');
+				case 'removeheader':	$this->dismiss_user_help( $page );
 										wp_safe_redirect( remove_query_arg( 'action' ) );
 										break;
 
@@ -5387,8 +5376,7 @@ if(!class_exists('membershipadmin')) {
 				$pings = $this->get_pings();
 				$pings = apply_filters('M_pings_list', $pings);
 
-				$showheader = get_option('membership_show_help_header_' . $page, 'yes');
-				if($showheader == 'yes') {
+				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
 						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
@@ -6601,6 +6589,41 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			exit;
+		}
+
+		// Functions to determine whether to show user help on this screen and to disable it if not
+		function show_user_help( $page ) {
+
+			$user_id = get_current_user_id();
+
+			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
+
+			if(!is_array($helpscreens)) {
+				$helpscreens = array();
+			}
+
+			if(!isset($helpscreens[$page])) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+
+		function dismiss_user_help( $page ) {
+			$user_id = get_current_user_id();
+
+			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
+
+			if(!is_array($helpscreens)) {
+				$helpscreens = array();
+			}
+
+			if(!isset($helpscreens[$page])) {
+				$helpscreens[$page] = 'no';
+			}
+
+			update_user_meta( $user_id, 'membership_show_help_headers', $helpscreens );
 		}
 
 	}
