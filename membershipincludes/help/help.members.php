@@ -1,1 +1,1 @@
-<p>Members</p>
+<p>Members<p><?php _e('Some help content', 'membership'); ?></p></p>
