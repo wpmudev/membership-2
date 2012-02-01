@@ -4648,7 +4648,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.communications.php'));
@@ -5062,7 +5062,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.urlgroups.php'));
@@ -5535,7 +5535,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.pings.php'));
@@ -6750,6 +6750,10 @@ if(!class_exists('membershipadmin')) {
 		// Functions to determine whether to show user help on this screen and to disable it if not
 		function show_user_help( $page ) {
 
+			if(in_array($page, array('membershipmembers', 'membershiplevels', 'membershipsubs' ))) {
+				return false;
+			}
+
 			$user_id = get_current_user_id();
 
 			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
@@ -6767,6 +6771,7 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function dismiss_user_help( $page ) {
+
 			$user_id = get_current_user_id();
 
 			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
