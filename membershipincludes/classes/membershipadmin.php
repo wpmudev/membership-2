@@ -6170,7 +6170,7 @@ if(!class_exists('membershipadmin')) {
 								<tr valign="middle" class="alternate" id="gateway-<?php echo $gateway_data['gateway_id']; ?>">
 									<th class="check-column" scope="row"><input type="checkbox" value="<?php echo esc_attr($gateway_data['gateway_id']); ?>" name="gatewaycheck[]"></th>
 									<td class="column-name">
-										<strong><?php echo esc_html($gateway_data['Name']) . "</strong>" . __(' by ', 'membership') . "<a href='" . esc_attr($gateway_data['AuthorURI']) . "'>" . esc_html($gateway_data['Author']) . "</a>"; ?>
+										<strong><?php echo esc_html($gateway_data['Name']) ?></strong>
 										<?php if(!empty($gateway_data['Description'])) {
 											?><br/><?php echo esc_html($gateway_data['Description']);
 											}
