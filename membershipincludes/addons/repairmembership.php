@@ -13,7 +13,17 @@ class M_Membershiprepair {
 	}
 
 	function __construct() {
-		add_action('membership_add_menu_items_bottom', array(&$this, 'add_menu'));
+		// Add advanced tab
+		add_filter('membership_options_menus', array(&$this, 'add_advanced_option'));
+		// Add advanced content
+		add_action('membership_option_menu_advanced', array(&$this, 'handle_repair_panel'));
+	}
+
+	function add_advanced_option( $menus ) {
+
+		$menus['advanced'] = __('Advanced', 'membership');
+
+		return $menus;
 	}
 
 	function add_menu() {
@@ -40,8 +50,8 @@ class M_Membershiprepair {
 
 			<p><?php _e('If you are having problems with your membership site, or have recently upgraded and are seeing strange behaviour then try the membership check below to see if there are any issues with your table structure. Click on the repair button if you want to repair any issues found (back up your database first).','membership'); ?></p>
 			<p>
-			<?php echo "<a href='" . wp_nonce_url("?page=" . $page. "&amp;verify=yes", 'verify-membership') . "' class='button'>" . __('Verify Membership Tables','membership') . "</a>&nbsp;&nbsp;"; ?>
-			<?php echo "<a href='" . wp_nonce_url("?page=" . $page. "&amp;repair=yes", 'repair-membership') . "' class='button'>" . __('Repair Membership Tables','membership') . "</a>"; ?>
+			<?php echo "<a href='" . wp_nonce_url("?page=" . $page. "&amp;tab=advanced&amp;verify=yes", 'verify-membership') . "' class='button'>" . __('Verify Membership Tables','membership') . "</a>&nbsp;&nbsp;"; ?>
+			<?php echo "<a href='" . wp_nonce_url("?page=" . $page. "&amp;tab=advanced&amp;repair=yes", 'repair-membership') . "' class='button'>" . __('Repair Membership Tables','membership') . "</a>"; ?>
 			</p>
 
 			<?php
