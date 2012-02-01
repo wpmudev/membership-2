@@ -43,5 +43,12 @@ div.screenhelpheader .welcome-panel-close {
 	padding: 8px 3px;
 }
 
+.membershipactivestatus {
+	color: green;
+}
+
+.membershipinactivestatus {
+	color: red;
+}
 
 

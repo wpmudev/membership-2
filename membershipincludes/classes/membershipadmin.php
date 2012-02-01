@@ -1948,9 +1948,9 @@ if(!class_exists('membershipadmin')) {
 								<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf( __('e-mail: %s','membership' ), $user_object->user_email ); ?>'><?php echo $user_object->user_email; ?></a></td>
 								<td <?php echo $style; ?>>
 									<?php if($user_object->active_member()) {
-										echo "<strong>" . __('Active', 'membership') . "</strong>";
+										echo "<span class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
 									} else {
-										echo __('Inactive', 'membership');
+										echo "<span class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
 									}
 									?>
 								</td>
@@ -2583,19 +2583,6 @@ if(!class_exists('membershipadmin')) {
 
 							<table class="form-table">
 							<tbody>
-								<tr valign="top">
-									<th scope="row"><?php _e('Actual download URL','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("This is a system generated URL, you shouldn't need to change this.",'membership'); ?>
-										</em>
-									</th>
-									<td>
-										<?php
-										 	$membershipurl = $M_options['original_url'];
-											if(empty($membershipurl)) $membershipurl = membership_upload_path();
-										?>
-										<input type='text' name='original_url' id='original_url' value='<?php esc_attr_e($membershipurl);  ?>' class='wide' />
-									</td>
-								</tr>
 								<tr valign="top">
 									<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
 										<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
@@ -3743,9 +3730,9 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-active">
 										<?php
 											switch($level->level_active) {
-												case 0:	echo __('Inactive', 'membership');
+												case 0:	echo "<span  class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
 														break;
-												case 1:	echo "<strong>" . __('Active', 'membership') . "</strong>";
+												case 1:	echo "<span  class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
 														break;
 											}
 										?>
@@ -4337,9 +4324,9 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-active">
 										<?php
 											switch($sub->sub_active) {
-												case 0:	echo __('Inactive', 'membership');
+												case 0:	echo "<span  class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
 														break;
-												case 1:	echo "<strong>" . __('Active', 'membership') . "</strong>";
+												case 1:	echo "<span  class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
 														break;
 											}
 										?>
@@ -4760,9 +4747,9 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-active">
 										<?php
 											if($comm->active == 1) {
-												echo "<strong>" . __('Active', 'membership') . "</strong>";
+												echo "<span  class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
 											} else {
-												echo __('Inactive', 'membership');
+												echo "<span  class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
 											}
 										?>
 									</td>
@@ -6446,9 +6433,9 @@ if(!class_exists('membershipadmin')) {
 									<td class="column-active">
 										<?php
 											if(in_array($gateway_data['gateway_id'], $active)) {
-												echo "<strong>" . __('Active', 'membership') . "</strong>";
+												echo "<span  class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
 											} else {
-												echo __('Inactive', 'membership');
+												echo "<span  class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
 											}
 										?>
 									</td>
@@ -6758,10 +6745,6 @@ if(!class_exists('membershipadmin')) {
 
 		// Functions to determine whether to show user help on this screen and to disable it if not
 		function show_user_help( $page ) {
-
-			if(in_array($page, array('membershipmembers', 'membershipsubs' ))) {
-				return false;
-			}
 
 			$user_id = get_current_user_id();
 

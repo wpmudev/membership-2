@@ -411,7 +411,9 @@ if(!class_exists('membershippublic')) {
 
 			$file = trailingslashit(ABSPATH . $uploadpath) . $pathtofile;
 
-			$trueurl = trailingslashit($M_options['original_url']) . $pathtofile;
+			$origpath = membership_upload_path();
+
+			$trueurl = trailingslashit($origpath) . $pathtofile;
 
 			if ( !is_file( $file ) ) {
 				status_header( 404 );
@@ -814,7 +816,9 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
-			$the_content = str_replace($M_options['original_url'], trailingslashit(get_option('home')) . $M_options['masked_url'], $the_content);
+			$origpath = membership_upload_path();
+
+			$the_content = str_replace( $origpath, trailingslashit(get_option('home')) . $M_options['masked_url'], $the_content);
 
 			return $the_content;
 
