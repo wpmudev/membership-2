@@ -37,6 +37,7 @@ function M_Upgrade($from = false) {
 
 		default:	M_Createtables();
 					M_CreatePages();
+					M_activate_admin_shortcodes();
 					break;
 	}
 
@@ -241,6 +242,53 @@ function M_CreatePages() {
 			update_option('membership_options', $M_options);
 		}
 
+	}
+
+}
+
+function M_activate_admin_shortcodes() {
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+
+			$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+		} else {
+			$M_options = get_option('membership_options', array());
+		}
+	} else {
+		$M_options = get_option('membership_options', array());
+	}
+
+	if(!is_array($M_options['membershipadminshortcodes'])) {
+		$M_options['membershipadminshortcodes'] = array();
+	}
+
+	if(class_exists('RGForms')) {
+		// Gravity Forms exists
+		$M_options['membershipadminshortcodes'][] = 'gravityform';
+	}
+
+	if(defined('WPCF7_VERSION')) {
+		// Contact Form 7 exists
+		$M_options['membershipadminshortcodes'][] = 'contact-form';
+	}
+
+	if(defined('WPAUDIO_URL')) {
+		// WPAudio exists
+		$M_options['membershipadminshortcodes'][] = 'wpaudio';
+	}
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('update_blog_option')) {
+			update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+		} else {
+			update_option('membership_options', $M_options);
+		}
+	} else {
+		update_option('membership_options', $M_options);
 	}
 
 }
