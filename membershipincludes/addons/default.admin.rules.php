@@ -119,8 +119,6 @@ class M_Mainmenus extends M_Rule {
 
 }
 
-M_register_rule('mainmenus', 'M_Mainmenus', 'admin');
-
 class M_Submenus extends M_Rule {
 
 	var $name = 'submenus';
@@ -258,8 +256,6 @@ class M_Submenus extends M_Rule {
 	}
 
 }
-
-M_register_rule('submenus', 'M_Submenus', 'admin');
 
 class M_Dashboardwidgets extends M_Rule {
 
@@ -405,8 +401,6 @@ class M_Dashboardwidgets extends M_Rule {
 
 }
 
-M_register_rule('dashboard', 'M_Dashboardwidgets', 'admin');
-
 class M_Plugins extends M_Rule {
 
 	var $name = 'plugins';
@@ -516,8 +510,6 @@ class M_Plugins extends M_Rule {
 
 }
 
-M_register_rule('plugins', 'M_Plugins', 'admin');
-
 function M_cache_favourite_actions( $actions = false ) {
 
 	static $M_actions;
@@ -531,8 +523,6 @@ function M_cache_favourite_actions( $actions = false ) {
 	return $actions;
 
 }
-add_filter('favorite_actions', 'M_cache_favourite_actions', 999 );
-
 
 function M_AddAdminSection($sections) {
 	$sections['admin'] = array(	"title" => __('Administration','membership') );
@@ -540,6 +530,17 @@ function M_AddAdminSection($sections) {
 	return $sections;
 }
 
-add_filter('membership_level_sections', 'M_AddAdminSection', 99);
+function M_setup_Admin_addons() {
+
+	M_register_rule('mainmenus', 'M_Mainmenus', 'admin');
+	M_register_rule('submenus', 'M_Submenus', 'admin');
+	M_register_rule('dashboard', 'M_Dashboardwidgets', 'admin');
+	M_register_rule('plugins', 'M_Plugins', 'admin');
+
+	add_filter('favorite_actions', 'M_cache_favourite_actions', 999 );
+	add_filter('membership_level_sections', 'M_AddAdminSection', 99);
+
+}
+add_action('plugins_loaded', 'M_setup_Admin_addons', 99);
 
 ?>

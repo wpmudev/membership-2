@@ -314,7 +314,6 @@ class M_Posts extends M_Rule {
 	}
 
 }
-M_register_rule('posts', 'M_Posts', 'main');
 
 class M_Pages extends M_Rule {
 
@@ -647,7 +646,6 @@ class M_Pages extends M_Rule {
 
 
 }
-M_register_rule('pages', 'M_Pages', 'main');
 
 class M_Categories extends M_Rule {
 
@@ -867,7 +865,6 @@ class M_Categories extends M_Rule {
 	}
 
 }
-M_register_rule('categories', 'M_Categories', 'main');
 
 class M_More extends M_Rule {
 
@@ -973,7 +970,6 @@ class M_More extends M_Rule {
 	}
 
 }
-M_register_rule('more', 'M_More', 'main');
 
 class M_Comments extends M_Rule {
 
@@ -1038,7 +1034,7 @@ class M_Comments extends M_Rule {
 	}
 
 }
-M_register_rule('comments', 'M_Comments', 'main');
+
 
 class M_Downloads extends M_Rule {
 
@@ -1143,8 +1139,6 @@ class M_Downloads extends M_Rule {
 	}
 
 }
-
-M_register_rule('downloads', 'M_Downloads', 'content');
 
 //shortcode_tags
 class M_Shortcodes extends M_Rule {
@@ -1275,7 +1269,6 @@ class M_Shortcodes extends M_Rule {
 	}
 
 }
-M_register_rule('shortcodes', 'M_Shortcodes', 'content');
 
 class M_Menu extends M_Rule {
 
@@ -1397,7 +1390,6 @@ class M_Menu extends M_Rule {
 	}
 
 }
-M_register_rule('menu', 'M_Menu', 'main');
 
 class M_Blogcreation extends M_Rule {
 
@@ -1521,7 +1513,6 @@ class M_Blogcreation extends M_Rule {
 	}
 
 }
-M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
 
 class M_URLGroups extends M_Rule {
 
@@ -1731,6 +1722,24 @@ class M_URLGroups extends M_Rule {
 	}
 
 }
-M_register_rule('urlgroups', 'M_URLGroups', 'main');
+
+function M_setup_default_rules() {
+
+	M_register_rule('downloads', 'M_Downloads', 'content');
+	M_register_rule('comments', 'M_Comments', 'main');
+	M_register_rule('more', 'M_More', 'main');
+	M_register_rule('categories', 'M_Categories', 'main');
+	M_register_rule('pages', 'M_Pages', 'main');
+	M_register_rule('posts', 'M_Posts', 'main');
+	M_register_rule('shortcodes', 'M_Shortcodes', 'content');
+	M_register_rule('menu', 'M_Menu', 'main');
+	M_register_rule('urlgroups', 'M_URLGroups', 'main');
+
+	if(is_multisite()) {
+		M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
+	}
+
+}
+add_action('plugins_loaded', 'M_setup_default_rules', 99);
 
 ?>
