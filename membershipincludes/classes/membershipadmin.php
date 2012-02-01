@@ -131,6 +131,8 @@ if(!class_exists('membershipadmin')) {
 				if(!$user->has_cap('membershipadmin') && defined('MEMBERSHIP_SETACTIVATORAS_ADMIN') && MEMBERSHIP_SETACTIVATORAS_ADMIN == 'yes') {
 					$user->add_cap('membershipadmin');
 				}
+
+				$this->create_defaults();
 			}
 
 			// Add in our new capability
@@ -6741,6 +6743,90 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			exit;
+		}
+
+		function create_defaults() {
+
+			// Function to create some defaults if they are not set
+
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('get_blog_option')) {
+					if(function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
+
+			// Make registration and associated pages
+			if(empty($M_options['registration_page'])) {
+
+				$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+				$id = wp_insert_post( $pagedetails );
+				$M_options['registration_page'] = $id;
+
+				$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+				$id = wp_insert_post( $pagedetails );
+				$M_options['account_page'] = $id;
+
+				$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
+				$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+				$id = wp_insert_post( $pagedetails );
+				$M_options['nocontent_page'] = $id;
+
+			}
+
+			// Create relevant admin side shortcodes
+			if(empty($M_options['membershipadminshortcodes'])) {
+				if(!is_array($M_options['membershipadminshortcodes'])) {
+					$M_options['membershipadminshortcodes'] = array();
+				}
+
+				if(class_exists('RGForms')) {
+					// Gravity Forms exists
+					$M_options['membershipadminshortcodes'][] = 'gravityform';
+				}
+
+				if(defined('WPCF7_VERSION')) {
+					// Contact Form 7 exists
+					$M_options['membershipadminshortcodes'][] = 'contact-form';
+				}
+
+				if(defined('WPAUDIO_URL')) {
+					// WPAudio exists
+					$M_options['membershipadminshortcodes'][] = 'wpaudio';
+				}
+			}
+
+			// Create a default download group
+			if(empty($M_options['membershipdownloadgroups'])) {
+				if(!is_array($M_options['membershipdownloadgroups'])) {
+					$M_options['membershipdownloadgroups'] = array();
+				}
+				$M_options['membershipdownloadgroups'][] = __('default', 'membership');
+			}
+
+			// Create a hashed downloads url
+			if(empty($M_options['masked_url'])) {
+				$M_options['masked_url'] = __('downloads', 'membership');
+			}
+
+			// Update the options
+			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if(function_exists('update_blog_option')) {
+					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+				} else {
+					update_option('membership_options', $M_options);
+				}
+			} else {
+				update_option('membership_options', $M_options);
+			}
+
 		}
 
 		// Functions to determine whether to show user help on this screen and to disable it if not
