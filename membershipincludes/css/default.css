@@ -19,9 +19,9 @@ div.screenhelpheader {
 	position: relative;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	border: 5px solid #dfdfdf;
+	border: none;
 	color: #464646;
-	padding: 0 10px;
+	padding: 0px;
 }
 
 div.screenhelpheader .welcome-panel-close:before {
@@ -34,6 +34,7 @@ div.screenhelpheader .welcome-panel-close:before {
 }
 
 div.screenhelpheader .welcome-panel-close {
+	display: none;
     font-size: 13px;
     position: absolute;
     right: 10px;

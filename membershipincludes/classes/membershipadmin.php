@@ -4648,7 +4648,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.communications.php'));
@@ -5062,7 +5062,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.urlgroups.php'));
@@ -5535,7 +5535,7 @@ if(!class_exists('membershipadmin')) {
 				if($this->show_user_help( $page )) {
 					?>
 					<div class='screenhelpheader'>
-						<?php /* <a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a> */?>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.pings.php'));
@@ -6322,6 +6322,19 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
+				if($this->show_user_help( $page )) {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.gateways.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
+
 				?>
 
 				<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="posts-filter">
@@ -6350,7 +6363,6 @@ if(!class_exists('membershipadmin')) {
 					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-gateways');
 
 					$columns = array(	"name"		=>	__('Gateway Name', 'membership'),
-										"file" 		=> 	__('Gateway File','membership'),
 										"active"	=>	__('Active','membership')
 									);
 
@@ -6431,9 +6443,6 @@ if(!class_exists('membershipadmin')) {
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 										</td>
 
-									<td class="column-name">
-										<?php echo esc_html($gateway); ?>
-										</td>
 									<td class="column-active">
 										<?php
 											if(in_array($gateway_data['gateway_id'], $active)) {
@@ -6750,7 +6759,7 @@ if(!class_exists('membershipadmin')) {
 		// Functions to determine whether to show user help on this screen and to disable it if not
 		function show_user_help( $page ) {
 
-			if(in_array($page, array('membershipmembers', 'membershiplevels', 'membershipsubs' ))) {
+			if(in_array($page, array('membershipmembers', 'membershipsubs' ))) {
 				return false;
 			}
 
