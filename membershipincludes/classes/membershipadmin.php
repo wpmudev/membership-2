@@ -4445,8 +4445,7 @@ if(!class_exists('membershipadmin')) {
 						<?php
 						ob_start();
 						include_once(membership_dir('membershipincludes/help/header.communications.php'));
-						$help = ob_get_clean();
-						echo __($help, 'membership');
+						echo ob_get_clean();
 						?>
 					</div>
 					<?php
