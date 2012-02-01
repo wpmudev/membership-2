@@ -2193,6 +2193,28 @@ if(!class_exists('membershipadmin')) {
 											$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
 											break;
 
+					case 'users':			$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
+											$admins = $wp_user_search->get_results();
+											$user_id = get_current_user_id();
+											foreach($admins as $admin) {
+												if($user_id == $admin->ID) {
+													continue;
+												} else {
+													if(in_array( $admin->ID, (array) $_POST['admincheck'])) {
+														$user = new WP_User( $admin->ID );
+														if(!$user->has_cap('membershipadmin')) {
+															$user->add_cap('membershipadmin');
+														}
+													} else {
+														$user = new WP_User( $admin->ID );
+														if($user->has_cap('membershipadmin')) {
+															$user->remove_cap('membershipadmin');
+														}
+													}
+												}
+											}
+											break;
+
 					case 'extras':			$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
 											$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
 											$M_options['renewalperiod'] = $_POST['renewalperiod'];
@@ -2975,23 +2997,95 @@ if(!class_exists('membershipadmin')) {
 						<div class="inside">
 							<p class='description'><?php _e('You can add or remove the ability for specific admin user accounts to manage the Membership plugin by checking or unchecking the boxes next to the relevant username.','membership'); ?></p>
 
-							<table class="form-table">
-							<tbody>
-								<tr valign="top">
-									<th scope="row"><?php _e('Membership Admins','membership'); ?></th>
-									<td>
-										<?php
+							<?php
+								$columns = array(	"name" 		=> 	__('User Login','membership')
+												);
 
+								$columns = apply_filters('membership_adminuserscolumns', $columns);
+
+								$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
+								$admins = $wp_user_search->get_results();
+
+							?>
+
+							<table cellspacing="0" class="widefat fixed">
+								<thead>
+								<tr>
+								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+								<?php
+									foreach($columns as $key => $col) {
 										?>
-									</td>
+										<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+										<?php
+									}
+								?>
 								</tr>
-							</tbody>
+								</thead>
+
+								<tfoot>
+								<tr>
+								<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+								<?php
+									reset($columns);
+									foreach($columns as $key => $col) {
+										?>
+										<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+										<?php
+									}
+								?>
+								</tr>
+								</tfoot>
+
+								<tbody>
+									<?php
+									if(!empty($admins)) {
+										$user_id = get_current_user_id();
+										foreach($admins as $key => $admin) {
+											?>
+											<tr valign="middle" class="alternate" id="admin-<?php echo $admin->ID; ?>">
+												<th class="check-column" scope="row">
+													<?php if($user_id != $admin->ID) {
+															$user = new WP_User( $admin->ID );
+															if($user->has_cap('membershipadmin')) {
+															?>
+															<input type="checkbox" value="<?php echo esc_attr($admin->ID); ?>" name="admincheck[]" checked='checked'>
+															<?php
+															} else {
+															?>
+															<input type="checkbox" value="<?php echo esc_attr($admin->ID); ?>" name="admincheck[]" >
+															<?php
+															}
+														 } ?>
+												</th>
+												<td class="column-name">
+													<strong><?php echo esc_html(stripslashes($admin->user_login)); ?></strong><br/>
+													<?php
+													if($user_id == $admin->ID) {
+														_e('You can not remove your own permissions to manage the membership system whilst logged in.', 'membership');
+													}
+													?>
+												</td>
+										    </tr>
+											<?php
+										}
+									} else {
+										$columncount = count($columns) + 1;
+										?>
+										<tr valign="middle" class="alternate" >
+											<td colspan="<?php echo $columncount; ?>" scope="row"><?php _e('There are no Admin users - something may have gone wrong.','membership'); ?></td>
+									    </tr>
+										<?php
+									}
+									?>
+
+								</tbody>
 							</table>
+
 						</div>
 					</div>
 
 					<?php
-						do_action( 'membership_extrasoptions_page' );
+						do_action( 'membership_adminusersoptions_page' );
 					?>
 
 					<p class="submit">
