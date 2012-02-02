@@ -23,6 +23,9 @@ if(!class_exists('membershipadmin')) {
 		var $ping_history;
 		var $pings;
 
+		// Class variable to hold a link to the tooltips class
+		var $_tips;
+
 
 		function __construct() {
 
@@ -33,6 +36,10 @@ if(!class_exists('membershipadmin')) {
 			foreach($this->tables as $table) {
 				$this->$table = membership_db_prefix($this->db, $table);
 			}
+
+			// Instantiate the tooltips class and set the icon
+			$this->_tips = new WpmuDev_HelpTooltips();
+			$this->_tips->set_icon_url(membership_url('membershipincludes/images/information.png'));
 
 			// Add administration actions
 			add_action('init', array(&$this, 'initialise_plugin'), 1);
@@ -2450,13 +2457,13 @@ if(!class_exists('membershipadmin')) {
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration page','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
-							<p class='description'><?php _e('If you want to include an introduction then you <strong>should</strong> include the [subscriptionform] shortcode in some location, otherwise leave the page blank for the standard Membership subscription forms.','membership'); ?></p>
+							<p class='description'><?php _e('If you want to include an introduction then you <strong>should</strong> include the [subscriptionform] shortcode in some location on that page, otherwise leave the page blank for the standard Membership subscription forms.','membership'); ?></p>
 
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Registration page','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("Select a page to use for the registration form.",'membership'); ?></em>
+									<th scope="row"><?php _e('Registration page','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('Select a page to use for the registration form. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
 									</th>
 									<td>
 										<?php
@@ -2475,6 +2482,7 @@ if(!class_exists('membershipadmin')) {
 							<tbody>
 								<tr valign="top">
 									<th scope="row"><?php _e('Form type','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Choose between the original multi-page or Pop up registration methods.','membership') ); ?>
 									</th>
 									<td>
 										<select name='formtype' id='formtype'>
@@ -2499,6 +2507,7 @@ if(!class_exists('membershipadmin')) {
 							<tbody>
 								<tr valign="top">
 									<th scope="row"><?php _e('Account page','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Select a page to use for the account form. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
 									</th>
 									<td>
 										<?php
@@ -2523,6 +2532,7 @@ if(!class_exists('membershipadmin')) {
 							<tbody>
 								<tr valign="top">
 									<th scope="row"><?php _e('Protected content page','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Select a page to use for the Protected Content message. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
 									</th>
 									<td>
 										<?php
@@ -2586,10 +2596,8 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Masked download URL','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("This is the URL that the user will see.",'membership'); ?><br/>
-										<?php _e("Change the end part to something unique.",'membership'); ?>
-										</em>
+									<th scope="row"><?php _e('Masked download URL','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('This is the URL that the user will see. You can change the end part to something unique.','membership') ); ?>
 									</th>
 									<td>
 										<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
@@ -2597,9 +2605,8 @@ if(!class_exists('membershipadmin')) {
 								</tr>
 
 								<tr valign="top">
-									<th scope="row"><?php _e('Protected groups','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("Place each download group name on a new line, removing used groups will leave content visible to all users/members.",'membership'); ?>
-										</em>
+									<th scope="row"><?php _e('Protected groups','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Place each download group name on a new line, removing used groups will leave content visible to all users/members.','membership') ); ?>
 									</th>
 									<td>
 										<textarea name='membershipdownloadgroups' id='membershipdownloadgroups' rows='10' cols='40'><?php
@@ -2668,9 +2675,8 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Shortcodes','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes will leave content visible to all users/members.",'membership'); ?>
-										</em>
+									<th scope="row"><?php _e('Shortcodes','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('Place each shortcode text (without the square brackets) on a new line, removing used shortcodes will leave content visible to all users/members.','membership') ); ?>
 									</th>
 									<td>
 										<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'><?php
@@ -2685,9 +2691,8 @@ if(!class_exists('membershipadmin')) {
 									</td>
 								</tr>
 								<tr valign="top">
-									<th scope="row"><?php _e('Shortcode visibility default','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("Should all shortcodes be visible or protected by default.",'membership'); ?>
-										</em>
+									<th scope="row"><?php _e('Shortcode visibility default','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('Should all shortcodes be visible or protected by default.','membership') ); ?>
 									</th>
 									<td>
 										<select name='shortcodedefault' id='shortcodedefault'>
@@ -2697,11 +2702,8 @@ if(!class_exists('membershipadmin')) {
 									</td>
 								</tr>
 								<tr valign="top">
-									<th scope="row"><?php _e('No access message','membership'); ?><br/>
-									<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the shortcode can't be shown.",'membership'); ?><br/>
-									<?php _e("Leave blank for no message.",'membership'); ?><br/>
-									<?php _e("HTML allowed.",'membership'); ?>
-									</em>
+									<th scope="row"><?php _e('No access message','membership'); ?>
+									<?php echo $this->_tips->add_tip( __("This is the message that is displayed when the content protected by the shortcode can't be shown. Leave blank for no message. HTML allowed.",'membership') ); ?>
 									</th>
 									<td>
 										<?php
@@ -2729,9 +2731,8 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Admin Only Shortcodes','membership'); ?><br/>
-										<em style='font-size:smaller;'><?php _e("Place each shortcode on a new line, removing used shortcodes could leave content visible to all users/members.",'membership'); ?>
-										</em>
+									<th scope="row"><?php _e('Admin Only Shortcodes','membership'); ?>
+										<?php echo $this->_tips->add_tip( __("Place each shortcode text (without the square brackets) on a new line, removing used shortcodes could leave content visible to all users/members.",'membership') ); ?>
 									</th>
 									<td>
 										<textarea name='membershipadminshortcodes' id='membershipadminshortcodes' rows='10' cols='40'><?php
@@ -2768,11 +2769,8 @@ if(!class_exists('membershipadmin')) {
 								</tr>
 
 								<tr valign="top">
-									<th scope="row"><?php _e('No access message','membership'); ?><br/>
-									<em style='font-size:smaller;'><?php _e("This is the message that is displayed when the content protected by the moretag can't be shown.",'membership'); ?><br/>
-									<?php _e("Leave blank for no message.",'membership'); ?><br/>
-									<?php _e("HTML allowed.",'membership'); ?>
-									</em>
+									<th scope="row"><?php _e('No access message','membership'); ?>
+									<?php echo $this->_tips->add_tip( __("This is the message that is displayed when the content protected by the moretag can't be shown. Leave blank for no message. HTML allowed.",'membership') ); ?>
 									</th>
 									<td>
 										<?php
