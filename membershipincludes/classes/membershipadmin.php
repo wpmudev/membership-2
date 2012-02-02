@@ -2678,8 +2678,8 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										$written = false;
 										if(!empty($M_options['membershipshortcodes'])) {
-											$written = false;
 											?>
 											<input name='membershipshortcodes' type='hidden' value='<?php
 											foreach($M_options['membershipshortcodes'] as $key => $value) {
@@ -2696,10 +2696,20 @@ if(!class_exists('membershipadmin')) {
 														echo "[" . esc_html(stripslashes($value)) . "]<br/>";
 													}
 												}
-											} else {
-												echo __('No shortcodes available.','membership');
 											}
-										} else {
+											// Bring in the level based shortcodes to the list here
+											$shortcodes = apply_filters('membership_level_shortcodes', array() );
+											if(!empty($shortcodes)) {
+												foreach($shortcode as $key => $value) {
+													if(!empty($value)) {
+														echo "[" . esc_html(stripslashes($value)) . "]<br/>";
+													}
+												}
+											}
+
+										}
+
+										if($written == false) {
 											echo __('No shortcodes available.','membership');
 										}
 										?>
