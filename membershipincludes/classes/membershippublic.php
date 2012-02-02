@@ -121,6 +121,9 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
+			// Shortcodes now default to protected for those entered by the user (which will be none for new users / installs)
+			$this->override_shortcodes();
+
 			// Downloads protection
 			if(!empty($M_options['masked_url'])) {
 				add_filter('the_content', array(&$this, 'protect_download_content') );
@@ -562,6 +565,23 @@ if(!class_exists('membershippublic')) {
 			global $M_options;
 
 			return stripslashes($M_options['shortcodemessage']);
+
+		}
+
+
+		function override_shortcodes() {
+			// By default all the shortcodes are protected to override them here
+			global $M_shortcode_tags, $shortcode_tags;
+
+			$M_shortcode_tags = $shortcode_tags;
+
+			if(!empty($M_options['membershipshortcodes'])) {
+				foreach($M_options['membershipshortcodes'] as $key => $value) {
+					if(!empty($value)) {
+						$shortcode_tags[$value] = array(&$this, 'do_protected_shortcode');
+					}
+				}
+			}
 
 		}
 
