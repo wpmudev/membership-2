@@ -2674,7 +2674,7 @@ if(!class_exists('membershipadmin')) {
 							<tbody>
 								<tr valign="top">
 									<th scope="row"><?php _e('Available Shortcodes','membership'); ?>
-										<?php echo $this->_tips->add_tip( __('Place each shortcode text (without the square brackets) on a new line, removing used shortcodes will leave content visible to all users/members.','membership') ); ?>
+										<?php //echo $this->_tips->add_tip( __('','membership') ); ?>
 									</th>
 									<td>
 										<?php

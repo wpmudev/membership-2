@@ -46,18 +46,6 @@ if(!class_exists('membershippublic')) {
 			// Register
 			add_filter('register', array(&$this, 'override_register') );
 
-			/*
-			add_action( 'wp_ajax_nopriv_buynow', array(&$this, 'popover_signup_form') );
-
-			//login and register are no-priv only because, well they aren't logged in or registered
-			add_action( 'wp_ajax_nopriv_register_user', array(&$this, 'popover_register_process') );
-			add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
-
-			// if logged in:
-			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
-			add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
-			add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
-			*/
 		}
 
 		function membershippublic() {
@@ -131,11 +119,6 @@ if(!class_exists('membershippublic')) {
 						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
 					}
 				}
-			}
-
-			// Check the shortcodes default and override if needed
-			if($M_options['shortcodedefault'] == 'no' ) {
-				$this->override_shortcodes();
 			}
 
 			// Downloads protection
@@ -580,22 +563,6 @@ if(!class_exists('membershippublic')) {
 
 			return stripslashes($M_options['shortcodemessage']);
 
-		}
-
-		// Override the shortcode to display a protected message instead
-		function override_shortcodes() {
-
-			global $M_shortcode_tags, $shortcode_tags;
-
-			$M_shortcode_tags = $shortcode_tags;
-
-			foreach($shortcode_tags as $key => $function) {
-				if(!in_array($key, array('subscriptionform','accountform', 'upgradeform', 'renewform', 'subscriptiontitle', 'subscriptiondetails', 'subscriptionprice', 'subscriptionbutton'))) {
-					$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
-				}
-			}
-
-			return $content;
 		}
 
 		function may_be_singular($wp_query) {
