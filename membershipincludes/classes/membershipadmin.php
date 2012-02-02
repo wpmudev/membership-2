@@ -2192,7 +2192,6 @@ if(!class_exists('membershipadmin')) {
 					case 'posts':			$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
 											$M_options['membershipadminshortcodes'] = explode("\n", $_POST['membershipadminshortcodes']);
 											$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
-											$M_options['shortcodedefault'] = $_POST['shortcodedefault'];
 											$M_options['moretagdefault'] = $_POST['moretagdefault'];
 											$M_options['moretagmessage'] = $_POST['moretagmessage'];
 											break;
@@ -2665,40 +2664,45 @@ if(!class_exists('membershipadmin')) {
 					<?php
 						wp_nonce_field('update-membership-options');
 					?>
-
 					<div class="postbox">
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Shortcode protected content','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('You can protect parts of a post or pages content by enclosing it in WordPress shortcodes.','membership'); ?></p>
-							<p class='description'><?php _e('Create as many shortcodes as you want by entering them below, each shortcode should be on a separate line.','membership'); ?></p>
+							<p class='description'><?php _e("Each level you create has it's own shortcode. The shortcodes that are available to use are shown below.",'membership'); ?></p>
 
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Shortcodes','membership'); ?>
+									<th scope="row"><?php _e('Available Shortcodes','membership'); ?>
 										<?php echo $this->_tips->add_tip( __('Place each shortcode text (without the square brackets) on a new line, removing used shortcodes will leave content visible to all users/members.','membership') ); ?>
 									</th>
 									<td>
-										<textarea name='membershipshortcodes' id='membershipshortcodes' rows='10' cols='40'><?php
+										<?php
 										if(!empty($M_options['membershipshortcodes'])) {
+											$written = false;
+											?>
+											<input name='membershipshortcodes' type='hidden' value='<?php
 											foreach($M_options['membershipshortcodes'] as $key => $value) {
 												if(!empty($value)) {
-													esc_html_e(stripslashes($value)) . "\n";
+													$written = true;
+													echo esc_html(stripslashes($value)) . "\n";
 												}
 											}
+											?>' />
+											<?php
+											if($written == true) {
+												foreach($M_options['membershipshortcodes'] as $key => $value) {
+													if(!empty($value)) {
+														echo "[" . esc_html(stripslashes($value)) . "]<br/>";
+													}
+												}
+											} else {
+												echo __('No shortcodes available.','membership');
+											}
+										} else {
+											echo __('No shortcodes available.','membership');
 										}
-										?></textarea>
-									</td>
-								</tr>
-								<tr valign="top">
-									<th scope="row"><?php _e('Shortcode visibility default','membership'); ?>
-										<?php echo $this->_tips->add_tip( __('Should all shortcodes be visible or protected by default.','membership') ); ?>
-									</th>
-									<td>
-										<select name='shortcodedefault' id='shortcodedefault'>
-											<option value="yes" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'yes') echo "selected='selected'"; ?>><?php _e('Yes - Shortcodes are visible by default','membership'); ?></option>
-											<option value="no" <?php if(isset($M_options['shortcodedefault']) && $M_options['shortcodedefault'] == 'no') echo "selected='selected'"; ?>><?php _e('No - Shortcodes are protected by default','membership'); ?></option>
-										</select>
+										?>
 									</td>
 								</tr>
 								<tr valign="top">
@@ -3263,58 +3267,68 @@ if(!class_exists('membershipadmin')) {
 
 								<?php do_action('membership_level_form_before_rules', $level->id); ?>
 
-								<h3 class='positive'><?php _e('Positive rules','membership'); ?></h3>
-								<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
+								<ul class='leveltabs'>
+									<li class='positivetab'><a href='#positive'><?php _e('Positive Rules', 'membership'); ?></a></li>
+									<li class='negativetab'><a href='#negative'><?php _e('Negative Rules', 'membership'); ?></a></li>
+									<li class='advancedtab'><a href='#advanced'><?php _e('Advanced (both)', 'membership'); ?></a></li>
+								</ul>
 
-								<div id='positive-rules' class='level-droppable-rules levels-sortable'>
-									<?php _e('Drop here','membership'); ?>
-								</div>
+								<div class='positivecontent'>
+									<h3 class='positive positivetitle'><?php _e('Negative rules','membership'); ?></h3>
+									<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
-								<div id='positive-rules-holder'>
+									<div id='positive-rules' class='level-droppable-rules levels-sortable'>
+										<?php _e('Drop here','membership'); ?>
+									</div>
 
-									<?php do_action('membership_level_form_before_positive_rules', $level->id); ?>
+									<div id='positive-rules-holder'>
 
-									<?php
-										if(!empty($p)) {
-											foreach($p as $key => $value) {
+										<?php do_action('membership_level_form_before_positive_rules', $level->id); ?>
 
-												if(isset($M_Rules[$key])) {
-														$rule = new $M_Rules[$key]();
+										<?php
+											if(!empty($p)) {
+												foreach($p as $key => $value) {
 
-														$rule->admin_main($value);
+													if(isset($M_Rules[$key])) {
+															$rule = new $M_Rules[$key]();
+
+															$rule->admin_main($value);
+													}
 												}
 											}
-										}
-									?>
+										?>
 
-									<?php do_action('membership_level_form_after_positive_rules', $level->id); ?>
+										<?php do_action('membership_level_form_after_positive_rules', $level->id); ?>
 
+									</div>
 								</div>
 
-								<h3 class='negative'><?php _e('Negative rules','membership'); ?></h3>
-								<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
+								<div class='negativecontent'>
+									<h3 class='negative negativetitle'><?php _e('Negative rules','membership'); ?></h3>
+									<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 
-								<div id='negative-rules' class='level-droppable-rules levels-sortable'>
-									<?php _e('Drop here','membership'); ?>
-								</div>
+									<div id='negative-rules' class='level-droppable-rules levels-sortable'>
+										<?php _e('Drop here','membership'); ?>
+									</div>
 
-								<div id='negative-rules-holder'>
-									<?php do_action('membership_level_form_before_negative_rules', $level->id); ?>
+									<div id='negative-rules-holder'>
+										<?php do_action('membership_level_form_before_negative_rules', $level->id); ?>
 
-									<?php
-										if(!empty($n)) {
-											foreach($n as $key => $value) {
-												if(isset($M_Rules[$key])) {
-														$rule = new $M_Rules[$key]();
+										<?php
+											if(!empty($n)) {
+												foreach($n as $key => $value) {
+													if(isset($M_Rules[$key])) {
+															$rule = new $M_Rules[$key]();
 
-														$rule->admin_main($value);
+															$rule->admin_main($value);
+													}
 												}
 											}
-										}
-									?>
+										?>
 
-									<?php do_action('membership_level_form_after_negative_rules', $level->id); ?>
+										<?php do_action('membership_level_form_after_negative_rules', $level->id); ?>
 
+									</div>
 								</div>
 
 								<?php do_action('membership_level_form_after_rules', $level->id); ?>

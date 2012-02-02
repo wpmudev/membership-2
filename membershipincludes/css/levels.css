@@ -116,6 +116,8 @@ div.level-details select {
 	padding-left: 10px;
 	padding-top: 2px;
 	padding-bottom: 2px;
+	clear: both;
+	display: none;
 }
 
 .level-holder h3.negative {
@@ -341,4 +343,27 @@ div.buttons a.cancellink {
 
 .no-movecursor {
 	cursor: auto !Important;
+}
+
+/* Level tabs */
+
+#edit-level div.level-holder ul.leveltabs {
+	background-color: #f1f1f1;
+	min-height: 36px;
+	clear: both;
+}
+
+#edit-level div.level-holder ul.leveltabs li {
+	display: inline;
+	float: left;
+	padding: 10px 20px;
+	background-color: transparent;
+	color: #333;
+}
+
+#edit-level div.level-holder ul.leveltabs li a {
+	color: #333;
+	font-weight: bold;
+	text-decoration: none;
+	text-shadow: 0 1px 0 #FFFFFF;
 }
