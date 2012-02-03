@@ -316,6 +316,22 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 
+			// Set up the level shortcodes here
+			$shortcodes = apply_filters('membership_level_shortcodes', array() );
+			if(!empty($shortcodes)) {
+				foreach($shortcodes as $key => $value) {
+					if(!empty($value)) {
+						if($member->on_level($key, true)) {
+							// member is on this level so can see the content
+							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_level_shortcode') );
+						} else {
+							// member isn't on this level and so can't see the content
+							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_protected_shortcode') );
+						}
+					}
+				}
+			}
+
 			// Set the initialisation status
 			$initialised = true;
 
@@ -552,6 +568,13 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $the_content;
+
+		}
+
+		// Output the level based shortcode content
+		function do_level_shortcode($atts, $content = null, $code = "") {
+
+			return do_shortcode($content);
 
 		}
 
@@ -1783,7 +1806,7 @@ if(!class_exists('membershippublic')) {
 
 			if(!empty($levels)) {
 				foreach($levels as $level) {
-					$shortcodes[] = sanitize_title_with_dashes('level-' . $level->level_title);
+					$shortcodes[$level->id] = sanitize_title_with_dashes('level-' . $level->level_title);
 				}
 			}
 
