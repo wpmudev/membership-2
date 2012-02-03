@@ -66,6 +66,22 @@ if(!class_exists('M_Level')) {
 
 		}
 
+		function get_shortcode() {
+
+			if(empty($this->level)) {
+				$level = $this->get();
+
+				if($level) {
+					return sanitize_title_with_dashes('level-' . $level->level_title);
+				} else {
+					return false;
+				}
+			} else {
+				return sanitize_title_with_dashes('level-' . $level->level->level_title);
+			}
+
+		}
+
 		// Gets
 
 		function get() {

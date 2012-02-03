@@ -46,6 +46,9 @@ if(!class_exists('membershippublic')) {
 			// Register
 			add_filter('register', array(&$this, 'override_register') );
 
+			// Level shortcodes filters
+			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
+
 		}
 
 		function membershippublic() {
@@ -1743,6 +1746,48 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $this->db->get_results($sql);
+
+		}
+
+		function get_levels() {
+
+			$where = array();
+			$orderby = array();
+
+			$where[] = "level_active = 1";
+
+			$orderby[] = 'id ASC';
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->levels}");
+
+			if(!empty($where)) {
+				$sql .= " WHERE " . implode(' AND ', $where);
+			}
+
+			if(!empty($orderby)) {
+				$sql .= " ORDER BY " . implode(', ', $orderby);
+			}
+
+			return $this->db->get_results($sql);
+
+		}
+
+		// Level shortcodes function
+		function build_level_shortcode_list( $shortcodes = array() ) {
+
+			if(!is_array($shortcodes)) {
+				$shortcodes = array();
+			}
+
+			$levels = $this->get_levels();
+
+			if(!empty($levels)) {
+				foreach($levels as $level) {
+					$shortcodes[] = sanitize_title_with_dashes('level-' . $level->level_title);
+				}
+			}
+
+			return $shortcodes;
 
 		}
 

@@ -102,6 +102,9 @@ if(!class_exists('membershipadmin')) {
 			add_action( 'membership_activate_addon', array(&$this, 'activate_addon'), 10, 1 );
 			add_action( 'membership_deactivate_addon', array(&$this, 'deactivate_addon'), 10, 1 );
 
+			// Level shortcodes filters
+			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
+
 		}
 
 		function membershipadmin() {
@@ -2674,7 +2677,7 @@ if(!class_exists('membershipadmin')) {
 							<tbody>
 								<tr valign="top">
 									<th scope="row"><?php _e('Available Shortcodes','membership'); ?>
-										<?php //echo $this->_tips->add_tip( __('','membership') ); ?>
+										<?php echo $this->_tips->add_tip( __('Each shortcode can be used to wrap protected content such as [shortcode] Protected content [/shortcode]','membership') ); ?>
 									</th>
 									<td>
 										<?php
@@ -2700,8 +2703,9 @@ if(!class_exists('membershipadmin')) {
 											// Bring in the level based shortcodes to the list here
 											$shortcodes = apply_filters('membership_level_shortcodes', array() );
 											if(!empty($shortcodes)) {
-												foreach($shortcode as $key => $value) {
+												foreach($shortcodes as $key => $value) {
 													if(!empty($value)) {
+														$written = true;
 														echo "[" . esc_html(stripslashes($value)) . "]<br/>";
 													}
 												}
@@ -6885,6 +6889,25 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			update_user_meta( $user_id, 'membership_show_help_headers', $helpscreens );
+		}
+
+		// Level shortcodes function
+		function build_level_shortcode_list( $shortcodes = array() ) {
+
+			if(!is_array($shortcodes)) {
+				$shortcodes = array();
+			}
+
+			$levels = $this->get_membership_levels();
+
+			if(!empty($levels)) {
+				foreach($levels as $level) {
+					$shortcodes[] = sanitize_title_with_dashes('level-' . $level->level_title);
+				}
+			}
+
+			return $shortcodes;
+
 		}
 
 	}
