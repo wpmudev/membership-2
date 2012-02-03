@@ -3288,7 +3288,7 @@ if(!class_exists('membershipadmin')) {
 								</ul>
 
 								<div class='positivecontent activecontent'>
-									<h3 class='positive positivetitle'><?php _e('Negative rules','membership'); ?></h3>
+									<h3 class='positive positivetitle'><?php _e('Positive rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
 									<div id='positive-rules' class='level-droppable-rules levels-sortable'>

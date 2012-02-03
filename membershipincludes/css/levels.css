@@ -107,7 +107,7 @@ div.level-details select {
 }
 
 .level-holder h3 {
-	background-color: #edf3fe;
+	background-color: #f1f1f1;
 	text-shadow: 0 1px 0 #FFFFFF;
 	color: #000;
 	font: normal bold 12px/2.2em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
@@ -122,6 +122,10 @@ div.level-details select {
 
 .level-holder h3.negative {
 	background-color: #ffd6d6;
+}
+
+.level-holder h3.positive {
+	background-color: #edf3fe;
 }
 
 .placeholder-rules {
@@ -428,3 +432,8 @@ div.buttons a.cancellink {
 #edit-level div.level-holder div.inactivecontent {
 	display: none;
 }
+
+div.positivecontent {
+	
+}
+

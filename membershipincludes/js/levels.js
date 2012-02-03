@@ -87,6 +87,8 @@ function m_clickpositivetab() {
 		jQuery('.positivecontent').removeClass('inactivecontent').addClass('activecontent');
 		jQuery('.negativecontent').removeClass('activecontent').addClass('inactivecontent');
 		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
+
+		jQuery('.level-holder h3').css('display', 'none');
 	}
 
 	return false;
@@ -103,6 +105,8 @@ function m_clicknegativetab() {
 		jQuery('.negativecontent').removeClass('inactivecontent').addClass('activecontent');
 		jQuery('.positivecontent').removeClass('activecontent').addClass('inactivecontent');
 		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
+
+		jQuery('.level-holder h3').css('display', 'none');
 	}
 
 	return false;
@@ -119,6 +123,8 @@ function m_clickadvancedtab() {
 		jQuery('.positivecontent').removeClass('inactivecontent').addClass('activecontent');
 		jQuery('.negativecontent').removeClass('inactivecontent').addClass('activecontent');
 		jQuery('.advancedcontent').removeClass('inactivecontent').addClass('activecontent');
+
+		jQuery('.level-holder h3').css('display', 'block');
 	}
 
 	return false;
