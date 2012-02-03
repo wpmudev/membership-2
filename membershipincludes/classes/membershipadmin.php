@@ -443,7 +443,11 @@ if(!class_exists('membershipadmin')) {
 				wp_enqueue_style('levelscss', membership_url('membershipincludes/css/levels.css'), array(), $this->build);
 			}
 
-			wp_localize_script( 'levelsjs', 'membership', array( 'deletelevel' => __('Are you sure you want to delete this level?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+			wp_localize_script( 'levelsjs', 'membership', array( 	'deletelevel' => __('Are you sure you want to delete this level?','membership'),
+																	'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership'),
+																	'movetopositive' => __('Moving to the Positive area will remove any Negative rules you have set - is that ok?','membership'),
+																	'movetonegative' => __('Moving to the Negative area will remove any Positive rules you have set - is that ok?','membership')
+																) );
 
 			$this->handle_levels_updates();
 		}
@@ -3302,9 +3306,7 @@ if(!class_exists('membershipadmin')) {
 									</div>
 
 									<div id='positive-rules-holder'>
-
 										<?php do_action('membership_level_form_before_positive_rules', $level->id); ?>
-
 										<?php
 											if(!empty($p)) {
 												foreach($p as $key => $value) {
@@ -3317,9 +3319,7 @@ if(!class_exists('membershipadmin')) {
 												}
 											}
 										?>
-
 										<?php do_action('membership_level_form_after_positive_rules', $level->id); ?>
-
 									</div>
 								</div>
 

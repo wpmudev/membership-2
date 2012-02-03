@@ -81,6 +81,16 @@ function m_clickpositivetab() {
 	if(jQuery(this).parents('.positivetab').hasClass('activetab')) {
 		return false;
 	} else {
+
+		negatives = jQuery('#in-negative-rules').val();
+		negatives = negatives.replace(',','');
+
+		if(negatives.length >= 1) {
+			if(!confirm(membership.movetopositive)) {
+				return false;
+			}
+		}
+
 		jQuery('#ontab').val('positive');
 
 		jQuery('.activetab').removeClass('activetab');
@@ -102,6 +112,16 @@ function m_clicknegativetab() {
 	if(jQuery(this).parents('.negativetab').hasClass('activetab')) {
 		return false;
 	} else {
+
+		positives = jQuery('#in-positive-rules').val();
+		positives = positives.replace(',','');
+
+		if(positives.length >= 1) {
+			if(!confirm(membership.movetonegative)) {
+				return false;
+			}
+		}
+
 		jQuery('#ontab').val('negative');
 
 		jQuery('.activetab').removeClass('activetab');
