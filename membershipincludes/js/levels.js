@@ -111,6 +111,9 @@ function m_clickpositivetab() {
 
 		jQuery('.level-holder h3').css('display', 'none');
 		jQuery('div.advancedtabwarning').css('display', 'none');
+
+		jQuery('a.action-to-negative').css('display', 'none');
+		jQuery('a.action-to-positive').css('display', 'block');
 	}
 
 	return false;
@@ -151,6 +154,9 @@ function m_clicknegativetab() {
 
 		jQuery('.level-holder h3').css('display', 'none');
 		jQuery('div.advancedtabwarning').css('display', 'none');
+
+		jQuery('a.action-to-negative').css('display', 'block');
+		jQuery('a.action-to-positive').css('display', 'none');
 	}
 
 	return false;
@@ -172,6 +178,9 @@ function m_clickadvancedtab() {
 
 		jQuery('.level-holder h3').css('display', 'block');
 		jQuery('div.advancedtabwarning').css('display', 'block');
+
+		jQuery('a.action-to-negative').css('display', 'block');
+		jQuery('a.action-to-positive').css('display', 'block');
 	}
 
 	return false;

@@ -39,7 +39,7 @@ if(!class_exists('M_Rule')) {
 							</p>
 						<?php } ?>
 						<p>
-							<a href='#addtopositive' class='action-to-positive' title='<?php _e('Add this rule to the positive area of the membership level.','membership'); ?>'><?php _e('Add to Positive rules','membership'); ?></a> | <a href='#addtonegative' class='action-to-negative' title='<?php _e('Add this rule to the negative area of the membership level.','membership'); ?>'><?php _e('Add to Negative rules','membership'); ?></a>
+							<a href='#addtopositive' class='action-to-positive' title='<?php _e('Add this rule to the positive area of the membership level.','membership'); ?>'><?php _e('Add to Positive rules','membership'); ?></a><a href='#addtonegative' class='action-to-negative' title='<?php _e('Add this rule to the negative area of the membership level.','membership'); ?>'><?php _e('Add to Negative rules','membership'); ?></a>
 						</p>
 					</div>
 				</div>

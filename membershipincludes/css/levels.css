@@ -130,6 +130,15 @@ div.level-details select {
 	display: none;
 }
 
+a.action-to-positive {
+	float: left;
+}
+
+a.action-to-negative {
+	float: right;
+	display: none;
+}
+
 .level-holder h3.negative {
 	background-color: #ffd6d6;
 }
@@ -241,11 +250,12 @@ div.level-details select {
 	text-shadow: #fff 0 1px 0;
 	width: 250px;
 	margin-left: 10px;
-	padding: 5px 15px;
+	padding: 5px 15px 10px;
 	font-weight: normal;
 	border: 1px solid #ddd;
 	margin-bottom: 10px;
 	min-height: 20px;
+	overflow: hidden;
 }
 
 .action-body.closed {
