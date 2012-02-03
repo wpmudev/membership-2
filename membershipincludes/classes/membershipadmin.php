@@ -2720,7 +2720,7 @@ if(!class_exists('membershipadmin')) {
 									</td>
 								</tr>
 								<tr valign="top">
-									<th scope="row"><?php _e('No access message','membership'); ?>
+									<th scope="row"><?php _e('Protected content message','membership'); ?>
 									<?php echo $this->_tips->add_tip( __("This is the message that is displayed when the content protected by the shortcode can't be shown. Leave blank for no message. HTML allowed.",'membership') ); ?>
 									</th>
 									<td>
@@ -3282,12 +3282,12 @@ if(!class_exists('membershipadmin')) {
 								<?php do_action('membership_level_form_before_rules', $level->id); ?>
 
 								<ul class='leveltabs'>
-									<li class='positivetab'><a href='#positive'><?php _e('Positive Rules', 'membership'); ?></a></li>
-									<li class='negativetab'><a href='#negative'><?php _e('Negative Rules', 'membership'); ?></a></li>
-									<li class='advancedtab'><a href='#advanced'><?php _e('Advanced (both)', 'membership'); ?></a></li>
+									<li class='positivetab activetab'><div class='downarrow'></div><a href='#positive'><div><?php _e('Positive Rules', 'membership'); ?></div></a></li>
+									<li class='negativetab'><div class='downarrow'></div><a href='#negative'><div><?php _e('Negative Rules', 'membership'); ?></div></a></li>
+									<li class='advancedtab'><div class='downarrow'></div><a href='#advanced'><div><?php _e('Advanced (both)', 'membership'); ?></div></a></li>
 								</ul>
 
-								<div class='positivecontent'>
+								<div class='positivecontent activecontent'>
 									<h3 class='positive positivetitle'><?php _e('Negative rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
@@ -3317,7 +3317,7 @@ if(!class_exists('membershipadmin')) {
 									</div>
 								</div>
 
-								<div class='negativecontent'>
+								<div class='negativecontent inactivecontent'>
 									<h3 class='negative negativetitle'><?php _e('Negative rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 
@@ -3345,7 +3345,9 @@ if(!class_exists('membershipadmin')) {
 									</div>
 								</div>
 
+								<div class='advancedcontent inactivecontent'>
 								<?php do_action('membership_level_form_after_rules', $level->id); ?>
+								</div>
 
 								<div class='buttons'>
 									<?php

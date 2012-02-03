@@ -351,9 +351,11 @@ div.buttons a.cancellink {
 	background-color: #f1f1f1;
 	min-height: 36px;
 	clear: both;
+	margin-bottom: 20px;
 }
 
 #edit-level div.level-holder ul.leveltabs li {
+	position: relative;
 	display: inline;
 	float: left;
 	padding: 10px 20px;
@@ -361,9 +363,68 @@ div.buttons a.cancellink {
 	color: #333;
 }
 
+#edit-level div.level-holder ul.leveltabs li.activetab {
+	position: relative;
+	display: inline;
+	float: left;
+	padding: 10px 20px;
+	background-color: #808080;
+	color: #333;
+}
+
+#edit-level div.level-holder ul.leveltabs li:hover {
+	position: relative;
+	display: inline;
+	float: left;
+	padding: 10px 20px;
+	background-color: #cfcfcf;
+	color: #333;
+}
+
+#edit-level div.level-holder ul.leveltabs li.activetab .downarrow {
+	position: absolute;
+	bottom: -5px;
+	left: 53px;
+	width: 10px;
+	height: 10px;
+	-moz-transform: matrix(-1.6,1,1.6,1,0,0);
+	-webkit-transform: matrix(-1.6,1,1.6,1,0,0);
+	-o-transform: matrix(-1.6,1,1.6,1,0,0);
+	-ms-transform: matrix(-1.6,1,1.6,1,0,0);
+	transform: matrix(-1.6,1,1.6,1,0,0);
+	background: #808080;
+}
+
+#edit-level div.level-holder ul.leveltabs li:hover .downarrow {
+	position: absolute;
+	bottom: -5px;
+	left: 53px;
+	width: 10px;
+	height: 10px;
+	-moz-transform: matrix(-1.6,1,1.6,1,0,0);
+	-webkit-transform: matrix(-1.6,1,1.6,1,0,0);
+	-o-transform: matrix(-1.6,1,1.6,1,0,0);
+	-ms-transform: matrix(-1.6,1,1.6,1,0,0);
+	transform: matrix(-1.6,1,1.6,1,0,0);
+	background: #cfcfcf;
+}
+
 #edit-level div.level-holder ul.leveltabs li a {
 	color: #333;
 	font-weight: bold;
 	text-decoration: none;
 	text-shadow: 0 1px 0 #FFFFFF;
+	background: #f1f1f1;
+}
+
+#edit-level div.level-holder ul.leveltabs li.activetab a {
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	text-shadow: 0 -1px 0 #333333;
+	background: #f1f1f1;
+}
+
+#edit-level div.level-holder div.inactivecontent {
+	display: none;
 }

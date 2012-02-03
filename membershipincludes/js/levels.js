@@ -76,6 +76,54 @@ function m_addtonegative() {
 	return false;
 }
 
+function m_clickpositivetab() {
+
+	if(jQuery(this).parents('.positivetab').hasClass('activetab')) {
+		return false;
+	} else {
+		jQuery('.activetab').removeClass('activetab');
+		jQuery('.positivetab').addClass('activetab');
+
+		jQuery('.positivecontent').removeClass('inactivecontent').addClass('activecontent');
+		jQuery('.negativecontent').removeClass('activecontent').addClass('inactivecontent');
+		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
+	}
+
+	return false;
+}
+
+function m_clicknegativetab() {
+
+	if(jQuery(this).parents('.negativetab').hasClass('activetab')) {
+		return false;
+	} else {
+		jQuery('.activetab').removeClass('activetab');
+		jQuery('.negativetab').addClass('activetab');
+
+		jQuery('.negativecontent').removeClass('inactivecontent').addClass('activecontent');
+		jQuery('.positivecontent').removeClass('activecontent').addClass('inactivecontent');
+		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
+	}
+
+	return false;
+}
+
+function m_clickadvancedtab() {
+
+	if(jQuery(this).parents('.advancedtab').hasClass('activetab')) {
+		return false;
+	} else {
+		jQuery('.activetab').removeClass('activetab');
+		jQuery('.advancedtab').addClass('activetab');
+
+		jQuery('.positivecontent').removeClass('inactivecontent').addClass('activecontent');
+		jQuery('.negativecontent').removeClass('inactivecontent').addClass('activecontent');
+		jQuery('.advancedcontent').removeClass('inactivecontent').addClass('activecontent');
+	}
+
+	return false;
+}
+
 function m_levelsReady() {
 
 
@@ -134,6 +182,10 @@ function m_levelsReady() {
 
 	jQuery('a.action-to-positive').click(m_addtopositive);
 	jQuery('a.action-to-negative').click(m_addtonegative);
+
+	jQuery('.positivetab a').click(m_clickpositivetab);
+	jQuery('.negativetab a').click(m_clicknegativetab);
+	jQuery('.advancedtab a').click(m_clickadvancedtab);
 
 }
 
