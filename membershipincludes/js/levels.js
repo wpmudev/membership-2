@@ -88,6 +88,15 @@ function m_clickpositivetab() {
 		if(negatives.length >= 1) {
 			if(!confirm(membership.movetopositive)) {
 				return false;
+			} else {
+				// remove the content
+				jQuery('#negative-rules-holder .level-operation').each( function(index) {
+																		sectionname = jQuery(this).attr('id');
+																		sectionname = sectionname.replace('main-', '');
+																		jQuery('#main-' + sectionname).appendTo('#hiden-actions');
+																		jQuery('#' + sectionname).show();
+																	});
+				jQuery('#in-negative-rules').val(',');
 			}
 		}
 
@@ -119,6 +128,15 @@ function m_clicknegativetab() {
 		if(positives.length >= 1) {
 			if(!confirm(membership.movetonegative)) {
 				return false;
+			} else {
+				// remove the content
+				jQuery('#positive-rules-holder .level-operation').each( function(index) {
+																		sectionname = jQuery(this).attr('id');
+																		sectionname = sectionname.replace('main-', '');
+																		jQuery('#main-' + sectionname).appendTo('#hiden-actions');
+																		jQuery('#' + sectionname).show();
+																	});
+				jQuery('#in-positive-rules').val(',');
 			}
 		}
 
