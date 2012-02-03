@@ -81,6 +81,8 @@ function m_clickpositivetab() {
 	if(jQuery(this).parents('.positivetab').hasClass('activetab')) {
 		return false;
 	} else {
+		jQuery('#ontab').val('positive');
+
 		jQuery('.activetab').removeClass('activetab');
 		jQuery('.positivetab').addClass('activetab');
 
@@ -89,6 +91,7 @@ function m_clickpositivetab() {
 		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
 
 		jQuery('.level-holder h3').css('display', 'none');
+		jQuery('div.advancedtabwarning').css('display', 'none');
 	}
 
 	return false;
@@ -99,6 +102,8 @@ function m_clicknegativetab() {
 	if(jQuery(this).parents('.negativetab').hasClass('activetab')) {
 		return false;
 	} else {
+		jQuery('#ontab').val('negative');
+
 		jQuery('.activetab').removeClass('activetab');
 		jQuery('.negativetab').addClass('activetab');
 
@@ -107,6 +112,7 @@ function m_clicknegativetab() {
 		jQuery('.advancedcontent').removeClass('activecontent').addClass('inactivecontent');
 
 		jQuery('.level-holder h3').css('display', 'none');
+		jQuery('div.advancedtabwarning').css('display', 'none');
 	}
 
 	return false;
@@ -117,6 +123,8 @@ function m_clickadvancedtab() {
 	if(jQuery(this).parents('.advancedtab').hasClass('activetab')) {
 		return false;
 	} else {
+		jQuery('#ontab').val('advanced');
+
 		jQuery('.activetab').removeClass('activetab');
 		jQuery('.advancedtab').addClass('activetab');
 
@@ -125,6 +133,7 @@ function m_clickadvancedtab() {
 		jQuery('.advancedcontent').removeClass('inactivecontent').addClass('activecontent');
 
 		jQuery('.level-holder h3').css('display', 'block');
+		jQuery('div.advancedtabwarning').css('display', 'block');
 	}
 
 	return false;

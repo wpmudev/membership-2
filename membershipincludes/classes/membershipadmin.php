@@ -3262,6 +3262,8 @@ if(!class_exists('membershipadmin')) {
 						<form action='?page=<?php echo $page; ?>' name='leveledit' method='post'>
 							<input type='hidden' name='level_id' id='level_id' value='<?php echo $level->id; ?>' />
 
+							<input type='hidden' name='ontab' id='ontab' value='positive' />
+
 							<input type='hidden' name='beingdragged' id='beingdragged' value='' />
 							<input type='hidden' name='in-positive-rules' id='in-positive-rules' value=',<?php echo implode(',', array_keys($p)); ?>' />
 							<input type='hidden' name='in-negative-rules' id='in-negative-rules' value=',<?php echo implode(',', array_keys($n)); ?>' />
@@ -3286,6 +3288,10 @@ if(!class_exists('membershipadmin')) {
 									<li class='negativetab'><div class='downarrow'></div><a href='#negative'><div><?php _e('Negative Rules', 'membership'); ?></div></a></li>
 									<li class='advancedtab'><div class='downarrow'></div><a href='#advanced'><div><?php _e('Advanced (both)', 'membership'); ?></div></a></li>
 								</ul>
+
+								<div class='advancedtabwarning'>
+									<?php _e('<strong>Warning:</strong> using both positive and negative rules on the same level can cause conflicts and unpredictable behaviour.','membership'); ?>
+								</div>
 
 								<div class='positivecontent activecontent'>
 									<h3 class='positive positivetitle'><?php _e('Positive rules','membership'); ?></h3>
