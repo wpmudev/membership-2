@@ -3313,8 +3313,15 @@ if(!class_exists('membershipadmin')) {
 							</div>
 							<div class='level-holder'>
 								<div class='level-details'>
-								<label for='level_title'><?php _e('Level title','membership'); ?></label><br/>
+								<label for='level_title'><?php _e('Level title','membership'); ?></label><?php //echo $this->_tips->add_tip( __('This is the title used throughout the system to identify this level.','membership') ); ?><br/>
 								<input class='wide' type='text' name='level_title' id='level_title' value='<?php echo esc_attr($level->level_title); ?>' />
+								<br/><br/>
+								<label for='level_shortcode'><?php _e('Level shortcode','membership'); ?></label><?php echo $this->_tips->add_tip( __('The shortcode for this level is based on the title (above). It can be used to wrap content that you only want to be seen by members on this level e.g. [levelshortcode] protected content [/levelshortcode]','membership') ); ?>
+								<?php if($level->id > 0) {
+									echo "[" . sanitize_title_with_dashes('level-' . $level->level_title) . "]";
+								} else {
+									_e('Save your level to create the shortcode', 'membership');
+								} ?>
 								</div>
 
 								<?php do_action('membership_level_form_before_rules', $level->id); ?>
@@ -3922,9 +3929,8 @@ if(!class_exists('membershipadmin')) {
 								*/
 								?>
 								<br/>
-								<label for='sub_pricetext'><?php _e('Subscription price text','membership'); ?></label>
+								<label for='sub_pricetext'><?php _e('Subscription price text','membership'); ?><?php echo $this->_tips->add_tip( __('The text you want to show as the price on the subscription form. E.G. Only $25 per month.','membership') ); ?></label>
 								<input class='wide' type='text' name='sub_pricetext' id='sub_pricetext' value='<?php echo esc_attr(stripslashes($sub->sub_pricetext)); ?>' />
-								<p class='description'><?php _e('The text you want to show as the price on the subscription form. E.G. Only $25 per month.','membership'); ?></p>
 								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
 
 								</div>
