@@ -3741,7 +3741,7 @@ if(!class_exists('membershipadmin')) {
 					$columns = array(	"name" 		=> 	__('Level Name','membership'),
 										"active"	=>	__('Active','membership'),
 										"users"		=>	__('Users','membership'),
-										"shortcode"	=>	__('Shortcode', 'membership')
+										"shortcode"	=>	__('Shortcode', 'membership') . $this->_tips->add_tip( __('The shortcode for this level is based on the title. It can be used to wrap content that you only want to be seen by members on this level e.g. [levelshortcode] protected content [/levelshortcode]','membership') )
 									);
 
 					$columns = apply_filters('membership_levelcolumns', $columns);
