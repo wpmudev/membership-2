@@ -3740,7 +3740,8 @@ if(!class_exists('membershipadmin')) {
 
 					$columns = array(	"name" 		=> 	__('Level Name','membership'),
 										"active"	=>	__('Active','membership'),
-										"users"		=>	__('Users','membership')
+										"users"		=>	__('Users','membership'),
+										"shortcode"	=>	__('Shortcode', 'membership')
 									);
 
 					$columns = apply_filters('membership_levelcolumns', $columns);
@@ -3816,6 +3817,9 @@ if(!class_exists('membershipadmin')) {
 										<strong>
 											<?php echo $this->count_on_level( $level->id ); ?>
 										</strong>
+									</td>
+									<td class="column-shortcode">
+										<?php echo "[" . sanitize_title_with_dashes('level-' . $level->level_title) . "]"; ?>
 									</td>
 							    </tr>
 								<?php
