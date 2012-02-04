@@ -3248,6 +3248,38 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			// Check which tab we should open the edit form with
+			if(!empty($p) && !empty($n)) {
+				// We have content in both areas - so start with advanced open
+				$advancedtab = 'activetab';
+				$negativetab = '';
+				$positivetab = '';
+
+				$advancedcontent = 'activecontent';
+				$negativecontent = 'activecontent';
+				$positivecontent = 'activecontent';
+			} else {
+				if(!empty($n)) {
+					// We have content in the negative area - so start with that
+					$advancedtab = '';
+					$negativetab = 'activetab';
+					$positivetab = '';
+
+					$advancedcontent = 'inactivecontent';
+					$negativecontent = 'activecontent';
+					$positivecontent = 'inactivecontent';
+				} else {
+					// Default to the positive area
+					$advancedtab = '';
+					$negativetab = '';
+					$positivetab = 'activetab';
+
+					$advancedcontent = 'inactivecontent';
+					$negativecontent = 'inactivecontent';
+					$positivecontent = 'activecontent';
+				}
+			}
+
 			?>
 			<div class='wrap nosubsub'>
 				<div class="icon32" id="icon-link-manager"><br></div>
@@ -3288,16 +3320,16 @@ if(!class_exists('membershipadmin')) {
 								<?php do_action('membership_level_form_before_rules', $level->id); ?>
 
 								<ul class='leveltabs'>
-									<li class='positivetab activetab'><div class='downarrow'></div><a href='#positive'><div><?php _e('Positive Rules', 'membership'); ?></div></a></li>
-									<li class='negativetab'><div class='downarrow'></div><a href='#negative'><div><?php _e('Negative Rules', 'membership'); ?></div></a></li>
-									<li class='advancedtab'><div class='downarrow'></div><a href='#advanced'><div><?php _e('Advanced (both)', 'membership'); ?></div></a></li>
+									<li class='positivetab <?php echo $positivetab; ?>'><div class='downarrow'></div><a href='#positive'><div><?php _e('Positive Rules', 'membership'); ?></div></a></li>
+									<li class='negativetab <?php echo $negativetab; ?>'><div class='downarrow'></div><a href='#negative'><div><?php _e('Negative Rules', 'membership'); ?></div></a></li>
+									<li class='advancedtab <?php echo $advancedtab; ?>'><div class='downarrow'></div><a href='#advanced'><div><?php _e('Advanced (both)', 'membership'); ?></div></a></li>
 								</ul>
 
-								<div class='advancedtabwarning'>
+								<div class='advancedtabwarning <?php echo $advancedcontent; ?>'>
 									<?php _e('<strong>Warning:</strong> using both positive and negative rules on the same level can cause conflicts and unpredictable behaviour.','membership'); ?>
 								</div>
 
-								<div class='positivecontent activecontent'>
+								<div class='positivecontent <?php echo $positivecontent; ?>'>
 									<h3 class='positive positivetitle'><?php _e('Positive rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
@@ -3323,7 +3355,7 @@ if(!class_exists('membershipadmin')) {
 									</div>
 								</div>
 
-								<div class='negativecontent inactivecontent'>
+								<div class='negativecontent <?php echo $negativecontent; ?>'>
 									<h3 class='negative negativetitle'><?php _e('Negative rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 
@@ -3351,7 +3383,7 @@ if(!class_exists('membershipadmin')) {
 									</div>
 								</div>
 
-								<div class='advancedcontent inactivecontent'>
+								<div class='advancedcontent <?php echo $advancedcontent; ?>'>
 								<?php do_action('membership_level_form_after_rules', $level->id); ?>
 								</div>
 

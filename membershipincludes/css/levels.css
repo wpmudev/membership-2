@@ -120,7 +120,7 @@ div.level-details select {
 	display: none;
 }
 
-#edit-level div.level-holder div.advancedtabwarning {
+#edit-level div.level-holder div.advancedtabwarning.inactivecontent {
 	background-color: #fffbcc;
 	border: 1px solid #e6db55;
 	padding: 10px;
@@ -128,6 +128,16 @@ div.level-details select {
 	margin-right: 10px;
 	margin-bottom: 10px;
 	display: none;
+}
+
+#edit-level div.level-holder div.advancedtabwarning.activecontent {
+	background-color: #fffbcc;
+	border: 1px solid #e6db55;
+	padding: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	display: block;
 }
 
 a.action-to-positive {
