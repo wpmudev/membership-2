@@ -120,6 +120,18 @@ div.level-details select {
 	display: none;
 }
 
+.level-holder h3.activecontent {
+	display: block;
+}
+
+.level-holder h3.inactivecontent {
+	display: none;
+}
+
+.level-holder div.advancedcontent.activecontent h3 {
+	display: block;
+}
+
 #edit-level div.level-holder div.advancedtabwarning.inactivecontent {
 	background-color: #fffbcc;
 	border: 1px solid #e6db55;

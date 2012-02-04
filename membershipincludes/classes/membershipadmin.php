@@ -3330,7 +3330,7 @@ if(!class_exists('membershipadmin')) {
 								</div>
 
 								<div class='positivecontent <?php echo $positivecontent; ?>'>
-									<h3 class='positive positivetitle'><?php _e('Positive rules','membership'); ?></h3>
+									<h3 class='positive positivetitle <?php echo $advancedcontent; ?>'><?php _e('Positive rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level can access.','membership'); ?></p>
 
 									<div id='positive-rules' class='level-droppable-rules levels-sortable'>
@@ -3356,7 +3356,7 @@ if(!class_exists('membershipadmin')) {
 								</div>
 
 								<div class='negativecontent <?php echo $negativecontent; ?>'>
-									<h3 class='negative negativetitle'><?php _e('Negative rules','membership'); ?></h3>
+									<h3 class='negative negativetitle <?php echo $advancedcontent; ?>'><?php _e('Negative rules','membership'); ?></h3>
 									<p class='description'><?php _e('These are the areas / elements that a member of this level doesn\'t have access to.','membership'); ?></p>
 
 									<div id='negative-rules' class='level-droppable-rules levels-sortable'>
