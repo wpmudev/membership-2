@@ -1645,12 +1645,14 @@ if(!class_exists('membershippublic')) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_subscription_form')) {
 						wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 					}
 				}
 				if(strstr($post->post_content, '[accountform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
+						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 						wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
 					}
 				}
@@ -1658,12 +1660,14 @@ if(!class_exists('membershippublic')) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
+						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 					}
 				}
 				if(strstr($post->post_content, '[renewform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
+						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 						wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 						wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 					}
