@@ -1,0 +1,268 @@
+#membership-wrapper form {
+  margin: 0 0 18px;
+}
+#membership-wrapper fieldset {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+#membership-wrapper legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 20px;
+  font-size: 1.6em;
+  border-bottom: 1px solid #ddd;
+}
+#membership-wrapper label {
+  display: block;
+  margin-bottom: 5px;
+}
+#membership-wrapper input,
+#membership-wrapper textarea,
+#membership-wrapper select{
+  display: inline-block;
+  width: 50%;
+  min-height: 20px;
+  padding: 3px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#membership-wrapper label input, #membership-wrapper label textarea, #membership-wrapper label select {
+  display: block;
+}
+#membership-wrapper input[type="image"], #membership-wrapper input[type="checkbox"], #membership-wrapper input[type="radio"] {
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 3px 0;
+  line-height: normal;
+  border: 0;
+  cursor: pointer;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+#membership-wrapper input[type="file"] {
+  padding: initial;
+  line-height: initial;
+  border: initial;
+  background-color: #fff;
+  background-color: initial;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+#membership-wrapper input[type="button"], #membership-wrapper input[type="reset"], #membership-wrapper input[type="submit"] {
+  width: auto;
+  height: auto;
+}
+#membership-wrapper select, #membership-wrapper input[type="file"] {
+  height: 28px;
+}
+#membership-wrapper select {
+  max-width: 220px;
+  background-color: #fff;
+}
+#membership-wrapper select[multiple], #membership-wrapper select[size] {
+  height: auto;
+}
+#membership-wrapper input[type="image"] {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+#membership-wrapper textarea {
+  height: auto;
+}
+#membership-wrapper input[type="hidden"] {
+  display: none;
+}
+#membership-wrapper .radio, #membership-wrapper .checkbox {
+  padding-left: 20px;
+}
+#membership-wrapper .radio input[type="radio"], #membership-wrapper .checkbox input[type="checkbox"] {
+  float: left;
+  margin-left: -20px;
+}
+#membership-wrapper .element > .radio:first-child, #membership-wrapper .element > .checkbox:first-child {
+  padding-top: 5px;
+}
+#membership-wrapper .radio.inline, #membership-wrapper .checkbox.inline {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+#membership-wrapper .radio.inline + .radio.inline, #membership-wrapper .checkbox.inline + .checkbox.inline {
+  margin-left: 10px;
+}
+#membership-wrapper .element > .radio.inline:first-child, #membership-wrapper .element > .checkbox.inline:first-child {
+  padding-top: 0;
+}
+#membership-wrapper input, #membership-wrapper textarea {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+#membership-wrapper input:focus, #membership-wrapper textarea:focus {
+    border-color: rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+#membership-wrapper input[type="file"]:focus, #membership-wrapper input[type="checkbox"]:focus, #membership-wrapper select:focus {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+#membership-wrapper :-moz-placeholder {
+  color: #999;
+}
+#membership-wrapper ::-webkit-input-placeholder {
+  color: #999;
+}
+#membership-wrapper .help-block {
+  margin-top: 10px;
+  margin-bottom: 0;
+  color: #999999;
+}
+#membership-wrapper .help-inline {
+  display: inline-block;
+  margin-bottom: 10px;
+  vertical-align: middle;
+  padding-left: 10px;
+}
+#membership-wrapper form{
+  display: inline-block;
+  margin-bottom: 0;
+}
+#membership-wrapper label{
+  display: inline-block;
+}
+#membership-wrapper .form-element {
+  margin-bottom: 10px;
+}
+#membership-wrapper .form-membership legend + .form-element {
+  margin-top: 18px;
+  -webkit-margin-top-collapse: separate;
+}
+#membership-wrapper .form-membership . {
+  margin-bottom: 18px;
+  *zoom: 1;
+}
+#membership-wrapper .form-membership .form-element:before, #membership-wrapper .form-membership .form-element:after {
+  display: table;
+  content: "";
+}
+#membership-wrapper .form-membership .form-element:after {
+  clear: both;
+}
+#membership-wrapper .form-membership .form-element > label {
+  float: left;
+  width: 140px;
+  padding-top: 5px;
+  text-align: right;
+}
+#membership-wrapper .form-membership .element {
+  margin-left: 170px;
+}
+#membership-wrapper .form-membership .form-actions {
+  padding-left: 170px;
+}
+#membership-wrapper .close {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 18px;
+  color: #000000;
+  text-shadow: 0 1px 0 #ffffff;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+#membership-wrapper .close:hover {
+  color: #000000;
+  text-decoration: none;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  cursor: pointer;
+}
+#membership-wrapper .btnstyle {
+  display: inline-block;
+  padding: 5px 10px 5px;
+  font-size: 1.2em;
+  line-height: 18px;
+  text-align: center;
+  color:#333;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  background-color: #fafafa;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+  border: 1px solid #ccc;
+  border-bottom-color: #bbb;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+#membership-wrapper .btnstyle:hover {
+  color: #333;
+  text-decoration: none;
+  background-color: #e6e6e6;
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -ms-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+#membership-wrapper .alert {
+  padding: 10px 30px 10px 15px;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #fbfce3;
+  border: 1px solid #ecf088;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+#membership-wrapper .alert{
+  color: #c09853;
+}
+#membership-wrapper .alert .close {
+  position: relative;
+  top: -2px;
+  right: -21px;
+  line-height: 18px;
+}
+#membership-wrapper .alert-success {
+  background-color: #def7e4;
+  border-color: #8de3a1;
+}
+#membership-wrapper .alert-success, #membership-wrapper .alert-success .alert-heading {
+  color: #468847;
+}
+#membership-wrapper .alert-danger, #membership-wrapper .alert-error {
+  background-color: #fce5e3;
+  border-color: #f28f87;
+}
+#membership-wrapper .alert-error,
+#membership-wrapper .alert-error .alert-heading {
+  color: #b94a48;
+}
