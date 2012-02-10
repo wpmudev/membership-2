@@ -1196,7 +1196,7 @@ if(!class_exists('membershippublic')) {
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && !empty($anyerrors)) {
 										$messages = $error->get_error_messages();
-										$content .= "<div class='error'>";
+										$content .= "<div class='alert alert-error'>";
 										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
 
@@ -1312,7 +1312,7 @@ if(!class_exists('membershippublic')) {
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && !empty($anyerrors)) {
 										$messages = $error->get_error_messages();
-										$content .= "<div class='error'>";
+										$content .= "<div class='alert alert-error'>";
 										$content .= implode('<br/>', $messages);
 										$content .= "</div>";
 										// Show the page so that it can display the errors
@@ -1625,6 +1625,7 @@ if(!class_exists('membershippublic')) {
 								wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
 								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
@@ -1688,13 +1689,13 @@ if(!class_exists('membershippublic')) {
 				if(strstr($post->post_content, '[subscriptionbutton') !== false) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_subscription_form')) {
-						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
-
 						wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
 						wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 
 						wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
 						wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+
+						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
 
 						wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
 						 														'registernonce'	=>	wp_create_nonce('membership_register'),
