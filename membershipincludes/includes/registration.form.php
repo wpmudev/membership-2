@@ -53,7 +53,7 @@
 			do_action( 'signup_extra_fields', $errors );
 		?>
 
-		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="alignright btnstyle <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
+		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="alignright button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 		<input type="hidden" name="action" value="validatepage1" />
 
 		<a title="Login »" href="<?php echo wp_login_url( add_query_arg('action', 'page2', get_permalink()) ); ?>" class="alignleft" id="login_right"><?php _e('Already have a user account?' ,'membership'); ?></a>
