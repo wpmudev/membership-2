@@ -1580,6 +1580,7 @@ if(!class_exists('membershippublic')) {
 							// registration page found - add in the styles
 							if(!current_theme_supports('membership_subscription_form')) {
 								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
+								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
 
 								if($M_options['formtype'] == 'new') {
@@ -1622,6 +1623,8 @@ if(!class_exists('membershippublic')) {
 								wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
 								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 								wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+
+								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );

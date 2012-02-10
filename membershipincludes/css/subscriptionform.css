@@ -303,7 +303,7 @@ div.priceboxes {
 	margin-left: auto;
 	margin-right: auto;
 	overflow: hidden;
-	padding: 5px 10px 0;
+	padding: 0;
 }
 
 div.pricebox {
@@ -313,11 +313,7 @@ div.pricebox {
 	float: left;
 	background: #ffffff;
 	width: 95%;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1);
-	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
+	border: 1px solid #ddd;
 }
 
 div.topbar {
@@ -325,12 +321,6 @@ div.topbar {
 	top: 0;
 	width: 100%;
 	background: #eee;
-	border-top-left-radius: 10px;
-	-moz-border-radius-topleft: 10px;
-	-webkit-border-radius-topleft: 10px;
-	border-top-right-radius: 10px;
-	-moz-border-radius-topright: 10px;
-	-webkit-border-radius-topright: 10px;
 	text-align: left;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -344,12 +334,6 @@ div.bottombar {
 	bottom: 0;
 	width: 100%;
 	background: #f6f6f6;
-	border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomleft: 10px;
-	-webkit-border-radius-bottomleft: 10px;
-	border-bottom-right-radius: 10px;
-	-moz-border-radius-bottomright: 10px;
-	-webkit-border-radius-bottomright: 10px;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	color: #434343;
