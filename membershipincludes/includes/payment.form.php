@@ -12,10 +12,14 @@ if(!empty($user->ID) && is_numeric($user->ID) ) {
 if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );
 	?>
-		<h2><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h2>
+		<div id='membership-wrapper'>
+		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
+		<fieldset>
+			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
 
-		<div class='paymentfullwidth'>
-			<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
+			<div class="alert">
+			<?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?>
+			</div>
 
 			<table class='purchasetable'>
 				<?php $subs = $this->get_subscriptions();
@@ -71,6 +75,8 @@ if($member->on_sub( $subscription )) {
 						}
 				?>
 			</table>
+			</fieldset>
+			</form>
 		</div>
 
 	<?php
@@ -79,9 +85,14 @@ if($member->on_sub( $subscription )) {
 	$sub =  new M_Subscription( $subscription );
 
 	?>
-		<h2><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h2>
-		<div class='paymentfullwidth'>
-			<p><?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?></p>
+		<div id='membership-wrapper'>
+		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
+		<fieldset>
+			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
+
+			<div class="alert alert-success">
+			<?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?>
+			</div>
 
 			<table class='purchasetable'>
 				<tr>
@@ -126,7 +137,8 @@ if($member->on_sub( $subscription )) {
 					</td>
 				</tr>
 			</table>
-
+			</fieldset>
+			</form>
 		</div>
 	<?php
 }
