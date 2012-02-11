@@ -303,7 +303,7 @@ div.priceboxes {
 	margin-left: auto;
 	margin-right: auto;
 	overflow: hidden;
-	padding: 0;
+	padding: 20px 0 0;
 }
 
 div.pricebox {
@@ -312,7 +312,7 @@ div.pricebox {
 	margin-bottom: 20px;
 	float: left;
 	background: #ffffff;
-	width: 95%;
+	width: 99%;
 	border: 1px solid #ddd;
 }
 
