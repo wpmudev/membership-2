@@ -2290,6 +2290,12 @@ if(!class_exists('membershipadmin')) {
 													$M_options['account_page'] = $id;
 													break;
 
+					case 'createsubscriptionspage':		check_admin_referer('create-subscriptionspage');
+													$pagedetails = array('post_title' => __('Subscriptions', 'membership'), 'post_name' => 'subscriptions', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+													$id = wp_insert_post( $pagedetails );
+													$M_options['subscriptions_page'] = $id;
+													break;
+
 					case 'createnoaccesspage':		check_admin_referer('create-noaccesspage');
 													$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.','membership') . '</p>';
 													$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
@@ -2507,7 +2513,6 @@ if(!class_exists('membershipadmin')) {
 						<div class="inside">
 							<p class='description'><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
 							<p class='description'><?php _e('It can be left blank to use the standard Membership interface, otherwise it can contain any content you want but <strong>should</strong> contain the [accountform] shortcode in some location.','membership'); ?></p>
-							<p class='description'><?php _e('If you would like your users to be able to see their subscription details and upgrade / renew them then also add the shortcode [renewform] on this or a linked page.','membership'); ?></p>
 
 							<table class="form-table">
 							<tbody>
@@ -2521,6 +2526,31 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createaccountpage", 'create-accountpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the account page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Subscriptions page','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('This is the page a user will be redirected to when they want to view their subscription details and upgrade / renew them.','membership'); ?></p>
+							<p class='description'><?php _e('It can be left blank to use the standard Membership interface, otherwise it can contain any content you want but <strong>should</strong> contain the [renewform] shortcode in some location.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Subscriptions page','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Select a page to use for the upgrade form. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
+									</th>
+									<td>
+										<?php
+										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['subscriptions_page'], 'name' => 'subscriptions_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+										echo $pages;
+										?>
+										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createsubscriptionspage", 'create-subscriptionspage'); ?>' class='button-primary' title='<?php _e('Create a default page for the upgrade / renewal page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
 									</td>
 								</tr>
 							</tbody>
