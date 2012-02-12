@@ -1051,6 +1051,14 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function do_renew_form() {
+			global $wp_query, $M_options, $bp;
+
+			$content = $this->show_renew_page();
+
+			return $content;
+		}
+
 		function output_subscriptionform() {
 
 			global $wp_query, $M_options, $bp;
@@ -1625,6 +1633,23 @@ if(!class_exists('membershippublic')) {
 							if(!current_theme_supports('membership_account_form')) {
 								wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
 								wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+
+								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+							}
+							// There is no shortcode in there, so override
+							remove_filter( 'the_content', 'wpautop' );
+							$post->post_content = $this->do_account_form();
+						}
+					}
+					if($post->ID == $M_options['subscriptions_page']) {
+						// account page - check if page contains a shortcode
+						if(strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
+							// There is content in there with the shortcode so just return it
+							return $posts;
+						} else {
+							// account page found - add in the styles
+							if(!current_theme_supports('membership_account_form')) {
 								wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 								wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
 								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
@@ -1635,7 +1660,7 @@ if(!class_exists('membershippublic')) {
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content = $this->do_account_form();
+							$post->post_content = $this->do_renew_form();
 						}
 					}
 					if($post->ID == $M_options['nocontent_page']) {
