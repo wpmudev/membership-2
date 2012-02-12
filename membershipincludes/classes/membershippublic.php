@@ -1043,6 +1043,22 @@ if(!class_exists('membershippublic')) {
 
 		function do_account_form() {
 
+			global $wp_query, $M_options, $bp;
+
+			$content = apply_filters('membership_account_form_before_content', $content, $user_id);
+			ob_start();
+			if( defined('MEMBERSHIP_ACCOUNT_FORM') && file_exists( MEMBERSHIP_ACCOUNT_FORM ) ) {
+				include_once( MEMBERSHIP_ACCOUNT_FORM );
+			} elseif(file_exists( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) ) ) {
+				include_once( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_account_form_after_content', $content, $user_id );
+
+			return $content;
+
 		}
 
 		function output_subscriptionform() {

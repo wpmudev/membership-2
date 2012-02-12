@@ -19,14 +19,14 @@
 			<div class="form-element">
 				<label class="control-label" for="user_login"><?php _e('Choose a Username','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_login" placeholder="" value="<?php echo esc_attr($_POST['user_login']); ?>">
+					<input type="text" class="input-xlarge" id="user_login" name="user_login" placeholder="" value="<?php echo esc_attr($_POST['user_login']); ?>">
 				</div>
 			</div>
 
 			<div class="form-element">
 				<label class="control-label" for="user_email"><?php _e('Email Address','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_email" placeholder="" value="<?php echo esc_attr($_POST['user_email']); ?>">
+					<input type="text" class="input-xlarge" id="user_email" name="user_email" placeholder="" value="<?php echo esc_attr($_POST['user_email']); ?>">
 				</div>
 
 				<p class="help-block"><?php _e('Please enter a new password, and then verify your new password by entering it again.','membership'); ?></p>
@@ -34,14 +34,14 @@
 			<div class="form-element">
 				<label class="control-label" for="user_email"><?php _e('Password','membership'); ?></label>
 				<div class="element">
-					<input type="password" class="input-xlarge" id="user_email" placeholder="" autocomplete="off">
+					<input type="password" class="input-xlarge" id="password" name="password" placeholder="" autocomplete="off">
 				</div>
 			</div>
 
 			<div class="form-element">
 				<label class="control-label" for="user_email"><?php _e('Confirm Password','membership'); ?></label>
 				<div class="element">
-					<input type="password" class="input-xlarge" id="user_email" placeholder="" autocomplete="off">
+					<input type="password" class="input-xlarge" id="password2" name="password2" placeholder="" autocomplete="off">
 				</div>
 
 				<p class="help-block"><?php _e('Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).','membership'); ?></p>

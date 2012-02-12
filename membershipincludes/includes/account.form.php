@@ -39,6 +39,54 @@
 
 
 ?>
+
+<div id='membership-wrapper'>
+
+<?php if(!empty($msg)) {
+?>
+	<div class='alert alert-error'><?php echo $msg; ?></div>
+<?php
+} ?>
+
+<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
+	<?php wp_nonce_field('update-user_' . $user_id); ?>
+	<input type="hidden" name="action" value="update" />
+	<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr($user_id); ?>" />
+
+	<fieldset>
+		<legend><?php _e( 'Edit your details', 'membership' ) ?></legend>
+
+			<div class="form-element">
+				<label class="control-label" for="user_login"><?php _e('Username', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" id="user_login" nmae="user_login" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" >
+					<p class="help-block"><?php _e('Usernames cannot be changed.','membership'); ?></p>
+				</div>
+			</div>
+
+			<div class="form-element">
+				<label class="control-label" for="user_login"><?php _e('First Name', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" >
+					<p class="help-block"><?php _e('Usernames cannot be changed.','membership'); ?></p>
+				</div>
+			</div>
+
+			<div class="form-element">
+				<label class="control-label" for="user_login"><?php _e('Username', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" id="user_login" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" >
+					<p class="help-block"><?php _e('Usernames cannot be changed.','membership'); ?></p>
+				</div>
+			</div>
+
+
+	</fieldset>
+
+</form>
+
+</div>
+
 <div id="account-form">
 	<div class="formleft">
 
