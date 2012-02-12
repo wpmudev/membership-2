@@ -67,16 +67,14 @@
 			<div class="form-element">
 				<label class="control-label" for="user_login"><?php _e('First Name', 'membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" >
-					<p class="help-block"><?php _e('Usernames cannot be changed.','membership'); ?></p>
+					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" >
 				</div>
 			</div>
 
 			<div class="form-element">
-				<label class="control-label" for="user_login"><?php _e('Username', 'membership'); ?></label>
+				<label class="control-label" for="user_login"><?php _e('Last Name', 'membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_login" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" >
-					<p class="help-block"><?php _e('Usernames cannot be changed.','membership'); ?></p>
+					<input type="text" class="input-xlarge" id="last_name" name="last_name" placeholder="" value="<?php echo esc_attr($profileuser->last_name) ?>" >
 				</div>
 			</div>
 
