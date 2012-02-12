@@ -14,6 +14,8 @@ class paypalexpress extends M_Gateway {
 	function paypalexpress() {
 		parent::M_Gateway();
 
+		//echo "booboo";
+
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
 
 		// If I want to override the transactions output - then I can use this action
@@ -348,6 +350,7 @@ class paypalexpress extends M_Gateway {
 			}
 
 			if(!$free) {
+
 				if(count($pricing) == 1) {
 					// A basic price or a single subscription
 					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {

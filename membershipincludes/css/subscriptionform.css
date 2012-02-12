@@ -375,3 +375,19 @@ div.priceboxes div.bottombar span.link {
 .clear {
 	clear: both;
 }
+
+#membership-wrapper form.form-membership .purchasetable .buynowcolumn {
+	text-align: right;
+	vertical-align: top;
+}
+
+#membership-wrapper form.form-membership .purchasetable .detailscolumn {
+	text-align: left;
+	vertical-align: top;
+}
+
+#membership-wrapper form.form-membership .purchasetable .pricecolumn {
+	text-align: right;
+	vertical-align: top;
+}
+

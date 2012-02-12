@@ -63,14 +63,14 @@ if(!class_exists('M_Gateway')) {
 
 		function activate() {
 
-			$active = get_option('M_active_gateways', array());
+			$active = get_option('membership_activated_gateways', array());
 
-			if(array_key_exists($this->gateway, $active)) {
+			if(in_array($this->gateway, $active)) {
 				return true;
 			} else {
 				$active[$this->gateway] = true;
 
-				update_option('M_active_gateways', $active);
+				update_option('membership_activated_gateways', $active);
 
 				return true;
 			}
@@ -79,12 +79,12 @@ if(!class_exists('M_Gateway')) {
 
 		function deactivate() {
 
-			$active = get_option('M_active_gateways', array());
+			$active = get_option('membership_activated_gateways', array());
 
-			if(array_key_exists($this->gateway, $active)) {
+			if(in_array($this->gateway, $active)) {
 				unset($active[$this->gateway]);
 
-				update_option('M_active_gateways', $active);
+				update_option('membership_activated_gateways', $active);
 
 				return true;
 			} else {
@@ -95,8 +95,9 @@ if(!class_exists('M_Gateway')) {
 
 		function is_active() {
 
-			$active = get_option('M_active_gateways', array());
-			if(array_key_exists($this->gateway, $active)) {
+			$active = get_option('membership_activated_gateways', array());
+
+			if(in_array($this->gateway, $active)) {
 				return true;
 			} else {
 				return false;

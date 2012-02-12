@@ -65,7 +65,7 @@ if($member->on_sub( $subscription )) {
 									<?php
 									$pricing = $sub->get_pricingarray();
 
-									if($pricing) {
+									if(!empty($pricing)) {
 										do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 									}
 									?>
@@ -130,7 +130,7 @@ if($member->on_sub( $subscription )) {
 					<?php
 					$pricing = $sub->get_pricingarray();
 
-					if($pricing) {
+					if(!empty($pricing)) {
 						do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 					}
 					?>
