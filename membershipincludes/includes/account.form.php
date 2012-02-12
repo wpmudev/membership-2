@@ -4,7 +4,7 @@
 	if(isset($_POST['action']) && $_POST['action'] == 'update') {
 
 		if( wp_verify_nonce($_REQUEST['_wpnonce'], 'update-user_' . $user_id) ) {
-			$msg = __('Your details have been updated.','membership');
+			$msg = '<div class="alert alert-success">' . __('Your details have been updated.','membership') . '</div>';
 
 			$user = array( 	'ID'			=>	$_POST['user_id'],
 							'first_name'	=>	$_POST['first_name'],
@@ -19,7 +19,7 @@
 				if(($_POST['pass1'] == $_POST['pass2'])) {
 					$user['user_pass'] = $_POST['pass1'];
 				} else {
-					$msg = __('Your password settings do not match','membership');
+					$msg = "<div class='alert alert-error'>" . __('Your password settings do not match','membership') . "</div>";
 				}
 			}
 
@@ -27,11 +27,11 @@
 			$profileuser = get_user_to_edit($user_id);
 
 			if ( isset( $errors ) && is_wp_error( $errors ) ) {
-				$msg = implode( "</p>\n<p>", $errors->get_error_messages() );
+				$msg = "<div class='alert alert-error'>" . implode( "<br/>\n", $errors->get_error_messages() ) . "</div>";
 			}
 
 		} else {
-			$msg = __('Your details could not be updated.','membership');
+			$msg = "<div class='alert alert-error'>" . __('Your details could not be updated.','membership') . "</div>";
 		}
 
 		do_action('edit_user_profile_update', $user_id);
@@ -44,7 +44,7 @@
 
 <?php if(!empty($msg)) {
 ?>
-	<div class='alert alert-error'><?php echo $msg; ?></div>
+	<?php echo $msg; ?>
 <?php
 } ?>
 
@@ -65,75 +65,29 @@
 			</div>
 
 			<div class="form-element">
-				<label class="control-label" for="user_login"><?php _e('First Name', 'membership'); ?></label>
+				<label class="control-label" for="first_name"><?php _e('First Name', 'membership'); ?></label>
 				<div class="element">
 					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" >
 				</div>
 			</div>
 
 			<div class="form-element">
-				<label class="control-label" for="user_login"><?php _e('Last Name', 'membership'); ?></label>
+				<label class="control-label" for="last_name"><?php _e('Last Name', 'membership'); ?></label>
 				<div class="element">
 					<input type="text" class="input-xlarge" id="last_name" name="last_name" placeholder="" value="<?php echo esc_attr($profileuser->last_name) ?>" >
 				</div>
 			</div>
 
+			<div class="form-element">
+				<label class="control-label" for="nickname"><?php _e('Nickname', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" id="nickname" name="nickname" placeholder="" value="<?php echo esc_attr($profileuser->nickname) ?>" >
+				</div>
+			</div>
 
-	</fieldset>
-
-</form>
-
-</div>
-
-<div id="account-form">
-	<div class="formleft">
-
-	<?php if(!empty($msg)) {
-	?>
-		<div id='message'><p><?php echo $msg; ?></p></div>
-	<?php
-	} ?>
-		<p><?php echo sprintf(__('<strong>Hello %s</strong>, to edit your account details click on the edit link.','membership'),$profileuser->display_name) ; ?>
-		<span>
-		<a href='#edit' id='membershipaccounttoggle'><?php _e('edit','membership'); ?></a>
-		</span>
-		</p>
-
-		<form action='' method='POST'>
-
-		<?php wp_nonce_field('update-user_' . $user_id); ?>
-
-		<input type="hidden" name="action" value="update" />
-		<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr($user_id); ?>" />
-
-		<table class="form-table">
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Username', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="user_login" id="user_login" value="<?php echo esc_attr($profileuser->user_login); ?>" disabled="disabled" class="regular-text" /><br/><span class="description"><?php _e('Usernames cannot be changed.','membership'); ?></span>
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('First Name', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="first_name" id="first_name" value="<?php echo esc_attr($profileuser->first_name) ?>" class="regular-text" />
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Last Name', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="last_name" id="last_name" value="<?php echo esc_attr($profileuser->last_name) ?>" class="regular-text" />
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Nickname', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="nickname" id="nickname" value="<?php echo esc_attr($profileuser->nickname) ?>" class="regular-text" />
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Display name publicly as', 'membership'); ?></label></th>
-				<td>
+			<div class="form-element">
+				<label class="control-label" for="display_name"><?php _e('Display name as', 'membership'); ?></label>
+				<div class="element">
 					<select name="display_name" id="display_name">
 					<?php
 						$public_display = array();
@@ -158,51 +112,47 @@
 						}
 					?>
 					</select>
-				</td>
-			</tr>
-		</table>
+				</div>
+			</div>
 
-		<table class="form-table">
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Email', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="email" id="email" value="<?php echo esc_attr($profileuser->user_email) ?>" class="regular-text" />
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('Website', 'membership'); ?></label></th>
-				<td>
-					<input type="text" name="url" id="url" value="<?php echo esc_attr($profileuser->user_url) ?>" class="regular-text code" />
-				</td>
-			</tr>
-		</table>
+			<div class="form-element">
+				<label class="control-label" for="email"><?php _e('Email', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" name="email" id="email" value="<?php echo esc_attr($profileuser->user_email) ?>" />
+				</div>
+			</div>
 
-		<table class="form-table">
-			<tr style='background: transparent;'>
-				<th><label for="enable_affiliate"><?php _e('New Password', 'membership'); ?></label></th>
-				<td>
-					<input type="password" name="pass1" id="pass1" size="16" value="" autocomplete="off" />
-				</td>
-			</tr>
-			<tr style='background: transparent;'>
-				<th></th>
-				<td>
-					<input type="password" name="pass2" id="pass2" size="16" value="" autocomplete="off" />
-				</td>
-			</tr>
-		</table>
+			<div class="form-element">
+				<label class="control-label" for="url"><?php _e('Website', 'membership'); ?></label>
+				<div class="element">
+					<input type="text" class="input-xlarge" name="url" id="url" value="<?php echo esc_attr($profileuser->user_url) ?>" />
+				</div>
+			</div>
 
-		<table class="form-table">
-			<tr style='background: transparent;'>
-				<th></th>
-				<td>
-					<input type="submit" value="<?php _e('Update Account','membership'); ?>" class="button-primary" id="submit" name="submit">
-				</td>
-			</tr>
-		</table>
+			<div class="form-element">
+				<p class="help-block"><?php _e('To change your password, enter the new password below and then repeat it to confirm, otherwise leave these two fields blank.','membership'); ?></p>
+			</div>
 
-		</form>
-	</div>
+			<div class="form-element">
+				<label class="control-label" for="pass1"><?php _e('New Password', 'membership'); ?></label>
+				<div class="element">
+					<input type="password" class="input-xlarge" name="pass1" id="pass1" value="" autocomplete="off" />
+				</div>
+			</div>
+
+			<div class="form-element">
+				<label class="control-label" for="pass1"><?php _e('Confirm Password', 'membership'); ?></label>
+				<div class="element">
+					<input type="password" class="input-xlarge" name="pass2" id="pass2" value="" autocomplete="off" />
+				</div>
+			</div>
+
+			<p><input type="submit" value="<?php _e('Update Account','membership'); ?>" class="alignright button <?php echo apply_filters('membership_account_button_color', 'blue'); ?>" name="submit"></p>
+
+	</fieldset>
+
+</form>
+
 </div>
 <?php
 ?>
