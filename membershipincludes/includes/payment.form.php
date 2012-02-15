@@ -92,8 +92,6 @@ if($member->on_sub( $subscription )) {
 
 	?>
 		<div id='membership-wrapper'>
-		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
-		<fieldset>
 			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
 
 			<div class="alert alert-success">
@@ -149,8 +147,6 @@ if($member->on_sub( $subscription )) {
 					</td>
 				</tr>
 			</table>
-			</fieldset>
-			</form>
 		</div>
 	<?php
 }

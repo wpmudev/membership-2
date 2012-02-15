@@ -155,7 +155,7 @@ class freesubscriptions extends M_Gateway {
 
 		$form = '';
 
-		$form .= '<form action="' . M_get_registration_permalink() . '" method="post">';
+		$form .= '<form action="' . M_get_subscription_permalink() . '" method="post">';
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
 

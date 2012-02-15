@@ -1054,7 +1054,42 @@ if(!class_exists('membershippublic')) {
 		function do_renew_form() {
 			global $wp_query, $M_options, $bp;
 
-			$content = $this->show_renew_page();
+			$page = addslashes($_REQUEST['action']);
+			if(empty($page)) {
+				$page = 'renewform';
+			}
+
+			$content = '';
+
+			switch($page) {
+
+				case 'renewform':			$content = $this->show_renew_page();
+											break;
+
+				case 'subscriptionsignup':	if(!is_user_logged_in()) {
+												$member = current_member();
+
+												$sub_id = (int) $_POST['subscription'];
+												$user = (int)	$_POST['user'];
+												$level = (int) $_POST['level'];
+												if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
+													// Join the new subscription
+													$member->create_subscription($sub_id, $gateway);
+													// Remove the old subscription
+													$member->drop_subscription($fromsub_id);
+													// Timestamp the update
+													update_user_meta( $user, '_membership_last_upgraded', time());
+												}
+												//update_user_meta( $member->ID, '_membership_last_upgraded', time());
+												break;
+											}
+											break;
+
+
+
+
+
+			}
 
 			return $content;
 		}

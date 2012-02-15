@@ -259,11 +259,11 @@ class paypalsolo extends M_Gateway {
 
 		$form = '';
 
-		$form .= '<form action="' . M_get_registration_permalink() . '" method="post">';
+		$form .= '<form action="' . M_get_subscription_permalink() . '" method="post">';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0', $sublevel) .'">';
 
 		if($sublevel == 1) {
-			$form .= '<input type="hidden" name="action" value="validatepage2" />';
+			$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 			$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
 		} else {
 			$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
@@ -274,7 +274,6 @@ class paypalsolo extends M_Gateway {
 			$form .=  "<input type='hidden' name='level' value='" . $sublevel . "' />";
 			$button = get_option( $this->gateway . "_paypal_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
 		}
-
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '</form>';
