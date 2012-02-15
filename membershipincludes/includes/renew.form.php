@@ -92,7 +92,18 @@
 			<?php
 		} else {
 			// The user has a subscription so we can display it with the information
-
+			?>
+				<div id='membership-wrapper'>
+					<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
+						<fieldset>
+							<legend><?php echo __('Your Subscriptions','membership'); ?></legend>
+							<div class="alert alert-error">
+							<?php echo __('You do not currently have any subscriptions in place. You can sign up for a new subscription by selecting one below', 'membership'); ?>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			<?php
 		}
 	}
 

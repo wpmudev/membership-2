@@ -6747,29 +6747,35 @@ if(!class_exists('membershipadmin')) {
 												</td>
 												<td class='pricecolumn'>
 												<?php
-													$first = $sub->get_level_at_position(1);
+													$amount = $sub->sub_pricetext();
 
-													if(!empty($first)) {
-														$price = $first->level_price;
-														if($price == 0) {
-															$price = "Free";
-														} else {
+													if(!empty($amount)) {
+														echo $amount;
+													} else {
+														$first = $sub->get_level_at_position(1);
 
-															$M_options = get_option('membership_options', array());
+														if(!empty($first)) {
+															$price = $first->level_price;
+															if($price == 0) {
+																$price = "Free";
+															} else {
 
-															switch( $M_options['paymentcurrency'] ) {
-																case "USD": $price = "$" . $price;
-																			break;
+																$M_options = get_option('membership_options', array());
 
-																case "GBP":	$price = "&pound;" . $price;
-																			break;
+																switch( $M_options['paymentcurrency'] ) {
+																	case "USD": $price = "$" . $price;
+																				break;
 
-																case "EUR":	$price = "&euro;" . $price;
-																			break;
+																	case "GBP":	$price = "&pound;" . $price;
+																				break;
+
+																	case "EUR":	$price = "&euro;" . $price;
+																				break;
+																}
 															}
 														}
+														echo $price;
 													}
-													echo $price;
 												?>
 												</td>
 												<td class='buynowcolumn'>
@@ -6807,29 +6813,35 @@ if(!class_exists('membershipadmin')) {
 								</td>
 								<td class='pricecolumn'>
 								<?php
-									$first = $sub->get_level_at_position(1);
+									$amount = $sub->sub_pricetext();
 
-									if(!empty($first)) {
-										$price = $first->level_price;
-										if($price == 0) {
-											$price = "Free";
-										} else {
+									if(!empty($amount)) {
+										echo $amount;
+									} else {
+										$first = $sub->get_level_at_position(1);
 
-											$M_options = get_option('membership_options', array());
+										if(!empty($first)) {
+											$price = $first->level_price;
+											if($price == 0) {
+												$price = "Free";
+											} else {
 
-											switch( $M_options['paymentcurrency'] ) {
-												case "USD": $price = "$" . $price;
-															break;
+												$M_options = get_option('membership_options', array());
 
-												case "GBP":	$price = "&pound;" . $price;
-															break;
+												switch( $M_options['paymentcurrency'] ) {
+													case "USD": $price = "$" . $price;
+																break;
 
-												case "EUR":	$price = "&euro;" . $price;
-															break;
+													case "GBP":	$price = "&pound;" . $price;
+																break;
+
+													case "EUR":	$price = "&euro;" . $price;
+																break;
+												}
 											}
 										}
+										echo $price;
 									}
-									echo $price;
 								?>
 								</td>
 								<td class='buynowcolumn'>
