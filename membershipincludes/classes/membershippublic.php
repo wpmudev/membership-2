@@ -1144,6 +1144,13 @@ if(!class_exists('membershippublic')) {
 											}
 											break;
 
+				case 'subscriptionsignup':	if(!is_user_logged_in()) {
+												$content = $this->output_registeruser();
+											} else {
+												$content = $this->output_paymentpage();
+											}
+											break;
+
 				case 'validatepage1':	// Page 1 of the form has been submitted - validate
 									include_once(ABSPATH . WPINC . '/registration.php');
 

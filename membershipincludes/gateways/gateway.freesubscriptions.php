@@ -155,8 +155,8 @@ class freesubscriptions extends M_Gateway {
 
 		$form = '';
 
-		$form .= '<form action="' . get_permalink() . '" method="post">';
-		$form .= '<input type="hidden" name="action" value="validatepage2" />';
+		$form .= '<form action="' . M_get_registration_permalink() . '" method="post">';
+		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
 
 		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
