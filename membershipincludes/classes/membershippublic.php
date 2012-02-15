@@ -1068,11 +1068,9 @@ if(!class_exists('membershippublic')) {
 
 				case 'subscriptionsignup':	if(!is_user_logged_in()) {
 												$member = current_member();
+												list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-												$sub_id = (int) $_POST['subscription'];
-												$user = (int)	$_POST['user'];
-												$level = (int) $_POST['level'];
-												if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
+												if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) && $user_id == $member->ID ) {
 													// Join the new subscription
 													$member->create_subscription($sub_id, $gateway);
 													// Remove the old subscription

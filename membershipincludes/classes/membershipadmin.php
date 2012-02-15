@@ -4157,6 +4157,25 @@ if(!class_exists('membershipadmin')) {
 								}
 								break;
 
+				case 'togglemakepublic':
+								if(isset($_GET['sub_id'])) {
+									$sub_id = (int) $_GET['sub_id'];
+
+									check_admin_referer('togglemakepublic-sub_' . $sub_id);
+
+									$sub = new M_Subscription( $sub_id );
+
+									$sub->toggleactivation();
+
+									if($sub->togglepublic()) {
+										wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 8, wp_get_referer() ) );
+									}
+
+								}
+								break;
+
 				case 'toggle':	if(isset($_GET['sub_id'])) {
 									$sub_id = (int) $_GET['sub_id'];
 
@@ -4414,16 +4433,23 @@ if(!class_exists('membershipadmin')) {
 											$actions = array();
 											//$actions['id'] = "<strong>" . __('ID : ', 'membership') . $sub->id . "</strong>";
 											$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;sub_id=" . $sub->id . "'>" . __('Edit', 'membership') . "</a></span>";
-											if($sub->sub_active == 0) {
-												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Activate', 'membership') . "</a></span>";
+
+											if($sub->sub_active == 0 && $sub->sub_public == 0) {
+												$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglemakepublic&amp;sub_id=" . $sub->id . "", 'togglemakepublic-sub_' . $sub->id) . "'>" . __('Activate and Make Public', 'membership') . "</a></span>";
 											} else {
-												$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Deactivate', 'membership') . "</a></span>";
+												if($sub->sub_active == 0) {
+													$actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Activate', 'membership') . "</a></span>";
+												} else {
+													$actions['toggle'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=toggle&amp;sub_id=" . $sub->id . "", 'toggle-sub_' . $sub->id) . "'>" . __('Deactivate', 'membership') . "</a></span>";
+												}
+
+												if($sub->sub_public == 0) {
+													$actions['public'] = "<span class='edit makeprivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make public', 'membership') . "</a></span>";
+												} else {
+													$actions['public'] = "<span class='edit makepublic'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make private', 'membership') . "</a></span>";
+												}
 											}
-											if($sub->sub_public == 0) {
-												$actions['public'] = "<span class='edit makeprivate'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make public', 'membership') . "</a></span>";
-											} else {
-												$actions['public'] = "<span class='edit makepublic'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=togglepublic&amp;sub_id=" . $sub->id . "", 'toggle-pubsub_' . $sub->id) . "'>" . __('Make private', 'membership') . "</a></span>";
-											}
+
 											$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;sub_id=" . $sub->id . "", 'delete-sub_' . $sub->id) . "'>" . __('Delete', 'membership') . "</a></span>";
 
 										?>
