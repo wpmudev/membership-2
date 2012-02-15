@@ -1066,21 +1066,19 @@ if(!class_exists('membershippublic')) {
 				case 'renewform':			$content = $this->show_renew_page();
 											break;
 
-				case 'subscriptionsignup':	if(!is_user_logged_in()) {
+				case 'subscriptionsignup':	if(is_user_logged_in()) {
 												$member = current_member();
 												list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 												if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) && $user_id == $member->ID ) {
+													$gateway = $_POST['gateway'];
 													// Join the new subscription
 													$member->create_subscription($sub_id, $gateway);
-													// Remove the old subscription
-													$member->drop_subscription($fromsub_id);
 													// Timestamp the update
 													update_user_meta( $user, '_membership_last_upgraded', time());
 												}
-												//update_user_meta( $member->ID, '_membership_last_upgraded', time());
-												break;
 											}
+											$content = $this->show_renew_page();
 											break;
 
 

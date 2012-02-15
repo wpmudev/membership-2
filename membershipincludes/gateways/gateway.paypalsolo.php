@@ -264,6 +264,8 @@ class paypalsolo extends M_Gateway {
 
 		if($sublevel == 1) {
 			$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
+			$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+			$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 			$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
 		} else {
 			$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", true, false);

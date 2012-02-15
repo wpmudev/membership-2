@@ -156,6 +156,8 @@ class freesubscriptions extends M_Gateway {
 		$form = '';
 
 		$form .= '<form action="' . M_get_subscription_permalink() . '" method="post">';
+		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
 
