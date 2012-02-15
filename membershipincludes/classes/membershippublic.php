@@ -1650,6 +1650,7 @@ if(!class_exists('membershippublic')) {
 						} else {
 							// account page found - add in the styles
 							if(!current_theme_supports('membership_account_form')) {
+								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
 								wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
 								wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
 								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
@@ -1657,6 +1658,26 @@ if(!class_exists('membershippublic')) {
 
 								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+
+								if($M_options['formtype'] == 'new') {
+									// pop up registration form
+									wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+									wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+
+									wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
+									wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+
+									wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+									 														'registernonce'	=>	wp_create_nonce('membership_register'),
+																							'loginnonce'	=>	wp_create_nonce('membership_login'),
+																							'regproblem'	=>	__('Problem with registration.', 'membership'),
+																							'logpropblem'	=>	__('Problem with Login.', 'membership'),
+																							'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
+																							'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
+																							'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
+																						));
+								}
+
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );

@@ -1,7 +1,7 @@
 <?php
 /**
  * Very simple tooltip implementation for admin pages.
- * 
+ *
  * Example usage:
  * <code>
  * if (!class_exists('WpmuDev_HelpTooltips')) require_once YOUR_PLUGIN_BASE_DIR . '/lib/external/class_wd_help_tooltips.php';
@@ -12,7 +12,7 @@
  * echo $tips->add_tip("Tip 2 text here");
  * </code>
  * This is a basic usage scenario.
- * 
+ *
  * Alternative usage example:
  * <code>
  * if (!class_exists('WpmuDev_HelpTooltips')) require_once YOUR_PLUGIN_BASE_DIR . '/lib/external/class_wd_help_tooltips.php';
@@ -23,9 +23,9 @@
  * // added automatically next to the supplied selector (second argument)
  * </code>
  * This scenario may be useful for e.g. adding our tips to UI elements created by WP or other plugins.
- * You can freely alternate between add_tip() and bind_tip() methods, 
- * just remember to echo add_tip() and *not* echo bind_tip(). 
- *  
+ * You can freely alternate between add_tip() and bind_tip() methods,
+ * just remember to echo add_tip() and *not* echo bind_tip().
+ *
  * Another alternative usage example, setting tips for multiple pages in one place:
  * <code>
  * if (!class_exists('WpmuDev_HelpTooltips')) require_once YOUR_PLUGIN_BASE_DIR . '/lib/external/class_wd_help_tooltips.php';
@@ -46,8 +46,9 @@
  * E.g. for adding tooltips in a plugin add-on.
  */
 
+if(!class_exists('WpmuDev_HelpTooltips')) {
 class WpmuDev_HelpTooltips {
-	
+
 	/**
 	 * Holds an array of inline tips: used as dependency inclusion switch.
 	 */
@@ -62,40 +63,40 @@ class WpmuDev_HelpTooltips {
 	 * Holds an array of bound tips selectors: used as bound tips selectors buffer.
 	 */
 	private $_bound_selectors = array();
-	
+
 	/**
 	 * Full URL to help icon, which is used as tip anchor
 	 * and as notice background image.
 	 */
 	private $_icon_url;
-	
+
 	/**
 	 * Flag that determines do we want to use notices
 	 * (tips expanded on click).
 	 * Defaults to true.
 	 */
 	private $_use_notice = true;
-	
+
 	/**
 	 * Limits tip output to a screen (page).
 	 * Optional.
 	 * Works best with bind_tip() method.
 	 */
 	private $_screen_id = false;
-	
+
 	/**
 	 * Bind to footer hooks when instantiated.
 	 */
 	public function __construct () {
 		global $wp_version;
 		$version = preg_replace('/-.*$/', '', $wp_version);
-		
+
 		if (version_compare($version, '3.3', '>=')) {
 			add_action('admin_footer', array($this, 'add_bound_tips'), 999);
 			add_action('admin_print_footer_scripts', array($this, 'initialize'));
 		}
 	}
-	
+
 	/**
 	 * Sets icon URL.
 	 * @param string $icon_url Full URL to help anchor icon
@@ -111,7 +112,7 @@ class WpmuDev_HelpTooltips {
 	public function set_use_notice ($use_notice=true) {
 		$this->_use_notice = $use_notice;
 	}
-	
+
 	/**
 	 * Set screen limiting flag.
 	 * @param $screen_id Screen ID that tips in this object apply to.
@@ -119,7 +120,7 @@ class WpmuDev_HelpTooltips {
 	public function set_screen_id ($screen_id) {
 		$this->_screen_id = $screen_id;
 	}
-	
+
 	/**
 	 * Returns inline tip markup.
 	 * Scenario: for echoing inline tips next to elements on the page.
@@ -135,7 +136,7 @@ class WpmuDev_HelpTooltips {
 		$this->_inline_tips[] = $tip;
 		return $this->_get_tip_markup($tip);
 	}
-	
+
 	/**
 	 * Binds a tip to selector.
 	 * This is different from inline tips, as you don't have to output them yourself.
@@ -152,7 +153,7 @@ class WpmuDev_HelpTooltips {
 		$this->_bound_tips[$tip_id] = $tip;
 		$this->_bound_selectors[$tip_id] = $bind_to_selector;
 	}
-	
+
 	/**
 	 * Bounded tips injection handler.
 	 * Will queue up the bounded tips.
@@ -160,12 +161,12 @@ class WpmuDev_HelpTooltips {
 	function add_bound_tips () {
 		if (!$this->_check_screen()) return false;
 		if (!$this->_bound_tips) return false;
-		
+
 		foreach ($this->_bound_tips as $id => $tip) {
 			echo $this->_get_tip_markup($tip, 'id="' . $id . '" style=display:none');
 		}
 	}
-	
+
 	/**
 	 * Dependency injection handler.
 	 * Will only add dependencies if there are actual tooltips to show.
@@ -173,29 +174,29 @@ class WpmuDev_HelpTooltips {
 	function initialize () {
 		if (!$this->_check_screen()) return false;
 		if (!$this->_inline_tips && !$this->_bound_tips) return false;
-		
+
 		$this->_print_styles();
 		$this->_print_scripts();
 	}
-	
+
 	/**
 	 * Screen limitation check.
 	 * @return bool True if we're good to go, false if we're on a wrong screen.
 	 */
 	private function _check_screen () {
-		if (!$this->_screen_id) return true; // No screen dependency		
-		
+		if (!$this->_screen_id) return true; // No screen dependency
+
 		$screen = get_current_screen();
 		if (!is_object($screen)) return false; // Actually older then 3.3
 		if ($this->_screen_id != @$screen->id) return false; // Not for this screen
-		
+
 		return true;
 	}
-	
+
 	private function _get_tip_markup ($tip, $arg='') {
 		return "<span class='wpmudev-help' {$arg}>{$tip}</span>";
 	}
-	
+
 	/**
 	 * Private helper method that prints style dependencies.
 	 */
@@ -203,7 +204,7 @@ class WpmuDev_HelpTooltips {
 		// Have we already done this?
 		if (!defined('WPMUDEV_TOOLTIPS_CSS_ADDED')) define('WPMUDEV_TOOLTIPS_CSS_ADDED', true);
 		else return false;
-		
+
 		?>
 <style type="text/css">
 .wpmudev-help {
@@ -216,8 +217,8 @@ class WpmuDev_HelpTooltips {
 	-webkit-border-radius:3px;
 	border-radius:3px;
 }
-<?php 	
-		if ($this->_icon_url) { 
+<?php
+		if ($this->_icon_url) {
 ?>
 .wpmudev-help {
 	background: url(<?php echo $this->_icon_url; ?>) no-repeat scroll 10px center #ffffe0;
@@ -234,8 +235,8 @@ class WpmuDev_HelpTooltips {
 	padding: 1px 12px;
 	text-decoration: none;
 }
-<?php 
-		} 
+<?php
+		}
 ?>
 #wpmudev-tooltip-source {
 	margin: 0 13px;
@@ -269,7 +270,7 @@ class WpmuDev_HelpTooltips {
 	margin-top: 8px;
 	background: url(<?php echo site_url("/wp-includes/images/arrow-pointer-blue.png");?>) -16px -15px no-repeat;
 }
-</style>		
+</style>
 		<?php
 	}
 
@@ -280,10 +281,10 @@ class WpmuDev_HelpTooltips {
 		// Have we already done this?
 		if (!defined('WPMUDEV_TOOLTIPS_JS_ADDED')) define('WPMUDEV_TOOLTIPS_JS_ADDED', true);
 		else return false;
-		
+
 		// Initialize bound selectors
 		$selectors = json_encode($this->_bound_selectors);
-		
+
 		?>
 <script type="text/javascript">
 (function ($) {
@@ -294,9 +295,9 @@ class WpmuDev_HelpTooltips {
 function initialize_help_item ($me) {
 	var $prev = $me.prev();
 	var help = '&nbsp;<a class="wpmudev-help-trigger" href="#help"><span><?php _e('Help');?></span></a>';
-	$prev = $prev.length ? 
+	$prev = $prev.length ?
 		$prev.after(help)
-		: 
+		:
 		$me.before(help)
 	;
 	$me.hide();
@@ -316,7 +317,7 @@ function get_help_block ($me) {
 function show_help_block ($me) {
 	var $help = get_help_block($me);
 	if (!$help.length) return false;
-	
+
 	if ($("#wpmudev-tooltip").length) $("#wpmudev-tooltip").remove();
 	if ($help.is(":visible")) $help.hide('fast');
 	else $help.show('fast');
@@ -326,22 +327,22 @@ function show_help_block ($me) {
  * Pops tooltip open.
  */
 function open_tooltip ($me) {
-	var $help = get_help_block($me); 
+	var $help = get_help_block($me);
 	if ($help.is(":visible")) return false;
-	
+
 	if ($("#wpmudev-tooltip").length) $("#wpmudev-tooltip").remove();
 	if (!$("#wpmudev-tooltip").length) $("body").append('<div id="wpmudev-tooltip"><div class="wpmudev-pointer wpmudev-left_pointer"></div><div id="wpmudev-tooltip-source"></div></div>');
 	var $tip = $("#wpmudev-tooltip");
 	if (!$tip.length) return false;
-	
+
 	var width = 200;
 	var margin = 20;
 	var src_pos = $me.offset();
-	
+
 	var top_pos = src_pos.top + ($me.height() / 2);
-	var left_pos = src_pos.left + margin;	
+	var left_pos = src_pos.left + margin;
 	var $pointer = $tip.find(".wpmudev-pointer");
-	
+
 	// Setup left/right orientation
 <?php if (!is_rtl()) { ?>
 	if ((left_pos+width+60) >= $(window).width()) {
@@ -361,13 +362,13 @@ function open_tooltip ($me) {
 		;
 	}
 <?php } ?>
-	
+
 	// IE safeguard
 	if ($.browser.msie) {
 		var $pointer_left = $tip.find(".wpmudev-left_pointer");
 		if ($pointer_left.length) $pointer_left.css("position", "absolute");
 	}
-	
+
 	$tip
 		// Populate tip text
 		.find("#wpmudev-tooltip-source")
@@ -398,7 +399,7 @@ function open_tooltip ($me) {
  */
 function close_tooltip () {
 	if (!$("#wpmudev-tooltip").length) return false;
-	
+
 	// IE conditional alternate removal
 	if ($.browser.msie) {
 		$("#wpmudev-tooltip").hide('fast');
@@ -419,22 +420,22 @@ function close_tooltip () {
 
 // Init
 $(function () {
-	
+
 // Populate and place bound tips
 $.each($.parseJSON('<?php echo $selectors; ?>'), function (tip_id, selector) {
 	var $tip = $("#" + tip_id);
 	if (!$tip.length) return true;
-	
+
 	var $selector = $(selector);
 	if (!$selector.length) return true;
-	
+
 	$selector.append($tip);
 });
 
-// Initialize help and add handles	
+// Initialize help and add handles
 $(".wpmudev-help").each(function () {
 	initialize_help_item($(this));
-	
+
 });
 
 // Handle help requests
@@ -447,15 +448,16 @@ $(".wpmudev-help-trigger")
 	})
 	.mouseover(function (e) {
 		open_tooltip($(this));
-		
+
 	})
 	.mouseout(close_tooltip)
 ;
-	
-	
+
+
 });
 })(jQuery);
 </script>
 		<?php
 	}
+}
 }
