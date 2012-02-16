@@ -118,36 +118,6 @@
 							$gatewayissingle = 'admin';
 						}
 
-						?>
-							<div class="renew-form">
-								<div class="formleft">
-									<p>
-									<?php echo __('<strong>You are currently on the subscription</strong> : ','membership') . $sub->sub_name(); ?>
-									</p>
-									<p>
-									<?php
-										if($member->is_marked_for_expire($rel->sub_id)) {
-											echo __('Your membership has been cancelled and will expire on : ', 'membership');
-											echo date( "jS F Y", mysql2date("U", $rel->expirydate));
-										} else {
-											if($gatewayissingle == 'yes') {
-												echo __('Your membership is due to expire on : ', 'membership');
-												echo date( "jS F Y", mysql2date("U", $rel->expirydate));
-											} elseif($gatewayissingle == 'admin') {
-												echo __('Your membership is set to automatically renew', 'membership');
-											} else {
-												echo __('Your membership is set to automatically renew', 'membership');
-											}
-											if($gatewayissingle != 'admin') {
-												$pricing = $sub->get_pricingarray();
-												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
-											}
-										}
-									?>
-									</p>
-								</div>
-							</div> <!-- renew-form -->
-						<?php
 					}
 					?>
 
