@@ -1051,6 +1051,7 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+
 		function do_renew_form() {
 			global $wp_query, $M_options, $bp;
 
