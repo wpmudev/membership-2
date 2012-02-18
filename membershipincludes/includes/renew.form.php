@@ -98,6 +98,44 @@
 					<div class="alert alert-success">
 					<?php echo __('Your current subscriptions are listed here. You can renew, cancel or updgrade your subscriptions by using the forms below.', 'membership'); ?>
 					</div>
+					<div class="priceboxes">
+					<?php
+						$member = current_member();
+
+						$rels = $member->get_relationships();
+						foreach( (array) $rels as $rel ) {
+
+							$sub = new M_Subscription( $rel->sub_id );
+
+							$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
+
+							if( !empty( $rel->usinggateway ) && ($rel->usinggateway != 'admin') ) {
+								$gateway = M_get_class_for_gateway( $rel->usinggateway );
+
+								if( !empty( $gateway ) && $gateway->issingle ) {
+									$gatewayissingle = 'yes';
+								} else {
+									$gatewayissingle = 'no';
+								}
+							} else {
+								$gatewayissingle = 'admin';
+							}
+
+							?>
+								<div class="pricebox">
+									<div class="topbar"><span class='title'><?php echo $sub->sub_name(); ?></span></div>
+									<div class="pricedetails"><?php
+
+									?></div>
+									<div class="bottombar"><span class='price'><?php
+
+									?></span>
+								</div>
+							<?php
+
+						}
+					?>
+					</div>
 				</div>
 			<?php
 		}
