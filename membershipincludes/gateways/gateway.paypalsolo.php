@@ -329,7 +329,7 @@ class paypalsolo extends M_Gateway {
 		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
-		echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' />";
+		echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' class='button white' />";
 		echo "</form>";
 	}
 

@@ -154,8 +154,11 @@
 											}
 										}
 									?></div>
-									<div class="bottombar"><span class='price'><?php
-
+									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
+											if($gatewayissingle != 'admin') {
+												$pricing = $sub->get_pricingarray();
+												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
+											}
 									?></span>
 								</div>
 							<?php

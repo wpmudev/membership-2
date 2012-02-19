@@ -416,7 +416,7 @@ if(!class_exists('M_Gateway')) {
 		function display_cancel_button($subscription, $pricing, $user_id) {
 			// By default there is no default button available
 			echo '<form class="unsubbutton" action="" method="post">';
-			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' />";
+			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' class='button' />";
 			echo "</form>";
 		}
 

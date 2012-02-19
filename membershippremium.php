@@ -48,6 +48,8 @@ if(is_admin()) {
 	require_once('membershipincludes/includes/default.rules.php');
 	// Add in the contextual help
 	require_once('membershipincludes/classes/class.help.php');
+	// Add in the wizard
+	require_once('membershipincludes/classes/class.wizard.php');
 	// Add in the pointer tutorial
 	require_once('membershipincludes/includes/pointer-tutorials.php');
 	// Add in the tooltips class - from social marketing app by Ve
