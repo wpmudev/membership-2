@@ -1,1 +1,1 @@
-<p><?php _e('Some help content', 'membership'); ?></p>
+<p><?php _e('If you intend to charge a membership fee for higher levels of access to your site, this is where you need to set up your payment gateway.', 'membership'); ?></p>

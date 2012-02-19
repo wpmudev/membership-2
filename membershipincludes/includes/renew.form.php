@@ -108,6 +108,7 @@
 							$sub = new M_Subscription( $rel->sub_id );
 
 							$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
+							$currentlevel = $sub->get_level_at( $rel->level_id, $rel->order_instance );
 
 							if( !empty( $rel->usinggateway ) && ($rel->usinggateway != 'admin') ) {
 								$gateway = M_get_class_for_gateway( $rel->usinggateway );
@@ -125,7 +126,33 @@
 								<div class="pricebox">
 									<div class="topbar"><span class='title'><?php echo $sub->sub_name(); ?></span></div>
 									<div class="pricedetails"><?php
+										if($member->is_marked_for_expire($rel->sub_id)) {
+											echo __('Your membership has been cancelled and will expire on : ', 'membership');
+											echo date( "jS F Y", mysql2date("U", $rel->expirydate));
+										} else {
+											if($gatewayissingle == 'yes') {
+												switch($currentlevel->sub_type) {
+													case 'serial':
+													case 'finite':		echo __('Your membership is due to expire on : ', 'membership');
+																		echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+																		break;
 
+													case 'indefinite':	echo __('You are on an <strong>indefinite</strong> membership.', 'membership');
+																		break;
+
+												}
+
+											} elseif($gatewayissingle == 'admin') {
+												echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+											} else {
+												// Serial gateway
+												echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+											}
+											if($gatewayissingle != 'admin') {
+												//$pricing = $sub->get_pricingarray();
+												//$gateway->display_cancel_button( $sub, $pricing, $member->ID );
+											}
+										}
 									?></div>
 									<div class="bottombar"><span class='price'><?php
 
