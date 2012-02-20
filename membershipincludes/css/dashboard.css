@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=10 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/dashboard.css?ver=11 */
 
 div#full-sortables {
 	min-height: 50px;
@@ -57,6 +57,7 @@ div.inside p {
 
 #welcome-panel div.welcome-panel-content h3 {
 	font: 32px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	margin-left: 10px;
 }
 
 #welcome-panel div.welcome-panel-content div.welcome-panel-column-container div.welcome-panel-column h4 {
@@ -71,6 +72,23 @@ div.inside p {
 	margin-left: 0;
 	margin-top: 5px;
 	padding: 7px 10px;
+}
+
+ul.wizardoptions {
+	color: #777;
+	font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+	margin-left: 20px;
+}
+
+ul.wizardoptions li {
+	margin-bottom: 10px;
+}
+
+#welcome-panel div.welcome-panel-content ul.wizardoptions li input {
+	vertical-align: middle;
+	margin-right: 10px;
 }
 
 #welcome-panel div.welcome-panel-content p.welcome-panel-dismiss {

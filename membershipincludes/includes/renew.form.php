@@ -40,7 +40,7 @@
 								$subscription = new M_Subscription($sub->id);
 
 								?>
-								<div class="pricebox">
+								<div class="pricebox subscriptionbox" id='subscriptionbox-<?php echo $subscription->id; ?>'>
 									<div class="topbar"><span class='title'><?php echo $subscription->sub_name(); ?></span></div>
 									<div class="pricedetails"><?php echo $subscription->sub_description(); ?></div>
 									<div class="bottombar"><span class='price'><?php echo $subscription->sub_pricetext(); ?></span>
@@ -176,41 +176,7 @@
 					if(!$member->is_marked_for_expire($rel->sub_id)) {
 						switch( $gatewayissingle ) {
 
-							case 'no':		if($upgradedat <= strtotime('-' . $period . ' days')) {
-												// If it exists display we'll display the gateways upgrade forms.
-												$upgradesubs = $this->get_subscriptions();
-												$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
-												foreach((array) $upgradesubs as $key => $upgradesub) {
-													$subscription = new M_Subscription($upgradesub->id);
-														if($upgradesub->id == $rel->sub_id ) {
-															// do a cancel button
-														} else {
-															// do an upgrade button
-															?>
-															<div class="subscription">
-																<div class="description">
-																	<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
-																	<p>
-																	<?php echo $subscription->sub_description(); ?>
-																	</p>
-																</div>
-															<?php
-															$pricing = $subscription->get_pricingarray();
-															if($pricing) {
-																?>
-																<div class='priceforms'>
-																	<?php
-																		$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
-																	?>
-																</div>
-																<?php
-															}
-														}
-													?>
-															</div> <!-- subscription -->
-													<?php
-												}
-											}
+							case 'no':		// Don't need to display a renewal for this gateway as it will automatically handle it for us
 											break;
 
 							case 'yes':		if(empty($M_options['renewalperiod'])) $M_options['renewalperiod'] = 7;

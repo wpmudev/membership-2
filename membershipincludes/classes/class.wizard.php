@@ -163,10 +163,15 @@ if(!class_exists('M_Wizard')) {
 						if ( !defined('WPMUDEV_REMOVE_BRANDING') ) {
 							_e('If you need help getting started, check out our documentation over on <a href="http://premium.wpmudev.org/project/membership">WPMUDEV</a>. ','membership');
 						}
-						_e('You can use the Help tabs in the upper right corner to get information on how to use your current screen.','membership');
-						_e('If you would like us to set up some basic things for you then click <strong>Next Step</strong> below.','membership');
+						_e('You can use the Help tabs in the upper right corner to get information on how to use your current screen. ','membership');
+						_e('If you would like us to set up some basic things for you then choose an option below.','membership');
 					?>
 					<br/>
+					<ul class='wizardoptions'>
+						<li><input type='radio' name='wizardtype' value='normal' checked='checked' />&nbsp;<?php _e('Standard membership site.','membership'); ?></li>
+						<li><input type='radio' name='wizardtype' value='dripped' />&nbsp;<?php _e('Dripped content site.','membership'); ?></li>
+						<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
+					</ul><br/>
 					<?php if($nextsteplink) { ?>
 					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
 					<?php } ?>

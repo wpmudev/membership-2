@@ -20,7 +20,7 @@
 			$subscription = new M_Subscription($sub->id);
 
 			?>
-			<div class="pricebox">
+			<div class="pricebox subscriptionbox" id='subscriptionbox-<?php echo $subscription->id; ?>'>
 				<div class="topbar"><span class='title'><?php echo $subscription->sub_name(); ?></span></div>
 				<div class="pricedetails"><?php echo $subscription->sub_description(); ?></div>
 				<div class="bottombar"><span class='price'><?php echo $subscription->sub_pricetext(); ?></span>
