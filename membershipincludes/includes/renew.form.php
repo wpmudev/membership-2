@@ -166,6 +166,7 @@
 						}
 					?>
 					</div> <!-- price boxes -->
+
 					<?php
 					// Get the last upgrade time
 					$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
@@ -186,6 +187,7 @@
 												// we have a next level so we can display the details and form for it
 												if( $member->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order )) {
 													?>
+													<legend><?php echo __('Renewal your subscription','membership'); ?></legend>
 													<div class='renew-form'>
 														<div class="formleft">
 															<p><?php
@@ -244,6 +246,9 @@
 
 					if( $upgradedat <= strtotime('-' . $period . ' days') ) {
 						// Show upgrades
+						?>
+						<legend><?php echo __('Upgrade your subscription','membership'); ?></legend>
+						<?php
 						$upgradesubs = $this->get_subscriptions();
 						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
 						foreach((array) $upgradesubs as $key => $upgradesub) {

@@ -173,7 +173,7 @@ if(!class_exists('M_Wizard')) {
 						<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
 					</ul><br/>
 					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteponebutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
 					<?php } ?>
 				</p>
 

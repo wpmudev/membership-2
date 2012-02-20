@@ -78,6 +78,14 @@ function memReBuildChartThree() {
 	);
 }
 
+function memLoadWizardStepTwo() {
+	return false;
+}
+
+function memSetUpWizard() {
+	jQuery('#wizardsteponebutton').click(memLoadWizardStepTwo);
+}
+
 function memReportReady() {
 
 	memSetWidth();
@@ -87,6 +95,8 @@ function memReportReady() {
 		memSetWidth();
 		memReBuildCharts();
 	});
+
+	memSetUpWizard();
 
 }
 
