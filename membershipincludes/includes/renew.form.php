@@ -165,8 +165,152 @@
 
 						}
 					?>
-					</div>
-				</div>
+					</div> <!-- price boxes -->
+					<?php
+					// Get the last upgrade time
+					$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
+					if(empty($upgradedat)) $upgradedat = strtotime('-1 year');
+					$period = $M_options['upgradeperiod'];
+					if(empty($period)) $period = 1;
+
+					if(!$member->is_marked_for_expire($rel->sub_id)) {
+						switch( $gatewayissingle ) {
+
+							case 'no':		if($upgradedat <= strtotime('-' . $period . ' days')) {
+												// If it exists display we'll display the gateways upgrade forms.
+												$upgradesubs = $this->get_subscriptions();
+												$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
+												foreach((array) $upgradesubs as $key => $upgradesub) {
+													$subscription = new M_Subscription($upgradesub->id);
+														if($upgradesub->id == $rel->sub_id ) {
+															// do a cancel button
+														} else {
+															// do an upgrade button
+															?>
+															<div class="subscription">
+																<div class="description">
+																	<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
+																	<p>
+																	<?php echo $subscription->sub_description(); ?>
+																	</p>
+																</div>
+															<?php
+															$pricing = $subscription->get_pricingarray();
+															if($pricing) {
+																?>
+																<div class='priceforms'>
+																	<?php
+																		$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																	?>
+																</div>
+																<?php
+															}
+														}
+													?>
+															</div> <!-- subscription -->
+													<?php
+												}
+											}
+											break;
+
+							case 'yes':		if(empty($M_options['renewalperiod'])) $M_options['renewalperiod'] = 7;
+											$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
+
+											if($nextlevel && time() >= $renewalperiod ) {
+												// we have a next level so we can display the details and form for it
+												if( $member->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order )) {
+													?>
+													<div class='renew-form'>
+														<div class="formleft">
+															<p><?php
+																echo __('Renewal for the ','membership') . "<strong>" . $nextlevel->level_period;
+																switch($nextlevel->level_period_unit) {
+																	case 'd':	_e(' day(s)', 'membership');
+																				break;
+																	case 'w':	_e(' week(s)', 'membership');
+																				break;
+																	case 'm':	_e(' month(s)', 'membership');
+																				break;
+																	case 'y':	_e(' year(s)', 'membership');
+																				break;
+																}
+																echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
+																_e('has been completed.', 'membership');
+															?></p>
+														</div>
+													</div> <!-- renew-form -->
+													<?php
+												} else {
+												?>
+												<div class='renew-form'>
+													<div class="formleft">
+														<p><?php
+															echo __('To renew your subscription for another ','membership') . "<strong>" . $nextlevel->level_period;
+															switch($nextlevel->level_period_unit) {
+																case 'd':	_e(' day(s)', 'membership');
+																			break;
+																case 'w':	_e(' week(s)', 'membership');
+																			break;
+																case 'm':	_e(' month(s)', 'membership');
+																			break;
+																case 'y':	_e(' year(s)', 'membership');
+																			break;
+															}
+															echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
+															if( $nextlevel->level_price > 0 ) {
+																_e('you will need to pay', 'membership');
+																echo " <strong>" . $nextlevel->level_price . " " . apply_filters('membership_real_currency_display', $M_options['paymentcurrency'] ) . "</strong>";
+															} else {
+																_e('click on the button to the right.', 'membership');
+															}
+															$pricing = $sub->get_pricingarray();
+															$gateway->display_subscribe_button($sub, $pricing, $member->ID, $nextlevel->level_order);
+														?></p>
+													</div>
+												</div> <!-- renew-form -->
+												<?php
+												}
+											}
+											break;
+
+						}
+					}
+
+					if( $upgradedat <= strtotime('-' . $period . ' days') ) {
+						// Show upgrades
+						$upgradesubs = $this->get_subscriptions();
+						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
+						foreach((array) $upgradesubs as $key => $upgradesub) {
+								if($upgradesub->id == $rel->sub_id ) {
+									// Don't want to show our current subscription as we will display this above.
+								} else {
+									$subscription = new M_Subscription($upgradesub->id);
+									?>
+									<div class="subscription">
+										<div class="description">
+											<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
+											<p><?php echo $subscription->sub_description(); ?></p>
+										</div>
+									<?php
+									// do an upgrade button
+									$pricing = $subscription->get_pricingarray();
+									if($pricing) {
+										?>
+										<div class='priceforms'>
+											<?php
+												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+											?>
+										</div>
+										<?php
+									}
+									?>
+									</div> <!-- subscription -->
+								<?php
+								}
+						}
+					}
+					?>
+				</div> <!-- membership wrapper -->
 			<?php
 		}
 	}
