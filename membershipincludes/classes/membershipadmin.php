@@ -425,6 +425,10 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				wp_enqueue_style('dashcss', membership_url('membershipincludes/css/dashboard.css'), array(), $this->build);
 			}
+			// Add localisation for the wizard
+			wp_localize_script('dashjs', 'membershipwizard', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+			 														'wizardnonce'	=>	wp_create_nonce('membership_wizard')
+																	));
 
 			$this->handle_membership_dashboard_updates();
 		}

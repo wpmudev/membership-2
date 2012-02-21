@@ -4,11 +4,16 @@ if(!class_exists('M_Wizard')) {
 	class M_Wizard {
 
 		function __construct( ) {
-
+			// if logged in:
+			add_action( 'wp_ajax_processwizard', array(&$this, 'ajax_process_wizard') );
 		}
 
 		function M_Wizard(  ) {
 			$this->__construct();
+		}
+
+		function ajax_process_wizard() {
+			print_r($_POST);
 		}
 
 		function process_visibility() {

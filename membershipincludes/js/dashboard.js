@@ -78,7 +78,27 @@ function memReBuildChartThree() {
 	);
 }
 
+function mem_WizardStepTwoSuccess() {
+
+}
+
+function mem_WizardStepTwoError() {
+
+}
+
 function memLoadWizardStepTwo() {
+
+	alert('click');
+
+	jQuery.ajax({
+		type	: 'POST',
+		cache	: false,
+		url		: membershipwizard.ajaxurl,
+		data	: {	action : 'processwizard', nonce : membershipwizard.wizardnonce, from: 'stepone', option: jQuery('ul.wizardoptions input[name=wizardtype]:checked').val() },
+		success	: mem_WizardStepTwoSuccess,
+		error	: mem_WizardStepTwoError
+	});
+
 	return false;
 }
 
