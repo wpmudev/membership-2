@@ -153,6 +153,83 @@
 												//$gateway->display_cancel_button( $sub, $pricing, $member->ID );
 											}
 										}
+
+										// Get the last upgrade time
+										$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
+										if(empty($upgradedat)) $upgradedat = strtotime('-1 year');
+										$period = $M_options['upgradeperiod'];
+										if(empty($period)) $period = 1;
+
+										if(!$member->is_marked_for_expire($rel->sub_id)) {
+											switch( $gatewayissingle ) {
+
+												case 'no':		// Don't need to display a renewal for this gateway as it will automatically handle it for us
+																break;
+
+												case 'yes':		if(empty($M_options['renewalperiod'])) $M_options['renewalperiod'] = 7;
+																$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
+
+																if($nextlevel && time() >= $renewalperiod ) {
+																	// we have a next level so we can display the details and form for it
+																	if( $member->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order )) {
+																		?>
+																		<legend><?php echo __('Renewal your subscription','membership'); ?></legend>
+																		<div class='renew-form'>
+																			<div class="formleft">
+																				<p><?php
+																					echo __('Renewal for the ','membership') . "<strong>" . $nextlevel->level_period;
+																					switch($nextlevel->level_period_unit) {
+																						case 'd':	_e(' day(s)', 'membership');
+																									break;
+																						case 'w':	_e(' week(s)', 'membership');
+																									break;
+																						case 'm':	_e(' month(s)', 'membership');
+																									break;
+																						case 'y':	_e(' year(s)', 'membership');
+																									break;
+																					}
+																					echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
+																					_e('has been completed.', 'membership');
+																				?></p>
+																			</div>
+																		</div> <!-- renew-form -->
+																		<?php
+																	} else {
+																	?>
+																	<div class='renew-form'>
+																		<div class="formleft">
+																			<p><?php
+																				echo __('To renew your subscription for another ','membership') . "<strong>" . $nextlevel->level_period;
+																				switch($nextlevel->level_period_unit) {
+																					case 'd':	_e(' day(s)', 'membership');
+																								break;
+																					case 'w':	_e(' week(s)', 'membership');
+																								break;
+																					case 'm':	_e(' month(s)', 'membership');
+																								break;
+																					case 'y':	_e(' year(s)', 'membership');
+																								break;
+																				}
+																				echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
+																				if( $nextlevel->level_price > 0 ) {
+																					_e('you will need to pay', 'membership');
+																					echo " <strong>" . $nextlevel->level_price . " " . apply_filters('membership_real_currency_display', $M_options['paymentcurrency'] ) . "</strong>";
+																				} else {
+																					_e('click on the button to the right.', 'membership');
+																				}
+																				$pricing = $sub->get_pricingarray();
+																				$gateway->display_subscribe_button($sub, $pricing, $member->ID, $nextlevel->level_order);
+																			?></p>
+																		</div>
+																	</div> <!-- renew-form -->
+																	<?php
+																	}
+																}
+																break;
+
+											}
+										}
+
 									?></div>
 									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
 											if($gatewayissingle != 'admin') {
@@ -168,82 +245,6 @@
 					</div> <!-- price boxes -->
 
 					<?php
-					// Get the last upgrade time
-					$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
-					if(empty($upgradedat)) $upgradedat = strtotime('-1 year');
-					$period = $M_options['upgradeperiod'];
-					if(empty($period)) $period = 1;
-
-					if(!$member->is_marked_for_expire($rel->sub_id)) {
-						switch( $gatewayissingle ) {
-
-							case 'no':		// Don't need to display a renewal for this gateway as it will automatically handle it for us
-											break;
-
-							case 'yes':		if(empty($M_options['renewalperiod'])) $M_options['renewalperiod'] = 7;
-											$renewalperiod = strtotime('-' . $M_options['renewalperiod'] . ' days', mysql2date("U", $rel->expirydate));
-
-											if($nextlevel && time() >= $renewalperiod ) {
-												// we have a next level so we can display the details and form for it
-												if( $member->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order )) {
-													?>
-													<legend><?php echo __('Renewal your subscription','membership'); ?></legend>
-													<div class='renew-form'>
-														<div class="formleft">
-															<p><?php
-																echo __('Renewal for the ','membership') . "<strong>" . $nextlevel->level_period;
-																switch($nextlevel->level_period_unit) {
-																	case 'd':	_e(' day(s)', 'membership');
-																				break;
-																	case 'w':	_e(' week(s)', 'membership');
-																				break;
-																	case 'm':	_e(' month(s)', 'membership');
-																				break;
-																	case 'y':	_e(' year(s)', 'membership');
-																				break;
-																}
-																echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
-																_e('has been completed.', 'membership');
-															?></p>
-														</div>
-													</div> <!-- renew-form -->
-													<?php
-												} else {
-												?>
-												<div class='renew-form'>
-													<div class="formleft">
-														<p><?php
-															echo __('To renew your subscription for another ','membership') . "<strong>" . $nextlevel->level_period;
-															switch($nextlevel->level_period_unit) {
-																case 'd':	_e(' day(s)', 'membership');
-																			break;
-																case 'w':	_e(' week(s)', 'membership');
-																			break;
-																case 'm':	_e(' month(s)', 'membership');
-																			break;
-																case 'y':	_e(' year(s)', 'membership');
-																			break;
-															}
-															echo "</strong> " . __('following', 'membership') . " " . date( "jS F Y", mysql2date("U", $rel->expirydate)) . " ";
-															if( $nextlevel->level_price > 0 ) {
-																_e('you will need to pay', 'membership');
-																echo " <strong>" . $nextlevel->level_price . " " . apply_filters('membership_real_currency_display', $M_options['paymentcurrency'] ) . "</strong>";
-															} else {
-																_e('click on the button to the right.', 'membership');
-															}
-															$pricing = $sub->get_pricingarray();
-															$gateway->display_subscribe_button($sub, $pricing, $member->ID, $nextlevel->level_order);
-														?></p>
-													</div>
-												</div> <!-- renew-form -->
-												<?php
-												}
-											}
-											break;
-
-						}
-					}
-
 					if( $upgradedat <= strtotime('-' . $period . ' days') ) {
 						// Show upgrades
 						?>

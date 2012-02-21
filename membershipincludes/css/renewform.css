@@ -1,11 +1,10 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/renewform.css?ver=3.1.1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/renewform.css?ver=3.3.1 */
 
 div.renew-form {
-	width: 90%;
 	padding: 10px;
 	margin-top: 10px;
-	border: 1px solid #d4d4d4;
-	background-color: #f3f3f3;
+	border: 1px solid #cccc66;
+	background-color: #fefcad;
 	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 	overflow: hidden;
 }
