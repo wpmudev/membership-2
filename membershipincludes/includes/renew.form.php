@@ -251,34 +251,35 @@
 						<?php
 						$upgradesubs = $this->get_subscriptions();
 						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
+						?>
+						<div class="priceboxes">
+						<?php
 						foreach((array) $upgradesubs as $key => $upgradesub) {
 								if($upgradesub->id == $rel->sub_id ) {
 									// Don't want to show our current subscription as we will display this above.
 								} else {
 									$subscription = new M_Subscription($upgradesub->id);
 									?>
-									<div class="subscription">
-										<div class="description">
-											<h3><strong><?php _e('Move to subscription : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></h3>
-											<p><?php echo $subscription->sub_description(); ?></p>
-										</div>
-									<?php
-									// do an upgrade button
-									$pricing = $subscription->get_pricingarray();
-									if($pricing) {
-										?>
-										<div class='priceforms'>
-											<?php
-												$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
-											?>
-										</div>
-										<?php
-									}
-									?>
-									</div> <!-- subscription -->
+										<div class="pricebox">
+											<div class="topbar"><span class='title'><strong><?php _e('Move to : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></span></div>
+											<div class="pricedetails">
+												<?php echo $subscription->sub_description(); ?>
+											</div>
+											<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
+													// do an upgrade button
+													$pricing = $subscription->get_pricingarray();
+													if($pricing) {
+														$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+													}
+											?></span>
+											</div>
+										</div> <!-- pricebox -->
 								<?php
 								}
 						}
+						?>
+						</div> <!-- priceboxes -->
+						<?php
 					}
 					?>
 				</div> <!-- membership wrapper -->
