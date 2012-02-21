@@ -545,4 +545,61 @@ function M_get_noaccess_permalink() {
 	return $link;
 }
 
+function M_get_registrationcompleted_permalink() {
+	global $M_options;
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+			$link = get_permalink( $M_options['registrationcompleted_page'] );
+			if(function_exists('restore_current_blog')) {
+				restore_current_blog();
+			}
+		} else {
+			$link = get_permalink( $M_options['registrationcompleted_page'] );
+		}
+	} else {
+		$link = get_permalink( $M_options['registrationcompleted_page'] );
+	}
+
+	return $link;
+}
+
+function M_get_returnurl_permalink() {
+	global $M_options;
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			if(function_exists('switch_to_blog')) {
+				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+			}
+			if(!empty($M_options['registrationcompleted_page'])) {
+				$link = get_permalink( $M_options['registrationcompleted_page'] );
+			} else {
+				$link = get_permalink( $M_options['subscriptions_page'] );
+			}
+
+			if(function_exists('restore_current_blog')) {
+				restore_current_blog();
+			}
+		} else {
+			if(!empty($M_options['registrationcompleted_page'])) {
+				$link = get_permalink( $M_options['registrationcompleted_page'] );
+			} else {
+				$link = get_permalink( $M_options['subscriptions_page'] );
+			}
+		}
+	} else {
+		if(!empty($M_options['registrationcompleted_page'])) {
+			$link = get_permalink( $M_options['registrationcompleted_page'] );
+		} else {
+			$link = get_permalink( $M_options['subscriptions_page'] );
+		}
+	}
+
+	return $link;
+}
+
 ?>
