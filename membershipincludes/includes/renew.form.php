@@ -260,7 +260,7 @@
 								} else {
 									$subscription = new M_Subscription($upgradesub->id);
 									?>
-										<div class="pricebox">
+										<div class="pricebox upgradebox" id='upgradebox-<?php echo $subscription->id; ?>'>
 											<div class="topbar"><span class='title'><strong><?php _e('Move to : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></span></div>
 											<div class="pricedetails">
 												<?php echo $subscription->sub_description(); ?>
