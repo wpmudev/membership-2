@@ -294,7 +294,7 @@
 								if( $upgradedat <= strtotime('-' . $period . ' days') ) {
 									// Show upgrades
 									?>
-									<legend><?php echo __('Upgrade from ','membership') . $sub->sub_name(); ?></legend>
+									<legend class='upgradefrom-<?php echo $sub->id; ?>'><?php echo __('Upgrade from ','membership') . $sub->sub_name(); ?></legend>
 									<?php
 									$upgradesubs = $this->get_subscriptions();
 									$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
