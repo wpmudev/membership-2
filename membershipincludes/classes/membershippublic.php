@@ -750,6 +750,16 @@ if(!class_exists('membershippublic')) {
 				$forchecking[] = $M_options['nocontent_page'];
 			}
 
+			if(!empty($M_options['registrationcompleted_page'])) {
+				$wp_query->query_vars['post__in'][] = $M_options['registrationcompleted_page'];
+				$forchecking[] = $M_options['registrationcompleted_page'];
+			}
+
+			if(!empty($M_options['subscriptions_page'])) {
+				$wp_query->query_vars['post__in'][] = $M_options['subscriptions_page'];
+				$forchecking[] = $M_options['subscriptions_page'];
+			}
+
 			if(is_array($wp_query->query_vars['post__not_in'])) {
 				foreach($wp_query->query_vars['post__not_in'] as $key => $value) {
 					if(in_array( $value, (array) $forchecking ) ) {
@@ -767,7 +777,7 @@ if(!class_exists('membershippublic')) {
 			global $M_options;
 
 			foreach( (array) $pages as $key => $page ) {
-				if($page->ID == $M_options['nocontent_page']) {
+				if( ($page->ID == $M_options['nocontent_page']) || ($page->ID == $M_options['registrationcompleted_page'])) {
 					unset($pages[$key]);
 				}
 			}
@@ -790,6 +800,16 @@ if(!class_exists('membershippublic')) {
 			}
 
 			if(!empty($wp_query->queried_object_id) && !empty($M_options['nocontent_page']) && $wp_query->queried_object_id == $M_options['nocontent_page']) {
+				return;
+			}
+
+			if(!empty($wp_query->queried_object_id) && !empty($M_options['registrationcompleted_page']) && $wp_query->queried_object_id == $M_options['registrationcompleted_page']) {
+				// We know what we are looking at, the registration page has been set and we are trying to access it
+				return;
+			}
+
+			if(!empty($wp_query->queried_object_id) && !empty($M_options['subscriptions_page']) && $wp_query->queried_object_id == $M_options['subscriptions_page']) {
+				// We know what we are looking at, the registration page has been set and we are trying to access it
 				return;
 			}
 

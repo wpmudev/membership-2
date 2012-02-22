@@ -2211,6 +2211,7 @@ if(!class_exists('membershipadmin')) {
 											$M_options['account_page'] = $_POST['account_page'];
 											$M_options['registration_page'] = $_POST['registration_page'];
 											$M_options['registrationcompleted_page'] = $_POST['registrationcompleted_page'];
+											$M_options['subscriptions_page'] = $_POST['subscriptions_page'];
 											$M_options['formtype'] = $_POST['formtype'];
 											break;
 
@@ -2308,7 +2309,7 @@ if(!class_exists('membershipadmin')) {
 													$M_options['account_page'] = $id;
 													break;
 
-					case 'createsubscriptionspage':		check_admin_referer('create-subscriptionspage');
+					case 'createsubscriptionspage':	check_admin_referer('create-subscriptionspage');
 													$pagedetails = array('post_title' => __('Subscriptions', 'membership'), 'post_name' => 'subscriptions', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
 													$id = wp_insert_post( $pagedetails );
 													$M_options['subscriptions_page'] = $id;
