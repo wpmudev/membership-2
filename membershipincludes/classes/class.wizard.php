@@ -14,6 +14,7 @@ if(!class_exists('M_Wizard')) {
 
 		function ajax_process_wizard() {
 			print_r($_POST);
+			exit;
 		}
 
 		function process_visibility() {
