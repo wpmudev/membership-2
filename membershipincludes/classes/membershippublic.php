@@ -1702,6 +1702,29 @@ if(!class_exists('membershippublic')) {
 						}
 					}
 					if($post->ID == $M_options['subscriptions_page']) {
+
+						// Handle any updates passed
+						$page = addslashes($_REQUEST['action']);
+						if(empty($page)) {
+							$page = 'renewform';
+						}
+
+						switch($page) {
+							case 'subscriptionsignup':	if(is_user_logged_in()) {
+															$member = current_member();
+															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+
+															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) && $user_id == $member->ID ) {
+																$gateway = $_POST['gateway'];
+																// Join the new subscription
+																$member->create_subscription($sub_id, $gateway);
+																// Timestamp the update
+																update_user_meta( $user, '_membership_last_upgraded', time());
+															}
+														}
+														break;
+						}
+
 						// account page - check if page contains a shortcode
 						if(strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
 							// There is content in there with the shortcode so just return it
@@ -1747,6 +1770,34 @@ if(!class_exists('membershippublic')) {
 						// no access page - we must return the content entered by the user so just return it
 						return $posts;
 					}
+					// Registration complete page
+					if($post->ID == $M_options['registrationcompleted_page']) {
+
+						// Handle any updates passed
+						$page = addslashes($_REQUEST['action']);
+						if(empty($page)) {
+							$page = 'renewform';
+						}
+
+						switch($page) {
+							case 'subscriptionsignup':	if(is_user_logged_in()) {
+															$member = current_member();
+															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+
+															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) && $user_id == $member->ID ) {
+																$gateway = $_POST['gateway'];
+																// Join the new subscription
+																$member->create_subscription($sub_id, $gateway);
+																// Timestamp the update
+																update_user_meta( $user, '_membership_last_upgraded', time());
+															}
+														}
+														break;
+						}
+
+						return $posts;
+					}
+
 				}
 			}
 			// If nothing else is hit, just return the content
