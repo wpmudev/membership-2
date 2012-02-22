@@ -314,7 +314,13 @@
 																// do an upgrade button
 																$pricing = $subscription->get_pricingarray();
 																if($pricing) {
-																	$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																	if($currentlevel->level_price < 1) {
+																		// We are on a free level, so need to do an upgrade from free
+																		$gateway->display_upgrade_from_free_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																	} else {
+																		// We want a normal upgrade button
+																		$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																	}
 																}
 														?></span>
 														</div>
