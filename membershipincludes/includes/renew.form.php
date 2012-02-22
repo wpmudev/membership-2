@@ -1,4 +1,5 @@
 <?php
+
 	if(!is_user_logged_in()) {
 		// The user isn't logged in so display a message here
 		?>
@@ -92,6 +93,61 @@
 			<?php
 		} else {
 			// The user has a subscription so we can display it with the information
+			$member = current_member();
+
+			//Handle the processing if needed
+			if(isset($_POST['action'])) {
+				switch(addslashes($_POST['action'])) {
+					case 'unsubscribe':	// Unsubscribe button has been clicked for solo gateways
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'cancel-sub_' . $sub_id) && $user == $member->ID ) {
+											$member->mark_for_expire( $sub_id );
+										}
+										break;
+
+					case 'renewfree':	// Renew a free level on this subscription
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$level = (int) $_POST['level'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
+											$member->record_active_payment( $sub_id, $level, time() );
+										}
+										//update_user_meta( $member->ID, '_membership_last_upgraded', time());
+										break;
+
+					case 'upgradesolo':	// Upgrade a solo subscription
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										$gateway = $_POST['gateway'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+											// Join the new subscription
+											$member->create_subscription($sub_id, $gateway);
+											// Remove the old subscription
+											$member->drop_subscription($fromsub_id);
+											// Timestamp the update
+											update_user_meta( $user, '_membership_last_upgraded', time());
+										}
+										break;
+					case 'upgradefromfree':
+										$sub_id = (int) $_POST['subscription'];
+										$user = (int)	$_POST['user'];
+										$fromsub_id = (int) $_POST['fromsub_id'];
+										$gateway = $_POST['gateway'];
+										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+											// Join the new subscription
+											$member->create_subscription($sub_id, $gateway);
+											// Remove the old subscription
+											$member->drop_subscription($fromsub_id);
+											// Timestamp the update
+											update_user_meta( $user, '_membership_last_upgraded', time());
+										}
+										break;
+
+				}
+			}
+
 			?>
 				<div id='membership-wrapper'>
 					<legend><?php echo __('Your Subscriptions','membership'); ?></legend>
@@ -100,7 +156,6 @@
 					</div>
 					<div class="priceboxes">
 					<?php
-						$member = current_member();
 
 						$rels = $member->get_relationships();
 						foreach( (array) $rels as $rel ) {
@@ -147,10 +202,6 @@
 											} else {
 												// Serial gateway
 												echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
-											}
-											if($gatewayissingle != 'admin') {
-												//$pricing = $sub->get_pricingarray();
-												//$gateway->display_cancel_button( $sub, $pricing, $member->ID );
 											}
 										}
 
