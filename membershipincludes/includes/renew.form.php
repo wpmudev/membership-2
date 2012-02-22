@@ -178,7 +178,7 @@
 							}
 
 							?>
-								<div class="pricebox">
+								<div class="pricebox subscribedbox" id='subscribedbox-<?php echo $sub->id; ?>'>
 									<div class="topbar"><span class='title'><?php echo $sub->sub_name(); ?></span></div>
 									<div class="pricedetails"><?php
 										if($member->is_marked_for_expire($rel->sub_id)) {
@@ -289,51 +289,45 @@
 											}
 									?></span>
 								</div>
-							<?php
+								</div> <!-- price box -->
+								<?php
+								if( $upgradedat <= strtotime('-' . $period . ' days') ) {
+									// Show upgrades
+									?>
+									<legend><?php echo __('Upgrade from ','membership') . $sub->sub_name(); ?></legend>
+									<?php
+									$upgradesubs = $this->get_subscriptions();
+									$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
 
+									foreach((array) $upgradesubs as $key => $upgradesub) {
+											if($upgradesub->id == $rel->sub_id ) {
+												// Don't want to show our current subscription as we will display this above.
+											} else {
+												$subscription = new M_Subscription($upgradesub->id);
+												?>
+													<div class="pricebox upgradebox upgradefrom-<?php echo $sub->id; ?>" id='upgradebox-<?php echo $subscription->id; ?>'>
+														<div class="topbar"><span class='title'><strong><?php _e('Move to : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></span></div>
+														<div class="pricedetails">
+															<?php echo $subscription->sub_description(); ?>
+														</div>
+														<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
+																// do an upgrade button
+																$pricing = $subscription->get_pricingarray();
+																if($pricing) {
+																	$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																}
+														?></span>
+														</div>
+													</div> <!-- pricebox -->
+											<?php
+											}
+									}
+								}
+								?>
+							<?php
 						}
 					?>
 					</div> <!-- price boxes -->
-
-					<?php
-					if( $upgradedat <= strtotime('-' . $period . ' days') ) {
-						// Show upgrades
-						?>
-						<legend><?php echo __('Upgrade your subscription','membership'); ?></legend>
-						<?php
-						$upgradesubs = $this->get_subscriptions();
-						$upgradesubs = apply_filters( 'membership_override_upgrade_subscriptions', $upgradesubs );
-						?>
-						<div class="priceboxes">
-						<?php
-						foreach((array) $upgradesubs as $key => $upgradesub) {
-								if($upgradesub->id == $rel->sub_id ) {
-									// Don't want to show our current subscription as we will display this above.
-								} else {
-									$subscription = new M_Subscription($upgradesub->id);
-									?>
-										<div class="pricebox upgradebox" id='upgradebox-<?php echo $subscription->id; ?>'>
-											<div class="topbar"><span class='title'><strong><?php _e('Move to : ','membership'); ?></strong><?php echo $subscription->sub_name(); ?></span></div>
-											<div class="pricedetails">
-												<?php echo $subscription->sub_description(); ?>
-											</div>
-											<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
-													// do an upgrade button
-													$pricing = $subscription->get_pricingarray();
-													if($pricing) {
-														$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
-													}
-											?></span>
-											</div>
-										</div> <!-- pricebox -->
-								<?php
-								}
-						}
-						?>
-						</div> <!-- priceboxes -->
-						<?php
-					}
-					?>
 				</div> <!-- membership wrapper -->
 			<?php
 		}
