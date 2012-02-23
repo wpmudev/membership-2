@@ -97,6 +97,7 @@
 
 			//Handle the processing if needed
 			if(isset($_POST['action'])) {
+
 				switch(addslashes($_POST['action'])) {
 					case 'unsubscribe':	// Unsubscribe button has been clicked for solo gateways
 										$sub_id = (int) $_POST['subscription'];

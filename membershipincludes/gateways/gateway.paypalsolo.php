@@ -154,7 +154,7 @@ class paypalsolo extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount, $sublevel = 0) {
+	function build_custom($user_id, $sub_id, $amount, $sublevel = 0, $fromsub = 0) {
 
 		$custom = '';
 
@@ -164,13 +164,13 @@ class paypalsolo extends M_Gateway {
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
-		$custom .= ":" . $sublevel;
+		$custom .= ":" . $sublevel . ":" . $fromsub;
 
 		return $custom;
 
 	}
 
-	function single_button($pricing, $subscription, $user_id, $sublevel = 0) {
+	function single_button($pricing, $subscription, $user_id, $sublevel = 0, $fromsub = 0) {
 
 		global $M_options;
 
@@ -195,7 +195,7 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="return" value="' . apply_filters( 'membership_return_url_' . $this->gateway, M_get_returnurl_permalink()) . '">';
 		$form .= '<input type="hidden" name="cancel_return" value="' . apply_filters( 'membership_cancel_url_' . $this->gateway, M_get_subscription_permalink()) . '">';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2), $sublevel) .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2), $sublevel, $fromsub) .'">';
 
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . apply_filters( 'membership_notify_url_' . $this->gateway, trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway)) . '">';
@@ -284,7 +284,7 @@ class paypalsolo extends M_Gateway {
 
 	}
 
-	function build_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+	function build_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1, $fromsub = 0) {
 
 		if(!empty($pricing)) {
 			// check to make sure there is a price in the subscription
@@ -296,7 +296,7 @@ class paypalsolo extends M_Gateway {
 					return $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 				} else {
 					// It's a paid level
-					return $this->single_button($pricing, $subscription, $user_id, $sublevel);
+					return $this->single_button($pricing, $subscription, $user_id, $sublevel, $fromsub);
 				}
 			}
 
@@ -305,12 +305,12 @@ class paypalsolo extends M_Gateway {
 	}
 
 	function display_upgrade_from_free_button($subscription, $pricing, $user_id, $fromsub_id = false) {
-
+		echo $this->build_subscribe_button($subscription, $pricing, $user_id, 1, $fromsub_id);
 	}
 
 	function display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 
-		echo '<form class="upgradebutton" action="" method="post">';
+		echo '<form class="upgradebutton" action="' . M_get_subscription_permalink() . '" method="post">';
 		wp_nonce_field('upgrade-sub_' . $subscription->sub_id());
 		echo "<input type='hidden' name='action' value='upgradesolo' />";
 		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
@@ -323,7 +323,7 @@ class paypalsolo extends M_Gateway {
 
 	function display_cancel_button($subscription, $pricing, $user_id) {
 
-		echo '<form class="unsubbutton" action="" method="post">';
+		echo '<form class="unsubbutton" action="' . M_get_subscription_permalink() . '" method="post">';
 		wp_nonce_field('cancel-sub_' . $subscription->sub_id());
 		echo "<input type='hidden' name='action' value='unsubscribe' />";
 		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";

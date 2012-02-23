@@ -1084,9 +1084,6 @@ if(!class_exists('membershippublic')) {
 
 			switch($page) {
 
-				case 'renewform':			$content = $this->show_renew_page();
-											break;
-
 				case 'subscriptionsignup':	if(is_user_logged_in()) {
 												$member = current_member();
 												list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
@@ -1100,6 +1097,10 @@ if(!class_exists('membershippublic')) {
 												}
 											}
 											$content = $this->show_renew_page();
+											break;
+
+				case 'renewform':
+				default:					$content = $this->show_renew_page();
 											break;
 
 
@@ -1722,6 +1723,9 @@ if(!class_exists('membershippublic')) {
 																update_user_meta( $user, '_membership_last_upgraded', time());
 															}
 														}
+														break;
+
+							default:
 														break;
 						}
 
