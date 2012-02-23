@@ -438,7 +438,7 @@ class paypalsolo extends M_Gateway {
 					// case: successful payment
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
-					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+					list($timestamp, $user_id, $sub_id, $key, $sublevel, $fromsub) = explode(':', $_POST['custom']);
 
 					$newkey = md5('MEMBERSHIP' . $amount);
 					if($key != $newkey) {
@@ -463,6 +463,11 @@ class paypalsolo extends M_Gateway {
 									// Mark the payment so that we can move through ok
 									$member->record_active_payment( $sub_id, $sublevel, $timestamp );
 								}
+							}
+
+							// remove any current subs for upgrades
+							if(!empty($fromsub) && $fromsub != 0) {
+								$member->drop_subscription( $fromsub );
 							}
 
 							// Added for affiliate system link
