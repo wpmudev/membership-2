@@ -6150,7 +6150,7 @@ if(!class_exists('membershipadmin')) {
 
 		function count_on_level( $level_id ) {
 
-			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE level_id = %d", $level_id );
+			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE level_id = %d AND user_id > 0", $level_id );
 
 			return $this->db->get_var( $sql );
 
@@ -6158,7 +6158,7 @@ if(!class_exists('membershipadmin')) {
 
 		function count_on_sub( $sub_id ) {
 
-			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE sub_id = %d", $sub_id );
+			$sql = $this->db->prepare( "SELECT count(*) as levelcount FROM {$this->membership_relationships} WHERE sub_id = %d AND user_id > 0", $sub_id );
 
 			return $this->db->get_var( $sql );
 

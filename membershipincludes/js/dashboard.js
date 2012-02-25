@@ -88,8 +88,6 @@ function mem_WizardStepTwoError() {
 
 function memLoadWizardStepTwo() {
 
-	alert('click');
-
 	jQuery.ajax({
 		type	: 'POST',
 		cache	: false,
@@ -103,6 +101,7 @@ function memLoadWizardStepTwo() {
 }
 
 function memSetUpWizard() {
+	alert('click');
 	jQuery('#wizardsteponebutton').click(memLoadWizardStepTwo);
 }
 
