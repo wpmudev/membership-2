@@ -12,8 +12,30 @@ if(!class_exists('M_Wizard')) {
 			$this->__construct();
 		}
 
+
+
 		function ajax_process_wizard() {
-			print_r($_POST);
+
+			switch( $_POST['from']) {
+				case 'stepone':		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
+										switch($_POST['option']) {
+											case 'normal':		echo $this->show_normal_wizard_step();
+																break;
+
+											case 'dripped':		echo $this->show_dripped_wizard_step();
+																break;
+
+											case 'advanced':	// Skips wizard and goes to pointer tutorial
+																break;
+										}
+									}
+									break;
+
+				case 'steptwo':		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
+
+									}
+									break;
+			}
 			exit;
 		}
 
@@ -81,56 +103,21 @@ if(!class_exists('M_Wizard')) {
 								$this->show_with_wrap( $this->page_one( $step2 ) );
 								break;
 
-					case 2:		$this->show_with_wrap( $this->page_two( ) );
-								break;
+					case 2:		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
+									switch($_POST['option']) {
+										case 'normal':		echo $this->show_normal_wizard_step();
+															break;
 
-					case 3:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
-									// create the pages
-									check_admin_referer('step-three');
-									$this->create_step_two_pages();
-								}
-								if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
-									// BP is isntalled so ask about activating rules
-									$this->show_with_wrap( $this->page_three( ) );
-								} else {
-									// BP not installed so check for MarketPress
-									if(class_exists('MarketPress')) {
-										// MarketPress is installed so ask about activating rules
-										$this->show_with_wrap( $this->page_four( ) );
-									} else {
-										$this->show_with_wrap( $this->page_five( ) );
+										case 'dripped':		echo $this->show_dripped_wizard_step();
+															break;
+
+										case 'advanced':	// Skips wizard and goes to pointer tutorial
+															break;
 									}
 								}
 								break;
 
-					case 4:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
-									// activate the addon
-									check_admin_referer( 'step-four' );
-									$this->activate_buddypress_addon();
-								}
-								if(class_exists('MarketPress')) {
-									// MarketPress is installed so ask about activating rules
-									$this->show_with_wrap( $this->page_four( ) );
-								} else {
-									$this->show_with_wrap( $this->page_five( ) );
-								}
-								break;
 
-					case 5:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
-									// activate the addon
-									check_admin_referer( 'step-five' );
-									$this->activate_marketpress_addon();
-								}
-								$this->show_with_wrap( $this->page_five( ) );
-								break;
-
-					case 6:		if(!isset($_GET['skip']) || $_GET['skip'] != 'yes') {
-									// activate the addon
-									check_admin_referer( 'step-six' );
-									$this->activate_admin_shortcodes();
-								}
-								$this->show_with_wrap( $this->page_end( ) );
-								break;
 
 				}
 
@@ -185,6 +172,14 @@ if(!class_exists('M_Wizard')) {
 
 			<?php
 			return ob_get_clean();
+		}
+
+		function show_normal_wizard_step() {
+
+		}
+
+		function show_dripped_wizard_step() {
+
 		}
 
 		function create_step_two_pages() {

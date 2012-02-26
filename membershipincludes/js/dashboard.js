@@ -103,6 +103,10 @@ function memLoadWizardStepTwo() {
 function memSetUpWizard() {
 	jQuery('#wizardsteponebutton').unbind('click');
 	jQuery('#wizardsteponebutton').click(memLoadWizardStepTwo);
+
+	jQuery('#wizardsteponebutton').ajaxStart(function(){
+	   jQuery(this).html('Loading...');
+	 });
 }
 
 function memReportReady() {
