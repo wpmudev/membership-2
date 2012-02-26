@@ -26,6 +26,9 @@ if(!class_exists('membershipadmin')) {
 		// Class variable to hold a link to the tooltips class
 		var $_tips;
 
+		// The Wizard
+		var $potter;
+
 
 		function __construct() {
 
@@ -40,6 +43,9 @@ if(!class_exists('membershipadmin')) {
 			// Instantiate the tooltips class and set the icon
 			$this->_tips = new WpmuDev_HelpTooltips();
 			$this->_tips->set_icon_url(membership_url('membershipincludes/images/information.png'));
+
+			// Initiate the wizard class
+			$this->potter = new M_Wizard();
 
 			// Add administration actions
 			add_action('init', array(&$this, 'initialise_plugin'), 1);
@@ -104,6 +110,8 @@ if(!class_exists('membershipadmin')) {
 
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
+
+
 
 		}
 
@@ -853,8 +861,7 @@ if(!class_exists('membershipadmin')) {
 				<h2><?php _e('Membership dashboard','membership'); ?></h2>
 
 				<?php
-					$potter = new M_Wizard();
-					$potter->conditional_show();
+					$this->potter->conditional_show();
 				?>
 
 				<div id="dashboard-widgets-wrap">
