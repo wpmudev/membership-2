@@ -113,3 +113,8 @@ p.about-description.createsteps {
 	padding-right: 30px !Important;
 	
 }
+
+#welcome-panel div.welcome-panel-content p.about-description.createsteps input.wizardlevelname {
+	margin-bottom: 5px;
+	width: 40em;
+}
