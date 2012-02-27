@@ -79,7 +79,25 @@ function memReBuildChartThree() {
 }
 
 function memAddRemoveLevelNames() {
-	alert('change');
+
+	currentnumber = jQuery('input.wizardlevelname').size() + 1;
+	goingto = jQuery('#wizardnumberoflevels').val();
+	// We need to add fields if we are goingto a greater numnber
+	if(goingto > currentnumber) {
+		while(currentnumber < goingto) {
+
+			currentnumber++;
+		}
+	} else {
+		// We need to remove fields if we are goingto a lower number
+		if(goingto < currentnumber) {
+			while(currentnumber > goingto) {
+
+				currentnumber--;
+			}
+		}
+	}
+	// otherwise we ignore the setting as there is no difference.
 }
 
 function mem_WizardStepTwoSuccess( data ) {
