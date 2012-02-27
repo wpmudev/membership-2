@@ -18,7 +18,7 @@ if(!class_exists('M_Wizard')) {
 
 			switch( $_POST['from']) {
 				case 'stepone':		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
-										switch($_POST['option']) {
+										switch($_POST['wizardtype']) {
 											case 'normal':		echo $this->show_normal_wizard_step(wp_nonce_url("admin.php?page=" . $page. "&amp;step=2", 'step-two'));
 																break;
 
@@ -101,12 +101,12 @@ if(!class_exists('M_Wizard')) {
 
 				switch($current_step) {
 
-					case 1:		$step2 = wp_nonce_url("admin.php?page=" . $page. "&amp;step=2", 'step-two');
+					case 1:		$step2 = "admin.php?page=" . $page. "&amp;step=2";
 								$this->show_with_wrap( $this->page_one( $step2 ) );
 								break;
 
 					case 2:		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
-									switch($_POST['option']) {
+									switch($_POST['wizardtype']) {
 										case 'normal':		echo $this->show_normal_wizard_step();
 															break;
 
@@ -115,7 +115,7 @@ if(!class_exists('M_Wizard')) {
 
 										case 'advanced':	// Skips wizard and goes to pointer tutorial
 															$this->hide_wizard();
-															echo "clear";
+															echo "";
 															break;
 									}
 								}
@@ -164,16 +164,19 @@ if(!class_exists('M_Wizard')) {
 						_e('If you would like us to set up some basic things for you then choose an option below.','membership');
 					?>
 				</p>
-				<ul class='wizardoptions'>
-					<li><input type='radio' name='wizardtype' value='normal' checked='checked' />&nbsp;<?php _e('Standard membership site.','membership'); ?></li>
-					<li><input type='radio' name='wizardtype' value='dripped' />&nbsp;<?php _e('Dripped content site.','membership'); ?></li>
-					<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
-				</ul>
-				<p class="about-description">
-					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteponebutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
-					<?php } ?>
-				</p>
+				<form action='<?php echo $nextsteplink; ?>' method='post' name='wizardform' id='wizardform'>
+					<input type='hidden' name='action' value='processwizard' />
+					<input type='hidden' name='from' value='stepone' />
+					<input type='hidden' name='nonce' value='<?php echo wp_create_nonce('membership_wizard'); ?>' />
+					<ul class='wizardoptions'>
+						<li><input type='radio' name='wizardtype' value='normal' checked='checked' />&nbsp;<?php _e('Standard membership site.','membership'); ?></li>
+						<li><input type='radio' name='wizardtype' value='dripped' />&nbsp;<?php _e('Dripped content site.','membership'); ?></li>
+						<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
+					</ul>
+					<p class="about-description">
+						<input type='submit' name='submit' class='button-primary alignright' value='<?php _e('Next Step &raquo;', 'membership'); ?>' />
+					</p>
+				</form>
 
 			<?php
 			return ob_get_clean();
@@ -190,6 +193,10 @@ if(!class_exists('M_Wizard')) {
 						_e('Select the number of levels you think you will need to get started (you can add or remove them later).','membership');
 					?>
 				</p>
+				<form action='' method='post' name='wizardform' id='wizardform'>
+					<input type='hidden' name='' value='' />
+					<input type='hidden' name='' value='' />
+					<input type='hidden' name='' value='' />
 				<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
 					<select name='numberoflevels' id='wizardnumberoflevels'>
@@ -250,6 +257,7 @@ if(!class_exists('M_Wizard')) {
 					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
 					<?php } ?>
 				</p>
+				</form>
 
 			<?php
 			return ob_get_clean();
@@ -267,6 +275,7 @@ if(!class_exists('M_Wizard')) {
 						_e('Select the number of levels you think you will need to get started (you can add or remove them later).','membership');
 					?>
 				</p>
+				<form action='' method='post' name='wizardform' id='wizardform'>
 				<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
 					<select name='numberoflevels' id='wizardnumberoflevels'>
@@ -285,12 +294,12 @@ if(!class_exists('M_Wizard')) {
 					?>
 					</select>
 					<?php _e(' levels and give them the following names:','membership'); ?>
-				</p>
-					<ul class='wizardlevelnames'>
-						<li><input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
-						<li><input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
-					</ul>
-				<p class="about-description createsteps">
+					</p>
+						<ul class='wizardlevelnames'>
+							<li><input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
+							<li><input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
+						</ul>
+					<p class="about-description createsteps">
 					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
 					<br/><br/>
 					<?php _e('Finally, I would like to use the ','membership'); ?>
@@ -327,6 +336,7 @@ if(!class_exists('M_Wizard')) {
 					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
 					<?php } ?>
 				</p>
+				</form>
 
 			<?php
 			return ob_get_clean();

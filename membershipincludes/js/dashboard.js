@@ -154,7 +154,7 @@ function memLoadWizardStepTwo() {
 		type	: 'POST',
 		cache	: false,
 		url		: membershipwizard.ajaxurl,
-		data	: {	action : 'processwizard', nonce : membershipwizard.wizardnonce, from: 'stepone', option: jQuery('ul.wizardoptions input[name=wizardtype]:checked').val() },
+		data	: jQuery('#wizardform').serialize(),
 		success	: mem_WizardStepTwoSuccess,
 		error	: mem_WizardStepTwoError
 	});
@@ -163,8 +163,8 @@ function memLoadWizardStepTwo() {
 }
 
 function memSetUpWizard() {
-	jQuery('#wizardsteponebutton').unbind('click');
-	jQuery('#wizardsteponebutton').click(memLoadWizardStepTwo);
+	jQuery('#wizardform').unbind('submit');
+	jQuery('#wizardform').submit(memLoadWizardStepTwo);
 
 	jQuery('#wizardsteponebutton').ajaxStart(function(){
 	   jQuery(this).html(membershipwizard.membershiploading);
