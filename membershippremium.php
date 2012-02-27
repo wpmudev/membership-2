@@ -50,8 +50,9 @@ if(is_admin()) {
 	require_once('membershipincludes/classes/class.help.php');
 	// Add in the wizard
 	require_once('membershipincludes/classes/class.wizard.php');
+	require_once('membershipincludes/classes/class.tutorial.php');
 	// Add in the pointer tutorial
-	require_once('membershipincludes/includes/pointer-tutorials.php');
+	//require_once('membershipincludes/includes/pointer-tutorials.php');
 	// Add in the tooltips class - from social marketing app by Ve
 	require_once('membershipincludes/includes/class_wd_help_tooltips.php');
 	// Add in the main class
