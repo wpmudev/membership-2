@@ -6,7 +6,7 @@ class M_Tutorial {
 	private $_setup_tutorial;
 	private $_insert_tutorial;
 
-	private $_edit_steps = array(
+	private $_member_steps = array(
 		'welcome',
 		'title',
 		'body',
@@ -18,16 +18,88 @@ class M_Tutorial {
 		'services',
 	);
 
-	private $_setup_steps = array(
-		'settings',
-		//'popup',
-		'javascript',
-		'appearance',
-		'styles',
+	private $_level_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
 	);
 
-	private $_insert_steps = array(
-		'insert',
+	private $_subscription_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
+	);
+
+	private $_communication_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
+	);
+
+	private $_urlgroups_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
+	);
+
+	private $_pings_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
+	);
+
+	private $_gateways_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
+	);
+
+	private $_options_steps = array(
+		'welcome',
+		'title',
+		'body',
+		'options',
+		'share_url',
+		'button_text',
+		'type',
+		'share_text',
+		'services',
 	);
 
 	private function __construct () {
