@@ -9,6 +9,7 @@ if(!class_exists('M_Help')) {
 
 			$this->screen = $screen;
 
+			$this->set_global_sidebar_content();
 			//print_r($screen);
 
 		}
@@ -30,7 +31,7 @@ if(!class_exists('M_Help')) {
 				case 'toplevel_page_membership':					$this->dashboard_help();
 																	break;
 
-				case 'membership_page_members':						$this->members_help();
+				case 'membership_page_membershipmembers':			$this->members_help();
 																	break;
 
 				case 'membership_page_membershiplevels':			$this->levels_help();
@@ -62,6 +63,15 @@ if(!class_exists('M_Help')) {
 		}
 
 		// Specific help content creation functions
+
+		function set_global_sidebar_content() {
+
+			ob_start();
+			include_once(membership_dir('membershipincludes/help/help.sidebar.php'));
+			$help = ob_get_clean();
+
+			$this->screen->set_help_sidebar( $help );
+		}
 
 		function dashboard_help() {
 

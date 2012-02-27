@@ -2,7 +2,7 @@
 /*
 Plugin Name: Membership Premium
 Version: 3.0
-Plugin URI: http://premium.wpmudev.org
+Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: Barry (Incsub)
 Author URI: http://mapinated.com
