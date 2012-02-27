@@ -197,9 +197,15 @@ if(!class_exists('M_Wizard')) {
 					<select name='numberoflevels'>
 					<?php
 						for($n=1; $n <= 99; $n++) {
-							?>
-								<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
-							<?php
+							if($n == 2) {
+								?>
+									<option value='<?php echo $n; ?>' selected='selected'><?php echo $n; ?></option>
+								<?php
+							} else {
+								?>
+									<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
+								<?php
+							}
 						}
 					?>
 					</select>

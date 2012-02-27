@@ -2,9 +2,9 @@
 
 class M_Tutorial {
 
-	private $_edit_tutorial;
-	private $_setup_tutorial;
-	private $_insert_tutorial;
+	private $_member_tutorial;
+	private $_level_tutorial;
+	private $_subscription_tutorial;
 
 	private $_member_steps = array(
 		'welcome',
