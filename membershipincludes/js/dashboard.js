@@ -80,19 +80,19 @@ function memReBuildChartThree() {
 
 function memAddRemoveLevelNames() {
 
-	currentnumber = jQuery('input.wizardlevelname').size() + 1;
+	currentnumber = jQuery('input.wizardlevelname').size();
 	goingto = jQuery('#wizardnumberoflevels').val();
 	// We need to add fields if we are goingto a greater numnber
 	if(goingto > currentnumber) {
 		while(currentnumber < goingto) {
-
 			currentnumber++;
+			jQuery("<li><input type='text' name='levelname[]' value='" + membershipwizard.membershiplevel + ' ' + currentnumber + "' class='wizardlevelname' /></li>").appendTo('ul.wizardlevelnames');
 		}
 	} else {
 		// We need to remove fields if we are goingto a lower number
 		if(goingto < currentnumber) {
 			while(currentnumber > goingto) {
-
+				jQuery('input.wizardlevelname').last().parent().remove();
 				currentnumber--;
 			}
 		}

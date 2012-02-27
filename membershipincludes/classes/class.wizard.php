@@ -164,13 +164,11 @@ if(!class_exists('M_Wizard')) {
 						_e('If you would like us to set up some basic things for you then choose an option below.','membership');
 					?>
 				</p>
-				<p class="about-description createsteps">
-					<ul class='wizardoptions'>
-						<li><input type='radio' name='wizardtype' value='normal' checked='checked' />&nbsp;<?php _e('Standard membership site.','membership'); ?></li>
-						<li><input type='radio' name='wizardtype' value='dripped' />&nbsp;<?php _e('Dripped content site.','membership'); ?></li>
-						<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
-					</ul>
-				</p>
+				<ul class='wizardoptions'>
+					<li><input type='radio' name='wizardtype' value='normal' checked='checked' />&nbsp;<?php _e('Standard membership site.','membership'); ?></li>
+					<li><input type='radio' name='wizardtype' value='dripped' />&nbsp;<?php _e('Dripped content site.','membership'); ?></li>
+					<li><input type='radio' name='wizardtype' value='advanced' />&nbsp;<?php _e('Advanced.','membership'); ?></li>
+				</ul>
 				<p class="about-description">
 					<?php if($nextsteplink) { ?>
 					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteponebutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
