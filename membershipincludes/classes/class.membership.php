@@ -652,10 +652,10 @@ if(!class_exists('M_Membership')) {
 		function has_level($level_id = false) {
 			// Returns true if the user has a level to process
 
-			if($level_id) {
-				return isset($this->levels[$level_id]);
+			if($level_id && isset($this->levels[$level_id])) {
+				return true;
 			} else {
-				return !empty($this->levels);
+				return false;
 			}
 		}
 

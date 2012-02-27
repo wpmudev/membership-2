@@ -31,13 +31,13 @@ class M_Tutorial {
 	);
 
 	private function __construct () {
-		if (!class_exists('')) require_once WDSM_PLUGIN_BASE_DIR . '/lib/external/pointers_tutorial.php';
+		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/pointer-tutorials.php'));
 		$this->_edit_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
 		$this->_setup_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
 		$this->_insert_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
-		$this->_edit_tutorial->add_icon(WDSM_PLUGIN_URL . '/img/pointer_icon.png');
-		$this->_setup_tutorial->add_icon(WDSM_PLUGIN_URL . '/img/pointer_icon.png');
-		$this->_insert_tutorial->add_icon(WDSM_PLUGIN_URL . '/img/pointer_icon.png');
+		$this->_edit_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_setup_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_insert_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
 	}
 
 	function M_Tutorial() {
@@ -45,7 +45,7 @@ class M_Tutorial {
 	}
 
 	public static function serve () {
-		$me = new Wdsm_Tutorial;
+		$me = new M_Tutorial;
 		$me->_add_hooks();
 	}
 

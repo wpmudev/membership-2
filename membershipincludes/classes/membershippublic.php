@@ -321,7 +321,7 @@ if(!class_exists('membershippublic')) {
 			if(!empty($shortcodes)) {
 				foreach($shortcodes as $key => $value) {
 					if(!empty($value)) {
-						if($member->on_level($key, true)) {
+						if($member->has_level($key)) {
 							// member is on this level so can see the content
 							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_level_shortcode') );
 						} else {
@@ -1955,7 +1955,7 @@ if(!class_exists('membershippublic')) {
 
 			$orderby[] = 'id ASC';
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->levels}");
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}");
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
