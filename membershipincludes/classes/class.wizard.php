@@ -184,6 +184,7 @@ if(!class_exists('M_Wizard')) {
 
 		function show_normal_wizard_step( $nextsteplink = false ) {
 
+			$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
 			ob_start();
 			?>
 				<h3><?php _e('Create your levels', 'membership'); ?></h3>
@@ -194,10 +195,11 @@ if(!class_exists('M_Wizard')) {
 					?>
 				</p>
 				<form action='' method='post' name='wizardform' id='wizardform'>
-					<input type='hidden' name='' value='' />
-					<input type='hidden' name='' value='' />
-					<input type='hidden' name='' value='' />
-				<p class="about-description createsteps">
+					<input type='hidden' name='action' value='processwizard' />
+					<input type='hidden' name='from' value='steptwo' />
+					<input type='hidden' name='nonce' value='<?php echo wp_create_nonce('membership_wizard'); ?>' />
+					<input type='hidden' name='wizardtype' value='normal' />
+					<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
 					<select name='numberoflevels' id='wizardnumberoflevels'>
 					<?php
@@ -253,11 +255,11 @@ if(!class_exists('M_Wizard')) {
 					<?php _e(' gateway to receive payments.','membership'); ?>
 				</p>
 				<p class="about-description">
-					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
-					<?php } ?>
+					<input type='submit' name='submit' class='button-primary alignright' value='<?php _e('Finish', 'membership'); ?>' />
 				</p>
 				</form>
+
+				<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 
 			<?php
 			return ob_get_clean();
@@ -266,6 +268,7 @@ if(!class_exists('M_Wizard')) {
 
 		function show_dripped_wizard_step( $nextsteplink = false ) {
 
+			$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
 			ob_start();
 			?>
 				<h3><?php _e('Create your levels', 'membership'); ?></h3>
@@ -276,7 +279,11 @@ if(!class_exists('M_Wizard')) {
 					?>
 				</p>
 				<form action='' method='post' name='wizardform' id='wizardform'>
-				<p class="about-description createsteps">
+					<input type='hidden' name='action' value='processwizard' />
+					<input type='hidden' name='from' value='steptwo' />
+					<input type='hidden' name='nonce' value='<?php echo wp_create_nonce('membership_wizard'); ?>' />
+					<input type='hidden' name='wizardtype' value='dripped' />
+					<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
 					<select name='numberoflevels' id='wizardnumberoflevels'>
 					<?php
@@ -332,11 +339,11 @@ if(!class_exists('M_Wizard')) {
 					<?php _e(' gateway to receive payments.','membership'); ?>
 				</p>
 				<p class="about-description">
-					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
-					<?php } ?>
+					<input type='submit' name='submit' class='button-primary alignright' value='<?php _e('Finish', 'membership'); ?>' />
 				</p>
 				</form>
+
+				<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 
 			<?php
 			return ob_get_clean();
