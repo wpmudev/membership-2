@@ -77,9 +77,10 @@ div.inside p {
 ul.wizardoptions {
 	color: #777;
 	font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: normal;
 	margin-left: 20px;
+	margin-top: 0;
 }
 
 ul.wizardoptions li {
@@ -97,4 +98,18 @@ ul.wizardoptions li {
 
 #welcome-panel {
 	position: relative;
+}
+
+div#welcomeloading {
+	position: absolute;
+	background: #ffffff;
+	top: 150px;
+}
+
+p.about-description.createsteps {
+	overflow: hidden;
+	font-size: 16px;
+	padding-left: 30px !Important;
+	padding-right: 30px !Important;
+	
 }

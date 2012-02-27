@@ -78,8 +78,12 @@ function memReBuildChartThree() {
 	);
 }
 
-function mem_WizardStepTwoSuccess() {
-
+function mem_WizardStepTwoSuccess( data ) {
+	if(data != 'clear') {
+		jQuery('div.welcome-panel-content').html(data);
+	} else {
+		jQuery('#welcome-panel').hide();
+	}
 }
 
 function mem_WizardStepTwoError() {
@@ -107,6 +111,12 @@ function memSetUpWizard() {
 	jQuery('#wizardsteponebutton').ajaxStart(function(){
 	   jQuery(this).html('Loading...');
 	 });
+
+	jQuery('#wizardsteponebutton').ajaxStop(function(){
+	   jQuery(this).html('Next Step &raquo;');
+	 });
+
+	//
 }
 
 function memReportReady() {
