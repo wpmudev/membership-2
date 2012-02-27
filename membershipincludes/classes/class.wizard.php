@@ -214,7 +214,36 @@ if(!class_exists('M_Wizard')) {
 					<input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /><br/>
 					<input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' />
 					<br/><br/>
-					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('Create a stranger level?', 'membership'); ?>
+					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
+					<br/><br/>
+					<?php _e('Finally, I would like to use the ','membership'); ?>
+					<select name='wizardgateway' >
+						<option value=''><?php _e('Select a gateway...', 'membership'); ?></option>
+						<?php 	$gateways = get_membership_gateways();
+								if(!empty($gateways)) {
+									foreach($gateways as $key => $gateway) {
+										$default_headers = array(
+											                'Name' => 'Addon Name',
+															'Author' => 'Author',
+															'Description'	=>	'Description',
+															'AuthorURI' => 'Author URI',
+															'gateway_id' => 'Gateway ID'
+											        );
+
+										$gateway_data = get_file_data( membership_dir('membershipincludes/gateways/' . $gateway), $default_headers, 'plugin' );
+
+										if(empty($gateway_data['Name'])) {
+											continue;
+										}
+										?>
+										<option value=''><?php echo $gateway_data['Name']; ?></option>
+										<?php
+
+									}
+								}
+						?>
+					</select>
+					<?php _e(' gateway to receive payments.','membership'); ?>
 				</p>
 				<p class="about-description">
 					<?php if($nextsteplink) { ?>
@@ -237,21 +266,63 @@ if(!class_exists('M_Wizard')) {
 						_e('A level controls what parts of your website a user has access to, so we will need to set some initial ones up. ','membership');
 						_e('Select the number of levels you think you will need to get started (you can add or remove them later).','membership');
 					?>
-					<br/><br/>
+				</p>
+				<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
-					<select name='numberoflevels'>
+					<select name='numberoflevels' id='wizardnumberoflevels'>
 					<?php
 						for($n=1; $n <= 99; $n++) {
-							?>
-								<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
-							<?php
+							if($n == 2) {
+								?>
+									<option value='<?php echo $n; ?>' selected='selected'><?php echo $n; ?></option>
+								<?php
+							} else {
+								?>
+									<option value='<?php echo $n; ?>'><?php echo $n; ?></option>
+								<?php
+							}
 						}
 					?>
 					</select>
-					<?php _e(' levels.','membership'); ?>
-					<br/>
+					<?php _e(' levels and give them the following names:','membership'); ?>
+					<br/><br/>
+					<input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /><br/>
+					<input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' />
+					<br/><br/>
+					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
+					<br/><br/>
+					<?php _e('Finally, I would like to use the ','membership'); ?>
+					<select name='wizardgateway' >
+						<option value=''><?php _e('Select a gateway...', 'membership'); ?></option>
+						<?php 	$gateways = get_membership_gateways();
+								if(!empty($gateways)) {
+									foreach($gateways as $key => $gateway) {
+										$default_headers = array(
+											                'Name' => 'Addon Name',
+															'Author' => 'Author',
+															'Description'	=>	'Description',
+															'AuthorURI' => 'Author URI',
+															'gateway_id' => 'Gateway ID'
+											        );
+
+										$gateway_data = get_file_data( membership_dir('membershipincludes/gateways/' . $gateway), $default_headers, 'plugin' );
+
+										if(empty($gateway_data['Name'])) {
+											continue;
+										}
+										?>
+										<option value=''><?php echo $gateway_data['Name']; ?></option>
+										<?php
+
+									}
+								}
+						?>
+					</select>
+					<?php _e(' gateway to receive payments.','membership'); ?>
+				</p>
+				<p class="about-description">
 					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteponebutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
 					<?php } ?>
 				</p>
 
