@@ -209,7 +209,10 @@ if(!class_exists('M_Wizard')) {
 						}
 					?>
 					</select>
-					<?php _e(' levels.','membership'); ?>
+					<?php _e(' levels and give them the following names:','membership'); ?>
+					<br/><br/>
+					<input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' /><br/>
+					<input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' />
 					<br/><br/>
 					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('Create a stranger level?', 'membership'); ?>
 				</p>
