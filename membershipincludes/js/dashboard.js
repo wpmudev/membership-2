@@ -105,9 +105,10 @@ function mem_WizardStepTwoSuccess( data ) {
 		// Add the content to the box
 		jQuery('div.welcome-panel-content').html(data);
 		// Set up the hooks
-		jQuery('#wizardsteptwobutton').unbind('click');
-		jQuery('#wizardsteptwobutton').click(memLoadWizardStepThree);
+		jQuery('#wizardform').unbind('submit');
+		jQuery('#wizardform').submit(memLoadWizardStepThree);
 		jQuery('#wizardnumberoflevels').change(memAddRemoveLevelNames);
+		jQuery('div.welcome-panel-content').scrollTop();
 	} else {
 		jQuery('#welcome-panel').hide();
 	}
@@ -117,9 +118,7 @@ function mem_WizardStepThreeSuccess( data ) {
 	if(data != 'clear') {
 		// Add the content to the box
 		jQuery('div.welcome-panel-content').html(data);
-		// Set up the hooks
-		jQuery('#wizardsteptwobutton').unbind('click');
-		jQuery('#wizardsteptwobutton').click(memLoadWizardStepThree);
+		jQuery('div.welcome-panel-content').scrollTop();
 	} else {
 		jQuery('#welcome-panel').hide();
 	}
@@ -139,7 +138,7 @@ function memLoadWizardStepThree() {
 		type	: 'POST',
 		cache	: false,
 		url		: membershipwizard.ajaxurl,
-		data	: {	action : 'processwizard', nonce : membershipwizard.wizardnonce, from: 'steptwo', option: jQuery('ul.wizardoptions input[name=wizardtype]:checked').val() },
+		data	: jQuery('#wizardform').serialize(),
 		success	: mem_WizardStepThreeSuccess,
 		error	: mem_WizardStepThreeError
 	});
