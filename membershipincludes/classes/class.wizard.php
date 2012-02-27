@@ -247,7 +247,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				<p class="about-description">
 					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
 					<?php } ?>
 				</p>
 
@@ -322,7 +322,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				<p class="about-description">
 					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Finish', 'membership'); ?></a>
 					<?php } ?>
 				</p>
 
