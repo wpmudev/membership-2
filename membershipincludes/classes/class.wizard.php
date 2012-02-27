@@ -210,10 +210,12 @@ if(!class_exists('M_Wizard')) {
 					?>
 					</select>
 					<?php _e(' levels and give them the following names:','membership'); ?>
-					<br/><br/>
-					<input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /><br/>
-					<input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' />
-					<br/><br/>
+					</p>
+						<ul class='wizardlevelnames'>
+							<li><input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
+							<li><input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
+						</ul>
+					<p class="about-description createsteps">
 					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
 					<br/><br/>
 					<?php _e('Finally, I would like to use the ','membership'); ?>
@@ -285,10 +287,12 @@ if(!class_exists('M_Wizard')) {
 					?>
 					</select>
 					<?php _e(' levels and give them the following names:','membership'); ?>
-					<br/><br/>
-					<input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /><br/>
-					<input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' />
-					<br/><br/>
+				</p>
+					<ul class='wizardlevelnames'>
+						<li><input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
+						<li><input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
+					</ul>
+				<p class="about-description createsteps">
 					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
 					<br/><br/>
 					<?php _e('Finally, I would like to use the ','membership'); ?>

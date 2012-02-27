@@ -114,7 +114,14 @@ p.about-description.createsteps {
 	
 }
 
-#welcome-panel div.welcome-panel-content p.about-description.createsteps input.wizardlevelname {
+ul.wizardlevelnames input.wizardlevelname {
 	margin-bottom: 5px;
 	width: 40em;
+}
+
+#welcome-panel div.welcome-panel-content ul.wizardlevelnames {
+	overflow: hidden;
+	font-size: 16px;
+	padding-left: 30px !Important;
+	padding-right: 30px !Important;
 }
