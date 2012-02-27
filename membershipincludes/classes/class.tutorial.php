@@ -130,11 +130,15 @@ class M_Tutorial {
 		$this->_gateways_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
 		$this->_options_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
 
+		$this->_member_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_level_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_subscription_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_communication_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_urlgroups_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_pings_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_gateways_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_options_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
 
-
-		$this->_edit_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_setup_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_insert_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
 	}
 
 	function M_Tutorial() {
