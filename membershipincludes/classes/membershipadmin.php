@@ -29,6 +29,9 @@ if(!class_exists('membershipadmin')) {
 		// The Wizard
 		var $potter;
 
+		// The tutorial
+		var $tutorial;
+
 
 		function __construct() {
 
@@ -111,7 +114,9 @@ if(!class_exists('membershipadmin')) {
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
 
-
+			// Add in pointer tutorial
+			$this->tutorial = new M_Tutorial();
+			$this->tutorial->serve();
 
 		}
 

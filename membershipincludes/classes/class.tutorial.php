@@ -107,19 +107,8 @@ class M_Tutorial {
 		'services',
 	);
 
-	private function __construct () {
+	function __construct () {
 		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/pointer-tutorials.php'));
-
-		/*
-		private $_member_tutorial;
-		private $_level_tutorial;
-		private $_subscription_tutorial;
-		private $_communication_tutorial;
-		private $_urlgroups_tutorial;
-		private $_pings_tutorial;
-		private $_gateways_tutorial;
-		private $_options_tutorial;
-		*/
 
 		$this->_member_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
 		$this->_level_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
@@ -145,18 +134,19 @@ class M_Tutorial {
 		$this->__construct();
 	}
 
-	public static function serve () {
-		$me = new M_Tutorial;
-		$me->_add_hooks();
+	function serve () {
+		$this->_add_hooks();
 	}
 
 	private function _add_hooks () {
 		add_action('admin_init', array($this, 'process_tutorial'));
-		add_action('wp_ajax_wdsm_restart_tutorial', array($this, 'json_restart_tutorial'));
+		add_action('wp_ajax_membership_restart_tutorial', array($this, 'json_restart_tutorial'));
 	}
 
 	function process_tutorial () {
 		global $pagenow;
+
+		/*
 		if ('wdsm' == wdsm_getval($_GET, 'page')) $this->_init_tutorial($this->_setup_steps);
 		if ('social_marketing_ad' == wdsm_getval($_GET, 'post_type') && 'post-new.php' == $pagenow) $this->_init_tutorial($this->_edit_steps);
 		if ('first' == wdsm_getval($_GET, 'wdsm') && 'post-new.php' == $pagenow) $this->_init_tutorial($this->_insert_steps);
@@ -167,6 +157,7 @@ class M_Tutorial {
 		$this->_edit_tutorial->initialize();
 		$this->_setup_tutorial->initialize();
 		$this->_insert_tutorial->initialize();
+		*/
 	}
 
 	function json_restart_tutorial () {
@@ -185,8 +176,10 @@ class M_Tutorial {
 	}
 
 	private function _init_tutorial ($steps) {
-		$this->_edit_tutorial->set_textdomain('wdsm');
+		$this->_edit_tutorial->set_textdomain('membership');
 		$this->_setup_tutorial->set_capability('manage_options');
+
+
 		$this->_edit_tutorial->set_textdomain('wdsm');
 		$this->_setup_tutorial->set_capability('manage_options');
 
