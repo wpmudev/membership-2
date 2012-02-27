@@ -108,7 +108,7 @@ function mem_WizardStepTwoSuccess( data ) {
 		jQuery('#wizardform').unbind('submit');
 		jQuery('#wizardform').submit(memLoadWizardStepThree);
 		jQuery('#wizardnumberoflevels').change(memAddRemoveLevelNames);
-		jQuery('div.welcome-panel-content').scrollTop();
+		jQuery('html, body').animate({ scrollTop: 0 }, 0);
 	} else {
 		jQuery('#welcome-panel').hide();
 	}
@@ -118,7 +118,7 @@ function mem_WizardStepThreeSuccess( data ) {
 	if(data != 'clear') {
 		// Add the content to the box
 		jQuery('div.welcome-panel-content').html(data);
-		jQuery('div.welcome-panel-content').scrollTop();
+		jQuery('html, body').animate({ scrollTop: 0 }, 0);
 	} else {
 		jQuery('#welcome-panel').hide();
 	}

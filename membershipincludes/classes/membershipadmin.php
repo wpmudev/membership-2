@@ -2213,6 +2213,18 @@ if(!class_exists('membershipadmin')) {
 					case 'extras':			$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
 											$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
 											$M_options['renewalperiod'] = $_POST['renewalperiod'];
+
+											if(isset($_POST['membershipwizard']) && $_POST['membershipwizard'] == 'yes') {
+												if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+													if(function_exists('update_blog_option')) {
+														update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', 'yes');
+													} else {
+														update_option('membership_wizard_visible', 'yes');
+													}
+												} else {
+													update_option('membership_wizard_visible', 'yes');
+												}
+											}
 											break;
 
 					default:				do_action('membership_option_menu_' . $tab);
@@ -2999,6 +3011,42 @@ if(!class_exists('membershipadmin')) {
 										      }
 										  ?>
 										  </select>&nbsp;<?php _e('day(s)','membership'); ?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Membership wizard','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('If you accidentally dismissed the membership wizard and would like to show it again, then check the box below.','membership'); ?></p>
+
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Show membership wizard','membership'); ?></th>
+									<td>
+										<?php
+										if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+											if(function_exists('get_blog_option')) {
+												if(function_exists('switch_to_blog')) {
+													switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+												}
+												$wizard_visible = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', 'yes');
+												if(function_exists('restore_current_blog')) {
+													restore_current_blog();
+												}
+											} else {
+												$wizard_visible = get_option('membership_wizard_visible', 'yes');
+											}
+										} else {
+											$wizard_visible = get_option('membership_wizard_visible', 'yes');
+										}
+										?>
+										<input type='checkbox' name='membershipwizard' value='yes' <?php if($wizard_visible == 'yes') echo "checked='checked'"; ?>/>
 									</td>
 								</tr>
 							</tbody>
