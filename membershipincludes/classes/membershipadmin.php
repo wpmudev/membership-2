@@ -386,7 +386,10 @@ if(!class_exists('membershipadmin')) {
 			}
 			// Add localisation for the wizard
 			wp_localize_script('dashjs', 'membershipwizard', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-			 														'wizardnonce'	=>	wp_create_nonce('membership_wizard')
+			 														'wizardnonce'	=>	wp_create_nonce('membership_wizard'),
+																	'membershiploading' => __('Loading...', 'membership'),
+																	'membershipnextstep' => __('Next Step &raquo;','membership'),
+																	'membershipgonewrong' => __('Something has gone wrong with the Wizard, please try clicking the button again.', 'membership')
 																	));
 
 			$this->handle_membership_dashboard_updates();

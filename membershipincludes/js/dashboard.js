@@ -80,13 +80,21 @@ function memReBuildChartThree() {
 
 function mem_WizardStepTwoSuccess( data ) {
 	if(data != 'clear') {
+		// Add the content to the box
 		jQuery('div.welcome-panel-content').html(data);
+		// Set up the hooks
+		jQuery('#wizardsteponebutton').unbind('click');
+		jQuery('#wizardsteponebutton').click(memLoadWizardStepThree);
 	} else {
 		jQuery('#welcome-panel').hide();
 	}
 }
 
 function mem_WizardStepTwoError() {
+	alert(membershipwizard.membershipgonewrong);
+}
+
+function memLoadWizardStepThree() {
 
 }
 
@@ -109,11 +117,11 @@ function memSetUpWizard() {
 	jQuery('#wizardsteponebutton').click(memLoadWizardStepTwo);
 
 	jQuery('#wizardsteponebutton').ajaxStart(function(){
-	   jQuery(this).html('Loading...');
+	   jQuery(this).html(membershipwizard.membershiploading);
 	 });
 
 	jQuery('#wizardsteponebutton').ajaxStop(function(){
-	   jQuery(this).html('Next Step &raquo;');
+	   jQuery(this).html(membershipwizard.membershipnextstep);
 	 });
 
 	//
