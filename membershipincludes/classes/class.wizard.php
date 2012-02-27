@@ -194,7 +194,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				<p class="about-description createsteps">
 					<?php _e('Create ','membership'); ?>
-					<select name='numberoflevels'>
+					<select name='numberoflevels' id='wizardnumberoflevels'>
 					<?php
 						for($n=1; $n <= 99; $n++) {
 							if($n == 2) {
@@ -218,7 +218,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				<p class="about-description">
 					<?php if($nextsteplink) { ?>
-					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteponebutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
+					<a href='<?php echo $nextsteplink; ?>' class='button-primary alignright' id='wizardsteptwobutton'><?php _e('Next Step &raquo;', 'membership'); ?></a>
 					<?php } ?>
 				</p>
 

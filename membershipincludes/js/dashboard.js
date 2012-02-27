@@ -78,13 +78,30 @@ function memReBuildChartThree() {
 	);
 }
 
+function memAddRemoveLevelNames() {
+	alert('change');
+}
+
 function mem_WizardStepTwoSuccess( data ) {
 	if(data != 'clear') {
 		// Add the content to the box
 		jQuery('div.welcome-panel-content').html(data);
 		// Set up the hooks
-		jQuery('#wizardsteponebutton').unbind('click');
-		jQuery('#wizardsteponebutton').click(memLoadWizardStepThree);
+		jQuery('#wizardsteptwobutton').unbind('click');
+		jQuery('#wizardsteptwobutton').click(memLoadWizardStepThree);
+		jQuery('#wizardnumberoflevels').change(memAddRemoveLevelNames);
+	} else {
+		jQuery('#welcome-panel').hide();
+	}
+}
+
+function mem_WizardStepThreeSuccess( data ) {
+	if(data != 'clear') {
+		// Add the content to the box
+		jQuery('div.welcome-panel-content').html(data);
+		// Set up the hooks
+		jQuery('#wizardsteptwobutton').unbind('click');
+		jQuery('#wizardsteptwobutton').click(memLoadWizardStepThree);
 	} else {
 		jQuery('#welcome-panel').hide();
 	}
@@ -94,7 +111,22 @@ function mem_WizardStepTwoError() {
 	alert(membershipwizard.membershipgonewrong);
 }
 
+function mem_WizardStepThreeError() {
+	alert(membershipwizard.membershipgonewrong);
+}
+
 function memLoadWizardStepThree() {
+
+	jQuery.ajax({
+		type	: 'POST',
+		cache	: false,
+		url		: membershipwizard.ajaxurl,
+		data	: {	action : 'processwizard', nonce : membershipwizard.wizardnonce, from: 'steptwo', option: jQuery('ul.wizardoptions input[name=wizardtype]:checked').val() },
+		success	: mem_WizardStepThreeSuccess,
+		error	: mem_WizardStepThreeError
+	});
+
+	return false;
 
 }
 
