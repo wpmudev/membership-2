@@ -5,6 +5,11 @@ class M_Tutorial {
 	private $_member_tutorial;
 	private $_level_tutorial;
 	private $_subscription_tutorial;
+	private $_communication_tutorial;
+	private $_urlgroups_tutorial;
+	private $_pings_tutorial;
+	private $_gateways_tutorial;
+	private $_options_tutorial;
 
 	private $_member_steps = array(
 		'welcome',
@@ -104,9 +109,29 @@ class M_Tutorial {
 
 	private function __construct () {
 		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/pointer-tutorials.php'));
-		$this->_edit_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
-		$this->_setup_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
-		$this->_insert_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
+
+		/*
+		private $_member_tutorial;
+		private $_level_tutorial;
+		private $_subscription_tutorial;
+		private $_communication_tutorial;
+		private $_urlgroups_tutorial;
+		private $_pings_tutorial;
+		private $_gateways_tutorial;
+		private $_options_tutorial;
+		*/
+
+		$this->_member_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
+		$this->_level_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
+		$this->_subscription_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
+		$this->_communication_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
+		$this->_urlgroups_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
+		$this->_pings_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
+		$this->_gateways_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
+		$this->_options_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
+
+
+
 		$this->_edit_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
 		$this->_setup_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
 		$this->_insert_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));

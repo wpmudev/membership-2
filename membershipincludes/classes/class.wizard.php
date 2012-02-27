@@ -236,7 +236,7 @@ if(!class_exists('M_Wizard')) {
 											continue;
 										}
 										?>
-										<option value=''><?php echo $gateway_data['Name']; ?></option>
+										<option value='<?php echo $gateway; ?>'><?php echo $gateway_data['Name']; ?></option>
 										<?php
 
 									}
@@ -311,7 +311,7 @@ if(!class_exists('M_Wizard')) {
 											continue;
 										}
 										?>
-										<option value=''><?php echo $gateway_data['Name']; ?></option>
+										<option value='<?php echo $gateway; ?>'><?php echo $gateway_data['Name']; ?></option>
 										<?php
 
 									}
