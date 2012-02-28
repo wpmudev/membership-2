@@ -259,7 +259,7 @@ class M_Tutorial {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#level_title',
-			__('Adding Levels From', 'membership'),
+			__('Adding Levels Form', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
 				'position' => array('edge' => 'bottom', 'align' => 'left'),
@@ -272,7 +272,7 @@ class M_Tutorial {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#level_title',
-			__('Adding Levels From', 'membership'),
+			__('Subscriptions', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
 				'position' => array('edge' => 'bottom', 'align' => 'left'),
@@ -425,182 +425,6 @@ class M_Tutorial {
 	'pings',
 	*/
 
-
-
-	function add_title_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#title',
-			__('Title', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Give your advert a title.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-
-	}
-
-	function add_body_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#postdivrich',
-			__('Sell Your Product', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Tell your visitors why they should click on your advert!', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
-			)
-		);
-
-	}
-
-	function add_options_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm_services',
-			__('Social Marketing Options', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('You can tweak most of your options here.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
-			)
-		);
-
-	}
-
-	function add_share_url_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm_url',
-			__('URL', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('This is the URL that will be shared by your visitors with their friends.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_button_text_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm_button_text',
-			__('Button text', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Add a call to action to get your visitors to click!', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_type_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm_type',
-			__('Offer Type', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Choose whether you are offering a free download or a coupon code.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_share_text_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm_share_text',
-			__('Thank You Text', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Thank your users for clicking on your link.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_services_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#wdsm-services_box',
-			__('Social Media', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Select one or more social media service.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
-			)
-		);
-	}
-
-/* ----- Setup Steps ----- */
-
-	function add_settings_step () {
-		$this->_setup_tutorial->add_step(
-			admin_url('edit.php?post_type=social_marketing_ad&page=wdsm'), 'social_marketing_ad_page_wdsm',
-			'#wdsm-settings_start',
-			__('Welcome!', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('This is where you&#8217;ll create your first social marketing advert.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-/*
-	function add_popup_step () {
-		$this->_setup_tutorial->add_step(
-			admin_url('edit.php?post_type=social_marketing_ad&page=wdsm'), 'social_marketing_ad_page_wdsm',
-			'#settings-pop-up-box',
-			__('Pop-up style', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Choose how your pop-up advert will be displayed. ', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-*/
-	function add_javascript_step () {
-		$this->_setup_tutorial->add_step(
-			admin_url('edit.php?post_type=social_marketing_ad&page=wdsm'), 'social_marketing_ad_page_wdsm',
-			'#settings-javascript',
-			__('Javascript', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Select any services which already provide javascript to your website.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_appearance_step () {
-		$this->_setup_tutorial->add_step(
-			admin_url('edit.php?post_type=social_marketing_ad&page=wdsm'), 'social_marketing_ad_page_wdsm',
-			'#wdsm-theme',
-			__('Appearance', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Select how your button will look.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-	function add_styles_step () {
-		$this->_setup_tutorial->add_step(
-			admin_url('edit.php?post_type=social_marketing_ad&page=wdsm'), 'social_marketing_ad_page_wdsm',
-			'#wdsm-no-theme',
-			__('Styles', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('If you want to style the button yourself check this box.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'left'),
-			)
-		);
-	}
-
-/* ----- Insert ----- */
-
-	function add_insert_step () {
-		$this->_insert_tutorial->add_step(
-			admin_url('post-new.php'), 'post-new.php',
-			'#add_advert',
-			__('Insert Advert', 'wdsm'),
-			array(
-				'content' => '<p>' . esc_js(__('Click this icon to insert your Social Marketing Advert.', 'wdsm')) . '</p>',
-				'position' => array('edge' => 'left', 'align' => 'left'),
-			)
-		);
-	}
 
 
 }
