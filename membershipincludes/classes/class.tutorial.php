@@ -12,6 +12,7 @@ class M_Tutorial {
 		'memberssubs',
 		'levels',
 		'levelsaddnew',
+		'levelsaddnewform',
 		'subscriptions',
 		'gateways',
 		'options',
@@ -262,7 +263,7 @@ class M_Tutorial {
 			__('Adding Levels Form', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
