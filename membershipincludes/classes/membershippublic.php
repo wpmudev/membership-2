@@ -1084,7 +1084,9 @@ if(!class_exists('membershippublic')) {
 
 			switch($page) {
 
-				case 'subscriptionsignup':	if(is_user_logged_in()) {
+				case 'subscriptionsignup':
+											if(is_user_logged_in()) {
+
 												$member = current_member();
 												list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
@@ -1095,12 +1097,31 @@ if(!class_exists('membershippublic')) {
 													// Timestamp the update
 													update_user_meta( $user, '_membership_last_upgraded', time());
 												}
+											} else {
+												// check if a custom is posted and of so then process the user
+												if(isset($_POST['custom'])) {
+													list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+
+													if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
+														$gateway = $_POST['gateway'];
+														// Join the new subscription
+														$member = new M_Membership( $user_id );
+														$member->create_subscription($sub_id, $gateway);
+														// Timestamp the update
+														update_user_meta( $user, '_membership_last_upgraded', time());
+														// Login?
+														if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
+															wp_set_auth_cookie( $user_id );
+														}
+													}
+												}
 											}
 											$content = $this->show_renew_page();
 											break;
 
 				case 'renewform':
-				default:					$content = $this->show_renew_page();
+				default:					// Just show the page
+											$content = $this->show_renew_page();
 											break;
 
 
@@ -1794,6 +1815,21 @@ if(!class_exists('membershippublic')) {
 																$member->create_subscription($sub_id, $gateway);
 																// Timestamp the update
 																update_user_meta( $user, '_membership_last_upgraded', time());
+															}
+														} else {
+															// check if a custom is posted and of so then process the user
+															die('here');
+															if(isset($_POST['custom'])) {
+																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+
+																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
+																	$gateway = $_POST['gateway'];
+																	// Join the new subscription
+																	$member = new M_Membership( $user_id );
+																	$member->create_subscription($sub_id, $gateway);
+																	// Timestamp the update
+																	update_user_meta( $user, '_membership_last_upgraded', time());
+																}
 															}
 														}
 														break;

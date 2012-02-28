@@ -2,16 +2,10 @@
 
 class M_Tutorial {
 
-	private $_member_tutorial;
-	private $_level_tutorial;
-	private $_subscription_tutorial;
-	private $_communication_tutorial;
-	private $_urlgroups_tutorial;
-	private $_pings_tutorial;
-	private $_gateways_tutorial;
-	private $_options_tutorial;
+	private $_membership_tutorial;
+	private $_wizard_tutorial;
 
-	private $_member_steps = array(
+	private $_membership_steps = array(
 		'welcome',
 		'title',
 		'body',
@@ -23,110 +17,20 @@ class M_Tutorial {
 		'services',
 	);
 
-	private $_level_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_subscription_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_communication_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_urlgroups_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_pings_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_gateways_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
-	);
-
-	private $_options_steps = array(
-		'welcome',
-		'title',
-		'body',
-		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
+	private $_wizard_steps = array(
+		'wizardwelcome',
+		'wizardshow',
+		'wizarddismiss'
 	);
 
 	function __construct () {
 		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/pointer-tutorials.php'));
 
-		$this->_member_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
-		$this->_level_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
-		$this->_subscription_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
-		$this->_communication_tutorial = new Pointer_Tutorial('wdsm-edit', __('Social Marketing tutorial', 'wdsm'), false, false);
-		$this->_urlgroups_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
-		$this->_pings_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
-		$this->_gateways_tutorial = new Pointer_Tutorial('wdsm-setup', __('Setup tutorial', 'wdsm'), false, false);
-		$this->_options_tutorial = new Pointer_Tutorial('wdsm-insert', __('Insert tutorial', 'wdsm'), false, false);
+		$this->_membership_tutorial = new Pointer_Tutorial('membership', __('Membership tutorial', 'membership'), false, false);
+		$this->_membership_tutorial->add_icon(membership_url('membershipincludes/images/pointer-icon.png'));
 
-		$this->_member_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_level_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_subscription_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_communication_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_urlgroups_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_pings_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_gateways_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
-		$this->_options_tutorial->add_icon(membership_url('membershipincludes/images/pointer_icon.png'));
+		$this->_wizard_tutorial = new Pointer_Tutorial('membership', __('Membership tutorial', 'membership'), false, false);
+		$this->_wizard_tutorial->add_icon(membership_url('membershipincludes/images/pointer-icon.png'));
 
 	}
 
@@ -143,8 +47,40 @@ class M_Tutorial {
 		add_action('wp_ajax_membership_restart_tutorial', array($this, 'json_restart_tutorial'));
 	}
 
+	function wizard_visible() {
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('get_blog_option')) {
+				if(function_exists('switch_to_blog')) {
+					switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+				}
+				$wizard_visible = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_wizard_visible', 'yes');
+				if(function_exists('restore_current_blog')) {
+					restore_current_blog();
+				}
+			} else {
+				$wizard_visible = get_option('membership_wizard_visible', 'yes');
+			}
+		} else {
+			$wizard_visible = get_option('membership_wizard_visible', 'yes');
+		}
+
+		return $wizard_visible;
+	}
+
 	function process_tutorial () {
 		global $pagenow;
+
+		//if($_GET['page'] == )
+		if(!$this->wizard_visible()) {
+			// Show after the wizard is dissmissed
+			$this->_init_tutorial($this->_membership_steps);
+			$this->_membership_tutorial->initialize();
+		} else {
+
+			$this->_init_wizard_tutorial($this->_wizard_steps);
+			$this->_wizard_tutorial->initialize();
+		}
+
 
 		/*
 		if ('wdsm' == wdsm_getval($_GET, 'page')) $this->_init_tutorial($this->_setup_steps);
@@ -167,26 +103,68 @@ class M_Tutorial {
 	}
 
 	public function restart ($part=false) {
-		$tutorial = "_{$part}_tutorial";
-		if ($part && isset($this->$tutorial)) return $this->$tutorial->restart();
-		else if (!$part) {
-			$this->_edit_tutorial->restart();
-			$this->_setup_tutorial->restart();
-		}
+		$this->_membership_tutorial->restart();
 	}
 
 	private function _init_tutorial ($steps) {
-		$this->_edit_tutorial->set_textdomain('membership');
-		$this->_setup_tutorial->set_capability('manage_options');
-
-
-		$this->_edit_tutorial->set_textdomain('wdsm');
-		$this->_setup_tutorial->set_capability('manage_options');
+		$this->_membership_tutorial->set_textdomain('membership');
+		$this->_membership_tutorial->set_capability('manage_options');
 
 		foreach ($steps as $step) {
 			$call_step = "add_{$step}_step";
 			if (method_exists($this, $call_step)) $this->$call_step();
 		}
+	}
+
+	private function _init_wizard_tutorial ($steps) {
+		$this->_wizard_tutorial->set_textdomain('membership');
+		$this->_wizard_tutorial->set_capability('manage_options');
+
+		foreach ($steps as $step) {
+			$call_step = "add_{$step}_step";
+			if (method_exists($this, $call_step)) $this->$call_step();
+		}
+	}
+
+/* ----- Wizard steps ---- */
+
+	function add_wizardwelcome_step () {
+		$this->_wizard_tutorial->add_step(
+			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			'#icon-index',
+			__('Welcome to Membership', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('This is the membership dashboard panel where you can keep track of your sites statistics and information.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_wizardshow_step () {
+		$this->_wizard_tutorial->add_step(
+			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			'div.welcome-panel-content h3',
+			__('Getting started wizard', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('We have built a short (very short) wizard to help you get started with the plugin.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_wizarddismiss_step () {
+		$this->_wizard_tutorial->add_step(
+			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			'p.welcome-panel-dismiss',
+			__('Dismissing the wizard', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('If you do not want to use the wizard then you can dismiss it here.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
 	}
 
 /* ----- Edit Steps ----- */
@@ -203,6 +181,8 @@ class M_Tutorial {
 		);
 
 	}
+
+
 
 	function add_title_step () {
 		$this->_edit_tutorial->add_step(
