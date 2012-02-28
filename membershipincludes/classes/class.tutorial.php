@@ -7,14 +7,22 @@ class M_Tutorial {
 
 	private $_membership_steps = array(
 		'welcome',
-		'title',
-		'body',
+		'members',
+		'membersfilter',
+		'memberssubs',
+		'levels',
+		'levelsaddnew',
+		'subscriptions',
+		'gateways',
 		'options',
-		'share_url',
-		'button_text',
-		'type',
-		'share_text',
-		'services',
+		'optionspages',
+		'optionsprotection',
+		'optionsdownloads',
+		'optionsadmins',
+		'optionsextras',
+		'communications',
+		'urlgroups',
+		'pings',
 	);
 
 	private $_wizard_steps = array(
@@ -29,7 +37,7 @@ class M_Tutorial {
 		$this->_membership_tutorial = new Pointer_Tutorial('membership', __('Membership tutorial', 'membership'), false, false);
 		$this->_membership_tutorial->add_icon(membership_url('membershipincludes/images/pointer-icon.png'));
 
-		$this->_wizard_tutorial = new Pointer_Tutorial('membership', __('Membership tutorial', 'membership'), false, false);
+		$this->_wizard_tutorial = new Pointer_Tutorial('membershipwizard', __('Membership tutorial', 'membership'), false, false);
 		$this->_wizard_tutorial->add_icon(membership_url('membershipincludes/images/pointer-icon.png'));
 
 	}
@@ -71,12 +79,12 @@ class M_Tutorial {
 		global $pagenow;
 
 		//if($_GET['page'] == )
-		if(!$this->wizard_visible()) {
+		$visible = $this->wizard_visible();
+		if($visible == 'no') {
 			// Show after the wizard is dissmissed
 			$this->_init_tutorial($this->_membership_steps);
 			$this->_membership_tutorial->initialize();
 		} else {
-
 			$this->_init_wizard_tutorial($this->_wizard_steps);
 			$this->_wizard_tutorial->initialize();
 		}
@@ -170,17 +178,252 @@ class M_Tutorial {
 /* ----- Edit Steps ----- */
 
 	function add_welcome_step () {
-		$this->_edit_tutorial->add_step(
-			admin_url('post-new.php?post_type=social_marketing_ad'), 'post-new.php',
-			'#icon-edit',
-			__('New Advert', 'wdsm'),
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			'a.toplevel_page_membership',
+			__('Membership Menu', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('Here is where you&#8217;ll create your first social marketing advert!', 'wdsm')) . '</p>',
+				'content' => '<p>' . esc_js(__('This is your main membership menu, you have direct access to all the areas of the plugin from here.', 'membership')) . '</p>',
+				'position' => array('edge' => 'left', 'align' => 'top'),
+			)
+		);
+
+	}
+
+	function add_members_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			'#icon-users',
+			__('Members screen', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('This is the list of members for your site, you can control their subscriptions from here.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'right'),
+			)
+		);
+
+	}
+
+	function add_membersfilter_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			'#doaction',
+			__('Member filtering', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('You can use the filters at the top of the list to find members with specific criteria.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
 	}
+
+	function add_memberssubs_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			'#sub',
+			__('Member subscriptions', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('You can Add, move or drop members from a subscription or level by using the links on a members row.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levels_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
+			'#icon-link-manager',
+			__('Access Levels', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Access levels allow you to control the amount of access to content members are entitled to see.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'right'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnew_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
+			'.add-new-h2',
+			__('Adding Levels', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Click on the Add New link to create a new level.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnewform_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_subscriptions_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_gateways_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_options_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_optionspages_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_optionsprotection_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_optionsdownloads_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_optionsadmins_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_optionsextras_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_communications_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_urlgroups_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_pings_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#level_title',
+			__('Adding Levels From', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'position' => array('edge' => 'bottom', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	/*
+	'subscriptions',
+	'gateways',
+	'options',
+	'optionspages',
+	'optionsprotection',
+	'optionsdownloads',
+	'optionsadmins',
+	'optionsextras',
+	'communications',
+	'urlgroups',
+	'pings',
+	*/
 
 
 

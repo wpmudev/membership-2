@@ -542,7 +542,7 @@ if(!class_exists('M_Wizard')) {
 				<p class="about-description">
 					<?php
 
-						$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
+						$deactivateurl = wp_nonce_url("admin.php?page=membership&amp;action=deactivatewelcome", 'deactivate-welcome');
 
 						_e('Thank you, we have now set up some of the initial Membership options. ','membership');
 						_e('If you would like more tips on using the system then you can now follow the tutorial pointers we have included, or check out the help guides at the top of every page.','membership');
