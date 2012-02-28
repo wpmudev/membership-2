@@ -204,15 +204,6 @@ if(!class_exists('membershipadmin')) {
 
 			do_action('membership_register_shortcodes');
 
-			// Call the pointer tutorial setup function
-			$this->setup_pointer_tutorial();
-
-		}
-
-		function setup_pointer_tutorial() {
-
-
-
 		}
 
 		function get_membership_active() {
@@ -371,6 +362,13 @@ if(!class_exists('membershipadmin')) {
 
 			// Add in default style sheet with common styling elements
 			wp_enqueue_style('defaultcss', membership_url('membershipincludes/css/default.css'), array(), $this->build);
+
+			// Check for a reset of the tutorial
+			if(isset($_GET['restarttutorial']) && $_GET['restarttutorial'] == 'yes') {
+				check_admin_referer('restarttutorial');
+				$this->tutorial->restart();
+				wp_safe_redirect( remove_query_arg( 'restarttutorial', remove_query_arg( '_wpnonce') ) );
+			}
 
 		}
 
