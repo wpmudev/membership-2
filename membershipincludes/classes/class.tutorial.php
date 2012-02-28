@@ -12,7 +12,12 @@ class M_Tutorial {
 		'memberssubs',
 		'levels',
 		'levelsaddnew',
-		'levelsaddnewform',
+		'levelsaddnewformtitle',
+		'levelsaddnewformrules',
+		'levelsaddnewformrulesdrag',
+		'levelsaddnewformrulespositive',
+		'levelsaddnewformrulesnegative',
+		'levelsaddnewformrulesadvanced',
 		'subscriptions',
 		'gateways',
 		'options',
@@ -33,7 +38,7 @@ class M_Tutorial {
 	);
 
 	function __construct () {
-		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/pointer-tutorials.php'));
+		if (!class_exists('Pointer_Tutorial')) require_once(membership_dir('membershipincludes/includes/new-pointer-tutorials.php'));
 
 		$this->_membership_tutorial = new Pointer_Tutorial('membership', __('Membership tutorial', 'membership'), false, false);
 		$this->_membership_tutorial->add_icon(membership_url('membershipincludes/images/pointer-icon.png'));
@@ -256,11 +261,11 @@ class M_Tutorial {
 
 	}
 
-	function add_levelsaddnewform_step () {
+	function add_levelsaddnewformtitle_step () {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#level_title',
-			__('Adding Levels Form', 'membership'),
+			__('Level Title', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
@@ -269,7 +274,85 @@ class M_Tutorial {
 
 	}
 
+	function add_levelsaddnewformrules_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#sidebar-main',
+			__('Level Rules', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Each rule allows you to specify specific content to protect or allow access to.', 'membership')) . '</p>',
+				'position' => array('edge' => 'right', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnewformrulesdrag_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'#positive-rules',
+			__('Adding Rules', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('To add a rule to your level, drag it to the Drop Here box. You can then select the content you want to protect / allow access to. To remove a rule you can click the Remove link in the rules title.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnewformrulespositive_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'li.positivetab',
+			__('Positive Rules', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Positive rules allow you to specify what a member on this level has access to.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnewformrulesnegative_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'li.negativetab',
+			__('Negative Rules', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Negative rules allow you to specify what a member does not have access to.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_levelsaddnewformrulesadvanced_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			'li.advancedtab',
+			__('Advanced Rules', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('If you want to use a combination of Positive and Negative rules then you can add both in the advanced area.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
 	function add_subscriptions_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
+			'#icon-link-manager',
+			__('Subscriptions', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Subscriptions control a members passage through your site and the length of time / amount of money they spend on each level.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+
+	}
+
+	function add_subscriptionsaddnew_step () {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
 			'#icon-link-manager',

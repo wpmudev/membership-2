@@ -473,6 +473,7 @@ if ( !class_exists( 'Pointer_Tutorial' ) ) {
 				$close_title = sprintf(__('Dismiss %s', $this->textdomain), $this->tutorial_name);
 				?>
 				//step <?php echo $pointer_id; ?> pointer<?php if ($pointer_id == $current_step) { ?> (Current)<?php } ?>
+				<?php echo "\n"; ?>
 				var options<?php echo $pointer_id; ?> = <?php echo json_encode( $args ); ?>;
 
 				options<?php echo $pointer_id; ?> = $.extend( options<?php echo $pointer_id; ?>, {
