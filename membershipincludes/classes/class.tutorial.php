@@ -19,6 +19,12 @@ class M_Tutorial {
 		'levelsaddnewformrulesnegative',
 		'levelsaddnewformrulesadvanced',
 		'subscriptions',
+		'subscriptionsaddnew',
+		'subscriptionsaddtitle',
+		'subscriptionsadddescription',
+		'subscriptionsaddpricetext',
+		'subscriptionsaddlevels',
+		'subscriptionsadddrophere',
 		'gateways',
 		'options',
 		'optionspages',
@@ -355,14 +361,74 @@ class M_Tutorial {
 	function add_subscriptionsaddnew_step () {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
-			'#icon-link-manager',
-			__('Subscriptions', 'membership'),
+			'a.add-new-h2',
+			__('Adding Subscriptions', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('Subscriptions control a members passage through your site and the length of time / amount of money they spend on each level.', 'membership')) . '</p>',
+				'content' => '<p>' . esc_js(__('To add a subscription click on the Add New link.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
+	}
+
+	function add_subscriptionsaddtitle_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			'#sub_name',
+			__('Subscription Name', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The subscription name helps identify the subscription and is shown on the subscriptions list on the front end of your site.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+	}
+
+	function add_subscriptionsadddescription_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			'#wp-sub_description-wrap',
+			__('Subscription Description', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The subscription description is shown on the front end of your site and should describe the subscription and the benefits of selecting it.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+	}
+
+	function add_subscriptionsaddpricetext_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			'#sub_pricetext',
+			__('Subscription Price Text', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The subscription price text is shown on the front end of your site and should contain an description of the pricing. E.g. $35 per month', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+	}
+
+	function add_subscriptionsaddlevels_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			'#sidebar-levels',
+			__('Subscription Levels', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('The levels that you have available are shown here, to add them to this subscription you can drag them over to the Drop Here box.', 'membership')) . '</p>',
+				'position' => array('edge' => 'right', 'align' => 'left'),
+			)
+		);
+	}
+
+	function add_subscriptionsadddrophere_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			'#membership-levels',
+			__('Subscription Level Drop', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Drop any Levels you want to add to this subscription here, you can re-order levels by dragging them into the desired order. To remove a level from the subscription you can click on the Remove link.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
 	}
 
 	function add_gateways_step () {
