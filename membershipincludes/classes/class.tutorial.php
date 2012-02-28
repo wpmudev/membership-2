@@ -270,12 +270,12 @@ class M_Tutorial {
 
 	function add_subscriptions_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
-			'#level_title',
+			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
+			'#icon-link-manager',
 			__('Subscriptions', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('Subscriptions control a members passage through your site and the length of time / amount of money they spend on each level.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
@@ -283,12 +283,12 @@ class M_Tutorial {
 
 	function add_gateways_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
-			'#level_title',
-			__('Adding Levels From', 'membership'),
+			admin_url('admin.php?page=membershipgateways'), 'membership_page_membershipgateways',
+			'#icon-plugins',
+			__('Gateways', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('A gateway controls the interface between your website and a payment provider. You should activate the gateways you want to use on your site.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
@@ -296,12 +296,12 @@ class M_Tutorial {
 
 	function add_options_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
-			'#level_title',
-			__('Adding Levels From', 'membership'),
+			admin_url('admin.php?page=membershipoptions'), 'membership_page_membershipoptions',
+			'#icon-options-general',
+			__('Options General Page', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('This options page allows you to set the level that you wish unregistered visitors to your site to belong to, as well as the subscription that you want new subscribers to be automatically added to.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
@@ -309,12 +309,12 @@ class M_Tutorial {
 
 	function add_optionspages_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			admin_url('admin.php?page=membershipoptions&amp;tab=pages'), 'membership_page_membershipoptions',
 			'#level_title',
-			__('Adding Levels From', 'membership'),
+			__('Options Membership Pages', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('This options page allows you to control and create the pages that display specific membership information.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
