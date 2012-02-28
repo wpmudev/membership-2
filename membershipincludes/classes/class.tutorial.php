@@ -34,8 +34,12 @@ class M_Tutorial {
 		'optionsextras',
 		'optionsadvanced',
 		'communications',
+		'communicationsadd',
+		'communicationsaddform',
+		'communicationsaddformsubject',
 		'urlgroups',
 		'pings',
+		'enablemembership'
 	);
 
 	private $_wizard_steps = array(
@@ -546,17 +550,52 @@ class M_Tutorial {
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
+	}
 
+	function add_communicationsadd_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipcommunication'), 'membership_page_membershipcommunication',
+			'a.add-new-h2',
+			__('Add Communication', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('To add a new communication, click on the Add New button at the top of the page.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+	}
+
+	function add_communicationsaddform_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
+			'select[name=periodprepost]',
+			__('Set period', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Specify a time period before or after a subscription starts or is due to end. Setting a period of 0 means that the message is sent immediately on signup.', 'membership')) . '</p>',
+				'position' => array('edge' => 'left', 'align' => 'right'),
+			)
+		);
+	}
+
+	function add_communicationsaddformsubject_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
+			'input[name=subject]',
+			__('Set subject and message', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('You should enter the subject and content of the message in the areas provided. You can use the placeholders listed next to the message area to include details such as the member name, etc.', 'membership')) . '</p>',
+				'position' => array('edge' => 'left', 'align' => 'right'),
+			)
+		);
 	}
 
 	function add_urlgroups_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
-			'#level_title',
-			__('Adding Levels From', 'membership'),
+			admin_url('admin.php?page=membershipurlgroups'), 'membership_page_membershipurlgroups',
+			'#icon-edit-pages',
+			__('URL Groups', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('URL Groups allow you to specify a group of URLs on your site that you want to protect and then allow / or prevent members to access them from within a level.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
@@ -564,31 +603,27 @@ class M_Tutorial {
 
 	function add_pings_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
-			'#level_title',
-			__('Adding Levels From', 'membership'),
+			admin_url('admin.php?page=membershippings'), 'membership_page_membershippings',
+			'#icon-link-manager',
+			__('Pings', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
-				'position' => array('edge' => 'bottom', 'align' => 'left'),
+				'content' => '<p>' . esc_js(__('A Ping is a method of sending a message to an external URL when something happens within the membership plugin (such as a member starts or ends a subscription). They are useful for things like registering users on external support forums.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
-
 	}
 
-	/*
-	'subscriptions',
-	'gateways',
-	'options',
-	'optionspages',
-	'optionsprotection',
-	'optionsdownloads',
-	'optionsadmins',
-	'optionsextras',
-	'communications',
-	'urlgroups',
-	'pings',
-	*/
-
+	function add_enablemembership_step () {
+		$this->_membership_tutorial->add_step(
+			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			'#enablemembership',
+			__('Enable Membership', 'membership'),
+			array(
+				'content' => '<p>' . esc_js(__('Once you have everything set up you should enable the membership plugins protection system.', 'membership')) . '</p>',
+				'position' => array('edge' => 'top', 'align' => 'left'),
+			)
+		);
+	}
 
 
 }

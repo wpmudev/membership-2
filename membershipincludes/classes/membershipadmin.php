@@ -691,9 +691,9 @@ if(!class_exists('membershipadmin')) {
 
 			// Membership active toggle
 			if($membershipactive == 'no') {
-				echo '<strong>' . __('disabled', 'membership') . '</strong> <a href="' . wp_nonce_url("?page=" . $page. "&amp;action=activate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('[Enable it]','membership') . '</a>';
+				echo '<strong>' . __('disabled', 'membership') . '</strong> <a id="enablemembership" href="' . wp_nonce_url("?page=" . $page. "&amp;action=activate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('[Enable it]','membership') . '</a>';
 			} else {
-				echo '<strong>' . __('enabled', 'membership') . '</strong> <a href="' . wp_nonce_url("?page=" . $page. "&amp;action=deactivate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('[Disable it]','membership') . '</a>';
+				echo '<strong>' . __('enabled', 'membership') . '</strong> <a id="enablemembership" href="' . wp_nonce_url("?page=" . $page. "&amp;action=deactivate", 'toggle-plugin') . '" title="' . __('Click here to enable the plugin','membership') . '">' . __('[Disable it]','membership') . '</a>';
 			}
 
 			echo '<br/><br/>';
