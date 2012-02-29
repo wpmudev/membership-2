@@ -278,7 +278,7 @@ class M_Tutorial {
 			'#level_title',
 			__('Level Title', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should as descriptive as possible.', 'membership')) . '</p>',
+				'content' => '<p>' . esc_js(__('The Level title enables you to quickly identify a level and should be as descriptive as possible.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
@@ -406,7 +406,7 @@ class M_Tutorial {
 			'#sub_pricetext',
 			__('Subscription Price Text', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('The subscription price text is shown on the front end of your site and should contain an description of the pricing. E.g. $35 per month', 'membership')) . '</p>',
+				'content' => '<p>' . esc_js(__('The subscription price text is shown on the front end of your site and should contain a description of the pricing. E.g. $35 per month', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
@@ -442,7 +442,7 @@ class M_Tutorial {
 			'#icon-plugins',
 			__('Gateways', 'membership'),
 			array(
-				'content' => '<p>' . esc_js(__('A gateway controls the interface between your website and a payment provider. You should activate the gateways you want to use on your site by clicking the Activate link underneath each gateways name. The settings for each gateway can be accessed by click the Settings link under the gateways name.', 'membership')) . '</p>',
+				'content' => '<p>' . esc_js(__('A gateway controls the interface between your website and a payment provider. You should activate the gateways you want to use on your site by clicking the Activate link underneath each gateways name. The settings for each gateway can be accessed by click the Settings link under the gateways name once it is active.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
@@ -605,7 +605,7 @@ class M_Tutorial {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membershippings'), 'membership_page_membershippings',
 			'#icon-link-manager',
-			__('Pings', 'membership'),
+			__('Remote Pings', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('A Ping is a method of sending a message to an external URL when something happens within the membership plugin (such as a member starts or ends a subscription). They are useful for things like registering users on external support forums.', 'membership')) . '</p>',
 				'position' => array('edge' => 'top', 'align' => 'left'),
