@@ -235,7 +235,7 @@ if(!class_exists('membershipadmin')) {
 			// Membership active check
 			$membershipactive = $this->get_membership_active();
 			if($membershipactive == 'no') {
-				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To ensure your content is protected you should enable it <a href='%s'>here</a>", 'membership'), 'admin.php?page=membership') . '</p></div>';
+				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To ensure your content is protected you should <a href='%s'>enable it</a>", 'membership'), wp_nonce_url("?page=membership&amp;action=activate", 'toggle-plugin')) . '</p></div>';
 			}
 
 			// Membership admin check
