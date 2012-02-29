@@ -86,7 +86,7 @@ function memAddRemoveLevelNames() {
 	if(goingto > currentnumber) {
 		while(currentnumber < goingto) {
 			currentnumber++;
-			jQuery("<li><input type='text' name='levelname[]' value='" + membershipwizard.membershiplevel + ' ' + currentnumber + "' class='wizardlevelname' /></li>").appendTo('ul.wizardlevelnames');
+			jQuery("<li><input type='text' name='levelname[]' placeholder='" + membershipwizard.membershiplevel + ' ' + currentnumber + "' class='wizardlevelname' /></li>").appendTo('ul.wizardlevelnames');
 		}
 	} else {
 		// We need to remove fields if we are goingto a lower number

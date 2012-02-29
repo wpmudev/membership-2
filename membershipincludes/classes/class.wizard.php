@@ -58,7 +58,8 @@ if(!class_exists('M_Wizard')) {
 									}
 									break;
 
-				case 'steptwo':		if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
+				case 'steptwo':
+									if(wp_verify_nonce( $_POST['nonce'], 'membership_wizard' )) {
 										switch($_POST['wizardtype']) {
 											case 'normal':		echo $this->process_normal_wizard_step();
 																break;
@@ -269,8 +270,8 @@ if(!class_exists('M_Wizard')) {
 					<?php _e(' levels and give them the following names:','membership'); ?>
 					</p>
 						<ul class='wizardlevelnames'>
-							<li><input type='text' name='levelname[]' value='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
-							<li><input type='text' name='levelname[]' value='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
+							<li><input type='text' name='levelname[]' placeholder='<?php _e('Level 1', 'membership'); ?>' class='wizardlevelname' /></li>
+							<li><input type='text' name='levelname[]' placeholder='<?php _e('Level 2', 'membership'); ?>' class='wizardlevelname' /></li>
 						</ul>
 					<p class="about-description createsteps">
 					<input type='checkbox' name='creatavisitorlevel' value='yes' checked='checked' />&nbsp;<?php _e('also create a level to control what non-members can see?', 'membership'); ?>
@@ -407,6 +408,9 @@ if(!class_exists('M_Wizard')) {
 
 			if(isset($_POST['levelname'])) {
 				foreach($_POST['levelname'] as $key => $value) {
+					if(empty($value)) {
+						$value = __('Level ', 'membership') . ((int) $key + 1);
+					}
 					// Create a level
 					$level_id = $this->create_level( $value );
 					// Create a subscription with that level
@@ -478,6 +482,9 @@ if(!class_exists('M_Wizard')) {
 				$sub->togglepublic();
 
 				foreach($_POST['levelname'] as $key => $value) {
+					if(empty($value)) {
+						$value = __('Level ', 'membership') . ((int) $key + 1);
+					}
 					// Create a level
 					$level_id = $this->create_level( $value );
 					// Add the level to the subscription
