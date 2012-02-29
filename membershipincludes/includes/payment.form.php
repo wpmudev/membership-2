@@ -1,13 +1,4 @@
 <?php
-$user = wp_get_current_user();
-
-$subscription = (int) $_REQUEST['subscription'];
-
-if(!empty($user->ID) && is_numeric($user->ID) ) {
-	$member = new M_Membership( $user->ID);
-} else {
-	$member = current_member();
-}
 
 if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );

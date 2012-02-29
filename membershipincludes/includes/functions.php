@@ -575,28 +575,17 @@ function M_get_returnurl_permalink() {
 			if(function_exists('switch_to_blog')) {
 				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
 			}
-			if(!empty($M_options['registrationcompleted_page'])) {
-				$link = get_permalink( $M_options['registrationcompleted_page'] );
-			} else {
-				$link = get_permalink( $M_options['subscriptions_page'] );
-			}
+
+			$link = get_permalink( $M_options['registrationcompleted_page'] );
 
 			if(function_exists('restore_current_blog')) {
 				restore_current_blog();
 			}
 		} else {
-			if(!empty($M_options['registrationcompleted_page'])) {
-				$link = get_permalink( $M_options['registrationcompleted_page'] );
-			} else {
-				$link = get_permalink( $M_options['subscriptions_page'] );
-			}
+			$link = get_permalink( $M_options['registrationcompleted_page'] );
 		}
 	} else {
-		if(!empty($M_options['registrationcompleted_page'])) {
-			$link = get_permalink( $M_options['registrationcompleted_page'] );
-		} else {
-			$link = get_permalink( $M_options['subscriptions_page'] );
-		}
+		$link = get_permalink( $M_options['registrationcompleted_page'] );
 	}
 
 	return $link;

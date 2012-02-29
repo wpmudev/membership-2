@@ -984,7 +984,7 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function show_renew_page() {
+		function show_renew_page( $user_id = false ) {
 
 			global $M_options;
 
@@ -1174,11 +1174,24 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
-		function output_paymentpage() {
+		function output_paymentpage( $user_id = false ) {
 
 			global $wp_query, $M_options;
 
 			$subscription = (int) $_REQUEST['subscription'];
+
+			if(!$user_id) {
+				$user = wp_get_current_user();
+
+				if(!empty($user->ID) && is_numeric($user->ID) ) {
+					$member = new M_Membership( $user->ID);
+				} else {
+					$member = current_member();
+				}
+			} else {
+				$member = new M_Membership( $user_id );
+			}
+
 			$content = apply_filters('membership_subscription_form_payment_before_content', $content, $error);
 			ob_start();
 			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
@@ -1301,7 +1314,7 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// add do the payment and completion page
-										$content = $this->output_paymentpage();
+										$content = $this->output_paymentpage( $user_id );
 									}
 
 									break;
@@ -1415,7 +1428,7 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// display the payment forms
-										$content = $this->output_paymentpage();
+										$content = $this->output_paymentpage( $user_id );
 									}
 
 									break;
@@ -1743,6 +1756,21 @@ if(!class_exists('membershippublic')) {
 																// Timestamp the update
 																update_user_meta( $user, '_membership_last_upgraded', time());
 															}
+														} else {
+															// check if a custom is posted and of so then process the user
+															if(isset($_POST['custom'])) {
+																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+																print_r($_POST);
+																die();
+																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
+																	$gateway = $_POST['gateway'];
+																	// Join the new subscription
+																	$member = new M_Membership( $user_id );
+																	$member->create_subscription($sub_id, $gateway);
+																	// Timestamp the update
+																	update_user_meta( $user, '_membership_last_upgraded', time());
+																}
+															}
 														}
 														break;
 
@@ -1818,10 +1846,8 @@ if(!class_exists('membershippublic')) {
 															}
 														} else {
 															// check if a custom is posted and of so then process the user
-															die('here');
 															if(isset($_POST['custom'])) {
 																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
-
 																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 																	$gateway = $_POST['gateway'];
 																	// Join the new subscription

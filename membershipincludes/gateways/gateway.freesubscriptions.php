@@ -55,20 +55,6 @@ class freesubscriptions extends M_Gateway {
 		  </td>
 		  </tr>
 
-		  	<tr valign="top">
-				<th scope="row"><?php _e('Completed message','membership'); ?><br/>
-					<em style='font-size:smaller;'><?php _e("The message that is displayed to a user once they are signed up. HTML allowed",'membership'); ?>
-					</em>
-				</th>
-				<td>
-					<textarea name='completed_message' id='completed_message' rows='10' cols='40'><?php
-					$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
-					echo stripslashes($message);
-					?>
-					</textarea>
-				</td>
-			</tr>
-
 		</tbody>
 		</table>
 		<?php
