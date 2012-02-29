@@ -602,4 +602,17 @@ function M_get_returnurl_permalink() {
 	return $link;
 }
 
+function M_activation_function() {
+	// This function is called when the plugin is activated.
+	global $user;
+
+	if(empty($user) || !method_exists($user, 'has_cap')) {
+		$user = wp_get_current_user();
+	}
+
+	if($user->user_login == MEMBERSHIP_MASTER_ADMIN && !$user->has_cap('membershipadmin')) {
+		$user->add_cap('membershipadmin');
+	}
+}
+
 ?>

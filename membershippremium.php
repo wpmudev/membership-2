@@ -58,6 +58,9 @@ if(is_admin()) {
 
 	$membershipadmin = new membershipadmin();
 
+	// Register an activation hook
+	register_activation_hook( __FILE__, 'M_activation_function' );
+
 } else {
 	// Public interface
 	// Load required classes
@@ -81,4 +84,3 @@ if(is_admin()) {
 // Load secondary plugins
 load_all_membership_addons();
 load_membership_gateways();
-

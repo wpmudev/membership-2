@@ -111,6 +111,7 @@ function mem_WizardStepTwoSuccess( data ) {
 		jQuery('html, body').animate({ scrollTop: 0 }, 0);
 	} else {
 		jQuery('#welcome-panel').hide();
+		window.location = 'admin.php?page=membership';
 	}
 }
 

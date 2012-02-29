@@ -70,6 +70,16 @@ class M_Tutorial {
 	private function _add_hooks () {
 		add_action('admin_init', array($this, 'process_tutorial'));
 		add_action('wp_ajax_membership_restart_tutorial', array($this, 'json_restart_tutorial'));
+		add_action( 'admin_init', array(&$this, 'process_restart') );
+	}
+
+	function process_restart() {
+		// Check for a reset of the tutorial
+		if(isset($_GET['restarttutorial']) && $_GET['restarttutorial'] == 'yes') {
+			check_admin_referer('restarttutorial');
+			$this->_membership_tutorial->restart();
+			wp_safe_redirect( remove_query_arg( 'restarttutorial', remove_query_arg( '_wpnonce') ) );
+		}
 	}
 
 	function wizard_visible() {
@@ -197,11 +207,11 @@ class M_Tutorial {
 	function add_welcome_step () {
 		$this->_membership_tutorial->add_step(
 			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
-			'a.toplevel_page_membership',
+			'#toplevel_page_membership',
 			__('Membership Menu', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('This is your main membership menu, you have direct access to all the areas of the plugin from here.', 'membership')) . '</p>',
-				'position' => array('edge' => 'left', 'align' => 'top'),
+				'position' => array('edge' => 'left', 'align' => 'bottom'),
 			)
 		);
 

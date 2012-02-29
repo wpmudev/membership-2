@@ -284,26 +284,8 @@ if(!class_exists('membershipadmin')) {
 				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
 
 				do_action('membership_add_menu_items_bottom');
-
-				// Move the menu to the top of the page
-				foreach($menu as $key => $value) {
-					if($value[2] == 'membership') {
-						if(!isset($menu[-10])) {
-							$menu[-10] = $menu[$key];
-							$menu[-11] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
-
-							// CSS style for the menu
-							$menu[-10][4] .= ' menu-top-first menu-top-last';
-
-							unset($menu[$key]);
-							break;
-						}
-
-					}
-				}
 			}
 
-			//add_users_page( __('Membership details','membership'), __('Membership details','membership'), 'read', "mymembership", array(&$this,'handle_profile_member_page'));
 
 		}
 
@@ -362,13 +344,6 @@ if(!class_exists('membershipadmin')) {
 
 			// Add in default style sheet with common styling elements
 			wp_enqueue_style('defaultcss', membership_url('membershipincludes/css/default.css'), array(), $this->build);
-
-			// Check for a reset of the tutorial
-			if(isset($_GET['restarttutorial']) && $_GET['restarttutorial'] == 'yes') {
-				check_admin_referer('restarttutorial');
-				$this->tutorial->restart();
-				wp_safe_redirect( remove_query_arg( 'restarttutorial', remove_query_arg( '_wpnonce') ) );
-			}
 
 		}
 

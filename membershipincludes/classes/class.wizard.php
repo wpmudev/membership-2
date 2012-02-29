@@ -28,6 +28,7 @@ if(!class_exists('M_Wizard')) {
 
 			// if logged in:
 			add_action( 'wp_ajax_processwizard', array(&$this, 'ajax_process_wizard') );
+			add_action( 'admin_init', array(&$this, 'process_visibility') );
 		}
 
 		function M_Wizard(  ) {
@@ -80,6 +81,8 @@ if(!class_exists('M_Wizard')) {
 				check_admin_referer('deactivate-welcome');
 
 				$this->hide_wizard();
+
+				wp_safe_redirect( remove_query_arg( 'action', remove_query_arg( '_wpnonce') ) );
 			}
 
 		}
@@ -121,9 +124,6 @@ if(!class_exists('M_Wizard')) {
 			global $page, $action, $step;
 
 			wp_reset_vars( array('action', 'page', 'step') );
-
-			// process any deactivate calls
-			$this->process_visibility();
 
 			// carry on and see if we should display the wizard and then what we should display
 			if($this->wizard_visible() != 'no') {
