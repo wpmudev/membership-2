@@ -1833,7 +1833,8 @@ if(!class_exists('membershippublic')) {
 						}
 
 						switch($page) {
-							case 'subscriptionsignup':	if(is_user_logged_in()) {
+							case 'subscriptionsignup':
+														if(is_user_logged_in()) {
 															$member = current_member();
 															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 

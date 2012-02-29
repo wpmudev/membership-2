@@ -6689,6 +6689,9 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function popover_register_process() {
+
+			global $M_options;
+
 			include_once(ABSPATH . WPINC . '/registration.php');
 
 			$error = array();
@@ -6715,6 +6718,9 @@ if(!class_exists('membershipadmin')) {
 					$error[] = $userid->get_error_message();
 				} else {
 					$member = new M_Membership( $user_id );
+					if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+						$member->deactivate();
+					}
 
 					if( has_action('membership_susbcription_form_registration_notification') ) {
 						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
@@ -6722,7 +6728,7 @@ if(!class_exists('membershipadmin')) {
 						wp_new_user_notification($user_id, $_POST['password']);
 					}
 
-					wp_set_auth_cookie($user_id);
+					//wp_set_auth_cookie($user_id);
 				}
 			}
 
@@ -6734,7 +6740,7 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				echo $this->popover_sendpayment_form();
+				echo $this->popover_sendpayment_form( $user_id );
 			}
 
 			exit;
@@ -6768,25 +6774,30 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				echo $this->popover_sendpayment_form();
+				echo $this->popover_sendpayment_form($user->ID);
 			}
 
 			exit;
 
 		}
 
-		function popover_sendpayment_form() {
+		function popover_sendpayment_form( $user_id = false ) {
 
-			$user = wp_get_current_user();
+			if(!$user_id) {
+				$user = wp_get_current_user();
 
-			$spmemuserid = $user->ID;
-			$subscription = (int) $_REQUEST['subscription'];
+				$spmemuserid = $user->ID;
 
-			if(!empty($user->ID) && is_numeric($user->ID) ) {
-				$member = new M_Membership( $user->ID);
+				if(!empty($user->ID) && is_numeric($user->ID) ) {
+					$member = new M_Membership( $user->ID);
+				} else {
+					$member = current_member();
+				}
 			} else {
-				$member = current_member();
+				$member = new M_Membership( $user_id );
 			}
+
+			$subscription = (int) $_REQUEST['subscription'];
 
 			if($member->on_sub( $subscription )) {
 					$sub =  new M_Subscription( $subscription );

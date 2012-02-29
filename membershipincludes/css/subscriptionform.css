@@ -137,23 +137,7 @@
 }
 
 #reg-form {
-	margin: 0px 0px 2em;
-	float: left;
-	width: 95%;
-	background: transparent;
-	overflow: hidden;
-	padding: 10px;
-	position: relative;
-	margin-top: 0px;
-	margin-bottom: 20px;
-	float: left;
-	background: #ffffff;
-	width: 95%;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1);
-	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
+	
 }
 
 #reg-form .formleft {
@@ -184,7 +168,6 @@
 	margin-bottom: 20px;
 	font-family: Arial, sans-serif;
 	font-size: 13px;
-	color: #111;
 	background: #FFFFFF;
 	border: 1px solid #CCCCCC;
 }
