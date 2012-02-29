@@ -1,4 +1,5 @@
 function M_CheckUnsubSubmit() {
+	alert('here' + membership.unsubscribe);
 	if(confirm(membership.unsubscribe)) {
 		return true;
 	} else {

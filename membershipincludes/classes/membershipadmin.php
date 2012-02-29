@@ -6728,7 +6728,6 @@ if(!class_exists('membershipadmin')) {
 						wp_new_user_notification($user_id, $_POST['password']);
 					}
 
-					//wp_set_auth_cookie($user_id);
 				}
 			}
 
