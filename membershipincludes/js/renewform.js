@@ -1,5 +1,7 @@
 function M_CheckUnsubSubmit() {
-	alert('here' + membership.unsubscribe);
+	// return true until can work out why the confirm is returning undefined
+	return true;
+
 	if(confirm(membership.unsubscribe)) {
 		return true;
 	} else {
