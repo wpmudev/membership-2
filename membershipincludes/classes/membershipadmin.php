@@ -1840,7 +1840,7 @@ if(!class_exists('membershipadmin')) {
 										"active"	=>	__('Active','membership'),
 										"sub"		=>	__('Subscription','membership'),
 										"level"		=>	__('Membership Level','membership'),
-										"expires"	=>	__('Expires', 'membership'),
+										"expires"	=>	__('Level Expires', 'membership'),
 										"gateway"	=>	__('Gateway', 'membership')
 									);
 
