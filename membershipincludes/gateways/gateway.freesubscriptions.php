@@ -199,7 +199,10 @@ class freesubscriptions extends M_Gateway {
 			// a free first level
 			$this->display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 		} else {
-			do_action('membership_purchase_button', $subscription, $pricing, $user_id);
+			//do_action('membership_purchase_button', $subscription, $pricing, $user_id);
+			echo "<form class=''>";
+			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' />";
+			echo "</form>";
 		}
 
 	}
