@@ -166,8 +166,8 @@ if(!class_exists('membershipadmin')) {
 
 			if($user->has_cap('membershipadmin')) {
 				// profile field for capabilities
-				add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
-				add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
+				//add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
+				//add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
 
 				// If the user is a membershipadmin user then we can add in notices
 				add_action('all_admin_notices', array(&$this, 'show_membership_status_notice'));
