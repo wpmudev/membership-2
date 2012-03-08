@@ -316,10 +316,15 @@
 																if($pricing) {
 																	if($currentlevel->level_price < 1) {
 																		// We are on a free level, so need to do an upgrade from free
-																		$gateway->display_upgrade_from_free_button( $subscription, $pricing, $member->ID, $rel->sub_id, $sub->id );
+																		if($gatewayissingle != 'admin') {
+																			$gateway->display_upgrade_from_free_button( $subscription, $pricing, $member->ID, $rel->sub_id, $sub->id );
+																		}
+
 																	} else {
 																		// We want a normal upgrade button
-																		$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																		if($gatewayissingle != 'admin') {
+																			$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
+																		}
 																	}
 																}
 														?></span>
