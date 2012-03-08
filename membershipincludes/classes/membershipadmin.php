@@ -2447,7 +2447,7 @@ if(!class_exists('membershipadmin')) {
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration page','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('This is the page a new user will be redirected to when they want to register on your site.','membership'); ?></p>
-							<p class='description'><?php _e('If you want to include an introduction then you <strong>should</strong> include the [subscriptionform] shortcode in some location on that page, otherwise leave the page blank for the standard Membership subscription forms.','membership'); ?></p>
+							<p class='description'><?php _e('You can include an introduction on the page, for more advanced content around the registration form then you <strong>should</strong> include the [subscriptionform] shortcode in some location on that page. Alternatively leave the page blank for the standard Membership subscription forms.','membership'); ?></p>
 
 							<table class="form-table">
 							<tbody>
