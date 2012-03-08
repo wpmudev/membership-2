@@ -2461,6 +2461,10 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createregistrationpage", 'create-registrationpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['registration_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['registration_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['registration_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
@@ -2504,6 +2508,10 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createregistrationcompletedpage", 'create-registrationcompletedpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration completed page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['registrationcompleted_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['registrationcompleted_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['registrationcompleted_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
@@ -2529,6 +2537,10 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createaccountpage", 'create-accountpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the account page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['account_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['account_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['account_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
@@ -2554,6 +2566,10 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createsubscriptionspage", 'create-subscriptionspage'); ?>' class='button-primary' title='<?php _e('Create a default page for the upgrade / renewal page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['subscriptions_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['subscriptions_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['subscriptions_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
@@ -2579,6 +2595,10 @@ if(!class_exists('membershipadmin')) {
 										echo $pages;
 										?>
 										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createnoaccesspage", 'create-noaccesspage'); ?>' class='button-primary' title='<?php _e('Create a default page for the protected content page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['nocontent_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['nocontent_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['nocontent_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
 									</td>
 								</tr>
 							</tbody>
