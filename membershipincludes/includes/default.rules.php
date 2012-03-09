@@ -1735,7 +1735,7 @@ function M_setup_default_rules() {
 	M_register_rule('menu', 'M_Menu', 'main');
 	M_register_rule('urlgroups', 'M_URLGroups', 'main');
 
-	if(is_multisite()) {
+	if(is_multisite() && is_super_admin()) {
 		M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
 	}
 
