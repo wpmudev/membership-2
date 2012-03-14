@@ -21,7 +21,7 @@ function cc_card_pick(card_image, card_num){
 jQuery(document).ready( function() {
     jQuery(".noautocomplete").attr("autocomplete", "off");
     
-    jQuery("form.membership_payment_form.authorizenet").submit(function () {
+    /*jQuery("form.membership_payment_form.authorizenet").submit(function () {
         var _current_form = jQuery(this);
         jQuery(_current_form).find('.message').addClass('hidden');
         jQuery.post(_aim_return_url, jQuery(this).serialize(), function(data) {
@@ -38,6 +38,6 @@ jQuery(document).ready( function() {
         }, "json");
         
         return false;
-    });
+    });*/
 });
   
