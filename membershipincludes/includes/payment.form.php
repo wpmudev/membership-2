@@ -89,12 +89,12 @@ if($member->on_sub( $subscription )) {
 			<?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?>
 			</div>
 
-			<table class='purchasetable'>
-				<tr>
-					<td class='detailscolumn'>
+			<div class='purchase-wrapper'>
+				<div class='purchase-item'>
+					<div class='purchase-item-details'>
 					<?php echo $sub->sub_name(); ?>
-					</td>
-					<td class='pricecolumn'>
+					</div>
+					<div class='purchase-item-price'>
 					<?php
 						$amount = $sub->sub_pricetext();
 
@@ -126,8 +126,9 @@ if($member->on_sub( $subscription )) {
 							echo $price;
 						}
 					?>
-					</td>
-					<td class='buynowcolumn'>
+					</div>
+				</div>
+					<div class='buynow'>
 					<?php
 					$pricing = $sub->get_pricingarray();
 
@@ -135,9 +136,8 @@ if($member->on_sub( $subscription )) {
 						do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 					}
 					?>
-					</td>
-				</tr>
-			</table>
+					</div>
+			</div>
 		</div>
 	<?php
 }
