@@ -214,8 +214,8 @@ class authorizenetaim extends M_Gateway {
 //		$form .= '<style type="text/css">';
 //		$form .= 'div.subscription div.priceforms { width: 400px; }';
 //		$form .= '</style>';
-//'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'
-		$form .= '<form method="post" action="" class="membership_payment_form authorizenet single">';
+//
+		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
 		global $m_aim_error;
 		if(isset($m_aim_error) && !empty($m_aim_error)) {
 			$form .= '<div class="message error hidden">'.$m_aim_error.'</div>';
@@ -445,29 +445,35 @@ class authorizenetaim extends M_Gateway {
 				  if($member) {
 					$member->create_subscription($sub_id, $this->gateway);
 				  }
-				
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+				wp_redirect(M_get_registrationcompleted_permalink());
+				exit;
 				  //print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));				  
 				  //exit();
 				} else {
-				  $error = __('There was a problem processing your purchase. Please try again', 'membership') . ' ' . $payment->getResponseText();
+					$error = __('There was a problem processing your purchase. Please try again', 'membership') . ' ' . $payment->getResponseText();
+					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+					exit;
+				  
 				  //print json_encode(array('status' => 'error', 'message' => __('There was a problem processing your purchase. Please try again', 'membership'), 'more' => $error));
 				 // exit();
 				}
 			} else {
+				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+				exit;
 				$error = __('Payment method not supported for the payment', 'membership');
 				//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
 				//exit();
 			}
 		} else {
 			$error = __('Payment method not supported for the payment', 'membership');
+			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+			exit;
+			
 			//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
 			//exit();
 		}
-		if($error) {
-			global $m_aim_error;
-			$m_aim_error = $error;
-		}
+		
 			
 	}
 }
