@@ -31,6 +31,7 @@ class authorizenetaim extends M_Gateway {
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
+			add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
 
 			if (!is_admin()) {
 				$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
@@ -38,7 +39,13 @@ class authorizenetaim extends M_Gateway {
 		}
 
 	}
-
+	function force_ssl_account_creation() {
+		if($_SERVER['HTTPS'] != 'on') {
+			$url = home_url($_SERVER['REQUEST_URI'].'/','https');
+			wp_redirect($url);
+			exit;
+		}
+	}
 	function mysettings() {
 		global $M_options;
 
@@ -155,7 +162,7 @@ class authorizenetaim extends M_Gateway {
 		if(isset($_POST['custom'])) {
 			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 		}
-
+				
 		$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
 
 		$content .= '<div class="formleft">';
@@ -203,30 +210,76 @@ class authorizenetaim extends M_Gateway {
 
 		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
 
-		$form .= '<style type="text/css">';
-		$form .= 'div.subscription div.priceforms { width: 400px; }';
-		$form .= '</style>';
-		$form .= '<form method="post" action="#" class="membership_payment_form authorizenet single">';
-		$form .= '<div class="message error hidden"></div>';
+//Removed width to style in CSS
+//		$form .= '<style type="text/css">';
+//		$form .= 'div.subscription div.priceforms { width: 400px; }';
+//		$form .= '</style>';
+//'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'
+		$form .= '<form method="post" action="" class="membership_payment_form authorizenet single">';
+		global $m_aim_error;
+		if(isset($m_aim_error) && !empty($m_aim_error)) {
+			$form .= '<div class="message error hidden">'.$m_aim_error.'</div>';
+		}
 		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'" />';
-		$form .= '<table class="membership_cart_billing">';
-		$form .= '<thead><tr><th colspan="2">'. __('Enter Your Credit Card Information:', 'membership'). '</th></tr></thead>';
-		$form .= '<tbody><tr><td align="right">'. __('Credit Card Number:', 'mp'). '*</td>';
-		$form .= '<td><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
-		$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
-		$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
-		$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></td></tr>';
-		$form .= '<tr><td align="right">'.__('Expiration Date:', 'mp').'*</td>';
-		$form .= '<td><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
-		$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
-		$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
-		$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></td></tr>';
-		$form .= '<tr><td align="right">'.__('Security Code:', 'mp').'</td>';
-		$form .= '<td><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
-		$form .= 'type="text" size="4" maxlength="4" /></td></tr>';
-		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/credit_card_64.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
-		$form .= '</tbody></table></form>';
+//New DIV based form by Kevin D. Lyons
+		$form .= '<div class="membership_cart_billing">';
+			$form .= '<div class="auth-header">'. __('Enter Your Credit Card Information:', 'membership'). '</div>';
+			$form .= '<div class="auth-body">';
+//New Address Verification as Billing Address added by Kevin D. Lyons
+				$form .= '<div class="auth-billing">';
+					$form .= '<div class="auth-billing-name">'.__('Credit Card Billing Information:', 'mp'). '*</div>';
+					$form .= '<div class="auth-billing-fname-lable"><label class="inputLabel" for="first_name">'.__('First Name:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-fname"><input id="first_name" name="first_name" class="input_field noautocomplete" style="width: 160px;" ';
+					$form .= 'type="text" size="20" maxlength="20" /></div>';
+					$form .= '<div class="auth-billing-lname-lable"><label class="inputLabel" for="last_name">'.__('Last Name:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" style="width: 160px;" ';
+					$form .= 'type="text" size="20" maxlength="20" /></div>';
+					$form .= '<div class="auth-billing-address-lable"><label class="inputLabel" for="address">'.__('Address:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-address"><input id="address" name="address" class="input_field noautocomplete" style="width: 427px;" ';
+					$form .= 'type="text" size="120" maxlength="120" /></div>';
+					$form .= '<div class="auth-billing-zip-lable"><label class="inputLabel" for="zip">'.__('Billing 5-Digit Zipcode:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-zip"><input id="zip" name="zip" class="input_field noautocomplete" style="width: 80px;" ';
+					$form .= 'type="text" size="5" maxlength="5" /></div></div>';
+//End Address Verification
+				$form .= '<div class="auth-cc">';
+					$form .= '<div class="auth-cc-lable">'. __('Credit Card Number:', 'mp'). '*</div>';
+					$form .= '<div class="auth-cc-input"><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
+					$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
+						$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
+						$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></div></div>';
+				$form .= '<div class="auth-exp">';
+					$form .= '<div class="auth-exp-lable">'.__('Expiration Date:', 'mp').'*</div>';
+					$form .= '<div class="auth-exp-input"><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
+					$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
+					$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
+					$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></div></div>';
+				$form .= '<div class="auth-sec">';
+					$form .= '<div class="auth-sec-lable">'.__('Security Code:', 'mp').'</div>';
+					$form .= '<div class="auth-sec-input"><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
+					$form .= 'type="text" size="4" maxlength="4" /></div></div>';
+				$form .= '<div class="auth-submit">';
+					$form .= '<input type="submit" />';
+					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
+		$form .= '</div></div></form>';
+// Replaced by Kevin D. Lyons for DIV based form
+//		$form .= '<table class="membership_cart_billing">';
+//		$form .= '<thead><tr><th colspan="2">'. __('Enter Your Credit Card Information:', 'membership'). '</th></tr></thead>';
+//		$form .= '<tbody><tr><td align="right">'. __('Credit Card Number:', 'mp'). '*</td>';
+//		$form .= '<td><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
+//		$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
+//		$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
+//		$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></td></tr>';
+//		$form .= '<tr><td align="right">'.__('Expiration Date:', 'mp').'*</td>';
+//		$form .= '<td><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
+//		$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
+//		$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
+//		$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></td></tr>';
+//		$form .= '<tr><td align="right">'.__('Security Code:', 'mp').'</td>';
+//		$form .= '<td><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
+//		$form .= 'type="text" size="4" maxlength="4" /></td></tr>';
+//		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/credit_card_64.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
+//		$form .= '</tbody></table></form>';
 
 		return $form;
 	}
@@ -365,6 +418,12 @@ class authorizenetaim extends M_Gateway {
 				$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
 				$payment->setParameter("x_amount", number_format($pricing[0]['amount'], 2));
 
+				//NEW Added by Kevin D. Lyons Billing Address Information
+				$payment->setParameter("x_first_name", $_POST['first_name']);
+				$payment->setParameter("x_last_name", $_POST['last_name']);
+				$payment->setParameter("x_address", $_POST['address']);
+				$payment->setParameter("x_zip", $_POST['zip']);
+
 				// Order Info
 				$payment->setParameter("x_description", $subscription->sub_name());
 
@@ -386,23 +445,30 @@ class authorizenetaim extends M_Gateway {
 				  if($member) {
 					$member->create_subscription($sub_id, $this->gateway);
 				  }
-
-				  print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));
-				  do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				  exit();
+				
+				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+				  //print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));				  
+				  //exit();
 				} else {
-				  $error = $payment->getResponseText();
-				  print json_encode(array('status' => 'error', 'message' => __('There was a problem processing your purchase. Please try again', 'membership'), 'more' => $error));
-				  exit();
+				  $error = __('There was a problem processing your purchase. Please try again', 'membership') . ' ' . $payment->getResponseText();
+				  //print json_encode(array('status' => 'error', 'message' => __('There was a problem processing your purchase. Please try again', 'membership'), 'more' => $error));
+				 // exit();
 				}
 			} else {
-				print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
-				exit();
+				$error = __('Payment method not supported for the payment', 'membership');
+				//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
+				//exit();
 			}
 		} else {
-			print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
-			exit();
+			$error = __('Payment method not supported for the payment', 'membership');
+			//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
+			//exit();
 		}
+		if($error) {
+			global $m_aim_error;
+			$m_aim_error = $error;
+		}
+			
 	}
 }
 
@@ -470,7 +536,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
       $count = 0;
       while ($count < $retries)
       {
-        $args['user-agent'] = "MarketPress/{$mp->version}: http://premium.wpmudev.org/project/e-commerce | Authorize.net AIM Plugin/{$mp->version}";
+        $args['user-agent'] = "Membership: http://premium.wpmudev.org/project/membeship | Authorize.net AIM Plugin/";
         $args['body'] = $query_string;
         $args['sslverify'] = false;
 
