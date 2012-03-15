@@ -1287,23 +1287,20 @@ if(!class_exists('membershippublic')) {
 											$member = new M_Membership( $user_id );
 											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
 												$member->deactivate();
-											} else {
-												$creds = array(
-													'user_login' => $_POST['user_login'],
-													'user_password' => $_POST['password'],
-													'remember' => true
-												);
-												$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
-												$user = wp_signon( $creds, $is_ssl );
-												if ( !is_wp_error($user) ) {
-													wp_set_current_user($user->ID);
-													wp_set_auth_cookie($user->ID);
-													wp_redirect(home_url($_SERVER['REQUEST_URI']));
-													exit;
-												} else {
-													//We need to handle errors for loggining in somehow.
-												}
 											}
+											$creds = array(
+												'user_login' => $_POST['user_login'],
+												'user_password' => $_POST['password'],
+												'remember' => true
+											);
+											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
+											$user = wp_signon( $creds, $is_ssl );
+											
+											wp_set_current_user($user_id);
+											wp_set_auth_cookie($user_id);
+											wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											exit;
+											
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
@@ -1415,23 +1412,20 @@ if(!class_exists('membershippublic')) {
 											$member = new M_Membership( $user_id );
 											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
 												$member->deactivate();
-											} else {
-												$creds = array(
-													'user_login' => $_POST['user_login'],
-													'user_password' => $_POST['password'],
-													'remember' => true
-												);
-												$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
-												$user = wp_signon( $creds, $is_ssl );
-												if ( !is_wp_error($user) ) {
-													wp_set_current_user($user->ID);
-													wp_set_auth_cookie($user->ID);
-													wp_redirect(home_url($_SERVER['REQUEST_URI']));
-													exit;
-												} else {
-													//We need to handle errors for loggining in somehow.
-												}
 											}
+											$creds = array(
+												'user_login' => $_POST['user_login'],
+												'user_password' => $_POST['password'],
+												'remember' => true
+											);
+											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
+											$user = wp_signon( $creds, $is_ssl );
+											
+											wp_set_current_user($user_id);
+											wp_set_auth_cookie($user_id);
+											wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											exit;
+											
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
