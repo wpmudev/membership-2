@@ -437,101 +437,101 @@ function M_Communication_process( ) {
 	if(empty($members)) {
 		// do nothing
 		//update_option('membership_communication_last_user_processed', 0);
-	}
+	} else {
+		// Our starting time
+		$timestart = time();
 
-	// Our starting time
-	$timestart = time();
+		//Or processing limit
+		$timelimit = 3; // max seconds for processing
 
-	//Or processing limit
-	$timelimit = 3; // max seconds for processing
+		foreach( (array) $members as $user_id ) {
 
-	foreach( (array) $members as $user_id ) {
-
-		if(time() > $timestart + $timelimit) {
-			update_option('membership_communication_last_user_processed', $user_id);
-			break;
-		}
-
-		if( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
-
-			$starts = M_Communication_get_startstamps( $user_id );
-			$comms = M_Communication_get_post_messages();
-
-			if(!empty($starts) && !empty($comms)) {
-				foreach($starts as $start) {
-					$starttime = $start->meta_value;
-					$now = time();
-
-					$sub_id = str_replace( 'start_current_', '', $start->meta_key );
-					$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
-
-					if(empty($sentalready) || !is_array($sentalready)) {
-						$sentalready = array();
-					}
-
-					foreach( (array) $comms as $comm ) {
-						if(in_array( $comm->id, $sentalready )) {
-							continue;
-						}
-
-						$withperiod = ($starttime + $comm->periodstamp);
-						// Get 24 hour previous and after so we have a range in which to fit a communication
-						$onedaybefore = strtotime('-6 hours', $withperiod );
-						$onedayafter = strtotime('+6 hours', $withperiod );
-
-						if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
-							$message = new M_Communication( $comm->id );
-							$sentalready[$comm->id] = $comm->id;
-							$message->send_message( $user_id, $sub_id );
-							break;
-						}
-					}
-
-					update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
-				}
+			if(time() > $timestart + $timelimit) {
+				update_option('membership_communication_last_user_processed', $user_id);
+				break;
 			}
 
-			$ends = M_Communication_get_endstamps( $user_id );
-			$comms = M_Communication_get_pre_messages();
+			if( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
 
-			if(!empty($ends) && !empty($comms)) {
-				foreach($ends as $end) {
-					$endtime = $end->meta_value;
-					$now = time();
+				$starts = M_Communication_get_startstamps( $user_id );
+				$comms = M_Communication_get_post_messages();
 
-					$sub_id = str_replace( 'expire_current_', '', $end->meta_key );
-					$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
+				if(!empty($starts) && !empty($comms)) {
+					foreach($starts as $start) {
+						$starttime = $start->meta_value;
+						$now = time();
 
-					if(empty($sentalready) || !is_array($sentalready)) {
-						$sentalready = array();
-					}
+						$sub_id = str_replace( 'start_current_', '', $start->meta_key );
+						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
 
-					foreach( (array) $comms as $comm ) {
-						if(in_array( $comm->id, $sentalready )) {
-							continue;
+						if(empty($sentalready) || !is_array($sentalready)) {
+							$sentalready = array();
 						}
 
-						$withperiod = ($endtime + $comm->periodstamp);
-						// Get 24 hour previous and after so we have a range in which to fit a communication
-						$onedaybefore = strtotime('-6 hours', $withperiod );
-						$onedayafter = strtotime('+6 hours', $withperiod );
+						foreach( (array) $comms as $comm ) {
+							if(in_array( $comm->id, $sentalready )) {
+								continue;
+							}
 
-						if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
-							$message = new M_Communication( $comm->id );
-							$sentalready[$comm->id] = $comm->id;
-							$message->send_message( $user_id, $sub_id );
-							break;
+							$withperiod = ($starttime + $comm->periodstamp);
+							// Get 24 hour previous and after so we have a range in which to fit a communication
+							$onedaybefore = strtotime('-6 hours', $withperiod );
+							$onedayafter = strtotime('+6 hours', $withperiod );
+
+							if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
+								$message = new M_Communication( $comm->id );
+								$sentalready[$comm->id] = $comm->id;
+								$message->send_message( $user_id, $sub_id );
+								break;
+							}
 						}
-					}
 
-					update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
+						update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
+					}
 				}
+
+				$ends = M_Communication_get_endstamps( $user_id );
+				$comms = M_Communication_get_pre_messages();
+
+				if(!empty($ends) && !empty($comms)) {
+					foreach($ends as $end) {
+						$endtime = $end->meta_value;
+						$now = time();
+
+						$sub_id = str_replace( 'expire_current_', '', $end->meta_key );
+						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
+
+						if(empty($sentalready) || !is_array($sentalready)) {
+							$sentalready = array();
+						}
+
+						foreach( (array) $comms as $comm ) {
+							if(in_array( $comm->id, $sentalready )) {
+								continue;
+							}
+
+							$withperiod = ($endtime + $comm->periodstamp);
+							// Get 24 hour previous and after so we have a range in which to fit a communication
+							$onedaybefore = strtotime('-6 hours', $withperiod );
+							$onedayafter = strtotime('+6 hours', $withperiod );
+
+							if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
+								$message = new M_Communication( $comm->id );
+								$sentalready[$comm->id] = $comm->id;
+								$message->send_message( $user_id, $sub_id );
+								break;
+							}
+						}
+
+						update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
+					}
+				}
+
 			}
-
 		}
-	}
 
-	update_option('membership_communication_last_user_processed', $user_id);
+		update_option('membership_communication_last_user_processed', $user_id);
+	}
 
 }
 add_action('init', 'M_Communication_process', 10 );
