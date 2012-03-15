@@ -412,7 +412,6 @@ class authorizenetaim extends M_Gateway {
 					$form .= '<div class="auth-sec-input"><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
 					$form .= 'type="text" size="4" maxlength="4" /></div></div>';
 				$form .= '<div class="auth-submit">';
-					$form .= '<input type="submit" />';
 					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
 		$form .= '</div></div></form>';
 // Replaced by Kevin D. Lyons for DIV based form
