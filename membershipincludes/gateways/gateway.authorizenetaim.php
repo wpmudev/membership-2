@@ -202,7 +202,11 @@ class authorizenetaim extends M_Gateway {
 		}
 
 		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-
+		$form .= '<div class="auth-header">'. __('Enter Your Credit Card Information:', 'membership'). '</div>';
+		$form .= '</td>';
+		$form .= '<tr><td colspan="3">';
+		
+		
 		$form .= '<script type="text/javascript">';
 		$form .= '_aim_return_url = "'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'";';
 		$form .= '_permalink_url = "'.get_permalink().'";';
@@ -211,51 +215,201 @@ class authorizenetaim extends M_Gateway {
 		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
 
 //Removed width to style in CSS
-//		$form .= '<style type="text/css">';
-//		$form .= 'div.subscription div.priceforms { width: 400px; }';
-//		$form .= '</style>';
-//
+		$form .= '<style type="text/css">';
+		$form .= '				
+				.membership_cart_billing {
+				width: 646px;
+				}
+				
+				.purchase-wrapper {
+				padding: 10px;
+				border: 1px solid #d6d6d6;
+				border-radius: 10px;
+				background: #efefef
+				}
+				
+				.purchase-item {
+				background: #a0a0a0;
+				padding: 10px;
+				border-radius: 5px;
+				font-size: 130%;
+				font-weight: 700;
+				color: #fff;
+				margin-bottom: 10px;
+				}
+				
+				.purchase-item-details {
+				float: left;
+				}
+				
+				.purchase-item-price {
+				text-align: right;
+				}
+				
+				.buynow {
+				background: #fff;
+				padding: 10px;
+				border-radius: 5px;
+				border: 1px solid #d6d6d6;
+				}
+				
+				.auth-header {
+				font-size: 120%;
+				margin-bottom: 5px;
+				font-weight: 700;
+				}
+				
+				.auth-body {
+				background: #EFEFEF;
+				padding: 10px;
+				border-radius: 5px;
+				}
+				
+				.auth-billing {
+				padding: 5px;
+				background: white;
+				border-radius: 3px;
+				margin-bottom: 10px;
+				}
+				
+				.auth-billing-name {
+				font-size: 110%;
+				margin-bottom: 10px;
+				}
+				
+				.auth-billing-fname-label {
+				float: left;
+				padding-top: 5px;
+				margin-right: 10px;
+				}
+				
+				.auth-billing-fname {
+				float: left;
+				margin-right: 15px;
+				}
+				
+				.auth-billing-lname-label {
+				float: left;
+				padding-top: 5px;
+				margin-right: 10px;
+				}
+				
+				.auth-billing-address-label {
+				float: left;
+				padding-top: 5px;
+				margin-right: 27px;
+				}
+				
+				.auth-billing-zip-label {
+				float: left;
+				padding-top: 5px;
+				margin-right: 10px;
+				}
+				
+				.auth-cc {
+				padding: 5px;
+				background: white;
+				border-radius: 3px;
+				margin-bottom: 10px;
+				}
+				.auth-exp {
+				padding: 10px 10px 0 5px;
+				background: white;
+				border-radius: 3px;
+				margin-bottom: 10px;
+				}
+				.auth-sec {
+				padding: 10px 10px 0 5px;
+				background: white;
+				border-radius: 3px;
+				margin-bottom: 10px;
+				}
+				
+				.cardimage {
+				height: 23px;
+				width: 157px;
+				display: inline-table;
+				margin-left: 20px;
+				}
+				
+				.auth-exp-input .inputLabel {
+				margin: 0 5px 0 20px;
+				}
+				
+				#membership-wrapper select, #membership-wrapper input[type="file"] {
+				height: 28px;
+				width: 100px;
+				}
+				
+				.auth-cc-label {
+				}
+				
+				.auth-exp-label {
+				float: left;
+				padding-top: 2px;
+				}
+				
+				.auth-sec-label {
+				float: left;
+				margin-right: 10px;
+				padding-top: 5px;
+				}
+				
+				.auth-submit-button {
+				text-align: right;
+				}
+		';
+		$form .= '</style>';
+
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
-		global $m_aim_error;
-		if(isset($m_aim_error) && !empty($m_aim_error)) {
-			$form .= '<div class="message error hidden">'.$m_aim_error.'</div>';
+		
+		
+		if(isset($_GET['error'])) {
+			if($_GET['error'] == 1)
+				$error = __('Payment method not supported for the payment', 'membership');
+			if($_GET['error'] == 2)
+				$error = __('There was a problem processing your purchase. Please try again', 'membership');
+		} else {
+			$error = false;
 		}
+		$form .= '<div class="message error'.($error == false ? ' hidden' : '').'">'.$error.'</div>';
 		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'" />';
+		$form .= var_export($_GET,true);
 //New DIV based form by Kevin D. Lyons
 		$form .= '<div class="membership_cart_billing">';
-			$form .= '<div class="auth-header">'. __('Enter Your Credit Card Information:', 'membership'). '</div>';
+			
 			$form .= '<div class="auth-body">';
 //New Address Verification as Billing Address added by Kevin D. Lyons
 				$form .= '<div class="auth-billing">';
 					$form .= '<div class="auth-billing-name">'.__('Credit Card Billing Information:', 'mp'). '*</div>';
-					$form .= '<div class="auth-billing-fname-lable"><label class="inputLabel" for="first_name">'.__('First Name:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-fname-label"><label class="inputLabel" for="first_name">'.__('First Name:', 'mp'). '</label></div>';
 					$form .= '<div class="auth-billing-fname"><input id="first_name" name="first_name" class="input_field noautocomplete" style="width: 160px;" ';
 					$form .= 'type="text" size="20" maxlength="20" /></div>';
-					$form .= '<div class="auth-billing-lname-lable"><label class="inputLabel" for="last_name">'.__('Last Name:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-lname-label"><label class="inputLabel" for="last_name">'.__('Last Name:', 'mp'). '</label></div>';
 					$form .= '<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" style="width: 160px;" ';
 					$form .= 'type="text" size="20" maxlength="20" /></div>';
-					$form .= '<div class="auth-billing-address-lable"><label class="inputLabel" for="address">'.__('Address:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-address-label"><label class="inputLabel" for="address">'.__('Address:', 'mp'). '</label></div>';
 					$form .= '<div class="auth-billing-address"><input id="address" name="address" class="input_field noautocomplete" style="width: 427px;" ';
 					$form .= 'type="text" size="120" maxlength="120" /></div>';
-					$form .= '<div class="auth-billing-zip-lable"><label class="inputLabel" for="zip">'.__('Billing 5-Digit Zipcode:', 'mp'). '</label></div>';
+					$form .= '<div class="auth-billing-zip-label"><label class="inputLabel" for="zip">'.__('Billing 5-Digit Zipcode:', 'mp'). '</label></div>';
 					$form .= '<div class="auth-billing-zip"><input id="zip" name="zip" class="input_field noautocomplete" style="width: 80px;" ';
 					$form .= 'type="text" size="5" maxlength="5" /></div></div>';
 //End Address Verification
 				$form .= '<div class="auth-cc">';
-					$form .= '<div class="auth-cc-lable">'. __('Credit Card Number:', 'mp'). '*</div>';
+					$form .= '<div class="auth-cc-label">'. __('Credit Card Number:', 'mp'). '*</div>';
 					$form .= '<div class="auth-cc-input"><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
 					$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
 						$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
 						$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></div></div>';
 				$form .= '<div class="auth-exp">';
-					$form .= '<div class="auth-exp-lable">'.__('Expiration Date:', 'mp').'*</div>';
+					$form .= '<div class="auth-exp-label">'.__('Expiration Date:', 'mp').'*</div>';
 					$form .= '<div class="auth-exp-input"><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
 					$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
 					$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
 					$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></div></div>';
 				$form .= '<div class="auth-sec">';
-					$form .= '<div class="auth-sec-lable">'.__('Security Code:', 'mp').'</div>';
+					$form .= '<div class="auth-sec-label">'.__('Security Code:', 'mp').'</div>';
 					$form .= '<div class="auth-sec-input"><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
 					$form .= 'type="text" size="4" maxlength="4" /></div></div>';
 				$form .= '<div class="auth-submit">';
@@ -278,7 +432,7 @@ class authorizenetaim extends M_Gateway {
 //		$form .= '<tr><td align="right">'.__('Security Code:', 'mp').'</td>';
 //		$form .= '<td><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
 //		$form .= 'type="text" size="4" maxlength="4" /></td></tr>';
-//		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/credit_card_64.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
+//		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
 //		$form .= '</tbody></table></form>';
 
 		return $form;
@@ -448,32 +602,20 @@ class authorizenetaim extends M_Gateway {
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				wp_redirect(M_get_registrationcompleted_permalink());
 				exit;
-				  //print json_encode(array('status' => 'success', 'message' => $status, 'transaction_id' => $payment->getTransactionID(), 'custom' => $this->build_custom($user_id, $sub_id, $pricing[0]['amount'])));				  
-				  //exit();
 				} else {
-					$error = __('There was a problem processing your purchase. Please try again', 'membership') . ' ' . $payment->getResponseText();
-					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=1');
 					exit;
-				  
-				  //print json_encode(array('status' => 'error', 'message' => __('There was a problem processing your purchase. Please try again', 'membership'), 'more' => $error));
-				 // exit();
 				}
 			} else {
-				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=2');
 				exit;
-				$error = __('Payment method not supported for the payment', 'membership');
-				//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
-				//exit();
 			}
 		} else {
-			$error = __('Payment method not supported for the payment', 'membership');
-			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id);
+			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=2');
 			exit;
-			
-			//print json_encode(array('status' => 'error', 'message' => __('Payment method not supported for the payment', 'membership')));
-			//exit();
 		}
-		
+		global $m_aim_errors;
+		$m_aim_errors = $error;
 			
 	}
 }
