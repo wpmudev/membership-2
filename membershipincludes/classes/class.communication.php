@@ -343,7 +343,7 @@ if(!class_exists('M_Communication')) {
 												}
 												break;
 
-					case '%accounturl%':		$commdata[$key] = get_permalink( $M_options['account_page'] );
+					case '%accounturl%':		$commdata[$key] = M_get_account_permalink();
 												break;
 
 					default:					$commdata[$key] = apply_filters( 'membership_commfield_' . $key, '', $user_id );

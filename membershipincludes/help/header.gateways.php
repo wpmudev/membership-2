@@ -1,1 +1,1 @@
-<p><?php _e('If you intend to charge a membership fee for higher levels of access to your site, this is where you need to set up your payment gateway.', 'membership'); ?></p>
+<p><?php _e('This is where you control which gateways you want to use for your website. You should only activate the ones that you want to use to accept payments.', 'membership'); ?></p>

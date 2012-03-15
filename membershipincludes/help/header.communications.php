@@ -1,1 +1,1 @@
-<p><?php _e("You can set up an automated message that reminds your site users when their membership is about to expire. Write your message here, and choose when it will be sent out (anywhere between 1 and 365 days before a membership expires).", 'membership'); ?></p>
+<p><?php _e("This is where you can set up an automated message to welcome your new members or to remind your memebers that their membership is about to expire.", 'membership'); ?></p>
