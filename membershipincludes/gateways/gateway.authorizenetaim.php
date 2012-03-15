@@ -363,11 +363,10 @@ class authorizenetaim extends M_Gateway {
 
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
 		
-		
-		if(isset($_GET['error'])) {
-			if($_GET['error'] == 1)
+		if(isset($_GET['errors'])) {
+			if($_GET['errors'] == 1)
 				$error = __('Payment method not supported for the payment', 'membership');
-			if($_GET['error'] == 2)
+			if($_GET['errors'] == 2)
 				$error = __('There was a problem processing your purchase. Please try again', 'membership');
 		} else {
 			$error = false;
@@ -375,7 +374,7 @@ class authorizenetaim extends M_Gateway {
 		$form .= '<div class="message error'.($error == false ? ' hidden' : '').'">'.$error.'</div>';
 		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'" />';
-		$form .= var_export($_GET,true);
+		
 //New DIV based form by Kevin D. Lyons
 		$form .= '<div class="membership_cart_billing">';
 			
@@ -603,15 +602,15 @@ class authorizenetaim extends M_Gateway {
 				wp_redirect(M_get_registrationcompleted_permalink());
 				exit;
 				} else {
-					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=1');
+					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=1');
 					exit;
 				}
 			} else {
-				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=2');
+				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=2');
 				exit;
 			}
 		} else {
-			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&error=2');
+			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=2');
 			exit;
 		}
 		global $m_aim_errors;
