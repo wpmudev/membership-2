@@ -435,8 +435,8 @@ function M_Communication_process( ) {
 
 	$members = M_Communication_get_members($lastatid);
 	if(empty($members)) {
-		// reset the counter for the next round of processing
-		update_option('membership_communication_last_user_processed', 0);
+		// do nothing
+		//update_option('membership_communication_last_user_processed', 0);
 	}
 
 	// Our starting time
