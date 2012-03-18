@@ -116,7 +116,7 @@ class twocheckout extends M_Gateway {
 		);
 
 		$args['user-agent'] = "Membership/1.0.3: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.0";
-		$args['body'] = 'product_id='.$subscription->sub_id();
+		$args['body'] = array('product_id' => $subscription->sub_id());
 		$args['sslverify'] = false;
 		$args['timeout'] = 10;
 
@@ -161,10 +161,10 @@ class twocheckout extends M_Gateway {
 					$body = array();
 
 					foreach ($bargs as $bkey => $bval) {
-						$body[] = "{$bkey}=".rawurlencode($bval);
+						$body[$bkey] = $bval;
 					}
 
-					$args['body'] = join('&', $body);
+					$args['body'] = $body;
 
 					$response = wp_remote_post($endpoint."create_product", $args);
 
