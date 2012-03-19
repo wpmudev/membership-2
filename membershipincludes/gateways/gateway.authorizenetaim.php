@@ -218,7 +218,7 @@ class authorizenetaim extends M_Gateway {
 		$form .= '<style type="text/css">';
 		$form .= '				
 				.membership_cart_billing {
-				width: 646px;
+					
 				}
 				
 				.purchase-wrapper {
@@ -333,43 +333,50 @@ class authorizenetaim extends M_Gateway {
 				}
 				
 				.auth-exp-input .inputLabel {
-				margin: 0 5px 0 20px;
+					margin: 0 5px 0 20px;
 				}
 				
 				#membership-wrapper select, #membership-wrapper input[type="file"] {
-				height: 28px;
-				width: 100px;
+					height: 28px;
+					width: 100px;
 				}
 				
 				.auth-cc-label {
 				}
 				
 				.auth-exp-label {
-				float: left;
-				padding-top: 2px;
+					float: left;
+					padding-top: 2px;
 				}
 				
 				.auth-sec-label {
-				float: left;
-				margin-right: 10px;
-				padding-top: 5px;
+					float: left;
+					margin-right: 10px;
+					padding-top: 5px;
 				}
 				
 				.auth-submit-button {
-				text-align: right;
+					text-align: right;
+				}
+				.membership_payment_form.authorizenet {
+					width: 100%;
 				}
 		';
 		$form .= '</style>';
-
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
 		
+		$api_u = get_option( $this->gateway . "_api_user");
+		$api_k = get_option( $this->gateway . "_api_key");
+		
+		$error = false;
 		if(isset($_GET['errors'])) {
 			if($_GET['errors'] == 1)
 				$error = __('Payment method not supported for the payment', 'membership');
 			if($_GET['errors'] == 2)
 				$error = __('There was a problem processing your purchase. Please try again', 'membership');
-		} else {
-			$error = false;
+		} 
+		if(!isset($api_u) || $api_u == '' || $api_u == false || !isset($api_k) || $api_k == '' || $api_k == false) {
+			$error = __('This payment gateway has not been configured.  Your transaction will not be processed.', 'membership');
 		}
 		$form .= '<div class="message error'.($error == false ? ' hidden' : '').'">'.$error.'</div>';
 		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
