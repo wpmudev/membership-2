@@ -2925,9 +2925,9 @@ if(!class_exists('membershipadmin')) {
 										          'DKK' => __('DKK - Danish Krone','membership'),
 										          'EUR' => __('EUR - Euro','membership'),
 										          'GBP' => __('GBP - Pound Sterling','membership'),
-										          'ILS' => __('ILS - Israeli Shekel','membership'),
 										          'HKD' => __('HKD - Hong Kong Dollar','membership'),
 										          'HUF' => __('HUF - Hungarian Forint','membership'),
+												  'ILS' => __('ILS - Israeli Shekel','membership'),
 										          'JPY' => __('JPY - Japanese Yen','membership'),
 										          'MYR' => __('MYR - Malaysian Ringgits','membership'),
 										          'MXN' => __('MXN - Mexican Peso','membership'),
@@ -2939,7 +2939,8 @@ if(!class_exists('membershipadmin')) {
 										          'SGD' => __('SGD - Singapore Dollar','membership'),
 										          'TWD' => __('TWD - Taiwan New Dollars','membership'),
 										          'THB' => __('THB - Thai Baht','membership'),
-										          'USD' => __('USD - U.S. Dollar','membership')
+										          'USD' => __('USD - U.S. Dollar','membership'),
+												  'ZAR' => __('ZAR - South African Rand')
 										      );
 
 												$currencies = apply_filters('membership_available_currencies', $currencies);
