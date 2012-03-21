@@ -3408,7 +3408,7 @@ if(!class_exists('membershipadmin')) {
 								<br/><br/>
 								<label for='level_shortcode'><?php _e('Level shortcode','membership'); ?></label><?php echo $this->_tips->add_tip( __('The shortcode for this level is based on the title (above). It can be used to wrap content that you only want to be seen by members on this level e.g. [levelshortcode] protected content [/levelshortcode]','membership') ); ?>
 								<?php if($level->id > 0) {
-									echo "[" . sanitize_title_with_dashes('level-' . $level->level_title) . "]";
+									echo "[" . M_normalize_shortcode($level->level_title) . "]";
 								} else {
 									_e('Save your level to create the shortcode', 'membership');
 								} ?>
@@ -3909,7 +3909,7 @@ if(!class_exists('membershipadmin')) {
 										</strong>
 									</td>
 									<td class="column-shortcode">
-										<?php echo "[" . sanitize_title_with_dashes('level-' . $level->level_title) . "]"; ?>
+										<?php echo "[" . M_normalize_shortcode($level->level_title) . "]"; ?>
 									</td>
 							    </tr>
 								<?php

@@ -1295,20 +1295,20 @@ if(!class_exists('membershippublic')) {
 											);
 											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
-											
+
 											wp_set_current_user($user_id);
 											wp_set_auth_cookie($user_id);
 											wp_redirect(home_url($_SERVER['REQUEST_URI']));
 											exit;
-											
+
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 											} else {
 												wp_new_user_notification($user_id, $_POST['password']);
 											}
-											
-											
+
+
 
 										}
 									}
@@ -1420,19 +1420,19 @@ if(!class_exists('membershippublic')) {
 											);
 											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
-											
+
 											wp_set_current_user($user_id);
 											wp_set_auth_cookie($user_id);
 											wp_redirect(home_url($_SERVER['REQUEST_URI']));
 											exit;
-											
+
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 											} else {
 												wp_new_user_notification($user_id, $_POST['signup_password']);
 											}
-											
+
 
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
@@ -2072,7 +2072,7 @@ if(!class_exists('membershippublic')) {
 
 			if(!empty($levels)) {
 				foreach($levels as $level) {
-					$shortcodes[$level->id] = sanitize_title_with_dashes('level-' . $level->level_title);
+					$shortcodes[$level->id] = M_normalize_shortcode($level->level_title);
 				}
 			}
 
