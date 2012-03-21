@@ -122,10 +122,10 @@ if(!class_exists('membershippublic')) {
 						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
 					}
 				}
-			}
 
-			// Shortcodes now default to protected for those entered by the user (which will be none for new users / installs)
-			$this->override_shortcodes();
+				// Shortcodes now default to protected for those entered by the user (which will be none for new users / installs)
+				$this->override_shortcodes();
+			}
 
 			// Downloads protection
 			if(!empty($M_options['masked_url'])) {
