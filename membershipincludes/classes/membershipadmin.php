@@ -7090,7 +7090,7 @@ if(!class_exists('membershipadmin')) {
 
 			if(!empty($levels)) {
 				foreach($levels as $level) {
-					$shortcodes[] = sanitize_title_with_dashes('level-' . $level->level_title);
+					$shortcodes[] = M_normalize_shortcode($level->level_title);
 				}
 			}
 
