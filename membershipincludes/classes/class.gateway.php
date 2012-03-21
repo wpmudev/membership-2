@@ -323,8 +323,7 @@ if(!class_exists('M_Gateway')) {
 									</td>
 									<td class="column-date">
 										<?php
-											echo mysql2date("d-m-Y", $transaction->transaction_stamp);
-
+											echo date("d-m-Y", $transaction->transaction_stamp);
 										?>
 									</td>
 									<td class="column-amount">
