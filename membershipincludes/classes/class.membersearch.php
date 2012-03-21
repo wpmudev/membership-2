@@ -45,7 +45,7 @@ if(!class_exists('M_Member_Search')) {
 				$this->paging_text = paginate_links( array(
 					'total' => ceil($this->total_users_for_query / $this->users_per_page),
 					'current' => $this->page,
-					'base' => 'admin.php?page=members&%_%',
+					'base' => 'admin.php?page=membershipmembers&%_%',
 					'format' => 'userspage=%#%',
 					'add_args' => $args
 				) );
