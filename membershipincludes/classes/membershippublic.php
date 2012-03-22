@@ -1111,7 +1111,7 @@ if(!class_exists('membershippublic')) {
 														update_user_meta( $user, '_membership_last_upgraded', time());
 														// Login?
 														if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
-															wp_set_auth_cookie( $user_id );
+															if(!headers_sent())wp_set_auth_cookie( $user_id );
 														}
 													}
 												}
@@ -1297,8 +1297,10 @@ if(!class_exists('membershippublic')) {
 											$user = wp_signon( $creds, $is_ssl );
 
 											wp_set_current_user($user_id);
-											wp_set_auth_cookie($user_id);
-											wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											if(!headers_sent()) {
+												wp_set_auth_cookie($user_id);
+												wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											}
 											exit;
 
 
@@ -1422,8 +1424,10 @@ if(!class_exists('membershippublic')) {
 											$user = wp_signon( $creds, $is_ssl );
 
 											wp_set_current_user($user_id);
-											wp_set_auth_cookie($user_id);
-											wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											if(!headers_sent()) {
+												wp_set_auth_cookie($user_id);
+												wp_redirect(home_url($_SERVER['REQUEST_URI']));
+											}
 											exit;
 
 
