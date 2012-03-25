@@ -1435,6 +1435,9 @@ if(!class_exists('membershippublic')) {
 												wp_new_user_notification($user_id, $_POST['signup_password']);
 											}
 
+											// Add the bp filter for usermeta signup
+											$meta_array = apply_filters( 'bp_signup_usermeta', $meta_array );
+
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
 													xprofile_set_field_data( $field_id, $user_id, $field_content );
@@ -1457,6 +1460,8 @@ if(!class_exists('membershippublic')) {
 										$content = $this->output_registeruser( $content, $_POST );
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
+										// run the bp complete signup action
+										do_action( 'bp_complete_signup' );
 										// display the payment forms
 										if(!headers_sent()) {
 											wp_set_current_user($user_id);
