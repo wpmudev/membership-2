@@ -1363,6 +1363,17 @@ if(!class_exists('membershippublic')) {
 										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 									}
 
+									// Initial fix provided by user: cmurtagh - modified to add extra checks and rejigged a bit
+									// Run the buddypress validation
+									do_action( 'bp_signup_validate' );
+
+							        // Add any errors to the action for the field in the template for display.
+        							if ( !empty( $bp->signup->errors ) ) {
+										foreach ( (array)$bp->signup->errors as $fieldname => $error_message ) {
+												$error->add($fieldname, $error_message);
+										}
+									}
+
 									$meta_array = array();
 
 									// xprofile required fields
