@@ -1278,7 +1278,7 @@ if(!class_exists('membershippublic')) {
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && empty($anyerrors)) {
-										// Pre - error reporting check for final add user
+										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
@@ -1296,21 +1296,11 @@ if(!class_exists('membershippublic')) {
 											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
 
-											wp_set_current_user($user_id);
-											if(!headers_sent()) {
-												wp_set_auth_cookie($user_id);
-												wp_redirect(home_url($_SERVER['REQUEST_URI']));
-											}
-											exit;
-
-
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 											} else {
 												wp_new_user_notification($user_id, $_POST['password']);
 											}
-
-
 
 										}
 									}
@@ -1320,6 +1310,7 @@ if(!class_exists('membershippublic')) {
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && !empty($anyerrors)) {
+										// we have an error - output
 										$messages = $error->get_error_messages();
 										$content .= "<div class='alert alert-error'>";
 										$content .= implode('<br/>', $messages);
@@ -1331,6 +1322,11 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// add do the payment and completion page
+										if(!headers_sent()) {
+											wp_set_current_user($user_id);
+											wp_set_auth_cookie($user_id);
+										}
+
 										$content = $this->output_paymentpage( $user_id );
 									}
 
@@ -1404,8 +1400,7 @@ if(!class_exists('membershippublic')) {
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
 									if(is_wp_error($error) && empty($anyerrors)) {
-										// Pre - error reporting check for final add user
-
+										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
@@ -1423,20 +1418,11 @@ if(!class_exists('membershippublic')) {
 											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
 
-											wp_set_current_user($user_id);
-											if(!headers_sent()) {
-												wp_set_auth_cookie($user_id);
-												wp_redirect(home_url($_SERVER['REQUEST_URI']));
-											}
-											exit;
-
-
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 											} else {
 												wp_new_user_notification($user_id, $_POST['signup_password']);
 											}
-
 
 											foreach((array) $meta_array as $field_id => $field_content) {
 												if(function_exists('xprofile_set_field_data')) {
@@ -1461,6 +1447,11 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// display the payment forms
+										if(!headers_sent()) {
+											wp_set_current_user($user_id);
+											wp_set_auth_cookie($user_id);
+										}
+
 										$content = $this->output_paymentpage( $user_id );
 									}
 
