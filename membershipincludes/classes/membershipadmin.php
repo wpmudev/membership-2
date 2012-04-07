@@ -1735,6 +1735,8 @@ if(!class_exists('membershipadmin')) {
 			$userspage = isset($_GET['userspage']) ? $_GET['userspage'] : null;
 			$role = null;
 
+			if(empty($active_op)) $active_op = '';
+
 			// Query the users
 			$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id, $active_op);
 
@@ -1827,7 +1829,7 @@ if(!class_exists('membershipadmin')) {
 						if($subs) {
 							foreach($subs as $key => $sub) {
 								?>
-								<option value="<?php echo $sub->id; ?>" <?php if($_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
+								<option value="<?php echo $sub->id; ?>" <?php if(isset($_GET['sub_op']) && $_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
 								<?php
 							}
 						}
@@ -1842,7 +1844,7 @@ if(!class_exists('membershipadmin')) {
 						if($levels) {
 							foreach($levels as $key => $level) {
 								?>
-								<option value="<?php echo $level->id; ?>" <?php if($_GET['level_op'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
+								<option value="<?php echo $level->id; ?>" <?php if(isset($_GET['level_op']) && $_GET['level_op'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
 								<?php
 							}
 						}
@@ -1852,8 +1854,8 @@ if(!class_exists('membershipadmin')) {
 
 				<select name="active_op">
 					<option value=""><?php _e('Filter by status','membership'); ?></option>
-					<option value="yes" <?php if($_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
-					<option value="no" <?php if($_GET['active_op'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
+					<option value="yes" <?php if(isset($_GET['active_op']) && $_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
+					<option value="no" <?php if(isset($_GET['active_op']) && $_GET['active_op'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter','membership'); ?>">
 
@@ -2117,7 +2119,7 @@ if(!class_exists('membershipadmin')) {
 						if($subs) {
 							foreach($subs as $key => $sub) {
 								?>
-								<option value="<?php echo $sub->id; ?>" <?php if($_GET['sub_op2'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
+								<option value="<?php echo $sub->id; ?>" <?php if(isset($_GET['sub_op2']) && $_GET['sub_op2'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
 								<?php
 							}
 						}
@@ -2132,7 +2134,7 @@ if(!class_exists('membershipadmin')) {
 						if($levels) {
 							foreach($levels as $key => $level) {
 								?>
-								<option value="<?php echo $level->id; ?>" <?php if($_GET['level_op2'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
+								<option value="<?php echo $level->id; ?>" <?php if(isset($_GET['level_op2']) && $_GET['level_op2'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
 								<?php
 							}
 						}
@@ -2142,8 +2144,8 @@ if(!class_exists('membershipadmin')) {
 
 				<select name="active_op2">
 					<option value=""><?php _e('Filter by status','membership'); ?></option>
-					<option value="yes" <?php if($_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
-					<option value="no" <?php if($_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
+					<option value="yes" <?php if(isset($_GET['active_op2']) && $_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active','membership'); ?></option>
+					<option value="no" <?php if(isset($_GET['active_op2']) && $_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive','membership'); ?></option>
 				</select>
 				<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter','membership'); ?>">
 
@@ -3268,7 +3270,7 @@ if(!class_exists('membershipadmin')) {
 				$M_options = get_option('membership_options', array());
 			}
 
-			$tab = $_GET['tab'];
+			$tab = (isset($_GET['tab'])) ? $_GET['tab'] : '';
 			if(empty($tab)) {
 				$tab = 'general';
 			}
@@ -4896,7 +4898,12 @@ if(!class_exists('membershipadmin')) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 				}
 
-				$comms = $this->get_communications( $_GET['comm_id'] );
+				if(isset($_GET['comm_id'])) {
+					$comm_id = $_GET['comm_id'];
+				} else {
+					$comm_id = 'all';
+				}
+				$comms = $this->get_communications( $comm_id );
 				$comms = apply_filters('M_communications_list', $comms);
 
 

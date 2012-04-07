@@ -1161,7 +1161,17 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query, $M_options, $bp;
 
-			$content = apply_filters('membership_subscription_form_before_content', $content, $user_id);
+			if(empty($user_id)) {
+				$user = wp_get_current_user();
+
+				if(!empty($user->ID) && is_numeric($user->ID) ) {
+					$user_id = $user->ID;
+				} else {
+					$user_id = 0;
+				}
+			}
+
+			$content = apply_filters('membership_subscription_form_before_content', '', $user_id);
 			ob_start();
 			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
 				include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
@@ -1181,7 +1191,7 @@ if(!class_exists('membershippublic')) {
 			global $wp_query, $M_options, $bp;
 
 			$subscription = (int) $_GET['subscription'];
-			$content = apply_filters('membership_subscription_form_registration_before_content', $content, $error);
+			$content = apply_filters('membership_subscription_form_registration_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
 				include_once( MEMBERSHIP_REGISTRATION_FORM );
@@ -1216,7 +1226,7 @@ if(!class_exists('membershippublic')) {
 				$member = new M_Membership( $user_id );
 			}
 
-			$content = apply_filters('membership_subscription_form_payment_before_content', $content, $error);
+			$content = apply_filters('membership_subscription_form_payment_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
 				include_once( MEMBERSHIP_PAYMENT_FORM );
@@ -1236,7 +1246,7 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query, $M_options, $bp;
 
-			$page = addslashes($_REQUEST['action']);
+			if(isset($_REQUEST['action'])) $page = addslashes($_REQUEST['action']);
 			if(empty($page)) {
 				$page = 'subscriptionform';
 			}

@@ -162,7 +162,7 @@ if(!class_exists('M_Membership')) {
 						}
 
 						// Need to check if we are on a solo payment and have a valid payment or the next level is free.
-						$onsolo = get_user_meta( $user_id, 'membership_signup_gateway_is_single', true );
+						$onsolo = get_user_meta( $this->ID, 'membership_signup_gateway_is_single', true );
 						if(!empty($onsolo) && $onsolo == 'yes') {
 							// We are on a solo gateway so need some extra checks
 							// Grab the subscription
