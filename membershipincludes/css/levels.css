@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=11 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=12 */
 
 div.level-liquid-left {
 	float: left;
@@ -480,6 +480,15 @@ div.buttons a.cancellink {
 }
 
 div.positivecontent {
+	
+}
+
+#wp-level_protectedcontent-wrap {
+	margin-left: 10px;
+	margin-right: 10px;	
+}
+
+#wp-level_protectedcontent-editor-container {
 	
 }
 

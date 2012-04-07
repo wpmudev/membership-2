@@ -326,7 +326,7 @@ if(!class_exists('membershippublic')) {
 							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_level_shortcode') );
 						} else {
 							// member isn't on this level and so can't see the content
-							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_protected_shortcode') );
+							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_levelprotected_shortcode') );
 						}
 					}
 				}
@@ -590,6 +590,30 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
+			return stripslashes($M_options['shortcodemessage']);
+
+		}
+
+		// Show the level based protected shortcode message
+		function do_levelprotected_shortcode($atts, $content = null, $code = "") {
+
+			global $M_options;
+
+			// Set up the level shortcodes here
+			$shortcodes = apply_filters('membership_level_shortcodes', array() );
+			if(!empty($shortcodes)) {
+				$id = array_search( $code, $shortcodes );
+
+				if($id !== false) {
+					// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
+					$level = new M_Level( $id );
+					$message = $level->get_meta( 'level_protectedcontent' );
+					if(!empty($message)) {
+						return stripslashes($message);
+					}
+				}
+			}
+			// If we are here then we have no custom message, or the shortcode wasn't found so just output the standard message
 			return stripslashes($M_options['shortcodemessage']);
 
 		}
@@ -1919,6 +1943,24 @@ if(!class_exists('membershippublic')) {
 					if(!current_theme_supports('membership_subscription_form')) {
 						wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
 						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+						wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
+						wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
+
+						wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
+						wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
+
+						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+
+						wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
+						 														'registernonce'	=>	wp_create_nonce('membership_register'),
+																				'loginnonce'	=>	wp_create_nonce('membership_login'),
+																				'regproblem'	=>	__('Problem with registration.', 'membership'),
+																				'logpropblem'	=>	__('Problem with Login.', 'membership'),
+																				'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
+																				'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
+																				'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
+																			));
+
 					}
 				}
 				if(strstr($post->post_content, '[accountform]') !== false) {
@@ -1975,7 +2017,7 @@ if(!class_exists('membershippublic')) {
 																				'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
 																				'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
 																			));
-}
+					}
 					do_action('membership_subscriptionbutton_onpage');
 
 					//wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));

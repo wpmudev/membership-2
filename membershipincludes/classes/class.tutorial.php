@@ -1,5 +1,7 @@
 <?php
 
+if(!class_exists('M_Tutorial')) {
+
 class M_Tutorial {
 
 	private $_membership_tutorial;
@@ -165,7 +167,7 @@ class M_Tutorial {
 
 	function add_wizardwelcome_step () {
 		$this->_wizard_tutorial->add_step(
-			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			$this->admin_url('admin.php?page=membership'), 'toplevel_page_membership',
 			'#icon-index',
 			__('Welcome to Membership', 'membership'),
 			array(
@@ -178,7 +180,7 @@ class M_Tutorial {
 
 	function add_wizardshow_step () {
 		$this->_wizard_tutorial->add_step(
-			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			$this->admin_url('admin.php?page=membership'), 'toplevel_page_membership',
 			'div.welcome-panel-content h3',
 			__('Getting started wizard', 'membership'),
 			array(
@@ -191,7 +193,7 @@ class M_Tutorial {
 
 	function add_wizarddismiss_step () {
 		$this->_wizard_tutorial->add_step(
-			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			$this->admin_url('admin.php?page=membership'), 'toplevel_page_membership',
 			'p.welcome-panel-dismiss',
 			__('Dismissing the wizard', 'membership'),
 			array(
@@ -206,7 +208,7 @@ class M_Tutorial {
 
 	function add_welcome_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			$this->admin_url('admin.php?page=membership'), 'toplevel_page_membership',
 			'#toplevel_page_membership',
 			__('Membership Menu', 'membership'),
 			array(
@@ -219,7 +221,7 @@ class M_Tutorial {
 
 	function add_members_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			$this->admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
 			'#icon-users',
 			__('Members screen', 'membership'),
 			array(
@@ -232,7 +234,7 @@ class M_Tutorial {
 
 	function add_membersfilter_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			$this->admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
 			'#doaction',
 			__('Member filtering', 'membership'),
 			array(
@@ -245,7 +247,7 @@ class M_Tutorial {
 
 	function add_memberssubs_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
+			$this->admin_url('admin.php?page=membershipmembers'), 'membership_page_membershipmembers',
 			'#sub',
 			__('Member subscriptions', 'membership'),
 			array(
@@ -258,7 +260,7 @@ class M_Tutorial {
 
 	function add_levels_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
 			'#icon-link-manager',
 			__('Access Levels', 'membership'),
 			array(
@@ -271,7 +273,7 @@ class M_Tutorial {
 
 	function add_levelsaddnew_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels'), 'membership_page_membershiplevels',
 			'.add-new-h2',
 			__('Adding Levels', 'membership'),
 			array(
@@ -284,7 +286,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformtitle_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#level_title',
 			__('Level Title', 'membership'),
 			array(
@@ -297,7 +299,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformrules_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#sidebar-main',
 			__('Level Rules', 'membership'),
 			array(
@@ -310,7 +312,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformrulesdrag_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'#positive-rules',
 			__('Adding Rules', 'membership'),
 			array(
@@ -323,7 +325,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformrulespositive_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'li.positivetab',
 			__('Positive Rules', 'membership'),
 			array(
@@ -336,7 +338,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformrulesnegative_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'li.negativetab',
 			__('Negative Rules', 'membership'),
 			array(
@@ -349,7 +351,7 @@ class M_Tutorial {
 
 	function add_levelsaddnewformrulesadvanced_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
+			$this->admin_url('admin.php?page=membershiplevels&action=edit&level_id='), 'membership_page_membershiplevels',
 			'li.advancedtab',
 			__('Advanced Rules', 'membership'),
 			array(
@@ -362,7 +364,7 @@ class M_Tutorial {
 
 	function add_subscriptions_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
 			'#icon-link-manager',
 			__('Subscriptions', 'membership'),
 			array(
@@ -375,7 +377,7 @@ class M_Tutorial {
 
 	function add_subscriptionsaddnew_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs'), 'membership_page_membershipsubs',
 			'a.add-new-h2',
 			__('Adding Subscriptions', 'membership'),
 			array(
@@ -388,7 +390,7 @@ class M_Tutorial {
 
 	function add_subscriptionsaddtitle_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
 			'#sub_name',
 			__('Subscription Name', 'membership'),
 			array(
@@ -400,7 +402,7 @@ class M_Tutorial {
 
 	function add_subscriptionsadddescription_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
 			'#wp-sub_description-wrap',
 			__('Subscription Description', 'membership'),
 			array(
@@ -412,7 +414,7 @@ class M_Tutorial {
 
 	function add_subscriptionsaddpricetext_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
 			'#sub_pricetext',
 			__('Subscription Price Text', 'membership'),
 			array(
@@ -424,7 +426,7 @@ class M_Tutorial {
 
 	function add_subscriptionsaddlevels_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
 			'#sidebar-levels',
 			__('Subscription Levels', 'membership'),
 			array(
@@ -436,7 +438,7 @@ class M_Tutorial {
 
 	function add_subscriptionsadddrophere_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
+			$this->admin_url('admin.php?page=membershipsubs&action=edit&sub_id='), 'membership_page_membershipsubs',
 			'#membership-levels',
 			__('Subscription Level Drop', 'membership'),
 			array(
@@ -448,7 +450,7 @@ class M_Tutorial {
 
 	function add_gateways_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipgateways'), 'membership_page_membershipgateways',
+			$this->admin_url('admin.php?page=membershipgateways'), 'membership_page_membershipgateways',
 			'#icon-plugins',
 			__('Gateways', 'membership'),
 			array(
@@ -461,7 +463,7 @@ class M_Tutorial {
 
 	function add_options_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('General Options', 'membership'),
 			array(
@@ -474,7 +476,7 @@ class M_Tutorial {
 
 	function add_optionspages_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=pages'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=pages'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('Membership Page Options', 'membership'),
 			array(
@@ -487,7 +489,7 @@ class M_Tutorial {
 
 	function add_optionsprotection_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=posts'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=posts'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('Content Protection Options', 'membership'),
 			array(
@@ -500,7 +502,7 @@ class M_Tutorial {
 
 	function add_optionsdownloads_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=downloads'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=downloads'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('Download / Media Options', 'membership'),
 			array(
@@ -513,7 +515,7 @@ class M_Tutorial {
 
 	function add_optionsadmins_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=users'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=users'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('Membership Admin Users', 'membership'),
 			array(
@@ -526,7 +528,7 @@ class M_Tutorial {
 
 	function add_optionsextras_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=extras'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=extras'), 'membership_page_membershipoptions',
 			'#icon-options-general',
 			__('Extra Options', 'membership'),
 			array(
@@ -539,7 +541,7 @@ class M_Tutorial {
 
 	function add_optionsadvanced_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipoptions&tab=advanced'), 'membership_page_membershipoptions',
+			$this->admin_url('admin.php?page=membershipoptions&tab=advanced'), 'membership_page_membershipoptions',
 			'#icon-tools',
 			__('Repair Membership', 'membership'),
 			array(
@@ -552,7 +554,7 @@ class M_Tutorial {
 
 	function add_communications_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipcommunication'), 'membership_page_membershipcommunication',
+			$this->admin_url('admin.php?page=membershipcommunication'), 'membership_page_membershipcommunication',
 			'#icon-edit-comments',
 			__('Communications', 'membership'),
 			array(
@@ -564,7 +566,7 @@ class M_Tutorial {
 
 	function add_communicationsadd_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipcommunication'), 'membership_page_membershipcommunication',
+			$this->admin_url('admin.php?page=membershipcommunication'), 'membership_page_membershipcommunication',
 			'a.add-new-h2',
 			__('Add Communication', 'membership'),
 			array(
@@ -576,7 +578,7 @@ class M_Tutorial {
 
 	function add_communicationsaddform_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
+			$this->admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
 			'select[name=periodprepost]',
 			__('Set period', 'membership'),
 			array(
@@ -588,7 +590,7 @@ class M_Tutorial {
 
 	function add_communicationsaddformsubject_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
+			$this->admin_url('admin.php?page=membershipcommunication&action=edit&comm='), 'membership_page_membershipcommunication',
 			'input[name=subject]',
 			__('Set subject and message', 'membership'),
 			array(
@@ -600,7 +602,7 @@ class M_Tutorial {
 
 	function add_urlgroups_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershipurlgroups'), 'membership_page_membershipurlgroups',
+			$this->admin_url('admin.php?page=membershipurlgroups'), 'membership_page_membershipurlgroups',
 			'#icon-edit-pages',
 			__('URL Groups', 'membership'),
 			array(
@@ -613,7 +615,7 @@ class M_Tutorial {
 
 	function add_pings_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membershippings'), 'membership_page_membershippings',
+			$this->admin_url('admin.php?page=membershippings'), 'membership_page_membershippings',
 			'#icon-link-manager',
 			__('Remote Pings', 'membership'),
 			array(
@@ -625,7 +627,7 @@ class M_Tutorial {
 
 	function add_enablemembership_step () {
 		$this->_membership_tutorial->add_step(
-			admin_url('admin.php?page=membership'), 'toplevel_page_membership',
+			$this->admin_url('admin.php?page=membership'), 'toplevel_page_membership',
 			'#enablemembership',
 			__('Enable Membership', 'membership'),
 			array(
@@ -635,5 +637,16 @@ class M_Tutorial {
 		);
 	}
 
+	function admin_url( $extend = false ) {
+		// ready for if site has network interface
+		if( (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('membership/membershippremium.php')) && (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true)) {
+			return network_admin_url( $extend );
+		} else {
+			return admin_url( $extend );
+		}
+	}
+
+
+}
 
 }

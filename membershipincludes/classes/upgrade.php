@@ -32,12 +32,37 @@ function M_Upgrade($from = false) {
 		case 10:	M_Alterfor11();
 					break;
 
+		case 11:	M_Alterfor12();
+
 		case false:	M_Createtables();
 					break;
 
 		default:	M_Createtables();
 					break;
 	}
+
+}
+
+function M_Alterfor12() {
+	global $wpdb;
+
+	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `site_id` bigint(20) DEFAULT '0',
+	  `couponcode` varchar(250) DEFAULT NULL,
+	  `discount` decimal(11,2) DEFAULT '0.00',
+	  `discount_type` varchar(5) DEFAULT NULL,
+	  `discount_currency` varchar(5) DEFAULT NULL,
+	  `coupon_startdate` datetime DEFAULT NULL,
+	  `coupon_enddate` datetime DEFAULT NULL,
+	  `coupon_sub_id` bigint(20) DEFAULT '0',
+	  `coupon_uses` int(11) DEFAULT '0',
+	  `coupon_used` int(11) DEFAULT '0',
+	  PRIMARY KEY (`id`),
+	  KEY `couponcode` (`couponcode`)
+	)";
+
+	$wpdb->query( $sql );
 
 }
 
@@ -381,6 +406,24 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
+	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	  `site_id` bigint(20) DEFAULT '0',
+	  `couponcode` varchar(250) DEFAULT NULL,
+	  `discount` decimal(11,2) DEFAULT '0.00',
+	  `discount_type` varchar(5) DEFAULT NULL,
+	  `discount_currency` varchar(5) DEFAULT NULL,
+	  `coupon_startdate` datetime DEFAULT NULL,
+	  `coupon_enddate` datetime DEFAULT NULL,
+	  `coupon_sub_id` bigint(20) DEFAULT '0',
+	  `coupon_uses` int(11) DEFAULT '0',
+	  `coupon_used` int(11) DEFAULT '0',
+	  PRIMARY KEY (`id`),
+	  KEY `couponcode` (`couponcode`)
+	)";
+
+	$wpdb->query( $sql );
+
 	do_action( 'membership_create_new_tables' );
 }
 
@@ -566,6 +609,23 @@ function M_Create_single_table( $name ) {
 					);";
 					break;
 
+		case membership_db_prefix($wpdb, 'coupons'):
+					$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+					  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					  `site_id` bigint(20) DEFAULT '0',
+					  `couponcode` varchar(250) DEFAULT NULL,
+					  `discount` decimal(11,2) DEFAULT '0.00',
+					  `discount_type` varchar(5) DEFAULT NULL,
+					  `discount_currency` varchar(5) DEFAULT NULL,
+					  `coupon_startdate` datetime DEFAULT NULL,
+					  `coupon_enddate` datetime DEFAULT NULL,
+					  `coupon_sub_id` bigint(20) DEFAULT '0',
+					  `coupon_uses` int(11) DEFAULT '0',
+					  `coupon_used` int(11) DEFAULT '0',
+					  PRIMARY KEY (`id`),
+					  KEY `couponcode` (`couponcode`)
+					)";
+					break;
 
 	}
 
@@ -830,6 +890,18 @@ function M_build_database_structure() {
 																					'level_order'	=>	$i,
 																					'paymentmade'	=>	$d,
 																					'paymentexpires'	=>	$d
+																			),
+						membership_db_prefix($wpdb, 'coupons') => array(	'id'	=>	$biu,
+																			'site_id'	=> $bi,
+																			'couponcode'	=> $v250,
+																			'discount'	=> $dc,
+																			'discount_type'	=> $v5,
+																			'discount_currency'	=> $v5,
+																			'coupon_startdate'	=>	$d,
+																			'coupon_enddate'	=> $d,
+																			'coupon_sub_id'	=> $bi,
+																			'coupon_uses'	=> $i,
+																			'coupon_used'	=> $i
 																			)
 						);
 

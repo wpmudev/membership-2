@@ -3,14 +3,14 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 11;
+		var $build = 12;
 		var $db;
 
 		//
 		var $showposts = 25;
 		var $showpages = 100;
 
-		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications', 'urlgroups', 'ping_history', 'pings');
+		var $tables = array('membership_levels', 'membership_rules', 'subscriptions', 'subscriptions_levels', 'membership_relationships', 'membermeta', 'communications', 'urlgroups', 'ping_history', 'pings', 'coupons');
 
 		var $membership_levels;
 		var $membership_rules;
@@ -22,6 +22,7 @@ if(!class_exists('membershipadmin')) {
 		var $urlgroups;
 		var $ping_history;
 		var $pings;
+		var $coupons;
 
 		// Class variable to hold a link to the tooltips class
 		var $_tips;
@@ -31,6 +32,12 @@ if(!class_exists('membershipadmin')) {
 
 		// The tutorial
 		var $tutorial;
+
+		// Coupons
+		var $_coupons;
+
+		// For the coupons datepicker
+		var $language;
 
 
 		function __construct() {
@@ -56,7 +63,11 @@ if(!class_exists('membershipadmin')) {
 			// Add in admin area membership levels
 			add_action('init', array(&$this, 'initialise_membership_protection'), 999);
 
-			add_action('admin_menu', array(&$this, 'add_admin_menu'));
+			if( (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('membership/membershippremium.php')) && (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true)) {
+				add_action('network_admin_menu', array(&$this, 'add_admin_menu'));
+			} else {
+				add_action('admin_menu', array(&$this, 'add_admin_menu'));
+			}
 
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
 
@@ -65,6 +76,7 @@ if(!class_exists('membershipadmin')) {
 			add_action('load-membership_page_membershipmembers', array(&$this, 'add_admin_header_members'));
 			add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
 			add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
+			add_action('load-membership_page_membershipcoupons', array(&$this, 'add_admin_header_membershipcoupons'));
 			add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
 			add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
 			add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
@@ -118,6 +130,9 @@ if(!class_exists('membershipadmin')) {
 			$this->tutorial = new M_Tutorial();
 			$this->tutorial->serve();
 
+			// Add in the coupon class
+			$this->_coupons = new M_Coupon();
+
 		}
 
 		function membershipadmin() {
@@ -129,8 +144,13 @@ if(!class_exists('membershipadmin')) {
 			$locale = apply_filters( 'membership_locale', get_locale() );
 			$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
-			if ( file_exists( $mofile ) )
+			if ( file_exists( $mofile ) ) {
 				load_textdomain( 'membership', $mofile );
+			}
+
+			//setup language code for jquery datepicker translation
+		    $temp_locales = explode('_', get_locale());
+		  	$this->language = ($temp_locales[0]) ? $temp_locales[0] : 'en';
 
 		}
 
@@ -267,22 +287,25 @@ if(!class_exists('membershipadmin')) {
 				do_action('membership_add_menu_items_top');
 				// Add the sub menu
 				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadmin', "membershipmembers", array(&$this,'handle_members_panel'));
-
+				do_action('membership_add_menu_items_after_members');
 				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
+				do_action('membership_add_menu_items_after_levels');
 				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
-
+				do_action('membership_add_menu_items_after_subscriptions');
+				add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
+				do_action('membership_add_menu_items_after_coupons');
 				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
-
+				do_action('membership_add_menu_items_after_purchases');
 				add_submenu_page('membership', __('Membership Communication','membership'), __('Communications','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
-
+				do_action('membership_add_menu_items_after_communications');
 				add_submenu_page('membership', __('Membership URL Groups','membership'), __('URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
-
+				do_action('membership_add_menu_items_after_urlgroups');
 				add_submenu_page('membership', __('Membership Pings','membership'), __('Remote Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
-
+				do_action('membership_add_menu_items_after_pings');
 				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
-
+				do_action('membership_add_menu_items_after_gateways');
 				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
-
+				do_action('membership_add_menu_items_after_options');
 				do_action('membership_add_menu_items_bottom');
 			}
 
@@ -414,6 +437,35 @@ if(!class_exists('membershipadmin')) {
 			wp_localize_script( 'subsjs', 'membership', array( 'deletesub' => __('Are you sure you want to delete this subscription?','membership'), 'deactivatesub' => __('Are you sure you want to deactivate this subscription?','membership') ) );
 
 			$this->handle_subscriptions_updates();
+
+		}
+
+		function add_admin_header_membershipcoupons() {
+
+			global $wp_version;
+			// Run the core header
+			$this->add_admin_header_core();
+
+			wp_enqueue_script( 'jquery-datepicker', membership_url( 'membershipincludes/js/datepicker/js/datepicker.min.js'), array('jquery', 'jquery-ui-core'), $this->build);
+
+			//only load languages for datepicker if not english (or it will show Chinese!)
+			if ($this->language != 'en')
+				wp_enqueue_script( 'jquery-datepicker-i18n', membership_url( 'membershipincludes/js/datepicker/js/datepicker-i18n.min.js'), array('jquery', 'jquery-ui-core', 'jquery-datepicker'), $this->build);
+
+			wp_enqueue_style( 'jquery-datepicker-css', membership_url( 'membershipincludes/js/datepicker/css/ui-lightness/datepicker.css'), false, $this->build);
+
+			// Queue scripts and localise
+			wp_enqueue_script('couponsjs', membership_url('membershipincludes/js/coupons.js'), array(), $this->build);
+			wp_enqueue_style('couponscss', membership_url('membershipincludes/css/coupons.css'), array(), $this->build);
+
+			wp_localize_script( 'couponsjs', 'membership', array( 	'deletecoupon' 	=> 	__('Are you sure you want to delete this coupon?','membership'),
+			 														'setlangugae'	=>	$this->language,
+																	'start_of_week'	=>	(get_option('start_of_week')=='0') ? 7 : get_option('start_of_week')
+																	) );
+
+
+
+			$this->handle_coupons_updates();
 
 		}
 
@@ -3481,6 +3533,18 @@ if(!class_exists('membershipadmin')) {
 								</div>
 
 								<div class='advancedcontent <?php echo $advancedcontent; ?>'>
+									<h3><?php _e('Custom shortcode protected content message','membership'); ?></h3>
+									<p class='description'><?php _e('If you want a protected content message to be displayed for this level then you can enter it here.','membership'); ?></p>
+									<?php
+									$args = array("textarea_name" => "level_protectedcontent", "textarea_rows" => 10);
+									if(!empty($mlevel)) {
+										$level_protectedcontent = $mlevel->get_meta( 'level_protectedcontent' );
+									}
+									wp_editor( stripslashes($level_protectedcontent), "level_protectedcontent", $args );
+									?>
+								</div>
+
+								<div class='advancedcontent <?php echo $advancedcontent; ?>'>
 								<?php do_action('membership_level_form_after_rules', $level->id); ?>
 								</div>
 
@@ -3609,6 +3673,11 @@ if(!class_exists('membershipadmin')) {
 									$level = new M_Level($id);
 
 									if($level->add()) {
+										// Add in the meta information
+										if(!empty($_POST['level_protectedcontent'])) {
+											$level->update_meta( 'level_protectedcontent', $_POST['level_protectedcontent'] );
+										}
+										// redirect
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 4,  'admin.php?page=' . $page ) );
@@ -3625,6 +3694,13 @@ if(!class_exists('membershipadmin')) {
 									$level = new M_Level($id);
 
 									if($level->update()) {
+										// update the meta information
+										if(!empty($_POST['level_protectedcontent'])) {
+											$level->update_meta( 'level_protectedcontent', $_POST['level_protectedcontent'] );
+										} else {
+											$level->delete_meta( 'level_protectedcontent' );
+										}
+										// redirect
 										wp_safe_redirect( add_query_arg( 'msg', 3,  'admin.php?page=' . $page ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 5,  'admin.php?page=' . $page ) );
@@ -3642,6 +3718,9 @@ if(!class_exists('membershipadmin')) {
 									$level = new M_Level($level_id);
 
 									if($level->delete($level_id)) {
+										// delete the meta information
+										$level->delete_meta( 'level_protectedcontent' );
+										// redirect
 										wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
 									} else {
 										wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
@@ -4016,11 +4095,6 @@ if(!class_exists('membershipadmin')) {
 								<?php
 								$args = array("textarea_name" => "sub_description", "textarea_rows" => 5);
 								wp_editor( stripslashes($sub->sub_description), "sub_description", $args );
-								/*
-								?>
-								<textarea class='wide' name='sub_description' id='sub_description'><?php echo esc_html(stripslashes($sub->sub_description)); ?></textarea>
-								<?php
-								*/
 								?>
 								<br/>
 								<label for='sub_pricetext'><?php _e('Subscription price text','membership'); ?><?php echo $this->_tips->add_tip( __('The text you want to show as the price on the subscription form. E.G. Only $25 per month.','membership') ); ?></label>
@@ -6667,6 +6741,379 @@ if(!class_exists('membershipadmin')) {
 
 			</div> <!-- wrap -->
 			<?php
+		}
+
+		function get_coupons( $filter = false ) {
+
+			$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} " );
+
+			if(!is_network_admin()) {
+				// We are on a single site admin interface
+				$sql .= $this->db->prepare( "WHERE site_id = %d", $this->db->blogid );
+			}
+
+			return $this->db->get_results( $sql );
+
+		}
+
+		function handle_coupons_updates() {
+
+				global $action, $page;
+
+				wp_reset_vars( array('action', 'page') );
+
+				if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
+					if(addslashes($_GET['action']) == 'delete' || addslashes($_GET['action2']) == 'delete') {
+						$action = 'bulk-delete';
+					}
+				}
+
+				switch(addslashes($action)) {
+
+					case 'removeheader':	$this->dismiss_user_help( $page );
+											wp_safe_redirect( remove_query_arg( 'action' ) );
+											break;
+
+					case 'added':	$id = (int) $_POST['ID'];
+									check_admin_referer('add-coupon');
+
+									if($id) {
+										$coupon = new M_Coupon( $id );
+
+										$errors = $coupon->add( $_POST );
+
+										if($errors !== true) {
+											wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+										} else {
+											//
+											//wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+										}
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 4, 'admin.php?page=' . $page ) );
+									}
+
+									break;
+					case 'updated':	$id = (int) $_POST['ID'];
+									check_admin_referer('update-coupon_' . $id);
+									if($id) {
+										$coupon = new M_Coupon( $id );
+
+										$errors = $coupon->update( $_POST );
+
+										if($errors !== true) {
+											wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+										}
+									} else {
+										wp_safe_redirect( add_query_arg( 'msg', 5, 'admin.php?page=' . $page ) );
+									}
+									break;
+
+					case 'delete':	if(isset($_GET['coupon_id'])) {
+										$coupon_id = (int) $_GET['coupon_id'];
+
+										check_admin_referer('delete-coupon_' . $coupon_id);
+
+										$coupon = new M_Coupon( $coupon_id );
+
+										if($coupon->delete()) {
+											wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
+										} else {
+											wp_safe_redirect( add_query_arg( 'msg', 6, wp_get_referer() ) );
+										}
+
+									}
+									break;
+
+					case 'bulk-delete':
+									check_admin_referer('bulk-subscriptions');
+									foreach($_GET['subcheck'] AS $value) {
+										if(is_numeric($value)) {
+											$sub_id = (int) $value;
+
+											$sub = new M_Subscription( $sub_id );
+
+											$sub->delete();
+										}
+									}
+
+									wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+									break;
+
+				}
+
+		}
+
+		function handle_coupon_edit_form( $coupon_id = false ) {
+
+				global $page;
+
+				if( $coupon_id === false ) {
+					$coupon =& new M_Coupon( 0, $this->_tips );
+
+					echo "<div class='wrap'>";
+					echo "<h2>" . __('Add Coupon','membership') . "</h2>";
+					echo '<div id="poststuff" class="metabox-holder">';
+					?>
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Add Coupon','membership'); ?></span></h3>
+						<div class="inside">
+							<?php
+							echo '<form method="post" action="?page=' . $page . '&amp;action=edit&amp;coupon=">';
+							echo '<input type="hidden" name="ID" value="" />';
+							echo "<input type='hidden' name='action' value='added' />";
+							wp_nonce_field('add-coupon');
+							$coupon->addform();
+							echo "<div class='buttons'>";
+							echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add coupon', 'membership') . '" />';
+							echo "<a href='?page=" . $page . "' class='cancellink alignright' title='Cancel edit'>" . __('Cancel', 'membership') . "</a>";
+							echo '</div>';
+							echo '</form>';
+							echo '<br/>';
+							?>
+						</div>
+					</div>
+					<?php
+					echo "</div>";
+					echo "</div>";
+				} else {
+					$coupon =& new M_Coupon( (int) $coupon_id, $this->_tips );
+
+					echo "<div class='wrap'>";
+					echo "<h2>" . __('Edit Coupon','membership') . "</h2>";
+
+					echo '<div id="poststuff" class="metabox-holder">';
+					?>
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Edit Coupon','membership'); ?></span></h3>
+						<div class="inside">
+							<?php
+							echo '<form method="post" action="?page=' . $page . '&amp;action=edit&amp;coupon=' . $coupon_id . '">';
+							echo '<input type="hidden" name="ID" value="' . $coupon_id . '" />';
+							echo "<input type='hidden' name='action' value='updated' />";
+							wp_nonce_field('update-coupon_' . $coupon_id);
+							$coupon->editform();
+							echo "<div class='buttons'>";
+							echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update coupon', 'membership') . '" />';
+							echo "<a href='?page=" . $page . "' class='cancellink alignright' title='Cancel edit'>" . __('Cancel', 'membership') . "</a>";
+							echo '</div>';
+							echo '</form>';
+							echo '<br/>';
+						?>
+						</div>
+					</div>
+					<?php
+					echo "</div>";
+					echo "</div>";
+				}
+
+		}
+
+		function handle_coupons_panel() {
+
+			global $action, $page, $M_options;
+
+			wp_reset_vars( array('action', 'page') );
+
+			switch(addslashes($action)) {
+
+				case 'edit':	if(isset($_GET['coupon_id'])) {
+									$this->handle_coupon_edit_form( (int) $_GET['coupon_id'] );
+								} else {
+									$this->handle_coupon_edit_form();
+								}
+								return; // so we don't show the list below
+								break;
+
+			}
+
+
+			$messages = array();
+			$messages[1] = __('Coupon added.', 'membership');
+			$messages[2] = __('Coupon not added.', 'membership');
+
+			$messages[3] = __('Coupon updated.', 'membership');
+			$messages[4] = __('Coupon not updated.', 'membership');
+
+			$messages[5] = __('Coupon deleted.', 'membership');
+			$messages[6] = __('Coupon not deleted.', 'membership');
+
+			?>
+			<div class='wrap'>
+				<div class="icon32" id="icon-link-manager"><br></div>
+				<h2><?php _e('Edit Coupons','membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;coupon="><?php _e('Add New','membership'); ?></a></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+
+				if($this->show_user_help( $page )) {
+					?>
+					<div class='screenhelpheader'>
+						<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss','membership'); ?></a>
+						<?php
+						ob_start();
+						include_once(membership_dir('membershipincludes/help/header.coupons.php'));
+						echo ob_get_clean();
+						?>
+					</div>
+					<?php
+				}
+
+				$coupons = $this->get_coupons();
+
+				$posts_columns = array(
+					'code'         => __('Coupon Code', 'membership'),
+					'discount'     => __('Discount', 'membership'),
+					'start'        => __('Start Date', 'membership'),
+					'end'          => __('Expire Date', 'membership'),
+		      		'sub'          => __('Subscription', 'membership'),
+		      		'used'         => __('Used', 'membership'),
+		      		'remaining'    => __('Remaining Uses', 'membership')
+				);
+				?>
+				<form>
+					<table width="100%" cellpadding="3" cellspacing="3" class="widefat fixed">
+						<thead>
+							<tr>
+							<th scope="col" class="check-column"><input type="checkbox" /></th>
+							<?php foreach($posts_columns as $column_id => $column_display_name) {
+								$col_url = $column_display_name;
+								?>
+								<th scope="col"><?php echo $col_url ?></th>
+							<?php } ?>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+							<th scope="col" class="check-column"><input type="checkbox" /></th>
+							<?php foreach($posts_columns as $column_id => $column_display_name) {
+								$col_url = $column_display_name;
+								?>
+								<th scope="col"><?php echo $col_url ?></th>
+							<?php } ?>
+							</tr>
+						</tfoot>
+						<tbody id="the-list">
+						<?php
+
+						if ( !empty($coupons) ) {
+							$bgcolor = isset($class) ? $class : '';
+							foreach ($coupons as $key => $coupon) {
+								$class = (isset($class) && 'alternate' == $class) ? '' : 'alternate';
+
+			          			//assign classes based on coupon availability
+			          			//$class = ($this->check_coupon($coupon_code)) ? $class . ' coupon-active' : $class . ' coupon-inactive';
+
+								echo '<tr class="' . $class . ' blog-row" style="vertical-align: top;"><th scope="row" class="check-column" valign="top"><input type="checkbox" name="coupons_checks[]"" value="' . $coupon->id . '" /></th>';
+
+								foreach( $posts_columns as $column_name => $column_display_name ) {
+									switch($column_name) {
+										case 'code': ?>
+											<td scope="row">
+												<?php
+													echo $coupon->couponcode;
+
+													$actions = array();
+													//$actions['id'] = "<strong>" . __('ID : ', 'membership') . $level->id . "</strong>";
+													$actions['edit'] = "<span class='edit'><a href='?page=" . $page . "&amp;action=edit&amp;coupon_id=" . $coupon->id . "'>" . __('Edit', 'membership') . "</a></span>";
+
+													$actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=delete&amp;coupon_id=" . $coupon->id . "", 'delete-coupon_' . $coupon->id) . "'>" . __('Delete', 'membership') . "</a></span>";
+
+												?>
+												<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+											</td>
+										<?php
+										break;
+
+										case 'discount': ?>
+											<td scope="row">
+												<?php
+												if ($coupon->discount_type == 'pct') {
+			                    					echo $coupon->discount . '%';
+			                  					} else if ($coupon->discount_type == 'amt') {
+													echo $coupon->discount_currency . ' ' . number_format_i18n($coupon->discount, 2);
+			                  					}
+			                  					?>
+											</td>
+										<?php
+										break;
+
+										case 'start': ?>
+											<td scope="row">
+			                  				<?php echo date_i18n( get_option('date_format'), $coupon->coupon_startdate ); ?>
+											</td>
+										<?php
+										break;
+
+										case 'end': ?>
+											<td scope="row">
+												<?php if (!empty($coupon->coupon_enddate)) {
+													echo date_i18n( get_option('date_format'), $coupon->coupon_enddate );
+												} else {
+													_e('No End', 'membership');
+												}
+											 	?>
+											</td>
+										<?php
+										break;
+
+										case 'sub': ?>
+											<td scope="row">
+												<?php
+												if( $coupon->coupon_sub_id != 0 ) {
+													$sub = new M_Subscription( $coupon->coupon_sub_id );
+													echo $sub->sub_name();
+												} else {
+													_e('Any Subscription', 'membership');
+												}
+												?>
+											</td>
+										<?php
+										break;
+
+										case 'used': ?>
+											<td scope="row">
+												<?php echo number_format_i18n($coupon->coupon_used); ?>
+											</td>
+										<?php
+										break;
+
+										case 'remaining': ?>
+											<td scope="row">
+												<?php
+			                  					if ( $coupon->coupon_uses > 0 ) {
+													echo number_format_i18n(intval($coupon->coupon_uses) - intval($coupon->coupon_used));
+												} else {
+													_e('Unlimited', 'membership');
+												}
+			                  					?>
+											</td>
+										<?php
+										break;
+
+									}
+								}
+								?>
+								</tr>
+								<?php
+							}
+						} else { ?>
+							<tr style='background-color: <?php echo $bgcolor; ?>'>
+								<td colspan="8"><?php _e('No coupons yet.', 'psts') ?></td>
+							</tr>
+						<?php
+						} // end if coupons
+						?>
+
+						</tbody>
+					</table>
+				</form>
+				<?php
+
 		}
 
 		function activate_addon( $addon ) {
