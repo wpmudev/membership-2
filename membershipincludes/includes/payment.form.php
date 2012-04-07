@@ -89,55 +89,56 @@ if($member->on_sub( $subscription )) {
 			<?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?>
 			</div>
 
-			<div class='purchase-wrapper'>
-				<div class='purchase-item'>
-					<div class='purchase-item-details'>
-					<?php echo $sub->sub_name(); ?>
-					</div>
-					<div class='purchase-item-price'>
-					<?php
-						$amount = $sub->sub_pricetext();
+			<table class='purchasetable'>
+			<tr>
+				<td class='detailscolumn'>
+				<?php echo $sub->sub_name(); ?>
+				</td>
+				<td class='pricecolumn'>
+				<?php
+					$amount = $sub->sub_pricetext();
 
-						if(!empty($amount)) {
-							echo $amount;
-						} else {
-							$first = $sub->get_level_at_position(1);
+					if(!empty($amount)) {
+						echo $amount;
+					} else {
+						$first = $sub->get_level_at_position(1);
 
-							if(!empty($first)) {
-								$price = $first->level_price;
-								if($price == 0) {
-									$price = "Free";
-								} else {
+						if(!empty($first)) {
+							$price = $first->level_price;
+							if($price == 0) {
+								$price = "Free";
+							} else {
 
-									$M_options = get_option('membership_options', array());
+								$M_options = get_option('membership_options', array());
 
-									switch( $M_options['paymentcurrency'] ) {
-										case "USD": $price = "$" . $price;
-													break;
+								switch( $M_options['paymentcurrency'] ) {
+									case "USD": $price = "$" . $price;
+												break;
 
-										case "GBP":	$price = "&pound;" . $price;
-													break;
+									case "GBP":	$price = "&pound;" . $price;
+												break;
 
-										case "EUR":	$price = "&euro;" . $price;
-													break;
-									}
+									case "EUR":	$price = "&euro;" . $price;
+												break;
 								}
 							}
-							echo $price;
 						}
-					?>
-					</div>
-				</div>
-					<div class='buynow'>
-					<?php
-					$pricing = $sub->get_pricingarray();
-
-					if(!empty($pricing)) {
-						do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+						echo $price;
 					}
-					?>
-					</div>
-			</div>
+				?>
+				</td>
+				<td class='buynowcolumn'>
+				<?php
+				$pricing = $sub->get_pricingarray();
+
+				if(!empty($pricing)) {
+					do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+				}
+				?>
+				</td>
+			</tr>
+			</table>
+
 		</div>
 	<?php
 }
