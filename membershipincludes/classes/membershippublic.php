@@ -1099,7 +1099,7 @@ if(!class_exists('membershippublic')) {
 		function do_renew_form() {
 			global $wp_query, $M_options, $bp;
 
-			$page = addslashes($_REQUEST['action']);
+			$page = (isset($_REQUEST['action'])) ? addslashes($_REQUEST['action']) : '';
 			if(empty($page)) {
 				$page = 'renewform';
 			}
@@ -1813,7 +1813,7 @@ if(!class_exists('membershippublic')) {
 					if($post->ID == $M_options['subscriptions_page']) {
 
 						// Handle any updates passed
-						$page = addslashes($_REQUEST['action']);
+						$page = isset($_REQUEST['action']) ? addslashes($_REQUEST['action']) : '';
 						if(empty($page)) {
 							$page = 'renewform';
 						}

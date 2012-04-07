@@ -283,7 +283,9 @@
 
 									?></div>
 									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
-											if($gatewayissingle != 'admin') {
+										echo "here";
+										print_r($gateway);
+											if($gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' )) {
 												$pricing = $sub->get_pricingarray();
 												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
 											}
@@ -316,13 +318,13 @@
 																if($pricing) {
 																	if($currentlevel->level_price < 1) {
 																		// We are on a free level, so need to do an upgrade from free
-																		if($gatewayissingle != 'admin') {
+																		if($gatewayissingle != 'admin' && method_exists($gateway, 'display_upgrade_from_free_button')) {
 																			$gateway->display_upgrade_from_free_button( $subscription, $pricing, $member->ID, $rel->sub_id, $sub->id );
 																		}
 
 																	} else {
 																		// We want a normal upgrade button
-																		if($gatewayissingle != 'admin') {
+																		if($gatewayissingle != 'admin' && method_exists($gateway, 'display_upgrade_button')) {
 																			$gateway->display_upgrade_button( $subscription, $pricing, $member->ID, $rel->sub_id );
 																		}
 																	}
