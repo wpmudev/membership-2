@@ -283,8 +283,6 @@
 
 									?></div>
 									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
-										echo "here";
-										print_r($gateway);
 											if($gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' )) {
 												$pricing = $sub->get_pricingarray();
 												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
