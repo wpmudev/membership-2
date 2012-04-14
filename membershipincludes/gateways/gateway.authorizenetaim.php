@@ -582,6 +582,8 @@ class authorizenetaim extends M_Gateway {
 				$payment->setParameter("x_last_name", $_POST['last_name']);
 				$payment->setParameter("x_address", $_POST['address']);
 				$payment->setParameter("x_zip", $_POST['zip']);
+				// TODO: add fallback for retreiving the user's email from registration
+				//$payment->setParameter("x_email", $_POST['xemail']);
 
 				// Order Info
 				$payment->setParameter("x_description", $subscription->sub_name());
