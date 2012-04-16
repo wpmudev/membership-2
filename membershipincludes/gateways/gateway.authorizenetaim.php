@@ -62,14 +62,13 @@ class authorizenetaim extends M_Gateway {
 		          'live'	=> __('Live','membership')
 			);
 
-		      foreach ($modes as $key => $value) {
-					echo '<option value="' . esc_attr($key) . '"';
-		 			if($key == $sel_mode) echo 'selected="selected"';
-		 			echo '>' . esc_html($value) . '</option>' . "\n";
-		      }
-		  ?>
+		      foreach ($modes as $key => $value) : ?>
+			  	<option value="<?php echo esc_attr($key); ?>" <?php selected($key, $sel_mode); ?>><?php echo esc_html($value); ?></option>
+		      <?php endforeach; ?>
+			  
 		  </select></td>
 		  </tr>
+		  
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Login ID', 'membership') ?></th>
 		    <td><input type="text" name="api_user" value="<?php esc_attr_e(get_option( $this->gateway . "_api_user", "" )); ?>" /></td>
@@ -83,6 +82,9 @@ class authorizenetaim extends M_Gateway {
 		<h3><?php print _e('Advanced Settings', 'membership'); ?></h3>
 		<table class="form-table">
 			<tbody>
+				<tr valign="top">
+					<th scope="row" colspan="2"><div class="updated below-h2"><p><?php _e('Authorize.net requires an SSL certificate to be installed on this domain', 'membership') ?></p></div></th>
+				</tr>
 				<tr>
 					<th scope="row"><?php _e('Delimiter Character', 'membership') ?></th>
 					<td><input type="text" name="delim_char" value="<?php esc_attr_e(get_option( $this->gateway . "_delim_char", "," )); ?>" /></td>
@@ -215,8 +217,8 @@ class authorizenetaim extends M_Gateway {
 		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
 
 //Removed width to style in CSS
-		$form .= '<style type="text/css">';
-		$form .= '				
+		$style = '<style type="text/css">';
+		$style .= '				
 				.membership_cart_billing {
 					
 				}
@@ -362,7 +364,10 @@ class authorizenetaim extends M_Gateway {
 					width: 100%;
 				}
 		';
-		$form .= '</style>';
+		$style .= '</style>';
+		
+		$form .= apply_filters('membership_authorize_payment_form_css', $style);
+		
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
 		
 		$api_u = get_option( $this->gateway . "_api_user");
@@ -421,6 +426,8 @@ class authorizenetaim extends M_Gateway {
 				$form .= '<div class="auth-submit">';
 					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
 		$form .= '</div></div></form>';
+		
+		$form = apply_filters('membership_authorize_payment_form', $form);
 // Replaced by Kevin D. Lyons for DIV based form
 //		$form .= '<table class="membership_cart_billing">';
 //		$form .= '<thead><tr><th colspan="2">'. __('Enter Your Credit Card Information:', 'membership'). '</th></tr></thead>';
@@ -480,10 +487,62 @@ class authorizenetaim extends M_Gateway {
 			}
 		}
 	}
-
+	
 	function display_subscribe_button($subscription, $pricing, $user_id) {
 		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
 	}
+	
+	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
+		if($norepeat === true) {
+			$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
+		} else {
+			$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade Subscription','membership').'</a>';
+		}
+		echo $form;
+	}
+	function complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
+		$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
+		echo $form;
+	}
+	
+	function build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+
+		if(!empty($pricing)) {
+
+			// check to make sure there is a price in the subscription
+			// we don't want to display free ones for a payment system
+			$free = true;
+			foreach($pricing as $key => $price) {
+				if(!empty($price['amount']) && $price['amount'] > 0 ) {
+					$free = false;
+				}
+			}
+
+			if(!$free) {
+				if(count($pricing) == 1) {
+					// A basic price or a single subscription
+					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
+						// one-off payment
+						return $this->single_upgrade_button($pricing, $subscription, $user_id, true, $fromsub_id);
+					} else {
+						// simple subscription
+						return $this->single_upgrade_button($pricing, $subscription, $user_id, false, $fromsub_id);
+					}
+				} else {
+					// something much more complex
+					return $this->complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id);
+
+				}
+			}
+
+		}
+
+	}
+	
+	function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
+		$this->build_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false);
+	}
+
 
 	function update() {
 		if(isset($_POST['mode'])) {
@@ -547,8 +606,9 @@ class authorizenetaim extends M_Gateway {
 
 		$subscription = new M_Subscription($_POST['subscription_id']);
 		$pricing = $subscription->get_pricingarray();
-
-		$user_id = $_POST['user_id'];
+		
+		$user_id = ( is_user_logged_in() ? get_current_user_id() : $_POST['user_id'] );
+		$user = get_userdata($user_id);		
 		$sub_id = $subscription->id;
 
 		if ($M_options['paymentcurrency'] == 'USD' && count($pricing) == 1) {
@@ -571,19 +631,18 @@ class authorizenetaim extends M_Gateway {
 				  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
 
 				$payment->transaction($_POST['card_num']);
-
+				$amount = number_format($pricing[0]['amount'], 2);
 				// Billing Info
 				$payment->setParameter("x_card_code", $_POST['card_code']);
 				$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
-				$payment->setParameter("x_amount", number_format($pricing[0]['amount'], 2));
+				$payment->setParameter("x_amount", $amount);
 
-				//NEW Added by Kevin D. Lyons Billing Address Information
+				// Payment billing information passed to authorize, thanks to Kevin L. for spotting this.
 				$payment->setParameter("x_first_name", $_POST['first_name']);
 				$payment->setParameter("x_last_name", $_POST['last_name']);
 				$payment->setParameter("x_address", $_POST['address']);
 				$payment->setParameter("x_zip", $_POST['zip']);
-				// TODO: add fallback for retreiving the user's email from registration
-				//$payment->setParameter("x_email", $_POST['xemail']);
+				$payment->setParameter("x_email", ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
 
 				// Order Info
 				$payment->setParameter("x_description", $subscription->sub_name());
@@ -600,15 +659,23 @@ class authorizenetaim extends M_Gateway {
 				$payment->process();
 
 				if ($payment->isApproved()) {
-				  $status = __('The payment has been completed, and the funds have been added successfully to your account balance.', 'membership');
+					
+					$status = __('Processed','membership');
+					$note = '';
+					//$note = __('The payment has been completed, and the funds have been added successfully to your account balance.', 'membership');
 
-				  $member = new M_Membership($user_id);
-				  if($member) {
-					$member->create_subscription($sub_id, $this->gateway);
-				  }
-				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				wp_redirect(M_get_registrationcompleted_permalink());
-				exit;
+					$member = new M_Membership($user_id);
+					if($member) {
+						$member->create_subscription($sub_id, $this->gateway);
+					}
+					
+					// TODO: create switch for handling different authorize aim respone codes
+					
+					$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
+					
+					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+					wp_redirect(M_get_registrationcompleted_permalink());
+					exit;
 				} else {
 					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=1');
 					exit;
