@@ -36,6 +36,9 @@ class twocheckout extends M_Gateway {
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
+		  <th scope="row" colspan="2"><div class="updated below-h2"><p><?php _e('In order for recurring payments to log properly you must enable your global instant notifications url pointing to '.home_url('paymentreturn/' . esc_attr($this->gateway)).' ', 'membership') ?></p></div></th>
+		  </tr>
+		  <tr valign="top">
 		  <th scope="row"><?php _e('2Checkout Username', 'membership') ?></th>
 		  <td><input type="text" name="twocheckout_username" value="<?php esc_attr_e(get_option( $this->gateway . "_twocheckout_username" )); ?>" />
 		  </td>
