@@ -144,12 +144,14 @@ class paypalsolo extends M_Gateway {
 
 	function build_custom($user_id, $sub_id, $amount, $sublevel = 0, $fromsub = 0) {
 
+		global $M_options;
+
 		$custom = '';
 
 		//fake:user:sub:key
 
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
-		$key = md5('MEMBERSHIP' . $amount);
+		$key = md5('MEMBERSHIP' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], $amount));
 
 		$custom .= $key;
 		$custom .= ":" . $sublevel . ":" . $fromsub;

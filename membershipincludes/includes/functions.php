@@ -622,4 +622,12 @@ function M_normalize_shortcode ($string) {
     return sanitize_title_with_dashes('level-' . strtolower(strtr($string, $table)));
 }
 
+// Function and filter to strip the decimal places from japanese amounts
+function M_strip_decimal_places( $amount ) {
+
+	$amount = number_format($amount,0,'.','');
+
+	return $amount;
+}
+add_filter('membership_amount_JPY', 'M_strip_decimal_places');
 ?>
