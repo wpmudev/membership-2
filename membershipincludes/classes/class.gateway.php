@@ -423,6 +423,16 @@ if(!class_exists('M_Gateway')) {
 
 }
 
+function M_is_gateway_active( $gateway ) {
+	global $M_Gateways;
+
+	if(isset($M_Gateways[$gateway])) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function M_register_gateway($gateway, $class) {
 
 	global $M_Gateways;

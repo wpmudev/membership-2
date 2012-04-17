@@ -371,6 +371,15 @@ div.level-operation .inner-operation p.description {
 	margin: 10px 0 0;
 }
 
+div.level-operation.open div.inner-operation {
+	
+}
+
+div.level-operation.closed div.inner-operation {
+	display: none;
+}
+
+
 #positive-rules-holder, #negative-rules-holder {
 	clear: both;
 	overflow: hidden;

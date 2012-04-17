@@ -15,6 +15,11 @@ class freesubscriptions extends M_Gateway {
 	var $defaultmessage = "<h2>Completed: Thank you for signing up</h2>\n<p>\nYour subscription to our site is now set up and you should be able to visit the members only content.\n</p>\n";
 
 	function freesubscriptions() {
+
+		if(M_is_gateway_active('paypalsolo')) {
+			return;
+		}
+
 		parent::M_Gateway();
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));

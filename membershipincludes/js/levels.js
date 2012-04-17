@@ -46,6 +46,9 @@ function m_clickactiontoggle() {
 
 function m_addtopositive() {
 
+	// hide all the other rules first
+	m_hide_all_rules();
+
 	moving = jQuery(this).parents('.draggable-level').attr('id');
 	ruleplace = 'positive-rules';
 	if(moving != '') {
@@ -55,12 +58,17 @@ function m_addtopositive() {
 		// put the name in the relevant holding input field
 		jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
 
+		// redisplay our one
+		jQuery('#main-' + moving).removeClass('closed').addClass('open');
 	}
 
 	return false;
 }
 
 function m_addtonegative() {
+
+	// hide all the other rules first
+	m_hide_all_rules();
 
 	moving = jQuery(this).parents('.draggable-level').attr('id');
 	ruleplace = 'negative-rules';
@@ -71,6 +79,8 @@ function m_addtonegative() {
 		// put the name in the relevant holding input field
 		jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
 
+		// redisplay our one
+		jQuery('#main-' + moving).removeClass('closed').addClass('open');
 	}
 
 	return false;
@@ -186,6 +196,20 @@ function m_clickadvancedtab() {
 	return false;
 }
 
+function m_toggle_visibility() {
+	if(jQuery(this).parents('.level-operation').hasClass('closed')) {
+		m_hide_all_rules();
+		jQuery(this).parents('.level-operation').removeClass('closed').addClass('open');
+	} else {
+		jQuery(this).parents('.level-operation').removeClass('open').addClass('closed');
+	}
+	return false;
+}
+
+function m_hide_all_rules() {
+	jQuery('div.level-operation').removeClass('open').addClass('closed');
+}
+
 function m_levelsReady() {
 
 
@@ -206,12 +230,17 @@ function m_levelsReady() {
 					moving = jQuery('input#beingdragged').val();
 					ruleplace = jQuery(this).attr('id');
 					if(moving != '') {
+						// hide all the other rules first
+						m_hide_all_rules();
+
 						jQuery('#main-' + moving).prependTo('#' + ruleplace + '-holder');
 						jQuery('#' + moving).hide();
 
 						// put the name in the relevant holding input field
 						jQuery('#in-' + ruleplace).val( jQuery('#in-' + ruleplace).val() + ',' + moving );
 
+						// redisplay our one
+						jQuery('#main-' + moving).removeClass('closed').addClass('open');
 					}
 				}
 	});
@@ -248,6 +277,10 @@ function m_levelsReady() {
 	jQuery('.positivetab a').click(m_clickpositivetab);
 	jQuery('.negativetab a').click(m_clicknegativetab);
 	jQuery('.advancedtab a').click(m_clickadvancedtab);
+
+	jQuery('div.level-operation h2.sidebar-name').click(m_toggle_visibility);
+
+	m_hide_all_rules();
 
 }
 
