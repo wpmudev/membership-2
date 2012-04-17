@@ -7,6 +7,8 @@ if(!class_exists('M_Member_Search')) {
 		var $level_id = false;
 		var $active = false;
 
+		var $users_per_page = 2;
+
 		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
 			$this->search_term = $search_term;
 			$this->raw_page = ( '' == $page ) ? false : (int) $page;
@@ -33,14 +35,22 @@ if(!class_exists('M_Member_Search')) {
 		function do_paging() {
 			if ( $this->total_users_for_query > $this->users_per_page ) { // have to page the results
 				$args = array();
-				if( ! empty($this->search_term) )
-					$args['usersearch'] = urlencode($this->search_term);
-				if( ! empty($this->role) )
+				if( ! empty($this->search_term) ) {
+					$args['s'] = urlencode($this->search_term);
+				}
+
+				if( ! empty($this->role) ) {
 					$args['role'] = urlencode($this->role);
-				if( ! empty($this->sub_id) )
-					$args['sub_id'] = urlencode($this->sub_id);
-				if( ! empty($this->level_id) )
-					$args['level_id'] = urlencode($this->level_id);
+				}
+				if( ! empty($this->sub_id) ) {
+					$args['sub_op'] = urlencode($this->sub_id);
+					$args['doactionsub'] = 'Filter';
+				}
+				if( ! empty($this->level_id) ) {
+					$args['level_op'] = urlencode($this->level_id);
+					$args['doactionlevel'] = 'Filter';
+				}
+
 
 				$this->paging_text = paginate_links( array(
 					'total' => ceil($this->total_users_for_query / $this->users_per_page),
