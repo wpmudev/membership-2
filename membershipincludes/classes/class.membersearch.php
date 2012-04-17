@@ -7,8 +7,6 @@ if(!class_exists('M_Member_Search')) {
 		var $level_id = false;
 		var $active = false;
 
-		var $users_per_page = 2;
-
 		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
 			$this->search_term = $search_term;
 			$this->raw_page = ( '' == $page ) ? false : (int) $page;
