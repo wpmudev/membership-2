@@ -7442,6 +7442,13 @@ if(!class_exists('membershipadmin')) {
 			// Make registration and associated pages
 			if(empty($M_options['registration_page'])) {
 
+				// Check if the buddypress registration page is created or not
+				if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
+					// Get the BP pages
+					$bppages = get_option('bp-pages', array());
+
+				}
+
 				$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
 				$id = wp_insert_post( $pagedetails );
 				$M_options['registration_page'] = $id;
