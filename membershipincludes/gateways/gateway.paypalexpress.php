@@ -60,6 +60,7 @@ class paypalexpress extends M_Gateway {
 		          'DE'	=> __('Germany', 'membership'),
 		          'HK'	=> __('Hong Kong', 'membership'),
 		          'IT'	=> __('Italy', 'membership'),
+				  'jp_JP' => __('Japan','membership'),
 		          'MX'	=> __('Mexico', 'membership'),
 		          'NL'	=> __('Netherlands', 'membership'),
 				  'NZ'	=> __('New Zealand', 'membership'),
