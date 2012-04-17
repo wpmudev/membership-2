@@ -10,41 +10,45 @@ function M_AddSimpleInviteOptions() {
 
 	$Msi_options = get_option('membership_simpleinvite_options', array());
 	?>
-	<h3><?php _e('Simple Invite Codes','membership'); ?></h3>
-	<p><?php _e('Use the section below to enable and require invitation codes on the registration panel.','membership'); ?></p>
+			<div class="postbox">
+				<h3 class="hndle" style='cursor:auto;'><span><?php _e('Simple Invite Codes','membership'); ?></span></h3>
+				<div class="inside">
+					<p class='description'><?php _e('Use the section below to enable and require invitation codes on the registration panel.','membership'); ?></p>
 
-	<table class="form-table">
-	<tbody>
-		<tr valign="top">
-			<th scope="row"><?php _e('Require Invite Codes','membership'); ?>
-			</em>
-			</th>
-			<td>
-				<input type='checkbox' name='inviterequired' id='inviterequired' value='yes' <?php checked('yes', $Msi_options['inviterequired']); ?> />
-			</td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php _e('Invite Codes','membership'); ?><br/>
-			<em style='font-size:smaller;'><?php _e("Place each available code on a new line.",'membership'); ?>
-			</em>
-			</th>
-			<td>
-				<textarea name='invitecodes' id='invitecodes' rows='15' cols='40'><?php esc_html_e(stripslashes($Msi_options['invitecodes'])); ?></textarea>
-			</td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php _e('Remove Code once used','membership'); ?>
-			</em>
-			</th>
-			<td>
-				<input type='checkbox' name='inviteremove' id='inviteremove' value='yes' <?php checked('yes', $Msi_options['inviteremove']); ?> />
-			</td>
-		</tr>
-	</tbody>
-	</table>
+					<table class="form-table">
+					<tbody>
+						<tr valign="top">
+							<th scope="row"><?php _e('Require Invite Codes','membership'); ?>
+							</em>
+							</th>
+							<td>
+								<input type='checkbox' name='inviterequired' id='inviterequired' value='yes' <?php checked('yes', $Msi_options['inviterequired']); ?> />
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Invite Codes','membership'); ?><br/>
+							<em style='font-size:smaller;'><?php _e("Place each available code on a new line.",'membership'); ?>
+							</em>
+							</th>
+							<td>
+								<textarea name='invitecodes' id='invitecodes' rows='15' cols='40'><?php esc_html_e(stripslashes($Msi_options['invitecodes'])); ?></textarea>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Remove Code once used','membership'); ?>
+							</em>
+							</th>
+							<td>
+								<input type='checkbox' name='inviteremove' id='inviteremove' value='yes' <?php checked('yes', $Msi_options['inviteremove']); ?> />
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
 	<?php
 }
-add_action( 'membership_options_page', 'M_AddSimpleInviteOptions', 11 );
+add_action( 'membership_extrasoptions_page', 'M_AddSimpleInviteOptions', 11 );
 
 function M_AddSimpleInviteOptionsProcess() {
 
@@ -57,7 +61,7 @@ function M_AddSimpleInviteOptionsProcess() {
 	update_option('membership_simpleinvite_options', $Msi_options);
 
 }
-add_action( 'membership_options_page_process', 'M_AddSimpleInviteOptionsProcess', 11 );
+add_action( 'membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11 );
 
 function M_AddSimpleInviteField() {
 

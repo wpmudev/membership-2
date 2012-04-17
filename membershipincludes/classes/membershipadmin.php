@@ -2259,11 +2259,13 @@ if(!class_exists('membershipadmin')) {
 											}
 											break;
 
-					default:				do_action('membership_option_menu_' . $tab);
+					default:
 											break;
 
 
 				}
+				// included an action here so that it is processed for all tabs
+				do_action('membership_option_menu_process_' . $tab);
 
 				// For future upgrades
 				$M_options['registration_tos'] = $_POST['registration_tos'];
