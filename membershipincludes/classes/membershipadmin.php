@@ -2709,6 +2709,14 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
+									<th scope="row"><?php _e('Your uploads location','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('This is where membership thinks you have your images stored, if this is not correct then download protection may not work correctly.','membership') ); ?>
+									</th>
+									<td>
+										<?php echo membership_upload_path();  ?>
+									</td>
+								</tr>
+								<tr valign="top">
 									<th scope="row"><?php _e('Masked download URL','membership'); ?>
 										<?php echo $this->_tips->add_tip( __('This is the URL that the user will see. You can change the end part to something unique.','membership') ); ?>
 									</th>

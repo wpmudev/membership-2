@@ -204,6 +204,8 @@ function membership_upload_path() {
 	$path = trailingslashit(get_option('home')) . get_option('upload_path');
 	// if an override exists, then use that.
 	$path = get_option('fileupload_url', $path);
+	// Added to force override the location
+	$path = get_option('membership_fileupload_url', $path);
 	// return whatever we have left.
 	return $path;
 
