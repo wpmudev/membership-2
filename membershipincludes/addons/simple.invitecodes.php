@@ -71,9 +71,11 @@ function M_AddSimpleInviteField() {
 	}
 
 	?>
-		<div class="alignleft">
-			<label><?php _e('Invite Code','membership'); ?> <span>*</span></label>
-			<input type="text" autocomplete="off" class="regtext" name="invitecode">
+		<div class="form-element">
+			<label class="control-label" for="user_email"><?php _e('Invite Code','membership'); ?></label>
+			<div class="element">
+				<input type="text" autocomplete="off" class="input-xlarge" name="invitecode">
+			</div>
 		</div>
 	<?php
 }
