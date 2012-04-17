@@ -1265,6 +1265,17 @@ function M_KeepBuddyPressPages( $pages ) {
 
 }
 
+function M_overrideBPSignupSlug( $slug ) {
+
+	$permalink = M_get_registration_permalink();
+
+	if(!empty($permalink)) {
+		return basename($permalink);
+	} else {
+		return $slug;
+	}
+}
+
 function M_setup_BP_addons() {
 	if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
 		M_register_rule('bppages', 'M_BPPages', 'bp');
@@ -1278,6 +1289,9 @@ function M_setup_BP_addons() {
 		add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
 		add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
 		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
+
+		add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
+
 	}
 
 }
