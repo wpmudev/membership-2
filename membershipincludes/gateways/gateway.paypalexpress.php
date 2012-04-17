@@ -173,7 +173,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-		$form .= '<input type="hidden" name="a3" value="' . number_format($pricing[0]['amount'], 2) . '">';
+		$form .= '<input type="hidden" name="a3" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[0]['amount'], 2)) . '">';
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
 		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
 
@@ -231,12 +231,12 @@ class paypalexpress extends M_Gateway {
 
 				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
 								if($count < 3) {
-									$ff['a' . $count] = number_format($price['amount'], 2);
+									$ff['a' . $count] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p' . $count] = $price['period'];
 									$ff['t' . $count] = strtoupper($price['unit']);
 								} else {
 									// Or last finite is going to be the end of the subscription payments
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '0';
@@ -269,7 +269,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '0';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p3'] = 1;
 									$ff['t3'] = 'Y';
 									$ff['src'] = '0';
@@ -300,7 +300,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '1';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '1';
@@ -395,7 +395,7 @@ class paypalexpress extends M_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-		$form .= '<input type="hidden" name="a3" value="' . number_format($pricing[0]['amount'], 2) . '">';
+		$form .= '<input type="hidden" name="a3" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[0]['amount'], 2)) . '">';
 		$form .= '<input type="hidden" name="p3" value="' . $pricing[0]['period'] . '">';
 		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '"> <!-- Set recurring payments until canceled. -->';
 
@@ -455,7 +455,7 @@ class paypalexpress extends M_Gateway {
 
 				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
 								if($count < 3) {
-									$ff['a' . $count] = number_format($price['amount'], 2);
+									$ff['a' . $count] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p' . $count] = $price['period'];
 									$ff['t' . $count] = strtoupper($price['unit']);
 								} else {
@@ -493,7 +493,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '0';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p3'] = 1;
 									$ff['t3'] = 'Y';
 									$ff['src'] = '0';
@@ -524,7 +524,7 @@ class paypalexpress extends M_Gateway {
 										$ff['src'] = '1';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '1';

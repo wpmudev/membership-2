@@ -177,7 +177,7 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="cmd" value="_xclick">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="amount" value="' . number_format($pricing[$sublevel -1]['amount'], 2) . '">';
+		$form .= '<input type="hidden" name="amount" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[$sublevel -1]['amount'], 2)) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 
 		$form .= '<input type="hidden" name="return" value="' . apply_filters( 'membership_return_url_' . $this->gateway, M_get_returnurl_permalink()) . '">';
