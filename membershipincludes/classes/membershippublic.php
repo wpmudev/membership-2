@@ -414,7 +414,12 @@ if(!class_exists('membershippublic')) {
 
 			$uploadpath = get_option('upload_path');
 
-			$file = trailingslashit(ABSPATH . $uploadpath) . $pathtofile;
+			if(strstr($uploadpath, ABSPATH) === false) {
+				$file = trailingslashit(ABSPATH . $uploadpath) . $pathtofile;
+			} else {
+				$file = trailingslashit($uploadpath) . $pathtofile;
+			}
+			echo strstr(ABSPATH, $uploadpath);
 
 			$origpath = membership_upload_path();
 
