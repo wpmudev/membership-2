@@ -1,14 +1,14 @@
-= 3.1 =
+= 3.0 RC-3 =
 Fixed News Stream output when member expires
 
-Recurring membership fixes for 2Checkout gateway users. 
+Recurring membership fixes for 2Checkout gateway users.
 *** Please read the notice inside the 2Checkout settings page to setup notifications properly ***
 
 Various Authorize.net gateway fixes
 
 Updated language files
 
-= 3.0 RC-2 = 
+= 3.0 RC-2 =
 Lots and lots of issues fixed including:
 Header already sent issue fixed
 Membership filtering and paging issues fixed
@@ -21,7 +21,7 @@ Overrides BP registration page
 
 Updated gateways
 
-= 3.0 RC-1 = 
+= 3.0 RC-1 =
 Entirely new setup procedure
 Pointers tutorial after setup
 Better display notice for admin users
