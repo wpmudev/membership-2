@@ -25,10 +25,15 @@ class twocheckout extends M_Gateway {
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_2checkout_return'));
+			
+			add_filter('membership_gateway_exp_window', array(&$this,'twocheckout_expiration_window'));
 		}
 
 	}
-
+	function twocheckout_expiration_window($time) {
+		//2Checkout will sometimes send notifications up to 24 hours after a subscription expires, so we need to adjust the window.
+		return "+ 24 hours";
+	}
 	function mysettings() {
 		global $M_options, $M_membership_url;
 
@@ -118,7 +123,7 @@ class twocheckout extends M_Gateway {
 			'Accept' => 'application/json',
 		);
 
-		$args['user-agent'] = "Membership/1.0.3: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.0";
+		$args['user-agent'] = "Membership/3.0.0: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.1";
 		$args['body'] = array('product_id' => $subscription->sub_id());
 		$args['sslverify'] = false;
 		$args['timeout'] = 10;
@@ -378,7 +383,7 @@ class twocheckout extends M_Gateway {
 
 	// Return stuff
 	function handle_2checkout_return() {
-
+				
 		// Return handling code
 		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
@@ -389,7 +394,7 @@ class twocheckout extends M_Gateway {
 
 			$product_id = $_REQUEST['merchant_product_id'];
 			list($tmp, $user_id) = explode(':', $_REQUEST['merchant_order_id']);
-
+			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
 			} else {
@@ -397,6 +402,7 @@ class twocheckout extends M_Gateway {
 			}
 
 			if ($product_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
+				
 				$this->record_transaction($user_id, $product_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 
 				// Added for affiliate system link
@@ -406,7 +412,7 @@ class twocheckout extends M_Gateway {
 				if($member) {
 					$member->create_subscription($product_id, $this->gateway);
 				}
-
+				
 				do_action('membership_payment_subscr_signup', $user_id, $product_id);
 				wp_redirect(get_option('home'));
 				exit();
@@ -419,14 +425,35 @@ class twocheckout extends M_Gateway {
 
 			$product_id = $_REQUEST['item_id_1'];
 			list($tmp, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
-
+						
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
-					case 'RECURRING_INSTALLMENT_SUCCESS ':
-					case 'RECURRING_RESTARTED':
+					case 'RECURRING_INSTALLMENT_SUCCESS':
+					
+					if(!$this->duplicate_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '')) {
 						$this->record_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+						$member = new M_Membership($user_id);
+						if($member) {
+							remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+							$member->expire_subscription($product_id);
+							$member->create_subscription($product_id, $this->gateway);
+						}
 						// Added for affiliate system link
 						do_action('membership_payment_processed', $user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
+					}
+						break;
+					case 'FRAUD_STATUS_CHANGED':
+					case 'INVOICE_STATUS_CHANGED':
+						// We don't really want to do anything here without pulling out more information
+						break;
+					case 'ORDER_CREATED':
+					case 'RECURRING_RESTARTED':
+						$this->record_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+						$member = new M_Membership($user_id);
+						if($member) {
+							$member->create_subscription($product_id, $this->gateway);
+						}
 						break;
 					case 'RECURRING_STOPPED':
 					case 'RECURRING_COMPLETE':
@@ -434,10 +461,8 @@ class twocheckout extends M_Gateway {
 					default:
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->expire_subscription($product_id);
-							$member->deactivate();
+							$member->mark_for_expire($product_id);
 						}
-
 						do_action('membership_payment_subscr_cancel', $user_id, $product_id);
 						break;
 				}

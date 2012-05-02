@@ -1,0 +1,42 @@
+= 3.1 =
+Fixed News Stream output when member expires
+
+Recurring membership fixes for 2Checkout gateway users. 
+*** Please read the notice inside the 2Checkout settings page to setup notifications properly ***
+
+Various Authorize.net gateway fixes
+
+Updated language files
+
+= 3.0 RC-2 = 
+Lots and lots of issues fixed including:
+Header already sent issue fixed
+Membership filtering and paging issues fixed
+Japanese locale and currency issue fixed
+
+Also added amongst others:
+Level specific no access messages
+Collapsing rules in level edit forms
+Overrides BP registration page
+
+Updated gateways
+
+= 3.0 RC-1 = 
+Entirely new setup procedure
+Pointers tutorial after setup
+Better display notice for admin users
+Better notification when membership is not active
+Contextual help
+Automatic membership pages creation
+Automatically create a default downloads group for media protection
+Made active/inactive levels and subscriptions much more obvious
+Auto-fill the mask url field in media protection
+Automatic level shortcode creation. Use in any post or page
+All new signup forms and intuitive registration process
+Unique IDs added to subscriptions in the forms - you can now control the styling through CSS in your theme!
+Level edit screen now separates positive and negative rules to avoid confusion
+Killed the 'addons'. Now membership will recognize BuddyPress, GravityFroms and much more automatically!
+Fixed Authorize.NET gateway
+Fixed free subscription
+Fixed # of members displayed in dashboard widget
+Props to Kevin Lyons for assistance with the authorizeNET gateway

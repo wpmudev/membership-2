@@ -11,6 +11,7 @@ class authorizenetaim extends M_Gateway {
 
 	var $gateway = 'authorizenetaim';
 	var $title = 'Authorize.net AIM';
+	//var $issingle = true;
 
 	function authorizenetaim() {
 		global $M_membership_url;
@@ -180,6 +181,11 @@ class authorizenetaim extends M_Gateway {
 
 		return $content;
 
+	}
+	
+	function show_payment_form() {
+		
+		
 	}
 
 	function single_button($pricing, $subscription, $user_id) {
@@ -662,11 +668,17 @@ class authorizenetaim extends M_Gateway {
 					
 					$status = __('Processed','membership');
 					$note = '';
-					//$note = __('The payment has been completed, and the funds have been added successfully to your account balance.', 'membership');
-
+					
 					$member = new M_Membership($user_id);
 					if($member) {
-						$member->create_subscription($sub_id, $this->gateway);
+						if($member->has_subscription() && $member->on_sub($sub_id)) {
+							remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+							$member->expire_subscription($sub_id);
+							$member->create_subscription($sub_id, $this->gateway);
+						} else {
+							$member->create_subscription($sub_id, $this->gateway);
+						}
 					}
 					
 					// TODO: create switch for handling different authorize aim respone codes

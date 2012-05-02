@@ -84,7 +84,7 @@ function membership_record_user_expire($sub_id, $user_id) {
 
 	// Get the information
 	$user = new WP_User( $user_id );
-	$sub = new M_Subscription( $tosub_id );
+	$sub = new M_Subscription( $sub_id );
 
 	$message = sprintf(__( '<strong>%s</strong> has left subscription <strong>%s</strong>','membership' ), $user->display_name, $sub->sub_name() );
 

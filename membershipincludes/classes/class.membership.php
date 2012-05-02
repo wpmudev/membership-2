@@ -153,7 +153,7 @@ if(!class_exists('M_Membership')) {
 			if($relationships) {
 				foreach($relationships as $key => $rel) {
 					// Add 6 hours to the expiry date to give a grace period?
-					if( strtotime("+ 6 hours", mysql2date("U", $rel->expirydate)) <= time() ) {
+					if( strtotime(apply_filters('membership_gateway_exp_window',"+ 6 hours"), mysql2date("U", $rel->expirydate)) <= time() ) {
 						// expired, we need to remove the subscription
 						if($this->is_marked_for_expire($rel->sub_id)) {
 							$this->expire_subscription($rel->sub_id);
