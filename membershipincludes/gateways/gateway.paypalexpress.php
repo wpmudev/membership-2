@@ -27,6 +27,7 @@ class paypalexpress extends M_Gateway {
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
+			add_filter( 'membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
 		}
 
 	}
@@ -369,6 +370,9 @@ class paypalexpress extends M_Gateway {
 					return $this->complex_sub_button($pricing, $subscription, $user_id);
 
 				}
+			} else {
+				// Free subscription - so we'll use the free code
+				return $this->single_free_button($pricing, $subscription, $user_id, true);
 			}
 
 		}

@@ -136,7 +136,7 @@ class freesubscriptions extends M_Gateway {
 
 	}
 
-	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
+	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
 
 		global $M_options;
 
@@ -173,7 +173,7 @@ class freesubscriptions extends M_Gateway {
 			}
 
 			if($free) {
-				return $this->single_sub_button($pricing, $subscription, $user_id, true);
+				return $this->single_free_button($pricing, $subscription, $user_id, true);
 			}
 
 		}

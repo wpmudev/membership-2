@@ -419,6 +419,74 @@ if(!class_exists('M_Gateway')) {
 			echo "</form>";
 		}
 
+		/* adding extra functions here to handle free subscriptions across a lot of gateways */
+
+		function single_free_button($pricing, $subscription, $user_id, $sublevel = 0) {
+
+			global $M_options;
+
+			if(empty($M_options['paymentcurrency'])) {
+				$M_options['paymentcurrency'] = 'USD';
+			}
+
+			$form = '';
+
+			$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post">';
+			$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0', $sublevel) .'">';
+
+			if($sublevel == 1) {
+				$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
+				$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+				$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+				$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+			} else {
+				$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+				$form .=  "<input type='hidden' name='action' value='subscriptionsignup' />";
+				$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+				$form .=  "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+				$form .=  "<input type='hidden' name='user' value='" . $user_id . "' />";
+				$form .=  "<input type='hidden' name='level' value='" . $sublevel . "' />";
+				$button = get_option( $this->gateway . "_paypal_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+			}
+
+			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+			$form .= '</form>';
+
+			return $form;
+
+		}
+
+		function signup_free_subscription($content, $error) {
+
+			if(isset($_POST['custom'])) {
+				list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+			}
+
+			// create_subscription
+			$member = new M_Membership($user_id);
+			if($member) {
+				$member->create_subscription($sub_id, $this->gateway);
+			}
+
+			do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+
+			$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
+
+			$content .= '<div class="formleft">';
+
+			$message = get_option( $this->gateway . "_completed_message", $this->defaultmessage );
+			$content .= stripslashes($message);
+
+			$content .= '</div>';
+
+			$content .= "</div>";
+
+			$content = apply_filters('membership_subscriptionform_signedup', $content, $user_id, $sub_id);
+
+			return $content;
+
+		}
+
 	}
 
 }
