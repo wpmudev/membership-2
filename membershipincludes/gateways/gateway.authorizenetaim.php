@@ -493,11 +493,15 @@ class authorizenetaim extends M_Gateway {
 			}
 		}
 	}
-	
-	function display_subscribe_button($subscription, $pricing, $user_id) {
-		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
+
+	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+		
+		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
+			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
+		else
+			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
+
 	}
-	
 	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
 		if($norepeat === true) {
 			$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';

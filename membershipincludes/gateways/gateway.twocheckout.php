@@ -323,7 +323,7 @@ class twocheckout extends M_Gateway {
 
 	}
 
-	function build_subscribe_button($subscription, $pricing, $user_id) {
+	function build_subscribe_button($subscription, $pricing, $user_id, $sublevel) {
 
 		if(!empty($pricing)) {
 
@@ -356,9 +356,12 @@ class twocheckout extends M_Gateway {
 
 	}
 
-	function display_subscribe_button($subscription, $pricing, $user_id) {
-
-		echo $this->build_subscribe_button($subscription, $pricing, $user_id);
+	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+		
+		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
+			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
+		else
+			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
 
 	}
 
