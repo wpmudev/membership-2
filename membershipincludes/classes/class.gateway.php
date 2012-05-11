@@ -446,7 +446,7 @@ if(!class_exists('M_Gateway')) {
 				$form .=  "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 				$form .=  "<input type='hidden' name='user' value='" . $user_id . "' />";
 				$form .=  "<input type='hidden' name='level' value='" . $sublevel . "' />";
-				$button = get_option( $this->gateway . "_paypal_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+				$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
 			}
 
 			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
