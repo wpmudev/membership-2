@@ -8,7 +8,16 @@ Author URI: http://caffeinatedb.com
 
 function M_AddSimpleInviteOptions() {
 
-	$Msi_options = get_option('membership_simpleinvite_options', array());
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			$Msi_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', array());
+		} else {
+			$Msi_options = get_option('membership_simpleinvite_options', array());
+		}
+	} else {
+		$Msi_options = get_option('membership_simpleinvite_options', array());
+	}
+
 	?>
 			<div class="postbox">
 				<h3 class="hndle" style='cursor:auto;'><span><?php _e('Simple Invite Codes','membership'); ?></span></h3>
@@ -52,13 +61,29 @@ add_action( 'membership_extrasoptions_page', 'M_AddSimpleInviteOptions', 11 );
 
 function M_AddSimpleInviteOptionsProcess() {
 
-	$Msi_options = get_option('membership_simpleinvite_options', array());
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			$Msi_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', array());
+		} else {
+			$Msi_options = get_option('membership_simpleinvite_options', array());
+		}
+	} else {
+		$Msi_options = get_option('membership_simpleinvite_options', array());
+	}
 
 	$Msi_options['invitecodes'] = $_POST['invitecodes'];
 	$Msi_options['inviterequired'] = $_POST['inviterequired'];
 	$Msi_options['inviteremove'] = $_POST['inviteremove'];
 
-	update_option('membership_simpleinvite_options', $Msi_options);
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', $Msi_options);
+		} else {
+			update_option('membership_simpleinvite_options', $Msi_options);
+		}
+	} else {
+		update_option('membership_simpleinvite_options', $Msi_options);
+	}
 
 }
 add_action( 'membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11 );

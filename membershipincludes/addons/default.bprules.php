@@ -864,7 +864,15 @@ class M_BPGroupcreation extends M_Rule {
 
 	function neg_bp_message() {
 
-		$MBP_options = get_option('membership_bp_options', array());
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('get_blog_option')) {
+				$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
+			} else {
+				$MBP_options = get_option('membership_bp_options', array());
+			}
+		} else {
+			$MBP_options = get_option('membership_bp_options', array());
+		}
 
 	 	echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
 
@@ -1174,7 +1182,15 @@ class M_BPPrivatemessage extends M_Rule {
 	}
 
 	function neg_bp_message() {
-	  $MBP_options = get_option('membership_bp_options', array());
+	  	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('get_blog_option')) {
+				$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
+			} else {
+				$MBP_options = get_option('membership_bp_options', array());
+			}
+		} else {
+			$MBP_options = get_option('membership_bp_options', array());
+		}
 
 	  echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
 
@@ -1204,36 +1220,65 @@ function M_AddBuddyPressSection($sections) {
 // BuddyPress options
 function M_AddBuddyPressOptions() {
 
-	$MBP_options = get_option('membership_bp_options', array());
-	?>
-	<h3><?php _e('BuddyPress protected content message','membership'); ?></h3>
-	<p><?php _e('This is the message that is displayed when a BuddyPress related operation is restricted. Depending on your theme this is displayed in a red bar, and so should be short and concise.','membership'); ?></p>
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
+		} else {
+			$MBP_options = get_option('membership_bp_options', array());
+		}
+	} else {
+		$MBP_options = get_option('membership_bp_options', array());
+	}
 
-	<table class="form-table">
-	<tbody>
-		<tr valign="top">
-			<th scope="row"><?php _e('BuddyPress No access message','membership'); ?><br/>
-			<em style='font-size:smaller;'><?php _e("This is the message that is displayed when a BuddyPress related operation is restricted.",'membership'); ?><br/>
-			<?php _e("Leave blank for no message.",'membership'); ?><br/>
-			<?php _e("HTML allowed.",'membership'); ?>
-			</em>
-			</th>
-			<td>
-				<textarea name='buddypressmessage' id='buddypressmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($MBP_options['buddypressmessage'])); ?></textarea>
-			</td>
-		</tr>
-	</tbody>
-	</table>
+	?>
+		<div class="postbox">
+			<h3 class="hndle" style='cursor:auto;'><span><?php _e('BuddyPress protected content message','membership'); ?></span></h3>
+			<div class="inside">
+				<p class='description'><?php _e('This is the message that is displayed when a BuddyPress related operation is restricted. Depending on your theme this is displayed in a red bar, and so should be short and concise.','membership'); ?></p>
+
+				<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row"><?php _e('BuddyPress No access message','membership'); ?>
+						</th>
+						<td>
+						<?php
+							$args = array("textarea_name" => "buddypressmessage");
+							wp_editor( stripslashes($MBP_options['buddypressmessage']), "buddypressmessage", $args );
+						?>
+						</td>
+					</tr>
+				</tbody>
+				</table>
+			</div>
+		</div>
+
 	<?php
 }
 
 function M_AddBuddyPressOptionsProcess() {
 
-	$MBP_options = get_option('membership_bp_options', array());
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
+		} else {
+			$MBP_options = get_option('membership_bp_options', array());
+		}
+	} else {
+		$MBP_options = get_option('membership_bp_options', array());
+	}
 
 	$MBP_options['buddypressmessage'] = $_POST['buddypressmessage'];
 
-	update_option('membership_bp_options', $MBP_options);
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', $MBP_options);
+		} else {
+			update_option('membership_bp_options', $MBP_options);
+		}
+	} else {
+		update_option('membership_bp_options', $MBP_options);
+	}
 
 }
 
@@ -1285,9 +1330,11 @@ function M_setup_BP_addons() {
 		M_register_rule('bpgroups', 'M_BPGroups', 'bp');
 
 		add_filter('membership_level_sections', 'M_AddBuddyPressSection');
-		add_action( 'membership_options_page', 'M_AddBuddyPressOptions' );
-		add_action( 'membership_options_page_process', 'M_AddBuddyPressOptionsProcess' );
-		add_filter( 'staypress_hide_protectable_pages', 'M_HideBuddyPressPages' );
+
+		add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
+		add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
+
+		add_filter( 'membership_hide_protectable_pages', 'M_HideBuddyPressPages' );
 		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
 
 		add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
