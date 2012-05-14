@@ -235,21 +235,15 @@ if(!class_exists('M_Subscription')) {
 				return false;
 			}
 
-			if($this->count() == 0 || $force) {
+			$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d", $this->id);
 
-				$sql = $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_active = NOT sub_active WHERE id = %d", $this->id);
+			$this->dirty = true;
 
-				$this->dirty = true;
+			$result = $this->db->query($sql);
 
-				$result = $this->db->query($sql);
+			do_action( 'membership_toggleactivate_subscription', $this->id, $result );
 
-				do_action( 'membership_toggleactivate_subscription', $this->id, $result );
-
-				return $result;
-			} else {
-				return false;
-			}
-
+			return $result;
 
 		}
 
@@ -278,25 +272,21 @@ if(!class_exists('M_Subscription')) {
 				return false;
 			}
 
-			if($this->count() == 0 || $force) {
-				$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d", $this->id);
 
-				$sql2 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id);
+			$sql = $this->db->prepare( "DELETE FROM {$this->subscriptions} WHERE id = %d", $this->id);
 
-				if($this->db->query($sql)) {
+			$sql2 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id);
 
-					$this->db->query($sql2);
+			if($this->db->query($sql)) {
 
-					$this->dirty = true;
+				$this->db->query($sql2);
 
-					do_action( 'membership_delete_subscription', $this->id );
-				}
+				$this->dirty = true;
 
-				return true;
-
-			} else {
-				return false;
+				do_action( 'membership_delete_subscription', $this->id );
 			}
+
+			return true;
 
 		}
 

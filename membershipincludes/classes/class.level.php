@@ -110,25 +110,20 @@ if(!class_exists('M_Level')) {
 
 		function delete($forced = false) {
 
-			if($this->count() == 0 || $forced) {
-				$sql = $this->db->prepare( "DELETE FROM {$this->membership_levels} WHERE id = %d", $this->id);
+			$sql = $this->db->prepare( "DELETE FROM {$this->membership_levels} WHERE id = %d", $this->id);
 
-				$sql2 = $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $this->id);
+			$sql2 = $this->db->prepare( "DELETE FROM {$this->membership_rules} WHERE level_id = %d", $this->id);
 
-				$sql3 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE level_id = %d", $this->id);
+			$sql3 = $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE level_id = %d", $this->id);
 
-				if($this->db->query($sql)) {
+			if($this->db->query($sql)) {
 
-					$this->db->query($sql2);
-					$this->db->query($sql3);
+				$this->db->query($sql2);
+				$this->db->query($sql3);
 
-					$this->dirty = true;
+				$this->dirty = true;
 
-					return true;
-
-				} else {
-					return false;
-				}
+				return true;
 
 			} else {
 				return false;
@@ -255,13 +250,9 @@ if(!class_exists('M_Level')) {
 
 			$this->dirty = true;
 
-			if($this->count() == 0 || $forced) {
-				$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
+			$sql = $this->db->prepare( "UPDATE {$this->membership_levels} SET level_active = NOT level_active WHERE id = %d", $this->id);
 
-				return $this->db->query($sql);
-			} else {
-				return false;
-			}
+			return $this->db->query($sql);
 
 		}
 		// UI functions
