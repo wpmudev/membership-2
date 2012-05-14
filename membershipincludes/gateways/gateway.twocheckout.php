@@ -364,6 +364,18 @@ class twocheckout extends M_Gateway {
 			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
 
 	}
+	
+	function display_cancel_button($subscription, $pricing, $user_id) {
+
+		echo '<form class="unsubbutton" action="' . M_get_subscription_permalink() . '" method="post">';
+		wp_nonce_field('cancel-sub_' . $subscription->sub_id());
+		echo "<input type='hidden' name='action' value='unsubscribe' />";
+		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+		echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' class='button white' />";
+		echo "</form>";
+	}
 
 	function update() {
 
