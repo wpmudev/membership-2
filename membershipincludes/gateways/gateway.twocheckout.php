@@ -37,16 +37,8 @@ class twocheckout extends M_Gateway {
 		return "+ 24 hours";
 	}
 	function remove_recurring_line_item($sub_id, $user_id) {
-		/*$member = new M_Membership($user_id);
-		if($member) {
-			var_export($member);
-		}
-		$subscription = new M_Subscription($sub_id);
-		if($subscription) {
-			var_export($subscription);
-		}
-		die();*/
-		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s LIMIT 1", $sub_id, $user_id ) );
+
+		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s AND transaction_gateway = %s LIMIT 1", $sub_id, $user_id, $this->gateway ) );
 		
 		if(empty($invoice_id) || !$invoice_id) {
 			// Don't really know what else to do if we can't find the Invoice ID besides echo an error.
