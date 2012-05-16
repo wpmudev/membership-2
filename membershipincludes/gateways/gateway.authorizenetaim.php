@@ -35,7 +35,10 @@ class authorizenetaim extends M_Gateway {
 			add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
 
 			if (!is_admin()) {
-				$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
+				// Added in check to make sure we are on https before changin the url - as it was causing issues with other gateways
+				if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+					$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
+				}
 			}
 		}
 
@@ -66,10 +69,10 @@ class authorizenetaim extends M_Gateway {
 		      foreach ($modes as $key => $value) : ?>
 			  	<option value="<?php echo esc_attr($key); ?>" <?php selected($key, $sel_mode); ?>><?php echo esc_html($value); ?></option>
 		      <?php endforeach; ?>
-			  
+
 		  </select></td>
 		  </tr>
-		  
+
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Login ID', 'membership') ?></th>
 		    <td><input type="text" name="api_user" value="<?php esc_attr_e(get_option( $this->gateway . "_api_user", "" )); ?>" /></td>
@@ -165,7 +168,7 @@ class authorizenetaim extends M_Gateway {
 		if(isset($_POST['custom'])) {
 			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 		}
-				
+
 		$content .= '<div id="reg-form">'; // because we can't have an enclosing form for this part
 
 		$content .= '<div class="formleft">';
@@ -182,10 +185,10 @@ class authorizenetaim extends M_Gateway {
 		return $content;
 
 	}
-	
+
 	function show_payment_form() {
-		
-		
+
+
 	}
 
 	function single_button($pricing, $subscription, $user_id) {
@@ -213,8 +216,8 @@ class authorizenetaim extends M_Gateway {
 		$form .= '<div class="auth-header">'. __('Enter Your Credit Card Information:', 'membership'). '</div>';
 		$form .= '</td>';
 		$form .= '<tr><td colspan="3">';
-		
-		
+
+
 		$form .= '<script type="text/javascript">';
 		$form .= '_aim_return_url = "'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'";';
 		$form .= '_permalink_url = "'.get_permalink().'";';
@@ -224,18 +227,18 @@ class authorizenetaim extends M_Gateway {
 
 //Removed width to style in CSS
 		$style = '<style type="text/css">';
-		$style .= '				
+		$style .= '
 				.membership_cart_billing {
-					
+
 				}
-				
+
 				.purchase-wrapper {
 				padding: 10px;
 				border: 1px solid #d6d6d6;
 				border-radius: 10px;
 				background: #efefef
 				}
-				
+
 				.purchase-item {
 				background: #a0a0a0;
 				padding: 10px;
@@ -245,75 +248,75 @@ class authorizenetaim extends M_Gateway {
 				color: #fff;
 				margin-bottom: 10px;
 				}
-				
+
 				.purchase-item-details {
 				float: left;
 				}
-				
+
 				.purchase-item-price {
 				text-align: right;
 				}
-				
+
 				.buynow {
 				background: #fff;
 				padding: 10px;
 				border-radius: 5px;
 				border: 1px solid #d6d6d6;
 				}
-				
+
 				.auth-header {
 				font-size: 120%;
 				margin-bottom: 5px;
 				font-weight: 700;
 				}
-				
+
 				.auth-body {
 				background: #EFEFEF;
 				padding: 10px;
 				border-radius: 5px;
 				}
-				
+
 				.auth-billing {
 				padding: 5px;
 				background: white;
 				border-radius: 3px;
 				margin-bottom: 10px;
 				}
-				
+
 				.auth-billing-name {
 				font-size: 110%;
 				margin-bottom: 10px;
 				}
-				
+
 				.auth-billing-fname-label {
 				float: left;
 				padding-top: 5px;
 				margin-right: 10px;
 				}
-				
+
 				.auth-billing-fname {
 				float: left;
 				margin-right: 15px;
 				}
-				
+
 				.auth-billing-lname-label {
 				float: left;
 				padding-top: 5px;
 				margin-right: 10px;
 				}
-				
+
 				.auth-billing-address-label {
 				float: left;
 				padding-top: 5px;
 				margin-right: 27px;
 				}
-				
+
 				.auth-billing-zip-label {
 				float: left;
 				padding-top: 5px;
 				margin-right: 10px;
 				}
-				
+
 				.auth-cc {
 				padding: 5px;
 				background: white;
@@ -332,37 +335,37 @@ class authorizenetaim extends M_Gateway {
 				border-radius: 3px;
 				margin-bottom: 10px;
 				}
-				
+
 				.cardimage {
 				height: 23px;
 				width: 157px;
 				display: inline-table;
 				margin-left: 20px;
 				}
-				
+
 				.auth-exp-input .inputLabel {
 					margin: 0 5px 0 20px;
 				}
-				
+
 				#membership-wrapper select, #membership-wrapper input[type="file"] {
 					height: 28px;
 					width: 100px;
 				}
-				
+
 				.auth-cc-label {
 				}
-				
+
 				.auth-exp-label {
 					float: left;
 					padding-top: 2px;
 				}
-				
+
 				.auth-sec-label {
 					float: left;
 					margin-right: 10px;
 					padding-top: 5px;
 				}
-				
+
 				.auth-submit-button {
 					text-align: right;
 				}
@@ -371,31 +374,31 @@ class authorizenetaim extends M_Gateway {
 				}
 		';
 		$style .= '</style>';
-		
+
 		$form .= apply_filters('membership_authorize_payment_form_css', $style);
-		
+
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
-		
+
 		$api_u = get_option( $this->gateway . "_api_user");
 		$api_k = get_option( $this->gateway . "_api_key");
-		
+
 		$error = false;
 		if(isset($_GET['errors'])) {
 			if($_GET['errors'] == 1)
 				$error = __('Payment method not supported for the payment', 'membership');
 			if($_GET['errors'] == 2)
 				$error = __('There was a problem processing your purchase. Please try again', 'membership');
-		} 
+		}
 		if(!isset($api_u) || $api_u == '' || $api_u == false || !isset($api_k) || $api_k == '' || $api_k == false) {
 			$error = __('This payment gateway has not been configured.  Your transaction will not be processed.', 'membership');
 		}
 		$form .= '<div class="message error'.($error == false ? ' hidden' : '').'">'.$error.'</div>';
 		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'" />';
-		
+
 //New DIV based form by Kevin D. Lyons
 		$form .= '<div class="membership_cart_billing">';
-			
+
 			$form .= '<div class="auth-body">';
 //New Address Verification as Billing Address added by Kevin D. Lyons
 				$form .= '<div class="auth-billing">';
@@ -432,7 +435,7 @@ class authorizenetaim extends M_Gateway {
 				$form .= '<div class="auth-submit">';
 					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
 		$form .= '</div></div></form>';
-		
+
 		$form = apply_filters('membership_authorize_payment_form', $form);
 // Replaced by Kevin D. Lyons for DIV based form
 //		$form .= '<table class="membership_cart_billing">';
@@ -495,7 +498,7 @@ class authorizenetaim extends M_Gateway {
 	}
 
 	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
-		
+
 		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
 			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 		else
@@ -514,7 +517,7 @@ class authorizenetaim extends M_Gateway {
 		$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
 		echo $form;
 	}
-	
+
 	function build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 
 		if(!empty($pricing)) {
@@ -548,7 +551,7 @@ class authorizenetaim extends M_Gateway {
 		}
 
 	}
-	
+
 	function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 		$this->build_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false);
 	}
@@ -616,9 +619,9 @@ class authorizenetaim extends M_Gateway {
 
 		$subscription = new M_Subscription($_POST['subscription_id']);
 		$pricing = $subscription->get_pricingarray();
-		
+
 		$user_id = ( is_user_logged_in() ? get_current_user_id() : $_POST['user_id'] );
-		$user = get_userdata($user_id);		
+		$user = get_userdata($user_id);
 		$sub_id = $subscription->id;
 
 		if ($M_options['paymentcurrency'] == 'USD' && count($pricing) == 1) {
@@ -669,10 +672,10 @@ class authorizenetaim extends M_Gateway {
 				$payment->process();
 
 				if ($payment->isApproved()) {
-					
+
 					$status = __('Processed','membership');
 					$note = '';
-					
+
 					$member = new M_Membership($user_id);
 					if($member) {
 						if($member->has_subscription() && $member->on_sub($sub_id)) {
@@ -684,11 +687,11 @@ class authorizenetaim extends M_Gateway {
 							$member->create_subscription($sub_id, $this->gateway);
 						}
 					}
-					
+
 					// TODO: create switch for handling different authorize aim respone codes
-					
+
 					$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
-					
+
 					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 					wp_redirect(M_get_registrationcompleted_permalink());
 					exit;
@@ -706,7 +709,7 @@ class authorizenetaim extends M_Gateway {
 		}
 		global $m_aim_errors;
 		$m_aim_errors = $error;
-			
+
 	}
 }
 

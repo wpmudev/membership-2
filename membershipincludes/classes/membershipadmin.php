@@ -2058,6 +2058,7 @@ if(!class_exists('membershipadmin')) {
 								<td <?php echo $style; ?>>
 									<?php
 										$subs = $user_object->get_relationships();
+										//print_r($subs);
 										if($subs) {
 											$gates = array();
 											foreach($subs as $sub) {
