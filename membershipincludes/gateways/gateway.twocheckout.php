@@ -27,12 +27,105 @@ class twocheckout extends M_Gateway {
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_2checkout_return'));
 			
 			add_filter('membership_gateway_exp_window', array(&$this,'twocheckout_expiration_window'));
+			
+			add_action('membership_mark_for_expire', array(&$this,'remove_recurring_line_item'), null, 2);
 		}
 
 	}
 	function twocheckout_expiration_window($time) {
 		//2Checkout will sometimes send notifications up to 24 hours after a subscription expires, so we need to adjust the window.
 		return "+ 24 hours";
+	}
+	function remove_recurring_line_item($sub_id, $user_id) {
+		/*$member = new M_Membership($user_id);
+		if($member) {
+			var_export($member);
+		}
+		$subscription = new M_Subscription($sub_id);
+		if($subscription) {
+			var_export($subscription);
+		}
+		die();*/
+		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s LIMIT 1", $sub_id, $user_id ) );
+		
+		if(empty($invoice_id) || !$invoice_id) {
+			// Don't really know what else to do if we can't find the Invoice ID besides echo an error.
+			echo '<div class="alert alert-error">'.__('Invoice ID could not be determined','membership').'</div>';
+		} else {
+			$args = array();
+	
+			$args['headers'] = array(
+				'Authorization' => 'Basic '.base64_encode(get_option( $this->gateway . "_twocheckout_username" ).':'.get_option( $this->gateway . "_twocheckout_password" )),
+				'Accept' => 'application/json',
+			);
+	
+			$args['user-agent'] = "Membership/3.0.0: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.1";
+			$args['body'] = array('invoice_id' => $invoice_id);
+			$args['sslverify'] = false;
+			$args['timeout'] = 30;
+	
+			$endpoint = "https://www.2checkout.com/api/sales/detail_sale";
+	
+			$response = wp_remote_post($endpoint, $args);
+			
+			if (is_wp_error($response) || (wp_remote_retrieve_response_code($response) != 200 && wp_remote_retrieve_response_code($response) != 400)) {
+				print '<div class="alert alert-error">'.__('There was a problem connecting to 2CO. Please try again.', 'membership').'</div>';
+			} else {
+				$response_obj = json_decode($response['body']);
+				
+				$lineitem_id = false;
+				$product_id = false;
+				
+				$subscription = new M_Subscription($sub_id);
+				if($subscription) {
+					$product_id = $this->get_product_id($subscription, $subscription->get_pricingarray());
+				}
+				
+				if ($response_obj->response_code == "OK" && $product_id != false) {
+					//$product_id = $response_obj->assigned_product_id;
+					foreach($response_obj->sale->invoices as $invoice) {
+						foreach($invoice->lineitems as $lineitem) {
+							if($lineitem->product_id == $product_id)
+								$lineitem_id = $lineitem->lineitem_id;
+						}
+					}
+				}
+				
+				
+				if($lineitem_id == false) {
+					print '<div class="alert alert-error">'.__('There was a problem finding your transaction in 2CO.  Please contact an administrator.', 'membership').'</div>';
+				} else {
+					$args = array();
+					$args['headers'] = array(
+						'Authorization' => 'Basic '.base64_encode(get_option( $this->gateway . "_twocheckout_username" ).':'.get_option( $this->gateway . "_twocheckout_password" )),
+						'Accept' => 'application/json',
+					);
+			
+					$args['user-agent'] = "Membership/3.0.0: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.1";
+					$args['body'] = array('lineitem_id' => $lineitem_id);
+					$args['sslverify'] = false;
+					$args['timeout'] = 30;
+					
+					$endpoint = "https://www.2checkout.com/api/sales/stop_lineitem_recurring";
+	
+					$stop_response = wp_remote_post($endpoint, $args);
+					
+					if (is_wp_error($stop_response) || (wp_remote_retrieve_response_code($stop_response) != 200 && wp_remote_retrieve_response_code($stop_response) != 400)) {
+						print '<div class="alert alert-error">'.__('There was a problem connecting to 2CO. Please try again.', 'membership').'</div>';
+					} else {
+						$stop_response_obj = json_decode($stop_response['body']);
+						
+						if ($response_obj->response_code !== "OK" ) {
+							print '<div class="alert alert-error">'.__('An unknown error prevented 2CO from canceling your payment. Please contact an administrator or cancel your payment from the 2Checkout website.', 'membership').'</div>';
+						} else {
+							print '<div class="alert alert-success">'.__('Your recurring payment has been canceled successfully', 'membership').'</div>';
+						}
+					}
+				}
+				
+			}
+		}
+		
 	}
 	function mysettings() {
 		global $M_options, $M_membership_url;
