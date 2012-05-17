@@ -1150,7 +1150,7 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($action) && !empty($action2)) $action = $action2;
 
-			$gateways = apply_filters('M_gateways_list', array());
+			$gateways = apply_filters('M_gateways_list', $M_Gateways);
 
 			$active = get_option('M_active_gateways', array());
 
