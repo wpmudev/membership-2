@@ -614,21 +614,33 @@ class paypalexpress extends M_Gateway {
 
 	function display_cancel_button($subscription, $pricing, $user_id) {
 
-		$form = '';
-
-		if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
-			$form .= '<a class="unsubbutton" href="https://www.paypal.com/cgi-bin/webscr';
+		if($pricing[0]['amount'] < 1) {
+			// a free first level, so we can just cancel without having to go to paypal
+			echo '<form class="unsubbutton" action="" method="post">';
+			wp_nonce_field('cancel-sub_' . $subscription->sub_id());
+			echo "<input type='hidden' name='action' value='unsubscribe' />";
+			echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+			echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+			echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+			echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' />";
+			echo "</form>";
 		} else {
-			$form .= '<a class="unsubbutton" href="https://www.sandbox.paypal.com/cgi-bin/webscr';
+			$form = '';
+
+			if (get_option( $this->gateway . "_paypal_status" ) == 'live') {
+				$form .= '<a class="unsubbutton" href="https://www.paypal.com/cgi-bin/webscr';
+			} else {
+				$form .= '<a class="unsubbutton" href="https://www.sandbox.paypal.com/cgi-bin/webscr';
+			}
+
+			$form .= '?cmd=_subscr-find&alias=' . urlencode(esc_attr(get_option( $this->gateway . "_paypal_email" ))) . '">';
+
+			$button = get_option( $this->gateway . "_paypal_cancel_button", 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif' );
+			$form .= '<img border="0" src="' . esc_attr($button) . '">';
+			$form .= '</a>';
+
+			echo $form;
 		}
-
-		$form .= '?cmd=_subscr-find&alias=' . urlencode(esc_attr(get_option( $this->gateway . "_paypal_email" ))) . '">';
-
-		$button = get_option( $this->gateway . "_paypal_cancel_button", 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif' );
-		$form .= '<img border="0" src="' . esc_attr($button) . '">';
-		$form .= '</a>';
-
-		echo $form;
 
 	}
 

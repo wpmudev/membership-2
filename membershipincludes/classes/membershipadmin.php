@@ -1220,7 +1220,7 @@ if(!class_exists('membershipadmin')) {
 											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-gateway-complete');
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-gateway-complete'); ?>' />
 										<?php
 											if(is_array($member_id)) {
@@ -1361,7 +1361,7 @@ if(!class_exists('membershipadmin')) {
 											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-level-complete');
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-level-complete'); ?>' />
 										<?php
 											if(is_array($member_id)) {
@@ -1520,7 +1520,7 @@ if(!class_exists('membershipadmin')) {
 											wp_original_referer_field(true, 'previous'); wp_nonce_field($action . '-sub-complete');
 										?>
 										<a href='?page=<?php echo $page; ?>' class='cancellink' title='Cancel add'><?php _e('Cancel', 'membership'); ?></a>
-										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button' />
+										<input type='submit' value='<?php _e($button, 'membership'); ?>' class='button-primary' />
 										<input type='hidden' name='action' value='<?php esc_attr_e($action . '-sub-complete'); ?>' />
 										<?php
 											if(is_array($member_id)) {
