@@ -1150,9 +1150,9 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($action) && !empty($action2)) $action = $action2;
 
-			$gateways = apply_filters('M_gateways_list', $M_Gateways);
+			$gateways = apply_filters('M_gateways_list', array());
 
-			$active = get_option('M_active_gateways', array());
+			$active = get_option('membership_activated_gateways', array());
 
 			switch($operation) {
 
@@ -1166,7 +1166,7 @@ if(!class_exists('membershipadmin')) {
 								$html .= "<option value='admin'>" . esc_html('admin' . " - " . "admin default gateway") . "</option>\n";
 								if($gateways) {
 									foreach($gateways as $key => $gateway) {
-										if(array_key_exists($key, $active)) {
+										if(in_array($key, $active)) {
 											$html .= "<option value='" . esc_attr($key) . "'>" . esc_html($key . " - " . $gateway) . "</option>\n";
 										}
 									}
@@ -1182,7 +1182,7 @@ if(!class_exists('membershipadmin')) {
 								reset($gateways);
 								if($gateways) {
 									foreach($gateways as $key => $gateway) {
-										if(array_key_exists($key, $active)) {
+										if(in_array($key, $active)) {
 											$html .= "<option value='" . esc_attr($key) . "'>" . esc_html($key . " - " . $gateway) . "</option>\n";
 										}
 									}

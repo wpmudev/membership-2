@@ -43,18 +43,18 @@ if(!class_exists('M_Gateway')) {
 
 		function toggleactivation() {
 
-			$active = get_option('M_active_gateways', array());
+			$active = get_option('membership_activated_gateways', array());
 
 			if(array_key_exists($this->gateway, $active)) {
 				unset($active[$this->gateway]);
 
-				update_option('M_active_gateways', $active);
+				update_option('membership_activated_gateways', $active);
 
 				return true;
 			} else {
 				$active[$this->gateway] = true;
 
-				update_option('M_active_gateways', $active);
+				update_option('membership_activated_gateways', $active);
 
 				return true;
 			}
