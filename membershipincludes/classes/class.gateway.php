@@ -401,21 +401,21 @@ if(!class_exists('M_Gateway')) {
 		function display_upgrade_from_free_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 			// By default there is no default button available
 			echo "<form class=''>";
-			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' />";
+			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
 		}
 
 		function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 			// By default there is no default button available
 			echo "<form class=''>";
-			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' />";
+			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
 		}
 
 		function display_cancel_button($subscription, $pricing, $user_id) {
 			// By default there is no default button available
 			echo '<form class="unsubbutton" action="" method="post">';
-			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' class='button' />";
+			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
 		}
 

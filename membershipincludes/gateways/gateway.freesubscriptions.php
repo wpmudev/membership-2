@@ -195,7 +195,7 @@ class freesubscriptions extends M_Gateway {
 		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
 		echo "<input type='hidden' name='fromsub_id' value='" . $fromsub_id . "' />";
-		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' />";
+		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' class='button blue' />";
 		echo "</form>";
 	}
 
@@ -206,7 +206,7 @@ class freesubscriptions extends M_Gateway {
 		} else {
 			//do_action('membership_purchase_button', $subscription, $pricing, $user_id);
 			echo "<form class=''>";
-			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' />";
+			echo "<input type='submit' value=' " . __('Upgrades not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
 		}
 
