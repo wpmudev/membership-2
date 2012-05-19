@@ -661,6 +661,19 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	function display_free_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+
+		echo '<form class="upgradebutton" action="' . M_get_subscription_permalink() . '" method="post">';
+		wp_nonce_field('upgrade-sub_' . $subscription->sub_id());
+		echo "<input type='hidden' name='action' value='upgradesolo' />";
+		echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+		echo "<input type='hidden' name='fromsub_id' value='" . $fromsub_id . "' />";
+		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' />";
+		echo "</form>";
+	}
+
 	function display_upgrade_from_free_button($subscription, $pricing, $user_id, $fromsub_id = false) {
 
 		if(!empty($pricing)) {
@@ -673,10 +686,10 @@ class paypalexpress extends M_Gateway {
 			}
 
 			if($free) {
-				echo "here";
-				echo $this->build_subscribe_button($subscription, $pricing, $user_id, 1, $fromsub_id);
+
+				$this->display_free_upgrade_button($subscription, $pricing, $user_id, 1, $fromsub_id);
 			} else {
-				echo $this->build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
+				$this->display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 			}
 
 		}
