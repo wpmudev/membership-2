@@ -661,6 +661,28 @@ class paypalexpress extends M_Gateway {
 
 	}
 
+	function display_upgrade_from_free_button($subscription, $pricing, $user_id, $fromsub_id = false) {
+
+		if(!empty($pricing)) {
+
+			$free = true;
+			foreach($pricing as $key => $price) {
+				if(!empty($price['amount']) && $price['amount'] > 0 ) {
+					$free = false;
+				}
+			}
+
+			if($free) {
+				echo "here";
+				echo $this->build_subscribe_button($subscription, $pricing, $user_id, 1, $fromsub_id);
+			} else {
+				echo $this->build_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
+			}
+
+		}
+
+	}
+
 	// IPN stuff
 	function handle_paypal_return() {
 		// PayPal IPN handling code

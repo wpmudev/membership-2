@@ -283,7 +283,7 @@
 
 									?></div>
 									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
-											if($gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' )) {
+											if($gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' ) && !$member->is_marked_for_expire($rel->sub_id)) {
 												$pricing = $sub->get_pricingarray();
 												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
 											}
