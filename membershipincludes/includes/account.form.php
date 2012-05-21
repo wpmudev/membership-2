@@ -67,7 +67,7 @@
 			<div class="form-element">
 				<label class="control-label" for="first_name"><?php _e('First Name', 'membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->user_login); ?>" >
+					<input type="text" class="input-xlarge" id="first_name" name="first_name" placeholder="" value="<?php echo esc_attr($profileuser->first_name); ?>" >
 				</div>
 			</div>
 
