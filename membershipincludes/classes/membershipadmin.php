@@ -1154,6 +1154,12 @@ if(!class_exists('membershipadmin')) {
 
 			$active = get_option('membership_activated_gateways', array());
 
+			if(isset($_GET['fromgateway']) && !empty($_GET['fromgateway'])) {
+				$fromgateway = stripslashes($_GET['fromgateway']);
+			} else {
+				$fromgateway = '';
+			}
+
 			switch($operation) {
 
 				case 'move':	$title = __('Move subscription to another gateway','membership');
@@ -1167,7 +1173,11 @@ if(!class_exists('membershipadmin')) {
 								if($gateways) {
 									foreach($gateways as $key => $gateway) {
 										if(in_array($key, $active)) {
-											$html .= "<option value='" . esc_attr($key) . "'>" . esc_html($key . " - " . $gateway) . "</option>\n";
+											$html .= "<option value='" . esc_attr($key) . "'";
+											if( $fromgateway == $key ) {
+												$html .= " selected='selected'";
+											}
+											$html .= ">" . esc_html($key . " - " . $gateway) . "</option>\n";
 										}
 									}
 								}
@@ -1256,6 +1266,12 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($action) && !empty($action2)) $action = $action2;
 
+			if(isset($_GET['fromlevel']) && !empty($_GET['fromlevel'])) {
+				$fromlevel = $_GET['fromlevel'];
+			} else {
+				$fromlevel = '';
+			}
+
 			switch($operation) {
 
 				case 'add':		$title = __('Add member to a level','membership');
@@ -1269,7 +1285,8 @@ if(!class_exists('membershipadmin')) {
 								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+										$html .= "<option value='" . esc_attr($level->id) . "'";
+										$html .= ">" . esc_html($level->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1289,7 +1306,9 @@ if(!class_exists('membershipadmin')) {
 								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+										$html .= "<option value='" . esc_attr($level->id) . "'";
+										if($fromlevel == $level->id) $html .= " selected='selected'";
+										$html .= ">" . esc_html($level->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1302,7 +1321,8 @@ if(!class_exists('membershipadmin')) {
 								reset($levels);
 								if($levels) {
 									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+										$html .= "<option value='" . esc_attr($level->id) . "'";
+										$html .= ">" . esc_html($level->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1323,7 +1343,9 @@ if(!class_exists('membershipadmin')) {
 								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'>" . esc_html($level->level_title) . "</option>\n";
+										$html .= "<option value='" . esc_attr($level->id) . "'";
+										if($fromlevel == $level->id) $html .= " selected='selected'";
+										$html .= ">" . esc_html($level->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1397,6 +1419,12 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($action) && !empty($action2)) $action = $action2;
 
+			if(isset($_GET['fromsub']) && !empty($_GET['fromsub'])) {
+				$fromsub = $_GET['fromsub'];
+			} else {
+				$fromsub = '';
+			}
+
 			switch($operation) {
 
 				case 'add':		$title = __('Add member to a subscription','membership');
@@ -1420,7 +1448,8 @@ if(!class_exists('membershipadmin')) {
 											$html .= "'>";
 
 										}
-										$html .= "<option value='" . esc_attr($sub->sub_id) . "-" . esc_attr($sub->level_id) . "-" . esc_attr($sub->level_order) . "'>" . $sub->level_order . " : " . esc_html($sub->sub_name . " - " . $sub->level_title) . "</option>\n";
+										$html .= "<option value='" . esc_attr($sub->sub_id) . "-" . esc_attr($sub->level_id) . "-" . esc_attr($sub->level_order) . "'";
+										$html .= ">" . $sub->level_order . " : " . esc_html($sub->sub_name . " - " . $sub->level_title) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1440,7 +1469,9 @@ if(!class_exists('membershipadmin')) {
 								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 								if($subs) {
 									foreach($subs as $key => $sub) {
-										$html .= "<option value='" . esc_attr($sub->id) . "'>" . esc_html($sub->sub_name) . "</option>\n";
+										$html .= "<option value='" . esc_attr($sub->id) . "'";
+										if($fromsub == $sub->id) $html .= " selected='selected'";
+										$html .= ">" . esc_html($sub->sub_name) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1483,7 +1514,9 @@ if(!class_exists('membershipadmin')) {
 								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
 								if($subs) {
 									foreach($subs as $key => $sub) {
-										$html .= "<option value='" . esc_attr($sub->id) . "'>" . esc_html($sub->sub_name) . "</option>\n";
+										$html .= "<option value='" . esc_attr($sub->id) . "'";
+										if($fromsub == $sub->id) $html .= " selected='selected'";
+										$html .= ">" . esc_html($sub->sub_name) . "</option>\n";
 									}
 								}
 								$html .= "</select>\n";
@@ -1986,17 +2019,17 @@ if(!class_exists('membershipadmin')) {
 										echo implode(", ", $rows);
 									}
 
-									if($user_object->has_cap('membershipadmin')) {
-										$actions = array();
-										if(!empty($subs)) {
-											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-										}
-									} else {
-										$actions = array();
-										$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									$actions = array();
 
-										if(!empty($subs)) {
+									if(!$user_object->has_cap('membershipadmin')) {
+										$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									}
+
+									if(!empty($subs)) {
+										if(count($subs) == 1) {
+											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										} else {
 											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
 											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
 										}
@@ -2023,17 +2056,16 @@ if(!class_exists('membershipadmin')) {
 										echo implode(", ", $rows);
 									}
 
-									if($user_object->has_cap('membershipadmin')) {
-										$actions = array();
-										if(!empty($levels)) {
-											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-										}
-									} else {
-										$actions = array();
+									$actions = array();
+									if(!$user_object->has_cap('membershipadmin')) {
 										$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									}
 
-										if(!empty($levels)) {
+									if(!empty($levels)) {
+										if(count($levels) == 1) {
+											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										} else {
 											$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
 											$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
 										}
@@ -2070,7 +2102,12 @@ if(!class_exists('membershipadmin')) {
 												$actions = array();
 											} else {
 												$actions = array();
-												$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "", 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+
+												if(count($gates) == 1) {
+													$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "&amp;fromgateway=" . $gates[0], 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+												} else {
+													$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "", 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+												}
 
 											}
 
