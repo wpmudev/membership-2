@@ -171,6 +171,7 @@ class paypalexpress extends M_Gateway {
 		} else {
 			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
 		}
+		$form .= '<input type="hidden" name="charset" value="utf-8">';
 		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
 		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
@@ -219,6 +220,7 @@ class paypalexpress extends M_Gateway {
 		} else {
 			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
 		}
+		$form .= '<input type="hidden" name="charset" value="utf-8">';
 		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
 		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
@@ -396,6 +398,7 @@ class paypalexpress extends M_Gateway {
 		} else {
 			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
 		}
+		$form .= '<input type="hidden" name="charset" value="utf-8">';
 		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option( $this->gateway . "_paypal_email" )) . '">';
 		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
