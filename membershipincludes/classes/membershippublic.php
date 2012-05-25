@@ -1361,10 +1361,13 @@ if(!class_exists('membershippublic')) {
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// add do the payment and completion page
-										if(!headers_sent()) {
-											wp_set_current_user($user_id);
-											wp_set_auth_cookie($user_id);
+										if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
+											if(!headers_sent()) {
+												wp_set_current_user($user_id);
+												wp_set_auth_cookie($user_id);
+											}
 										}
+
 
 										$content = $this->output_paymentpage( $user_id );
 									}
@@ -1502,9 +1505,11 @@ if(!class_exists('membershippublic')) {
 										// run the bp complete signup action
 										do_action( 'bp_complete_signup' );
 										// display the payment forms
-										if(!headers_sent()) {
-											wp_set_current_user($user_id);
-											wp_set_auth_cookie($user_id);
+										if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
+											if(!headers_sent()) {
+												wp_set_current_user($user_id);
+												wp_set_auth_cookie($user_id);
+											}
 										}
 
 										$content = $this->output_paymentpage( $user_id );
