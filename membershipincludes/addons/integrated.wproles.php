@@ -89,7 +89,9 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
-		$member->set_role( $wprole );
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->set_role( $wprole );
+		}
 	}
 
 
@@ -104,11 +106,15 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
-		$member->remove_role( $wprole );
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->remove_role( $wprole );
+		}
 	}
 
 	if(!$member->has_levels()) {
-		$member->set_role( get_option('default_role') );
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->set_role( get_option('default_role') );
+		}
 	}
 
 }
@@ -129,7 +135,9 @@ function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 	$wprole = $level->get_meta( 'associated_wp_role' );
 
 	if(!empty($wprole)) {
-		$member->set_role( $wprole );
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->set_role( $wprole );
+		}
 	}
 
 }
@@ -141,7 +149,9 @@ function M_Roles_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
 	$member =& new M_Membership( $user_id );
 	if(!$member->has_levels()) {
-		$member->set_role( get_option('default_role') );
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->set_role( get_option('default_role') );
+		}
 	}
 
 }
