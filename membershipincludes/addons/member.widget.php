@@ -64,7 +64,7 @@ class membershipleveltext extends WP_Widget {
 				echo $before_title . $title . $after_title;
 			}
 
-			echo apply_filters('the_content', $content);
+			echo do_shortcode($content);
 
 			echo $after_widget;
 		}
@@ -200,7 +200,7 @@ class membershipsubtext extends WP_Widget {
 				echo $before_title . $title . $after_title;
 			}
 
-			echo apply_filters('the_content', $content);
+			echo do_shortcode($content);
 
 			echo $after_widget;
 		}
