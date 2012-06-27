@@ -758,11 +758,9 @@ class M_Categories extends M_Rule {
 				// Not a post so ignore
 				return $posts;
 			} else {
-				// Cycle the categories
-				foreach($this->data as $cat_id) {
-					if(has_category( $cat_id, $post )) {
-						$redirect = true;
-					}
+				// Check the categories
+				if(has_category( $this->data, $post )) {
+					$redirect = true;
 				}
 			}
 		}
@@ -790,12 +788,11 @@ class M_Categories extends M_Rule {
 				// Not a post so ignore
 				return $posts;
 			} else {
-				// Cycle the categories
-				foreach($this->data as $cat_id) {
-					if(!has_category( $cat_id, $post )) {
-						$redirect = true;
-					}
+				// Check the categories
+				if(!has_category( $this->data, $post )) {
+					$redirect = true;
 				}
+
 			}
 		}
 
