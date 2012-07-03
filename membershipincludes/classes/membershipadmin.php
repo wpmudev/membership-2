@@ -3960,7 +3960,7 @@ if(!class_exists('membershipadmin')) {
 					$columns = array(	"name" 		=> 	__('Level Name','membership'),
 										"active"	=>	__('Active','membership'),
 										"users"		=>	__('Users','membership'),
-										"shortcode"	=>	__('Shortcode', 'membership') . $this->_tips->add_tip( __('The shortcode for this level is based on the title. It can be used to wrap content that you only want to be seen by members on this level e.g. [levelshortcode] protected content [/levelshortcode]','membership') )
+										"shortcode"	=>	__('Shortcode', 'membership') . $this->_tips->add_tip( __('The shortcode for this level is based on the title. It can be used to wrap content that you only want to be seen by members on this level e.g. [levelshortcode] protected content [/levelshortcode], use the [not-levelshortcode] shortcodes to wrap content that should be visible to people not on a particular level.','membership') )
 									);
 
 					$columns = apply_filters('membership_levelcolumns', $columns);
@@ -4038,7 +4038,8 @@ if(!class_exists('membershipadmin')) {
 										</strong>
 									</td>
 									<td class="column-shortcode">
-										<?php echo "[" . M_normalize_shortcode($level->level_title) . "]"; ?>
+										<?php echo "[" . M_normalize_shortcode($level->level_title) . "]"; ?><br/>
+										<?php echo "[not-" . M_normalize_shortcode($level->level_title) . "]"; ?>
 									</td>
 							    </tr>
 								<?php
@@ -4156,7 +4157,7 @@ if(!class_exists('membershipadmin')) {
 								<?php do_action('membership_subscription_form_before_levels', $sub->id); ?>
 
 								<h3><?php _e('Membership levels','membership'); ?></h3>
-								<p class='description'><?php _e('These are the levels that are part of this subscription and the order a user will travel through them.','membership'); ?></p>
+								<p class='description'><?php _e('These are the levels that are part of this subscription and the order a user will travel through them. Any levels highlighted in red will never be reached due to the settings of previous levels.','membership'); ?></p>
 								<div id='membership-levels-start'>
 									<div id="main-start" class="sub-operation" style="display: block;">
 											<h2 class="sidebar-name">Starting Point</h2>

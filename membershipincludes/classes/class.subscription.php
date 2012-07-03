@@ -535,6 +535,8 @@ if(!class_exists('M_Subscription')) {
 
 			$this->levels = $this->get_levels();
 
+			$afterserial = false;
+
 			if(!empty($this->levels)) {
 				$count = 1;
 				foreach($this->levels as $key => $level) {
@@ -545,20 +547,25 @@ if(!class_exists('M_Subscription')) {
 					?>
 					<li class='sortable-levels' id="<?php echo $levelid; ?>" >
 						<div class='joiningline'>&nbsp;</div>
-						<div class="sub-operation" style="display: block;">
+						<div class="sub-operation <?php echo ($afterserial) ? 'afterserial' : ''; ?>" style="display: block;">
 							<h2 class="sidebar-name"><?php echo esc_html($level->level_title); ?><span><a href='#remove' class='removelink' title='<?php _e("Remove this level from the subscription.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 							<div class="inner-operation">
 								<div class='levelfields' style='float: left;'>
 								<label for='levelmode[<?php echo $levelid; ?>]'><?php _e('Mode : ','membership'); ?></label>
-								<select name='levelmode[<?php echo $levelid; ?>]'>
+								<select name='levelmode[<?php echo $levelid; ?>]' class='sublevelmode'>
 									<!-- <option value='trial' <?php if($level->sub_type == 'trial') echo "selected='selected'"; ?>><?php _e('Trial','membership'); ?></option> -->
 									<option value='finite' <?php if($level->sub_type == 'finite') echo "selected='selected'"; ?>><?php _e('Finite','membership'); ?></option>
 									<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>><?php _e('Indefinite','membership'); ?></option>
 									<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>><?php _e('Serial','membership'); ?></option>
 									<!-- <option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>><?php _e('Sequential','membership'); ?></option> -->
+									<?php
+										if($level->sub_type == 'serial') {
+											$afterserial = true;
+										}
+									?>
 								</select>
 								<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
-								<select name='levelperiod[<?php echo $levelid; ?>]'>
+								<select name='levelperiod[<?php echo $levelid; ?>]' class='sublevelperiod'>
 									<?php
 										for($n = 1; $n <= 365; $n++) {
 											?>
@@ -567,7 +574,7 @@ if(!class_exists('M_Subscription')) {
 										}
 									?>
 								</select>&nbsp;
-								<select name="levelperiodunit[<?php echo $levelid; ?>]">
+								<select name="levelperiodunit[<?php echo $levelid; ?>]" class='sublevelperiodunit'>
 									<option value='d' <?php if($level->level_period_unit == 'd') echo "selected='selected'"; ?>><?php _e('day(s)','membership'); ?></option>
 									<option value='w' <?php if($level->level_period_unit == 'w') echo "selected='selected'"; ?>><?php _e('week(s)','membership'); ?></option>
 									<option value='m' <?php if($level->level_period_unit == 'm') echo "selected='selected'"; ?>><?php _e('month(s)','membership'); ?></option>
@@ -575,7 +582,7 @@ if(!class_exists('M_Subscription')) {
 								</select>
 
 								<label for='levelprice[<?php echo $levelid; ?>]'><?php _e('Price : ','membership'); ?></label>
-								<input type='text' name='levelprice[<?php echo $levelid; ?>]' value='<?php echo number_format($level->level_price, 2, '.', ''); ?>' class='narrow' />
+								<input type='text' name='levelprice[<?php echo $levelid; ?>]' value='<?php echo number_format($level->level_price, 2, '.', ''); ?>' class='narrow sublevelprice' />
 								<?php /* ?>
 								<select name='levelprice[<?php echo $levelid; ?>]'>
 									<option value=''></option>
