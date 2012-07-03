@@ -1,5 +1,19 @@
 var m_levelcount = 1;
 
+function m_colorsublevels() {
+
+	jQuery('div.sub-operation').each(
+		function () {
+			if(jQuery(this).find('.sublevelmode').val() == 'serial') {
+				//alert('serial found');
+			} else {
+				//alert('notserial found');
+			}
+		}
+	);
+
+}
+
 function m_removesublevel() {
 	var level = jQuery(this).parents('li.sortable-levels').attr('id');
 
@@ -7,6 +21,8 @@ function m_removesublevel() {
 
 
 	jQuery('#level-order').val( jQuery('#level-order').val().replace(',' + level, ''));
+
+	m_colorsublevels();
 
 	return false;
 }
@@ -66,6 +82,8 @@ function m_addtosubscription() {
 
 	m_levelcount++;
 
+	m_colorsublevels();
+
 	return false;
 
 }
@@ -107,6 +125,8 @@ function m_subsReady() {
 					jQuery('#level-order').val( jQuery('#level-order').val() + ',' + moving + '-' + m_levelcount);
 
 					m_levelcount++;
+
+					m_colorsublevels();
 				}
 	});
 
@@ -116,6 +136,8 @@ function m_subsReady() {
 		placeholder: 'placeholder-levels',
 		update: function(event, ui) {
 				jQuery('#level-order').val(',' + jQuery('#membership-levels-holder').sortable('toArray').join(','));
+
+				m_colorsublevels();
 			}
 	});
 
