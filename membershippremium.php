@@ -33,21 +33,25 @@ require_once('membershipincludes/includes/functions.php');
 set_membership_url(__FILE__);
 set_membership_dir(__FILE__);
 
+// Load required classes
+require_once('membershipincludes/classes/class.rule.php');
+require_once('membershipincludes/classes/class.gateway.php');
+require_once('membershipincludes/classes/class.level.php');
+require_once('membershipincludes/classes/class.subscription.php');
+require_once('membershipincludes/classes/class.membership.php');
+// Communications class
+require_once('membershipincludes/classes/class.communication.php');
+// URL groups class
+require_once('membershipincludes/classes/class.urlgroup.php');
+// Pings class
+require_once('membershipincludes/classes/class.ping.php');
+// Add in the coupon
+require_once('membershipincludes/classes/class.coupon.php');
+// Set up the default rules
+require_once('membershipincludes/includes/default.rules.php');
+
 if(is_admin()) {
 	// Administration interface
-	// Load required classes
-	require_once('membershipincludes/classes/class.rule.php');
-	require_once('membershipincludes/classes/class.gateway.php');
-	require_once('membershipincludes/classes/class.level.php');
-	require_once('membershipincludes/classes/class.subscription.php');
-	require_once('membershipincludes/classes/class.membership.php');
-	require_once('membershipincludes/classes/class.communication.php');
-	require_once('membershipincludes/classes/class.urlgroup.php');
-	require_once('membershipincludes/classes/class.ping.php');
-	// Add in the coupon
-	require_once('membershipincludes/classes/class.coupon.php');
-	// Set up the default rules
-	require_once('membershipincludes/includes/default.rules.php');
 	// Add in the contextual help
 	require_once('membershipincludes/classes/class.help.php');
 	// Add in the wizard and tutorial
@@ -65,20 +69,6 @@ if(is_admin()) {
 
 } else {
 	// Public interface
-	// Load required classes
-	require_once('membershipincludes/classes/class.rule.php');
-	require_once('membershipincludes/classes/class.gateway.php');
-	require_once('membershipincludes/classes/class.level.php');
-	require_once('membershipincludes/classes/class.subscription.php');
-	require_once('membershipincludes/classes/class.membership.php');
-	require_once('membershipincludes/classes/class.communication.php');
-	require_once('membershipincludes/classes/class.urlgroup.php');
-	require_once('membershipincludes/classes/class.ping.php');
-	// Add in the coupon
-	require_once('membershipincludes/classes/class.coupon.php');
-	// Set up the default rules
-	require_once('membershipincludes/includes/default.rules.php');
-
 	require_once('membershipincludes/classes/membershippublic.php');
 
 	$membershippublic = new membershippublic();
