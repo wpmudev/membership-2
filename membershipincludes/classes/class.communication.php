@@ -534,5 +534,33 @@ function M_Communication_process( ) {
 	}
 
 }
-add_action('init', 'M_Communication_process', 10 );
+
+function M_add_communications_time_period( $periods ) {
+
+	if(!is_array($periods)) {
+		$periods = array();
+	}
+
+	$periods['10mins'] = array( 'interval' => 600, 'display' => __('Every 10 Mins', 'membership') );
+	$periods['5mins'] = array( 'interval' => 300, 'display' => __('Every 5 Mins', 'membership') );
+
+	return $periods;
+}
+add_filter( 'cron_schedules', 'M_add_communications_time_period' );
+
+function M_setup_communications() {
+	// Action to be called by the cron job
+	if(defined('MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT') && MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT == 10) {
+		$checkperiod = '10mins';
+	} else {
+		$checkperiod = '5mins';
+	}
+
+	if ( !wp_next_scheduled( 'membership_communications_process' ) ) {
+		wp_schedule_event(time(), $checkperiod, 'membership_communications_process');
+	}
+
+}
+add_action('init', 'M_setup_communications', 10 );
+
 ?>
