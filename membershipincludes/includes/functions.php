@@ -695,4 +695,46 @@ function M_strip_decimal_places( $amount ) {
 	return $amount;
 }
 add_filter('membership_amount_JPY', 'M_strip_decimal_places');
+
+function M_get_option($key, $default = false) {
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('get_blog_option')) {
+			return get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, $key, $default);
+		} else {
+			return get_option( $key , $default);
+		}
+	} else {
+		return get_option( $key, $default);
+	}
+
+}
+
+function M_update_option($key, $value) {
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('update_blog_option')) {
+			return update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, $key, $value);
+		} else {
+			return update_option( $key , $value);
+		}
+	} else {
+		return update_option( $key, $value);
+	}
+
+}
+
+function M_delete_option($key) {
+
+	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+		if(function_exists('delete_blog_option')) {
+			return delete_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, $key );
+		} else {
+			return delete_option( $key );
+		}
+	} else {
+		return delete_option( $key );
+	}
+
+}
 ?>

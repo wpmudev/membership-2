@@ -428,7 +428,7 @@ function M_Communication_get_post_messages( ) {
 function M_Communication_process( ) {
 	// This function checks for any communication messages that need to be sent for this user and sends them
 
-	$lastatid = get_option('membership_communication_last_user_processed', 0);
+	$lastatid = M_get_option('membership_communication_last_user_processed', 0);
 
 	if(empty($lastatid))
 		$lastat = 0;
@@ -439,15 +439,15 @@ function M_Communication_process( ) {
 		//update_option('membership_communication_last_user_processed', 0);
 	} else {
 		// Our starting time
-		$timestart = time();
+		$timestart = current_time('timestamp');
 
 		//Or processing limit
 		$timelimit = 3; // max seconds for processing
 
 		foreach( (array) $members as $user_id ) {
 
-			if(time() > $timestart + $timelimit) {
-				update_option('membership_communication_last_user_processed', $user_id);
+			if(current_time('timestamp') > $timestart + $timelimit) {
+				M_update_option('membership_communication_last_user_processed', $user_id);
 				break;
 			}
 
@@ -459,7 +459,7 @@ function M_Communication_process( ) {
 				if(!empty($starts) && !empty($comms)) {
 					foreach($starts as $start) {
 						$starttime = $start->meta_value;
-						$now = time();
+						$now = current_time('timestamp');
 
 						$sub_id = str_replace( 'start_current_', '', $start->meta_key );
 						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
@@ -496,7 +496,7 @@ function M_Communication_process( ) {
 				if(!empty($ends) && !empty($comms)) {
 					foreach($ends as $end) {
 						$endtime = $end->meta_value;
-						$now = time();
+						$now = current_time('timestamp');
 
 						$sub_id = str_replace( 'expire_current_', '', $end->meta_key );
 						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
@@ -530,10 +530,11 @@ function M_Communication_process( ) {
 			}
 		}
 
-		update_option('membership_communication_last_user_processed', $user_id);
+		M_update_option('membership_communication_last_user_processed', $user_id);
 	}
 
 }
+add_action( 'membership_communications_process', 'M_Communication_process' );
 
 function M_add_communications_time_period( $periods ) {
 
