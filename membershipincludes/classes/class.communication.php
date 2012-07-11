@@ -436,7 +436,9 @@ function M_Communication_process( ) {
 	$members = M_Communication_get_members($lastatid);
 	if(empty($members)) {
 		// do nothing
-		//update_option('membership_communication_last_user_processed', 0);
+		if($lastatid != 0) {
+			M_update_option('membership_communication_last_user_processed', 0);
+		}
 	} else {
 		// Our starting time
 		$timestart = current_time('timestamp');
