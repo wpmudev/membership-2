@@ -198,10 +198,32 @@
 												}
 
 											} elseif($gatewayissingle == 'admin') {
-												echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+												switch($currentlevel->sub_type) {
+													case 'serial':		echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+																		break;
+
+													case 'finite':		echo __('Your membership is due to expire on : ', 'membership');
+																		echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+																		break;
+
+													case 'indefinite':	echo __('You are on an <strong>indefinite</strong> membership.', 'membership');
+																		break;
+
+												}
 											} else {
 												// Serial gateway
-												echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+												switch($currentlevel->sub_type) {
+													case 'serial':		echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+																		break;
+
+													case 'finite':		echo __('Your membership is due to expire on : ', 'membership');
+																		echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+																		break;
+
+													case 'indefinite':	echo __('You are on an <strong>indefinite</strong> membership.', 'membership');
+																		break;
+
+												}
 											}
 										}
 
