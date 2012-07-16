@@ -894,7 +894,7 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
-			$origpath = membership_upload_path();
+			$origpath = membership_upload_url();
 			$newpath = trailingslashit(trailingslashit(get_option('home')) . $M_options['masked_url']);
 
 			$the_content = str_replace( $origpath, $newpath, $the_content);

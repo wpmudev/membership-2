@@ -201,7 +201,7 @@ function membership_dir($extended) {
 /*
 Function based on the function wp_upload_dir, which we can't use here because it insists on creating a directory at the end.
 */
-function membership_wp_upload_dir() {
+function membership_wp_upload_url() {
 	global $switched;
 
 	$siteurl = get_option( 'siteurl' );
@@ -246,12 +246,69 @@ function membership_wp_upload_dir() {
 	return trailingslashit($burl);
 }
 
+function membership_wp_upload_dir() {
+	global $switched;
+
+	$siteurl = get_option( 'siteurl' );
+	$upload_path = get_option( 'upload_path' );
+	$upload_path = trim($upload_path);
+
+	$main_override = is_multisite() && defined( 'MULTISITE' ) && is_main_site();
+
+	if ( empty($upload_path) ) {
+		$dir = WP_CONTENT_DIR . '/uploads';
+	} else {
+		$dir = $upload_path;
+		if ( 'wp-content/uploads' == $upload_path ) {
+			$dir = WP_CONTENT_DIR . '/uploads';
+		} elseif ( 0 !== strpos($dir, ABSPATH) ) {
+			// $dir is absolute, $upload_path is (maybe) relative to ABSPATH
+			$dir = path_join( ABSPATH, $dir );
+		}
+	}
+
+	if ( !$url = get_option( 'upload_url_path' ) ) {
+		if ( empty($upload_path) || ( 'wp-content/uploads' == $upload_path ) || ( $upload_path == $dir ) )
+			$url = WP_CONTENT_URL . '/uploads';
+		else
+			$url = trailingslashit( $siteurl ) . $upload_path;
+	}
+
+	if ( defined('UPLOADS') && !$main_override && ( !isset( $switched ) || $switched === false ) ) {
+		$dir = ABSPATH . UPLOADS;
+		$url = trailingslashit( $siteurl ) . UPLOADS;
+	}
+
+	if ( is_multisite() && !$main_override && ( !isset( $switched ) || $switched === false ) ) {
+		if ( defined( 'BLOGUPLOADDIR' ) )
+			$dir = untrailingslashit(BLOGUPLOADDIR);
+		$url = str_replace( UPLOADS, 'files', $url );
+	}
+
+	$bdir = $dir;
+	$burl = $url;
+
+	return trailingslashit($bdir);
+}
+
 function membership_upload_path() {
 
 	$path = get_option('membership_fileupload_url', '');
 
 	if(empty($path)) {
 		return membership_wp_upload_dir();
+	} else {
+		return trailingslashit($path);
+	}
+
+}
+
+function membership_upload_url() {
+
+	$path = get_option('membership_fileupload_url', '');
+
+	if(empty($path)) {
+		return membership_wp_upload_url();
 	} else {
 		return trailingslashit($path);
 	}
