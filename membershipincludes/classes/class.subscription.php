@@ -545,9 +545,9 @@ if(!class_exists('M_Subscription')) {
 					$this->levelorder[] = $levelid;
 
 					?>
-					<li class='sortable-levels' id="<?php echo $levelid; ?>" >
+					<li class='sortable-levels <?php echo ($afterserial) ? 'afterserial' : ''; ?>' id="<?php echo $levelid; ?>" >
 						<div class='joiningline'>&nbsp;</div>
-						<div class="sub-operation <?php echo ($afterserial) ? 'afterserial' : ''; ?>" style="display: block;">
+						<div class="sub-operation" style="display: block;">
 							<h2 class="sidebar-name"><?php echo esc_html($level->level_title); ?><span><a href='#remove' class='removelink' title='<?php _e("Remove this level from the subscription.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 							<div class="inner-operation">
 								<div class='levelfields' style='float: left;'>
@@ -558,11 +558,6 @@ if(!class_exists('M_Subscription')) {
 									<option value='indefinite' <?php if($level->sub_type == 'indefinite') echo "selected='selected'"; ?>><?php _e('Indefinite','membership'); ?></option>
 									<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>><?php _e('Serial','membership'); ?></option>
 									<!-- <option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>><?php _e('Sequential','membership'); ?></option> -->
-									<?php
-										if($level->sub_type == 'serial' || $level->sub_type == 'indefinite') {
-											$afterserial = true;
-										}
-									?>
 								</select>
 								<label for='levelperiod[<?php echo $levelid; ?>]'><?php _e('Period : ','membership'); ?></label>
 								<select name='levelperiod[<?php echo $levelid; ?>]' class='sublevelperiod'>
@@ -616,6 +611,12 @@ if(!class_exists('M_Subscription')) {
 						</div>
 					</li>
 					<?php
+
+					// Set the afterserial to true
+					if($level->sub_type == 'serial' || $level->sub_type == 'indefinite') {
+						$afterserial = true;
+					}
+
 				}
 			}
 

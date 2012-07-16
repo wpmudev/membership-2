@@ -260,12 +260,12 @@ div.sub-operation {
 	margin-bottom: 0;
 }
 
-div.sub-operation.afterserial {
+li.afterserial div.sub-operation {
 	border-color: #d81813;
 	border-width: 1px;
 }
 
-div.sub-operation.afterserial div.inner-operation {
+li.afterserial div.sub-operation div.inner-operation {
 	background-color: #ffd6d6;
 	-moz-border-radius-bottomleft: 6px;
 	-moz-border-radius-bottomright: 6px;

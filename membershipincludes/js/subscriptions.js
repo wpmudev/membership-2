@@ -2,15 +2,23 @@ var m_levelcount = 1;
 
 function m_colorsublevels() {
 
-	jQuery('div.sub-operation').each(
-		function () {
-			if(jQuery(this).find('.sublevelmode').val() == 'serial') {
-				//alert('serial found');
+	var levels = jQuery('#membership-levels-holder').sortable("toArray");
+
+	onserial = false;
+	if(levels.length > 1) {
+		for(n=0; n < levels.length; n++) {
+			mode = jQuery('#' + levels[n]).find('.sublevelmode').val();
+			if(onserial == true) {
+				jQuery('#' + levels[n]).addClass('afterserial');
 			} else {
-				//alert('notserial found');
+				jQuery('#' + levels[n]).removeClass('afterserial');
+			}
+
+			if(mode == 'serial' || mode == 'indefinite') {
+				onserial = true;
 			}
 		}
-	);
+	}
 
 }
 
@@ -151,6 +159,8 @@ function m_subsReady() {
 	jQuery('.action .action-top .action-button').click(m_clickactiontoggle);
 
 	jQuery('a.action-to-subscription').click(m_addtosubscription);
+
+	jQuery('.sublevelmode').change(m_colorsublevels);
 
 }
 
