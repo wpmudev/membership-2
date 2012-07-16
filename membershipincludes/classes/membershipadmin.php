@@ -2743,6 +2743,15 @@ if(!class_exists('membershipadmin')) {
 					<div class="postbox">
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Downloads / Media protection','membership'); ?></span></h3>
 						<div class="inside">
+
+							<?php
+									if ( current_user_can('manage_options') && !get_option('permalink_structure') ) {
+								      echo '<div class="error"><p>'.__('You must enable Pretty Permalinks to use this feature - <a href="options-permalink.php">Enable now &raquo;</a>', 'membership').'</p></div>';
+									}
+									//$permalink_structure = get_option('permalink_structure');
+									//echo $permalink_structure;
+							?>
+
 							<p class='description'><?php _e('Downloads and media files can be protected by remapping their perceived location.','membership'); ?></p>
 							<p class='description'><?php _e('Note: If a user determines a files actual location on your server, there is very little we can do to prevent its download, so please be careful about giving out URLs.','membership'); ?></p>
 
