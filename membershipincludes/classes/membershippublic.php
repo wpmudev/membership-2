@@ -428,17 +428,11 @@ if(!class_exists('membershippublic')) {
 
 			global $wpdb, $M_options;
 
-			$uploadpath = get_option('upload_path');
-
-			if(strstr($uploadpath, ABSPATH) === false) {
-				$file = trailingslashit(ABSPATH . $uploadpath) . $pathtofile;
-			} else {
-				$file = trailingslashit($uploadpath) . $pathtofile;
-			}
-			echo strstr(ABSPATH, $uploadpath);
-
-			$origpath = membership_upload_path();
-
+			// The directory and direct path dir
+			$uploadpath = membership_wp_upload_dir();
+			$file = trailingslashit($uploadpath) . $pathtofile;
+			// The url and direct url
+			$origpath = membership_upload_url();
 			$trueurl = trailingslashit($origpath) . $pathtofile;
 
 			if ( !is_file( $file ) ) {
