@@ -559,7 +559,7 @@ if(!class_exists('M_Subscription')) {
 									<option value='serial' <?php if($level->sub_type == 'serial') echo "selected='selected'"; ?>><?php _e('Serial','membership'); ?></option>
 									<!-- <option value='sequential' <?php if($level->sub_type == 'sequential') echo "selected='selected'"; ?>><?php _e('Sequential','membership'); ?></option> -->
 									<?php
-										if($level->sub_type == 'serial') {
+										if($level->sub_type == 'serial' || $level->sub_type == 'indefinite') {
 											$afterserial = true;
 										}
 									?>
