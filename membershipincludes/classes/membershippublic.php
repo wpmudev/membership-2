@@ -129,7 +129,7 @@ if(!class_exists('membershippublic')) {
 			}
 
 			// Downloads protection
-			if(!empty($M_options['masked_url'])) {
+			if(!empty($M_options['membershipdownloadgroups'])) {
 				add_filter('the_content', array(&$this, 'protect_download_content') );
 			}
 
