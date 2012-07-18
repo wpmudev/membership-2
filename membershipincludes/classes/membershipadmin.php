@@ -2256,6 +2256,7 @@ if(!class_exists('membershipadmin')) {
 					case 'downloads':		$M_options['original_url'] = $_POST['original_url'];
 											$M_options['masked_url'] = $_POST['masked_url'];
 											$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
+											$M_options['protection_type'] = $_POST['protection_type'];
 											break;
 
 					case 'users':			$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
@@ -2757,6 +2758,17 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
+									<th scope="row"><?php _e('Protection method','membership'); ?>
+										<?php echo $this->_tips->add_tip( __('The method of protection can be changed depending on your needs. Membership offers three methods, <strong>Basic</strong> masks your media directory but leaves any filenames the same, <strong>Complete</strong> masks the media directory and changes the image filename as well and <strong>Hybrid</strong> is for use if you are using a host or server that has a problem with the system (such as some installs of nginx).','membership') ); ?>
+									</th>
+									<td>
+										<?php if( empty($M_options['protection_type']) ) $M_options['protection_type'] = 'basic'; ?>
+										<input type='radio' name='protection_type' value='basic' <?php checked($M_options['protection_type'], 'basic'); ?> />&nbsp;&nbsp;<?php echo __('Basic protection','membership'); ?><br/>
+										<input type='radio' name='protection_type' value='complete' <?php checked($M_options['protection_type'], 'complete'); ?>/>&nbsp;&nbsp;<?php echo __('Complete protection','membership'); ?><br/>
+										<input type='radio' name='protection_type' value='hybrid' <?php checked($M_options['protection_type'], 'hybrid'); ?>/>&nbsp;&nbsp;<?php echo __('Hybrid protection','membership'); ?><br/>
+									</td>
+								</tr>
+								<tr valign="top">
 									<th scope="row"><?php _e('Your uploads location','membership'); ?>
 										<?php echo $this->_tips->add_tip( __('This is where membership thinks you have your images stored, if this is not correct then download protection may not work correctly.','membership') ); ?>
 									</th>
@@ -2769,7 +2781,7 @@ if(!class_exists('membershipadmin')) {
 										<?php echo $this->_tips->add_tip( __('This is the URL that the user will see. You can change the end part to something unique.','membership') ); ?>
 									</th>
 									<td>
-										<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />
+										<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />&nbsp;/
 									</td>
 								</tr>
 
