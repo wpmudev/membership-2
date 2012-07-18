@@ -891,10 +891,27 @@ if(!class_exists('membershippublic')) {
 			$origpath = membership_upload_url();
 			$newpath = trailingslashit(trailingslashit(get_option('home')) . $M_options['masked_url']);
 
-			$the_content = str_replace( $origpath, $newpath, $the_content);
+			// Find all the urls in the post and then we'll check if they are protected
+			/* Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the
+			*/
+
+			$url_exp = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)/';
+
+			$matches = array();
+			if(preg_match_all($url_exp, $the_content, $matches)) {
+				//print_r($matches);
+			}
+
+			//$the_content = str_replace( $origpath, $newpath, $the_content);
 
 			return $the_content;
 
+		}
+
+		function boo($stuff) {
+			print_r($stuff);
+
+			die();
 		}
 
 		// Shortcodes
