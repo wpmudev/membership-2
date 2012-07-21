@@ -892,26 +892,51 @@ if(!class_exists('membershippublic')) {
 			$newpath = trailingslashit(trailingslashit(get_option('home')) . $M_options['masked_url']);
 
 			// Find all the urls in the post and then we'll check if they are protected
-			/* Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the
-			*/
+			/* Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the */
 
 			$url_exp = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)/';
 
 			$matches = array();
 			if(preg_match_all($url_exp, $the_content, $matches)) {
-				//print_r($matches);
+				$home = get_option('home');
+				if(!empty($matches) && !empty($matches[2])) {
+					foreach((array) $matches[2] as $key => $domain) {
+						if(untrailingslashit($home) == untrailingslashit($domain)) {
+							$foundlocal = $key;
+							$file = basename($matches[4][$foundlocal]);
+
+							$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $file . '%');
+							$post_id = $this->db->get_var( $sql );
+							if(!empty($post_id)) {
+								// Found the file and it's in the media library
+								$protected = get_post_meta( $post_id, '_membership_protected_content_group', true );
+
+								if(!empty($protected)) {
+									// We have a protected file - so we'll mask it
+									switch($M_options['protection_type']) {
+										case 'complete' :
+															break;
+										case 'hybrid' :
+															break;
+										case 'basic' :
+										default:			$the_content = str_replace( $matches[0][$foundlocal], str_replace( $origpath, $newpath, $matches[0][$foundlocal] ), $the_content );
+
+															break;
+									}
+								}
+							}
+
+						}
+					}
+				}
+				//stristr
+				print_r($matches);
 			}
 
-			//$the_content = str_replace( $origpath, $newpath, $the_content);
+			//
 
 			return $the_content;
 
-		}
-
-		function boo($stuff) {
-			print_r($stuff);
-
-			die();
 		}
 
 		// Shortcodes
