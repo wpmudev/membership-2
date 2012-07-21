@@ -930,7 +930,7 @@ if(!class_exists('membershippublic')) {
 					}
 				}
 				//stristr
-				print_r($matches);
+				//print_r($matches);
 			}
 
 			//
