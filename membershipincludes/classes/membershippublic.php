@@ -442,8 +442,6 @@ if(!class_exists('membershippublic')) {
 												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
 											}
 										}
-
-										//echo $image;
 										break;
 
 					case 'basic' :
