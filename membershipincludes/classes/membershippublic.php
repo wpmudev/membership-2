@@ -449,6 +449,12 @@ if(!class_exists('membershippublic')) {
 										$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%' );
 										$post_id = $wpdb->get_var( $sql );
 
+										if(empty($post_id)) {
+											// Can't find the file in the first pass, try the second pass.
+											$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $protected . '%');
+											$post_id = $this->db->get_var( $sql );
+										}
+
 										if(is_numeric($post_id) && $post_id > 0) {
 											$image = get_post_meta($post_id, '_wp_attached_file', true);
 											if(!empty($size_extension)) {
@@ -484,6 +490,9 @@ if(!class_exists('membershippublic')) {
 							$this->show_noaccess_image($wp_query);
 						}
 					}
+				} else {
+					// We haven't found anything so default to the no access image
+					$this->show_noaccess_image($wp_query);
 				}
 
 				exit();
