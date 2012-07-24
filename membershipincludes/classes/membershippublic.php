@@ -932,7 +932,8 @@ if(!class_exists('membershippublic')) {
 									// We have a protected file - so we'll mask it
 									switch($M_options['protection_type']) {
 										case 'complete' :	$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . "." . pathinfo($newfile, PATHINFO_EXTENSION);
-															echo $protectedfilename;
+
+															$the_content = str_replace( $matches[0][$foundlocal], $newpath . $protectedfilename, $the_content );
 															break;
 										case 'hybrid' :
 															break;
