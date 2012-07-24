@@ -900,7 +900,7 @@ if(!class_exists('membershippublic')) {
 			if(preg_match_all($url_exp, $the_content, $matches)) {
 				$home = get_option('home');
 				if(!empty($matches) && !empty($matches[2])) {
-					print_r($matches);
+
 					foreach((array) $matches[2] as $key => $domain) {
 						if(untrailingslashit($home) == untrailingslashit($domain)) {
 							$foundlocal = $key;
@@ -909,7 +909,6 @@ if(!class_exists('membershippublic')) {
 							$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
 							$filematch = array();
 							if(preg_match($filename_exp, $file, $filematch)) {
-								print_r($filematch);
 								// We have an image with an image size attached
 								$newfile = $filematch[1] . "." . $filematch[3];
 							} else {
@@ -935,8 +934,12 @@ if(!class_exists('membershippublic')) {
 
 															$the_content = str_replace( $matches[0][$foundlocal], $newpath . $protectedfilename, $the_content );
 															break;
-										case 'hybrid' :
+
+										case 'hybrid' :		$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . "." . pathinfo($newfile, PATHINFO_EXTENSION);
+
+															$the_content = str_replace( $matches[0][$foundlocal], $newpath . "?file=" . $protectedfilename, $the_content );
 															break;
+
 										case 'basic' :
 										default:			$the_content = str_replace( $matches[0][$foundlocal], str_replace( $origpath, $newpath, $matches[0][$foundlocal] ), $the_content );
 
@@ -948,11 +951,8 @@ if(!class_exists('membershippublic')) {
 						}
 					}
 				}
-				//stristr
-				//print_r($matches);
-			}
 
-			//
+			}
 
 			return $the_content;
 
