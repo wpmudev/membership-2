@@ -22,11 +22,17 @@ if(!defined('MEMBERSHIP_VIEW_COMMENTS')) define( 'MEMBERSHIP_VIEW_COMMENTS', fal
 if(!defined('MEMBERSHIP_GLOBAL_TABLES')) define( 'MEMBERSHIP_GLOBAL_TABLES', false);
 if(!defined('MEMBERSHIP_GLOBAL_MAINSITE')) define( 'MEMBERSHIP_GLOBAL_MAINSITE', 1);
 
+// The master admin user - shouldn't need to change this unless you are not using the admin account
 if(!defined('MEMBERSHIP_MASTER_ADMIN')) define( 'MEMBERSHIP_MASTER_ADMIN', 'admin');
-
+// Sets the user who activated the plugin as a membership admin user
 if(!defined('MEMBERSHIP_SETACTIVATORAS_ADMIN')) define( 'MEMBERSHIP_SETACTIVATORAS_ADMIN', 'yes');
-
+//
 if(!defined('MEMBERSHIP_VERSION_KEY')) define( 'MEMBERSHIP_VERSION_KEY', 'yes');
-
+// Shows the add-ons page only to super-admins - no logner used.
 if(!defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN')) define( 'MEMBERSHIP_ADDONS_ONLY_SUPERADMIN', true);
+
+// File protection - add a prefix to generated filenames
+if(!defined('MEMBERSHIP_FILE_NAME_PREFIX')) define( 'MEMBERSHIP_FILE_NAME_PREFIX', '');
+// File protection - increment the file id by a set amount
+if(!defined('MEMBERSHIP_FILE_NAME_INCREMENT')) define( 'MEMBERSHIP_FILE_NAME_INCREMENT', 2771);
 ?>

@@ -900,13 +900,30 @@ if(!class_exists('membershippublic')) {
 			if(preg_match_all($url_exp, $the_content, $matches)) {
 				$home = get_option('home');
 				if(!empty($matches) && !empty($matches[2])) {
+					print_r($matches);
 					foreach((array) $matches[2] as $key => $domain) {
 						if(untrailingslashit($home) == untrailingslashit($domain)) {
 							$foundlocal = $key;
 							$file = basename($matches[4][$foundlocal]);
 
-							$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $file . '%');
+							$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
+							$filematch = array();
+							if(preg_match($filename_exp, $file, $filematch)) {
+								print_r($filematch);
+								// We have an image with an image size attached
+								$newfile = $filematch[1] . "." . $filematch[3];
+							} else {
+								$newfile = $file;
+							}
+
+							$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%');
 							$post_id = $this->db->get_var( $sql );
+							if(empty($post_id)) {
+								// Can't find the file in the first pass, try the second pass.
+								$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $newfile . '%');
+								$post_id = $this->db->get_var( $sql );
+							}
+
 							if(!empty($post_id)) {
 								// Found the file and it's in the media library
 								$protected = get_post_meta( $post_id, '_membership_protected_content_group', true );
@@ -914,7 +931,8 @@ if(!class_exists('membershippublic')) {
 								if(!empty($protected)) {
 									// We have a protected file - so we'll mask it
 									switch($M_options['protection_type']) {
-										case 'complete' :
+										case 'complete' :	$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . "." . pathinfo($newfile, PATHINFO_EXTENSION);
+															echo $protectedfilename;
 															break;
 										case 'hybrid' :
 															break;
