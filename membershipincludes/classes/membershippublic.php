@@ -176,7 +176,7 @@ if(!class_exists('membershippublic')) {
 			$new_rules = array();
 
 			if(!empty($M_options['masked_url'])) {
-				$new_rules[trailingslashit($M_options['masked_url']) . '(.+)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index(1);
+				$new_rules[trailingslashit($M_options['masked_url']) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index(1);
 			}
 
 			$new_rules['paymentreturn/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index(1);
@@ -392,17 +392,86 @@ if(!class_exists('membershippublic')) {
 
 			if(!empty($wp_query->query_vars['protectedfile'])) {
 				$protected = explode("/", $wp_query->query_vars['protectedfile']);
+				$protected = array_pop( $protected );
+			}
 
-				$filename = array_pop($protected);
-				$fileid = $wpdb->get_var( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . mysql_real_escape_string($filename) . "%'" );
+			if(empty($protected) && !empty($_GET['file'])) {
+				$protected = $_GET['file'];
+			}
 
-				if(!empty($fileid)) {
+			if(!empty($protected)) {
+				// See if the filename has a size extension and if so, strip it out
+				$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
+				$filematch = array();
+				if(preg_match($filename_exp, $protected, $filematch)) {
+					// We have an image with an image size attached
+					$newfile = $filematch[1] . "." . $filematch[3];
+					$size_extension = "-" . $filematch[2];
+				} else {
+					$newfile = $protected;
+					$size_extension = '';
+				}
+				// Process based on the protection type
+				switch($M_options['protection_type']) {
+					case 'complete' :	// Work out the post_id again
+										$post_id = preg_replace('/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile);
+										$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
+
+										if(is_numeric($post_id) && $post_id > 0) {
+											$image = get_post_meta($post_id, '_wp_attached_file', true);
+											if(!empty($size_extension)) {
+												// Add back in a size extension if we need to
+												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
+												// hack to remove any double extensions :/ need to change when work out a neater way
+												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+											}
+										}
+										break;
+
+					case 'hybrid' :		// Work out the post_id again
+
+										$post_id = preg_replace('/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile);
+										$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
+
+										if(is_numeric($post_id) && $post_id > 0) {
+											$image = get_post_meta($post_id, '_wp_attached_file', true);
+											if(!empty($size_extension)) {
+												// Add back in a size extension if we need to
+												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
+												// hack to remove any double extensions :/ need to change when work out a neater way
+												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+											}
+										}
+
+										//echo $image;
+										break;
+
+					case 'basic' :
+					default:			// The basic protection - need to change this
+										$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%' );
+										$post_id = $wpdb->get_var( $sql );
+
+										if(is_numeric($post_id) && $post_id > 0) {
+											$image = get_post_meta($post_id, '_wp_attached_file', true);
+											if(!empty($size_extension)) {
+												// Add back in a size extension if we need to
+												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
+												// hack to remove any double extensions :/ need to change when work out a neater way
+												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+											}
+										}
+										break;
+				}
+
+
+				if(!empty($image) && !empty($post_id) && is_numeric($post_id)) {
 					// check for protection
-					$protected = get_post_meta($fileid, '_membership_protected_content_group', true);
-					if(empty($protected) || $protected == 'no') {
+					$group = get_post_meta($post_id, '_membership_protected_content_group', true);
+
+					if(empty($group) || $group == 'no') {
 						// it's not protected so grab and display it
-						$file = $wp_query->query_vars['protectedfile'];
-						$this->output_file($file);
+						//$file = $wp_query->query_vars['protectedfile'];
+						$this->output_file($image);
 					} else {
 						// check we can see it
 						if(empty($member) || !method_exists($member, 'has_level_rule')) {
@@ -410,9 +479,9 @@ if(!class_exists('membershippublic')) {
 							$member = new M_Membership( $user->ID );
 						}
 
-						if( method_exists($member, 'has_level_rule') && $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $protected ) ) ) {
-							$file = $wp_query->query_vars['protectedfile'];
-							$this->output_file($file);
+						if( method_exists($member, 'has_level_rule') && $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $group ) ) ) {
+							//$file = $wp_query->query_vars['protectedfile'];
+							$this->output_file($image);
 						} else {
 							$this->show_noaccess_image($wp_query);
 						}
@@ -911,15 +980,17 @@ if(!class_exists('membershippublic')) {
 							if(preg_match($filename_exp, $file, $filematch)) {
 								// We have an image with an image size attached
 								$newfile = $filematch[1] . "." . $filematch[3];
+								$size_extension = "-" . $filematch[2];
 							} else {
 								$newfile = $file;
+								$size_extension = '';
 							}
 
 							$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%');
 							$post_id = $this->db->get_var( $sql );
 							if(empty($post_id)) {
 								// Can't find the file in the first pass, try the second pass.
-								$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $newfile . '%');
+								$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $file . '%');
 								$post_id = $this->db->get_var( $sql );
 							}
 
@@ -930,12 +1001,14 @@ if(!class_exists('membershippublic')) {
 								if(!empty($protected)) {
 									// We have a protected file - so we'll mask it
 									switch($M_options['protection_type']) {
-										case 'complete' :	$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . "." . pathinfo($newfile, PATHINFO_EXTENSION);
+										case 'complete' :	$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . $size_extension;
+															$protectedfilename .= "." . pathinfo($newfile, PATHINFO_EXTENSION);
 
 															$the_content = str_replace( $matches[0][$foundlocal], $newpath . $protectedfilename, $the_content );
 															break;
 
-										case 'hybrid' :		$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . "." . pathinfo($newfile, PATHINFO_EXTENSION);
+										case 'hybrid' :		$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . $size_extension;
+															$protectedfilename .= "." . pathinfo($newfile, PATHINFO_EXTENSION);
 
 															$the_content = str_replace( $matches[0][$foundlocal], $newpath . "?file=" . $protectedfilename, $the_content );
 															break;
