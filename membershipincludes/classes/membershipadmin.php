@@ -2257,6 +2257,9 @@ if(!class_exists('membershipadmin')) {
 											$M_options['masked_url'] = $_POST['masked_url'];
 											$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
 											$M_options['protection_type'] = $_POST['protection_type'];
+
+											// Refresh the rewrite rules in case they've switched to hybrid from an earlier version
+											flush_rewrite_rules();
 											break;
 
 					case 'users':			$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
