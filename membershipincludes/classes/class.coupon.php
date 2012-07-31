@@ -26,8 +26,17 @@ class M_Coupon {
 		foreach($this->tables as $table) {
 			$this->$table = membership_db_prefix($this->db, $table);
 		}
-
-		$this->id = $id;
+		
+		// If we are passing a non numeric ID we should try to find the ID by searching for the coupon name instead.
+		if(!is_numeric($id)) {
+			$search = $this->db->get_var( $this->db->prepare( "SELECT * FROM $this->coupons WHERE `couponcode` = %s", $id ) );
+			
+			if(!empty($search)) {
+				$this->id = $search;
+			}
+		} else {
+			$this->id = $id;
+		}
 
 		if($tips !== false) {
 			$this->_tips = $tips;
@@ -42,38 +51,42 @@ class M_Coupon {
 	function add( $data ) {
 
 		if($this->id > 0 ) {
-			return $this->update();
+			return $this->update( $data );
 		} else {
 			if(!empty($data)) {
 
 				$newdata = array();
 
 				$newdata['couponcode'] = preg_replace('/[^A-Z0-9_-]/', '', strtoupper($data['couponcode']));
-			    if (!$$newdata['couponcode'])
-			       $error[] = __('Please enter a valid Coupon Code', 'membership');
+			    if (!$newdata['couponcode'])
+			       $this->errors[] = __('Please enter a valid Coupon Code', 'membership');
 
 			    $newdata['discount'] = round($data['discount'], 2);
 			    if ($newdata['discount'] <= 0)
-					$error[] = __('Please enter a valid Discount Amount', 'membership');
+					$this->errors[] = __('Please enter a valid Discount Amount', 'membership');
 
 				$newdata['discount_type'] = $data['discount_type'];
 				if ($newdata['discount_type'] != 'amt' && $newdata['discount_type'] != 'pct')
-			        $error[] = __('Please choose a valid Discount Type', 'membership');
+			        $this->errors[] = __('Please choose a valid Discount Type', 'membership');
 
 				$newdata['discount_currency'] = $data['discount_currency'];
 
 				$newdata['coupon_sub_id'] = $data['coupon_sub_id'];
 
-			  	$newdata['coupon_startdate'] = strtotime($data['coupon_startdate']);
+			  	$newdata['coupon_startdate'] = date('Y-m-d H:i:s',strtotime($data['coupon_startdate']));
 			 	if ($newdata['coupon_startdate'] === false)
-			        $error[] = __('Please enter a valid Start Date', 'membership');
+			        $this->errors[] = __('Please enter a valid Start Date', 'membership');
 
-				$newdata['coupon_enddate'] = strtotime($data['coupon_enddate']);
+				$newdata['coupon_enddate'] = date('Y-m-d H:i:s',strtotime($data['coupon_enddate']));
 				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
-					$error[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
 
 				$newdata['coupon_uses'] = (is_numeric($data['coupon_uses'])) ? (int) $data['coupon_uses'] : '';
-
+				
+				//We need to insert a site_id
+				global $blog_id;
+				$newdata['site_id'] = $blog_id;
+				
 				$this->db->insert( $this->coupons, $newdata );
 
 
@@ -85,9 +98,40 @@ class M_Coupon {
 	}
 
 	function update( $data ) {
+		
+		$coupon_id = $data['ID'];
+		
+		if(!empty($data) && isset($coupon_id)) {
+			$newdata = array();
 
-		if(!empty($data)) {
+				$newdata['couponcode'] = preg_replace('/[^A-Z0-9_-]/', '', strtoupper($data['couponcode']));
+			    if (!$newdata['couponcode'])
+			       $this->errors[] = __('Please enter a valid Coupon Code', 'membership');
 
+			    $newdata['discount'] = round($data['discount'], 2);
+			    if ($newdata['discount'] <= 0)
+					$this->errors[] = __('Please enter a valid Discount Amount', 'membership');
+
+				$newdata['discount_type'] = $data['discount_type'];
+				if ($newdata['discount_type'] != 'amt' && $newdata['discount_type'] != 'pct')
+			        $this->errors[] = __('Please choose a valid Discount Type', 'membership');
+
+				$newdata['discount_currency'] = $data['discount_currency'];
+
+				$newdata['coupon_sub_id'] = $data['coupon_sub_id'];
+
+			  	$newdata['coupon_startdate'] = date('Y-m-d H:i:s',strtotime($data['coupon_startdate']));
+			 	if ($newdata['coupon_startdate'] === false)
+			        $this->errors[] = __('Please enter a valid Start Date', 'membership');
+
+				$newdata['coupon_enddate'] = date('Y-m-d H:i:s',strtotime($data['coupon_enddate']));
+				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
+					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+
+				$newdata['coupon_uses'] = (is_numeric($data['coupon_uses'])) ? (int) $data['coupon_uses'] : '';
+				$this->db->update( $this->coupons, $newdata, array('ID' => $coupon_id ), '%s', '%s' );
+				//$this->db->update( $this->coupons, $newdata );
+				
 		} else {
 			$this->errors[] = __('Please ensure you complete the form.','membership');
 		}
@@ -126,7 +170,23 @@ class M_Coupon {
 
 		return $this->db->get_row( $sql );
 	}
-
+	function apply_price($price) {
+		if(!is_numeric($this->id) || $this->id < 1)
+			return $price;
+		
+		$coupon = $this->get_coupon();
+		
+		if($coupon->discount_type == 'pct') {
+			$discount = ($price / 100) * $coupon->discount; 
+			$new_price = $price - $discount;
+		} else {
+			// We can't properly determine the discount type so just return the original price
+			return $price;
+		}
+		
+		return apply_filters('membership_coupon_price', $new_price, $price, $coupon);
+		
+	}
 	function addform() {
 
 		global $M_options;

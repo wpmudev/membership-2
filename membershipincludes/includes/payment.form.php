@@ -80,7 +80,7 @@ if($member->on_sub( $subscription )) {
 } else {
 
 	$sub =  new M_Subscription( $subscription );
-
+	$coupon_code = $_POST['coupon_code'];
 	?>
 		<div id='membership-wrapper'>
 			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
@@ -88,7 +88,14 @@ if($member->on_sub( $subscription )) {
 			<div class="alert alert-success">
 			<?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?>
 			</div>
-
+			
+			<div class="membership-coupon">
+				<form method="post">
+					<label><?php echo __('Have a coupon code?','membership'); ?>
+					<input type="text" name="coupon_code" value="<?php echo (!empty($coupon_code) ? $_POST['coupon_code'] : ''); ?>" /></label>
+					<input type="submit" name="apply_coupon" value="<?php _e('Apply','membership'); ?>"/>
+				</form>
+			</div>
 			<table class='purchasetable'>
 			<tr>
 				<td class='detailscolumn'>
@@ -125,13 +132,16 @@ if($member->on_sub( $subscription )) {
 						}
 						echo $price;
 					}
-				?>
+					?>
 				</td>
 				<td class='buynowcolumn'>
 				<?php
 				$pricing = $sub->get_pricingarray();
-
+				
 				if(!empty($pricing)) {
+					if(!empty($coupon_code)) {
+						$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+					}
 					do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 				}
 				?>

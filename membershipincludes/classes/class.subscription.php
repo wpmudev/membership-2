@@ -106,7 +106,18 @@ if(!class_exists('M_Subscription')) {
 			}
 
 		}
-
+		function apply_coupon_pricing($coupon_code = false, $pricing = false) {
+			if( $coupon_code === false || $pricing === false )
+				return false;
+			
+			$coupon = new M_Coupon($coupon_code);
+			
+			foreach($pricing as $key => $value) {
+				$pricing[$key]['amount'] = $coupon->apply_price($value['amount']);
+			}
+			return $pricing;
+			
+		}
 		function get_pricingarray() {
 
 			$levels = $this->get_levels();

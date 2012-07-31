@@ -292,7 +292,7 @@ if(!class_exists('membershipadmin')) {
 				do_action('membership_add_menu_items_after_levels');
 				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
 				do_action('membership_add_menu_items_after_subscriptions');
-				//add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
+				add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
 				do_action('membership_add_menu_items_after_coupons');
 				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
 				do_action('membership_add_menu_items_after_purchases');
@@ -6830,7 +6830,6 @@ if(!class_exists('membershipadmin')) {
 				// We are on a single site admin interface
 				$sql .= $this->db->prepare( "WHERE site_id = %d", $this->db->blogid );
 			}
-
 			return $this->db->get_results( $sql );
 
 		}
@@ -6855,8 +6854,8 @@ if(!class_exists('membershipadmin')) {
 
 					case 'added':	$id = (int) $_POST['ID'];
 									check_admin_referer('add-coupon');
-
-									if($id) {
+									
+									if(!$id) {
 										$coupon = new M_Coupon( $id );
 
 										$errors = $coupon->add( $_POST );
@@ -6906,18 +6905,20 @@ if(!class_exists('membershipadmin')) {
 									break;
 
 					case 'bulk-delete':
-									check_admin_referer('bulk-subscriptions');
-									foreach($_GET['subcheck'] AS $value) {
+									check_admin_referer('bulk-coupon-actions');
+									
+									foreach($_GET['coupons_checks'] as $value) {
 										if(is_numeric($value)) {
-											$sub_id = (int) $value;
+											$coupon_id = (int) $value;
 
-											$sub = new M_Subscription( $sub_id );
+											$coupon = new M_Coupon( $coupon_id );
 
-											$sub->delete();
+											$coupon->delete($coupon_id);
 										}
 									}
 
-									wp_safe_redirect( add_query_arg( 'msg', 2, wp_get_referer() ) );
+									wp_safe_redirect( add_query_arg( 'msg', 7, wp_get_referer() ) );
+									exit;
 									break;
 
 				}
@@ -7017,6 +7018,7 @@ if(!class_exists('membershipadmin')) {
 
 			$messages[5] = __('Coupon deleted.', 'membership');
 			$messages[6] = __('Coupon not deleted.', 'membership');
+			$messages[7] = __('Coupons deleted.', 'membership');
 
 			?>
 			<div class='wrap'>
@@ -7054,7 +7056,19 @@ if(!class_exists('membershipadmin')) {
 		      		'remaining'    => __('Remaining Uses', 'membership')
 				);
 				?>
-				<form>
+				
+				<form method="get" action="?page=<?php echo esc_attr($page); ?>">
+					<input type="hidden" name="page" value="<?php echo esc_attr($page); ?>" />
+					<?php wp_nonce_field('bulk-coupon-actions'); ?>
+					<div class="tablenav">
+						<div class="alignleft actions">
+							<select name="action">
+								<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
+								<option value="bulk-delete"><?php _e('Delete Coupon','membership'); ?></option>
+							</select>
+							<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>">
+						</div>
+					</div>
 					<table width="100%" cellpadding="3" cellspacing="3" class="widefat fixed">
 						<thead>
 							<tr>
@@ -7123,7 +7137,7 @@ if(!class_exists('membershipadmin')) {
 
 										case 'start': ?>
 											<td scope="row">
-			                  				<?php echo date_i18n( get_option('date_format'), $coupon->coupon_startdate ); ?>
+			                  				<?php echo mysql2date( get_option('date_format'), $coupon->coupon_startdate ); ?>
 											</td>
 										<?php
 										break;
@@ -7131,7 +7145,7 @@ if(!class_exists('membershipadmin')) {
 										case 'end': ?>
 											<td scope="row">
 												<?php if (!empty($coupon->coupon_enddate)) {
-													echo date_i18n( get_option('date_format'), $coupon->coupon_enddate );
+													echo mysql2date( get_option('date_format'), $coupon->coupon_enddate );
 												} else {
 													_e('No End', 'membership');
 												}
