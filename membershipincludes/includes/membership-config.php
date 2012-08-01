@@ -35,4 +35,6 @@ if(!defined('MEMBERSHIP_ADDONS_ONLY_SUPERADMIN')) define( 'MEMBERSHIP_ADDONS_ONL
 if(!defined('MEMBERSHIP_FILE_NAME_PREFIX')) define( 'MEMBERSHIP_FILE_NAME_PREFIX', '');
 // File protection - increment the file id by a set amount
 if(!defined('MEMBERSHIP_FILE_NAME_INCREMENT')) define( 'MEMBERSHIP_FILE_NAME_INCREMENT', 2771);
+// Set to true if you want a category page with no posts to be redirected to a protected page
+if(!defined('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE')) define('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE', false);
 ?>

@@ -748,7 +748,13 @@ class M_Categories extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_singular || count($posts) > 1) {
+		$redirect = false;
+
+		if(is_category() && count($posts) == 0 && MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE === true) {
+			$redirect = true;
+		}
+
+		if((!$wp_query->is_singular || count($posts) > 1) && $redirect != true) {
 			return $posts;
 		}
 
@@ -778,7 +784,13 @@ class M_Categories extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_singular || count($posts) > 1) {
+		$redirect = false;
+
+		if(is_category() && count($posts) == 0 && MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE === true) {
+			$redirect = true;
+		}
+
+		if((!$wp_query->is_singular || count($posts) > 1) && $redirect != true) {
 			return $posts;
 		}
 
