@@ -47,6 +47,8 @@ require_once('membershipincludes/classes/class.urlgroup.php');
 require_once('membershipincludes/classes/class.ping.php');
 // Add in the coupon
 require_once('membershipincludes/classes/class.coupon.php');
+// Add in the Admin bar
+require_once('membershipincludes/classes/class.adminbar.php');
 // Set up the default rules
 require_once('membershipincludes/includes/default.rules.php');
 
