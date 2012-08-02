@@ -663,6 +663,10 @@ if(!class_exists('membershipadmin')) {
 									update_option('membership_active', 'no');
 									wp_safe_redirect( wp_get_referer() );
 									break;
+
+				default:			do_action('membership_dashboard_' . $action);
+									break;
+
 			}
 
 			wp_enqueue_script('flot_js', membership_url('membershipincludes/js/jquery.flot.min.js'), array('jquery'));
@@ -6854,7 +6858,7 @@ if(!class_exists('membershipadmin')) {
 
 					case 'added':	$id = (int) $_POST['ID'];
 									check_admin_referer('add-coupon');
-									
+
 									if(!$id) {
 										$coupon = new M_Coupon( $id );
 
@@ -6906,7 +6910,7 @@ if(!class_exists('membershipadmin')) {
 
 					case 'bulk-delete':
 									check_admin_referer('bulk-coupon-actions');
-									
+
 									foreach($_GET['coupons_checks'] as $value) {
 										if(is_numeric($value)) {
 											$coupon_id = (int) $value;
@@ -7056,7 +7060,7 @@ if(!class_exists('membershipadmin')) {
 		      		'remaining'    => __('Remaining Uses', 'membership')
 				);
 				?>
-				
+
 				<form method="get" action="?page=<?php echo esc_attr($page); ?>">
 					<input type="hidden" name="page" value="<?php echo esc_attr($page); ?>" />
 					<?php wp_nonce_field('bulk-coupon-actions'); ?>
