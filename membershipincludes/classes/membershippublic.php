@@ -254,26 +254,52 @@ if(!class_exists('membershippublic')) {
 				$user = wp_get_current_user();
 			}
 
-			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
-				// Admins can see everything
+			if( $M_active == 'no' ) {
+				// The plugin isn't active so just return
 				return;
 			}
 
-			if(!empty($wp->query_vars['feed'])) {
-				// This is a feed access
-				// Set the feed rules
-				if(isset($_GET['k'])) {
-					$key = $_GET['k'];
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
+				// Admins can see everything - unless we have a cookie set to limit viewing
+				if(!empty($_COOKIE['membershipuselevel']) && $_COOKIE['membershipuselevel'] != '0') {
 
-					$user_id = $this->find_user_from_key($key);
-					$user_id = (int) $user_id;
-					if($user_id > 0) {
-						// Logged in - check there settings, if they have any.
-						$member = new M_Membership($user_id);
-						// Load the levels for this member - and associated rules
-						$member->load_levels( true );
+					$level_id = (int) $_COOKIE['membershipuselevel'];
+
+					//die('here - ' . $level_id);
+					$member = new M_Membership($user->ID);
+					$member->assign_level( $level_id, true );
+				} else {
+					return;
+				}
+			} else {
+				// We are not a membershipadmin user
+				if(!empty($wp->query_vars['feed'])) {
+					// This is a feed access
+					// Set the feed rules
+					if(isset($_GET['k'])) {
+						$key = $_GET['k'];
+
+						$user_id = $this->find_user_from_key($key);
+						$user_id = (int) $user_id;
+						if($user_id > 0) {
+							// Logged in - check there settings, if they have any.
+							$member = new M_Membership($user_id);
+							// Load the levels for this member - and associated rules
+							$member->load_levels( true );
+						} else {
+							$member = new M_Membership(false);
+							if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+								$member->assign_level($M_options['strangerlevel'], true );
+							} else {
+								// This user can't access anything on the site - show a blank feed.
+								add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
+							}
+						}
+
 					} else {
-						$member = new M_Membership(false);
+						// not passing a key so limit based on stranger settings
+						// need to grab the stranger settings
+						$member = new M_Membership($user->ID);
 						if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
 							$member->assign_level($M_options['strangerlevel'], true );
 						} else {
@@ -281,38 +307,27 @@ if(!class_exists('membershippublic')) {
 							add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
 						}
 					}
-
 				} else {
-					// not passing a key so limit based on stranger settings
-					// need to grab the stranger settings
+					// Users
 					$member = new M_Membership($user->ID);
-					if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-						$member->assign_level($M_options['strangerlevel'], true );
-					} else {
-						// This user can't access anything on the site - show a blank feed.
-						add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
-					}
-				}
-			} else {
-				// Users
-				$member = new M_Membership($user->ID);
 
-				if($user->ID > 0 && $member->has_levels()) {
-					// Load the levels for this member - and associated rules
-					$member->load_levels( true );
-				} else {
-					// not logged in so limit based on stranger settings
-					// need to grab the stranger settings
-					if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-						$member->assign_level( $M_options['strangerlevel'], true );
+					if($user->ID > 0 && $member->has_levels()) {
+						// Load the levels for this member - and associated rules
+						$member->load_levels( true );
 					} else {
-						// This user can't access anything on the site - .
-						add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
-						add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-						// Hide all pages from menus - except the signup one
-						add_filter('get_pages', array(&$this, 'remove_pages_menu'));
-						// Hide all categories from lists
-						add_filter( 'get_terms', array(&$this, 'remove_categories'), 1, 3 );
+						// not logged in so limit based on stranger settings
+						// need to grab the stranger settings
+						if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+							$member->assign_level( $M_options['strangerlevel'], true );
+						} else {
+							// This user can't access anything on the site - .
+							add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
+							add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+							// Hide all pages from menus - except the signup one
+							add_filter('get_pages', array(&$this, 'remove_pages_menu'));
+							// Hide all categories from lists
+							add_filter( 'get_terms', array(&$this, 'remove_categories'), 1, 3 );
+						}
 					}
 				}
 			}
