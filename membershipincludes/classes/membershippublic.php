@@ -265,7 +265,6 @@ if(!class_exists('membershippublic')) {
 
 					$level_id = (int) $_COOKIE['membershipuselevel'];
 
-					//die('here - ' . $level_id);
 					$member = new M_Membership($user->ID);
 					$member->assign_level( $level_id, true );
 				} else {
