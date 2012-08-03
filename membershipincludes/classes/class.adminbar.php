@@ -126,6 +126,8 @@ if(!class_exists('M_Adminbar')) {
 			if(!empty($_GET['level_id'])) {
 				$level_id = (int) $_GET['level_id'];
 				check_admin_referer( 'membershipuselevel-' . $level_id );
+
+				@setcookie('membershipuselevel', $level_id, 0, COOKIEPATH, COOKIE_DOMAIN);
 			}
 
 			wp_safe_redirect( wp_get_referer() );
@@ -141,6 +143,10 @@ if(!class_exists('M_Adminbar')) {
 			$title = __('View site as : ', 'membership');
 			if(empty($_COOKIE['membershipuselevel'])) {
 				$title .= __('Membership Admin', 'membership');
+			} else {
+				$level_id = (int) $_COOKIE['membershipuselevel'];
+				$level = new M_Level( $level_id );
+				$title .= $level->level_title();
 			}
 			$metatitle = __('Select a level to view your site as', 'membership');
 			$linkurl = ''; // No link for the main menu
@@ -167,16 +173,14 @@ if(!class_exists('M_Adminbar')) {
 				}
 			}
 
-
-			/*
-			$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=activate"), 'toggle-plugin');
+			$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=membershipuselevel&amp;level_id=0"), 'membershipuselevel-0');
 			$wp_admin_bar->add_menu( array(
-				'parent'    => 'membership',
-				'id'        => 'membershipenable',
-				'title'     => __('Enable Membership', 'membership'),
-				'href'      => $linkurl,
+				'parent'    => 'membershipuselevel',
+				'id'        => 'membershipuselevel-0',
+				'title'     => __('Reset', 'membership'),
+				'href'      => $linkurl
 			) );
-			*/
+
 		}
 
 		function add_admin_bar_items() {
