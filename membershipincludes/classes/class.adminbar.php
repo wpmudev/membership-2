@@ -123,7 +123,7 @@ if(!class_exists('M_Adminbar')) {
 
 		function switch_membership_level() {
 
-			if(!empty($_GET['level_id'])) {
+			if(isset($_GET['level_id'])) {
 				$level_id = (int) $_GET['level_id'];
 				check_admin_referer( 'membershipuselevel-' . $level_id );
 
@@ -141,7 +141,7 @@ if(!class_exists('M_Adminbar')) {
 			$levels = $this->get_membership_levels( array( 'level_id' => 'active', 'order_by' => 'order_id' ) );
 
 			$title = __('View site as : ', 'membership');
-			if(empty($_COOKIE['membershipuselevel'])) {
+			if(empty($_COOKIE['membershipuselevel']) || $_COOKIE['membershipuselevel'] == '0') {
 				$title .= __('Membership Admin', 'membership');
 			} else {
 				$level_id = (int) $_COOKIE['membershipuselevel'];
@@ -173,13 +173,17 @@ if(!class_exists('M_Adminbar')) {
 				}
 			}
 
-			$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=membershipuselevel&amp;level_id=0"), 'membershipuselevel-0');
-			$wp_admin_bar->add_menu( array(
-				'parent'    => 'membershipuselevel',
-				'id'        => 'membershipuselevel-0',
-				'title'     => __('Reset', 'membership'),
-				'href'      => $linkurl
-			) );
+			if(empty($_COOKIE['membershipuselevel']) || $_COOKIE['membershipuselevel'] == '0') {
+			} else {
+				$linkurl = wp_nonce_url(admin_url("admin.php?page=membership&amp;action=membershipuselevel&amp;level_id=0"), 'membershipuselevel-0');
+				$wp_admin_bar->add_menu( array(
+					'parent'    => 'membershipuselevel',
+					'id'        => 'membershipuselevel-0',
+					'title'     => __('Reset', 'membership'),
+					'href'      => $linkurl
+				) );
+			}
+
 
 		}
 
