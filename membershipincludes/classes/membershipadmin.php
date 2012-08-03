@@ -7237,6 +7237,7 @@ if(!class_exists('membershipadmin')) {
 		// The popover registration functions added to the bottom of this class until a new more suitable home can be found
 		function popover_signup_form() {
 
+			$content = '';
 			$content = apply_filters('membership_popover_signup_form_before_content', $content );
 			ob_start();
 			if( defined('MEMBERSHIP_POPOVER_SIGNUP_FORM') && file_exists( MEMBERSHIP_POPOVER_SIGNUP_FORM ) ) {
@@ -7347,158 +7348,19 @@ if(!class_exists('membershipadmin')) {
 
 		function popover_sendpayment_form( $user_id = false ) {
 
-			if(!$user_id) {
-				$user = wp_get_current_user();
-
-				$spmemuserid = $user->ID;
-
-				if(!empty($user->ID) && is_numeric($user->ID) ) {
-					$member = new M_Membership( $user->ID);
-				} else {
-					$member = current_member();
-				}
-			} else {
-				$member = new M_Membership( $user_id );
+			$content = '';
+			$content = apply_filters('membership_popover_sendpayment_form_before_content', $content );
+			ob_start();
+			if( defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM ) ) {
+				include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
+			} elseif(file_exists( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) ) ) {
+				include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
 			}
+			$content .= ob_get_contents();
+			ob_end_clean();
 
-			$subscription = (int) $_REQUEST['subscription'];
-
-			if($member->on_sub( $subscription )) {
-					$sub =  new M_Subscription( $subscription );
-				?>
-					<div class='header' style='width: 750px'>
-					<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
-					</div>
-					<div class='fullwidth'>
-						<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
-
-						<table class='purchasetable'>
-							<?php $subs = $this->get_subscriptions();
-
-									foreach($subs as $s) {
-										if($s->id == $subscription) {
-											continue;
-										}
-										$sub =  new M_Subscription( $s->id );
-										?>
-											<tr>
-												<td class='detailscolumn'>
-												<?php echo $sub->sub_name(); ?>
-												</td>
-												<td class='pricecolumn'>
-												<?php
-													$amount = $sub->sub_pricetext();
-
-													if(!empty($amount)) {
-														echo $amount;
-													} else {
-														$first = $sub->get_level_at_position(1);
-
-														if(!empty($first)) {
-															$price = $first->level_price;
-															if($price == 0) {
-																$price = "Free";
-															} else {
-
-																$M_options = get_option('membership_options', array());
-
-																switch( $M_options['paymentcurrency'] ) {
-																	case "USD": $price = "$" . $price;
-																				break;
-
-																	case "GBP":	$price = "&pound;" . $price;
-																				break;
-
-																	case "EUR":	$price = "&euro;" . $price;
-																				break;
-																}
-															}
-														}
-														echo $price;
-													}
-												?>
-												</td>
-												<td class='buynowcolumn'>
-												<?php
-												$pricing = $sub->get_pricingarray();
-
-												if($pricing) {
-													do_action('membership_purchase_button', $sub, $pricing, $member->ID);
-												}
-												?>
-												</td>
-											</tr>
-										<?php
-									}
-							?>
-						</table>
-					</div>
-
-				<?php
-			} else {
-
-				$sub =  new M_Subscription( $subscription );
-
-				?>
-					<div class='header' style='width: 750px'>
-					<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
-					</div>
-					<div class='fullwidth'>
-						<p><?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.','membership'); ?></p>
-
-						<table class='purchasetable'>
-							<tr>
-								<td class='detailscolumn'>
-								<?php echo $sub->sub_name(); ?>
-								</td>
-								<td class='pricecolumn'>
-								<?php
-									$amount = $sub->sub_pricetext();
-
-									if(!empty($amount)) {
-										echo $amount;
-									} else {
-										$first = $sub->get_level_at_position(1);
-
-										if(!empty($first)) {
-											$price = $first->level_price;
-											if($price == 0) {
-												$price = "Free";
-											} else {
-
-												$M_options = get_option('membership_options', array());
-
-												switch( $M_options['paymentcurrency'] ) {
-													case "USD": $price = "$" . $price;
-																break;
-
-													case "GBP":	$price = "&pound;" . $price;
-																break;
-
-													case "EUR":	$price = "&euro;" . $price;
-																break;
-												}
-											}
-										}
-										echo $price;
-									}
-								?>
-								</td>
-								<td class='buynowcolumn'>
-								<?php
-								$pricing = $sub->get_pricingarray();
-
-								if($pricing) {
-									do_action('membership_purchase_button', $sub, $pricing, $member->ID);
-								}
-								?>
-								</td>
-							</tr>
-						</table>
-
-					</div>
-				<?php
-			}
+			$content = apply_filters('membership_popover_sendpayment_form_after_content', $content );
+			echo $content;
 
 			exit;
 		}
