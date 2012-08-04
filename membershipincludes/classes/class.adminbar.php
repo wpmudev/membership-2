@@ -189,16 +189,21 @@ if(!class_exists('M_Adminbar')) {
 
 		function add_admin_bar_items() {
 
-			global $M_options;
+			global $M_options, $user;
 
-			$active = M_get_membership_active();
-
-			if($active == 'yes') {
-				add_action( 'admin_bar_menu', array( &$this, 'add_admin_bar_view_site_as' ), 8 );
-			} else {
-				add_action( 'admin_bar_menu', array( &$this, 'add_admin_bar_enabled_item' ), 8 );
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
 			}
 
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
+				$active = M_get_membership_active();
+
+				if($active == 'yes') {
+					add_action( 'admin_bar_menu', array( &$this, 'add_admin_bar_view_site_as' ), 8 );
+				} else {
+					add_action( 'admin_bar_menu', array( &$this, 'add_admin_bar_enabled_item' ), 8 );
+				}
+			}
 
 		}
 
