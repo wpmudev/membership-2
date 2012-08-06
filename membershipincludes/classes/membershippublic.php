@@ -81,7 +81,7 @@ if(!class_exists('membershippublic')) {
 			}
 
 			// Check if the membership plugin is active
-			$M_active = get_option('membership_active', 'no');
+			$M_active = M_get_membership_active();
 
 			// Create our subscription page shortcode
 			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
@@ -106,6 +106,18 @@ if(!class_exists('membershippublic')) {
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
 				// Admins can see everything
 				return;
+			}
+
+			if( $M_active == 'no' ) {
+				// The plugin isn't active so just return
+				return;
+			}
+
+			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
+				// Admins can see everything - unless we have a cookie set to limit viewing
+				if(empty($_COOKIE['membershipuselevel']) || $_COOKIE['membershipuselevel'] == '0') {
+					return;
+				}
 			}
 
 			// More tags

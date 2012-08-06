@@ -226,34 +226,12 @@ if(!class_exists('membershipadmin')) {
 
 		}
 
-		function get_membership_active() {
-
-			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-				if(function_exists('get_blog_option')) {
-					if(function_exists('switch_to_blog')) {
-						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
-					}
-					$membershipactive = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'no');
-					if(function_exists('restore_current_blog')) {
-						restore_current_blog();
-					}
-				} else {
-					$membershipactive = get_option('membership_active', 'no');
-				}
-			} else {
-				$membershipactive = get_option('membership_active', 'no');
-			}
-
-			return $membershipactive;
-
-		}
-
 		function show_membership_status_notice() {
 
 			global $user, $M_options;
 
 			// Membership active check
-			$membershipactive = $this->get_membership_active();
+			$membershipactive = M_get_membership_active();
 			if($membershipactive == 'no') {
 				echo '<div class="error fade"><p>' . sprintf(__("The Membership plugin is not enabled. To ensure your content is protected you should <a href='%s'>enable it</a>", 'membership'), wp_nonce_url("?page=membership&amp;action=activate", 'toggle-plugin')) . '</p></div>';
 			}
@@ -713,7 +691,7 @@ if(!class_exists('membershipadmin')) {
 
 			$plugin = get_plugin_data(membership_dir('membershippremium.php'));
 
-			$membershipactive = get_option('membership_active', 'no');
+			$membershipactive = M_get_membership_active();
 
 			echo __('Membership protection ','membership');
 			echo __(' is ', 'membership');
