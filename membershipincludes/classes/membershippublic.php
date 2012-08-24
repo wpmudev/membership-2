@@ -45,17 +45,26 @@ if(!class_exists('membershippublic')) {
 
 			// Register
 			add_filter('register', array(&$this, 'override_register') );
+			
+			// Ultimate Facebook Compatibility
+			add_filter( 'wdfb_registration_redirect_url', array(&$this, 'wdfb_registration_redirect_url') );
 
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
 			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
 
 		}
-
+		
+		function wdfb_registration_redirect_url($url) {
+			global $M_options;
+			$url = get_permalink($M_options['registration_page']);
+			return $url;
+		}
+		
 		function membershippublic() {
 			$this->__construct();
 		}
-
+		
 		function load_textdomain() {
 
 			$locale = apply_filters( 'membership_locale', get_locale() );
