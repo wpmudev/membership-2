@@ -1620,6 +1620,7 @@ class M_URLGroups extends M_Rule {
 		global $M_options, $wp_query;
 
 		$redirect = false;
+		$found = false;
 		$host = '';
 		if(is_ssl()) {
 			$host = "https://";
@@ -1653,12 +1654,13 @@ class M_URLGroups extends M_Rule {
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if(!$group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
-				$redirect = true;
+			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+				// We've found a pge in the positive rules so can let the user see it
+				$found = true;
 			}
 		}
 
-		if($redirect === true) {
+		if($found !== true) {
 			// we need to redirect
 			$this->redirect();
 		}
