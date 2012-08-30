@@ -152,7 +152,7 @@
 				<div id='membership-wrapper'>
 					<legend><?php echo __('Your Subscriptions','membership'); ?></legend>
 					<div class="alert alert-success">
-					<?php echo __('Your current subscriptions are listed here. You can renew, cancel or updgrade your subscriptions by using the forms below.', 'membership'); ?>
+					<?php echo __('Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', 'membership'); ?>
 					</div>
 					<div class="priceboxes">
 					<?php
