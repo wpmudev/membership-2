@@ -270,7 +270,7 @@ if(!class_exists('membershipadmin')) {
 				do_action('membership_add_menu_items_after_levels');
 				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
 				do_action('membership_add_menu_items_after_subscriptions');
-				//add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
+				add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
 				do_action('membership_add_menu_items_after_coupons');
 				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
 				do_action('membership_add_menu_items_after_purchases');
