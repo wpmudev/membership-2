@@ -107,6 +107,7 @@ if(!class_exists('M_Subscription')) {
 
 		}
 		function apply_coupon_pricing($coupon_code = false, $pricing = false) {
+			
 			if( $coupon_code === false || $pricing === false )
 				return false;
 			
@@ -114,8 +115,9 @@ if(!class_exists('M_Subscription')) {
 			
 			foreach($pricing as $key => $value) {
 				$pricing[$key]['amount'] = $coupon->apply_price($value['amount']);
+				$this->coupon_label = $coupon->coupon_label;
 			}
-			return $pricing;
+			return apply_filters('membership_apply_coupon_pricingarray', $pricing, $coupon_code);
 			
 		}
 		function get_pricingarray() {
