@@ -10,6 +10,8 @@ class M_Coupon {
 
 	var $coupons;
 	var $subscriptions;
+	
+	var $coupon_label = false;
 
 	var $id;
 	var $_coupon;
@@ -179,9 +181,15 @@ class M_Coupon {
 		if($coupon->discount_type == 'pct') {
 			$discount = ($price / 100) * $coupon->discount; 
 			$new_price = $price - $discount;
+			$this->coupon_label = sprintf(__('%s: -%s%%','membership'), $coupon->couponcode, $coupon->discount );
+		} else if($coupon->discount_type == 'amt') {
+			$new_price = $price - $coupon->discount;
+			$discount_currency = (isset($M_options['paymentcurrency']) ? $M_options['paymentcurrency'] : '$');
+			$discount_currency = (isset($coupon->discount_currency) && !empty($coupon->discount_currency) ? $coupon->discount_currency : $discount_currency);
+			$this->coupon_label = sprintf(__('%s: -%s%s','membership'), $coupon->couponcode, $discount_currency, $coupon->discount );
 		} else {
-			// We can't properly determine the discount type so just return the original price
-			return $price;
+			//Unknown type
+			$new_price = $price;
 		}
 		
 		return apply_filters('membership_coupon_price', $new_price, $price, $coupon);
@@ -203,7 +211,7 @@ class M_Coupon {
 		echo '<td valign="top"><input name="discount" type="text" size="6" title="' . __('discount', 'membership') . '" style="width: 6em;" value="" />';
 		echo "&nbsp;";
 		echo "<select name='discount_type'>";
-			echo "<option value='amt'>" . $M_options['paymentcurrency'] . "</option>";
+			echo "<option value='amt'>" . (isset($M_options['paymentcurrency']) ? $M_options['paymentcurrency'] : '$') . "</option>";
 			echo "<option value='pct'>%</option>";
 		echo "</select>";
 		echo "<input type='hidden' name='discount_currency' value='" . $M_options['paymentcurrency'] . "'/>";
@@ -275,8 +283,8 @@ class M_Coupon {
 		echo '" />';
 		echo "&nbsp;";
 		echo "<select name='discount_type'>";
-			echo "<option value='amt' " . selected('amt', esc_attr($this->_coupon->discount_type)) . ">" . esc_attr($this->_coupon->discount_currency) . "</option>";
-			echo "<option value='pct'" . selected('pct', esc_attr($this->_coupon->discount_type)) . ">%</option>";
+			echo "<option value='amt' " . selected('amt', esc_attr($this->_coupon->discount_type), false) . ">" . (isset($M_options['paymentcurrency']) ? $M_options['paymentcurrency'] : '$') . "</option>";
+			echo "<option value='pct'" . selected('pct', esc_attr($this->_coupon->discount_type), false) . ">%</option>";
 		echo "</select>";
 		echo "<input type='hidden' name='discount_currency' value='" . esc_attr($this->_coupon->discount_currency) . "'/>";
 		echo "</td>";
