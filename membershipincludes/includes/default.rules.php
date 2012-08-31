@@ -251,6 +251,7 @@ class M_Posts extends M_Rule {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			$redirect = false;
+			$found = false;
 			$url = '';
 
 			$exclude = array();
@@ -295,12 +296,12 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
-					$redirect = true;
+				if( $group->url_matches( $url ) ) {
+					$found = true;
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($found !== true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
 				$this->redirect();
 			} else {
@@ -582,6 +583,7 @@ class M_Pages extends M_Rule {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			$redirect = false;
+			$found = false;
 			$url = '';
 
 			$exclude = array();
@@ -626,12 +628,12 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
-					$redirect = true;
+				if( $group->url_matches( $url ) ) {
+					$found = true;
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($found !== true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
 				$this->redirect();
 			} else {
