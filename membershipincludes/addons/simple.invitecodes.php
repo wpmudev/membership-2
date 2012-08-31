@@ -105,7 +105,8 @@ function M_AddSimpleInviteField() {
 	<?php
 }
 add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField');
-add_action( 'bp_after_account_details_fields', 'M_AddSimpleInviteField');
+// Moved on BP to Profile area
+add_action( 'bp_custom_profile_edit_fields', 'M_AddSimpleInviteField');
 
 function M_AddSimpleInviteFieldProcess( $error ) {
 
