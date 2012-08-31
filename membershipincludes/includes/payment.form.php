@@ -2,6 +2,14 @@
 
 if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$pricing = $sub->get_pricingarray();
+		$remove_coupon = sprintf('<input type="submit" name="remove_coupon" value="%s" href="#" id="membership_remove_coupon" />',__('Remove Coupon','membership'));
+		
+		if(!empty($pricing) && !empty($coupon_code) ) {
+				$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+		}
+		
 	?>
 		<div id='membership-wrapper'>
 		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
@@ -31,6 +39,9 @@ if($member->on_sub( $subscription )) {
 
 										if(!empty($amount)) {
 											echo $amount;
+											if($sub->coupon_label) {
+												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+											}
 										} else {
 											$first = $sub->get_level_at_position(1);
 
@@ -55,12 +66,15 @@ if($member->on_sub( $subscription )) {
 												}
 											}
 											echo $price;
+											if($sub->coupon_label) {
+												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+											}
 										}
 									?>
 									</td>
 									<td class='buynowcolumn'>
 									<?php
-									$pricing = $sub->get_pricingarray();
+									
 
 									if(!empty($pricing)) {
 										do_action('membership_purchase_button', $sub, $pricing, $member->ID);
@@ -72,6 +86,15 @@ if($member->on_sub( $subscription )) {
 						}
 				?>
 			</table>
+			<div class="membership-coupon">
+					<?php if(empty($coupon_code)) : ?>
+					<label><?php echo __('Have a coupon code?','membership'); ?>
+					<input type="text" name="coupon_code" value="<?php echo (!empty($coupon_code) ? $_REQUEST['coupon_code'] : ''); ?>" /></label>
+					<input type="submit" name="apply_coupon" value="<?php _e('Apply','membership'); ?>"/>
+					<?php else: ?>
+						<?php echo $remove_coupon; ?>
+					<?php endif; ?>
+			</div>
 			</fieldset>
 			</form>
 		</div>
@@ -84,10 +107,8 @@ if($member->on_sub( $subscription )) {
 	$pricing = $sub->get_pricingarray();
 	$remove_coupon = sprintf('<input type="submit" name="remove_coupon" value="%s" href="#" id="membership_remove_coupon" />',__('Remove Coupon','membership'));
 
-	if(!empty($pricing)) {
-		if(!empty($coupon_code)) {
-			$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
-		}
+	if(!empty($pricing) && !empty($coupon_code) ) {
+		$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
 	}
 	?>
 		<div id='membership-wrapper'>
