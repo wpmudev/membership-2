@@ -130,7 +130,7 @@ if(!class_exists('membershippublic')) {
 			}
 
 			// More tags
-			if($M_options['moretagdefault'] == 'no' ) {
+			if( isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no' ) {
 				// More tag content is not visible by default - works for both web and rss content - unfortunately
 				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
 				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
