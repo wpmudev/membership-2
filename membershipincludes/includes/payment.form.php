@@ -1,6 +1,14 @@
 <?php
-
-if($member->on_sub( $subscription )) {
+if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
+	
+	$gateway = M_get_class_for_gateway($_REQUEST['gateway']);
+	if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
+		$sub =  new M_Subscription( $subscription );
+		$pricing = $sub->get_pricingarray();
+		do_action('membership_payment_form', $sub, $pricing, $member->ID);
+	}
+		
+} else if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );
 		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$pricing = $sub->get_pricingarray();
@@ -86,7 +94,11 @@ if($member->on_sub( $subscription )) {
 						}
 				?>
 			</table>
+			
+			</fieldset>
+			</form>
 			<div class="membership-coupon">
+				<form method="post">
 					<?php if(empty($coupon_code)) : ?>
 					<label><?php echo __('Have a coupon code?','membership'); ?>
 					<input type="text" name="coupon_code" value="<?php echo (!empty($coupon_code) ? $_REQUEST['coupon_code'] : ''); ?>" /></label>
@@ -94,9 +106,8 @@ if($member->on_sub( $subscription )) {
 					<?php else: ?>
 						<?php echo $remove_coupon; ?>
 					<?php endif; ?>
+				</form>
 			</div>
-			</fieldset>
-			</form>
 		</div>
 
 	<?php
