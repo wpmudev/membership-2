@@ -116,6 +116,7 @@ if(!class_exists('membershipadmin')) {
 
 			// if logged in:
 			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
+			add_action( 'wp_ajax_extra_form', array(&$this, 'popover_extraform_process') );
 			add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
 			add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
 
@@ -7265,6 +7266,16 @@ if(!class_exists('membershipadmin')) {
 					if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
 						$member->deactivate();
 					}
+					
+					$creds = array(
+						'user_login' => $_POST['user_login'],
+						'user_password' => $_POST['password'],
+						'remember' => true
+					);
+					$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
+					$user = wp_signon( $creds, $is_ssl );
+					if ( is_wp_error($user) && method_exists($userid, 'get_error_message') )
+						$error[] = $user->get_error_message();
 
 					if( has_action('membership_susbcription_form_registration_notification') ) {
 						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
@@ -7323,7 +7334,10 @@ if(!class_exists('membershipadmin')) {
 			exit;
 
 		}
-
+		function popover_extraform_process() {
+			echo $this->popover_extra_payment_form();
+			exit;
+		}
 		function popover_sendpayment_form( $user_id = false ) {
 
 			$content = '';
@@ -7341,6 +7355,26 @@ if(!class_exists('membershipadmin')) {
 			echo $content;
 
 			exit;
+		}
+		
+		function popover_extra_payment_form( $user_id = false ) {
+			
+			$content = '';
+			$content = apply_filters('membership_popover_extraform_before_content', $content );
+			ob_start();
+			if( defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM ) ) {
+				include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
+			} elseif(file_exists( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) ) ) {
+				include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_popover_extraform_after_content', $content );
+			echo $content;
+
+			exit;
+			
 		}
 
 		function create_defaults() {
