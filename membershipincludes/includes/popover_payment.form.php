@@ -15,8 +15,39 @@ if(!$user_id) {
 
 $subscription = (int) $_REQUEST['subscription'];
 
-if($member->on_sub( $subscription )) {
+if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
+	
+	$gateway = M_get_class_for_gateway($_REQUEST['gateway']);
+	if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
 		$sub =  new M_Subscription( $subscription );
+		$pricing = $sub->get_pricingarray();
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+
+		if(!empty($pricing) && !empty($coupon_code) ) {
+			$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+		}
+		?>
+		<div class='header' style='width: 750px'>
+			<h1><?php echo __('Enter Your Credit Card Information','membership') . " " . $sub->sub_name(); ?></h1>
+		</div>
+		<div class='fullwidth'>
+			<?php do_action('membership_payment_form', $sub, $pricing, $member->ID); ?>
+		</div>
+		<?php		
+	} else {
+		?>
+		<div class='fullwidth'>
+			<h2><?php echo __('Misconfigured Custom Payment Gateway: haspaymentform must be true.','membership'); ?></h2>
+		</div>
+		<?php
+	}
+} else if($member->on_sub( $subscription )) {
+		$sub =  new M_Subscription( $subscription );
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$remove_coupon = sprintf('<input type="submit" name="remove_coupon" value="%s" href="#" id="membership_remove_coupon" />',__('Remove Coupon','membership'));
+		if(!empty($pricing) && !empty($coupon_code) ) {
+			$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+		}
 	?>
 		<div class='header' style='width: 750px'>
 		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
@@ -43,6 +74,9 @@ if($member->on_sub( $subscription )) {
 
 										if(!empty($amount)) {
 											echo $amount;
+											if($sub->coupon_label) {
+												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+											}
 										} else {
 											$first = $sub->get_level_at_position(1);
 
@@ -67,6 +101,9 @@ if($member->on_sub( $subscription )) {
 												}
 											}
 											echo $price;
+											if($sub->coupon_label) {
+												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+											}
 										}
 									?>
 									</td>
@@ -84,13 +121,29 @@ if($member->on_sub( $subscription )) {
 						}
 				?>
 			</table>
+			<div class="membership-coupon">
+				<form method="post">
+					<?php if(empty($coupon_code)) : ?>
+					<label><?php echo __('Have a coupon code?','membership'); ?>
+					<input type="text" name="coupon_code" value="<?php echo (!empty($coupon_code) ? $_REQUEST['coupon_code'] : ''); ?>" /></label>
+					<input type="submit" name="apply_coupon" value="<?php _e('Apply','membership'); ?>"/>
+					<?php else: ?>
+						<?php echo $remove_coupon; ?>
+					<?php endif; ?>
+				</form>
+			</div>
 		</div>
 
 	<?php
 } else {
 
 	$sub =  new M_Subscription( $subscription );
-
+	$pricing = $sub->get_pricingarray();
+	$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+	$remove_coupon = sprintf('<input type="submit" name="remove_coupon" value="%s" href="#" id="membership_remove_coupon" />',__('Remove Coupon','membership'));
+	if(!empty($pricing) && !empty($coupon_code) ) {
+		$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+	}
 	?>
 		<div class='header' style='width: 750px'>
 		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
@@ -109,6 +162,9 @@ if($member->on_sub( $subscription )) {
 
 						if(!empty($amount)) {
 							echo $amount;
+							if($sub->coupon_label) {
+								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+							}
 						} else {
 							$first = $sub->get_level_at_position(1);
 
@@ -133,13 +189,14 @@ if($member->on_sub( $subscription )) {
 								}
 							}
 							echo $price;
+							if($sub->coupon_label) {
+								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
+							}
 						}
 					?>
 					</td>
 					<td class='buynowcolumn'>
 					<?php
-					$pricing = $sub->get_pricingarray();
-
 					if($pricing) {
 						do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 					}
@@ -147,7 +204,17 @@ if($member->on_sub( $subscription )) {
 					</td>
 				</tr>
 			</table>
-
+			<div class="membership-coupon">
+				<form method="post">
+					<?php if(empty($coupon_code)) : ?>
+					<label><?php echo __('Have a coupon code?','membership'); ?>
+					<input type="text" name="coupon_code" value="<?php echo (!empty($coupon_code) ? $_REQUEST['coupon_code'] : ''); ?>" /></label>
+					<input type="submit" name="apply_coupon" value="<?php _e('Apply','membership'); ?>"/>
+					<?php else: ?>
+						<?php echo $remove_coupon; ?>
+					<?php endif; ?>
+				</form>
+			</div>
 		</div>
 	<?php
 }
