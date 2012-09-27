@@ -12,6 +12,7 @@ class authorizenetaim extends M_Gateway {
 	var $gateway = 'authorizenetaim';
 	var $title = 'Authorize.net AIM';
 	//var $issingle = true;
+	var $haspaymentform = true;
 
 	function authorizenetaim() {
 		global $M_membership_url;
@@ -26,29 +27,33 @@ class authorizenetaim extends M_Gateway {
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
+			add_action('membership_payment_form', array(&$this, 'display_payment_form'), 10, 3 );
 
+			
+			
 			wp_enqueue_script('jquery');
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
+			
 			add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
 
 			if (!is_admin()) {
 				// Added in check to make sure we are on https before changin the url - as it was causing issues with other gateways
-				if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+				/*if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
 					$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
-				}
+				}*/
 			}
 		}
 
 	}
 	function force_ssl_account_creation() {
-		if($_SERVER['HTTPS'] != 'on') {
+		/*if($_SERVER['HTTPS'] != 'on') {
 			$url = home_url($_SERVER['REQUEST_URI'].'/','https');
 			wp_redirect($url);
 			exit;
-		}
+		}*/
 	}
 	function mysettings() {
 		global $M_options;
@@ -190,16 +195,28 @@ class authorizenetaim extends M_Gateway {
 
 
 	}
-
 	function single_button($pricing, $subscription, $user_id) {
+		$form = '';
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$form .= '<form action="" method="post" id="extra-form">';
+		$form .= '<input type="submit" class="button blue" value="'.__('Pay Now','membership').'" />';
+		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
+		$form .= '<input type="hidden" name="action" value="extra_form" />';
+		$form .= '<input type="hidden" name="extra_form" value="1">';
+		$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon_code) ? $_REQUEST['coupon_code'] : '').'" />';
+		$form .= '</form>';
+		
+		return $form;
+	}
+	function display_payment_form($subscription, $pricing, $user_id) {
 		global $M_options, $M_membership_url;
 
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 		$form = '';
-
-		if (!function_exists('wp_https_redirect'))
+		/*if (!function_exists('wp_https_redirect'))
 		{
 		  if ($_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0)
 		  {
@@ -210,173 +227,18 @@ class authorizenetaim extends M_Gateway {
 		    echo '</script>';
 		    exit(0);
 		  }
-		}
+		}*/
 
-		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-		$form .= '<div class="auth-header">'. __('Enter Your Credit Card Information:', 'membership'). '</div>';
-		$form .= '</td>';
-		$form .= '<tr><td colspan="3">';
-
+		//$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
+		$M_secure_home_url = trailingslashit(get_option('home'));
 
 		$form .= '<script type="text/javascript">';
 		$form .= '_aim_return_url = "'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'";';
 		$form .= '_permalink_url = "'.get_permalink().'";';
+		$form .= 'jQuery("head").append("<link href=\'' . $M_membership_url . 'membershipincludes/css/authorizenet.css\' rel=\'stylesheet\' type=\'text/css\'>")';
 		$form .= '</script>';
 
 		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
-
-//Removed width to style in CSS
-		$style = '<style type="text/css">';
-		$style .= '
-				.membership_cart_billing {
-
-				}
-
-				.purchase-wrapper {
-				padding: 10px;
-				border: 1px solid #d6d6d6;
-				border-radius: 10px;
-				background: #efefef
-				}
-
-				.purchase-item {
-				background: #a0a0a0;
-				padding: 10px;
-				border-radius: 5px;
-				font-size: 130%;
-				font-weight: 700;
-				color: #fff;
-				margin-bottom: 10px;
-				}
-
-				.purchase-item-details {
-				float: left;
-				}
-
-				.purchase-item-price {
-				text-align: right;
-				}
-
-				.buynow {
-				background: #fff;
-				padding: 10px;
-				border-radius: 5px;
-				border: 1px solid #d6d6d6;
-				}
-
-				.auth-header {
-				font-size: 120%;
-				margin-bottom: 5px;
-				font-weight: 700;
-				}
-
-				.auth-body {
-				background: #EFEFEF;
-				padding: 10px;
-				border-radius: 5px;
-				}
-
-				.auth-billing {
-				padding: 5px;
-				background: white;
-				border-radius: 3px;
-				margin-bottom: 10px;
-				}
-
-				.auth-billing-name {
-				font-size: 110%;
-				margin-bottom: 10px;
-				}
-
-				.auth-billing-fname-label {
-				float: left;
-				padding-top: 5px;
-				margin-right: 10px;
-				}
-
-				.auth-billing-fname {
-				float: left;
-				margin-right: 15px;
-				}
-
-				.auth-billing-lname-label {
-				float: left;
-				padding-top: 5px;
-				margin-right: 10px;
-				}
-
-				.auth-billing-address-label {
-				float: left;
-				padding-top: 5px;
-				margin-right: 27px;
-				}
-
-				.auth-billing-zip-label {
-				float: left;
-				padding-top: 5px;
-				margin-right: 10px;
-				}
-
-				.auth-cc {
-				padding: 5px;
-				background: white;
-				border-radius: 3px;
-				margin-bottom: 10px;
-				}
-				.auth-exp {
-				padding: 10px 10px 0 5px;
-				background: white;
-				border-radius: 3px;
-				margin-bottom: 10px;
-				}
-				.auth-sec {
-				padding: 10px 10px 0 5px;
-				background: white;
-				border-radius: 3px;
-				margin-bottom: 10px;
-				}
-
-				.cardimage {
-				height: 23px;
-				width: 157px;
-				display: inline-table;
-				margin-left: 20px;
-				}
-
-				.auth-exp-input .inputLabel {
-					margin: 0 5px 0 20px;
-				}
-
-				#membership-wrapper select, #membership-wrapper input[type="file"] {
-					height: 28px;
-					width: 100px;
-				}
-
-				.auth-cc-label {
-				}
-
-				.auth-exp-label {
-					float: left;
-					padding-top: 2px;
-				}
-
-				.auth-sec-label {
-					float: left;
-					margin-right: 10px;
-					padding-top: 5px;
-				}
-
-				.auth-submit-button {
-					text-align: right;
-				}
-				.membership_payment_form.authorizenet {
-					width: 100%;
-				}
-		';
-		$style .= '</style>';
-
-		$form .= apply_filters('membership_authorize_payment_form_css', $style);
-
 		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
 
 		$api_u = get_option( $this->gateway . "_api_user");
@@ -436,27 +298,7 @@ class authorizenetaim extends M_Gateway {
 					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
 		$form .= '</div></div></form>';
 
-		$form = apply_filters('membership_authorize_payment_form', $form);
-// Replaced by Kevin D. Lyons for DIV based form
-//		$form .= '<table class="membership_cart_billing">';
-//		$form .= '<thead><tr><th colspan="2">'. __('Enter Your Credit Card Information:', 'membership'). '</th></tr></thead>';
-//		$form .= '<tbody><tr><td align="right">'. __('Credit Card Number:', 'mp'). '*</td>';
-//		$form .= '<td><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
-//		$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
-//		$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
-//		$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></td></tr>';
-//		$form .= '<tr><td align="right">'.__('Expiration Date:', 'mp').'*</td>';
-//		$form .= '<td><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
-//		$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
-//		$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
-//		$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></td></tr>';
-//		$form .= '<tr><td align="right">'.__('Security Code:', 'mp').'</td>';
-//		$form .= '<td><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
-//		$form .= 'type="text" size="4" maxlength="4" /></td></tr>';
-//		$form .= '<tr><td colspan="2"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></td></tr>';
-//		$form .= '</tbody></table></form>';
-
-		return $form;
+		echo $form;
 	}
 
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
