@@ -2,8 +2,66 @@ function m_register_events() {
 	jQuery.fancybox.resize();
 	jQuery('#reg-form').submit(m_registersubmit);
 	jQuery('#login-form').submit(m_loginsubmit);
+	jQuery('#extra-form').submit(m_extraform);
+	jQuery('.membership-coupon form').submit(m_applycoupon);
 }
+function m_applycoupon() {
+	jQuery.fancybox.showActivity();
+	var _coupon = jQuery(this).find('input[name=coupon_code]').val();
 
+	if( typeof _coupon != 'undefined' && _coupon.length > 0 ) {
+		jQuery.get(membership.ajaxurl + '?action=buynow&subscription=2&coupon_code=' + _coupon, function(data) {
+			jQuery('#fancybox-content div').html(data);
+			m_register_events();
+		});
+	} else {
+		jQuery.get(membership.ajaxurl + '?action=buynow&subscription=2&remove_coupon=1', function(data) {
+			jQuery('#fancybox-content div').html(data);
+			m_register_events();
+		});
+	}
+	
+	
+	
+	return false;
+}
+function m_extraform() {
+	jQuery.fancybox.showActivity();
+	
+	jQuery.ajax({
+		type	: 'POST',
+		cache	: false,
+		url		: membership.ajaxurl,
+		data	: jQuery(this).serialize(),
+		success	: m_extraformsuccess,
+		error	: m_loginerror
+	});
+
+	return false;
+}
+function m_extraformsuccess(data) {
+	jQuery.fancybox.hideActivity();
+
+	try
+	{
+		returned = jQuery.parseJSON(data);
+		if(typeof returned.errormsg != 'undefined') {
+			// Oops an error
+			jQuery("#reg-error").html(returned.errormsg).show('fast', function() { jQuery.fancybox.resize(); });
+		} else {
+			// Content is being passed back so display
+			jQuery('#fancybox-content div').html(data);
+			jQuery.fancybox.resize();
+		}
+	}
+	catch(e)
+	{
+		// Content
+		jQuery('#fancybox-content div').html(data);
+		jQuery.fancybox.resize();
+	}
+	m_register_events();
+}
 function m_registersuccess(data) {
 	jQuery.fancybox.hideActivity();
 
@@ -25,6 +83,7 @@ function m_registersuccess(data) {
 		jQuery('#fancybox-content div').html(data);
 		jQuery.fancybox.resize();
 	}
+	m_register_events();
 }
 
 function m_registererror(data) {
@@ -55,6 +114,7 @@ function m_loginsuccess(data) {
 		jQuery('#fancybox-content div').html(data);
 		jQuery.fancybox.resize();
 	}
+	m_register_events();
 
 }
 
