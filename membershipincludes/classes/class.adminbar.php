@@ -148,6 +148,7 @@ if(!class_exists('M_Adminbar')) {
 				$level = new M_Level( $level_id );
 				$title .= $level->level_title();
 			}
+			$class = apply_filters('membership_adminbar_view_site_as_class','membership-view-site-as');
 			$metatitle = __('Select a level to view your site as', 'membership');
 			$linkurl = ''; // No link for the main menu
 			$wp_admin_bar->add_menu( array(
