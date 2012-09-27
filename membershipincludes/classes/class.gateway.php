@@ -10,6 +10,7 @@ if(!class_exists('M_Gateway')) {
 		var $gateway = 'Not Set';
 		var $title = 'Not Set';
 		var $issingle = false;
+		var $haspaymentform = false;
 
 		// Tables
 		var $tables = array('subscription_transaction');
@@ -417,6 +418,10 @@ if(!class_exists('M_Gateway')) {
 			echo '<form class="unsubbutton" action="" method="post">';
 			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
+		}
+		
+		function display_payment_form() {
+			die('You Must Override The display_payment_form() in your gateway');
 		}
 
 		/* adding extra functions here to handle free subscriptions across a lot of gateways */
