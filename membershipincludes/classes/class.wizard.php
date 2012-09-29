@@ -192,7 +192,7 @@ if(!class_exists('M_Wizard')) {
 					<?php
 						echo $content;
 					?>
-					<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
+					<p class="welcome-panel-dismiss"><?php _e('Already know what you\'re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 					</div>
 
 					</div>
@@ -310,7 +310,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				</form>
 
-				<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
+				<p class="welcome-panel-dismiss"><?php _e('Already know what you\'re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 
 			<?php
 			return ob_get_clean();
@@ -396,7 +396,7 @@ if(!class_exists('M_Wizard')) {
 				</p>
 				</form>
 
-				<p class="welcome-panel-dismiss"><?php _e('Already know what you’re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
+				<p class="welcome-panel-dismiss"><?php _e('Already know what you\'re doing?', 'membership'); ?> <a href="<?php echo $deactivateurl;  ?>"><?php _e('Dismiss this message', 'membership'); ?></a>.</p>
 
 			<?php
 			return ob_get_clean();
@@ -494,7 +494,6 @@ if(!class_exists('M_Wizard')) {
 					$level->toggleactivation();
 				}
 			}
-
 			// Create a visitor level and set it in the options
 			if(isset($_POST['creatavisitorlevel']) && $_POST['creatavisitorlevel'] == 'yes') {
 				$level_id = $this->create_level( __('Visitors','membership') );
