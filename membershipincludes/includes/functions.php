@@ -144,7 +144,9 @@ function set_membership_url($base) {
 	} else {
 		$M_membership_url = trailingslashit(WP_PLUGIN_URL . '/membership');
 	}
-
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+		$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
+	}
 }
 
 function set_membership_dir($base) {
