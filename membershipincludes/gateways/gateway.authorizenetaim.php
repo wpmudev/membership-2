@@ -36,7 +36,6 @@ class M_authorizenetaim extends M_Gateway {
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 			
-			//add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
 		}
 
 	}
@@ -218,21 +217,9 @@ class M_authorizenetaim extends M_Gateway {
 		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 		$form = '';
-		/*if (!function_exists('wp_https_redirect'))
-		{
-		  if ($_SERVER['HTTPS'] != "on" && preg_match('/^https/', get_option('siteurl')) == 0)
-		  {
-		    $host_x = preg_split('/\//', get_option('siteurl'));
-		    $host = $host_x[2];
-		    echo '<script type="text/javascript">';
-		    echo 'window.location = "https://'. $host . $_SERVER['REQUEST_URI'].'"';
-		    echo '</script>';
-		    exit(0);
-		  }
-		}*/
 
 		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-		//$M_secure_home_url = trailingslashit(get_option('home'));
+		
 		?>
 		<script type="text/javascript">
 			_authorize_return_url = "<?php echo $M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway); ?>";
