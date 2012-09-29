@@ -47,7 +47,6 @@ jQuery(document).ready( function() {
 						break;
 					case 'success':
 						if(typeof data.redirect != 'undefined') {
-							console.log(data.redirect);
 							window.location.href = data.redirect;
 						}
 						break;
