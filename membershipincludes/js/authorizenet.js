@@ -20,24 +20,46 @@ function cc_card_pick(card_image, card_num){
 
 jQuery(document).ready( function() {
     jQuery(".noautocomplete").attr("autocomplete", "off");
-    
-    /*jQuery("form.membership_payment_form.authorizenet").submit(function () {
-        var _current_form = jQuery(this);
-        jQuery(_current_form).find('.message').addClass('hidden');
-        jQuery.post(_aim_return_url, jQuery(this).serialize(), function(data) {
-            if (data.status == "success") {
-                jQuery("#reg-form").load(_permalink_url+" #reg-form", {action: 'validatepage2', custom: data.custom});
-                window.location += '#';
-            } else {
-                jQuery(_current_form).find('.message').html(data.message);
-                if (data.more) {
-                    jQuery(_current_form).find('.message').append(data.more);
-                }
-                jQuery(_current_form).find('.message').removeClass('hidden');
-            }
-        }, "json");
+    jQuery("form.membership_payment_form.authorizenet").submit(function () {
+		var error_div = jQuery('#authorize_errors');
+        jQuery.ajax({
+			url: _authorize_return_url,
+			type: 'POST',
+			dataType: 'json',
+			data: jQuery(this).serialize(),
+			beforeSend: function() {
+				error_div.fadeOut(400).html('');
+			},
+			success: function(data) {
+				if(typeof data != 'object')
+					alert(_authorize_payment_error_msg);
+				switch(data.status) {
+					case 'error':
+						var error_div = jQuery('#authorize_errors');
+						if(jQuery.isArray(data.errors)) {
+							jQuery.each(data.errors, function(i,e) {
+								error_div.append('<p>' + e + '</p>');
+							});
+							error_div.fadeIn(400);
+						} else {
+							alert(_authorize_payment_error_msg);
+						}
+						break;
+					case 'success':
+						if(typeof data.redirect != 'undefined') {
+							console.log(data.redirect);
+							window.location.href = data.redirect;
+						}
+						break;
+				}
+			},
+			error: function(data) {
+				alert(_authorize_payment_error_msg);
+			}
+			
+		});
         
         return false;
-    });*/
+    });
+	
 });
-  
