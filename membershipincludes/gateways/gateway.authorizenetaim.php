@@ -1,20 +1,21 @@
 <?php
 /*
 Addon Name: Authorize.net gateway
-Description: The Payment gateway for Authorize.net
+Description: The Payment gateway for Authorize.net.
 Author: S H Mohanjith (Incsub)
 Author URI: http://premium.wpmudev.org
 Gateway ID: authorizenetaim
 */
 
-class authorizenetaim extends M_Gateway {
+class M_authorizenetaim extends M_Gateway {
 
 	var $gateway = 'authorizenetaim';
-	var $title = 'Authorize.net AIM';
+	var $title = 'Authorize.net';
 	//var $issingle = true;
 	var $haspaymentform = true;
+	var $ssl = true;
 
-	function authorizenetaim() {
+	function M_authorizenetaim() {
 		global $M_membership_url;
 
 		parent::M_Gateway();
@@ -23,41 +24,31 @@ class authorizenetaim extends M_Gateway {
 
 		// If I want to override the transactions output - then I can use this action
 		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
-
+		
+		add_action('membership_subscription_form_registration_process', array(&$this, 'force_ssl_cookie'), null, 2);
+		
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
 			add_action('membership_payment_form', array(&$this, 'display_payment_form'), 10, 3 );
 
-			
-			
-			wp_enqueue_script('jquery');
-
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 			
-			add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
-
-			if (!is_admin()) {
-				// Added in check to make sure we are on https before changin the url - as it was causing issues with other gateways
-				/*if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
-					$M_membership_url = preg_replace('/http:/i', 'https:', $M_membership_url);
-				}*/
-			}
+			//add_action('signup_hidden_fields', array(&$this, 'force_ssl_account_creation'));
 		}
 
 	}
-	function force_ssl_account_creation() {
-		/*if($_SERVER['HTTPS'] != 'on') {
-			$url = home_url($_SERVER['REQUEST_URI'].'/','https');
-			wp_redirect($url);
-			exit;
-		}*/
+	function force_ssl_cookie($errors, $user_id) {
+		if(empty($errors)) {
+			wp_set_auth_cookie($user_id,true,true);
+			wp_set_current_user($user_id);
+		}
 	}
 	function mysettings() {
 		global $M_options;
-
+		
 		?>
 		<table class="form-table">
 		<tbody>
@@ -71,21 +62,21 @@ class authorizenetaim extends M_Gateway {
 		          'live'	=> __('Live','membership')
 			);
 
-		      foreach ($modes as $key => $value) : ?>
-			  	<option value="<?php echo esc_attr($key); ?>" <?php selected($key, $sel_mode); ?>><?php echo esc_html($value); ?></option>
-		      <?php endforeach; ?>
+			foreach ($modes as $key => $value) : ?>
+				<option value="<?php echo esc_attr($key); ?>" <?php selected($key, $sel_mode); ?>><?php echo esc_html($value); ?></option>
+			<?php endforeach; ?>
 
 		  </select></td>
 		  </tr>
 
-		  <tr valign="top">
-		  <th scope="row"><?php _e('Login ID', 'membership') ?></th>
-		    <td><input type="text" name="api_user" value="<?php esc_attr_e(get_option( $this->gateway . "_api_user", "" )); ?>" /></td>
-		  </tr>
-		  <tr valign="top">
-		  <th scope="row"><?php _e('Transaction key', 'membership') ?></th>
-		    <td><input type="text" name="api_key" value="<?php esc_attr_e(get_option( $this->gateway . "_api_key", "" )); ?>" /></td>
-		  </tr>
+		<tr valign="top">
+			<th scope="row"><?php _e('Login ID', 'membership') ?></th>
+			<td><input type="text" name="api_user" value="<?php esc_attr_e(get_option( $this->gateway . "_api_user", "" )); ?>" /></td>
+		</tr>
+		<tr valign="top">
+				<th scope="row"><?php _e('Transaction key', 'membership') ?></th>
+				<td><input type="text" name="api_key" value="<?php esc_attr_e(get_option( $this->gateway . "_api_key", "" )); ?>" /></td>
+			</tr>
 		</tbody>
 		</table>
 		<h3><?php print _e('Advanced Settings', 'membership'); ?></h3>
@@ -196,14 +187,23 @@ class authorizenetaim extends M_Gateway {
 
 	}
 	function single_button($pricing, $subscription, $user_id) {
+		global $M_options;
+		
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		
+		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+
 		$form = '';
 		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
-		$form .= '<form action="" method="post" id="extra-form">';
+		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
 		$form .= '<input type="submit" class="button blue" value="'.__('Pay Now','membership').'" />';
 		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
-		$form .= '<input type="hidden" name="action" value="extra_form" />';
+		
+		//if($popup)
+			//$form .= '<input type="hidden" name="action" value="extra_form" />';
+		
 		$form .= '<input type="hidden" name="extra_form" value="1">';
-		$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
+		//$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
 		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon_code) ? $_REQUEST['coupon_code'] : '').'" />';
 		$form .= '</form>';
 		
@@ -211,10 +211,12 @@ class authorizenetaim extends M_Gateway {
 	}
 	function display_payment_form($subscription, $pricing, $user_id) {
 		global $M_options, $M_membership_url;
-
+		
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 		$form = '';
 		/*if (!function_exists('wp_https_redirect'))
 		{
@@ -229,21 +231,23 @@ class authorizenetaim extends M_Gateway {
 		  }
 		}*/
 
-		//$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-		$M_secure_home_url = trailingslashit(get_option('home'));
-
-		$form .= '<script type="text/javascript">';
-		$form .= '_aim_return_url = "'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'";';
-		$form .= '_permalink_url = "'.get_permalink().'";';
-		$form .= 'jQuery("head").append("<link href=\'' . $M_membership_url . 'membershipincludes/css/authorizenet.css\' rel=\'stylesheet\' type=\'text/css\'>")';
-		$form .= '</script>';
-
-		$form .= '<script type="text/javascript" src="' . $M_membership_url . 'membershipincludes/js/authorizenet.js"></script>';
-		$form .= '<form method="post" action="'.$M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway).'" class="membership_payment_form authorizenet single">';
-
+		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
+		//$M_secure_home_url = trailingslashit(get_option('home'));
+		?>
+		<script type="text/javascript">
+			_authorize_return_url = "<?php echo $M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway); ?>";
+			_permalink_url = "<?php echo get_permalink(); ?>";
+			_authorize_payment_error_msg = "<?php echo __('There was an unknown error encountered with your payment.  Please contact the site administrator.','membership'); ?>";
+			jQuery("head").append('<link href="<?php echo $M_membership_url; ?>membershipincludes/css/authorizenet.css" rel="stylesheet" type="text/css">');
+		</script>
+		
+		<script type="text/javascript" src="<?php echo $M_membership_url; ?>membershipincludes/js/authorizenet.js"></script>
+		<form method="post" action="" class="membership_payment_form authorizenet single">
+		
+		<?php
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$api_u = get_option( $this->gateway . "_api_user");
 		$api_k = get_option( $this->gateway . "_api_key");
-
 		$error = false;
 		if(isset($_GET['errors'])) {
 			if($_GET['errors'] == 1)
@@ -254,53 +258,186 @@ class authorizenetaim extends M_Gateway {
 		if(!isset($api_u) || $api_u == '' || $api_u == false || !isset($api_k) || $api_k == '' || $api_k == false) {
 			$error = __('This payment gateway has not been configured.  Your transaction will not be processed.', 'membership');
 		}
-		$form .= '<div class="message error'.($error == false ? ' hidden' : '').'">'.$error.'</div>';
-		$form .= '<input type="hidden" name="subscription_id" value="'.$subscription->id.'" />';
-		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'" />';
-
-//New DIV based form by Kevin D. Lyons
-		$form .= '<div class="membership_cart_billing">';
-
-			$form .= '<div class="auth-body">';
-//New Address Verification as Billing Address added by Kevin D. Lyons
-				$form .= '<div class="auth-billing">';
-					$form .= '<div class="auth-billing-name">'.__('Credit Card Billing Information:', 'mp'). '*</div>';
-					$form .= '<div class="auth-billing-fname-label"><label class="inputLabel" for="first_name">'.__('First Name:', 'mp'). '</label></div>';
-					$form .= '<div class="auth-billing-fname"><input id="first_name" name="first_name" class="input_field noautocomplete" style="width: 160px;" ';
-					$form .= 'type="text" size="20" maxlength="20" /></div>';
-					$form .= '<div class="auth-billing-lname-label"><label class="inputLabel" for="last_name">'.__('Last Name:', 'mp'). '</label></div>';
-					$form .= '<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" style="width: 160px;" ';
-					$form .= 'type="text" size="20" maxlength="20" /></div>';
-					$form .= '<div class="auth-billing-address-label"><label class="inputLabel" for="address">'.__('Address:', 'mp'). '</label></div>';
-					$form .= '<div class="auth-billing-address"><input id="address" name="address" class="input_field noautocomplete" style="width: 427px;" ';
-					$form .= 'type="text" size="120" maxlength="120" /></div>';
-					$form .= '<div class="auth-billing-zip-label"><label class="inputLabel" for="zip">'.__('Billing 5-Digit Zipcode:', 'mp'). '</label></div>';
-					$form .= '<div class="auth-billing-zip"><input id="zip" name="zip" class="input_field noautocomplete" style="width: 80px;" ';
-					$form .= 'type="text" size="5" maxlength="5" /></div></div>';
-//End Address Verification
-				$form .= '<div class="auth-cc">';
-					$form .= '<div class="auth-cc-label">'. __('Credit Card Number:', 'mp'). '*</div>';
-					$form .= '<div class="auth-cc-input"><input name="card_num" onkeyup="cc_card_pick(\'#cardimage\', \'#card_num\');"';
-					$form .= 'id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />';
-						$form .= '<div class="hide_after_success nocard cardimage"  id="cardimage" ';
-						$form .= 'style="background: url(' . $M_membership_url . 'membershipincludes/images/card_array.png) no-repeat;"></div></div></div>';
-				$form .= '<div class="auth-exp">';
-					$form .= '<div class="auth-exp-label">'.__('Expiration Date:', 'mp').'*</div>';
-					$form .= '<div class="auth-exp-input"><label class="inputLabel" for="exp_month">'.__('Month', 'membership'). '</label>';
-					$form .= '<select name="exp_month" id="exp_month">'.$this->_print_month_dropdown(). '</select>';
-					$form .= '<label class="inputLabel" for="exp_year">'.__('Year', 'membership'). '</label>';
-					$form .= '<select name="exp_year" id="exp_year">'.$this->_print_year_dropdown('', true).'</select></div></div>';
-				$form .= '<div class="auth-sec">';
-					$form .= '<div class="auth-sec-label">'.__('Security Code:', 'mp').'</div>';
-					$form .= '<div class="auth-sec-input"><input id="card_code" name="card_code" class="input_field noautocomplete" style="width: 70px;" ';
-					$form .= 'type="text" size="4" maxlength="4" /></div></div>';
-				$form .= '<div class="auth-submit">';
-					$form .= '<div class="auth-submit-button"><input type="image" src="' . $M_membership_url . 'membershipincludes/images/cc_process_payment.png" alt="'. __("Pay with Credit Card", "membership") .'" /></div></div>';
-		$form .= '</div></div></form>';
-
-		echo $form;
+		?>
+		<?php if($popup) : ?>
+			<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
+		<?php endif; ?>
+		
+		<div id="authorize_errors" class="message error hidden"></div>
+		<input type="hidden" name="subscription_id" value="<?php echo $subscription->id; ?>" />
+		<input type="hidden" name="gateway" value="<?php echo $this->gateway; ?>" />
+		<?php if(!empty($coupon_code)) : ?>
+			<input type="hidden" name="coupon_code" value="<?php echo $coupon_code; ?>" />
+		<?php endif; ?>
+		<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+		<div class="membership_cart_billing">
+			<div class="auth-body">
+				<div class="auth-billing">
+					<div class="auth-billing-name"><?php echo __('Credit Card Billing Information:', 'mp'); ?>*</div>
+					<div class="auth-billing-fname-label">
+						<label class="inputLabel" for="first_name"><?php echo __('First Name:', 'mp'); ?></label>
+					</div>
+					<div class="auth-billing-fname">
+						<input id="first_name" name="first_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" />
+					</div>
+					<div class="auth-billing-lname-label">
+						<label class="inputLabel" for="last_name"><?php echo __('Last Name:', 'mp'); ?></label>
+					</div>
+					<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" /></div>
+					<div class="auth-billing-address-label">
+						<label class="inputLabel" for="address"><?php echo __('Address:', 'mp'); ?></label>
+					</div>
+					<div class="auth-billing-address">
+						<input id="address" name="address" class="input_field noautocomplete" type="text" size="120" maxlength="120" />
+					</div>
+					<div class="auth-billing-zip-label">
+						<label class="inputLabel" for="zip"><?php echo __('Billing 5-Digit Zipcode:', 'mp'); ?></label>
+					</div>
+					<div class="auth-billing-zip">
+						<input id="zip" name="zip" class="input_field noautocomplete" type="text" size="5" maxlength="5" />
+					</div>
+				</div>
+				<div class="auth-cc">
+					<div class="auth-cc-label"><?php echo __('Credit Card Number:', 'mp'); ?>*</div>
+					<div class="auth-cc-input">
+						<input name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />
+						<div class="hide_after_success nocard cardimage"  id="cardimage" style="background: url(<?php echo $M_membership_url; ?>membershipincludes/images/card_array.png) no-repeat;"></div>
+					</div>
+				</div>
+				<div class="auth-exp">
+					<div class="auth-exp-label"><?php echo __('Expiration Date:', 'mp'); ?>*</div>
+					<div class="auth-exp-input">
+						<label class="inputLabel" for="exp_month"><?php echo __('Month', 'membership'); ?></label>
+						<select name="exp_month" id="exp_month"><?php echo $this->_print_month_dropdown(); ?></select>
+						<label class="inputLabel" for="exp_year"><?php echo __('Year', 'membership'); ?></label>
+						<select name="exp_year" id="exp_year"><?php echo $this->_print_year_dropdown('', true); ?></select>
+					</div>
+				</div>
+				<div class="auth-sec">
+					<div class="auth-sec-label"><?php echo __('Security Code:', 'mp'); ?></div>
+					<div class="auth-sec-input">
+						<input id="card_code" name="card_code" class="input_field noautocomplete" type="text" size="4" maxlength="4" />
+					</div>
+				</div>
+				<div class="auth-submit">
+					<div class="auth-submit-button">
+						<input type="image" src="<?php echo $M_membership_url; ?>membershipincludes/images/cc_process_payment.png" alt="<?php echo __("Pay with Credit Card", "membership"); ?>" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form><?php
 	}
+	
+	function handle_payment_return() {
+		global $M_options, $M_membership_url;
+		
+		$return = array();
+		
+		if($_SERVER['HTTPS'] != 'on') {
+			wp_die(__('You must use HTTPS in order to do this','membership'));
+			exit;
+		}
+		
+		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 
+		if(empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$subscription = new M_Subscription($_POST['subscription_id']);
+		$pricing = $subscription->get_pricingarray();
+		
+		if(!empty($coupon_code))
+			$pricing = $subscription->apply_coupon_pricing($coupon_code,$pricing);
+
+		$user_id = ( is_user_logged_in() ? get_current_user_id() : $_POST['user_id'] );
+		$user = get_userdata($user_id);
+		$sub_id = $subscription->id;
+
+		// A basic price or a single subscription
+		if($pricing) {
+			$timestamp = time();
+
+			if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
+				$endpoint = "https://test.authorize.net/gateway/transact.dll";
+			} else {
+				$endpoint = "https://secure.authorize.net/gateway/transact.dll";
+			}
+
+			$payment = new M_Gateway_Worker_AuthorizeNet_AIM($endpoint,
+			  get_option( $this->gateway . "_delim_data", 'yes' ),
+			  get_option( $this->gateway . "_delim_char", ',' ),
+			  get_option( $this->gateway . "_encap_char", '' ),
+			  get_option( $this->gateway . "_api_user", '' ),
+			  get_option( $this->gateway . "_api_key", '' ),
+			  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+
+			$payment->transaction($_POST['card_num']);
+			$amount = number_format($pricing[0]['amount'], 2);
+			// Billing Info
+			$payment->setParameter("x_card_code", $_POST['card_code']);
+			$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
+			$payment->setParameter("x_amount", $amount);
+
+			// Payment billing information passed to authorize, thanks to Kevin L. for spotting this.
+			$payment->setParameter("x_first_name", $_POST['first_name']);
+			$payment->setParameter("x_last_name", $_POST['last_name']);
+			$payment->setParameter("x_address", $_POST['address']);
+			$payment->setParameter("x_zip", $_POST['zip']);
+			$payment->setParameter("x_email", ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
+			// Order Info
+			$payment->setParameter("x_description", $subscription->sub_name());
+
+			$payment->setParameter("x_duplicate_window", 30);
+
+			// E-mail
+			$payment->setParameter("x_header_email_receipt", get_option( $this->gateway . "_header_email_receipt", '' ));
+			$payment->setParameter("x_footer_email_receipt", get_option( $this->gateway . "_footer_email_receipt", '' ));
+			$payment->setParameter("x_email_customer", strtoupper(get_option( $this->gateway . "_email_customer", '' )));
+
+			$payment->setParameter("x_customer_ip", $_SERVER['REMOTE_ADDR']);
+
+			$payment->process();
+
+			if ($payment->isApproved()) {
+
+				$status = __('Processed','membership');
+				$note = '';
+
+				$member = new M_Membership($user_id);
+				if($member) {
+					if($member->has_subscription() && $member->on_sub($sub_id)) {
+						remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+						remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+						$member->expire_subscription($sub_id);
+						$member->create_subscription($sub_id, $this->gateway);
+					} else {
+						$member->create_subscription($sub_id, $this->gateway);
+					}
+				}
+
+				// TODO: create switch for handling different authorize aim respone codes
+
+				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
+
+				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
+				$return['status'] = 'success';
+				$return['redirect'] = (!strpos(home_url,'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+			} else {
+				$return['status'] = 'error';
+				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
+			}
+		} else {
+			$return['status'] = 'error';
+			$return['errors'][] =  __('There was an issue determining the price.','membership');
+		}
+		
+		echo json_encode($return);
+		exit;
+
+	}
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
 
@@ -450,108 +587,6 @@ class authorizenetaim extends M_Gateway {
 		$output .=  "<option " . ($sel==12?' selected':'') . "  value='12'>12 - Doc</option>";
 
 		return($output);
-	}
-
-	function handle_payment_return() {
-		global $M_options, $M_membership_url;
-
-		if(empty($M_options['paymentcurrency'])) {
-			$M_options['paymentcurrency'] = 'USD';
-		}
-
-		$subscription = new M_Subscription($_POST['subscription_id']);
-		$pricing = $subscription->get_pricingarray();
-
-		$user_id = ( is_user_logged_in() ? get_current_user_id() : $_POST['user_id'] );
-		$user = get_userdata($user_id);
-		$sub_id = $subscription->id;
-
-		if ($M_options['paymentcurrency'] == 'USD' && count($pricing) == 1) {
-			// A basic price or a single subscription
-			if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
-				$timestamp = time();
-
-				if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
-					$endpoint = "https://test.authorize.net/gateway/transact.dll";
-				} else {
-					$endpoint = "https://secure.authorize.net/gateway/transact.dll";
-				}
-
-				$payment = new M_Gateway_Worker_AuthorizeNet_AIM($endpoint,
-				  get_option( $this->gateway . "_delim_data", 'yes' ),
-				  get_option( $this->gateway . "_delim_char", ',' ),
-				  get_option( $this->gateway . "_encap_char", '' ),
-				  get_option( $this->gateway . "_api_user", '' ),
-				  get_option( $this->gateway . "_api_key", '' ),
-				  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
-
-				$payment->transaction($_POST['card_num']);
-				$amount = number_format($pricing[0]['amount'], 2);
-				// Billing Info
-				$payment->setParameter("x_card_code", $_POST['card_code']);
-				$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
-				$payment->setParameter("x_amount", $amount);
-
-				// Payment billing information passed to authorize, thanks to Kevin L. for spotting this.
-				$payment->setParameter("x_first_name", $_POST['first_name']);
-				$payment->setParameter("x_last_name", $_POST['last_name']);
-				$payment->setParameter("x_address", $_POST['address']);
-				$payment->setParameter("x_zip", $_POST['zip']);
-				$payment->setParameter("x_email", ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
-
-				// Order Info
-				$payment->setParameter("x_description", $subscription->sub_name());
-
-				$payment->setParameter("x_duplicate_window", 30);
-
-				// E-mail
-				$payment->setParameter("x_header_email_receipt", get_option( $this->gateway . "_header_email_receipt", '' ));
-				$payment->setParameter("x_footer_email_receipt", get_option( $this->gateway . "_footer_email_receipt", '' ));
-				$payment->setParameter("x_email_customer", strtoupper(get_option( $this->gateway . "_email_customer", '' )));
-
-				$payment->setParameter("x_customer_ip", $_SERVER['REMOTE_ADDR']);
-
-				$payment->process();
-
-				if ($payment->isApproved()) {
-
-					$status = __('Processed','membership');
-					$note = '';
-
-					$member = new M_Membership($user_id);
-					if($member) {
-						if($member->has_subscription() && $member->on_sub($sub_id)) {
-							remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
-							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
-							$member->expire_subscription($sub_id);
-							$member->create_subscription($sub_id, $this->gateway);
-						} else {
-							$member->create_subscription($sub_id, $this->gateway);
-						}
-					}
-
-					// TODO: create switch for handling different authorize aim respone codes
-
-					$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
-
-					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-					wp_redirect(M_get_registrationcompleted_permalink());
-					exit;
-				} else {
-					wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=1');
-					exit;
-				}
-			} else {
-				wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=2');
-				exit;
-			}
-		} else {
-			wp_redirect(M_get_registration_permalink().'?action=registeruser&subscription='.$sub_id.'&errors=2');
-			exit;
-		}
-		global $m_aim_errors;
-		$m_aim_errors = $error;
-
 	}
 }
 
@@ -741,4 +776,4 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
   }
 }
 
-M_register_gateway('authorizenetaim', 'authorizenetaim');
+M_register_gateway('authorizenetaim', 'M_authorizenetaim');
