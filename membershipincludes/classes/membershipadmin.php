@@ -7274,6 +7274,7 @@ if(!class_exists('membershipadmin')) {
 					);
 					$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 					$user = wp_signon( $creds, $is_ssl );
+
 					if ( is_wp_error($user) && method_exists($userid, 'get_error_message') )
 						$error[] = $user->get_error_message();
 
