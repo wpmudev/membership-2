@@ -1,3 +1,9 @@
+= 3.3 =
+Coupons will now properly display when using popover registration.
+Stopped some 2CO transactions from displaying twice.
+Fixed Authorize gateway class interfering with other plugins.
+Major structural changes to Authorize.net Gateway is preparation for Recurring Billing (To Be Released Shortly).
+
 = 3.0 RC-3 =
 Fixed News Stream output when member expires
 
