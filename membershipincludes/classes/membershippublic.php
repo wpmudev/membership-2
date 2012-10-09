@@ -382,6 +382,8 @@ if(!class_exists('membershippublic')) {
 					}
 				}
 			}
+			
+			do_action('membership-add-shortcodes');
 
 			// Set the initialisation status
 			$initialised = true;

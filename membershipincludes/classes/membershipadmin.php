@@ -330,6 +330,8 @@ if(!class_exists('membershipadmin')) {
 				}
 			}
 
+			do_action('membership-admin-add-shortcodes');
+
 			// Set the initialisation status
 			$initialised = true;
 
@@ -7266,7 +7268,7 @@ if(!class_exists('membershipadmin')) {
 					if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
 						$member->deactivate();
 					}
-					
+
 					$creds = array(
 						'user_login' => $_POST['user_login'],
 						'user_password' => $_POST['password'],
@@ -7357,9 +7359,9 @@ if(!class_exists('membershipadmin')) {
 
 			exit;
 		}
-		
+
 		function popover_extra_payment_form( $user_id = false ) {
-			
+
 			$content = '';
 			$content = apply_filters('membership_popover_extraform_before_content', $content );
 			ob_start();
@@ -7375,7 +7377,7 @@ if(!class_exists('membershipadmin')) {
 			echo $content;
 
 			exit;
-			
+
 		}
 
 		function create_defaults() {
