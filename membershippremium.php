@@ -39,6 +39,8 @@ require_once('membershipincludes/classes/class.gateway.php');
 require_once('membershipincludes/classes/class.level.php');
 require_once('membershipincludes/classes/class.subscription.php');
 require_once('membershipincludes/classes/class.membership.php');
+// Shortcodes class
+require_once('membershipincludes/classes/class.shortcodes.php');
 // Communications class
 require_once('membershipincludes/classes/class.communication.php');
 // URL groups class
