@@ -1653,15 +1653,15 @@ if(!class_exists('membershippublic')) {
 												$member->deactivate();
 											}
 											$creds = array(
-												'user_login' => $_POST['user_login'],
-												'user_password' => $_POST['password'],
+												'user_login' => $_POST['signup_username'],
+												'user_password' => $_POST['signup_password'],
 												'remember' => true
 											);
 											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
-												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['signup_password']);
 											} else {
 												wp_new_user_notification($user_id, $_POST['signup_password']);
 											}
@@ -2026,8 +2026,14 @@ if(!class_exists('membershippublic')) {
 																$gateway = $_POST['gateway'];
 																// Join the new subscription
 																$member->create_subscription($sub_id, $gateway);
+																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
+																
+																// Added another redirect to the same url because the show_no_access filters
+																// have already run on the "parse_request" action (Cole)
+																wp_redirect(M_get_subscription_permalink());
+																exit;
 															}
 														} else {
 															// check if a custom is posted and of so then process the user
@@ -2039,8 +2045,14 @@ if(!class_exists('membershippublic')) {
 																	// Join the new subscription
 																	$member = new M_Membership( $user_id );
 																	$member->create_subscription($sub_id, $gateway);
+																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
+																	
+																	// Added another redirect to the same url because the show_no_access filters
+																	// have already run on the "parse_request" action (Cole)
+																	wp_redirect(M_get_subscription_permalink());
+																	exit;
 																}
 															}
 														}
@@ -2116,8 +2128,14 @@ if(!class_exists('membershippublic')) {
 																$gateway = $_POST['gateway'];
 																// Join the new subscription
 																$member->create_subscription($sub_id, $gateway);
+																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
+																
+																// Added another redirect to the same url because the show_no_access filters
+																// have already run on the "parse_request" action (Cole)
+																wp_redirect(M_get_returnurl_permalink());
+																exit;
 															}
 
 														} else {
@@ -2129,8 +2147,14 @@ if(!class_exists('membershippublic')) {
 																	// Join the new subscription
 																	$member = new M_Membership( $user_id );
 																	$member->create_subscription($sub_id, $gateway);
+																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
+																	
+																	// Added another redirect to the same url because the show_no_access filters
+																	// have already run on the "parse_request" action (Cole)
+																	wp_redirect(M_get_returnurl_permalink());
+																	exit;
 																}
 															}
 														}
