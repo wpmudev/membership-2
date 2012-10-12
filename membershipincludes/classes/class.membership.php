@@ -259,13 +259,47 @@ if(!class_exists('M_Membership')) {
 
 			$subscription = new M_Subscription( $sub_id );
 			$levels = $subscription->get_levels();
-
+			
+			if( function_exists('is_multisite') && is_multisite() )
+				global $blog_id;
+			
 			if(!empty($levels)) {
 
 				foreach($levels as $key => $level) {
 					if($level->level_order == 1) {
-
 						$this->add_subscription($sub_id, $level->level_id, $level->level_order, $gateway);
+						
+						// Check for a coupon transient
+						if( function_exists('is_multisite') && is_multisite() ) {
+							$trans = get_site_transient('m_coupon_'.$blog_id.'_'.$this->ID.'_'.$sub_id);
+						} else {
+							$trans = get_transient('m_coupon_'.$this->ID.'_'.$sub_id);
+						}
+												
+						// If there is a coupon transient do our coupon count magic
+						if( $trans && is_array($trans) ) {
+							
+							$code = strtoupper($code);
+							$coupon = new M_Coupon($trans['code']);
+							$price = $coupon->apply_price($level->level_price);
+							$coupon_data = $coupon->get_coupon(true);
+							$coupon_data['ID'] = $coupon_data['id'];
+							unset($coupon_data['id']);
+							
+							
+							// Ok they for sure used the coupon so lets delete the transient	
+							if( function_exists('is_multisite') && is_multisite() ) {
+								delete_site_transient('m_coupon_'.$blog_id.'_'.$this->ID.'_'.$sub_id);
+							} else {
+								delete_transient('m_coupon_'.$this->ID.'_'.$sub_id);
+							}
+							
+							// Now lets just add a use to the coupon it self and daz it...
+							$new_total = (int)$coupon_data['coupon_used'] + 1;
+							$coupon_data['coupon_used'] = $new_total;
+							$coupon->increment_coupon_used();
+						}
+						
 						break;
 					}
 				}
