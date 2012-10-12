@@ -1,3 +1,9 @@
+=3.XXXX=
+Fixed problems with coupons restarting the signup process in certain setups
+Coupon Uses and Date limitations now properly update
+Fixed error with the buddypress registration page
+Various new actions and filters are now available
+
 = 3.3 =
 Coupons will now properly display when using popover registration.
 Stopped some 2CO transactions from displaying twice.
