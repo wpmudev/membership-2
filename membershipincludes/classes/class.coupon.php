@@ -98,12 +98,23 @@ class M_Coupon {
 		}
 
 	}
+	
+	function increment_coupon_used() {
+		$sql = $this->db->prepare( "UPDATE {$this->coupons} SET coupon_used = coupon_used + 1 WHERE id = %d", $this->id);
 
+		if($this->db->query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	function update( $data ) {
-		
+
 		$coupon_id = $data['ID'];
-		
+
 		if(!empty($data) && isset($coupon_id)) {
+			
 			$newdata = array();
 
 				$newdata['couponcode'] = preg_replace('/[^A-Z0-9_-]/', '', strtoupper($data['couponcode']));
@@ -129,9 +140,11 @@ class M_Coupon {
 				$newdata['coupon_enddate'] = date('Y-m-d H:i:s',strtotime($data['coupon_enddate']));
 				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
 					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
-
-				$newdata['coupon_uses'] = (is_numeric($data['coupon_uses'])) ? (int) $data['coupon_uses'] : '';
-				$this->db->update( $this->coupons, $newdata, array('ID' => $coupon_id ), '%s', '%s' );
+				
+				if(isset($data['coupon_uses']))
+					$newdata['coupon_uses'] = $data['coupon_uses'];
+				
+				$this->db->update( $this->coupons, $newdata, array('id' => $coupon_id ), '%s', '%s' );
 				//$this->db->update( $this->coupons, $newdata );
 				
 		} else {
@@ -167,10 +180,13 @@ class M_Coupon {
 
 	}
 
-	private function get_coupon() {
+	function get_coupon($return_array=False) {
 		$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} WHERE id = %d", $this->id );
-
-		return $this->db->get_row( $sql );
+		
+		if($return_array)
+			return $this->db->get_row( $sql, ARRAY_A );
+		else
+			return $this->db->get_row( $sql );
 	}
 	function apply_price($price) {
 		if(!is_numeric($this->id) || $this->id < 1)
