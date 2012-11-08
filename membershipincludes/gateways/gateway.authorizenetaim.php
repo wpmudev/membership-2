@@ -11,7 +11,7 @@ class M_authorizenetaim extends M_Gateway {
 
 	var $gateway = 'authorizenetaim';
 	var $title = 'Authorize.net';
-	//var $issingle = true;
+	var $issingle = true;
 	var $haspaymentform = true;
 	var $ssl = true;
 
