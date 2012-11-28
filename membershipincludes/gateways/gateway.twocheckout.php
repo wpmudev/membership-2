@@ -166,28 +166,29 @@ class twocheckout extends M_Gateway {
 		  </td>
 		  </tr>
 		  
-		  <tr valign="top">
-		  <th scope="row"><?php _e('2Checkout Language', 'membership') ?></th>
-		  <td><select name="twocheckout_lang">
-		  <?php $lang = get_option($this->gateway.'_twocheckout_lang'); ?>
-		  <option value="en" <?php selected($lang,'en'); ?>><?php _e('English','membership') ?></option>
-		  <option value="zh" <?php selected($lang,'zh'); ?>><?php _e('Chinese','membership') ?></option>
-		  <option value="da" <?php selected($lang,'da'); ?>><?php _e('Danish','membership') ?></option>
-		  <option value="fr" <?php selected($lang,'fr'); ?>><?php _e('French','membership') ?></option>
-		  <option value="gr" <?php selected($lang,'gr'); ?>><?php _e('German','membership') ?></option>
-		  <option value="el" <?php selected($lang,'el'); ?>><?php _e('Greek','membership') ?></option>
-		  <option value="it" <?php selected($lang,'it'); ?>><?php _e('Italian','membership') ?></option>
-		  <option value="jp" <?php selected($lang,'jp'); ?>><?php _e('Japanese','membership') ?></option>
-		  <option value="no" <?php selected($lang,'no'); ?>><?php _e('Norwegian','membership') ?></option>
-		  <option value="pt" <?php selected($lang,'pt'); ?>><?php _e('Portuguese','membership') ?></option>
-		  <option value="sl" <?php selected($lang,'sl'); ?>><?php _e('Slovenian','membership') ?></option>
-		  <option value="es_ib" <?php selected($lang,'es_ib'); ?>><?php _e('Spanish','membership') ?></option>
-		  <option value="es_la" <?php selected($lang,'es_la'); ?>><?php _e('Spanish (Latin America)','membership') ?></option>
-		  <option value="sv" <?php selected($lang,'sv'); ?>><?php _e('Swedish','membership') ?></option>
-		  </select>
-		  <br />
-		  </td>
-		  </tr>
+		<tr valign="top">
+			<th scope="row"><?php _e('2Checkout Language', 'membership') ?></th>
+			<td>
+				<select name="twocheckout_lang">
+					<?php $lang = get_option($this->gateway.'_twocheckout_lang'); ?>
+					<option value="en" <?php selected($lang,'en'); ?>><?php _e('English','membership') ?></option>
+					<option value="zh" <?php selected($lang,'zh'); ?>><?php _e('Chinese','membership') ?></option>
+					<option value="da" <?php selected($lang,'da'); ?>><?php _e('Danish','membership') ?></option>
+					<option value="fr" <?php selected($lang,'fr'); ?>><?php _e('French','membership') ?></option>
+					<option value="gr" <?php selected($lang,'gr'); ?>><?php _e('German','membership') ?></option>
+					<option value="el" <?php selected($lang,'el'); ?>><?php _e('Greek','membership') ?></option>
+					<option value="it" <?php selected($lang,'it'); ?>><?php _e('Italian','membership') ?></option>
+					<option value="jp" <?php selected($lang,'jp'); ?>><?php _e('Japanese','membership') ?></option>
+					<option value="no" <?php selected($lang,'no'); ?>><?php _e('Norwegian','membership') ?></option>
+					<option value="pt" <?php selected($lang,'pt'); ?>><?php _e('Portuguese','membership') ?></option>
+					<option value="sl" <?php selected($lang,'sl'); ?>><?php _e('Slovenian','membership') ?></option>
+					<option value="es_ib" <?php selected($lang,'es_ib'); ?>><?php _e('Spanish','membership') ?></option>
+					<option value="es_la" <?php selected($lang,'es_la'); ?>><?php _e('Spanish (Latin America)','membership') ?></option>
+					<option value="sv" <?php selected($lang,'sv'); ?>><?php _e('Swedish','membership') ?></option>
+				</select>
+				<br />
+			</td>
+		</tr>
 		  
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Skip Order Review Page', 'membership') ?></th>
@@ -195,6 +196,17 @@ class twocheckout extends M_Gateway {
 		  <?php $skip = get_option($this->gateway.'_twocheckout_skip_landing'); ?>
 		  <option value="1" <?php selected($skip,'1'); ?>><?php _e('Yes','membership') ?></option>
 		  <option value="0" <?php selected($skip,'0'); ?>><?php _e('No','membership') ?></option>
+		  </select>
+		  <br />
+		  </td>
+		  </tr>
+		  
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Checkout Style', 'membership') ?></th>
+		  <td><select name="twocheckout_checkout_type">
+		  <?php $checkout_type = get_option($this->gateway.'_twocheckout_checkout_type'); ?>
+		  <option value="multi" <?php selected($checkout_type,'multi'); ?>><?php _e('Multi Page Checkout','membership') ?></option>
+		  <option value="single" <?php selected($checkout_type,'single'); ?>><?php _e('Single Page Checkout','membership') ?></option>
 		  </select>
 		  <br />
 		  </td>
@@ -229,6 +241,7 @@ class twocheckout extends M_Gateway {
 			update_option( $this->gateway . "_twocheckout_button", $_POST[ 'twocheckout_button' ] );
 			update_option( $this->gateway . "_twocheckout_lang", $_POST[ 'twocheckout_lang' ] );
 			update_option( $this->gateway . "_twocheckout_skip_landing", $_POST[ 'twocheckout_skip_landing' ] );
+			update_option( $this->gateway . "_twocheckout_checkout_type", $_POST[ 'twocheckout_checkout_type' ] );
 		}
 
 		// default action is to return true
@@ -363,8 +376,13 @@ class twocheckout extends M_Gateway {
 		//$product_id = $this->get_product_id($subscription, $pricing);
 
 		$form = '';
-
-		$form .= '<form action="https://www.2checkout.com/checkout/spurchase" method="post">';
+		
+		if (get_option( $this->gateway . '_twocheckout_checkout_type') == 'multi') {
+			$endpoint = 'https://www.2checkout.com/checkout/purchase';
+		} else {
+			$endpoint = 'https://www.2checkout.com/checkout/spurchase';
+		}
+		$form .= sprintf('<form action="%s" method="post">',$endpoint);
 
 		if (get_option( $this->gateway . "_twocheckout_status" ) != 'live') {
 			$form .= '<input type="hidden" name="demo" value="Y">';
@@ -506,20 +524,16 @@ class twocheckout extends M_Gateway {
 
 	// Return stuff
 	function handle_2checkout_return() {
-		
-		wp_mail('cole@incsub.com','debug',var_export($_REQUEST,true));
-		
-		
+				
 		// Return handling code
 		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
 			$total = $_REQUEST['total'];
 
-			$product_id = false;
+			$sub_id = false;
 			$user_id = false;
 
-			$product_id = $_REQUEST['li_0_product_id'];
-			list($tmp, $user_id) = explode(':', $_REQUEST['merchant_order_id']);
+			list($sub_id, $user_id) = explode(':', $_REQUEST['merchant_order_id']);
 			
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
@@ -527,46 +541,46 @@ class twocheckout extends M_Gateway {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . $_REQUEST['order_number'] . $total));
 			}
 
-			if ($product_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
+			if ($sub_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
 				
-				$this->record_transaction($user_id, $product_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
+				$this->record_transaction($user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 
 				// Added for affiliate system link
-				do_action('membership_payment_processed', $user_id, $product_id, $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
+				do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
 
 				$member = new M_Membership($user_id);
 				if($member) {
-					$member->create_subscription($product_id, $this->gateway);
+					$member->create_subscription($sub_id, $this->gateway);
 				}
 				
-				do_action('membership_payment_subscr_signup', $user_id, $product_id);
+				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				wp_redirect(get_option('home'));
 				exit();
 			}
 		} else if (isset($_REQUEST['message_type'])) {
 			$md5_hash = strtoupper(md5("{$_REQUEST['sale_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_sid" ))."{$_REQUEST['invoice_id']}".esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" ))));
 
-			$product_id = false;
+			$sub_id = false;
 			$user_id = false;
 
-			$product_id = $_REQUEST['item_id_1'];
-			list($tmp, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
+			//$product_id = $_REQUEST['item_id_1'];
+			list($sub_id, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
 						
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
 					
-					if(!$this->duplicate_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '')) {
-						$this->record_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+					if(!$this->duplicate_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '')) {
+						$this->record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
 						$member = new M_Membership($user_id);
 						if($member) {
 							remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
 							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
-							$member->expire_subscription($product_id);
-							$member->create_subscription($product_id, $this->gateway);
+							$member->expire_subscription($sub_id);
+							$member->create_subscription($sub_id, $this->gateway);
 						}
 						// Added for affiliate system link
-						do_action('membership_payment_processed', $user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
+						do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
 					}
 						break;
 					case 'FRAUD_STATUS_CHANGED':
@@ -575,10 +589,10 @@ class twocheckout extends M_Gateway {
 						break;
 					case 'ORDER_CREATED':
 					case 'RECURRING_RESTARTED':
-						$this->record_transaction($user_id, $product_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+						$this->record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->create_subscription($product_id, $this->gateway);
+							$member->create_subscription($sub_id, $this->gateway);
 						}
 						break;
 					case 'RECURRING_STOPPED':
@@ -587,20 +601,26 @@ class twocheckout extends M_Gateway {
 					default:
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->mark_for_expire($product_id);
+							$member->mark_for_expire($sub_id);
 						}
-						do_action('membership_payment_subscr_cancel', $user_id, $product_id);
+						do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
 						break;
 				}
+			} else {
+				// MD5 Hash Failed
+				header('Status: 403 Forbidden');
+				echo 'Error: Unexpected Security Value. Verification is not possible.';
+				exit();
 			}
+			
 			echo  "OK";
 			exit();
-		}/* else {
+		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
-			header('Status: 404 Not Found');
+			header('Status: 400 Bad Request');
 			echo 'Error: Missing POST variables. Identification is not possible.';
-			exit;
-		}*/
+			exit();
+		}
 	}
 
 }

@@ -19,7 +19,7 @@ function m_couponsReady() {
 	jQuery('.delete a').click(m_deletecoupon);
 
 	jQuery.datepicker.setDefaults(jQuery.datepicker.regional[membership.setlanguage]);
- 	jQuery('.pickdate').datepicker( {dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true, minDate: 0, firstDay: membership.start_of_week} );
+ 	jQuery('.pickdate').datetimepicker( {timeFormat: 'hh:mm tt', changeMonth: true, changeYear: true, minDate: 0, firstDay: membership.start_of_week} );
 
 }
 

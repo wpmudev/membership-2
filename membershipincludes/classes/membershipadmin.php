@@ -3,7 +3,7 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 12;
+		var $build = 13;
 		var $db;
 
 		//
@@ -224,6 +224,9 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			do_action('membership_register_shortcodes');
+			
+			add_action( 'wp_ajax_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
+			add_action( 'wp_ajax_nopriv_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
 
 		}
 
@@ -427,13 +430,14 @@ if(!class_exists('membershipadmin')) {
 			// Run the core header
 			$this->add_admin_header_core();
 
-			wp_enqueue_script( 'jquery-datepicker', membership_url( 'membershipincludes/js/datepicker/js/datepicker.min.js'), array('jquery', 'jquery-ui-core'), $this->build);
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-ui-timepicker', membership_url('membershipincludes/js/datepicker/js/jquery.timepicker.min.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker') , $this->build );
 
 			//only load languages for datepicker if not english (or it will show Chinese!)
 			if ($this->language != 'en')
-				wp_enqueue_script( 'jquery-datepicker-i18n', membership_url( 'membershipincludes/js/datepicker/js/datepicker-i18n.min.js'), array('jquery', 'jquery-ui-core', 'jquery-datepicker'), $this->build);
+				wp_enqueue_script( 'jquery-datepicker-i18n', membership_url( 'membershipincludes/js/datepicker/js/datepicker-i18n.min.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker'), $this->build);
 
-			wp_enqueue_style( 'jquery-datepicker-css', membership_url( 'membershipincludes/js/datepicker/css/ui-lightness/datepicker.css'), false, $this->build);
+			wp_enqueue_style( 'jquery-datepicker-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.19/themes/base/jquery-ui.css', false, $this->build);
 
 			// Queue scripts and localise
 			wp_enqueue_script('couponsjs', membership_url('membershipincludes/js/coupons.js'), array(), $this->build);
@@ -6183,7 +6187,7 @@ if(!class_exists('membershipadmin')) {
 
 			}
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}");
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}",null);
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
@@ -6239,7 +6243,7 @@ if(!class_exists('membershipadmin')) {
 
 			}
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions}");
+			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions}",null);
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
@@ -6809,7 +6813,7 @@ if(!class_exists('membershipadmin')) {
 
 		function get_coupons( $filter = false ) {
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} " );
+			$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} ", null );
 
 			if(!is_network_admin()) {
 				// We are on a single site admin interface
@@ -7524,6 +7528,29 @@ if(!class_exists('membershipadmin')) {
 
 			return $shortcodes;
 
+		}
+		
+		function start_membership_session() {
+			if (session_id() == "")
+      			session_start();
+		}
+		
+		function set_membership_coupon_cookie() {
+			
+			if(!defined('DOING_AJAX') || DOING_AJAX == FALSE )
+				die('NOT DOING AJAX?');
+			
+			$this->start_membership_session();
+
+			if(isset($_POST['coupon_code'])) {
+				$_SESSION['m_coupon_code'] = esc_attr($_POST['coupon_code']);
+				include membership_dir('membershipincludes/includes/coupon.form.php');
+				die();
+			} else {
+				die(0);
+			}
+			
+			
 		}
 
 	}

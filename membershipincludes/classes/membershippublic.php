@@ -2335,7 +2335,7 @@ if(!class_exists('membershippublic')) {
 
 			$orderby[] = 'id ASC';
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}");
+			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}",null);
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
@@ -2385,7 +2385,6 @@ if(!class_exists('membershippublic')) {
 			return $shortcodes;
 
 		}
-
 
 	}
 

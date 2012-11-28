@@ -700,4 +700,7 @@ function M_delete_option($key) {
 	}
 
 }
+function membership_get_current_coupon() {
+	return (isset($_SESSION['m_coupon_code']) ? false : $_SESSION['m_coupon_code']);
+}
 ?>

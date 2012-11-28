@@ -137,7 +137,7 @@ class M_Coupon {
 			 	if ($newdata['coupon_startdate'] === false)
 			        $this->errors[] = __('Please enter a valid Start Date', 'membership');
 
-				$newdata['coupon_enddate'] = date('Y-m-d H:i:s',strtotime($data['coupon_enddate']));
+				$newdata['coupon_enddate'] = ( !empty($data['coupon_enddate']) ? date('Y-m-d H:i:s',strtotime($data['coupon_enddate'])) : date('Y-m-d H:i:s',strtotime($data['coupon_startdate'])) );
 				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
 					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
 				

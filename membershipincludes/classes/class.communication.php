@@ -410,7 +410,7 @@ function M_Communication_get_pre_messages( ) {
 
 	global $wpdb;
 
-	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp < 0 AND active = 1 ORDER BY periodstamp ASC " );
+	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp < 0 AND active = 1 ORDER BY periodstamp ASC ", null );
 
 	return $wpdb->get_results( $sql );
 
@@ -420,7 +420,7 @@ function M_Communication_get_post_messages( ) {
 
 	global $wpdb;
 
-	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp >= 0 AND active = 1 ORDER BY periodstamp ASC " );
+	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp >= 0 AND active = 1 ORDER BY periodstamp ASC ", null );
 
 	return $wpdb->get_results( $sql );
 }

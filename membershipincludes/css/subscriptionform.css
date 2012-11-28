@@ -325,6 +325,22 @@ div.bottombar {
 	margin-top: 0px;
 }
 
+div.couponbar {
+	background: #f6f6f6;
+	padding: 10px;
+	color: #434343;
+	font: 15px Verdana, Geneva, sans-serif;
+}
+input.couponInput {
+	
+}
+div.couponQuestion {
+	
+}
+div.couponQuestion {
+	
+}
+
 div.pricebox div.topbar span.title {
 	margin-left: 10px;
 	float: left;
