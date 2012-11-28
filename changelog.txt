@@ -4,7 +4,7 @@ Coupon Uses and Date limitations now properly update
 Fixed error with the buddypress registration page
 Various new actions and filters are now available
 2Checkout - Multiple Bug Fixes and feature additions
-Fixed $wpdb->prepare() errors in preperation for WP3.5
+Fixed $wpdb->prepare() errors in preparation for WP3.5
 
 = 3.3 =
 Coupons will now properly display when using popover registration.

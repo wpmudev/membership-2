@@ -7541,7 +7541,7 @@ if(!class_exists('membershipadmin')) {
 				die('NOT DOING AJAX?');
 			
 			$this->start_membership_session();
-
+			
 			if(isset($_POST['coupon_code'])) {
 				$_SESSION['m_coupon_code'] = esc_attr($_POST['coupon_code']);
 				include membership_dir('membershipincludes/includes/coupon.form.php');
