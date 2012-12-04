@@ -8,15 +8,7 @@ Author URI: http://caffeinatedb.com
 
 function M_AddSimpleInviteOptions() {
 
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('get_blog_option')) {
-			$Msi_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', array());
-		} else {
-			$Msi_options = get_option('membership_simpleinvite_options', array());
-		}
-	} else {
-		$Msi_options = get_option('membership_simpleinvite_options', array());
-	}
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
 
 	?>
 			<div class="postbox">
@@ -31,6 +23,11 @@ function M_AddSimpleInviteOptions() {
 							</em>
 							</th>
 							<td>
+								<?php
+								if(!isset($Msi_options['inviterequired'])) {
+									$Msi_options['inviterequired'] = '';
+								}
+								?>
 								<input type='checkbox' name='inviterequired' id='inviterequired' value='yes' <?php checked('yes', $Msi_options['inviterequired']); ?> />
 							</td>
 						</tr>
@@ -40,6 +37,11 @@ function M_AddSimpleInviteOptions() {
 							</em>
 							</th>
 							<td>
+								<?php
+								if(!isset($Msi_options['invitecodes'])) {
+									$Msi_options['invitecodes'] = '';
+								}
+								?>
 								<textarea name='invitecodes' id='invitecodes' rows='15' cols='40'><?php esc_html_e(stripslashes($Msi_options['invitecodes'])); ?></textarea>
 							</td>
 						</tr>
@@ -48,6 +50,11 @@ function M_AddSimpleInviteOptions() {
 							</em>
 							</th>
 							<td>
+								<?php
+								if(!isset($Msi_options['inviteremove'])) {
+									$Msi_options['inviteremove'] = '';
+								}
+								?>
 								<input type='checkbox' name='inviteremove' id='inviteremove' value='yes' <?php checked('yes', $Msi_options['inviteremove']); ?> />
 							</td>
 						</tr>
@@ -61,36 +68,21 @@ add_action( 'membership_extrasoptions_page', 'M_AddSimpleInviteOptions', 11 );
 
 function M_AddSimpleInviteOptionsProcess() {
 
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('get_blog_option')) {
-			$Msi_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', array());
-		} else {
-			$Msi_options = get_option('membership_simpleinvite_options', array());
-		}
-	} else {
-		$Msi_options = get_option('membership_simpleinvite_options', array());
-	}
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
 
 	$Msi_options['invitecodes'] = $_POST['invitecodes'];
 	$Msi_options['inviterequired'] = $_POST['inviterequired'];
 	$Msi_options['inviteremove'] = $_POST['inviteremove'];
 
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('get_blog_option')) {
-			update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_simpleinvite_options', $Msi_options);
-		} else {
-			update_option('membership_simpleinvite_options', $Msi_options);
-		}
-	} else {
-		update_option('membership_simpleinvite_options', $Msi_options);
-	}
+	M_update_option('membership_simpleinvite_options', $Msi_options);
+
 
 }
 add_action( 'membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11 );
 
 function M_AddSimpleInviteField() {
 
-	$Msi_options = get_option('membership_simpleinvite_options', array());
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
 	if(empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
 		return;
 	}
@@ -110,7 +102,7 @@ add_action( 'bp_custom_profile_edit_fields', 'M_AddSimpleInviteField');
 
 function M_AddSimpleInviteFieldProcess( $error ) {
 
-	$Msi_options = get_option('membership_simpleinvite_options', array());
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
 	if(empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
 		return $error;
 	}
@@ -139,13 +131,15 @@ function M_AddSimpleInviteFieldProcess( $error ) {
 			$error->add('incorrectinvitecode', __('Sorry, but we do not seem to have that code on file, please try another.','membership'));
 
 		} else {
-			if($Msi_options['inviteremove'] == 'yes') {
-				$key = array_search( $thekey, $codes);
-				if($key !== false) {
-					unset($codes[$key]);
-					$Msi_options['invitecodes'] = implode("\n", $codes);
+			if(empty($error)) {
+				if($Msi_options['inviteremove'] == 'yes') {
+					$key = array_search( $thekey, $codes);
+					if($key !== false) {
+						unset($codes[$key]);
+						$Msi_options['invitecodes'] = implode("\n", $codes);
 
-					update_option('membership_simpleinvite_options', $Msi_options);
+						M_update_option('membership_simpleinvite_options', $Msi_options);
+					}
 				}
 			}
 		}

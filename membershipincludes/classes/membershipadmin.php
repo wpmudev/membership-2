@@ -2482,6 +2482,11 @@ if(!class_exists('membershipadmin')) {
 									</em>
 									</th>
 									<td>
+										<?php
+											if(!isset($M_options['enableincompletesignups'])) {
+												$M_options['enableincompletesignups'] = 'no';
+											}
+										?>
 										<input type='checkbox' name='enableincompletesignups' id='enableincompletesignups' value='yes' <?php checked('yes', $M_options['enableincompletesignups']); ?> />
 									</td>
 								</tr>
@@ -2544,6 +2549,9 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										if(!isset($M_options['registration_page'])) {
+											$M_options['registration_page'] = '';
+										}
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
@@ -2591,6 +2599,9 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										if(!isset($M_options['registrationcompleted_page'])) {
+											$M_options['registrationcompleted_page'] = '';
+										}
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registrationcompleted_page'], 'name' => 'registrationcompleted_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
@@ -2620,6 +2631,9 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										if(!isset($M_options['account_page'])) {
+											$M_options['account_page'] = '';
+										}
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['account_page'], 'name' => 'account_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
@@ -2649,6 +2663,9 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										if(!isset($M_options['subscriptions_page'])) {
+											$M_options['subscriptions_page'] = '';
+										}
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['subscriptions_page'], 'name' => 'subscriptions_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
@@ -2678,6 +2695,9 @@ if(!class_exists('membershipadmin')) {
 									</th>
 									<td>
 										<?php
+										if(!isset($M_options['nocontent_page'])) {
+											$M_options['nocontent_page'] = '';
+										}
 										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['nocontent_page'], 'name' => 'nocontent_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
 										echo $pages;
 										?>
@@ -2773,7 +2793,12 @@ if(!class_exists('membershipadmin')) {
 										<?php echo $this->_tips->add_tip( __('This is the URL that the user will see. You can change the end part to something unique.','membership') ); ?>
 									</th>
 									<td>
-										<?php esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);  ?>' />&nbsp;/
+										<?php
+											if(!isset($M_options['masked_url'])) {
+												$M_options['masked_url'] = '';
+											}
+											esc_html_e(trailingslashit(get_option('home')));  ?>&nbsp;<input type='text' name='masked_url' id='masked_url' value='<?php esc_attr_e($M_options['masked_url']);
+										?>' />&nbsp;/
 									</td>
 								</tr>
 
@@ -2897,6 +2922,9 @@ if(!class_exists('membershipadmin')) {
 									<td>
 										<?php
 										$args = array("textarea_name" => "shortcodemessage");
+										if(!isset($M_options['shortcodemessage'])) {
+											$M_options['shortcodemessage'] = '';
+										}
 										wp_editor( stripslashes($M_options['shortcodemessage']), "shortcodemessage", $args );
 										/*
 										?>
@@ -2964,6 +2992,9 @@ if(!class_exists('membershipadmin')) {
 									<td>
 										<?php
 										$args = array("textarea_name" => "moretagmessage");
+										if(!isset($M_options['moretagmessage'])) {
+											$M_options['moretagmessage'] = '';
+										}
 										wp_editor( stripslashes($M_options['moretagmessage']), "moretagmessage", $args );
 										/*
 										?>
@@ -5161,14 +5192,14 @@ if(!class_exists('membershipadmin')) {
 		function get_communications( $type = 'all') {
 
 			switch($type) {
-				case 'active':		$sql = $this->db->prepare( "SELECT * FROM {$this->communications} WHERE active = 1 ORDER BY periodstamp ASC" );
+				case 'active':		$sql = "SELECT * FROM {$this->communications} WHERE active = 1 ORDER BY periodstamp ASC";
 									break;
 
-				case 'inactive':	$sql = $this->db->prepare( "SELECT * FROM {$this->communications} WHERE active = 0 ORDER BY periodstamp ASC" );
+				case 'inactive':	$sql = "SELECT * FROM {$this->communications} WHERE active = 0 ORDER BY periodstamp ASC";
 									break;
 
 				case 'all':
-				default:			$sql = $this->db->prepare( "SELECT * FROM {$this->communications} ORDER BY periodstamp ASC" );
+				default:			$sql = "SELECT * FROM {$this->communications} ORDER BY periodstamp ASC";
 									break;
 			}
 
@@ -5669,7 +5700,7 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		function get_pings() {
-			$sql = $this->db->prepare( "SELECT * FROM {$this->pings} ORDER BY id ASC" );
+			$sql = "SELECT * FROM {$this->pings} ORDER BY id ASC";
 
 			$results = $this->db->get_results( $sql );
 
