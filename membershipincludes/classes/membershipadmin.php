@@ -224,7 +224,7 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			do_action('membership_register_shortcodes');
-			
+
 			add_action( 'wp_ajax_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
 			add_action( 'wp_ajax_nopriv_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
 
@@ -532,7 +532,7 @@ if(!class_exists('membershipadmin')) {
 
 		function build_signup_stats() {
 
-			$sql = $this->db->prepare( "SELECT YEAR(startdate) as year, MONTH(startdate)as month, DAY(startdate) as day, count(*) AS signedup FROM {$this->membership_relationships} WHERE startdate > DATE_SUB(CURDATE(), INTERVAL 10 DAY) GROUP BY YEAR(startdate), MONTH(startdate), DAY(startdate) ORDER BY startdate DESC" );
+			$sql = $this->db->prepare( "SELECT YEAR(startdate) as year, MONTH(startdate)as month, DAY(startdate) as day, count(*) AS signedup FROM {$this->membership_relationships} WHERE startdate > DATE_SUB(CURDATE(), INTERVAL %d DAY) GROUP BY YEAR(startdate), MONTH(startdate), DAY(startdate) ORDER BY startdate DESC", 10 );
 
 			$results = $this->db->get_results( $sql );
 
@@ -573,7 +573,7 @@ if(!class_exists('membershipadmin')) {
 
 		function build_levels_stats() {
 
-			$sql = $this->db->prepare( "SELECT l.id, l.level_title, count(m.rel_id) as users FROM {$this->membership_levels} as l, {$this->membership_relationships} as m WHERE l.id = m.level_id GROUP BY l.id, l.level_title ORDER BY users DESC" );
+			$sql = "SELECT l.id, l.level_title, count(m.rel_id) as users FROM {$this->membership_levels} as l, {$this->membership_relationships} as m WHERE l.id = m.level_id GROUP BY l.id, l.level_title ORDER BY users DESC";
 
 			$results = $this->db->get_results( $sql );
 
@@ -597,7 +597,7 @@ if(!class_exists('membershipadmin')) {
 
 		function build_subs_stats() {
 
-			$sql = $this->db->prepare( "SELECT s.id, s.sub_name, count(m.rel_id) as users FROM {$this->subscriptions} as s, {$this->membership_relationships} as m WHERE s.id = m.sub_id GROUP BY s.id, s.sub_name ORDER BY users DESC" );
+			$sql = "SELECT s.id, s.sub_name, count(m.rel_id) as users FROM {$this->subscriptions} as s, {$this->membership_relationships} as m WHERE s.id = m.sub_id GROUP BY s.id, s.sub_name ORDER BY users DESC";
 
 			$results = $this->db->get_results( $sql );
 
@@ -790,7 +790,7 @@ if(!class_exists('membershipadmin')) {
 				echo "<table style='width: 100%;'>";
 				echo "<tbody>";
 
-					$usercount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->users} INNER JOIN {$this->db->usermeta} ON {$this->db->users}.ID = {$this->db->usermeta}.user_id WHERE {$this->db->usermeta}.meta_key = '{$this->db->prefix}capabilities'") );
+					$usercount = $this->db->get_var( "SELECT count(*) FROM {$this->db->users} INNER JOIN {$this->db->usermeta} ON {$this->db->users}.ID = {$this->db->usermeta}.user_id WHERE {$this->db->usermeta}.meta_key = '{$this->db->prefix}capabilities'" );
 
 					echo "<tr>";
 						echo "<td>" . __('Total Users', 'membership') . "</td>";
@@ -6286,13 +6286,13 @@ if(!class_exists('membershipadmin')) {
 
 			}
 
-			$sql = $this->db->prepare( "SELECT s.id as sub_id, ml.id as level_id, s.*, ml.*, sl.level_order FROM {$this->subscriptions} AS s, {$this->subscriptions_levels} AS sl, {$this->membership_levels} AS ml");
+			$sql = "SELECT s.id as sub_id, ml.id as level_id, s.*, ml.*, sl.level_order FROM {$this->subscriptions} AS s, {$this->subscriptions_levels} AS sl, {$this->membership_levels} AS ml";
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
 			}
 
-			$sql .= $this->db->prepare( " AND s.id = sl.sub_id AND sl.level_id = ml.id ORDER BY s.id ASC, sl.level_order ASC " );
+			$sql .= " AND s.id = sl.sub_id AND sl.level_id = ml.id ORDER BY s.id ASC, sl.level_order ASC ";
 
 			return $this->db->get_results($sql);
 
@@ -7529,19 +7529,19 @@ if(!class_exists('membershipadmin')) {
 			return $shortcodes;
 
 		}
-		
+
 		function start_membership_session() {
 			if (session_id() == "")
       			session_start();
 		}
-		
+
 		function set_membership_coupon_cookie() {
-			
+
 			if(!defined('DOING_AJAX') || DOING_AJAX == FALSE )
 				die('NOT DOING AJAX?');
-			
+
 			$this->start_membership_session();
-			
+
 			if(isset($_POST['coupon_code'])) {
 				$_SESSION['m_coupon_code'] = esc_attr($_POST['coupon_code']);
 				include membership_dir('membershipincludes/includes/coupon.form.php');
@@ -7549,8 +7549,8 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				die(0);
 			}
-			
-			
+
+
 		}
 
 	}

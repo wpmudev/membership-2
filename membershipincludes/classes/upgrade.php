@@ -46,7 +46,7 @@ function M_Upgrade($from = false) {
 function M_Alterfor12() {
 	global $wpdb;
 
-	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
       `site_id` bigint(20) DEFAULT '0',
 	  `couponcode` varchar(250) DEFAULT NULL,

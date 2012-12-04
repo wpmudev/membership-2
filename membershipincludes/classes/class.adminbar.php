@@ -105,7 +105,7 @@ if(!class_exists('M_Adminbar')) {
 				'title'     => $title,
 				'href'      => $linkurl,
 				'meta'      => array(
-					'class'     => $class,
+					'class'     => '',
 					'title'     => $metatitle,
 				),
 			) );
