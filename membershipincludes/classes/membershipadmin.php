@@ -1822,7 +1822,7 @@ if(!class_exists('membershipadmin')) {
 				<?php endif; ?>
 
 				<div class="alignleft actions">
-				<select name="action" style='float:none; margin-top: 0; height: 25px; vertical-align: top;'>
+				<select name="action">
 					<option selected="selected" value=""><?php _e('Bulk Actions','membership'); ?></option>
 					<option value="toggle"><?php _e('Toggle activation','membership'); ?></option>
 
@@ -1842,7 +1842,7 @@ if(!class_exists('membershipadmin')) {
 						<option value="bulkmovegateway"><?php _e('Move gateway','membership'); ?></option>
 					</optgroup>
 				</select>
-				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>" style="margin-top: 0;" >
+				<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply','membership'); ?>" />
 
 				<select name="sub_op" style='float:none;'>
 					<option value=""><?php _e('Filter by subscription','membership'); ?></option>

@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/default.css?ver=11 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/default.css?ver=13 */
 
 #poststuff div.postbox {
 	position: relative;
@@ -50,5 +50,20 @@ div.screenhelpheader .welcome-panel-close {
 .membershipinactivestatus {
 	color: red;
 }
+
+div.tablenav div.alignleft.actions select {
+	float:none; 
+	margin-top: 0; 
+	height: 25px; 
+	vertical-align: top;
+	margin-right: 5px;	
+}
+
+div.tablenav div.alignleft.actions input.action {
+	margin-top: 0;
+	margin-right: 10px;
+	margin-left: 0px;
+}
+
 
 
