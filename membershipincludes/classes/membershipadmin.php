@@ -7287,7 +7287,7 @@ if(!class_exists('membershipadmin')) {
 
 			global $M_options;
 
-			include_once(ABSPATH . WPINC . '/registration.php');
+			//include_once(ABSPATH . WPINC . '/registration.php');
 
 			$error = array();
 

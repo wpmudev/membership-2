@@ -6,17 +6,17 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 		$pricing = $sub->get_pricingarray();
 		do_action('membership_payment_form', $sub, $pricing, $member->ID);
 	}
-		
+
 } else if($member->on_sub( $subscription )) {
 		$sub =  new M_Subscription( $subscription );
 		$coupon_code = membership_get_current_coupon();
 		$pricing = $sub->get_pricingarray();
-		
-				
+
+
 		if(!empty($pricing) && !empty($coupon_code) ) {
 				$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
 		}
-		
+
 	?>
 		<div id='membership-wrapper'>
 		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
@@ -81,7 +81,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 									</td>
 									<td class='buynowcolumn'>
 									<?php
-									
+
 
 									if(!empty($pricing)) {
 										do_action('membership_purchase_button', $sub, $pricing, $member->ID);
@@ -93,10 +93,10 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 						}
 				?>
 			</table>
-			
+
 			</fieldset>
 			</form>
-			
+
 		</div>
 
 	<?php
@@ -123,11 +123,11 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 				<?php echo $sub->sub_name(); ?>
 				</td>
 				<td class='pricecolumn'><?php
-					
+
 					$amount = $sub->sub_pricetext();
 					if(!empty($amount)) {
 						echo $amount;
-						if($sub->coupon_label) {
+						if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
 							echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
 						}
 					} else {
@@ -154,7 +154,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 							}
 						}
 						echo $price;
-						if($sub->coupon_label) {
+						if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
 							echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
 						}
 					}
@@ -162,8 +162,8 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 				</td>
 				<td class='buynowcolumn'>
 				<?php
-				
-				
+
+
 				if(!empty($pricing)) {
 					do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 				}

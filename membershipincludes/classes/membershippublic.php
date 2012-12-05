@@ -1420,6 +1420,10 @@ if(!class_exists('membershippublic')) {
 				$member = new M_Membership( $user_id );
 			}
 
+			if(empty($error)) {
+				$error = '';
+			}
+
 			$content = apply_filters('membership_subscription_form_payment_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
@@ -1467,7 +1471,7 @@ if(!class_exists('membershippublic')) {
 											break;
 
 				case 'validatepage1':	// Page 1 of the form has been submitted - validate
-									include_once(ABSPATH . WPINC . '/registration.php');
+									//include_once(ABSPATH . WPINC . '/registration.php');
 
 									$required = array(	'user_login' => __('Username', 'membership'),
 														'user_email' => __('Email address','membership'),
@@ -1521,7 +1525,7 @@ if(!class_exists('membershippublic')) {
 												'user_password' => $_POST['password'],
 												'remember' => true
 											);
-											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
+											$is_ssl = (isset($_SERVER['https']) && $_SERVER['https'] == 'on' ? true : false);
 											$user = wp_signon( $creds, $is_ssl );
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
@@ -1566,7 +1570,7 @@ if(!class_exists('membershippublic')) {
 				case 'validatepage1bp':
 									global $bp;
 
-									include_once(ABSPATH . WPINC . '/registration.php');
+									//include_once(ABSPATH . WPINC . '/registration.php');
 
 									$required = array(	'signup_username' => __('Username', 'membership'),
 														'signup_email' => __('Email address','membership'),
