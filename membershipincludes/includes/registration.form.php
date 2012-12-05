@@ -1,4 +1,7 @@
 <?php
+
+global $errors;
+
 ?>
 
 <div id='membership-wrapper'>
@@ -11,7 +14,7 @@
 
 	<?php do_action( "signup_hidden_fields" ); ?>
 
-	<input type='hidden' name='subscription' value='<?php echo esc_attr($_REQUEST['subscription']); ?>' />
+	<input type='hidden' name='subscription' value='<?php if(isset($_REQUEST['subscription'])) echo esc_attr($_REQUEST['subscription']); ?>' />
 
 	<fieldset>
 		<legend><?php _e( 'Create an Account', 'membership' ) ?></legend>
@@ -19,14 +22,14 @@
 			<div class="form-element">
 				<label class="control-label" for="user_login"><?php _e('Choose a Username','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_login" name="user_login" placeholder="" value="<?php echo esc_attr($_POST['user_login']); ?>">
+					<input type="text" class="input-xlarge" id="user_login" name="user_login" placeholder="" value="<?php if(isset($_POST['user_login'])) echo esc_attr($_POST['user_login']); ?>">
 				</div>
 			</div>
 
 			<div class="form-element">
 				<label class="control-label" for="user_email"><?php _e('Email Address','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_email" name="user_email" placeholder="" value="<?php echo esc_attr($_POST['user_email']); ?>">
+					<input type="text" class="input-xlarge" id="user_email" name="user_email" placeholder="" value="<?php if(isset($_POST['user_email'])) echo esc_attr($_POST['user_email']); ?>">
 				</div>
 
 				<p class="help-block"><?php _e('Please enter a new password, and then verify your new password by entering it again.','membership'); ?></p>

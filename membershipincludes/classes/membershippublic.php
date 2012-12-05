@@ -970,13 +970,13 @@ if(!class_exists('membershippublic')) {
 			}
 
 			//post_type] => nav_menu_item
-			if($wp_query->query_vars['post_type'] == 'nav_menu_item') {
+			if(isset($wp_query->query_vars['post_type']) && $wp_query->query_vars['post_type'] == 'nav_menu_item') {
 				// we've started looking at menus - implement bad bit of code until find a better method
 				define('M_REACHED_MENU', 'yup');
 			}
 
 			// If still here then we need to redirect to the no-access page
-			if(!empty($M_options['nocontent_page']) && $wp_query->queried_object_id != $M_options['nocontent_page'] && !defined('M_REACHED_MENU')) {
+			if(!empty($M_options['nocontent_page']) && isset($wp_query->queried_object_id) && $wp_query->queried_object_id != $M_options['nocontent_page'] && !defined('M_REACHED_MENU')) {
 				// grab the content form the no content page
 				$url = get_permalink( (int) $M_options['nocontent_page'] );
 
@@ -1380,7 +1380,7 @@ if(!class_exists('membershippublic')) {
 			return $content;
 		}
 
-		function output_registeruser( $errormessages = false ) {
+		function output_registeruser( $error = false ) {
 
 			global $wp_query, $M_options, $bp;
 
