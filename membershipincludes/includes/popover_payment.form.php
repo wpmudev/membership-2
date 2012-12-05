@@ -16,7 +16,7 @@ if(!$user_id) {
 $subscription = (int) $_REQUEST['subscription'];
 
 if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
-	
+
 	$gateway = M_get_class_for_gateway($_REQUEST['gateway']);
 	if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
 		$sub =  new M_Subscription( $subscription );
@@ -33,7 +33,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 		<div class='fullwidth'>
 			<?php do_action('membership_payment_form', $sub, $pricing, $member->ID); ?>
 		</div>
-		<?php		
+		<?php
 	} else {
 		?>
 		<div class='fullwidth'>
@@ -150,7 +150,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 
 						if(!empty($amount)) {
 							echo $amount;
-							if($sub->coupon_label) {
+							if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
 								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
 							}
 						} else {
@@ -177,7 +177,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 								}
 							}
 							echo $price;
-							if($sub->coupon_label) {
+							if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
 								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
 							}
 						}

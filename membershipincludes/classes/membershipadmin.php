@@ -7307,12 +7307,12 @@ if(!class_exists('membershipadmin')) {
 
 			if(empty($error)) {
 				// Pre - error reporting check for final add user
-				$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
+				$user = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
 
-				if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-					$error[] = $userid->get_error_message();
+				if(is_wp_error($user) && method_exists($user, 'get_error_message')) {
+					$error[] = $user->get_error_message();
 				} else {
-					$member = new M_Membership( $user_id );
+					$member = new M_Membership( $user );
 					if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
 						$member->deactivate();
 					}
@@ -7322,22 +7322,22 @@ if(!class_exists('membershipadmin')) {
 						'user_password' => $_POST['password'],
 						'remember' => true
 					);
-					$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
+					$is_ssl = (isset($_SERVER['https']) && $_SERVER['https'] == 'on' ? true : false);
 					$user = wp_signon( $creds, $is_ssl );
 
-					if ( is_wp_error($user) && method_exists($userid, 'get_error_message') )
+					if ( is_wp_error($user) && method_exists($user, 'get_error_message') )
 						$error[] = $user->get_error_message();
 
 					if( has_action('membership_susbcription_form_registration_notification') ) {
-						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+						do_action('membership_susbcription_form_registration_notification', $user->ID, $_POST['password']);
 					} else {
-						wp_new_user_notification($user_id, $_POST['password']);
+						wp_new_user_notification($user->ID, $_POST['password']);
 					}
 
 				}
 			}
 
-			do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+			do_action( 'membership_subscription_form_registration_process', $error, $user->ID );
 
 			if(!empty($error)) {
 				//sendback error
@@ -7345,7 +7345,7 @@ if(!class_exists('membershipadmin')) {
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				echo $this->popover_sendpayment_form( $user_id );
+				echo $this->popover_sendpayment_form( $user->ID );
 			}
 
 			exit;

@@ -7,11 +7,11 @@
 <form id="reg-form" action="<?php echo get_permalink(); ?>" method="post">
 	<div class="">
 		<label><?php _e('Username','membership'); ?> <span>*</span></label>
-		<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='reg_user_login'>
+		<input type="text" value="<?php if(isset($_POST['user_login'])) echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='reg_user_login'>
 	</div>
 	<div class="">
 		<label><?php _e('Email Address','membership'); ?> <span>*</span></label>
-		<input type="text" value="<?php echo esc_attr($_POST['user_email']); ?>" class="regtext" name="user_email" id='reg_user_email'>
+		<input type="text" value="<?php if(isset($_POST['user_email'])) echo esc_attr($_POST['user_email']); ?>" class="regtext" name="user_email" id='reg_user_email'>
 	</div>
 	<div class="">
 		<label><?php _e('Password','membership'); ?> <span>*</span></label>
@@ -27,7 +27,7 @@
 
 	<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 	<input type="hidden" name="action" value="validatepage1" />
-	<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='reg_subscription' />
+	<input type="hidden" name="subscription" value="<?php if(isset($_GET['subscription'])) echo (int) $_GET['subscription']; ?>" id='reg_subscription' />
 </form>
 </div>
 <div class='rightside'>
@@ -36,7 +36,7 @@
 <form id="login-form" action="<?php echo get_permalink(); ?>" method="post">
 	<div class="">
 		<label><?php _e('Username','membership'); ?></label>
-		<input type="text" value="<?php echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='login_user_login'>
+		<input type="text" value="<?php if(isset($_POST['user_login'])) echo esc_attr($_POST['user_login']); ?>" class="regtext" name="user_login" id='login_user_login'>
 	</div>
 	<div class="">
 		<label><?php _e('Password','membership'); ?></label>
@@ -47,6 +47,6 @@
 
 	<p><input type="submit" value="<?php _e('Login &raquo;','membership'); ?>" class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 	<input type="hidden" name="action" value="loginaccount" />
-	<input type="hidden" name="subscription" value="<?php echo (int) $_GET['subscription']; ?>" id='login_subscription' />
+	<input type="hidden" name="subscription" value="<?php if(isset($_GET['subscription'])) echo (int) $_GET['subscription']; ?>" id='login_subscription' />
 </form>
 </div>
