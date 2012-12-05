@@ -45,7 +45,7 @@ if(!class_exists('membershippublic')) {
 
 			// Register
 			add_filter('register', array(&$this, 'override_register') );
-			
+
 			// Ultimate Facebook Compatibility
 			add_filter( 'wdfb_registration_redirect_url', array(&$this, 'wdfb_registration_redirect_url') );
 
@@ -54,17 +54,17 @@ if(!class_exists('membershippublic')) {
 			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
 
 		}
-		
+
 		function wdfb_registration_redirect_url($url) {
 			global $M_options;
 			$url = get_permalink($M_options['registration_page']);
 			return $url;
 		}
-		
+
 		function membershippublic() {
 			$this->__construct();
 		}
-		
+
 		function load_textdomain() {
 
 			$locale = apply_filters( 'membership_locale', get_locale() );
@@ -382,7 +382,7 @@ if(!class_exists('membershippublic')) {
 					}
 				}
 			}
-			
+
 			do_action('membership-add-shortcodes');
 
 			// Set the initialisation status
@@ -2029,7 +2029,7 @@ if(!class_exists('membershippublic')) {
 																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
-																
+
 																// Added another redirect to the same url because the show_no_access filters
 																// have already run on the "parse_request" action (Cole)
 																wp_redirect(M_get_subscription_permalink());
@@ -2048,7 +2048,7 @@ if(!class_exists('membershippublic')) {
 																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
-																	
+
 																	// Added another redirect to the same url because the show_no_access filters
 																	// have already run on the "parse_request" action (Cole)
 																	wp_redirect(M_get_subscription_permalink());
@@ -2131,7 +2131,7 @@ if(!class_exists('membershippublic')) {
 																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
-																
+
 																// Added another redirect to the same url because the show_no_access filters
 																// have already run on the "parse_request" action (Cole)
 																wp_redirect(M_get_returnurl_permalink());
@@ -2150,7 +2150,7 @@ if(!class_exists('membershippublic')) {
 																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
-																	
+
 																	// Added another redirect to the same url because the show_no_access filters
 																	// have already run on the "parse_request" action (Cole)
 																	wp_redirect(M_get_returnurl_permalink());
@@ -2288,7 +2288,7 @@ if(!class_exists('membershippublic')) {
 
 		function queue_user( $user_login, $user_pass, $user_email, $user_meta = '' ) {
 
-			$sql = $this->db->prepare( "INSERT INTO {$this->user_queue} (user_login, user_pass, user_email, user_timestamp, user_meta) VALUES " );
+			$sql = "INSERT INTO {$this->user_queue} (user_login, user_pass, user_email, user_timestamp, user_meta) VALUES ";
 			$sql .= $this->db->prepare( "( %s, %s, %s, %d, %s )", $user_login, wp_hash_password( $user_pass ), $user_email, time(), serialize($user_meta) );
 			$sql .= $this->db->prepare( " ON DUPLICATE KEY UPDATE user_timestamp = %d", time());
 
@@ -2312,7 +2312,7 @@ if(!class_exists('membershippublic')) {
 
 			$orderby[] = 'id ASC';
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions}");
+			$sql = "SELECT * FROM {$this->subscriptions}";
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
@@ -2335,7 +2335,7 @@ if(!class_exists('membershippublic')) {
 
 			$orderby[] = 'id ASC';
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}",null);
+			$sql = "SELECT * FROM {$this->membership_levels}";
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);

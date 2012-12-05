@@ -6170,9 +6170,9 @@ if(!class_exists('membershipadmin')) {
 
 		function update_levelcounts() {
 
-			$sql = $this->db->prepare( "SELECT level_id, count(*) AS number FROM {$this->membership_relationships} WHERE level_id != 0 GROUP BY level_id" );
+			$sql = $this->db->prepare( "SELECT level_id, count(*) AS number FROM {$this->membership_relationships} WHERE level_id != %d GROUP BY level_id", 0 );
 
-			$this->db->query( $this->db->prepare( "UPDATE {$this->membership_levels} SET level_count = 0") );
+			$this->db->query( $this->db->prepare( "UPDATE {$this->membership_levels} SET level_count = %d", 0) );
 
 			$levels = $this->db->get_results($sql);
 			if($levels) {
@@ -6185,9 +6185,9 @@ if(!class_exists('membershipadmin')) {
 
 		function update_subcounts() {
 
-			$sql = $this->db->prepare( "SELECT sub_id, count(*) AS number FROM {$this->membership_relationships} WHERE sub_id != 0 GROUP BY sub_id" );
+			$sql = $this->db->prepare( "SELECT sub_id, count(*) AS number FROM {$this->membership_relationships} WHERE sub_id != %d GROUP BY sub_id", 0 );
 
-			$this->db->query( $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_count = 0") );
+			$this->db->query( $this->db->prepare( "UPDATE {$this->subscriptions} SET sub_count = %d", 0) );
 
 			$subs = $this->db->get_results($sql);
 			if($subs) {
@@ -6231,7 +6231,7 @@ if(!class_exists('membershipadmin')) {
 
 			}
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_levels}",null);
+			$sql = "SELECT * FROM {$this->membership_levels}";
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
@@ -6287,7 +6287,7 @@ if(!class_exists('membershipadmin')) {
 
 			}
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions}",null);
+			$sql = "SELECT * FROM {$this->subscriptions}";
 
 			if(!empty($where)) {
 				$sql .= " WHERE " . implode(' AND ', $where);
