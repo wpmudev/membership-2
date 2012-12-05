@@ -3629,9 +3629,12 @@ if(!class_exists('membershipadmin')) {
 									<h3><?php _e('Custom shortcode protected content message','membership'); ?></h3>
 									<p class='description'><?php _e('If you want a protected content message to be displayed for this level then you can enter it here.','membership'); ?></p>
 									<?php
-									$args = array("textarea_name" => "level_protectedcontent", "textarea_rows" => 10);
+									$args = array("textarea_name" => "level_protectedcontent", "textarea_rows" => 20);
 									if(!empty($mlevel)) {
 										$level_protectedcontent = $mlevel->get_meta( 'level_protectedcontent' );
+									}
+									if(empty($level_protectedcontent)) {
+										$level_protectedcontent = '';
 									}
 									wp_editor( stripslashes($level_protectedcontent), "level_protectedcontent", $args );
 									?>
@@ -4188,9 +4191,19 @@ if(!class_exists('membershipadmin')) {
 								<label for='sub_name'><?php _e('Subscription description','membership'); ?></label>
 								<?php
 								$args = array("textarea_name" => "sub_description", "textarea_rows" => 5);
+
+								if(!isset($sub->sub_description)) {
+									$sub->sub_description = '';
+								}
+
 								wp_editor( stripslashes($sub->sub_description), "sub_description", $args );
 								?>
 								<br/>
+								<?php
+								if(!isset($sub->sub_pricetext)) {
+									$sub->sub_pricetext = '';
+								}
+								?>
 								<label for='sub_pricetext'><?php _e('Subscription price text','membership'); ?><?php echo $this->_tips->add_tip( __('The text you want to show as the price on the subscription form. E.G. Only $25 per month.','membership') ); ?></label>
 								<input class='wide' type='text' name='sub_pricetext' id='sub_pricetext' value='<?php echo esc_attr(stripslashes($sub->sub_pricetext)); ?>' />
 								<?php do_action('membership_subscription_form_after_details', $sub->id); ?>
@@ -7215,7 +7228,7 @@ if(!class_exists('membershipadmin')) {
 								<?php
 							}
 						} else { ?>
-							<tr style='background-color: <?php echo $bgcolor; ?>'>
+							<tr>
 								<td colspan="8"><?php _e('No coupons yet.', 'psts') ?></td>
 							</tr>
 						<?php

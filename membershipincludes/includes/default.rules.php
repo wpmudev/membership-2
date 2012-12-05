@@ -1112,7 +1112,7 @@ class M_Downloads extends M_Rule {
 
 						} else {
 							?>
-							<tr valign="middle" class="alternate" id="post-<?php echo $category->term_id; ?>">
+							<tr valign="middle" class="alternate" id="group-nogroup">
 								<td class="column-name" colspan='2'>
 									<?php echo __('You have no download groups set, please visit the membership options page to set them up.','membership'); ?>
 								</td>
@@ -1416,7 +1416,12 @@ class M_Blogcreation extends M_Rule {
 		<div class='level-operation' id='main-blogcreation'>
 			<h2 class='sidebar-name'><?php _e('Blog Creation', 'membership');?><span><a href='#remove' id='remove-blogcreation' class='removelink' title='<?php _e("Remove Blog Creation from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
-				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create ','membership'); ?><input type='text' name='blogcreation[number]' value='<?php echo esc_attr($data['number']); ?>' /><?php _e(' blogs.','membership'); ?><br/><em><?php _e('Leave blanks for unlimited blogs.','membership'); ?></em></p>
+				<?php
+					if(!isset($data['number'])) {
+						$data['number'] = '';
+					}
+				?>
+				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can create ','membership'); ?><input type='text' name='blogcreation[number]' value='<?php echo esc_attr($data['number']); ?>' /><?php _e(' blogs.','membership'); ?><br/><em><?php _e('Leave blank for unlimited blogs.','membership'); ?></em></p>
 				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User is unable to create any blogs.','membership'); ?></p>
 				<input type='hidden' name='blogcreation[]' value='yes' />
 			</div>
