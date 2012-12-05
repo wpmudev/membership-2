@@ -6397,11 +6397,11 @@ if(!class_exists('membershipadmin')) {
 			$member = new M_Membership($id);
 
 			if($member->is_member()) {
-				$key = get_usermeta($id, '_membership_key');
+				$key = get_user_meta($id, '_membership_key');
 
 				if(empty($key)) {
 					$key = md5($id . $profileuser->user_pass . time());
-					update_usermeta($id, '_membership_key', $key);
+					update_user_meta($id, '_membership_key', $key);
 				}
 
 				?>

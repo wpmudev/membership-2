@@ -241,11 +241,11 @@ if(!class_exists('membershippublic')) {
 				$member = new M_Membership($user->ID);
 
 				if($member->is_member()) {
-					$key = get_usermeta($user->ID, '_membership_key');
+					$key = get_user_meta($user->ID, '_membership_key');
 
 					if(empty($key)) {
 						$key = md5($user->ID . $user->user_pass . time());
-						update_usermeta($user->ID, '_membership_key', $key);
+						update_user_meta($user->ID, '_membership_key', $key);
 					}
 
 					if(!empty($key)) {
@@ -2115,8 +2115,9 @@ if(!class_exists('membershippublic')) {
 					if($post->ID == $M_options['registrationcompleted_page']) {
 
 						// Handle any updates passed
-						$page = addslashes($_REQUEST['action']);
-						if(empty($page)) {
+						if(isset($_REQUEST['action']) && !empty($_REQUEST['action'])) {
+							$page = addslashes($_REQUEST['action']);
+						} else {
 							$page = 'renewform';
 						}
 
