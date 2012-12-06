@@ -282,6 +282,21 @@ function m_levelsReady() {
 
 	m_hide_all_rules();
 
+	if(jQuery('ul.leveltabs li.positivetab').hasClass('activetab')) {
+		jQuery('a.action-to-negative').css('display', 'none');
+		jQuery('a.action-to-positive').css('display', 'block');
+	}
+
+	if(jQuery('ul.leveltabs li.negativetab').hasClass('activetab')) {
+		jQuery('a.action-to-negative').css('display', 'block');
+		jQuery('a.action-to-positive').css('display', 'none');
+	}
+
+	if(jQuery('ul.leveltabs li.advancedtab').hasClass('activetab')) {
+		jQuery('a.action-to-negative').css('display', 'block');
+		jQuery('a.action-to-positive').css('display', 'block');
+	}
+
 }
 
 jQuery(document).ready(m_levelsReady);
