@@ -905,7 +905,7 @@ class M_More extends M_Rule {
 
 		$this->data = $data;
 
-		if($M_options['moretagdefault'] == 'no' ) {
+		if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no' ) {
 
 			// remove the filters - otherwise we don't need to do anything
 			if(isset($wp_filter['the_content_more_link'][99])) {
@@ -950,7 +950,7 @@ class M_More extends M_Rule {
 
 		$this->data = $data;
 
-		if($M_options['moretagdefault'] != 'no' ) {
+		if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] != 'no' ) {
 			// add the filters - otherwise we don't need to do anything
 			add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
 			add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
