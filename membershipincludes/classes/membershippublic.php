@@ -729,20 +729,45 @@ if(!class_exists('membershippublic')) {
 
 			// Set up the level shortcodes here
 			$shortcodes = apply_filters('membership_level_shortcodes', array() );
-			if(!empty($shortcodes)) {
-				$id = array_search( $code, $shortcodes );
+			$notshortcodes = apply_filters('membership_not_level_shortcodes', array() );
 
-				if($id !== false) {
-					// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
-					$level = new M_Level( $id );
-					$message = $level->get_meta( 'level_protectedcontent' );
-					if(!empty($message)) {
-						return stripslashes($message);
+			$code = strtolower( $code );
+
+			if( substr( $code, 0, 4 ) !== "not-" ) {
+				if(!empty($shortcodes)) {
+					// search positive shortcodes first
+					$id = array_search( $code, $shortcodes );
+					if($id !== false) {
+						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
+						$level = new M_Level( $id );
+						$message = $level->get_meta( 'level_protectedcontent' );
+						if(!empty($message)) {
+							return stripslashes($message);
+						}
+					}
+				}
+			} else {
+				if(!empty($notshortcodes)) {
+					// search positive shortcodes first
+					$id = array_search( $code, $notshortcodes );
+					if($id !== false) {
+						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
+						$level = new M_Level( $id );
+						$message = $level->get_meta( 'level_protectedcontent' );
+						if(!empty($message)) {
+							return stripslashes($message);
+						}
 					}
 				}
 			}
+
 			// If we are here then we have no custom message, or the shortcode wasn't found so just output the standard message
-			return stripslashes($M_options['shortcodemessage']);
+			if(isset($M_options['shortcodemessage'])) {
+				return stripslashes($M_options['shortcodemessage']);
+			} else {
+				return '';
+			}
+
 
 		}
 
