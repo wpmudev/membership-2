@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 3.4 RC 1
+Version: 3.4
 Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: Barry (Incsub), Cole (Incsub)
 Author URI: http://premium.wpmudev.org
 WDP ID: 140
 
-Copyright 2010  (email: admin@incsub.com)
+Copyright 2012  (email: admin@incsub.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
