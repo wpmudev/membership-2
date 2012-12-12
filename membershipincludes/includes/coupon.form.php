@@ -1,4 +1,4 @@
-<?php 
+<?php
 $coupon_code = membership_get_current_coupon();
 ?>
 <div class="membership-coupon">
@@ -20,19 +20,19 @@ $coupon_code = membership_get_current_coupon();
 	</div>
 	<script type="text/javascript">
 		jQuery(document).ready( function($) {
-			
+
 			function m_fire_coupon_update() {
-				$.ajax({
+				jQuery.ajax({
 					url: '<?php echo admin_url('admin-ajax.php'); ?>',
 					type: 'POST',
 					data: {
 						action: 'm_set_coupon',
-						coupon_code: $('.membership_coupon_form .couponInput').val()
+						coupon_code: jQuery('.membership_coupon_form .couponInput').val()
 					},
 					success: function(data) {
-						
+
 						if(data) {
-							$('.membership_coupon_form').replaceWith($(data).find('.membership_coupon_form'));
+							jQuery('.membership_coupon_form').replaceWith( jQuery(data).find('.membership_coupon_form'));
 							bind_coupon_js();
 						} else {
 							alert('<?php echo __('There was an error applying your coupon.  Please contact an administrator if you think this is in error','membership'); ?>');
@@ -41,11 +41,11 @@ $coupon_code = membership_get_current_coupon();
 				});
 				return false;
 			}
-			
+
 			function bind_coupon_js() {
-				$('.membership_coupon_form #submitCoupon').on('click', m_fire_coupon_update);
+				jQuery('.membership_coupon_form #submitCoupon').click(m_fire_coupon_update);
 			}
-			
+
 			// First Time
 			bind_coupon_js();
 		});
