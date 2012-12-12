@@ -6857,12 +6857,15 @@ if(!class_exists('membershipadmin')) {
 
 		function get_coupons( $filter = false ) {
 
-			$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} ", null );
+			global $blog_id;
+
+			$sql = "SELECT * FROM {$this->coupons}";
 
 			if(!is_network_admin()) {
 				// We are on a single site admin interface
-				$sql .= $this->db->prepare( "WHERE site_id = %d", $this->db->blogid );
+				$sql .= $this->db->prepare( " WHERE site_id = %d", $blog_id );
 			}
+
 			return $this->db->get_results( $sql );
 
 		}

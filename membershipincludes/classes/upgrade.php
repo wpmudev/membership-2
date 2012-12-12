@@ -424,6 +424,24 @@ function M_Createtables() {
 
 	$wpdb->query( $sql );
 
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
+	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `site_id` bigint(20) DEFAULT '0',
+	  `couponcode` varchar(250) DEFAULT NULL,
+	  `discount` decimal(11,2) DEFAULT '0.00',
+	  `discount_type` varchar(5) DEFAULT NULL,
+	  `discount_currency` varchar(5) DEFAULT NULL,
+	  `coupon_startdate` datetime DEFAULT NULL,
+	  `coupon_enddate` datetime DEFAULT NULL,
+	  `coupon_sub_id` bigint(20) DEFAULT '0',
+	  `coupon_uses` int(11) DEFAULT '0',
+	  `coupon_used` int(11) DEFAULT '0',
+	  PRIMARY KEY (`id`),
+	  KEY `couponcode` (`couponcode`)
+	)";
+
+	$wpdb->query( $sql );
+
 	do_action( 'membership_create_new_tables' );
 }
 
@@ -610,9 +628,9 @@ function M_Create_single_table( $name ) {
 					break;
 
 		case membership_db_prefix($wpdb, 'coupons'):
-					$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 					  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					  `site_id` bigint(20) DEFAULT '0',
+				      `site_id` bigint(20) DEFAULT '0',
 					  `couponcode` varchar(250) DEFAULT NULL,
 					  `discount` decimal(11,2) DEFAULT '0.00',
 					  `discount_type` varchar(5) DEFAULT NULL,

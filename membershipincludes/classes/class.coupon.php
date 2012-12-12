@@ -52,6 +52,8 @@ class M_Coupon {
 
 	function add( $data ) {
 
+		global $blog_id;
+
 		if($this->id > 0 ) {
 			return $this->update( $data );
 		} else {
@@ -79,14 +81,20 @@ class M_Coupon {
 			 	if ($newdata['coupon_startdate'] === false)
 			        $this->errors[] = __('Please enter a valid Start Date', 'membership');
 
-				$newdata['coupon_enddate'] = date('Y-m-d H:i:s',strtotime($data['coupon_enddate']));
-				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
-					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+				if(empty($data['coupon_enddate'])) {
+					if(isset($newdata['coupon_enddate'])) {
+						unset($newdata['coupon_enddate']);
+					}
+				} else {
+					$newdata['coupon_enddate'] = ( !empty($data['coupon_enddate']) ? date('Y-m-d H:i:s',strtotime($data['coupon_enddate'])) : '' );
+					if (!empty($newdata['coupon_enddate']) && $data['coupon_enddate'] < $data['coupon_startdate']) {
+						$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+					}
+				}
 
 				$newdata['coupon_uses'] = (is_numeric($data['coupon_uses'])) ? (int) $data['coupon_uses'] : '';
 
 				//We need to insert a site_id
-				global $blog_id;
 				$newdata['site_id'] = $blog_id;
 
 				$this->db->insert( $this->coupons, $newdata );
@@ -111,6 +119,8 @@ class M_Coupon {
 
 	function update( $data ) {
 
+		global $blog_id;
+
 		$coupon_id = $data['ID'];
 
 		if(!empty($data) && isset($coupon_id)) {
@@ -134,12 +144,19 @@ class M_Coupon {
 				$newdata['coupon_sub_id'] = $data['coupon_sub_id'];
 
 			  	$newdata['coupon_startdate'] = date('Y-m-d H:i:s',strtotime($data['coupon_startdate']));
-			 	if ($newdata['coupon_startdate'] === false)
+			 	if (empty($newdata['coupon_startdate']))
 			        $this->errors[] = __('Please enter a valid Start Date', 'membership');
 
-				$newdata['coupon_enddate'] = ( !empty($data['coupon_enddate']) ? date('Y-m-d H:i:s',strtotime($data['coupon_enddate'])) : date('Y-m-d H:i:s',strtotime($data['coupon_startdate'])) );
-				if ($newdata['coupon_enddate'] && $data['coupon_enddate'] < $data['coupon_startdate'])
-					$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+				if(empty($data['coupon_enddate'])) {
+					if(isset($newdata['coupon_enddate'])) {
+						unset($newdata['coupon_enddate']);
+					}
+				} else {
+					$newdata['coupon_enddate'] = ( !empty($data['coupon_enddate']) ? date('Y-m-d H:i:s',strtotime($data['coupon_enddate'])) : '' );
+					if (!empty($newdata['coupon_enddate']) && $data['coupon_enddate'] < $data['coupon_startdate']) {
+						$this->errors[] = __('Please enter a valid End Date not earlier than the Start Date', 'membership');
+					}
+				}
 
 				if(isset($data['coupon_uses']))
 					$newdata['coupon_uses'] = $data['coupon_uses'];
