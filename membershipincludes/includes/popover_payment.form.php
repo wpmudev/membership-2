@@ -101,7 +101,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 												}
 											}
 											echo $price;
-											if($sub->coupon_label) {
+											if(isset($sub->coupon_label)) {
 												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
 											}
 										}
