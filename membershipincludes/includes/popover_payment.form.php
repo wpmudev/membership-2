@@ -56,7 +56,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
 
 			<table class='purchasetable'>
-				<?php $subs = $this->get_subscriptions();
+				<?php $subs = $this->get_public_subscriptions();
 
 						foreach($subs as $s) {
 							if($s->id == $subscription) {

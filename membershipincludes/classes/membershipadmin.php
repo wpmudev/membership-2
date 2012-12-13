@@ -6247,6 +6247,30 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		//subscriptions
+		
+		function get_public_subscriptions() {
+
+			$where = array();
+			$orderby = array();
+
+			$where[] = "sub_public = 1";
+			$where[] = "sub_active = 1";
+
+			$orderby[] = 'id ASC';
+
+			$sql = "SELECT * FROM {$this->subscriptions}";
+
+			if(!empty($where)) {
+				$sql .= " WHERE " . implode(' AND ', $where);
+			}
+
+			if(!empty($orderby)) {
+				$sql .= " ORDER BY " . implode(', ', $orderby);
+			}
+
+			return $this->db->get_results($sql);
+
+		}
 
 		function get_subscriptions($filter = false) {
 
