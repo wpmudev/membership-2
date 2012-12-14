@@ -179,11 +179,11 @@ function memSetUpWizard() {
 
 function memReportReady() {
 
-	memSetWidth();
+	//memSetWidth();
 	memReBuildCharts();
 
 	jQuery(window).resize( function() {
-		memSetWidth();
+		//memSetWidth();
 		memReBuildCharts();
 	});
 
