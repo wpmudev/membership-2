@@ -226,7 +226,7 @@ class M_Tutorial {
 			__('Members screen', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('This is the list of members for your site, you can control their subscriptions from here.', 'membership')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'right'),
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
@@ -265,7 +265,7 @@ class M_Tutorial {
 			__('Access Levels', 'membership'),
 			array(
 				'content' => '<p>' . esc_js(__('Access levels allow you to control the amount of access to content members are entitled to see.', 'membership')) . '</p>',
-				'position' => array('edge' => 'top', 'align' => 'right'),
+				'position' => array('edge' => 'top', 'align' => 'left'),
 			)
 		);
 
