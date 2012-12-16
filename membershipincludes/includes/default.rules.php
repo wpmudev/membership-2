@@ -98,7 +98,7 @@ class M_Posts extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_posts-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
 
 		$results = $wpdb->get_var( $sql );
 
@@ -435,7 +435,7 @@ class M_Pages extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s", '_pages-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
 
 		$results = $wpdb->get_var( $sql );
 

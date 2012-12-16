@@ -129,8 +129,11 @@ if(!class_exists('M_Wizard')) {
 			// carry on and see if we should display the wizard and then what we should display
 			if($this->wizard_visible() != 'no') {
 
-				$current_step = (int) $_GET['step'];
-				if(empty($current_step)) $current_step = 1;
+				if(isset($_GET['step'])) {
+					$current_step = (int) $_GET['step'];
+				} else {
+					$current_step = 1;
+				}
 
 				switch($current_step) {
 
