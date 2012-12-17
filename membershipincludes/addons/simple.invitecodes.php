@@ -70,9 +70,9 @@ function M_AddSimpleInviteOptionsProcess() {
 
 	$Msi_options = M_get_option('membership_simpleinvite_options', array());
 
-	$Msi_options['invitecodes'] = $_POST['invitecodes'];
-	$Msi_options['inviterequired'] = $_POST['inviterequired'];
-	$Msi_options['inviteremove'] = $_POST['inviteremove'];
+	$Msi_options['invitecodes'] = (isset($_POST['invitecodes'])) ? $_POST['invitecodes'] : '';
+	$Msi_options['inviterequired'] = (isset($_POST['inviterequired'])) ? $_POST['inviterequired'] : '';
+	$Msi_options['inviteremove'] = (isset($_POST['inviteremove'])) ? $_POST['inviteremove'] : '';
 
 	M_update_option('membership_simpleinvite_options', $Msi_options);
 

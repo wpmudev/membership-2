@@ -2201,8 +2201,9 @@ if(!class_exists('membershipadmin')) {
 
 				check_admin_referer('update-membership-options');
 
-				$tab = $_GET['tab'];
-				if(empty($tab)) {
+				if(isset($_GET['tab'])) {
+					$tab = $_GET['tab'];
+				} else {
 					$tab = 'general';
 				}
 
@@ -2222,30 +2223,30 @@ if(!class_exists('membershipadmin')) {
 
 				switch($tab) {
 
-					case 'general':			$M_options['strangerlevel'] = (int) $_POST['strangerlevel'];
-											$M_options['freeusersubscription'] = (int) $_POST['freeusersubscription'];
-											$M_options['enableincompletesignups'] = $_POST['enableincompletesignups'];
+					case 'general':			$M_options['strangerlevel'] = (isset($_POST['strangerlevel'])) ? (int) $_POST['strangerlevel'] : '';
+											$M_options['freeusersubscription'] = (isset($_POST['freeusersubscription'])) ? (int) $_POST['freeusersubscription'] : '';
+											$M_options['enableincompletesignups'] = (isset($_POST['enableincompletesignups'])) ? $_POST['enableincompletesignups'] : '';
 											break;
 
-					case 'pages':			$M_options['nocontent_page'] = $_POST['nocontent_page'];
-											$M_options['account_page'] = $_POST['account_page'];
-											$M_options['registration_page'] = $_POST['registration_page'];
-											$M_options['registrationcompleted_page'] = $_POST['registrationcompleted_page'];
-											$M_options['subscriptions_page'] = $_POST['subscriptions_page'];
-											$M_options['formtype'] = $_POST['formtype'];
+					case 'pages':			$M_options['nocontent_page'] = (isset($_POST['nocontent_page'])) ? $_POST['nocontent_page'] : '';
+											$M_options['account_page'] = (isset($_POST['account_page'])) ? $_POST['account_page'] : '';
+											$M_options['registration_page'] = (isset($_POST['registration_page'])) ? $_POST['registration_page'] : '';
+											$M_options['registrationcompleted_page'] = (isset($_POST['registrationcompleted_page'])) ? $_POST['registrationcompleted_page'] : '';
+											$M_options['subscriptions_page'] = (isset($_POST['subscriptions_page'])) ? $_POST['subscriptions_page'] : '';
+											$M_options['formtype'] = (isset($_POST['formtype'])) ? $_POST['formtype'] : '';
 											break;
 
-					case 'posts':			$M_options['membershipshortcodes'] = explode("\n", $_POST['membershipshortcodes']);
-											$M_options['membershipadminshortcodes'] = explode("\n", $_POST['membershipadminshortcodes']);
-											$M_options['shortcodemessage'] = $_POST['shortcodemessage'];
-											$M_options['moretagdefault'] = $_POST['moretagdefault'];
-											$M_options['moretagmessage'] = $_POST['moretagmessage'];
+					case 'posts':			$M_options['membershipshortcodes'] = (isset($_POST['membershipshortcodes'])) ? explode("\n", $_POST['membershipshortcodes']) : array();
+											$M_options['membershipadminshortcodes'] = (isset($_POST['membershipadminshortcodes'])) ? explode("\n", $_POST['membershipadminshortcodes']) : array();
+											$M_options['shortcodemessage'] = (isset($_POST['shortcodemessage'])) ? $_POST['shortcodemessage'] : '';
+											$M_options['moretagdefault'] = (isset($_POST['moretagdefault'])) ? $_POST['moretagdefault'] : '';
+											$M_options['moretagmessage'] = (isset($_POST['moretagmessage'])) ? $_POST['moretagmessage'] : '';
 											break;
 
-					case 'downloads':		$M_options['original_url'] = $_POST['original_url'];
-											$M_options['masked_url'] = $_POST['masked_url'];
-											$M_options['membershipdownloadgroups'] = explode("\n", $_POST['membershipdownloadgroups']);
-											$M_options['protection_type'] = $_POST['protection_type'];
+					case 'downloads':		$M_options['original_url'] = (isset($_POST['original_url'])) ? $_POST['original_url'] : '';
+											$M_options['masked_url'] = (isset($_POST['masked_url'])) ? $_POST['masked_url'] : '';
+											$M_options['membershipdownloadgroups'] = (isset($_POST['membershipdownloadgroups'])) ? explode("\n", $_POST['membershipdownloadgroups']) : array();
+											$M_options['protection_type'] = (isset($_POST['protection_type'])) ? $_POST['protection_type'] : '';
 
 											// Refresh the rewrite rules in case they've switched to hybrid from an earlier version
 											flush_rewrite_rules();
@@ -2273,9 +2274,9 @@ if(!class_exists('membershipadmin')) {
 											}
 											break;
 
-					case 'extras':			$M_options['paymentcurrency'] = $_POST['paymentcurrency'];
-											$M_options['upgradeperiod'] = $_POST['upgradeperiod'];
-											$M_options['renewalperiod'] = $_POST['renewalperiod'];
+					case 'extras':			$M_options['paymentcurrency'] = (isset($_POST['paymentcurrency'])) ? $_POST['paymentcurrency'] : '';
+											$M_options['upgradeperiod'] = (isset($_POST['upgradeperiod'])) ? $_POST['upgradeperiod'] : '';
+											$M_options['renewalperiod'] = (isset($_POST['renewalperiod'])) ? $_POST['renewalperiod'] : '';
 
 											if(isset($_POST['membershipwizard']) && $_POST['membershipwizard'] == 'yes') {
 												if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
@@ -2299,7 +2300,7 @@ if(!class_exists('membershipadmin')) {
 				do_action('membership_option_menu_process_' . $tab);
 
 				// For future upgrades
-				$M_options['registration_tos'] = $_POST['registration_tos'];
+				$M_options['registration_tos'] = (isset($_POST['registration_tos'])) ? $_POST['registration_tos'] : '';
 
 				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 					if(function_exists('update_blog_option')) {
@@ -6247,7 +6248,7 @@ if(!class_exists('membershipadmin')) {
 		}
 
 		//subscriptions
-		
+
 		function get_public_subscriptions() {
 
 			$where = array();

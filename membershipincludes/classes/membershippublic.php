@@ -966,6 +966,8 @@ if(!class_exists('membershippublic')) {
 
 			global $M_options;
 
+			//die('here');
+
 			if(!empty($wp_query->queried_object_id) && !empty($M_options['registration_page']) && $wp_query->queried_object_id == $M_options['registration_page']) {
 				// We know what we are looking at, the registration page has been set and we are trying to access it
 				return;
