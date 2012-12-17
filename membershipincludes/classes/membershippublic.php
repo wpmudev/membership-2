@@ -342,6 +342,7 @@ if(!class_exists('membershippublic')) {
 						} else {
 							// This user can't access anything on the site - .
 							add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
+							// Changed for this version to see if it helps to get around changed in WP 3.5
 							//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
 							add_action('the_posts', array(&$this, 'show_noaccess_page'), 1 );
 							//the_posts
