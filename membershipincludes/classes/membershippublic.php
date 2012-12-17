@@ -342,7 +342,9 @@ if(!class_exists('membershippublic')) {
 						} else {
 							// This user can't access anything on the site - .
 							add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
-							add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+							//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+							add_action('the_posts', array(&$this, 'show_noaccess_page'), 1 );
+							//the_posts
 							// Hide all pages from menus - except the signup one
 							add_filter('get_pages', array(&$this, 'remove_pages_menu'));
 							// Hide all categories from lists
@@ -962,58 +964,112 @@ if(!class_exists('membershippublic')) {
 			return $pages;
 		}
 
-		function show_noaccess_page($wp_query, $forceviewing = false) {
+		//function show_noaccess_page($wp_query, $forceviewing = false) {
+		function show_noaccess_page($posts, $forceviewing = false) {
 
 			global $M_options;
 
-			//die('here');
+			if(!empty($posts)) {
 
-			if(!empty($wp_query->queried_object_id) && !empty($M_options['registration_page']) && $wp_query->queried_object_id == $M_options['registration_page']) {
-				// We know what we are looking at, the registration page has been set and we are trying to access it
-				return;
+				if(count($posts) == 1 && isset($posts[0]->post_type) && $posts[0]->post_type == 'page') {
+					// We are on a page so get the first page and then check for ones we want to allow
+					$page = $posts[0];
+
+					if(!empty($page->ID) && !empty($M_options['nocontent_page']) && $page->ID == $M_options['nocontent_page']) {
+						return $posts;
+					}
+
+					if(!empty($page->ID) && !empty($M_options['registration_page']) && $page->ID == $M_options['registration_page']) {
+						// We know what we are looking at, the registration page has been set and we are trying to access it
+						return $posts;
+					}
+
+					if(!empty($page->ID) && !empty($M_options['account_page']) && $page->ID == $M_options['account_page']) {
+						// We know what we are looking at, the registration page has been set and we are trying to access it
+						return $posts;
+					}
+
+					if(!empty($page->ID) && !empty($M_options['registrationcompleted_page']) && $page->ID == $M_options['registrationcompleted_page']) {
+						// We know what we are looking at, the registration page has been set and we are trying to access it
+						return $posts;
+					}
+
+					if(!empty($page->ID) && !empty($M_options['subscriptions_page']) && $page->ID == $M_options['subscriptions_page']) {
+						// We know what we are looking at, the registration page has been set and we are trying to access it
+						return $posts;
+					}
+
+					// We are still here so we may be at a page that we shouldn't be able to see
+					if(!empty($M_options['nocontent_page']) && isset($page->ID) && $page->ID != $M_options['nocontent_page'] && !headers_sent()) {
+						// grab the content form the no content page
+						$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+						wp_safe_redirect( $url );
+						exit;
+					} else {
+						return $posts;
+					}
+
+
+				} else {
+					// We could be on a posts page / or on a single post.
+					if(count($posts) == 1) {
+						// We could be on a single posts page, or only have the one post to view
+						if(isset($posts[0]->post_type) && $posts[0]->post_type != 'nav_menu_item') {
+							// We'll redirect if this isn't a navigation menu item
+							$post = $posts[0];
+
+							if(!empty($M_options['nocontent_page']) && isset($post->ID) && $post->ID != $M_options['nocontent_page'] && !headers_sent()) {
+								// grab the content form the no content page
+								$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+								wp_safe_redirect( $url );
+								exit;
+							} else {
+								return $posts;
+							}
+						}
+					} else {
+						// Check the first post in the list
+						if(isset($posts[0]->post_type) && $posts[0]->post_type != 'nav_menu_item') {
+							// We'll redirect if this isn't a navigation menu item
+							$post = $posts[0];
+
+							if(!empty($M_options['nocontent_page']) && isset($post->ID) && $post->ID != $M_options['nocontent_page'] && !headers_sent()) {
+								// grab the content form the no content page
+								$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+								wp_safe_redirect( $url );
+								exit;
+							} else {
+								return $posts;
+							}
+						}
+					}
+
+				}
+
+			} else {
+				// We don't have any posts, so we should just redirect to the no content page.
+				if(!empty($M_options['nocontent_page']) && !headers_sent()) {
+					// grab the content form the no content page
+					$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+					wp_safe_redirect( $url );
+					exit;
+				} else {
+					return $posts;
+				}
 			}
 
-			if(!empty($wp_query->queried_object_id) && !empty($M_options['account_page']) && $wp_query->queried_object_id == $M_options['account_page']) {
-				// We know what we are looking at, the registration page has been set and we are trying to access it
-				return;
-			}
+			// If we've reached here then something weird has happened :/
+			return $posts;
 
-			if(!empty($wp_query->queried_object_id) && !empty($M_options['nocontent_page']) && $wp_query->queried_object_id == $M_options['nocontent_page']) {
-				return;
-			}
-
-			if(!empty($wp_query->queried_object_id) && !empty($M_options['registrationcompleted_page']) && $wp_query->queried_object_id == $M_options['registrationcompleted_page']) {
-				// We know what we are looking at, the registration page has been set and we are trying to access it
-				return;
-			}
-
-			if(!empty($wp_query->queried_object_id) && !empty($M_options['subscriptions_page']) && $wp_query->queried_object_id == $M_options['subscriptions_page']) {
-				// We know what we are looking at, the registration page has been set and we are trying to access it
-				return;
-			}
-
+			/*
 			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 				return;
 			}
-
-			//post_type] => nav_menu_item
-			if(isset($wp_query->query_vars['post_type']) && $wp_query->query_vars['post_type'] == 'nav_menu_item') {
-				// we've started looking at menus - implement bad bit of code until find a better method
-				define('M_REACHED_MENU', 'yup');
-			}
-
-			// If still here then we need to redirect to the no-access page
-			if(!empty($M_options['nocontent_page']) && isset($wp_query->queried_object_id) && $wp_query->queried_object_id != $M_options['nocontent_page'] && !defined('M_REACHED_MENU')) {
-				// grab the content form the no content page
-				$url = get_permalink( (int) $M_options['nocontent_page'] );
-
-				wp_safe_redirect( $url );
-				exit;
-
-				//$post = get_post( $M_options['nocontent_page'] );
-			} else {
-
-			}
+			*/
 
 		}
 
