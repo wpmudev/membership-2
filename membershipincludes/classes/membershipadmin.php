@@ -2473,6 +2473,8 @@ if(!class_exists('membershipadmin')) {
 							</tbody>
 							</table>
 
+							<?php
+							/*
 							<p class='description'><?php _e('The default setting for the membership plugin is to disable user accounts that do not complete their subscription signup.','membership'); ?></p>
 							<p class='description'><?php _e('If you want to change this, then use the option below.','membership'); ?></p>
 
@@ -2493,6 +2495,8 @@ if(!class_exists('membershipadmin')) {
 								</tr>
 							</tbody>
 							</table>
+							*/
+							?>
 						</div>
 					</div>
 
@@ -7333,7 +7337,13 @@ if(!class_exists('membershipadmin')) {
 
 			$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
-			if(empty($error)) {
+			if(is_wp_error($error)) {
+				$anyerrors = $error->get_error_messages();
+			} else {
+				$anyerrors = array();
+			}
+
+			if( is_wp_error($error) && empty($anyerrors) ) {
 				// Pre - error reporting check for final add user
 				$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
 
