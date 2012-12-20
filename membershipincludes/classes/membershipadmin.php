@@ -7317,63 +7317,67 @@ if(!class_exists('membershipadmin')) {
 
 			//include_once(ABSPATH . WPINC . '/registration.php');
 
-			$error = array();
+			$error = new WP_Error();
 
 			if(!wp_verify_nonce( $_POST['nonce'], 'membership_register')) {
-				$error[] = __('Invalid form submission.','membership');
+				$error->add('invalid', __('Invalid form submission.','membership'));
 			}
 
 			if(username_exists(sanitize_user($_POST['user_login']))) {
-				$error[] = __('That username is already taken, sorry.','membership');
+				$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 			}
 
 			if(email_exists($_POST['email'])) {
-				$error[] = __('That email address is already taken, sorry.','membership');
+				$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 			}
 
 			$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
 
 			if(empty($error)) {
 				// Pre - error reporting check for final add user
-				$user = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
+				$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
 
-				if(is_wp_error($user) && method_exists($user, 'get_error_message')) {
-					$error[] = $user->get_error_message();
+				if(is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
+					$error->add('userid', $user_id->get_error_message());
 				} else {
-					$member = new M_Membership( $user );
-					if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+					$member = new M_Membership( $user_id );
+					if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
 						$member->deactivate();
+					} else {
+						$creds = array(
+							'user_login' => $_POST['user_login'],
+							'user_password' => $_POST['password'],
+							'remember' => true
+						);
+						$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+						$user = wp_signon( $creds, $is_ssl );
+
+						if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
+							$error->add('userlogin', $user->get_error_message());
+						}
 					}
 
-					$creds = array(
-						'user_login' => $_POST['user_login'],
-						'user_password' => $_POST['password'],
-						'remember' => true
-					);
-					$is_ssl = (isset($_SERVER['https']) && $_SERVER['https'] == 'on' ? true : false);
-					$user = wp_signon( $creds, $is_ssl );
-
-					if ( is_wp_error($user) && method_exists($user, 'get_error_message') )
-						$error[] = $user->get_error_message();
-
 					if( has_action('membership_susbcription_form_registration_notification') ) {
-						do_action('membership_susbcription_form_registration_notification', $user->ID, $_POST['password']);
+						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 					} else {
-						wp_new_user_notification($user->ID, $_POST['password']);
+						wp_new_user_notification($user_id, $_POST['password']);
 					}
 
 				}
 			}
 
-			do_action( 'membership_subscription_form_registration_process', $error, $user->ID );
+			do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
-			if(!empty($error)) {
+			$anyerrors = $error->get_error_code();
+			if(is_wp_error($error) && !empty($anyerrors)) {
+				// we have an error - output
+				$messages = $error->get_error_messages();
 				//sendback error
-				echo json_encode( array('errormsg' => $error[0]) );
+				echo json_encode( array('errormsg' => $messages[0]) );
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.
-				echo $this->popover_sendpayment_form( $user->ID );
+				echo $this->popover_sendpayment_form( $user_id );
 			}
 
 			exit;
@@ -7382,10 +7386,10 @@ if(!class_exists('membershipadmin')) {
 
 		function popover_login_process() {
 
-			$error = array();
+			$error = new WP_Error();
 
 			if(!wp_verify_nonce( $_POST['nonce'], 'membership_login')) {
-				$error[] = __('Invalid form submission.','membership');
+				$error->add('invalid', __('Invalid form submission.','membership'));
 			}
 
 			$userbylogin = get_user_by( 'login', $_POST['user_login'] );
@@ -7393,17 +7397,20 @@ if(!class_exists('membershipadmin')) {
 			if(!empty($userbylogin)) {
 				$user = wp_authenticate( $userbylogin->user_login, $_POST['password'] );
 				if(is_wp_error($user)) {
-					$error[] = __('User not found.','membership');
+					$error->add('userlogin', $user->get_error_message());
 				} else {
 					wp_set_auth_cookie($user->ID);
 				}
 			} else {
-				$error[] = __('User not found.','membership');
+				$error->add('userlogin', __('User not found.','membership') );
 			}
 
-			if(!empty($error)) {
+			$anyerrors = $error->get_error_code();
+			if(is_wp_error($error) && !empty($anyerrors)) {
+				// we have an error - output
+				$messages = $error->get_error_messages();
 				//sendback error
-				echo json_encode( array('errormsg' => $error[0]) );
+				echo json_encode( array('errormsg' => $messages[0]) );
 			} else {
 				// everything seems fine (so far), so we have our queued user so let's
 				// move to picking a subscription - so send back the form.

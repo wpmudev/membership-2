@@ -1598,19 +1598,21 @@ if(!class_exists('membershippublic')) {
 										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error->add('userid', $userid->get_error_message());
+											$error->add('userid', $user_id->get_error_message());
 										} else {
 											$member = new M_Membership( $user_id );
-											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+
+											if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
 												$member->deactivate();
+											} else {
+												$creds = array(
+													'user_login' => $_POST['user_login'],
+													'user_password' => $_POST['password'],
+													'remember' => true
+												);
+												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+												$user = wp_signon( $creds, $is_ssl );
 											}
-											$creds = array(
-												'user_login' => $_POST['user_login'],
-												'user_password' => $_POST['password'],
-												'remember' => true
-											);
-											$is_ssl = (isset($_SERVER['https']) && $_SERVER['https'] == 'on' ? true : false);
-											$user = wp_signon( $creds, $is_ssl );
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
@@ -1734,19 +1736,20 @@ if(!class_exists('membershippublic')) {
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
 										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error->add('userid', $userid->get_error_message());
+											$error->add('userid', $user_id->get_error_message());
 										} else {
 											$member = new M_Membership( $user_id );
-											if(empty($M_options['enableincompletesignups']) || $M_options['enableincompletesignups'] != 'yes') {
+											if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
 												$member->deactivate();
+											} else {
+												$creds = array(
+													'user_login' => $_POST['signup_username'],
+													'user_password' => $_POST['signup_password'],
+													'remember' => true
+												);
+												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+												$user = wp_signon( $creds, $is_ssl );
 											}
-											$creds = array(
-												'user_login' => $_POST['signup_username'],
-												'user_password' => $_POST['signup_password'],
-												'remember' => true
-											);
-											$is_ssl = ($_SERVER['https'] == 'on' ? true : false);
-											$user = wp_signon( $creds, $is_ssl );
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
 												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['signup_password']);

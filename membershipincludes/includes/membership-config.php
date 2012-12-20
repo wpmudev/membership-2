@@ -2,8 +2,6 @@
 /*
 *	Membership plugin configuration file v1.0
 *
-*	http://www.youtube.com/watch?v=BOJrmTF3TCs
-*
 */
 
 // Determines the number of posts to show in the posts rule
@@ -37,4 +35,8 @@ if(!defined('MEMBERSHIP_FILE_NAME_PREFIX')) define( 'MEMBERSHIP_FILE_NAME_PREFIX
 if(!defined('MEMBERSHIP_FILE_NAME_INCREMENT')) define( 'MEMBERSHIP_FILE_NAME_INCREMENT', 2771);
 // Set to true if you want a category page with no posts to be redirected to a protected page
 if(!defined('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE')) define('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE', false);
+
+// Re-enable the deactivate user on registration and cancellation facility
+if(!defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION')) define('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION', false);
+if(!defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION')) define('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION', false);
 ?>
