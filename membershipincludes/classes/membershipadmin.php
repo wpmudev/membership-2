@@ -6906,7 +6906,7 @@ if(!class_exists('membershipadmin')) {
 				wp_reset_vars( array('action', 'page') );
 
 				if(isset($_GET['doaction']) || isset($_GET['doaction2'])) {
-					if(addslashes($_GET['action']) == 'delete' || addslashes($_GET['action2']) == 'delete') {
+					if( (isset($_GET['action']) && addslashes($_GET['action']) == 'delete') || ( isset($_GET['action2']) && addslashes($_GET['action2']) == 'delete') ) {
 						$action = 'bulk-delete';
 					}
 				}

@@ -339,7 +339,7 @@ class paypalsolo extends M_Gateway {
 		if(isset($_POST['paypal_email'])) {
 			update_option( $this->gateway . "_paypal_email", $_POST[ 'paypal_email' ] );
 			update_option( $this->gateway . "_paypal_site", $_POST[ 'paypal_site' ] );
-			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
+			update_option( $this->gateway . "_currency", (isset($_POST[ 'currency' ])) ? $_POST[ 'currency' ] : '' );
 			update_option( $this->gateway . "_paypal_status", $_POST[ 'paypal_status' ] );
 			update_option( $this->gateway . "_paypal_button", $_POST[ 'paypal_button' ] );
 			update_option( $this->gateway . "_paypal_upgrade_button", $_POST[ '_paypal_upgrade_button' ] );
