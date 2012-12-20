@@ -74,6 +74,8 @@ class paypalexpress extends M_Gateway {
 		          'US'	=> __('United States', 'membership')
 		          );
 
+				$locales = apply_filters('membership_gateway_locals', $locales, $this->gateway);
+
 		      foreach ($locales as $key => $value) {
 					echo '<option value="' . esc_attr($key) . '"';
 		 			if($key == $sel_locale) echo 'selected="selected"';
@@ -801,7 +803,9 @@ class paypalexpress extends M_Gateway {
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
-						$member->deactivate();
+						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+							$member->deactivate();
+						}
 					}
 
 					do_action('membership_payment_reversed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
@@ -836,7 +840,9 @@ class paypalexpress extends M_Gateway {
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
-						$member->deactivate();
+						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+							$member->deactivate();
+						}
 					}
 
 					do_action('membership_payment_denied', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
@@ -881,7 +887,9 @@ class paypalexpress extends M_Gateway {
 					if($key != $newkey) {
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->deactivate();
+							if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+								$member->deactivate();
+							}
 						}
 					} else {
 						// create_subscription

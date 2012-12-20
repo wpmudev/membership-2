@@ -441,7 +441,9 @@ class paypalsolo extends M_Gateway {
 					if($key != $newkey) {
 						$member = new M_Membership($user_id);
 						if($member) {
-							$member->deactivate();
+							if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+								$member->deactivate();
+							}
 						}
 					} else {
 						if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '' ) ) {
@@ -485,7 +487,9 @@ class paypalsolo extends M_Gateway {
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
-						$member->deactivate();
+						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+							$member->deactivate();
+						}
 					}
 
 					do_action('membership_payment_reversed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
@@ -520,7 +524,9 @@ class paypalsolo extends M_Gateway {
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
-						$member->deactivate();
+						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+							$member->deactivate();
+						}
 					}
 
 					do_action('membership_payment_denied', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
