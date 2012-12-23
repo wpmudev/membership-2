@@ -50,6 +50,14 @@ class M_Coupon {
 		$this->__construct( $id, $tips );
 	}
 
+	function valid_coupon() {
+
+	}
+
+	function valid_for_subscription( $sub_id ) {
+
+	}
+
 	function add( $data ) {
 
 		global $blog_id;

@@ -701,6 +701,14 @@ function M_delete_option($key) {
 
 }
 function membership_get_current_coupon() {
-	return (isset($_SESSION['m_coupon_code']) ? $_SESSION['m_coupon_code'] : false);
+
+	if(isset($_SESSION['m_coupon_code'])) {
+		// Check that it is a valid coupon code - otherwise we'll return an error.
+		$coupon = new M_Coupon($coupon_code);
+
+		return (isset($_SESSION['m_coupon_code']) ? $_SESSION['m_coupon_code'] : false);
+	}
+
+
 }
 ?>
