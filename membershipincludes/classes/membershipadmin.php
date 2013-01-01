@@ -126,11 +126,9 @@ if(!class_exists('membershipadmin')) {
 
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
-
-			// Add in pointer tutorial
-			$this->tutorial = new M_Tutorial();
-			$this->tutorial->serve();
-
+			
+			add_action( 'plugins_loaded', array(&$this, 'load_tutorial'), 11); //init tutorial after translation loaded
+			
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 
@@ -153,6 +151,12 @@ if(!class_exists('membershipadmin')) {
 		    $temp_locales = explode('_', get_locale());
 		  	$this->language = ($temp_locales[0]) ? $temp_locales[0] : 'en';
 
+		}
+		
+		function load_tutorial() {
+			// Add in pointer tutorial
+			$this->tutorial = new M_Tutorial();
+			$this->tutorial->serve();
 		}
 
 		function initialise_plugin() {
@@ -4221,7 +4225,7 @@ if(!class_exists('membershipadmin')) {
 								<p class='description'><?php _e('These are the levels that are part of this subscription and the order a user will travel through them. Any levels highlighted in red will never be reached due to the settings of previous levels.','membership'); ?></p>
 								<div id='membership-levels-start'>
 									<div id="main-start" class="sub-operation" style="display: block;">
-											<h2 class="sidebar-name">Starting Point</h2>
+											<h2 class="sidebar-name"><?php _e('Starting Point','membership'); ?></h2>
 											<div class="inner-operation">
 												<p class='description'><?php _e('A new signup for this subscription will start here and immediately pass to the next membership level listed below.','membership'); ?></p>
 											</div>
@@ -7261,7 +7265,7 @@ if(!class_exists('membershipadmin')) {
 							}
 						} else { ?>
 							<tr>
-								<td colspan="8"><?php _e('No coupons yet.', 'psts') ?></td>
+								<td colspan="8"><?php _e('No coupons yet.', 'membership') ?></td>
 							</tr>
 						<?php
 						} // end if coupons

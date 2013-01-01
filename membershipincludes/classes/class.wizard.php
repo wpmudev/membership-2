@@ -189,7 +189,7 @@ if(!class_exists('M_Wizard')) {
 			$deactivateurl = wp_nonce_url("admin.php?page=" . $page. "&amp;action=deactivatewelcome", 'deactivate-welcome');
 			?>
 				<div class="welcome-panel" id="welcome-panel">
-					<a href="<?php echo $deactivateurl;  ?>" class="welcome-panel-close">Dismiss</a>
+					<a href="<?php echo $deactivateurl;  ?>" class="welcome-panel-close"><?php _e('Dismiss', 'membership'); ?></a>
 
 					<div class="welcome-panel-content">
 					<?php
