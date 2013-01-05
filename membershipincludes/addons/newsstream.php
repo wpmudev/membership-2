@@ -186,6 +186,9 @@ function membership_news_stream() {
 
 				foreach($news as $key => $newsitem) {
 					echo "<p id='newsitem-" . $newsitem->id . "'>";
+					echo "[ ";
+					echo date("Y-m-d : H:i", strtotime($newsitem->newsdate));
+					echo " ] ";
 					echo $newsitem->newsitem;
 					echo "</p>";
 				}

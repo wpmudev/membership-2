@@ -1593,7 +1593,7 @@ if(!class_exists('membershippublic')) {
 
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
-									if(is_wp_error($error) && empty($anyerrors)) {
+									if( empty($anyerrors) ) {
 										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
 
@@ -1638,16 +1638,6 @@ if(!class_exists('membershippublic')) {
 										$content = $this->output_registeruser( $content );
 
 									} else {
-										// everything seems fine (so far), so we have our queued user so let's
-										// add do the payment and completion page
-										if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
-											if(!headers_sent()) {
-												wp_set_current_user($user_id);
-												wp_set_auth_cookie($user_id);
-											}
-										}
-
-
 										$content = $this->output_paymentpage( $user_id );
 									}
 
@@ -1731,7 +1721,7 @@ if(!class_exists('membershippublic')) {
 
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
-									if(is_wp_error($error) && empty($anyerrors)) {
+									if( empty($anyerrors) ) {
 										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
 
@@ -1785,13 +1775,6 @@ if(!class_exists('membershippublic')) {
 										// run the bp complete signup action
 										do_action( 'bp_complete_signup' );
 										// display the payment forms
-										if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
-											if(!headers_sent()) {
-												wp_set_current_user($user_id);
-												wp_set_auth_cookie($user_id);
-											}
-										}
-
 										$content = $this->output_paymentpage( $user_id );
 									}
 

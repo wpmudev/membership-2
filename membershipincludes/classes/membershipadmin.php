@@ -126,9 +126,9 @@ if(!class_exists('membershipadmin')) {
 
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
-			
+
 			add_action( 'plugins_loaded', array(&$this, 'load_tutorial'), 11); //init tutorial after translation loaded
-			
+
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 
@@ -152,7 +152,7 @@ if(!class_exists('membershipadmin')) {
 		  	$this->language = ($temp_locales[0]) ? $temp_locales[0] : 'en';
 
 		}
-		
+
 		function load_tutorial() {
 			// Add in pointer tutorial
 			$this->tutorial = new M_Tutorial();
@@ -7349,7 +7349,7 @@ if(!class_exists('membershipadmin')) {
 				$anyerrors = array();
 			}
 
-			if( is_wp_error($error) && empty($anyerrors) ) {
+			if( empty($anyerrors) ) {
 				// Pre - error reporting check for final add user
 				$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email'] );
 
@@ -7379,10 +7379,11 @@ if(!class_exists('membershipadmin')) {
 						wp_new_user_notification($user_id, $_POST['password']);
 					}
 
+					do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 				}
+			} else {
+				do_action( 'membership_subscription_form_registration_process', $error, 0 );
 			}
-
-			do_action( 'membership_subscription_form_registration_process', $error, $user_id );
 
 			$anyerrors = $error->get_error_code();
 			if(is_wp_error($error) && !empty($anyerrors)) {
