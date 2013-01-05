@@ -419,7 +419,7 @@ if(!class_exists('M_Gateway')) {
 			echo "<input type='button' value=' " . __('Unsubscribe not available', 'membership') . " ' disabled='disabled' class='button blue' />";
 			echo "</form>";
 		}
-		
+
 		function display_payment_form() {
 			die('You Must Override The display_payment_form() in your gateway');
 		}
@@ -441,11 +441,12 @@ if(!class_exists('M_Gateway')) {
 
 			if($sublevel == 1) {
 				$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
-				$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+				$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
 				$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 				$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
 			} else {
-				$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+				//$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
+				$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
 				$form .=  "<input type='hidden' name='action' value='subscriptionsignup' />";
 				$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 				$form .=  "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";

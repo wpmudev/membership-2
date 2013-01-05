@@ -74,9 +74,6 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 
 										if(!empty($amount)) {
 											echo $amount;
-											if($sub->coupon_label) {
-												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
-											}
 										} else {
 											$first = $sub->get_level_at_position(1);
 
@@ -101,9 +98,6 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 												}
 											}
 											echo $price;
-											if(isset($sub->coupon_label)) {
-												echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
-											}
 										}
 									?>
 									</td>
@@ -150,9 +144,6 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 
 						if(!empty($amount)) {
 							echo $amount;
-							if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
-								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
-							}
 						} else {
 							$first = $sub->get_level_at_position(1);
 
@@ -177,9 +168,6 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 								}
 							}
 							echo $price;
-							if(isset($sub->coupon_label) && !empty($sub->coupon_label)) {
-								echo sprintf('<p class="membership_coupon_label">%s</p>',$sub->coupon_label);
-							}
 						}
 					?>
 					</td>

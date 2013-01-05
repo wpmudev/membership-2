@@ -1411,10 +1411,6 @@ if(!class_exists('membershippublic')) {
 														$member->create_subscription($sub_id, $gateway);
 														// Timestamp the update
 														update_user_meta( $user_id, '_membership_last_upgraded', time());
-														// Login?
-														if(!defined('MEMBERSHIP_NOLOGINONREGISTRATION')) {
-															if(!headers_sent()) wp_set_auth_cookie( $user_id );
-														}
 													}
 												}
 											}
@@ -1612,6 +1608,13 @@ if(!class_exists('membershippublic')) {
 												);
 												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
 												$user = wp_signon( $creds, $is_ssl );
+
+												if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
+													$error->add('userlogin', $user->get_error_message());
+												} else {
+													// Set the current user up
+													wp_set_current_user( $user_id );
+												}
 											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
@@ -1739,6 +1742,13 @@ if(!class_exists('membershippublic')) {
 												);
 												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
 												$user = wp_signon( $creds, $is_ssl );
+
+												if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
+													$error->add('userlogin', $user->get_error_message());
+												} else {
+													// Set the current user up
+													wp_set_current_user( $user_id );
+												}
 											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
@@ -2193,7 +2203,7 @@ if(!class_exists('membershippublic')) {
 
 						switch($page) {
 							case 'subscriptionsignup':
-														if(is_user_logged_in()) {
+														if(is_user_logged_in() && isset($_POST['custom'])) {
 															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
@@ -2211,13 +2221,17 @@ if(!class_exists('membershippublic')) {
 																// have already run on the "parse_request" action (Cole)
 																wp_redirect(M_get_returnurl_permalink());
 																exit;
+															} else {
+
 															}
 
 														} else {
 															// check if a custom is posted and of so then process the user
 															if(isset($_POST['custom'])) {
 																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
+
 																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
+
 																	$gateway = $_POST['gateway'];
 																	// Join the new subscription
 																	$member = new M_Membership( $user_id );

@@ -7370,6 +7370,9 @@ if(!class_exists('membershipadmin')) {
 
 						if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
 							$error->add('userlogin', $user->get_error_message());
+						} else {
+							// Set the current user up
+							wp_set_current_user( $user_id );
 						}
 					}
 
@@ -7417,6 +7420,8 @@ if(!class_exists('membershipadmin')) {
 					$error->add('userlogin', $user->get_error_message());
 				} else {
 					wp_set_auth_cookie($user->ID);
+					// Set the current user up
+					wp_set_current_user( $user->ID );
 				}
 			} else {
 				$error->add('userlogin', __('User not found.','membership') );
