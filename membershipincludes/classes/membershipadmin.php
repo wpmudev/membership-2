@@ -2873,6 +2873,7 @@ if(!class_exists('membershipadmin')) {
 
 							<table class="form-table">
 							<tbody>
+								<?php if(!empty($M_options['membershipshortcodes'])) { ?>
 								<tr valign="top">
 									<th scope="row"><?php _e('Available Shortcodes','membership'); ?>
 										<?php echo $this->_tips->add_tip( __('Each shortcode can be used to wrap protected content such as [shortcode] Protected content [/shortcode]','membership') ); ?>
@@ -2917,6 +2918,7 @@ if(!class_exists('membershipadmin')) {
 										?>
 									</td>
 								</tr>
+								<?php } ?>
 								<tr valign="top">
 									<th scope="row"><?php _e('Protected content message','membership'); ?>
 									<?php echo $this->_tips->add_tip( __("This is the message that is displayed when the content protected by the shortcode can't be shown. Leave blank for no message. HTML allowed.",'membership') ); ?>

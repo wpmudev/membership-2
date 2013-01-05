@@ -19,6 +19,8 @@ class M_Coupon {
 
 	var $errors = array();
 
+	var $thecoupon;
+
 	function __construct( $id = false, &$tips = false ) {
 
 		global $wpdb;
@@ -31,7 +33,7 @@ class M_Coupon {
 
 		// If we are passing a non numeric ID we should try to find the ID by searching for the coupon name instead.
 		if(!is_numeric($id)) {
-			$search = $this->db->get_var( $this->db->prepare( "SELECT * FROM $this->coupons WHERE `couponcode` = %s", $id ) );
+			$search = $this->db->get_var( $this->db->prepare( "SELECT * FROM $this->coupons WHERE `couponcode` = %s", strtoupper($id) ) );
 
 			if(!empty($search)) {
 				$this->id = $search;
@@ -44,6 +46,9 @@ class M_Coupon {
 			$this->_tips = $tips;
 		}
 
+		// Get the coupon for further usage
+		$this->thecoupon = $this->get_coupon( $this->id );
+
 	}
 
 	function M_Coupon( $id = false, &$tips = false ) {
@@ -52,9 +57,31 @@ class M_Coupon {
 
 	function valid_coupon() {
 
+		if(empty($this->thecoupon)) {
+			// We don't have a coupon so there wasn't a valid one
+			return false;
+		}
+
+		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() ) {
+			return false;
+		} else {
+			return true;
+		}
+
 	}
 
 	function valid_for_subscription( $sub_id ) {
+
+		if(empty($this->thecoupon)) {
+			// We don't have a coupon so there wasn't a valid one
+			return false;
+		}
+
+		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time()   ) {
+			return false;
+		} else {
+			return true;
+		}
 
 	}
 
