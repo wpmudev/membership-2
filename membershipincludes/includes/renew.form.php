@@ -231,7 +231,7 @@
 										$upgradedat = get_user_meta( $member->ID, '_membership_last_upgraded', true);
 										if(empty($upgradedat)) $upgradedat = strtotime('-1 year');
 										$period = $M_options['upgradeperiod'];
-										if(empty($period)) $period = 1;
+										if(empty($period) && $period != 0) $period = 1;
 
 										if(!$member->is_marked_for_expire($rel->sub_id)) {
 											switch( $gatewayissingle ) {

@@ -3151,8 +3151,12 @@ if(!class_exists('membershipadmin')) {
 										<select name="upgradeperiod">
 										  <?php
 										  	$upgradeperiod = $M_options['upgradeperiod'];
+											// Set a default of 1 day, but allow the selection of 0 days
+											if(empty($upgradeperiod) && $upgradeperiod != 0) {
+												$upgradeperiod = 1;
+											}
 
-										      for($n=1; $n <= 365; $n++) {
+										      for($n=0; $n <= 365; $n++) {
 													echo '<option value="' . esc_attr($n) . '"';
 													if($n == $upgradeperiod) echo 'selected="selected"';
 													echo '>' . esc_html($n) . '</option>' . "\n";
