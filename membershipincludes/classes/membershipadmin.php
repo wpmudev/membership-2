@@ -2281,6 +2281,7 @@ if(!class_exists('membershipadmin')) {
 					case 'extras':			$M_options['paymentcurrency'] = (isset($_POST['paymentcurrency'])) ? $_POST['paymentcurrency'] : '';
 											$M_options['upgradeperiod'] = (isset($_POST['upgradeperiod'])) ? $_POST['upgradeperiod'] : '';
 											$M_options['renewalperiod'] = (isset($_POST['renewalperiod'])) ? $_POST['renewalperiod'] : '';
+											$M_options['show_coupons_form'] = (isset($_POST['show_coupons_form'])) ? $_POST['show_coupons_form'] : '';
 
 											if(isset($_POST['membershipwizard']) && $_POST['membershipwizard'] == 'yes') {
 												if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
@@ -3199,6 +3200,27 @@ if(!class_exists('membershipadmin')) {
 										}
 										?>
 										<input type='checkbox' name='membershipwizard' value='yes' <?php if($wizard_visible == 'yes') echo "checked='checked'"; ?>/>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Coupons','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('If you want to enable Coupons on your site then check the box below.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Show coupon form','membership'); ?></th>
+									<td>
+										<?php
+										$coupon_visible = (isset($M_options['show_coupons_form'])) ? $M_options['show_coupons_form'] : 'no';
+										?>
+										<input type='checkbox' name='show_coupons_form' value='yes' <?php if($coupon_visible == 'yes') echo "checked='checked'"; ?>/>
 									</td>
 								</tr>
 							</tbody>

@@ -709,6 +709,141 @@ function membership_get_current_coupon() {
 		return (isset($_SESSION['m_coupon_code']) ? $_SESSION['m_coupon_code'] : false);
 	}
 
+}
+
+function membership_price_in_text( $pricing ) {
+
+	$pd = array();
+	$count = 1;
+
+	foreach((array) $pricing as $key => $price) {
+
+		switch($price['type']) {
+
+			case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
+
+							if($count < 3) {
+								$pd[$count] = sprintf( __('%s for ','membership'), apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+
+								switch( strtoupper($price['unit']) ) {
+									case 'D':	if( $price['period'] == 1 ) {
+													$pd[$count] .= $price['period'] . __(' day','membership');
+												} else {
+													$pd[$count] .= $price['period'] . __(' days','membership');
+												}
+												break;
+
+									case 'M':	if( $price['period'] == 1 ) {
+													$pd[$count] .= $price['period'] . __(' month','membership');
+												} else {
+													$pd[$count] .= $price['period'] . __(' months','membership');
+												}
+												break;
+
+									case 'Y':	if( $price['period'] == 1 ) {
+													$pd[$count] .= $price['period'] . __(' year','membership');
+												} else {
+													$pd[$count] .= $price['period'] . __(' years','membership');
+												}
+												break;
+								}
+
+							} else {
+								// Or last finite is going to be the end of the subscription payments
+								$pd[$count] = sprintf( __('and then %s for ','membership'), apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+
+								switch( strtoupper($price['unit']) ) {
+									case 'D':	if( $price['period'] == 1 ) {
+													$price['period'] . __(' day','membership');
+												} else {
+													$price['period'] . __(' days','membership');
+												}
+												break;
+
+									case 'M':	if( $price['period'] == 1 ) {
+													$price['period'] . __(' month','membership');
+												} else {
+													$price['period'] . __(' months','membership');
+												}
+												break;
+
+									case 'Y':	if( $price['period'] == 1 ) {
+													$price['period'] . __(' year','membership');
+												} else {
+													$price['period'] . __(' years','membership');
+												}
+												break;
+								}
+
+							}
+							$count++;
+							break;
+
+			case 'indefinite':
+							if(empty($price['amount'])) $price['amount'] = '0';
+
+							if($price['amount'] == '0') {
+								// The indefinite rule is free, we need to move any previous
+								// steps up to this one as we can't have a free a3
+								if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
+									// we have some other earlier rule so move it up
+									$ff['a3'] = $ff['a2'];
+									$ff['p3'] = $ff['p2'];
+									$ff['t3'] = $ff['t2'];
+									unset($ff['a2']);
+									unset($ff['p2']);
+									unset($ff['t2']);
+									$ff['src'] = '0';
+								} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
+									$ff['a3'] = $ff['a1'];
+									$ff['p3'] = $ff['p1'];
+									$ff['t3'] = $ff['t1'];
+									unset($ff['a1']);
+									unset($ff['p1']);
+									unset($ff['t1']);
+									$ff['src'] = '0';
+								}
+							} else {
+								$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
+								$ff['p3'] = 1;
+								$ff['t3'] = 'Y';
+								$ff['src'] = '0';
+							}
+							break;
+			case 'serial':
+							if(empty($price['amount'])) $price['amount'] = '0';
+
+							if($price['amount'] == '0') {
+								// The serial rule is free, we need to move any previous
+								// steps up to this one as we can't have a free a3
+								if( isset($ff['a2']) && $ff['a2'] != '0.00' ) {
+									// we have some other earlier rule so move it up
+									$ff['a3'] = $ff['a2'];
+									$ff['p3'] = $ff['p2'];
+									$ff['t3'] = $ff['t2'];
+									unset($ff['a2']);
+									unset($ff['p2']);
+									unset($ff['t2']);
+									$ff['src'] = '1';
+								} elseif( isset($ff['a1']) && $ff['a1'] != '0.00' ) {
+									$ff['a3'] = $ff['a1'];
+									$ff['p3'] = $ff['p1'];
+									$ff['t3'] = $ff['t1'];
+									unset($ff['a1']);
+									unset($ff['p1']);
+									unset($ff['t1']);
+									$ff['src'] = '1';
+								}
+							} else {
+								$ff['a3'] = apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2));
+								$ff['p3'] = $price['period'];
+								$ff['t3'] = strtoupper($price['unit']);
+								$ff['src'] = '1';
+							}
+
+							break;
+		}
+	}
 
 }
 ?>
