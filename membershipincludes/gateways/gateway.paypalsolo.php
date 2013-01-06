@@ -300,7 +300,7 @@ class paypalsolo extends M_Gateway {
 			// a free first level
 			$this->display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 		} else {
-			echo $this->build_subscribe_button($subscription, $pricing, $user_id, 1, $fromsub_id);
+			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $fromsub_id);
 		}
 
 	}

@@ -692,7 +692,7 @@ class paypalexpress extends M_Gateway {
 
 			if($free) {
 
-				$this->display_free_upgrade_button($subscription, $pricing, $user_id, 1, $fromsub_id);
+				$this->display_free_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 			} else {
 				$this->display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id);
 			}
