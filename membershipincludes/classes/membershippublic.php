@@ -1624,21 +1624,19 @@ if(!class_exists('membershippublic')) {
 											}
 
 										}
-									}
 
-									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+										do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+
+									} else {
+										do_action( 'membership_subscription_form_registration_process', $error, 0 );
+									}
 
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
-									if(is_wp_error($error) && !empty($anyerrors)) {
+									if( !empty($anyerrors) ) {
 										// we have an error - output
-										$messages = $error->get_error_messages();
-										$content .= "<div class='alert alert-error'>";
-										$content .= implode('<br/>', $messages);
-										$content .= "</div>";
-
 										// Show the page again so that it can display the errors
-										$content = $this->output_registeruser( $content );
+										$content = $this->output_registeruser( $error );
 
 									} else {
 										$content = $this->output_paymentpage( $user_id );
@@ -1767,19 +1765,17 @@ if(!class_exists('membershippublic')) {
 											}
 
 										}
-									}
 
-									do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+										do_action( 'membership_subscription_form_registration_process', $error, $user_id );
+									} else {
+										do_action( 'membership_subscription_form_registration_process', $error, 0 );
+									}
 
 									// Hack for now - eeek
 									$anyerrors = $error->get_error_code();
-									if(is_wp_error($error) && !empty($anyerrors)) {
-										$messages = $error->get_error_messages();
-										$content .= "<div class='alert alert-error'>";
-										$content .= implode('<br/>', $messages);
-										$content .= "</div>";
+									if(!empty($anyerrors)) {
 										// Show the page so that it can display the errors
-										$content = $this->output_registeruser( $content, $_POST );
+										$content = $this->output_registeruser( $error );
 									} else {
 										// everything seems fine (so far), so we have our queued user so let's
 										// run the bp complete signup action

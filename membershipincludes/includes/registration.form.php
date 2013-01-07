@@ -2,6 +2,16 @@
 
 global $errors;
 
+$anyerrors = $error->get_error_code();
+if( !empty($anyerrors) ) {
+	// we have an error - output
+	$messages = $error->get_error_messages();
+	$errormessages = "<div class='alert alert-error'>";
+	$errormessages .= implode('<br/>', $messages);
+	$errormessages .= "</div>";
+} else {
+	$errormessages = '';
+}
 ?>
 
 <div id='membership-wrapper'>

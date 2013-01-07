@@ -1,4 +1,15 @@
 <?php
+$anyerrors = $error->get_error_code();
+if( !empty($anyerrors) ) {
+	// we have an error - output
+	$messages = $error->get_error_messages();
+	$errormessages = "<div class='alert alert-error'>";
+	$errormessages .= implode('<br/>', $messages);
+	$errormessages .= "</div>";
+} else {
+	$errormessages = '';
+}
+
 ?>
 	<form action="" name="signup_form" id="signup_form" class="standard-form" method="post" enctype="multipart/form-data">
 
