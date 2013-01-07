@@ -111,6 +111,14 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 									?>
 									</td>
 								</tr>
+								<tr class='pricescolumn'>
+									<td colspan='3'>
+										<?php
+											// Decipher the pricing array and display it
+											echo membership_price_in_text( $pricing );
+										?>
+									</td>
+								</tr>
 							<?php
 						}
 				?>
@@ -177,6 +185,14 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 						do_action('membership_purchase_button', $sub, $pricing, $member->ID);
 					}
 					?>
+					</td>
+				</tr>
+				<tr class='pricescolumn'>
+					<td colspan='3'>
+						<?php
+							// Decipher the pricing array and display it
+							echo membership_price_in_text( $pricing );
+						?>
 					</td>
 				</tr>
 			</table>
