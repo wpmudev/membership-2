@@ -162,6 +162,8 @@ function m_subsReady() {
 
 	jQuery('.sublevelmode').change(m_colorsublevels);
 
+	m_levelcount = jQuery('li.sortable-levels').length + 1;
+
 }
 
 jQuery(document).ready(m_subsReady);
