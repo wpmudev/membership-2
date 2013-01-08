@@ -566,6 +566,7 @@ function M_Create_single_table( $name ) {
 					  `periodstamp` bigint(20) default '0',
 					  PRIMARY KEY  (`id`)
 					);";
+					break;
 
 		case membership_db_prefix($wpdb, 'pings'):
 					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
