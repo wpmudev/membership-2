@@ -237,12 +237,12 @@ class paypalnosignup extends M_Gateway {
 
 				case 'finite':	if(empty($price['amount'])) $price['amount'] = '0';
 								if($count < 3) {
-									$ff['a' . $count] = number_format($price['amount'], 2);
+									$ff['a' . $count] = number_format($price['amount'], 2, '.' , '');
 									$ff['p' . $count] = $price['period'];
 									$ff['t' . $count] = strtoupper($price['unit']);
 								} else {
 									// Or last finite is going to be the end of the subscription payments
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = number_format($price['amount'], 2, '.' , '');
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '0';
@@ -275,7 +275,7 @@ class paypalnosignup extends M_Gateway {
 										$ff['src'] = '0';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = number_format($price['amount'], 2, '.' , '');
 									$ff['p3'] = 1;
 									$ff['t3'] = 'Y';
 									$ff['src'] = '0';
@@ -306,7 +306,7 @@ class paypalnosignup extends M_Gateway {
 										$ff['src'] = '1';
 									}
 								} else {
-									$ff['a3'] = number_format($price['amount'], 2);
+									$ff['a3'] = number_format($price['amount'], 2, '.' , '');
 									$ff['p3'] = $price['period'];
 									$ff['t3'] = strtoupper($price['unit']);
 									$ff['src'] = '1';

@@ -180,13 +180,13 @@ class paypalsolo extends M_Gateway {
 		$form .= '<input type="hidden" name="cmd" value="_xclick">';
 		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		$form .= '<input type="hidden" name="amount" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[$sublevel -1]['amount'], 2)) . '">';
+		$form .= '<input type="hidden" name="amount" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[$sublevel -1]['amount'], 2, '.' , '')) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
 
 		$form .= '<input type="hidden" name="return" value="' . apply_filters( 'membership_return_url_' . $this->gateway, M_get_returnurl_permalink()) . '">';
 		$form .= '<input type="hidden" name="cancel_return" value="' . apply_filters( 'membership_cancel_url_' . $this->gateway, M_get_subscription_permalink()) . '">';
 
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2), $sublevel, $fromsub) .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2, '.' , ''), $sublevel, $fromsub) .'">';
 
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
 		$form .= '<input type="hidden" name="notify_url" value="' . apply_filters( 'membership_notify_url_' . $this->gateway, trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway)) . '">';

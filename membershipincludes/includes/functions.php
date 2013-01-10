@@ -813,7 +813,7 @@ function membership_price_in_text( $pricing ) {
 								}
 							} else {
 								if($count == 1) {
-									$pd[$count] = sprintf( __('%s for ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('%s for ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 
 									switch( strtoupper($price['unit']) ) {
 										case 'D':	if( $price['period'] == 1 ) {
@@ -847,7 +847,7 @@ function membership_price_in_text( $pricing ) {
 
 								} else {
 									// Or last finite is going to be the end of the subscription payments
-									$pd[$count] = sprintf( __('and then %s for ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('and then %s for ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 
 									switch( strtoupper($price['unit']) ) {
 										case 'D':	if( $price['period'] == 1 ) {
@@ -900,9 +900,9 @@ function membership_price_in_text( $pricing ) {
 							} else {
 
 								if($count == 1) {
-									$pd[$count] = sprintf( __('%s ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('%s ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 								} else {
-									$pd[$count] = sprintf( __('and then %s ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('and then %s ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 								}
 
 							}
@@ -982,7 +982,7 @@ function membership_price_in_text( $pricing ) {
 							} else {
 
 								if($count == 1) {
-									$pd[$count] = sprintf( __('%s every ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('%s every ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 
 									switch( strtoupper($price['unit']) ) {
 										case 'D':	if( $price['period'] == 1 ) {
@@ -1014,7 +1014,7 @@ function membership_price_in_text( $pricing ) {
 													break;
 									}
 								} else {
-									$pd[$count] = sprintf( __('and then %s every ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2)) );
+									$pd[$count] = sprintf( __('and then %s every ','membership'), $cur . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($price['amount'], 2, '.' , '')) );
 
 									switch( strtoupper($price['unit']) ) {
 										case 'D':	if( $price['period'] == 1 ) {
