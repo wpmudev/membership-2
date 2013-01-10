@@ -1,7 +1,5 @@
 <?php
 
-global $error;
-
 if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 	$anyerrors = $error->get_error_code();
 	if( !empty($anyerrors) ) {
@@ -68,7 +66,7 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 		<?php
 			do_action('membership_subscription_form_registration_presubmit_content');
 
-			do_action( 'signup_extra_fields', $errors );
+			do_action( 'signup_extra_fields', $error );
 		?>
 
 		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="alignright button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
