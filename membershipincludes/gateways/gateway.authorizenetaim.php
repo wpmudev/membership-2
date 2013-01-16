@@ -411,7 +411,7 @@ class M_authorizenetaim extends M_Gateway {
 
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				$return['status'] = 'success';
-				$return['redirect'] = (!strpos(home_url,'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+				$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
 			} else {
 				$return['status'] = 'error';
 				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
