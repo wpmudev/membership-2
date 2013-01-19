@@ -109,6 +109,8 @@ if(!class_exists('M_Subscription')) {
 
 		function apply_coupon_pricing($coupon_code = false, $pricing = false) {
 
+			return $pricing;
+
 			if( $coupon_code === false || $pricing === false )
 				return false;
 

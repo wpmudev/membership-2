@@ -1,12 +1,15 @@
 <?php
 $coupon = membership_get_current_coupon();
+if(isset($_GET['subscription'])) {
+	$sub_id = (int) $_GET['subscription'];
+}
 
-if($coupon != false && isset($_GET['subscription']) ) {
+if($coupon != false ) {
 	// Check the coupon is a valid one
 	$sub_id = (int) $_GET['subscription'];
 	if(is_numeric($sub_id) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $sub_id )) {
 		// The coupon is valid for this subscription
-
+		$msg = '';
 	} else {
 		// The coupon is not valid for this subscription
 		$msg = $coupon->get_not_valid_message( $sub_id );
@@ -16,54 +19,32 @@ if($coupon != false && isset($_GET['subscription']) ) {
 	$msg = '';
 }
 
+if(!empty($msg)) {
+	$errormessages = "<div class='alert alert-error'>";
+	$errormessages .= $msg;
+	$errormessages .= "</div>";
+
+	echo $errormessages;
+}
+
 ?>
 <div class="membership-coupon">
 	<div class="membership_coupon_form couponbar">
-		<?php if(!$coupon_code || empty($coupon_code)) : ?>
+		<form action='' method='POST'>
+		<?php if(empty($coupon) || (method_exists( $coupon, 'valid_for_subscription') && !$coupon->valid_for_subscription( $sub_id ))) { ?>
 			<div class="couponQuestion"><?php _e('Have a coupon code?','membership'); ?></div>
 			<div class="couponEntry">
 				<input type="text" class="couponInput" name="coupon_code" value="" />
-				<a class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" href="#"><?php _e('Apply Coupon','membership'); ?></a>
+				<input type='submit' class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" value = '<?php _e('Apply Coupon','membership'); ?>' />
 			</div>
-		<?php else: ?>
+		<?php } else { ?>
 			<div class="couponEntry">
 				<?php _e('Using Coupon Code: ','membership'); ?>
-				<strong><?php echo $coupon_code; ?></strong>
+				<strong><?php //echo $coupon_code; ?></strong>
 				<input type="hidden" class="couponInput" name="coupon_code" value="" />
 				<a class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" href="#"><?php _e('Remove Coupon','membership'); ?></a>
 			</div>
-		<?php endif; ?>
+		<?php } ?>
+		</form>
 	</div>
-	<script type="text/javascript">
-		jQuery(document).ready( function($) {
-
-			function m_fire_coupon_update() {
-				jQuery.ajax({
-					url: '<?php echo admin_url('admin-ajax.php'); ?>',
-					type: 'POST',
-					data: {
-						action: 'm_set_coupon',
-						coupon_code: jQuery('.membership_coupon_form .couponInput').val()
-					},
-					success: function(data) {
-
-						if(data) {
-							jQuery('.membership_coupon_form').replaceWith( jQuery(data).find('.membership_coupon_form'));
-							bind_coupon_js();
-						} else {
-							alert('<?php echo __('There was an error applying your coupon.  Please contact an administrator if you think this is in error','membership'); ?>');
-						}
-					},
-				});
-				return false;
-			}
-
-			function bind_coupon_js() {
-				jQuery('.membership_coupon_form #submitCoupon').click(m_fire_coupon_update);
-			}
-
-			// First Time
-			bind_coupon_js();
-		});
-	</script>
 </div>

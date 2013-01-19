@@ -23,7 +23,7 @@ class M_Coupon {
 
 	function __construct( $id = false, &$tips = false ) {
 
-		global $wpdb $site_id;
+		global $wpdb, $site_id;
 
 		$this->db =& $wpdb;
 
@@ -87,16 +87,24 @@ class M_Coupon {
 
 	function get_not_valid_message( $sub_id ) {
 
-		if(empty($this->thecoupon)) {
+		if( empty($this->thecoupon) ) {
 			// We don't have a coupon so there wasn't a valid one
-			return false;
+			return __('The Coupon code is invalid.','membership');
 		}
 
-		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() || ( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id )  ) {
-			return false;
-		} else {
-			return true;
+		if( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses'] ) {
+			return __('No Coupons remaining for this code.','membership');
 		}
+
+		if( strtotime( $this->thecoupon['coupon_enddate'] ) < time() ) {
+			return __('This Coupon has expired.','membership');
+		}
+
+		if( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id ) {
+			return __('The Coupon is not valid for this subscription.','membership');
+		}
+
+		return '';
 
 	}
 
