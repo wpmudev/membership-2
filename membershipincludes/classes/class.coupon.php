@@ -23,7 +23,7 @@ class M_Coupon {
 
 	function __construct( $id = false, &$tips = false ) {
 
-		global $wpdb;
+		global $wpdb $site_id;
 
 		$this->db =& $wpdb;
 
@@ -33,7 +33,7 @@ class M_Coupon {
 
 		// If we are passing a non numeric ID we should try to find the ID by searching for the coupon name instead.
 		if(!is_numeric($id)) {
-			$search = $this->db->get_var( $this->db->prepare( "SELECT * FROM $this->coupons WHERE `couponcode` = %s", strtoupper($id) ) );
+			$search = $this->db->get_var( $this->db->prepare( "SELECT id FROM $this->coupons WHERE couponcode = %s AND site_id = %d", strtoupper($id), $site_id ) );
 
 			if(!empty($search)) {
 				$this->id = $search;
@@ -77,7 +77,22 @@ class M_Coupon {
 			return false;
 		}
 
-		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time()   ) {
+		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() || ( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id )  ) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	function get_not_valid_message( $sub_id ) {
+
+		if(empty($this->thecoupon)) {
+			// We don't have a coupon so there wasn't a valid one
+			return false;
+		}
+
+		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() || ( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id )  ) {
 			return false;
 		} else {
 			return true;
@@ -232,14 +247,16 @@ class M_Coupon {
 
 	}
 
-	function get_coupon($return_array=False) {
+	function get_coupon( $return_array = false ) {
 		$sql = $this->db->prepare( "SELECT * FROM {$this->coupons} WHERE id = %d", $this->id );
 
-		if($return_array)
+		if($return_array) {
 			return $this->db->get_row( $sql, ARRAY_A );
-		else
+		} else {
 			return $this->db->get_row( $sql );
+		}
 	}
+
 	function apply_price($price) {
 		if(!is_numeric($this->id) || $this->id < 1)
 			return $price;

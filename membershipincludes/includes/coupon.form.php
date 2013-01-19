@@ -1,5 +1,21 @@
 <?php
-$coupon_code = membership_get_current_coupon();
+$coupon = membership_get_current_coupon();
+
+if($coupon != false && isset($_GET['subscription']) ) {
+	// Check the coupon is a valid one
+	$sub_id = (int) $_GET['subscription'];
+	if(is_numeric($sub_id) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $sub_id )) {
+		// The coupon is valid for this subscription
+
+	} else {
+		// The coupon is not valid for this subscription
+		$msg = $coupon->get_not_valid_message( $sub_id );
+	}
+
+} else {
+	$msg = '';
+}
+
 ?>
 <div class="membership-coupon">
 	<div class="membership_coupon_form couponbar">
@@ -7,14 +23,14 @@ $coupon_code = membership_get_current_coupon();
 			<div class="couponQuestion"><?php _e('Have a coupon code?','membership'); ?></div>
 			<div class="couponEntry">
 				<input type="text" class="couponInput" name="coupon_code" value="" />
-				<a class="button" id="submitCoupon" href="#"><?php _e('Apply Coupon','membership'); ?></a>
+				<a class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" href="#"><?php _e('Apply Coupon','membership'); ?></a>
 			</div>
 		<?php else: ?>
 			<div class="couponEntry">
 				<?php _e('Using Coupon Code: ','membership'); ?>
 				<strong><?php echo $coupon_code; ?></strong>
 				<input type="hidden" class="couponInput" name="coupon_code" value="" />
-				<a class="button" id="submitCoupon" href="#"><?php _e('Remove Coupon','membership'); ?></a>
+				<a class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" href="#"><?php _e('Remove Coupon','membership'); ?></a>
 			</div>
 		<?php endif; ?>
 	</div>
