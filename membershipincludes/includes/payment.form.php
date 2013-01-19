@@ -180,7 +180,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			</table>
 
 			<?php
-				include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
 			?>
 		</div>
 	<?php

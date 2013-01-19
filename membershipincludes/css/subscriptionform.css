@@ -1,4 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.4.1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.5 */
 
 #reg-form .formleft td label {
     display:inline;
@@ -325,22 +325,6 @@ div.bottombar {
 	margin-top: 0px;
 }
 
-div.couponbar {
-	background: #f6f6f6;
-	padding: 10px;
-	color: #434343;
-	font: 15px Verdana, Geneva, sans-serif;
-}
-input.couponInput {
-	
-}
-div.couponQuestion {
-	
-}
-div.couponQuestion {
-	
-}
-
 div.pricebox div.topbar span.title {
 	margin-left: 10px;
 	float: left;
@@ -389,4 +373,30 @@ div.priceboxes div.bottombar span.link {
 	text-align: right;
 	vertical-align: top;
 }
+
+div.couponbar {
+	background: #f6f6f6;
+	padding: 10px;
+	color: #434343;
+	font: 15px Verdana, Geneva, sans-serif;
+}
+
+div.couponbar form {
+	width: 100%;
+}
+
+#coupon_code {
+	display: inline;
+}
+
+#submit_coupon_code {
+	display: inline;	
+}
+div.couponQuestion {
+	
+}
+div.couponQuestion {
+	
+}
+
 
