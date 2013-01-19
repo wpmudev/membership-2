@@ -702,7 +702,7 @@ function M_delete_option($key) {
 }
 function membership_get_current_coupon() {
 
-	if(isset($_POST['coupon_code'])) {
+	if(isset($_POST['coupon_code']) && !empty($_POST['coupon_code'])) {
 		// Check that it is a valid coupon code - otherwise we'll return an error.
 		$coupon = new M_Coupon( $_POST['coupon_code'] );
 

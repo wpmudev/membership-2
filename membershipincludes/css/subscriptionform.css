@@ -390,6 +390,7 @@ div.couponbar form {
 }
 
 #submit_coupon_code {
+	float: right;
 	display: inline;	
 }
 div.couponQuestion {

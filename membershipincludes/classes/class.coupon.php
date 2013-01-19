@@ -85,6 +85,17 @@ class M_Coupon {
 
 	}
 
+	function get_coupon_code() {
+
+		if(empty($this->thecoupon)) {
+			// We don't have a coupon so there wasn't a valid one
+			return false;
+		} else {
+			return strtoupper($this->thecoupon['couponcode']);
+		}
+
+	}
+
 	function get_not_valid_message( $sub_id ) {
 
 		if( empty($this->thecoupon) ) {

@@ -37,12 +37,12 @@ if(!empty($msg)) {
 				<input type="text" class="couponInput" id="coupon_code" name="coupon_code" value="" />
 				<input type='submit' class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submit_coupon_code" value = '<?php _e('Apply Coupon','membership'); ?>' />
 			</div>
-		<?php } else { ?>
+		<?php } elseif( method_exists( $coupon, 'get_coupon_code') && $coupon->get_coupon_code() != false ) { ?>
 			<div class="couponEntry">
 				<?php _e('Using Coupon Code: ','membership'); ?>
-				<strong><?php //echo $coupon_code; ?></strong>
-				<input type="hidden" class="couponInput" name="coupon_code" value="" />
-				<a class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submitCoupon" href="#"><?php _e('Remove Coupon','membership'); ?></a>
+				<strong><?php echo $coupon->get_coupon_code(); ?></strong>
+				<input type="hidden" class="couponInput" id="coupon_code" name="coupon_code" value="" />
+				<input type='submit' class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submit_coupon_code" value = '<?php _e('Remove Coupon','membership'); ?>' />
 			</div>
 		<?php } ?>
 		</form>
