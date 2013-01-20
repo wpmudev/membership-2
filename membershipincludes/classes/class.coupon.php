@@ -100,17 +100,8 @@ class M_Coupon {
 
 		return $pricing;
 
-		if( $coupon_code === false || $pricing === false )
+		if( $pricing === false ) {
 			return false;
-
-		$coupon_code = strtoupper($coupon_code);
-
-		$coupon = new M_Coupon($coupon_code);
-		$coupon_data = $coupon->get_coupon(true);
-
-		if( ((int)$coupon_data['coupon_used'] >= (int)$coupon_data['coupon_uses']) || strtotime($coupon_data['coupon_enddate']) < time()) {
-			$this->coupon_label = __('The coupon you supplied is either invalid or expired.','membership');
-			return $pricing;
 		}
 
 		// We should always have a user_id at this point so we are going to
