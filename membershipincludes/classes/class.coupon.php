@@ -98,11 +98,39 @@ class M_Coupon {
 
 	function apply_coupon_pricing( $pricing = false ) {
 
-		return $pricing;
-
 		if( $pricing === false ) {
 			return false;
 		}
+
+		if(empty($this->_coupon)) {
+			// We don't have a coupon so there wasn't a valid one
+			return $pricing;
+		}
+
+		// Cycle through the pricing array
+		foreach($pricing as $key => $price) {
+
+			switch( $this->_coupon->coupon_apply_to ) {
+
+				case 'all':
+										break;
+
+				case 'serial':
+										break;
+
+				case 'finite':
+										break;
+
+				case 'indefinite':
+										break;
+			}
+
+		}
+
+		// Return the updated pricing array
+		return $pricing;
+
+		// OLD CODE BELOW
 
 		// We should always have a user_id at this point so we are going to
 		// create a transient to help us log when a coupon is used.
