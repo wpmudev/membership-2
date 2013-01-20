@@ -47,7 +47,7 @@ class M_Coupon {
 		}
 
 		// Get the coupon for further usage
-		$this->thecoupon = $this->get_coupon( $this->id );
+		$this->_coupon = $this->get_coupon();
 
 	}
 
@@ -57,12 +57,12 @@ class M_Coupon {
 
 	function valid_coupon() {
 
-		if(empty($this->thecoupon)) {
+		if(empty($this->_coupon)) {
 			// We don't have a coupon so there wasn't a valid one
 			return false;
 		}
 
-		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() ) {
+		if( ( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() ) {
 			return false;
 		} else {
 			return true;
@@ -72,12 +72,12 @@ class M_Coupon {
 
 	function valid_for_subscription( $sub_id ) {
 
-		if(empty($this->thecoupon)) {
+		if(empty($this->_coupon)) {
 			// We don't have a coupon so there wasn't a valid one
 			return false;
 		}
 
-		if( ( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses']) || strtotime( $this->thecoupon['coupon_enddate'] ) < time() || ( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id )  ) {
+		if( ( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
 			return false;
 		} else {
 			return true;
@@ -87,11 +87,11 @@ class M_Coupon {
 
 	function get_coupon_code() {
 
-		if(empty($this->thecoupon)) {
+		if(empty($this->_coupon)) {
 			// We don't have a coupon so there wasn't a valid one
 			return false;
 		} else {
-			return strtoupper($this->thecoupon['couponcode']);
+			return strtoupper($this->_coupon->couponcode);
 		}
 
 	}
@@ -149,20 +149,20 @@ class M_Coupon {
 
 	function get_not_valid_message( $sub_id ) {
 
-		if( empty($this->thecoupon) ) {
+		if( empty($this->_coupon) ) {
 			// We don't have a coupon so there wasn't a valid one
 			return __('The Coupon code is invalid.','membership');
 		}
 
-		if( (int) $this->thecoupon['coupon_used'] >= (int) $this->thecoupon['coupon_uses'] ) {
+		if( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses ) {
 			return __('No Coupons remaining for this code.','membership');
 		}
 
-		if( strtotime( $this->thecoupon['coupon_enddate'] ) < time() ) {
+		if( strtotime( $this->_coupon->coupon_enddate ) < time() ) {
 			return __('This Coupon has expired.','membership');
 		}
 
-		if( $this->thecoupon['coupon_sub_id'] != 0 && $this->thecoupon['coupon_sub_id'] != $sub_id ) {
+		if( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id ) {
 			return __('The Coupon is not valid for this subscription.','membership');
 		}
 
