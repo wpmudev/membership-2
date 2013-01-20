@@ -291,6 +291,7 @@
 																					_e('click on the button to the right.', 'membership');
 																				}
 																				$pricing = $sub->get_pricingarray();
+																				// Need to put in coupon code bit here in case they have signed up with one
 																				$gateway->display_subscribe_button($sub, $pricing, $member->ID, $nextlevel->level_order);
 																			?></p>
 																		</div>
