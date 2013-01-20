@@ -46,10 +46,11 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 										if(!empty($amount)) {
 											echo $amount;
 										} else {
-											$first = $sub->get_level_at_position(1);
+
+											$first = $pricing[0];
 
 											if(!empty($first)) {
-												$price = $first->level_price;
+												$price = $first['amount'];
 												if($price == 0) {
 													$price = "Free";
 												} else {
@@ -135,10 +136,10 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 					if(!empty($amount)) {
 						echo $amount;
 					} else {
-						$first = $sub->get_level_at_position(1);
+						$first = $pricing[0];
 
 						if(!empty($first)) {
-							$price = $first->level_price;
+							$price = $first['amount'];
 							if($price == 0) {
 								$price = "Free";
 							} else {
