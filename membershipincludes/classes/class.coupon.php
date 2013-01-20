@@ -96,6 +96,26 @@ class M_Coupon {
 
 	}
 
+	function apply_price( $price ) {
+
+		if($this->_coupon->discount_type == 'pct') {
+			$discount = ($price / 100) * $this->_coupon->discount;
+			$new_price = $price - $discount;
+		} else if($this->_coupon->discount_type == 'amt') {
+			$new_price = $price - $this->_coupon->discount;
+		} else {
+			//Unknown type
+			$new_price = $price;
+		}
+
+		if($new_price < 0) {
+			$new_price = 0;
+		}
+
+		return apply_filters('membership_coupon_price', $new_price, $price, $this->_coupon);
+
+	}
+
 	function apply_coupon_pricing( $pricing = false ) {
 
 		if( $pricing === false ) {
@@ -112,16 +132,28 @@ class M_Coupon {
 
 			switch( $this->_coupon->coupon_apply_to ) {
 
-				case 'all':
+				case 'all':				// Update the price for all parts of the subscription
+										if($price['amount'] != 0 ) {
+											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
+										}
 										break;
 
-				case 'serial':
+				case 'serial':			// Update the price for only the serial parts of the subscription
+										if($price['amount'] != 0 && $price['type'] == 'serial') {
+											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
+										}
 										break;
 
-				case 'finite':
+				case 'finite':			// Update the price for only the finite parts of the subscription
+										if($price['amount'] != 0 && $price['type'] == 'finite') {
+											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
+										}
 										break;
 
-				case 'indefinite':
+				case 'indefinite':		// Update the price for only the indefinite parts of the subscription
+										if($price['amount'] != 0 && $price['type'] == 'indefinite') {
+											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
+										}
 										break;
 			}
 
@@ -132,6 +164,7 @@ class M_Coupon {
 
 		// OLD CODE BELOW
 
+		/*
 		// We should always have a user_id at this point so we are going to
 		// create a transient to help us log when a coupon is used.
 		$user = wp_get_current_user();
@@ -172,7 +205,7 @@ class M_Coupon {
 			set_transient( 'm_coupon_'.$user->ID.'_'.$this->id, $trans, $time );
 		}
 		return apply_filters('membership_apply_coupon_pricingarray', $pricing, $coupon_code);
-
+		*/
 	}
 
 	function get_not_valid_message( $sub_id ) {
@@ -359,29 +392,6 @@ class M_Coupon {
 		}
 	}
 
-	function apply_price($price) {
-		if(!is_numeric($this->id) || $this->id < 1)
-			return $price;
-
-		$coupon = $this->get_coupon();
-
-		if($coupon->discount_type == 'pct') {
-			$discount = ($price / 100) * $coupon->discount;
-			$new_price = $price - $discount;
-			$this->coupon_label = sprintf(__('%s: -%s%%','membership'), $coupon->couponcode, $coupon->discount );
-		} else if($coupon->discount_type == 'amt') {
-			$new_price = $price - $coupon->discount;
-			$discount_currency = (isset($M_options['paymentcurrency']) ? $M_options['paymentcurrency'] : '$');
-			$discount_currency = (isset($coupon->discount_currency) && !empty($coupon->discount_currency) ? $coupon->discount_currency : $discount_currency);
-			$this->coupon_label = sprintf(__('%s: -%s%s','membership'), $coupon->couponcode, $discount_currency, $coupon->discount );
-		} else {
-			//Unknown type
-			$new_price = $price;
-		}
-
-		return apply_filters('membership_coupon_price', $new_price, $price, $coupon);
-
-	}
 	function addform() {
 
 		global $M_options;
