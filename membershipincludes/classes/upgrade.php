@@ -6,33 +6,28 @@ function M_Upgrade($from = false) {
 
 		case 1:
 		case 2:		M_Alterfor2();
-					break;
 
 		case 3:		M_Alterfor3();
-					break;
 
 		case 4:
 		case 5:		M_Alterfor4();
-					break;
 
-		case 6:		M_Alterfor4();
-					M_Alterfor5();
-					break;
+		case 6:		M_Alterfor5();
 
-		case 7:		M_Alterfor4();
-					M_Alterfor5();
-					M_Alterfor6();
-					break;
+		case 7:		M_Alterfor6();
 
 		case 8:
 		case 9:
 					M_Alterfor10();
-					break;
 
 		case 10:	M_Alterfor11();
-					break;
 
 		case 11:	M_Alterfor12();
+
+		case 12:
+		case 13:	M_Alterfor14();
+
+					break;
 
 		case false:	M_Createtables();
 					break;
@@ -43,12 +38,21 @@ function M_Upgrade($from = false) {
 
 }
 
+function M_Alterfor14() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'coupons') . " ADD `coupon_apply_to` VARCHAR(20)  NULL  DEFAULT NULL  AFTER `coupon_used`;";
+
+	$wpdb->query( $sql );
+
+}
+
 function M_Alterfor12() {
 	global $wpdb;
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `site_id` bigint(20) DEFAULT '0',
+	  `site_id` bigint(20) DEFAULT '0',
 	  `couponcode` varchar(250) DEFAULT NULL,
 	  `discount` decimal(11,2) DEFAULT '0.00',
 	  `discount_type` varchar(5) DEFAULT NULL,
@@ -58,6 +62,7 @@ function M_Alterfor12() {
 	  `coupon_sub_id` bigint(20) DEFAULT '0',
 	  `coupon_uses` int(11) DEFAULT '0',
 	  `coupon_used` int(11) DEFAULT '0',
+	  `coupon_apply_to` varchar(20) DEFAULT NULL,
 	  PRIMARY KEY (`id`),
 	  KEY `couponcode` (`couponcode`)
 	)";
@@ -406,7 +411,7 @@ function M_Createtables() {
 
 	$wpdb->query($sql);
 
-	$sql = "CREATE TABLE `" . membership_db_prefix($wpdb, 'coupons') . "` (
+	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	  `site_id` bigint(20) DEFAULT '0',
 	  `couponcode` varchar(250) DEFAULT NULL,
@@ -418,24 +423,7 @@ function M_Createtables() {
 	  `coupon_sub_id` bigint(20) DEFAULT '0',
 	  `coupon_uses` int(11) DEFAULT '0',
 	  `coupon_used` int(11) DEFAULT '0',
-	  PRIMARY KEY (`id`),
-	  KEY `couponcode` (`couponcode`)
-	)";
-
-	$wpdb->query( $sql );
-
-	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
-	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `site_id` bigint(20) DEFAULT '0',
-	  `couponcode` varchar(250) DEFAULT NULL,
-	  `discount` decimal(11,2) DEFAULT '0.00',
-	  `discount_type` varchar(5) DEFAULT NULL,
-	  `discount_currency` varchar(5) DEFAULT NULL,
-	  `coupon_startdate` datetime DEFAULT NULL,
-	  `coupon_enddate` datetime DEFAULT NULL,
-	  `coupon_sub_id` bigint(20) DEFAULT '0',
-	  `coupon_uses` int(11) DEFAULT '0',
-	  `coupon_used` int(11) DEFAULT '0',
+	  `coupon_apply_to` varchar(20) DEFAULT NULL,
 	  PRIMARY KEY (`id`),
 	  KEY `couponcode` (`couponcode`)
 	)";
@@ -631,7 +619,7 @@ function M_Create_single_table( $name ) {
 		case membership_db_prefix($wpdb, 'coupons'):
 					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 					  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-				      `site_id` bigint(20) DEFAULT '0',
+					  `site_id` bigint(20) DEFAULT '0',
 					  `couponcode` varchar(250) DEFAULT NULL,
 					  `discount` decimal(11,2) DEFAULT '0.00',
 					  `discount_type` varchar(5) DEFAULT NULL,
@@ -641,6 +629,7 @@ function M_Create_single_table( $name ) {
 					  `coupon_sub_id` bigint(20) DEFAULT '0',
 					  `coupon_uses` int(11) DEFAULT '0',
 					  `coupon_used` int(11) DEFAULT '0',
+					  `coupon_apply_to` varchar(20) DEFAULT NULL,
 					  PRIMARY KEY (`id`),
 					  KEY `couponcode` (`couponcode`)
 					)";
@@ -920,7 +909,8 @@ function M_build_database_structure() {
 																			'coupon_enddate'	=> $d,
 																			'coupon_sub_id'	=> $bi,
 																			'coupon_uses'	=> $i,
-																			'coupon_used'	=> $i
+																			'coupon_used'	=> $i,
+																			'coupon_apply_to' => $v20
 																			)
 						);
 

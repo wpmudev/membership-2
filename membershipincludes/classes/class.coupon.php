@@ -214,6 +214,8 @@ class M_Coupon {
 
 				$newdata['coupon_uses'] = (is_numeric($data['coupon_uses'])) ? (int) $data['coupon_uses'] : '';
 
+				$newdata['coupon_apply_to'] = $data['coupon_apply_to'];
+
 				//We need to insert a site_id
 				$newdata['site_id'] = $blog_id;
 
@@ -280,6 +282,8 @@ class M_Coupon {
 
 				if(isset($data['coupon_uses']))
 					$newdata['coupon_uses'] = $data['coupon_uses'];
+
+				$newdata['coupon_apply_to'] = $data['coupon_apply_to'];
 
 				$this->db->update( $this->coupons, $newdata, array('id' => $coupon_id ), '%s', '%s' );
 				//$this->db->update( $this->coupons, $newdata );
@@ -404,6 +408,18 @@ class M_Coupon {
 		echo '<td valign="top"><input name="coupon_uses" type="text" size="20" title="' . __('Allowed Uses', 'membership') . '" style="width: 6em;" value="" class="" /></td>';
 		echo '</tr>';
 
+		echo '<tr class="form-field form-required">';
+		echo '<th style="" scope="row" valign="top">' . __('Apply Coupon to','membership') . $this->_tips->add_tip( __('The parts of a subscription that the coupon should be applied to.','membership') ) . '</th>';
+		echo '<td valign="top">';
+		echo "<select name='coupon_apply_to'>";
+			echo "<option value='all'>" . __('All Levels','membership') . "</option>";
+			echo "<option value='finite'>" . __('Only Finite Levels','membership') . "</option>";
+			echo "<option value='serial'>" . __('Only Serial Levels','membership') . "</option>";
+			echo "<option value='indefinite'>" . __('Only Indefinite Levels','membership') . "</option>";
+		echo "</select>";
+		echo "</td>";
+		echo '</tr>';
+
 		echo '</div>';
 		echo '</td>';
 		echo '</tr>';
@@ -478,6 +494,18 @@ class M_Coupon {
 		echo '<td valign="top"><input name="coupon_uses" type="text" size="20" title="' . __('Allowed Uses', 'membership') . '" style="width: 6em;" value="';
 		if($this->_coupon->coupon_uses != 0) echo esc_attr($this->_coupon->coupon_uses);
 		echo '" class="" /></td>';
+		echo '</tr>';
+
+		echo '<tr class="form-field form-required">';
+		echo '<th style="" scope="row" valign="top">' . __('Apply Coupon to','membership') . $this->_tips->add_tip( __('The parts of a subscription that the coupon should be applied to.','membership') ) . '</th>';
+		echo '<td valign="top">';
+		echo "<select name='coupon_apply_to'>";
+			echo "<option value='all'" . (($this->_coupon->coupon_apply_to == 'all') ? " selected='selected'" : "") . ">" . __('All Levels','membership') . "</option>";
+			echo "<option value='finite'" . (($this->_coupon->coupon_apply_to == 'finite') ? " selected='selected'" : "") . ">" . __('Only Finite Levels','membership') . "</option>";
+			echo "<option value='serial'" . (($this->_coupon->coupon_apply_to == 'serial') ? " selected='selected'" : "") . ">" . __('Only Serial Levels','membership') . "</option>";
+			echo "<option value='indefinite'" . (($this->_coupon->coupon_apply_to == 'indefinite') ? " selected='selected'" : "") . ">" . __('Only Indefinite Levels','membership') . "</option>";
+		echo "</select>";
+		echo "</td>";
 		echo '</tr>';
 
 		echo '</div>';
