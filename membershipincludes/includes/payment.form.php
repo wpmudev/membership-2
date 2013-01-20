@@ -8,19 +8,11 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	}
 
 } else if($member->on_sub( $subscription )) {
-		$sub =  new M_Subscription( $subscription );
-		$coupon_code = membership_get_current_coupon();
-		$pricing = $sub->get_pricingarray();
-
-
-		if(!empty($pricing) && !empty($coupon_code) ) {
-				$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
-		}
+		// Get the coupon
+		$coupon = membership_get_current_coupon();
 
 	?>
 		<div id='membership-wrapper'>
-		<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
-		<fieldset>
 			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
 
 			<div class="alert">
@@ -35,6 +27,13 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 								continue;
 							}
 							$sub =  new M_Subscription( $s->id );
+							// Build the pricing array
+							$pricing = $sub->get_pricingarray();
+
+							if(!empty($pricing) && !empty($coupon) ) {
+									$pricing = $coupon->apply_coupon_pricing( $pricing );
+							}
+
 							?>
 								<tr>
 									<td class='detailscolumn'>
@@ -97,8 +96,10 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 						}
 				?>
 			</table>
-			</fieldset>
-			</form>
+
+			<?php
+				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+			?>
 
 		</div>
 
@@ -106,12 +107,15 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 } else {
 
 	$sub =  new M_Subscription( $subscription );
-	$coupon_code = membership_get_current_coupon();
+	// Get the coupon
+	$coupon = membership_get_current_coupon();
+	// Build the pricing array
 	$pricing = $sub->get_pricingarray();
 
-	if(!empty($pricing) && !empty($coupon_code) ) {
-		$pricing = $sub->apply_coupon_pricing($coupon_code,$pricing);
+	if(!empty($pricing) && !empty($coupon) ) {
+			$pricing = $coupon->apply_coupon_pricing( $pricing );
 	}
+
 	?>
 		<div id='membership-wrapper'>
 			<legend><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></legend>
@@ -159,7 +163,6 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 				</td>
 				<td class='buynowcolumn'>
 				<?php
-
 
 				if(!empty($pricing)) {
 					do_action('membership_purchase_button', $sub, $pricing, $member->ID);

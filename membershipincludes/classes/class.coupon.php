@@ -96,6 +96,66 @@ class M_Coupon {
 
 	}
 
+	function apply_coupon_pricing( $pricing = false ) {
+
+		return $pricing;
+
+		if( $coupon_code === false || $pricing === false )
+			return false;
+
+		$coupon_code = strtoupper($coupon_code);
+
+		$coupon = new M_Coupon($coupon_code);
+		$coupon_data = $coupon->get_coupon(true);
+
+		if( ((int)$coupon_data['coupon_used'] >= (int)$coupon_data['coupon_uses']) || strtotime($coupon_data['coupon_enddate']) < time()) {
+			$this->coupon_label = __('The coupon you supplied is either invalid or expired.','membership');
+			return $pricing;
+		}
+
+		// We should always have a user_id at this point so we are going to
+		// create a transient to help us log when a coupon is used.
+		$user = wp_get_current_user();
+
+		$trans = array(
+			'code' => $coupon_code,
+			'user_id' => $user->ID,
+			'sub_id' => $this->id,
+			'prices_w_coupon' => array(),
+		);
+
+		foreach($pricing as $key => $value) {
+			// For every possible price they could have paid we put the total into the transient to check if the coupon was set and never used
+			$pricing[$key]['amount'] = $coupon->apply_price($value['amount']);
+			$trans['prices_w_coupon'][$key] = $coupon->apply_price($value['amount']);
+			$this->coupon_label = $coupon->coupon_label;
+		}
+
+		if( function_exists('is_multisite') && is_multisite() )
+			global $blog_id;
+
+		// Check if a transient already exists and delete it if it does
+		if( function_exists('is_multisite') && is_multisite() ) {
+			if( get_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id) )
+				delete_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id );
+		} else {
+			if( get_transient( 'm_coupon_'.$user->ID.'_'.$this->id) )
+				delete_transient( 'm_coupon_'.$user->ID.'_'.$this->id );
+		}
+
+		// Create transient for 1 hour.  This means the user has 1 hour to redeem the coupon after its been applied before it goes back into the pool.
+		// If you want to use a different time limit use the filter below
+		$time = apply_filters('membership_apply_coupon_redemption_time', 60*60);
+
+		if( function_exists('is_multisite') && is_multisite() ) {
+			set_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id, $trans, $time );
+		} else {
+			set_transient( 'm_coupon_'.$user->ID.'_'.$this->id, $trans, $time );
+		}
+		return apply_filters('membership_apply_coupon_pricingarray', $pricing, $coupon_code);
+
+	}
+
 	function get_not_valid_message( $sub_id ) {
 
 		if( empty($this->thecoupon) ) {
