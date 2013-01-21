@@ -4,30 +4,64 @@ function m_register_events() {
 	jQuery('#login-form').submit(m_loginsubmit);
 	jQuery('#extra-form').submit(m_extraform);
 	jQuery('.membership-coupon form').submit(m_applycoupon);
+
 }
+
+function m_couponsuccess(data) {
+	jQuery.fancybox.hideActivity();
+
+	try
+	{
+		returned = jQuery.parseJSON(data);
+		if(typeof returned.errormsg != 'undefined') {
+			// Oops an error
+			alert(returned.errormsg);
+		} else {
+			// Content is being passed back so display
+			jQuery('#fancybox-content div').html(data);
+			jQuery.fancybox.resize();
+		}
+	}
+	catch(e)
+	{
+		// Content
+		jQuery('#fancybox-content div').html(data);
+		jQuery.fancybox.resize();
+	}
+	m_register_events();
+}
+
+function m_couponerror(data) {
+	jQuery.fancybox.hideActivity();
+
+	alert('Coupon error');
+}
+
 function m_applycoupon() {
 	jQuery.fancybox.showActivity();
-	var _coupon = jQuery(this).find('input[name=coupon_code]').val();
 
-	if( typeof _coupon != 'undefined' && _coupon.length > 0 ) {
-		jQuery.get(membership.ajaxurl + '?action=buynow&subscription=2&coupon_code=' + _coupon, function(data) {
-			jQuery('#fancybox-content div').html(data);
-			m_register_events();
+	var _coupon = jQuery('#coupon_code').val();
+	var _sub_id = jQuery('#coupon_sub_id').val();
+
+	if( typeof _coupon != 'undefined' ) {
+
+		jQuery.ajax({
+			type	: 'POST',
+			cache	: false,
+			url		: membership.ajaxurl + '?action=buynow&subscription=' + _sub_id,
+			data	: {	coupon_code : _coupon },
+			success	: m_couponsuccess,
+			error	: m_couponerror
 		});
-	} else {
-		jQuery.get(membership.ajaxurl + '?action=buynow&subscription=2&remove_coupon=1', function(data) {
-			jQuery('#fancybox-content div').html(data);
-			m_register_events();
-		});
+
 	}
-	
-	
-	
+
 	return false;
 }
+
 function m_extraform() {
 	jQuery.fancybox.showActivity();
-	
+
 	jQuery.ajax({
 		type	: 'POST',
 		cache	: false,

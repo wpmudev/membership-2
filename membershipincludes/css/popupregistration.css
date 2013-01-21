@@ -1,6 +1,4 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/popupregistration.css?ver=3.3.1 */
-
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/popupregistration.css?ver=3.3.1 */
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/popupregistration.css?ver=3.5 */
 
 #fancybox-content div.header {
 	width: 730px !Important;
@@ -143,5 +141,46 @@ td.buynowcolumn {
 
 #fancybox-content {
 	min-height: 400px;
+}
+
+#fancybox-content .alert {
+  padding: 10px 30px 10px 15px;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #fbfce3;
+  border: 1px solid #ecf088;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#fancybox-content .alert{
+  color: #c09853;
+}
+
+#fancybox-content .alert .close {
+  position: relative;
+  top: -2px;
+  right: -21px;
+  line-height: 18px;
+}
+
+#fancybox-content .alert-success {
+  background-color: #def7e4;
+  border-color: #8de3a1;
+}
+
+#fancybox-content .alert-success, #fancybox-content .alert-success .alert-heading {
+  color: #468847;
+}
+
+#fancybox-content .alert-danger, #fancybox-content .alert-error {
+  background-color: #fce5e3;
+  border-color: #f28f87;
+}
+
+#fancybox-content div.alert-error,
+#fancybox-content div.alert-error .alert-heading {
+  color: #b94a48;
 }
 
