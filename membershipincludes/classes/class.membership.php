@@ -286,6 +286,8 @@ if(!class_exists('M_Membership')) {
 								$coupon = new M_Coupon( $trying['coupon_id'] );
 								// Add one to the coupon count
 								$coupon->increment_coupon_used();
+								// Store the coupon details in the usermeta
+								update_user_meta( $this->ID, 'm_coupon_' . $sub_id, $trying );
 							}
 
 							if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
