@@ -33,7 +33,7 @@ class M_Coupon {
 
 		// If we are passing a non numeric ID we should try to find the ID by searching for the coupon name instead.
 		if(!is_numeric($id)) {
-			$search = $this->db->get_var( $this->db->prepare( "SELECT id FROM $this->coupons WHERE couponcode = %s AND site_id = %d", strtoupper($id), $site_id ) );
+			$search = $this->db->get_var( $this->db->prepare( "SELECT id FROM $this->coupons WHERE couponcode = %s", strtoupper($id) ) );
 
 			if(!empty($search)) {
 				$this->id = $search;
