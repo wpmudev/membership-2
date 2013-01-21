@@ -11,7 +11,7 @@ if($coupon != false ) {
 		// The coupon is valid for this subscription
 		$msg = '';
 		// Apply the coupon so that we can check if it was applied at a later date and change the count
-		$coupon->record_coupon_application();
+		$coupon->record_coupon_application( $sub_id, $pricing );
 	} else {
 		// The coupon is not valid for this subscription
 		$msg = $coupon->get_not_valid_message( $sub_id );

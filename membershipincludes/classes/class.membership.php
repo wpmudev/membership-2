@@ -253,6 +253,8 @@ if(!class_exists('M_Membership')) {
 
 		function create_subscription($sub_id, $gateway = 'admin') {
 
+			global $blog_id;
+
 			if(!$this->active_member()) {
 				$this->toggle_activation();
 			}
@@ -260,44 +262,42 @@ if(!class_exists('M_Membership')) {
 			$subscription = new M_Subscription( $sub_id );
 			$levels = $subscription->get_levels();
 
-			if( function_exists('is_multisite') && is_multisite() )
-				global $blog_id;
-
 			if(!empty($levels)) {
 
 				foreach($levels as $key => $level) {
 					if($level->level_order == 1) {
 						$this->add_subscription($sub_id, $level->level_id, $level->level_order, $gateway);
 
-						// Check for a coupon transient
-						if( function_exists('is_multisite') && is_multisite() ) {
-							$trans = get_site_transient('m_coupon_'.$blog_id.'_'.$this->ID.'_'.$sub_id);
+						// Check if a coupon transient already exists
+						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+							if(function_exists('get_site_transient')) {
+								$trying = get_site_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
+							} else {
+								$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
+							}
 						} else {
-							$trans = get_transient('m_coupon_'.$this->ID.'_'.$sub_id);
+							$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
 						}
 
 						// If there is a coupon transient do our coupon count magic
-						if( $trans && is_array($trans) ) {
+						if( $trying != false && is_array($trying) ) {
 
-							$code = strtoupper($code);
-							$coupon = new M_Coupon($trans['code']);
-							$price = $coupon->apply_price($level->level_price);
-							$coupon_data = $coupon->get_coupon(true);
-							$coupon_data['ID'] = $coupon_data['id'];
-							unset($coupon_data['id']);
-
-
-							// Ok they for sure used the coupon so lets delete the transient
-							if( function_exists('is_multisite') && is_multisite() ) {
-								delete_site_transient('m_coupon_'.$blog_id.'_'.$this->ID.'_'.$sub_id);
-							} else {
-								delete_transient('m_coupon_'.$this->ID.'_'.$sub_id);
+							if( !empty( $trying['coupon_id'] ) ) {
+								$coupon = new M_Coupon( $trying['coupon_id'] );
+								// Add one to the coupon count
+								$coupon->increment_coupon_used();
 							}
 
-							// Now lets just add a use to the coupon it self and daz it...
-							$new_total = (int)$coupon_data['coupon_used'] + 1;
-							$coupon_data['coupon_used'] = $new_total;
-							$coupon->increment_coupon_used();
+							if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+								if(function_exists('delete_site_transient')) {
+									delete_site_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
+								} else {
+									delete_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
+								}
+							} else {
+								delete_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
+							}
+
 						}
 
 						break;

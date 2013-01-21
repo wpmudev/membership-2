@@ -94,7 +94,7 @@ class M_Coupon {
 		$user = wp_get_current_user();
 
 		$trans = array(
-			'code' => $this->_coupon->id,
+			'coupon_id' => $this->_coupon->id,
 			'user_id' => $user->ID,
 			'sub_id' => $sub_id,
 			'prices_w_coupon' => $pricing,
