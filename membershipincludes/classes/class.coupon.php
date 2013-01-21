@@ -55,6 +55,94 @@ class M_Coupon {
 		$this->__construct( $id, $tips );
 	}
 
+	function remove_coupon_application( $sub_id = false ) {
+
+		global $blog_id;
+
+		// Grab the user account as we should be logged in by now
+		$user = wp_get_current_user();
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('get_site_transient')) {
+				$trying = get_site_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				if($trying != false) {
+					// We have found an existing coupon try so remove it as we are using a new one
+					delete_site_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				}
+			} else {
+				$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				if($trying != false) {
+					// We have found an existing coupon try so remove it as we are using a new one
+					delete_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				}
+			}
+		} else {
+			$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+			if($trying != false) {
+				// We have found an existing coupon try so remove it as we are using a new one
+				delete_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+			}
+		}
+
+	}
+
+	function record_coupon_application( $sub_id = false, $pricing = false ) {
+
+		global $blog_id;
+
+		// Grab the user account as we should be logged in by now
+		$user = wp_get_current_user();
+
+		$trans = array(
+			'code' => $this->_coupon->id,
+			'user_id' => $user->ID,
+			'sub_id' => $sub_id,
+			'prices_w_coupon' => $pricing,
+		);
+
+		// Check if a transient already exists and delete it if it does
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('get_site_transient')) {
+				$trying = get_site_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				if($trying != false) {
+					// We have found an existing coupon try so remove it as we are using a new one
+					delete_site_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				}
+			} else {
+				$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				if($trying != false) {
+					// We have found an existing coupon try so remove it as we are using a new one
+					delete_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+				}
+			}
+		} else {
+			$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+			if($trying != false) {
+				// We have found an existing coupon try so remove it as we are using a new one
+				delete_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id );
+			}
+		}
+
+		// Create transient for 1 hour.  This means the user has 1 hour to redeem the coupon after its been applied before it goes back into the pool.
+		// If you want to use a different time limit use the filter below
+		$time = apply_filters('membership_apply_coupon_redemption_time', 60*60);
+
+		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+			if(function_exists('set_site_transient')) {
+				set_site_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id, $trans, $time );
+			} else {
+
+			}
+		} else {
+			set_transient( 'm_coupon_' . $blog_id . '_' . $user->ID . '_' . $sub_id, $trans, $time );
+		}
+
+	}
+
+	function confirm_coupon_application() {
+
+	}
+
 	function valid_coupon() {
 
 		if(empty($this->_coupon)) {
