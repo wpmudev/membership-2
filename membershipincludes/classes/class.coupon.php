@@ -379,13 +379,19 @@ class M_Coupon {
 	}
 
 	function increment_coupon_used() {
-		$sql = $this->db->prepare( "UPDATE {$this->coupons} SET coupon_used = coupon_used + 1 WHERE id = %d", $this->id);
 
-		if($this->db->query($sql)) {
-			return true;
+		if( (int) $this->_coupon->coupon_used < (int) $this->_coupon->coupon_uses ) {
+			$sql = $this->db->prepare( "UPDATE {$this->coupons} SET coupon_used = coupon_used + 1 WHERE id = %d", $this->id);
+
+			if($this->db->query($sql)) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
+
 	}
 
 	function update( $data ) {
