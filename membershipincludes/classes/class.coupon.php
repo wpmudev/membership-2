@@ -150,7 +150,7 @@ class M_Coupon {
 			return false;
 		}
 
-		if( ( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() ) {
+		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() ) {
 			return false;
 		} else {
 			return true;
@@ -165,7 +165,7 @@ class M_Coupon {
 			return false;
 		}
 
-		if( ( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
+		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
 			return false;
 		} else {
 			return true;
@@ -220,12 +220,6 @@ class M_Coupon {
 
 			switch( $this->_coupon->coupon_apply_to ) {
 
-				case 'all':				// Update the price for all parts of the subscription
-										if($price['amount'] != 0 ) {
-											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
-										}
-										break;
-
 				case 'serial':			// Update the price for only the serial parts of the subscription
 										if($price['amount'] != 0 && $price['type'] == 'serial') {
 											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
@@ -240,6 +234,13 @@ class M_Coupon {
 
 				case 'indefinite':		// Update the price for only the indefinite parts of the subscription
 										if($price['amount'] != 0 && $price['type'] == 'indefinite') {
+											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
+										}
+										break;
+
+				default:
+				case 'all':				// Update the price for all parts of the subscription
+										if($price['amount'] != 0 ) {
 											$pricing[$key]['amount'] = $this->apply_price($price['amount']);
 										}
 										break;
@@ -303,7 +304,7 @@ class M_Coupon {
 			return __('The Coupon code is invalid.','membership');
 		}
 
-		if( (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses ) {
+		if( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses ) {
 			return __('No Coupons remaining for this code.','membership');
 		}
 
