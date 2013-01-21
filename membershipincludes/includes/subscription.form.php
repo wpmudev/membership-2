@@ -33,7 +33,7 @@
 							<span class='link'>
 								<?php
 
-									if($M_options['formtype'] == 'new') {
+									if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') {
 										// pop up form
 										$link = admin_url( 'admin-ajax.php' );
 										$link .= '?action=buynow&amp;subscription=' . (int) $sub->id;
