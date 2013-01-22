@@ -8,6 +8,8 @@ Author URI: http://caffeinatedb.com
 
 function M_Roles_show_information( $level_id ) {
 
+	global $wp_roles;
+
 	// Get the currentlt set ping for each level
 	$level =& new M_Level( $level_id );
 
@@ -24,17 +26,18 @@ function M_Roles_show_information( $level_id ) {
 		<select name='levelrole'>
 			<option value=''><?php _e('No associated role','membership'); ?></option>
 		<?php
-		$editable_roles = get_editable_roles();
+		$all_roles = $wp_roles->roles;
 
 		// Preset variables
 		$p = ''; $r = '';
 
-		foreach ( $editable_roles as $role => $details ) {
+		foreach ( $all_roles as $role => $details ) {
 			$name = translate_user_role($details['name'] );
-			if ( $levelrole == $role ) // preselect specified role
-				$p = "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
-			else
-				$r = "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+			if ( $levelrole == $role ) { // preselect specified role
+				$p .= "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
+			} else {
+				$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+			}
 		}
 		echo $p . $r;
 		?>
