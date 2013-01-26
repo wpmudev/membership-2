@@ -1,5 +1,4 @@
 <?php
-global $error;
 
 if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 	$anyerrors = $error->get_error_code();
