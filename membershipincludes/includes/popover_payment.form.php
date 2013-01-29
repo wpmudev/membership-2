@@ -45,6 +45,8 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 		<?php
 	}
 } else if($member->on_sub( $subscription )) {
+
+	$sub =  new M_Subscription( $subscription );
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 	?>

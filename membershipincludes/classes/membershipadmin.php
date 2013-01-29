@@ -716,7 +716,7 @@ if(!class_exists('membershipadmin')) {
 
 			echo '<br/><br/>';
 
-			echo "<strong>" . __('Member counts', 'membership') . "</strong><br/>";
+			echo "<strong>" . __('Member breakdown', 'membership') . "</strong><br/>";
 
 			$detail = $this->get_subscriptions_and_levels(array('sub_status' => 'active'));
 			$subs = $this->get_subscriptions(array('sub_status' => 'active'));
@@ -744,10 +744,6 @@ if(!class_exists('membershipadmin')) {
 							$levelcount += (int) $thiscount;
 						echo "</tr>";
 					}
-					echo "<tr>";
-						echo "<td>". __('Total', 'membership') . "</td>";
-						echo "<td style='text-align: right;'><strong>" . (int) $levelcount . "</strong></td>";
-					echo "</tr>";
 				echo "</tbody>";
 				echo "</table>";
 			}
@@ -771,10 +767,6 @@ if(!class_exists('membershipadmin')) {
 							$subcount += (int) $thiscount;
 						echo "</tr>";
 					}
-					echo "<tr>";
-						echo "<td>". __('Total', 'membership') . "</td>";
-						echo "<td style='text-align: right;'><strong>" . (int) $subcount . "</strong></td>";
-					echo "</tr>";
 				echo "</tbody>";
 				echo "</table>";
 			}
@@ -784,7 +776,7 @@ if(!class_exists('membershipadmin')) {
 			echo "</tbody>";
 			echo "</table>";
 
-			echo "<br/><strong>" . __('User counts', 'membership') . "</strong><br/>";
+			echo "<br/><strong>" . __('Member counts', 'membership') . "</strong><br/>";
 
 			echo "<table style='width: 100%;'>";
 			echo "<tbody>";
@@ -797,14 +789,14 @@ if(!class_exists('membershipadmin')) {
 					$usercount = $this->db->get_var( "SELECT count(*) FROM {$this->db->users} INNER JOIN {$this->db->usermeta} ON {$this->db->users}.ID = {$this->db->usermeta}.user_id WHERE {$this->db->usermeta}.meta_key = '{$this->db->prefix}capabilities'" );
 
 					echo "<tr>";
-						echo "<td>" . __('Total Users', 'membership') . "</td>";
+						echo "<td>" . __('Total Members', 'membership') . "</td>";
 						echo "<td style='text-align: right;'>" . $usercount . "</td>";
 					echo "</tr>";
 
 					$deactivecount = $this->db->get_var( $this->db->prepare("SELECT count(*) FROM {$this->db->usermeta} WHERE meta_key = %s AND meta_value = %s", $this->db->prefix . 'membership_active' , 'no') );
 
 					echo "<tr>";
-						echo "<td>" . __('Deactivated Users', 'membership') . "</td>";
+						echo "<td>" . __('Deactivated Members', 'membership') . "</td>";
 						echo "<td style='text-align: right;'>" . $deactivecount . "</td>";
 					echo "</tr>";
 
