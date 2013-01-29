@@ -5659,8 +5659,8 @@ if(!class_exists('membershipadmin')) {
 								break;
 
 				case 'history':
-								$history = (int) $_GET['history'];
-								if(isset($_GET['resend'])) {
+								if(isset($_GET['history']) && isset($_GET['resend'])) {
+									$history = (int) $_GET['history'];
 									switch($_GET['resend']) {
 										case 'new':		$ping = new M_Ping( false );
 														$ping->resend_historic_ping( $history, true );
