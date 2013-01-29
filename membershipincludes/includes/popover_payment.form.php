@@ -68,7 +68,10 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 							$pricing = $sub->get_pricingarray();
 
 							if(!empty($pricing) && !empty($coupon) ) {
+								if($coupon->valid_for_subscription( $s->id )) {
 									$pricing = $coupon->apply_coupon_pricing( $pricing );
+								}
+
 							}
 							?>
 								<tr>

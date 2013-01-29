@@ -4,6 +4,9 @@ if(isset($_GET['subscription'])) {
 	$sub_id = (int) $_GET['subscription'];
 }
 
+// Check if there are any coupons and if there are any valid for this subscription
+
+
 if($coupon != false ) {
 	// Check the coupon is a valid one
 	$sub_id = (int) $_GET['subscription'];
