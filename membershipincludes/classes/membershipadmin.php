@@ -3210,7 +3210,7 @@ if(!class_exists('membershipadmin')) {
 									<th scope="row"><?php _e('Show coupon form','membership'); ?></th>
 									<td>
 										<?php
-										$coupon_visible = (isset($M_options['show_coupons_form'])) ? $M_options['show_coupons_form'] : 'no';
+										$coupon_visible = (isset($M_options['show_coupons_form'])) ? $M_options['show_coupons_form'] : 'yes';
 										?>
 										<input type='checkbox' name='show_coupons_form' value='yes' <?php if($coupon_visible == 'yes') echo "checked='checked'"; ?>/>
 									</td>
