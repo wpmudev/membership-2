@@ -1,4 +1,7 @@
 <?php
+
+Global $M_options;
+
 if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	$gateway = M_get_class_for_gateway($_REQUEST['gateway']);
 	if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
@@ -103,7 +106,12 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			</table>
 
 			<?php
-				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+					if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+						if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
+							include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+						}
+
+					}
 			?>
 
 		</div>
@@ -188,7 +196,12 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			</table>
 
 			<?php
-				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+					if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+						if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
+							include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+						}
+
+					}
 			?>
 		</div>
 	<?php

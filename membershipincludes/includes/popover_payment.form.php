@@ -1,4 +1,7 @@
 <?php
+
+Global $M_options;
+
 if(!$user_id) {
 	$user = wp_get_current_user();
 
@@ -137,7 +140,12 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			</table>
 
 			<?php
-				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+					if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
+						include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+					}
+
+				}
 			?>
 		</div>
 
@@ -219,7 +227,12 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			</table>
 
 			<?php
-				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+					if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+						if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
+							include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+						}
+
+					}
 			?>
 		</div>
 	<?php
