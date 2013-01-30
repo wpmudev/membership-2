@@ -236,6 +236,10 @@ if(!class_exists('membershippublic')) {
 		function add_feed_key( $output, $feed ) {
 			global $user;
 
+			if(empty($user) || !method_exists($user, 'has_cap')) {
+				$user = wp_get_current_user();
+			}
+
 			if($user->ID > 0) {
 
 				$member = new M_Membership($user->ID);
