@@ -18,6 +18,8 @@ if($coupon != false ) {
 	} else {
 		// The coupon is not valid for this subscription
 		$msg = $coupon->get_not_valid_message( $sub_id );
+		// Remove the coupon as it isn't valid
+		$coupon = false;
 	}
 
 } else {

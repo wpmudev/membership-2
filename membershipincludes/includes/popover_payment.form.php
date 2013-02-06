@@ -70,11 +70,8 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 							// Build the pricing array
 							$pricing = $sub->get_pricingarray();
 
-							if(!empty($pricing) && !empty($coupon) ) {
-								if($coupon->valid_for_subscription( $s->id )) {
-									$pricing = $coupon->apply_coupon_pricing( $pricing );
-								}
-
+							if(!empty($pricing) && !empty($coupon) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $s->id ) ) {
+								$pricing = $coupon->apply_coupon_pricing( $pricing );
 							}
 							?>
 								<tr>
@@ -158,7 +155,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	// Build the pricing array
 	$pricing = $sub->get_pricingarray();
 
-	if(!empty($pricing) && !empty($coupon) ) {
+	if(!empty($pricing) && !empty($coupon) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $sub->id ) ) {
 			$pricing = $coupon->apply_coupon_pricing( $pricing );
 	}
 	?>
