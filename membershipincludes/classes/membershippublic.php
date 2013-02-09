@@ -1583,6 +1583,10 @@ if(!class_exists('membershippublic')) {
 										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 									}
 
+									if(!is_email($_POST['user_email'])) {
+										$error->add('emailnotvalid', __('The email address is not valid, sorry.','membership'));
+									}
+
 									if(email_exists($_POST['user_email'])) {
 										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 									}
@@ -1681,6 +1685,10 @@ if(!class_exists('membershippublic')) {
 
 									if(username_exists(sanitize_user($_POST['signup_username']))) {
 										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
+									}
+
+									if(!is_email($_POST['signup_email'])) {
+										$error->add('emailnotvalid', __('The email address is not valid, sorry.','membership'));
 									}
 
 									if(email_exists($_POST['signup_email'])) {

@@ -7359,6 +7359,10 @@ if(!class_exists('membershipadmin')) {
 				$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 			}
 
+			if(!is_email($_POST['email'])) {
+				$error->add('emailnotvalid', __('The email address is not valid, sorry.','membership'));
+			}
+
 			if(email_exists($_POST['email'])) {
 				$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
 			}
