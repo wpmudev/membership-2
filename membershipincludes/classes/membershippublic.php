@@ -1575,6 +1575,10 @@ if(!class_exists('membershippublic')) {
 										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
 									}
 
+									if(!validate_username( $_POST['user_login'] )) {
+										$error->add('usernamenotvalid', __('The username is not valid, sorry.','membership'));
+									}
+
 									if(username_exists(sanitize_user($_POST['user_login']))) {
 										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
 									}
@@ -1669,6 +1673,10 @@ if(!class_exists('membershippublic')) {
 
 									if($_POST['signup_password'] != $_POST['signup_password_confirm']) {
 										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
+									}
+
+									if(!validate_username( $_POST['signup_username'] )) {
+										$error->add('usernamenotvalid', __('The username is not valid, sorry.','membership'));
 									}
 
 									if(username_exists(sanitize_user($_POST['signup_username']))) {

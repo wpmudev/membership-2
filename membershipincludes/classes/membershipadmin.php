@@ -6450,7 +6450,7 @@ if(!class_exists('membershipadmin')) {
 			$member = new M_Membership($id);
 
 			if($member->is_member()) {
-				$key = get_user_meta($id, '_membership_key');
+				$key = get_user_meta($id, '_membership_key', true);
 
 				if(empty($key)) {
 					$key = md5($id . $profileuser->user_pass . time());
@@ -7349,6 +7349,10 @@ if(!class_exists('membershipadmin')) {
 
 			if(!wp_verify_nonce( $_POST['nonce'], 'membership_register')) {
 				$error->add('invalid', __('Invalid form submission.','membership'));
+			}
+
+			if(!validate_username( $_POST['user_login'] )) {
+				$error->add('usernamenotvalid', __('The username is not valid, sorry.','membership'));
 			}
 
 			if(username_exists(sanitize_user($_POST['user_login']))) {
