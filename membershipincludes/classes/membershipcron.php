@@ -25,10 +25,8 @@ if(!class_exists('membershipcron')) {
 				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
-			add_action('plugins_loaded', array(&$this, 'load_textdomain'));
-
 			// Set up Actions
-			add_action('init', array(&$this, 'initialise_plugin'), 1 );
+			//add_action('init', array(&$this, 'initialise_plugin'), 1 );
 
 			add_action( 'init', array(&$this, 'set_up_schedule') );
 			add_filter( 'cron_schedules', array(&$this, 'add_time_period') );
