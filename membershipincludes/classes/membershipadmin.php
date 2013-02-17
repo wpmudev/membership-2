@@ -188,6 +188,23 @@ if(!class_exists('membershipadmin')) {
 				$user->add_cap('membershipadmin');
 			}
 
+			// Update the membership capabillities for the new layout
+			if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmindashboard') ) {
+				// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
+				// Which likely means that they have not been upgraded - so let's do that :)
+				$user->add_cap('membershipadmindashboard');
+				$user->add_cap('membershipadminmembers');
+				$user->add_cap('membershipadminlevels');
+				$user->add_cap('membershipadminsubscriptions');
+				$user->add_cap('membershipcoupons');
+				$user->add_cap('membershipadminpurchases');
+				$user->add_cap('membershipadmincommunications');
+				$user->add_cap('membershipadmingroups');
+				$user->add_cap('membershipadminpings');
+				$user->add_cap('membershipadmingateways');
+				$user->add_cap('membershipadminoptions');
+			}
+
 
 			if($user->has_cap('membershipadmin')) {
 				// profile field for capabilities
@@ -261,9 +278,9 @@ if(!class_exists('membershipadmin')) {
 
 			global $menu, $admin_page_hooks;
 
-			if(current_user_can('membershipadmin')) {
+			if(current_user_can('membershipadmindashboard')) {
 				// Add the menu page
-				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'membershipadmin',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
+				add_menu_page(__('Membership','membership'), __('Membership','membership'), 'membershipadmindashboard',  'membership', array(&$this,'handle_membership_panel'), membership_url('membershipincludes/images/members.png'));
 				//echo $hook;
 				// Fix WP translation hook issue
 				if(isset($admin_page_hooks['membership'])) {
@@ -272,26 +289,36 @@ if(!class_exists('membershipadmin')) {
 
 				do_action('membership_add_menu_items_top');
 				// Add the sub menu
-				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadmin', "membershipmembers", array(&$this,'handle_members_panel'));
+				add_submenu_page('membership', __('Members','membership'), __('All Members','membership'), 'membershipadminmembers', "membershipmembers", array(&$this,'handle_members_panel'));
 				do_action('membership_add_menu_items_after_members');
-				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadmin', "membershiplevels", array(&$this,'handle_levels_panel'));
+
+				add_submenu_page('membership', __('Membership Levels','membership'), __('Access Levels','membership'), 'membershipadminlevels', "membershiplevels", array(&$this,'handle_levels_panel'));
 				do_action('membership_add_menu_items_after_levels');
-				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadmin', "membershipsubs", array(&$this,'handle_subs_panel'));
+
+				add_submenu_page('membership', __('Membership Subscriptions','membership'), __('Subscription Plans','membership'), 'membershipadminsubscriptions', "membershipsubs", array(&$this,'handle_subs_panel'));
 				do_action('membership_add_menu_items_after_subscriptions');
-				add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmin', "membershipcoupons", array(&$this,'handle_coupons_panel'));
+
+				add_submenu_page('membership', __('Membership Coupons','membership'), __('Coupons','membership'), 'membershipadmincoupons', "membershipcoupons", array(&$this,'handle_coupons_panel'));
 				do_action('membership_add_menu_items_after_coupons');
-				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadmin', "membershippurchases", array(&$this,'handle_purchases_panel'));
+
+				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadminpurchases', "membershippurchases", array(&$this,'handle_purchases_panel'));
 				do_action('membership_add_menu_items_after_purchases');
-				add_submenu_page('membership', __('Membership Communication','membership'), __('Communications','membership'), 'membershipadmin', "membershipcommunication", array(&$this,'handle_communication_panel'));
+
+				add_submenu_page('membership', __('Membership Communication','membership'), __('Communications','membership'), 'membershipadmincommunications', "membershipcommunication", array(&$this,'handle_communication_panel'));
 				do_action('membership_add_menu_items_after_communications');
-				add_submenu_page('membership', __('Membership URL Groups','membership'), __('URL Groups','membership'), 'membershipadmin', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
+
+				add_submenu_page('membership', __('Membership URL Groups','membership'), __('URL Groups','membership'), 'membershipadmingroups', "membershipurlgroups", array(&$this,'handle_urlgroups_panel'));
 				do_action('membership_add_menu_items_after_urlgroups');
-				add_submenu_page('membership', __('Membership Pings','membership'), __('Remote Pings','membership'), 'membershipadmin', "membershippings", array(&$this,'handle_pings_panel'));
+
+				add_submenu_page('membership', __('Membership Pings','membership'), __('Remote Pings','membership'), 'membershipadminpings', "membershippings", array(&$this,'handle_pings_panel'));
 				do_action('membership_add_menu_items_after_pings');
-				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmin', "membershipgateways", array(&$this,'handle_gateways_panel'));
+
+				add_submenu_page('membership', __('Membership Gateways','membership'), __('Payment Gateways','membership'), 'membershipadmingateways', "membershipgateways", array(&$this,'handle_gateways_panel'));
 				do_action('membership_add_menu_items_after_gateways');
-				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadmin', "membershipoptions", array(&$this,'handle_options_panel'));
+
+				add_submenu_page('membership', __('Membership Options','membership'), __('Options','membership'), 'membershipadminoptions', "membershipoptions", array(&$this,'handle_options_panel'));
 				do_action('membership_add_menu_items_after_options');
+
 				do_action('membership_add_menu_items_bottom');
 			}
 

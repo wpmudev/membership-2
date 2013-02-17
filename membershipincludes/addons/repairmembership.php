@@ -27,7 +27,7 @@ class M_Membershiprepair {
 	}
 
 	function add_menu() {
-		add_submenu_page('membership', __('Membership Repair','membership'), __('Repair Membership','membership'), 'membershipadmin', "membershiprepair", array(&$this,'handle_repair_panel'));
+		add_submenu_page('membership', __('Membership Repair','membership'), __('Repair Membership','membership'), 'membershipadminoptions', "membershiprepair", array(&$this,'handle_repair_panel'));
 	}
 
 	// Database repair functions
