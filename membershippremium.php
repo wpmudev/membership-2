@@ -54,6 +54,9 @@ require_once('membershipincludes/classes/class.adminbar.php');
 // Set up the default rules
 require_once('membershipincludes/includes/default.rules.php');
 
+// Load the Cron process
+require_once('membershipincludes/classes/membershipcron.php');
+
 if(is_admin()) {
 	include_once('membershipincludes/external/wpmudev-dash-notification.php');
 	// Administration interface

@@ -30,6 +30,10 @@ if(!class_exists('membershipcron')) {
 			// Set up Actions
 			add_action('init', array(&$this, 'initialise_plugin'), 1 );
 
+			add_action( 'init', array(&$this, 'set_up_schedule') );
+			add_filter( 'cron_schedules', array(&$this, 'add_time_period') );
+
+
 
 		}
 
@@ -37,13 +41,26 @@ if(!class_exists('membershipcron')) {
 			$this->__construct();
 		}
 
-		function load_textdomain() {
+		function add_time_period( $periods ) {
 
-			$locale = apply_filters( 'membership_locale', get_locale() );
-			$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
+			if(!is_array($periods)) {
+				$periods = array();
+			}
 
-			if ( file_exists( $mofile ) )
-				load_textdomain( 'membership', $mofile );
+			$periods['15mins'] = array( 'interval' => 900, 'display' => __('Every 15 Mins', 'membership') );
+
+			return $periods;
+		}
+
+		function set_up_schedule() {
+
+			if ( !wp_next_scheduled( 'membership_perform_cron_processes_quarterhourly' ) ) {
+				wp_schedule_event(time(), '15mins', 'membership_perform_cron_processes_quarterhourly');
+			}
+
+			if ( !wp_next_scheduled( 'membership_perform_cron_processes_hourly' ) ) {
+				wp_schedule_event(time(), 'hourly', 'membership_perform_cron_processes_hourly');
+			}
 
 		}
 
@@ -283,7 +300,36 @@ if(!class_exists('membershipcron')) {
 
 		}
 
+		// Quearter hourly processing
+		function membership_perform_cron_processes_quarterhourly() {
+
+		}
+
+		// Hourly processing
+		function membership_perform_cron_processes_hourly() {
+
+		}
+
 	}
 
 }
+
+// Instanticate the class
+$membershipcron = new membershipcron();
+
+// The cron job actions and calls back
+function membership_perform_cron_processes_quarterhourly() {
+	global $membershipcron;
+
+	$membershipcron->membership_perform_cron_processes_quarterhourly();
+}
+
+function membership_perform_cron_processes_hourly() {
+	global $membershipcron;
+
+	$membershipcron->membership_perform_cron_processes_hourly();
+}
+
+add_action( 'membership_perform_cron_processes_quarterhourly', 'membership_perform_cron_processes_quarterhourly' );
+add_action( 'membership_perform_cron_processes_hourly', 'membership_perform_cron_processes_hourly' );
 ?>
