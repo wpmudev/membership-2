@@ -31,6 +31,14 @@ if(!class_exists('membershipcron')) {
 			add_action( 'init', array(&$this, 'set_up_schedule') );
 			add_filter( 'cron_schedules', array(&$this, 'add_time_period') );
 
+			if( !$this->get_expiring_relationships_count() >= 50 ) {
+				// Schedule for quarter hourly to get number of processing down a bit
+				add_action( 'membership_process_quarterhourly_cron', array( &$this, 'transition_user_through_subscriptions' ) );
+			} else {
+				// We don't have that many, so let's process hourly instead
+				add_action( 'membership_process_hourly_cron', array( &$this, 'transition_user_through_subscriptions' ) );
+			}
+
 
 
 		}
@@ -59,6 +67,18 @@ if(!class_exists('membershipcron')) {
 			if ( !wp_next_scheduled( 'membership_perform_cron_processes_hourly' ) ) {
 				wp_schedule_event(time(), 'hourly', 'membership_perform_cron_processes_hourly');
 			}
+
+		}
+
+		function get_expiring_relationships_count() {
+			return 0;
+		}
+
+		function get_expiring_relationships() {
+
+		}
+
+		function transition_user_through_subscriptions() {
 
 		}
 
@@ -301,10 +321,14 @@ if(!class_exists('membershipcron')) {
 		// Quearter hourly processing
 		function membership_perform_cron_processes_quarterhourly() {
 
+			do_action( 'membership_process_quarterhourly_cron' );
+
 		}
 
 		// Hourly processing
 		function membership_perform_cron_processes_hourly() {
+
+			do_action( 'membership_process_hourly_cron' );
 
 		}
 
