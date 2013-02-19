@@ -2087,7 +2087,7 @@ if(!class_exists('membershippublic')) {
 							do_action('membership_subscriptionbutton_onpage');
 							// There is no shortcode content in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content = $this->do_subscription_form();
+							$post->post_content .= $this->do_subscription_form();
 						}
 					}
 					if($post->ID == $M_options['account_page']) {
@@ -2106,7 +2106,7 @@ if(!class_exists('membershippublic')) {
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content = $this->do_account_form();
+							$post->post_content .= $this->do_account_form();
 						}
 					}
 					if($post->ID == $M_options['subscriptions_page']) {
@@ -2200,7 +2200,7 @@ if(!class_exists('membershippublic')) {
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content = $this->do_renew_form();
+							$post->post_content .= $this->do_renew_form();
 						}
 					}
 					if($post->ID == $M_options['nocontent_page']) {
