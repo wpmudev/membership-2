@@ -102,7 +102,7 @@ class M_Posts extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
+		add_action('pre_get_posts', array(&$this, 'add_viewable_posts'), 99 );
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_posts'));
 	}
@@ -111,7 +111,7 @@ class M_Posts extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 99 );
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_posts'));
 	}
@@ -120,7 +120,8 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_singlular && empty($wp_query->query_vars['pagename'])) {
+		if( !$wp_query->is_singular && empty($wp_query->query_vars['pagename']) && (!isset($wp_query->query_vars['post_type']) || in_array($wp_query->query_vars['post_type'], array('post','')))) {
+
 			// We are in a list rather than on a single post
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__in'][] = $value;
@@ -139,7 +140,8 @@ class M_Posts extends M_Rule {
 
 		global $M_options;
 
-		if(!$wp_query->is_singlular && empty($wp_query->query_vars['pagename'])) {
+		if( !$wp_query->is_singular && empty($wp_query->query_vars['pagename']) && (!isset($wp_query->query_vars['post_type']) || in_array($wp_query->query_vars['post_type'], array('post','')))) {
+
 			// We are on a list rather than on a single post
 			foreach( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__not_in'][] = $value;
@@ -158,8 +160,7 @@ class M_Posts extends M_Rule {
 
 		global $wp_query, $M_options;
 
-
-		if(!$wp_query->is_singlular || count($posts) > 1) {
+		if( !$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -232,7 +233,7 @@ class M_Posts extends M_Rule {
 
 		global $wp_query, $M_options;
 
-		if(!$wp_query->is_singlular || count($posts) > 1) {
+		if( !$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
 
@@ -385,7 +386,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 2 );
+		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 100 );
 		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
@@ -396,7 +397,7 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 2 );
+		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 100 );
 		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
@@ -480,8 +481,6 @@ class M_Pages extends M_Rule {
 		if(!$wp_query->is_singular || count($posts) > 1) {
 			return $posts;
 		}
-
-		//print_r($wp_query);
 
 		if(!empty($posts) && count($posts) == 1) {
 			// we may be on a restricted post so check the URL and redirect if needed
