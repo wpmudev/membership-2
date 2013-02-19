@@ -386,7 +386,6 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 100 );
 		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
@@ -397,7 +396,6 @@ class M_Pages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 100 );
 		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'), 1);
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
@@ -428,6 +426,8 @@ class M_Pages extends M_Rule {
 	function add_viewable_pages($wp_query) {
 
 		global $M_options;
+
+		print_r($wp_query);
 
 		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
 			// We are not on a single page - so just limit the viewing
