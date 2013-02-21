@@ -245,7 +245,7 @@ if(!class_exists('membershippublic')) {
 				$member = new M_Membership($user->ID);
 
 				if($member->is_member()) {
-					$key = get_user_meta($user->ID, '_membership_key');
+					$key = get_user_meta($user->ID, '_membership_key', true);
 
 					if(empty($key)) {
 						$key = md5($user->ID . $user->user_pass . time());
