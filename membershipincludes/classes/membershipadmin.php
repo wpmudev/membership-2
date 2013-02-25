@@ -189,14 +189,14 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Update the membership capabillities for the new layout
-			if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmindashboard') ) {
+			if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmincoupons') ) {
 				// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
 				// Which likely means that they have not been upgraded - so let's do that :)
 				$user->add_cap('membershipadmindashboard');
 				$user->add_cap('membershipadminmembers');
 				$user->add_cap('membershipadminlevels');
 				$user->add_cap('membershipadminsubscriptions');
-				$user->add_cap('membershipcoupons');
+				$user->add_cap('membershipadmincoupons');
 				$user->add_cap('membershipadminpurchases');
 				$user->add_cap('membershipadmincommunications');
 				$user->add_cap('membershipadmingroups');

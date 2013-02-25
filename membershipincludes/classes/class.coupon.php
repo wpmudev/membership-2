@@ -150,7 +150,7 @@ class M_Coupon {
 			return false;
 		}
 
-		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() ) {
+		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || (!empty($this->_coupon->coupon_enddate) && strtotime( $this->_coupon->coupon_enddate ) < time()) ) {
 			return false;
 		} else {
 			return true;
@@ -165,7 +165,7 @@ class M_Coupon {
 			return false;
 		}
 
-		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || strtotime( $this->_coupon->coupon_enddate ) < time() || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
+		if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || (!empty($this->_coupon->coupon_enddate) && strtotime( $this->_coupon->coupon_enddate ) < time()) || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
 			return false;
 		} else {
 			return true;
