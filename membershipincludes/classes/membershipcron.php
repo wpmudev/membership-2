@@ -86,13 +86,9 @@ if(!class_exists('membershipcron')) {
 
 			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE sub_id != 0 AND expirydate <= %s ORDER BY expirydate ASC LIMIT 0, 25", gmdate( 'Y-m-d H:i:s', time() ) );
 
-			$result = $this->db->get_var( $sql );
+			$result = $this->db->get_results( $sql );
 
-			if(empty($result)) {
-				return 0;
-			} else {
-				return $result;
-			}
+			return $result;
 
 		}
 
