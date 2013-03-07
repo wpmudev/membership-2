@@ -1618,15 +1618,22 @@ if(!class_exists('membershippublic')) {
 													'user_password' => $_POST['password'],
 													'remember' => true
 												);
-												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-												$user = wp_signon( $creds, $is_ssl );
 
-												if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
-													$error->add('userlogin', $user->get_error_message());
+												if(!headers_sent()) {
+													$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+													$user = @wp_signon( $creds, $is_ssl );
+
+													if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
+														$error->add('userlogin', $user->get_error_message());
+													} else {
+														// Set the current user up
+														wp_set_current_user( $user_id );
+													}
 												} else {
 													// Set the current user up
 													wp_set_current_user( $user_id );
 												}
+
 											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
@@ -1758,15 +1765,22 @@ if(!class_exists('membershippublic')) {
 													'user_password' => $_POST['signup_password'],
 													'remember' => true
 												);
-												$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-												$user = wp_signon( $creds, $is_ssl );
 
-												if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
-													$error->add('userlogin', $user->get_error_message());
+												if(!headers_sent()) {
+													$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+													$user = @wp_signon( $creds, $is_ssl );
+
+													if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
+														$error->add('userlogin', $user->get_error_message());
+													} else {
+														// Set the current user up
+														wp_set_current_user( $user_id );
+													}
 												} else {
 													// Set the current user up
 													wp_set_current_user( $user_id );
 												}
+
 											}
 
 											if( has_action('membership_susbcription_form_registration_notification') ) {
