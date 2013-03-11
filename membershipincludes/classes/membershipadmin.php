@@ -2889,13 +2889,13 @@ if(!class_exists('membershipadmin')) {
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Shortcode protected content','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('You can protect parts of a post or pages content by enclosing it in WordPress shortcodes.','membership'); ?></p>
-							<p class='description'><?php _e("Each level you create has it's own shortcode. The shortcodes that are available to use are shown below.",'membership'); ?></p>
+							<p class='description'><?php _e("Each level you create has it's own shortcode.",'membership'); ?></p>
 
 							<table class="form-table">
 							<tbody>
 								<?php if(!empty($M_options['membershipshortcodes'])) { ?>
 								<tr valign="top">
-									<th scope="row"><?php _e('Available Shortcodes','membership'); ?>
+									<th scope="row"><?php _e('Legacy Shortcodes','membership'); ?>
 										<?php echo $this->_tips->add_tip( __('Each shortcode can be used to wrap protected content such as [shortcode] Protected content [/shortcode]','membership') ); ?>
 									</th>
 									<td>
