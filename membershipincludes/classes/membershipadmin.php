@@ -207,7 +207,12 @@ if(!class_exists('membershipadmin')) {
 
 
 			if($user->has_cap('membershipadmin')) {
-				// profile field for capabilities
+				// user permissions on the user form
+				add_filter( 'manage_users_columns', array(&$this, 'add_user_permissions_column') );
+				add_filter( 'wpmu_users_columns', array(&$this, 'add_user_permissions_column') );
+				add_filter( 'manage_users_custom_column', array(&$this, 'show_user_permissions_column'), 10, 3 );
+
+
 				//add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
 				//add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
 
@@ -248,6 +253,92 @@ if(!class_exists('membershipadmin')) {
 
 			add_action( 'wp_ajax_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
 			add_action( 'wp_ajax_nopriv_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
+
+		}
+
+		function add_user_permissions_column( $columns ) {
+			$columns['membershippermissions'] = __('Permissions', 'membership');
+
+			return $columns;
+		}
+
+		function show_user_permissions_column( $content, $column_name, $user_id ) {
+
+			if($column_name == 'membershippermissions') {
+				// We are on our column
+				$theuser = get_user_by( 'id', $user_id );
+
+				$perms = array();
+				if( $theuser->has_cap('membershipadmindashboard') ) {
+					$perms[] = __('Dashboard','membership');
+				}
+				if( $theuser->has_cap('membershipadminmembers') ) {
+					$perms[] = __('Members','membership');
+				}
+				if( $theuser->has_cap('membershipadminlevels') ) {
+					$perms[] = __('Levels','membership');
+				}
+				if( $theuser->has_cap('membershipadminsubscriptions') ) {
+					$perms[] = __('Subscriptions','membership');
+				}
+				if( $theuser->has_cap('membershipadmincoupons') ) {
+					$perms[] = __('Coupons','membership');
+				}
+
+				if( $theuser->has_cap('membershipadminpurchases') ) {
+					$perms[] = __('Purchases','membership');
+				}
+				if( $theuser->has_cap('membershipadmincommunications') ) {
+					$perms[] = __('Communications','membership');
+				}
+				if( $theuser->has_cap('membershipadmingroups') ) {
+					$perms[] = __('URL Groups','membership');
+				}
+				if( $theuser->has_cap('membershipadminpings') ) {
+					$perms[] = __('Pings','membership');
+				}
+				if( $theuser->has_cap('membershipadmingateways') ) {
+					$perms[] = __('Gateways','membership');
+				}
+
+				if( $theuser->has_cap('membershipadminoptions') ) {
+					$perms[] = __('Options','membership');
+				}
+
+				if(empty($perms)) {
+					$perms[] = __('None', 'membership');
+				}
+
+				$content .= implode( ', ', $perms );
+
+				$content .= '<div class="row-actions">';
+				$content .= '<span class="edit">';
+				$content .= '<a class="membershipeditlink" href="' . wp_nonce_url( admin_url("admin-ajax.php?action=editusermembershippermissions&amp;user_id=" . $user_id . ""), 'edit_user_membership_' . $user_id) . '">' . __('Edit','membership') . '</a>';
+				$content .= '</span>';
+				$content .= '</div>';
+
+				/*
+				if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmincoupons') ) {
+					// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
+					// Which likely means that they have not been upgraded - so let's do that :)
+					$user->add_cap('membershipadmindashboard');
+					$user->add_cap('membershipadminmembers');
+					$user->add_cap('membershipadminlevels');
+					$user->add_cap('membershipadminsubscriptions');
+					$user->add_cap('membershipadmincoupons');
+					$user->add_cap('membershipadminpurchases');
+					$user->add_cap('membershipadmincommunications');
+					$user->add_cap('membershipadmingroups');
+					$user->add_cap('membershipadminpings');
+					$user->add_cap('membershipadmingateways');
+					$user->add_cap('membershipadminoptions');
+				}
+				*/
+
+
+			}
+
+			return $content;
 
 		}
 
