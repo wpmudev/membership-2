@@ -72,6 +72,9 @@ if(!class_exists('membershipadmin')) {
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
 
 			// Header actions
+			add_action( 'admin_head-users.php', array(&$this, 'add_header_users_page'));
+
+
 			add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
 			add_action('load-membership_page_membershipmembers', array(&$this, 'add_admin_header_members'));
 			add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
@@ -474,6 +477,17 @@ if(!class_exists('membershipadmin')) {
 			// Add in default style sheet with common styling elements
 			wp_enqueue_style('defaultcss', membership_url('membershipincludes/css/default.css'), array(), $this->build);
 
+		}
+
+		function add_header_users_page() {
+
+			wp_enqueue_script('thickbox');
+
+			wp_register_script('membership-users-js', membership_url('membershipincludes/js/users.js', array('jquery', 'thickbox'));
+			wp_enqueue_script('membership-users-js');
+
+			wp_localize_script('membership-users-js', 'membership', array( 'useredittitle'		=>	__('Membership Permissions','membership') ));
+			wp_enqueue_style('thickbox');
 		}
 
 		function add_admin_header_membership() {
