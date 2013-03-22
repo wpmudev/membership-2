@@ -71,10 +71,10 @@ if(!class_exists('membershipadmin')) {
 
 			add_action( 'plugins_loaded', array(&$this, 'load_textdomain'));
 
-			// Header actions
-			add_action( 'admin_head-users.php', array(&$this, 'add_header_users_page'));
+			// Header actions for users page
+			add_action( 'load-users.php', array(&$this, 'add_header_users_page'));
 
-
+			// Custom header actions
 			add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
 			add_action('load-membership_page_membershipmembers', array(&$this, 'add_admin_header_members'));
 			add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
@@ -347,17 +347,6 @@ if(!class_exists('membershipadmin')) {
 
 		// Code from this function based on code from AJAX Media Upload function
 		function edit_user_permissions() {
-
-			if( isset( $_GET['action'] ) ) {
-				switch( $_GET['action'] ) {
-					case 'updatepostindexersitesettings':	$blog_id = $_GET['blog_id'];
-															check_admin_referer( 'postindexer_update_site_settings_' . $blog_id );
-															$this->model->switch_to_blog( $blog_id );
-															update_option( 'postindexer_active', $_GET['postindexer_active'] );
-															$this->model->restore_current_blog();
-															break;
-				}
-			}
 
 			_wp_admin_html_begin();
 			?>
@@ -635,6 +624,88 @@ if(!class_exists('membershipadmin')) {
 
 			wp_localize_script('membership-users-js', 'membership', array( 'useredittitle'		=>	__('Membership Permissions','membership') ));
 			wp_enqueue_style('thickbox');
+
+			$this->process_users_page();
+		}
+
+		function process_users_page() {
+
+			if( isset( $_GET['action'] ) ) {
+				switch( $_GET['action'] ) {
+					case 'updatemembershippermissionsesettings':
+
+															$user_id = $_GET['user_id'];
+															//check_admin_referer( 'membership_update_permissions_settings_' . $user_id );
+															$theuser = get_user_by( 'id', $user_id );
+
+
+															if(!empty( $_GET['membership_permission'] )) {
+																$new = (array) $_GET['membership_permission'];
+															} else {
+																$new = array();
+															}
+
+															if( in_array('dashboard', $new ) ) {
+																$theuser->add_cap('membershipadmindashboard');
+															} else {
+																$theuser->remove_cap('membershipadmindashboard');
+															}
+															if( in_array('members', $new ) ) {
+																$theuser->add_cap('membershipadminmembers');
+															} else {
+																$theuser->remove_cap('membershipadminmembers');
+															}
+															if( in_array('levels', $new ) ) {
+																$theuser->add_cap('membershipadminlevels');
+															} else {
+																$theuser->remove_cap('membershipadminlevels');
+															}
+															if( in_array('subscriptions', $new ) ) {
+																$theuser->add_cap('membershipadminsubscriptions');
+															} else {
+																$theuser->remove_cap('membershipadminsubscriptions');
+															}
+															if( in_array('coupons', $new ) ) {
+																$theuser->add_cap('membershipadmincoupons');
+															} else {
+																$theuser->remove_cap('membershipadmincoupons');
+															}
+															if( in_array('purchases', $new ) ) {
+																$theuser->add_cap('membershipadminpurchases');
+															} else {
+																$theuser->remove_cap('membershipadminpurchases');
+															}
+															if( in_array('communications', $new ) ) {
+																$theuser->add_cap('membershipadmincommunications');
+															} else {
+																$theuser->remove_cap('membershipadmincommunications');
+															}
+															if( in_array('urlgroups', $new ) ) {
+																$theuser->add_cap('membershipadmingroups');
+															} else {
+																$theuser->remove_cap('membershipadmingroups');
+															}
+															if( in_array('pings', $new ) ) {
+																$theuser->add_cap('membershipadminpings');
+															} else {
+																$theuser->remove_cap('membershipadminpings');
+															}
+															if( in_array('gateways', $new ) ) {
+																$theuser->add_cap('membershipadmingateways');
+															} else {
+																$theuser->remove_cap('membershipadmingateways');
+															}
+															if( in_array('options', $new ) ) {
+																$theuser->add_cap('membershipadminoptions');
+															} else {
+																$theuser->remove_cap('membershipadminoptions');
+															}
+
+															wp_safe_redirect( $_GET['comefrom'] );
+															break;
+				}
+			}
+
 		}
 
 		function add_admin_header_membership() {
