@@ -215,7 +215,7 @@ if(!class_exists('membershipadmin')) {
 				add_filter( 'wpmu_users_columns', array(&$this, 'add_user_permissions_column') );
 				add_filter( 'manage_users_custom_column', array(&$this, 'show_user_permissions_column'), 10, 3 );
 
-
+				add_action( 'wp_ajax_editusermembershippermissions', array(&$this, 'edit_user_permissions') );
 				//add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
 				//add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
 
@@ -342,6 +342,153 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			return $content;
+
+		}
+
+		// Code from this function based on code from AJAX Media Upload function
+		function edit_user_permissions() {
+
+			if( isset( $_GET['action'] ) ) {
+				switch( $_GET['action'] ) {
+					case 'updatepostindexersitesettings':	$blog_id = $_GET['blog_id'];
+															check_admin_referer( 'postindexer_update_site_settings_' . $blog_id );
+															$this->model->switch_to_blog( $blog_id );
+															update_option( 'postindexer_active', $_GET['postindexer_active'] );
+															$this->model->restore_current_blog();
+															break;
+				}
+			}
+
+			_wp_admin_html_begin();
+			?>
+			<title><?php _e('Post Indexer Settings','postindexer'); ?></title>
+			<?php
+
+			wp_enqueue_style( 'colors' );
+			//wp_enqueue_style( 'media' );
+			//wp_enqueue_style( 'ie' );
+			wp_enqueue_script( 'jquery' );
+
+			do_action('admin_print_styles');
+			do_action('admin_print_scripts');
+			do_action('admin_head');
+
+			?>
+			</head>
+			<body<?php if ( isset($GLOBALS['body_id']) ) echo ' id="' . $GLOBALS['body_id'] . '"'; ?> class="no-js">
+			<script type="text/javascript">
+				document.body.className = document.body.className.replace('no-js', 'js');
+			</script>
+			<?php
+				$this->edit_users_permissions_content();
+
+				do_action('admin_print_footer_scripts');
+			?>
+			<script type="text/javascript">if(typeof wpOnload=='function')wpOnload();</script>
+			</body>
+			</html>
+			<?php
+			exit;
+		}
+
+		function edit_users_permissions_content() {
+
+			if( !isset($_GET['user_id'])) {
+				wp_die( __( 'Cheatin&#8217; uh?' ) );
+			} else {
+
+				$user_id = $_GET['user_id'];
+				check_admin_referer( 'edit_user_membership_' . $user_id );
+
+				?>
+					<form action="" class="" id="membership-form" method='get'>
+
+						<input type='hidden' name='action' value='updatemembershippermissionsesettings' />
+						<input type='hidden' name='user_id' value='<?php echo $user_id; ?>' />
+						<input type='hidden' name='comefrom' value='<?php echo esc_attr( wp_get_referer() ); ?>' />
+						<?php
+							wp_nonce_field('membership_update_permissions_settings_' . $user_id);
+						?>
+
+						<h3 class="media-title"><?php echo __("Membership Permissions","membership"); ?></h3>
+						<p class='description'><?php _e('Select the areas you want this user to be able to administrate.','membership'); ?></p>
+
+						<table>
+							<tbody>
+								<tr>
+									<th style='min-width: 150px; vertical-align: top;'><?php _e('Current Permissions', 'membership'); ?></th>
+									<td>
+									<?php
+										$theuser = get_user_by( 'id', $user_id );
+
+										$perms = array();
+										if( $theuser->has_cap('membershipadmindashboard') ) {
+											$perms[] = 'dashboard';
+										}
+										if( $theuser->has_cap('membershipadminmembers') ) {
+											$perms[] = 'members';
+										}
+										if( $theuser->has_cap('membershipadminlevels') ) {
+											$perms[] = 'levels';
+										}
+										if( $theuser->has_cap('membershipadminsubscriptions') ) {
+											$perms[] = 'subscriptions';
+										}
+										if( $theuser->has_cap('membershipadmincoupons') ) {
+											$perms[] = 'coupons';
+										}
+										if( $theuser->has_cap('membershipadminpurchases') ) {
+											$perms[] = 'purchases';
+										}
+										if( $theuser->has_cap('membershipadmincommunications') ) {
+											$perms[] = 'communications';
+										}
+										if( $theuser->has_cap('membershipadmingroups') ) {
+											$perms[] = 'urlgroups';
+										}
+										if( $theuser->has_cap('membershipadminpings') ) {
+											$perms[] = 'pings';
+										}
+										if( $theuser->has_cap('membershipadmingateways') ) {
+											$perms[] = 'gateways';
+										}
+										if( $theuser->has_cap('membershipadminoptions') ) {
+											$perms[] = 'options';
+										}
+
+										$headings = array();
+										$headings['dashboard'] = __('Dashboard','membership');
+										$headings['members'] = __('Members','membership');
+										$headings['levels'] = __('Levels','membership');
+										$headings['subscriptions'] = __('Subscriptions','membership');
+										$headings['coupons'] = __('Coupons','membership');
+										$headings['purchases'] = __('Purchases','membership');
+										$headings['communications'] = __('Communications','membership');
+										$headings['urlgroups'] = __('URL Groups','membership');
+										$headings['pings'] = __('Pings','membership');
+										$headings['gateways'] = __('Gateways','membership');
+										$headings['options'] = __('Options','membership');
+
+										foreach($headings as $heading => $label) {
+											?>
+												<label><input type='checkbox' name='membership_permission[]' value='<?php echo $heading; ?>' <?php if(in_array($heading, $perms)) { echo "checked='checked'"; } ?> />&nbsp;<?php echo $label; ?></label><br/>
+											<?php
+										}
+
+									?>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+
+					<p class="savebutton ml-submit">
+						<input name="save" id="save" class="button-primary" value="<?php _e('Save all changes','postindexer'); ?>" type="submit">
+					</p>
+				</form>
+
+				<?php
+			}
 
 		}
 
@@ -483,7 +630,7 @@ if(!class_exists('membershipadmin')) {
 
 			wp_enqueue_script('thickbox');
 
-			wp_register_script('membership-users-js', membership_url('membershipincludes/js/users.js', array('jquery', 'thickbox'));
+			wp_register_script('membership-users-js', membership_url('membershipincludes/js/users.js'), array('jquery', 'thickbox'));
 			wp_enqueue_script('membership-users-js');
 
 			wp_localize_script('membership-users-js', 'membership', array( 'useredittitle'		=>	__('Membership Permissions','membership') ));
