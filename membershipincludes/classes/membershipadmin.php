@@ -192,36 +192,44 @@ if(!class_exists('membershipadmin')) {
 			}
 
 			// Update the membership capabillities for the new layout
-			if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmincoupons') ) {
+			if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadminupdatepermissions') ) {
 				// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
 				// Which likely means that they have not been upgraded - so let's do that :)
-				$user->add_cap('membershipadmindashboard');
-				$user->add_cap('membershipadminmembers');
-				$user->add_cap('membershipadminlevels');
-				$user->add_cap('membershipadminsubscriptions');
-				$user->add_cap('membershipadmincoupons');
-				$user->add_cap('membershipadminpurchases');
-				$user->add_cap('membershipadmincommunications');
-				$user->add_cap('membershipadmingroups');
-				$user->add_cap('membershipadminpings');
-				$user->add_cap('membershipadmingateways');
-				$user->add_cap('membershipadminoptions');
+
+				$updated = get_user_meta( $user->ID, 'membership_permissions_updated', true );
+
+				if(empty($updated) || $updated != 'yes') {
+					$user->add_cap('membershipadmindashboard');
+					$user->add_cap('membershipadminmembers');
+					$user->add_cap('membershipadminlevels');
+					$user->add_cap('membershipadminsubscriptions');
+					$user->add_cap('membershipadmincoupons');
+					$user->add_cap('membershipadminpurchases');
+					$user->add_cap('membershipadmincommunications');
+					$user->add_cap('membershipadmingroups');
+					$user->add_cap('membershipadminpings');
+					$user->add_cap('membershipadmingateways');
+					$user->add_cap('membershipadminoptions');
+					// New permissions setting
+					$user->add_cap('membershipadminupdatepermissions');
+
+					update_user_meta( $user->ID, 'membership_permissions_updated', 'yes');
+				}
 			}
 
 
-			if($user->has_cap('membershipadmin')) {
+			if($user->has_cap('membershipadminupdatepermissions')) {
 				// user permissions on the user form
 				add_filter( 'manage_users_columns', array(&$this, 'add_user_permissions_column') );
 				add_filter( 'wpmu_users_columns', array(&$this, 'add_user_permissions_column') );
 				add_filter( 'manage_users_custom_column', array(&$this, 'show_user_permissions_column'), 10, 3 );
 
 				add_action( 'wp_ajax_editusermembershippermissions', array(&$this, 'edit_user_permissions') );
-				//add_action( 'edit_user_profile', array(&$this, 'add_membershipadmin_capability') );
-				//add_action( 'edit_user_profile_update', array(&$this, 'update_membershipadmin_capability'));
+			}
 
+			if($user->has_cap('membershipadmin')) {
 				// If the user is a membershipadmin user then we can add in notices
 				add_action('all_admin_notices', array(&$this, 'show_membership_status_notice'));
-
 			}
 
 			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
@@ -307,6 +315,11 @@ if(!class_exists('membershipadmin')) {
 				if( $theuser->has_cap('membershipadminoptions') ) {
 					$perms[] = __('Options','membership');
 				}
+
+				if( $theuser->has_cap('membershipadminupdatepermissions') ) {
+					$perms[] = __('Permissions','membership');
+				}
+
 
 				if(empty($perms)) {
 					$perms[] = __('None', 'membership');
@@ -444,6 +457,10 @@ if(!class_exists('membershipadmin')) {
 										if( $theuser->has_cap('membershipadminoptions') ) {
 											$perms[] = 'options';
 										}
+										if( $theuser->has_cap('membershipadminupdatepermissions') ) {
+											$perms[] = 'permissions';
+										}
+
 
 										$headings = array();
 										$headings['dashboard'] = __('Dashboard','membership');
@@ -457,6 +474,7 @@ if(!class_exists('membershipadmin')) {
 										$headings['pings'] = __('Pings','membership');
 										$headings['gateways'] = __('Gateways','membership');
 										$headings['options'] = __('Options','membership');
+										$headings['permissions'] = __('Permissions','membership');
 
 										foreach($headings as $heading => $label) {
 											?>
@@ -699,6 +717,12 @@ if(!class_exists('membershipadmin')) {
 																$theuser->add_cap('membershipadminoptions');
 															} else {
 																$theuser->remove_cap('membershipadminoptions');
+															}
+
+															if( in_array('permissions', $new ) ) {
+																$theuser->add_cap('membershipadminupdatepermissions');
+															} else {
+																$theuser->remove_cap('membershipadminupdatepermissions');
 															}
 
 															wp_safe_redirect( $_GET['comefrom'] );
