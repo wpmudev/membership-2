@@ -476,11 +476,17 @@ if(!class_exists('membershipadmin')) {
 										$headings['options'] = __('Options','membership');
 										$headings['permissions'] = __('Permissions','membership');
 
+										?>
+										<ul style='margin:0; padding:0;'>
+										<?php
 										foreach($headings as $heading => $label) {
 											?>
-												<label><input type='checkbox' name='membership_permission[]' value='<?php echo $heading; ?>' <?php if(in_array($heading, $perms)) { echo "checked='checked'"; } ?> />&nbsp;<?php echo $label; ?></label><br/>
+												<li><label><input style='margin-top: 0; margin-right: 5px;' type='checkbox' name='membership_permission[]' value='<?php echo $heading; ?>' <?php if(in_array($heading, $perms)) { echo "checked='checked'"; } ?> />&nbsp;<?php echo $label; ?></label></li>
 											<?php
 										}
+										?>
+										</ul>
+										<?php
 
 									?>
 								</td>
