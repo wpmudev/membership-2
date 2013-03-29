@@ -235,7 +235,6 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 							foreach( $_POST[$rule] as $rule ) {
 								$thelink = get_permalink( $rule );
 								$thelink = str_replace('http://', 'https?://', $thelink );
-								//$thelink = str_replace('/', '\/', $thelink );
 								$permalinks[] = $thelink . '(/.*)';
 							}
 
@@ -262,7 +261,6 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 							foreach( $_POST[$rule] as $rule ) {
 								$thelink = get_permalink( $rule );
 								$thelink = str_replace('http://', 'https?://', $thelink );
-								//$thelink = str_replace('/', '\/', $thelink );
 								$permalinks[] = $thelink . '(/.*)';
 							}
 
@@ -289,7 +287,6 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 								foreach( $_POST[$rule] as $rule ) {
 									$thelink = untrailingslashit(get_permalink( $rule ));
 									$thelink = str_replace('http://', 'https?://', $thelink );
-									//$thelink = str_replace('/', '\/', $thelink );
 									$permalinks[] = $thelink . '(/.*)';
 								}
 
@@ -314,12 +311,10 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 
 			case 'bpgroups':	$permalinks = array();
 								if(function_exists('bp_get_group_permalink')) {
-									//bp_get_group_permalink( $group )
 									foreach( $_POST[$rule] as $rule ) {
 										$group = new BP_Groups_Group( $rule );
 										$thelink = untrailingslashit(bp_get_group_permalink( $group ));
 										$thelink = str_replace('http://', 'https?://', $thelink );
-										//$thelink = str_replace('/', '\/', $thelink );
 										$permalinks[] = $thelink . '(/.*)';
 									}
 								}
