@@ -212,7 +212,7 @@ if(!class_exists('M_Urlgroup')) {
 
 				}
 				// switched to using a character that won't be in a url as the start and end markers
-				$matchstring = "!" . $matchstring . "!";
+				$matchstring = "#" . $matchstring . "#i";
 
 				if(preg_match($matchstring, $host, $matches) ) {
 					return true;
