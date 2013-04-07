@@ -3302,7 +3302,7 @@ if(!class_exists('membershipadmin')) {
 										if(!isset($M_options['shortcodemessage'])) {
 											$M_options['shortcodemessage'] = '';
 										}
-										wp_editor( stripslashes($M_options['shortcodemessage']), "shortcodemessage", $args );
+										wp_editor( __(stripslashes($M_options['shortcodemessage']), 'membership'), "shortcodemessage", $args );
 										/*
 										?>
 										<textarea name='shortcodemessage' id='shortcodemessage' rows='10' cols='80'><?php esc_html_e(stripslashes($M_options['shortcodemessage'])); ?></textarea>
@@ -3372,7 +3372,7 @@ if(!class_exists('membershipadmin')) {
 										if(!isset($M_options['moretagmessage'])) {
 											$M_options['moretagmessage'] = '';
 										}
-										wp_editor( stripslashes($M_options['moretagmessage']), "moretagmessage", $args );
+										wp_editor( __(stripslashes($M_options['moretagmessage']), 'membership'), "moretagmessage", $args );
 										/*
 										?>
 										<textarea name='moretagmessage' id='moretagmessage' rows='5' cols='40'><?php esc_html_e(stripslashes($M_options['moretagmessage'])); ?></textarea>
