@@ -187,7 +187,6 @@ if(!class_exists('M_Urlgroup')) {
 				$host = substr( $host, 0, strpos($host, '?'));
 			}
 
-
 			if($this->group->isregexp == 0) {
 				// straight match
 				$newgroups = array_map('untrailingslashit', $groups);
@@ -202,13 +201,12 @@ if(!class_exists('M_Urlgroup')) {
 				$matchstring = "";
 				foreach($groups as $key => $value) {
 					if($matchstring != "") $matchstring .= "|";
-					/*
-					if( !stripos($value, '\/') ) {
-						$matchstring .= addcslashes($value,"/");
+
+					if( stripos($value, '\/') ) {
+						$matchstring .= stripcslashes($value);
 					} else {
 						$matchstring .= $value;
 					}
-					*/
 
 				}
 				// switched to using a character that won't be in a url as the start and end markers
@@ -235,7 +233,7 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 							foreach( $_POST[$rule] as $rule ) {
 								$thelink = get_permalink( $rule );
 								$thelink = str_replace('http://', 'https?://', $thelink );
-								$permalinks[] = $thelink . '(/.*)';
+								$permalinks[] = untrailingshlashit($thelink) . '(/.*)';
 							}
 
 							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $level_id );
@@ -261,7 +259,7 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 							foreach( $_POST[$rule] as $rule ) {
 								$thelink = get_permalink( $rule );
 								$thelink = str_replace('http://', 'https?://', $thelink );
-								$permalinks[] = $thelink . '(/.*)';
+								$permalinks[] = untrailingshlashit($thelink) . '(/.*)';
 							}
 
 							$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $level_id );
@@ -285,9 +283,9 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 
 			case 'bppages':		$permalinks = array();
 								foreach( $_POST[$rule] as $rule ) {
-									$thelink = untrailingslashit(get_permalink( $rule ));
+									$thelink = get_permalink( $rule );
 									$thelink = str_replace('http://', 'https?://', $thelink );
-									$permalinks[] = $thelink . '(/.*)';
+									$permalinks[] = untrailingshlashit($thelink) . '(/.*)';
 								}
 
 								$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bppages-' . $level_id);
@@ -313,9 +311,9 @@ function M_create_internal_URL_group( $rule, $post, $level_id ) {
 								if(function_exists('bp_get_group_permalink')) {
 									foreach( $_POST[$rule] as $rule ) {
 										$group = new BP_Groups_Group( $rule );
-										$thelink = untrailingslashit(bp_get_group_permalink( $group ));
+										$thelink = bp_get_group_permalink( $group );
 										$thelink = str_replace('http://', 'https?://', $thelink );
-										$permalinks[] = $thelink . '(/.*)';
+										$permalinks[] = untrailingshlashit($thelink) . '(/.*)';
 									}
 								}
 
