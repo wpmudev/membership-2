@@ -903,11 +903,16 @@ class paypalexpress extends M_Gateway {
 								$member->deactivate();
 							}
 						}
+
+						membership_debug_log( sprintf(__('Key does not match for amount - not creating subscription for user %d with key ','membership'), $user_id ) . $newkey );
+
 					} else {
 						// create_subscription
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->create_subscription($sub_id, $this->gateway);
+
+							membership_debug_log( sprintf(__('Creating subscription %d for user %d','membership'), $sub_id, $user_id ) );
 						}
 
 						do_action('membership_payment_subscr_signup', $user_id, $sub_id);
@@ -923,10 +928,15 @@ class paypalexpress extends M_Gateway {
 					if($member) {
 						// Remove the old subscription
 						$member->drop_subscription($sub_id);
+
 						// Join the new subscription
 						$member->create_subscription((int) $_POST['item_number'], $this->gateway);
+
 						// Timestamp the update
 						update_user_meta( $user_id, '_membership_last_upgraded', time());
+
+						membership_debug_log( sprintf(__('Moved from subscription - %d to subscription %d for user %d','membership'), $sub_id, (int) $_POST['item_number'], $user_id ) );
+
 					}
 
 					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
@@ -939,6 +949,8 @@ class paypalexpress extends M_Gateway {
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->mark_for_expire($sub_id);
+
+						membership_debug_log( sprintf(__('Marked for expiration %d on %d','membership'), $user_id, $sub_id ) );
 					}
 
 					do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
@@ -951,6 +963,8 @@ class paypalexpress extends M_Gateway {
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->deactivate();
+
+							membership_debug_log( sprintf(__('Dispute for %d','membership'), $user_id ) );
 						}
 					}
 
