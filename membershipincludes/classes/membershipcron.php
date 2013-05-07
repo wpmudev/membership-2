@@ -77,6 +77,8 @@ if(!class_exists('membershipcron')) {
 			if(empty($result)) {
 				return 0;
 			} else {
+				membership_debug_log( sprintf(__('CRON: There are %d expiring relationships' , 'membership'), $result ) );
+
 				return $result;
 			}
 
@@ -98,10 +100,14 @@ if(!class_exists('membershipcron')) {
 
 			if( !empty($relationships) ) {
 
+				membership_debug_log( __('CRON: Loaded relationships' , 'membership') . print_r($relationships, true) );
+
 				foreach( $relationships as $rel ) {
 
 					// Just creating a membership record for this user should automatically
 					// start the transition through the subscription
+					membership_debug_log( sprintf(__('CRON: Processing member %d' , 'membership'), $rel->user_id ) );
+
 					$member = new M_Membership( $rel->user_id );
 
 				}
