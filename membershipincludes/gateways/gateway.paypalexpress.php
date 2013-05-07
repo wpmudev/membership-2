@@ -713,6 +713,8 @@ class paypalexpress extends M_Gateway {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
 
+			membership_debug_log( __('Received PayPal IPN from - ' , 'membership') . $domain );
+
 			$req = 'cmd=_notify-validate';
 			if (!isset($_POST)) $_POST = $HTTP_POST_VARS;
 			foreach ($_POST as $k => $v) {
@@ -763,6 +765,7 @@ class paypalexpress extends M_Gateway {
 
 				if ($error != '') {
 					echo $error;
+					membership_debug_log( $error );
 					exit;
 				}
 			}
@@ -787,6 +790,7 @@ class paypalexpress extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
 
+					membership_debug_log( __('Processed transaction received - ','membership') . print_r($_POST, true) );
 					// Added for affiliate system link
 					do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
@@ -799,6 +803,8 @@ class paypalexpress extends M_Gateway {
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
+					membership_debug_log( __('Reversed transaction received - ','membership') . print_r($_POST, true) );
 
 					$member = new M_Membership($user_id);
 					if($member) {
@@ -820,6 +826,8 @@ class paypalexpress extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					membership_debug_log( __('Refunded transaction received - ','membership') . print_r($_POST, true) );
+
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
@@ -836,6 +844,8 @@ class paypalexpress extends M_Gateway {
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
+					membership_debug_log( __('Denied transaction received - ','membership') . print_r($_POST, true) );
 
 					$member = new M_Membership($user_id);
 					if($member) {
@@ -866,6 +876,8 @@ class paypalexpress extends M_Gateway {
 					$amount = $_POST['mc_gross'];
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
+					membership_debug_log( __('Pending transaction received - ','membership') . print_r($_POST, true) );
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 

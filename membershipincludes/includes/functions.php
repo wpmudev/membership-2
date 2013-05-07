@@ -1079,4 +1079,31 @@ function membership_redirect_to_protected() {
 	}
 
 }
+
+function membership_debug_log( $message ) {
+
+	if( defined('MEMBERSHIP_DEBUG') && MEMBERSHIP_DEBUG == true ) {
+		// We have debugging switched on
+		switch( MEMBERSHIP_DEBUG_METHOD ) {
+			case 'log': error_log( $message );
+						break;
+
+			case 'email':
+						if( is_email( MEMBERSHIP_DEBUG_EMAIL ) ) {
+							if( function_exists('wp_mail') ) {
+								wp_mail( MEMBERSHIP_DEBUG_EMAIL, __('Membership Debug Message','membership'), $message );
+							} else {
+								error_log( $message, 1, MEMBERSHIP_DEBUG_EMAIL );
+							}
+						}
+						break;
+
+			default:
+						do_action( 'membership_debug', MEMBERSHIP_DEBUG_METHOD, $message );
+						do_action( 'membership_debug_' . MEMBERSHIP_DEBUG_METHOD, $message );
+						break;
+		}
+	}
+
+}
 ?>
