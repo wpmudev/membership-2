@@ -15,7 +15,7 @@ if(!class_exists('M_Membership')) {
 
 		var $levels = array();
 
-		function M_Membership( $id, $name = '' ) {
+		function __construct( $id, $name = '' ) {
 
 			global $wpdb;
 
@@ -30,6 +30,12 @@ if(!class_exists('M_Membership')) {
 			}
 
 			$this->transition_through_subscription();
+
+		}
+
+		function M_Membership( $id, $name = '' ) {
+
+			$this->__construct( $id, $name );
 
 		}
 

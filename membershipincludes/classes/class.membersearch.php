@@ -1,13 +1,16 @@
 <?php
 if(!class_exists('M_Member_Search')) {
 
-	class M_Member_Search extends WP_User_Search {
+	class M_Member_Search extends WP_User_Query {
 
 		var $sub_id = false;
 		var $level_id = false;
 		var $active = false;
 
-		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
+		function __construct($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
+
+			//parent::__construct();
+
 			$this->search_term = $search_term;
 			$this->raw_page = ( '' == $page ) ? false : (int) $page;
 			$this->page = (int) ( '' == $page ) ? 1 : $page;
@@ -26,8 +29,12 @@ if(!class_exists('M_Member_Search')) {
 
 			$this->prepare_query();
 			$this->query();
-			$this->prepare_vars_for_template_usage();
+			//$this->prepare_vars_for_template_usage();
 			$this->do_paging();
+		}
+
+		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
+			$this->__construct($search_term, $page, $sub_id, $level_id, $active);
 		}
 
 		function do_paging() {

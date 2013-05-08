@@ -16,7 +16,7 @@ if(!class_exists('M_Gateway')) {
 		var $tables = array('subscription_transaction');
 		var $subscription_transaction;
 
-		function M_Gateway() {
+		function __construct() {
 
 			global $wpdb;
 
@@ -31,6 +31,12 @@ if(!class_exists('M_Gateway')) {
 
 			add_action( 'membership_process_payment_return', array(&$this, 'process_payment_return') );
 			add_action( 'membership_record_user_gateway', array(&$this, 'record_user_gateway') );
+
+		}
+
+		function M_Gateway() {
+
+			$this->__construct();
 
 		}
 
