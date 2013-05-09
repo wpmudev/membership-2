@@ -21,6 +21,8 @@ if(!class_exists('M_Membership')) {
 
 			if($id != 0) {
 				parent::__construct( $id, $name );
+
+				membership_debug_log( sprintf(__('MEMBER: Loaded member %d' , 'membership'), $id ) );
 			}
 
 			$this->db =& $wpdb;
@@ -157,13 +159,25 @@ if(!class_exists('M_Membership')) {
 			$relationships = $this->get_relationships();
 
 			if($relationships) {
+
+				membership_debug_log( __('MEMBER: Starting transition' , 'membership') );
+
 				foreach($relationships as $key => $rel) {
+
+					membership_debug_log( __('MEMBER: transition - ' , 'membership') . print_r($rel, true) );
+
 					// Add 6 hours to the expiry date to give a grace period?
 					if( strtotime(apply_filters('membership_gateway_exp_window',"+ 6 hours"), mysql2date("U", $rel->expirydate)) <= time() ) {
+
+						membership_debug_log( __('MEMBER: transition passed timestamp - ' , 'membership') . print_r($rel, true) );
+
 						// expired, we need to remove the subscription
 						if($this->is_marked_for_expire($rel->sub_id)) {
 							$this->expire_subscription($rel->sub_id);
 							delete_user_meta($this->ID, '_membership_expire_next');
+
+							membership_debug_log( sprintf(__('MEMBER: membership marked for expiration - %d' , 'membership'), $rel->sub_id) );
+
 							continue;
 						}
 
@@ -200,24 +214,34 @@ if(!class_exists('M_Membership')) {
 							$subscription = new M_Subscription($rel->sub_id);
 							$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
+							membership_debug_log( sprintf(__('MEMBER: membership level to move to for subscription - %d - ' , 'membership'), $rel->sub_id) . print_r($nextlevel, true) );
+
 							if($nextlevel){
 								if(empty($nextlevel->level_price)) {
 									// this is a non paid level transition so we can go head
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+
+									membership_debug_log( sprintf(__('MEMBER: moved level for - %d' , 'membership'), $rel->sub_id) );
 								} else {
 
 									// This is a paid level transition so check for a payment
 									// Transition for now cos we are disabling everything when a payment fails
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+
+									membership_debug_log( sprintf(__('MEMBER: moved level for - %d' , 'membership'), $rel->sub_id) );
 								}
 							} else {
 								// there isn't a next level so expire this subscription
 								$this->expire_subscription($rel->sub_id);
+
+								membership_debug_log( sprintf(__('MEMBER: expired subscription as no next level for - %d' , 'membership'), $rel->sub_id) );
 							}
 						}
 
 					} else {
 						// not expired we can ignore this for now
+						membership_debug_log( __('MEMBER: transition not expired - ' , 'membership') . print_r($rel, true) );
+
 						continue;
 					}
 

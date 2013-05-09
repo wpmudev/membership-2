@@ -36,6 +36,10 @@ if(!class_exists('M_Member_Search')) {
 		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
 			$this->__construct($search_term, $page, $sub_id, $level_id, $active);
 		}
+		
+		function results_are_paged() {
+			
+		}
 
 		function do_paging() {
 			if ( $this->total_users_for_query > $this->users_per_page ) { // have to page the results
