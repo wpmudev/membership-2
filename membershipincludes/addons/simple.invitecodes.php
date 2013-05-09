@@ -80,6 +80,35 @@ function M_AddSimpleInviteOptionsProcess() {
 }
 add_action( 'membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11 );
 
+function M_BPAreaAddSimpleInviteField() {
+
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
+	if(empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
+		return;
+	}
+
+	?>
+		<div class="register-section" id="invite-details-section" style="<?php echo apply_filters('membership_simpleinvites_bp_styling', 'float:right; width: 48%;'); ?>">
+			<h4><?php _e( 'Invite Code (required)', 'membership' ) ?></h4>
+			<label for="invitecode"><?php _e('Invite Code','membership'); ?></label>
+			<input type="text" autocomplete="off" class="" name="invitecode" />
+		</div>
+	<?php
+}
+
+function M_BPSimpleAddSimpleInviteField() {
+
+	$Msi_options = M_get_option('membership_simpleinvite_options', array());
+	if(empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
+		return;
+	}
+
+	?>
+		<label for="invitecode"><?php _e('Invite Code (required)','membership'); ?></label>
+		<input type="text" autocomplete="off" class="" name="invitecode" />
+	<?php
+}
+
 function M_AddSimpleInviteField() {
 
 	$Msi_options = M_get_option('membership_simpleinvite_options', array());
@@ -89,7 +118,7 @@ function M_AddSimpleInviteField() {
 
 	?>
 		<div class="form-element">
-			<label class="control-label" for="user_email"><?php _e('Invite Code','membership'); ?></label>
+			<label class="control-label" for="invitecode"><?php _e('Invite Code','membership'); ?></label>
 			<div class="element">
 				<input type="text" autocomplete="off" class="input-xlarge" name="invitecode">
 			</div>
@@ -97,8 +126,11 @@ function M_AddSimpleInviteField() {
 	<?php
 }
 add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField');
-// Moved on BP to Profile area
-add_action( 'bp_after_account_details_fields', 'M_AddSimpleInviteField');
+
+// BP invite code actions - default is to place invite code in account creation area
+// Comment out the line below and uncomment the one following to move the invite code to a seperate area
+add_action( 'bp_before_account_details_end', 'M_BPSimpleAddSimpleInviteField');
+//add_action( 'bp_after_account_details_fields', 'M_BPAreaAddSimpleInviteField');
 
 function M_AddSimpleInviteFieldProcess( $error ) {
 
@@ -115,7 +147,7 @@ function M_AddSimpleInviteFieldProcess( $error ) {
 			$error = new WP_Error();
 		}
 
-		$error->add('enterinvitecode', __('You need to enter an invite code in order to register.','membership'));
+		$error->add('enterinvitecode', __('You need to enter an <strong>Invite code</strong> in order to register.','membership'));
 
 	} else {
 

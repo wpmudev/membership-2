@@ -53,6 +53,8 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 				<label for="signup_password_confirm"><?php _e( 'Confirm Password', 'membership' ) ?> <?php _e( '(required)', 'membership' ) ?></label>
 				<?php do_action( 'bp_signup_password_confirm_errors' ) ?>
 				<input type="password" name="signup_password_confirm" id="signup_password_confirm" value="" />
+				
+				<?php do_action( 'bp_before_account_details_end' ) ?>
 
 	</div><!-- #basic-details-section -->
 

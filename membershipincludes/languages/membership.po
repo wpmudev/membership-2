@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-07 18:44+0100\n"
-"PO-Revision-Date: 2013-04-07 18:44+0100\n"
-"Last-Translator: Barry <barry@mapinated.com>\n"
+"POT-Creation-Date: 2013-05-09 17:10+0100\n"
+"PO-Revision-Date: 2013-05-09 17:10+0100\n"
+"Last-Translator: \n"
 "Language-Team: Incsub <barry@incsub.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -423,14 +423,20 @@ msgid "Remove Code once used"
 msgstr ""
 
 #: membership/membershipincludes/addons/simple.invitecodes.php:92
+#: membership/membershipincludes/addons/simple.invitecodes.php:107
+msgid "Invite Code (required)"
+msgstr ""
+
+#: membership/membershipincludes/addons/simple.invitecodes.php:93
+#: membership/membershipincludes/addons/simple.invitecodes.php:121
 msgid "Invite Code"
 msgstr ""
 
-#: membership/membershipincludes/addons/simple.invitecodes.php:118
-msgid "You need to enter an invite code in order to register."
+#: membership/membershipincludes/addons/simple.invitecodes.php:150
+msgid "You need to enter an <strong>Invite code</strong> in order to register."
 msgstr ""
 
-#: membership/membershipincludes/addons/simple.invitecodes.php:131
+#: membership/membershipincludes/addons/simple.invitecodes.php:163
 msgid "Sorry, but we do not seem to have that code on file, please try another."
 msgstr ""
 
@@ -623,7 +629,7 @@ msgstr ""
 
 #: membership/membershipincludes/classes/class.coupon.php:524
 #: membership/membershipincludes/classes/class.coupon.php:610
-#: membership/membershipincludes/classes/class.gateway.php:252
+#: membership/membershipincludes/classes/class.gateway.php:258
 msgid "Subscription"
 msgstr ""
 
@@ -679,81 +685,81 @@ msgstr ""
 msgid "Only Indefinite Levels"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:115
+#: membership/membershipincludes/classes/class.gateway.php:121
 msgid "Edit &quot;"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:115
+#: membership/membershipincludes/classes/class.gateway.php:121
 msgid "&quot; settings"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:216
+#: membership/membershipincludes/classes/class.gateway.php:222
 msgid " transactions"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:219
+#: membership/membershipincludes/classes/class.gateway.php:225
 msgid "Recent transactions"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:220
+#: membership/membershipincludes/classes/class.gateway.php:226
 msgid "Pending transactions"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:221
+#: membership/membershipincludes/classes/class.gateway.php:227
 msgid "Future transactions"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:253
+#: membership/membershipincludes/classes/class.gateway.php:259
 msgid "User"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:254
+#: membership/membershipincludes/classes/class.gateway.php:260
 msgid "Date"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:255
+#: membership/membershipincludes/classes/class.gateway.php:261
 msgid "Amount"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:256
+#: membership/membershipincludes/classes/class.gateway.php:262
 msgid "Transaction id"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:257
+#: membership/membershipincludes/classes/class.gateway.php:263
 msgid "Status"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:258
+#: membership/membershipincludes/classes/class.gateway.php:264
 msgid "Notes"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:311
+#: membership/membershipincludes/classes/class.gateway.php:317
 msgid "Subscription not found"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:321
+#: membership/membershipincludes/classes/class.gateway.php:327
 msgid "User not found"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:343
-#: membership/membershipincludes/classes/class.gateway.php:352
+#: membership/membershipincludes/classes/class.gateway.php:349
+#: membership/membershipincludes/classes/class.gateway.php:358
 msgid "None yet"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:361
+#: membership/membershipincludes/classes/class.gateway.php:367
 msgid "None"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:372
+#: membership/membershipincludes/classes/class.gateway.php:378
 msgid "No Transactions have been found, patience is a virtue."
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:405
-#: membership/membershipincludes/classes/class.gateway.php:412
+#: membership/membershipincludes/classes/class.gateway.php:411
+#: membership/membershipincludes/classes/class.gateway.php:418
 msgid "Upgrades not available"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.gateway.php:419
+#: membership/membershipincludes/classes/class.gateway.php:425
 msgid "Unsubscribe not available"
 msgstr ""
 
@@ -825,9 +831,72 @@ msgstr ""
 msgid "Add-ons"
 msgstr ""
 
-#: membership/membershipincludes/classes/class.membersearch.php:61
+#: membership/membershipincludes/classes/class.membersearch.php:109
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:25
+#, php-format
+msgid "MEMBER: Loaded member %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:163
+msgid "MEMBER: Have relationships so starting transition check"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:167
+msgid "MEMBER: Processing transition - "
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:172
+msgid "MEMBER: Transition has passed expiration timestamp - "
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:179
+#, php-format
+msgid "MEMBER: Membership has been marked for expiration - %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:193
+#: membership/membershipincludes/classes/class.membership.php:219
+#, php-format
+msgid "MEMBER: Membership level to move to for subscription - %d - "
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:226
+#: membership/membershipincludes/classes/class.membership.php:233
+#, php-format
+msgid "MEMBER: Moved to new level for - %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:239
+#, php-format
+msgid "MEMBER: Expired subscription as no next level for - %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:245
+msgid "MEMBER: Transition check not expired - "
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:641
+#, php-format
+msgid "MEMBER: Moving subscription from %d to %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:645
+#, php-format
+msgid "MEMBER: New level to move to %d on order %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:679
+#, php-format
+msgid "MEMBER: Completed move to %d on order %d on sub %d"
+msgstr ""
+
+#: membership/membershipincludes/classes/class.membership.php:685
+#, php-format
+msgid "MEMBER: Already on level %d on order %d"
 msgstr ""
 
 #: membership/membershipincludes/classes/class.ping.php:98
@@ -3491,6 +3560,20 @@ msgstr ""
 msgid "Every 15 Mins"
 msgstr ""
 
+#: membership/membershipincludes/classes/membershipcron.php:80
+#, php-format
+msgid "CRON: There are %d expiring relationships"
+msgstr ""
+
+#: membership/membershipincludes/classes/membershipcron.php:103
+msgid "CRON: Loaded relationships"
+msgstr ""
+
+#: membership/membershipincludes/classes/membershipcron.php:109
+#, php-format
+msgid "CRON: Processing member %d"
+msgstr ""
+
 #: membership/membershipincludes/classes/membershippublic.php:229
 msgid "My Account"
 msgstr ""
@@ -3683,92 +3766,92 @@ msgstr ""
 msgid "Request a delimited response from the payment gateway"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:198
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:201
 msgid "Pay Now"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:227
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:230
 msgid "There was an unknown error encountered with your payment.  Please contact the site administrator."
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:241
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:247
 msgid "Payment method not supported for the payment"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:243
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:249
 msgid "There was a problem processing your purchase. Please try again"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:246
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:252
 msgid "This payment gateway has not been configured.  Your transaction will not be processed."
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:250
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:256
 msgid "Enter Your Credit Card Information"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:263
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:269
 msgid "Credit Card Billing Information:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:265
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:271
 msgid "First Name:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:271
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:277
 msgid "Last Name:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:275
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:281
 msgid "Address:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:281
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:287
 msgid "Billing 5-Digit Zipcode:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:288
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:294
 msgid "Credit Card Number:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:295
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:301
 msgid "Expiration Date:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:297
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:303
 msgid "Month"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:299
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:305
 msgid "Year"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:304
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:310
 msgid "Security Code:"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:311
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:317
 msgid "Pay with Credit Card"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:325
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:331
 msgid "You must use HTTPS in order to do this"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:393
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:400
 msgid "Processed"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:417
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:424
 msgid "Your payment was declined.  Please check all your details or use a different card."
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:421
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:428
 msgid "There was an issue determining the price."
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:476
 #: membership/membershipincludes/gateways/gateway.authorizenetaim.php:483
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:490
 #: membership/membershipincludes/gateways/gateway.freesubscriptions.php:92
 #: membership/membershipincludes/gateways/gateway.freesubscriptions.php:198
 #: membership/membershipincludes/gateways/gateway.paypalexpress.php:678
@@ -3776,7 +3859,7 @@ msgstr ""
 msgid "Upgrade"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:478
+#: membership/membershipincludes/gateways/gateway.authorizenetaim.php:485
 msgid "Upgrade Subscription"
 msgstr ""
 
@@ -3972,63 +4055,119 @@ msgstr ""
 msgid "Cancel button"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:796
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:480
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:716
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:368
+msgid "Received PayPal IPN from - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:793
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:479
+msgid "Processed transaction received - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:800
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:484
 msgid "Last transaction has been reversed. Reason: Payment has been reversed (charge back)"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:816
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:500
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:807
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:491
+msgid "Reversed transaction received - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:822
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:506
 msgid "Last transaction has been reversed. Reason: Payment has been refunded"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:833
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:517
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:829
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:513
+msgid "Refunded transaction received - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:841
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:525
 msgid "Last transaction has been reversed. Reason: Payment Denied"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:854
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:538
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:848
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:532
+msgid "Denied transaction received - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:864
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:548
 msgid "Customer did not include a confirmed shipping address"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:855
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:539
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:865
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:549
 msgid "Funds not captured yet"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:856
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:540
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:866
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:550
 msgid "eCheck that has not cleared yet"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:857
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:541
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:867
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:551
 msgid "Payment waiting for aproval by service provider"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:858
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:542
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:868
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:552
 msgid "Payment waiting for service provider to handle multi-currency process"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:859
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:543
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:869
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:553
 msgid "Customer did not register or confirm his/her email yet"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:860
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:544
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:870
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:554
 msgid "Waiting for service provider to upgrade the PayPal account"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:861
-#: membership/membershipincludes/gateways/gateway.paypalsolo.php:545
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:871
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:555
 msgid "Waiting for service provider to verify his/her PayPal account"
 msgstr ""
 
-#: membership/membershipincludes/gateways/gateway.paypalexpress.php:865
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:875
 msgid "Last transaction is pending. Reason: "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:880
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:566
+msgid "Pending transaction received - "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:907
+#, php-format
+msgid "Key does not match for amount - not creating subscription for user %d with key "
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:915
+#, php-format
+msgid "Creating subscription %d for user %d"
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:938
+#, php-format
+msgid "Moved from subscription - %d to subscription %d for user %d"
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:953
+#, php-format
+msgid "Marked for expiration %d on %d"
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.paypalexpress.php:967
+#: membership/membershipincludes/gateways/gateway.paypalsolo.php:587
+#, php-format
+msgid "Dispute for %d"
 msgstr ""
 
 #: membership/membershipincludes/gateways/gateway.paypalpro.php:18
@@ -4173,6 +4312,26 @@ msgstr ""
 msgid "There was a problem connecting to 2CO. Please try again. REF:"
 msgstr ""
 
+#: membership/membershipincludes/gateways/gateway.twocheckout.php:555
+#, php-format
+msgid "Order complete for user %d on subscription %d."
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.twocheckout.php:584
+#, php-format
+msgid "Recurring installment for user %d on subscription %d."
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.twocheckout.php:601
+#, php-format
+msgid "Recurring restarted for user %d on subscription %d."
+msgstr ""
+
+#: membership/membershipincludes/gateways/gateway.twocheckout.php:612
+#, php-format
+msgid "Recurring failed for user %d on subscription %d."
+msgstr ""
+
 #: membership/membershipincludes/help/header.communications.php:1
 msgid "This is where you can set up an automated message to welcome your new members or to remind your members that their membership is about to expire."
 msgstr ""
@@ -4211,7 +4370,6 @@ msgstr ""
 #: membership/membershipincludes/help/help.optionsextras.php:1
 #: membership/membershipincludes/help/help.pings.php:1
 #: membership/membershipincludes/help/help.pingsedit.php:1
-#: membership/membershipincludes/help/help.pingshistory.php:1
 msgid "Some help content"
 msgstr ""
 
@@ -4577,13 +4735,13 @@ msgstr ""
 #: membership/membershipincludes/includes/bp.registration.form.php:45
 #: membership/membershipincludes/includes/bp.registration.form.php:49
 #: membership/membershipincludes/includes/bp.registration.form.php:53
-#: membership/membershipincludes/includes/bp.registration.form.php:80
-#: membership/membershipincludes/includes/bp.registration.form.php:88
-#: membership/membershipincludes/includes/bp.registration.form.php:96
-#: membership/membershipincludes/includes/bp.registration.form.php:106
-#: membership/membershipincludes/includes/bp.registration.form.php:117
-#: membership/membershipincludes/includes/bp.registration.form.php:132
-#: membership/membershipincludes/includes/bp.registration.form.php:143
+#: membership/membershipincludes/includes/bp.registration.form.php:82
+#: membership/membershipincludes/includes/bp.registration.form.php:90
+#: membership/membershipincludes/includes/bp.registration.form.php:98
+#: membership/membershipincludes/includes/bp.registration.form.php:108
+#: membership/membershipincludes/includes/bp.registration.form.php:119
+#: membership/membershipincludes/includes/bp.registration.form.php:134
+#: membership/membershipincludes/includes/bp.registration.form.php:145
 msgid "(required)"
 msgstr ""
 
@@ -4595,15 +4753,15 @@ msgstr ""
 msgid "Choose a Password"
 msgstr ""
 
-#: membership/membershipincludes/includes/bp.registration.form.php:69
+#: membership/membershipincludes/includes/bp.registration.form.php:71
 msgid "Profile Details"
 msgstr ""
 
-#: membership/membershipincludes/includes/bp.registration.form.php:123
+#: membership/membershipincludes/includes/bp.registration.form.php:125
 msgid "Clear"
 msgstr ""
 
-#: membership/membershipincludes/includes/bp.registration.form.php:182
+#: membership/membershipincludes/includes/bp.registration.form.php:184
 msgid "Sign Up"
 msgstr ""
 
@@ -4961,6 +5119,10 @@ msgstr ""
 msgid "and then %s every "
 msgstr ""
 
+#: membership/membershipincludes/includes/functions.php:1094
+msgid "Membership Debug Message"
+msgstr ""
+
 #: membership/membershipincludes/includes/member.form.php:5
 msgid "Completed: Thank you for joining"
 msgstr ""
@@ -4974,24 +5136,30 @@ msgid "If you are at this page because you would like to create another account,
 msgstr ""
 
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:134
+#: membership/membershipincludes/includes/pointer-tutorials.php:134
 msgid "Tutorial"
 msgstr ""
 
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:435
+#: membership/membershipincludes/includes/pointer-tutorials.php:421
 msgid "Next &raquo;"
 msgstr ""
 
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:451
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:473
+#: membership/membershipincludes/includes/pointer-tutorials.php:437
+#: membership/membershipincludes/includes/pointer-tutorials.php:459
 #, php-format
 msgid "Dismiss %s"
 msgstr ""
 
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:457
+#: membership/membershipincludes/includes/pointer-tutorials.php:443
 msgid "&laquo; Previous"
 msgstr ""
 
 #: membership/membershipincludes/includes/new-pointer-tutorials.php:513
+#: membership/membershipincludes/includes/pointer-tutorials.php:498
 #, php-format
 msgid "%s: Step %d of %d"
 msgstr ""
