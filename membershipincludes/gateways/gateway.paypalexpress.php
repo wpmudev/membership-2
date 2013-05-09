@@ -976,6 +976,7 @@ class paypalexpress extends M_Gateway {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 404 Not Found');
 			echo 'Error: Missing POST variables. Identification is not possible.';
+			membership_debug_log( 'Error: Missing POST variables. Identification is not possible.' );
 			exit;
 		}
 	}

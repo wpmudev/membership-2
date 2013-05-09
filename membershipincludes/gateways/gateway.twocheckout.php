@@ -25,9 +25,9 @@ class twocheckout extends M_Gateway {
 
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_2checkout_return'));
-			
+
 			add_filter('membership_gateway_exp_window', array(&$this,'twocheckout_expiration_window'));
-			
+
 			add_action('membership_mark_for_expire', array(&$this,'remove_recurring_line_item'), null, 2);
 		}
 
@@ -39,40 +39,40 @@ class twocheckout extends M_Gateway {
 	function remove_recurring_line_item($sub_id, $user_id) {
 
 		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s AND transaction_gateway = %s LIMIT 1", $sub_id, $user_id, $this->gateway ) );
-		
+
 		if(empty($invoice_id) || !$invoice_id) {
 			// Don't really know what else to do if we can't find the Invoice ID besides echo an error.
 			echo '<div class="alert alert-error">'.__('Invoice ID could not be determined','membership').'</div>';
 		} else {
 			$args = array();
-	
+
 			$args['headers'] = array(
 				'Authorization' => 'Basic '.base64_encode(get_option( $this->gateway . "_twocheckout_username" ).':'.get_option( $this->gateway . "_twocheckout_password" )),
 				'Accept' => 'application/json',
 			);
-	
+
 			$args['user-agent'] = "Membership/3.0.0: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.1";
 			$args['body'] = array('invoice_id' => $invoice_id);
 			$args['sslverify'] = false;
 			$args['timeout'] = 30;
-	
+
 			$endpoint = "https://www.2checkout.com/api/sales/detail_sale";
-	
+
 			$response = wp_remote_post($endpoint, $args);
-			
+
 			if (is_wp_error($response) || (wp_remote_retrieve_response_code($response) != 200 && wp_remote_retrieve_response_code($response) != 400)) {
 				print '<div class="alert alert-error">'.__('There was a problem connecting to 2CO. Please try again.', 'membership').'</div>';
 			} else {
 				$response_obj = json_decode($response['body']);
-				
+
 				$lineitem_id = false;
 				$product_id = false;
-				
+
 				$subscription = new M_Subscription($sub_id);
 				if($subscription) {
 					$product_id = $this->get_product_id($subscription, $subscription->get_pricingarray());
 				}
-				
+
 				if ($response_obj->response_code == "OK" && $product_id != false) {
 					//$product_id = $response_obj->assigned_product_id;
 					foreach($response_obj->sale->invoices as $invoice) {
@@ -82,8 +82,8 @@ class twocheckout extends M_Gateway {
 						}
 					}
 				}
-				
-				
+
+
 				if($lineitem_id == false) {
 					print '<div class="alert alert-error">'.__('There was a problem finding your transaction in 2CO.  Please contact an administrator.', 'membership').'</div>';
 				} else {
@@ -92,21 +92,21 @@ class twocheckout extends M_Gateway {
 						'Authorization' => 'Basic '.base64_encode(get_option( $this->gateway . "_twocheckout_username" ).':'.get_option( $this->gateway . "_twocheckout_password" )),
 						'Accept' => 'application/json',
 					);
-			
+
 					$args['user-agent'] = "Membership/3.0.0: http://premium.wpmudev.org/project/membership | 2CO Payment plugin/1.1";
 					$args['body'] = array('lineitem_id' => $lineitem_id);
 					$args['sslverify'] = false;
 					$args['timeout'] = 30;
-					
+
 					$endpoint = "https://www.2checkout.com/api/sales/stop_lineitem_recurring";
-	
+
 					$stop_response = wp_remote_post($endpoint, $args);
-					
+
 					if (is_wp_error($stop_response) || (wp_remote_retrieve_response_code($stop_response) != 200 && wp_remote_retrieve_response_code($stop_response) != 400)) {
 						print '<div class="alert alert-error">'.__('There was a problem connecting to 2CO. Please try again.', 'membership').'</div>';
 					} else {
 						$stop_response_obj = json_decode($stop_response['body']);
-						
+
 						if ($response_obj->response_code !== "OK" ) {
 							print '<div class="alert alert-error">'.__('An unknown error prevented 2CO from canceling your payment. Please contact an administrator or cancel your payment from the 2Checkout website.', 'membership').'</div>';
 						} else {
@@ -114,10 +114,10 @@ class twocheckout extends M_Gateway {
 						}
 					}
 				}
-				
+
 			}
 		}
-		
+
 	}
 	function mysettings() {
 		global $M_options, $M_membership_url;
@@ -165,7 +165,7 @@ class twocheckout extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
-		  
+
 		<tr valign="top">
 			<th scope="row"><?php _e('2Checkout Language', 'membership') ?></th>
 			<td>
@@ -189,7 +189,7 @@ class twocheckout extends M_Gateway {
 				<br />
 			</td>
 		</tr>
-		  
+
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Skip Order Review Page', 'membership') ?></th>
 		  <td><select name="twocheckout_skip_landing">
@@ -200,7 +200,7 @@ class twocheckout extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
-		  
+
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Checkout Style', 'membership') ?></th>
 		  <td><select name="twocheckout_checkout_type">
@@ -211,7 +211,7 @@ class twocheckout extends M_Gateway {
 		  <br />
 		  </td>
 		  </tr>
-		  
+
 		  <tr valign="top">
 		  <th scope="row"><?php _e('Subscription button', 'membership') ?></th>
 		  <?php
@@ -225,8 +225,8 @@ class twocheckout extends M_Gateway {
 		</table>
 		<?php
 	}
-	
-	
+
+
 	function update() {
 
 		if(isset($_POST['twocheckout_sid'])) {
@@ -248,7 +248,7 @@ class twocheckout extends M_Gateway {
 		return true;
 
 	}
-	
+
 	function build_custom($user_id, $sub_id, $amount) {
 		$custom = '';
 
@@ -376,7 +376,7 @@ class twocheckout extends M_Gateway {
 		//$product_id = $this->get_product_id($subscription, $pricing);
 
 		$form = '';
-		
+
 		if (get_option( $this->gateway . '_twocheckout_checkout_type') == 'multi') {
 			$endpoint = 'https://www.2checkout.com/checkout/purchase';
 		} else {
@@ -404,11 +404,11 @@ class twocheckout extends M_Gateway {
 		$form .= '<input type="hidden" name="skip_landing" value="'.esc_attr(get_option($this->gateway.'_twocheckout_skip_landing')).'" />';
 		$form .= '<input type="hidden" name="lang" value="'.esc_attr(get_option( $this->gateway . "_twocheckout_lang" )).'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
-		
+
 		$user_data = get_userdata($user_id);
 		if($user_data)
 			$form .= '<input type="hidden" name="email" value="'.$user_data->data->user_email.'" />';
-			
+
 		$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 		$form .= '<input type="hidden" name="return_url" value="'.trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway).'" />';
 		$form .= '<input type="hidden" name="return_method" value="1" />';
@@ -493,7 +493,7 @@ class twocheckout extends M_Gateway {
 					// something much more complex
 					// Complex buttons currently not supported by 2CO
 					//return $this->complex_sub_button($pricing, $subscription, $user_id);
-					
+
 				}
 			}
 
@@ -502,14 +502,14 @@ class twocheckout extends M_Gateway {
 	}
 
 	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
-		
+
 		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
 			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 		else
 			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
 
 	}
-	
+
 	function display_cancel_button($subscription, $pricing, $user_id) {
 
 		echo '<form class="unsubbutton" action="' . M_get_subscription_permalink() . '" method="post">';
@@ -524,7 +524,7 @@ class twocheckout extends M_Gateway {
 
 	// Return stuff
 	function handle_2checkout_return() {
-				
+
 		// Return handling code
 		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
@@ -534,7 +534,7 @@ class twocheckout extends M_Gateway {
 			$user_id = false;
 
 			list($sub_id, $user_id) = explode(':', $_REQUEST['merchant_order_id']);
-			
+
 			if (esc_attr(get_option( $this->gateway . "_twocheckout_status" )) == 'test') {
 				$hash = strtoupper(md5(esc_attr(get_option( $this->gateway . "_twocheckout_secret_word" )) . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . 1 . $total));
 			} else {
@@ -542,7 +542,7 @@ class twocheckout extends M_Gateway {
 			}
 
 			if ($sub_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
-				
+
 				$this->record_transaction($user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 
 				// Added for affiliate system link
@@ -551,8 +551,10 @@ class twocheckout extends M_Gateway {
 				$member = new M_Membership($user_id);
 				if($member) {
 					$member->create_subscription($sub_id, $this->gateway);
+
+					membership_debug_log( sprintf(__('Order complete for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );
 				}
-				
+
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				wp_redirect(get_option('home'));
 				exit();
@@ -565,11 +567,11 @@ class twocheckout extends M_Gateway {
 
 			//$product_id = $_REQUEST['item_id_1'];
 			list($sub_id, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
-						
+
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
-					
+
 					if(!$this->duplicate_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '')) {
 						$this->record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
 						$member = new M_Membership($user_id);
@@ -578,6 +580,8 @@ class twocheckout extends M_Gateway {
 							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
 							$member->expire_subscription($sub_id);
 							$member->create_subscription($sub_id, $this->gateway);
+
+							membership_debug_log( sprintf(__('Recurring installment for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );
 						}
 						// Added for affiliate system link
 						do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
@@ -593,6 +597,8 @@ class twocheckout extends M_Gateway {
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->create_subscription($sub_id, $this->gateway);
+
+							membership_debug_log( sprintf(__('Recurring restarted for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );
 						}
 						break;
 					case 'RECURRING_STOPPED':
@@ -602,6 +608,8 @@ class twocheckout extends M_Gateway {
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->mark_for_expire($sub_id);
+
+							membership_debug_log( sprintf(__('Recurring failed for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );
 						}
 						do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
 						break;
@@ -610,15 +618,24 @@ class twocheckout extends M_Gateway {
 				// MD5 Hash Failed
 				header('Status: 403 Forbidden');
 				echo 'Error: Unexpected Security Value. Verification is not possible.';
+
+				membership_debug_log( 'Error: Unexpected Security Value. Verification is not possible.' );
+
 				exit();
 			}
-			
+
 			echo  "OK";
+
+			membership_debug_log( 'OK' );
+
 			exit();
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 400 Bad Request');
 			echo 'Error: Missing POST variables. Identification is not possible.';
+
+			membership_debug_log( 'Error: Missing POST variables. Identification is not possible.' );
+
 			exit();
 		}
 	}
