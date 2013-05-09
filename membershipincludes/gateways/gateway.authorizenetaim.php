@@ -24,9 +24,9 @@ class M_authorizenetaim extends M_Gateway {
 
 		// If I want to override the transactions output - then I can use this action
 		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
-		
+
 		add_action('membership_subscription_form_registration_process', array(&$this, 'force_ssl_cookie'), null, 2);
-		
+
 		if($this->is_active()) {
 			// Subscription form gateway
 			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
@@ -35,7 +35,7 @@ class M_authorizenetaim extends M_Gateway {
 			// Payment return
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
-			
+
 		}
 
 	}
@@ -47,7 +47,7 @@ class M_authorizenetaim extends M_Gateway {
 	}
 	function mysettings() {
 		global $M_options;
-		
+
 		?>
 		<table class="form-table">
 		<tbody>
@@ -187,30 +187,33 @@ class M_authorizenetaim extends M_Gateway {
 	}
 	function single_button($pricing, $subscription, $user_id) {
 		global $M_options;
-		
+
 		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
-		
+
 		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 
 		$form = '';
-		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+
+		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$coupon = membership_get_current_coupon();
+
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
 		$form .= '<input type="submit" class="button blue" value="'.__('Pay Now','membership').'" />';
 		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
-		
+
 		//if($popup)
 			//$form .= '<input type="hidden" name="action" value="extra_form" />';
-		
+
 		$form .= '<input type="hidden" name="extra_form" value="1">';
 		//$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
-		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon_code) ? $_REQUEST['coupon_code'] : '').'" />';
+		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
 		$form .= '</form>';
-		
+
 		return $form;
 	}
 	function display_payment_form($subscription, $pricing, $user_id) {
 		global $M_options, $M_membership_url;
-		
+
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
@@ -219,7 +222,7 @@ class M_authorizenetaim extends M_Gateway {
 		$form = '';
 
 		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
-		
+
 		?>
 		<script type="text/javascript">
 			_authorize_return_url = "<?php echo $M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway); ?>";
@@ -227,12 +230,15 @@ class M_authorizenetaim extends M_Gateway {
 			_authorize_payment_error_msg = "<?php echo __('There was an unknown error encountered with your payment.  Please contact the site administrator.','membership'); ?>";
 			jQuery("head").append('<link href="<?php echo $M_membership_url; ?>membershipincludes/css/authorizenet.css" rel="stylesheet" type="text/css">');
 		</script>
-		
+
 		<script type="text/javascript" src="<?php echo $M_membership_url; ?>membershipincludes/js/authorizenet.js"></script>
 		<form method="post" action="" class="membership_payment_form authorizenet single">
-		
+
 		<?php
-		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+
+		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$coupon = membership_get_current_coupon();
+
 		$api_u = get_option( $this->gateway . "_api_user");
 		$api_k = get_option( $this->gateway . "_api_key");
 		$error = false;
@@ -249,12 +255,12 @@ class M_authorizenetaim extends M_Gateway {
 		<?php if($popup) : ?>
 			<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
 		<?php endif; ?>
-		
+
 		<div id="authorize_errors" class="message error hidden"></div>
 		<input type="hidden" name="subscription_id" value="<?php echo $subscription->id; ?>" />
 		<input type="hidden" name="gateway" value="<?php echo $this->gateway; ?>" />
-		<?php if(!empty($coupon_code)) : ?>
-			<input type="hidden" name="coupon_code" value="<?php echo $coupon_code; ?>" />
+		<?php if(!empty($coupon)) : ?>
+			<input type="hidden" name="coupon_code" value="<?php echo $coupon->get_coupon_code(); ?>" />
 		<?php endif; ?>
 		<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
 		<div class="membership_cart_billing">
@@ -315,18 +321,18 @@ class M_authorizenetaim extends M_Gateway {
 		</div>
 	</form><?php
 	}
-	
+
 	function handle_payment_return() {
 		global $M_options, $M_membership_url;
-		
+
 		$return = array();
-		
+
 		if($_SERVER['HTTPS'] != 'on') {
 			wp_die(__('You must use HTTPS in order to do this','membership'));
 			exit;
 		}
-		
-		$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+
+		$coupon = membership_get_current_coupon();
 
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
@@ -334,9 +340,10 @@ class M_authorizenetaim extends M_Gateway {
 
 		$subscription = new M_Subscription($_POST['subscription_id']);
 		$pricing = $subscription->get_pricingarray();
-		
-		if(!empty($coupon_code))
-			$pricing = $subscription->apply_coupon_pricing($coupon_code,$pricing);
+
+		if(!empty($pricing) && !empty($coupon) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $subscription->id ) ) {
+			$pricing = $coupon->apply_coupon_pricing( $pricing );
+		}
 
 		$user_id = ( is_user_logged_in() ? get_current_user_id() : $_POST['user_id'] );
 		$user = get_userdata($user_id);
@@ -420,7 +427,7 @@ class M_authorizenetaim extends M_Gateway {
 			$return['status'] = 'error';
 			$return['errors'][] =  __('There was an issue determining the price.','membership');
 		}
-		
+
 		echo json_encode($return);
 		exit;
 
