@@ -7,6 +7,11 @@ if(!class_exists('M_Member_Search')) {
 		var $level_id = false;
 		var $active = false;
 
+		var $users_per_page = 50;
+
+		var $search_errors = false;
+
+
 		function __construct($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
 
 			//parent::__construct();
@@ -27,6 +32,31 @@ if(!class_exists('M_Member_Search')) {
 				$this->active = $active;
 			}
 
+			$args = array( 	'search' => $this->search_term,
+							'number' => $this->users_per_page,
+							'offset' => ( $this->page-1 ) * $this->users_per_page,
+							'fields' => 'all'
+							);
+
+			$this->query_vars = wp_parse_args( $args, array(
+				'blog_id' => $GLOBALS['blog_id'],
+				'role' => '',
+				'meta_key' => '',
+				'meta_value' => '',
+				'meta_compare' => '',
+				'include' => array(),
+				'exclude' => array(),
+				'search' => '',
+				'search_columns' => array(),
+				'orderby' => 'login',
+				'order' => 'ASC',
+				'offset' => '',
+				'number' => '',
+				'count_total' => true,
+				'fields' => 'all',
+				'who' => ''
+			) );
+
 			$this->prepare_query();
 			$this->query();
 			//$this->prepare_vars_for_template_usage();
@@ -36,12 +66,19 @@ if(!class_exists('M_Member_Search')) {
 		function M_Member_Search($search_term = '', $page = '', $sub_id = false, $level_id = false, $active = false) {
 			$this->__construct($search_term, $page, $sub_id, $level_id, $active);
 		}
-		
+
 		function results_are_paged() {
-			
+
+		}
+
+		function is_search() {
+
 		}
 
 		function do_paging() {
+
+			$this->total_users_for_query = $this->get_total();
+
 			if ( $this->total_users_for_query > $this->users_per_page ) { // have to page the results
 				$args = array();
 				if( ! empty($this->search_term) ) {
@@ -79,42 +116,144 @@ if(!class_exists('M_Member_Search')) {
 			}
 		}
 
+		/* From the Wp_User_Query class with our bit added to the end - will move to use the actions in an update */
 		function prepare_query() {
+			global $wpdb;
 
+			$qv =& $this->query_vars;
 
-			global $wpdb, $wp_version;
+			if ( is_array( $qv['fields'] ) ) {
+				$qv['fields'] = array_unique( $qv['fields'] );
 
-			$this->first_user = ($this->page - 1) * $this->users_per_page;
-
-			$this->query_limit = $wpdb->prepare(" LIMIT %d, %d", $this->first_user, $this->users_per_page);
-			$this->query_orderby = ' ORDER BY user_login';
-
-			$search_sql = '';
-
-			if ( $this->search_term ) {
-				$searches = array();
-				$search_sql = 'AND (';
-				foreach ( array('user_login', 'user_nicename', 'user_email', 'user_url', 'display_name') as $col )
-					$searches[] = $col . " LIKE '%$this->search_term%'";
-				$search_sql .= implode(' OR ', $searches);
-				$search_sql .= ')';
+				$this->query_fields = array();
+				foreach ( $qv['fields'] as $field )
+					$this->query_fields[] = $wpdb->users . '.' . esc_sql( $field );
+				$this->query_fields = implode( ',', $this->query_fields );
+			} elseif ( 'all' == $qv['fields'] ) {
+				$this->query_fields = "$wpdb->users.*";
+			} else {
+				$this->query_fields = "$wpdb->users.ID";
 			}
 
-			// The following code changes in WP3 and above
+			if ( $qv['count_total'] )
+				$this->query_fields = 'SQL_CALC_FOUND_ROWS ' . $this->query_fields;
 
-			// We are on version 3.0 or above
-			$this->query_from = " FROM $wpdb->users";
-			$this->query_where = " WHERE 1=1 $search_sql";
+			$this->query_from = "FROM $wpdb->users";
+			$this->query_where = "WHERE 1=1";
 
-			if ( $this->role ) {
-				$this->query_from .= " INNER JOIN $wpdb->usermeta ON $wpdb->users.ID = $wpdb->usermeta.user_id";
-				$this->query_where .= $wpdb->prepare(" AND $wpdb->usermeta.meta_key = '{$wpdb->prefix}capabilities' AND $wpdb->usermeta.meta_value LIKE %s", '%' . $this->role . '%');
-			} elseif ( is_multisite() ) {
-				$level_key = $wpdb->prefix . 'capabilities'; // wpmu site admins don't have user_levels
-				$this->query_from .= ", $wpdb->usermeta";
-				$this->query_where .= " AND $wpdb->users.ID = $wpdb->usermeta.user_id AND meta_key = '{$level_key}'";
+			// sorting
+			if ( in_array( $qv['orderby'], array('nicename', 'email', 'url', 'registered') ) ) {
+				$orderby = 'user_' . $qv['orderby'];
+			} elseif ( in_array( $qv['orderby'], array('user_nicename', 'user_email', 'user_url', 'user_registered') ) ) {
+				$orderby = $qv['orderby'];
+			} elseif ( 'name' == $qv['orderby'] || 'display_name' == $qv['orderby'] ) {
+				$orderby = 'display_name';
+			} elseif ( 'post_count' == $qv['orderby'] ) {
+				// todo: avoid the JOIN
+				$where = get_posts_by_author_sql('post');
+				$this->query_from .= " LEFT OUTER JOIN (
+					SELECT post_author, COUNT(*) as post_count
+					FROM $wpdb->posts
+					$where
+					GROUP BY post_author
+				) p ON ({$wpdb->users}.ID = p.post_author)
+				";
+				$orderby = 'post_count';
+			} elseif ( 'ID' == $qv['orderby'] || 'id' == $qv['orderby'] ) {
+				$orderby = 'ID';
+			} else {
+				$orderby = 'user_login';
 			}
 
+			$qv['order'] = strtoupper( $qv['order'] );
+			if ( 'ASC' == $qv['order'] )
+				$order = 'ASC';
+			else
+				$order = 'DESC';
+			$this->query_orderby = "ORDER BY $orderby $order";
+
+			// limit
+			if ( $qv['number'] ) {
+				if ( $qv['offset'] )
+					$this->query_limit = $wpdb->prepare("LIMIT %d, %d", $qv['offset'], $qv['number']);
+				else
+					$this->query_limit = $wpdb->prepare("LIMIT %d", $qv['number']);
+			}
+
+			$search = trim( $qv['search'] );
+			if ( $search ) {
+				$leading_wild = ( ltrim($search, '*') != $search );
+				$trailing_wild = ( rtrim($search, '*') != $search );
+				if ( $leading_wild && $trailing_wild )
+					$wild = 'both';
+				elseif ( $leading_wild )
+					$wild = 'leading';
+				elseif ( $trailing_wild )
+					$wild = 'trailing';
+				else
+					$wild = false;
+				if ( $wild )
+					$search = trim($search, '*');
+
+				$search_columns = array();
+				if ( $qv['search_columns'] )
+					$search_columns = array_intersect( $qv['search_columns'], array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename' ) );
+				if ( ! $search_columns ) {
+					if ( false !== strpos( $search, '@') )
+						$search_columns = array('user_email');
+					elseif ( is_numeric($search) )
+						$search_columns = array('user_login', 'ID');
+					elseif ( preg_match('|^https?://|', $search) && ! wp_is_large_network( 'users' ) )
+						$search_columns = array('user_url');
+					else
+						$search_columns = array('user_login', 'user_nicename');
+				}
+
+				$this->query_where .= $this->get_search_sql( $search, $search_columns, $wild );
+			}
+
+			$blog_id = absint( $qv['blog_id'] );
+
+			if ( 'authors' == $qv['who'] && $blog_id ) {
+				$qv['meta_key'] = $wpdb->get_blog_prefix( $blog_id ) . 'user_level';
+				$qv['meta_value'] = 0;
+				$qv['meta_compare'] = '!=';
+				$qv['blog_id'] = $blog_id = 0; // Prevent extra meta query
+			}
+
+			$role = trim( $qv['role'] );
+
+			if ( $blog_id && ( $role || is_multisite() ) ) {
+				$cap_meta_query = array();
+				$cap_meta_query['key'] = $wpdb->get_blog_prefix( $blog_id ) . 'capabilities';
+
+				if ( $role ) {
+					$cap_meta_query['value'] = '"' . $role . '"';
+					$cap_meta_query['compare'] = 'like';
+				}
+
+				$qv['meta_query'][] = $cap_meta_query;
+			}
+
+			$meta_query = new WP_Meta_Query();
+			$meta_query->parse_query_vars( $qv );
+
+			if ( !empty( $meta_query->queries ) ) {
+				$clauses = $meta_query->get_sql( 'user', $wpdb->users, 'ID', $this );
+				$this->query_from .= $clauses['join'];
+				$this->query_where .= $clauses['where'];
+
+				if ( 'OR' == $meta_query->relation )
+					$this->query_fields = 'DISTINCT ' . $this->query_fields;
+			}
+
+			if ( !empty( $qv['include'] ) ) {
+				$ids = implode( ',', wp_parse_id_list( $qv['include'] ) );
+				$this->query_where .= " AND $wpdb->users.ID IN ($ids)";
+			} elseif ( !empty($qv['exclude']) ) {
+				$ids = implode( ',', wp_parse_id_list( $qv['exclude'] ) );
+				$this->query_where .= " AND $wpdb->users.ID NOT IN ($ids)";
+			}
 
 			if( $this->sub_id ) {
 				$sql = $wpdb->prepare( "SELECT user_id FROM " . membership_db_prefix($wpdb, "membership_relationships") . " WHERE sub_id = %d", $this->sub_id );
@@ -150,7 +289,7 @@ if(!class_exists('M_Member_Search')) {
 			}
 
 			if($this->active) {
-				$sql = $wpdb->prepare( "SELECT user_id FROM " . $wpdb->usermeta . " WHERE meta_key = '" . membership_db_prefix($wpdb, 'membership_active', false) . "' AND meta_value = 'no'" );
+				$sql = $wpdb->prepare( "SELECT user_id FROM " . $wpdb->usermeta . " WHERE meta_key = '" . membership_db_prefix($wpdb, 'membership_active', false) . "' AND meta_value = %s", 'no' );
 				$actives = $wpdb->get_col( $sql );
 
 				if(!empty($actives)) {
@@ -178,8 +317,7 @@ if(!class_exists('M_Member_Search')) {
 				}
 			}
 
-			do_action_ref_array( 'pre_user_search', array( &$this ) );
-
+			do_action_ref_array( 'pre_user_query', array( &$this ) );
 		}
 
 	}

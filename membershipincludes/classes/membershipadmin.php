@@ -2334,8 +2334,8 @@ if(!class_exists('membershipadmin')) {
 						<?php
 
 						$style = '';
-						foreach ( $wp_user_search->get_results() as $userid ) {
-							$user_object = new M_Membership($userid);
+						foreach ( $wp_user_search->get_results() as $user ) {
+							$user_object = new M_Membership($user->ID);
 							$roles = $user_object->roles;
 							$role = array_shift($roles);
 
