@@ -365,6 +365,8 @@ class paypalsolo extends M_Gateway {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
 
+			membership_debug_log( __('Received PayPal IPN from - ' , 'membership') . $domain );
+
 			$req = 'cmd=_notify-validate';
 			if (!isset($_POST)) $_POST = $HTTP_POST_VARS;
 			foreach ($_POST as $k => $v) {
@@ -415,6 +417,7 @@ class paypalsolo extends M_Gateway {
 
 				if ($error != '') {
 					echo $error;
+					membership_debug_log( $error );
 					exit;
 				}
 			}
@@ -473,6 +476,7 @@ class paypalsolo extends M_Gateway {
 							do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 						}
 					}
+					membership_debug_log( __('Processed transaction received - ','membership') . print_r($_POST, true) );
 					break;
 
 				case 'Reversed':
@@ -483,6 +487,8 @@ class paypalsolo extends M_Gateway {
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
+					membership_debug_log( __('Reversed transaction received - ','membership') . print_r($_POST, true) );
 
 					$member = new M_Membership($user_id);
 					if($member) {
@@ -504,6 +510,8 @@ class paypalsolo extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					membership_debug_log( __('Refunded transaction received - ','membership') . print_r($_POST, true) );
+
 					$member = new M_Membership($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
@@ -520,6 +528,8 @@ class paypalsolo extends M_Gateway {
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+
+					membership_debug_log( __('Denied transaction received - ','membership') . print_r($_POST, true) );
 
 					$member = new M_Membership($user_id);
 					if($member) {
@@ -553,6 +563,8 @@ class paypalsolo extends M_Gateway {
 
 					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
+					membership_debug_log( __('Pending transaction received - ','membership') . print_r($_POST, true) );
+
 					do_action('membership_payment_pending', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 					break;
 
@@ -571,6 +583,8 @@ class paypalsolo extends M_Gateway {
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->deactivate();
+
+							membership_debug_log( sprintf(__('Dispute for %d','membership'), $user_id ) );
 						}
 					}
 

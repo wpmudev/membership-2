@@ -158,25 +158,25 @@ if(!class_exists('M_Membership')) {
 
 			$relationships = $this->get_relationships();
 
-			if($relationships) {
+			if( $relationships !== false ) {
 
-				membership_debug_log( __('MEMBER: Starting transition' , 'membership') );
+				membership_debug_log( __('MEMBER: Have relationships so starting transition check' , 'membership') );
 
 				foreach($relationships as $key => $rel) {
 
-					membership_debug_log( __('MEMBER: transition - ' , 'membership') . print_r($rel, true) );
+					membership_debug_log( __('MEMBER: Processing transition - ' , 'membership') . print_r($rel, true) );
 
 					// Add 6 hours to the expiry date to give a grace period?
 					if( strtotime(apply_filters('membership_gateway_exp_window',"+ 6 hours"), mysql2date("U", $rel->expirydate)) <= time() ) {
 
-						membership_debug_log( __('MEMBER: transition passed timestamp - ' , 'membership') . print_r($rel, true) );
+						membership_debug_log( __('MEMBER: Transition has passed expiration timestamp - ' , 'membership') . print_r($rel, true) );
 
 						// expired, we need to remove the subscription
 						if($this->is_marked_for_expire($rel->sub_id)) {
 							$this->expire_subscription($rel->sub_id);
 							delete_user_meta($this->ID, '_membership_expire_next');
 
-							membership_debug_log( sprintf(__('MEMBER: membership marked for expiration - %d' , 'membership'), $rel->sub_id) );
+							membership_debug_log( sprintf(__('MEMBER: Membership has been marked for expiration - %d' , 'membership'), $rel->sub_id) );
 
 							continue;
 						}
@@ -189,6 +189,8 @@ if(!class_exists('M_Membership')) {
 							$subscription = new M_Subscription($rel->sub_id);
 							// Get the next level we will be moving onto
 							$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
+
+							membership_debug_log( sprintf(__('MEMBER: Membership level to move to for subscription - %d - ' , 'membership'), $rel->sub_id) . print_r($nextlevel, true) );
 
 							if($nextlevel) {
 								// We have a level to move to - let's check it
@@ -214,33 +216,33 @@ if(!class_exists('M_Membership')) {
 							$subscription = new M_Subscription($rel->sub_id);
 							$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
-							membership_debug_log( sprintf(__('MEMBER: membership level to move to for subscription - %d - ' , 'membership'), $rel->sub_id) . print_r($nextlevel, true) );
+							membership_debug_log( sprintf(__('MEMBER: Membership level to move to for subscription - %d - ' , 'membership'), $rel->sub_id) . print_r($nextlevel, true) );
 
 							if($nextlevel){
 								if(empty($nextlevel->level_price)) {
 									// this is a non paid level transition so we can go head
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 
-									membership_debug_log( sprintf(__('MEMBER: moved level for - %d' , 'membership'), $rel->sub_id) );
+									membership_debug_log( sprintf(__('MEMBER: Moved to new level for - %d' , 'membership'), $rel->sub_id) );
 								} else {
 
 									// This is a paid level transition so check for a payment
 									// Transition for now cos we are disabling everything when a payment fails
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 
-									membership_debug_log( sprintf(__('MEMBER: moved level for - %d' , 'membership'), $rel->sub_id) );
+									membership_debug_log( sprintf(__('MEMBER: Moved to new level for - %d' , 'membership'), $rel->sub_id) );
 								}
 							} else {
 								// there isn't a next level so expire this subscription
 								$this->expire_subscription($rel->sub_id);
 
-								membership_debug_log( sprintf(__('MEMBER: expired subscription as no next level for - %d' , 'membership'), $rel->sub_id) );
+								membership_debug_log( sprintf(__('MEMBER: Expired subscription as no next level for - %d' , 'membership'), $rel->sub_id) );
 							}
 						}
 
 					} else {
 						// not expired we can ignore this for now
-						membership_debug_log( __('MEMBER: transition not expired - ' , 'membership') . print_r($rel, true) );
+						membership_debug_log( __('MEMBER: Transition check not expired - ' , 'membership') . print_r($rel, true) );
 
 						continue;
 					}
@@ -471,13 +473,19 @@ if(!class_exists('M_Membership')) {
 
 		}
 
-		function on_level($level_id, $include_subs = false) {
+		function on_level($level_id, $include_subs = false, $check_order = false) {
 
 			$sql = $this->db->prepare( "SELECT rel_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id = %d", $this->ID, $level_id );
 
-			if(!$include_subs) {
+			if($include_subs === false) {
 				$sql .= $this->db->prepare( " AND sub_id = %d", 0 );
 			}
+
+			if($check_order !== false) {
+				$sql .= $this->db->prepare( " AND order_instance = %d", $check_order );
+			}
+
+			membership_debug_log( $sql );
 
 			$result = $this->db->get_col( $sql );
 
@@ -630,7 +638,12 @@ if(!class_exists('M_Membership')) {
 				return false;
 			}
 
-			if(!$this->on_level($tolevel_id, true) && $this->on_sub($fromsub_id)) {
+			membership_debug_log( sprintf(__('MEMBER: Moving subscription from %d to %d' , 'membership'), $fromsub_id, $tosub_id ) );
+
+			if(!$this->on_level($tolevel_id, true, $to_order) && $this->on_sub($fromsub_id)) {
+
+				membership_debug_log( sprintf(__('MEMBER: New level to move to %d on order %d' , 'membership'), $tolevel_id, $to_order ) );
+
 				// Get the level for this subscription before removing it
 				$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
 
@@ -663,9 +676,13 @@ if(!class_exists('M_Membership')) {
 
 					$this->db->update( $this->membership_relationships, array('sub_id' => $tosub_id, 'level_id' => $tolevel_id, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order), array( 'sub_id' => $fromsub_id, 'user_id' => $this->ID ) );
 
+					membership_debug_log( sprintf(__('MEMBER: Completed move to %d on order %d on sub %d' , 'membership'), $tolevel_id, $to_order, $tosub_id ) );
+
 					do_action( 'membership_move_subscription', $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $this->ID );
 				}
 
+			} else {
+				membership_debug_log( sprintf(__('MEMBER: Already on level %d on order %d' , 'membership'), $tolevel_id, $to_order ) );
 			}
 
 		}
