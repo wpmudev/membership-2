@@ -197,19 +197,27 @@ if(!class_exists('M_Membership')) {
 								if(empty($nextlevel->level_price) || $nextlevel->level_price == 0 ) {
 									// The next level is a free one, so I guess we just move to it
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+
+									membership_debug_log( sprintf(__('MEMBER: Moved to new level for - %d' , 'membership'), $rel->sub_id) );
 								} else {
 									// The next level is a charged one so we need to make sure we have a payment
 									if( $this->has_active_payment( $rel->sub_id, $nextlevel->level_id, $nextlevel->level_order ) ) {
 										// We have a current payment for the level we are going to move to
 										$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
+
+										membership_debug_log( sprintf(__('MEMBER: Moved to new level for - %d' , 'membership'), $rel->sub_id) );
 									} else {
 										// We don't have a payment for this next level so we have to expire it.
 										$this->expire_subscription($rel->sub_id);
+
+										membership_debug_log( sprintf(__('MEMBER: Expired subscription as no next level for - %d' , 'membership'), $rel->sub_id) );
 									}
 								}
 							} else {
 								// We're at the end so need to expire this subscription
 								$this->expire_subscription($rel->sub_id);
+
+								membership_debug_log( sprintf(__('MEMBER: Expired subscription as no next level for - %d' , 'membership'), $rel->sub_id) );
 							}
 
 						} else {
@@ -228,6 +236,10 @@ if(!class_exists('M_Membership')) {
 
 									// This is a paid level transition so check for a payment
 									// Transition for now cos we are disabling everything when a payment fails
+
+									// Check if this is a serial level and it matches
+
+									// otherwise do the standard transition
 									$this->move_to($rel->sub_id, $rel->level_id, $rel->order_instance, $nextlevel);
 
 									membership_debug_log( sprintf(__('MEMBER: Moved to new level for - %d' , 'membership'), $rel->sub_id) );
@@ -640,7 +652,11 @@ if(!class_exists('M_Membership')) {
 
 			membership_debug_log( sprintf(__('MEMBER: Moving subscription from %d to %d' , 'membership'), $fromsub_id, $tosub_id ) );
 
-			if(!$this->on_level($tolevel_id, true, $to_order) && $this->on_sub($fromsub_id)) {
+			// Check if existing level matches new one but it is a serial or indefinite level
+			$subscription = new M_Subscription($tosub_id);
+			$nextlevel = $subscription->get_next_level($tolevel_id, $to_order);
+
+			if( ( !$this->on_level($tolevel_id, true, $to_order) ) || ( $this->on_level($tolevel_id, true, $to_order) && ( $nextlevel->sub_type == 'serial' || $nextlevel->sub_type == 'indefinite' ) ) && $this->on_sub($fromsub_id) ) {
 
 				membership_debug_log( sprintf(__('MEMBER: New level to move to %d on order %d' , 'membership'), $tolevel_id, $to_order ) );
 
