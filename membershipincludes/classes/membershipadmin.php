@@ -2650,7 +2650,7 @@ if(!class_exists('membershipadmin')) {
 											}
 											break;
 
-					case 'extras':			$M_options['paymentcurrency'] = (isset($_POST['paymentcurrency'])) ? $_POST['paymentcurrency'] : '';
+					case 'configuration':	$M_options['paymentcurrency'] = (isset($_POST['paymentcurrency'])) ? $_POST['paymentcurrency'] : '';
 											$M_options['upgradeperiod'] = (isset($_POST['upgradeperiod'])) ? $_POST['upgradeperiod'] : '';
 											$M_options['renewalperiod'] = (isset($_POST['renewalperiod'])) ? $_POST['renewalperiod'] : '';
 											$M_options['show_coupons_form'] = (isset($_POST['show_coupons_form'])) ? $_POST['show_coupons_form'] : '';
@@ -2667,6 +2667,10 @@ if(!class_exists('membershipadmin')) {
 												}
 											}
 											break;
+
+					case 'extras':			// Don't really need this here as processing is covered by the do_action below
+											break;
+
 
 					default:
 											break;
@@ -3399,7 +3403,7 @@ if(!class_exists('membershipadmin')) {
 			<?php
 		}
 
-		function show_extras_options() {
+		function show_configuration_options() {
 			global $action, $page, $M_options;
 
 			$messages = array();
@@ -3407,7 +3411,7 @@ if(!class_exists('membershipadmin')) {
 
 			?>
 				<div class="icon32" id="icon-options-general"><br></div>
-				<h2><?php _e('Extra Options','membership'); ?></h2>
+				<h2><?php _e('Configuration Options','membership'); ?></h2>
 
 				<?php
 				if ( isset($_GET['msg']) ) {
@@ -3601,6 +3605,43 @@ if(!class_exists('membershipadmin')) {
 					</div>
 
 					<?php
+						do_action( 'membership_configurationoptions_page' );
+					?>
+
+					<p class="submit">
+						<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes','membership'); ?>" />
+					</p>
+
+				</form>
+				</div>
+			<?php
+		}
+
+		function show_extras_options() {
+			global $action, $page, $M_options;
+
+			$messages = array();
+			$messages[1] = __('Your options have been updated.','membership');
+
+			?>
+				<div class="icon32" id="icon-options-general"><br></div>
+				<h2><?php _e('Extra Options','membership'); ?></h2>
+
+				<?php
+				if ( isset($_GET['msg']) ) {
+					echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+					$_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
+				}
+				?>
+				<div id="poststuff" class="metabox-holder m-settings">
+				<form action='' method='post'>
+
+					<input type='hidden' name='page' value='<?php echo $page; ?>' />
+					<input type='hidden' name='action' value='updateoptions' />
+
+					<?php
+						wp_nonce_field('update-membership-options');
+
 						do_action( 'membership_extrasoptions_page' );
 					?>
 
@@ -3775,9 +3816,14 @@ if(!class_exists('membershipadmin')) {
 					$menus['general'] = __('General', 'membership');
 					$menus['pages'] = __('Membership Pages', 'membership');
 					$menus['posts'] = __('Content Protection', 'membership');
-					$menus['downloads'] = __('Downloads / Media', 'membership');
-					$menus['users'] = __('Membership Admins','membership');
-					$menus['extras'] = __('Extras', 'membership');
+					$menus['downloads'] = __('Media', 'membership');
+					//$menus['users'] = __('Membership Admins','membership');
+					$menus['configuration'] = __('Configuration', 'membership');
+
+					if( has_action('membership_extrasoptions_page') ) {
+						// There are registered extras so add the page to the tabs
+						$menus['extras'] = __('Extras', 'membership');
+					}
 
 					$menus = apply_filters('membership_options_menus', $menus);
 				?>
@@ -3814,6 +3860,9 @@ if(!class_exists('membershipadmin')) {
 											break;
 
 					case 'downloads':		$this->show_downloads_options();
+											break;
+
+					case 'configuration':	$this->show_configuration_options();
 											break;
 
 					case 'extras':			$this->show_extras_options();
