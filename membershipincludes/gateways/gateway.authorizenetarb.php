@@ -210,6 +210,7 @@ class M_authorizenetarb extends M_Gateway {
 
 		return $form;
 	}
+
 	function display_payment_form($subscription, $pricing, $user_id) {
 		global $M_options, $M_membership_url;
 
@@ -431,6 +432,7 @@ class M_authorizenetarb extends M_Gateway {
 		exit;
 
 	}
+
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
 

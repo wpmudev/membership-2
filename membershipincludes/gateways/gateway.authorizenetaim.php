@@ -36,12 +36,14 @@ class M_authorizenetaim extends M_Gateway {
 		}
 
 	}
+
 	function force_ssl_cookie($errors, $user_id) {
 		if(empty($errors)) {
 			wp_set_auth_cookie($user_id,true,true);
 			wp_set_current_user($user_id);
 		}
 	}
+
 	function mysettings() {
 		global $M_options;
 
@@ -209,6 +211,7 @@ class M_authorizenetaim extends M_Gateway {
 
 		return $form;
 	}
+
 	function display_payment_form($subscription, $pricing, $user_id) {
 		global $M_options, $M_membership_url;
 
@@ -430,6 +433,7 @@ class M_authorizenetaim extends M_Gateway {
 		exit;
 
 	}
+
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
 
@@ -476,6 +480,7 @@ class M_authorizenetaim extends M_Gateway {
 			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
 
 	}
+
 	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
 		if($norepeat === true) {
 			$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
@@ -484,6 +489,7 @@ class M_authorizenetaim extends M_Gateway {
 		}
 		echo $form;
 	}
+
 	function complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 		$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
 		echo $form;
