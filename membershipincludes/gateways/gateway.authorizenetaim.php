@@ -22,9 +22,6 @@ class M_authorizenetaim extends M_Gateway {
 
 		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
 
-		// If I want to override the transactions output - then I can use this action
-		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
-
 		add_action('membership_subscription_form_registration_process', array(&$this, 'force_ssl_cookie'), null, 2);
 
 		if($this->is_active()) {
@@ -47,6 +44,10 @@ class M_authorizenetaim extends M_Gateway {
 	}
 	function mysettings() {
 		global $M_options;
+
+		if ( !is_ssl() ) {
+			echo '<div id="message" class="updated fade"><p>' . __('Authorize.net requires an SSL certificate to be installed on this domain', 'membership') . '</p></div>';
+		}
 
 		?>
 		<table class="form-table">
@@ -81,9 +82,6 @@ class M_authorizenetaim extends M_Gateway {
 		<h3><?php print _e('Advanced Settings', 'membership'); ?></h3>
 		<table class="form-table">
 			<tbody>
-				<tr valign="top">
-					<th scope="row" colspan="2"><div class="updated below-h2"><p><?php _e('Authorize.net requires an SSL certificate to be installed on this domain', 'membership') ?></p></div></th>
-				</tr>
 				<tr>
 					<th scope="row"><?php _e('Delimiter Character', 'membership') ?></th>
 					<td><input type="text" name="delim_char" value="<?php esc_attr_e(get_option( $this->gateway . "_delim_char", "," )); ?>" /></td>
