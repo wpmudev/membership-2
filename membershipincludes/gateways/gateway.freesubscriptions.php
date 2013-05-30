@@ -154,7 +154,12 @@ class freesubscriptions extends M_Gateway {
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
 
-		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+		$button = get_option( $this->gateway . "_payment_button", '' );
+		if( empty($button) ) {
+			$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="' . __('Sign Up','membership') . '" />';
+		} else {
+			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+		}
 
 		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '</form>';

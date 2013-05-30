@@ -449,7 +449,13 @@ if(!class_exists('M_Gateway')) {
 				$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 				$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
 				$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
-				$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+
+				$button = get_option( $this->gateway . "_payment_button", '' );
+				if( empty($button) ) {
+					$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="' . __('Sign Up','membership') . '" />';
+				} else {
+					$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+				}
 			} else {
 				$form .=  wp_nonce_field('renew-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
 				//$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", false, false);
@@ -458,10 +464,15 @@ if(!class_exists('M_Gateway')) {
 				$form .=  "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 				$form .=  "<input type='hidden' name='user' value='" . $user_id . "' />";
 				$form .=  "<input type='hidden' name='level' value='" . $sublevel . "' />";
-				$button = get_option( $this->gateway . "_payment_button", 'http://www.paypal.com/en_US/i/btn/x-click-but23.gif' );
+
+				$button = get_option( $this->gateway . "_payment_button", '' );
+				if( empty($button) ) {
+					$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="' . __('Sign Up','membership') . '" />';
+				} else {
+					$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+				}
 			}
 
-			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 			$form .= '</form>';
 
 			return $form;
