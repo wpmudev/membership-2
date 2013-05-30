@@ -150,6 +150,8 @@ class paypalexpress extends M_Gateway {
 
 		if($fromsub_id !== false) {
 			$custom .= ":" . $fromsub_id;
+		} else {
+			$custom .= ":0";
 		}
 
 		return $custom;

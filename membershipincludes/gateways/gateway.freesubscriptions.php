@@ -65,19 +65,21 @@ class freesubscriptions extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
-
+	function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
 		$custom = '';
-
-		//fake:user:sub:key
 
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
 
-		return $custom;
+		if($fromsub_id !== false) {
+			$custom .= ":" . $fromsub_id;
+		} else {
+			$custom .= ":0";
+		}
 
+		return $custom;
 	}
 
 	function not_yet_display_upgrade_button($subscription, $pricing, $user_id, $fromsub_id = false) {

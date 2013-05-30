@@ -71,7 +71,8 @@ form#reg-form, form#login-form  {
 	overflow: hidden;
 	display: block;
 	clear: both;
-	margin-top: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 #reg-form p input.button, #login-form p input.button {

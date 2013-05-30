@@ -146,13 +146,19 @@ class M_authorizenetarb extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
+	function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
 		$custom = '';
 
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
+
+		if($fromsub_id !== false) {
+			$custom .= ":" . $fromsub_id;
+		} else {
+			$custom .= ":0";
+		}
 
 		return $custom;
 	}
@@ -197,7 +203,7 @@ class M_authorizenetarb extends M_Gateway {
 		$coupon = membership_get_current_coupon();
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
-		$form .= '<input type="submit" class="button blue" value="'.__('Pay Now','membership').'" />';
+		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
 		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
 
 		//if($popup)

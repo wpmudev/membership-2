@@ -2074,6 +2074,13 @@ if(!class_exists('membershippublic')) {
 			//wp_new_user_notification( $user_id, $_POST['password'] );
 		}
 
+		function enqueue_public_form_styles() {
+
+			wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+			wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+
+		}
+
 		function check_for_membership_pages($posts) {
 
 			global $M_options;
@@ -2091,8 +2098,8 @@ if(!class_exists('membershippublic')) {
 							// registration page found - add in the styles
 							if(!current_theme_supports('membership_subscription_form')) {
 								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
-								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+
+								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 
 								if($M_options['formtype'] == 'new') {
 									// pop up registration form
@@ -2131,8 +2138,7 @@ if(!class_exists('membershippublic')) {
 								wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
 								wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
 
-								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
-								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
@@ -2205,8 +2211,7 @@ if(!class_exists('membershippublic')) {
 								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 								wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
 
-								wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
-								wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 
 								if($M_options['formtype'] == 'new') {
 									// pop up registration form
@@ -2314,14 +2319,13 @@ if(!class_exists('membershippublic')) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_subscription_form')) {
 						wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 						wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
 						wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 
 						wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
 						wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
 
-						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+						add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 
 						wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
 						 														'registernonce'	=>	wp_create_nonce('membership_register'),
@@ -2339,24 +2343,28 @@ if(!class_exists('membershippublic')) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
 						wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
+
+						add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 					}
 				}
 				if(strstr($post->post_content, '[upgradeform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
-						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+
+						add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 					}
 				}
 				if(strstr($post->post_content, '[renewform]') !== false) {
 					// The shortcode is in a post on this page, add the header
 					if(!current_theme_supports('membership_account_form')) {
 						wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
-						wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
+
 						wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
 						wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
+
+						add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 					}
 				}
 
@@ -2375,7 +2383,7 @@ if(!class_exists('membershippublic')) {
 						wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
 						wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
 
-						wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
+						add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
 
 						if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') {
 							wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);

@@ -147,13 +147,19 @@ class M_authorizenetaim extends M_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
+	function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
 		$custom = '';
 
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
 		$key = md5('MEMBERSHIP' . $amount);
 
 		$custom .= $key;
+
+		if($fromsub_id !== false) {
+			$custom .= ":" . $fromsub_id;
+		} else {
+			$custom .= ":0";
+		}
 
 		return $custom;
 	}
@@ -198,7 +204,7 @@ class M_authorizenetaim extends M_Gateway {
 		$coupon = membership_get_current_coupon();
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
-		$form .= '<input type="submit" class="button blue" value="'.__('Pay Now','membership').'" />';
+		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
 		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
 
 		//if($popup)
@@ -472,13 +478,38 @@ class M_authorizenetaim extends M_Gateway {
 		}
 	}
 
+	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
+
+		global $M_options;
+
+		if(empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post">';
+		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+
+		$button = get_option( $this->gateway . "_payment_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
+
+		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+		$form .= '</form>';
+
+		return $form;
+
+	}
+
 	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
 
-		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
+		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1) {
 			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
-		else
+		} else {
 			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
-
+		}
 	}
 
 	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
