@@ -4,7 +4,8 @@ function m_register_events() {
 	jQuery('#login-form').submit(m_loginsubmit);
 	jQuery('#extra-form').submit(m_extraform);
 	jQuery('.membership-coupon form').submit(m_applycoupon);
-
+	// Additional input for submit button
+	jQuery('#signup-form').submit(m_signupform);
 }
 
 function m_couponsuccess(data) {
@@ -55,6 +56,12 @@ function m_applycoupon() {
 		});
 
 	}
+
+	return false;
+}
+
+function m_signupform() {
+
 
 	return false;
 }
