@@ -34,10 +34,10 @@ class M_authorizenetaim extends M_Gateway {
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 
 			// Ajax calls for purchase buttons - if logged out
-			add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
+			//add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
 
 			// if logged in
-			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
+			//add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
 
 
 		}
