@@ -3004,6 +3004,33 @@ if(!class_exists('membershipadmin')) {
 					</div>
 
 					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed message','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('If you are using the pop up registration method, then you can set a message to be displayed in the pop up when the process is complete. If you do not want to use this then leave it blank and the plugin will use the <strong>Registration completed page</strong> set above.','membership'); ?></p>
+							<p class='description'><?php _e('You should include a welcome message in this content and some details on what to do next.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Registration completed message','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Enter your message here, leave this blank if you do not want to use a message and would prefer to use the page set above.','membership') ); ?>
+									</th>
+									<td>
+										<?php
+										$args = array("textarea_name" => "registrationcompleted_message");
+										if(!isset($M_options['registrationcompleted_message'])) {
+											$M_options['registrationcompleted_message'] = '';
+										}
+										wp_editor( stripslashes($M_options['registrationcompleted_message']), "registrationcompleted_message", $args );
+										?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Account page','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
