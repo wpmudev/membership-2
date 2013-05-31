@@ -33,6 +33,13 @@ class M_authorizenetaim extends M_Gateway {
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 
+			// Ajax calls for purchase buttons - if logged out
+			add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
+
+			// if logged in
+			add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
+
+
 		}
 
 	}
@@ -203,7 +210,7 @@ class M_authorizenetaim extends M_Gateway {
 		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
-		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
+		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
 		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
 		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
 
@@ -488,7 +495,7 @@ class M_authorizenetaim extends M_Gateway {
 
 		$form = '';
 
-		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post">';
+		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post" id="signup-form">';
 		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
 		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';

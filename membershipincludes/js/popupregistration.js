@@ -62,6 +62,7 @@ function m_applycoupon() {
 
 function m_signupform() {
 
+	alert('pay form');
 
 	return false;
 }
