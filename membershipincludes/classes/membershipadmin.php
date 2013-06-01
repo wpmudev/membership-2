@@ -2610,6 +2610,7 @@ if(!class_exists('membershipadmin')) {
 											$M_options['registrationcompleted_page'] = (isset($_POST['registrationcompleted_page'])) ? $_POST['registrationcompleted_page'] : '';
 											$M_options['subscriptions_page'] = (isset($_POST['subscriptions_page'])) ? $_POST['subscriptions_page'] : '';
 											$M_options['formtype'] = (isset($_POST['formtype'])) ? $_POST['formtype'] : '';
+											$M_options['registrationcompleted_message'] = (isset($_POST['registrationcompleted_message'])) ? $_POST['registrationcompleted_message'] : '';
 											break;
 
 					case 'posts':			$M_options['membershipshortcodes'] = (isset($_POST['membershipshortcodes'])) ? explode("\n", $_POST['membershipshortcodes']) : array();
@@ -2972,65 +2973,6 @@ if(!class_exists('membershipadmin')) {
 					</div>
 
 					<div class="postbox">
-						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed page','membership'); ?></span></h3>
-						<div class="inside">
-							<p class='description'><?php _e('When a user has signed up for membership and completed any payments required, they will be redirected to this page.','membership'); ?></p>
-							<p class='description'><?php _e('You should include a welcome message on this page and some details on what to do next.','membership'); ?></p>
-
-							<table class="form-table">
-							<tbody>
-								<tr valign="top">
-									<th scope="row"><?php _e('Registration completed page','membership'); ?>
-									<?php echo $this->_tips->add_tip( __('Select a page to use for the Registration completed page. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
-									</th>
-									<td>
-										<?php
-										if(!isset($M_options['registrationcompleted_page'])) {
-											$M_options['registrationcompleted_page'] = '';
-										}
-										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registrationcompleted_page'], 'name' => 'registrationcompleted_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
-										echo $pages;
-										?>
-										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createregistrationcompletedpage", 'create-registrationcompletedpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration completed page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
-										<?php if(!empty($M_options['registrationcompleted_page'])) { ?>
-										<br/>
-										<a href='<?php echo get_permalink($M_options['registrationcompleted_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['registrationcompleted_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
-										<?php } ?>
-									</td>
-								</tr>
-							</tbody>
-							</table>
-						</div>
-					</div>
-
-					<div class="postbox">
-						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed message','membership'); ?></span></h3>
-						<div class="inside">
-							<p class='description'><?php _e('If you are using the pop up registration method, then you can set a message to be displayed in the pop up when the process is complete. If you do not want to use this then leave it blank and the plugin will use the <strong>Registration completed page</strong> set above.','membership'); ?></p>
-							<p class='description'><?php _e('You should include a welcome message in this content and some details on what to do next.','membership'); ?></p>
-
-							<table class="form-table">
-							<tbody>
-								<tr valign="top">
-									<th scope="row"><?php _e('Registration completed message','membership'); ?>
-									<?php echo $this->_tips->add_tip( __('Enter your message here, leave this blank if you do not want to use a message and would prefer to use the page set above.','membership') ); ?>
-									</th>
-									<td>
-										<?php
-										$args = array("textarea_name" => "registrationcompleted_message");
-										if(!isset($M_options['registrationcompleted_message'])) {
-											$M_options['registrationcompleted_message'] = '';
-										}
-										wp_editor( stripslashes($M_options['registrationcompleted_message']), "registrationcompleted_message", $args );
-										?>
-									</td>
-								</tr>
-							</tbody>
-							</table>
-						</div>
-					</div>
-
-					<div class="postbox">
 						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Account page','membership'); ?></span></h3>
 						<div class="inside">
 							<p class='description'><?php _e('This is the page a user will be redirected to when they want to view their account or make a payment on their account.','membership'); ?></p>
@@ -3119,6 +3061,65 @@ if(!class_exists('membershipadmin')) {
 										<br/>
 										<a href='<?php echo get_permalink($M_options['nocontent_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['nocontent_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
 										<?php } ?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed page','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('When a user has signed up for membership and completed any payments required, they will be redirected to this page.','membership'); ?></p>
+							<p class='description'><?php _e('You should include a welcome message on this page and some details on what to do next.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Registration completed page','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Select a page to use for the Registration completed page. If you do not have one already, then click on <strong>Create Page</strong> to make one.','membership') ); ?>
+									</th>
+									<td>
+										<?php
+										if(!isset($M_options['registrationcompleted_page'])) {
+											$M_options['registrationcompleted_page'] = '';
+										}
+										$pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registrationcompleted_page'], 'name' => 'registrationcompleted_page', 'show_option_none' => __('Select a page', 'membership'), 'sort_column'=> 'menu_order, post_title', 'echo' => 0));
+										echo $pages;
+										?>
+										&nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page. "&amp;tab=pages&amp;action=createregistrationcompletedpage", 'create-registrationcompletedpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration completed page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
+										<?php if(!empty($M_options['registrationcompleted_page'])) { ?>
+										<br/>
+										<a href='<?php echo get_permalink($M_options['registrationcompleted_page']); ?>'><?php _e('view page','membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['registrationcompleted_page'] . '&action=edit'); ?>'><?php _e('edit page','membership'); ?></a>
+										<?php } ?>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed message','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('If you are using the pop up registration method, then you can set a message to be displayed in the pop up when the process is complete. If you do not want to use this then leave it blank and the plugin will use the <strong>Registration completed page</strong> set above.','membership'); ?></p>
+							<p class='description'><?php _e('You should include a welcome message in this content and some details on what to do next.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Registration completed message','membership'); ?>
+									<?php echo $this->_tips->add_tip( __('Enter your message here, leave this blank if you do not want to use a message and would prefer to use the page set above.','membership') ); ?>
+									</th>
+									<td>
+										<?php
+										$args = array("textarea_name" => "registrationcompleted_message");
+										if(!isset($M_options['registrationcompleted_message'])) {
+											$M_options['registrationcompleted_message'] = '';
+										}
+										wp_editor( stripslashes($M_options['registrationcompleted_message']), "registrationcompleted_message", $args );
+										?>
 									</td>
 								</tr>
 							</tbody>

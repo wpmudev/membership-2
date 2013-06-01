@@ -34,11 +34,10 @@ class M_authorizenetaim extends M_Gateway {
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 
 			// Ajax calls for purchase buttons - if logged out
-			//add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
+			add_action( 'wp_ajax_nopriv_purchaseform', array(&$this, 'popover_payment_form') );
 
 			// if logged in
-			//add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
-
+			add_action( 'wp_ajax_purchaseform', array(&$this, 'popover_payment_form') );
 
 		}
 
@@ -212,17 +211,75 @@ class M_authorizenetaim extends M_Gateway {
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
 		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
-		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
+		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
 
 		//if($popup)
 			//$form .= '<input type="hidden" name="action" value="extra_form" />';
 
 		$form .= '<input type="hidden" name="extra_form" value="1">';
-		//$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
-		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+
+		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
+
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
 		$form .= '</form>';
 
 		return $form;
+	}
+
+	function popover_payment_form() {
+
+		$gateway = $_POST['gateway'];
+
+		if( $gateway == 'authorizenetaim' ) {
+			$subscription_id = $_POST['subscription'];
+			$coupon_code = $_POST['coupon_code'];
+			$user_id = $_POST['user'];
+
+			if( empty($user_id) ) {
+				$user = wp_get_current_user();
+
+				$spmemuserid = $user->ID;
+
+				if(!empty($user->ID) && is_numeric($user->ID) ) {
+					$member = new M_Membership( $user->ID);
+				} else {
+					$member = current_member();
+				}
+			} else {
+				$member = new M_Membership( $user_id );
+			}
+
+			$subscription = (int) $_REQUEST['subscription'];
+
+			$gateway = M_get_class_for_gateway($gateway);
+
+			if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
+				$sub =  new M_Subscription( $subscription );
+				// Get the coupon
+				$coupon = membership_get_current_coupon();
+				// Build the pricing array
+				$pricing = $sub->get_pricingarray();
+
+				if(!empty($pricing) && !empty($coupon) ) {
+						$pricing = $coupon->apply_coupon_pricing( $pricing );
+				}
+
+				?>
+				<div class='header' style='width: 750px'>
+					<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
+				</div>
+				<?php
+
+				$this->display_payment_form( $sub, $pricing, $member->ID );
+
+			}
+
+		}
+
+		// Need this to stop processing
+		die();
+
 	}
 
 	function display_payment_form($subscription, $pricing, $user_id) {
@@ -266,9 +323,6 @@ class M_authorizenetaim extends M_Gateway {
 			$error = __('This payment gateway has not been configured.  Your transaction will not be processed.', 'membership');
 		}
 		?>
-		<?php if($popup) : ?>
-			<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
-		<?php endif; ?>
 
 		<div id="authorize_errors" class="message error hidden"></div>
 		<input type="hidden" name="subscription_id" value="<?php echo $subscription->id; ?>" />

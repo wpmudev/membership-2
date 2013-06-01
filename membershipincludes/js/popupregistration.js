@@ -60,9 +60,52 @@ function m_applycoupon() {
 	return false;
 }
 
-function m_signupform() {
+function m_signupsuccess(data) {
+	jQuery.fancybox.hideActivity();
 
-	alert('pay form');
+	try
+	{
+		returned = jQuery.parseJSON(data);
+		if(typeof returned.errormsg != 'undefined') {
+			// Oops an error
+			alert(returned.errormsg);
+		} else {
+			// Content is being passed back so display
+			jQuery('#fancybox-content div').html(data);
+			jQuery.fancybox.resize();
+		}
+	}
+	catch(e)
+	{
+		// Content
+		jQuery('#fancybox-content div').html(data);
+		jQuery.fancybox.resize();
+	}
+	m_register_events();
+}
+
+function m_signupeerror(data) {
+	jQuery.fancybox.hideActivity();
+
+	alert('Purchase error');
+}
+
+function m_signupform() {
+	jQuery.fancybox.showActivity();
+
+	var _coupon = jQuery('#subscription_coupon_code').val();
+	var _sub_id = jQuery('#subscription_id').val();
+	var _user_id = jQuery('#subscription_user_id').val();
+	var _gateway = jQuery('#subscription_gateway').val();
+
+	jQuery.ajax({
+		type	: 'POST',
+		cache	: false,
+		url		: membership.ajaxurl + '?action=purchaseform&subscription=' + _sub_id,
+		data	: {	coupon_code : _coupon, user : _user_id, gateway : _gateway, subscription : _sub_id },
+		success	: m_signupsuccess,
+		error	: m_signupeerror
+	});
 
 	return false;
 }
