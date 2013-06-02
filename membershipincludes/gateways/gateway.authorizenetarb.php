@@ -521,13 +521,61 @@ class M_authorizenetarb extends M_Gateway {
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
 
-		// No ARB yet
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+
+		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+
+		$form = '';
+
+		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$coupon = membership_get_current_coupon();
+
+		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
+		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
+		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
+
+		//if($popup)
+			//$form .= '<input type="hidden" name="action" value="extra_form" />';
+
+		$form .= '<input type="hidden" name="extra_form" value="1">';
+
+		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
+
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+		$form .= '</form>';
+
+		return $form;
 	}
 
 	function complex_sub_button($pricing, $subscription, $user_id) {
 		global $M_options, $M_membership_url;
 
-		// No ARB yet
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+
+		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+
+		$form = '';
+
+		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		$coupon = membership_get_current_coupon();
+
+		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
+		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
+		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
+
+		//if($popup)
+			//$form .= '<input type="hidden" name="action" value="extra_form" />';
+
+		$form .= '<input type="hidden" name="extra_form" value="1">';
+
+		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
+
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+		$form .= '</form>';
+
+		return $form;
 	}
 
 	function build_subscribe_button($subscription, $pricing, $user_id) {
