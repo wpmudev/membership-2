@@ -35,9 +35,13 @@ class M_authorizenetaim extends M_Gateway {
 
 			// Ajax calls for purchase buttons - if logged out
 			add_action( 'wp_ajax_nopriv_purchaseform', array(&$this, 'popover_payment_form') );
-
 			// if logged in
 			add_action( 'wp_ajax_purchaseform', array(&$this, 'popover_payment_form') );
+
+			// Ajax calls for purchase processing - if logged out
+			add_action( 'wp_ajax_nopriv_processpurchase_' . $this->gateway , array(&$this, 'process_payment_form') );
+			// if logged in
+			add_action( 'wp_ajax_processpurchase_' . $this->gateway, array(&$this, 'process_payment_form') );
 
 		}
 
@@ -197,6 +201,7 @@ class M_authorizenetaim extends M_Gateway {
 
 
 	}
+
 	function single_button($pricing, $subscription, $user_id) {
 		global $M_options;
 
@@ -296,10 +301,10 @@ class M_authorizenetaim extends M_Gateway {
 
 		?>
 		<script type="text/javascript">
-			_authorize_return_url = "<?php echo $M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway); ?>";
+			_authorize_return_url = "<?php echo admin_url( 'admin-ajax.php', 'https' ) . '?action=processpurchase_' . $this->gateway; ?>";
 			_permalink_url = "<?php echo get_permalink(); ?>";
 			_authorize_payment_error_msg = "<?php echo __('There was an unknown error encountered with your payment.  Please contact the site administrator.','membership'); ?>";
-			jQuery("head").append('<link href="<?php echo $M_membership_url; ?>membershipincludes/css/authorizenet.css" rel="stylesheet" type="text/css">');
+			jQuery("head").append('<link href="<?php echo membership_url( 'membershipincludes/css/authorizenet.css' ); ?>" rel="stylesheet" type="text/css">');
 		</script>
 
 		<script type="text/javascript" src="<?php echo $M_membership_url; ?>membershipincludes/js/authorizenet.js"></script>
@@ -307,7 +312,6 @@ class M_authorizenetaim extends M_Gateway {
 
 		<?php
 
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
 		$api_u = get_option( $this->gateway . "_api_user");
@@ -390,7 +394,8 @@ class M_authorizenetaim extends M_Gateway {
 	</form><?php
 	}
 
-	function handle_payment_return() {
+	// Function to process the ajax payment for gateways that do live processing / no ipn
+	function process_payment_form() {
 		global $M_options, $M_membership_url;
 
 		$return = array();
@@ -400,6 +405,7 @@ class M_authorizenetaim extends M_Gateway {
 			exit;
 		}
 
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 		$coupon = membership_get_current_coupon();
 
 		if(empty($M_options['paymentcurrency'])) {
@@ -486,7 +492,13 @@ class M_authorizenetaim extends M_Gateway {
 
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				$return['status'] = 'success';
-				$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+				if( $popup && !empty($M_options['registrationcompleted_message']) ) {
+					$return['redirect'] = 'no';
+					$return['message'] = $M_options['registrationcompleted_message'];
+				} else {
+					$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+					$return['message'] = '';
+				}
 			} else {
 				$return['status'] = 'error';
 				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
@@ -498,7 +510,12 @@ class M_authorizenetaim extends M_Gateway {
 
 		echo json_encode($return);
 		exit;
+	}
 
+	function handle_payment_return() {
+
+		// Not used for this gateway
+		exit;
 	}
 
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
