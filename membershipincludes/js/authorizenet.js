@@ -48,8 +48,13 @@ jQuery(document).ready( function() {
 						}
 						break;
 					case 'success':
-						if(typeof data.redirect != 'undefined') {
+						if(typeof data.redirect != 'undefined' && data.redirect != 'no') {
+							// Redirect to welcome page
 							window.location.href = data.redirect;
+						} else {
+							// Show the message instead
+							jQuery('#fancybox-content div').html(data.message);
+							jQuery.fancybox.resize();
 						}
 						break;
 				}
