@@ -11,7 +11,7 @@ class M_authorizenetarb extends M_Gateway {
 
 	var $gateway = 'authorizenetarb';
 	var $title = 'Authorize.net ARB';
-	var $issingle = false;
+	var $issingle = true;
 	var $haspaymentform = true;
 	var $ssl = true;
 
@@ -33,15 +33,27 @@ class M_authorizenetarb extends M_Gateway {
 			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
 			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
 
+			// Ajax calls for purchase buttons - if logged out
+			add_action( 'wp_ajax_nopriv_purchaseform', array(&$this, 'popover_payment_form') );
+			// if logged in
+			add_action( 'wp_ajax_purchaseform', array(&$this, 'popover_payment_form') );
+
+			// Ajax calls for purchase processing - if logged out
+			add_action( 'wp_ajax_nopriv_processpurchase_' . $this->gateway , array(&$this, 'process_payment_form') );
+			// if logged in
+			add_action( 'wp_ajax_processpurchase_' . $this->gateway, array(&$this, 'process_payment_form') );
+
 		}
 
 	}
+
 	function force_ssl_cookie($errors, $user_id) {
 		if(empty($errors)) {
 			wp_set_auth_cookie($user_id,true,true);
 			wp_set_current_user($user_id);
 		}
 	}
+
 	function mysettings() {
 		global $M_options;
 
@@ -50,7 +62,6 @@ class M_authorizenetarb extends M_Gateway {
 		}
 
 		?>
-
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
@@ -190,6 +201,7 @@ class M_authorizenetarb extends M_Gateway {
 
 
 	}
+
 	function single_button($pricing, $subscription, $user_id) {
 		global $M_options;
 
@@ -202,19 +214,77 @@ class M_authorizenetarb extends M_Gateway {
 		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
-		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post">';
+		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
 		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
-		$form .= '<input type="hidden" name="gateway" value="' . $this->gateway . '" />';
+		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
 
 		//if($popup)
 			//$form .= '<input type="hidden" name="action" value="extra_form" />';
 
 		$form .= '<input type="hidden" name="extra_form" value="1">';
-		//$form .= '<input type="hidden" name="subscription" value="' . $subscription->id . '" />';
-		$form .= '<input type="hidden" name="coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+
+		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
+
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
 		$form .= '</form>';
 
 		return $form;
+	}
+
+	function popover_payment_form() {
+
+		$gateway = $_POST['gateway'];
+
+		if( $gateway == 'authorizenetaim' ) {
+			$subscription_id = $_POST['subscription'];
+			$coupon_code = $_POST['coupon_code'];
+			$user_id = $_POST['user'];
+
+			if( empty($user_id) ) {
+				$user = wp_get_current_user();
+
+				$spmemuserid = $user->ID;
+
+				if(!empty($user->ID) && is_numeric($user->ID) ) {
+					$member = new M_Membership( $user->ID);
+				} else {
+					$member = current_member();
+				}
+			} else {
+				$member = new M_Membership( $user_id );
+			}
+
+			$subscription = (int) $_REQUEST['subscription'];
+
+			$gateway = M_get_class_for_gateway($gateway);
+
+			if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
+				$sub =  new M_Subscription( $subscription );
+				// Get the coupon
+				$coupon = membership_get_current_coupon();
+				// Build the pricing array
+				$pricing = $sub->get_pricingarray();
+
+				if(!empty($pricing) && !empty($coupon) ) {
+						$pricing = $coupon->apply_coupon_pricing( $pricing );
+				}
+
+				?>
+				<div class='header' style='width: 750px'>
+					<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
+				</div>
+				<?php
+
+				$this->display_payment_form( $sub, $pricing, $member->ID );
+
+			}
+
+		}
+
+		// Need this to stop processing
+		die();
+
 	}
 
 	function display_payment_form($subscription, $pricing, $user_id) {
@@ -231,10 +301,10 @@ class M_authorizenetarb extends M_Gateway {
 
 		?>
 		<script type="text/javascript">
-			_authorize_return_url = "<?php echo $M_secure_home_url . 'paymentreturn/' . esc_attr($this->gateway); ?>";
+			_authorize_return_url = "<?php echo admin_url( 'admin-ajax.php', 'https' ) . '?action=processpurchase_' . $this->gateway; ?>";
 			_permalink_url = "<?php echo get_permalink(); ?>";
 			_authorize_payment_error_msg = "<?php echo __('There was an unknown error encountered with your payment.  Please contact the site administrator.','membership'); ?>";
-			jQuery("head").append('<link href="<?php echo $M_membership_url; ?>membershipincludes/css/authorizenet.css" rel="stylesheet" type="text/css">');
+			jQuery("head").append('<link href="<?php echo membership_url( 'membershipincludes/css/authorizenet.css' ); ?>" rel="stylesheet" type="text/css">');
 		</script>
 
 		<script type="text/javascript" src="<?php echo $M_membership_url; ?>membershipincludes/js/authorizenet.js"></script>
@@ -242,7 +312,6 @@ class M_authorizenetarb extends M_Gateway {
 
 		<?php
 
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
 		$api_u = get_option( $this->gateway . "_api_user");
@@ -258,11 +327,8 @@ class M_authorizenetarb extends M_Gateway {
 			$error = __('This payment gateway has not been configured.  Your transaction will not be processed.', 'membership');
 		}
 		?>
-		<?php if($popup) : ?>
-			<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
-		<?php endif; ?>
 
-		<div id="authorize_errors" class="message error hidden"></div>
+		<div id="authorize_errors" class=""></div>
 		<input type="hidden" name="subscription_id" value="<?php echo $subscription->id; ?>" />
 		<input type="hidden" name="gateway" value="<?php echo $this->gateway; ?>" />
 		<?php if(!empty($coupon)) : ?>
@@ -272,40 +338,40 @@ class M_authorizenetarb extends M_Gateway {
 		<div class="membership_cart_billing">
 			<div class="auth-body">
 				<div class="auth-billing">
-					<div class="auth-billing-name"><?php echo __('Credit Card Billing Information:', 'mp'); ?>*</div>
-					<div class="auth-billing-fname-label">
+					<div class="auth-billing-name auth-field"><?php echo __('Credit Card Billing Information:', 'mp'); ?>*</div>
+					<div class="auth-billing-fname-label auth-field">
 						<label class="inputLabel" for="first_name"><?php echo __('First Name:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-fname">
+					<div class="auth-billing-fname auth-field">
 						<input id="first_name" name="first_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" />
 					</div>
-					<div class="auth-billing-lname-label">
+					<div class="auth-billing-lname-label auth-field">
 						<label class="inputLabel" for="last_name"><?php echo __('Last Name:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" /></div>
-					<div class="auth-billing-address-label">
+					<div class="auth-billing-lname auth-field"><input id="last_name" name="last_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" /></div>
+					<div class="auth-billing-address-label auth-field">
 						<label class="inputLabel" for="address"><?php echo __('Address:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-address">
+					<div class="auth-billing-address auth-field">
 						<input id="address" name="address" class="input_field noautocomplete" type="text" size="120" maxlength="120" />
 					</div>
-					<div class="auth-billing-zip-label">
+					<div class="auth-billing-zip-label auth-field">
 						<label class="inputLabel" for="zip"><?php echo __('Billing 5-Digit Zipcode:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-zip">
+					<div class="auth-billing-zip auth-field">
 						<input id="zip" name="zip" class="input_field noautocomplete" type="text" size="5" maxlength="5" />
 					</div>
 				</div>
 				<div class="auth-cc">
-					<div class="auth-cc-label"><?php echo __('Credit Card Number:', 'mp'); ?>*</div>
-					<div class="auth-cc-input">
-						<input name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />
+					<div class="auth-cc-label auth-field"><?php echo __('Credit Card Number:', 'mp'); ?>*</div>
+					<div class="auth-cc-input auth-field">
+						<input class="auth-cc-cardnum" name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />
 						<div class="hide_after_success nocard cardimage"  id="cardimage" style="background: url(<?php echo $M_membership_url; ?>membershipincludes/images/card_array.png) no-repeat;"></div>
 					</div>
 				</div>
 				<div class="auth-exp">
-					<div class="auth-exp-label"><?php echo __('Expiration Date:', 'mp'); ?>*</div>
-					<div class="auth-exp-input">
+					<div class="auth-exp-label auth-field"><?php echo __('Expiration Date:', 'mp'); ?>*</div>
+					<div class="auth-exp-input auth-field">
 						<label class="inputLabel" for="exp_month"><?php echo __('Month', 'membership'); ?></label>
 						<select name="exp_month" id="exp_month"><?php echo $this->_print_month_dropdown(); ?></select>
 						<label class="inputLabel" for="exp_year"><?php echo __('Year', 'membership'); ?></label>
@@ -313,13 +379,13 @@ class M_authorizenetarb extends M_Gateway {
 					</div>
 				</div>
 				<div class="auth-sec">
-					<div class="auth-sec-label"><?php echo __('Security Code:', 'mp'); ?></div>
-					<div class="auth-sec-input">
+					<div class="auth-sec-label auth-field"><?php echo __('Security Code:', 'mp'); ?></div>
+					<div class="auth-sec-input auth-field">
 						<input id="card_code" name="card_code" class="input_field noautocomplete" type="text" size="4" maxlength="4" />
 					</div>
 				</div>
 				<div class="auth-submit">
-					<div class="auth-submit-button">
+					<div class="auth-submit-button auth-field">
 						<input type="image" src="<?php echo $M_membership_url; ?>membershipincludes/images/cc_process_payment.png" alt="<?php echo __("Pay with Credit Card", "membership"); ?>" />
 					</div>
 				</div>
@@ -328,16 +394,18 @@ class M_authorizenetarb extends M_Gateway {
 	</form><?php
 	}
 
-	function handle_payment_return() {
+	// Function to process the ajax payment for gateways that do live processing / no ipn
+	function process_payment_form() {
 		global $M_options, $M_membership_url;
 
 		$return = array();
 
-		if($_SERVER['HTTPS'] != 'on') {
+		if( !is_ssl() ) {
 			wp_die(__('You must use HTTPS in order to do this','membership'));
 			exit;
 		}
 
+		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 		$coupon = membership_get_current_coupon();
 
 		if(empty($M_options['paymentcurrency'])) {
@@ -424,7 +492,13 @@ class M_authorizenetarb extends M_Gateway {
 
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				$return['status'] = 'success';
-				$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+				if( $popup && !empty($M_options['registrationcompleted_message']) ) {
+					$return['redirect'] = 'no';
+					$return['message'] = $M_options['registrationcompleted_message'];
+				} else {
+					$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+					$return['message'] = '';
+				}
 			} else {
 				$return['status'] = 'error';
 				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
@@ -436,7 +510,12 @@ class M_authorizenetarb extends M_Gateway {
 
 		echo json_encode($return);
 		exit;
+	}
 
+	function handle_payment_return() {
+
+		// Not used for this gateway
+		exit;
 	}
 
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
@@ -477,14 +556,44 @@ class M_authorizenetarb extends M_Gateway {
 		}
 	}
 
-	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
 
-		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1)
-			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
-		else
-			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
+		global $M_options;
+
+		if(empty($M_options['paymentcurrency'])) {
+			$M_options['paymentcurrency'] = 'USD';
+		}
+
+		$form = '';
+
+		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post" id="signup-form">';
+		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
+		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+
+		$button = get_option( $this->gateway . "_payment_button", '' );
+		if( empty($button) ) {
+			$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="' . __('Sign Up','membership') . '" />';
+		} else {
+			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
+		}
+
+		$form .= '</form>';
+
+		return $form;
 
 	}
+
+	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
+
+		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1) {
+			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
+		} else {
+			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
+		}
+	}
+
 	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
 		if($norepeat === true) {
 			$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
@@ -493,6 +602,7 @@ class M_authorizenetarb extends M_Gateway {
 		}
 		echo $form;
 	}
+
 	function complex_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 		$form = '<a class="button" href="'.M_get_registration_permalink().'?action=registeruser&subscription='.$subscription->id.'">'.__('Upgrade','membership').'</a>';
 		echo $form;
