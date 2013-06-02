@@ -334,40 +334,40 @@ class M_authorizenetaim extends M_Gateway {
 		<div class="membership_cart_billing">
 			<div class="auth-body">
 				<div class="auth-billing">
-					<div class="auth-billing-name"><?php echo __('Credit Card Billing Information:', 'mp'); ?>*</div>
-					<div class="auth-billing-fname-label">
+					<div class="auth-billing-name auth-field"><?php echo __('Credit Card Billing Information:', 'mp'); ?>*</div>
+					<div class="auth-billing-fname-label auth-field">
 						<label class="inputLabel" for="first_name"><?php echo __('First Name:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-fname">
+					<div class="auth-billing-fname auth-field">
 						<input id="first_name" name="first_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" />
 					</div>
-					<div class="auth-billing-lname-label">
+					<div class="auth-billing-lname-label auth-field">
 						<label class="inputLabel" for="last_name"><?php echo __('Last Name:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-lname"><input id="last_name" name="last_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" /></div>
-					<div class="auth-billing-address-label">
+					<div class="auth-billing-lname auth-field"><input id="last_name" name="last_name" class="input_field noautocomplete" type="text" size="20" maxlength="20" /></div>
+					<div class="auth-billing-address-label auth-field">
 						<label class="inputLabel" for="address"><?php echo __('Address:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-address">
+					<div class="auth-billing-address auth-field">
 						<input id="address" name="address" class="input_field noautocomplete" type="text" size="120" maxlength="120" />
 					</div>
-					<div class="auth-billing-zip-label">
+					<div class="auth-billing-zip-label auth-field">
 						<label class="inputLabel" for="zip"><?php echo __('Billing 5-Digit Zipcode:', 'mp'); ?></label>
 					</div>
-					<div class="auth-billing-zip">
+					<div class="auth-billing-zip auth-field">
 						<input id="zip" name="zip" class="input_field noautocomplete" type="text" size="5" maxlength="5" />
 					</div>
 				</div>
 				<div class="auth-cc">
-					<div class="auth-cc-label"><?php echo __('Credit Card Number:', 'mp'); ?>*</div>
-					<div class="auth-cc-input">
-						<input name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />
+					<div class="auth-cc-label auth-field"><?php echo __('Credit Card Number:', 'mp'); ?>*</div>
+					<div class="auth-cc-input auth-field">
+						<input class="auth-cc-cardnum" name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22" />
 						<div class="hide_after_success nocard cardimage"  id="cardimage" style="background: url(<?php echo $M_membership_url; ?>membershipincludes/images/card_array.png) no-repeat;"></div>
 					</div>
 				</div>
 				<div class="auth-exp">
-					<div class="auth-exp-label"><?php echo __('Expiration Date:', 'mp'); ?>*</div>
-					<div class="auth-exp-input">
+					<div class="auth-exp-label auth-field"><?php echo __('Expiration Date:', 'mp'); ?>*</div>
+					<div class="auth-exp-input auth-field">
 						<label class="inputLabel" for="exp_month"><?php echo __('Month', 'membership'); ?></label>
 						<select name="exp_month" id="exp_month"><?php echo $this->_print_month_dropdown(); ?></select>
 						<label class="inputLabel" for="exp_year"><?php echo __('Year', 'membership'); ?></label>
@@ -375,13 +375,13 @@ class M_authorizenetaim extends M_Gateway {
 					</div>
 				</div>
 				<div class="auth-sec">
-					<div class="auth-sec-label"><?php echo __('Security Code:', 'mp'); ?></div>
-					<div class="auth-sec-input">
+					<div class="auth-sec-label auth-field"><?php echo __('Security Code:', 'mp'); ?></div>
+					<div class="auth-sec-input auth-field">
 						<input id="card_code" name="card_code" class="input_field noautocomplete" type="text" size="4" maxlength="4" />
 					</div>
 				</div>
 				<div class="auth-submit">
-					<div class="auth-submit-button">
+					<div class="auth-submit-button auth-field">
 						<input type="image" src="<?php echo $M_membership_url; ?>membershipincludes/images/cc_process_payment.png" alt="<?php echo __("Pay with Credit Card", "membership"); ?>" />
 					</div>
 				</div>
