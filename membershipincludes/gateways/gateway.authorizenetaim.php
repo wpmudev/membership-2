@@ -324,7 +324,7 @@ class M_authorizenetaim extends M_Gateway {
 		}
 		?>
 
-		<div id="authorize_errors" class="message error hidden"></div>
+		<div id="authorize_errors" class=""></div>
 		<input type="hidden" name="subscription_id" value="<?php echo $subscription->id; ?>" />
 		<input type="hidden" name="gateway" value="<?php echo $this->gateway; ?>" />
 		<?php if(!empty($coupon)) : ?>
@@ -395,7 +395,7 @@ class M_authorizenetaim extends M_Gateway {
 
 		$return = array();
 
-		if($_SERVER['HTTPS'] != 'on') {
+		if( !is_ssl() ) {
 			wp_die(__('You must use HTTPS in order to do this','membership'));
 			exit;
 		}

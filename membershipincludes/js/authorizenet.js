@@ -2,11 +2,11 @@ function cc_card_pick(card_image, card_num){
     if (card_image == null) {
         card_image = '#cardimage';
     }
-    
+
     if (card_num == null) {
         card_num = '#card_num';
     }
-  
+
     numLength = jQuery(card_num).val().length;
     number = jQuery(card_num).val();
     if (numLength > 10) {
@@ -28,7 +28,8 @@ jQuery(document).ready( function() {
 			dataType: 'json',
 			data: jQuery(this).serialize(),
 			beforeSend: function() {
-				error_div.fadeOut(400).html('');
+
+				//error_div.fadeOut(400).html('');
 			},
 			success: function(data) {
 				if(typeof data != 'object')
@@ -37,10 +38,11 @@ jQuery(document).ready( function() {
 					case 'error':
 						var error_div = jQuery('#authorize_errors');
 						if(jQuery.isArray(data.errors)) {
+							error_div.html('');
 							jQuery.each(data.errors, function(i,e) {
-								error_div.append('<p>' + e + '</p>');
+								error_div.append('<p class="error">' + e + '</p>');
+								jQuery('p.error').show();
 							});
-							error_div.fadeIn(400);
 						} else {
 							alert(_authorize_payment_error_msg);
 						}
@@ -55,10 +57,10 @@ jQuery(document).ready( function() {
 			error: function(data) {
 				alert(_authorize_payment_error_msg);
 			}
-			
+
 		});
-        
+
         return false;
     });
-	
+
 });
