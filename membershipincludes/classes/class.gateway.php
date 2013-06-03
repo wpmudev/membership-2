@@ -510,6 +510,21 @@ if(!class_exists('M_Gateway')) {
 
 		}
 
+		function is_free_subscription( $pricing ) {
+
+			// check to see if the subscription is a free one
+
+			$free = true;
+			foreach($pricing as $key => $price) {
+				if(!empty($price['amount']) && $price['amount'] > 0 ) {
+					$free = false;
+				}
+			}
+
+			return $free;
+
+		}
+
 	}
 
 }

@@ -226,7 +226,7 @@ class M_authorizenetaim extends M_Gateway {
 		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
 		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
 
-		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="' . (!empty($coupon) ? $coupon->get_coupon_code() : '') . '" />';
 		$form .= '</form>';
 
 		return $form;
@@ -269,6 +269,9 @@ class M_authorizenetaim extends M_Gateway {
 				if(!empty($pricing) && !empty($coupon) ) {
 						$pricing = $coupon->apply_coupon_pricing( $pricing );
 				}
+
+				// Check if the pricing is now a free subscription and if so then handle the signup directly
+
 
 				?>
 				<div class='header' style='width: 750px'>

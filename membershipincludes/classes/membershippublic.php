@@ -2161,7 +2161,8 @@ if(!class_exists('membershippublic')) {
 															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 																$gateway = $_POST['gateway'];
 																// Join the new subscription
-																$member->create_subscription($sub_id, $gateway);
+																do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+
 																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
@@ -2179,8 +2180,8 @@ if(!class_exists('membershippublic')) {
 																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 																	$gateway = $_POST['gateway'];
 																	// Join the new subscription
-																	$member = new M_Membership( $user_id );
-																	$member->create_subscription($sub_id, $gateway);
+																	do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+
 																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
@@ -2259,11 +2260,10 @@ if(!class_exists('membershippublic')) {
 
 															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 
-																$member = current_member();
-
 																$gateway = $_POST['gateway'];
-																// Join the new subscription
-																$member->create_subscription($sub_id, $gateway);
+
+																do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+
 																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																// Timestamp the update
 																update_user_meta( $user_id, '_membership_last_upgraded', time());
@@ -2284,9 +2284,9 @@ if(!class_exists('membershippublic')) {
 																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 
 																	$gateway = $_POST['gateway'];
-																	// Join the new subscription
-																	$member = new M_Membership( $user_id );
-																	$member->create_subscription($sub_id, $gateway);
+
+																	do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+
 																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 																	// Timestamp the update
 																	update_user_meta( $user_id, '_membership_last_upgraded', time());
