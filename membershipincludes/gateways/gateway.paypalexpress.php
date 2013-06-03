@@ -910,12 +910,9 @@ class paypalexpress extends M_Gateway {
 
 					} else {
 						// create_subscription
-						$member = new M_Membership($user_id);
-						if($member) {
-							$member->create_subscription($sub_id, $this->gateway);
+						do_action( 'membership_create_subscription', $user_id, $sub_id, $this->gateway );
 
-							membership_debug_log( sprintf(__('Creating subscription %d for user %d','membership'), $sub_id, $user_id ) );
-						}
+						membership_debug_log( sprintf(__('Creating subscription %d for user %d','membership'), $sub_id, $user_id ) );
 
 						do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 					}
@@ -925,21 +922,16 @@ class paypalexpress extends M_Gateway {
 					// modify the subscription
 					list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
+					// drop subscription
+					do_action( 'membership_drop_subscription', $user_id, $sub_id );
+
 					// create_subscription
-					$member = new M_Membership($user_id);
-					if($member) {
-						// Remove the old subscription
-						$member->drop_subscription($sub_id);
+					do_action( 'membership_create_subscription', $user_id, (int) $_POST['item_number'], $this->gateway );
 
-						// Join the new subscription
-						$member->create_subscription((int) $_POST['item_number'], $this->gateway);
+					// Timestamp the update
+					update_user_meta( $user_id, '_membership_last_upgraded', time());
 
-						// Timestamp the update
-						update_user_meta( $user_id, '_membership_last_upgraded', time());
-
-						membership_debug_log( sprintf(__('Moved from subscription - %d to subscription %d for user %d','membership'), $sub_id, (int) $_POST['item_number'], $user_id ) );
-
-					}
+					membership_debug_log( sprintf(__('Moved from subscription - %d to subscription %d for user %d','membership'), $sub_id, (int) $_POST['item_number'], $user_id ) );
 
 					do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				  break;
