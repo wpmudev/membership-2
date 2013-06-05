@@ -226,7 +226,7 @@ class M_authorizenetarb extends M_Gateway {
 		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
 		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
 
-		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="' . (!empty($coupon) ? $coupon->get_coupon_code() : '') . '" />';
 		$form .= '</form>';
 
 		return $form;
@@ -234,9 +234,12 @@ class M_authorizenetarb extends M_Gateway {
 
 	function popover_payment_form() {
 
+		global $M_options;
+
 		$gateway = $_POST['gateway'];
 
 		if( $gateway == 'authorizenetaim' ) {
+
 			$subscription_id = $_POST['subscription'];
 			$coupon_code = $_POST['coupon_code'];
 			$user_id = $_POST['user'];
@@ -267,17 +270,28 @@ class M_authorizenetarb extends M_Gateway {
 				$pricing = $sub->get_pricingarray();
 
 				if(!empty($pricing) && !empty($coupon) ) {
-						$pricing = $coupon->apply_coupon_pricing( $pricing );
+					$pricing = $coupon->apply_coupon_pricing( $pricing );
 				}
 
-				?>
-				<div class='header' style='width: 750px'>
-					<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
-				</div>
-				<?php
+				// Check if the pricing is now a free subscription and if so then handle the signup directly
+				// We are on a free signup - check the subscription then set it up
+				if( isset($pricing[0]) && $pricing[0]['amount'] < 1 ) {
+					// We have a free level
+					do_action( 'membership_create_subscription', $user_id, $subscription_id, $this->gateway );
+					if( !empty($M_options['registrationcompleted_message']) ) {
+						echo $this->get_completed_message( $sub );
+					} else {
+						wp_safe_redirect( (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink()) );
+					}
+				} else {
+					?>
+					<div class='header' style='width: 750px'>
+						<h1><?php echo __('Enter Your Credit Card Information','membership'); ?></h1>
+					</div>
+					<?php
 
-				$this->display_payment_form( $sub, $pricing, $member->ID );
-
+					$this->display_payment_form( $sub, $pricing, $member->ID );
+				}
 			}
 
 		}
@@ -494,7 +508,8 @@ class M_authorizenetarb extends M_Gateway {
 				$return['status'] = 'success';
 				if( $popup && !empty($M_options['registrationcompleted_message']) ) {
 					$return['redirect'] = 'no';
-					$return['message'] = $M_options['registrationcompleted_message'];
+					$registrationcompletedmessage = $this->get_completed_message( $subscription );
+					$return['message'] = $registrationcompletedmessage;
 				} else {
 					$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
 					$return['message'] = '';
@@ -512,6 +527,24 @@ class M_authorizenetarb extends M_Gateway {
 		exit;
 	}
 
+	function get_completed_message( $sub ) {
+
+		global $M_options;
+
+		$html = '';
+
+		$html .= "<div class='header' style='width: 750px'><h1>";
+		$html .= __('Sign up for','membership') . " " . $sub->sub_name() . " " . __('completed', 'membership');
+		$html .= "</h1></div><div class='fullwidth'>";
+
+		$html .= wpautop( $M_options['registrationcompleted_message'] );
+
+		$html .= "</div>";
+
+		return $html;
+
+	}
+
 	function handle_payment_return() {
 
 		// Not used for this gateway
@@ -521,64 +554,17 @@ class M_authorizenetarb extends M_Gateway {
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options, $M_membership_url;
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
-
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
-
-		$form = '';
-
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
-		$coupon = membership_get_current_coupon();
-
-		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
-		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
-		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
-
-		//if($popup)
-			//$form .= '<input type="hidden" name="action" value="extra_form" />';
-
-		$form .= '<input type="hidden" name="extra_form" value="1">';
-
-		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
-		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
-
-		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
-		$form .= '</form>';
-
-		return $form;
+		// No ARB yet
 	}
 
 	function complex_sub_button($pricing, $subscription, $user_id) {
 		global $M_options, $M_membership_url;
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
-
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
-
-		$form = '';
-
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
-		$coupon = membership_get_current_coupon();
-
-		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
-		$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="'.__('Pay Now','membership').'" />';
-		$form .= '<input type="hidden" name="gateway" id="subscription_gateway" value="' . $this->gateway . '" />';
-
-		//if($popup)
-			//$form .= '<input type="hidden" name="action" value="extra_form" />';
-
-		$form .= '<input type="hidden" name="extra_form" value="1">';
-
-		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
-		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
-
-		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="'.(!empty($coupon) ? $coupon->get_coupon_code() : '').'" />';
-		$form .= '</form>';
-
-		return $form;
+		// No ARB yet
 	}
 
 	function build_subscribe_button($subscription, $pricing, $user_id) {
+
 		if(!empty($pricing)) {
 			$free = true;
 			foreach($pricing as $key => $price) {
@@ -586,6 +572,7 @@ class M_authorizenetarb extends M_Gateway {
 					$free = false;
 				}
 			}
+
 			if(!$free) {
 				if(count($pricing) == 1) {
 					// A basic price or a single subscription
@@ -614,11 +601,16 @@ class M_authorizenetarb extends M_Gateway {
 
 		$form = '';
 
+		$coupon = membership_get_current_coupon();
+
 		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post" id="signup-form">';
 		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
-		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' id='subscription_gateway' />";
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+
+		$form .= '<input type="hidden" name="subscription" id="subscription_id" value="' . $subscription->id . '" />';
+		$form .= '<input type="hidden" name="user" id="subscription_user_id" value="' . $user_id . '" />';
 
 		$button = get_option( $this->gateway . "_payment_button", '' );
 		if( empty($button) ) {
@@ -627,6 +619,7 @@ class M_authorizenetarb extends M_Gateway {
 			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		}
 
+		$form .= '<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="' . (!empty($coupon) ? $coupon->get_coupon_code() : '') . '" />';
 		$form .= '</form>';
 
 		return $form;
@@ -635,7 +628,7 @@ class M_authorizenetarb extends M_Gateway {
 
 	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
 
-		if(isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1) {
+		if( isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1 ) {
 			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
 		} else {
 			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
