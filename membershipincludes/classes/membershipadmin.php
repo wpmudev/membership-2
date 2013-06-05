@@ -3109,7 +3109,7 @@ if(!class_exists('membershipadmin')) {
 							<table class="form-table">
 							<tbody>
 								<tr valign="top">
-									<th scope="row"><?php _e('Registration completed message','membership'); ?>
+									<th scope="row"><?php _e('Completed message','membership'); ?>
 									<?php echo $this->_tips->add_tip( __('Enter your message here, leave this blank if you do not want to use a message and would prefer to use the page set above.','membership') ); ?>
 									</th>
 									<td>

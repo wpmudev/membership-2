@@ -202,7 +202,7 @@ class freesubscriptions extends M_Gateway {
 		echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
 		echo "<input type='hidden' name='user' value='" . $user_id . "' />";
 		echo "<input type='hidden' name='fromsub_id' value='" . $fromsub_id . "' />";
-		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' class='button blue' />";
+		echo "<input type='submit' name='submit' value=' " . __('Upgrade', 'membership') . " ' class='button " . apply_filters('membership_subscription_button_color', 'blue') . "' />";
 		echo "</form>";
 	}
 
