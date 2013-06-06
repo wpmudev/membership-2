@@ -746,8 +746,8 @@ class M_authorizenetarb extends M_Gateway {
 * This class passes through the actual requests to Authorize.net
 */
 
-if( !class_exists('AuthorizeNetRequest') ) {
-	abstract class AuthorizeNetRequest
+if( !class_exists('M_AuthorizeNetRequest') ) {
+	abstract class M_AuthorizeNetRequest
 	{
 
 	    protected $_api_login;
@@ -826,35 +826,21 @@ if( !class_exists('AuthorizeNetRequest') ) {
 	    {
 	        $this->_setPostString();
 	        $post_url = $this->_getPostUrl();
-	        $curl_request = curl_init($post_url);
-	        curl_setopt($curl_request, CURLOPT_POSTFIELDS, $this->_post_string);
-	        curl_setopt($curl_request, CURLOPT_HEADER, 0);
-	        curl_setopt($curl_request, CURLOPT_TIMEOUT, 45);
-	        curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, 1);
-	        curl_setopt($curl_request, CURLOPT_SSL_VERIFYHOST, 2);
-	        if ($this->VERIFY_PEER) {
-	            curl_setopt($curl_request, CURLOPT_CAINFO, dirname(dirname(__FILE__)) . '/ssl/cert.pem');
+
+			$args = array();
+			$args['user-agent'] = "Membership: http://premium.wpmudev.org/project/membeship | Authorize.net ARB Plugin/";
+	        $args['sslverify'] = false;
+			$args['body'] = $this->_post_string;
+
+			$response = wp_remote_post($post_url, $args);
+
+	        if (is_array($response) && isset($response['body'])) {
+	          $this->response = $response['body'];
 	        } else {
-	            curl_setopt($curl_request, CURLOPT_SSL_VERIFYPEER, false);
+	          $this->response = "";
+	          $this->error = true;
+	          return;
 	        }
-
-	        if (preg_match('/xml/',$post_url)) {
-	            curl_setopt($curl_request, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
-	        }
-
-	        $response = curl_exec($curl_request);
-
-	        if ($this->_log_file) {
-
-	            if ($curl_error = curl_error($curl_request)) {
-	                file_put_contents($this->_log_file, "----CURL ERROR----\n$curl_error\n\n", FILE_APPEND);
-	            }
-	            // Do not log requests that could contain CC info.
-	            // file_put_contents($this->_log_file, "----Request----\n{$this->_post_string}\n", FILE_APPEND);
-
-	            file_put_contents($this->_log_file, "----Response----\n$response\n\n", FILE_APPEND);
-	        }
-	        curl_close($curl_request);
 
 	        return $this->_handleResponse($response);
 	    }
@@ -862,7 +848,7 @@ if( !class_exists('AuthorizeNetRequest') ) {
 	}
 }
 
-class AuthorizeNetARB extends AuthorizeNetRequest
+class M_Gateway_Worker_AuthorizeNet_ARB extends M_AuthorizeNetRequest
 {
 
     const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
@@ -948,7 +934,7 @@ class AuthorizeNetARB extends AuthorizeNetRequest
      */
     protected function _handleResponse($response)
     {
-        return new AuthorizeNetARB_Response($response);
+        return new M_AuthorizeNetARB_Response($response);
     }
 
     /**
@@ -978,7 +964,7 @@ XML;
 
 }
 
-class AuthorizeNetXMLResponse
+class M_AuthorizeNetXMLResponse
 {
 
     public $xml; // Holds a SimpleXML Element with response.
@@ -1099,7 +1085,7 @@ class AuthorizeNetXMLResponse
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetARB
  */
-class AuthorizeNetARB_Response extends AuthorizeNetXMLResponse
+class M_AuthorizeNetARB_Response extends M_AuthorizeNetXMLResponse
 {
 
     /**
