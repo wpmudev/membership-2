@@ -495,15 +495,46 @@ class M_authorizenetarb extends M_Gateway {
 
 						$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
 
-						/*
-						// Order Info
-						$payment->setParameter("x_description", $subscription->sub_name());
-						*/
+					} elseif( $pricing[0]['type'] == 'serial' ) {
+						// Single serial subscription
+						$arbsubscription = new M_AuthorizeNet_Subscription;
+					    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
 
-						//return $this->single_button($pricing, $subscription, $user_id, true);
-					} else {
-						// simple subscription
-						//return $this->single_sub_button($pricing, $subscription, $user_id);
+						switch($pricing[0]['unit']) {
+							case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
+										$arbsubscription->intervalUnit = "days";
+										break;
+
+							case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
+										$arbsubscription->intervalUnit = "days";
+										break;
+
+							case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
+										$arbsubscription->intervalUnit = "months";
+										break;
+
+							case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
+										$arbsubscription->intervalUnit = "months";
+										break;
+						}
+
+						$arbsubscription->startDate = date("Y-m-d"); // Today
+					    $arbsubscription->totalOccurrences = "9999"; // 9999 = ongoing subscription in ARB docs
+
+					    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
+
+						$arbsubscription->creditCardCardNumber = $_POST['card_num'];
+					    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
+					    $arbsubscription->creditCardCardCode = $_POST['card_code'];
+
+						$arbsubscription->billToFirstName = $_POST['first_name'];
+					    $arbsubscription->billToLastName = $_POST['last_name'];
+
+						$arbsubscription->billToAddress = $_POST['last_name'];
+						$arbsubscription->billToZip = $_POST['last_name'];
+
+						$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
 					}
 				} else {
 					// something much more complex
