@@ -437,6 +437,82 @@ class M_authorizenetarb extends M_Gateway {
 		$user = get_userdata($user_id);
 		$sub_id = $subscription->id;
 
+		if(!empty($pricing)) {
+			$free = true;
+			foreach($pricing as $key => $price) {
+				if(!empty($price['amount']) && $price['amount'] > 0 ) {
+					$free = false;
+				}
+			}
+
+			if(!$free) {
+				if(count($pricing) == 1) {
+					// A basic price or a single subscription
+					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
+						// one-off payment
+						$arbsubscription = new M_AuthorizeNet_Subscription;
+					    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+
+						if($pricing[0]['type'] == 'indefinite') {
+							// Set it for a year - even though we don't need it
+							$arbsubscription->intervalLength = "12";
+						    $arbsubscription->intervalUnit = "months";
+						} else {
+							// It's a finite level so set based on that
+							switch($pricing[0]['unit']) {
+								case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
+											$arbsubscription->intervalUnit = "days";
+											break;
+
+								case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
+											$arbsubscription->intervalUnit = "days";
+											break;
+
+								case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
+											$arbsubscription->intervalUnit = "months";
+											break;
+
+								case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
+											$arbsubscription->intervalUnit = "months";
+											break;
+							}
+						}
+
+						$arbsubscription->startDate = date("Y-m-d"); // Today
+					    $arbsubscription->totalOccurrences = "1"; // Single payment so we only want 1 occurance
+
+					    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
+
+						$arbsubscription->creditCardCardNumber = $_POST['card_num'];
+					    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
+					    $arbsubscription->creditCardCardCode = $_POST['card_code'];
+
+						$arbsubscription->billToFirstName = $_POST['first_name'];
+					    $arbsubscription->billToLastName = $_POST['last_name'];
+
+						$arbsubscription->billToAddress = $_POST['last_name'];
+						$arbsubscription->billToZip = $_POST['last_name'];
+
+						$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
+						/*
+						// Order Info
+						$payment->setParameter("x_description", $subscription->sub_name());
+						*/
+
+						//return $this->single_button($pricing, $subscription, $user_id, true);
+					} else {
+						// simple subscription
+						//return $this->single_sub_button($pricing, $subscription, $user_id);
+					}
+				} else {
+					// something much more complex
+					//return $this->complex_sub_button($pricing, $subscription, $user_id);
+				}
+			}
+		}
+
+
 		// A basic price or a single subscription
 		if($pricing) {
 			$timestamp = time();
