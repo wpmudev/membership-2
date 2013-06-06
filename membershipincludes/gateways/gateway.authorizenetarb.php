@@ -11,7 +11,7 @@ class M_authorizenetarb extends M_Gateway {
 
 	var $gateway = 'authorizenetarb';
 	var $title = 'Authorize.net ARB';
-	var $issingle = true;
+	var $issingle = false;
 	var $haspaymentform = true;
 	var $ssl = true;
 
@@ -676,11 +676,17 @@ class M_authorizenetarb extends M_Gateway {
 
 	function display_subscribe_button($subscription, $pricing, $user_id, $sublevel = 1) {
 
-		if( isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1 ) {
-			echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
-		} else {
-			echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
+		if(!empty($pricing) && (count($pricing) == 1 || count($pricing) == 2)) {
+			// We have a pricing array that can be used for ARB so carry on processing
+			if( count($pricing) == 1 && isset($pricing[$sublevel - 1]) && $pricing[$sublevel - 1]['amount'] < 1 ) {
+				// Just a single free level
+				echo $this->single_free_button($pricing, $subscription, $user_id, $sublevel);
+			} else {
+				// Slightly more complex so we have to do some building
+				echo $this->build_subscribe_button($subscription, $pricing, $user_id, $sublevel);
+			}
 		}
+
 	}
 
 	function single_upgrade_button($pricing, $subscription, $user_id, $norepeat = false, $fromsub_id = false) {
