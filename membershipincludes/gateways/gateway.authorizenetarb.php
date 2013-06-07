@@ -538,7 +538,75 @@ class M_authorizenetarb extends M_Gateway {
 					}
 				} else {
 					// something much more complex
-					//return $this->complex_sub_button($pricing, $subscription, $user_id);
+					$processsecond = true;
+
+					$arbsubscription = new M_AuthorizeNet_Subscription;
+				    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+
+					/*
+					public $trialOccurrences;
+				    public $amount;
+				    public $trialAmount;
+					*/
+
+					switch( $pricing[0]['type'] ) {
+						case 'finite':			// This is the one we are expecting here as anything else would be silly
+												// Set the trial period up
+												switch($pricing[0]['unit']) {
+													case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
+																$arbsubscription->intervalUnit = "days";
+																break;
+
+													case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
+																$arbsubscription->intervalUnit = "days";
+																break;
+
+													case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
+																$arbsubscription->intervalUnit = "months";
+																break;
+
+													case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
+																$arbsubscription->intervalUnit = "months";
+																break;
+												}
+												break;
+
+						case 'indefinite':		// Hmmm - ok
+												$processsecond = false;
+												break;
+
+						case 'serial':			// Hmmm - ok par deux
+												$processsecond = false;
+												break;
+					}
+
+					if( $processsecond == true ) {
+
+						switch( $pricing[1]['type'] ) {
+							case 'finite':
+							case 'indefinite':
+							case 'serial':
+						}
+
+					}
+
+					$arbsubscription->startDate = date("Y-m-d"); // Today
+
+				    //$arbsubscription->totalOccurrences = "9999"; // 9999 = ongoing subscription in ARB docs
+				    //$arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
+
+					$arbsubscription->creditCardCardNumber = $_POST['card_num'];
+				    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
+				    $arbsubscription->creditCardCardCode = $_POST['card_code'];
+
+					$arbsubscription->billToFirstName = $_POST['first_name'];
+				    $arbsubscription->billToLastName = $_POST['last_name'];
+
+					$arbsubscription->billToAddress = $_POST['last_name'];
+					$arbsubscription->billToZip = $_POST['last_name'];
+
+					$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
 				}
 			}
 		}
@@ -740,7 +808,9 @@ class M_authorizenetarb extends M_Gateway {
 					}
 				} else {
 					// something much more complex
-					return $this->complex_sub_button($pricing, $subscription, $user_id);
+					if( (count($pricing) == 2) ) {
+						return $this->complex_sub_button($pricing, $subscription, $user_id);
+					}
 				}
 			}
 		}
