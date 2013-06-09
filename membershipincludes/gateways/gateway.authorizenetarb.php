@@ -408,7 +408,7 @@ class M_authorizenetarb extends M_Gateway {
 	</form><?php
 	}
 
-	function process_aim_payment( $amount ) {
+	function process_aim_payment( $amount, $user_id, $sub_id ) {
 
 		// A basic price or a single subscription
 		$return = array();
@@ -460,9 +460,12 @@ class M_authorizenetarb extends M_Gateway {
 
 			if ($payment->isApproved()) {
 
-				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
-
 				$return['status'] = 'success';
+
+				$status = __('Processed','membership');
+				$note = '';
+
+				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
 
 			} else {
 				$return['status'] = 'error';
@@ -520,10 +523,22 @@ class M_authorizenetarb extends M_Gateway {
 					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 						// one-off payment - so we just use AIM instead
 
-						$return = $this->process_aim_payment( $pricing[0]['amount'] );
+						$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
+							$member = new M_Membership($user_id);
+							if($member) {
+								if($member->has_subscription() && $member->on_sub($sub_id)) {
+									remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+									remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+									$member->expire_subscription($sub_id);
+									$member->create_subscription($sub_id, $this->gateway);
+								} else {
+									$member->create_subscription($sub_id, $this->gateway);
+								}
+							}
+
 							if( $popup && !empty($M_options['registrationcompleted_message']) ) {
 								$return['redirect'] = 'no';
 								$registrationcompletedmessage = $this->get_completed_message( $subscription );
@@ -543,7 +558,7 @@ class M_authorizenetarb extends M_Gateway {
 					} elseif( $pricing[0]['type'] == 'serial' ) {
 						// Single serial subscription - we want to charge the first amount using AIM so we can validate the payment, then setup the subscription to start one period later
 
-						$return = $this->process_aim_payment( $pricing[0]['amount'] );
+						$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
@@ -585,8 +600,27 @@ class M_authorizenetarb extends M_Gateway {
 							$arbsubscription->billToZip = $_POST['last_name'];
 
 							$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
+							// Attempt to create the subscription
+							if( true == true ) {
+								// Subscription created, create it
+								$member = new M_Membership($user_id);
+								if($member) {
+									if($member->has_subscription() && $member->on_sub($sub_id)) {
+										remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+										remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+										$member->expire_subscription($sub_id);
+										$member->create_subscription($sub_id, $this->gateway);
+									} else {
+										$member->create_subscription($sub_id, $this->gateway);
+									}
+								}
+
+
+							}
+
 						} else {
-							// The payment didn't go through so return an error
+							// The payment didn't go through so return the error passed through from the aim processing
 
 						}
 
@@ -614,23 +648,22 @@ class M_authorizenetarb extends M_Gateway {
 												switch($pricing[0]['unit']) {
 													case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
 																$arbsubscription->intervalUnit = "days";
-																$lowestunit = 'd';
-																$arbsubscription->trialOccurrences = 1;
+
 																break;
 
 													case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
 																$arbsubscription->intervalUnit = "days";
-																$lowestunit = 'd';
+
 																break;
 
 													case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
 																$arbsubscription->intervalUnit = "months";
-																$lowestunit = 'm';
+
 																break;
 
 													case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
 																$arbsubscription->intervalUnit = "months";
-																$lowestunit = 'm';
+
 																break;
 												}
 												break;
