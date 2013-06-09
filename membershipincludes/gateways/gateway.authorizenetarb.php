@@ -1015,18 +1015,18 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	    private $text;
 	    private $subscrId;
 
-	    public function __construct($login, $transkey, $test = self::USE_PRODUCTION_SERVER)
+	    public function __construct($login, $transkey, $test = false )
 	    {
 	        $login    = trim($login);
 	        $transkey = trim($transkey);
 	        if (empty($login) || empty($transkey))
 	        {
-	            throw new AuthnetARBException('You have not configured your ' . __CLASS__ . '() login credentials properly.');
+	            return false;
 	        }
 
 	        $this->login    = trim($login);
 	        $this->transkey = trim($transkey);
-	        $this->test     = (bool) $test;
+	        $this->test     = $test;
 
 	        $subdomain = ($this->test) ? 'apitest' : 'api';
 	        $this->url = 'https://' . $subdomain . '.authorize.net/xml/v1/request.api';
@@ -1072,16 +1072,22 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 
 	    private function process()
 	    {
-	        $this->ch = curl_init();
-	        curl_setopt($this->ch, CURLOPT_URL, $this->url);
-	        curl_setopt($this->ch, CURLOPT_TIMEOUT, 30);
-	        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
-	        curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array('Content-Type: text/xml'));
-	        curl_setopt($this->ch, CURLOPT_HEADER, 0);
-	        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->xml);
-	        curl_setopt($this->ch, CURLOPT_POST, 1);
-	        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
-	        $this->response = curl_exec($this->ch);
+
+			$args['user-agent'] = "Membership: http://premium.wpmudev.org/project/membeship | Authorize.net ARB Plugin/";
+	        $args['body'] = $this->xml;
+	        $args['sslverify'] = false;
+
+	        //use built in WP http class to work with most server setups
+	        $response = wp_remote_post($this->url, $args);
+
+			if (is_array($response) && isset($response['body'])) {
+	          $this->response = $response['body'];
+	        } else {
+	          $this->response = "";
+	          $this->error = true;
+	          return false;
+	        }
+
 	        if($this->response)
 	        {
 	            $this->parseResults();
@@ -1097,9 +1103,11 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	            }
 	            curl_close($this->ch);
 	            unset($this->ch);
-	            return;
-	        }
-	        throw new AuthnetARBException('Connection error: ' . curl_error($this->ch) . ' (' . curl_errno($this->ch) . ')', self::EXCEPTION_CURL);
+	            return true;
+	        } else {
+				return false;
+			}
+
 	    }
 
 	    public function createAccount($echeck = false)
@@ -1242,22 +1250,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	    {
 	        $field = (is_string($field)) ? trim($field) : $field;
 	        $value = (is_string($value)) ? trim($value) : $value;
-	        if (!is_string($field))
-	        {
-	            throw new AuthnetARBException('setParameter() arg 1 must be a string or integer: ' . gettype($field) . ' given.');
-	        }
-	        if (!is_string($value) && !is_numeric($value) && !is_bool($value))
-	        {
-	            throw new AuthnetARBException('setParameter() arg 2 must be a string, integer, or boolean value: ' . gettype($value) . ' given.');
-	        }
-	        if (empty($field))
-	        {
-	            throw new AuthnetARBException('setParameter() requires a parameter field to be named.');
-	        }
-	        if ($value === '')
-	        {
-	            throw new AuthnetARBException('setParameter() requires a parameter value to be assigned: $field');
-	        }
+
 	        $this->params[$field] = $value;
 	    }
 
