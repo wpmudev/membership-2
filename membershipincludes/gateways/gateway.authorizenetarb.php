@@ -408,6 +408,75 @@ class M_authorizenetarb extends M_Gateway {
 	</form><?php
 	}
 
+	function process_aim_payment( $amount ) {
+
+		// A basic price or a single subscription
+		$return = array();
+
+		if($pricing) {
+			$timestamp = time();
+
+			if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
+				$endpoint = "https://test.authorize.net/gateway/transact.dll";
+			} else {
+				$endpoint = "https://secure.authorize.net/gateway/transact.dll";
+			}
+
+			$payment = new M_Gateway_Worker_AuthorizeNet_AIM($endpoint,
+			  get_option( $this->gateway . "_delim_data", 'yes' ),
+			  get_option( $this->gateway . "_delim_char", ',' ),
+			  get_option( $this->gateway . "_encap_char", '' ),
+			  get_option( $this->gateway . "_api_user", '' ),
+			  get_option( $this->gateway . "_api_key", '' ),
+			  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+
+			$payment->transaction($_POST['card_num']);
+			$amount = number_format($amount, 2, '.', '');
+			// Billing Info
+			$payment->setParameter("x_card_code", $_POST['card_code']);
+			$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
+			$payment->setParameter("x_amount", $amount);
+
+			// Payment billing information passed to authorize, thanks to Kevin L. for spotting this.
+			$payment->setParameter("x_first_name", $_POST['first_name']);
+			$payment->setParameter("x_last_name", $_POST['last_name']);
+			$payment->setParameter("x_address", $_POST['address']);
+			$payment->setParameter("x_zip", $_POST['zip']);
+			$payment->setParameter("x_email", ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+
+			// Order Info
+			$payment->setParameter("x_description", $subscription->sub_name());
+
+			$payment->setParameter("x_duplicate_window", 30);
+
+			// E-mail
+			$payment->setParameter("x_header_email_receipt", get_option( $this->gateway . "_header_email_receipt", '' ));
+			$payment->setParameter("x_footer_email_receipt", get_option( $this->gateway . "_footer_email_receipt", '' ));
+			$payment->setParameter("x_email_customer", strtoupper(get_option( $this->gateway . "_email_customer", '' )));
+
+			$payment->setParameter("x_customer_ip", $_SERVER['REMOTE_ADDR']);
+
+			$payment->process();
+
+			if ($payment->isApproved()) {
+
+				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
+
+				$return['status'] = 'success';
+
+			} else {
+				$return['status'] = 'error';
+				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
+			}
+		} else {
+			$return['status'] = 'error';
+			$return['errors'][] =  __('There was an issue determining the price.','membership');
+		}
+
+		return $return;
+
+	}
+
 	// Function to process the ajax payment for gateways that do live processing / no ipn
 	function process_payment_form() {
 		global $M_options, $M_membership_url;
@@ -449,16 +518,38 @@ class M_authorizenetarb extends M_Gateway {
 				if(count($pricing) == 1) {
 					// A basic price or a single subscription
 					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
-						// one-off payment
-						$arbsubscription = new M_AuthorizeNet_Subscription;
-					    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+						// one-off payment - so we just use AIM instead
 
-						if($pricing[0]['type'] == 'indefinite') {
-							// Set it for a year - even though we don't need it
-							$arbsubscription->intervalLength = "12";
-						    $arbsubscription->intervalUnit = "months";
+						$return = $this->process_aim_payment( $pricing[0]['amount'] );
+
+						if( !empty($return) && $return['status'] == 'success' ) {
+							// The payment went through ok
+							if( $popup && !empty($M_options['registrationcompleted_message']) ) {
+								$return['redirect'] = 'no';
+								$registrationcompletedmessage = $this->get_completed_message( $subscription );
+								$return['message'] = $registrationcompletedmessage;
+							} else {
+								$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
+								$return['message'] = '';
+							}
 						} else {
-							// It's a finite level so set based on that
+							// The payment didn't go through, so leave the return array holding the error
+						}
+
+						// Encode the return, echo it and exit so no more processing occurs
+						echo json_encode($return);
+						exit;
+
+					} elseif( $pricing[0]['type'] == 'serial' ) {
+						// Single serial subscription - we want to charge the first amount using AIM so we can validate the payment, then setup the subscription to start one period later
+
+						$return = $this->process_aim_payment( $pricing[0]['amount'] );
+
+						if( !empty($return) && $return['status'] == 'success' ) {
+							// The payment went through ok
+							$arbsubscription = new M_AuthorizeNet_Subscription;
+						    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+
 							switch($pricing[0]['unit']) {
 								case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
 											$arbsubscription->intervalUnit = "days";
@@ -476,64 +567,32 @@ class M_authorizenetarb extends M_Gateway {
 											$arbsubscription->intervalUnit = "months";
 											break;
 							}
+
+							// Add a period to the start date
+							$arbsubscription->startDate = date( "Y-m-d", strtotime( '+' . $arbsubscription->intervalLength + ' ' + $arbsubscription->intervalUnit ) ); // Next period
+						    $arbsubscription->totalOccurrences = "9999"; // 9999 = ongoing subscription in ARB docs
+
+						    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
+
+							$arbsubscription->creditCardCardNumber = $_POST['card_num'];
+						    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
+						    $arbsubscription->creditCardCardCode = $_POST['card_code'];
+
+							$arbsubscription->billToFirstName = $_POST['first_name'];
+						    $arbsubscription->billToLastName = $_POST['last_name'];
+
+							$arbsubscription->billToAddress = $_POST['last_name'];
+							$arbsubscription->billToZip = $_POST['last_name'];
+
+							$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+						} else {
+							// The payment didn't go through so return an error
+
 						}
 
-						$arbsubscription->startDate = date("Y-m-d"); // Today
-					    $arbsubscription->totalOccurrences = "1"; // Single payment so we only want 1 occurance
-
-					    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
-
-						$arbsubscription->creditCardCardNumber = $_POST['card_num'];
-					    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
-					    $arbsubscription->creditCardCardCode = $_POST['card_code'];
-
-						$arbsubscription->billToFirstName = $_POST['first_name'];
-					    $arbsubscription->billToLastName = $_POST['last_name'];
-
-						$arbsubscription->billToAddress = $_POST['last_name'];
-						$arbsubscription->billToZip = $_POST['last_name'];
-
-						$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
-
-					} elseif( $pricing[0]['type'] == 'serial' ) {
-						// Single serial subscription
-						$arbsubscription = new M_AuthorizeNet_Subscription;
-					    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
-
-						switch($pricing[0]['unit']) {
-							case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
-										$arbsubscription->intervalUnit = "days";
-										break;
-
-							case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
-										$arbsubscription->intervalUnit = "days";
-										break;
-
-							case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
-										$arbsubscription->intervalUnit = "months";
-										break;
-
-							case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
-										$arbsubscription->intervalUnit = "months";
-										break;
-						}
-
-						$arbsubscription->startDate = date("Y-m-d"); // Today
-					    $arbsubscription->totalOccurrences = "9999"; // 9999 = ongoing subscription in ARB docs
-
-					    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
-
-						$arbsubscription->creditCardCardNumber = $_POST['card_num'];
-					    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
-					    $arbsubscription->creditCardCardCode = $_POST['card_code'];
-
-						$arbsubscription->billToFirstName = $_POST['first_name'];
-					    $arbsubscription->billToLastName = $_POST['last_name'];
-
-						$arbsubscription->billToAddress = $_POST['last_name'];
-						$arbsubscription->billToZip = $_POST['last_name'];
-
-						$arbsubscription->customerEmail = ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
+						// Encode the return, echo it and exit so no more processing occurs
+						echo json_encode($return);
+						exit;
 
 					}
 				} else {
@@ -555,18 +614,23 @@ class M_authorizenetarb extends M_Gateway {
 												switch($pricing[0]['unit']) {
 													case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
 																$arbsubscription->intervalUnit = "days";
+																$lowestunit = 'd';
+																$arbsubscription->trialOccurrences = 1;
 																break;
 
 													case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
 																$arbsubscription->intervalUnit = "days";
+																$lowestunit = 'd';
 																break;
 
 													case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
 																$arbsubscription->intervalUnit = "months";
+																$lowestunit = 'm';
 																break;
 
 													case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
 																$arbsubscription->intervalUnit = "months";
+																$lowestunit = 'm';
 																break;
 												}
 												break;
@@ -612,94 +676,7 @@ class M_authorizenetarb extends M_Gateway {
 		}
 
 
-		// A basic price or a single subscription
-		if($pricing) {
-			$timestamp = time();
 
-			if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
-				$endpoint = "https://test.authorize.net/gateway/transact.dll";
-			} else {
-				$endpoint = "https://secure.authorize.net/gateway/transact.dll";
-			}
-
-			$payment = new M_Gateway_Worker_AuthorizeNet_AIM($endpoint,
-			  get_option( $this->gateway . "_delim_data", 'yes' ),
-			  get_option( $this->gateway . "_delim_char", ',' ),
-			  get_option( $this->gateway . "_encap_char", '' ),
-			  get_option( $this->gateway . "_api_user", '' ),
-			  get_option( $this->gateway . "_api_key", '' ),
-			  (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
-
-			$payment->transaction($_POST['card_num']);
-			$amount = number_format($pricing[0]['amount'], 2);
-			// Billing Info
-			$payment->setParameter("x_card_code", $_POST['card_code']);
-			$payment->setParameter("x_exp_date ", $_POST['exp_month'] . $_POST['exp_year']);
-			$payment->setParameter("x_amount", $amount);
-
-			// Payment billing information passed to authorize, thanks to Kevin L. for spotting this.
-			$payment->setParameter("x_first_name", $_POST['first_name']);
-			$payment->setParameter("x_last_name", $_POST['last_name']);
-			$payment->setParameter("x_address", $_POST['address']);
-			$payment->setParameter("x_zip", $_POST['zip']);
-			$payment->setParameter("x_email", ( is_email($user->user_email) != false ? is_email($user->user_email) : '' ) );
-
-			// Order Info
-			$payment->setParameter("x_description", $subscription->sub_name());
-
-			$payment->setParameter("x_duplicate_window", 30);
-
-			// E-mail
-			$payment->setParameter("x_header_email_receipt", get_option( $this->gateway . "_header_email_receipt", '' ));
-			$payment->setParameter("x_footer_email_receipt", get_option( $this->gateway . "_footer_email_receipt", '' ));
-			$payment->setParameter("x_email_customer", strtoupper(get_option( $this->gateway . "_email_customer", '' )));
-
-			$payment->setParameter("x_customer_ip", $_SERVER['REMOTE_ADDR']);
-
-			$payment->process();
-
-			if ($payment->isApproved()) {
-
-				$status = __('Processed','membership');
-				$note = '';
-
-				$member = new M_Membership($user_id);
-				if($member) {
-					if($member->has_subscription() && $member->on_sub($sub_id)) {
-						remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
-						remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
-						$member->expire_subscription($sub_id);
-						$member->create_subscription($sub_id, $this->gateway);
-					} else {
-						$member->create_subscription($sub_id, $this->gateway);
-					}
-				}
-
-				// TODO: create switch for handling different authorize aim respone codes
-
-				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
-
-				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				$return['status'] = 'success';
-				if( $popup && !empty($M_options['registrationcompleted_message']) ) {
-					$return['redirect'] = 'no';
-					$registrationcompletedmessage = $this->get_completed_message( $subscription );
-					$return['message'] = $registrationcompletedmessage;
-				} else {
-					$return['redirect'] = (!strpos(home_url(),'https:') ? str_replace('https:','http:',M_get_registrationcompleted_permalink()) : M_get_registrationcompleted_permalink());
-					$return['message'] = '';
-				}
-			} else {
-				$return['status'] = 'error';
-				$return['errors'][] =  __('Your payment was declined.  Please check all your details or use a different card.','membership');
-			}
-		} else {
-			$return['status'] = 'error';
-			$return['errors'][] =  __('There was an issue determining the price.','membership');
-		}
-
-		echo json_encode($return);
-		exit;
 	}
 
 	function get_completed_message( $sub ) {
@@ -808,7 +785,7 @@ class M_authorizenetarb extends M_Gateway {
 					}
 				} else {
 					// something much more complex
-					if( (count($pricing) == 2) ) {
+					if( ( count($pricing) == 2 ) ) {
 						return $this->complex_sub_button($pricing, $subscription, $user_id);
 					}
 				}
@@ -1467,6 +1444,191 @@ class M_AuthorizeNetARB_Response extends M_AuthorizeNetXMLResponse
         return $this->_getElementContents("Status");
     }
 
+}
+
+if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
+  class M_Gateway_Worker_AuthorizeNet_AIM
+  {
+    var $login;
+    var $transkey;
+    var $params   = array();
+    var $results  = array();
+    var $line_items = array();
+
+    var $approved = false;
+    var $declined = false;
+    var $error    = true;
+    var $method   = "";
+
+    var $fields;
+    var $response;
+
+    var $instances = 0;
+
+    function __construct($url, $delim_data, $delim_char, $encap_char, $gw_username, $gw_tran_key, $gw_test_mode)
+    {
+      if ($this->instances == 0)
+      {
+	$this->url = $url;
+
+	$this->params['x_delim_data']     = $delim_data;
+	$this->params['x_delim_char']     = $delim_char;
+	$this->params['x_encap_char']     = $encap_char;
+	$this->params['x_relay_response'] = "FALSE";
+	$this->params['x_url']            = "FALSE";
+	$this->params['x_version']        = "3.1";
+	$this->params['x_method']         = "CC";
+	$this->params['x_type']           = "AUTH_CAPTURE";
+	$this->params['x_login']          = $gw_username;
+	$this->params['x_tran_key']       = $gw_tran_key;
+	$this->params['x_test_request']   = $gw_test_mode;
+
+	$this->instances++;
+      } else {
+	return false;
+      }
+    }
+
+    function transaction($cardnum)
+    {
+      $this->params['x_card_num']  = trim($cardnum);
+    }
+
+    function addLineItem($id, $name, $description, $quantity, $price, $taxable = 0)
+    {
+      $this->line_items[] = "{$id}<|>{$name}<|>{$description}<|>{$quantity}<|>{$price}<|>{$taxable}";
+    }
+
+    function process($retries = 1)
+    {
+      global $mp;
+
+      $this->_prepareParameters();
+      $query_string = rtrim($this->fields, "&");
+
+      $count = 0;
+      while ($count < $retries)
+      {
+        $args['user-agent'] = "Membership: http://premium.wpmudev.org/project/membeship | Authorize.net AIM Plugin/";
+        $args['body'] = $query_string;
+        $args['sslverify'] = false;
+
+        //use built in WP http class to work with most server setups
+        $response = wp_remote_post($this->url, $args);
+
+        if (is_array($response) && isset($response['body'])) {
+          $this->response = $response['body'];
+        } else {
+          $this->response = "";
+          $this->error = true;
+          return;
+        }
+
+	$this->parseResults();
+
+	if ($this->getResultResponseFull() == "Approved")
+	{
+          $this->approved = true;
+	  $this->declined = false;
+	  $this->error    = false;
+          $this->method   = $this->getMethod();
+	  break;
+	} else if ($this->getResultResponseFull() == "Declined")
+	{
+          $this->approved = false;
+	  $this->declined = true;
+	  $this->error    = false;
+	  break;
+	}
+	$count++;
+      }
+    }
+
+    function parseResults()
+    {
+      $this->results = explode($this->params['x_delim_char'], $this->response);
+    }
+
+    function setParameter($param, $value)
+    {
+      $param                = trim($param);
+      $value                = trim($value);
+      $this->params[$param] = $value;
+    }
+
+    function setTransactionType($type)
+    {
+      $this->params['x_type'] = strtoupper(trim($type));
+    }
+
+    function _prepareParameters()
+    {
+      foreach($this->params as $key => $value)
+      {
+	$this->fields .= "$key=" . urlencode($value) . "&";
+      }
+      for($i=0; $i<count($this->line_items); $i++) {
+        $this->fields .= "x_line_item={$this->line_items[$i]}&";
+      }
+    }
+
+    function getMethod()
+    {
+      if (isset($this->results[51]))
+      {
+        return str_replace($this->params['x_encap_char'],'',$this->results[51]);
+      }
+      return "";
+    }
+
+    function getGatewayResponse()
+    {
+      return str_replace($this->params['x_encap_char'],'',$this->results[0]);
+    }
+
+    function getResultResponseFull()
+    {
+      $response = array("", "Approved", "Declined", "Error");
+      return $response[str_replace($this->params['x_encap_char'],'',$this->results[0])];
+    }
+
+    function isApproved()
+    {
+      return $this->approved;
+    }
+
+    function isDeclined()
+    {
+      return $this->declined;
+    }
+
+    function isError()
+    {
+      return $this->error;
+    }
+
+    function getResponseText()
+    {
+      return $this->results[3];
+      $strip = array($this->params['x_delim_char'],$this->params['x_encap_char'],'|',',');
+      return str_replace($strip,'',$this->results[3]);
+    }
+
+    function getAuthCode()
+    {
+      return str_replace($this->params['x_encap_char'],'',$this->results[4]);
+    }
+
+    function getAVSResponse()
+    {
+      return str_replace($this->params['x_encap_char'],'',$this->results[5]);
+    }
+
+    function getTransactionID()
+    {
+      return str_replace($this->params['x_encap_char'],'',$this->results[6]);
+    }
+  }
 }
 
 M_register_gateway('authorizenetarb', 'M_authorizenetarb');
