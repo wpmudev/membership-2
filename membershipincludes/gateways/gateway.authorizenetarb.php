@@ -530,8 +530,8 @@ class M_authorizenetarb extends M_Gateway {
 							$member = new M_Membership($user_id);
 							if($member) {
 								if($member->has_subscription() && $member->on_sub($sub_id)) {
-									remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
-									remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+									//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+									//remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
 									$member->expire_subscription($sub_id);
 									$member->create_subscription($sub_id, $this->gateway);
 								} else {
@@ -562,68 +562,72 @@ class M_authorizenetarb extends M_Gateway {
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
-							$arbsubscription = new M_AuthorizeNet_Subscription;
-						    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+							$arbsubscription = new M_Gateway_Worker_AuthorizeNet_ARB( 	get_option( $this->gateway . "_api_user", '' ),
+							  															get_option( $this->gateway . "_api_key", '' ),
+							  															(get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+
+						    $arbsubscription->setParameter( 'subscrName', $subscription->sub_name() . ' ' . __('subscription', 'membership') );
 
 							switch($pricing[0]['unit']) {
-								case 'd':	$arbsubscription->intervalLength = $pricing[0]['period'];
-											$arbsubscription->intervalUnit = "days";
+								case 'd':	$arbsubscription->setParameter( 'interval_length', $pricing[0]['period'] );
+											$arbsubscription->setParameter( 'interval_unit', "days" );
 											break;
 
-								case 'w':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 7 );
-											$arbsubscription->intervalUnit = "days";
+								case 'w':	$arbsubscription->setParameter( 'interval_length', ( $pricing[0]['period'] * 7 ) );
+											$arbsubscription->setParameter( 'interval_unit', "days" );
 											break;
 
-								case 'm':	$arbsubscription->intervalLength = $pricing[0]['period'];
-											$arbsubscription->intervalUnit = "months";
+								case 'm':	$arbsubscription->setParameter( 'interval_length', $pricing[0]['period'] );
+											$arbsubscription->setParameter( 'interval_unit', "months" );
 											break;
 
-								case 'y':	$arbsubscription->intervalLength = ( $pricing[0]['period'] * 12 );
-											$arbsubscription->intervalUnit = "months";
+								case 'y':	$arbsubscription->setParameter( 'interval_length', ( $pricing[0]['period'] * 12 ) );
+											$arbsubscription->setParameter( 'interval_unit', "months" );
 											break;
 							}
 
 							// Add a period to the start date
-							$arbsubscription->startDate = date( "Y-m-d", strtotime( '+' . $arbsubscription->intervalLength . ' ' . $arbsubscription->intervalUnit ) ); // Next period
-						    $arbsubscription->totalOccurrences = "9999"; // 9999 = ongoing subscription in ARB docs
+							$arbsubscription->setParameter( 'startDate', date( "Y-m-d", strtotime( '+' . $arbsubscription->intervalLength . ' ' . $arbsubscription->intervalUnit ) ) ); // Next period
+						    $arbsubscription->setParameter( 'totalOccurrences', "9999" ); // 9999 = ongoing subscription in ARB docs
 
-						    $arbsubscription->amount = number_format($pricing[0]['amount'], 2, '.', '');
+						    $arbsubscription->setParameter( 'amount', number_format($pricing[0]['amount'], 2, '.', '') );
 
-							$arbsubscription->creditCardCardNumber = $_POST['card_num'];
-						    $arbsubscription->creditCardExpirationDate= $_POST['exp_year'] . '-' . $_POST['exp_month'];
-						    $arbsubscription->creditCardCardCode = $_POST['card_code'];
+							$arbsubscription->setParameter( 'cardNumber', $_POST['card_num'] );
+						    $arbsubscription->setParameter( 'expirationDate', $_POST['exp_year'] . '-' . $_POST['exp_month'] );
+						    $arbsubscription->setParameter( 'cardCode', $_POST['card_code'] );
 
-							$arbsubscription->billToFirstName = $_POST['first_name'];
-						    $arbsubscription->billToLastName = $_POST['last_name'];
+							$arbsubscription->setParameter( 'firstName', $_POST['first_name'] );
+						    $arbsubscription->setParameter( 'lastName', $_POST['last_name'] );
 
-							$arbsubscription->billToAddress = $_POST['last_name'];
-							$arbsubscription->billToZip = $_POST['last_name'];
+							$arbsubscription->setParameter( 'address', $_POST['address'] );
+							$arbsubscription->setParameter( 'zip', $_POST['zip'] );
 
-							$arbsubscription->customerEmail = ( is_email($user->user_email) != false ) ? $user->user_email : '';
+							$arbsubscription->setParameter( 'customerEmail', ( is_email($user->user_email) != false ) ? $user->user_email : '' );
 
-							$request = new M_Gateway_Worker_AuthorizeNet_ARB( 	get_option( $this->gateway . "_api_user", '' ),
-							  													get_option( $this->gateway . "_api_key", '' ),
-							  													(get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+							$arbsubscription->createAccount();
 
-						    $response = $request->createSubscription( $arbsubscription );
-						    $subscription_id = $response->getSubscriptionId();
+							if( $arbsubscription->isSuccessful() ) {
+								// Get the subscription ID
+								$subscription_id = $arbsubscription->getSubscriberID();
 
-							// Attempt to create the subscription
-							if( !empty($subscription_id) ) {
-								// Subscription created, create it
 								$member = new M_Membership($user_id);
 								if($member) {
 									if($member->has_subscription() && $member->on_sub($sub_id)) {
-										remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
-										remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+										//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+										//remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
 										$member->expire_subscription($sub_id);
 										$member->create_subscription($sub_id, $this->gateway);
 									} else {
 										$member->create_subscription($sub_id, $this->gateway);
 									}
+
+									// Store the subscription id in the user meta for later use
+									update_user_meta( $member->ID, 'membership_' . $this->gateway . '_subscription_' . $sub_id , $subscription_id );
+
 								}
 
-
+							} else {
+								// The subscription was not created!
 							}
 
 						} else {
@@ -640,8 +644,11 @@ class M_authorizenetarb extends M_Gateway {
 					// something much more complex
 					$processsecond = true;
 
-					$arbsubscription = new M_AuthorizeNet_Subscription;
-				    $arbsubscription->name = $subscription->sub_name() . ' ' . __('subscription', 'membership');
+					$arbsubscription = new M_Gateway_Worker_AuthorizeNet_ARB( 	get_option( $this->gateway . "_api_user", '' ),
+					  															get_option( $this->gateway . "_api_key", '' ),
+					  															(get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+
+				    $arbsubscription->setParameter( 'subscrName', $subscription->sub_name() . ' ' . __('subscription', 'membership') );
 
 					/*
 					public $trialOccurrences;
@@ -994,8 +1001,6 @@ class M_authorizenetarb extends M_Gateway {
 if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	class M_Gateway_Worker_AuthorizeNet_ARB
 	{
-	    const USE_PRODUCTION_SERVER  = 0;
-	    const USE_DEVELOPMENT_SERVER = 1;
 
 	    const EXCEPTION_CURL = 10;
 
@@ -1150,6 +1155,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	                                  <creditCard>
 	                                      <cardNumber>" . $this->params['cardNumber'] . "</cardNumber>
 	                                      <expirationDate>" . $this->params['expirationDate'] . "</expirationDate>
+										  <cardCode>" . $this->params['cardCode'] . "</cardCode>
 	                                  </creditCard>";
 	        }
 
