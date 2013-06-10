@@ -101,7 +101,7 @@
 					case 'unsubscribe':	// Unsubscribe button has been clicked for solo gateways
 										$sub_id = (int) $_POST['subscription'];
 										$user = (int)	$_POST['user'];
-										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'cancel-sub_' . $sub_id) && $user == $member->ID ) {
+										if( apply_filters( 'membership_unsubscribe_subscription', true, $sub_id, $user ) && wp_verify_nonce($_REQUEST['_wpnonce'], 'cancel-sub_' . $sub_id) && $user == $member->ID ) {
 											$member->mark_for_expire( $sub_id );
 										}
 										break;
@@ -110,7 +110,7 @@
 										$sub_id = (int) $_POST['subscription'];
 										$user = (int)	$_POST['user'];
 										$level = (int) $_POST['level'];
-										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
+										if( apply_filters( 'membership_renewfree_subscription', true, $sub_id, $user ) && wp_verify_nonce($_REQUEST['_wpnonce'], 'renew-sub_' . $sub_id) && $user == $member->ID ) {
 											$member->record_active_payment( $sub_id, $level, time() );
 										}
 										//update_user_meta( $member->ID, '_membership_last_upgraded', time());
@@ -121,7 +121,7 @@
 										$user = (int)	$_POST['user'];
 										$fromsub_id = (int) $_POST['fromsub_id'];
 										$gateway = $_POST['gateway'];
-										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+										if( apply_filters( 'membership_upgradesolo_subscription', true, $sub_id, $user ) && wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
 											// Join the new subscription
 											$member->create_subscription($sub_id, $gateway);
 											// Remove the old subscription
@@ -135,7 +135,7 @@
 										$user = (int)	$_POST['user'];
 										$fromsub_id = (int) $_POST['fromsub_id'];
 										$gateway = $_POST['gateway'];
-										if( wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
+										if( apply_filters( 'membership_upgradefromfree_subscription', true, $sub_id, $user ) && wp_verify_nonce($_REQUEST['_wpnonce'], 'upgrade-sub_' . $sub_id) && $user == $member->ID ) {
 											// Join the new subscription
 											$member->create_subscription($sub_id, $gateway);
 											// Remove the old subscription

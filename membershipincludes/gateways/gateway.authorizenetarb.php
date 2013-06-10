@@ -43,6 +43,8 @@ class M_authorizenetarb extends M_Gateway {
 			// if logged in
 			add_action( 'wp_ajax_processpurchase_' . $this->gateway, array(&$this, 'process_payment_form') );
 
+			// Cancel subscription button
+			add_filter( 'membership_unsubscribe_subscription', array(&$this, 'process_unsubscribe_subscription'), 10, 3 );
 		}
 
 	}
@@ -406,6 +408,32 @@ class M_authorizenetarb extends M_Gateway {
 			</div>
 		</div>
 	</form><?php
+	}
+
+	function process_unsubscribe_subscription( $pass, $sub_id, $user_id ) {
+
+		// We need to find if we have a subscription and attempt to remove it
+		$subscription_id = get_user_meta( $user_id, 'membership_' . $this->gateway . '_subscription_' . $sub_id, true );
+
+		if(!empty($subscription_id)) {
+
+			$arbsubscription = new M_Gateway_Worker_AuthorizeNet_ARB( 	get_option( $this->gateway . "_api_user", '' ),
+			  															get_option( $this->gateway . "_api_key", '' ),
+			  															(get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox'));
+
+			$arbsubscription->setParameter('subscrId', $subscription_id);
+			$arbsubscription->deleteAccount();
+
+			if( $arbsubscription->isSuccessful() ) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} else {
+			return $pass;
+		}
+
 	}
 
 	function process_aim_payment( $amount, $user, $subscription ) {
@@ -1162,10 +1190,37 @@ class M_authorizenetarb extends M_Gateway {
 
 	}
 
-	function display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
+	function old_display_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false) {
 		$this->build_upgrade_button($pricing, $subscription, $user_id, $fromsub_id = false);
 	}
 
+	function display_cancel_button($subscription, $pricing, $user_id) {
+
+		$subscription_id = get_user_meta( $user_id, 'membership_' . $this->gateway . '_subscription_' . $subscription->sub_id(), true );
+
+		if(!empty($subscription_id)) {
+			// We have an ARB subscription
+			echo '<form class="unsubbutton" action="" method="post">';
+			wp_nonce_field('cancel-sub_' . $subscription->sub_id());
+			echo "<input type='hidden' name='action' value='unsubscribe' />";
+			echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+			echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+			echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+			echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' class='button " . apply_filters('membership_subscription_button_color', 'blue') . "' />";
+			echo "</form>";
+		} else {
+			// We don't seem to have a subscription - so just do a cancel
+			echo '<form class="unsubbutton" action="" method="post">';
+			wp_nonce_field('cancel-sub_' . $subscription->sub_id());
+			echo "<input type='hidden' name='action' value='unsubscribe' />";
+			echo "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+			echo "<input type='hidden' name='subscription' value='" . $subscription->sub_id() . "' />";
+			echo "<input type='hidden' name='user' value='" . $user_id . "' />";
+			echo "<input type='submit' name='submit' value=' " . __('Unsubscribe', 'membership') . " ' class='button " . apply_filters('membership_subscription_button_color', 'blue') . "' />";
+			echo "</form>";
+		}
+
+	}
 
 	function update() {
 		if( isset($_POST['mode'])) {
