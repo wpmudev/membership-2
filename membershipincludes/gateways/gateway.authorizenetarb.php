@@ -275,7 +275,7 @@ class M_authorizenetarb extends M_Gateway {
 
 				// Check if the pricing is now a free subscription and if so then handle the signup directly
 				// We are on a free signup - check the subscription then set it up
-				if( isset($pricing[0]) && $pricing[0]['amount'] < 1 ) {
+				if( (isset($pricing[0]) && $pricing[0]['amount'] < 1 && count($pricing) == 1) || (count($pricing) == 2 && $pricing[0]['amount'] < 1 && $pricing[1]['amount'] < 1 ) ) {
 					// We have a free level
 					do_action( 'membership_create_subscription', $user_id, $subscription_id, $this->gateway );
 					if( !empty($M_options['registrationcompleted_message']) ) {
@@ -881,7 +881,7 @@ class M_authorizenetarb extends M_Gateway {
 														break;
 							}
 
-						    $arbsubscription->setParameter( 'amount', number_format($pricing[0]['amount'], 2, '.', '') );
+						    $arbsubscription->setParameter( 'amount', number_format($pricing[1]['amount'], 2, '.', '') );
 
 							$arbsubscription->setParameter( 'cardNumber', $_POST['card_num'] );
 						    $arbsubscription->setParameter( 'expirationDate', $_POST['exp_year'] . '-' . $_POST['exp_month'] );
