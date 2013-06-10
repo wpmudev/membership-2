@@ -176,7 +176,7 @@ class M_authorizenetarb extends M_Gateway {
 
 	function signup_subscription($content, $error) {
 
-		if(isset($_POST['custom'])) {
+		if( isset($_POST['custom'])) {
 			list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 		}
 
@@ -205,13 +205,13 @@ class M_authorizenetarb extends M_Gateway {
 	function single_button($pricing, $subscription, $user_id) {
 		global $M_options;
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$popup = ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+		$reg_page = ( isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 
 		$form = '';
 
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		//$coupon_code = ( isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
@@ -238,7 +238,7 @@ class M_authorizenetarb extends M_Gateway {
 
 		$gateway = $_POST['gateway'];
 
-		if( $gateway == 'authorizenetaim' ) {
+		if( $gateway == 'authorizenetarb' ) {
 
 			$subscription_id = $_POST['subscription'];
 			$coupon_code = $_POST['coupon_code'];
@@ -307,8 +307,8 @@ class M_authorizenetarb extends M_Gateway {
 		if(empty($M_options['paymentcurrency'])) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+		$popup = ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$reg_page = ( isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 		$form = '';
 
 		$M_secure_home_url = preg_replace('/http:/i', 'https:', trailingslashit(get_option('home')));
@@ -331,7 +331,7 @@ class M_authorizenetarb extends M_Gateway {
 		$api_u = get_option( $this->gateway . "_api_user");
 		$api_k = get_option( $this->gateway . "_api_key");
 		$error = false;
-		if(isset($_GET['errors'])) {
+		if( isset($_GET['errors'])) {
 			if($_GET['errors'] == 1)
 				$error = __('Payment method not supported for the payment', 'membership');
 			if($_GET['errors'] == 2)
@@ -408,12 +408,15 @@ class M_authorizenetarb extends M_Gateway {
 	</form><?php
 	}
 
-	function process_aim_payment( $amount, $user_id, $sub_id ) {
+	function process_aim_payment( $amount, $user, $subscription ) {
+
+		global $M_options;
 
 		// A basic price or a single subscription
 		$return = array();
 
-		if($pricing) {
+		if($amount >= 1) {
+			// We have a charge to make
 			$timestamp = time();
 
 			if (get_option( $this->gateway . "_mode", 'sandbox' ) == 'sandbox')	{
@@ -465,7 +468,7 @@ class M_authorizenetarb extends M_Gateway {
 				$status = __('Processed','membership');
 				$note = '';
 
-				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
+				$this->record_transaction($user->ID, $subscription->sub_id(), $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
 
 			} else {
 				$return['status'] = 'error';
@@ -491,7 +494,7 @@ class M_authorizenetarb extends M_Gateway {
 			exit;
 		}
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$popup = ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 		$coupon = membership_get_current_coupon();
 
 		if(empty($M_options['paymentcurrency'])) {
@@ -523,7 +526,7 @@ class M_authorizenetarb extends M_Gateway {
 					if(in_array($pricing[0]['type'], array('indefinite','finite'))) {
 						// one-off payment - so we just use AIM instead
 
-						$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
+						$return = $this->process_aim_payment( $pricing[0]['amount'], $user, $subscription );
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
@@ -558,7 +561,7 @@ class M_authorizenetarb extends M_Gateway {
 					} elseif( $pricing[0]['type'] == 'serial' ) {
 						// Single serial subscription - we want to charge the first amount using AIM so we can validate the payment, then setup the subscription to start one period later
 
-						$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
+						$return = $this->process_aim_payment( $pricing[0]['amount'], $user, $subscription );
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
@@ -571,23 +574,31 @@ class M_authorizenetarb extends M_Gateway {
 							switch($pricing[0]['unit']) {
 								case 'd':	$arbsubscription->setParameter( 'interval_length', $pricing[0]['period'] );
 											$arbsubscription->setParameter( 'interval_unit', "days" );
+
+											$trialperiod = '+' . $pricing[0]['period'] . ' days';
 											break;
 
 								case 'w':	$arbsubscription->setParameter( 'interval_length', ( $pricing[0]['period'] * 7 ) );
 											$arbsubscription->setParameter( 'interval_unit', "days" );
+
+											$trialperiod = '+' . $pricing[0]['period'] . ' weeks';
 											break;
 
 								case 'm':	$arbsubscription->setParameter( 'interval_length', $pricing[0]['period'] );
 											$arbsubscription->setParameter( 'interval_unit', "months" );
+
+											$trialperiod = '+' . $pricing[0]['period'] . ' months';
 											break;
 
 								case 'y':	$arbsubscription->setParameter( 'interval_length', ( $pricing[0]['period'] * 12 ) );
 											$arbsubscription->setParameter( 'interval_unit', "months" );
+
+											$trialperiod = '+' . $pricing[0]['period'] . ' years';
 											break;
 							}
 
 							// Add a period to the start date
-							$arbsubscription->setParameter( 'startDate', date( "Y-m-d", strtotime( '+' . $arbsubscription->intervalLength . ' ' . $arbsubscription->intervalUnit ) ) ); // Next period
+							$arbsubscription->setParameter( 'startDate', date( "Y-m-d", strtotime( $trialperiod ) ) ); // Next period
 						    $arbsubscription->setParameter( 'totalOccurrences', "9999" ); // 9999 = ongoing subscription in ARB docs
 
 						    $arbsubscription->setParameter( 'amount', number_format($pricing[0]['amount'], 2, '.', '') );
@@ -601,6 +612,8 @@ class M_authorizenetarb extends M_Gateway {
 
 							$arbsubscription->setParameter( 'address', $_POST['address'] );
 							$arbsubscription->setParameter( 'zip', $_POST['zip'] );
+
+							$arbsubscription->setParameter( 'customerId', $user->ID );
 
 							$arbsubscription->setParameter( 'customerEmail', ( is_email($user->user_email) != false ) ? $user->user_email : '' );
 
@@ -683,7 +696,7 @@ class M_authorizenetarb extends M_Gateway {
 						case 'indefinite':		// Hmmm - ok
 												$processsecond = false;
 
-												$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
+												$return = $this->process_aim_payment( $pricing[0]['amount'], $user, $subscription );
 
 												if( !empty($return) && $return['status'] == 'success' ) {
 													// The payment went through ok
@@ -720,7 +733,7 @@ class M_authorizenetarb extends M_Gateway {
 						case 'serial':			// Hmmm - ok par deux
 												$processsecond = false;
 
-												$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
+												$return = $this->process_aim_payment( $pricing[0]['amount'], $user, $subscription );
 
 												if( !empty($return) && $return['status'] == 'success' ) {
 													// The payment went through ok
@@ -764,6 +777,7 @@ class M_authorizenetarb extends M_Gateway {
 													$arbsubscription->setParameter( 'address', $_POST['address'] );
 													$arbsubscription->setParameter( 'zip', $_POST['zip'] );
 
+													$arbsubscription->setParameter( 'customerId', $user->ID );
 													$arbsubscription->setParameter( 'customerEmail', ( is_email($user->user_email) != false ) ? $user->user_email : '' );
 
 													$arbsubscription->createAccount();
@@ -821,7 +835,7 @@ class M_authorizenetarb extends M_Gateway {
 
 						if( $pricing[0]['amount'] >= 1 ) {
 							// The first period is not free so we have to charge for it
-							$return = $this->process_aim_payment( $pricing[0]['amount'], $user_id, $sub_id );
+							$return = $this->process_aim_payment( $pricing[0]['amount'], $user, $subscription );
 						} else {
 							$return = array();
 							$return['status'] = 'success';
@@ -879,6 +893,7 @@ class M_authorizenetarb extends M_Gateway {
 							$arbsubscription->setParameter( 'address', $_POST['address'] );
 							$arbsubscription->setParameter( 'zip', $_POST['zip'] );
 
+							$arbsubscription->setParameter( 'customerId', $user->ID );
 							$arbsubscription->setParameter( 'customerEmail', ( is_email($user->user_email) != false ) ? $user->user_email : '' );
 
 							$arbsubscription->createAccount();
@@ -929,13 +944,9 @@ class M_authorizenetarb extends M_Gateway {
 
 					}
 
-
-
 				}
 			}
 		}
-
-
 
 	}
 
@@ -966,13 +977,13 @@ class M_authorizenetarb extends M_Gateway {
 	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 		global $M_options;
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$popup = ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+		$reg_page = ( isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 
 		$form = '';
 
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		//$coupon_code = ( isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
@@ -996,13 +1007,13 @@ class M_authorizenetarb extends M_Gateway {
 	function complex_sub_button($pricing, $subscription, $user_id) {
 		global $M_options;
 
-		$popup = (isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
+		$popup = ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ? true : false);
 
-		$reg_page = (isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
+		$reg_page = ( isset($M_options['registration_page']) ? get_permalink($M_options['registration_page']) : '');
 
 		$form = '';
 
-		//$coupon_code = (isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
+		//$coupon_code = ( isset($_REQUEST['remove_coupon']) ? '' : $_REQUEST['coupon_code']);
 		$coupon = membership_get_current_coupon();
 
 		$form .= '<form action="'.str_replace('http:', 'https:',$reg_page.'?action=registeruser&amp;subscription='.$subscription->id).'" method="post" id="signup-form">';
@@ -1157,7 +1168,7 @@ class M_authorizenetarb extends M_Gateway {
 
 
 	function update() {
-		if(isset($_POST['mode'])) {
+		if( isset($_POST['mode'])) {
 			update_option( $this->gateway . "_mode", $_POST[ 'mode' ] );
 			update_option( $this->gateway . "_api_user", $_POST[ 'api_user' ] );
 			update_option( $this->gateway . "_api_key", $_POST[ 'api_key' ] );
@@ -1233,7 +1244,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	    private $text;
 	    private $subscrId;
 
-	    public function __construct($login, $transkey, $test = false )
+	    function __construct($login, $transkey, $test = false )
 	    {
 	        $login    = trim($login);
 	        $transkey = trim($transkey);
@@ -1255,17 +1266,10 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	        $this->params['totalOccurrences'] = 9999;
 	        $this->params['trialOccurrences'] = 0;
 	        $this->params['trialAmount']      = 0.00;
+
 	    }
 
-	    public function __destruct()
-	    {
-	        if (isset($this->ch))
-	        {
-	            curl_close($this->ch);
-	        }
-	    }
-
-	    public function __toString()
+	    function __toString()
 	    {
 	        if (!$this->params)
 	        {
@@ -1288,12 +1292,14 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	        return $output;
 	    }
 
-	    private function process()
+	    function process()
 	    {
 
+			$args = array();
 			$args['user-agent'] = "Membership: http://premium.wpmudev.org/project/membeship | Authorize.net ARB Plugin/";
 	        $args['body'] = $this->xml;
 	        $args['sslverify'] = false;
+			$args['headers'] = array( 'Content-Type' => 'text/xml' );
 
 	        //use built in WP http class to work with most server setups
 	        $response = wp_remote_post($this->url, $args);
@@ -1319,8 +1325,6 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	                $this->success = false;
 	                $this->error   = true;
 	            }
-	            curl_close($this->ch);
-	            unset($this->ch);
 	            return true;
 	        } else {
 				return false;
@@ -1328,7 +1332,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 
 	    }
 
-	    public function createAccount($echeck = false)
+	    function createAccount($echeck = false)
 	    {
 	        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
 	                      <ARBCreateSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
@@ -1336,78 +1340,79 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	                              <name>" . $this->login . "</name>
 	                              <transactionKey>" . $this->transkey . "</transactionKey>
 	                          </merchantAuthentication>
-	                          <refId>" . $this->params['refID'] ."</refId>
+	                          <refId>" . ( isset($this->params['refID'] ) ? $this->params['refID'] : '' ) ."</refId>
 	                          <subscription>
-	                              <name>". $this->params['subscrName'] ."</name>
+	                              <name>". ( isset($this->params['subscrName'] ) ? $this->params['subscrName'] : '' ) ."</name>
 	                              <paymentSchedule>
 	                                  <interval>
-	                                      <length>". $this->params['interval_length'] ."</length>
-	                                      <unit>". $this->params['interval_unit'] ."</unit>
+	                                      <length>". ( isset($this->params['interval_length'] ) ? $this->params['interval_length'] : '' ) . "</length>
+	                                      <unit>". ( isset($this->params['interval_unit'] ) ? $this->params['interval_unit'] : '' ) . "</unit>
 	                                  </interval>
-	                                  <startDate>" . $this->params['startDate'] . "</startDate>
-	                                  <totalOccurrences>". $this->params['totalOccurrences'] . "</totalOccurrences>
-	                                  <trialOccurrences>". $this->params['trialOccurrences'] . "</trialOccurrences>
+	                                  <startDate>" . ( isset($this->params['startDate'] ) ? $this->params['startDate'] : '' ) . "</startDate>
+	                                  <totalOccurrences>". ( isset($this->params['totalOccurrences'] ) ? $this->params['totalOccurrences'] : '' ) . "</totalOccurrences>
+	                                  <trialOccurrences>". ( isset($this->params['trialOccurrences'] ) ? $this->params['trialOccurrences'] : '' ) . "</trialOccurrences>
 	                              </paymentSchedule>
-	                              <amount>". $this->params['amount'] ."</amount>
-	                              <trialAmount>" . $this->params['trialAmount'] . "</trialAmount>
+	                              <amount>". ( isset($this->params['amount'] ) ? $this->params['amount'] : '' ) . "</amount>
+	                              <trialAmount>" . ( isset($this->params['trialAmount'] ) ? $this->params['trialAmount'] : '' ) . "</trialAmount>
 	                              <payment>";
 	        if ($echeck)
 	        {
 	            $this->xml .= "
 	                                  <bankAccount>
-	                                      <accountType>". $this->params['accountType'] ."</accountType>
-	                                      <routingNumber>". $this->params['routingNumber'] ."</routingNumber>
-	                                      <accountNumber>". $this->params['accountNumber'] ."</accountNumber>
-	                                      <nameOnAccount>". $this->params['nameOnAccount'] ."</nameOnAccount>
-	                                      <bankName>". $this->params['bankName'] ."</bankName>
+	                                      <accountType>". ( isset($this->params['accountType'] ) ? $this->params['accountType'] : '' ) . "</accountType>
+	                                      <routingNumber>". ( isset($this->params['routingNumber'] ) ? $this->params['routingNumber'] : '' ) . "</routingNumber>
+	                                      <accountNumber>". ( isset($this->params['accountNumber'] ) ? $this->params['accountNumber'] : '' ) . "</accountNumber>
+	                                      <nameOnAccount>". ( isset($this->params['nameOnAccount'] ) ? $this->params['nameOnAccount'] : '' ) . "</nameOnAccount>
+	                                      <bankName>". ( isset($this->params['bankName'] ) ? $this->params['bankName'] : '' ) . "</bankName>
 	                                  </bankAccount>";
 	        }
 	        else
 	        {
 	            $this->xml .= "
 	                                  <creditCard>
-	                                      <cardNumber>" . $this->params['cardNumber'] . "</cardNumber>
-	                                      <expirationDate>" . $this->params['expirationDate'] . "</expirationDate>
-										  <cardCode>" . $this->params['cardCode'] . "</cardCode>
+	                                      <cardNumber>" . ( isset($this->params['cardNumber'] ) ? $this->params['cardNumber'] : '' ) . "</cardNumber>
+	                                      <expirationDate>" . ( isset($this->params['expirationDate'] ) ? $this->params['expirationDate'] : '' ) . "</expirationDate>
+	                                      <cardCode>" . ( isset($this->params['cardCode'] ) ? $this->params['cardCode'] : '' ) . "</cardCode>
 	                                  </creditCard>";
 	        }
 
 	        $this->xml .= "
 	                              </payment>
 	                              <order>
-	                                  <invoiceNumber>" . $this->params['orderInvoiceNumber'] . "</invoiceNumber>
-	                                  <description>" . $this->params['orderDescription'] . "</description>
+	                                  <invoiceNumber>" . ( isset($this->params['orderInvoiceNumber'] ) ? $this->params['orderInvoiceNumber'] : '' ) . "</invoiceNumber>
+	                                  <description>" . ( isset($this->params['orderDescription'] ) ? $this->params['orderDescription'] : '' ) . "</description>
 	                              </order>
 	                              <customer>
-	                                  <id>" . $this->params['customerId'] . "</id>
-	                                  <email>" . $this->params['customerEmail'] . "</email>
-	                                  <phoneNumber>" . $this->params['customerPhoneNumber'] . "</phoneNumber>
-	                                  <faxNumber>" . $this->params['customerFaxNumber'] . "</faxNumber>
+	                                  <id>" . ( isset($this->params['customerId'] ) ? $this->params['customerId'] : '' ) . "</id>
+	                                  <email>" . ( isset($this->params['customerEmail'] ) ? $this->params['customerEmail'] : '' ) . "</email>
+	                                  <phoneNumber>" . ( isset($this->params['customerPhoneNumber'] ) ? $this->params['customerPhoneNumber'] : '' ) . "</phoneNumber>
+	                                  <faxNumber>" . ( isset($this->params['customerFaxNumber'] ) ? $this->params['customerFaxNumber'] : '' ) . "</faxNumber>
 	                              </customer>
 	                              <billTo>
-	                                  <firstName>". $this->params['firstName'] . "</firstName>
-	                                  <lastName>" . $this->params['lastName'] . "</lastName>
-	                                  <company>" . $this->params['company'] . "</company>
-	                                  <address>" . $this->params['address'] . "</address>
-	                                  <city>" . $this->params['city'] . "</city>
-	                                  <state>" . $this->params['state'] . "</state>
-	                                  <zip>" . $this->params['zip'] . "</zip>
+	                                  <firstName>". ( isset($this->params['firstName'] ) ? $this->params['firstName'] : '' ) . "</firstName>
+	                                  <lastName>" . ( isset($this->params['lastName'] ) ? $this->params['lastName'] : '' ) . "</lastName>
+	                                  <company>" . ( isset($this->params['company'] ) ? $this->params['company'] : '' ) . "</company>
+	                                  <address>" . ( isset($this->params['address'] ) ? $this->params['address'] : '' ) . "</address>
+	                                  <city>" . ( isset($this->params['city'] ) ? $this->params['city'] : '' ) . "</city>
+	                                  <state>" . ( isset($this->params['state'] ) ? $this->params['state'] : '' ) . "</state>
+	                                  <zip>" . ( isset($this->params['zip'] ) ? $this->params['zip'] : '' ) . "</zip>
 	                              </billTo>
 	                              <shipTo>
-	                                  <firstName>". $this->params['shipFirstName'] . "</firstName>
-	                                  <lastName>" . $this->params['shipLastName'] . "</lastName>
-	                                  <company>" . $this->params['shipCompany'] . "</company>
-	                                  <address>" . $this->params['shipAddress'] . "</address>
-	                                  <city>" . $this->params['shipCity'] . "</city>
-	                                  <state>" . $this->params['shipState'] . "</state>
-	                                  <zip>" . $this->params['shipZip'] . "</zip>
+	                                  <firstName>". ( isset($this->params['shipFirstName'] ) ? $this->params['shipFirstName'] : '' ) . "</firstName>
+	                                  <lastName>" . ( isset($this->params['shipLastName'] ) ? $this->params['shipLastName'] : '' ) . "</lastName>
+	                                  <company>" . ( isset($this->params['shipCompany'] ) ? $this->params['shipCompany'] : '' ) . "</company>
+	                                  <address>" . ( isset($this->params['shipAddress'] ) ? $this->params['shipAddress'] : '' ) . "</address>
+	                                  <city>" . ( isset($this->params['shipCity'] ) ? $this->params['shipCity'] : '' ) . "</city>
+	                                  <state>" . ( isset($this->params['shipState'] ) ? $this->params['shipState'] : '' ) . "</state>
+	                                  <zip>" . ( isset($this->params['shipZip'] ) ? $this->params['shipZip'] : '' ) . "</zip>
 	                              </shipTo>
 	                          </subscription>
 	                      </ARBCreateSubscriptionRequest>";
+
 	        $this->process();
 	    }
 
-	    public function updateAccount()
+	    function updateAccount()
 	    {
 	        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
 	                      <ARBUpdateSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
@@ -1415,32 +1420,33 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	                              <name>" . $this->login . "</name>
 	                              <transactionKey>" . $this->transkey . "</transactionKey>
 	                          </merchantAuthentication>
-	                          <refId>" . $this->params['refID'] ."</refId>
-	                          <subscriptionId>" . $this->params['subscrId'] . "</subscriptionId>
+	                          <refId>" . ( isset($this->params['refID'] ) ? $this->params['refID'] : '' ) . "</refId>
+	                          <subscriptionId>" . ( isset($this->params['subscrId'] ) ? $this->params['subscrId'] : '' ) . "</subscriptionId>
 	                          <subscription>
-	                              <name>". $this->params['subscrName'] ."</name>
-	                              <amount>". $this->params['amount'] ."</amount>
-	                              <trialAmount>" . $this->params['trialAmount'] . "</trialAmount>
+	                              <name>". ( isset($this->params['subscrName'] ) ? $this->params['subscrName'] : '' ) . "</name>
+	                              <amount>". ( isset($this->params['amount'] ) ? $this->params['amount'] : '' ) . "</amount>
+	                              <trialAmount>" . ( isset($this->params['trialAmount'] ) ? $this->params['trialAmount'] : '' ) . "</trialAmount>
 	                              <payment>
 	                                  <creditCard>
-	                                      <cardNumber>" . $this->params['cardNumber'] . "</cardNumber>
-	                                      <expirationDate>" . $this->params['expirationDate'] . "</expirationDate>
+	                                      <cardNumber>" . ( isset($this->params['cardNumber'] ) ? $this->params['cardNumber'] : '' ) . "</cardNumber>
+	                                      <expirationDate>" . ( isset($this->params['expirationDate'] ) ? $this->params['expirationDate'] : '' ) . "</expirationDate>
 	                                  </creditCard>
 	                              </payment>
 	                              <billTo>
-	                                  <firstName>". $this->params['firstName'] . "</firstName>
-	                                  <lastName>" . $this->params['lastName'] . "</lastName>
-	                                  <address>" . $this->params['address'] . "</address>
-	                                  <city>" . $this->params['city'] . "</city>
-	                                  <state>" . $this->params['state'] . "</state>
-	                                  <zip>" . $this->params['zip'] . "</zip>
+	                                  <firstName>". ( isset($this->params['firstName'] ) ? $this->params['firstName'] : '' ) . "</firstName>
+	                                  <lastName>" . ( isset($this->params['lastName'] ) ? $this->params['lastName'] : '' ) . "</lastName>
+	                                  <address>" . ( isset($this->params['address'] ) ? $this->params['address'] : '' ) . "</address>
+	                                  <city>" . ( isset($this->params['city'] ) ? $this->params['city'] : '' ) . "</city>
+	                                  <state>" . ( isset($this->params['state'] ) ? $this->params['state'] : '' ) . "</state>
+	                                  <zip>" . ( isset($this->params['zip'] ) ? $this->params['zip'] : '' ) . "</zip>
 	                              </billTo>
 	                          </subscription>
 	                      </ARBUpdateSubscriptionRequest>";
+
 	        $this->process();
 	    }
 
-	    public function deleteAccount()
+	    function deleteAccount()
 	    {
 	        $this->xml = "<?xml version='1.0' encoding='utf-8'?>
 	                      <ARBCancelSubscriptionRequest xmlns='AnetApi/xml/v1/schema/AnetApiSchema.xsd'>
@@ -1448,13 +1454,14 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	                              <name>" . $this->login . "</name>
 	                              <transactionKey>" . $this->transkey . "</transactionKey>
 	                          </merchantAuthentication>
-	                          <refId>" . $this->params['refID'] ."</refId>
-	                          <subscriptionId>" . $this->params['subscrId'] . "</subscriptionId>
+	                          <refId>" . ( isset($this->params['refID'] ) ? $this->params['refID'] : '' ) . "</refId>
+	                          <subscriptionId>" . ( isset($this->params['subscrId'] ) ? $this->params['subscrId'] : '' ) . "</subscriptionId>
 	                      </ARBCancelSubscriptionRequest>";
+
 	        $this->process();
 	    }
 
-	    private function parseResults()
+	    function parseResults()
 	    {
 	        $response = str_replace('xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd"', '', $this->response);
 	        $xml = new SimpleXMLElement($response);
@@ -1465,7 +1472,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	        $this->subscrId   = (string) $xml->subscriptionId;
 	    }
 
-	    public function setParameter($field = '', $value = null)
+	    function setParameter($field = '', $value = null)
 	    {
 	        $field = (is_string($field)) ? trim($field) : $field;
 	        $value = (is_string($value)) ? trim($value) : $value;
@@ -1473,27 +1480,27 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_ARB')) {
 	        $this->params[$field] = $value;
 	    }
 
-	    public function isSuccessful()
+	    function isSuccessful()
 	    {
 	        return $this->success;
 	    }
 
-	    public function isError()
+	    function isError()
 	    {
 	        return $this->error;
 	    }
 
-	    public function getResponse()
+	    function getResponse()
 	    {
 	        return strip_tags($this->text);
 	    }
 
-	    public function getResponseCode()
+	    function getResponseCode()
 	    {
 	        return $this->code;
 	    }
 
-	    public function getSubscriberID()
+	    function getSubscriberID()
 	    {
 	        return $this->subscrId;
 	    }
@@ -1629,7 +1636,7 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
 
     function getMethod()
     {
-      if (isset($this->results[51]))
+      if ( isset($this->results[51]))
       {
         return str_replace($this->params['x_encap_char'],'',$this->results[51]);
       }
