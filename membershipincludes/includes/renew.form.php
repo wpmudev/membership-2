@@ -202,8 +202,13 @@
 													case 'serial':		echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
 																		break;
 
-													case 'finite':		echo __('Your membership is due to expire on : ', 'membership');
-																		echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+													case 'finite':		if(!empty($nextlevel)) {
+																			// We have a level we can move to next
+																			echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+																		} else {
+																			echo __('Your membership is due to expire on : ', 'membership');
+																			echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+																		}
 																		break;
 
 													case 'indefinite':	echo __('You are on an <strong>indefinite</strong> membership.', 'membership');
@@ -216,8 +221,13 @@
 													case 'serial':		echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
 																		break;
 
-													case 'finite':		echo __('Your membership is due to expire on : ', 'membership');
-																		echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+													case 'finite':		if(!empty($nextlevel)) {
+																			// We have a level we can move to next
+																			echo __('Your membership is set to <strong>automatically renew</strong>', 'membership');
+																		} else {
+																			echo __('Your membership is due to expire on : ', 'membership');
+																			echo "<strong>" . date( "jS F Y", mysql2date("U", $rel->expirydate)) . "</strong>";
+																		}
 																		break;
 
 													case 'indefinite':	echo __('You are on an <strong>indefinite</strong> membership.', 'membership');
