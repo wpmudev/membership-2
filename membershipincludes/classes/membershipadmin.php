@@ -3,7 +3,7 @@ if(!class_exists('membershipadmin')) {
 
 	class membershipadmin {
 
-		var $build = 14;
+		var $build = 15;
 		var $db;
 
 		//
@@ -5613,7 +5613,7 @@ if(!class_exists('membershipadmin')) {
 									</td>
 									<td class="column-sub">
 										<?php
-											if( (!isset($comm->sub_id)) || $comm->sub_id == 0 ) {
+											if( empty($comm->sub_id) || $comm->sub_id == 0 ) {
 												echo __('All','membership');
 											} else {
 												$sub = new M_Subscription( $comm->sub_id );

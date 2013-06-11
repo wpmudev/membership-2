@@ -29,12 +29,24 @@ function M_Upgrade($from = false) {
 
 					break;
 
+		case 14:	M_Alterfor15();
+					break;
+
 		case false:	M_Createtables();
 					break;
 
 		default:	M_Createtables();
 					break;
 	}
+
+}
+
+function M_Alterfor15() {
+	global $wpdb;
+
+	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'communications') . " ADD `sub_id` BIGINT  NULL  DEFAULT NULL  AFTER `id`;";
+
+	$wpdb->query( $sql );
 
 }
 
@@ -184,6 +196,7 @@ function M_Alterfor4() {
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
 	  `id` bigint(11) NOT NULL auto_increment,
+	  `sub_id` bigint(20) DEFAULT NULL,
 	  `subject` varchar(250) default NULL,
 	  `message` text,
 	  `periodunit` int(11) default NULL,
@@ -338,6 +351,7 @@ function M_Createtables() {
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
 	  `id` bigint(11) NOT NULL auto_increment,
+	  `sub_id` bigint(20) DEFAULT NULL,
 	  `subject` varchar(250) default NULL,
 	  `message` text,
 	  `periodunit` int(11) default NULL,
@@ -544,6 +558,7 @@ function M_Create_single_table( $name ) {
 		case membership_db_prefix($wpdb, 'communications'):
 					$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'communications') . "` (
 					  `id` bigint(11) NOT NULL auto_increment,
+					  `sub_id` bigint(20) DEFAULT NULL,
 					  `subject` varchar(250) default NULL,
 					  `message` text,
 					  `periodunit` int(11) default NULL,
@@ -858,6 +873,7 @@ function M_build_database_structure() {
 																				'stripquerystring'	=>	$i
 																			),
 						membership_db_prefix($wpdb, 'communications')	=>	array(	'id'	=>	$bi11,
+																					'sub_id' => $bi,
 																					'subject'	=>	$v250,
 																					'message'	=>	$t,
 																					'periodunit'	=>	$i,
