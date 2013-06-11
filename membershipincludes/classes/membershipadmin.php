@@ -5550,6 +5550,7 @@ if(!class_exists('membershipadmin')) {
 					wp_original_referer_field(true, 'previous'); wp_nonce_field('bulk-comms');
 
 					$columns = array(	"name" 		=> 	__('Message Subject','membership'),
+										"sub" 		=> 	__('Subscription','membership'),
 										"active"	=>	__('Active','membership'),
 										"transactions" => __('Pre-expiry period','membership')
 									);
@@ -5609,7 +5610,20 @@ if(!class_exists('membershipadmin')) {
 
 										?>
 										<br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-										</td>
+									</td>
+									<td class="column-sub">
+										<?php
+											if( (!isset($comm->sub_id)) || $comm->sub_id == 0 ) {
+												echo __('All','membership');
+											} else {
+												$sub = new M_Subscription( $comm->sub_id );
+												if(!empty($sub)) {
+													echo $sub->sub_name();
+												}
+											}
+
+										?>
+									</td>
 									<td class="column-active">
 										<?php
 											if($comm->active == 1) {

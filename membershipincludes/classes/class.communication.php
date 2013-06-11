@@ -57,6 +57,29 @@ if(!class_exists('M_Communication')) {
 			return $this->db->get_row( $commsql );
 		}
 
+		function get_active_subscriptions() {
+
+			$where = array();
+			$orderby = array();
+
+			$where[] = "sub_active = 1";
+
+			$orderby[] = 'id ASC';
+
+			$sql = "SELECT * FROM {$this->subscriptions}";
+
+			if(!empty($where)) {
+				$sql .= " WHERE " . implode(' AND ', $where);
+			}
+
+			if(!empty($orderby)) {
+				$sql .= " ORDER BY " . implode(', ', $orderby);
+			}
+
+			return $this->db->get_results($sql);
+
+		}
+
 		function addform() {
 
 			echo '<table class="form-table">';
@@ -99,6 +122,26 @@ if(!class_exists('M_Communication')) {
 				echo ">";
 				echo __('after a subscription is paid','membership');
 				echo "</option>";
+			echo '</select>';
+
+			echo '</td>';
+			echo '</tr>';
+
+			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('For subscription','membership') . '</th>';
+			echo '<td valign="top">';
+
+			$subscriptions = $this->get_active_subscriptions();
+
+			echo '<select name="subscription_id">';
+
+			echo '<option value="0">' . __('All', 'membership') . '</option>';
+			if(!empty($subscriptions)) {
+				foreach( $subscriptions as $sub ) {
+					echo '<option value="' . $sub->id . '">' . $sub->sub_name . '</option>';
+				}
+			}
+
 			echo '</select>';
 
 			echo '</td>';
@@ -178,6 +221,27 @@ if(!class_exists('M_Communication')) {
 				echo __('after a subscription is paid','membership');
 				echo "</option>";
 			echo '</select>';
+
+			echo '</td>';
+			echo '</tr>';
+
+			echo '<tr class="form-field form-required">';
+			echo '<th style="" scope="row" valign="top">' . __('For subscription','membership') . '</th>';
+			echo '<td valign="top">';
+
+			$subscriptions = $this->get_active_subscriptions();
+
+			echo '<select name="subscription_id">';
+
+			echo '<option value="0"' . ($this->comm->sub_id == 0) ? 'selected="selected"' : '' . '>' . __('All', 'membership') . '</option>';
+			if(!empty($subscriptions)) {
+				foreach( $subscriptions as $sub ) {
+					echo '<option value="' . $sub->id . '"' . ($this->comm->sub_id == $sub->id) ? 'selected="selected"' : '' . '>' . $sub->sub_name . '</option>';
+				}
+			}
+
+			echo '</select>';
+
 
 			echo '</td>';
 			echo '</tr>';
