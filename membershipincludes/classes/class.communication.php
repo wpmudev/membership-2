@@ -294,7 +294,8 @@ if(!class_exists('M_Communication')) {
 								"periodprepost"	=>	$_POST['periodprepost'],
 								"subject"		=>	$_POST['subject'],
 								"message"		=>	$_POST['message'],
-								"periodstamp"	=> $time
+								"periodstamp"	=> $time,
+								"sub_id"		=> $_POST['subscription_id']
 							);
 
 			return $this->db->insert( $this->communications, $insert );
@@ -325,7 +326,8 @@ if(!class_exists('M_Communication')) {
 								"periodprepost"	=>	$_POST['periodprepost'],
 								"subject"		=>	$_POST['subject'],
 								"message"		=>	$_POST['message'],
-								"periodstamp"	=> $time
+								"periodstamp"	=> $time,
+								"sub_id"		=> $_POST['subscription_id']
 							);
 
 			return $this->db->update( $this->communications, $updates, array( "id" => $this->id) );
