@@ -34,11 +34,12 @@ if(!class_exists('membershippublic')) {
 
 			// Add protection
 			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 2 );
-			// Download protection
-			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 3 );
 
 			// Payment return
 			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 1 );
+
+			// Download protection
+			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 3 );
 
 			// add feed protection
 			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
@@ -52,6 +53,10 @@ if(!class_exists('membershippublic')) {
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
 			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
+
+			// New url protection processing
+			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
+			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 999 );
 
 		}
 
@@ -2534,6 +2539,17 @@ if(!class_exists('membershippublic')) {
 			return $shortcodes;
 
 		}
+
+		// Set the processing defaults for individual page checks
+		function start_url_protection_processing( $wp ) {
+
+		}
+
+		// Check the results and handle the outcome - redirecting if necessary
+		function complete_url_protection_processing( $wp ) {
+
+		}
+
 
 	}
 

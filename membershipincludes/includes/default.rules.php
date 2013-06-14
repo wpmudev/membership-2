@@ -104,7 +104,7 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 99 );
 
-		add_filter( 'pre_get_posts', array(&$this, 'check_positive_posts') );
+		add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
 	}
 
 	function on_negative($data) {
@@ -113,7 +113,7 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 99 );
 
-		add_filter( 'pre_get_posts', array(&$this, 'check_negative_posts') );
+		add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
 	}
 
 	function add_viewable_posts($wp_query) {
@@ -1561,8 +1561,7 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_action( 'pre_get_posts', array(&$this, 'positive_check_request'), 1 );
-
+		add_action( 'pre_get_posts', array(&$this, 'positive_check_request') );
 
 	}
 
@@ -1570,7 +1569,7 @@ class M_URLGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_action( 'pre_get_posts', array(&$this, 'negative_check_request'), 1 );
+		add_action( 'pre_get_posts', array(&$this, 'negative_check_request') );
 	}
 
 	function positive_check_request($wp) {

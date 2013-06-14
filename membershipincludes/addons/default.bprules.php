@@ -116,10 +116,10 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_viewable_pages'), 3 );
-		add_filter('get_pages', array(&$this, 'add_viewable_pages_menu'), 2 );
+		add_action( 'pre_get_posts', array(&$this, 'add_viewable_pages'), 3 );
+		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 2 );
 
-		add_filter( 'the_posts', array(&$this, 'check_positive_pages'));
+		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 
 	}
 
@@ -127,10 +127,10 @@ class M_BPPages extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_pages'), 3 );
-		add_filter('get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
+		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_pages'), 3 );
+		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
 
-		add_filter( 'the_posts', array(&$this, 'check_negative_pages'));
+		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 
 	}
 
@@ -213,15 +213,11 @@ class M_BPPages extends M_Rule {
 		return $pages;
 	}
 
-	function check_negative_pages( $posts ) {
+	function check_negative_pages( $wp ) {
 
 		global $wp_query, $M_options;
 
 		$component = bp_current_component();
-
-		if(count($posts) > 1) {
-			return $posts;
-		}
 
 		if(!empty($component)) {
 			// we may be on a restricted post so check the URL and redirect if needed
@@ -258,7 +254,7 @@ class M_BPPages extends M_Rule {
 
 			// Check if we have a url available to check
 			if(empty($url)) {
-				return $posts;
+				return;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -276,24 +272,20 @@ class M_BPPages extends M_Rule {
 				// we need to redirect
 				$this->redirect();
 			} else {
-				return $posts;
+				return;
 			}
 
 		}
 
-		return $posts;
+		return;
 
 	}
 
-	function check_positive_pages( $posts ) {
+	function check_positive_pages( $wp ) {
 
 		global $wp_query, $M_options;
 
 		$component = bp_current_component();
-
-		if(count($posts) > 1) {
-			return $posts;
-		}
 
 		if(!empty($component)) {
 			// we may be on a restricted post so check the URL and redirect if needed
@@ -330,7 +322,7 @@ class M_BPPages extends M_Rule {
 
 			// Check if we have a url available to check
 			if(empty($url)) {
-				return $posts;
+				return;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -348,12 +340,12 @@ class M_BPPages extends M_Rule {
 				// we need to redirect
 				$this->redirect();
 			} else {
-				return $posts;
+				return;
 			}
 
 		}
 
-		return $posts;
+		return;
 
 	}
 
@@ -447,7 +439,7 @@ class M_BPGroups extends M_Rule {
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
 
-		add_filter( 'the_posts', array(&$this, 'check_positive_groups'));
+		add_action( 'pre_get_posts', array(&$this, 'check_positive_groups') );
 
 	}
 
@@ -523,12 +515,12 @@ class M_BPGroups extends M_Rule {
 
 		$this->data = $data;
 
-		add_filter('groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
+		add_filter( 'groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
 		//add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
 
-		add_filter( 'the_posts', array(&$this, 'check_negative_groups'));
+		add_action( 'pre_get_posts', array(&$this, 'check_negative_groups') );
 	}
 
 	function add_unhas_activity($activities, $two) {
@@ -600,22 +592,18 @@ class M_BPGroups extends M_Rule {
 		}
 	}
 
-	function check_negative_groups( $posts ) {
+	function check_negative_groups( $wp ) {
 
 		global $wp_query, $M_options, $bp;
 
 		$component = bp_current_component();
-
-		if(count($posts) > 1) {
-			return $posts;
-		}
 
 		if(!empty($component) && $component == 'groups') {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			// If we aren't on a group then return
 			if($bp->groups->current_group == 0) {
-				return $posts;
+				return;
 			}
 
 			$redirect = false;
@@ -651,7 +639,7 @@ class M_BPGroups extends M_Rule {
 			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 			if(in_array(strtolower( $url ), $exclude)) {
-				return $posts;
+				return;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -669,12 +657,12 @@ class M_BPGroups extends M_Rule {
 				// we need to redirect
 				$this->redirect();
 			} else {
-				return $posts;
+				return;
 			}
 
 		}
 
-		return $posts;
+		return;
 
 	}
 
@@ -684,16 +672,12 @@ class M_BPGroups extends M_Rule {
 
 		$component = bp_current_component();
 
-		if(count($posts) > 1) {
-			return $posts;
-		}
-
 		if(!empty($component) && $component == 'groups') {
 			// we may be on a restricted post so check the URL and redirect if needed
 
 			// If we aren't on a group then return
 			if($bp->groups->current_group == 0) {
-				return $posts;
+				return;
 			}
 
 			$redirect = false;
@@ -729,7 +713,7 @@ class M_BPGroups extends M_Rule {
 			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 			if(in_array(strtolower( $url ), $exclude)) {
-				return $posts;
+				return;
 			}
 
 			// we have the current page / url - get the groups selected
@@ -747,12 +731,12 @@ class M_BPGroups extends M_Rule {
 				// we need to redirect
 				$this->redirect();
 			} else {
-				return $posts;
+				return;
 			}
 
 		}
 
-		return $posts;
+		return;
 
 	}
 
@@ -790,14 +774,14 @@ class M_BPGroupcreation extends M_Rule {
 
 		$this->data = $data;
 
-		add_filter('groups_template_create_group', array(&$this, 'pos_bp_groups_template'));
+		add_filter( 'groups_template_create_group', array(&$this, 'pos_bp_groups_template') );
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
 
-		add_filter('groups_template_create_group', array(&$this, 'neg_bp_groups_template'));
+		add_filter( 'groups_template_create_group', array(&$this, 'neg_bp_groups_template') );
 
 	}
 
@@ -1136,14 +1120,14 @@ class M_BPPrivatemessage extends M_Rule {
 
 		$this->data = $data;
 
-		add_filter('messages_template_compose', array(&$this, 'pos_bp_messages_template') );
+		add_filter( 'messages_template_compose', array(&$this, 'pos_bp_messages_template') );
 	}
 
 	function on_negative($data) {
 
 		$this->data = $data;
 
-		add_filter('messages_template_compose', array(&$this, 'neg_bp_messages_template') );
+		add_filter( 'messages_template_compose', array(&$this, 'neg_bp_messages_template') );
 
 	}
 
