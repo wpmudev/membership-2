@@ -2543,21 +2543,31 @@ if(!class_exists('membershippublic')) {
 		// Set the processing defaults for individual page checks
 		function start_url_protection_processing( $wp ) {
 
-			global $membership_redirect_to_protected;
+			global $membership_redirect_to_protected, $membership_first_url_group;
 
 			// Set up the defaults
 			$membership_redirect_to_protected = false;
+			$$membership_first_url_group = false;
 
 		}
 
 		// Check the results and handle the outcome - redirecting if necessary
 		function complete_url_protection_processing( $wp ) {
 
-			global $membership_redirect_to_protected;
+			global $membership_redirect_to_protected, $membership_first_url_group;
 
 			if( $membership_redirect_to_protected === true ) {
 				// We have detected a need to redirect - so do the redirect
 				membership_redirect_to_protected();
+			} else {
+				switch( $$membership_first_url_group ) {
+					case 'positive':
+										break;
+
+					case 'negative':
+										break;
+				}
+
 			}
 
 		}

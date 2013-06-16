@@ -1080,6 +1080,18 @@ function membership_redirect_to_protected() {
 
 }
 
+function membership_set_positive_redirect() {
+
+	global $membership_redirect_to_protected, $membership_first_url_group;
+
+}
+
+function membership_set_negative_redirect() {
+
+	global $membership_redirect_to_protected, $membership_first_url_group;
+
+}
+
 function membership_debug_log( $message ) {
 
 	if( defined('MEMBERSHIP_DEBUG') && MEMBERSHIP_DEBUG == true ) {
