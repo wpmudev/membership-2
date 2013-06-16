@@ -1073,7 +1073,7 @@ function membership_redirect_to_protected() {
 	$url = get_permalink( (int) $M_options['nocontent_page'] );
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-	if($url != $current_url) {
+	if($url != $current_url && !headers_sent() ) {
 		wp_safe_redirect( $url );
 		exit;
 	}
