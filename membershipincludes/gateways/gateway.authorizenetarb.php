@@ -1088,6 +1088,8 @@ class M_authorizenetarb extends M_Gateway {
 						return $this->complex_sub_button($pricing, $subscription, $user_id);
 					}
 				}
+			} else {
+				return $this->single_free_button($pricing, $subscription, $user_id);
 			}
 		}
 	}

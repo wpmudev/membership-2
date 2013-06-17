@@ -718,6 +718,21 @@ function membership_price_in_text( $pricing ) {
 
 	global $M_options;
 
+	// Run a check to see if this is a fully free subscription
+	if( !empty($pricing) ) {
+		$free = true;
+		foreach($pricing as $key => $price) {
+			if(!empty($price['amount']) && $price['amount'] > 0 ) {
+				$free = false;
+			}
+		}
+	}
+	// If it is then we just return nothing
+	if( $free ) {
+		return false;
+	}
+
+	// Otherwise we process
 	$pd = array();
 	$count = 1;
 

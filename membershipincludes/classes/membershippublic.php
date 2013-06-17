@@ -2556,11 +2556,11 @@ if(!class_exists('membershippublic')) {
 
 			global $membership_redirect_to_protected, $membership_first_url_group;
 
-			if( $membership_redirect_to_protected === true ) {
+			if( $membership_redirect_to_protected == true ) {
 				// We have detected a need to redirect - so do the redirect
 				membership_redirect_to_protected();
 			} else {
-				switch( $$membership_first_url_group ) {
+				switch( $membership_first_url_group ) {
 					case 'positive':
 										break;
 

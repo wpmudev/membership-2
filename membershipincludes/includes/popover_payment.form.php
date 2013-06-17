@@ -121,16 +121,20 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 									?>
 									</td>
 								</tr>
-								<?php if(!defined('MEMBERSHIP_HIDE_PAYTEXT')) { ?>
-								<tr class='pricescolumn'>
-									<td colspan='3'>
-										<?php
-											// Decipher the pricing array and display it
-											echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
-										?>
-									</td>
-								</tr>
-								<?php } ?>
+								<?php if(!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
+											$pricetext = membership_price_in_text( $pricing );
+											if( $pricetext !== false ) {
+												?>
+												<tr class='pricescolumn'>
+													<td colspan='3'>
+														<?php
+															// Decipher the pricing array and display it
+															echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
+														?>
+													</td>
+												</tr>
+								<?php 		}
+									} ?>
 							<?php
 						}
 				?>
@@ -211,16 +215,20 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 					?>
 					</td>
 				</tr>
-				<?php if(!defined('MEMBERSHIP_HIDE_PAYTEXT')) { ?>
-				<tr class='pricescolumn'>
-					<td colspan='3'>
-						<?php
-							// Decipher the pricing array and display it
-							echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
-						?>
-					</td>
-				</tr>
-				<?php } ?>
+				<?php if(!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
+							$pricetext = membership_price_in_text( $pricing );
+							if( $pricetext !== false ) {
+								?>
+								<tr class='pricescolumn'>
+									<td colspan='3'>
+										<?php
+											// Decipher the pricing array and display it
+											echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
+										?>
+									</td>
+								</tr>
+				<?php 		}
+					} ?>
 			</table>
 
 			<?php

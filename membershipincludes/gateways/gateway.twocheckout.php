@@ -311,7 +311,7 @@ class twocheckout extends M_Gateway {
 						'vendor_product_id' => $subscription->sub_id(),
 						'approved_url' => trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway),
 						'tangible' => 0,
-						'price' => number_format($pricing[0]['amount'], 2),
+						'price' => number_format($pricing[0]['amount'], 2, '.', ''),
 					);
 
 
@@ -392,7 +392,7 @@ class twocheckout extends M_Gateway {
 		$form .= '<input type="hidden" name="mode" value="2CO" />';
 		$form .= '<input type="hidden" name="li_1_type" value="product" />';
 		$form .= '<input type="hidden" name="li_1_name" value="'.$subscription->sub_name().'" />';
-		$form .= '<input type="hidden" name="li_1_price" value="'.number_format($pricing[0]['amount'], 2).'" />';
+		$form .= '<input type="hidden" name="li_1_price" value="'.number_format($pricing[0]['amount'], 2, '.', '').'" />';
 		$form .= '<input type="hidden" name="li_1_tangible" value="N" />';
 		$form .= '<input type="hidden" name="li_1_product_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="li_1_description" value="'.$subscription->sub_description().'" />';
@@ -445,7 +445,7 @@ class twocheckout extends M_Gateway {
 		$form .= '<input type="hidden" name="sid" value="' . esc_attr(get_option( $this->gateway . "_twocheckout_sid" )) . '">';
 		$form .= '<input type="hidden" name="li_0_type" value="product" />';
 		$form .= '<input type="hidden" name="li_0_name" value="'.$subscription->sub_name().'" />';
-		$form .= '<input type="hidden" name="li_0_price" value="'.number_format($pricing[0]['amount'], 2).'" />';
+		$form .= '<input type="hidden" name="li_0_price" value="'.number_format($pricing[0]['amount'], 2, '.', '').'" />';
 		$form .= '<input type="hidden" name="li_0_tangible" value="N" />';
 		$form .= '<input type="hidden" name="li_0_product_id" value="'.$subscription->id.'" />';
 		$form .= '<input type="hidden" name="li_0_description" value="'.$subscription->sub_description().'" />';
@@ -495,6 +495,8 @@ class twocheckout extends M_Gateway {
 					//return $this->complex_sub_button($pricing, $subscription, $user_id);
 
 				}
+			} else {
+				return $this->single_free_button($pricing, $subscription, $user_id);
 			}
 
 		}

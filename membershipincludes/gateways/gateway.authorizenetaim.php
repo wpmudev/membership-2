@@ -587,6 +587,8 @@ class M_authorizenetaim extends M_Gateway {
 					// something much more complex
 					return $this->complex_sub_button($pricing, $subscription, $user_id);
 				}
+			} else {
+				return $this->single_free_button($pricing, $subscription, $user_id);
 			}
 		}
 	}
