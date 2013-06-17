@@ -225,6 +225,10 @@ if(!class_exists('membershipadmin')) {
 				add_filter( 'manage_users_custom_column', array(&$this, 'show_user_permissions_column'), 10, 3 );
 
 				add_action( 'wp_ajax_editusermembershippermissions', array(&$this, 'edit_user_permissions') );
+
+				add_filter( 'user_row_actions', array(&$this, 'add_user_permissions_link'), 11, 2 );
+				add_filter( 'ms_user_row_actions', array(&$this, 'add_user_permissions_link'), 11, 2 );
+
 			}
 
 			if($user->has_cap('membershipadmin')) {
@@ -356,6 +360,13 @@ if(!class_exists('membershipadmin')) {
 
 			return $content;
 
+		}
+
+		function add_user_permissions_link( $columns, $user ) {
+
+			$columns['membershippermissions'] = '<a class="membershipeditlink" href="' . wp_nonce_url( admin_url("admin-ajax.php?action=editusermembershippermissions&amp;user_id=" . $user->ID . ""), 'edit_user_membership_' . $user->ID) . '">' . __('Membership Permissions','membership') . '</a>';
+
+			return $columns;
 		}
 
 		// Code from this function based on code from AJAX Media Upload function
