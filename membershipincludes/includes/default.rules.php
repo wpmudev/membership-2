@@ -191,8 +191,11 @@ class M_Posts extends M_Rule {
 			$exclude[] = untrailingslashit($host);
 		}
 
-		// Get the id for the post / page for this url
+		// Get the id for the post / page for this url - have to remove and re-add the actions
+		remove_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
 		$post_id = url_to_postid( $host );
+		add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
+
 
 		if( $post_id != 0 ) {
 			// Check if we are on a page
@@ -210,14 +213,14 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( $group->url_matches( $host ) ) {
 					$found = true;
 				}
 			}
 
 			if($found === true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
-				$this->redirect();
+				membership_set_negative_redirect();
 			} else {
 				return;
 			}
@@ -261,8 +264,10 @@ class M_Posts extends M_Rule {
 			$exclude[] = untrailingslashit($host);
 		}
 
-		// Get the id for the post / page for this url
+		// Get the id for the post / page for this url - have to remove and re-add the actions
+		remove_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
 		$post_id = url_to_postid( $host );
+		add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
 
 		if( $post_id != 0 ) {
 			// Check if we are on a page
@@ -280,7 +285,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( $group->url_matches( $host ) ) {
 					$found = true;
 				}
 			}
@@ -503,8 +508,10 @@ class M_Pages extends M_Rule {
 			$exclude[] = untrailingslashit($host);
 		}
 
-		// Get the id for the post / page for this url
+		// Get the id for the post / page for this url - have to remove and re-add the actions
+		remove_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 		$post_id = url_to_postid( $host );
+		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 
 		if( $post_id != 0 ) {
 			// Check if we are on a page
@@ -522,14 +529,14 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( $group->url_matches( $host ) ) {
 					$found = true;
 				}
 			}
 
 			if($found === true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
-				$this->redirect();
+				membership_set_negative_redirect();
 			} else {
 				return;
 			}
@@ -573,8 +580,10 @@ class M_Pages extends M_Rule {
 			$exclude[] = untrailingslashit($host);
 		}
 
-		// Get the id for the post / page for this url
+		// Get the id for the post / page for this url - have to remove and re-add the actions
+		remove_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 		$post_id = url_to_postid( $host );
+		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 
 		if( $post_id != 0 ) {
 			// Check if we are on a page
@@ -592,7 +601,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $url ) ) {
+				if( $group->url_matches( $host ) ) {
 					$found = true;
 				}
 			}
@@ -1667,7 +1676,7 @@ class M_URLGroups extends M_Rule {
 
 		if($redirect === true) {
 			// we need to redirect
-			$this->redirect();
+			membership_set_negative_redirect();
 		}
 
 	}

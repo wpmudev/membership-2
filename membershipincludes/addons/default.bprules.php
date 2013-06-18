@@ -270,7 +270,7 @@ class M_BPPages extends M_Rule {
 
 			if($redirect === true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
-				$this->redirect();
+				membership_set_negative_redirect();
 			} else {
 				return;
 			}
@@ -655,7 +655,7 @@ class M_BPGroups extends M_Rule {
 
 			if($redirect === true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
-				$this->redirect();
+				membership_set_negative_redirect();
 			} else {
 				return;
 			}

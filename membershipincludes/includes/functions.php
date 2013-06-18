@@ -1099,11 +1099,23 @@ function membership_set_positive_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
 
+	if( $membership_first_url_group === false ) {
+		$membership_first_url_group = 'positive';
+	}
+
+	$membership_redirect_to_protected = true;
+
 }
 
 function membership_set_negative_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
+
+	if( $membership_first_url_group === false ) {
+		$membership_first_url_group = 'negative';
+	}
+
+	$membership_redirect_to_protected = true;
 
 }
 
