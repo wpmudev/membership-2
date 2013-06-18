@@ -337,25 +337,6 @@ if(!class_exists('membershipadmin')) {
 				$content .= '</span>';
 				$content .= '</div>';
 
-				/*
-				if($user->has_cap('membershipadmin') && !$user->has_cap('membershipadmincoupons') ) {
-					// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
-					// Which likely means that they have not been upgraded - so let's do that :)
-					$user->add_cap('membershipadmindashboard');
-					$user->add_cap('membershipadminmembers');
-					$user->add_cap('membershipadminlevels');
-					$user->add_cap('membershipadminsubscriptions');
-					$user->add_cap('membershipadmincoupons');
-					$user->add_cap('membershipadminpurchases');
-					$user->add_cap('membershipadmincommunications');
-					$user->add_cap('membershipadmingroups');
-					$user->add_cap('membershipadminpings');
-					$user->add_cap('membershipadmingateways');
-					$user->add_cap('membershipadminoptions');
-				}
-				*/
-
-
 			}
 
 			return $content;
