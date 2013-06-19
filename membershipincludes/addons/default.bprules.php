@@ -121,6 +121,8 @@ class M_BPPages extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 
+		membership_set_first_redirect_area( 'positive' );
+
 	}
 
 	function on_negative($data) {
@@ -131,6 +133,8 @@ class M_BPPages extends M_Rule {
 		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
 
 		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
+
+		membership_set_first_redirect_area( 'negative' );
 
 	}
 
@@ -442,6 +446,8 @@ class M_BPGroups extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'check_positive_groups') );
 
+		membership_set_first_redirect_area( 'positive' );
+
 	}
 
 	function add_has_activity($activities, $two) {
@@ -522,6 +528,8 @@ class M_BPGroups extends M_Rule {
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
 
 		add_action( 'pre_get_posts', array(&$this, 'check_negative_groups') );
+
+		membership_set_first_redirect_area( 'negative' );
 	}
 
 	function add_unhas_activity($activities, $two) {

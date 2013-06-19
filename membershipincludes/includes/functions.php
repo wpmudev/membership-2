@@ -1095,6 +1095,25 @@ function membership_redirect_to_protected() {
 
 }
 
+function membership_set_first_redirect_area( $area = 'positive' ) {
+
+	global $membership_redirect_to_protected, $membership_first_url_group;
+
+	if( $membership_first_url_group === false ) {
+		switch( $area ) {
+			case 'positive':	$membership_first_url_group = 'positive';
+								$membership_redirect_to_protected = true;
+								break;
+
+			case 'negative':	$membership_first_url_group = 'negative';
+								$membership_redirect_to_protected = false;
+								break;
+		}
+
+	}
+
+}
+
 function membership_set_positive_no_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
