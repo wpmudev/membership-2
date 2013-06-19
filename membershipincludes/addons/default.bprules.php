@@ -290,7 +290,7 @@ class M_BPPages extends M_Rule {
 		if(!empty($component)) {
 			// we may be on a restricted post so check the URL and redirect if needed
 
-			$redirect = false;
+			$found = false;
 			$url = '';
 
 			$exclude = array();
@@ -331,14 +331,15 @@ class M_BPPages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
-					$redirect = true;
+				if( $group->url_matches( $url ) ) {
+					$found = true;
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($found === true) {
+				membership_set_positive_no_redirect();
 				// we need to redirect
-				$this->redirect();
+				//$this->redirect();
 			} else {
 				return;
 			}
@@ -680,7 +681,7 @@ class M_BPGroups extends M_Rule {
 				return;
 			}
 
-			$redirect = false;
+			$found = false;
 			$url = '';
 
 			$exclude = array();
@@ -722,14 +723,15 @@ class M_BPGroups extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( !$group->url_matches( $url ) ) {
-					$redirect = true;
+				if( $group->url_matches( $url ) ) {
+					$found = true;
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($found === true) {
+				membership_set_positive_no_redirect();
 				// we need to redirect
-				$this->redirect();
+				//$this->redirect();
 			} else {
 				return;
 			}

@@ -290,11 +290,13 @@ class M_Posts extends M_Rule {
 				}
 			}
 
-			if($found !== true && !empty($M_options['nocontent_page'])) {
+			if($found === true) {
+				membership_set_positive_no_redirect();
 				// we need to redirect
-				$this->redirect();
+				//$this->redirect();
 			} else {
-				return;
+
+				//return;
 			}
 
 		}
@@ -606,9 +608,10 @@ class M_Pages extends M_Rule {
 				}
 			}
 
-			if($found !== true && !empty($M_options['nocontent_page'])) {
+			if($found === true) {
+				membership_set_positive_no_redirect();
 				// we need to redirect
-				$this->redirect();
+				//$this->redirect();
 			} else {
 				return;
 			}
@@ -1626,9 +1629,10 @@ class M_URLGroups extends M_Rule {
 			}
 		}
 
-		if($found !== true) {
+		if($found === true) {
+			membership_set_positive_no_redirect();
 			// we need to redirect
-			$this->redirect();
+			//$this->redirect();
 		}
 
 	}

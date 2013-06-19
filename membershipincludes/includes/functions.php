@@ -1095,7 +1095,7 @@ function membership_redirect_to_protected() {
 
 }
 
-function membership_set_positive_redirect() {
+function membership_set_positive_no_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
 
@@ -1103,7 +1103,7 @@ function membership_set_positive_redirect() {
 		$membership_first_url_group = 'positive';
 	}
 
-	$membership_redirect_to_protected = true;
+	$membership_redirect_to_protected = false;
 
 }
 
