@@ -1079,6 +1079,9 @@ function membership_redirect_to_protected() {
 
 	global $M_options;
 
+	echo "redirecting" . "<br/>";
+	die();
+
 	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
 		if(function_exists('switch_to_blog')) {
 			switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
@@ -1088,9 +1091,11 @@ function membership_redirect_to_protected() {
 	$url = get_permalink( (int) $M_options['nocontent_page'] );
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-	if($url != $current_url && !headers_sent() ) {
+	if($url != $current_url && !headers_sent()) {
 		wp_safe_redirect( $url );
 		exit;
+	} else {
+
 	}
 
 }
@@ -1099,7 +1104,9 @@ function membership_set_first_redirect_area( $area = 'positive' ) {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
 
-	if( $membership_first_url_group === false ) {
+	echo $area . "<br/>";
+
+	if( $membership_first_url_group == false ) {
 		switch( $area ) {
 			case 'positive':	$membership_first_url_group = 'positive';
 								$membership_redirect_to_protected = true;

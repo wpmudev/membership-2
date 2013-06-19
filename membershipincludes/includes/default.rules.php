@@ -407,6 +407,7 @@ class M_Pages extends M_Rule {
 		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 
 		membership_set_first_redirect_area( 'negative' );
+
 	}
 
 	function redirect() {
@@ -540,12 +541,14 @@ class M_Pages extends M_Rule {
 				$group = new M_Urlgroup( $group_id );
 
 				if( $group->url_matches( $host ) ) {
+					echo 'found' . "<br/>";
 					$found = true;
 				}
 			}
 
-			if($found === true && !empty($M_options['nocontent_page'])) {
+			if($found == true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
+
 				membership_set_negative_redirect();
 			} else {
 				return;

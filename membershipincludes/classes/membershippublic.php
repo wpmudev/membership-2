@@ -54,9 +54,6 @@ if(!class_exists('membershippublic')) {
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
 			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
 
-			// New url protection processing
-			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
-			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 999 );
 
 		}
 
@@ -392,6 +389,10 @@ if(!class_exists('membershippublic')) {
 			}
 
 			do_action('membership-add-shortcodes');
+
+			// New url protection processing
+			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
+			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 99 );
 
 			// Set the initialisation status
 			$initialised = true;
@@ -2554,8 +2555,10 @@ if(!class_exists('membershippublic')) {
 
 			if( $membership_redirect_to_protected == true ) {
 				// We have detected a need to redirect - so do the redirect
+				echo "going to redirect" . "<br/>";
 				membership_redirect_to_protected();
 			} else {
+				echo "not going to redirect" . "<br/>";
 				switch( $membership_first_url_group ) {
 					case 'positive':
 										break;
