@@ -392,7 +392,7 @@ if(!class_exists('membershippublic')) {
 
 			// New url protection processing
 			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
-			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 99 );
+			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 12 );
 
 			// Set the initialisation status
 			$initialised = true;
