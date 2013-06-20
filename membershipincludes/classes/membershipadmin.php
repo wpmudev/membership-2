@@ -5394,7 +5394,7 @@ if(!class_exists('membershipadmin')) {
 			global $page;
 
 			if( $comm_id === false ) {
-				$addcomm =& new M_Communication( 0 );
+				$addcomm = new M_Communication( 0 );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add Message','membership') . "</h2>";
@@ -5420,7 +5420,7 @@ if(!class_exists('membershipadmin')) {
 				echo "</div>";
 				echo "</div>";
 			} else {
-				$editcomm =& new M_Communication( (int) $comm_id );
+				$editcomm = new M_Communication( (int) $comm_id );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit Message','membership') . "</h2>";
@@ -5756,7 +5756,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'added':	check_admin_referer('add-group');
 
-								$group =& new M_Urlgroup( 0 );
+								$group = new M_Urlgroup( 0 );
 
 								if($group->add()) {
 									wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
@@ -5768,7 +5768,7 @@ if(!class_exists('membershipadmin')) {
 				case 'updated':	$id = (int) $_POST['ID'];
 								check_admin_referer('update-group-' . $id);
 								if($id) {
-									$group =& new M_Urlgroup( $id );
+									$group = new M_Urlgroup( $id );
 
 									if($group->update()) {
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
@@ -5785,7 +5785,7 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('delete-group_' . $id);
 
-									$group =& new M_Urlgroup( $id );
+									$group = new M_Urlgroup( $id );
 
 									if($group->delete()) {
 										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
@@ -5802,7 +5802,7 @@ if(!class_exists('membershipadmin')) {
 									if(is_numeric($value)) {
 										$id = (int) $value;
 
-										$group =& new M_Urlgroup( $id );
+										$group = new M_Urlgroup( $id );
 
 										$group->delete();
 									}
@@ -5833,7 +5833,7 @@ if(!class_exists('membershipadmin')) {
 			global $page;
 
 			if( $group_id === false ) {
-				$add =& new M_Urlgroup( 0 );
+				$add = new M_Urlgroup( 0 );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add URL group','membership') . "</h2>";
@@ -5860,7 +5860,7 @@ if(!class_exists('membershipadmin')) {
 				echo "</div>";
 				echo "</div>";
 			} else {
-				$edit =& new M_Urlgroup( (int) $group_id );
+				$edit = new M_Urlgroup( (int) $group_id );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit URL group','membership') . "</h2>";
@@ -6084,7 +6084,7 @@ if(!class_exists('membershipadmin')) {
 
 				case 'added':	check_admin_referer('add-ping');
 
-								$ping =& new M_Ping( 0 );
+								$ping = new M_Ping( 0 );
 
 								if($ping->add()) {
 									wp_safe_redirect( add_query_arg( 'msg', 3, 'admin.php?page=' . $page ) );
@@ -6096,7 +6096,7 @@ if(!class_exists('membershipadmin')) {
 				case 'updated':	$id = (int) $_POST['ID'];
 								check_admin_referer('update-ping-' . $id);
 								if($id) {
-									$ping =& new M_Ping( $id );
+									$ping = new M_Ping( $id );
 
 									if($ping->update()) {
 										wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
@@ -6113,7 +6113,7 @@ if(!class_exists('membershipadmin')) {
 
 									check_admin_referer('delete-ping_' . $id);
 
-									$ping =& new M_Ping( $id );
+									$ping = new M_Ping( $id );
 
 									if($ping->delete()) {
 										wp_safe_redirect( add_query_arg( 'msg', 5, wp_get_referer() ) );
@@ -6130,7 +6130,7 @@ if(!class_exists('membershipadmin')) {
 									if(is_numeric($value)) {
 										$id = (int) $value;
 
-										$ping =& new M_Ping( $id );
+										$ping = new M_Ping( $id );
 
 										$ping->delete();
 									}
@@ -6165,7 +6165,7 @@ if(!class_exists('membershipadmin')) {
 			global $page;
 
 			if( $ping_id === false ) {
-				$add =& new M_Ping( 0 );
+				$add = new M_Ping( 0 );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Add Ping details','membership') . "</h2>";
@@ -6192,7 +6192,7 @@ if(!class_exists('membershipadmin')) {
 				echo "</div>";
 				echo "</div>";
 			} else {
-				$edit =& new M_Ping( (int) $ping_id );
+				$edit = new M_Ping( (int) $ping_id );
 
 				echo "<div class='wrap'>";
 				echo "<h2>" . __('Edit Ping details','membership') . "</h2>";
@@ -6991,7 +6991,7 @@ if(!class_exists('membershipadmin')) {
 		/* Ping interface */
 		function update_subscription_ping_information( $sub_id ) {
 
-			$subscription =& new M_Subscription( $sub_id );
+			$subscription = new M_Subscription( $sub_id );
 
 			$subscription->update_meta( 'joining_ping', $_POST['joiningping'] );
 			$subscription->update_meta( 'leaving_ping', $_POST['leavingping'] );
@@ -7004,7 +7004,7 @@ if(!class_exists('membershipadmin')) {
 			$pings = $this->get_pings();
 
 			// Get the currentlt set ping for each level
-			$subscription =& new M_Subscription( $sub_id );
+			$subscription = new M_Subscription( $sub_id );
 
 			$joinping = $subscription->get_meta( 'joining_ping', '' );
 			$leaveping = $subscription->get_meta( 'leaving_ping', '' );
@@ -7048,7 +7048,7 @@ if(!class_exists('membershipadmin')) {
 
 		function update_level_ping_information( $level_id ) {
 
-			$level =& new M_Level( $level_id );
+			$level = new M_Level( $level_id );
 
 			$level->update_meta( 'joining_ping', $_POST['joiningping'] );
 			$level->update_meta( 'leaving_ping', $_POST['leavingping'] );
@@ -7060,7 +7060,7 @@ if(!class_exists('membershipadmin')) {
 			$pings = $this->get_pings();
 
 			// Get the currentlt set ping for each level
-			$level =& new M_Level( $level_id );
+			$level = new M_Level( $level_id );
 
 			$joinping = $level->get_meta( 'joining_ping', '' );
 			$leaveping = $level->get_meta( 'leaving_ping', '' );
@@ -7500,7 +7500,7 @@ if(!class_exists('membershipadmin')) {
 				global $page;
 
 				if( $coupon_id === false ) {
-					$coupon =& new M_Coupon( 0, $this->_tips );
+					$coupon = new M_Coupon( 0, $this->_tips );
 
 					echo "<div class='wrap'>";
 					echo "<h2>" . __('Add Coupon','membership') . "</h2>";
@@ -7528,7 +7528,7 @@ if(!class_exists('membershipadmin')) {
 					echo "</div>";
 					echo "</div>";
 				} else {
-					$coupon =& new M_Coupon( (int) $coupon_id, $this->_tips );
+					$coupon = new M_Coupon( (int) $coupon_id, $this->_tips );
 
 					echo "<div class='wrap'>";
 					echo "<h2>" . __('Edit Coupon','membership') . "</h2>";

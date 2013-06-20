@@ -386,7 +386,7 @@ if(!class_exists('M_Communication')) {
 												}
 
 												if(!empty($sub_id)) {
-													$sub =& new M_Subscription( $sub_id );
+													$sub = new M_Subscription( $sub_id );
 													$commdata[$key] = $sub->sub_name();
 												} else {
 													$commdata[$key] = '';
@@ -402,7 +402,7 @@ if(!class_exists('M_Communication')) {
 												}
 
 												if(!empty($level_id)) {
-													$level =& new M_Level( $level_id );
+													$level = new M_Level( $level_id );
 													$commdata[$key] = $level->level_title();
 												} else {
 													$commdata[$key] = '';
