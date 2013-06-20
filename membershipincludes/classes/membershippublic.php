@@ -392,7 +392,7 @@ if(!class_exists('membershippublic')) {
 
 			// New url protection processing
 			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
-			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 12 );
+			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 11 );
 
 			// Set the initialisation status
 			$initialised = true;
@@ -2555,15 +2555,13 @@ if(!class_exists('membershippublic')) {
 
 			if( $membership_redirect_to_protected == true ) {
 				// We have detected a need to redirect - so do the redirect
-				echo "going to redirect" . "<br/>";
 				membership_redirect_to_protected();
 			} else {
-				echo "not going to redirect" . "<br/>";
 				switch( $membership_first_url_group ) {
-					case 'positive':
+					case 'positive':	// Place holder for future func
 										break;
 
-					case 'negative':
+					case 'negative':	// Place holder for future func
 										break;
 				}
 

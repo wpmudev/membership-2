@@ -6644,9 +6644,9 @@ if(!class_exists('membershipadmin')) {
 		function save_media_protection_settings($post, $attachment) {
 			$key = "protected-content";
 			if ( empty( $attachment[$key] ) || addslashes( $attachment[$key] ) == 'no') {
-				delete_post_meta($post['ID'], '_membership_protected_content_group'); // delete any residual metadata from a free-form field (as inserted below)
+				delete_post_meta($post['ID'], '_membership_protected_content_group');
 			} else // free-form text was entered, insert postmeta with credit
-				update_post_meta($post['ID'], '_membership_protected_content_group', $attachment['protected-content']); // insert 'media-credit' metadata field for image with free-form text
+				update_post_meta($post['ID'], '_membership_protected_content_group', $attachment['protected-content']);
 			return $post;
 		}
 

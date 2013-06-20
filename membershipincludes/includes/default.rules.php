@@ -541,7 +541,6 @@ class M_Pages extends M_Rule {
 				$group = new M_Urlgroup( $group_id );
 
 				if( $group->url_matches( $host ) ) {
-					echo 'found' . "<br/>";
 					$found = true;
 				}
 			}

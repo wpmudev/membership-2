@@ -1079,9 +1079,6 @@ function membership_redirect_to_protected() {
 
 	global $M_options;
 
-	echo "redirecting" . "<br/>";
-	die();
-
 	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
 		if(function_exists('switch_to_blog')) {
 			switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
@@ -1103,8 +1100,6 @@ function membership_redirect_to_protected() {
 function membership_set_first_redirect_area( $area = 'positive' ) {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
-
-	echo $area . "<br/>";
 
 	if( $membership_first_url_group == false ) {
 		switch( $area ) {

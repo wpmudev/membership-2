@@ -7,7 +7,7 @@ if(!class_exists('M_Member_Search')) {
 		var $level_id = false;
 		var $active = false;
 
-		var $users_per_page = 2;
+		var $users_per_page = 50;
 
 		var $search_errors = false;
 
