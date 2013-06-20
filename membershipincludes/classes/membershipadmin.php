@@ -1658,24 +1658,34 @@ if(!class_exists('membershipadmin')) {
 
 								$html = "<h3>" . __('Level to move from for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
-								$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
-								$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
-								$levels = $this->get_membership_levels(array('level_id' => 'active'));
-								if($levels) {
-									foreach($levels as $key => $level) {
-										$html .= "<option value='" . esc_attr($level->id) . "'";
-										if($fromlevel == $level->id) $html .= " selected='selected'";
-										$html .= ">" . esc_html($level->level_title) . "</option>\n";
+
+								if( empty($fromlevel) ) {
+									$html .= "<select name='fromlevel_id' id='fromlevel_id' class='wide'>\n";
+									$html .= "<option value='0'>" . __('Select the level to move from.','membership') . "</option>\n";
+
+									$levels = $this->get_membership_levels(array('level_id' => 'active'));
+									if($levels) {
+										foreach($levels as $key => $level) {
+											$html .= "<option value='" . esc_attr($level->id) . "'";
+											if($fromlevel == $level->id) $html .= " selected='selected'";
+											$html .= ">" . esc_html($level->level_title) . "</option>\n";
+										}
 									}
+									$html .= "</select>\n";
+								} else {
+									$level = new M_Level( $fromlevel );
+									$html .= __('Moving from :', 'membership') . " <strong>" . $level->level_title() . "</strong>";
+									$html .= "<input type='hidden' name='fromlevel_id' value='" . esc_attr($fromlevel) . "' />";
 								}
-								$html .= "</select>\n";
+
+
 								$html .= "</div>";
 
 								$html .= "<h3>" . __('Level to move to for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tolevel_id' id='tolevel_id' class='wide'>\n";
 								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
-								reset($levels);
+								$levels = $this->get_membership_levels(array('level_id' => 'active'));
 								if($levels) {
 									foreach($levels as $key => $level) {
 										$html .= "<option value='" . esc_attr($level->id) . "'";
@@ -1821,23 +1831,31 @@ if(!class_exists('membershipadmin')) {
 
 								$html = "<h3>" . __('Subscription to move from for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
-								$html .= "<select name='fromsub_id' id='fromsub_id' class='wide'>\n";
-								$html .= "<option value='0'>" . __('Select the subscription to move from.','membership') . "</option>\n";
-								$subs = $this->get_subscriptions( array('sub_status' => 'active'));
-								if($subs) {
-									foreach($subs as $key => $sub) {
-										$html .= "<option value='" . esc_attr($sub->id) . "'";
-										if($fromsub == $sub->id) $html .= " selected='selected'";
-										$html .= ">" . esc_html($sub->sub_name) . "</option>\n";
+
+								if( empty($fromsub) ) {
+									$html .= "<select name='fromsub_id' id='fromsub_id' class='wide'>\n";
+									$html .= "<option value='0'>" . __('Select the subscription to move from.','membership') . "</option>\n";
+									$subs = $this->get_subscriptions( array('sub_status' => 'active'));
+									if($subs) {
+										foreach($subs as $key => $sub) {
+											$html .= "<option value='" . esc_attr($sub->id) . "'";
+											if($fromsub == $sub->id) $html .= " selected='selected'";
+											$html .= ">" . esc_html($sub->sub_name) . "</option>\n";
+										}
 									}
+									$html .= "</select>\n";
+								} else {
+									$sub = new M_Subscription( $fromsub );
+									$html .= __('Moving from :', 'membership') . " <strong>" . $sub->sub_name() . "</strong>";
+									$html .= "<input type='hidden' name='fromsub_id' value='" . esc_attr($fromsub) . "' />";
 								}
-								$html .= "</select>\n";
+
 								$html .= "</div>";
 
 								$html .= "<h3>" . __('Subscription and Level to move to for this / these member(s)','membership') . "</h3>";
 								$html .= "<div class='level-details'>";
 								$html .= "<select name='tosub_id' id='tosub_id' class='wide'>\n";
-								$html .= "<option value='0'>" . __('Select the level to move to.','membership') . "</option>\n";
+								$html .= "<option value='0'>" . __('Select the subscription / level to move to.','membership') . "</option>\n";
 								$subs = $this->get_subscriptions_and_levels( array('sub_status' => 'active') );
 								if($subs) {
 									$sub_id = false;
