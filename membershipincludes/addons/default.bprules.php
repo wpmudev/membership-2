@@ -272,7 +272,7 @@ class M_BPPages extends M_Rule {
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($redirect == true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
 				membership_set_negative_redirect();
 			} else {
@@ -340,7 +340,7 @@ class M_BPPages extends M_Rule {
 				}
 			}
 
-			if($found === true) {
+			if($found == true) {
 				membership_set_positive_no_redirect();
 				// we need to redirect
 				//$this->redirect();
@@ -662,7 +662,7 @@ class M_BPGroups extends M_Rule {
 				}
 			}
 
-			if($redirect === true && !empty($M_options['nocontent_page'])) {
+			if($redirect == true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
 				membership_set_negative_redirect();
 			} else {
@@ -736,7 +736,7 @@ class M_BPGroups extends M_Rule {
 				}
 			}
 
-			if($found === true) {
+			if($found == true) {
 				membership_set_positive_no_redirect();
 				// we need to redirect
 				//$this->redirect();

@@ -15,6 +15,9 @@ if(!class_exists('membershippublic')) {
 		var $subscriptions;
 		var $subscriptions_levels;
 
+		// For url redirects - bit of a hack, but need to ensure they are only set once for now.
+		var $redirect_defaults_set = false;
+
 		function __construct() {
 
 			global $wpdb;
@@ -282,6 +285,12 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
+			// New url protection processing
+			$this->start_url_protection_processing();
+
+			//add_action('parse_request', array(&$this, 'start_url_protection_processing'), 10 );
+			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 11 );
+
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
 				if(!empty($_COOKIE['membershipuselevel']) && $_COOKIE['membershipuselevel'] != '0') {
@@ -389,10 +398,6 @@ if(!class_exists('membershippublic')) {
 			}
 
 			do_action('membership-add-shortcodes');
-
-			// New url protection processing
-			add_action('pre_get_posts', array(&$this, 'start_url_protection_processing'), 1 );
-			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 11 );
 
 			// Set the initialisation status
 			$initialised = true;
@@ -2538,13 +2543,20 @@ if(!class_exists('membershippublic')) {
 		}
 
 		// Set the processing defaults for individual page checks
-		function start_url_protection_processing( $wp ) {
+		function start_url_protection_processing() {
 
 			global $membership_redirect_to_protected, $membership_first_url_group;
 
 			// Set up the defaults
-			$membership_redirect_to_protected = false;
-			$$membership_first_url_group = false;
+			if( !$this->redirect_defaults_set ) {
+				membership_debug_log( __('Setting the defaults for URL group processing','membership') );
+
+				do_action('membership_set_redirect', false );
+				$$membership_first_url_group = false;
+				// We've set, so set the flag
+				$this->redirect_defaults_set = true;
+			}
+
 
 		}
 
@@ -2553,10 +2565,12 @@ if(!class_exists('membershippublic')) {
 
 			global $membership_redirect_to_protected, $membership_first_url_group;
 
-			if( $membership_redirect_to_protected == true ) {
+			if( $membership_redirect_to_protected ) {
 				// We have detected a need to redirect - so do the redirect
+				membership_debug_log( __('About to redirect to the protected page','membership') );
 				membership_redirect_to_protected();
 			} else {
+				membership_debug_log( __('Not going to redirect to the protected page','membership') );
 				switch( $membership_first_url_group ) {
 					case 'positive':	// Place holder for future func
 										break;

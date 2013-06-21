@@ -1104,11 +1104,11 @@ function membership_set_first_redirect_area( $area = 'positive' ) {
 	if( $membership_first_url_group == false ) {
 		switch( $area ) {
 			case 'positive':	$membership_first_url_group = 'positive';
-								$membership_redirect_to_protected = true;
+								do_action('membership_set_redirect', true );
 								break;
 
 			case 'negative':	$membership_first_url_group = 'negative';
-								$membership_redirect_to_protected = false;
+								do_action('membership_set_redirect', false );
 								break;
 		}
 
@@ -1120,11 +1120,13 @@ function membership_set_positive_no_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
 
-	if( $membership_first_url_group === false ) {
+	if( $membership_first_url_group == false ) {
 		$membership_first_url_group = 'positive';
 	}
 
-	$membership_redirect_to_protected = false;
+	membership_debug_log( __('I have found the url in my positive list - so I am going to set the system to not redirect.','membership') );
+
+	do_action('membership_set_redirect', false );
 
 }
 
@@ -1132,13 +1134,35 @@ function membership_set_negative_redirect() {
 
 	global $membership_redirect_to_protected, $membership_first_url_group;
 
-	if( $membership_first_url_group === false ) {
+	if( $membership_first_url_group == false ) {
 		$membership_first_url_group = 'negative';
 	}
 
-	$membership_redirect_to_protected = true;
+	membership_debug_log( __('I have found the url in my negative list - so I am going to set the system to redirect.','membership') );
+
+	do_action('membership_set_redirect', true );
 
 }
+
+function membership_set_redirect( $setto = true ) {
+
+	global $wp_filter;
+
+	//print_r($wp_filter['pre_get_posts']);
+	//die();
+
+	global $membership_redirect_to_protected;
+
+	$membership_redirect_to_protected = $setto;
+
+	if($setto) {
+		membership_debug_log( __('I am setting the redirect flag to : true','membership') );
+	} else {
+		membership_debug_log( __('I am setting the redirect flag to : false','membership') );
+	}
+}
+
+add_action('membership_set_redirect', 'membership_set_redirect');
 
 function membership_debug_log( $message ) {
 
@@ -1153,7 +1177,7 @@ function membership_debug_log( $message ) {
 							if( function_exists('wp_mail') ) {
 								wp_mail( MEMBERSHIP_DEBUG_EMAIL, __('Membership Debug Message','membership'), $message );
 							} else {
-								error_log( $message, 1, MEMBERSHIP_DEBUG_EMAIL );
+								error_log( $message , 1, MEMBERSHIP_DEBUG_EMAIL );
 							}
 						}
 						break;
@@ -1166,4 +1190,6 @@ function membership_debug_log( $message ) {
 	}
 
 }
+
+
 ?>

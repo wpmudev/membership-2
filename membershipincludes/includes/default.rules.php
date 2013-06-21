@@ -206,11 +206,6 @@ class M_Posts extends M_Rule {
 			// Check if we are on a page
 			$post = get_post( $post_id );
 
-			if( $post->post_type != 'post' || in_array(strtolower($host), $exclude) ) {
-				// We're only dealing with pages here and only those not excluded
-				return;
-			}
-
 			// Still here - must be on a page
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
@@ -218,7 +213,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'post' && !in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -278,11 +273,6 @@ class M_Posts extends M_Rule {
 			// Check if we are on a page
 			$post = get_post( $post_id );
 
-			if( $post->post_type != 'post' || in_array(strtolower($host), $exclude) ) {
-				// We're only dealing with pages here and only those not excluded
-				return;
-			}
-
 			// Still here - must be on a page
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
@@ -290,12 +280,12 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'post' && !in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
 
-			if($found === true) {
+			if($found == true) {
 				membership_set_positive_no_redirect();
 				// we need to redirect
 				//$this->redirect();
@@ -528,11 +518,6 @@ class M_Pages extends M_Rule {
 			// Check if we are on a page
 			$post = get_post( $post_id );
 
-			if( $post->post_type != 'page' || in_array(strtolower($host), $exclude) ) {
-				// We're only dealing with pages here and only those not excluded
-				return;
-			}
-
 			// Still here - must be on a page
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
@@ -540,7 +525,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'page' && in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -601,11 +586,6 @@ class M_Pages extends M_Rule {
 			// Check if we are on a page
 			$post = get_post( $post_id );
 
-			if( $post->post_type != 'page' || in_array(strtolower($host), $exclude) ) {
-				// We're only dealing with pages here and only those not excluded
-				return;
-			}
-
 			// Still here - must be on a page
 			// we have the current page / url - get the groups selected
 			$group_id = $this->get_group();
@@ -613,12 +593,12 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'page' && in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
 
-			if($found === true) {
+			if($found == true) {
 				membership_set_positive_no_redirect();
 				// we need to redirect
 				//$this->redirect();
@@ -1644,7 +1624,7 @@ class M_URLGroups extends M_Rule {
 			}
 		}
 
-		if($found === true) {
+		if($found == true) {
 			membership_set_positive_no_redirect();
 			// we need to redirect
 			//$this->redirect();
@@ -1693,7 +1673,7 @@ class M_URLGroups extends M_Rule {
 			}
 		}
 
-		if($redirect === true) {
+		if($redirect == true) {
 			// we need to redirect
 			membership_set_negative_redirect();
 		}
