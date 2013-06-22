@@ -131,7 +131,8 @@ if(!class_exists('M_Communication')) {
 			echo '<th style="" scope="row" valign="top">' . __('For subscription','membership') . '</th>';
 			echo '<td valign="top">';
 
-			$subscriptions = $this->get_active_subscriptions();
+			//$subscriptions = $this->get_active_subscriptions();
+			$subscriptions = array();
 
 			echo '<select name="subscription_id">';
 
@@ -229,11 +230,14 @@ if(!class_exists('M_Communication')) {
 			echo '<th style="" scope="row" valign="top">' . __('For subscription','membership') . '</th>';
 			echo '<td valign="top">';
 
-			$subscriptions = $this->get_active_subscriptions();
+			//$subscriptions = $this->get_active_subscriptions();
+			$subscriptions = array();
 
 			echo '<select name="subscription_id">';
 
-			echo '<option value="0"' . ($this->comm->sub_id == 0) ? 'selected="selected"' : '' . '>' . __('All', 'membership') . '</option>';
+			echo '<option value="0" ';
+			if ($this->comm->sub_id == 0) echo 'selected="selected"';
+			echo '>' . __('All', 'membership') . '</option>';
 			if(!empty($subscriptions)) {
 				foreach( $subscriptions as $sub ) {
 					echo '<option value="' . $sub->id . '"' . ($this->comm->sub_id == $sub->id) ? 'selected="selected"' : '' . '>' . $sub->sub_name . '</option>';
