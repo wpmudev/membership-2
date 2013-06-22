@@ -1116,6 +1116,33 @@ function membership_set_first_redirect_area( $area = 'positive' ) {
 
 }
 
+function membership_check_expression_match( $host, $list ) {
+
+	$list = array_map('strtolower', array_map('trim', explode("\n", $list )));
+
+	//reg expression match
+	$matchstring = "";
+	foreach($list as $key => $value) {
+		if($matchstring != "") $matchstring .= "|";
+
+		if( stripos($value, '\/') ) {
+			$matchstring .= stripcslashes($value);
+		} else {
+			$matchstring .= $value;
+		}
+
+	}
+
+	// switched to using a character that won't be in a url as the start and end markers
+	$matchstring = "#" . $matchstring . "#i";
+
+	if(preg_match($matchstring, $host, $matches) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function membership_debug_log( $message ) {
 
 	if( defined('MEMBERSHIP_DEBUG') && MEMBERSHIP_DEBUG == true ) {

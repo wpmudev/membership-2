@@ -146,7 +146,7 @@ function membership_excluded_urls( $exclude ) {
 		$exclude[] = $url;
 	}
 
-	print_r($exclude);
+	//print_r($exclude);
 
 	return $exclude;
 
