@@ -5,7 +5,7 @@
 */
 
 // Debug notifications - if debug activation is requested for support
-if(!defined('MEMBERSHIP_DEBUG')) define( 'MEMBERSHIP_DEBUG', false);
+if(!defined('MEMBERSHIP_DEBUG')) define( 'MEMBERSHIP_DEBUG', true);
 if(!defined('MEMBERSHIP_DEBUG_METHOD')) define( 'MEMBERSHIP_DEBUG_METHOD', 'log');
 if(!defined('MEMBERSHIP_DEBUG_EMAIL')) define( 'MEMBERSHIP_DEBUG_EMAIL', '');
 
