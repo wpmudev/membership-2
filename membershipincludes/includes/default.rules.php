@@ -242,7 +242,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( ($group->url_matches( $host ) && $post->post_type == 'post') || in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) || $post->post_type != 'post' || in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -521,7 +521,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( ($group->url_matches( $host ) && $post->post_type == 'page') || in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) || $post->post_type != 'page' || in_array(strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
