@@ -229,26 +229,7 @@ class M_BPPages extends M_Rule {
 			$redirect = false;
 			$url = '';
 
-			$exclude = array();
-			if(!empty($M_options['registration_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-			}
-
-			if(!empty($M_options['account_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['account_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-			}
-
-			if(!empty($M_options['nocontent_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-			}
-
-			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-				$exclude[] = $host;
-				$exclude[] = untrailingslashit($host);
-			}
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 			$existing_pages = bp_core_get_directory_page_ids();
 
@@ -297,26 +278,7 @@ class M_BPPages extends M_Rule {
 			$found = false;
 			$url = '';
 
-			$exclude = array();
-			if(!empty($M_options['registration_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-			}
-
-			if(!empty($M_options['account_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['account_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-			}
-
-			if(!empty($M_options['nocontent_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-			}
-
-			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-				$exclude[] = $host;
-				$exclude[] = untrailingslashit($host);
-			}
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 			$existing_pages = bp_core_get_directory_page_ids();
 
@@ -618,26 +580,7 @@ class M_BPGroups extends M_Rule {
 			$redirect = false;
 			$url = '';
 
-			$exclude = array();
-			if(!empty($M_options['registration_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-			}
-
-			if(!empty($M_options['account_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['account_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-			}
-
-			if(!empty($M_options['nocontent_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-			}
-
-			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-				$exclude[] = $host;
-				$exclude[] = untrailingslashit($host);
-			}
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 			$url = '';
 			if(is_ssl()) {
@@ -692,26 +635,7 @@ class M_BPGroups extends M_Rule {
 			$found = false;
 			$url = '';
 
-			$exclude = array();
-			if(!empty($M_options['registration_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-			}
-
-			if(!empty($M_options['account_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['account_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-			}
-
-			if(!empty($M_options['nocontent_page'])) {
-				$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-				$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-			}
-
-			if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-				$exclude[] = $host;
-				$exclude[] = untrailingslashit($host);
-			}
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 			$url = '';
 			if(is_ssl()) {

@@ -175,26 +175,7 @@ class M_Posts extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// Get the id for the post / page for this url - have to remove and re-add the actions
 		remove_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
@@ -243,26 +224,7 @@ class M_Posts extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// Get the id for the post / page for this url - have to remove and re-add the actions
 		remove_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
@@ -294,6 +256,11 @@ class M_Posts extends M_Rule {
 				//return;
 			}
 
+		} else {
+			// We don't have a post_id, so we may be on a page without one e.g. home
+			if(in_array(strtolower($host), $exclude)) {
+				membership_set_positive_no_redirect();
+			}
 		}
 
 	}
@@ -488,26 +455,7 @@ class M_Pages extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// Get the id for the post / page for this url - have to remove and re-add the actions
 		remove_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
@@ -532,7 +480,6 @@ class M_Pages extends M_Rule {
 
 			if($found == true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
-
 				membership_set_negative_redirect();
 			} else {
 				return;
@@ -556,26 +503,7 @@ class M_Pages extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// Get the id for the post / page for this url - have to remove and re-add the actions
 		remove_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
@@ -606,6 +534,11 @@ class M_Pages extends M_Rule {
 				return;
 			}
 
+		} else {
+			// We don't have a post_id, so we may be on a page without one e.g. home
+			if(in_array(strtolower($host), $exclude)) {
+				membership_set_positive_no_redirect();
+			}
 		}
 
 	}
@@ -1593,32 +1526,13 @@ class M_URLGroups extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// we have the current page / url - get the groups selected
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+			if($group->url_matches( $host ) || in_array(strtolower($host), $exclude)) {
 				// We've found a pge in the positive rules so can let the user see it
 				$found = true;
 			}
@@ -1643,26 +1557,7 @@ class M_URLGroups extends M_Rule {
 		}
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = array();
-		if(!empty($M_options['registration_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
-		}
-
-		if(!empty($M_options['account_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['account_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
-		}
-
-		if(!empty($M_options['nocontent_page'])) {
-			$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-			$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
-		}
-
-		if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-			$exclude[] = $host;
-			$exclude[] = untrailingslashit($host);
-		}
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
 
 		// we have the current page / url - get the groups selected
 		foreach((array) $this->data as $group_id) {
