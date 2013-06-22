@@ -90,6 +90,14 @@ function membership_excluded_urls( $exclude ) {
 
 	global $M_options;
 
+	$host = '';
+	if(is_ssl()) {
+		$host = "https://";
+	} else {
+		$host = "http://";
+	}
+	$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
 	if( !is_array($exclude) ) {
 		if(!empty($exclude)) {
 			$exclude = array( $exclude );
@@ -99,31 +107,46 @@ function membership_excluded_urls( $exclude ) {
 	}
 
 	if(defined('MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION') && MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION == true) {
-		$exclude[] = get_home_url();
-		$exclude[] = trailingslashit(get_home_url());
+		$url = untrailingslashit( get_home_url() );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
 	}
 
 	if(!empty($M_options['registration_page'])) {
-		$exclude[] = get_permalink( (int) $M_options['registration_page'] );
-		$exclude[] = untrailingslashit(get_permalink( (int) $M_options['registration_page'] ));
+		$url = untrailingslashit( get_permalink( (int) $M_options['registration_page'] ) );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
 	}
 
 	if(!empty($M_options['account_page'])) {
-		$exclude[] = get_permalink( (int) $M_options['account_page'] );
-		$exclude[] = untrailingslashit(get_permalink( (int) $M_options['account_page'] ));
+		$url = untrailingslashit( get_permalink( (int) $M_options['account_page'] ) );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
 	}
 
 	if(!empty($M_options['nocontent_page'])) {
-		$exclude[] = get_permalink( (int) $M_options['nocontent_page'] );
-		$exclude[] = untrailingslashit(get_permalink( (int) $M_options['nocontent_page'] ));
+		$url = untrailingslashit( get_permalink( (int) $M_options['nocontent_page'] ) );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
 	}
 
 	if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
-		$exclude[] = $host;
-		$exclude[] = untrailingslashit($host);
+		$url = untrailingslashit( $host );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
 	}
 
-	//print_r($exclude);
+	print_r($exclude);
 
 	return $exclude;
 
