@@ -1118,7 +1118,7 @@ function membership_set_first_redirect_area( $area = 'positive' ) {
 
 function membership_check_expression_match( $host, $list ) {
 
-	$list = array_map('strtolower', array_map('trim', explode("\n", $list )));
+	$list = array_map('strtolower', array_map('trim', $list ));
 
 	//reg expression match
 	$matchstring = "";

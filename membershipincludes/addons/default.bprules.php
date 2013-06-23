@@ -233,7 +233,8 @@ class M_BPPages extends M_Rule {
 
 			$existing_pages = bp_core_get_directory_page_ids();
 
-			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
+
+			if(!membership_check_expression_match( strtolower(get_permalink($existing_pages[$component]) ), $exclude)) {
 				$url = get_permalink($existing_pages[$component]);
 			}
 
@@ -282,7 +283,7 @@ class M_BPPages extends M_Rule {
 
 			$existing_pages = bp_core_get_directory_page_ids();
 
-			if(!in_array(strtolower( get_permalink($existing_pages[$component]) ), $exclude)) {
+			if(!membership_check_expression_match( strtolower(get_permalink($existing_pages[$component]) ), $exclude)) {
 				$url = get_permalink($existing_pages[$component]);
 			}
 
@@ -590,7 +591,7 @@ class M_BPGroups extends M_Rule {
 			}
 			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-			if(in_array(strtolower( $url ), $exclude)) {
+			if(membership_check_expression_match( strtolower($url), $exclude)) {
 				return;
 			}
 
@@ -645,7 +646,7 @@ class M_BPGroups extends M_Rule {
 			}
 			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-			if(in_array(strtolower( $url ), $exclude)) {
+			if(membership_check_expression_match( strtolower($url), $exclude)) {
 				return;
 			}
 

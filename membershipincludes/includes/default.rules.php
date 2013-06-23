@@ -194,7 +194,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) && $post->post_type == 'post' && !in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'post' && !membership_check_expression_match( strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -242,7 +242,7 @@ class M_Posts extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) || $post->post_type != 'post' || in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) || $post->post_type != 'post' || membership_check_expression_match( strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -473,7 +473,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) && $post->post_type == 'page' && !in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) && $post->post_type == 'page' && !membership_check_expression_match( strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -521,7 +521,7 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
-				if( $group->url_matches( $host ) || $post->post_type != 'page' || in_array(strtolower($host), $exclude) ) {
+				if( $group->url_matches( $host ) || $post->post_type != 'page' || membership_check_expression_match( strtolower($host), $exclude) ) {
 					$found = true;
 				}
 			}
@@ -1532,7 +1532,7 @@ class M_URLGroups extends M_Rule {
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if($group->url_matches( $host ) || in_array(strtolower($host), $exclude)) {
+			if($group->url_matches( $host ) || membership_check_expression_match( strtolower($host), $exclude) ) {
 				// We've found a pge in the positive rules so can let the user see it
 				$found = true;
 			}
@@ -1563,7 +1563,7 @@ class M_URLGroups extends M_Rule {
 		foreach((array) $this->data as $group_id) {
 			$group = new M_Urlgroup( $group_id );
 
-			if($group->url_matches( $host ) && !in_array(strtolower($host), $exclude)) {
+			if($group->url_matches( $host ) && !membership_check_expression_match( strtolower($host), $exclude) ) {
 				$redirect = true;
 			}
 		}
