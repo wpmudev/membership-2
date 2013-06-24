@@ -112,7 +112,9 @@ if(!class_exists('membershippublic')) {
 			do_action('membership_register_shortcodes');
 
 			// Check if we are on a membership specific page
-			add_filter('the_posts', array(&$this, 'check_for_membership_pages'), 1);
+			add_filter('the_posts', array(&$this, 'check_for_membership_pages'), 99);
+			add_filter('the_content', array(&$this, 'check_for_membership_pages_content'), 1);
+
 			// Check for subscription shortcodes - and if needed queue styles
 			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
 
@@ -2088,17 +2090,83 @@ if(!class_exists('membershippublic')) {
 
 		}
 
+		function check_for_membership_pages_content($content) {
+
+			global $M_options, $post;
+
+			if( !empty($post) ) {
+
+				if($post->post_type == 'page') {
+					if($post->ID == $M_options['registration_page']) {
+
+						// check if page contains a shortcode
+						if(strstr($content, '[subscriptionform]') != false) {
+							// There is content in there with the shortcode so just return it
+							return $content;
+						} else {
+
+							// There is no shortcode content in there, so override
+							remove_filter( 'the_content', 'wpautop' );
+
+							$content .= $this->do_subscription_form();
+
+						}
+					}
+					if($post->ID == $M_options['account_page']) {
+						// account page - check if page contains a shortcode
+						if(strstr($content, '[accountform]') != false || strstr($content, '[upgradeform]') != false || strstr($content, '[renewform]') != false) {
+							// There is content in there with the shortcode so just return it
+							return $content;
+						} else {
+
+							// There is no shortcode in there, so override
+							remove_filter( 'the_content', 'wpautop' );
+							$content .= $this->do_account_form();
+						}
+					}
+					if($post->ID == $M_options['subscriptions_page']) {
+
+						// account page - check if page contains a shortcode
+						if(strstr($content, '[upgradeform]') != false || strstr($content, '[renewform]') != false) {
+							// There is content in there with the shortcode so just return it
+							return $content;
+						} else {
+
+							// There is no shortcode in there, so override
+							remove_filter( 'the_content', 'wpautop' );
+							$content .= $this->do_renew_form();
+						}
+					}
+					if($post->ID == $M_options['nocontent_page']) {
+						// no access page - we must return the content entered by the user so just return it
+						return $content;
+					}
+					// Registration complete page
+					if($post->ID == $M_options['registrationcompleted_page']) {
+
+						return $content;
+					}
+
+				}
+			}
+
+			return $content;
+		}
+
 		function check_for_membership_pages($posts) {
 
 			global $M_options;
 
 			if(count($posts) == 1) {
+
 				// We have only the one post, so check if it's one of our pages
-				$post = $posts[0];
+				$post = &$posts[0];
+
 				if($post->post_type == 'page') {
 					if($post->ID == $M_options['registration_page']) {
+
 						// check if page contains a shortcode
-						if(strstr($post->post_content, '[subscriptionform]') !== false) {
+						if(strstr($post->post_content, '[subscriptionform]') != false) {
 							// There is content in there with the shortcode so just return it
 							return $posts;
 						} else {
@@ -2128,10 +2196,18 @@ if(!class_exists('membershippublic')) {
 								}
 							}
 
+							//echo "here";
+
 							do_action('membership_subscriptionbutton_onpage');
 							// There is no shortcode content in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content .= $this->do_subscription_form();
+
+							//$post->post_content .= $this->do_subscription_form();
+
+							//echo $post->post_content;
+							//die();
+
+							//$posts[0] = $post;
 						}
 					}
 					if($post->ID == $M_options['account_page']) {
@@ -2149,7 +2225,7 @@ if(!class_exists('membershippublic')) {
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content .= $this->do_account_form();
+							//$post->post_content .= $this->do_account_form();
 						}
 					}
 					if($post->ID == $M_options['subscriptions_page']) {
@@ -2243,7 +2319,7 @@ if(!class_exists('membershippublic')) {
 							}
 							// There is no shortcode in there, so override
 							remove_filter( 'the_content', 'wpautop' );
-							$post->post_content .= $this->do_renew_form();
+							//$post->post_content .= $this->do_renew_form();
 						}
 					}
 					if($post->ID == $M_options['nocontent_page']) {
@@ -2314,6 +2390,9 @@ if(!class_exists('membershippublic')) {
 				}
 			}
 			// If nothing else is hit, just return the content
+
+			//print_r($posts);
+			//print_r(debug_backtrace());
 			return $posts;
 		}
 
