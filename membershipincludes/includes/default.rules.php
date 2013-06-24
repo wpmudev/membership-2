@@ -199,7 +199,7 @@ class M_Posts extends M_Rule {
 				}
 			}
 
-			if($found === true && !empty($M_options['nocontent_page'])) {
+			if($found == true && !empty($M_options['nocontent_page'])) {
 				// we need to redirect
 				membership_set_negative_redirect();
 			} else {
@@ -258,7 +258,7 @@ class M_Posts extends M_Rule {
 
 		} else {
 			// We don't have a post_id, so we may be on a page without one e.g. home
-			if(in_array(strtolower($host), $exclude)) {
+			if( membership_check_expression_match( strtolower($host), $exclude) ) {
 				membership_set_positive_no_redirect();
 			}
 		}
@@ -536,7 +536,7 @@ class M_Pages extends M_Rule {
 
 		} else {
 			// We don't have a post_id, so we may be on a page without one e.g. home
-			if(in_array(strtolower($host), $exclude)) {
+			if( membership_check_expression_match( strtolower($host), $exclude) ) {
 				membership_set_positive_no_redirect();
 			}
 		}
