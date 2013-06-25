@@ -1146,6 +1146,11 @@ function membership_check_expression_match( $host, $list ) {
 function membership_debug_log( $message ) {
 
 	if( defined('MEMBERSHIP_DEBUG') && MEMBERSHIP_DEBUG == true ) {
+
+		if( defined('MEMBERSHIP_DEBUG_LEVEL') && MEMBERSHIP_DEBUG_LEVEL == 'adv' ) {
+			$message .= ' - ' . print_r( debug_backtrace(), true );
+		}
+
 		// We have debugging switched on
 		switch( MEMBERSHIP_DEBUG_METHOD ) {
 			case 'log': error_log( $message );

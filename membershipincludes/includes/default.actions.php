@@ -138,6 +138,22 @@ function membership_excluded_urls( $exclude ) {
 		$exclude[] = $url;
 	}
 
+	if(!empty($M_options['registrationcompleted_page'])) {
+		$url = untrailingslashit( get_permalink( (int) $M_options['registrationcompleted_page'] ) );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
+	}
+
+	if(!empty($M_options['subscriptions_page'])) {
+		$url = untrailingslashit( get_permalink( (int) $M_options['subscriptions_page'] ) );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url .= '(/.*)';
+
+		$exclude[] = $url;
+	}
+
 	if(!empty($wp_query->query_vars['protectedfile']) && !$forceviewing) {
 		$url = untrailingslashit( $host );
 		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );

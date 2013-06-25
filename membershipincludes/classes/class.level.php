@@ -262,6 +262,8 @@ if(!class_exists('M_Level')) {
 
 			global $M_Rules;
 
+			membership_debug_log( __('Loading level - ', 'membership') . $this->level_title() );
+
 			//positiverules
 			$positive = $this->get_rules('positive');
 

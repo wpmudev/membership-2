@@ -258,9 +258,9 @@ class M_Posts extends M_Rule {
 
 		} else {
 			// We don't have a post_id, so we may be on a page without one e.g. home
-			if( membership_check_expression_match( strtolower($host), $exclude) ) {
+			//if( membership_check_expression_match( strtolower($host), $exclude) ) {
 				membership_set_positive_no_redirect();
-			}
+			//}
 		}
 
 	}
@@ -473,8 +473,12 @@ class M_Pages extends M_Rule {
 			if($group_id) {
 				$group = new M_Urlgroup( $group_id );
 
+
+
 				if( $group->url_matches( $host ) && $post->post_type == 'page' && !membership_check_expression_match( strtolower($host), $exclude) ) {
 					$found = true;
+				} else {
+
 				}
 			}
 
@@ -536,9 +540,9 @@ class M_Pages extends M_Rule {
 
 		} else {
 			// We don't have a post_id, so we may be on a page without one e.g. home
-			if( membership_check_expression_match( strtolower($host), $exclude) ) {
+			//if( membership_check_expression_match( strtolower($host), $exclude) ) {
 				membership_set_positive_no_redirect();
-			}
+			//}
 		}
 
 	}
