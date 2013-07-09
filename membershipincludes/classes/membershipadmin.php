@@ -2666,6 +2666,11 @@ if(!class_exists('membershipadmin')) {
 											$M_options['renewalperiod'] = (isset($_POST['renewalperiod'])) ? $_POST['renewalperiod'] : '';
 											$M_options['show_coupons_form'] = (isset($_POST['show_coupons_form'])) ? $_POST['show_coupons_form'] : '';
 
+											$M_options['membership_post_count'] = (isset($_POST['membership_post_count']) && is_numeric($_POST['membership_post_count'])) ? $_POST['membership_post_count'] : '';
+											$M_options['membership_page_count'] = (isset($_POST['membership_page_count']) && is_numeric($_POST['membership_page_count'])) ? $_POST['membership_page_count'] : '';
+											$M_options['membership_group_count'] = (isset($_POST['membership_group_count']) && is_numeric($_POST['membership_group_count'])) ? $_POST['membership_group_count'] : '';
+
+
 											if(isset($_POST['membershipwizard']) && $_POST['membershipwizard'] == 'yes') {
 												if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
 													if(function_exists('update_blog_option')) {
@@ -3635,6 +3640,36 @@ if(!class_exists('membershipadmin')) {
 										$coupon_visible = (isset($M_options['show_coupons_form'])) ? $M_options['show_coupons_form'] : 'yes';
 										?>
 										<input type='checkbox' name='show_coupons_form' value='yes' <?php if($coupon_visible == 'yes') echo "checked='checked'"; ?>/>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="postbox">
+						<h3 class="hndle" style='cursor:auto;'><span><?php _e('Rule counts','membership'); ?></span></h3>
+						<div class="inside">
+							<p class='description'><?php _e('Use these options to set how many posts, pages and groups are shown in the Level management forms.','membership'); ?></p>
+
+							<table class="form-table">
+							<tbody>
+								<tr valign="top">
+									<th scope="row"><?php _e('Post count','membership'); ?></th>
+									<td>
+										<input type='text' name='membership_post_count' value='<?php if(!empty($M_options['membership_post_count'])) { echo $M_options['membership_post_count']; } else { if(defined('MEMBERSHIP_POST_COUNT')) { echo MEMBERSHIP_POST_COUNT; } } ?>' />
+									</td>
+								</tr>
+								<tr valign="top">
+									<th scope="row"><?php _e('Page count','membership'); ?></th>
+									<td>
+										<input type='text' name='membership_page_count' value='<?php if(!empty($M_options['membership_page_count'])) { echo $M_options['membership_page_count']; } else { if(defined('MEMBERSHIP_PAGE_COUNT')) { echo MEMBERSHIP_PAGE_COUNT; } } ?>' />
+									</td>
+								</tr>
+								<tr valign="top">
+									<th scope="row"><?php _e('Group count','membership'); ?></th>
+									<td>
+										<input type='text' name='membership_group_count' value='<?php if(!empty($M_options['membership_group_count'])) { echo $M_options['membership_group_count']; } else { if(defined('MEMBERSHIP_GROUP_COUNT')) { echo MEMBERSHIP_GROUP_COUNT; } } ?>' />
 									</td>
 								</tr>
 							</tbody>

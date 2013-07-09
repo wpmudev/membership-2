@@ -1,6 +1,6 @@
 <?php
 /*
-*	Membership plugin configuration file v1.0
+*	Membership plugin configuration file v1.0 - now replaced by config.php
 *
 */
 
