@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 3.4.5 beta 4
+Version: 3.4.5 beta 5
 Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: Barry (Incsub), Cole (Incsub)
@@ -38,6 +38,8 @@ set_membership_dir(__FILE__);
 // Load required classes
 // Rules class
 require_once( membership_dir('membershipincludes/classes/class.rule.php') );
+// Rules class
+require_once( membership_dir('membershipincludes/classes/class.advancedrule.php') );
 // Gateways class
 require_once( membership_dir('membershipincludes/classes/class.gateway.php') );
 // Levels class
@@ -60,6 +62,8 @@ require_once( membership_dir('membershipincludes/classes/class.coupon.php') );
 require_once( membership_dir('membershipincludes/classes/class.adminbar.php') );
 // Set up the default rules
 require_once( membership_dir('membershipincludes/includes/default.rules.php') );
+// Set up the default advanced rules
+require_once( membership_dir('membershipincludes/includes/default.advrules.php') );
 
 // Load the Cron process
 require_once( membership_dir('membershipincludes/classes/membershipcron.php') );
