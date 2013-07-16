@@ -426,7 +426,7 @@ if(!class_exists('M_Gateway')) {
 			echo "</form>";
 		}
 
-		function display_payment_form() {
+		function display_payment_form($subscription, $pricing, $user_id) {
 			die('You Must Override The display_payment_form() in your gateway');
 		}
 

@@ -8,15 +8,15 @@ Author URI: http://caffeinatedb.com
 
 class M_Membershiprepair {
 
-	function M_Membershiprepair() {
-		$this->__construct();
-	}
-
 	function __construct() {
 		// Add advanced tab
 		add_filter('membership_options_menus', array(&$this, 'add_advanced_option'));
 		// Add advanced content
 		add_action('membership_option_menu_advanced', array(&$this, 'handle_repair_panel'));
+	}
+
+	function M_Membershiprepair() {
+		$this->__construct();
 	}
 
 	function add_advanced_option( $menus ) {
