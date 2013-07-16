@@ -738,7 +738,7 @@ class M_authorizenetaim extends M_Gateway {
 		$output .=  "<option " . ($sel==9?' selected':'') . "  value='09'>09 - Sep</option>";
 		$output .=  "<option " . ($sel==10?' selected':'') . "  value='10'>10 - Oct</option>";
 		$output .=  "<option " . ($sel==11?' selected':'') . "  value='11'>11 - Nov</option>";
-		$output .=  "<option " . ($sel==12?' selected':'') . "  value='12'>12 - Doc</option>";
+		$output .=  "<option " . ($sel==12?' selected':'') . "  value='12'>12 - Dec</option>";
 
 		return($output);
 	}
