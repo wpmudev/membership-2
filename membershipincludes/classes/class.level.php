@@ -264,14 +264,9 @@ if(!class_exists('M_Level')) {
 
 			membership_debug_log( __('Loading level - ', 'membership') . $this->level_title() );
 
-			//positiverules
 			$positive = $this->get_rules('positive');
 
-			//negativerules
 			$negative = $this->get_rules('negative');
-
-			//print_r($positive);
-			//print_r($negative);
 
 			if(!empty($positive)) {
 				$key = 0;

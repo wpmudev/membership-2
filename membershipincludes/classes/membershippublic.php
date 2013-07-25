@@ -103,12 +103,6 @@ if(!class_exists('membershippublic')) {
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
 
-			// Moved extra shortcodes over to the main plugin for new registration forms
-			add_shortcode('subscriptiontitle', array(&$this, 'do_subscriptiontitle_shortcode') );
-			add_shortcode('subscriptiondetails', array(&$this, 'do_subscriptiondetails_shortcode') );
-			add_shortcode('subscriptionprice', array(&$this, 'do_subscriptionprice_shortcode') );
-			add_shortcode('subscriptionbutton', array(&$this, 'do_subscriptionbutton_shortcode') );
-
 			do_action('membership_register_shortcodes');
 
 			// Check if we are on a membership specific page
@@ -287,11 +281,12 @@ if(!class_exists('membershippublic')) {
 				return;
 			}
 
-			// New url protection processing
-			$this->start_url_protection_processing();
+			// New url protection processing - rewriting
+			/*
 
 			//add_action('parse_request', array(&$this, 'start_url_protection_processing'), 10 );
 			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 11 );
+			*/
 
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
@@ -1110,9 +1105,8 @@ if(!class_exists('membershippublic')) {
 			if(preg_match_all($url_exp, $the_content, $matches)) {
 				$home = get_option('home');
 				if(!empty($matches) && !empty($matches[2])) {
-
-					foreach((array) $matches[2] as $key => $domain) {
-						if(untrailingslashit($home) == untrailingslashit($domain)) {
+					foreach((array) $matches[0] as $key => $domain) {
+						if(strpos($domain, untrailingslashit($home)) === 0) {
 							$foundlocal = $key;
 							$file = basename($matches[4][$foundlocal]);
 
@@ -1845,239 +1839,6 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-
-		function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
-
-			global $wp_query;
-
-			$defaults = array(	"holder"				=>	'',
-								"holderclass"			=>	'',
-								"item"					=>	'',
-								"itemclass"				=>	'',
-								"postfix"				=>	'',
-								"prefix"				=>	'',
-								"wrapwith"				=>	'',
-								"wrapwithclass"			=>	'',
-								"subscription"			=>	''
-							);
-
-			extract(shortcode_atts($defaults, $atts));
-
-			if(empty($subscription)) {
-				return '';
-			}
-
-			$html = '';
-
-			if(!empty($holder)) {
-				$html .= "<{$holder} class='{$holderclass}'>";
-			}
-			if(!empty($item)) {
-				$html .= "<{$item} class='{$itemclass}'>";
-			}
-			$html .= $prefix;
-
-			// The title
-			if(!empty($wrapwith)) {
-				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-			}
-
-			$sub = new M_Subscription( (int) $subscription );
-			$html .= $sub->sub_name();
-
-			if(!empty($wrapwith)) {
-				$html .= "</{$wrapwith}>";
-			}
-
-			$html .= $postfix;
-			if(!empty($item)) {
-				$html .= "</{$item}>";
-			}
-			if(!empty($holder)) {
-				$html .= "</{$holder}>";
-			}
-
-
-			return $html;
-		}
-
-		function do_subscriptiondetails_shortcode($atts, $content = null, $code = "") {
-
-			global $wp_query;
-
-			$defaults = array(	"holder"				=>	'',
-								"holderclass"			=>	'',
-								"item"					=>	'',
-								"itemclass"				=>	'',
-								"postfix"				=>	'',
-								"prefix"				=>	'',
-								"wrapwith"				=>	'',
-								"wrapwithclass"			=>	'',
-								"subscription"			=>	''
-							);
-
-			extract(shortcode_atts($defaults, $atts));
-
-			if(empty($subscription)) {
-				return '';
-			}
-
-			$html = '';
-
-			if(!empty($holder)) {
-				$html .= "<{$holder} class='{$holderclass}'>";
-			}
-			if(!empty($item)) {
-				$html .= "<{$item} class='{$itemclass}'>";
-			}
-			$html .= $prefix;
-
-			// The title
-			if(!empty($wrapwith)) {
-				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-			}
-
-			$sub = new M_Subscription( (int) $subscription );
-			$html .= stripslashes($sub->sub_description());
-
-			if(!empty($wrapwith)) {
-				$html .= "</{$wrapwith}>";
-			}
-
-			$html .= $postfix;
-			if(!empty($item)) {
-				$html .= "</{$item}>";
-			}
-			if(!empty($holder)) {
-				$html .= "</{$holder}>";
-			}
-
-			return $html;
-		}
-
-		function do_subscriptionprice_shortcode($atts, $content = null, $code = "") {
-
-			global $wp_query;
-
-			$defaults = array(	"holder"				=>	'',
-								"holderclass"			=>	'',
-								"item"					=>	'',
-								"itemclass"				=>	'',
-								"postfix"				=>	'',
-								"prefix"				=>	'',
-								"wrapwith"				=>	'',
-								"wrapwithclass"			=>	'',
-								"subscription"			=>	''
-							);
-
-			extract(shortcode_atts($defaults, $atts));
-
-			if(empty($subscription)) {
-				return '';
-			}
-
-			$html = '';
-
-			if(!empty($holder)) {
-				$html .= "<{$holder} class='{$holderclass}'>";
-			}
-			if(!empty($item)) {
-				$html .= "<{$item} class='{$itemclass}'>";
-			}
-			$html .= $prefix;
-
-			// The title
-			if(!empty($wrapwith)) {
-				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-			}
-
-			$sub = new M_Subscription( (int) $subscription );
-			$first = $sub->get_level_at_position(1);
-
-			if(!empty($first)) {
-				$price = $first->level_price;
-				if($price == 0) {
-					$price = "Free";
-				} else {
-
-					$M_options = get_option('membership_options', array());
-
-					switch( $M_options['paymentcurrency'] ) {
-						case "USD": $price = "$" . $price;
-									break;
-
-						case "GBP":	$price = "&pound;" . $price;
-									break;
-
-						case "EUR":	$price = "&euro;" . $price;
-									break;
-
-						default:	$price = apply_filters('membership_currency_symbol_' . $M_options['paymentcurrency'], $M_options['paymentcurrency']) . $price;
-					}
-				}
-			}
-
-
-			$html .= $price;
-
-			if(!empty($wrapwith)) {
-				$html .= "</{$wrapwith}>";
-			}
-
-			$html .= $postfix;
-			if(!empty($item)) {
-				$html .= "</{$item}>";
-			}
-			if(!empty($holder)) {
-				$html .= "</{$holder}>";
-			}
-
-			return $html;
-		}
-
-		function do_subscriptionbutton_shortcode($atts, $content = null, $code = "") {
-
-			global $wp_query, $M_options;
-
-			$defaults = array(	"holder"				=>	'',
-								"holderclass"			=>	'',
-								"item"					=>	'',
-								"itemclass"				=>	'',
-								"postfix"				=>	'',
-								"prefix"				=>	'',
-								"wrapwith"				=>	'',
-								"wrapwithclass"			=>	'',
-								"subscription"			=>	'',
-								"color"					=>	'blue',
-								'buttontext'			=> __('Subscribe', 'membership')
-							);
-
-			extract(shortcode_atts($defaults, $atts));
-
-			if(isset($M_options['formtype']) && $M_options['formtype'] == 'new') {
-				// pop up form
-				$link = admin_url( 'admin-ajax.php' );
-				$link .= '?action=buynow&amp;subscription=' . (int) $subscription;
-				$class = 'popover';
-			} else {
-				// original form
-				$link = M_get_registration_permalink();
-				$link .= '?action=registeruser&amp;subscription=' . (int) $subscription;
-				$class = '';
-			}
-
-			if(empty($content)) {
-				$content = $buttontext;
-			}
-
-			$html = "<a href='" . $link . "' class='popover button " . $color . "'>" . $content . "</a>";
-
-			//$html = do_shortcode("[button class='popover' link='{$link}']Buy Now[/button]");
-
-
-			return $html;
-		}
-
 		function create_the_user_and_notify() {
 			//$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email']);
 			//wp_new_user_notification( $user_id, $_POST['password'] );
@@ -2618,24 +2379,6 @@ if(!class_exists('membershippublic')) {
 			}
 
 			return $shortcodes;
-
-		}
-
-		// Set the processing defaults for individual page checks
-		function start_url_protection_processing() {
-
-			global $membership_redirect_to_protected, $membership_first_url_group;
-
-			// Set up the defaults
-			if( !$this->redirect_defaults_set ) {
-				membership_debug_log( __('Setting the defaults for URL group processing','membership') );
-
-				do_action('membership_set_redirect', false );
-				$$membership_first_url_group = false;
-				// We've set, so set the flag
-				$this->redirect_defaults_set = true;
-			}
-
 
 		}
 

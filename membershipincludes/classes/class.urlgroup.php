@@ -346,4 +346,14 @@ add_action( 'membership_update_negative_rule', 'M_create_internal_URL_group', 10
 add_action( 'membership_add_positive_rule', 'M_create_internal_URL_group', 10, 3 );
 add_action( 'membership_add_negative_rule', 'M_create_internal_URL_group', 10, 3 );
 
+function M_add_to_global_urlgroup( $rules, $area = 'negative' ) {
+
+	global $M_global_groups;
+
+	if(!is_array($M_global_groups)) {
+		$M_global_groups = array();
+	}
+
+}
+
 ?>

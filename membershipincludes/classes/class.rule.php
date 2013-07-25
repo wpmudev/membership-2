@@ -77,4 +77,28 @@ if(!class_exists('M_Rule')) {
 	}
 
 }
+
+// Functions
+if(!function_exists('M_register_rule')) {
+	function M_register_rule($rule_name, $class_name, $section) {
+
+		global $M_Rules, $M_SectionRules;
+
+		if(!is_array($M_Rules)) {
+			$M_Rules = array();
+		}
+
+		if(!is_array($M_SectionRules)) {
+			$M_SectionRules = array();
+		}
+
+		if(class_exists($class_name)) {
+			$M_SectionRules[$section][$rule_name] = $class_name;
+			$M_Rules[$rule_name] = $class_name;
+		} else {
+			return false;
+		}
+
+	}
+}
 ?>

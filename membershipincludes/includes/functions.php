@@ -420,30 +420,6 @@ function current_user_on_subscription( $sub_id ) {
 
 }
 
-// Functions
-if(!function_exists('M_register_rule')) {
-	function M_register_rule($rule_name, $class_name, $section) {
-
-		global $M_Rules, $M_SectionRules;
-
-		if(!is_array($M_Rules)) {
-			$M_Rules = array();
-		}
-
-		if(!is_array($M_SectionRules)) {
-			$M_SectionRules = array();
-		}
-
-		if(class_exists($class_name)) {
-			$M_SectionRules[$section][$rule_name] = $class_name;
-			$M_Rules[$rule_name] = $class_name;
-		} else {
-			return false;
-		}
-
-	}
-}
-
 function M_remove_old_plugin( $plugins ) {
 
 	if(array_key_exists('membership/membership.php', $plugins) && !in_array('membership.php', (array) array_map('basename', wp_get_active_and_valid_plugins() ))) {
