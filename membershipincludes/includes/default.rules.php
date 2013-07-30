@@ -87,9 +87,9 @@ class M_Posts extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
 
-		$results = $wpdb->get_var( $sql );
+		$results = $wpdb->get_row( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -104,9 +104,8 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 99 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
 
-		membership_set_first_redirect_area( 'positive' );
 
 	}
 
@@ -116,9 +115,8 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 99 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
 
-		membership_set_first_redirect_area( 'negative' );
 	}
 
 	function add_viewable_posts($wp_query) {
@@ -349,9 +347,7 @@ class M_Pages extends M_Rule {
 
 		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 1 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
-
-		membership_set_first_redirect_area( 'positive' );
+		//add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 
 	}
 
@@ -361,9 +357,8 @@ class M_Pages extends M_Rule {
 
 		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 1 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 
-		membership_set_first_redirect_area( 'negative' );
 
 	}
 
@@ -377,9 +372,9 @@ class M_Pages extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
 
-		$results = $wpdb->get_var( $sql );
+		$results = $wpdb->get_row( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -1502,7 +1497,6 @@ class M_URLGroups extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'positive_check_request') );
 
-		membership_set_first_redirect_area( 'positive' );
 
 	}
 
@@ -1512,7 +1506,6 @@ class M_URLGroups extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'negative_check_request') );
 
-		membership_set_first_redirect_area( 'negative' );
 
 	}
 

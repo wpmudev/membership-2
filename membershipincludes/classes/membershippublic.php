@@ -282,11 +282,7 @@ if(!class_exists('membershippublic')) {
 			}
 
 			// New url protection processing - rewriting
-			/*
-
-			//add_action('parse_request', array(&$this, 'start_url_protection_processing'), 10 );
-			add_action('template_redirect', array(&$this, 'complete_url_protection_processing'), 11 );
-			*/
+			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 99 );
 
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
@@ -2385,7 +2381,9 @@ if(!class_exists('membershippublic')) {
 		// Check the results and handle the outcome - redirecting if necessary
 		function complete_url_protection_processing( $wp ) {
 
-			global $membership_redirect_to_protected, $membership_first_url_group;
+			global $M_global_groups;
+
+
 
 			if( $membership_redirect_to_protected ) {
 				// We have detected a need to redirect - so do the redirect

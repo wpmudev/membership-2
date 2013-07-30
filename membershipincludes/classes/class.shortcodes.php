@@ -1,19 +1,19 @@
 <?php
 // Added some extra helpfull shortcodes to the membership system
-if( !class_exists('M_shortcodes') ) {
+if( !class_exists('M_extrashortcodes') ) {
 
-	class M_shortcodes {
-
-		// PHP 4 constructor
-		function M_shortcodes() {
-			$this->__construct();
-		}
+	class M_extrashortcodes {
 
 		// PHP 5+ constructor
 		function __construct() {
 
 			add_action( 'membership_register_shortcodes', array(&$this, 'register_shortcodes' ) );
 
+		}
+
+		// PHP 4 constructor
+		function M_shortcodes() {
+			$this->__construct();
 		}
 
 		function register_shortcodes() {
@@ -262,5 +262,5 @@ if( !class_exists('M_shortcodes') ) {
 
 }
 
-$M_shortcodes = new M_shortcodes();
+$M_extrashortcodes = new M_extrashortcodes();
 ?>

@@ -261,7 +261,7 @@ if(!class_exists('M_Ping')) {
 			    include_once( ABSPATH . WPINC. '/class-http.php' );
 			}
 
-			$pingdata = $this->pingconstants;
+			$pingdata = apply_filters('membership_ping_constants_list', $this->pingconstants);
 
 			if(empty($user_id)) {
 				$user = wp_get_current_user();
