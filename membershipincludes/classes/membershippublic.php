@@ -2383,7 +2383,7 @@ if(!class_exists('membershippublic')) {
 
 			global $M_global_groups;
 
-
+			/*
 
 			if( $membership_redirect_to_protected ) {
 				// We have detected a need to redirect - so do the redirect
@@ -2400,6 +2400,8 @@ if(!class_exists('membershippublic')) {
 				}
 
 			}
+
+			*/
 
 		}
 

@@ -46,6 +46,27 @@ if(!class_exists('M_Urlgroup')) {
 			return $this->db->get_row( $sql );
 		}
 
+	 	function group_urls() {
+			$group = $this->get_group();
+
+			if(!empty($group)) {
+				return $group->groupurls;
+			} else {
+				return false;
+			}
+
+		}
+
+		function group_urls_array() {
+			$group = $this->get_group();
+
+			if(!empty($group)) {
+				return array_map('strtolower', array_map('trim', explode("\n", $group->groupurls)));
+			} else {
+				return false;
+			}
+		}
+
 		function editform() {
 
 			$this->group = $this->get_group();
@@ -346,12 +367,22 @@ add_action( 'membership_update_negative_rule', 'M_create_internal_URL_group', 10
 add_action( 'membership_add_positive_rule', 'M_create_internal_URL_group', 10, 3 );
 add_action( 'membership_add_negative_rule', 'M_create_internal_URL_group', 10, 3 );
 
-function M_add_to_global_urlgroup( $rules, $area = 'negative' ) {
+function M_add_to_global_urlgroup( $urls, $area = 'negative' ) {
 
 	global $M_global_groups;
 
 	if(!is_array($M_global_groups)) {
 		$M_global_groups = array();
+		$M_global_groups['positive'] = array();
+		$M_global_groups['negative'] = array();
+	}
+
+	switch( $area ) {
+		case 'positive':	$M_global_groups['positive'] = array_map('strtolower', array_map('trim', explode("\n", $urls)));
+							break;
+
+		case 'negative':	$M_global_groups['negative'] = array_map('strtolower', array_map('trim', explode("\n", $urls)));
+							break;
 	}
 
 }

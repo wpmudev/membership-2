@@ -1073,25 +1073,6 @@ function membership_redirect_to_protected() {
 
 }
 
-function membership_set_first_redirect_area( $area = 'positive' ) {
-
-	global $membership_redirect_to_protected, $membership_first_url_group;
-
-	if( $membership_first_url_group == false ) {
-		switch( $area ) {
-			case 'positive':	$membership_first_url_group = 'positive';
-								do_action('membership_set_redirect', true );
-								break;
-
-			case 'negative':	$membership_first_url_group = 'negative';
-								do_action('membership_set_redirect', false );
-								break;
-		}
-
-	}
-
-}
-
 function membership_check_expression_match( $host, $list ) {
 
 	$list = array_map('strtolower', array_map('trim', $list ));

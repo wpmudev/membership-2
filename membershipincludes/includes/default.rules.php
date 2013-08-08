@@ -87,9 +87,9 @@ class M_Posts extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
 
-		$results = $wpdb->get_row( $sql );
+		$results = $wpdb->get_var( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -104,8 +104,11 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 99 );
 
-		//add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
-
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
+		}
 
 	}
 
@@ -115,7 +118,11 @@ class M_Posts extends M_Rule {
 
 		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 99 );
 
-		//add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
+		}
 
 	}
 
@@ -347,7 +354,11 @@ class M_Pages extends M_Rule {
 
 		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 1 );
 
-		//add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
+		}
 
 	}
 
@@ -357,7 +368,11 @@ class M_Pages extends M_Rule {
 
 		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 1 );
 
-		//add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
+		}
 
 
 	}
@@ -372,9 +387,9 @@ class M_Pages extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
 
-		$results = $wpdb->get_row( $sql );
+		$results = $wpdb->get_var( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -386,8 +401,6 @@ class M_Pages extends M_Rule {
 	function add_viewable_pages($wp_query) {
 
 		global $M_options;
-
-		//print_r($wp_query);
 
 		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
 			// We are not on a single page - so just limit the viewing
@@ -619,7 +632,7 @@ class M_Categories extends M_Rule {
 
 		$this->data = $data;
 
-		add_action('pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
+		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
 		add_filter( 'get_terms', array(&$this, 'add_unviewable_categories'), 1, 3 );
 
 		add_filter( 'the_posts', array(&$this, 'check_negative_posts'));
@@ -1496,6 +1509,11 @@ class M_URLGroups extends M_Rule {
 		$this->data = $data;
 
 		add_action( 'pre_get_posts', array(&$this, 'positive_check_request') );
+
+		$group = $this->get_group();
+		if(!empty($group)) {
+			M_add_to_global_urlgroup( $group->groupurls, 'positive' );
+		}
 
 
 	}
