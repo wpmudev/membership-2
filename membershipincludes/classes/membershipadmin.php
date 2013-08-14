@@ -63,7 +63,7 @@ if(!class_exists('membershipadmin')) {
 			// Add in admin area membership levels
 			add_action('init', array(&$this, 'initialise_membership_protection'), 999);
 
-			if( (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('membership/membershippremium.php')) && (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true)) {
+			if( (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('membership/membershippremium.php')) && (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES == true)) {
 				add_action('network_admin_menu', array(&$this, 'add_admin_menu'));
 			} else {
 				add_action('admin_menu', array(&$this, 'add_admin_menu'));

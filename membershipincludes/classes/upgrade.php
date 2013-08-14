@@ -77,7 +77,7 @@ function M_Alterfor12() {
 	  `coupon_apply_to` varchar(20) DEFAULT NULL,
 	  PRIMARY KEY (`id`),
 	  KEY `couponcode` (`couponcode`)
-	)";
+	) $charset_collate;";
 
 	$wpdb->query( $sql );
 
@@ -124,7 +124,7 @@ function M_Alterfor6() {
 		`paymentmade` datetime default NULL,
 		`paymentexpires` datetime default NULL,
 		PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -139,7 +139,7 @@ function M_Alterfor5() {
 		`pinginfo` text,
 		`pingtype` varchar(10) default NULL,
 		PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -151,7 +151,7 @@ function M_Alterfor5() {
 		`ping_return` text,
 		PRIMARY KEY  (`id`),
 		KEY `ping_id` (`ping_id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -163,7 +163,7 @@ function M_Alterfor5() {
 		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 		PRIMARY KEY  (`id`),
 		UNIQUE KEY `level_id` (`level_id`,`meta_key`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -175,7 +175,7 @@ function M_Alterfor5() {
 		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 		PRIMARY KEY  (`id`),
 		UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 }
@@ -190,7 +190,7 @@ function M_Alterfor4() {
 	  `isregexp` int(11) default '0',
 	  `stripquerystring` int(11) default '0',
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -206,7 +206,7 @@ function M_Alterfor4() {
 	  `active` int(11) default '0',
 	  `periodstamp` bigint(20) default '0',
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 }
@@ -253,7 +253,7 @@ function M_Createtables() {
 	  `level_active` int(11) default '0',
 	  `level_count` bigint(20) default '0',
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -271,7 +271,7 @@ function M_Createtables() {
 		KEY `user_id` (`user_id`),
 		KEY `sub_id` (`sub_id`),
 		KEY `usinggateway` (`usinggateway`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -284,7 +284,7 @@ function M_Createtables() {
 	  PRIMARY KEY  (`level_id`,`rule_ive`,`rule_area`),
 	  KEY `rule_area` (`rule_area`),
 	  KEY `rule_ive` (`rule_ive`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -297,7 +297,7 @@ function M_Createtables() {
 	  `sub_description` text,
 	  `sub_pricetext` varchar(200) DEFAULT NULL,
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -312,7 +312,7 @@ function M_Createtables() {
 		`level_period_unit` varchar(1) default 'd',
 		KEY `sub_id` (`sub_id`),
 		KEY `level_id` (`level_id`)
-		);";
+		) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -334,7 +334,7 @@ function M_Createtables() {
 	  PRIMARY KEY  (`transaction_ID`),
 	  KEY `transaction_gateway` (`transaction_gateway`),
 	  KEY `transaction_subscription_ID` (`transaction_subscription_ID`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -345,7 +345,7 @@ function M_Createtables() {
 	  `isregexp` int(11) default '0',
 	  `stripquerystring` int(11) default '0',
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -361,7 +361,7 @@ function M_Createtables() {
 	  `active` int(11) default '0',
 	  `periodstamp` bigint(20) default '0',
 	  PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -372,7 +372,7 @@ function M_Createtables() {
 		`pinginfo` text,
 		`pingtype` varchar(10) default NULL,
 		PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -384,7 +384,7 @@ function M_Createtables() {
 		`ping_return` text,
 		PRIMARY KEY  (`id`),
 		KEY `ping_id` (`ping_id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -396,7 +396,7 @@ function M_Createtables() {
 		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 		PRIMARY KEY  (`id`),
 		UNIQUE KEY `level_id` (`level_id`,`meta_key`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -408,7 +408,7 @@ function M_Createtables() {
 		`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 		PRIMARY KEY  (`id`),
 		UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -421,7 +421,7 @@ function M_Createtables() {
 		`paymentmade` datetime default NULL,
 		`paymentexpires` datetime default NULL,
 		PRIMARY KEY  (`id`)
-	);";
+	) $charset_collate;";
 
 	$wpdb->query($sql);
 
@@ -440,7 +440,7 @@ function M_Createtables() {
 	  `coupon_apply_to` varchar(20) DEFAULT NULL,
 	  PRIMARY KEY (`id`),
 	  KEY `couponcode` (`couponcode`)
-	)";
+	) $charset_collate;";
 
 	$wpdb->query( $sql );
 
@@ -461,7 +461,7 @@ function M_Create_single_table( $name ) {
 					  `level_active` int(11) default '0',
 					  `level_count` bigint(20) default '0',
 					  PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'membership_relationships'):
@@ -479,7 +479,7 @@ function M_Create_single_table( $name ) {
 						KEY `user_id` (`user_id`),
 						KEY `sub_id` (`sub_id`),
 						KEY `usinggateway` (`usinggateway`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'membership_rules'):
@@ -492,7 +492,7 @@ function M_Create_single_table( $name ) {
 					  PRIMARY KEY  (`level_id`,`rule_ive`,`rule_area`),
 					  KEY `rule_area` (`rule_area`),
 					  KEY `rule_ive` (`rule_ive`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'subscriptions'):
@@ -504,7 +504,7 @@ function M_Create_single_table( $name ) {
 					  `sub_count` bigint(20) default '0',
 					  `sub_description` text,
 					  PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'subscriptions_levels'):
@@ -519,7 +519,7 @@ function M_Create_single_table( $name ) {
 						`level_period_unit` varchar(1) default 'd',
 						KEY `sub_id` (`sub_id`),
 						KEY `level_id` (`level_id`)
-						);";
+						) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'subscription_transaction'):
@@ -541,7 +541,7 @@ function M_Create_single_table( $name ) {
 					  PRIMARY KEY  (`transaction_ID`),
 					  KEY `transaction_gateway` (`transaction_gateway`),
 					  KEY `transaction_subscription_ID` (`transaction_subscription_ID`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'urlgroups'):
@@ -552,7 +552,7 @@ function M_Create_single_table( $name ) {
 					  `isregexp` int(11) default '0',
 					  `stripquerystring` int(11) default '0',
 					  PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'communications'):
@@ -568,7 +568,7 @@ function M_Create_single_table( $name ) {
 					  `active` int(11) default '0',
 					  `periodstamp` bigint(20) default '0',
 					  PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'pings'):
@@ -579,7 +579,7 @@ function M_Create_single_table( $name ) {
 						`pinginfo` text,
 						`pingtype` varchar(10) default NULL,
 						PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'ping_history'):
@@ -591,7 +591,7 @@ function M_Create_single_table( $name ) {
 						`ping_return` text,
 						PRIMARY KEY  (`id`),
 						KEY `ping_id` (`ping_id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'levelmeta'):
@@ -603,7 +603,7 @@ function M_Create_single_table( $name ) {
 						`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 						PRIMARY KEY  (`id`),
 						UNIQUE KEY `level_id` (`level_id`,`meta_key`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'subscriptionmeta'):
@@ -615,7 +615,7 @@ function M_Create_single_table( $name ) {
 						`meta_stamp` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
 						PRIMARY KEY  (`id`),
 						UNIQUE KEY `sub_id` (`sub_id`,`meta_key`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'member_payments'):
@@ -628,7 +628,7 @@ function M_Create_single_table( $name ) {
 						`paymentmade` datetime default NULL,
 						`paymentexpires` datetime default NULL,
 						PRIMARY KEY  (`id`)
-					);";
+					) $charset_collate;";
 					break;
 
 		case membership_db_prefix($wpdb, 'coupons'):
@@ -647,7 +647,7 @@ function M_Create_single_table( $name ) {
 					  `coupon_apply_to` varchar(20) DEFAULT NULL,
 					  PRIMARY KEY (`id`),
 					  KEY `couponcode` (`couponcode`)
-					)";
+					) $charset_collate;";
 					break;
 
 	}
