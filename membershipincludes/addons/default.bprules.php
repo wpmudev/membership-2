@@ -119,9 +119,13 @@ class M_BPPages extends M_Rule {
 		add_action( 'pre_get_posts', array(&$this, 'add_viewable_pages'), 3 );
 		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 2 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
 
-		membership_set_first_redirect_area( 'positive' );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
+		}
 
 	}
 
@@ -132,9 +136,13 @@ class M_BPPages extends M_Rule {
 		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_pages'), 3 );
 		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
 
-		membership_set_first_redirect_area( 'negative' );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
+		}
 
 	}
 
@@ -148,9 +156,9 @@ class M_BPPages extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bppages-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bppages-' . $this->level_id );
 
-		$results = $wpdb->get_row( $sql );
+		$results = $wpdb->get_var( $sql );
 
 		if(!empty($results)) {
 			return $results;
@@ -407,9 +415,13 @@ class M_BPGroups extends M_Rule {
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_groups') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_positive_groups') );
 
-		membership_set_first_redirect_area( 'positive' );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
+		}
 
 	}
 
@@ -490,9 +502,14 @@ class M_BPGroups extends M_Rule {
 
 		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
 
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_groups') );
+		//add_action( 'pre_get_posts', array(&$this, 'check_negative_groups') );
 
-		membership_set_first_redirect_area( 'negative' );
+		$group_id = $this->get_group();
+		if(!empty($group_id)) {
+			$group = new M_Urlgroup( $group_id );
+			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
+		}
+
 	}
 
 	function add_unhas_activity($activities, $two) {
@@ -553,9 +570,9 @@ class M_BPGroups extends M_Rule {
 
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $this->level_id );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $this->level_id );
 
-		$results = $wpdb->get_row( $sql );
+		$results = $wpdb->get_var( $sql );
 
 		if(!empty($results)) {
 			return $results;
