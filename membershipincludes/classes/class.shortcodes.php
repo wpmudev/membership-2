@@ -24,6 +24,71 @@ if( !class_exists('M_extrashortcodes') ) {
 			add_shortcode('subscriptionprice', array(&$this, 'do_subscriptionprice_shortcode') );
 			add_shortcode('subscriptionbutton', array(&$this, 'do_subscriptionbutton_shortcode') );
 
+			add_shortcode('membershiplogin', array(&$this, 'do_membershiplogin_shortcode') );
+
+		}
+
+		// Based on an original plugin by Pippin - http://pippinsplugins.com/wordpress-login-form-short-code/
+		function do_membershiplogin_shortcode($atts, $content = null, $code = "") {
+
+			global $wp_query;
+
+			$defaults = array(	"holder"				=>	'',
+								"holderclass"			=>	'',
+								"item"					=>	'',
+								"itemclass"				=>	'',
+								"postfix"				=>	'',
+								"prefix"				=>	'',
+								"wrapwith"				=>	'',
+								"wrapwithclass"			=>	'',
+								"subscription"			=>	'',
+								"redirect"				=>	''
+							);
+
+			extract(shortcode_atts($defaults, $atts));
+
+			if(empty($subscription)) {
+				return '';
+			}
+
+			$html = '';
+
+			if(!empty($holder)) {
+				$html .= "<{$holder} class='{$holderclass}'>";
+			}
+			if(!empty($item)) {
+				$html .= "<{$item} class='{$itemclass}'>";
+			}
+			$html .= $prefix;
+
+			// The title
+			if(!empty($wrapwith)) {
+				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+			}
+
+			if (!is_user_logged_in()) {
+				if($redirect) {
+					$redirect_url = $redirect;
+				} else {
+					$redirect_url = get_permalink();
+				}
+				$html .= wp_login_form(array('echo' => false, 'redirect' => $redirect_url ));
+			}
+
+			if(!empty($wrapwith)) {
+				$html .= "</{$wrapwith}>";
+			}
+
+			$html .= $postfix;
+			if(!empty($item)) {
+				$html .= "</{$item}>";
+			}
+			if(!empty($holder)) {
+				$html .= "</{$holder}>";
+			}
+
+
+			return $html;
 		}
 
 		function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {

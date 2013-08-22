@@ -16,9 +16,9 @@ class membershiploginwidget extends WP_Widget {
 		if ( file_exists( $mofile ) )
 			load_textdomain( 'membership', $mofile );
 
-		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __('Membership Level Text', 'membership') );
-		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipleveltext');
-		$this->WP_Widget( 'membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops );
+		$widget_ops = array( 'classname' => 'membershiploginwidget', 'description' => __('Membership Login Widget', 'membership') );
+		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershiploginwidget');
+		$this->WP_Widget( 'membershiploginwidget', __('Membership Login Widget', 'membership'), $widget_ops, $control_ops );
 	}
 
 	function widget( $args, $instance ) {
@@ -91,15 +91,6 @@ class membershiploginwidget extends WP_Widget {
 		return $instance;
 	}
 
-	function get_membership_levels() {
-
-		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'membership_levels') . " WHERE level_active = 1;");
-
-		return $wpdb->get_results($sql);
-
-	}
 
 	function form( $instance ) {
 
