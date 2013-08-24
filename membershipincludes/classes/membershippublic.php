@@ -2383,6 +2383,32 @@ if(!class_exists('membershippublic')) {
 
 			global $M_global_groups;
 
+			// Build core positive array
+			if( !empty( $M_global_groups['positive'] ) ) {
+
+				$positive = array();
+
+				foreach( $M_global_groups['positive'] as $pos ) {
+					$positive = array_merge( $positive, $pos );
+				}
+				// Unique the urls
+				$positive = array_unique( $positive );
+
+			}
+
+			// Build core negative array
+			if( !empty( $M_global_groups['negative']) ) {
+
+				$negative = array();
+
+				foreach( $M_global_groups['negative'] as $neg ) {
+					$negative = array_merge( $negative, $neg );
+				}
+				// Unique the urls
+				$negative = array_unique( $negative );
+
+			}
+
 			/*
 
 			if( $membership_redirect_to_protected ) {
