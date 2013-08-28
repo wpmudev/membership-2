@@ -2386,11 +2386,8 @@ if(!class_exists('membershippublic')) {
 			// Build core positive array
 			if( !empty( $M_global_groups['positive'] ) ) {
 
-				$positive = array();
+				$positive = $M_global_groups['positive'];
 
-				foreach( $M_global_groups['positive'] as $pos ) {
-					$positive = array_merge( $positive, $pos );
-				}
 				// Unique the urls
 				$positive = array_unique( $positive );
 
@@ -2407,6 +2404,44 @@ if(!class_exists('membershippublic')) {
 				// Unique the urls
 				$negative = array_unique( $negative );
 
+			}
+
+			$redirect = false;
+
+			$host = '';
+			if(is_ssl()) {
+				$host = "https://";
+			} else {
+				$host = "http://";
+			}
+			$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
+
+			// Check we are not on an excluded url
+			if( membership_check_expression_match( $host, $exclude ) ) {
+				return;
+			}
+
+			if(!empty( $positive )) {
+				// check if the page is in the positive rules
+				if(!membership_check_expression_match( $host, $positive ) ) {
+					$redirect = true;
+				}
+				//print_r($positive);
+			}
+
+			if(!empty( $negative )) {
+				// Check if the page is in the negative rules
+				if(membership_check_expression_match( $host, $negative) ) {
+					$redirect = true;
+				}
+				//print_r($negative);
+			}
+
+			if($redirect) {
+				membership_redirect_to_protected();
+				exit;
 			}
 
 			/*
