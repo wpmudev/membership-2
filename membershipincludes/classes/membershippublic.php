@@ -2428,7 +2428,6 @@ if(!class_exists('membershippublic')) {
 				if(!membership_check_expression_match( $host, $positive ) ) {
 					$redirect = true;
 				}
-				//print_r($positive);
 			}
 
 			if(!empty( $negative )) {
@@ -2436,33 +2435,15 @@ if(!class_exists('membershippublic')) {
 				if(membership_check_expression_match( $host, $negative) ) {
 					$redirect = true;
 				}
-				//print_r($negative);
 			}
 
 			if($redirect) {
-				membership_redirect_to_protected();
-				exit;
-			}
-
-			/*
-
-			if( $membership_redirect_to_protected ) {
-				// We have detected a need to redirect - so do the redirect
 				membership_debug_log( __('About to redirect to the protected page','membership') );
 				membership_redirect_to_protected();
+				exit;
 			} else {
 				membership_debug_log( __('Not going to redirect to the protected page','membership') );
-				switch( $membership_first_url_group ) {
-					case 'positive':	// Place holder for future func
-										break;
-
-					case 'negative':	// Place holder for future func
-										break;
-				}
-
 			}
-
-			*/
 
 		}
 
