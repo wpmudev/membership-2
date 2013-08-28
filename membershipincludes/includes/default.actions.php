@@ -109,7 +109,15 @@ function membership_excluded_urls( $exclude ) {
 	if(defined('MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION') && MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION == true) {
 		$url = untrailingslashit( get_home_url() );
 		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
-		$url .= '(/.*)';
+		$url = "^" . $url . "$";
+		//$url .= '(/.*)';
+
+		$exclude[] = $url;
+
+		$url = trailingslashit( get_home_url() );
+		$url = preg_replace( array('#https://#i', '#http://#i'), 'https?://', $url );
+		$url = "^" . $url . "$";
+		//$url .= '(/.*)';
 
 		$exclude[] = $url;
 	}
