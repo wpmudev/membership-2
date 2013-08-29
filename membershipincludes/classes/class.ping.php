@@ -330,7 +330,7 @@ if(!class_exists('M_Ping')) {
 					case '%timestamp%':			$pingdata[$key] = time();
 												break;
 
-					default:					$pingdata[$key] = apply_filter( 'membership_pingfield_' . $key, '' );
+					default:					$pingdata[$key] = apply_filters( 'membership_pingfield_' . $key, '' );
 												break;
 				}
 			}

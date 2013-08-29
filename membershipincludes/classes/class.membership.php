@@ -133,7 +133,7 @@ if(!class_exists('M_Membership')) {
 
 			if(!empty($results)) {
 				foreach($results as $key => $r) {
-					return apply_filter('membership_started_on_level_in_sub', $sub_id, mysql2date("U", $rel->updateddate));
+					return apply_filters('membership_started_on_level_in_sub', $sub_id, mysql2date("U", $rel->updateddate));
 				}
 			}
 
@@ -146,7 +146,7 @@ if(!class_exists('M_Membership')) {
 
 			if(!empty($results)) {
 				foreach($results as $key => $r) {
-					return apply_filter('membership_ends_on_level_in_sub', $sub_id, mysql2date("U", $rel->expirydate));
+					return apply_filters('membership_ends_on_level_in_sub', $sub_id, mysql2date("U", $rel->expirydate));
 				}
 			}
 
