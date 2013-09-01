@@ -39,9 +39,9 @@ class membershiploginwidget extends WP_Widget {
 		extract($defaults);
 
 		if( empty($redirect) ) {
-			do_shortcde("[membershiplogin]");
+			do_shortcode("[membershiplogin]");
 		} else {
-			do_shortcde("[membershiplogin redirect='" . $redirect . "']");
+			do_shortcode("[membershiplogin redirect='" . $redirect . "']");
 		}
 
 	}
