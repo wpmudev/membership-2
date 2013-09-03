@@ -2396,11 +2396,8 @@ if(!class_exists('membershippublic')) {
 			// Build core negative array
 			if( !empty( $M_global_groups['negative']) ) {
 
-				$negative = array();
+				$negative = $M_global_groups['negative'];
 
-				foreach( $M_global_groups['negative'] as $neg ) {
-					$negative = array_merge( $negative, $neg );
-				}
 				// Unique the urls
 				$negative = array_unique( $negative );
 
