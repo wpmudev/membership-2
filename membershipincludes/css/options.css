@@ -16,3 +16,7 @@ input.wide {
 	padding-left: 10px;
 }
 
+#invitecodes, #membershipdownloadgroups, #membershipadminshortcodes{
+    width: 100%;
+}
+

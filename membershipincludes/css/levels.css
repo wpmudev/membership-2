@@ -1,5 +1,9 @@
 /* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/levels.css?ver=12 */
 
+.tablenav .actions{
+    padding-right: 0px;
+}
+
 div.level-liquid-left {
 	float: left;
 	clear: left;

@@ -1,29 +1,31 @@
 <?php
+
 /*
-Plugin Name: Membership Premium
-Version: 3.4.5 RC 3e
-Plugin URI: http://premium.wpmudev.org/project/membership
-Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
-Author: Barry (Incsub), Cole (Incsub), Marko Miljus (Incsub)
-Author URI: http://premium.wpmudev.org
-WDP ID: 140
+  Plugin Name: Membership Premium
+  Version: 3.4.5 RC 3
+  Plugin URI: http://premium.wpmudev.org/project/membership
+  Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
+  Author: Barry (Incsub), Cole (Incsub), Marko Miljus (Incsub)
+  Author URI: http://premium.wpmudev.org
+  WDP ID: 140
 
-Copyright 2013 (email: admin@incsub.com)
+  License: GNU General Public License (Version 2 - GPLv2)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+  Copyright 2007-2013 Incsub (http://incsub.com)
 
-This program is distributed in the hope that it will be useful
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
+  the Free Software Foundation.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 // Load the new config file
 require_once('membershipincludes/includes/config.php');
@@ -46,6 +48,8 @@ require_once( membership_dir('membershipincludes/classes/class.gateway.php') );
 require_once( membership_dir('membershipincludes/classes/class.level.php') );
 // Subscriptions class
 require_once( membership_dir('membershipincludes/classes/class.subscription.php') );
+// Pagination class
+require_once( membership_dir('membershipincludes/classes/class.pagination.php') );
 // Members class
 require_once( membership_dir('membershipincludes/classes/class.membership.php') );
 // Shortcodes class
@@ -71,30 +75,28 @@ require_once( membership_dir('membershipincludes/classes/membershipcron.php') );
 // Create the default actions
 require_once( membership_dir('membershipincludes/includes/default.actions.php') );
 
-if(is_admin()) {
-	include_once( membership_dir('membershipincludes/external/wpmudev-dash-notification.php') );
-	// Administration interface
-	// Add in the contextual help
-	require_once( membership_dir('membershipincludes/classes/class.help.php') );
-	// Add in the wizard and tutorial
-	require_once( membership_dir('membershipincludes/classes/class.wizard.php') );
-	require_once( membership_dir('membershipincludes/classes/class.tutorial.php') );
-	// Add in the tooltips class - from social marketing app by Ve
-	require_once( membership_dir('membershipincludes/includes/class_wd_help_tooltips.php') );
-	// Add in the main class
-	require_once( membership_dir('membershipincludes/classes/membershipadmin.php') );
+if (is_admin()) {
+    include_once( membership_dir('membershipincludes/external/wpmudev-dash-notification.php') );
+    // Administration interface
+    // Add in the contextual help
+    require_once( membership_dir('membershipincludes/classes/class.help.php') );
+    // Add in the wizard and tutorial
+    require_once( membership_dir('membershipincludes/classes/class.wizard.php') );
+    require_once( membership_dir('membershipincludes/classes/class.tutorial.php') );
+    // Add in the tooltips class - from social marketing app by Ve
+    require_once( membership_dir('membershipincludes/includes/class_wd_help_tooltips.php') );
+    // Add in the main class
+    require_once( membership_dir('membershipincludes/classes/membershipadmin.php') );
 
-	$membershipadmin = new membershipadmin();
+    $membershipadmin = new membershipadmin();
 
-	// Register an activation hook
-	register_activation_hook( __FILE__, 'M_activation_function' );
-
+    // Register an activation hook
+    register_activation_hook(__FILE__, 'M_activation_function');
 } else {
-	// Public interface
-	require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
+    // Public interface
+    require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
 
-	$membershippublic = new membershippublic();
-
+    $membershippublic = new membershippublic();
 }
 
 // Load secondary plugins
