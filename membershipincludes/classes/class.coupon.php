@@ -506,7 +506,7 @@ class M_Coupon {
 			echo "<option value='amt'>" . (isset($M_options['paymentcurrency']) ? $M_options['paymentcurrency'] : '$') . "</option>";
 			echo "<option value='pct'>%</option>";
 		echo "</select>";
-		echo "<input type='hidden' name='discount_currency' value='" . $M_options['paymentcurrency'] . "'/>";
+		echo "<input type='hidden' name='discount_currency' value='", isset( $M_options['paymentcurrency'] ) ? $M_options['paymentcurrency'] : '' , "'/>";
 		echo "</td>";
 		echo '</tr>';
 

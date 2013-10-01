@@ -222,10 +222,13 @@ function membership_wp_upload_url() {
 		$url = trailingslashit( $siteurl ) . UPLOADS;
 	}
 
-	if ( is_multisite() && !$main_override && ( !isset( $switched ) || $switched === false ) ) {
-		if ( defined( 'BLOGUPLOADDIR' ) )
-			$dir = untrailingslashit(BLOGUPLOADDIR);
-		$url = str_replace( UPLOADS, 'files', $url );
+	if ( is_multisite() && !$main_override && (!isset( $switched ) || $switched === false ) ) {
+		if ( defined( 'BLOGUPLOADDIR' ) ) {
+			$dir = untrailingslashit( BLOGUPLOADDIR );
+		}
+		if ( defined( 'UPLOADS' ) ) {
+			$url = str_replace( UPLOADS, 'files', $url );
+		}
 	}
 
 	$bdir = $dir;
@@ -1135,6 +1138,3 @@ function membership_debug_log( $message ) {
 	}
 
 }
-
-
-?>

@@ -1,5 +1,17 @@
 <?php
 
+function M_get_charset_collate() {
+	$charset_collate = '';
+	if ( !empty( $wpdb->charset ) ) {
+		$charset_collate = " DEFAULT CHARACTER SET " . $wpdb->charset;
+	}
+	if ( !empty( $wpdb->collate ) ) {
+		$charset_collate .= " COLLATE " . $wpdb->collate;
+	}
+
+	return $charset_collate;
+}
+
 function M_Upgrade($from = false) {
 
 	switch($from) {
@@ -62,6 +74,8 @@ function M_Alterfor14() {
 function M_Alterfor12() {
 	global $wpdb;
 
+	$charset_collate = M_get_charset_collate();
+
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'coupons') . "` (
 	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	  `site_id` bigint(20) DEFAULT '0',
@@ -103,6 +117,8 @@ function M_Alterfor10() {
 function M_Alterfor6() {
 	global $wpdb;
 
+	$charset_collate = M_get_charset_collate();
+
 	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'membership_relationships') . " ADD `usinggateway` varchar(50) NULL DEFAULT 'admin'  AFTER `order_instance`;";
 	$wpdb->query( $sql );
 
@@ -132,6 +148,8 @@ function M_Alterfor6() {
 
 function M_Alterfor5() {
 	global $wpdb;
+
+	$charset_collate = M_get_charset_collate();
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'pings') . "` (
 	  	`id` bigint(20) NOT NULL auto_increment,
@@ -182,6 +200,8 @@ function M_Alterfor5() {
 
 function M_Alterfor4() {
 	global $wpdb;
+
+	$charset_collate = M_get_charset_collate();
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'urlgroups') . "` (
 	  `id` bigint(20) NOT NULL auto_increment,
@@ -245,6 +265,8 @@ function M_Alterfor2() {
 function M_Createtables() {
 
 	global $wpdb;
+
+	$charset_collate = M_get_charset_collate();
 
 	$sql = "CREATE TABLE IF NOT EXISTS `" . membership_db_prefix($wpdb, 'membership_levels') . "` (
 	  `id` bigint(20) NOT NULL auto_increment,
@@ -450,6 +472,8 @@ function M_Createtables() {
 function M_Create_single_table( $name ) {
 
 	global $wpdb;
+
+	$charset_collate = M_get_charset_collate();
 
 	switch( $name ) {
 

@@ -72,7 +72,7 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="alignright button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
 		<input type="hidden" name="action" value="validatepage1" />
 
-		<a title="Login »" href="<?php echo wp_login_url( add_query_arg( array('action' => 'registeruser', 'subscription' => $_GET['subscription']), get_permalink()) ); ?>" class="alignleft" id="login_right"><?php _e('Already have a user account?' ,'membership'); ?></a>
+		<a title="Login »" href="<?php echo wp_login_url( add_query_arg( array('action' => 'registeruser', 'subscription' => $_REQUEST['subscription']), get_permalink()) ); ?>" class="alignleft" id="login_right"><?php _e('Already have a user account?' ,'membership'); ?></a>
 
 
 		</fieldset>

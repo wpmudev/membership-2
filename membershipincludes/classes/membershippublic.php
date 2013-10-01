@@ -1,6 +1,6 @@
 <?php
-if(!class_exists('membershippublic')) {
 
+if ( !class_exists( 'membershippublic', false ) ) :
 	class membershippublic {
 
 		var $build = 2;
@@ -956,13 +956,13 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-		function hide_nocontent_page_from_menu($pages) {
-
+		function hide_nocontent_page_from_menu( $pages ) {
 			global $M_options;
 
-			foreach( (array) $pages as $key => $page ) {
-				if( ($page->ID == $M_options['nocontent_page']) || ($page->ID == $M_options['registrationcompleted_page'])) {
-					unset($pages[$key]);
+			foreach ( (array)$pages as $key => $page ) {
+				if ( ( isset( $M_options['nocontent_page'] ) && $page->ID == $M_options['nocontent_page'] )
+					|| ( isset( $M_options['registrationcompleted_page'] ) && $page->ID == $M_options['registrationcompleted_page'] ) ) {
+					unset( $pages[$key] );
 				}
 			}
 
@@ -1467,7 +1467,7 @@ if(!class_exists('membershippublic')) {
 
 			global $wp_query, $M_options, $bp;
 
-			$subscription = (int) $_GET['subscription'];
+			$subscription = (int) $_REQUEST['subscription'];
 			$content = apply_filters('membership_subscription_form_registration_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
@@ -2444,8 +2444,5 @@ if(!class_exists('membershippublic')) {
 
 		}
 
-
 	}
-
-}
-?>
+endif;

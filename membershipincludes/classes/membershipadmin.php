@@ -2463,7 +2463,7 @@ if (!class_exists('membershipadmin')) {
                                     <option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
                                 </optgroup>
                             </select>
-                            
+
                             <input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
 
                             <select name="sub_op2">
@@ -2479,7 +2479,7 @@ if (!class_exists('membershipadmin')) {
                                 }
                                 ?>
                             </select>
-                            
+
                             <input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter', 'membership'); ?>">
 
                             <select name="level_op2">
@@ -2495,7 +2495,7 @@ if (!class_exists('membershipadmin')) {
                                 }
                                 ?>
                             </select>
-                            
+
                             <input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter', 'membership'); ?>">
 
                             <select name="active_op2">
@@ -2503,11 +2503,11 @@ if (!class_exists('membershipadmin')) {
                                 <option value="yes" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active', 'membership'); ?></option>
                                 <option value="no" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive', 'membership'); ?></option>
                             </select>
-                            
+
                             <input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter', 'membership'); ?>">
 
                         </div>
-                        
+
                         <div class="alignright actions">
                             <div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
                         </div>
@@ -3417,8 +3417,7 @@ if (!class_exists('membershipadmin')) {
                                         <td>
                                             <select name="paymentcurrency">
                                                 <?php
-                                                $currency = $M_options['paymentcurrency'];
-                                                $sel_currency = empty($currency) ? 'USD' : $currency;
+                                                $sel_currency = empty( $M_options['paymentcurrency'] ) ? 'USD' : $M_options['paymentcurrency'];
                                                 $currencies = array(
                                                     'AUD' => __('AUD - Australian Dollar', 'membership'),
                                                     'BRL' => __('BRL - Brazilian Real', 'membership'),
@@ -3476,7 +3475,7 @@ if (!class_exists('membershipadmin')) {
                                         <td>
                                             <select name="renewalperiod">
                                                 <?php
-                                                $renewalperiod = $M_options['renewalperiod'];
+                                                $renewalperiod = isset( $M_options['renewalperiod'] ) ? $M_options['renewalperiod'] : 1;
 
                                                 for ($n = 1; $n <= 365; $n++) {
                                                     echo '<option value="' . esc_attr($n) . '"';
@@ -3506,7 +3505,7 @@ if (!class_exists('membershipadmin')) {
                                         <td>
                                             <select name="upgradeperiod">
                                                 <?php
-                                                $upgradeperiod = $M_options['upgradeperiod'];
+                                                $upgradeperiod = isset( $M_options['upgradeperiod'] ) ? $M_options['upgradeperiod'] : 1;
                                                 // Set a default of 1 day, but allow the selection of 0 days
                                                 if (empty($upgradeperiod) && $upgradeperiod != 0) {
                                                     $upgradeperiod = 1;

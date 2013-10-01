@@ -357,7 +357,9 @@ class paypalsolo extends M_Gateway {
 			update_option( $this->gateway . "_paypal_upgrade_button", $_POST[ '_paypal_upgrade_button' ] );
 			update_option( $this->gateway . "_paypal_cancel_button", $_POST[ '_paypal_cancel_button' ] );
 			update_option( $this->gateway . "_paypal_renew_button", $_POST[ '_paypal_renew_button' ] );
-			update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
+			if ( isset( $_POST[ 'completed_message' ] ) ) {
+				update_option( $this->gateway . "_completed_message", $_POST[ 'completed_message' ] );
+			}
 		}
 
 		// default action is to return true
