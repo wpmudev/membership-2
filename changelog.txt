@@ -1,0 +1,3 @@
+== 3.4.5 RC 3 ==
+
+* Fixed issue with broken links to levels and plans at membership dashboard (network wide)
