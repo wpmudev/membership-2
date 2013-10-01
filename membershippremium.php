@@ -1,31 +1,32 @@
 <?php
-
 /*
-  Plugin Name: Membership Premium
-  Version: 3.4.5 RC 3
-  Plugin URI: http://premium.wpmudev.org/project/membership
-  Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
-  Author: Barry (Incsub), Cole (Incsub), Marko Miljus (Incsub)
-  Author URI: http://premium.wpmudev.org
-  WDP ID: 140
-
-  License: GNU General Public License (Version 2 - GPLv2)
-
-  Copyright 2007-2013 Incsub (http://incsub.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
-  the Free Software Foundation.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Plugin Name: Membership Premium
+Version: 3.4.5 RC 3
+Plugin URI: http://premium.wpmudev.org/project/membership
+Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
+Author: Incsub
+Author URI: http://premium.wpmudev.org
+WDP ID: 140
+License: GNU General Public License (Version 2 - GPLv2)
  */
+
+// +----------------------------------------------------------------------+
+// | Copyright Incsub (http://incsub.com/)                                |
+// +----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify |
+// | it under the terms of the GNU General Public License, version 2, as  |
+// | published by the Free Software Foundation.                           |
+// |                                                                      |
+// | This program is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        |
+// | GNU General Public License for more details.                         |
+// |                                                                      |
+// | You should have received a copy of the GNU General Public License    |
+// | along with this program; if not, write to the Free Software          |
+// | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               |
+// | MA 02110-1301 USA                                                    |
+// +----------------------------------------------------------------------+
 
 // Load the new config file
 require_once('membershipincludes/includes/config.php');

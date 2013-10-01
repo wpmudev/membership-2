@@ -1,0 +1,20 @@
+/* TEAM */
+	Developer: Cole
+	Contact:
+	Twitter:
+	Location:
+
+	Developer: Barry
+	Contact:
+	Twitter: @caffeinatedwp
+	Location:
+
+	Developer: Marko Miljus
+	Location: Novi Sad, Serbia
+	Contact: marko [at] incsub [dot] com
+	Twitter: @markomiljus
+
+	Developer: Eugene Manuilov
+	Location: Kiev, Ukraine
+	Contact: eugene [at] incsub [dot] com
+	Twitter: @eugene_manuilov
