@@ -33,6 +33,10 @@ class membershiploginwidget extends WP_Widget {
 	 * @param array $instance The settings for the particular instance of the widget
 	 */
 	public function widget( $args, $instance ) {
+		if ( is_user_logged_in() ) {
+			return;
+		}
+
 		$defaults = array(
 			'redirect' => '',
 			'lostpass' => '',
