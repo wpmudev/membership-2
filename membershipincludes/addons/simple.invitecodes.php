@@ -1,11 +1,12 @@
 <?php
 /*
-  Addon Name: Simple Invites Codes
-  Description: Force invite codes for membership signups
-  Author: Barry (Incsub)
-  Author URI: http://caffeinatedb.com
- */
+Addon Name: Simple Invites Codes
+Description: Force invite codes for membership signups
+Author: Incsub
+Author URI: http://premium.wpmudev.org
+*/
 
+add_action( 'membership_extrasoptions_page', 'M_AddSimpleInviteOptions', 11 );
 function M_AddSimpleInviteOptions() {
 
     $Msi_options = M_get_option('membership_simpleinvite_options', array());
@@ -64,8 +65,7 @@ function M_AddSimpleInviteOptions() {
     <?php
 }
 
-add_action('membership_extrasoptions_page', 'M_AddSimpleInviteOptions', 11);
-
+add_action( 'membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11 );
 function M_AddSimpleInviteOptionsProcess() {
 
     $Msi_options = M_get_option('membership_simpleinvite_options', array());
@@ -77,8 +77,9 @@ function M_AddSimpleInviteOptionsProcess() {
     M_update_option('membership_simpleinvite_options', $Msi_options);
 }
 
-add_action('membership_option_menu_process_extras', 'M_AddSimpleInviteOptionsProcess', 11);
-
+add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField' );
+// Moved on BP to Profile area
+add_action( 'bp_custom_profile_edit_fields', 'M_AddSimpleInviteField' );
 function M_AddSimpleInviteField() {
 
     $Msi_options = M_get_option('membership_simpleinvite_options', array());
@@ -95,69 +96,59 @@ function M_AddSimpleInviteField() {
     <?php
 }
 
-add_action('membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField');
-// Moved on BP to Profile area
-add_action('bp_custom_profile_edit_fields', 'M_AddSimpleInviteField');
-
+add_action( 'membership_popover_extend_registration_form', 'M_AddSimpleRegistrationInviteField' );
 function M_AddSimpleInviteFieldProcess($error) {
+    $Msi_options = M_get_option( 'membership_simpleinvite_options', array() );
+	if ( empty( $Msi_options['inviterequired'] ) || $Msi_options['inviterequired'] != 'yes' ) {
+		return $error;
+	}
 
-    $Msi_options = M_get_option('membership_simpleinvite_options', array());
-    if (empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
-        return $error;
-    }
+	if ( !is_wp_error( $error ) ) {
+		$error = new WP_Error();
+	}
 
-    $thekey = $_POST['invitecode'];
+	$thekey = filter_input( INPUT_POST, 'invitecode' );
+	if ( empty( $thekey ) ) {
+		$error->add( 'enterinvitecode', __( 'You need to enter an invite code in order to register.', 'membership' ) );
+	} else {
+		$codes = array_map( 'trim', explode( "\n", $Msi_options['invitecodes'] ) );
+		if ( !in_array( $thekey, $codes ) ) {
+			$error->add( 'incorrectinvitecode', __( 'Sorry, but we do not seem to have that code on file, please try another.', 'membership' ) );
+		}
+	}
 
-    if (empty($thekey)) {
-
-        if (empty($error)) {
-            $error = new WP_Error();
-        }
-
-        $error->add('enterinvitecode', __('You need to enter an invite code in order to register.', 'membership'));
-    } else {
-
-        $codes = explode("\n", $Msi_options['invitecodes']);
-        $codes = array_map('trim', $codes);
-
-        if (!in_array($thekey, $codes)) {
-
-            if (empty($error)) {
-                $error = new WP_Error();
-            }
-
-            $error->add('incorrectinvitecode', __('Sorry, but we do not seem to have that code on file, please try another.', 'membership'));
-        } else {
-            if (empty($error)) {
-                if ($Msi_options['inviteremove'] == 'yes') {
-                    $key = array_search($thekey, $codes);
-                    if ($key !== false) {
-                        unset($codes[$key]);
-                        $Msi_options['invitecodes'] = implode("\n", $codes);
-
-                        M_update_option('membership_simpleinvite_options', $Msi_options);
-                    }
-                }
-            }
-        }
-    }
-
-    return $error;
+	return $error;
 }
 
-add_action('membership_popover_extend_registration_form', 'M_AddSimpleRegistrationInviteField');
-
+add_filter( 'membership_subscription_form_before_registration_process', 'M_AddSimpleInviteFieldProcess' );
 function M_AddSimpleRegistrationInviteField() {
-    $Msi_options = M_get_option('membership_simpleinvite_options', array());
-    if (!empty($Msi_options['inviterequired']) && $Msi_options['inviterequired'] == 'yes') {
-        ?>
-        <div class="">
-            <label><?php _e('Invite Code', 'membership'); ?> <span>*</span></label>
-            <input type="text" autocomplete="off" class="regtext" name="invitecode" id='invitecode'>
-        </div>
-        <?php
-    }
+	$Msi_options = M_get_option( 'membership_simpleinvite_options', array() );
+	if ( !empty( $Msi_options['inviterequired'] ) && $Msi_options['inviterequired'] == 'yes' ) {
+		?><div>
+			<label><?php _e( 'Invite Code', 'membership' ); ?> <span>*</span></label>
+			<input type="text" autocomplete="off" class="regtext" name="invitecode" id="invitecode">
+		</div><?php
+	}
 }
 
-add_filter('membership_subscription_form_before_registration_process', 'M_AddSimpleInviteFieldProcess');
-?>
+add_action( 'membership_subscription_form_registration_process', 'M_RemoveInviteCode', 10, 2 );
+function M_RemoveInviteCode( WP_Error $error, $user_id ) {
+	if ( ( is_wp_error( $error ) && !empty( $error->errors ) ) || !$user_id ) {
+		return;
+	}
+
+    $Msi_options = M_get_option( 'membership_simpleinvite_options', array() );
+	if ( !isset( $Msi_options['inviteremove'] ) || !filter_var( $Msi_options['inviteremove'], FILTER_VALIDATE_BOOLEAN ) || !isset( $Msi_options['invitecodes'] ) ) {
+		return;
+	}
+
+	$thekey = filter_input( INPUT_POST, 'invitecode' );
+	$codes = array_map( 'trim', explode( PHP_EOL, $Msi_options['invitecodes'] ) );
+
+	$key = array_search( $thekey, $codes );
+	if ( $key !== false ) {
+		unset( $codes[$key] );
+		$Msi_options['invitecodes'] = implode( PHP_EOL, $codes );
+		M_update_option( 'membership_simpleinvite_options', $Msi_options );
+	}
+}
