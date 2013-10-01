@@ -2,23 +2,24 @@
 /*
 Addon Name: Membership Widget
 Description: Membership widgets
-Author: Barry (Incsub)
-Author URI: http://caffeinatedb.com
+Author: Incsub
+Author URI: http://premium.wpmudev.org
 */
 
 class membershipleveltext extends WP_Widget {
 
-	function membershipleveltext() {
+	const NAME = __CLASS__;
 
+	function membershipleveltext() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-
-		if ( file_exists( $mofile ) )
+		if ( file_exists( $mofile ) ) {
 			load_textdomain( 'membership', $mofile );
+		}
 
-		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __('Membership Level Text', 'membership') );
-		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipleveltext');
-		$this->WP_Widget( 'membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops );
+		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __( 'Membership Level Text', 'membership' ) );
+		$control_ops = array( 'id_base' => 'membershipleveltext' );
+		$this->WP_Widget( 'membershipleveltext', __( 'Membership Level Text', 'membership' ), $widget_ops, $control_ops );
 	}
 
 	function widget( $args, $instance ) {
@@ -92,13 +93,8 @@ class membershipleveltext extends WP_Widget {
 	}
 
 	function get_membership_levels() {
-
 		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'membership_levels') . " WHERE level_active = 1;");
-
-		return $wpdb->get_results($sql);
-
+		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix($wpdb, 'membership_levels') . " WHERE level_active = 1;" );
 	}
 
 	function form( $instance ) {
@@ -144,17 +140,18 @@ class membershipleveltext extends WP_Widget {
 
 class membershipsubtext extends WP_Widget {
 
-	function membershipsubtext() {
+	const NAME = __CLASS__;
 
+	function membershipsubtext() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-
-		if ( file_exists( $mofile ) )
+		if ( file_exists( $mofile ) ) {
 			load_textdomain( 'membership', $mofile );
+		}
 
-		$widget_ops = array( 'classname' => 'membershipsubtext', 'description' => __('Membership Subscription Text', 'membership') );
-		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipsubtext');
-		$this->WP_Widget( 'membershipsubtext', __('Membership Subscription Text', 'membership'), $widget_ops, $control_ops );
+		$widget_ops = array( 'classname' => 'membershipsubtext', 'description' => __( 'Membership Subscription Text', 'membership' ) );
+		$control_ops = array( 'id_base' => 'membershipsubtext' );
+		$this->WP_Widget( 'membershipsubtext', __( 'Membership Subscription Text', 'membership' ), $widget_ops, $control_ops );
 	}
 
 	function widget( $args, $instance ) {
@@ -228,13 +225,8 @@ class membershipsubtext extends WP_Widget {
 	}
 
 	function get_subscriptions() {
-
 		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'subscriptions') . " WHERE sub_active = 1");
-
-		return $wpdb->get_results($sql);
-
+		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'subscriptions' ) . " WHERE sub_active = 1" );
 	}
 
 	function form( $instance ) {
@@ -278,12 +270,8 @@ class membershipsubtext extends WP_Widget {
 	}
 }
 
-function membershipwidget_register() {
-	register_widget( 'membershipleveltext' );
-	register_widget( 'membershipsubtext' );
-}
-
 add_action( 'widgets_init', 'membershipwidget_register' );
-
-
-?>
+function membershipwidget_register() {
+	register_widget( membershipleveltext::NAME );
+	register_widget( membershipsubtext::NAME );
+}

@@ -28,72 +28,62 @@ if (!class_exists('M_extrashortcodes')) {
         }
 
         // Based on an original plugin by Pippin - http://pippinsplugins.com/wordpress-login-form-short-code/
-        function do_membershiplogin_shortcode($atts, $content = null, $code = "") {
+        function do_membershiplogin_shortcode( $atts ) {
+			if ( is_user_logged_in() ) {
+				return '';
+			}
 
-            global $wp_query;
+			extract( shortcode_atts( array(
+				"holder"        => apply_filters( 'membership_short_login_form_holder', '' ),
+				"holderclass"   => apply_filters( 'membership_short_login_form_holderclass', '' ),
+				"item"          => apply_filters( 'membership_short_login_form_item', '' ),
+				"itemclass"     => apply_filters( 'membership_short_login_form_itemclass', '' ),
+				"postfix"       => apply_filters( 'membership_short_login_form_postfix', '' ),
+				"prefix"        => apply_filters( 'membership_short_login_form_prefix', '' ),
+				"wrapwith"      => apply_filters( 'membership_short_login_form_wrapwith', '' ),
+				"wrapwithclass" => apply_filters( 'membership_short_login_form_wrapwithclass', '' ),
+				"redirect"      => apply_filters( 'membership_short_login_form_redirect', '' ),
+				"lostpass"      => apply_filters( 'membership_short_login_form_lostpassword', '' ),
+			), $atts ) );
 
-            $defaults = array(
-                "holder" => apply_filters('membership_short_login_form_holder', ''),
-                "holderclass" => apply_filters('membership_short_login_form_holderclass', ''),
-                "item" => apply_filters('membership_short_login_form_item', ''),
-                "itemclass" => apply_filters('membership_short_login_form_itemclass', ''),
-                "postfix" => apply_filters('membership_short_login_form_postfix', ''),
-                "prefix" => apply_filters('membership_short_login_form_prefix', ''),
-                "wrapwith" => apply_filters('membership_short_login_form_wrapwith', ''),
-                "wrapwithclass" => apply_filters('membership_short_login_form_wrapwithclass', ''),
-                //"subscription" => '',
-                "redirect" => apply_filters('membership_short_login_form_redirect', ''),
-            );
+			$html = '';
 
-            extract(shortcode_atts($defaults, $atts));
+			if ( !empty( $holder ) ) {
+				$html .= "<{$holder} class='{$holderclass}'>";
+			}
 
-            /* if (empty($subscription)) {
-              return '';
-              } */
+			if ( !empty( $item ) ) {
+				$html .= "<{$item} class='{$itemclass}'>";
+			}
 
-            $html = '';
+			$html .= $prefix;
 
-            if (!empty($holder)) {
-                $html .= "<{$holder} class='{$holderclass}'>";
-            }
+			// The title
+			if ( !empty( $wrapwith ) ) {
+				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
+			}
 
-            if (!empty($item)) {
-                $html .= "<{$item} class='{$itemclass}'>";
-            }
+			$html .= wp_login_form( array( 'echo' => false, 'redirect' => $redirect ? $redirect : get_permalink() ) );
+			if ( !empty( $lostpass ) ) {
+				$html .= sprintf( '<a href="%s">%s</a>', esc_url( $lostpass ), __( 'Lost password?', 'membership' ) );
+			}
 
-            $html .= $prefix;
+			if ( !empty( $wrapwith ) ) {
+				$html .= "</{$wrapwith}>";
+			}
 
-            // The title
-            if (!empty($wrapwith)) {
-                $html .= "<{$wrapwith} class='{$wrapwithclass}'>";
-            }
+			$html .= $postfix;
 
-            if (!is_user_logged_in()) {
+			if ( !empty( $item ) ) {
+				$html .= "</{$item}>";
+			}
 
-                if ($redirect) {
-                    $redirect_url = $redirect;
-                } else {
-                    $redirect_url = get_permalink();
-                }
-                $html .= wp_login_form(array('echo' => false, 'redirect' => $redirect_url));
-            }
+			if ( !empty( $holder ) ) {
+				$html .= "</{$holder}>";
+			}
 
-            if (!empty($wrapwith)) {
-                $html .= "</{$wrapwith}>";
-            }
-
-            $html .= $postfix;
-
-            if (!empty($item)) {
-                $html .= "</{$item}>";
-            }
-
-            if (!empty($holder)) {
-                $html .= "</{$holder}>";
-            }
-
-            return $html;
-        }
+			return $html;
+		}
 
         function do_subscriptiontitle_shortcode($atts, $content = null, $code = "") {
 

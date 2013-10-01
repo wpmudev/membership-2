@@ -1,3 +1,7 @@
 == 3.4.5 RC 3 ==
 
 * Fixed issue with broken links to levels and plans at membership dashboard (network wide)
+* Fixed warnings and notices in level and subscription text widgets
+* Fixed warnings and notices in login widget
+* Fixed rendering issue with login widget and made it rendering as widget
+* Implemented ability to add a title and "lost password" link to the login widget
