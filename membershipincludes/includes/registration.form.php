@@ -23,7 +23,7 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 		echo $errormessages;
 	}
 ?>
-<form class="form-membership" action="<?php echo get_permalink(); ?>" method="post">
+<form class="form-membership" action="<?php echo add_query_arg( 'action', 'validatepage1', get_permalink() ) ?>" method="post">
 
 	<?php do_action( "signup_hidden_fields" ); ?>
 
@@ -35,14 +35,14 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 			<div class="form-element">
 				<label class="control-label" for="user_login"><?php _e('Choose a Username','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_login" name="user_login" placeholder="" value="<?php if(isset($_POST['user_login'])) echo esc_attr($_POST['user_login']); ?>">
+					<input type="text" class="input-xlarge" id="user_login" name="user_login" value="<?php echo esc_attr( filter_input( INPUT_POST, 'user_login' ) ) ?>">
 				</div>
 			</div>
 
 			<div class="form-element">
 				<label class="control-label" for="user_email"><?php _e('Email Address','membership'); ?></label>
 				<div class="element">
-					<input type="text" class="input-xlarge" id="user_email" name="user_email" placeholder="" value="<?php if(isset($_POST['user_email'])) echo esc_attr($_POST['user_email']); ?>">
+					<input type="text" class="input-xlarge" id="user_email" name="user_email" value="<?php echo esc_attr( filter_input( INPUT_POST, 'user_email' ) ) ?>">
 				</div>
 
 				<p class="help-block"><?php _e('Please enter a new password, and then verify your new password by entering it again.','membership'); ?></p>
@@ -70,7 +70,6 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 		?>
 
 		<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="alignright button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>
-		<input type="hidden" name="action" value="validatepage1" />
 
 		<a title="Login »" href="<?php echo wp_login_url( add_query_arg( array('action' => 'registeruser', 'subscription' => $_REQUEST['subscription']), get_permalink()) ); ?>" class="alignleft" id="login_right"><?php _e('Already have a user account?' ,'membership'); ?></a>
 
@@ -79,5 +78,3 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 </form>
 
 </div>
-<?php
-?>

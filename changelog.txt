@@ -6,3 +6,4 @@
 * Fixed warnings and notices in login widget
 * Fixed rendering issue with login widget and made it rendering as widget
 * Implemented ability to add a title and "lost password" link to the login widget
+* Reworked registration page workflow

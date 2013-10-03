@@ -98,7 +98,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			$M_active = M_get_membership_active();
 
 			// Create our subscription page shortcode
-			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
 			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
 			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
 			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
@@ -1463,28 +1462,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			return $content;
 		}
 
-		function output_registeruser( $error = false ) {
-
-			global $wp_query, $M_options, $bp;
-
-			$subscription = (int) $_REQUEST['subscription'];
-			$content = apply_filters('membership_subscription_form_registration_before_content', '', $error);
-			ob_start();
-			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-				include_once( MEMBERSHIP_REGISTRATION_FORM );
-			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-				include_once( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
-			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-				include_once( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
-			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
-			$content = apply_filters('membership_subscription_form_registration_after_content', $content, $error);
-
-			return $content;
-		}
-
 		function output_paymentpage( $user_id = false ) {
 
 			global $wp_query, $M_options;
@@ -1524,7 +1501,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function do_subscription_form() {
-
 			global $wp_query, $M_options, $bp;
 
 			if(isset($_REQUEST['action'])) $page = addslashes($_REQUEST['action']);
@@ -1539,288 +1515,10 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				case 'subscriptionform':	$content = $this->output_subscriptionform();
 											break;
 
-				case 'registeruser':		if(!is_user_logged_in()) {
-												$content = $this->output_registeruser();
-											} else {
+				case 'subscriptionsignup':	if(is_user_logged_in()) {
 												$content = $this->output_paymentpage();
 											}
 											break;
-
-				case 'subscriptionsignup':	if(!is_user_logged_in()) {
-												$content = $this->output_registeruser();
-											} else {
-												$content = $this->output_paymentpage();
-											}
-											break;
-
-				case 'validatepage1':	// Page 1 of the form has been submitted - validate
-									//include_once(ABSPATH . WPINC . '/registration.php');
-
-									$required = array(	'user_login' => __('Username', 'membership'),
-														'user_email' => __('Email address','membership'),
-														'password' => __('Password','membership'),
-														'password2' => __('Password confirmation','membership'),
-													);
-
-									$error = new WP_Error();
-
-									foreach($required as $key => $message) {
-										if(empty($_POST[$key])) {
-											$error->add($key, __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership'));
-										}
-									}
-
-									if($_POST['password'] != $_POST['password2']) {
-										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
-									}
-
-									if(!validate_username( $_POST['user_login'] )) {
-										$error->add('usernamenotvalid', __('The username is not valid, sorry.','membership'));
-									}
-
-									if(username_exists(sanitize_user($_POST['user_login']))) {
-										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
-									}
-
-									if(!is_email($_POST['user_email'])) {
-										$error->add('emailnotvalid', __('The email address is not valid, sorry.','membership'));
-									}
-
-									if(email_exists($_POST['user_email'])) {
-										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
-									}
-
-									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
-
-									$result = array('user_name' => $_POST['user_login'], 'orig_username' => $_POST['user_login'], 'user_email' => $_POST['user_email'], 'errors' => $error);
-
-									$result = apply_filters('wpmu_validate_user_signup', $result);
-
-									$error = $result['errors'];
-
-									// Hack for now - eeek
-									$anyerrors = $error->get_error_code();
-									if( empty($anyerrors) ) {
-										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
-										$user_id = wp_create_user( sanitize_user($_POST['user_login']), $_POST['password'], $_POST['user_email'] );
-
-										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error->add('userid', $user_id->get_error_message());
-										} else {
-											$member = new M_Membership( $user_id );
-
-											if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
-												$member->deactivate();
-											} else {
-												$creds = array(
-													'user_login' => $_POST['user_login'],
-													'user_password' => $_POST['password'],
-													'remember' => true
-												);
-
-												if(!headers_sent()) {
-													$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-													$user = @wp_signon( $creds, $is_ssl );
-
-													if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
-														$error->add('userlogin', $user->get_error_message());
-													} else {
-														// Set the current user up
-														wp_set_current_user( $user_id );
-													}
-												} else {
-													// Set the current user up
-													wp_set_current_user( $user_id );
-												}
-
-											}
-
-											if( has_action('membership_susbcription_form_registration_notification') ) {
-												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
-											} else {
-												wp_new_user_notification($user_id, $_POST['password']);
-											}
-
-										}
-
-										do_action( 'membership_subscription_form_registration_process', $error, $user_id );
-
-									} else {
-										do_action( 'membership_subscription_form_registration_process', $error, 0 );
-									}
-
-									// Hack for now - eeek
-									$anyerrors = $error->get_error_code();
-									if( !empty($anyerrors) ) {
-										// we have an error - output
-										// Show the page again so that it can display the errors
-										$content = $this->output_registeruser( $error );
-
-									} else {
-										$content = $this->output_paymentpage( $user_id );
-									}
-
-									break;
-
-				case 'validatepage1bp':
-									global $bp;
-
-									//include_once(ABSPATH . WPINC . '/registration.php');
-
-									$required = array(	'signup_username' => __('Username', 'membership'),
-														'signup_email' => __('Email address','membership'),
-														'signup_password' => __('Password','membership'),
-														'signup_password_confirm' => __('Password confirmation','membership'),
-													);
-
-									$error = new WP_Error();
-
-									foreach($required as $key => $message) {
-										if(empty($_POST[$key])) {
-											$error->add($key, __('Please ensure that the ', 'membership') . "<strong>" . $message . "</strong>" . __(' information is completed.','membership'));
-										}
-									}
-
-									if($_POST['signup_password'] != $_POST['signup_password_confirm']) {
-										$error->add('passmatch', __('Please ensure the passwords match.','membership'));
-									}
-
-									if(!validate_username( $_POST['signup_username'] )) {
-										$error->add('usernamenotvalid', __('The username is not valid, sorry.','membership'));
-									}
-
-									if(username_exists(sanitize_user($_POST['signup_username']))) {
-										$error->add('usernameexists', __('That username is already taken, sorry.','membership'));
-									}
-
-									if(!is_email($_POST['signup_email'])) {
-										$error->add('emailnotvalid', __('The email address is not valid, sorry.','membership'));
-									}
-
-									if(email_exists($_POST['signup_email'])) {
-										$error->add('emailexists', __('That email address is already taken, sorry.','membership'));
-									}
-
-									// Initial fix provided by user: cmurtagh - modified to add extra checks and rejigged a bit
-									// Run the buddypress validation
-									do_action( 'bp_signup_validate' );
-
-							        // Add any errors to the action for the field in the template for display.
-        							if ( !empty( $bp->signup->errors ) ) {
-										foreach ( (array)$bp->signup->errors as $fieldname => $error_message ) {
-												$error->add($fieldname, $error_message);
-										}
-									}
-
-									$meta_array = array();
-
-									// xprofile required fields
-									/* Now we've checked account details, we can check profile information */
-									//if ( function_exists( 'xprofile_check_is_required_field' ) ) {
-									if ( function_exists('bp_is_active') && bp_is_active( 'xprofile' ) ) {
-
-										/* Make sure hidden field is passed and populated */
-										if ( isset( $_POST['signup_profile_field_ids'] ) && !empty( $_POST['signup_profile_field_ids'] ) ) {
-
-											/* Let's compact any profile field info into an array */
-											$profile_field_ids = explode( ',', $_POST['signup_profile_field_ids'] );
-
-											/* Loop through the posted fields formatting any datebox values then validate the field */
-											foreach ( (array) $profile_field_ids as $field_id ) {
-												if ( !isset( $_POST['field_' . $field_id] ) ) {
-													if ( isset( $_POST['field_' . $field_id . '_day'] ) )
-														$_POST['field_' . $field_id] = strtotime( $_POST['field_' . $field_id . '_day'] . $_POST['field_' . $field_id . '_month'] . $_POST['field_' . $field_id . '_year'] );
-												}
-
-												/* Create errors for required fields without values */
-												if ( xprofile_check_is_required_field( $field_id ) && empty( $_POST['field_' . $field_id] ) ) {
-													$field = new BP_Xprofile_Field( $field_id );
-													$error->add($field->name, __('Please ensure that the ', 'membership') . "<strong>" . $field->name . "</strong>" . __(' information is completed.','membership'));
-												}
-
-												$meta_array[ $field_id ] = $_POST['field_' . $field_id];
-											}
-
-										}
-									}
-
-									$error = apply_filters( 'membership_subscription_form_before_registration_process', $error );
-
-									// Hack for now - eeek
-									$anyerrors = $error->get_error_code();
-									if( empty($anyerrors) ) {
-										// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
-										$user_id = wp_create_user( sanitize_user($_POST['signup_username']), $_POST['signup_password'], $_POST['signup_email'] );
-
-										if(is_wp_error($user_id) && method_exists($userid, 'get_error_message')) {
-											$error->add('userid', $user_id->get_error_message());
-										} else {
-											$member = new M_Membership( $user_id );
-											if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
-												$member->deactivate();
-											} else {
-												$creds = array(
-													'user_login' => $_POST['signup_username'],
-													'user_password' => $_POST['signup_password'],
-													'remember' => true
-												);
-
-												if(!headers_sent()) {
-													$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-													$user = @wp_signon( $creds, $is_ssl );
-
-													if ( is_wp_error($user) && method_exists($user, 'get_error_message') ) {
-														$error->add('userlogin', $user->get_error_message());
-													} else {
-														// Set the current user up
-														wp_set_current_user( $user_id );
-													}
-												} else {
-													// Set the current user up
-													wp_set_current_user( $user_id );
-												}
-
-											}
-
-											if( has_action('membership_susbcription_form_registration_notification') ) {
-												do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['signup_password']);
-											} else {
-												wp_new_user_notification($user_id, $_POST['signup_password']);
-											}
-
-											// Add the bp filter for usermeta signup
-											$meta_array = apply_filters( 'bp_signup_usermeta', $meta_array );
-
-											foreach((array) $meta_array as $field_id => $field_content) {
-												if(function_exists('xprofile_set_field_data')) {
-													xprofile_set_field_data( $field_id, $user_id, $field_content );
-												}
-											}
-
-										}
-
-										do_action( 'membership_subscription_form_registration_process', $error, $user_id );
-									} else {
-										do_action( 'membership_subscription_form_registration_process', $error, 0 );
-									}
-
-									// Hack for now - eeek
-									$anyerrors = $error->get_error_code();
-									if(!empty($anyerrors)) {
-										// Show the page so that it can display the errors
-										$content = $this->output_registeruser( $error );
-									} else {
-										// everything seems fine (so far), so we have our queued user so let's
-										// run the bp complete signup action
-										do_action( 'bp_complete_signup' );
-										// display the payment forms
-										$content = $this->output_paymentpage( $user_id );
-									}
-
-									break;
-
-
-
 			}
 
 			return $content;
@@ -1854,21 +1552,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			if( !empty($post) ) {
 
 				if($post->post_type == 'page') {
-					if($post->ID == $M_options['registration_page']) {
-
-						// check if page contains a shortcode
-						if(strstr($content, '[subscriptionform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $content;
-						} else {
-
-							// There is no shortcode content in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-
-							$content .= $this->do_subscription_form();
-
-						}
-					}
 					if($post->ID == $M_options['account_page']) {
 						// account page - check if page contains a shortcode
 						if(strstr($content, '[accountform]') != false || strstr($content, '[upgradeform]') != false || strstr($content, '[renewform]') != false) {
@@ -1920,53 +1603,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$post = &$posts[0];
 
 				if($post->post_type == 'page') {
-					if($post->ID == $M_options['registration_page']) {
-
-						// check if page contains a shortcode
-						if(strstr($post->post_content, '[subscriptionform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $posts;
-						} else {
-							// registration page found - add in the styles
-							if(!current_theme_supports('membership_subscription_form')) {
-								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-
-								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
-
-								if($M_options['formtype'] == 'new') {
-									// pop up registration form
-									wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-									wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-
-									wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
-									wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
-
-									wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-									 														'registernonce'	=>	wp_create_nonce('membership_register'),
-																							'loginnonce'	=>	wp_create_nonce('membership_login'),
-																							'regproblem'	=>	__('Problem with registration.', 'membership'),
-																							'logpropblem'	=>	__('Problem with Login.', 'membership'),
-																							'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
-																							'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
-																							'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
-																						));
-								}
-							}
-
-							//echo "here";
-
-							do_action('membership_subscriptionbutton_onpage');
-							// There is no shortcode content in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-
-							//$post->post_content .= $this->do_subscription_form();
-
-							//echo $post->post_content;
-							//die();
-
-							//$posts[0] = $post;
-						}
-					}
 					if($post->ID == $M_options['account_page']) {
 						// account page - check if page contains a shortcode
 						if(strstr($post->post_content, '[accountform]') !== false || strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
