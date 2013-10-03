@@ -594,20 +594,22 @@ if(!class_exists('M_Membership')) {
 						default: $period = 'days'; break;
 					}
 					$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
+					$expires = gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start ) );
+
 					$this->db->insert( $this->membership_relationships, array(
 						'user_id'        => $this->ID,
 						'level_id'       => $tolevel_id,
 						'sub_id'         => $tosub_id,
 						'startdate'      => $now,
 						'updateddate'    => $now,
-						'expirydate'     => gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start ) ),
+						'expirydate'     => $expires,
 						'order_instance' => $level->level_order,
 						'usinggateway'   => $gateway
 					) );
 
 					// Update users start and expiry meta
 					update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
-					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, $expires );
+					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
 					update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
 
 					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
