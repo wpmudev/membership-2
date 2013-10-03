@@ -262,7 +262,7 @@ class Membership_Module_Frontend_Register extends Membership_Module_Frontend {
 					wp_new_user_notification( $user_id, $password );
 				}
 
-				do_action( 'membership_registration_complete', $this->_errors, $user_id );
+				do_action( 'membership_registration_complete', $user_id );
 				return true;
 			}
 
