@@ -93,7 +93,8 @@ class Membership_Module_Frontend_Register extends Membership_Module_Frontend {
 			ob_end_clean();
 
 			if ( $complete ) {
-				wp_safe_redirect( home_url() );
+				$page_id = isset( $M_options['after_registration_page'] ) ? (int)$M_options['after_registration_page'] : false;
+				wp_safe_redirect( $page_id ? get_permalink( $page_id ) : home_url() );
 				exit;
 			}
 		}

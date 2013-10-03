@@ -2563,13 +2563,16 @@ if (!class_exists('membershipadmin')) {
                         $M_options['enableincompletesignups'] = (isset($_POST['enableincompletesignups'])) ? $_POST['enableincompletesignups'] : '';
                         break;
 
-                    case 'pages': $M_options['nocontent_page'] = (isset($_POST['nocontent_page'])) ? $_POST['nocontent_page'] : '';
-                        $M_options['account_page'] = (isset($_POST['account_page'])) ? $_POST['account_page'] : '';
-                        $M_options['registration_page'] = (isset($_POST['registration_page'])) ? $_POST['registration_page'] : '';
-                        $M_options['registrationcompleted_page'] = (isset($_POST['registrationcompleted_page'])) ? $_POST['registrationcompleted_page'] : '';
-                        $M_options['subscriptions_page'] = (isset($_POST['subscriptions_page'])) ? $_POST['subscriptions_page'] : '';
-                        $M_options['formtype'] = (isset($_POST['formtype'])) ? $_POST['formtype'] : '';
-                        $M_options['registrationcompleted_message'] = (isset($_POST['registrationcompleted_message'])) ? $_POST['registrationcompleted_message'] : '';
+                    case 'pages':
+						$options = array( 'options' => array( 'min_range' => 1, 'default' => 0 ) );
+						$M_options['nocontent_page']                = filter_input( INPUT_POST, 'nocontent_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['account_page']                  = filter_input( INPUT_POST, 'account_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['registration_page']             = filter_input( INPUT_POST, 'registration_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['after_registration_page']       = filter_input( INPUT_POST, 'after_registration_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['registrationcompleted_page']    = filter_input( INPUT_POST, 'registrationcompleted_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['subscriptions_page']            = filter_input( INPUT_POST, 'subscriptions_page', FILTER_VALIDATE_INT, $options );
+                        $M_options['registrationcompleted_message'] = filter_input( INPUT_POST, 'registrationcompleted_message', FILTER_VALIDATE_INT, $options );
+                        $M_options['formtype']                      = isset( $_POST['formtype'] ) ? $_POST['formtype'] : '';
                         break;
 
                     case 'posts': $M_options['membershipshortcodes'] = (isset($_POST['membershipshortcodes'])) ? explode("\n", $_POST['membershipshortcodes']) : array();
@@ -2889,21 +2892,22 @@ if (!class_exists('membershipadmin')) {
                                 <tbody>
                                     <tr valign="top">
                                         <th scope="row"><?php _e('Registration page', 'membership'); ?>
-            <?php echo $this->_tips->add_tip(__('Select a page to use for the registration form. If you do not have one already, then click on <strong>Create Page</strong> to make one.', 'membership')); ?>
+											<?php echo $this->_tips->add_tip(__('Select a page to use for the registration form. If you do not have one already, then click on <strong>Create Page</strong> to make one.', 'membership')); ?>
                                         </th>
                                         <td>
-                                            <?php
-                                            if (!isset($M_options['registration_page'])) {
-                                                $M_options['registration_page'] = '';
-                                            }
-                                            $pages = wp_dropdown_pages(array('post_type' => 'page', 'selected' => $M_options['registration_page'], 'name' => 'registration_page', 'show_option_none' => __('None', 'membership'), 'sort_column' => 'menu_order, post_title', 'echo' => 0));
-                                            echo $pages;
-                                            ?>
+                                            <?php if ( !isset( $M_options['registration_page'] ) ) $M_options['registration_page'] = ''; ?>
+											<?php wp_dropdown_pages( array(
+												'post_type'        => 'page',
+												'selected'         => $M_options['registration_page'],
+												'name'             => 'registration_page',
+												'show_option_none' => __('None', 'membership'),
+												'sort_column'      => 'menu_order, post_title',
+											) ) ?>
                                             &nbsp;<a href='<?php echo wp_nonce_url("admin.php?page=" . $page . "&amp;tab=pages&amp;action=createregistrationpage", 'create-registrationpage'); ?>' class='button-primary' title='<?php _e('Create a default page for the registration page and assign it here.', 'membership'); ?>'><?php _e('Create page', 'membership'); ?></a>
-            <?php if (!empty($M_options['registration_page'])) { ?>
+											<?php if (!empty($M_options['registration_page'])) { ?>
                                                 <br/>
                                                 <a href='<?php echo get_permalink($M_options['registration_page']); ?>'><?php _e('view page', 'membership'); ?></a> | <a href='<?php echo admin_url('post.php?post=' . $M_options['registration_page'] . '&action=edit'); ?>'><?php _e('edit page', 'membership'); ?></a>
-            <?php } ?>
+											<?php } ?>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -2922,6 +2926,27 @@ if (!class_exists('membershipadmin')) {
                                                 <option value="original" <?php if (isset($M_options['formtype']) && $M_options['formtype'] == 'original') echo "selected='selected'"; ?>><?php _e('Original membership form', 'membership'); ?></option>
                                                 <option value="new" <?php if (isset($M_options['formtype']) && $M_options['formtype'] == 'new') echo "selected='selected'"; ?>><?php _e('Popup registration form', 'membership'); ?></option>
                                             </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="form-table">
+                                <tbody>
+                                    <tr valign="top">
+                                        <th scope="row">
+											<?php _e( 'Registration complete page', 'membership' ) ?>
+											<?php echo $this->_tips->add_tip( __( 'Choose a page where user will be redirected after success registration.', 'membership' ) ) ?>
+                                        </th>
+                                        <td>
+											<?php if ( !isset( $M_options['after_registration_page'] ) ) $M_options['after_registration_page'] = isset( $M_options['subscriptions_page'] ) ? $M_options['subscriptions_page'] : ''; ?>
+											<?php wp_dropdown_pages( array(
+												'post_type'        => 'page',
+												'selected'         => $M_options['after_registration_page'],
+												'name'             => 'after_registration_page',
+												'show_option_none' => __( 'Homepage', 'membership' ),
+												'sort_column'      => 'menu_order, post_title',
+											) ) ?>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -3026,7 +3051,7 @@ if (!class_exists('membershipadmin')) {
                     </div>
 
                     <div class="postbox">
-                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed page', 'membership'); ?></span></h3>
+                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Subscription completed page', 'membership'); ?></span></h3>
                         <div class="inside">
                             <p class='description'><?php _e('When a user has signed up for membership and completed any payments required, they will be redirected to this page.', 'membership'); ?></p>
                             <p class='description'><?php _e('You should include a welcome message on this page and some details on what to do next.', 'membership'); ?></p>
@@ -3034,8 +3059,8 @@ if (!class_exists('membershipadmin')) {
                             <table class="form-table">
                                 <tbody>
                                     <tr valign="top">
-                                        <th scope="row"><?php _e('Registration completed page', 'membership'); ?>
-            <?php echo $this->_tips->add_tip(__('Select a page to use for the Registration completed page. If you do not have one already, then click on <strong>Create Page</strong> to make one.', 'membership')); ?>
+                                        <th scope="row"><?php _e('Subscription completed page', 'membership'); ?>
+            <?php echo $this->_tips->add_tip(__('Select a page to use for the Subscription completed page. If you do not have one already, then click on <strong>Create Page</strong> to make one.', 'membership')); ?>
                                         </th>
                                         <td>
                                             <?php
@@ -3058,9 +3083,9 @@ if (!class_exists('membershipadmin')) {
                     </div>
 
                     <div class="postbox">
-                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Registration completed message', 'membership'); ?></span></h3>
+                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Subscription completed message', 'membership'); ?></span></h3>
                         <div class="inside">
-                            <p class='description'><?php _e('If you are using the pop up registration method, then you can set a message to be displayed in the pop up when the process is complete. If you do not want to use this then leave it blank and the plugin will use the <strong>Registration completed page</strong> set above.', 'membership'); ?></p>
+                            <p class='description'><?php _e('If you are using the pop up registration method, then you can set a message to be displayed in the pop up when the process is complete. If you do not want to use this then leave it blank and the plugin will use the <strong>Subscription completed page</strong> set above.', 'membership'); ?></p>
                             <p class='description'><?php _e('You should include a welcome message in this content and some details on what to do next.', 'membership'); ?></p>
 
                             <table class="form-table">
@@ -3084,17 +3109,12 @@ if (!class_exists('membershipadmin')) {
                         </div>
                     </div>
 
-                    <?php
-                    do_action('membership_pageoptions_page');
-                    ?>
-
+                    <?php do_action('membership_pageoptions_page') ?>
                     <p class="submit">
                         <input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes', 'membership'); ?>" />
                     </p>
-
                 </form>
-            </div>
-            <?php
+            </div><?php
         }
 
         function show_downloads_options() {
