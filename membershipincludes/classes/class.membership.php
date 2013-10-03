@@ -584,7 +584,8 @@ if(!class_exists('M_Membership')) {
 				$level = $subscription->get_level_at($tolevel_id, $to_order);
 
 				if($level) {
-					$start = current_time('mysql');
+					$now = current_time('mysql');
+					$start = strtotime( $now );
 					switch($level->level_period_unit) {
 						case 'd': $period = 'days'; break;
 						case 'w': $period = 'weeks'; break;
@@ -592,12 +593,21 @@ if(!class_exists('M_Membership')) {
 						case 'y': $period = 'years'; break;
 						default: $period = 'days'; break;
 					}
-					$expires = gmdate( 'Y-m-d H:i:s', strtotime('+' . $level->level_period . ' ' . $period, strtotime($start) ));
-					$this->db->insert($this->membership_relationships, array('user_id' => $this->ID, 'level_id' => $tolevel_id, 'sub_id' => $tosub_id, 'startdate' => $start, 'updateddate' => $start, 'expirydate' => $expires, 'order_instance' => $level->level_order, 'usinggateway' => $gateway ));
+					$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
+					$this->db->insert( $this->membership_relationships, array(
+						'user_id'        => $this->ID,
+						'level_id'       => $tolevel_id,
+						'sub_id'         => $tosub_id,
+						'startdate'      => $now,
+						'updateddate'    => $now,
+						'expirydate'     => gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start ) ),
+						'order_instance' => $level->level_order,
+						'usinggateway'   => $gateway
+					) );
 
 					// Update users start and expiry meta
-					update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime($start) );
-					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
+					update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
+					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, $expires );
 					update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
 
 					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
