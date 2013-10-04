@@ -28,28 +28,27 @@ if ( !empty( $msg ) ) {
 	echo '<div class="alert alert-error">', $msg, '</div>';
 }
 
-$valid_for_subscription = empty( $coupon ) || ( method_exists( $coupon, 'valid_for_subscription' ) && !$coupon->valid_for_subscription( $sub_id ) );
-$get_coupon_code = method_exists( $coupon, 'get_coupon_code' ) && $coupon->get_coupon_code() != false;
-
-?><div class="membership-coupon">
+?>
+<div class="membership-coupon">
 	<div class="membership_coupon_form couponbar">
 		<form method="post">
-			<?php if ( $valid_for_subscription ) : ?>
-				<div class="couponQuestion"><?php _e( 'Have a coupon code?', 'membership' ) ?></div>
+			<input type="hidden" name="subscription" value="<?php if ( isset( $_REQUEST['subscription'] ) ) echo esc_attr( $_REQUEST['subscription'] ) ?>">
+			<?php if (empty($coupon) || (method_exists($coupon, 'valid_for_subscription') && !$coupon->valid_for_subscription($sub_id))) { ?>
+				<div class="couponQuestion"><?php _e('Have a coupon code?', 'membership'); ?></div>
 				<div class="couponEntry">
-					<input type="hidden" id="coupon_sub_id" name="coupon_sub_id" value="<?php echo esc_attr( $_REQUEST['subscription'] ) ?>" />
+					<input type="hidden" id="coupon_sub_id" name="coupon_sub_id" value="<?php echo esc_attr($_REQUEST['subscription']); ?>" />
 					<input type="text" class="couponInput" id="coupon_code" name="coupon_code" value="" />
-					<input type="submit" class="button <?php echo apply_filters( 'membership_subscription_button_color', 'blue' ) ?>" id="submit_coupon_code" value="<?php _e( 'Apply Coupon', 'membership' ) ?>">
+					<input type='submit' class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submit_coupon_code" value = '<?php _e('Apply Coupon', 'membership'); ?>' />
 				</div>
-			<?php elseif ( $get_coupon_code ) : ?>
+			<?php } elseif (method_exists($coupon, 'get_coupon_code') && $coupon->get_coupon_code() != false) { ?>
 				<div class="couponEntry">
-					<?php _e( 'Using Coupon Code: ', 'membership' ) ?>
-					<strong><?php echo $coupon->get_coupon_code() ?></strong>
-					<input type="hidden" id="coupon_sub_id" name="coupon_sub_id" value="<?php echo esc_attr( $_REQUEST['subscription'] ) ?>" />
+				<?php _e('Using Coupon Code: ', 'membership'); ?>
+					<strong><?php echo $coupon->get_coupon_code(); ?></strong>
+					<input type="hidden" id="coupon_sub_id" name="coupon_sub_id" value="<?php echo esc_attr($_REQUEST['subscription']); ?>" />
 					<input type="hidden" class="couponInput" id="coupon_code" name="coupon_code" value="" />
-					<input type="submit" class="button <?php echo apply_filters( 'membership_subscription_button_color', 'blue' ) ?>" id="submit_coupon_code" value="<?php _e( 'Remove Coupon', 'membership' ) ?>">
+					<input type='submit' class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" id="submit_coupon_code" value = '<?php _e('Remove Coupon', 'membership'); ?>' />
 				</div>
-			<?php endif; ?>
+			<?php } ?>
 		</form>
 	</div>
 </div>
