@@ -1504,35 +1504,28 @@ class M_URLGroups extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
+	function on_positive( $data ) {
+		add_action( 'pre_get_posts', array( $this, 'positive_check_request' ) );
 
 		$this->data = $data;
-
-		//add_action( 'pre_get_posts', array(&$this, 'positive_check_request') );
-
-		if(!empty($this->data) && is_array($this->data)) {
-			foreach( $this->data as $group_id ) {
+		if ( !empty( $this->data ) && is_array( $this->data ) ) {
+			foreach ( $this->data as $group_id ) {
 				$group = new M_Urlgroup( $group_id );
 				M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
 			}
 		}
-
 	}
 
-	function on_negative($data) {
+	function on_negative( $data ) {
+		add_action( 'pre_get_posts', array( $this, 'negative_check_request' ) );
 
 		$this->data = $data;
-
-		//add_action( 'pre_get_posts', array(&$this, 'negative_check_request') );
-
-		if(!empty($this->data) && is_array($this->data)) {
-			foreach( $this->data as $group_id ) {
+		if ( !empty( $this->data ) && is_array( $this->data ) ) {
+			foreach ( $this->data as $group_id ) {
 				$group = new M_Urlgroup( $group_id );
 				M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
 			}
 		}
-
-
 	}
 
 	function positive_check_request($wp) {
