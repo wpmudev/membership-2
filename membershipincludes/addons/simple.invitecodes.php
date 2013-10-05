@@ -79,7 +79,7 @@ function M_AddSimpleInviteOptionsProcess() {
 
 add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField' );
 // Moved on BP to Profile area
-add_action( 'bp_custom_profile_edit_fields', 'M_AddSimpleInviteField' );
+add_action( 'bp_after_signup_profile_fields', 'M_AddSimpleInviteField' );
 function M_AddSimpleInviteField() {
 
     $Msi_options = M_get_option('membership_simpleinvite_options', array());

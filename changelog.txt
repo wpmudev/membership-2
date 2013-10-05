@@ -1,4 +1,8 @@
-== 3.4.5 RC 3 ==
+== 3.4.6 ==
+
+* Fixed issues invite codes which appears after each BuddyPress fields
+
+== 3.4.5 ==
 
 * Fixed URL Groups match issues
 * Fixed issue with not removed invite codes when an option "Remove Code once used" is set to yes
