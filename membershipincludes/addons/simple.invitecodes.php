@@ -78,22 +78,36 @@ function M_AddSimpleInviteOptionsProcess() {
 }
 
 add_action( 'membership_subscription_form_registration_presubmit_content', 'M_AddSimpleInviteField' );
-// Moved on BP to Profile area
-add_action( 'bp_after_signup_profile_fields', 'M_AddSimpleInviteField' );
 function M_AddSimpleInviteField() {
+    $Msi_options = M_get_option( 'membership_simpleinvite_options', array( ) );
+	if ( empty( $Msi_options['inviterequired'] ) || $Msi_options['inviterequired'] != 'yes' ) {
+		return;
+	}
 
-    $Msi_options = M_get_option('membership_simpleinvite_options', array());
-    if (empty($Msi_options['inviterequired']) || $Msi_options['inviterequired'] != 'yes') {
-        return;
-    }
-    ?>
-    <div class="form-element">
-        <label class="control-label" for="user_email"><?php _e('Invite Code', 'membership'); ?></label>
+    ?><div class="form-element">
+        <label class="control-label" for="invitecode"><?php _e('Invite Code', 'membership'); ?></label>
         <div class="element">
-            <input type="text" autocomplete="off" class="input-xlarge" name="invitecode">
+            <input type="text" autocomplete="off" class="input-xlarge" id="invitecode" name="invitecode">
         </div>
-    </div>
-    <?php
+    </div><?php
+}
+
+add_action( 'bp_before_registration_submit_buttons', 'M_AddSimpleInviteField_BP' );
+function M_AddSimpleInviteField_BP() {
+    $Msi_options = M_get_option( 'membership_simpleinvite_options', array( ) );
+	if ( empty( $Msi_options['inviterequired'] ) || $Msi_options['inviterequired'] != 'yes' ) {
+		return;
+	}
+
+    ?><style>
+		#bp-default #invitecode-section {
+			float: left;
+		}
+	</style>
+	<div id="invitecode-section" class="register-section">
+		<label for="invitecode"><?php _e( 'Invite Code', 'membership' ); ?></label>
+		<input type="text" autocomplete="off" class="input-xlarge" id="invitecode" name="invitecode">
+	</div><?php
 }
 
 add_action( 'membership_popover_extend_registration_form', 'M_AddSimpleRegistrationInviteField' );
