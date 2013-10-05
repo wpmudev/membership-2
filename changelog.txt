@@ -1,5 +1,6 @@
 == 3.4.5 RC 3 ==
 
+* Fixed URL Groups match issues
 * Fixed issue with not removed invite codes when an option "Remove Code once used" is set to yes
 * Fixed issue with broken links to levels and plans at membership dashboard (network wide)
 * Fixed warnings and notices in level and subscription text widgets
