@@ -1815,6 +1815,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						$membership = new M_Membership( get_current_user_id() );
 						$membership->create_subscription( $sub_id );
 
+						$coupon->increment_coupon_used();
+
 						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
 							wp_redirect( get_permalink( $M_options['registrationcompleted_page'] ) );
 							exit;

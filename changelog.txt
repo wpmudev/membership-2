@@ -3,6 +3,7 @@
 * Fixed issues invite codes which appears after each BuddyPress fields
 * Fixed issue with not redirected page after 100% discount coupon was applied
 * Fixed issue with empty page appeared after redirection to protected page
+* Fixed issue with coupon used count incrementation when 100% discount coupon is used
 
 == 3.4.5 ==
 

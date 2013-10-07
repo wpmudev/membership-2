@@ -2,249 +2,211 @@
 
 global $M_options;
 
-$discount_100 = false;
+if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
+	$gateway = M_get_class_for_gateway( $_REQUEST['gateway'] );
+	if ( $gateway && is_object( $gateway ) && $gateway->haspaymentform == true ) {
+		$sub = new M_Subscription( $subscription );
+		$pricing = $sub->get_pricingarray();
+		do_action( 'membership_payment_form', $sub, $pricing, $member->ID );
+	}
+} else if ( $member->on_sub( $subscription ) ) {
 
-if (isset($_POST['coupon_code']) && isset($_POST['coupon_sub_id'])) {
 
-    $coupon = new M_Coupon($_POST['coupon_code']);
-    $coupon_obj = $coupon->get_coupon();
+	$sub = new M_Subscription($subscription);
+	// Get the coupon
+	$coupon = membership_get_current_coupon();
+	?>
+	<div id='membership-wrapper'>
+		<legend><?php echo __('Sign up for', 'membership') . " " . $sub->sub_name(); ?></legend>
 
-    if ($coupon->valid_coupon()) {
-        if ($coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct') {
-            $discount_100 = true;
-        }else{
-            $discount_100 = false;
-        }
-    }
-}
+		<div class="alert">
+	<?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.', 'membership'); ?>
+		</div>
 
-if (isset($_POST['coupon_code']) && isset($_POST['coupon_sub_id']) && $discount_100 === true) {
+		<table class='purchasetable'>
+	<?php
+	$subs = $this->get_subscriptions();
 
-    $coupon = new M_Coupon($_POST['coupon_code']);
-    $coupon_obj = $coupon->get_coupon();
-    if ($coupon->valid_coupon()) {
-        if ($coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct') {
-            ?>
-            <div id='membership-wrapper'>
-                <legend><?php echo __('Subscription Completed', 'membership'); ?></legend>
+	foreach ($subs as $s) {
+		if ($s->id == $subscription) {
+			continue;
+		}
+		$sub = new M_Subscription($s->id);
+		// Build the pricing array
+		$pricing = $sub->get_pricingarray();
 
-                <div class="alert alert-success">
-            <?php echo __('Subscription successfully completed. Thank you!', 'membership'); ?>
-                </div>
-            </div>
-            <?php
-        }
-    }
+		if (!empty($pricing) && !empty($coupon) && method_exists($coupon, 'valid_for_subscription') && $coupon->valid_for_subscription($s->id)) {
+			$pricing = $coupon->apply_coupon_pricing($pricing);
+		}
+		?>
+				<tr>
+					<td class='detailscolumn'>
+		<?php echo $sub->sub_name(); ?>
+					</td>
+					<td class='pricecolumn'>
+		<?php
+		$amount = $sub->sub_pricetext();
+
+		if (!empty($amount)) {
+			echo $amount;
+		} else {
+
+			$first = $pricing[0];
+
+			if (!empty($first)) {
+				$price = $first['amount'];
+				if ($price == 0) {
+					$price = "Free";
+				} else {
+
+					$M_options = get_option('membership_options', array());
+
+					switch ($M_options['paymentcurrency']) {
+						case "USD": $price = "$" . $price;
+							break;
+
+						case "GBP": $price = "&pound;" . $price;
+							break;
+
+						case "EUR": $price = "&euro;" . $price;
+							break;
+					}
+				}
+			}
+			echo $price;
+		}
+		?>
+					</td>
+					<td class='buynowcolumn'>
+		<?php
+		if (!empty($pricing)) {
+			do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+		}
+		?>
+					</td>
+				</tr>
+		<?php
+		if (!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
+			$pricetext = membership_price_in_text($pricing);
+			if ($pricetext !== false) {
+				?>
+						<tr class='pricescolumn'>
+							<td colspan='3'>
+				<?php
+				// Decipher the pricing array and display it
+				echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text($pricing);
+				?>
+							</td>
+						</tr>
+				<?php
+			}
+		}
+		?>
+				<?php
+			}
+			?>
+		</table>
+
+	<?php
+	if (!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+		if (!isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes') {
+			include_once( membership_dir('membershipincludes/includes/coupon.form.php') );
+		}
+	}
+	?>
+
+	</div>
+
+	<?php
 } else {
 
-    if (isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form'])) {
+	$sub = new M_Subscription($subscription);
+	// Get the coupon
+	$coupon = membership_get_current_coupon();
+	// Build the pricing array
+	$pricing = $sub->get_pricingarray();
 
-        $gateway = M_get_class_for_gateway($_REQUEST['gateway']);
-        if ($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
-            $sub = new M_Subscription($subscription);
-            $pricing = $sub->get_pricingarray();
-            do_action('membership_payment_form', $sub, $pricing, $member->ID);
-        }
-    } else if ($member->on_sub($subscription)) {
+	if (!empty($pricing) && !empty($coupon) && method_exists($coupon, 'valid_for_subscription') && $coupon->valid_for_subscription($sub->id)) {
+		$pricing = $coupon->apply_coupon_pricing($pricing);
+	}
+	?>
+	<div id='membership-wrapper'>
+		<legend><?php echo __('Sign up for', 'membership') . " " . $sub->sub_name(); ?></legend>
 
+		<div class="alert alert-success">
+	<?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.', 'membership'); ?>
+		</div>
 
-        $sub = new M_Subscription($subscription);
-        // Get the coupon
-        $coupon = membership_get_current_coupon();
-        ?>
-        <div id='membership-wrapper'>
-            <legend><?php echo __('Sign up for', 'membership') . " " . $sub->sub_name(); ?></legend>
+		<table class='purchasetable'>
+			<tr>
+				<td class='detailscolumn'>
+	<?php echo $sub->sub_name(); ?>
+				</td>
+				<td class='pricecolumn'><?php
+	$amount = $sub->sub_pricetext();
+	if (!empty($amount)) {
+		echo $amount;
+	} else {
+		$first = $pricing[0];
 
-            <div class="alert">
-        <?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.', 'membership'); ?>
-            </div>
+		if (!empty($first)) {
+			$price = $first['amount'];
+			if ($price == 0) {
+				$price = "Free";
+			} else {
 
-            <table class='purchasetable'>
-        <?php
-        $subs = $this->get_subscriptions();
+				$M_options = get_option('membership_options', array());
 
-        foreach ($subs as $s) {
-            if ($s->id == $subscription) {
-                continue;
-            }
-            $sub = new M_Subscription($s->id);
-            // Build the pricing array
-            $pricing = $sub->get_pricingarray();
+				switch ($M_options['paymentcurrency']) {
+					case "USD": $price = "$" . $price;
+						break;
 
-            if (!empty($pricing) && !empty($coupon) && method_exists($coupon, 'valid_for_subscription') && $coupon->valid_for_subscription($s->id)) {
-                $pricing = $coupon->apply_coupon_pricing($pricing);
-            }
-            ?>
-                    <tr>
-                        <td class='detailscolumn'>
-            <?php echo $sub->sub_name(); ?>
-                        </td>
-                        <td class='pricecolumn'>
-            <?php
-            $amount = $sub->sub_pricetext();
+					case "GBP": $price = "&pound;" . $price;
+						break;
 
-            if (!empty($amount)) {
-                echo $amount;
-            } else {
+					case "EUR": $price = "&euro;" . $price;
+						break;
+				}
+			}
+		}
+		echo $price;
+	}
+	?>
+				</td>
+				<td class='buynowcolumn'>
+	<?php
+	if (!empty($pricing)) {
+		do_action('membership_purchase_button', $sub, $pricing, $member->ID);
+	}
+	?>
+				</td>
+			</tr>
+	<?php
+	if (!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
+		$pricetext = membership_price_in_text($pricing);
+		if ($pricetext !== false) {
+			?>
+					<tr class='pricescolumn'>
+						<td colspan='3'>
+			<?php
+			// Decipher the pricing array and display it
+			echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text($pricing);
+			?>
+						</td>
+					</tr>
+			<?php
+		}
+	}
+	?>
+		</table>
 
-                $first = $pricing[0];
-
-                if (!empty($first)) {
-                    $price = $first['amount'];
-                    if ($price == 0) {
-                        $price = "Free";
-                    } else {
-
-                        $M_options = get_option('membership_options', array());
-
-                        switch ($M_options['paymentcurrency']) {
-                            case "USD": $price = "$" . $price;
-                                break;
-
-                            case "GBP": $price = "&pound;" . $price;
-                                break;
-
-                            case "EUR": $price = "&euro;" . $price;
-                                break;
-                        }
-                    }
-                }
-                echo $price;
-            }
-            ?>
-                        </td>
-                        <td class='buynowcolumn'>
-            <?php
-            if (!empty($pricing)) {
-                do_action('membership_purchase_button', $sub, $pricing, $member->ID);
-            }
-            ?>
-                        </td>
-                    </tr>
-            <?php
-            if (!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
-                $pricetext = membership_price_in_text($pricing);
-                if ($pricetext !== false) {
-                    ?>
-                            <tr class='pricescolumn'>
-                                <td colspan='3'>
-                    <?php
-                    // Decipher the pricing array and display it
-                    echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text($pricing);
-                    ?>
-                                </td>
-                            </tr>
-                    <?php
-                }
-            }
-            ?>
-                    <?php
-                }
-                ?>
-            </table>
-
-        <?php
-        if (!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
-            if (!isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes') {
-                include_once( membership_dir('membershipincludes/includes/coupon.form.php') );
-            }
-        }
-        ?>
-
-        </div>
-
-        <?php
-    } else {
-
-        $sub = new M_Subscription($subscription);
-        // Get the coupon
-        $coupon = membership_get_current_coupon();
-        // Build the pricing array
-        $pricing = $sub->get_pricingarray();
-
-        if (!empty($pricing) && !empty($coupon) && method_exists($coupon, 'valid_for_subscription') && $coupon->valid_for_subscription($sub->id)) {
-            $pricing = $coupon->apply_coupon_pricing($pricing);
-        }
-        ?>
-        <div id='membership-wrapper'>
-            <legend><?php echo __('Sign up for', 'membership') . " " . $sub->sub_name(); ?></legend>
-
-            <div class="alert alert-success">
-        <?php echo __('Please check the details of your subscription below and click on the relevant button to complete the subscription.', 'membership'); ?>
-            </div>
-
-            <table class='purchasetable'>
-                <tr>
-                    <td class='detailscolumn'>
-        <?php echo $sub->sub_name(); ?>
-                    </td>
-                    <td class='pricecolumn'><?php
-        $amount = $sub->sub_pricetext();
-        if (!empty($amount)) {
-            echo $amount;
-        } else {
-            $first = $pricing[0];
-
-            if (!empty($first)) {
-                $price = $first['amount'];
-                if ($price == 0) {
-                    $price = "Free";
-                } else {
-
-                    $M_options = get_option('membership_options', array());
-
-                    switch ($M_options['paymentcurrency']) {
-                        case "USD": $price = "$" . $price;
-                            break;
-
-                        case "GBP": $price = "&pound;" . $price;
-                            break;
-
-                        case "EUR": $price = "&euro;" . $price;
-                            break;
-                    }
-                }
-            }
-            echo $price;
-        }
-        ?>
-                    </td>
-                    <td class='buynowcolumn'>
-        <?php
-        if (!empty($pricing)) {
-            do_action('membership_purchase_button', $sub, $pricing, $member->ID);
-        }
-        ?>
-                    </td>
-                </tr>
-        <?php
-        if (!defined('MEMBERSHIP_HIDE_PAYTEXT')) {
-            $pricetext = membership_price_in_text($pricing);
-            if ($pricetext !== false) {
-                ?>
-                        <tr class='pricescolumn'>
-                            <td colspan='3'>
-                <?php
-                // Decipher the pricing array and display it
-                echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text($pricing);
-                ?>
-                            </td>
-                        </tr>
-                <?php
-            }
-        }
-        ?>
-            </table>
-
-        <?php
-        if (!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
-            if (!isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes') {
-                include_once( membership_dir('membershipincludes/includes/coupon.form.php') );
-            }
-        }
-        ?>
-        </div>
-            <?php
-        }
-    }
-    ?>
+	<?php
+	if (!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
+		if (!isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes') {
+			include_once( membership_dir('membershipincludes/includes/coupon.form.php') );
+		}
+	}
+	?>
+	</div>
+		<?php
+	}
