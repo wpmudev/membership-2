@@ -1525,6 +1525,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function process_subscription_form() {
+			global $M_options, $bp;
+
 			$subscription = isset( $_REQUEST['subscription'] )
 				? $_REQUEST['subscription']
 				: 0;
@@ -1645,8 +1647,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					break;
 
 				case 'validatepage1bp':
-					global $bp;
-
 					//include_once(ABSPATH . WPINC . '/registration.php');
 
 					$required = array( 'signup_username' => __( 'Username', 'membership' ),
@@ -1799,12 +1799,32 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					}
 
 					break;
+
+				case 'registeruser':
+				case 'subscriptionsignup':
+					$coupon = filter_input( INPUT_POST, 'coupon_code' );
+					$sub_id = filter_input( INPUT_POST, 'coupon_sub_id', FILTER_VALIDATE_INT );
+					if ( !is_user_logged_in() || !$coupon || !$sub_id ) {
+						return;
+					}
+
+					$coupon = new M_Coupon( $coupon );
+					$coupon_obj = $coupon->get_coupon();
+
+					if ( $coupon->valid_coupon() && $coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct' ) {
+						$membership = new M_Membership( get_current_user_id() );
+						$membership->create_subscription( $sub_id );
+
+						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
+							wp_redirect( get_permalink( $M_options['registrationcompleted_page'] ) );
+							exit;
+						}
+					}
+					break;
 			}
 		}
 
 		function do_subscription_form() {
-			global $wp_query, $M_options, $bp;
-
 			$content = '';
 			$page = isset( $_REQUEST['action'] )
 				? $_REQUEST['action']
@@ -1816,13 +1836,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					break;
 
 				case 'registeruser':
-					if ( !is_user_logged_in() ) {
-						$content = $this->output_registeruser();
-					} else {
-						$content = $this->output_paymentpage();
-					}
-					break;
-
 				case 'subscriptionsignup':
 					if ( !is_user_logged_in() ) {
 						$content = $this->output_registeruser();
@@ -2397,68 +2410,39 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		// Check the results and handle the outcome - redirecting if necessary
 		function complete_url_protection_processing( $wp ) {
-
 			global $M_global_groups;
 
-			// Build core positive array
-			if( !empty( $M_global_groups['positive'] ) ) {
-
-				$positive = $M_global_groups['positive'];
-
-				// Unique the urls
-				$positive = array_unique( $positive );
-
-			}
-
-			// Build core negative array
-			if( !empty( $M_global_groups['negative']) ) {
-
-				$negative = $M_global_groups['negative'];
-
-				// Unique the urls
-				$negative = array_unique( $negative );
-
-			}
-
-			$redirect = false;
-
-			$host = '';
-			if(is_ssl()) {
-				$host = "https://";
-			} else {
-				$host = "http://";
-			}
-			$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
+			$host = is_ssl() ? "https://" : "http://";
+			$host .= $_SERVER['HTTP_HOST'] . current( explode( '?', $_SERVER['REQUEST_URI'] ) );
+			$host = trailingslashit( $host );
 
 			// Check we are not on an excluded url
+			$exclude = apply_filters( 'membership_excluded_urls', array() );
 			if( membership_check_expression_match( $host, $exclude ) ) {
 				return;
 			}
 
-			if(!empty( $positive )) {
-				// check if the page is in the positive rules
-				if(!membership_check_expression_match( $host, $positive ) ) {
-					$redirect = true;
-				}
-			}
+			// Build core positive array
+			$positive = !empty( $M_global_groups['positive'] )
+				? array_unique( $M_global_groups['positive'] )
+				: array();
 
-			if(!empty( $negative )) {
-				// Check if the page is in the negative rules
-				if(membership_check_expression_match( $host, $negative) ) {
-					$redirect = true;
-				}
-			}
+			$in_positive = membership_check_expression_match( $host, $positive );
 
-			if($redirect) {
-				membership_debug_log( __('About to redirect to the protected page','membership') );
+			// Build core negative array
+			$negative = !empty( $M_global_groups['negative'] )
+				? array_unique( $M_global_groups['negative'] )
+				: array();
+
+			$in_negative = membership_check_expression_match( $host, $negative );
+
+			if ( !$in_positive || $in_negative ) {
+				membership_debug_log( __( 'About to redirect to the protected page', 'membership' ) );
 				membership_redirect_to_protected();
 				exit;
 			} else {
-				membership_debug_log( __('Not going to redirect to the protected page','membership') );
+				membership_debug_log( __( 'Not going to redirect to the protected page', 'membership' ) );
 			}
-
 		}
 
 	}

@@ -1,5 +1,6 @@
 <?php
-Global $M_options;
+
+global $M_options;
 
 $discount_100 = false;
 
@@ -21,13 +22,8 @@ if (isset($_POST['coupon_code']) && isset($_POST['coupon_sub_id']) && $discount_
 
     $coupon = new M_Coupon($_POST['coupon_code']);
     $coupon_obj = $coupon->get_coupon();
-
     if ($coupon->valid_coupon()) {
         if ($coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct') {
-            $membership = new M_Membership(get_current_user_id());
-
-            $membership->create_subscription($_POST['coupon_sub_id']);
-   
             ?>
             <div id='membership-wrapper'>
                 <legend><?php echo __('Subscription Completed', 'membership'); ?></legend>
