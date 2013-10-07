@@ -32,7 +32,18 @@ if ( !class_exists( 'M_Urlgroup' ) ) :
 		}
 
 		function get_group() {
-			return $this->db->get_row( $this->db->prepare( "SELECT * FROM {$this->urlgroups} WHERE id = %d ", $this->id ) );
+			if ( !$this->group ) {
+				$this->group = !empty( $this->id )
+					? $this->db->get_row( $this->db->prepare( "SELECT * FROM {$this->urlgroups} WHERE id = %d ", $this->id ) )
+					: (object)array(
+						'groupname'        => '',
+						'groupurls'        => '',
+						'stripquerystring' => 0,
+						'isregexp'         => 0,
+					);;
+			}
+
+			return $this->group;
 		}
 
 	 	function group_urls() {
@@ -47,101 +58,56 @@ if ( !class_exists( 'M_Urlgroup' ) ) :
 				: false;
 		}
 
-		function editform() {
-			$this->group = $this->get_group();
+		function render_form() {
+			$this->get_group();
 
-			echo '<table class="form-table">';
+			$yesno = array(
+				1 => esc_html__( 'Yes', 'membership' ),
+				0 => esc_html__( 'No', 'membership' ),
+			);
 
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Group name', 'membership' ) . '</th>';
-			echo '<td valign="top"><input name="groupname" type="text" size="50" title="' . __( 'Group name', 'membership' ) . '" style="width: 50%;" value="' . esc_attr( stripslashes( $this->group->groupname ) ) . '" /></td>';
-			echo '</tr>';
+			?><table class="form-table">
+				<tr class="form-field form-required">
+					<th scope="row" valign="top"><?php esc_html_e( 'Group name', 'membership' ) ?></th>
+					<td valign="top">
+						<input name="groupname" type="text" size="50" title="<?php esc_attr_e( 'Group name', 'membership' ) ?>" style="width:50%" value="<?php echo esc_attr( stripslashes( $this->group->groupname ) ) ?>">
+					</td>
+				</tr>
 
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Page URLs', 'membership' ) . '</th>';
-			echo '<td valign="top"><textarea name="groupurls" rows="15" cols="40">' . esc_html( stripslashes( $this->group->groupurls ) ) . '</textarea>';
-			// Display some instructions for the message.
-			echo "<br/><em style='font-size:smaller;'>" . __( "You should place each page URL or expression on a new line.", 'membership' ) . "</em>";
-			echo '</td>';
-			echo '</tr>';
+				<tr class="form-field form-required">
+					<th scope="row" valign="top"><?php esc_html_e( 'Page URLs', 'membership' ) ?></th>
+					<td valign="top">
+						<textarea id="groupurls" name="groupurls" rows="15" cols="40"><?php
+							echo esc_textarea( stripslashes( $this->group->groupurls ) )
+						?></textarea>
+						<p class="description"><?php esc_html_e( "You should place each page URL or expression on a new line.", 'membership' ) ?></p>
+					</td>
+				</tr>
 
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Strip query strings from URL', 'membership' ) . '</th>';
-			echo '<td valign="top" align="left">';
-			echo '<select name="stripquerystring">';
-			echo '<option value="0"';
-			if ( $this->group->stripquerystring == 0 )
-				echo ' selected="selected"';
-			echo '>' . __( 'No', 'membership' ) . '</option>';
-			echo '<option value="1"';
-			if ( $this->group->stripquerystring == 1 )
-				echo ' selected="selected"';
-			echo '>' . __( 'Yes', 'membership' ) . '</option>';
-			echo '</select>';
-			echo "<br/><em style='font-size:smaller;'>" . __( "Remove any query string values prior to checking URL.", 'membership' ) . "</em>";
-			echo '</td></tr>';
+				<tr class="form-field form-required">
+					<th scope="row" valign="top"><?php esc_html_e( 'Strip query strings from URL', 'membership' ) ?></th>
+					<td valign="top" align="left">
+						<select name="stripquerystring">
+							<?php foreach ( $yesno as $key => $label ) : ?>
+								<option value="<?php echo $key ?>"<?php selected( $key, $this->group->stripquerystring ) ?>><?php echo $label ?></option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description"><?php esc_html_e( "Remove any query string values prior to checking URL.", 'membership' ) ?></p>
+					</td>
+				</tr>
 
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Regular Expression', 'membership' ) . '</th>';
-			echo '<td valign="top" align="left">';
-			echo '<select name="isregexp">';
-			echo '<option value="0"';
-			if ( $this->group->isregexp == 0 )
-				echo ' selected="selected"';
-			echo '>' . __( 'No', 'membership' ) . '</option>';
-			echo '<option value="1"';
-			if ( $this->group->isregexp == 1 )
-				echo ' selected="selected"';
-			echo '>' . __( 'Yes', 'membership' ) . '</option>';
-			echo '</select>';
-			echo "<br/><em style='font-size:smaller;'>" . __( "If any of the page URLs are regular expressions then set this to yes.", 'membership' ) . "</em>";
-			echo '</td></tr>';
-
-			echo '</table>';
-		}
-
-		function addform() {
-
-			echo '<table class="form-table">';
-
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Group name', 'membership' ) . '</th>';
-			echo '<td valign="top"><input name="groupname" type="text" size="50" title="' . __( 'Group name', 'membership' ) . '" style="width: 50%;" value="" /></td>';
-			echo '</tr>';
-
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Page URLs', 'membership' ) . '</th>';
-			echo '<td valign="top"><textarea name="groupurls" rows="15" cols="40"></textarea>';
-			// Display some instructions for the message.
-			echo "<br/><em style='font-size:smaller;'>" . __( "You should place each page URL or expression on a new line.", 'membership' ) . "</em>";
-			echo '</td>';
-			echo '</tr>';
-
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Strip query strings from URL', 'membership' ) . '</th>';
-			echo '<td valign="top" align="left">';
-			echo '<select name="stripquerystring">';
-			echo '<option value="0"';
-			echo '>' . __( 'No', 'membership' ) . '</option>';
-			echo '<option value="1"';
-			echo '>' . __( 'Yes', 'membership' ) . '</option>';
-			echo '</select>';
-			echo "<br/><em style='font-size:smaller;'>" . __( "Remove any query string values prior to checking URL.", 'membership' ) . "</em>";
-			echo '</td></tr>';
-
-			echo '<tr class="form-field form-required">';
-			echo '<th style="" scope="row" valign="top">' . __( 'Regular Expression', 'membership' ) . '</th>';
-			echo '<td valign="top" align="left">';
-			echo '<select name="isregexp">';
-			echo '<option value="0"';
-			echo '>' . __( 'No', 'membership' ) . '</option>';
-			echo '<option value="1"';
-			echo '>' . __( 'Yes', 'membership' ) . '</option>';
-			echo '</select>';
-			echo "<br/><em style='font-size:smaller;'>" . __( "If any of the page URLs are regular expressions then set this to yes.", 'membership' ) . "</em>";
-			echo '</td></tr>';
-
-			echo '</table>';
+				<tr class="form-field form-required">
+					<th scope="row" valign="top"><?php esc_html_e( 'Regular Expression', 'membership' ) ?></th>
+					<td valign="top" align="left">
+						<select name="isregexp">';
+							<?php foreach ( $yesno as $key => $label ) : ?>
+								<option value="<?php echo $key ?>"<?php selected( $key, $this->group->isregexp ) ?>><?php echo $label ?></option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description"><?php esc_html_e( "If any of the page URLs are regular expressions then set this to yes.", 'membership' ) ?></p>
+					</td>
+				</tr>
+			</table><?php
 		}
 
 		function add() {

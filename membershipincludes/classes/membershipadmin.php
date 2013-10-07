@@ -855,17 +855,22 @@ if (!class_exists('membershipadmin')) {
         }
 
         function add_admin_header_membershipurlgroups() {
-            // Run the core header
-            $this->add_admin_header_core();
+			// Run the core header
+			$this->add_admin_header_core();
 
-            wp_enqueue_script('groupsjs', membership_url('membershipincludes/js/urlgroup.js'), array(), $this->build);
-            wp_localize_script('groupsjs', 'membership', array('deletegroup' => __('Are you sure you want to delete this url group?', 'membership')));
+			wp_enqueue_script( 'groupsjs', membership_url( 'membershipincludes/js/urlgroup.js' ), array( ), $this->build );
+			wp_localize_script( 'groupsjs', 'membership', array(
+				'deletegroup' => __( 'Are you sure you want to delete this url group?', 'membership' ),
+				'validrule'   => __( 'Valid', 'membership' ),
+				'invalidrule' => __( 'Invalid', 'membership' ),
+				'emptyrules'  => __( 'Add Page URLs to the group in case you want to test it against', 'membership' ),
+				'nothingtest' => __( 'Enter an URL above to test against rules in the group', 'membership' ),
+			) );
 
+			$this->handle_urlgroups_updates();
+		}
 
-            $this->handle_urlgroups_updates();
-        }
-
-        function add_admin_header_membershippings() {
+		function add_admin_header_membershippings() {
             // Run the core header
             $this->add_admin_header_core();
 
@@ -5786,65 +5791,56 @@ if (!class_exists('membershipadmin')) {
             }
         }
 
-        function show_urlgroup_edit($group_id) {
-
+        function show_urlgroup_edit( $group_id ) {
             global $page;
 
-            if ($group_id === false) {
-                $add = new M_Urlgroup(0);
+			$group_id = (int)$group_id;
+			$m_group = new M_Urlgroup( $group_id );
 
-                echo "<div class='wrap'>";
-                echo "<h2>" . __('Add URL group', 'membership') . "</h2>";
+			?><div class="wrap">
+                <h2><?php echo !$group_id ? esc_html__( 'Add URL group', 'membership' ) : esc_html__( 'Edit URL group', 'membership' ) ?></h2>
 
-                echo '<div id="poststuff" class="metabox-holder">';
-                ?>
-                <div class="postbox">
-                    <h3 class="hndle" style='cursor:auto;'><span><?php _e('Add URL group', 'membership'); ?></span></h3>
-                    <div class="inside">
-                        <?php
-                        echo '<form method="post" action="?page=' . $page . '">';
-                        echo '<input type="hidden" name="ID" value="" />';
-                        echo "<input type='hidden' name='action' value='added' />";
-                        wp_nonce_field('add-group');
-                        $add->addform();
-                        echo '<p class="submit">';
-                        echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add group', 'membership') . '" /></p>';
-                        echo '</form>';
-                        echo '<br/>';
-                        ?>
-                    </div>
-                </div>
-                <?php
-                echo "</div>";
-                echo "</div>";
-            } else {
-                $edit = new M_Urlgroup((int) $group_id);
+				<div id="poststuff" class="metabox-holder">
+					<div class="postbox">
+						<h3 class="hndle" style="cursor:auto;">
+							<span><?php echo !$group_id ? esc_html__( 'Add URL group', 'membership' ) : esc_html__( 'Edit URL group', 'membership' ) ?></span>
+						</h3>
+						<div class="inside">
+							<form action="?page=<?php echo $page ?>" method="post">
+								<input type="hidden" name="ID" value="<?php echo $group_id ?>">
+								<input type="hidden" name="action" value="<?php echo !$group_id ? 'added' : 'updated' ?>">
+								<?php wp_nonce_field( !$group_id ? 'add-group' : 'update-group-' . $group_id ) ?>
+								<?php $m_group->render_form() ?>
+								<p class="submit">
+									<input type="reset" class="button" value="<?php esc_attr_e( 'Reset', 'membership' ) ?>">
+									<input class="button-primary alignright" type="submit" name="go" value="<?php echo !$group_id ? esc_attr__( 'Add group', 'membership' ) : esc_attr__( 'Update group', 'membership' ) ?>">
+								</p>
+							</form>
+						</div>
+					</div>
+				</div>
 
-                echo "<div class='wrap'>";
-                echo "<h2>" . __('Edit URL group', 'membership') . "</h2>";
+				<style type="text/css">
+					#urltestresults { margin: 10px 0; border: 1px dotted #ddd; }
+					#urltestresults div { border: 1px dotted #ddd; padding: 10px; }
+					#urltestresults div:last-child { border-bottom: 0 }
+					#urltestresults span { float: right; }
+					.rule-valid { color: green; font-weight: bold; }
+					.rule-invalid { color: red; }
+				</style>
 
-                echo '<div id="poststuff" class="metabox-holder">';
-                ?>
-                <div class="postbox">
-                    <h3 class="hndle" style='cursor:auto;'><span><?php _e('Edit URL group', 'membership'); ?></span></h3>
-                    <div class="inside">
-                        <?php
-                        echo '<form method="post" action="?page=' . $page . '">';
-                        echo '<input type="hidden" name="ID" value="' . $group_id . '" />';
-                        echo "<input type='hidden' name='action' value='updated' />";
-                        wp_nonce_field('update-group-' . $group_id);
-                        $edit->editform();
-                        echo '<p class="submit">';
-                        echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update group', 'membership') . '" /></p>';
-                        echo '</form>';
-                        echo '<br/>';
-                        ?>
-                    </div>
-                </div>
-                <?php
-                echo "</div>";
-                echo "</div>";
-            }
+				<div class="metabox-holder">
+					<div class="postbox">
+						<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Test URL group', 'membership' ) ?></h3>
+						<div class="inside">
+							<input type="text" id="url2test" class="widefat">
+							<div id="urltestresults">
+								<div><i><?php esc_html_e( 'Enter an URL above to test against rules in the group', 'membership' ) ?><i></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><?php
         }
 
         function handle_urlgroups_panel() {
