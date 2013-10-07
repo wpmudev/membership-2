@@ -4,6 +4,7 @@
 * Fixed issue with not redirected page after 100% discount coupon was applied
 * Fixed issue with empty page appeared after redirection to protected page
 * Fixed issue with coupon used count incrementation when 100% discount coupon is used
+* Fixed issue with broken subscription URLs at registration form when ?id= permalink is used
 
 == 3.4.5 ==
 
