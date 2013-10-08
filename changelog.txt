@@ -9,6 +9,7 @@
 * Fixed issue with coupon used count incrementation when 100% discount coupon is used
 * Fixed issue with broken subscription URLs at registration form when ?id= permalink is used
 * Implemented ability to test rules in an URL group
+* Implemented ability to sort subscription plans at front end
 
 == 3.4.5 ==
 

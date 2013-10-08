@@ -12,54 +12,62 @@ function M_get_charset_collate() {
 	return $charset_collate;
 }
 
-function M_Upgrade($from = false) {
-
-	switch($from) {
-
+function M_Upgrade( $from = false ) {
+	switch ( $from ) {
 		case 1:
-		case 2:		M_Alterfor2();
+		case 2:
+			M_Alterfor2();
 
-		case 3:		M_Alterfor3();
+		case 3:
+			M_Alterfor3();
 
 		case 4:
-		case 5:		M_Alterfor4();
+		case 5:
+			M_Alterfor4();
 
-		case 6:		M_Alterfor5();
+		case 6:
+			M_Alterfor5();
 
-		case 7:		M_Alterfor6();
+		case 7:
+			M_Alterfor6();
 
 		case 8:
 		case 9:
-					M_Alterfor10();
+			M_Alterfor10();
 
-		case 10:	M_Alterfor11();
+		case 10:
+			M_Alterfor11();
 
-		case 11:	M_Alterfor12();
+		case 11:
+			M_Alterfor12();
 
 		case 12:
-		case 13:	M_Alterfor14();
+		case 13:
+			M_Alterfor14();
+			break;
 
-					break;
+		case 14:
+			M_Alterfor15();
+			break;
 
-		case 14:	M_Alterfor15();
-					break;
+		case 15:
+			M_Alterfor16();
+			break;
 
-		case false:	M_Createtables();
-					break;
-
-		default:	M_Createtables();
-					break;
+		default:
+			M_Createtables();
+			break;
 	}
+}
 
+function M_Alterfor16() {
+	global $wpdb;
+	$wpdb->query( "ALTER TABLE " . membership_db_prefix( $wpdb, 'subscriptions' ) . " ADD `order_num` INT NOT NULL DEFAULT 0" );
 }
 
 function M_Alterfor15() {
 	global $wpdb;
-
-	$sql = "ALTER TABLE " . membership_db_prefix($wpdb, 'communications') . " ADD `sub_id` BIGINT  NULL  DEFAULT NULL  AFTER `id`;";
-
-	$wpdb->query( $sql );
-
+	$wpdb->query( "ALTER TABLE " . membership_db_prefix( $wpdb, 'communications' ) . " ADD `sub_id` BIGINT  NULL  DEFAULT NULL  AFTER `id`;" );
 }
 
 function M_Alterfor14() {

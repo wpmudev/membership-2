@@ -298,7 +298,13 @@ if(!class_exists('M_Subscription')) {
 				$this->update();
 			} else {
 
-				$return = $this->db->insert($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description'], 'sub_pricetext' => $_POST['sub_pricetext']));
+				$this->db->insert( $this->subscriptions, array(
+					'sub_name'        => trim( filter_input( INPUT_POST, 'sub_name' ) ),
+					'sub_description' => trim( filter_input( INPUT_POST, 'sub_description' ) ),
+					'sub_pricetext'   => trim( filter_input( INPUT_POST, 'sub_pricetext' ) ),
+					'order_num'       => filter_input( INPUT_POST, 'sub_order_num', FILTER_VALIDATE_INT ),
+				), array( '%s', '%s', '%s', '%d' ) );
+
 				$this->id = $this->db->insert_id;
 
 				if(!empty($_POST['level-order'])) {
@@ -372,14 +378,18 @@ if(!class_exists('M_Subscription')) {
 		}
 
 		function update() {
-
 			$this->dirty = true;
 
 			if($this->id < 0) {
 				$this->add();
 			} else {
 
-				$return = $this->db->update($this->subscriptions, array('sub_name' => $_POST['sub_name'], 'sub_description' => $_POST['sub_description'], 'sub_pricetext' => $_POST['sub_pricetext']), array('id' => $this->id));
+				$this->db->update( $this->subscriptions, array(
+					'sub_name'        => trim( filter_input( INPUT_POST, 'sub_name' ) ),
+					'sub_description' => trim( filter_input( INPUT_POST, 'sub_description' ) ),
+					'sub_pricetext'   => trim( filter_input( INPUT_POST, 'sub_pricetext' ) ),
+					'order_num'       => filter_input( INPUT_POST, 'sub_order_num', FILTER_VALIDATE_INT ),
+				), array( 'id' => $this->id ), array( '%s', '%s', '%s', '%d' ), array( '%d' ) );
 
 				// Remove the existing rules for this subscription level
 				$this->db->query( $this->db->prepare( "DELETE FROM {$this->subscriptions_levels} WHERE sub_id = %d", $this->id ) );

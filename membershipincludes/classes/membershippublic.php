@@ -2333,7 +2333,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			$where[] = "sub_public = 1";
 			$where[] = "sub_active = 1";
 
-			$orderby[] = 'id ASC';
+			$orderby[] = 'order_num ASC';
 
 			$sql = "SELECT * FROM {$this->subscriptions}";
 

@@ -4,7 +4,7 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 
     class membershipadmin {
 
-        var $build = 15;
+        var $build = 16;
         var $db;
         //
         var $showposts = 25;
@@ -4686,17 +4686,27 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                                         ?>
                                         <br/>
                                         <?php
-                                        if (!isset($sub->sub_pricetext)) {
+                                        if ( !isset( $sub->sub_pricetext ) ) {
                                             $sub->sub_pricetext = '';
                                         }
                                         ?>
-                                        <label for='sub_pricetext'><?php _e('Subscription price text', 'membership'); ?><?php echo $this->_tips->add_tip(__('The text you want to show as the price on the subscription form. E.G. Only $25 per month.', 'membership')); ?></label>
-                                        <input class='wide' type='text' name='sub_pricetext' id='sub_pricetext' value='<?php echo esc_attr(stripslashes($sub->sub_pricetext)); ?>' />
-            <?php do_action('membership_subscription_form_after_details', $sub->id); ?>
+                                        <label for='sub_pricetext'>
+											<?php _e('Subscription price text', 'membership'); ?>
+											<?php echo $this->_tips->add_tip(__('The text you want to show as the price on the subscription form. E.G. Only $25 per month.', 'membership')); ?>
+										</label>
+                                        <input class='wide' type='text' name='sub_pricetext' id='sub_pricetext' value='<?php echo esc_attr( stripslashes( $sub->sub_pricetext ) ) ?>'>
+
+										<br><br>
+										<label for="sub_order_num">
+											<?php esc_html_e( 'Subscription order', 'membership' ) ?>
+										</label>
+										<input type="text" class="wide" name="sub_order_num" value="<?php echo isset( $sub->order_num ) ? intval( $sub->order_num ) : 0 ?>">
+
+							            <?php do_action('membership_subscription_form_after_details', $sub->id); ?>
 
                                     </div>
 
-            <?php do_action('membership_subscription_form_before_levels', $sub->id); ?>
+									<?php do_action('membership_subscription_form_before_levels', $sub->id); ?>
 
                                     <h3><?php _e('Membership levels', 'membership'); ?></h3>
                                     <p class='description'><?php _e('These are the levels that are part of this subscription and the order a user will travel through them. Any levels highlighted in red will never be reached due to the settings of previous levels.', 'membership'); ?></p>
@@ -5099,18 +5109,22 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                     <div class="clear"></div>
 
                     <?php
-                    wp_original_referer_field(true, 'previous');
-                    wp_nonce_field('bulk-subscriptions');
 
-                    $columns = array("name" => __('Subscription Name', 'membership'),
-                        "active" => __('Active', 'membership'),
-                        "public" => __('Public', 'membership'),
-                        "users" => __('Users', 'membership')
-                    );
+                    wp_original_referer_field( true, 'previous' );
+					wp_nonce_field( 'bulk-subscriptions' );
 
-                    $columns = apply_filters('subscription_columns', $columns);
+					$columns = array(
+						"name"      => __( 'Subscription Name', 'membership' ),
+						"active"    => __( 'Active', 'membership' ),
+						"public"    => __( 'Public', 'membership' ),
+						"users"     => __( 'Users', 'membership' ),
+						'order_num' => __( 'Order', 'membership' ),
+					);
 
-                    $subs = $this->get_subscriptions($filter);
+					$columns = apply_filters( 'subscription_columns', $columns );
+
+					$subs = $this->get_subscriptions( $filter );
+
                     ?>
 
                     <table cellspacing="0" class="widefat fixed">
@@ -5197,9 +5211,10 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                                         </td>
                                         <td class="column-users">
                                             <strong>
-                                    <?php echo $this->count_on_sub($sub->id); ?>
+												<?php echo $this->count_on_sub( $sub->id ) ?>
                                             </strong>
                                         </td>
+										<td class="column-order_num"><strong><?php echo $sub->order_num ?></strong></td>
                                     </tr>
                                     <?php
                                 }
@@ -6716,54 +6731,44 @@ if ( !class_exists( 'membershipadmin', false ) ) :
             return $this->db->get_results($sql);
         }
 
-        function get_subscriptions($filter = false) {
+        function get_subscriptions( $filter = false ) {
+			$where = $orderby = array( );
+			if ( $filter ) {
+				if ( isset( $filter['s'] ) ) {
+					$where[] = "sub_name LIKE '%" . mysql_real_escape_string( $filter['s'] ) . "%'";
+				}
 
-            if ($filter) {
+				if ( isset( $filter['sub_status'] ) ) {
+					switch ( $filter['sub_status'] ) {
+						case 'active':   $where[] = "sub_active = 1"; break;
+						case 'inactive': $where[] = "sub_active = 0"; break;
+						case 'public':   $where[] = "sub_public = 1"; break;
+						case 'private':  $where[] = "sub_public = 0"; break;
+					}
+				}
 
-                $where = array();
-                $orderby = array();
+				if ( isset( $filter['order_by'] ) ) {
+					switch ( $filter['order_by'] ) {
+						case 'order':      $orderby[] = 'order_num ASC';    break;
+						case 'order_id':   $orderby[] = 'id ASC';       break;
+						case 'order_name': $orderby[] = 'sub_name ASC'; break;
+					}
+				}
+			} else {
+				$orderby[] = 'order_num ASC';
+			}
 
-                if (isset($filter['s'])) {
-                    $where[] = "sub_name LIKE '%" . mysql_real_escape_string($filter['s']) . "%'";
-                }
+			$sql = "SELECT * FROM {$this->subscriptions}";
+			if ( !empty( $where ) ) {
+				$sql .= " WHERE " . implode( ' AND ', $where );
+			}
 
-                if (isset($filter['sub_status'])) {
-                    switch ($filter['sub_status']) {
+			if ( !empty( $orderby ) ) {
+				$sql .= " ORDER BY " . implode( ', ', $orderby );
+			}
 
-                        case 'active': $where[] = "sub_active = 1";
-                            break;
-                        case 'inactive': $where[] = "sub_active = 0";
-                            break;
-                        case 'public': $where[] = "sub_public = 1";
-                            break;
-                        case 'private': $where[] = "sub_public = 0";
-                            break;
-                    }
-                }
-
-                if (isset($filter['order_by'])) {
-                    switch ($filter['order_by']) {
-
-                        case 'order_id': $orderby[] = 'id ASC';
-                            break;
-                        case 'order_name': $orderby[] = 'sub_name ASC';
-                            break;
-                    }
-                }
-            }
-
-            $sql = "SELECT * FROM {$this->subscriptions}";
-
-            if (!empty($where)) {
-                $sql .= " WHERE " . implode(' AND ', $where);
-            }
-
-            if (!empty($orderby)) {
-                $sql .= " ORDER BY " . implode(', ', $orderby);
-            }
-
-            return $this->db->get_results($sql);
-        }
+			return $this->db->get_results( $sql );
+		}
 
         function get_subscriptions_and_levels($filter = false) {
 
