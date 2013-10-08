@@ -1,5 +1,6 @@
 == 3.4.6 ==
 
+* Fixed issue with popup registration form when email address was not determined
 * Fixed issue with not required invite code at BuddyPress registration page
 * Fixed issue with invite codes which appears after each BuddyPress fields
 * Fixed issue with not redirected page after 100% discount coupon was applied

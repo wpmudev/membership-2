@@ -7734,6 +7734,8 @@ if (!class_exists('membershipadmin')) {
 
                 $error = new WP_Error();
 
+				$email = $_POST['user_email'];
+
                 if (!wp_verify_nonce($_POST['nonce'], 'membership_register')) {
                     $error->add('invalid', __('Invalid form submission.', 'membership'));
                 }
@@ -7746,11 +7748,11 @@ if (!class_exists('membershipadmin')) {
                     $error->add('usernameexists', __('That username is already taken, sorry.', 'membership'));
                 }
 
-                if (!is_email($_POST['email'])) {
+                if (!is_email($email)) {
                     $error->add('emailnotvalid', __('The email address is not valid, sorry.', 'membership'));
                 }
 
-                if (email_exists($_POST['email'])) {
+                if (email_exists($email)) {
                     $error->add('emailexists', __('That email address is already taken, sorry.', 'membership'));
                 }
 
@@ -7764,7 +7766,7 @@ if (!class_exists('membershipadmin')) {
 
                 if (empty($anyerrors)) {
                     // Pre - error reporting check for final add user
-                    $user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $_POST['email']);
+                    $user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $email);
 
                     if (is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
                         $error->add('userid', $user_id->get_error_message());
