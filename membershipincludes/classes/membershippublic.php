@@ -1768,11 +1768,10 @@ if ( !class_exists( 'membershippublic', false ) ) :
 								wp_new_user_notification( $user_id, $_POST['signup_password'] );
 							}
 
-							// Add the bp filter for usermeta signup
-							$meta_array = apply_filters( 'bp_signup_usermeta', $meta_array );
-
-							foreach ( (array) $meta_array as $field_id => $field_content ) {
-								if ( function_exists( 'xprofile_set_field_data' ) ) {
+							if ( function_exists( 'xprofile_set_field_data' ) ) {
+								// Add the bp filter for usermeta signup
+								$meta_array = apply_filters( 'bp_signup_usermeta', $meta_array );
+								foreach ( (array)$meta_array as $field_id => $field_content ) {
 									xprofile_set_field_data( $field_id, $user_id, $field_content );
 								}
 							}
