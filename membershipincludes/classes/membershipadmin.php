@@ -1,5 +1,6 @@
 <?php
-if (!class_exists('membershipadmin')) {
+
+if ( !class_exists( 'membershipadmin', false ) ) :
 
     class membershipadmin {
 
@@ -91,6 +92,9 @@ if (!class_exists('membershipadmin')) {
 
             // profile field for feeds
             add_action('show_user_profile', array(&$this, 'add_profile_feed_key'));
+
+			// users
+			add_action( 'deleted_user', array( $this, 'cleanup_user' ) );
 
             // Pings
             add_action('membership_subscription_form_after_levels', array(&$this, 'show_subscription_ping_information'));
@@ -7685,383 +7689,386 @@ if (!class_exists('membershipadmin')) {
                 <?php
             }
 
-            function activate_addon($addon) {
-
-                $active = get_option('membership_activated_addons', array());
-
-                if (!in_array($addon, $active)) {
-                    $active[] = $addon;
-                    update_option('membership_activated_addons', array_unique($active));
-                }
-            }
-
-            function deactivate_addon($addon) {
-
-                $active = get_option('membership_activated_addons', array());
-
-                $found = array_search($addon, $active);
-                if ($found !== false) {
-                    unset($active[$found]);
-                    update_option('membership_activated_addons', array_unique($active));
-                }
-            }
-
-            // The popover registration functions added to the bottom of this class until a new more suitable home can be found
-            function popover_signup_form() {
-
-                $content = '';
-                $content = apply_filters('membership_popover_signup_form_before_content', $content);
-                ob_start();
-                if (defined('MEMBERSHIP_POPOVER_SIGNUP_FORM') && file_exists(MEMBERSHIP_POPOVER_SIGNUP_FORM)) {
-                    include_once( MEMBERSHIP_POPOVER_SIGNUP_FORM );
-                } elseif (file_exists(apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')))) {
-                    include_once( apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')) );
-                }
-                $content .= ob_get_contents();
-                ob_end_clean();
-
-                $content = apply_filters('membership_popover_signup_form_after_content', $content);
-                echo $content;
-
-                die();
-            }
-
-            function popover_register_process() {
-
-                global $M_options;
-
-                //include_once(ABSPATH . WPINC . '/registration.php');
-
-                $error = new WP_Error();
-
-				$email = $_POST['user_email'];
-
-                if (!wp_verify_nonce($_POST['nonce'], 'membership_register')) {
-                    $error->add('invalid', __('Invalid form submission.', 'membership'));
-                }
-
-                if (!validate_username($_POST['user_login'])) {
-                    $error->add('usernamenotvalid', __('The username is not valid, sorry.', 'membership'));
-                }
-
-                if (username_exists(sanitize_user($_POST['user_login']))) {
-                    $error->add('usernameexists', __('That username is already taken, sorry.', 'membership'));
-                }
-
-                if (!is_email($email)) {
-                    $error->add('emailnotvalid', __('The email address is not valid, sorry.', 'membership'));
-                }
-
-                if (email_exists($email)) {
-                    $error->add('emailexists', __('That email address is already taken, sorry.', 'membership'));
-                }
-
-                $error = apply_filters('membership_subscription_form_before_registration_process', $error);
-
-                if (is_wp_error($error)) {
-                    $anyerrors = $error->get_error_messages();
-                } else {
-                    $anyerrors = array();
-                }
-
-                if (empty($anyerrors)) {
-                    // Pre - error reporting check for final add user
-                    $user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $email);
-
-                    if (is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
-                        $error->add('userid', $user_id->get_error_message());
-                    } else {
-                        $member = new M_Membership($user_id);
-                        if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
-                            $member->deactivate();
-                        } else {
-                            $creds = array(
-                                'user_login' => $_POST['user_login'],
-                                'user_password' => $_POST['password'],
-                                'remember' => true
-                            );
-                            $is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-                            $user = wp_signon($creds, $is_ssl);
-
-                            if (is_wp_error($user) && method_exists($user, 'get_error_message')) {
-                                $error->add('userlogin', $user->get_error_message());
-                            } else {
-                                // Set the current user up
-                                wp_set_current_user($user_id);
-                            }
-                        }
-
-                        if (has_action('membership_susbcription_form_registration_notification')) {
-                            do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
-                        } else {
-                            wp_new_user_notification($user_id, $_POST['password']);
-                        }
-
-                        do_action('membership_subscription_form_registration_process', $error, $user_id);
-                    }
-                } else {
-                    do_action('membership_subscription_form_registration_process', $error, 0);
-                }
-
-                $anyerrors = $error->get_error_code();
-                if (is_wp_error($error) && !empty($anyerrors)) {
-                    // we have an error - output
-                    $messages = $error->get_error_messages();
-                    //sendback error
-                    echo json_encode(array('errormsg' => $messages[0]));
-                } else {
-                    // everything seems fine (so far), so we have our queued user so let's
-                    // move to picking a subscription - so send back the form.
-                    echo $this->popover_sendpayment_form($user_id);
-                }
-
-                exit;
-            }
-
-            function popover_login_process() {
-
-                $error = new WP_Error();
-
-                if (!wp_verify_nonce($_POST['nonce'], 'membership_login')) {
-                    $error->add('invalid', __('Invalid form submission.', 'membership'));
-                }
-
-                $userbylogin = get_user_by('login', $_POST['user_login']);
-
-                if (!empty($userbylogin)) {
-                    $user = wp_authenticate($userbylogin->user_login, $_POST['password']);
-                    if (is_wp_error($user)) {
-                        $error->add('userlogin', $user->get_error_message());
-                    } else {
-                        wp_set_auth_cookie($user->ID);
-                        // Set the current user up
-                        wp_set_current_user($user->ID);
-                    }
-                } else {
-                    $error->add('userlogin', __('User not found.', 'membership'));
-                }
-
-                $anyerrors = $error->get_error_code();
-                if (is_wp_error($error) && !empty($anyerrors)) {
-                    // we have an error - output
-                    $messages = $error->get_error_messages();
-                    //sendback error
-                    echo json_encode(array('errormsg' => $messages[0]));
-                } else {
-                    // everything seems fine (so far), so we have our queued user so let's
-                    // move to picking a subscription - so send back the form.
-                    echo $this->popover_sendpayment_form($user->ID);
-                }
-
-                exit;
-            }
-
-            function popover_extraform_process() {
-                echo $this->popover_extra_payment_form();
-                exit;
-            }
-
-            function popover_sendpayment_form($user_id = false) {
-
-                $content = '';
-                $content = apply_filters('membership_popover_sendpayment_form_before_content', $content);
-                ob_start();
-                if (defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists(MEMBERSHIP_POPOVER_SENDPAYMENT_FORM)) {
-                    include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
-                } elseif (file_exists(apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')))) {
-                    include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
-                }
-                $content .= ob_get_contents();
-                ob_end_clean();
-
-                $content = apply_filters('membership_popover_sendpayment_form_after_content', $content);
-                echo $content;
-
-                exit;
-            }
-
-            function popover_extra_payment_form($user_id = false) {
-
-                $content = '';
-                $content = apply_filters('membership_popover_extraform_before_content', $content);
-                ob_start();
-                if (defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists(MEMBERSHIP_POPOVER_SENDPAYMENT_FORM)) {
-                    include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
-                } elseif (file_exists(apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')))) {
-                    include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
-                }
-                $content .= ob_get_contents();
-                ob_end_clean();
-
-                $content = apply_filters('membership_popover_extraform_after_content', $content);
-                echo $content;
-
-                exit;
-            }
-
-            function create_defaults() {
-
-                // Function to create some defaults if they are not set
-
-                if (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-                    if (function_exists('get_blog_option')) {
-                        if (function_exists('switch_to_blog')) {
-                            switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
-                        }
-
-                        $M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
-                    } else {
-                        $M_options = get_option('membership_options', array());
-                    }
-                } else {
-                    $M_options = get_option('membership_options', array());
-                }
-
-                // Make registration and associated pages
-                if (empty($M_options['registration_page'])) {
-
-                    // Check if the buddypress registration page is created or not
-                    if (defined('BP_VERSION') && version_compare(preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
-                        // Get the BP pages
-                        $bppages = get_option('bp-pages', array());
-                    }
-
-                    $pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
-                    $id = wp_insert_post($pagedetails);
-                    $M_options['registration_page'] = $id;
-
-                    $pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
-                    $id = wp_insert_post($pagedetails);
-                    $M_options['account_page'] = $id;
-
-                    $content = '<p>' . __('The content you are trying to access is only available to members. Sorry.', 'membership') . '</p>';
-                    $pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
-                    $id = wp_insert_post($pagedetails);
-                    $M_options['nocontent_page'] = $id;
-                }
-
-                // Create relevant admin side shortcodes
-                if (empty($M_options['membershipadminshortcodes'])) {
-                    if (!is_array($M_options['membershipadminshortcodes'])) {
-                        $M_options['membershipadminshortcodes'] = array();
-                    }
-
-                    if (class_exists('RGForms')) {
-                        // Gravity Forms exists
-                        $M_options['membershipadminshortcodes'][] = 'gravityform';
-                    }
-
-                    if (defined('WPCF7_VERSION')) {
-                        // Contact Form 7 exists
-                        $M_options['membershipadminshortcodes'][] = 'contact-form';
-                    }
-
-                    if (defined('WPAUDIO_URL')) {
-                        // WPAudio exists
-                        $M_options['membershipadminshortcodes'][] = 'wpaudio';
-                    }
-                }
-
-                // Create a default download group
-                if (empty($M_options['membershipdownloadgroups'])) {
-                    if (!is_array($M_options['membershipdownloadgroups'])) {
-                        $M_options['membershipdownloadgroups'] = array();
-                    }
-                    $M_options['membershipdownloadgroups'][] = __('default', 'membership');
-                }
-
-                // Create a hashed downloads url
-                if (empty($M_options['masked_url'])) {
-                    $M_options['masked_url'] = __('downloads', 'membership');
-                }
-
-                // Update the options
-                if (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-                    if (function_exists('update_blog_option')) {
-                        update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
-                    } else {
-                        update_option('membership_options', $M_options);
-                    }
-                } else {
-                    update_option('membership_options', $M_options);
-                }
-            }
-
-            // Functions to determine whether to show user help on this screen and to disable it if not
-            function show_user_help($page) {
-
-                $user_id = get_current_user_id();
-
-                $helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
-
-                if (!is_array($helpscreens)) {
-                    $helpscreens = array();
-                }
-
-                if (!isset($helpscreens[$page])) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            function dismiss_user_help($page) {
-
-                $user_id = get_current_user_id();
-
-                $helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
-
-                if (!is_array($helpscreens)) {
-                    $helpscreens = array();
-                }
-
-                if (!isset($helpscreens[$page])) {
-                    $helpscreens[$page] = 'no';
-                }
-
-                update_user_meta($user_id, 'membership_show_help_headers', $helpscreens);
-            }
-
-            // Level shortcodes function
-            function build_level_shortcode_list($shortcodes = array()) {
-
-                if (!is_array($shortcodes)) {
-                    $shortcodes = array();
-                }
-
-                $levels = $this->get_membership_levels();
-
-                if (!empty($levels)) {
-                    foreach ($levels as $level) {
-                        $shortcodes[] = M_normalize_shortcode($level->level_title);
-                    }
-                }
-
-                return $shortcodes;
-            }
-
-            function start_membership_session() {
-                if (session_id() == "")
-                    session_start();
-            }
-
-            function set_membership_coupon_cookie() {
-
-                if (!defined('DOING_AJAX') || DOING_AJAX == FALSE)
-                    die('NOT DOING AJAX?');
-
-                $this->start_membership_session();
-
-                if (isset($_POST['coupon_code'])) {
-                    $_SESSION['m_coupon_code'] = esc_attr($_POST['coupon_code']);
-                    include membership_dir('membershipincludes/includes/coupon.form.php');
-                    die();
-                } else {
-                    die(0);
-                }
-            }
-
-        }
-
-    }
-    ?>
+		function activate_addon($addon) {
+
+			$active = get_option('membership_activated_addons', array());
+
+			if (!in_array($addon, $active)) {
+				$active[] = $addon;
+				update_option('membership_activated_addons', array_unique($active));
+			}
+		}
+
+		function deactivate_addon($addon) {
+
+			$active = get_option('membership_activated_addons', array());
+
+			$found = array_search($addon, $active);
+			if ($found !== false) {
+				unset($active[$found]);
+				update_option('membership_activated_addons', array_unique($active));
+			}
+		}
+
+		// The popover registration functions added to the bottom of this class until a new more suitable home can be found
+		function popover_signup_form() {
+
+			$content = '';
+			$content = apply_filters('membership_popover_signup_form_before_content', $content);
+			ob_start();
+			if (defined('MEMBERSHIP_POPOVER_SIGNUP_FORM') && file_exists(MEMBERSHIP_POPOVER_SIGNUP_FORM)) {
+				include_once( MEMBERSHIP_POPOVER_SIGNUP_FORM );
+			} elseif (file_exists(apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')))) {
+				include_once( apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_popover_signup_form_after_content', $content);
+			echo $content;
+
+			die();
+		}
+
+		function popover_register_process() {
+
+			global $M_options;
+
+			//include_once(ABSPATH . WPINC . '/registration.php');
+
+			$error = new WP_Error();
+
+			$email = $_POST['user_email'];
+
+			if (!wp_verify_nonce($_POST['nonce'], 'membership_register')) {
+				$error->add('invalid', __('Invalid form submission.', 'membership'));
+			}
+
+			if (!validate_username($_POST['user_login'])) {
+				$error->add('usernamenotvalid', __('The username is not valid, sorry.', 'membership'));
+			}
+
+			if (username_exists(sanitize_user($_POST['user_login']))) {
+				$error->add('usernameexists', __('That username is already taken, sorry.', 'membership'));
+			}
+
+			if (!is_email($email)) {
+				$error->add('emailnotvalid', __('The email address is not valid, sorry.', 'membership'));
+			}
+
+			if (email_exists($email)) {
+				$error->add('emailexists', __('That email address is already taken, sorry.', 'membership'));
+			}
+
+			$error = apply_filters('membership_subscription_form_before_registration_process', $error);
+
+			if (is_wp_error($error)) {
+				$anyerrors = $error->get_error_messages();
+			} else {
+				$anyerrors = array();
+			}
+
+			if (empty($anyerrors)) {
+				// Pre - error reporting check for final add user
+				$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $email);
+
+				if (is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
+					$error->add('userid', $user_id->get_error_message());
+				} else {
+					$member = new M_Membership($user_id);
+					if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
+						$member->deactivate();
+					} else {
+						$creds = array(
+							'user_login' => $_POST['user_login'],
+							'user_password' => $_POST['password'],
+							'remember' => true
+						);
+						$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
+						$user = wp_signon($creds, $is_ssl);
+
+						if (is_wp_error($user) && method_exists($user, 'get_error_message')) {
+							$error->add('userlogin', $user->get_error_message());
+						} else {
+							// Set the current user up
+							wp_set_current_user($user_id);
+						}
+					}
+
+					if (has_action('membership_susbcription_form_registration_notification')) {
+						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
+					} else {
+						wp_new_user_notification($user_id, $_POST['password']);
+					}
+
+					do_action('membership_subscription_form_registration_process', $error, $user_id);
+				}
+			} else {
+				do_action('membership_subscription_form_registration_process', $error, 0);
+			}
+
+			$anyerrors = $error->get_error_code();
+			if (is_wp_error($error) && !empty($anyerrors)) {
+				// we have an error - output
+				$messages = $error->get_error_messages();
+				//sendback error
+				echo json_encode(array('errormsg' => $messages[0]));
+			} else {
+				// everything seems fine (so far), so we have our queued user so let's
+				// move to picking a subscription - so send back the form.
+				echo $this->popover_sendpayment_form($user_id);
+			}
+
+			exit;
+		}
+
+		function popover_login_process() {
+
+			$error = new WP_Error();
+
+			if (!wp_verify_nonce($_POST['nonce'], 'membership_login')) {
+				$error->add('invalid', __('Invalid form submission.', 'membership'));
+			}
+
+			$userbylogin = get_user_by('login', $_POST['user_login']);
+
+			if (!empty($userbylogin)) {
+				$user = wp_authenticate($userbylogin->user_login, $_POST['password']);
+				if (is_wp_error($user)) {
+					$error->add('userlogin', $user->get_error_message());
+				} else {
+					wp_set_auth_cookie($user->ID);
+					// Set the current user up
+					wp_set_current_user($user->ID);
+				}
+			} else {
+				$error->add('userlogin', __('User not found.', 'membership'));
+			}
+
+			$anyerrors = $error->get_error_code();
+			if (is_wp_error($error) && !empty($anyerrors)) {
+				// we have an error - output
+				$messages = $error->get_error_messages();
+				//sendback error
+				echo json_encode(array('errormsg' => $messages[0]));
+			} else {
+				// everything seems fine (so far), so we have our queued user so let's
+				// move to picking a subscription - so send back the form.
+				echo $this->popover_sendpayment_form($user->ID);
+			}
+
+			exit;
+		}
+
+		function popover_extraform_process() {
+			echo $this->popover_extra_payment_form();
+			exit;
+		}
+
+		function popover_sendpayment_form($user_id = false) {
+
+			$content = '';
+			$content = apply_filters('membership_popover_sendpayment_form_before_content', $content);
+			ob_start();
+			if (defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists(MEMBERSHIP_POPOVER_SENDPAYMENT_FORM)) {
+				include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
+			} elseif (file_exists(apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')))) {
+				include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_popover_sendpayment_form_after_content', $content);
+			echo $content;
+
+			exit;
+		}
+
+		function popover_extra_payment_form($user_id = false) {
+
+			$content = '';
+			$content = apply_filters('membership_popover_extraform_before_content', $content);
+			ob_start();
+			if (defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists(MEMBERSHIP_POPOVER_SENDPAYMENT_FORM)) {
+				include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
+			} elseif (file_exists(apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')))) {
+				include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
+			}
+			$content .= ob_get_contents();
+			ob_end_clean();
+
+			$content = apply_filters('membership_popover_extraform_after_content', $content);
+			echo $content;
+
+			exit;
+		}
+
+		function create_defaults() {
+
+			// Function to create some defaults if they are not set
+
+			if (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if (function_exists('get_blog_option')) {
+					if (function_exists('switch_to_blog')) {
+						switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+					}
+
+					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
+				} else {
+					$M_options = get_option('membership_options', array());
+				}
+			} else {
+				$M_options = get_option('membership_options', array());
+			}
+
+			// Make registration and associated pages
+			if (empty($M_options['registration_page'])) {
+
+				// Check if the buddypress registration page is created or not
+				if (defined('BP_VERSION') && version_compare(preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
+					// Get the BP pages
+					$bppages = get_option('bp-pages', array());
+				}
+
+				$pagedetails = array('post_title' => __('Register', 'membership'), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+				$id = wp_insert_post($pagedetails);
+				$M_options['registration_page'] = $id;
+
+				$pagedetails = array('post_title' => __('Account', 'membership'), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => '');
+				$id = wp_insert_post($pagedetails);
+				$M_options['account_page'] = $id;
+
+				$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.', 'membership') . '</p>';
+				$pagedetails = array('post_title' => __('Protected Content', 'membership'), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+				$id = wp_insert_post($pagedetails);
+				$M_options['nocontent_page'] = $id;
+			}
+
+			// Create relevant admin side shortcodes
+			if (empty($M_options['membershipadminshortcodes'])) {
+				if (!is_array($M_options['membershipadminshortcodes'])) {
+					$M_options['membershipadminshortcodes'] = array();
+				}
+
+				if (class_exists('RGForms')) {
+					// Gravity Forms exists
+					$M_options['membershipadminshortcodes'][] = 'gravityform';
+				}
+
+				if (defined('WPCF7_VERSION')) {
+					// Contact Form 7 exists
+					$M_options['membershipadminshortcodes'][] = 'contact-form';
+				}
+
+				if (defined('WPAUDIO_URL')) {
+					// WPAudio exists
+					$M_options['membershipadminshortcodes'][] = 'wpaudio';
+				}
+			}
+
+			// Create a default download group
+			if (empty($M_options['membershipdownloadgroups'])) {
+				if (!is_array($M_options['membershipdownloadgroups'])) {
+					$M_options['membershipdownloadgroups'] = array();
+				}
+				$M_options['membershipdownloadgroups'][] = __('default', 'membership');
+			}
+
+			// Create a hashed downloads url
+			if (empty($M_options['masked_url'])) {
+				$M_options['masked_url'] = __('downloads', 'membership');
+			}
+
+			// Update the options
+			if (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
+				if (function_exists('update_blog_option')) {
+					update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', $M_options);
+				} else {
+					update_option('membership_options', $M_options);
+				}
+			} else {
+				update_option('membership_options', $M_options);
+			}
+		}
+
+		// Functions to determine whether to show user help on this screen and to disable it if not
+		function show_user_help($page) {
+
+			$user_id = get_current_user_id();
+
+			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
+
+			if (!is_array($helpscreens)) {
+				$helpscreens = array();
+			}
+
+			if (!isset($helpscreens[$page])) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function dismiss_user_help($page) {
+
+			$user_id = get_current_user_id();
+
+			$helpscreens = get_user_meta($user_id, 'membership_show_help_headers', true);
+
+			if (!is_array($helpscreens)) {
+				$helpscreens = array();
+			}
+
+			if (!isset($helpscreens[$page])) {
+				$helpscreens[$page] = 'no';
+			}
+
+			update_user_meta($user_id, 'membership_show_help_headers', $helpscreens);
+		}
+
+		// Level shortcodes function
+		function build_level_shortcode_list($shortcodes = array()) {
+
+			if (!is_array($shortcodes)) {
+				$shortcodes = array();
+			}
+
+			$levels = $this->get_membership_levels();
+
+			if (!empty($levels)) {
+				foreach ($levels as $level) {
+					$shortcodes[] = M_normalize_shortcode($level->level_title);
+				}
+			}
+
+			return $shortcodes;
+		}
+
+		function start_membership_session() {
+			if (session_id() == "")
+				session_start();
+		}
+
+		function set_membership_coupon_cookie() {
+
+			if (!defined('DOING_AJAX') || DOING_AJAX == FALSE)
+				die('NOT DOING AJAX?');
+
+			$this->start_membership_session();
+
+			if (isset($_POST['coupon_code'])) {
+				$_SESSION['m_coupon_code'] = esc_attr($_POST['coupon_code']);
+				include membership_dir('membershipincludes/includes/coupon.form.php');
+				die();
+			} else {
+				die(0);
+			}
+		}
+
+		function cleanup_user( $user_id ) {
+			$this->db->delete( $this->membership_relationships, array( 'user_id' => $user_id ), array( '%d' ) );
+		}
+
+	}
+
+endif;
