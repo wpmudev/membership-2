@@ -177,115 +177,34 @@ add_action( 'membership_add_negative_rule', 'M_create_internal_URL_group', 10, 3
 function M_create_internal_URL_group( $rule, $post, $level_id ) {
 	global $wpdb;
 
-	$permalinks = array();
-	switch ( $rule ) {
-		case 'posts':
+	if ( $rule == 'bpgroups' ) {
+		$permalinks = array( );
+		if ( function_exists( 'bp_get_group_permalink' ) ) {
 			foreach ( $_POST[$rule] as $rule ) {
-				$thelink = get_permalink( $rule );
+				$group = new BP_Groups_Group( $rule );
+				$thelink = bp_get_group_permalink( $group );
 				$thelink = str_replace( 'http://', 'https?://', $thelink );
 				$permalinks[] = untrailingslashit( $thelink ) . '(/.*)';
 			}
+		}
 
-			$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $level_id );
-			$id = $wpdb->get_var( $sql );
+		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $level_id );
+		$id = $wpdb->get_var( $sql );
 
-			$data = array( "groupname" => '_posts-' . $level_id,
-				"groupurls" => implode( "\n", $permalinks ),
-				"isregexp" => 1,
-				"stripquerystring" => 1
-			);
+		$data = array(
+			"groupname"        => '_bpgroups-' . $level_id,
+			"groupurls"        => implode( PHP_EOL, $permalinks ),
+			"isregexp"         => 1,
+			"stripquerystring" => 1
+		);
 
-			if ( !empty( $id ) ) {
-				// exists so we're going to do an update
-				$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
-			} else {
-				// doesn't exist so we're going to do an add.
-				$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
-			}
-
-			break;
-
-		case 'pages':
-			foreach ( $_POST[$rule] as $rule ) {
-				$thelink = get_permalink( $rule );
-				$thelink = str_replace( 'http://', 'https?://', $thelink );
-				$permalinks[] = untrailingslashit( $thelink ) . '(/.*)';
-			}
-
-			$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $level_id );
-			$id = $wpdb->get_var( $sql );
-
-			$data = array( "groupname" => '_pages-' . $level_id,
-				"groupurls" => implode( "\n", $permalinks ),
-				"isregexp" => 1,
-				"stripquerystring" => 1
-			);
-
-			if ( !empty( $id ) ) {
-				// exists so we're going to do an update
-				$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
-			} else {
-				// doesn't exist so we're going to do an add.
-				$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
-			}
-
-			break;
-
-		case 'bppages':
-			foreach ( $_POST[$rule] as $rule ) {
-				$thelink = get_permalink( $rule );
-				$thelink = str_replace( 'http://', 'https?://', $thelink );
-				$permalinks[] = untrailingslashit( $thelink ) . '(/.*)';
-			}
-
-			$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bppages-' . $level_id );
-			$id = $wpdb->get_var( $sql );
-
-			$data = array( "groupname" => '_bppages-' . $level_id,
-				"groupurls" => implode( "\n", $permalinks ),
-				"isregexp" => 1,
-				"stripquerystring" => 1
-			);
-
-			if ( !empty( $id ) ) {
-				// exists so we're going to do an update
-				$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
-			} else {
-				// doesn't exist so we're going to do an add.
-				$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
-			}
-
-			break;
-
-		case 'bpgroups':
-			if ( function_exists( 'bp_get_group_permalink' ) ) {
-				foreach ( $_POST[$rule] as $rule ) {
-					$group = new BP_Groups_Group( $rule );
-					$thelink = bp_get_group_permalink( $group );
-					$thelink = str_replace( 'http://', 'https?://', $thelink );
-					$permalinks[] = untrailingslashit( $thelink ) . '(/.*)';
-				}
-			}
-
-
-			$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $level_id );
-			$id = $wpdb->get_var( $sql );
-
-			$data = array( "groupname" => '_bpgroups-' . $level_id,
-				"groupurls" => implode( "\n", $permalinks ),
-				"isregexp" => 1,
-				"stripquerystring" => 1
-			);
-
-			if ( !empty( $id ) ) {
-				// exists so we're going to do an update
-				$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
-			} else {
-				// doesn't exist so we're going to do an add.
-				$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
-			}
-
-			break;
+		if ( !empty( $id ) ) {
+			// exists so we're going to do an update
+			$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
+		} else {
+			// doesn't exist so we're going to do an add.
+			$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
+		}
 	}
 }
 

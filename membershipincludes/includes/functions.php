@@ -1123,3 +1123,81 @@ function membership_debug_log( $message ) {
 	}
 
 }
+
+function membership_is_registration_page( $page_id = null ) {
+	global $M_options;
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	return is_page() && isset( $M_options['registration_page'] ) && $page_id == $M_options['registration_page'];
+}
+
+function membership_is_account_page( $page_id = null ) {
+	global $M_options;
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	return is_page() && isset( $M_options['account_page'] ) && $page_id == $M_options['account_page'];
+}
+
+function membership_is_subscription_page( $page_id = null ) {
+	global $M_options;
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	return is_page() && isset( $M_options['subscriptions_page'] ) && $page_id == $M_options['subscriptions_page'];
+}
+
+function membership_is_welcome_page( $page_id = null ) {
+	global $M_options;
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	return is_page() && isset( $M_options['registrationcompleted_page'] ) && $page_id == $M_options['registrationcompleted_page'];
+}
+
+function membership_is_protected_page( $page_id = null ) {
+	global $M_options;
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	return is_page() && isset( $M_options['nocontent_page'] ) && $page_id == $M_options['nocontent_page'];
+}
+
+function membership_is_special_page( $page_id = null, $check_type = true ) {
+	global $M_options;
+
+	if ( $check_type && !is_page() ) {
+		return false;
+	}
+
+	$page_id = intval( $page_id );
+	if ( !$page_id ) {
+		$page_id = get_the_ID();
+	}
+
+	$is_special = false;
+
+	$is_special |= isset( $M_options['nocontent_page'] ) && $page_id == $M_options['nocontent_page'];
+	$is_special |= isset( $M_options['registrationcompleted_page'] ) && $page_id == $M_options['registrationcompleted_page'];
+	$is_special |= isset( $M_options['subscriptions_page'] ) && $page_id == $M_options['subscriptions_page'];
+	$is_special |= isset( $M_options['account_page'] ) && $page_id == $M_options['account_page'];
+	$is_special |= isset( $M_options['registration_page'] ) && $page_id == $M_options['registration_page'];
+
+	return $is_special;
+}

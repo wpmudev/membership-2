@@ -1,6 +1,6 @@
 <?php
 
-if(!class_exists('M_Membership')) {
+if ( !class_exists( 'M_Membership', false ) ) :
 
 	class M_Membership extends WP_User {
 
@@ -882,10 +882,15 @@ if(!class_exists('M_Membership')) {
 
 		}
 
+		function validate_credentials() {
+			foreach ( $this->levels as $level ) {
+				if ( !$level->validate_credentials() ) {
+					return false;
+				}
+			}
+			return true;
+		}
 
 	}
 
-
-}
-
-?>
+endif;

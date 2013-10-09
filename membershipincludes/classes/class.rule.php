@@ -59,6 +59,14 @@ if ( !class_exists( 'M_Rule', false ) ) :
 			$this->data = $data;
 		}
 
+		function validate_positive() {
+			return true;
+		}
+
+		function validate_negative() {
+			return true;
+		}
+
 		// Getters and Setters
 		function is_adminside() {
 			if ( in_array( $this->rulearea, array( 'admin', 'core' ) ) ) {

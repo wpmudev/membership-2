@@ -258,50 +258,42 @@ if(!class_exists('M_Level')) {
 		// UI functions
 
 
-		function load_rules( $loadtype = array('public','core') ) {
-
+		function load_rules( $loadtype = array( 'public', 'core' ) ) {
 			global $M_Rules;
 
-			membership_debug_log( __('Loading level - ', 'membership') . $this->level_title() );
+			membership_debug_log( __( 'Loading level - ', 'membership' ) . $this->level_title() );
 
-			$positive = $this->get_rules('positive');
-
-			$negative = $this->get_rules('negative');
-
-			if(!empty($positive)) {
+			$positive = $this->get_rules( 'positive' );
+			if ( !empty( $positive ) ) {
 				$key = 0;
-				foreach( (array) $positive as $key => $rule) {
-					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
+				foreach ( (array) $positive as $key => $rule ) {
+					if ( isset( $M_Rules[$rule->rule_area] ) && class_exists( $M_Rules[$rule->rule_area] ) ) {
 						$this->positiverules[$key] = new $M_Rules[$rule->rule_area]( $this->id );
-
-						if( in_array($this->positiverules[$key]->rulearea, $loadtype) ) {
-							$this->positiverules[$key]->on_positive(maybe_unserialize($rule->rule_value));
+						if ( in_array( $this->positiverules[$key]->rulearea, $loadtype ) ) {
+							$this->positiverules[$key]->on_positive( maybe_unserialize( $rule->rule_value ) );
 							$key++;
 						} else {
-							unset($this->positiverules[$key]);
+							unset( $this->positiverules[$key] );
 						}
-
 					}
 				}
 			}
 
-			if(!empty($negative)) {
+			$negative = $this->get_rules( 'negative' );
+			if ( !empty( $negative ) ) {
 				$key = 0;
-				foreach( (array) $negative as $key => $rule) {
-					if(isset($M_Rules[$rule->rule_area]) && class_exists($M_Rules[$rule->rule_area])) {
+				foreach ( (array) $negative as $key => $rule ) {
+					if ( isset( $M_Rules[$rule->rule_area] ) && class_exists( $M_Rules[$rule->rule_area] ) ) {
 						$this->negativerules[$key] = new $M_Rules[$rule->rule_area]( $this->id );
-
-						if( in_array($this->negativerules[$key]->rulearea, $loadtype) ) {
-							$this->negativerules[$key]->on_negative(maybe_unserialize($rule->rule_value));
+						if ( in_array( $this->negativerules[$key]->rulearea, $loadtype ) ) {
+							$this->negativerules[$key]->on_negative( maybe_unserialize( $rule->rule_value ) );
 							$key++;
 						} else {
-							unset($this->negativerules[$key]);
+							unset( $this->negativerules[$key] );
 						}
-
 					}
 				}
 			}
-
 		}
 
 		function has_positive_rule($rulename) {
@@ -438,7 +430,28 @@ if(!class_exists('M_Level')) {
 
 		}
 
+		function validate_credentials() {
+			$valid = true;
+
+			foreach ( $this->positiverules as $rule ) {
+				if ( !$rule->validate_positive() ) {
+					$valid = false;
+					break;
+				}
+			}
+
+			if ( $valid ) {
+				foreach ( $this->negativerules as $rule ) {
+					if ( !$rule->validate_negative() ) {
+						$valid = false;
+						break;
+					}
+				}
+			}
+
+			return apply_filters( 'membership_validate_credentials', $valid );
+		}
+
 	}
 
 }
-?>

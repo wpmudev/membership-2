@@ -21,11 +21,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		var $redirect_defaults_set = false;
 
 		function __construct() {
+			global $wpdb, $M_active;
 
-			global $wpdb;
-
-			$this->db =& $wpdb;
-
+			$this->db = $wpdb;
 			foreach($this->tables as $table) {
 				$this->$table = membership_db_prefix($this->db, $table);
 			}
@@ -38,7 +36,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
-			add_action('parse_request', array(&$this, 'initialise_membership_protection'), 2 );
+			if ( $M_active != 'no' ) {
+				add_action( 'parse_request', array( $this, 'initialise_membership_protection' ), 2 );
+			}
 
 			// Payment return
 			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 1 );
@@ -129,11 +129,11 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			// More tags
-			if( isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no' ) {
+			if ( isset( $M_options['moretagdefault'] ) && $M_options['moretagdefault'] == 'no' ) {
 				// More tag content is not visible by default - works for both web and rss content - unfortunately
-				add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
-				add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
-				add_filter('the_content_feed', array(&$this, 'replace_moretag_content'), 1);
+				add_filter( 'the_content_more_link', array( $this, 'show_moretag_protection' ), 99, 2 );
+				add_filter( 'the_content', array( $this, 'replace_moretag_content' ), 1 );
+				add_filter( 'the_content_feed', array( $this, 'replace_moretag_content' ), 1 );
 			}
 
 			// Shortcodes setup
@@ -263,8 +263,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function initialise_membership_protection($wp) {
-
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
+			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
 			// Set up some common defaults
 
 			static $initialised = false;
@@ -278,13 +277,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$user = wp_get_current_user();
 			}
 
-			if( $M_active == 'no' ) {
-				// The plugin isn't active so just return
-				return;
-			}
-
 			// New url protection processing - rewriting
-			add_action('pre_get_posts', array(&$this, 'complete_url_protection_processing'), 99 );
+			add_action( 'template_redirect', array( $this, 'complete_url_protection_processing' ) );
 
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
@@ -361,42 +355,22 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				}
 			}
 
-			// Set up the level shortcodes here
-			$shortcodes = apply_filters('membership_level_shortcodes', array() );
-			if(!empty($shortcodes)) {
-				foreach($shortcodes as $key => $value) {
-					if(!empty($value)) {
-						if($member->has_level($key)) {
-							// member is on this level so can see the content
-							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_level_shortcode') );
-						} else {
-							// member isn't on this level and so can't see the content
-							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_levelprotected_shortcode') );
+			foreach ( array( 'membership_level_shortcodes', 'membership_not_level_shortcodes' ) as $index => $filter ) {
+				$shortcodes = apply_filters( $filter, array() );
+				if ( !empty( $shortcodes ) ) {
+					foreach ( $shortcodes as $key => $value ) {
+						if ( !empty( $value ) ) {
+							$valid = $index ? !$member->has_level( $key ) : $member->has_level( $key );
+							add_shortcode( stripslashes( trim( $value ) ), array( $this, $valid ? 'do_level_shortcode' : 'do_levelprotected_shortcode' ) );
 						}
 					}
 				}
 			}
 
-			$shortcodes = apply_filters('membership_not_level_shortcodes', array() );
-			if(!empty($shortcodes)) {
-				foreach($shortcodes as $key => $value) {
-					if(!empty($value)) {
-						if(!$member->has_level($key)) {
-							// member is on this level so can see the content
-							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_level_shortcode') );
-						} else {
-							// member isn't on this level and so can't see the content
-							add_shortcode(stripslashes(trim($value)), array(&$this, 'do_levelprotected_shortcode') );
-						}
-					}
-				}
-			}
-
-			do_action('membership-add-shortcodes');
+			do_action( 'membership-add-shortcodes' );
 
 			// Set the initialisation status
 			$initialised = true;
-
 		}
 
 		function remove_categories($terms, $taxonomies, $args) {
@@ -432,24 +406,23 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 		}
 
-		function handle_download_protection($wp_query) {
-
+		function handle_download_protection( $wp_query ) {
 			global $user, $member, $wpdb, $M_options;
 
-			if(!empty($wp_query->query_vars['protectedfile'])) {
-				$protected = explode("/", $wp_query->query_vars['protectedfile']);
+			if ( !empty( $wp_query->query_vars['protectedfile'] ) ) {
+				$protected = explode( "/", $wp_query->query_vars['protectedfile'] );
 				$protected = array_pop( $protected );
 			}
 
-			if(empty($protected) && !empty($_GET['file'])) {
+			if ( empty( $protected ) && !empty( $_GET['file'] ) ) {
 				$protected = $_GET['file'];
 			}
 
-			if(!empty($protected)) {
+			if ( !empty( $protected ) ) {
 				// See if the filename has a size extension and if so, strip it out
 				$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
-				$filematch = array();
-				if(preg_match($filename_exp, $protected, $filematch)) {
+				$filematch = array( );
+				if ( preg_match( $filename_exp, $protected, $filematch ) ) {
 					// We have an image with an image size attached
 					$newfile = $filematch[1] . "." . $filematch[3];
 					$size_extension = "-" . $filematch[2];
@@ -458,92 +431,93 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					$size_extension = '';
 				}
 				// Process based on the protection type
-				switch($M_options['protection_type']) {
-					case 'complete' :	// Work out the post_id again
-										$post_id = preg_replace('/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile);
-										$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
+				switch ( $M_options['protection_type'] ) {
+					case 'complete' :
+						// Work out the post_id again
+						$post_id = preg_replace( '/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile );
+						$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
 
-										if(is_numeric($post_id) && $post_id > 0) {
-											$image = get_post_meta($post_id, '_wp_attached_file', true);
-											if(!empty($size_extension)) {
-												// Add back in a size extension if we need to
-												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
-												// hack to remove any double extensions :/ need to change when work out a neater way
-												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
-											}
-										}
-										break;
+						if ( is_numeric( $post_id ) && $post_id > 0 ) {
+							$image = get_post_meta( $post_id, '_wp_attached_file', true );
+							if ( !empty( $size_extension ) ) {
+								// Add back in a size extension if we need to
+								$image = str_replace( '.' . pathinfo( $image, PATHINFO_EXTENSION ), $size_extension . '.' . pathinfo( $image, PATHINFO_EXTENSION ), $image );
+								// hack to remove any double extensions :/ need to change when work out a neater way
+								$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+							}
+						}
+						break;
 
-					case 'hybrid' :		// Work out the post_id again
+					case 'hybrid' :
+						// Work out the post_id again
+						$post_id = preg_replace( '/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile );
+						$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
 
-										$post_id = preg_replace('/^' . MEMBERSHIP_FILE_NAME_PREFIX . '/', '', $newfile);
-										$post_id -= (INT) MEMBERSHIP_FILE_NAME_INCREMENT;
-
-										if(is_numeric($post_id) && $post_id > 0) {
-											$image = get_post_meta($post_id, '_wp_attached_file', true);
-											if(!empty($size_extension)) {
-												// Add back in a size extension if we need to
-												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
-												// hack to remove any double extensions :/ need to change when work out a neater way
-												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
-											}
-										}
-										break;
+						if ( is_numeric( $post_id ) && $post_id > 0 ) {
+							$image = get_post_meta( $post_id, '_wp_attached_file', true );
+							if ( !empty( $size_extension ) ) {
+								// Add back in a size extension if we need to
+								$image = str_replace( '.' . pathinfo( $image, PATHINFO_EXTENSION ), $size_extension . '.' . pathinfo( $image, PATHINFO_EXTENSION ), $image );
+								// hack to remove any double extensions :/ need to change when work out a neater way
+								$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+							}
+						}
+						break;
 
 					case 'basic' :
-					default:			// The basic protection - need to change this
-										$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%' );
-										$post_id = $wpdb->get_var( $sql );
+					default:
+						// The basic protection - need to change this
+						$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s", '%' . $newfile . '%' );
+						$post_id = $wpdb->get_var( $sql );
 
-										if(empty($post_id)) {
-											// Can't find the file in the first pass, try the second pass.
-											$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $protected . '%');
-											$post_id = $this->db->get_var( $sql );
-										}
+						if ( empty( $post_id ) ) {
+							// Can't find the file in the first pass, try the second pass.
+							$sql = $this->db->prepare( "SELECT post_id FROM {$this->db->postmeta} WHERE meta_key = '_wp_attachment_metadata' AND meta_value LIKE %s", '%' . $protected . '%' );
+							$post_id = $this->db->get_var( $sql );
+						}
 
-										if(is_numeric($post_id) && $post_id > 0) {
-											$image = get_post_meta($post_id, '_wp_attached_file', true);
-											if(!empty($size_extension)) {
-												// Add back in a size extension if we need to
-												$image = str_replace( '.' . pathinfo($image, PATHINFO_EXTENSION), $size_extension . '.' . pathinfo($image, PATHINFO_EXTENSION), $image );
-												// hack to remove any double extensions :/ need to change when work out a neater way
-												$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
-											}
-										}
-										break;
+						if ( is_numeric( $post_id ) && $post_id > 0 ) {
+							$image = get_post_meta( $post_id, '_wp_attached_file', true );
+							if ( !empty( $size_extension ) ) {
+								// Add back in a size extension if we need to
+								$image = str_replace( '.' . pathinfo( $image, PATHINFO_EXTENSION ), $size_extension . '.' . pathinfo( $image, PATHINFO_EXTENSION ), $image );
+								// hack to remove any double extensions :/ need to change when work out a neater way
+								$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+							}
+						}
+						break;
 				}
 
 
-				if(!empty($image) && !empty($post_id) && is_numeric($post_id)) {
+				if ( !empty( $image ) && !empty( $post_id ) && is_numeric( $post_id ) ) {
 					// check for protection
-					$group = get_post_meta($post_id, '_membership_protected_content_group', true);
+					$group = get_post_meta( $post_id, '_membership_protected_content_group', true );
 
-					if(empty($group) || $group == 'no') {
+					if ( empty( $group ) || $group == 'no' ) {
 						// it's not protected so grab and display it
 						//$file = $wp_query->query_vars['protectedfile'];
-						$this->output_file($image);
+						$this->output_file( $image );
 					} else {
 						// check we can see it
-						if(empty($member) || !method_exists($member, 'has_level_rule')) {
+						if ( empty( $member ) || !method_exists( $member, 'has_level_rule' ) ) {
 							$user = wp_get_current_user();
 							$member = new M_Membership( $user->ID );
 						}
 
-						if( method_exists($member, 'has_level_rule') && $member->has_level_rule('downloads') && $member->pass_thru( 'downloads', array( 'can_view_download' => $group ) ) ) {
+						if ( method_exists( $member, 'has_level_rule' ) && $member->has_level_rule( 'downloads' ) && $member->pass_thru( 'downloads', array( 'can_view_download' => $group ) ) ) {
 							//$file = $wp_query->query_vars['protectedfile'];
-							$this->output_file($image);
+							$this->output_file( $image );
 						} else {
-							$this->show_noaccess_image($wp_query);
+							$this->show_noaccess_image( $wp_query );
 						}
 					}
 				} else {
 					// We haven't found anything so default to the no access image
-					$this->show_noaccess_image($wp_query);
+					$this->show_noaccess_image( $wp_query );
 				}
 
 				exit();
 			}
-
 		}
 
 		function output_file($pathtofile) {
@@ -685,27 +659,21 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		// loop and page overrides
 
-		function show_moretag_protection($more_tag_link, $more_tag) {
-
+		function show_moretag_protection( $more_tag_link, $more_tag ) {
 			global $M_options;
-
-			return stripslashes($M_options['moretagmessage']);
-
+			return stripslashes( $M_options['moretagmessage'] );
 		}
 
-		function replace_moretag_content($the_content) {
-
+		function replace_moretag_content( $the_content ) {
 			global $M_options;
 
-			$morestartsat = strpos($the_content, '<span id="more-');
-
-			if($morestartsat !== false) {
-				$the_content = substr($the_content, 0, $morestartsat);
-				$the_content .= stripslashes($M_options['moretagmessage']);
+			$morestartsat = strpos( $the_content, '<span id="more-' );
+			if ( $morestartsat !== false ) {
+				$the_content = substr( $the_content, 0, $morestartsat );
+				$the_content .= stripslashes( $M_options['moretagmessage'] );
 			}
 
 			return $the_content;
-
 		}
 
 		// Output the level based shortcode content
@@ -2410,34 +2378,14 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		// Check the results and handle the outcome - redirecting if necessary
-		function complete_url_protection_processing( $wp ) {
-			global $M_global_groups;
+		function complete_url_protection_processing() {
+			global $M_global_groups, $member;
 
-			$host = is_ssl() ? "https://" : "http://";
-			$host .= $_SERVER['HTTP_HOST'] . current( explode( '?', $_SERVER['REQUEST_URI'] ) );
-			$host = trailingslashit( $host );
-
-			// Check we are not on an excluded url
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
-			if( membership_check_expression_match( $host, $exclude ) ) {
+			if ( membership_is_special_page() || !is_object( $member ) || !is_a( $member, 'M_Membership' ) ) {
 				return;
 			}
-
-			// Build core positive array
-			$positive = !empty( $M_global_groups['positive'] )
-				? array_unique( $M_global_groups['positive'] )
-				: array();
-
-			$in_positive = membership_check_expression_match( $host, $positive );
-
-			// Build core negative array
-			$negative = !empty( $M_global_groups['negative'] )
-				? array_unique( $M_global_groups['negative'] )
-				: array();
-
-			$in_negative = membership_check_expression_match( $host, $negative );
-
-			if ( !$in_positive || $in_negative ) {
+			
+			if ( !$member->validate_credentials() ) {
 				membership_debug_log( __( 'About to redirect to the protected page', 'membership' ) );
 				membership_redirect_to_protected();
 				exit;

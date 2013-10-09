@@ -77,197 +77,28 @@ class M_Posts extends M_Rule {
 		<?php
 	}
 
-	function redirect() {
-
-		membership_redirect_to_protected();
-
+	function on_positive( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 	}
 
-	function get_group() {
-
-		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_posts-' . $this->level_id );
-
-		$results = $wpdb->get_var( $sql );
-
-		if(!empty($results)) {
-			return $results;
-		} else {
-			return false;
-		}
+	function on_negative( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 	}
 
-	function on_positive($data) {
-
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 99 );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
+	function validate_negative() {
+		if ( !is_single() || is_attachment() ) {
+			return parent::validate_negative();
 		}
 
+		return !in_array( get_the_ID(), $this->data );
 	}
 
-	function on_negative($data) {
-
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 99 );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
+	function validate_positive() {
+		if ( !is_single() || is_attachment() ) {
+			return parent::validate_positive();
 		}
 
-	}
-
-	function add_viewable_posts($wp_query) {
-
-		global $M_options;
-
-		if( !$wp_query->is_singular && empty($wp_query->query_vars['pagename']) && (!isset($wp_query->query_vars['post_type']) || in_array($wp_query->query_vars['post_type'], array('post','')))) {
-
-			// We are in a list rather than on a single post
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
-		} else {
-			// We are on a single post - wait until we get to the_posts
-		}
-
-
-
-	}
-
-	function add_unviewable_posts($wp_query) {
-
-		global $M_options;
-
-		if( !$wp_query->is_singular && empty($wp_query->query_vars['pagename']) && (!isset($wp_query->query_vars['post_type']) || in_array($wp_query->query_vars['post_type'], array('post','')))) {
-
-			// We are on a list rather than on a single post
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__not_in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
-
-		} else {
-			// We are on a single post - wait until we get to the_posts
-		}
-
-
-	}
-
-	function check_negative_posts( $wp ) {
-
-		global $M_options, $wp_query;
-
-		$redirect = false;
-		$found = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-		// Get the id for the post / page for this url - have to remove and re-add the actions
-		remove_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
-		$post_id = url_to_postid( $host );
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_posts') );
-
-
-		if( $post_id != 0 ) {
-			// Check if we are on a page
-			$post = get_post( $post_id );
-
-			// Still here - must be on a page
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $host ) && $post->post_type == 'post' && !membership_check_expression_match( strtolower($host), $exclude) ) {
-					$found = true;
-				}
-			}
-
-			if($found == true && !empty($M_options['nocontent_page'])) {
-				// we need to redirect
-				membership_set_negative_redirect();
-			} else {
-				return;
-			}
-
-		}
-
-	}
-
-	function check_positive_posts( $wp ) {
-
-		global $M_options, $wp_query;
-
-		$redirect = false;
-		$found = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-		// Get the id for the post / page for this url - have to remove and re-add the actions
-		remove_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
-		$post_id = url_to_postid( $host );
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_posts') );
-
-		if( $post_id != 0 ) {
-			// Check if we are on a page
-			$post = get_post( $post_id );
-
-			// Still here - must be on a page
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $host ) || $post->post_type != 'post' || membership_check_expression_match( strtolower($host), $exclude) ) {
-					$found = true;
-				}
-			}
-
-			if($found == true) {
-				membership_set_positive_no_redirect();
-				// we need to redirect
-				//$this->redirect();
-			} else {
-
-				//return;
-			}
-
-		} else {
-			// We don't have a post_id, so we may be on a page without one e.g. home
-			//if( membership_check_expression_match( strtolower($host), $exclude) ) {
-				membership_set_positive_no_redirect();
-			//}
-		}
-
+		return in_array( get_the_ID(), $this->data );
 	}
 
 }
@@ -280,281 +111,114 @@ class M_Pages extends M_Rule {
 
 	var $rulearea = 'public';
 
-	function admin_main($data) {
-		if(!$data) $data = array();
+	function admin_main( $data ) {
+		if ( !$data ) {
+			$data = array();
+		}
+
+		$posts = apply_filters( 'staypress_hide_protectable_pages', get_posts( array(
+			'numberposts' => MEMBERSHIP_PAGE_COUNT,
+			'offset'      => 0,
+			'orderby'     => 'post_date',
+			'order'       => 'DESC',
+			'post_type'   => 'page',
+			'post_status' => 'publish'
+		) ) );
 
 		?>
-		<div class='level-operation' id='main-pages'>
-			<h2 class='sidebar-name'><?php _e('Pages', 'membership');?><span><a href='#remove' id='remove-pages' class='removelink' title='<?php _e("Remove Pages from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-			<div class='inner-operation'>
-				<p><?php _e('Select the Pages to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
-				<?php
-					$args = array(
-						'numberposts' => MEMBERSHIP_PAGE_COUNT,
-						'offset' => 0,
-						'orderby' => 'post_date',
-						'order' => 'DESC',
-						'post_type' => 'page',
-						'post_status' => 'publish'
-					);
+		<div id="main-pages" class="level-operation">
+			<h2 class="sidebar-name">
+				<?php _e( 'Pages', 'membership' ) ?>
+				<span>
+					<a id="remove-pages" href="#remove" class="removelink" title="<?php _e( "Remove Pages from this rules area.", 'membership' ) ?>"><?php
+						_e( 'Remove', 'membership' )
+					?></a>
+				</span>
+			</h2>
 
-					$posts = get_posts($args);
+			<div class="inner-operation">
+				<p><?php _e( 'Select the Pages to be covered by this rule by checking the box next to the relevant pages title. Pay attention that pages selected as Membership page (in the options) are not listed below.', 'membership' ) ?></p>
 
-					// to remove bp specified pages - should be listed on the bp pages group
-					$posts = apply_filters( 'staypress_hide_protectable_pages', $posts );
+				<?php if ( $posts ) : ?>
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+						<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+						<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+						</tr>
+					</thead>
 
-					if($posts) {
-						?>
-						<table cellspacing="0" class="widefat fixed">
-							<thead>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-								</tr>
-							</thead>
+					<tfoot>
+					<tr>
+						<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+						<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
+						</tr>
+					</tfoot>
 
-							<tfoot>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Page title', 'membership'); ?></th>
-								</tr>
-							</tfoot>
-
-							<tbody>
-						<?php
-						foreach($posts as $key => $post) {
-
-							?>
-							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
+					<tbody>
+						<?php foreach ( $posts as $post ) : ?>
+							<?php if ( membership_is_special_page( $post->ID, false ) ) continue; ?>
+							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $post->ID; ?>" name="pages[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $post->ID ?>" name="pages[]"<?php checked( in_array( $post->ID, $data ) ) ?>>
 								</th>
 								<td class="column-name">
-									<strong><?php echo esc_html($post->post_title); ?></strong>
+									<strong><?php echo esc_html( $post->post_title ) ?></strong>
 								</td>
-						    </tr>
-							<?php
-						}
-						?>
-							</tbody>
-						</table>
-						<?php
-					}
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<?php endif; ?>
 
-				?>
-				<p class='description'><?php echo sprintf(__("Only the most recent %d pages are shown above.",'membership'), MEMBERSHIP_PAGE_COUNT); ?></p>
+				<p class="description"><?php printf( __( "Only the most recent %d pages are shown above.", 'membership' ), MEMBERSHIP_PAGE_COUNT ) ?></p>
 			</div>
-		</div>
-		<?php
+		</div><?php
 	}
 
-	function on_positive($data) {
-
-		$this->data = $data;
-
-		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 1 );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
-		}
-
+	function on_positive( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
+		add_filter( 'get_pages', array( $this, 'add_viewable_pages_menu' ), 1 );
 	}
 
-	function on_negative($data) {
-
-		$this->data = $data;
-
-		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 1 );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
-		}
-
-
+	function on_negative( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
+		add_filter( 'get_pages', array( $this, 'add_unviewable_pages_menu' ), 1 );
 	}
 
-	function redirect() {
-
-		membership_redirect_to_protected();
-
-	}
-
-	function get_group() {
-
-		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_pages-' . $this->level_id );
-
-		$results = $wpdb->get_var( $sql );
-
-		if(!empty($results)) {
-			return $results;
-		} else {
-			return false;
-		}
-	}
-
-	function add_viewable_pages($wp_query) {
-
-		global $M_options;
-
-		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
-			// We are not on a single page - so just limit the viewing
-			foreach( (array) $this->data as $key => $value ) {
-				$wp_query->query_vars['post__in'][] = $value;
-			}
-
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
-		} else {
-			// We are on a single page - so check for restriction on the_posts
-		}
-
-		return $wp_query;
-
-	}
-
-	function add_viewable_pages_menu($pages) {
-
+	function add_viewable_pages_menu( $pages ) {
 		$override_pages = apply_filters( 'membership_override_viewable_pages_menu', array() );
 
-		foreach( (array) $pages as $key => $page ) {
-			if(!in_array($page->ID, (array) $this->data) && !in_array($page->ID, (array) $override_pages)) {
-				unset($pages[$key]);
-			}
-		}
-
-		return $pages;
-
-	}
-
-	function add_unviewable_pages($wp_query) {
-
-		global $M_options;
-
-		return;
-
-	}
-
-	function add_unviewable_pages_menu($pages) {
-		foreach( (array) $pages as $key => $page ) {
-			if(in_array($page->ID, (array) $this->data)) {
-				unset($pages[$key]);
+		foreach ( (array)$pages as $key => $page ) {
+			if ( !in_array( $page->ID, (array) $this->data ) && !in_array( $page->ID, (array) $override_pages ) ) {
+				unset( $pages[$key] );
 			}
 		}
 
 		return $pages;
 	}
 
-	function check_negative_pages( $wp ) {
-
-		global $M_options, $wp_query;
-
-		$redirect = false;
-		$found = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-		// Get the id for the post / page for this url - have to remove and re-add the actions
-		remove_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
-		$post_id = url_to_postid( $host );
-		add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
-
-		if( $post_id != 0 ) {
-			// Check if we are on a page
-			$post = get_post( $post_id );
-
-			// Still here - must be on a page
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-
-
-				if( $group->url_matches( $host ) && $post->post_type == 'page' && !membership_check_expression_match( strtolower($host), $exclude) ) {
-					$found = true;
-				} else {
-
-				}
+	function add_unviewable_pages_menu( $pages ) {
+		foreach ( (array) $pages as $key => $page ) {
+			if ( in_array( $page->ID, (array) $this->data ) ) {
+				unset( $pages[$key] );
 			}
-
-			if($found == true && !empty($M_options['nocontent_page'])) {
-				// we need to redirect
-				membership_set_negative_redirect();
-			} else {
-				return;
-			}
-
 		}
 
+		return $pages;
 	}
 
-	function check_positive_pages( $wp ) {
-
-		global $M_options, $wp_query;
-
-		$redirect = false;
-		$found = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-		// Get the id for the post / page for this url - have to remove and re-add the actions
-		remove_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
-		$post_id = url_to_postid( $host );
-		add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
-
-		if( $post_id != 0 ) {
-			// Check if we are on a page
-			$post = get_post( $post_id );
-
-			// Still here - must be on a page
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $host ) || $post->post_type != 'page' || membership_check_expression_match( strtolower($host), $exclude) ) {
-					$found = true;
-				}
-			}
-
-			if($found == true) {
-				membership_set_positive_no_redirect();
-				// we need to redirect
-				//$this->redirect();
-			} else {
-				return;
-			}
-
-		} else {
-			// We don't have a post_id, so we may be on a page without one e.g. home
-			//if( membership_check_expression_match( strtolower($host), $exclude) ) {
-				membership_set_positive_no_redirect();
-			//}
-		}
-
+	function validate_negative() {
+		return is_page()
+			? !in_array( get_the_ID(), $this->data )
+			: parent::validate_negative();
 	}
 
+	function validate_positive() {
+		return is_page()
+			? in_array( get_the_ID(), $this->data )
+			: parent::validate_positive();
+	}
 
 }
 
@@ -618,159 +282,40 @@ class M_Categories extends M_Rule {
 			<?php
 	}
 
-	function on_positive($data) {
-
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_viewable_posts'), 1 );
-		add_filter( 'get_terms', array(&$this, 'add_viewable_categories'), 1, 3 );
-
-		add_filter( 'the_posts', array(&$this, 'check_positive_posts'));
+	function on_positive( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 	}
 
-	function on_negative($data) {
-
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_posts'), 1 );
-		add_filter( 'get_terms', array(&$this, 'add_unviewable_categories'), 1, 3 );
-
-		add_filter( 'the_posts', array(&$this, 'check_negative_posts'));
+	function on_negative( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 	}
 
-	function redirect() {
+	function validate_negative() {
+		if ( is_single() ) {
+			$categories = wp_get_post_categories( get_the_ID() );
+			$intersect = array_intersect( $categories, $this->data );
+			return empty( $intersect );
+		}
 
-		membership_redirect_to_protected();
+		if ( is_category() ) {
+			return !in_array( get_queried_object_id(), $this->data );
+		}
 
+		return parent::validate_negative();
 	}
 
-	function check_negative_posts( $posts ) {
-
-		global $wp_query, $M_options;
-
-		$redirect = false;
-
-		if(is_category() && count($posts) == 0 && MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE === true) {
-			$redirect = true;
+	function validate_positive() {
+		if ( is_single() ) {
+			$categories = wp_get_post_categories( get_the_ID() );
+			$intersect = array_intersect( $categories, $this->data );
+			return !empty( $intersect );
 		}
 
-		if((!$wp_query->is_singular || count($posts) > 1) && $redirect != true) {
-			return $posts;
+		if ( is_category() ) {
+			return in_array( get_queried_object_id(), $this->data );
 		}
 
-		foreach($posts as $post) {
-			// should only be one as otherwise the single check above didn't work very well.
-			if($post->post_type != 'post') {
-				// Not a post so ignore
-				return $posts;
-			} else {
-				// Check the categories
-				if(has_category( $this->data, $post )) {
-					$redirect = true;
-				}
-			}
-		}
-
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
-		} else {
-			return $posts;
-		}
-
-	}
-
-	function check_positive_posts( $posts ) {
-
-		global $wp_query, $M_options;
-
-		$redirect = false;
-
-		if(is_category() && count($posts) == 0 && MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE === true) {
-			$redirect = true;
-		}
-
-		if((!$wp_query->is_singular || count($posts) > 1) && $redirect != true) {
-			return $posts;
-		}
-
-		foreach($posts as $post) {
-			// should only be one as otherwise the single check above didn't work very well.
-			if($post->post_type != 'post') {
-				// Not a post so ignore
-				return $posts;
-			} else {
-				// Check the categories
-				if(!has_category( $this->data, $post )) {
-					$redirect = true;
-				}
-
-			}
-		}
-
-		if($redirect === true && !empty($M_options['nocontent_page'])) {
-			// we need to redirect
-			$this->redirect();
-		} else {
-			return $posts;
-		}
-
-	}
-
-	function add_viewable_posts($wp_query) {
-
-		//print_r($wp_query);
-
-		if((isset($wp_query->query_vars['post_type']) && !in_array($wp_query->query_vars['post_type'], array('post',''))) || !empty($wp_query->query_vars['pagename'])) {
-			return;
-		}
-
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['category__in'][] = $value;
-		}
-
-		$wp_query->query_vars['category__in'] = array_unique($wp_query->query_vars['category__in']);
-
-	}
-
-	function add_unviewable_posts($wp_query) {
-
-		if( (isset($wp_query->query_vars['post_type']) && !in_array($wp_query->query_vars['post_type'], array('post',''))) || !empty($wp_query->query_vars['pagename'])) {
-			return;
-		}
-
-		foreach( (array) $this->data as $key => $value ) {
-			$wp_query->query_vars['category__not_in'][] = $value;
-		}
-
-		$wp_query->query_vars['category__not_in'] = array_unique($wp_query->query_vars['category__not_in']);
-
-	}
-
-	function add_viewable_categories($terms, $taxonomies, $args) {
-
-		foreach( (array) $terms as $key => $value ) {
-			if($value->taxonomy == 'category') {
-				if(!in_array($value->term_id, $this->data)) {
-					unset($terms[$key]);
-				}
-			}
-		}
-
-		return $terms;
-	}
-
-	function add_unviewable_categories($terms, $taxonomies, $args) {
-
-		foreach( (array) $terms as $key => $value ) {
-			if($value->taxonomy == 'category') {
-				if(in_array($value->term_id, $this->data)) {
-					unset($terms[$key]);
-				}
-			}
-		}
-
-		return $terms;
+		return parent::validate_positive();
 	}
 
 }
@@ -797,85 +342,28 @@ class M_More extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
-
-		global $M_options, $wp_filter;
+	function on_positive( $data ) {
+		global $M_options, $membershippublic;
 
 		$this->data = $data;
 
-		if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] == 'no' ) {
-
-			// remove the filters - otherwise we don't need to do anything
-			if(isset($wp_filter['the_content_more_link'][99])) {
-				foreach($wp_filter['the_content_more_link'][99] as $key => $value) {
-					if(strstr($key, 'show_moretag_protection') !== false) {
-						unset($wp_filter['the_content_more_link'][99][$key]);
-					}
-					if(empty($wp_filter['the_content_more_link'][99])) {
-						unset($wp_filter['the_content_more_link'][99]);
-					}
-				}
-			}
-
-			if(isset($wp_filter['the_content'][1])) {
-				foreach($wp_filter['the_content'][1] as $key => $value) {
-					if(strstr($key, 'replace_moretag_content') !== false) {
-						unset($wp_filter['the_content'][1][$key]);
-					}
-					if(empty($wp_filter['the_content'][1])) {
-						unset($wp_filter['the_content'][1]);
-					}
-				}
-			}
-
-			if(isset($wp_filter['the_content_feed'][1])) {
-				foreach($wp_filter['the_content_feed'][1] as $key => $value) {
-					if(strstr($key, 'replace_moretag_content') !== false) {
-						unset($wp_filter['the_content_feed'][1][$key]);
-					}
-					if(empty($wp_filter['the_content_feed'][1])) {
-						unset($wp_filter['the_content_feed'][1]);
-					}
-				}
-			}
-
+		if ( isset( $M_options['moretagdefault'] ) && $M_options['moretagdefault'] == 'no' ) {
+			remove_filter( 'the_content_more_link', array( $membershippublic, 'show_moretag_protection' ), 99, 2 );
+			remove_filter( 'the_content', array( $membershippublic, 'replace_moretag_content' ), 1 );
+			remove_filter( 'the_content_feed', array( $membershippublic, 'replace_moretag_content' ), 1 );
 		}
 	}
 
-	function on_negative($data) {
-
-		global $M_options;
+	function on_negative( $data ) {
+		global $M_options, $membershippublic;
 
 		$this->data = $data;
-
-		if(isset($M_options['moretagdefault']) && $M_options['moretagdefault'] != 'no' ) {
+		if ( isset( $M_options['moretagdefault'] ) && $M_options['moretagdefault'] != 'no' ) {
 			// add the filters - otherwise we don't need to do anything
-			add_filter('the_content_more_link', array(&$this, 'show_moretag_protection'), 99, 2);
-			add_filter('the_content', array(&$this, 'replace_moretag_content'), 1);
+			add_filter( 'the_content_more_link', array( $membershippublic, 'show_moretag_protection' ), 99, 2 );
+			add_filter( 'the_content', array( $membershippublic, 'replace_moretag_content' ), 1 );
+			add_filter( 'the_content_feed', array( $membershippublic, 'replace_moretag_content' ), 1 );
 		}
-	}
-
-	function show_moretag_protection($more_tag_link, $more_tag) {
-
-		global $M_options;
-
-		return stripslashes($M_options['moretagmessage']);
-
-	}
-
-	function replace_moretag_content($the_content) {
-
-		global $M_options;
-
-		$morestartsat = strpos($the_content, '<span id="more-');
-
-		if($morestartsat !== false) {
-			$the_content = substr($the_content, 0, $morestartsat);
-			$the_content .= stripslashes($M_options['moretagmessage']);
-		}
-
-		return $the_content;
-
 	}
 
 }
@@ -888,62 +376,43 @@ class M_Comments extends M_Rule {
 
 	var $rulearea = 'public';
 
-	function admin_main($data) {
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-comments'>
-			<h2 class='sidebar-name'><?php _e('Comments', 'membership');?><span><a href='#remove' id='remove-comments' class='removelink' title='<?php _e("Remove Comments from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-			<div class='inner-operation'>
-				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User gets read and make comments of posts.','membership'); ?></p>
-				<p><strong><?php _e('Negative : ','membership'); ?></strong><?php _e('User can not read or comment on posts.','membership'); ?></p>
+	function admin_main( $data ) {
+		?><div id="main-comments" class="level-operation">
+			<h2 class="sidebar-name">
+				<?php _e( 'Comments', 'membership' ) ?>
+				<span>
+					<a id="remove-comments" class="removelink" href="#remove" title=""<?php _e( "Remove Comments from this rules area.", 'membership' ) ?>"><?php
+						_e( 'Remove', 'membership' )
+					?></a>
+				</span>
+			</h2>
+			<div class="inner-operation">
+				<p><strong><?php _e( 'Positive : ', 'membership' ) ?></strong><?php _e( 'User gets read and make comments of posts.', 'membership' ) ?></p>
+				<p><strong><?php _e( 'Negative : ', 'membership' ) ?></strong><?php _e( 'User can not read or comment on posts.', 'membership' ) ?></p>
 				<input type='hidden' name='comments[]' value='yes' />
 			</div>
-		</div>
-		<?php
+		</div><?php
 	}
 
-	function on_positive($data) {
-
+	function on_positive( $data ) {
 		$this->data = $data;
-
-		add_filter('comments_open', array(&$this, 'open_comments'), 99, 2);
-
+		add_filter( 'comments_open', array( $this, 'open_comments' ), 99 );
 	}
 
-	function on_negative($data) {
-
+	function on_negative( $data ) {
 		$this->data = $data;
 
-		add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
-
-		if(defined('MEMBERSHIP_VIEW_COMMENTS') && MEMBERSHIP_VIEW_COMMENTS == true) {
-			// We want users to be able to see the comments but not add to them
-		} else {
-			add_filter( 'comments_array', array(&$this, 'hide_comments'), 99, 2 );
+		add_filter( 'comments_open', '__return_false', 99 );
+		if ( !defined( 'MEMBERSHIP_VIEW_COMMENTS' ) || !filter_var( MEMBERSHIP_VIEW_COMMENTS, FILTER_VALIDATE_BOOLEAN )  ) {
+			add_filter( 'comments_array', '__return_empty_array', 99 );
 		}
-
 	}
 
-	function hide_comments($comments, $post_id) {
-
-		return array();
-
-	}
-
-	function close_comments($open, $postid) {
-
-		return false;
-
-	}
-
-	function open_comments($open, $postid) {
-
+	function open_comments( $open ) {
 		return $open;
-
 	}
 
 }
-
 
 class M_Downloads extends M_Rule {
 
@@ -1027,29 +496,25 @@ class M_Downloads extends M_Rule {
 		<?php
 	}
 
-	function can_view_download($area, $group) {
-
-		switch($area) {
-
-			case 'positive':	if(in_array($group, (array) $this->data)) {
-									return true;
-								}
-								break;
-
-			case 'negative':	if(in_array($group, (array) $this->data)) {
-									return false;
-								}
-								break;
-
-			default:			return false;
-
+	function can_view_download( $area, $group ) {
+		switch ( $area ) {
+			case 'positive':
+				if ( in_array( $group, (array)$this->data ) ) {
+					return true;
+				}
+				break;
+			case 'negative':
+				if ( in_array( $group, (array)$this->data ) ) {
+					return false;
+				}
+				break;
+			default:
+				return false;
 		}
-
 	}
 
 }
 
-//shortcode_tags
 class M_Shortcodes extends M_Rule {
 
 	var $name = 'shortcodes';
@@ -1116,65 +581,56 @@ class M_Shortcodes extends M_Rule {
 	}
 
 	function override_shortcodes() {
-
 		global $M_shortcode_tags, $shortcode_tags;
 
 		$M_shortcode_tags = $shortcode_tags;
 
-		foreach($shortcode_tags as $key => $function) {
-			if($key != 'subscriptionform') {
-				$shortcode_tags[$key] = array(&$this, 'do_protected_shortcode');
+		foreach ( $shortcode_tags as $key => $function ) {
+			if ( $key != 'subscriptionform' ) {
+				$shortcode_tags[$key] = array( &$this, 'do_protected_shortcode' );
 			}
 		}
 
 		return $content;
 	}
 
-	function on_positive($data) {
-
+	function on_positive( $data ) {
 		global $M_options, $M_shortcode_tags, $shortcode_tags;
 
 		$this->data = $data;
 
-		if($M_options['shortcodedefault'] == 'no' ) {
+		if ( $M_options['shortcodedefault'] == 'no' ) {
 			// Need to re-enable some shortcodes
-			foreach( (array) $data as $key => $code ) {
-				if(isset($M_shortcode_tags[$code]) && isset($shortcode_tags[$code])) {
+			foreach ( (array) $data as $key => $code ) {
+				if ( isset( $M_shortcode_tags[$code] ) && isset( $shortcode_tags[$code] ) ) {
 					$shortcode_tags[$code] = $M_shortcode_tags[$code];
 				}
 			}
 		}
-
 	}
 
-	function on_negative($data) {
-
+	function on_negative( $data ) {
 		global $M_options, $M_shortcode_tags, $shortcode_tags;
 
+		$this->data = $data;
 		$M_shortcode_tags = $shortcode_tags;
 
-		$this->data = $data;
-
-		if($M_options['shortcodedefault'] != 'no' ) {
+		if ( $M_options['shortcodedefault'] != 'no' ) {
 			// Need to disable some shortcodes
-			foreach( (array) $data as $key => $code ) {
-				if(isset($M_shortcode_tags[$code]) && isset($shortcode_tags[$code])) {
-					if($code != 'subscriptionform') {
-						$shortcode_tags[$code] = array(&$this, 'do_protected_shortcode');
+			foreach ( (array) $data as $key => $code ) {
+				if ( isset( $M_shortcode_tags[$code] ) && isset( $shortcode_tags[$code] ) ) {
+					if ( $code != 'subscriptionform' ) {
+						$shortcode_tags[$code] = array( &$this, 'do_protected_shortcode' );
 					}
 				}
 			}
 		}
-
 	}
 
 	// Show the protected shortcode message
-	function do_protected_shortcode($atts, $content = null, $code = "") {
-
+	function do_protected_shortcode( $atts, $content = null, $code = "" ) {
 		global $M_options;
-
-		return stripslashes($M_options['shortcodemessage']);
-
+		return stripslashes( $M_options['shortcodemessage'] );
 	}
 
 }
@@ -1437,18 +893,11 @@ class M_URLGroups extends M_Rule {
 	var $rulearea = 'core';
 
 	function get_groups() {
-
 		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname NOT LIKE (%s) ORDER BY id ASC", '\_%' );
-
-		$results = $wpdb->get_results( $sql );
-
-		if(!empty($results)) {
-			return $results;
-		} else {
-			return false;
-		}
+		return $wpdb->get_results( $wpdb->prepare(
+			"SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname NOT LIKE (%s) ORDER BY id ASC",
+			'\_%'
+		) );
 	}
 
 	function admin_main($data) {
@@ -1505,8 +954,6 @@ class M_URLGroups extends M_Rule {
 	}
 
 	function on_positive( $data ) {
-		add_action( 'pre_get_posts', array( $this, 'positive_check_request' ) );
-
 		$this->data = $data;
 		if ( !empty( $this->data ) && is_array( $this->data ) ) {
 			foreach ( $this->data as $group_id ) {
@@ -1517,8 +964,6 @@ class M_URLGroups extends M_Rule {
 	}
 
 	function on_negative( $data ) {
-		add_action( 'pre_get_posts', array( $this, 'negative_check_request' ) );
-
 		$this->data = $data;
 		if ( !empty( $this->data ) && is_array( $this->data ) ) {
 			foreach ( $this->data as $group_id ) {
@@ -1528,94 +973,70 @@ class M_URLGroups extends M_Rule {
 		}
 	}
 
-	function positive_check_request($wp) {
+	function validate_negative() {
+		global $M_global_groups;
 
-		global $M_options, $wp_query;
+		$host = is_ssl() ? "https://" : "http://";
+		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$redirect = false;
+		$exclude = apply_filters( 'membership_excluded_urls', array() );
+		if( membership_check_expression_match( $host, $exclude ) ) {
+			return true;
+		}
+
 		$found = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
-		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		$exclude = apply_filters( 'membership_excluded_urls', array() );
+		$negative = !empty( $M_global_groups['negative'] )
+			? array_unique( $M_global_groups['negative'] )
+			: array();
 
-		// we have the current page / url - get the groups selected
-		foreach((array) $this->data as $group_id) {
-			$group = new M_Urlgroup( $group_id );
-
-			if($group->url_matches( $host ) || membership_check_expression_match( strtolower($host), $exclude) ) {
-				// We've found a pge in the positive rules so can let the user see it
-				$found = true;
-			}
+		if ( !empty( $negative ) ) {
+			$found |= membership_check_expression_match( $host, $negative );
 		}
 
-		if($found == true) {
-			membership_set_positive_no_redirect();
-			// we need to redirect
-			//$this->redirect();
-		}
+		return !$found;
 
 	}
 
-	function negative_check_request($wp) {
+	function validate_positive() {
+		global $M_global_groups;
 
-		$redirect = false;
-		$host = '';
-		if(is_ssl()) {
-			$host = "https://";
-		} else {
-			$host = "http://";
-		}
+		$host = is_ssl() ? "https://" : "http://";
 		$host .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 		$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-		// we have the current page / url - get the groups selected
-		foreach((array) $this->data as $group_id) {
-			$group = new M_Urlgroup( $group_id );
-
-			if($group->url_matches( $host ) && !membership_check_expression_match( strtolower($host), $exclude) ) {
-				$redirect = true;
-			}
+		if( membership_check_expression_match( $host, $exclude ) ) {
+			return true;
 		}
 
-		if($redirect == true) {
-			// we need to redirect
-			membership_set_negative_redirect();
+		$found = false;
+
+		$negative = !empty( $M_global_groups['positive'] )
+			? array_unique( $M_global_groups['positive'] )
+			: array();
+
+		if ( !empty( $negative ) ) {
+			$found |= membership_check_expression_match( $host, $negative );
 		}
 
-	}
-
-	function redirect() {
-
-		membership_redirect_to_protected();
-
+		return $found;
 	}
 
 }
 
+add_action( 'plugins_loaded', 'M_setup_default_rules', 99 );
 function M_setup_default_rules() {
+	M_register_rule( 'downloads', 'M_Downloads', 'content' );
+	M_register_rule( 'comments', 'M_Comments', 'main' );
+	M_register_rule( 'more', 'M_More', 'main' );
+	M_register_rule( 'categories', 'M_Categories', 'main' );
+	M_register_rule( 'pages', 'M_Pages', 'main' );
+	M_register_rule( 'posts', 'M_Posts', 'main' );
+	M_register_rule( 'shortcodes', 'M_Shortcodes', 'content' );
+	M_register_rule( 'menu', 'M_Menu', 'main' );
+	M_register_rule( 'urlgroups', 'M_URLGroups', 'main' );
 
-	M_register_rule('downloads', 'M_Downloads', 'content');
-	M_register_rule('comments', 'M_Comments', 'main');
-	M_register_rule('more', 'M_More', 'main');
-	M_register_rule('categories', 'M_Categories', 'main');
-	M_register_rule('pages', 'M_Pages', 'main');
-	M_register_rule('posts', 'M_Posts', 'main');
-	M_register_rule('shortcodes', 'M_Shortcodes', 'content');
-	M_register_rule('menu', 'M_Menu', 'main');
-	M_register_rule('urlgroups', 'M_URLGroups', 'main');
-
-	if(is_multisite()) {
-		M_register_rule('blogcreation', 'M_Blogcreation', 'admin');
+	if ( is_multisite() ) {
+		M_register_rule( 'blogcreation', 'M_Blogcreation', 'admin' );
 	}
-
 }
-add_action('plugins_loaded', 'M_setup_default_rules', 99);
-
-?>
