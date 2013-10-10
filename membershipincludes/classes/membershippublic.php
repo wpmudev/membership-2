@@ -2379,12 +2379,15 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		// Check the results and handle the outcome - redirecting if necessary
 		function complete_url_protection_processing() {
-			global $M_global_groups, $member;
+			global $member;
 
 			if ( membership_is_special_page() || !is_object( $member ) || !is_a( $member, 'M_Membership' ) ) {
+				if ( membership_is_account_page() && !is_user_logged_in() ) {
+					membership_redirect_to_protected();
+				}
 				return;
 			}
-			
+
 			if ( !$member->validate_credentials() ) {
 				membership_debug_log( __( 'About to redirect to the protected page', 'membership' ) );
 				membership_redirect_to_protected();

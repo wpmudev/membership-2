@@ -1059,25 +1059,21 @@ function membership_price_in_text( $pricing ) {
 }
 
 function membership_redirect_to_protected() {
-
 	global $M_options;
 
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
-		if(function_exists('switch_to_blog')) {
-			switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
+	if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+		if ( function_exists( 'switch_to_blog' ) ) {
+			switch_to_blog( MEMBERSHIP_GLOBAL_MAINSITE );
 		}
 	}
 
-	$url = get_permalink( (int) $M_options['nocontent_page'] );
+	$url = get_permalink( (int)$M_options['nocontent_page'] );
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-	if($url != $current_url && !headers_sent()) {
+	if ( $url != $current_url && !headers_sent() ) {
 		wp_safe_redirect( $url );
 		exit;
-	} else {
-
 	}
-
 }
 
 function membership_check_expression_match( $host, $list ) {
