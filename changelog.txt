@@ -11,6 +11,7 @@
 * Fixed issue with broken subscription URLs at registration form when ?id= permalink is used
 * Implemented ability to test rules in an URL group
 * Implemented ability to sort subscription plans at front end
+* Implemented deletion of the "user registration" subscription after first regular subscription is selected
 * Reworked protection rules
 * Reworked BuddyPress protection rules
 

@@ -326,20 +326,20 @@ function membership_is_active($userdata, $password) {
 
 add_filter('wp_authenticate_user', 'membership_is_active', 30, 2);
 
-function membership_assign_subscription($user_id) {
-
+add_action( 'user_register', 'membership_assign_subscription', 30 );
+function membership_assign_subscription( $user_id ) {
 	global $M_options;
 
-	if(!empty($M_options['freeusersubscription'])) {
-		$member = new M_Membership($user_id);
-		if($member) {
-			$member->create_subscription($M_options['freeusersubscription']);
-		}
+	if ( empty( $M_options['freeusersubscription'] ) ) {
+		return;
 	}
 
+	$member = new M_Membership( $user_id );
+	if ( $member ) {
+		$member->create_subscription( $M_options['freeusersubscription'] );
+		add_user_meta( $user_id, 'membership_freesubscription', $M_options['freeusersubscription'], true );
+	}
 }
-
-add_action('user_register', 'membership_assign_subscription', 30);
 
 function membership_db_prefix(&$wpdb, $table, $useprefix = true) {
 

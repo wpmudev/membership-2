@@ -295,26 +295,24 @@ if ( !class_exists( 'M_Membership', false ) ) :
 
 		}
 
-		function create_subscription($sub_id, $gateway = 'admin') {
+		function create_subscription( $sub_id, $gateway = 'admin' ) {
 
 			global $blog_id;
 
-			if(!$this->active_member()) {
+			if ( !$this->active_member() ) {
 				$this->toggle_activation();
 			}
 
 			$subscription = new M_Subscription( $sub_id );
 			$levels = $subscription->get_levels();
-
-			if(!empty($levels)) {
-
-				foreach($levels as $key => $level) {
-					if($level->level_order == 1) {
-						$this->add_subscription($sub_id, $level->level_id, $level->level_order, $gateway);
+			if ( !empty( $levels ) ) {
+				foreach ( $levels as $level ) {
+					if ( $level->level_order == 1 ) {
+						$this->add_subscription( $sub_id, $level->level_id, $level->level_order, $gateway );
 
 						// Check if a coupon transient already exists
-						if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-							if(function_exists('get_site_transient')) {
+						if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+							if ( function_exists( 'get_site_transient' ) ) {
 								$trying = get_site_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
 							} else {
 								$trying = get_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
@@ -324,9 +322,8 @@ if ( !class_exists( 'M_Membership', false ) ) :
 						}
 
 						// If there is a coupon transient do our coupon count magic
-						if( $trying != false && is_array($trying) ) {
-
-							if( !empty( $trying['coupon_id'] ) ) {
+						if ( $trying != false && is_array( $trying ) ) {
+							if ( !empty( $trying['coupon_id'] ) ) {
 								$coupon = new M_Coupon( $trying['coupon_id'] );
 								// Add one to the coupon count
 								$coupon->increment_coupon_used();
@@ -334,8 +331,8 @@ if ( !class_exists( 'M_Membership', false ) ) :
 								update_user_meta( $this->ID, 'm_coupon_' . $sub_id, $trying );
 							}
 
-							if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-								if(function_exists('delete_site_transient')) {
+							if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+								if ( function_exists( 'delete_site_transient' ) ) {
 									delete_site_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
 								} else {
 									delete_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
@@ -343,19 +340,23 @@ if ( !class_exists( 'M_Membership', false ) ) :
 							} else {
 								delete_transient( 'm_coupon_' . $blog_id . '_' . $this->ID . '_' . $sub_id );
 							}
-
 						}
 
 						break;
 					}
 				}
 
-				return true;
+				// drop default subscription
+				$freesubscription = get_user_meta( $this->ID, 'membership_freesubscription', true );
+				if ( $freesubscription ) {
+					$this->drop_subscription( $freesubscription );
+					delete_user_meta( $this->ID, 'membership_freesubscription' );
+				}
 
-			} else {
-				return false;
+				return true;
 			}
 
+			return false;
 		}
 
 		function remove_active_payment( $sub_id, $level_order, $stamp ) {
@@ -571,52 +572,53 @@ if ( !class_exists( 'M_Membership', false ) ) :
 
 		}
 
-		function add_subscription($tosub_id, $tolevel_id = false, $to_order = false, $gateway = 'admin') {
-
-			if(!apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order, $this->ID )) {
+		function add_subscription( $tosub_id, $tolevel_id = false, $to_order = false, $gateway = 'admin' ) {
+			if ( !apply_filters( 'pre_membership_add_subscription', true, $tosub_id, $tolevel_id, $to_order, $this->ID ) || $this->on_sub( $tosub_id ) ) {
 				return false;
 			}
 
-			if(!$this->on_sub($tosub_id)) {
+			// grab the level information for this position
+			$subscription = new M_Subscription( $tosub_id );
+			$level = $subscription->get_level_at( $tolevel_id, $to_order );
 
-				// grab the level information for this position
-				$subscription = new M_Subscription( $tosub_id );
-				$level = $subscription->get_level_at($tolevel_id, $to_order);
-
-				if($level) {
-					$now = current_time('mysql');
-					$start = strtotime( $now );
-					switch($level->level_period_unit) {
-						case 'd': $period = 'days'; break;
-						case 'w': $period = 'weeks'; break;
-						case 'm': $period = 'months'; break;
-						case 'y': $period = 'years'; break;
-						default: $period = 'days'; break;
-					}
-					$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
-					$expires = gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start ) );
-
-					$this->db->insert( $this->membership_relationships, array(
-						'user_id'        => $this->ID,
-						'level_id'       => $tolevel_id,
-						'sub_id'         => $tosub_id,
-						'startdate'      => $now,
-						'updateddate'    => $now,
-						'expirydate'     => $expires,
-						'order_instance' => $level->level_order,
-						'usinggateway'   => $gateway
-					) );
-
-					// Update users start and expiry meta
-					update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
-					update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime($expires) );
-					update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
-
-					do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID);
+			if ( $level ) {
+				$now = current_time( 'mysql' );
+				$start = strtotime( $now );
+				switch ( $level->level_period_unit ) {
+					case 'd': $period = 'days';
+						break;
+					case 'w': $period = 'weeks';
+						break;
+					case 'm': $period = 'months';
+						break;
+					case 'y': $period = 'years';
+						break;
+					default: $period = 'days';
+						break;
 				}
+				$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
+				$expires = gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start )  );
 
+				$this->db->insert( $this->membership_relationships, array(
+					'user_id' => $this->ID,
+					'level_id' => $tolevel_id,
+					'sub_id' => $tosub_id,
+					'startdate' => $now,
+					'updateddate' => $now,
+					'expirydate' => $expires,
+					'order_instance' => $level->level_order,
+					'usinggateway' => $gateway
+				) );
+
+				// Update users start and expiry meta
+				update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
+				update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime( $expires ) );
+				update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
+
+				do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID );
 			}
 
+			return true;
 		}
 
 		function get_level_for_sub( $sub_id ) {
@@ -627,33 +629,33 @@ if ( !class_exists( 'M_Membership', false ) ) :
 
 		}
 
-		function drop_subscription($fromsub_id) {
-
-			if(!apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id, $this->ID )) {
+		function drop_subscription( $fromsub_id ) {
+			if ( !apply_filters( 'pre_membership_drop_subscription', true, $fromsub_id, $this->ID ) || !$this->on_sub( $fromsub_id ) ) {
 				return false;
 			}
 
-			if($this->on_sub($fromsub_id)) {
-				// Get the level for this subscription before removing it
-				$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
+			// Get the level for this subscription before removing it
+			$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
 
-				$sql = $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $fromsub_id);
-				$this->db->query( $sql );
+			$this->db->delete( $this->membership_relationships, array(
+				'user_id' => $this->ID,
+				'sub_id'  => $fromsub_id,
+			), array( '%d', '%d' ) );
 
-				// Update users start and expiry meta
-				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
-				delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
-				delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
-				delete_user_meta( $this->ID, 'using_gateway_' . $fromsub_id );
+			// Update users start and expiry meta
+			delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
+			delete_user_meta( $this->ID, 'expire_current_' . $fromsub_id );
+			delete_user_meta( $this->ID, 'sent_msgs_' . $fromsub_id );
+			delete_user_meta( $this->ID, 'using_gateway_' . $fromsub_id );
 
-				$expiring = get_user_meta( $this->ID, '_membership_expire_next', true);
-				if($expiring = $fromsub_id) {
-					delete_user_meta( $this->ID, '_membership_expire_next' );
-				}
-
-				do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
+			$expiring = get_user_meta( $this->ID, '_membership_expire_next', true );
+			if ( $expiring == $fromsub_id ) {
+				delete_user_meta( $this->ID, '_membership_expire_next' );
 			}
 
+			do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
+
+			return true;
 		}
 
 		function move_subscription($fromsub_id, $tosub_id, $tolevel_id, $to_order) {
