@@ -12,6 +12,7 @@
 * Implemented ability to test rules in an URL group
 * Implemented ability to sort subscription plans at front end
 * Reworked protection rules
+* Reworked BuddyPress protection rules
 
 == 3.4.5 ==
 

@@ -20,27 +20,19 @@ class M_BPPages extends M_Rule {
 	}
 
 	function get_pages() {
-
 		global $bp;
 
 		$directory_pages = array();
-
-		foreach( $bp->loaded_components as $component_slug => $component_id ) {
-
+		foreach ( $bp->loaded_components as $component_id ) {
 			// Only components that need directories should be listed here
 			if ( isset( $bp->{$component_id} ) && !empty( $bp->{$component_id}->has_directory ) ) {
-
 				// component->name was introduced in BP 1.5, so we must provide a fallback
 				$component_name = !empty( $bp->{$component_id}->name ) ? $bp->{$component_id}->name : ucwords( $component_id );
-
 				$directory_pages[$component_id] = $component_name;
 			}
 		}
 
-		$directory_pages = apply_filters( 'bp_directory_pages', $directory_pages );
-
-		return $directory_pages;
-
+		return apply_filters( 'bp_directory_pages', $directory_pages );
 	}
 
 	function admin_main($data) {
@@ -112,221 +104,76 @@ class M_BPPages extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
+	function on_positive( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_viewable_pages'), 3 );
-		add_filter( 'get_pages', array(&$this, 'add_viewable_pages_menu'), 2 );
-
-		//add_action( 'pre_get_posts', array(&$this, 'check_positive_pages') );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
-		}
-
+		add_action( 'pre_get_posts', array( $this, 'add_viewable_pages' ), 3 );
+		add_filter( 'get_pages', array( $this, 'add_viewable_pages_menu' ), 2 );
 	}
 
-	function on_negative($data) {
+	function on_negative( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 
-		$this->data = $data;
-
-		add_action( 'pre_get_posts', array(&$this, 'add_unviewable_pages'), 3 );
-		add_filter( 'get_pages', array(&$this, 'add_unviewable_pages_menu'), 2 );
-
-		//add_action( 'pre_get_posts', array(&$this, 'check_negative_pages') );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
-		}
-
+		add_action( 'pre_get_posts', array( $this, 'add_unviewable_pages' ), 3 );
+		add_filter( 'get_pages', array( $this, 'add_unviewable_pages_menu' ), 2 );
 	}
 
-	function redirect() {
-
-		membership_redirect_to_protected();
-
-	}
-
-	function get_group() {
-
-		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bppages-' . $this->level_id );
-
-		$results = $wpdb->get_var( $sql );
-
-		if(!empty($results)) {
-			return $results;
-		} else {
-			return false;
-		}
-	}
-
-	function add_viewable_pages($wp_query) {
-
-		global $M_options;
-
-		if(!$wp_query->is_single && !empty($wp_query->query_vars['post__in'])) {
+	function add_viewable_pages( $wp_query ) {
+		if ( !$wp_query->is_single && !empty( $wp_query->query_vars['post__in'] ) ) {
 			// We are not on a single page - so just limit the viewing
-			foreach( (array) $this->data as $key => $value ) {
+			foreach ( (array)$this->data as $value ) {
 				$wp_query->query_vars['post__in'][] = $value;
 			}
 
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
-		} else {
-			// We are on a single page - so check for restriction on the_posts
+			$wp_query->query_vars['post__in'] = array_unique( $wp_query->query_vars['post__in'] );
 		}
-
 	}
 
-	function add_viewable_pages_menu($pages) {
-
+	function add_viewable_pages_menu( $pages ) {
 		$existing_pages = bp_core_get_directory_page_ids();
-
-		foreach( (array) $pages as $key => $page ) {
-			if(!in_array($page->ID, (array) $this->data) && in_array( $page->ID, (array) $existing_pages )) {
-				unset($pages[$key]);
+		foreach ( (array) $pages as $key => $page ) {
+			if ( !in_array( $page->ID, (array)$this->data ) && in_array( $page->ID, (array)$existing_pages ) ) {
+				unset( $pages[$key] );
 			}
 		}
 
 		return $pages;
-
 	}
 
-	function add_unviewable_pages($wp_query) {
-
-		global $M_options;
-
-		if(!$wp_query->is_single) {
+	function add_unviewable_pages( $wp_query ) {
+		if ( !$wp_query->is_single ) {
 			// We are not on a single page - so just limit the viewing
-			foreach( (array) $this->data as $key => $value ) {
+			foreach ( (array) $this->data as $key => $value ) {
 				$wp_query->query_vars['post__not_in'][] = $value;
 			}
 
-			$wp_query->query_vars['post__not_in'] = array_unique($wp_query->query_vars['post__not_in']);
-		} else {
-			// We are on a single page - so check for restriction on the_posts
+			$wp_query->query_vars['post__not_in'] = array_unique( $wp_query->query_vars['post__not_in'] );
 		}
-
 	}
 
-	function add_unviewable_pages_menu($pages) {
-		foreach( (array) $pages as $key => $page ) {
-			if(in_array($page->ID, (array) $this->data)) {
-				unset($pages[$key]);
+	function add_unviewable_pages_menu( $pages ) {
+		foreach ( (array) $pages as $key => $page ) {
+			if ( in_array( $page->ID, (array) $this->data ) ) {
+				unset( $pages[$key] );
 			}
 		}
 
 		return $pages;
 	}
 
-	function check_negative_pages( $wp ) {
-
-		global $wp_query, $M_options;
-
-		$component = bp_current_component();
-
-		if(!empty($component)) {
-			// we may be on a restricted post so check the URL and redirect if needed
-
-			$redirect = false;
-			$url = '';
-
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-			$existing_pages = bp_core_get_directory_page_ids();
-
-
-			if(!membership_check_expression_match( strtolower(get_permalink($existing_pages[$component]) ), $exclude)) {
-				$url = get_permalink($existing_pages[$component]);
-			}
-
-			// Check if we have a url available to check
-			if(empty($url)) {
-				return;
-			}
-
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $url ) ) {
-					$redirect = true;
-				}
-			}
-
-			if($redirect == true && !empty($M_options['nocontent_page'])) {
-				// we need to redirect
-				membership_set_negative_redirect();
-			} else {
-				return;
-			}
-
-		}
-
-		return;
-
+	function validate_negative() {
+		return is_page()
+			? !in_array( get_the_ID(), $this->data )
+			: parent::validate_negative();
 	}
 
-	function check_positive_pages( $wp ) {
-
-		global $wp_query, $M_options;
-
-		$component = bp_current_component();
-
-		if(!empty($component)) {
-			// we may be on a restricted post so check the URL and redirect if needed
-
-			$found = false;
-			$url = '';
-
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-			$existing_pages = bp_core_get_directory_page_ids();
-
-			if(!membership_check_expression_match( strtolower(get_permalink($existing_pages[$component]) ), $exclude)) {
-				$url = get_permalink($existing_pages[$component]);
-			}
-
-			// Check if we have a url available to check
-			if(empty($url)) {
-				return;
-			}
-
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $url ) ) {
-					$found = true;
-				}
-			}
-
-			if($found == true) {
-				membership_set_positive_no_redirect();
-				// we need to redirect
-				//$this->redirect();
-			} else {
-				return;
-			}
-
-		}
-
-		return;
-
+	function validate_positive() {
+		return is_page()
+			? in_array( get_the_ID(), $this->data )
+			: parent::validate_positive();
 	}
 
 }
-
 
 class M_BPGroups extends M_Rule {
 
@@ -406,296 +253,143 @@ class M_BPGroups extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
+	function on_positive( $data ) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 
-		$this->data = $data;
-
-		add_filter( 'groups_get_groups', array(&$this, 'add_viewable_groups'), 10, 2 );
-		//add_filter( 'bp_has_groups', array(&$this, 'add_has_groups'), 10, 2);
-
-		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
-
-		//add_action( 'pre_get_posts', array(&$this, 'check_positive_groups') );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'positive' );
-		}
-
+		add_filter( 'groups_get_groups', array( $this, 'add_viewable_groups' ) );
+		add_filter( 'bp_activity_get', array( $this, 'add_has_activity' ) );
+		//add_filter( 'bp_has_groups', array( $this, 'add_has_groups'), 10, 2 );
 	}
 
-	function add_has_activity($activities, $two) {
-
+	function add_has_activity( $activities ) {
 		$inneracts = $activities['activities'];
 
-		foreach( (array) $inneracts as $key => $act ) {
-
-			if($act->component == 'groups') {
-				if(!in_array($act->item_id, $this->data)) {
-					unset($inneracts[$key]);
+		foreach ( (array)$inneracts as $key => $act ) {
+			if ( $act->component == 'groups' ) {
+				if ( !in_array( $act->item_id, $this->data ) ) {
+					unset( $inneracts[$key] );
 					$activities['total']--;
 				}
 			}
 		}
 
 		$activities['activities'] = array();
-		foreach( (array) $inneracts as $key => $act ) {
+		foreach ( (array) $inneracts as $key => $act ) {
 			$activities['activities'][] = $act;
 		}
 
 		return $activities;
 	}
 
-	function add_has_groups( $one, $groups) {
-
+	function add_has_groups( $one, $groups ) {
 		$innergroups = $groups->groups;
-
-		foreach( (array) $innergroups as $key => $group ) {
-			if(!in_array($group->group_id, $this->data)) {
-				unset($innergroups[$key]);
+		foreach ( (array)$innergroups as $key => $group ) {
+			if ( !in_array( $group->group_id, $this->data ) ) {
+				unset( $innergroups[$key] );
 				$groups->total_group_count--;
 			}
 		}
 
 		$groups->groups = array();
-		foreach( (array) $innergroups as $key => $group ) {
+		foreach ( (array)$innergroups as $key => $group ) {
 			$groups->groups[] = $group;
 		}
 
-		if(empty($groups->groups)) {
-			return false;
-		} else {
-			return true;
-		}
+		return !empty( $groups->groups );
 	}
 
-	function add_unhas_groups( $one, $groups) {
-
+	function add_unhas_groups( $one, $groups ) {
 		$innergroups = $groups->groups;
-
-		foreach( (array) $innergroups as $key => $group ) {
-			if(in_array($group->group_id, $this->data)) {
-				unset($innergroups[$key]);
+		foreach ( (array)$innergroups as $key => $group ) {
+			if ( in_array( $group->group_id, $this->data ) ) {
+				unset( $innergroups[$key] );
 				$groups->total_group_count--;
 			}
 		}
 
 		$groups->groups = array();
-		foreach( (array) $innergroups as $key => $group ) {
+		foreach ( (array)$innergroups as $key => $group ) {
 			$groups->groups[] = $group;
 		}
 
-		if(empty($groups->groups)) {
-			return false;
-		} else {
-			return true;
-		}
+		return !empty( $groups->groups );
 	}
 
 	function on_negative($data) {
+		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 
-		$this->data = $data;
-
-		add_filter( 'groups_get_groups', array(&$this, 'add_unviewable_groups'), 10, 2 );
-		//add_filter( 'bp_has_groups', array(&$this, 'add_unhas_groups'), 10, 2);
-
-		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
-
-		//add_action( 'pre_get_posts', array(&$this, 'check_negative_groups') );
-
-		$group_id = $this->get_group();
-		if(!empty($group_id)) {
-			$group = new M_Urlgroup( $group_id );
-			M_add_to_global_urlgroup( $group->group_urls_array(), 'negative' );
-		}
-
+		add_filter( 'groups_get_groups', array( &$this, 'add_unviewable_groups' ) );
+		add_filter( 'bp_activity_get', array( &$this, 'add_unhas_activity' ) );
+		//add_filter( 'bp_has_groups', array( $this, 'add_unhas_groups'), 10, 2 );
 	}
 
-	function add_unhas_activity($activities, $two) {
-
+	function add_unhas_activity( $activities ) {
 		$inneracts = $activities['activities'];
-
-		foreach( (array) $inneracts as $key => $act ) {
-
-			if($act->component == 'groups') {
-				if(in_array($act->item_id, $this->data)) {
-					unset($inneracts[$key]);
+		foreach ( (array)$inneracts as $key => $act ) {
+			if ( $act->component == 'groups' ) {
+				if ( in_array( $act->item_id, $this->data ) ) {
+					unset( $inneracts[$key] );
 					$activities['total']--;
 				}
 			}
 		}
 
-		$activities['activities'] = array();
-		foreach( (array) $inneracts as $key => $act ) {
+		$activities['activities'] = array( );
+		foreach ( (array)$inneracts as $key => $act ) {
 			$activities['activities'][] = $act;
 		}
 
 		return $activities;
 	}
 
-	function add_viewable_groups($groups, $params) {
-
-		foreach( (array) $groups['groups'] as $key => $group ) {
-
-			if(!in_array($group->id, $this->data)) {
-				unset($groups['groups'][$key]);
+	function add_viewable_groups( $groups ) {
+		foreach ( (array)$groups['groups'] as $key => $group ) {
+			if ( !in_array( $group->id, $this->data ) ) {
+				unset( $groups['groups'][$key] );
 				$groups['total']--;
 			}
 		}
 
-		sort($groups['groups']);
+		sort( $groups['groups'] );
 
 		return $groups;
-
 	}
 
-	function add_unviewable_groups($groups, $params) {
-
-		foreach( (array) $groups['groups'] as $key => $group ) {
-
-			if(in_array($group->id, $this->data)) {
-				unset($groups['groups'][$key]);
+	function add_unviewable_groups( $groups ) {
+		foreach ( (array)$groups['groups'] as $key => $group ) {
+			if ( in_array( $group->id, $this->data ) ) {
+				unset( $groups['groups'][$key] );
 				$groups['total']--;
 			}
 		}
 
-		sort($groups['groups']);
+		sort( $groups['groups'] );
 
 		return $groups;
-
 	}
 
-	function get_group() {
+	function validate_negative() {
+		global $bp;
 
-		global $wpdb;
-
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix($wpdb, 'urlgroups') . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $this->level_id );
-
-		$results = $wpdb->get_var( $sql );
-
-		if(!empty($results)) {
-			return $results;
-		} else {
-			return false;
-		}
-	}
-
-	function check_negative_groups( $wp ) {
-
-		global $wp_query, $M_options, $bp;
-
-		$component = bp_current_component();
-
-		if(!empty($component) && $component == 'groups') {
-			// we may be on a restricted post so check the URL and redirect if needed
-
-			// If we aren't on a group then return
-			if($bp->groups->current_group == 0) {
-				return;
-			}
-
-			$redirect = false;
-			$url = '';
-
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-			$url = '';
-			if(is_ssl()) {
-				$url = "https://";
-			} else {
-				$url = "http://";
-			}
-			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-			if(membership_check_expression_match( strtolower($url), $exclude)) {
-				return;
-			}
-
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $url ) ) {
-					$redirect = true;
-				}
-			}
-
-			if($redirect == true && !empty($M_options['nocontent_page'])) {
-				// we need to redirect
-				membership_set_negative_redirect();
-			} else {
-				return;
-			}
-
+		if ( bp_current_component() != 'groups' ) {
+			return parent::validate_negative();
 		}
 
-		return;
-
+		return isset( $bp->groups->current_group ) && is_a( $bp->groups->current_group, 'BP_Groups_Group' )
+			? !in_array( $bp->groups->current_group, $this->data )
+			: parent::validate_negative();
 	}
 
-	function check_positive_groups( $posts ) {
+	function validate_positive() {
+		global $bp;
 
-		global $wp_query, $M_options, $bp;
-
-		$component = bp_current_component();
-
-		if(!empty($component) && $component == 'groups') {
-			// we may be on a restricted post so check the URL and redirect if needed
-
-			// If we aren't on a group then return
-			if($bp->groups->current_group == 0) {
-				return;
-			}
-
-			$found = false;
-			$url = '';
-
-			$exclude = apply_filters( 'membership_excluded_urls', array() );
-
-			$url = '';
-			if(is_ssl()) {
-				$url = "https://";
-			} else {
-				$url = "http://";
-			}
-			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-			if(membership_check_expression_match( strtolower($url), $exclude)) {
-				return;
-			}
-
-			// we have the current page / url - get the groups selected
-			$group_id = $this->get_group();
-
-			if($group_id) {
-				$group = new M_Urlgroup( $group_id );
-
-				if( $group->url_matches( $url ) ) {
-					$found = true;
-				}
-			}
-
-			if($found == true) {
-				membership_set_positive_no_redirect();
-				// we need to redirect
-				//$this->redirect();
-			} else {
-				return;
-			}
-
+		if ( bp_current_component() != 'groups' ) {
+			return parent::validate_positive();
 		}
 
-		return;
-
-	}
-
-	function redirect() {
-
-		membership_redirect_to_protected();
-
+		return isset( $bp->groups->current_group ) && is_a( $bp->groups->current_group, 'BP_Groups_Group' )
+			? in_array( $bp->groups->current_group, $this->data )
+			: parent::validate_positive();
 	}
 
 }
@@ -722,77 +416,62 @@ class M_BPGroupcreation extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
-
+	function on_positive( $data ) {
 		$this->data = $data;
-
-		add_filter( 'groups_template_create_group', array(&$this, 'pos_bp_groups_template') );
+		add_filter( 'groups_template_create_group', array( $this, 'pos_bp_groups_template' ) );
 	}
 
-	function on_negative($data) {
-
+	function on_negative( $data ) {
 		$this->data = $data;
-
-		add_filter( 'groups_template_create_group', array(&$this, 'neg_bp_groups_template') );
-
+		add_filter( 'groups_template_create_group', array( $this, 'neg_bp_groups_template' ) );
 	}
 
-	function pos_bp_groups_template($template) {
-	  	global $bp;
-
-	  	// Positive - check if the count is set
-	  	if(empty($this->data['number'])) {
-			return $template;
-		} else {
-			if(is_numeric($this->data['number']) && (int) $this->data['number'] > $this->users_group_count() ) {
-				return $template;
-			} else {
-				return $this->neg_bp_groups_template($template);
+	function pos_bp_groups_template( $template ) {
+		if ( !empty( $this->data['number'] ) ) {
+			if ( !is_numeric( $this->data['number'] ) || (int)$this->data['number'] > $this->users_group_count() ) {
+				return $this->neg_bp_groups_template( $template );
 			}
 		}
+
+		return $template;
 	}
 
 	function users_group_count() {
 		global $member, $wpdb, $bp;
 
-		if(!empty($member) && method_exists($member, 'has_cap')) {
+		if ( !empty( $member ) && method_exists( $member, 'has_cap' ) ) {
 			// We have a member and it is a correct object
-			$count = $wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM {$bp->activity->table_name} WHERE component = 'groups' AND type = 'created_group' AND user_id = %d", $member->ID) );
-
-			return (int) $count;
-		} else {
-			return 0;
+			return (int)$wpdb->get_var( $wpdb->prepare(
+				"SELECT count(*) FROM {$bp->activity->table_name} WHERE component = 'groups' AND type = 'created_group' AND user_id = %d",
+				$member->ID
+			) );
 		}
+
+		return 0;
 	}
 
-	function neg_bp_groups_template($template) {
-	  global $bp;
+	function neg_bp_groups_template( $template ) {
+		global $bp;
 
-	  //hack template steps to hide creation form elements
-	  $bp->action_variables[1] = 'disabled'; //nonsensical value, hide all group steps
-	  $bp->avatar_admin->step = 'crop-image'; //hides submit button
-	  add_action( 'template_notices', array(&$this, 'neg_bp_message') );
+		//hack template steps to hide creation form elements
+		$bp->action_variables[1] = 'disabled'; //nonsensical value, hide all group steps
+		$bp->avatar_admin->step = 'crop-image'; //hides submit button
+		add_action( 'template_notices', array( $this, 'neg_bp_message' ) );
 
-	  return $template;
+		return $template;
 	}
 
 	function neg_bp_message() {
-
-		if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-			if(function_exists('get_blog_option')) {
-				$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
-			} else {
-				$MBP_options = get_option('membership_bp_options', array());
-			}
+		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			$MBP_options = function_exists( 'get_blog_option' )
+				? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array() )
+				: get_option( 'membership_bp_options', array() );
 		} else {
-			$MBP_options = get_option('membership_bp_options', array());
+			$MBP_options = get_option( 'membership_bp_options', array() );
 		}
 
-	 	echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
-
+		echo '<div id="message" class="error"><p>' . stripslashes( $MBP_options['buddypressmessage'] ) . '</p></div>';
 	}
-
-
 
 }
 
@@ -874,174 +553,138 @@ class M_BPBlogs extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
-
+	function on_positive( $data ) {
 		$this->data = $data;
 
-		add_filter( 'bp_blogs_get_blogs', array(&$this, 'add_viewable_blogs'), 10, 2 );
-		add_filter( 'bp_has_blogs', array(&$this, 'add_has_blogs'), 10, 2);
-
-		add_filter( 'bp_activity_get', array(&$this, 'add_has_activity'), 10, 2 );
-
-		add_filter( 'bp_get_total_blog_count', array(&$this, 'fix_blog_count'));
-
+		add_filter( 'bp_blogs_get_blogs', array( $this, 'add_viewable_blogs' ), 10, 2 );
+		add_filter( 'bp_has_blogs', array( $this, 'add_has_blogs' ), 10, 2 );
+		add_filter( 'bp_activity_get', array( $this, 'add_has_activity' ), 10, 2 );
+		add_filter( 'bp_get_total_blog_count', array( $this, 'fix_blog_count' ) );
 	}
 
-	function on_negative($data) {
-
+	function on_negative( $data ) {
 		$this->data = $data;
 
-		add_filter('bp_blogs_get_blogs', array(&$this, 'add_unviewable_blogs'), 10, 2 );
-		add_filter( 'bp_has_blogs', array(&$this, 'add_unhas_blogs'), 10, 2);
-
-		add_filter( 'bp_activity_get', array(&$this, 'add_unhas_activity'), 10, 2 );
-
-		add_filter( 'bp_get_total_blog_count', array(&$this, 'fix_unblog_count'));
+		add_filter( 'bp_blogs_get_blogs', array( $this, 'add_unviewable_blogs' ), 10, 2 );
+		add_filter( 'bp_has_blogs', array( $this, 'add_unhas_blogs' ), 10, 2 );
+		add_filter( 'bp_activity_get', array( $this, 'add_unhas_activity' ), 10, 2 );
+		add_filter( 'bp_get_total_blog_count', array( $this, 'fix_unblog_count' ) );
 	}
 
-	function fix_blog_count($count) {
-
-		$count = count($this->data);
-
+	function fix_blog_count( $count ) {
+		$count = count( $this->data );
 		return $count;
 	}
 
-	function fix_unblog_count($count) {
-
-		$count -= count($this->data);
-
+	function fix_unblog_count( $count ) {
+		$count -= count( $this->data );
 		return $count;
 	}
 
-
-	function add_has_activity($activities, $two) {
-
+	function add_has_activity( $activities, $two ) {
 		$inneracts = $activities['activities'];
-
-		foreach( (array) $inneracts as $key => $act ) {
-
-			if($act->component == 'blogs') {
-				if(!in_array($act->item_id, $this->data)) {
-					unset($inneracts[$key]);
+		foreach ( (array)$inneracts as $key => $act ) {
+			if ( $act->component == 'blogs' ) {
+				if ( !in_array( $act->item_id, $this->data ) ) {
+					unset( $inneracts[$key] );
 					$activities['total']--;
 				}
 			}
 		}
 
 		$activities['activities'] = array();
-		foreach( (array) $inneracts as $key => $act ) {
+		foreach ( (array)$inneracts as $key => $act ) {
 			$activities['activities'][] = $act;
 		}
 
 		return $activities;
 	}
 
-	function add_unhas_activity($activities, $two) {
-
+	function add_unhas_activity( $activities, $two ) {
 		$inneracts = $activities['activities'];
-
-		foreach( (array) $inneracts as $key => $act ) {
-
-			if($act->component == 'blogs') {
-				if(in_array($act->item_id, $this->data)) {
-					unset($inneracts[$key]);
+		foreach ( (array)$inneracts as $key => $act ) {
+			if ( $act->component == 'blogs' ) {
+				if ( in_array( $act->item_id, $this->data ) ) {
+					unset( $inneracts[$key] );
 					$activities['total']--;
 				}
 			}
 		}
 
 		$activities['activities'] = array();
-		foreach( (array) $inneracts as $key => $act ) {
+		foreach ( (array)$inneracts as $key => $act ) {
 			$activities['activities'][] = $act;
 		}
 
 		return $activities;
 	}
 
-	function add_unhas_blogs( $one, $blogs) {
-
+	function add_unhas_blogs( $one, $blogs ) {
 		$innerblogs = $blogs->blogs;
-
-		foreach( (array) $innerblogs as $key => $blog ) {
-			if(in_array($blog->blog_id, $this->data)) {
-				unset($innerblogs[$key]);
+		foreach ( (array)$innerblogs as $key => $blog ) {
+			if ( in_array( $blog->blog_id, $this->data ) ) {
+				unset( $innerblogs[$key] );
 				$blogs->total_blog_count--;
 			}
 		}
 
 		$blogs->blogs = array();
-		foreach( (array) $innerblogs as $key => $blog ) {
+		foreach ( (array) $innerblogs as $key => $blog ) {
 			$blogs->blogs[] = $blog;
 		}
 
-		if(empty($blogs->blogs)) {
-			return false;
-		} else {
-			return true;
-		}
+		return !empty( $blogs->blogs );
 	}
 
-	function add_has_blogs( $one, $blogs) {
-
+	function add_has_blogs( $one, $blogs ) {
 		$innerblogs = $blogs->blogs;
-
-		foreach( (array) $innerblogs as $key => $blog ) {
-			if(!in_array($blog->blog_id, $this->data)) {
-				unset($innerblogs[$key]);
+		foreach ( (array)$innerblogs as $key => $blog ) {
+			if ( !in_array( $blog->blog_id, $this->data ) ) {
+				unset( $innerblogs[$key] );
 				$blogs->total_blog_count--;
 			}
 		}
 
 		$blogs->blogs = array();
-		foreach( (array) $innerblogs as $key => $blog ) {
+		foreach ( (array)$innerblogs as $key => $blog ) {
 			$blogs->blogs[] = $blog;
 		}
 
-		if(empty($blogs->blogs)) {
-			return false;
-		} else {
-			return true;
-		}
+		return !empty( $blogs->blogs );
 	}
 
-	function add_viewable_blogs($blogs, $params) {
-
+	function add_viewable_blogs( $blogs, $params ) {
 		$innerblogs = $blogs['blogs'];
-
-		foreach( (array) $innerblogs as $key => $blog ) {
-			if(!in_array($blog->blog_id, $this->data)) {
-				unset($innerblogs[$key]);
+		foreach ( (array)$innerblogs as $key => $blog ) {
+			if ( !in_array( $blog->blog_id, $this->data ) ) {
+				unset( $innerblogs[$key] );
 				$blogs['total']--;
 			}
 		}
 
 		$blogs['blogs'] = array();
-		foreach( (array) $innerblogs as $key => $blog ) {
+		foreach ( (array)$innerblogs as $key => $blog ) {
 			$blogs['blogs'][] = $blog;
 		}
 
 		return $blogs;
-
 	}
 
-	function add_unviewable_blogs($blogs, $params) {
-
+	function add_unviewable_blogs( $blogs, $params ) {
 		$innerblogs = $blogs['groups'];
-
-		foreach( (array) $innerblogs as $key => $blog ) {
-			if(in_array($blog->blog_id, $this->data)) {
-				unset($innerblogs[$key]);
+		foreach ( (array)$innerblogs as $key => $blog ) {
+			if ( in_array( $blog->blog_id, $this->data ) ) {
+				unset( $innerblogs[$key] );
 				$blogs['total']--;
 			}
 		}
 
 		$blogs['blogs'] = array();
-		foreach( (array) $innerblogs as $key => $blog ) {
+		foreach ( (array)$innerblogs as $key => $blog ) {
 			$blogs['blogs'][] = $blog;
 		}
 
 		return $blogs;
-
 	}
 
 }
@@ -1068,49 +711,36 @@ class M_BPPrivatemessage extends M_Rule {
 		<?php
 	}
 
-	function on_positive($data) {
-
+	function on_positive( $data ) {
 		$this->data = $data;
-
-		add_filter( 'messages_template_compose', array(&$this, 'pos_bp_messages_template') );
+		add_filter( 'messages_template_compose', array( $this, 'pos_bp_messages_template' ) );
 	}
 
-	function on_negative($data) {
-
+	function on_negative( $data ) {
 		$this->data = $data;
-
-		add_filter( 'messages_template_compose', array(&$this, 'neg_bp_messages_template') );
-
+		add_filter( 'messages_template_compose', array( $this, 'neg_bp_messages_template' ) );
 	}
 
-	function pos_bp_messages_template($template) {
-
-	  return $template;
+	function pos_bp_messages_template( $template ) {
+		return $template;
 	}
 
-	function neg_bp_messages_template($template) {
-
-	  add_action( 'bp_template_content', array(&$this, 'neg_bp_message') );
-
-	  return 'members/single/plugins';
+	function neg_bp_messages_template( $template ) {
+		add_action( 'bp_template_content', array( $this, 'neg_bp_message' ) );
+		return 'members/single/plugins';
 	}
 
 	function neg_bp_message() {
-	  	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-			if(function_exists('get_blog_option')) {
-				$MBP_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array());
-			} else {
-				$MBP_options = get_option('membership_bp_options', array());
-			}
+		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+			$MBP_options = function_exists( 'get_blog_option' )
+				? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array() )
+				: get_option( 'membership_bp_options', array() );
 		} else {
-			$MBP_options = get_option('membership_bp_options', array());
+			$MBP_options = get_option( 'membership_bp_options', array( ) );
 		}
 
-	  echo '<div id="message" class="error"><p>' . stripslashes($MBP_options['buddypressmessage']) . '</p></div>';
-
+		echo '<div id="message" class="error"><p>' . stripslashes( $MBP_options['buddypressmessage'] ) . '</p></div>';
 	}
-
-
 
 }
 
@@ -1235,27 +865,21 @@ function M_overrideBPSignupSlug( $slug ) {
 	}
 }
 
+add_action( 'plugins_loaded', 'M_setup_BP_addons', 99 );
 function M_setup_BP_addons() {
-	if(defined('BP_VERSION') && version_compare( preg_replace('/-.*$/', '', BP_VERSION), "1.5", '>=')) {
-		M_register_rule('bppages', 'M_BPPages', 'bp');
-		M_register_rule('bpprivatemessage', 'M_BPPrivatemessage', 'bp');
-		M_register_rule('bpblogs', 'M_BPBlogs', 'bp');
-		M_register_rule('bpgroupcreation', 'M_BPGroupcreation', 'bp');
-		M_register_rule('bpgroups', 'M_BPGroups', 'bp');
-
-		add_filter('membership_level_sections', 'M_AddBuddyPressSection');
+	if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), "1.5", '>=' ) ) {
+		M_register_rule( 'bppages', 'M_BPPages', 'bp' );
+		M_register_rule( 'bpprivatemessage', 'M_BPPrivatemessage', 'bp' );
+		M_register_rule( 'bpblogs', 'M_BPBlogs', 'bp' );
+		M_register_rule( 'bpgroupcreation', 'M_BPGroupcreation', 'bp' );
+		M_register_rule( 'bpgroups', 'M_BPGroups', 'bp' );
 
 		add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
 		add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
 
+		add_filter( 'membership_level_sections', 'M_AddBuddyPressSection' );
 		add_filter( 'membership_hide_protectable_pages', 'M_HideBuddyPressPages' );
 		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
-
 		add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
-
 	}
-
 }
-add_action('plugins_loaded', 'M_setup_BP_addons', 99);
-
-?>

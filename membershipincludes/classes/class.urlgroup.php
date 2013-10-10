@@ -170,44 +170,6 @@ if ( !class_exists( 'M_Urlgroup' ) ) :
 	}
 endif;
 
-add_action( 'membership_update_positive_rule', 'M_create_internal_URL_group', 10, 3 );
-add_action( 'membership_update_negative_rule', 'M_create_internal_URL_group', 10, 3 );
-add_action( 'membership_add_positive_rule', 'M_create_internal_URL_group', 10, 3 );
-add_action( 'membership_add_negative_rule', 'M_create_internal_URL_group', 10, 3 );
-function M_create_internal_URL_group( $rule, $post, $level_id ) {
-	global $wpdb;
-
-	if ( $rule == 'bpgroups' ) {
-		$permalinks = array( );
-		if ( function_exists( 'bp_get_group_permalink' ) ) {
-			foreach ( $_POST[$rule] as $rule ) {
-				$group = new BP_Groups_Group( $rule );
-				$thelink = bp_get_group_permalink( $group );
-				$thelink = str_replace( 'http://', 'https?://', $thelink );
-				$permalinks[] = untrailingslashit( $thelink ) . '(/.*)';
-			}
-		}
-
-		$sql = $wpdb->prepare( "SELECT id FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname = %s ORDER BY id DESC LIMIT 0,1", '_bpgroups-' . $level_id );
-		$id = $wpdb->get_var( $sql );
-
-		$data = array(
-			"groupname"        => '_bpgroups-' . $level_id,
-			"groupurls"        => implode( PHP_EOL, $permalinks ),
-			"isregexp"         => 1,
-			"stripquerystring" => 1
-		);
-
-		if ( !empty( $id ) ) {
-			// exists so we're going to do an update
-			$wpdb->update( membership_db_prefix( $wpdb, 'urlgroups' ), $data, array( "id" => $id ) );
-		} else {
-			// doesn't exist so we're going to do an add.
-			$wpdb->insert( membership_db_prefix( $wpdb, 'urlgroups' ), $data );
-		}
-	}
-}
-
 function M_add_to_global_urlgroup( $urls, $area = 'negative' ) {
 	global $M_global_groups;
 

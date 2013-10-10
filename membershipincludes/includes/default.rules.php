@@ -79,10 +79,36 @@ class M_Posts extends M_Rule {
 
 	function on_positive( $data ) {
 		$this->data = array_filter( array_map( 'intval', (array)$data ) );
+		add_action( 'pre_get_posts', array( $this, 'add_viewable_posts' ), 99 );
 	}
 
 	function on_negative( $data ) {
 		$this->data = array_filter( array_map( 'intval', (array)$data ) );
+		add_action( 'pre_get_posts', array( $this, 'add_unviewable_posts' ), 99 );
+	}
+
+	function add_viewable_posts( $wp_query ) {
+		if ( !$wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ( !isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) )) ) {
+
+			// We are in a list rather than on a single post
+			foreach ( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__in'] = array_unique( $wp_query->query_vars['post__in'] );
+		}
+	}
+
+	function add_unviewable_posts( $wp_query ) {
+		if ( !$wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ( !isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
+
+			// We are on a list rather than on a single post
+			foreach ( (array) $this->data as $key => $value ) {
+				$wp_query->query_vars['post__not_in'][] = $value;
+			}
+
+			$wp_query->query_vars['post__not_in'] = array_unique( $wp_query->query_vars['post__not_in'] );
+		}
 	}
 
 	function validate_negative() {
