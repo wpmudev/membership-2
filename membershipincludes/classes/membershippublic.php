@@ -1107,11 +1107,11 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_ACCOUNT_FORM') && file_exists( MEMBERSHIP_ACCOUNT_FORM ) ) {
-				include_once( MEMBERSHIP_ACCOUNT_FORM );
+				include( MEMBERSHIP_ACCOUNT_FORM );
 			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpaccount_form', membership_dir('membershipincludes/includes/bp.account.form.php'), $user_id) )) {
-				include_once( apply_filters('membership_override_bpaccount_form', membership_dir('membershipincludes/includes/bp.account.form.php'), $user_id) );
+				include( apply_filters('membership_override_bpaccount_form', membership_dir('membershipincludes/includes/bp.account.form.php'), $user_id) );
 			} elseif( file_exists( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) ) ) {
-				include_once( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) );
+				include( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1132,11 +1132,11 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-				include_once( MEMBERSHIP_REGISTRATION_FORM );
+				include( MEMBERSHIP_REGISTRATION_FORM );
 			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-				include_once( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
+				include( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
 			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-				include_once( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
+				include( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1155,9 +1155,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
-				include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
+				include( MEMBERSHIP_SUBSCRIPTION_FORM );
 			} elseif(file_exists( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) ) ) {
-				include_once( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
+				include( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1176,9 +1176,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_MEMBER_FORM') && file_exists( MEMBERSHIP_MEMBER_FORM ) ) {
-				include_once( MEMBERSHIP_MEMBER_FORM );
+				include( MEMBERSHIP_MEMBER_FORM );
 			} elseif(file_exists( apply_filters('membership_override_member_form', membership_dir('membershipincludes/includes/member.form.php')) )) {
-				include_once( apply_filters('membership_override_member_form', membership_dir('membershipincludes/includes/member.form.php')) );
+				include( apply_filters('membership_override_member_form', membership_dir('membershipincludes/includes/member.form.php')) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1197,9 +1197,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_UPGRADE_FORM') && file_exists( MEMBERSHIP_UPGRADE_FORM ) ) {
-				include_once( MEMBERSHIP_UPGRADE_FORM );
+				include( MEMBERSHIP_UPGRADE_FORM );
 			} elseif(file_exists( apply_filters('membership_override_upgrade_form', membership_dir('membershipincludes/includes/upgrade.form.php')) )) {
-				include_once( apply_filters('membership_override_upgrade_form', membership_dir('membershipincludes/includes/upgrade.form.php')) );
+				include( apply_filters('membership_override_upgrade_form', membership_dir('membershipincludes/includes/upgrade.form.php')) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1220,9 +1220,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			ob_start();
 			if( defined('MEMBERSHIP_RENEW_FORM') && file_exists( MEMBERSHIP_RENEW_FORM ) ) {
-				include_once( MEMBERSHIP_RENEW_FORM );
+				include( MEMBERSHIP_RENEW_FORM );
 			} elseif(file_exists( apply_filters('membership_override_renew_form', membership_dir('membershipincludes/includes/renew.form.php')) )) {
-				include_once( apply_filters('membership_override_renew_form', membership_dir('membershipincludes/includes/renew.form.php')) );
+				include( apply_filters('membership_override_renew_form', membership_dir('membershipincludes/includes/renew.form.php')) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1371,9 +1371,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			$content = apply_filters('membership_subscription_form_before_content', '', $user_id);
 			ob_start();
 			if( defined('MEMBERSHIP_SUBSCRIPTION_FORM') && file_exists( MEMBERSHIP_SUBSCRIPTION_FORM ) ) {
-				include_once( MEMBERSHIP_SUBSCRIPTION_FORM );
+				include( MEMBERSHIP_SUBSCRIPTION_FORM );
 			} elseif(file_exists( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) ) ) {
-				include_once( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
+				include( apply_filters('membership_override_subscription_form', membership_dir('membershipincludes/includes/subscription.form.php'), $user_id) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1391,11 +1391,11 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			$content = apply_filters('membership_subscription_form_registration_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-				include_once( MEMBERSHIP_REGISTRATION_FORM );
+				include( MEMBERSHIP_REGISTRATION_FORM );
 			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-				include_once( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
+				include( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
 			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-				include_once( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
+				include( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();
@@ -1430,9 +1430,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			$content = apply_filters('membership_subscription_form_payment_before_content', '', $error);
 			ob_start();
 			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
-				include_once( MEMBERSHIP_PAYMENT_FORM );
+				include( MEMBERSHIP_PAYMENT_FORM );
 			} elseif( file_exists( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) ) ) {
-				include_once( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) );
+				include( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) );
 			}
 			$content .= ob_get_contents();
 			ob_end_clean();

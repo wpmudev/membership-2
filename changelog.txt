@@ -1,5 +1,6 @@
 == 3.4.6 ==
 
+* Fixed issue with not loaded custom templates for membership pages
 * Fixed bug with wrongly added memberhsip pages to a query
 * Fixed ability to access account page by unlogged users
 * Fixed issue with left user information in the membership relationships table after user has been deleted
