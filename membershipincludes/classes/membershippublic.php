@@ -153,8 +153,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				add_filter('the_content', array(&$this, 'protect_download_content') );
 			}
 
-			// Makes sure that despite other rules, the pages set in the options panel are available to the user
-			add_action('pre_get_posts', array(&$this, 'ensure_option_pages_visible'), 999 );
 			// check for a no-access page and always filter it if needed
 			if(!empty($M_options['nocontent_page']) && $M_options['nocontent_page'] != $M_options['registration_page']) {
 				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
@@ -876,53 +874,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			return array($post);
-
-		}
-
-		function ensure_option_pages_visible($wp_query) {
-
-			global $M_options;
-
-			if(empty($wp_query->query_vars['post__in'])) {
-				return;
-			}
-
-			$forchecking = array();
-
-			if(!empty($M_options['registration_page'])) {
-				$wp_query->query_vars['post__in'][] = $M_options['registration_page'];
-				$forchecking[] = $M_options['registration_page'];
-			}
-
-			if(!empty($M_options['account_page'])) {
-				$wp_query->query_vars['post__in'][] = $M_options['account_page'];
-				$forchecking[] = $M_options['account_page'];
-			}
-
-			if(!empty($M_options['nocontent_page'])) {
-				$wp_query->query_vars['post__in'][] = $M_options['nocontent_page'];
-				$forchecking[] = $M_options['nocontent_page'];
-			}
-
-			if(!empty($M_options['registrationcompleted_page'])) {
-				$wp_query->query_vars['post__in'][] = $M_options['registrationcompleted_page'];
-				$forchecking[] = $M_options['registrationcompleted_page'];
-			}
-
-			if(!empty($M_options['subscriptions_page'])) {
-				$wp_query->query_vars['post__in'][] = $M_options['subscriptions_page'];
-				$forchecking[] = $M_options['subscriptions_page'];
-			}
-
-			if(is_array($wp_query->query_vars['post__not_in'])) {
-				foreach($wp_query->query_vars['post__not_in'] as $key => $value) {
-					if(in_array( $value, (array) $forchecking ) ) {
-						unset($wp_query->query_vars['post__not_in'][$key]);
-					}
-				}
-			}
-
-			$wp_query->query_vars['post__in'] = array_unique($wp_query->query_vars['post__in']);
 
 		}
 
