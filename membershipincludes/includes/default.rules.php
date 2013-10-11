@@ -235,14 +235,16 @@ class M_Pages extends M_Rule {
 	}
 
 	function validate_negative() {
-		return is_page()
-			? !in_array( get_the_ID(), $this->data )
+		$page = get_queried_object();
+		return is_a( $page, 'WP_Post' ) && $page->post_type == 'page'
+			? !in_array( $page->ID, $this->data )
 			: parent::validate_negative();
 	}
 
 	function validate_positive() {
-		return is_page()
-			? in_array( get_the_ID(), $this->data )
+		$page = get_queried_object();
+		return is_a( $page, 'WP_Post' ) && $page->post_type == 'page'
+			? in_array( $page->ID, $this->data )
 			: parent::validate_positive();
 	}
 

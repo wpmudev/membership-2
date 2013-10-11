@@ -276,7 +276,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			// New url protection processing - rewriting
-			add_action( 'template_redirect', array( $this, 'complete_url_protection_processing' ) );
+			add_action( 'template_redirect', array( $this, 'complete_url_protection_processing' ), 1 );
 
 			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
