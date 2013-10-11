@@ -44,11 +44,9 @@ function M_Upgrade( $from = false ) {
 		case 12:
 		case 13:
 			M_Alterfor14();
-			break;
 
 		case 14:
 			M_Alterfor15();
-			break;
 
 		case 15:
 			M_Alterfor16();
