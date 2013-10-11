@@ -1120,65 +1120,85 @@ function membership_debug_log( $message ) {
 
 }
 
-function membership_is_registration_page( $page_id = null ) {
+function membership_is_registration_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
+
+	if ( $check_is_page && !is_page() ) {
+		return false;
+	}
 
 	$page_id = intval( $page_id );
 	if ( !$page_id ) {
 		$page_id = get_the_ID();
 	}
 
-	return is_page() && isset( $M_options['registration_page'] ) && $page_id == $M_options['registration_page'];
+	return isset( $M_options['registration_page'] ) && $page_id == $M_options['registration_page'];
 }
 
-function membership_is_account_page( $page_id = null ) {
+function membership_is_account_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
+
+	if ( $check_is_page && !is_page() ) {
+		return false;
+	}
 
 	$page_id = intval( $page_id );
 	if ( !$page_id ) {
 		$page_id = get_the_ID();
 	}
 
-	return is_page() && isset( $M_options['account_page'] ) && $page_id == $M_options['account_page'];
+	return isset( $M_options['account_page'] ) && $page_id == $M_options['account_page'];
 }
 
-function membership_is_subscription_page( $page_id = null ) {
+function membership_is_subscription_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
+
+	if ( $check_is_page && !is_page() ) {
+		return false;
+	}
 
 	$page_id = intval( $page_id );
 	if ( !$page_id ) {
 		$page_id = get_the_ID();
 	}
 
-	return is_page() && isset( $M_options['subscriptions_page'] ) && $page_id == $M_options['subscriptions_page'];
+	return isset( $M_options['subscriptions_page'] ) && $page_id == $M_options['subscriptions_page'];
 }
 
-function membership_is_welcome_page( $page_id = null ) {
+function membership_is_welcome_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
+
+	if ( $check_is_page && !is_page() ) {
+		return false;
+	}
 
 	$page_id = intval( $page_id );
 	if ( !$page_id ) {
 		$page_id = get_the_ID();
 	}
 
-	return is_page() && isset( $M_options['registrationcompleted_page'] ) && $page_id == $M_options['registrationcompleted_page'];
+	return isset( $M_options['registrationcompleted_page'] ) && $page_id == $M_options['registrationcompleted_page'];
 }
 
-function membership_is_protected_page( $page_id = null ) {
+function membership_is_protected_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
+
+	if ( $check_is_page && !is_page() ) {
+		return false;
+	}
 
 	$page_id = intval( $page_id );
 	if ( !$page_id ) {
 		$page_id = get_the_ID();
 	}
 
-	return is_page() && isset( $M_options['nocontent_page'] ) && $page_id == $M_options['nocontent_page'];
+	return isset( $M_options['nocontent_page'] ) && $page_id == $M_options['nocontent_page'];
 }
 
-function membership_is_special_page( $page_id = null, $check_type = true ) {
+function membership_is_special_page( $page_id = null, $check_is_page = true ) {
 	global $M_options;
 
-	if ( $check_type && !is_page() ) {
+	if ( $check_is_page && !is_page() ) {
 		return false;
 	}
 
