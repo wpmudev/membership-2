@@ -1,5 +1,6 @@
 == 3.4.6 ==
 
+* Fixed unexpected URL exclusion which leads to unexpected issues
 * Fixed issue with not loaded custom templates for membership pages
 * Fixed bug with wrongly added memberhsip pages to a query
 * Fixed ability to access account page by unlogged users
