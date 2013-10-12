@@ -1,5 +1,6 @@
 == 3.4.6 ==
 
+* Fixed communication message subscription plan selection
 * Fixed unexpected URL exclusion which leads to unexpected issues
 * Fixed issue with not loaded custom templates for membership pages
 * Fixed bug with wrongly added memberhsip pages to a query

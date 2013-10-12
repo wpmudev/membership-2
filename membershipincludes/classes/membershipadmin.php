@@ -5402,9 +5402,9 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                         wp_nonce_field('add-comm');
                         $addcomm->addform();
                         echo '<p class="submit">';
+						echo '<input type="reset" class="button" value="', __( 'Reset', 'membership' ), '">';
                         echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Add message', 'membership') . '" /></p>';
                         echo '</form>';
-                        echo '<br/>';
                         ?>
                     </div>
                 </div>
@@ -5429,9 +5429,9 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                         wp_nonce_field('update-comm_' . $comm_id);
                         $editcomm->editform();
                         echo '<p class="submit">';
+						echo '<input type="reset" class="button" value="', __( 'Reset', 'membership' ), '">';
                         echo '<input class="button-primary alignright" type="submit" name="go" value="' . __('Update message', 'membership') . '" /></p>';
                         echo '</form>';
-                        echo '<br/>';
                         ?>
                     </div>
                 </div>
