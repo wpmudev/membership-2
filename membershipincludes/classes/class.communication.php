@@ -346,78 +346,87 @@ if(!class_exists('M_Communication')) {
 
 			$this->comm = $this->get_communication();
 
-			$M_options = get_option('membership_options');
+			$M_options = get_option( 'membership_options' );
 
-			$commdata = apply_filters('membership_comm_constants_list', $this->commconstants);
+			$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
 
 			$member = new M_Membership( $user_id );
 
-			foreach($commdata as $key => $value) {
-				switch($key) {
-					case '%blogname%':			$commdata[$key] = get_option('blogname');
-												break;
+			foreach ( $commdata as $key => $value ) {
+				switch ( $key ) {
+					case '%blogname%':
+						$commdata[$key] = get_option( 'blogname' );
+						break;
 
-					case '%blogurl%':			$commdata[$key] = get_option('home');
-												break;
+					case '%blogurl%':
+						$commdata[$key] = get_option( 'home' );
+						break;
 
-					case '%username%':			$commdata[$key] = $member->user_login;
-												break;
+					case '%username%':
+						$commdata[$key] = $member->user_login;
+						break;
 
-					case '%usernicename%':		$commdata[$key] = $member->user_nicename;
-												break;
+					case '%usernicename%':
+						$commdata[$key] = $member->user_nicename;
+						break;
 
-					case '%networkname%':		$commdata[$key] = get_site_option('site_name');
-												break;
+					case '%networkname%':
+						$commdata[$key] = get_site_option( 'site_name' );
+						break;
 
-					case '%networkurl%':		$commdata[$key] = get_site_option('siteurl');
-												break;
+					case '%networkurl%':
+						$commdata[$key] = get_site_option( 'siteurl' );
+						break;
 
-					case '%subscriptionname%':	if(!$sub_id) {
-													$ids = $member->get_subscription_ids();
-													if(!empty($ids)) {
-														$sub_id = $ids[0];
-													}
-												}
+					case '%subscriptionname%':
+						if ( !$sub_id ) {
+							$ids = $member->get_subscription_ids();
+							if ( !empty( $ids ) ) {
+								$sub_id = $ids[0];
+							}
+						}
 
-												if(!empty($sub_id)) {
-													$sub = new M_Subscription( $sub_id );
-													$commdata[$key] = $sub->sub_name();
-												} else {
-													$commdata[$key] = '';
-												}
+						if ( !empty( $sub_id ) ) {
+							$sub = new M_Subscription( $sub_id );
+							$commdata[$key] = $sub->sub_name();
+						} else {
+							$commdata[$key] = '';
+						}
 
-												break;
+						break;
 
-					case '%levelname%':			if(!$level_id) {
-													$ids = $member->get_level_ids();
-													if(!empty($ids)) {
-														$level_id = $ids[0]->level_id;
-													}
-												}
+					case '%levelname%':
+						if ( !$level_id ) {
+							$ids = $member->get_level_ids();
+							if ( !empty( $ids ) ) {
+								$level_id = $ids[0]->level_id;
+							}
+						}
 
-												if(!empty($level_id)) {
-													$level = new M_Level( $level_id );
-													$commdata[$key] = $level->level_title();
-												} else {
-													$commdata[$key] = '';
-												}
-												break;
+						if ( !empty( $level_id ) ) {
+							$level = new M_Level( $level_id );
+							$commdata[$key] = $level->level_title();
+						} else {
+							$commdata[$key] = '';
+						}
+						break;
 
-					case '%accounturl%':		$commdata[$key] = M_get_account_permalink();
-												break;
+					case '%accounturl%':
+						$commdata[$key] = M_get_account_permalink();
+						break;
 
-					default:					$commdata[$key] = apply_filters( 'membership_commfield_' . $key, '', $user_id );
-												break;
+					default:
+						$commdata[$key] = apply_filters( 'membership_commfield_' . $key, '', $user_id );
+						break;
 				}
 			}
 
 			// Globally replace the values in the ping and then make it into an array to send
-			$commmessage = str_replace(array_keys($commdata), array_values($commdata), stripslashes($this->comm->message) );
+			$commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
 
-			if( !empty($member->user_email) ) {
-				$res = @wp_mail( $member->user_email, stripslashes($this->comm->subject), stripslashes($commmessage) );
+			if ( !empty( $member->user_email ) ) {
+				$res = @wp_mail( $member->user_email, stripslashes( $this->comm->subject ), stripslashes( $commmessage ) );
 			}
-
 		}
 
 	}
@@ -476,71 +485,64 @@ function M_Communication_get_pre_messages( ) {
 
 }
 
-function M_Communication_get_post_messages( ) {
-
+function M_Communication_get_post_messages() {
 	global $wpdb;
-
-	$sql = $wpdb->prepare( "SELECT * FROM " . membership_db_prefix($wpdb, 'communications') . " WHERE periodstamp >= 0 AND active = 1 ORDER BY periodstamp ASC ", null );
-
-	return $wpdb->get_results( $sql );
+	return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'communications' ) . " WHERE periodstamp >= 0 AND active = 1 ORDER BY periodstamp ASC" );
 }
 
-function M_Communication_process( ) {
+add_action( 'membership_communications_process', 'M_Communication_process' );
+function M_Communication_process() {
 	// This function checks for any communication messages that need to be sent for this user and sends them
+	$lastatid = M_get_option( 'membership_communication_last_user_processed', 0 );
+	if ( empty( $lastatid ) ) {
+		$lastatid = 0;
+	}
 
-	$lastatid = M_get_option('membership_communication_last_user_processed', 0);
-
-	if(empty($lastatid))
-		$lastat = 0;
-
-	$members = M_Communication_get_members($lastatid);
-	if(empty($members)) {
+	$members = M_Communication_get_members( $lastatid );
+	if ( empty( $members ) ) {
 		// do nothing
-		if($lastatid != 0) {
-			M_update_option('membership_communication_last_user_processed', 0);
+		if ( $lastatid != 0 ) {
+			M_update_option( 'membership_communication_last_user_processed', 0 );
 		}
 	} else {
 		// Our starting time
-		$timestart = current_time('timestamp');
-
+		$timestart = current_time( 'timestamp' );
 		//Or processing limit
 		$timelimit = 3; // max seconds for processing
 
-		foreach( (array) $members as $user_id ) {
-
-			if(current_time('timestamp') > $timestart + $timelimit) {
-				M_update_option('membership_communication_last_user_processed', $user_id);
+		foreach ( (array)$members as $user_id ) {
+			if ( current_time( 'timestamp' ) > $timestart + $timelimit ) {
+				M_update_option( 'membership_communication_last_user_processed', $user_id );
 				break;
 			}
 
-			if( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
-
+			if ( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
 				$starts = M_Communication_get_startstamps( $user_id );
 				$comms = M_Communication_get_post_messages();
 
-				if(!empty($starts) && !empty($comms)) {
-					foreach($starts as $start) {
+				if ( !empty( $starts ) && !empty( $comms ) ) {
+					foreach ( $starts as $start ) {
 						$starttime = $start->meta_value;
-						$now = current_time('timestamp');
+						$now = current_time( 'timestamp' );
 
 						$sub_id = str_replace( 'start_current_', '', $start->meta_key );
 						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
 
-						if(empty($sentalready) || !is_array($sentalready)) {
+						if ( empty( $sentalready ) || !is_array( $sentalready ) ) {
 							$sentalready = array();
 						}
 
-						foreach( (array) $comms as $comm ) {
-							if(in_array( $comm->id, $sentalready )) {
+						foreach ( (array) $comms as $comm ) {
+							if ( in_array( $comm->id, $sentalready ) || $comm->sub_id != $sub_id ) {
 								continue;
 							}
 
 							$withperiod = ($starttime + $comm->periodstamp);
 							// Get 24 hour previous and after so we have a range in which to fit a communication
-							$onedaybefore = strtotime('-6 hours', $withperiod );
-							$onedayafter = strtotime('+6 hours', $withperiod );
+							$onedaybefore = strtotime( '-6 hours', $withperiod );
+							$onedayafter = strtotime( '+6 hours', $withperiod );
 
-							if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
+							if ( ($now > $onedaybefore) && ($now < $onedayafter) ) {
 								$message = new M_Communication( $comm->id );
 								$sentalready[$comm->id] = $comm->id;
 								$message->send_message( $user_id, $sub_id );
@@ -555,29 +557,29 @@ function M_Communication_process( ) {
 				$ends = M_Communication_get_endstamps( $user_id );
 				$comms = M_Communication_get_pre_messages();
 
-				if(!empty($ends) && !empty($comms)) {
-					foreach($ends as $end) {
+				if ( !empty( $ends ) && !empty( $comms ) ) {
+					foreach ( $ends as $end ) {
 						$endtime = $end->meta_value;
-						$now = current_time('timestamp');
+						$now = current_time( 'timestamp' );
 
 						$sub_id = str_replace( 'expire_current_', '', $end->meta_key );
 						$sentalready = get_user_meta( $user_id, 'sent_msgs_' . $sub_id, true );
 
-						if(empty($sentalready) || !is_array($sentalready)) {
+						if ( empty( $sentalready ) || !is_array( $sentalready ) ) {
 							$sentalready = array();
 						}
 
-						foreach( (array) $comms as $comm ) {
-							if(in_array( $comm->id, $sentalready )) {
+						foreach ( (array) $comms as $comm ) {
+							if ( in_array( $comm->id, $sentalready ) || $comm->sub_id != $sub_id ) {
 								continue;
 							}
 
 							$withperiod = ($endtime + $comm->periodstamp);
 							// Get 24 hour previous and after so we have a range in which to fit a communication
-							$onedaybefore = strtotime('-6 hours', $withperiod );
-							$onedayafter = strtotime('+6 hours', $withperiod );
+							$onedaybefore = strtotime( '-6 hours', $withperiod );
+							$onedayafter = strtotime( '+6 hours', $withperiod );
 
-							if( ($now > $onedaybefore) && ($now < $onedayafter) ) {
+							if ( ($now > $onedaybefore) && ($now < $onedayafter) ) {
 								$message = new M_Communication( $comm->id );
 								$sentalready[$comm->id] = $comm->id;
 								$message->send_message( $user_id, $sub_id );
@@ -588,42 +590,30 @@ function M_Communication_process( ) {
 						update_user_meta( $user_id, 'sent_msgs_' . $sub_id, $sentalready );
 					}
 				}
-
 			}
 		}
 
-		M_update_option('membership_communication_last_user_processed', $user_id);
+		M_update_option( 'membership_communication_last_user_processed', $user_id );
 	}
-
 }
-add_action( 'membership_communications_process', 'M_Communication_process' );
 
+add_filter( 'cron_schedules', 'M_add_communications_time_period' );
 function M_add_communications_time_period( $periods ) {
-
-	if(!is_array($periods)) {
+	if ( !is_array( $periods ) ) {
 		$periods = array();
 	}
 
-	$periods['10mins'] = array( 'interval' => 600, 'display' => __('Every 10 Mins', 'membership') );
-	$periods['5mins'] = array( 'interval' => 300, 'display' => __('Every 5 Mins', 'membership') );
+	$periods['10mins'] = array( 'interval' => 10 * MINUTE_IN_SECONDS, 'display' => __( 'Every 10 Mins', 'membership' ) );
+	$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', 'membership' ) );
 
 	return $periods;
 }
-add_filter( 'cron_schedules', 'M_add_communications_time_period' );
 
+add_action( 'init', 'M_setup_communications', 10 );
 function M_setup_communications() {
 	// Action to be called by the cron job
-	if(defined('MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT') && MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT == 10) {
-		$checkperiod = '10mins';
-	} else {
-		$checkperiod = '5mins';
-	}
-
+	$checkperiod = defined( 'MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT' ) && MEMBERSHIP_COMMUNICATIONS_PROCESSING_CHECKLIMIT == 10 ? '10mins' : '5mins';
 	if ( !wp_next_scheduled( 'membership_communications_process' ) ) {
-		wp_schedule_event(time(), $checkperiod, 'membership_communications_process');
+		wp_schedule_event( time(), $checkperiod, 'membership_communications_process' );
 	}
-
 }
-add_action('init', 'M_setup_communications', 10 );
-
-?>
