@@ -179,19 +179,8 @@ function M_add_to_global_urlgroup( $urls, $area = 'negative' ) {
 		$M_global_groups['negative'] = array();
 	}
 
-	switch ( $area ) {
-		case 'positive':
-			$pos = array_map( 'strtolower', array_map( 'trim', $urls ) );
-			foreach ( $pos as $p ) {
-				$M_global_groups['positive'][] = $p;
-			}
-			break;
-
-		case 'negative':
-			$neg = array_map( 'strtolower', array_map( 'trim', $urls ) );
-			foreach ( $neg as $n ) {
-				$M_global_groups['negative'][] = $n;
-			}
-			break;
+	$urls = array_map( 'strtolower', array_filter( array_map( 'trim', (array)$urls ) ) );
+	foreach ( $urls as $p ) {
+		$M_global_groups[$area][] = $p;
 	}
 }
