@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 3.4.6.rc.1
+Version: 3.4.6.rc.2
 Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: Incsub
@@ -37,6 +37,12 @@ require_once('membershipincludes/includes/functions.php');
 // Set up my location
 set_membership_url(__FILE__);
 set_membership_dir(__FILE__);
+
+// load upgrade stuff
+include_once membership_dir( 'membershipincludes/classes/upgrade.php' );
+if ( get_option( 'M_Installed', false ) === false ) {
+	M_Upgrade( 0 );
+}
 
 // Load required classes
 // Rules class

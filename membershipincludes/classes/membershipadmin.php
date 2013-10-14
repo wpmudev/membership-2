@@ -165,8 +165,6 @@ if ( !class_exists( 'membershipadmin', false ) ) :
             }
 
             if ($installed === false || $installed != $this->build) {
-                include_once(membership_dir('membershipincludes/classes/upgrade.php') );
-
                 M_Upgrade($installed);
                 update_option('M_Installed', $this->build);
 
@@ -7950,33 +7948,29 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 			}
 
 			// Create relevant admin side shortcodes
-			if (empty($M_options['membershipadminshortcodes'])) {
-				if (!is_array($M_options['membershipadminshortcodes'])) {
-					$M_options['membershipadminshortcodes'] = array();
-				}
+			if ( empty( $M_options['membershipadminshortcodes'] ) ) {
+				$M_options['membershipadminshortcodes'] = array( );
 
-				if (class_exists('RGForms')) {
+				if ( class_exists( 'RGForms' ) ) {
 					// Gravity Forms exists
 					$M_options['membershipadminshortcodes'][] = 'gravityform';
 				}
 
-				if (defined('WPCF7_VERSION')) {
+				if ( defined( 'WPCF7_VERSION' ) ) {
 					// Contact Form 7 exists
 					$M_options['membershipadminshortcodes'][] = 'contact-form';
 				}
 
-				if (defined('WPAUDIO_URL')) {
+				if ( defined( 'WPAUDIO_URL' ) ) {
 					// WPAudio exists
 					$M_options['membershipadminshortcodes'][] = 'wpaudio';
 				}
 			}
 
 			// Create a default download group
-			if (empty($M_options['membershipdownloadgroups'])) {
-				if (!is_array($M_options['membershipdownloadgroups'])) {
-					$M_options['membershipdownloadgroups'] = array();
-				}
-				$M_options['membershipdownloadgroups'][] = __('default', 'membership');
+			if ( empty( $M_options['membershipdownloadgroups'] ) ) {
+				$M_options['membershipdownloadgroups'] = array( );
+				$M_options['membershipdownloadgroups'][] = __( 'default', 'membership' );
 			}
 
 			// Create a hashed downloads url
