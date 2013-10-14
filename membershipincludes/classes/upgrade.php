@@ -49,6 +49,7 @@ function M_Upgrade( $from = false ) {
 			M_Alterfor15();
 
 		case 15:
+		case 16:
 			M_Alterfor16();
 			break;
 
@@ -60,7 +61,12 @@ function M_Upgrade( $from = false ) {
 
 function M_Alterfor16() {
 	global $wpdb;
-	$wpdb->query( "ALTER TABLE " . membership_db_prefix( $wpdb, 'subscriptions' ) . " ADD `order_num` INT NOT NULL DEFAULT 0" );
+
+	$table = membership_db_prefix( $wpdb, 'subscriptions' );
+	$show = $wpdb->get_var( 'SHOW CREATE TABLE ' . $table );
+	if ( stripos( $show, 'order_num' ) === false ) {
+		$wpdb->query( "ALTER TABLE {$table} ADD `order_num` INT NOT NULL DEFAULT 0" );
+	}
 }
 
 function M_Alterfor15() {
