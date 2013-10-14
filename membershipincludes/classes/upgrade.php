@@ -14,6 +14,9 @@ function M_get_charset_collate() {
 
 function M_Upgrade( $from = false ) {
 	switch ( $from ) {
+		default:
+		case 0:
+			M_Createtables();
 		case 1:
 		case 2:
 			M_Alterfor2();
@@ -50,11 +53,8 @@ function M_Upgrade( $from = false ) {
 
 		case 15:
 		case 16:
+		case 17:
 			M_Alterfor16();
-			break;
-
-		default:
-			M_Createtables();
 			break;
 	}
 }
@@ -64,7 +64,7 @@ function M_Alterfor16() {
 
 	$table = membership_db_prefix( $wpdb, 'subscriptions' );
 	$show = $wpdb->get_var( 'SHOW CREATE TABLE ' . $table );
-	if ( stripos( $show, 'order_num' ) === false ) {
+	if ( stripos( (string)$show, 'order_num' ) === false ) {
 		$wpdb->query( "ALTER TABLE {$table} ADD `order_num` INT NOT NULL DEFAULT 0" );
 	}
 }

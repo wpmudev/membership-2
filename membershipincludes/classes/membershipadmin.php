@@ -4,7 +4,7 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 
     class membershipadmin {
 
-        var $build = 17;
+        var $build = 18;
         var $db;
         //
         var $showposts = 25;
@@ -165,7 +165,9 @@ if ( !class_exists( 'membershipadmin', false ) ) :
             }
 
             if ($installed === false || $installed != $this->build) {
-                M_Upgrade($installed);
+				include_once membership_dir( 'membershipincludes/classes/upgrade.php' );
+
+				M_Upgrade($installed);
                 update_option('M_Installed', $this->build);
 
                 // Add in our new capability

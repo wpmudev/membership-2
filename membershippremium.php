@@ -38,12 +38,6 @@ require_once('membershipincludes/includes/functions.php');
 set_membership_url(__FILE__);
 set_membership_dir(__FILE__);
 
-// load upgrade stuff
-include_once membership_dir( 'membershipincludes/classes/upgrade.php' );
-if ( get_option( 'M_Installed', false ) === false ) {
-	M_Upgrade( 0 );
-}
-
 // Load required classes
 // Rules class
 require_once( membership_dir('membershipincludes/classes/class.rule.php') );
