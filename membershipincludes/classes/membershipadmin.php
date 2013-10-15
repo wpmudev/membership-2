@@ -261,74 +261,53 @@ if ( !class_exists( 'membershipadmin', false ) ) :
             add_action('wp_ajax_nopriv_m_set_coupon', array(&$this, 'set_membership_coupon_cookie'));
         }
 
-        function add_user_permissions_column($columns) {
-            $columns['membershippermissions'] = __('Permissions', 'membership');
+        function add_user_permissions_column( $columns ) {
+			$columns['membershippermissions'] = __( 'Permissions', 'membership' );
+			return $columns;
+		}
 
-            return $columns;
-        }
+        function show_user_permissions_column( $content, $column_name, $user_id ) {
+			if ( $column_name != 'membershippermissions' ) {
+				return $content;
+			}
 
-        function show_user_permissions_column($content, $column_name, $user_id) {
+			// We are on our column
+			$theuser = get_user_by( 'id', $user_id );
 
-            if ($column_name == 'membershippermissions') {
-                // We are on our column
-                $theuser = get_user_by('id', $user_id);
+			$user_permissions = array();
+			$capabilities = array(
+				'membershipadmindashboard'         => __( 'Dashboard', 'membership' ),
+				'membershipadminmembers'           => __( 'Members', 'membership' ),
+				'membershipadminlevels'            => __( 'Levels', 'membership' ),
+				'membershipadminsubscriptions'     => __( 'Subscriptions', 'membership' ),
+				'membershipadmincoupons'           => __( 'Coupons', 'membership' ),
+				'membershipadminpurchases'         => __( 'Purchases', 'membership' ),
+				'membershipadmincommunications'    => __( 'Communications', 'membership' ),
+				'membershipadmingroups'            => __( 'URL Groups', 'membership' ),
+				'membershipadminpings'             => __( 'Pings', 'membership' ),
+				'membershipadmingateways'          => __( 'Gateways', 'membership' ),
+				'membershipadminoptions'           => __( 'Options', 'membership' ),
+				'membershipadminupdatepermissions' => __( 'Permissions', 'membership' ),
+				'membershipadmin'                  => __( 'Superuser', 'membership' ),
+			);
 
-                $perms = array();
-                if ($theuser->has_cap('membershipadmindashboard')) {
-                    $perms[] = __('Dashboard', 'membership');
-                }
-                if ($theuser->has_cap('membershipadminmembers')) {
-                    $perms[] = __('Members', 'membership');
-                }
-                if ($theuser->has_cap('membershipadminlevels')) {
-                    $perms[] = __('Levels', 'membership');
-                }
-                if ($theuser->has_cap('membershipadminsubscriptions')) {
-                    $perms[] = __('Subscriptions', 'membership');
-                }
-                if ($theuser->has_cap('membershipadmincoupons')) {
-                    $perms[] = __('Coupons', 'membership');
-                }
+			foreach ( $capabilities as $capability => $label ) {
+				if ( $theuser->has_cap( $capability ) ) {
+					$user_permissions[] = $label;
+				}
+			}
 
-                if ($theuser->has_cap('membershipadminpurchases')) {
-                    $perms[] = __('Purchases', 'membership');
-                }
-                if ($theuser->has_cap('membershipadmincommunications')) {
-                    $perms[] = __('Communications', 'membership');
-                }
-                if ($theuser->has_cap('membershipadmingroups')) {
-                    $perms[] = __('URL Groups', 'membership');
-                }
-                if ($theuser->has_cap('membershipadminpings')) {
-                    $perms[] = __('Pings', 'membership');
-                }
-                if ($theuser->has_cap('membershipadmingateways')) {
-                    $perms[] = __('Gateways', 'membership');
-                }
+			if ( empty( $user_permissions ) ) {
+				$user_permissions[] = __( 'None', 'membership' );
+			}
 
-                if ($theuser->has_cap('membershipadminoptions')) {
-                    $perms[] = __('Options', 'membership');
-                }
+			$content .= implode( ', ', $user_permissions );
 
-                if ($theuser->has_cap('membershipadminupdatepermissions')) {
-                    $perms[] = __('Permissions', 'membership');
-                }
+			$content .= '<div class="row-actions"><span class="edit">';
+			$content .= '<a class="membershipeditlink" href="' . wp_nonce_url( admin_url( "admin-ajax.php?height=450&action=editusermembershippermissions&user_id=" . $user_id ), 'edit_user_membership_' . $user_id ) . '">' . __( 'Edit', 'membership' ) . '</a>';
+			$content .= '</span></div>';
 
-
-                if (empty($perms)) {
-                    $perms[] = __('None', 'membership');
-                }
-
-                $content .= implode(', ', $perms);
-
-                $content .= '<div class="row-actions">';
-                $content .= '<span class="edit">';
-                $content .= '<a class="membershipeditlink" href="' . wp_nonce_url(admin_url("admin-ajax.php?action=editusermembershippermissions&amp;user_id=" . $user_id . ""), 'edit_user_membership_' . $user_id) . '">' . __('Edit', 'membership') . '</a>';
-                $content .= '</span>';
-                $content .= '</div>';
-            }
-
-            return $content;
+			return $content;
         }
 
         function add_user_permissions_link($columns, $user) {
@@ -381,14 +360,12 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                 $user_id = $_GET['user_id'];
                 check_admin_referer('edit_user_membership_' . $user_id);
                 ?>
-                <form action="" class="" id="membership-form" method='get'>
+                <form id="membership-form">
 
-                    <input type='hidden' name='action' value='updatemembershippermissionsesettings' />
-                    <input type='hidden' name='user_id' value='<?php echo $user_id; ?>' />
-                    <input type='hidden' name='comefrom' value='<?php echo esc_attr(wp_get_referer()); ?>' />
-                    <?php
-                    wp_nonce_field('membership_update_permissions_settings_' . $user_id);
-                    ?>
+					<input type='hidden' name='action' value='updatemembershippermissionsesettings'>
+					<input type='hidden' name='user_id' value='<?php echo $user_id ?>'>
+					<input type='hidden' name='comefrom' value='<?php echo esc_attr( wp_get_referer() ) ?>'>
+					<?php wp_nonce_field( 'membership_update_permissions_settings_' . $user_id ) ?>
 
                     <h3 class="media-title"><?php echo __("Membership Permissions", "membership"); ?></h3>
                     <p class='description'><?php _e('Select the areas you want this user to be able to administrate.', 'membership'); ?></p>
@@ -397,77 +374,59 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                         <tbody>
                             <tr>
                                 <th style='min-width: 150px; vertical-align: top;'><?php _e('Current Permissions', 'membership'); ?></th>
-                                <td>
-                                    <?php
+                                <td><?php
+
                                     $theuser = get_user_by('id', $user_id);
 
                                     $perms = array();
-                                    if ($theuser->has_cap('membershipadmindashboard')) {
-                                        $perms[] = 'dashboard';
-                                    }
-                                    if ($theuser->has_cap('membershipadminmembers')) {
-                                        $perms[] = 'members';
-                                    }
-                                    if ($theuser->has_cap('membershipadminlevels')) {
-                                        $perms[] = 'levels';
-                                    }
-                                    if ($theuser->has_cap('membershipadminsubscriptions')) {
-                                        $perms[] = 'subscriptions';
-                                    }
-                                    if ($theuser->has_cap('membershipadmincoupons')) {
-                                        $perms[] = 'coupons';
-                                    }
-                                    if ($theuser->has_cap('membershipadminpurchases')) {
-                                        $perms[] = 'purchases';
-                                    }
-                                    if ($theuser->has_cap('membershipadmincommunications')) {
-                                        $perms[] = 'communications';
-                                    }
-                                    if ($theuser->has_cap('membershipadmingroups')) {
-                                        $perms[] = 'urlgroups';
-                                    }
-                                    if ($theuser->has_cap('membershipadminpings')) {
-                                        $perms[] = 'pings';
-                                    }
-                                    if ($theuser->has_cap('membershipadmingateways')) {
-                                        $perms[] = 'gateways';
-                                    }
-                                    if ($theuser->has_cap('membershipadminoptions')) {
-                                        $perms[] = 'options';
-                                    }
-                                    if ($theuser->has_cap('membershipadminupdatepermissions')) {
-                                        $perms[] = 'permissions';
-                                    }
+									$capabilities = array(
+										'membershipadmindashboard'         => 'dashboard',
+										'membershipadminmembers'           => 'members',
+										'membershipadminlevels'            => 'levels',
+										'membershipadminsubscriptions'     => 'subscriptions',
+										'membershipadmincoupons'           => 'coupons',
+										'membershipadminpurchases'         => 'purchases',
+										'membershipadmincommunications'    => 'communications',
+										'membershipadmingroups'            => 'urlgroups',
+										'membershipadminpings'             => 'pings',
+										'membershipadmingateways'          => 'gateways',
+										'membershipadminoptions'           => 'options',
+										'membershipadminupdatepermissions' => 'permissions',
+										'membershipadmin'                  => 'superuser',
+									);
 
+									foreach ( $capabilities as $capability => $key ) {
+										if ( $theuser->has_cap( $capability ) ) {
+											$perms[] = $key;
+										}
+									}
 
-                                    $headings = array();
-                                    $headings['dashboard'] = __('Dashboard', 'membership');
-                                    $headings['members'] = __('Members', 'membership');
-                                    $headings['levels'] = __('Levels', 'membership');
-                                    $headings['subscriptions'] = __('Subscriptions', 'membership');
-                                    $headings['coupons'] = __('Coupons', 'membership');
-                                    $headings['purchases'] = __('Purchases', 'membership');
-                                    $headings['communications'] = __('Communications', 'membership');
-                                    $headings['urlgroups'] = __('URL Groups', 'membership');
-                                    $headings['pings'] = __('Pings', 'membership');
-                                    $headings['gateways'] = __('Gateways', 'membership');
-                                    $headings['options'] = __('Options', 'membership');
-                                    $headings['permissions'] = __('Permissions', 'membership');
-                                    ?>
-                                    <ul style='margin:0; padding:0;'>
-                                        <?php
-                                        foreach ($headings as $heading => $label) {
-                                            ?>
-                                            <li><label><input style='margin-top: 0; margin-right: 5px;' type='checkbox' name='membership_permission[]' value='<?php echo $heading; ?>' <?php
-                                                    if (in_array($heading, $perms)) {
-                                                        echo "checked='checked'";
-                                                    }
-                                                    ?> />&nbsp;<?php echo $label; ?></label></li>
-                                                <?php
-                                            }
-                                            ?>
+									$headings = array(
+										'dashboard'      => __( 'Dashboard', 'membership' ),
+										'members'        => __( 'Members', 'membership' ),
+										'levels'         => __( 'Levels', 'membership' ),
+										'subscriptions'  => __( 'Subscriptions', 'membership' ),
+										'coupons'        => __( 'Coupons', 'membership' ),
+										'purchases'      => __( 'Purchases', 'membership' ),
+										'communications' => __( 'Communications', 'membership' ),
+										'urlgroups'      => __( 'URL Groups', 'membership' ),
+										'pings'          => __( 'Pings', 'membership' ),
+										'gateways'       => __( 'Gateways', 'membership' ),
+										'options'        => __( 'Options', 'membership' ),
+										'permissions'    => __( 'Permissions', 'membership' ),
+										'superuser'      => __( 'Super user (has access to all content)', 'membership' ),
+									);
+
+                                    ?><ul style="margin:0;padding:0;">
+                                        <?php foreach ( $headings as $heading => $label ) : ?>
+                                            <li>
+												<label>
+													<input style="margin-top: 0; margin-right: 5px;" type="checkbox" name="membership_permission[]" value="<?php echo $heading ?>"<?php checked( in_array( $heading, $perms ) ) ?>>
+													<?php echo $label ?>
+												</label>
+											</li>
+										<?php endforeach; ?>
                                     </ul>
-                <?php ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -624,88 +583,44 @@ if ( !class_exists( 'membershipadmin', false ) ) :
         }
 
         function process_users_page() {
+			if ( filter_input( INPUT_GET, 'action' ) != 'updatemembershippermissionsesettings' ) {
+				return;
+			}
 
-            if (isset($_GET['action'])) {
-                switch ($_GET['action']) {
-                    case 'updatemembershippermissionsesettings':
+			$user_id = filter_input( INPUT_GET, 'user_id', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+			if ( !$user_id ) {
+				return;
+			}
 
-                        $user_id = $_GET['user_id'];
-                        //check_admin_referer( 'membership_update_permissions_settings_' . $user_id );
-                        $theuser = get_user_by('id', $user_id);
+			//check_admin_referer( 'membership_update_permissions_settings_' . $user_id );
+			$theuser = get_user_by( 'id', $user_id );
 
+			$capabilities = array(
+				'membershipadmindashboard'         => 'dashboard',
+				'membershipadminmembers'           => 'members',
+				'membershipadminlevels'            => 'levels',
+				'membershipadminsubscriptions'     => 'subscriptions',
+				'membershipadmincoupons'           => 'coupons',
+				'membershipadminpurchases'         => 'purchases',
+				'membershipadmincommunications'    => 'communications',
+				'membershipadmingroups'            => 'urlgroups',
+				'membershipadminpings'             => 'pings',
+				'membershipadmingateways'          => 'gateways',
+				'membershipadminoptions'           => 'options',
+				'membershipadminupdatepermissions' => 'permissions',
+				'membershipadmin'                  => 'superuser',
+			);
 
-                        if (!empty($_GET['membership_permission'])) {
-                            $new = (array) $_GET['membership_permission'];
-                        } else {
-                            $new = array();
-                        }
+			$new = !empty( $_GET['membership_permission'] ) ? (array)$_GET['membership_permission'] : array();
+			foreach ( $capabilities as $capability => $key ) {
+				if ( in_array( $key, $new ) ) {
+					$theuser->add_cap( $capability );
+				} else {
+					$theuser->remove_cap( $capability );
+				}
+			}
 
-                        if (in_array('dashboard', $new)) {
-                            $theuser->add_cap('membershipadmindashboard');
-                        } else {
-                            $theuser->remove_cap('membershipadmindashboard');
-                        }
-                        if (in_array('members', $new)) {
-                            $theuser->add_cap('membershipadminmembers');
-                        } else {
-                            $theuser->remove_cap('membershipadminmembers');
-                        }
-                        if (in_array('levels', $new)) {
-                            $theuser->add_cap('membershipadminlevels');
-                        } else {
-                            $theuser->remove_cap('membershipadminlevels');
-                        }
-                        if (in_array('subscriptions', $new)) {
-                            $theuser->add_cap('membershipadminsubscriptions');
-                        } else {
-                            $theuser->remove_cap('membershipadminsubscriptions');
-                        }
-                        if (in_array('coupons', $new)) {
-                            $theuser->add_cap('membershipadmincoupons');
-                        } else {
-                            $theuser->remove_cap('membershipadmincoupons');
-                        }
-                        if (in_array('purchases', $new)) {
-                            $theuser->add_cap('membershipadminpurchases');
-                        } else {
-                            $theuser->remove_cap('membershipadminpurchases');
-                        }
-                        if (in_array('communications', $new)) {
-                            $theuser->add_cap('membershipadmincommunications');
-                        } else {
-                            $theuser->remove_cap('membershipadmincommunications');
-                        }
-                        if (in_array('urlgroups', $new)) {
-                            $theuser->add_cap('membershipadmingroups');
-                        } else {
-                            $theuser->remove_cap('membershipadmingroups');
-                        }
-                        if (in_array('pings', $new)) {
-                            $theuser->add_cap('membershipadminpings');
-                        } else {
-                            $theuser->remove_cap('membershipadminpings');
-                        }
-                        if (in_array('gateways', $new)) {
-                            $theuser->add_cap('membershipadmingateways');
-                        } else {
-                            $theuser->remove_cap('membershipadmingateways');
-                        }
-                        if (in_array('options', $new)) {
-                            $theuser->add_cap('membershipadminoptions');
-                        } else {
-                            $theuser->remove_cap('membershipadminoptions');
-                        }
-
-                        if (in_array('permissions', $new)) {
-                            $theuser->add_cap('membershipadminupdatepermissions');
-                        } else {
-                            $theuser->remove_cap('membershipadminupdatepermissions');
-                        }
-
-                        wp_safe_redirect($_GET['comefrom']);
-                        break;
-                }
-            }
+			wp_safe_redirect( $_GET['comefrom'] );
         }
 
         function add_admin_header_membership() {
