@@ -1795,311 +1795,258 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function check_for_membership_pages_content($content) {
-
 			global $M_options, $post;
 
-			if( !empty($post) ) {
+			if ( empty( $post ) || $post->post_type != 'page' ) {
+				return $content;
+			}
 
-				if($post->post_type == 'page') {
-					if($post->ID == $M_options['registration_page']) {
+			if ( membership_is_registration_page( $post->ID, false ) ) {
 
-						// check if page contains a shortcode
-						if(strstr($content, '[subscriptionform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $content;
-						} else {
-
-							// There is no shortcode content in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-
-							$content .= $this->do_subscription_form();
-
-						}
-					}
-					if($post->ID == $M_options['account_page']) {
-						// account page - check if page contains a shortcode
-						if(strstr($content, '[accountform]') != false || strstr($content, '[upgradeform]') != false || strstr($content, '[renewform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $content;
-						} else {
-
-							// There is no shortcode in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-							$content .= $this->do_account_form();
-						}
-					}
-					if($post->ID == $M_options['subscriptions_page']) {
-
-						// account page - check if page contains a shortcode
-						if(strstr($content, '[upgradeform]') != false || strstr($content, '[renewform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $content;
-						} else {
-
-							// There is no shortcode in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-							$content .= $this->do_renew_form();
-						}
-					}
-					if($post->ID == $M_options['nocontent_page']) {
-						// no access page - we must return the content entered by the user so just return it
-						return $content;
-					}
-					// Registration complete page
-					if($post->ID == $M_options['registrationcompleted_page']) {
-
-						return $content;
-					}
-
+				// check if page contains a shortcode
+				if ( strstr( $content, '[subscriptionform]' ) === false ) {
+					// There is no shortcode content in there, so override
+					remove_filter( 'the_content', 'wpautop' );
+					$content .= $this->do_subscription_form();
 				}
+			} elseif ( membership_is_account_page( $post->ID, false ) ) {
+				// account page - check if page contains a shortcode
+				if ( strstr( $content, '[accountform]' ) !== false || strstr( $content, '[upgradeform]' ) !== false || strstr( $content, '[renewform]' ) !== false ) {
+					// There is content in there with the shortcode so just return it
+					return $content;
+				}
+
+				// There is no shortcode in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+				$content .= $this->do_account_form();
+			} elseif ( membership_is_subscription_page( $post->ID, false ) ) {
+
+				// account page - check if page contains a shortcode
+				if ( strstr( $content, '[upgradeform]' ) !== false || strstr( $content, '[renewform]' ) !== false ) {
+					// There is content in there with the shortcode so just return it
+					return $content;
+				}
+
+				// There is no shortcode in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+				$content .= $this->do_renew_form();
 			}
 
 			return $content;
 		}
 
-		function check_for_membership_pages($posts) {
-
+		function check_for_membership_pages( $posts ) {
 			global $M_options;
 
-			if(count($posts) == 1) {
-
-				// We have only the one post, so check if it's one of our pages
-				$post = &$posts[0];
-
-				if($post->post_type == 'page') {
-					if($post->ID == $M_options['registration_page']) {
-						if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-							add_action( 'template_redirect', array( $this, 'process_subscription_form' ) );
-						}
-
-						// check if page contains a shortcode
-						if(strstr($post->post_content, '[subscriptionform]') != false) {
-							// There is content in there with the shortcode so just return it
-							return $posts;
-						} else {
-							// registration page found - add in the styles
-							if(!current_theme_supports('membership_subscription_form')) {
-								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-
-								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
-
-								if($M_options['formtype'] == 'new') {
-									// pop up registration form
-									wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-									wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-
-									wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
-									wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
-
-									wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-									 														'registernonce'	=>	wp_create_nonce('membership_register'),
-																							'loginnonce'	=>	wp_create_nonce('membership_login'),
-																							'regproblem'	=>	__('Problem with registration.', 'membership'),
-																							'logpropblem'	=>	__('Problem with Login.', 'membership'),
-																							'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
-																							'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
-																							'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
-																						));
-								}
-							}
-
-							//echo "here";
-
-							do_action('membership_subscriptionbutton_onpage');
-							// There is no shortcode content in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-
-							//$post->post_content .= $this->do_subscription_form();
-
-							//echo $post->post_content;
-							//die();
-
-							//$posts[0] = $post;
-						}
-					}
-					if($post->ID == $M_options['account_page']) {
-						// account page - check if page contains a shortcode
-						if(strstr($post->post_content, '[accountform]') !== false || strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
-							// There is content in there with the shortcode so just return it
-							return $posts;
-						} else {
-							// account page found - add in the styles
-							if(!current_theme_supports('membership_account_form')) {
-								wp_enqueue_style('accountformcss', membership_url('membershipincludes/css/accountform.css'));
-								wp_enqueue_script('accountformjs', membership_url('membershipincludes/js/accountform.js'), array('jquery'));
-
-								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
-							}
-							// There is no shortcode in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-							//$post->post_content .= $this->do_account_form();
-						}
-					}
-					if($post->ID == $M_options['subscriptions_page']) {
-
-						// Handle any updates passed
-						$page = isset($_REQUEST['action']) ? addslashes($_REQUEST['action']) : '';
-						if(empty($page)) {
-							$page = 'renewform';
-						}
-
-						switch($page) {
-							case 'subscriptionsignup':	if(is_user_logged_in()) {
-															$member = current_member();
-															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
-
-															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
-																$gateway = $_POST['gateway'];
-																// Join the new subscription
-																do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
-
-																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-																// Timestamp the update
-																update_user_meta( $user_id, '_membership_last_upgraded', time());
-
-																// Added another redirect to the same url because the show_no_access filters
-																// have already run on the "parse_request" action (Cole)
-																wp_redirect(M_get_subscription_permalink());
-																exit;
-															}
-														} else {
-															// check if a custom is posted and of so then process the user
-															if(isset($_POST['custom'])) {
-																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
-
-																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
-																	$gateway = $_POST['gateway'];
-																	// Join the new subscription
-																	do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
-
-																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-																	// Timestamp the update
-																	update_user_meta( $user_id, '_membership_last_upgraded', time());
-
-																	// Added another redirect to the same url because the show_no_access filters
-																	// have already run on the "parse_request" action (Cole)
-																	wp_redirect(M_get_subscription_permalink());
-																	exit;
-																}
-															}
-														}
-														break;
-
-							default:
-														break;
-						}
-
-						// account page - check if page contains a shortcode
-						if(strstr($post->post_content, '[upgradeform]') !== false || strstr($post->post_content, '[renewform]') !== false) {
-							// There is content in there with the shortcode so just return it
-							return $posts;
-						} else {
-							// account page found - add in the styles
-							if(!current_theme_supports('membership_account_form')) {
-								wp_enqueue_style('subscriptionformcss', membership_url('membershipincludes/css/subscriptionform.css'));
-								wp_enqueue_style('upgradeformcss', membership_url('membershipincludes/css/upgradeform.css'));
-								wp_enqueue_style('renewformcss', membership_url('membershipincludes/css/renewform.css'));
-								wp_enqueue_script('renewformjs', membership_url('membershipincludes/js/renewform.js'), array('jquery'));
-								wp_localize_script( 'renewformjs', 'membership', array( 'unsubscribe' => __('Are you sure you want to unsubscribe from this subscription?','membership'), 'deactivatelevel' => __('Are you sure you want to deactivate this level?','membership') ) );
-
-								add_action( 'wp_head', array(&$this, 'enqueue_public_form_styles'), 99 );
-
-								if($M_options['formtype'] == 'new') {
-									// pop up registration form
-									wp_enqueue_style('fancyboxcss', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css'));
-									wp_enqueue_script('fancyboxjs', membership_url('membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js'), array('jquery'), false, true);
-
-									wp_enqueue_script('popupmemjs', membership_url('membershipincludes/js/popupregistration.js'), array('jquery'), false, true);
-									wp_enqueue_style('popupmemcss', membership_url('membershipincludes/css/popupregistration.css'));
-
-									wp_localize_script('popupmemjs', 'membership', array(	'ajaxurl'	=>	admin_url( 'admin-ajax.php' ),
-									 														'registernonce'	=>	wp_create_nonce('membership_register'),
-																							'loginnonce'	=>	wp_create_nonce('membership_login'),
-																							'regproblem'	=>	__('Problem with registration.', 'membership'),
-																							'logpropblem'	=>	__('Problem with Login.', 'membership'),
-																							'regmissing'	=>	__('Please ensure you have completed all the fields','membership'),
-																							'regnomatch'	=>	__('Please ensure passwords match', 'membership'),
-																							'logmissing'	=>	__('Please ensure you have entered an username or password','membership')
-																						));
-								}
-
-							}
-							// There is no shortcode in there, so override
-							remove_filter( 'the_content', 'wpautop' );
-							//$post->post_content .= $this->do_renew_form();
-						}
-					}
-					if($post->ID == $M_options['nocontent_page']) {
-						// no access page - we must return the content entered by the user so just return it
-						return $posts;
-					}
-					// Registration complete page
-					if($post->ID == $M_options['registrationcompleted_page']) {
-
-						// Handle any updates passed
-						if(isset($_REQUEST['action']) && !empty($_REQUEST['action'])) {
-							$page = addslashes($_REQUEST['action']);
-						} else {
-							$page = 'renewform';
-						}
-
-						switch($page) {
-							case 'subscriptionsignup':
-														if(is_user_logged_in() && isset($_POST['custom'])) {
-															list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
-
-															if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
-
-																$gateway = $_POST['gateway'];
-
-																do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
-
-																do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-																// Timestamp the update
-																update_user_meta( $user_id, '_membership_last_upgraded', time());
-
-																// Added another redirect to the same url because the show_no_access filters
-																// have already run on the "parse_request" action (Cole)
-																wp_redirect(M_get_returnurl_permalink());
-																exit;
-															} else {
-
-															}
-
-														} else {
-															// check if a custom is posted and of so then process the user
-															if(isset($_POST['custom'])) {
-																list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
-
-																if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
-
-																	$gateway = $_POST['gateway'];
-
-																	do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
-
-																	do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-																	// Timestamp the update
-																	update_user_meta( $user_id, '_membership_last_upgraded', time());
-
-																	// Added another redirect to the same url because the show_no_access filters
-																	// have already run on the "parse_request" action (Cole)
-																	wp_redirect(M_get_returnurl_permalink());
-																	exit;
-																}
-															}
-														}
-														break;
-						}
-
-						return $posts;
-					}
-
-				}
+			if ( count( $posts ) != 1 ) {
+				return $posts;
 			}
-			// If nothing else is hit, just return the content
 
-			//print_r($posts);
-			//print_r(debug_backtrace());
+			// We have only the one post, so check if it's one of our pages
+			$post = $posts[0];
+			if ( $post->post_type != 'page' ) {
+				return $posts;
+			}
+
+			if ( membership_is_registration_page( $post->ID, false ) ) {
+				if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+					add_action( 'template_redirect', array( $this, 'process_subscription_form' ) );
+				}
+
+				// check if page contains a shortcode
+				if ( strstr( $post->post_content, '[subscriptionform]' ) !== false ) {
+					// There is content in there with the shortcode so just return it
+					return $posts;
+				}
+
+				// registration page found - add in the styles
+				if ( !current_theme_supports( 'membership_subscription_form' ) ) {
+					wp_enqueue_style( 'subscriptionformcss', membership_url( 'membershipincludes/css/subscriptionform.css' ) );
+
+					add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
+					if ( $M_options['formtype'] == 'new' ) {
+						// pop up registration form
+						wp_enqueue_style( 'fancyboxcss', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css' ) );
+						wp_enqueue_script( 'fancyboxjs', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js' ), array( 'jquery' ), false, true );
+
+						wp_enqueue_script( 'popupmemjs', membership_url( 'membershipincludes/js/popupregistration.js' ), array( 'jquery' ), false, true );
+						wp_enqueue_style( 'popupmemcss', membership_url( 'membershipincludes/css/popupregistration.css' ) );
+
+						wp_localize_script( 'popupmemjs', 'membership', array(
+							'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+							'registernonce' => wp_create_nonce( 'membership_register' ),
+							'loginnonce'    => wp_create_nonce( 'membership_login' ),
+							'regproblem'    => __( 'Problem with registration.', 'membership' ),
+							'logpropblem'   => __( 'Problem with Login.', 'membership' ),
+							'regmissing'    => __( 'Please ensure you have completed all the fields', 'membership' ),
+							'regnomatch'    => __( 'Please ensure passwords match', 'membership' ),
+							'logmissing'    => __( 'Please ensure you have entered an username or password', 'membership' )
+						) );
+					}
+				}
+
+				do_action( 'membership_subscriptionbutton_onpage' );
+
+				// There is no shortcode content in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+
+			} elseif ( membership_is_account_page( $post->ID, false ) ) {
+				// account page - check if page contains a shortcode
+				if ( strstr( $post->post_content, '[accountform]' ) !== false || strstr( $post->post_content, '[upgradeform]' ) !== false || strstr( $post->post_content, '[renewform]' ) !== false ) {
+					// There is content in there with the shortcode so just return it
+					return $posts;
+				}
+
+				// account page found - add in the styles
+				if ( !current_theme_supports( 'membership_account_form' ) ) {
+					wp_enqueue_style( 'accountformcss', membership_url( 'membershipincludes/css/accountform.css' ) );
+					wp_enqueue_script( 'accountformjs', membership_url( 'membershipincludes/js/accountform.js' ), array( 'jquery' ) );
+
+					add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
+				}
+
+				// There is no shortcode in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+
+			} elseif ( membership_is_subscription_page( $post->ID, false ) ) {
+				// Handle any updates passed
+				$page = isset( $_REQUEST['action'] ) ? addslashes( $_REQUEST['action'] ) : '';
+				if ( empty( $page ) ) {
+					$page = 'renewform';
+				}
+
+				if ( $page == 'subscriptionsignup' ) {
+					if ( is_user_logged_in() ) {
+						$member = current_member();
+						list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode( ':', $_POST['custom'] );
+
+						if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
+							$gateway = $_POST['gateway'];
+							// Join the new subscription
+							do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+							do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+
+							// Timestamp the update
+							update_user_meta( $user_id, '_membership_last_upgraded', time() );
+
+							// Added another redirect to the same url because the show_no_access filters
+							// have already run on the "parse_request" action (Cole)
+							wp_redirect( M_get_subscription_permalink() );
+							exit;
+						}
+					} else {
+						// check if a custom is posted and of so then process the user
+						if ( isset( $_POST['custom'] ) ) {
+							list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
+							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
+								$gateway = $_POST['gateway'];
+								// Join the new subscription
+								do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+
+								// Timestamp the update
+								update_user_meta( $user_id, '_membership_last_upgraded', time() );
+
+								// Added another redirect to the same url because the show_no_access filters
+								// have already run on the "parse_request" action (Cole)
+								wp_redirect( M_get_subscription_permalink() );
+								exit;
+							}
+						}
+					}
+				}
+
+				// account page - check if page contains a shortcode
+				if ( strstr( $post->post_content, '[upgradeform]' ) !== false || strstr( $post->post_content, '[renewform]' ) !== false ) {
+					// There is content in there with the shortcode so just return it
+					return $posts;
+				}
+
+				// account page found - add in the styles
+				if ( !current_theme_supports( 'membership_account_form' ) ) {
+					wp_enqueue_style( 'subscriptionformcss', membership_url( 'membershipincludes/css/subscriptionform.css' ) );
+					wp_enqueue_style( 'upgradeformcss', membership_url( 'membershipincludes/css/upgradeform.css' ) );
+
+					wp_enqueue_style( 'renewformcss', membership_url( 'membershipincludes/css/renewform.css' ) );
+					wp_enqueue_script( 'renewformjs', membership_url( 'membershipincludes/js/renewform.js' ), array( 'jquery' ) );
+					wp_localize_script( 'renewformjs', 'membership', array(
+						'unsubscribe'     => __( 'Are you sure you want to unsubscribe from this subscription?', 'membership' ),
+						'deactivatelevel' => __( 'Are you sure you want to deactivate this level?', 'membership' ),
+					) );
+
+					add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
+
+					if ( $M_options['formtype'] == 'new' ) {
+						// pop up registration form
+						wp_enqueue_style( 'fancyboxcss', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css' ) );
+						wp_enqueue_script( 'fancyboxjs', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js' ), array( 'jquery' ), false, true );
+
+						wp_enqueue_script( 'popupmemjs', membership_url( 'membershipincludes/js/popupregistration.js' ), array( 'jquery' ), false, true );
+						wp_enqueue_style( 'popupmemcss', membership_url( 'membershipincludes/css/popupregistration.css' ) );
+
+						wp_localize_script( 'popupmemjs', 'membership', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ),
+							'registernonce' => wp_create_nonce( 'membership_register' ),
+							'loginnonce'    => wp_create_nonce( 'membership_login' ),
+							'regproblem'    => __( 'Problem with registration.', 'membership' ),
+							'logpropblem'   => __( 'Problem with Login.', 'membership' ),
+							'regmissing'    => __( 'Please ensure you have completed all the fields', 'membership' ),
+							'regnomatch'    => __( 'Please ensure passwords match', 'membership' ),
+							'logmissing'    => __( 'Please ensure you have entered an username or password', 'membership' )
+						) );
+					}
+				}
+				// There is no shortcode in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+
+			} elseif ( membership_is_protected_page( $post->ID, false ) ) {
+				// no access page - we must return the content entered by the user so just return it
+				return $posts;
+
+			} elseif ( membership_is_welcome_page( $post->ID, false ) ) {
+				// Registration complete page
+
+				// Handle any updates passed
+				$page = isset( $_REQUEST['action'] ) && !empty( $_REQUEST['action'] ) ? addslashes( $_REQUEST['action'] ) : 'renewform';
+
+				if ( $page == 'subscriptionsignup' ) {
+					if ( is_user_logged_in() && isset( $_POST['custom'] ) ) {
+						list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
+						if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
+							do_action( 'membership_create_subscription', $user_id, $sub_id, $_POST['gateway'] );
+							do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+
+							// Timestamp the update
+							update_user_meta( $user_id, '_membership_last_upgraded', time() );
+
+							// Added another redirect to the same url because the show_no_access filters
+							// have already run on the "parse_request" action (Cole)
+							wp_redirect( M_get_returnurl_permalink() );
+							exit;
+						}
+					} else {
+						// check if a custom is posted and of so then process the user
+						if ( isset( $_POST['custom'] ) ) {
+							list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
+							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
+								do_action( 'membership_create_subscription', $user_id, $sub_id, $_POST['gateway'] );
+								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+
+								// Timestamp the update
+								update_user_meta( $user_id, '_membership_last_upgraded', time() );
+
+								// Added another redirect to the same url because the show_no_access filters
+								// have already run on the "parse_request" action (Cole)
+								wp_redirect( M_get_returnurl_permalink() );
+								exit;
+							}
+						}
+					}
+				}
+
+				return $posts;
+			}
+
+			// If nothing else is hit, just return the content
 			return $posts;
 		}
 
