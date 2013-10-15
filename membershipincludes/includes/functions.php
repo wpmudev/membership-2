@@ -1217,3 +1217,28 @@ function membership_is_special_page( $page_id = null, $check_is_page = true ) {
 
 	return $is_special;
 }
+
+function membership_get_expire_date( $sub_id = null, $date_format = null ) {
+	global $member;
+
+	if ( $member && is_a( $member, 'M_Membership' ) ) {
+		if ( !$sub_id ) {
+			$sub_ids = $member->get_subscription_ids();
+			if ( count( $sub_ids ) > 0 ) {
+				$sub_id = $sub_ids[0];
+			}
+		}
+
+		if ( $sub_id ) {
+			$expired = get_user_meta( $member->ID, 'expire_current_' . $sub_ids[0], true );
+			if ( $expired ) {
+				if ( !$date_format ) {
+					$date_format = DATE_COOKIE;
+				}
+				return date( $date_format, $expired );
+			}
+		}
+	}
+
+	return __( 'unknown', 'membership' );
+}
