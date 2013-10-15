@@ -162,19 +162,27 @@ class M_BPPages extends M_Rule {
 	}
 
 	function validate_negative() {
-		$page = get_queried_object();
-		return is_a( $page, 'WP_Post' ) && $page->post_type == 'page'
-			? !in_array( $page->ID, $this->data )
-			: parent::validate_negative();
+		$component = bp_current_component();
+		if ( $component ) {
+			$pages = bp_core_get_directory_page_ids();
+			if ( !empty( $pages[$component] ) ) {
+				return !in_array( $pages[$component], $this->data );
+			}
+		}
+		return parent::validate_negative();
 	}
 
 	function validate_positive() {
-		$page = get_queried_object();
-		return is_a( $page, 'WP_Post' ) && $page->post_type == 'page'
-			? in_array( $page->ID, $this->data )
-			: parent::validate_positive();
+		$component = bp_current_component();
+		if ( $component ) {
+			$pages = bp_core_get_directory_page_ids();
+			if ( !empty( $pages[$component] ) ) {
+				return in_array( $pages[$component], $this->data );
+			}
+		}
+		return parent::validate_positive();
 	}
-	
+
 }
 
 class M_BPGroups extends M_Rule {
