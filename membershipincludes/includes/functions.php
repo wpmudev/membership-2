@@ -91,7 +91,9 @@ function get_membership_gateways() {
 }
 
 function load_membership_gateways() {
+	global $M_Gateways;
 
+	$M_Gateways = array();
 	$gateways = get_option('membership_activated_gateways', array());
 
 	if ( is_dir( membership_dir('membershipincludes/gateways') ) ) {

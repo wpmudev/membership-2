@@ -3,7 +3,7 @@
 global $M_options;
 
 if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
-	$gateway = M_get_class_for_gateway( $_REQUEST['gateway'] );
+	$gateway = Membership_Gateway::get_gateway( $_REQUEST['gateway'] );
 	if ( $gateway && is_object( $gateway ) && $gateway->haspaymentform == true ) {
 		$sub = new M_Subscription( $subscription );
 		$pricing = $sub->get_pricingarray();

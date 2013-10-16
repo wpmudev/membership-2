@@ -6,29 +6,28 @@ Author URI: http://caffeinatedb.com
 Gateway ID: paypalsolo
 */
 
-class paypalsolo extends M_Gateway {
+class paypalsolo extends Membership_Gateway {
 
 	var $gateway = 'paypalsolo';
 	var $title = 'PayPal Express - with Single Payments';
 	var $issingle = true;
 
-	function paypalsolo() {
-		parent::M_Gateway();
+	public function __construct() {
+		parent::__construct();
 
-		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
 
 		// If I want to override the transactions output - then I can use this action
 		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
-		if($this->is_active()) {
+		if ( $this->is_active() ) {
 			// Subscription form gateway
-			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
+			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
 
 			// Payment return
-			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
-			add_filter( 'membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
+			add_action( 'membership_handle_payment_return_' . $this->gateway, array( &$this, 'handle_paypal_return' ) );
+			add_filter( 'membership_subscription_form_subscription_process', array( &$this, 'signup_free_subscription' ), 10, 2 );
 		}
-
 	}
 
 	function mysettings() {
@@ -462,34 +461,33 @@ class paypalsolo extends M_Gateway {
 								$member->deactivate();
 							}
 						}
-					} else {
-						if( !$this->duplicate_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '' ) ) {
-							$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, trim($_POST['txn_id']), $_POST['payment_status'], '');
+					} elseif ( !$this->_check_duplicate_transaction( $user_id, $sub_id, $timestamp, trim( $_POST['txn_id'] ) ) ) {
+						$this->_record_transaction( $user_id, $sub_id, $amount, $currency, $timestamp, trim( $_POST['txn_id'] ), $_POST['payment_status'], '' );
 
-							if($sublevel == '1') {
-								// This is the first level of a subscription so we need to create one if it doesn't already exist
-								$member = new M_Membership($user_id);
-								if($member) {
-									$member->create_subscription($sub_id, $this->gateway);
-									do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-								}
-							} else {
-								$member = new M_Membership($user_id);
-								if($member) {
-									// Mark the payment so that we can move through ok
-									$member->record_active_payment( $sub_id, $sublevel, $timestamp );
-								}
+						if ( $sublevel == '1' ) {
+							// This is the first level of a subscription so we need to create one if it doesn't already exist
+							$member = new M_Membership( $user_id );
+							if ( $member ) {
+								$member->create_subscription( $sub_id, $this->gateway );
+								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 							}
-
-							// remove any current subs for upgrades
-							if(!empty($fromsub) && $fromsub != 0) {
-								$member->drop_subscription( $fromsub );
+						} else {
+							$member = new M_Membership( $user_id );
+							if ( $member ) {
+								// Mark the payment so that we can move through ok
+								$member->record_active_payment( $sub_id, $sublevel, $timestamp );
 							}
-
-							// Added for affiliate system link
-							do_action('membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
 						}
+
+						// remove any current subs for upgrades
+						if ( !empty( $fromsub ) && $fromsub != 0 ) {
+							$member->drop_subscription( $fromsub );
+						}
+
+						// Added for affiliate system link
+						do_action( 'membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id'] );
 					}
+
 					membership_debug_log( __('Processed transaction received - ','membership') . print_r($_POST, true) );
 					break;
 
@@ -500,7 +498,7 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+					$this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					membership_debug_log( __('Reversed transaction received - ','membership') . print_r($_POST, true) );
 
@@ -522,7 +520,7 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+					$this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					membership_debug_log( __('Refunded transaction received - ','membership') . print_r($_POST, true) );
 
@@ -541,7 +539,7 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+					$this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					membership_debug_log( __('Denied transaction received - ','membership') . print_r($_POST, true) );
 
@@ -575,7 +573,7 @@ class paypalsolo extends M_Gateway {
 					$currency = $_POST['mc_currency'];
 					list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 
-					$this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+					$this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
 					membership_debug_log( __('Pending transaction received - ','membership') . print_r($_POST, true) );
 
@@ -617,6 +615,4 @@ class paypalsolo extends M_Gateway {
 
 }
 
-M_register_gateway('paypalsolo', 'paypalsolo');
-
-?>
+Membership_Gateway::register_gateway( 'paypalsolo', 'paypalsolo' );

@@ -43,8 +43,6 @@ set_membership_dir(__FILE__);
 require_once( membership_dir('membershipincludes/classes/class.rule.php') );
 // Rules class
 require_once( membership_dir('membershipincludes/classes/class.advancedrule.php') );
-// Gateways class
-require_once( membership_dir('membershipincludes/classes/class.gateway.php') );
 // Levels class
 require_once( membership_dir('membershipincludes/classes/class.level.php') );
 // Subscriptions class
@@ -100,10 +98,6 @@ if (is_admin()) {
     $membershippublic = new membershippublic();
 }
 
-// Load secondary plugins
-load_all_membership_addons();
-load_membership_gateways();
-
 
 /******************************************************************************/
 /************** WE ARE IN THE PROCESS OF REWRITING THE PLUGIN *****************/
@@ -154,11 +148,12 @@ function membership_launch() {
 	// database tables
 	$global = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
 	$prefix = $global && isset( $wpdb->base_prefix ) ? $wpdb->base_prefix : $wpdb->prefix;
-	define( 'MEMBERSHIP_TABLE_LEVELS',              "{$prefix}m_membership_levels" );
-	define( 'MEMBERSHIP_TABLE_RULES',               "{$prefix}m_membership_rules" );
-	define( 'MEMBERSHIP_TABLE_SUBSCRIPTIONS',       "{$prefix}m_subscriptions" );
-	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS', "{$prefix}m_subscriptions_levels" );
-	define( 'MEMBERSHIP_TABLE_RELATIONS',           "{$prefix}m_membership_relationships" );
+	define( 'MEMBERSHIP_TABLE_LEVELS',                   "{$prefix}m_membership_levels" );
+	define( 'MEMBERSHIP_TABLE_RULES',                    "{$prefix}m_membership_rules" );
+	define( 'MEMBERSHIP_TABLE_SUBSCRIPTIONS',            "{$prefix}m_subscriptions" );
+	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS',      "{$prefix}m_subscriptions_levels" );
+	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION', "{$prefix}m_subscription_transaction" );
+	define( 'MEMBERSHIP_TABLE_RELATIONS',                "{$prefix}m_membership_relationships" );
 
 	// plugin setup
 	$plugin = Membership_Plugin::instance();
@@ -180,3 +175,7 @@ spl_autoload_register( 'membership_autoloader' );
 
 // launch the plugin
 membership_launch();
+
+// Load secondary plugins
+load_all_membership_addons();
+load_membership_gateways();

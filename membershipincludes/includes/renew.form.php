@@ -166,7 +166,7 @@
 							$currentlevel = $sub->get_level_at( $rel->level_id, $rel->order_instance );
 
 							if( !empty( $rel->usinggateway ) && ($rel->usinggateway != 'admin') ) {
-								$gateway = M_get_class_for_gateway( $rel->usinggateway );
+								$gateway = Membership_Gateway::get_gateway( $rel->usinggateway );
 
 								if( !empty( $gateway ) && $gateway->issingle ) {
 									$gatewayissingle = 'yes';

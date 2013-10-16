@@ -6,30 +6,28 @@
   Gateway ID: paypalexpress
  */
 
-class paypalexpress extends M_Gateway {
+class paypalexpress extends Membership_Gateway {
 
     var $gateway = 'paypalexpress';
     var $title = 'PayPal Express - with Subscriptions';
 
-    function paypalexpress() {
-        parent::M_Gateway();
+	public function __construct() {
+		parent::__construct();
 
-        //echo "booboo";
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
 
-        add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
+		// If I want to override the transactions output - then I can use this action
+		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
-        // If I want to override the transactions output - then I can use this action
-        //add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
+		if ( $this->is_active() ) {
+			// Subscription form gateway
+			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
 
-        if ($this->is_active()) {
-            // Subscription form gateway
-            add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
-
-            // Payment return
-            add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_paypal_return'));
-            add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2);
-        }
-    }
+			// Payment return
+			add_action( 'membership_handle_payment_return_' . $this->gateway, array( &$this, 'handle_paypal_return' ) );
+			add_filter( 'membership_subscription_form_subscription_process', array( &$this, 'signup_free_subscription' ), 10, 2 );
+		}
+	}
 
     function mysettings() {
 
@@ -993,7 +991,7 @@ class paypalexpress extends M_Gateway {
                     $currency = $_POST['mc_currency'];
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-                    $this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
+                    $this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], '');
 
                     membership_debug_log(__('Processed transaction received - ', 'membership') . print_r($_POST, true));
                     // Added for affiliate system link
@@ -1007,7 +1005,7 @@ class paypalexpress extends M_Gateway {
                     $currency = $_POST['mc_currency'];
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-                    $this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+                    $this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
                     membership_debug_log(__('Reversed transaction received - ', 'membership') . print_r($_POST, true));
 
@@ -1029,7 +1027,7 @@ class paypalexpress extends M_Gateway {
                     $currency = $_POST['mc_currency'];
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-                    $this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+                    $this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
                     membership_debug_log(__('Refunded transaction received - ', 'membership') . print_r($_POST, true));
 
@@ -1048,7 +1046,7 @@ class paypalexpress extends M_Gateway {
                     $currency = $_POST['mc_currency'];
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-                    $this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+                    $this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
                     membership_debug_log(__('Denied transaction received - ', 'membership') . print_r($_POST, true));
 
@@ -1084,7 +1082,7 @@ class paypalexpress extends M_Gateway {
 
                     membership_debug_log(__('Pending transaction received - ', 'membership') . print_r($_POST, true));
 
-                    $this->record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
+                    $this->_record_transaction($user_id, $sub_id, $amount, $currency, $timestamp, $_POST['txn_id'], $_POST['payment_status'], $note);
 
                     do_action('membership_payment_pending', $user_id, $sub_id, $amount, $currency, $_POST['txn_id']);
                     break;
@@ -1178,5 +1176,4 @@ class paypalexpress extends M_Gateway {
 
 }
 
-M_register_gateway('paypalexpress', 'paypalexpress');
-?>
+Membership_Gateway::register_gateway( 'paypalexpress', 'paypalexpress' );

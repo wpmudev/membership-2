@@ -1384,7 +1384,7 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 
         function handle_member_gateway_op($operation = 'move', $member_id = false) {
 
-            global $action, $page, $action2, $M_Gateways;
+            global $action, $page, $action2;
 
             wp_reset_vars(array('action', 'page', 'action2'));
 
@@ -6941,7 +6941,7 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 
         function handle_gateways_panel_updates() {
 
-            global $action, $page, $M_Gateways;
+            global $action, $page;
 
             wp_reset_vars(array('action', 'page'));
 
@@ -6998,39 +6998,46 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                     wp_safe_redirect(add_query_arg('msg', 7, wp_get_referer()));
                     break;
 
-                case 'updated': $gateway = addslashes($_POST['gateway']);
-                    check_admin_referer('updated-' . $gateway);
-                    if ($M_Gateways[$gateway]->update()) {
-                        wp_safe_redirect(add_query_arg('msg', 1, 'admin.php?page=' . $page));
-                    } else {
-                        wp_safe_redirect(add_query_arg('msg', 2, 'admin.php?page=' . $page));
-                    }
+                case 'updated':
+					$gateway = addslashes( $_POST['gateway'] );
+					check_admin_referer( 'updated-' . $gateway );
+					$gateway = Membership_Gateway::get_gateway( $gateway );
+					if ( $gateway && $gateway->update() ) {
+						wp_safe_redirect( add_query_arg( 'msg', 1, 'admin.php?page=' . $page ) );
+					} else {
+						wp_safe_redirect( add_query_arg( 'msg', 2, 'admin.php?page=' . $page ) );
+					}
 
-                    break;
+					break;
             }
         }
 
         function handle_gateways_panel() {
 
-            global $action, $page, $M_Gateways;
+            global $action, $page;
 
-            wp_reset_vars(array('action', 'page'));
+            wp_reset_vars( array( 'action', 'page' ) );
 
-            switch (addslashes($action)) {
+			$gateway = filter_input( INPUT_GET, 'gateway' );
+			if ( $gateway ) {
+				switch ( addslashes( $action ) ) {
+					case 'edit':
+						$gateway = Membership_Gateway::get_gateway( $gateway );
+						if ( $gateway ) {
+							$gateway->settings();
+							return; // so we don't show the list below
+						}
+						break;
 
-                case 'edit': if (isset($M_Gateways[addslashes($_GET['gateway'])])) {
-                        $M_Gateways[addslashes($_GET['gateway'])]->settings();
-                    }
-                    return; // so we don't show the list below
-                    break;
-
-                case 'transactions':
-                    if (isset($M_Gateways[addslashes($_GET['gateway'])])) {
-                        $M_Gateways[addslashes($_GET['gateway'])]->transactions();
-                    }
-                    return; // so we don't show the list below
-                    break;
-            }
+					case 'transactions':
+						$gateway = Membership_Gateway::get_gateway( $gateway );
+						if ( $gateway ) {
+							$gateway->transactions();
+							return; // so we don't show the list below
+						}
+						break;
+				}
+			}
 
 
             $messages = array();

@@ -7,7 +7,7 @@ Author URI: http://premium.wpmudev.org
 Gateway ID: authorizenetaim
 */
 
-class M_authorizenetaim extends M_Gateway {
+class M_authorizenetaim extends Membership_Gateway {
 
 	var $gateway = 'authorizenetaim';
 	var $title = 'Authorize.net AIM';
@@ -15,36 +15,31 @@ class M_authorizenetaim extends M_Gateway {
 	var $haspaymentform = true;
 	var $ssl = true;
 
-	function M_authorizenetaim() {
-		global $M_membership_url;
+	public function __construct() {
+		parent::__construct();
 
-		parent::M_Gateway();
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
+		add_action( 'membership_subscription_form_registration_process', array( &$this, 'force_ssl_cookie' ), null, 2 );
 
-		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
-
-		add_action('membership_subscription_form_registration_process', array(&$this, 'force_ssl_cookie'), null, 2);
-
-		if($this->is_active()) {
+		if ( $this->is_active() ) {
 			// Subscription form gateway
-			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
-			add_action('membership_payment_form', array(&$this, 'display_payment_form'), 10, 3 );
+			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
+			add_action( 'membership_payment_form', array( &$this, 'display_payment_form' ), 10, 3 );
 
 			// Payment return
-			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_payment_return'));
-			add_filter('membership_subscription_form_subscription_process', array(&$this, 'signup_subscription'), 10, 2 );
+			add_action( 'membership_handle_payment_return_' . $this->gateway, array( &$this, 'handle_payment_return' ) );
+			add_filter( 'membership_subscription_form_subscription_process', array( &$this, 'signup_subscription' ), 10, 2 );
 
 			// Ajax calls for purchase buttons - if logged out
-			add_action( 'wp_ajax_nopriv_purchaseform', array(&$this, 'popover_payment_form') );
+			add_action( 'wp_ajax_nopriv_purchaseform', array( &$this, 'popover_payment_form' ) );
 			// if logged in
-			add_action( 'wp_ajax_purchaseform', array(&$this, 'popover_payment_form') );
+			add_action( 'wp_ajax_purchaseform', array( &$this, 'popover_payment_form' ) );
 
 			// Ajax calls for purchase processing - if logged out
-			add_action( 'wp_ajax_nopriv_processpurchase_' . $this->gateway , array(&$this, 'process_payment_form') );
+			add_action( 'wp_ajax_nopriv_processpurchase_' . $this->gateway, array( &$this, 'process_payment_form' ) );
 			// if logged in
-			add_action( 'wp_ajax_processpurchase_' . $this->gateway, array(&$this, 'process_payment_form') );
-
+			add_action( 'wp_ajax_processpurchase_' . $this->gateway, array( &$this, 'process_payment_form' ) );
 		}
-
 	}
 
 	function force_ssl_cookie($errors, $user_id) {
@@ -260,7 +255,7 @@ class M_authorizenetaim extends M_Gateway {
 
 			$subscription = (int) $_REQUEST['subscription'];
 
-			$gateway = M_get_class_for_gateway($gateway);
+			$gateway = Membership_Gateway::get_gateway( $gateway );
 
 			if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
 				$sub =  new M_Subscription( $subscription );
@@ -502,7 +497,7 @@ class M_authorizenetaim extends M_Gateway {
 
 				// TODO: create switch for handling different authorize aim respone codes
 
-				$this->record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
+				$this->_record_transaction($user_id, $sub_id, $amount, $M_options['paymentcurrency'], time(), ( $payment->results[6] == 0 ? 'TESTMODE' : $payment->results[6]) , $status, $note);
 
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
 				$return['status'] = 'success';
@@ -930,4 +925,4 @@ if(!class_exists('M_Gateway_Worker_AuthorizeNet_AIM')) {
   }
 }
 
-M_register_gateway('authorizenetaim', 'M_authorizenetaim');
+Membership_Gateway::register_gateway( 'authorizenetaim', 'M_authorizenetaim' );

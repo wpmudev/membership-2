@@ -6,7 +6,7 @@ Author URI: http://caffeinatedb.com
 Gateway ID: freesubscriptions
 */
 
-class freesubscriptions extends M_Gateway {
+class freesubscriptions extends Membership_Gateway {
 
 	var $gateway = 'freesubscriptions';
 	var $title = 'Free Subscriptions';
@@ -14,35 +14,28 @@ class freesubscriptions extends M_Gateway {
 
 	var $defaultmessage = "<h2>Completed: Thank you for signing up</h2>\n<p>\nYour subscription to our site is now set up and you should be able to visit the members only content.\n</p>\n";
 
-	function freesubscriptions() {
-
-		if(M_is_gateway_active('paypalsolo')) {
+	public function __construct() {
+		if ( !is_null( self::get_gateway( 'paypalsolo' ) ) ) {
 			return;
 		}
 
-		parent::M_Gateway();
+		parent::__construct();
 
-		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
 
 		// If I want to override the transactions output - then I can use this action
-		add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
+		add_action( 'M_gateways_transactions_' . $this->gateway, array( &$this, 'mytransactions' ) );
 
-		if($this->is_active()) {
+		if ( $this->is_active() ) {
 			// Subscription form gateway
-			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
-			add_filter( 'membership_subscription_form_subscription_process', array(&$this, 'signup_free_subscription'), 10, 2 );
+			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
+			add_filter( 'membership_subscription_form_subscription_process', array( &$this, 'signup_free_subscription' ), 10, 2 );
 		}
-
-
-
 	}
 
-	function mytransactions() {
-
-		echo '<div class="tablenav">';
-		echo '</div>';
-
-		echo "<p>" . __('No transactions data for the Free gateway','membership') . "</p>";
+	protected function _render_transactions() {
+		echo '<div class="tablenav"></div>';
+		echo "<p>" . __( 'No transactions data for the Free gateway', 'membership' ) . "</p>";
 	}
 
 	function mysettings() {
@@ -239,6 +232,4 @@ class freesubscriptions extends M_Gateway {
 
 }
 
-M_register_gateway('freesubscriptions', 'freesubscriptions');
-
-?>
+Membership_Gateway::register_gateway( 'freesubscriptions', 'freesubscriptions' );

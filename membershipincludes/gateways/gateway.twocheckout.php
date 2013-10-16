@@ -6,39 +6,39 @@ Author URI: http://premium.wpmudev.org
 Gateway ID: twocheckout
 */
 
-class twocheckout extends M_Gateway {
+class twocheckout extends Membership_Gateway {
 
 	var $gateway = 'twocheckout';
 	var $title = '2Checkout';
 
-	function twocheckout() {
-		parent::M_Gateway();
+	public function __construct() {
+		parent::__construct();
 
-		add_action('M_gateways_settings_' . $this->gateway, array(&$this, 'mysettings'));
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
 
 		// If I want to override the transactions output - then I can use this action
 		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
-		if($this->is_active()) {
+		if ( $this->is_active() ) {
 			// Subscription form gateway
-			add_action('membership_purchase_button', array(&$this, 'display_subscribe_button'), 1, 3);
+			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
 
 			// Payment return
-			add_action('membership_handle_payment_return_' . $this->gateway, array(&$this, 'handle_2checkout_return'));
+			add_action( 'membership_handle_payment_return_' . $this->gateway, array( &$this, 'handle_2checkout_return' ) );
 
-			add_filter('membership_gateway_exp_window', array(&$this,'twocheckout_expiration_window'));
+			add_filter( 'membership_gateway_exp_window', array( &$this, 'twocheckout_expiration_window' ) );
 
-			add_action('membership_mark_for_expire', array(&$this,'remove_recurring_line_item'), null, 2);
+			add_action( 'membership_mark_for_expire', array( &$this, 'remove_recurring_line_item' ), null, 2 );
 		}
-
 	}
+
 	function twocheckout_expiration_window($time) {
 		//2Checkout will sometimes send notifications up to 24 hours after a subscription expires, so we need to adjust the window.
 		return "+ 24 hours";
 	}
 	function remove_recurring_line_item($sub_id, $user_id) {
 
-		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM {$this->subscription_transaction} WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s AND transaction_gateway = %s LIMIT 1", $sub_id, $user_id, $this->gateway ) );
+		$invoice_id = $this->db->get_var( $this->db->prepare( "SELECT transaction_paypal_ID FROM " . MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION . " WHERE transaction_subscription_ID = %s AND transaction_user_ID = %s AND transaction_gateway = %s LIMIT 1", $sub_id, $user_id, $this->gateway ) );
 
 		if(empty($invoice_id) || !$invoice_id) {
 			// Don't really know what else to do if we can't find the Invoice ID besides echo an error.
@@ -545,7 +545,7 @@ class twocheckout extends M_Gateway {
 
 			if ($sub_id && $user_id && $_REQUEST['key'] == $hash && $_REQUEST['credit_card_processed'] == 'Y') {
 
-				$this->record_transaction($user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
+				$this->_record_transaction($user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $timestamp, $_REQUEST['order_number'], 'Processed', '');
 
 				// Added for affiliate system link
 				do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
@@ -573,21 +573,20 @@ class twocheckout extends M_Gateway {
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
+						if ( !$this->_check_duplicate_transaction( $user_id, $sub_id, $timestamp, $_POST['invoice_id'] ) ) {
+							$this->_record_transaction( $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '' );
+							$member = new M_Membership( $user_id );
+							if ( $member ) {
+								remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
+								remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+								$member->expire_subscription( $sub_id );
+								$member->create_subscription( $sub_id, $this->gateway );
 
-					if(!$this->duplicate_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '')) {
-						$this->record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
-						$member = new M_Membership($user_id);
-						if($member) {
-							remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
-							remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
-							$member->expire_subscription($sub_id);
-							$member->create_subscription($sub_id, $this->gateway);
-
-							membership_debug_log( sprintf(__('Recurring installment for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );
+								membership_debug_log( sprintf( __( 'Recurring installment for user %d on subscription %d.', 'membership' ), $user_id, $sub_id ) );
+							}
+							// Added for affiliate system link
+							do_action( 'membership_payment_processed', $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id'] );
 						}
-						// Added for affiliate system link
-						do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $_POST['invoice_id']);
-					}
 						break;
 					case 'FRAUD_STATUS_CHANGED':
 					case 'INVOICE_STATUS_CHANGED':
@@ -595,7 +594,7 @@ class twocheckout extends M_Gateway {
 						break;
 					case 'ORDER_CREATED':
 					case 'RECURRING_RESTARTED':
-						$this->record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
+						$this->_record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
 						$member = new M_Membership($user_id);
 						if($member) {
 							$member->create_subscription($sub_id, $this->gateway);
@@ -644,4 +643,4 @@ class twocheckout extends M_Gateway {
 
 }
 
-M_register_gateway('twocheckout', 'twocheckout');
+Membership_Gateway::register_gateway( 'twocheckout', 'twocheckout' );
