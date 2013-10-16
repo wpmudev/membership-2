@@ -109,7 +109,7 @@ class Membership_Module_System extends Membership_Module {
 		update_site_option( $option, apply_filters( $filter, Membership_Plugin::VERSION ) );
 
 		// flush rewrite rules
-		flush_rewrite_rules();
+		add_action( 'init', 'flush_rewrite_rules' );
 	}
 
 }
