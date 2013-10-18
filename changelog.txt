@@ -1,3 +1,7 @@
+== 3.5 ==
+
+* Fixed communication issue when all subscription is selected
+
 == 3.4.6 ==
 
 * Fixed BuddyPress pages protection issue

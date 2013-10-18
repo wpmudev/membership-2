@@ -533,7 +533,7 @@ function M_Communication_process() {
 						}
 
 						foreach ( (array) $comms as $comm ) {
-							if ( in_array( $comm->id, $sentalready ) || $comm->sub_id != $sub_id ) {
+							if ( in_array( $comm->id, $sentalready ) || ( $comm->sub_id != $sub_id && $comm->sub_id > 0 ) ) {
 								continue;
 							}
 
@@ -570,7 +570,7 @@ function M_Communication_process() {
 						}
 
 						foreach ( (array) $comms as $comm ) {
-							if ( in_array( $comm->id, $sentalready ) || $comm->sub_id != $sub_id ) {
+							if ( in_array( $comm->id, $sentalready ) || ( $comm->sub_id != $sub_id && $comm->sub_id > 0 ) ) {
 								continue;
 							}
 
