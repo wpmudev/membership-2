@@ -1,15 +1,15 @@
 <?php
 /*
-  Addon Name: PayPal Express Gateway
-  Author: Barry (Incsub)
-  Author URI: http://caffeinatedb.com
+  Addon Name: PayPal Payments Standard Gateway
+  Author: Incsub
+  Author URI: http://premium.wpmudev.org
   Gateway ID: paypalexpress
  */
 
 class paypalexpress extends Membership_Gateway {
 
     var $gateway = 'paypalexpress';
-    var $title = 'PayPal Express - with Subscriptions';
+    var $title = 'PayPal Payments Standard';
 
 	public function __construct() {
 		parent::__construct();
