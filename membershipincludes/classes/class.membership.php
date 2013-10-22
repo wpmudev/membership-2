@@ -266,19 +266,17 @@ if ( !class_exists( 'M_Membership', false ) ) :
 
 		}
 
-		function expire_subscription($sub_id = false) {
-
-			if(!apply_filters( 'pre_membership_expire_subscription', true, $sub_id, $this->ID )) {
+		function expire_subscription( $sub_id = false ) {
+			if ( !apply_filters( 'pre_membership_expire_subscription', true, $sub_id, $this->ID ) ) {
 				return false;
 			}
 
-			if(!$sub_id) {
+			if ( !$sub_id ) {
 				// expire all of the current subscriptions
-				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d", $this->ID ));
+				$this->db->delete( $this->membership_relationships, array( 'user_id' => $this->ID ), array( '%d' ) );
 			} else {
 				// expire just the passed subscription
-				$this->db->query( $this->db->prepare( "DELETE FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id = %d", $this->ID, $sub_id ));
-
+				$this->db->delete( $this->membership_relationships, array( 'user_id' => $this->ID, 'sub_id' => $sub_id ), array( '%d', '%d' ) );
 			}
 
 			// Update users start and expiry meta
@@ -286,13 +284,12 @@ if ( !class_exists( 'M_Membership', false ) ) :
 			delete_user_meta( $this->ID, 'expire_current_' . $sub_id );
 			delete_user_meta( $this->ID, 'sent_msgs_' . $sub_id );
 
-			$expiring = get_user_meta( $this->ID, '_membership_expire_next', true);
-			if($expiring = $sub_id) {
+			$expiring = get_user_meta( $this->ID, '_membership_expire_next', true );
+			if ( $expiring == $sub_id ) {
 				delete_user_meta( $this->ID, '_membership_expire_next' );
 			}
 
-			do_action( 'membership_expire_subscription', $sub_id, $this->ID);
-
+			do_action( 'membership_expire_subscription', $sub_id, $this->ID );
 		}
 
 		function create_subscription( $sub_id, $gateway = 'admin' ) {
@@ -640,7 +637,7 @@ if ( !class_exists( 'M_Membership', false ) ) :
 			$this->db->delete( $this->membership_relationships, array(
 				'user_id' => $this->ID,
 				'sub_id'  => $fromsub_id,
-			), array( '%d', '%d' ) );
+				), array( '%d', '%d' ) );
 
 			// Update users start and expiry meta
 			delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );

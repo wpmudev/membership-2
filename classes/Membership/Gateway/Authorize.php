@@ -103,7 +103,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$this->_add_action( 'M_gateways_settings_' . $this->gateway, 'render_settings' );
 		$this->_add_action( 'membership_purchase_button', 'render_subscribe_button', 10, 3 );
-		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form' );
+		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 
@@ -222,8 +222,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 *
 	 * @access public
 	 * @param M_Subscription $subscription The current subscription to subscribe to.
+	 * @param array $pricing The pricing information.
+	 * @param int $user_id The current user id.
 	 */
-	public function render_payment_form( M_Subscription $subscription ) {
+	public function render_payment_form( M_Subscription $subscription, $pricing, $user_id ) {
 		$coupon = membership_get_current_coupon();
 
 		$api_u = get_option( $this->gateway . "_api_user" );
@@ -247,6 +249,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$template->coupon = !empty( $coupon ) ? $coupon->get_coupon_code() : '';
 		$template->subscription_id = $subscription->id;
 		$template->gateway = $this->gateway;
+		$template->user_id = $user_id;
 
 		$template->render();
 	}
@@ -266,7 +269,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		}
 
 		$subscription = new M_Subscription( filter_input( INPUT_POST, 'subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) ) );
-		do_action( 'membership_payment_form_' . $this->gateway, $subscription, null, get_current_user_id() );
+		$user_id = filter_input( INPUT_POST, 'user', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1, 'default' => get_current_user_id() ) ) );
+		do_action( 'membership_payment_form_' . $this->gateway, $subscription, null, $user_id );
 	}
 
 	/**
@@ -619,6 +623,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			: get_option( $key, $default );
 	}
 
+	/**
+	 * Enqueues scripts.
+	 *
+	 * @since 3.5
+	 * @action wp_enqueue_scripts
+	 *
+	 * @access public
+	 */
 	public function enqueue_scripts() {
 		if ( membership_is_registration_page() || membership_is_subscription_page() ) {
 			wp_enqueue_script( 'membership-authorize', MEMBERSHIP_ABSURL . 'membershipincludes/js/authorizenet.js', array( 'jquery' ), Membership_Plugin::VERSION, true );
