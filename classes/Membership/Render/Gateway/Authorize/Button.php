@@ -19,65 +19,33 @@
 // +----------------------------------------------------------------------+
 
 /**
- * Base class for all modules. Implements routine methods required by all modules.
+ * Renders Authorize.net button.
  *
  * @category Membership
- * @package Module
+ * @package Render
+ * @subpackage Gateway
  *
  * @since 3.5
  */
-class Membership_Module extends Membership_Hooker {
+class Membership_Render_Gateway_Authorize_Button extends Membership_Render {
 
 	/**
-	 * The instance of wpdb class.
+	 * Renders button template.
 	 *
 	 * @since 3.5
-	 *
-	 * @access protected
-	 * @var wpdb
-	 */
-	protected $_wpdb = null;
-
-	/**
-	 * The plugin instance.
-	 *
-	 * @since 3.5
-	 *
-	 * @access protected
-	 * @var Membership_Plugin
-	 */
-	protected $_plugin = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.5
-	 * @global wpdb $wpdb Current database connection.
 	 *
 	 * @access public
-	 * @param Membership_Plugin $plugin The instance of the plugin.
 	 */
-	public function __construct( Membership_Plugin $plugin ) {
-		global $wpdb;
+	protected function _to_html() {
+		?><form id="signup-form" action="<?php echo esc_url( $this->actionurl )  ?>" method="post">
+			<input type="hidden" name="gateway" id="subscription_gateway" value="<?php echo esc_attr( $this->gateway ) ?>">
+			<input type="hidden" name="extra_form" value="1">
+			<input type="hidden" name="subscription" id="subscription_id" value="<?php echo $this->subscription_id ?>">
+			<input type="hidden" name="user" id="subscription_user_id" value="<?php echo $this->user_id ?>">
+			<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="<?php echo esc_attr( $this->coupon_code ) ?>">
 
-		$this->_wpdb = $wpdb;
-		$this->_plugin = $plugin;
-	}
-
-	/**
-	 * Registers a hook for shortcode tag.
-	 *
-	 * @since 3.5
-	 * @uses add_shortcode() To register shortcode hook.
-	 *
-	 * @access protected
-	 * @param string $tag Shortcode tag to be searched in post content.
-	 * @param string $method Hook to run when shortcode is found.
-	 * @return Membership_Module
-	 */
-	protected function _add_shortcode( $tag, $method ) {
-		add_shortcode( $tag, array( $this, $method ) );
-		return $this;
+			<input type="submit" class="button <?php echo esc_attr( apply_filters( 'membership_subscription_button_color', 'blue' ) ) ?>" value="<?php esc_attr_e( 'Pay Now', 'membership' ) ?>">
+		</form><?php
 	}
 
 }

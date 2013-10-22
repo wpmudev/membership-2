@@ -27,7 +27,7 @@
  * @category Membership
  * @package Gateway
  */
-abstract class Membership_Gateway {
+abstract class Membership_Gateway extends Membership_Hooker {
 
 	/**
 	 * Database connection instance.
@@ -37,11 +37,36 @@ abstract class Membership_Gateway {
 	 */
 	protected $db;
 
-	// Class Identification
-	var $gateway = 'Not Set';
-	var $title = 'Not Set';
-	var $issingle = false;
-	var $haspaymentform = false;
+	/**
+	 * Gateway id.
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $gateway = 'Not Set';
+
+	/**
+	 * Gateway title.
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $title = 'Not Set';
+
+	/**
+	 *
+	 * @access public
+	 * @var boolean
+	 */
+	public $issingle = false;
+
+	/**
+	 * Determines whether gateway has payment form or not.
+	 *
+	 * @access public
+	 * @var boolean
+	 */
+	public $haspaymentform = false;
 
 	/**
 	 * Constructor.
@@ -54,10 +79,10 @@ abstract class Membership_Gateway {
 
 		$this->db = $wpdb;
 
-		add_filter( 'M_gateways_list', array( $this, 'gateways_list' ) );
+		$this->_add_filter( 'M_gateways_list', 'gateways_list' );
 
-		add_action( 'membership_process_payment_return', array( $this, 'process_payment_return' ) );
-		add_action( 'membership_record_user_gateway', array( $this, 'record_user_gateway' ) );
+		$this->_add_action( 'membership_process_payment_return', 'process_payment_return' );
+		$this->_add_action( 'membership_record_user_gateway', 'record_user_gateway' );
 	}
 
 	/**
@@ -181,9 +206,11 @@ abstract class Membership_Gateway {
 	 * @return array The array of transactions.
 	 */
 	protected function _get_transactions( $type, $startat, $num, &$total = null ) {
+		$in = 'IN';
 		$statuses = array();
 		switch ( $type ) {
 			case 'past':
+				$in = 'NOT IN';
 				$statuses[] = 'Future';
 				$statuses[] = 'Pending';
 				break;
@@ -196,7 +223,7 @@ abstract class Membership_Gateway {
 		}
 
 		$statuses = implode( "', '", $statuses );
-		$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM ' . MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION . " WHERE transaction_status IN ('{$statuses}') AND transaction_gateway = %s ORDER BY transaction_ID DESC LIMIT %d, %d";
+		$sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM ' . MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION . " WHERE transaction_status {$in} ('{$statuses}') AND transaction_gateway = %s ORDER BY transaction_ID DESC LIMIT %d, %d";
 		$results = $this->db->get_results( $this->db->prepare( $sql, $this->gateway, $startat, $num ) );
 		$total = $this->db->get_var( "SELECT FOUND_ROWS()" );
 
@@ -368,7 +395,7 @@ abstract class Membership_Gateway {
 								<?php echo $member->user_login ?>
 							</td>
 							<td class="column-date">
-								<?php echo date( "d-m-Y", $transaction->transaction_stamp ) ?>
+								<?php echo date( DATE_COOKIE, $transaction->transaction_stamp ) ?>
 							</td>
 							<td class="column-amount">
 								<?php echo $transaction->transaction_currency ?> <?php echo number_format( $transaction->transaction_total_amount / 100, 2, '.', ',' ) ?>
@@ -606,6 +633,42 @@ abstract class Membership_Gateway {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns user IP address.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access protected
+	 * @return string Remote IP address on success, otherwise FALSE.
+	 */
+	protected static function _get_remote_ip() {
+		$flag = !WP_DEBUG ? FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE : null;
+		$keys = array(
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_FORWARDED',
+			'HTTP_X_CLUSTER_CLIENT_IP',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
+		);
+
+		$remote_ip = false;
+		foreach ( $keys as $key ) {
+			if ( array_key_exists( $key, $_SERVER ) === true ) {
+				foreach ( array_filter( array_map( 'trim', explode( ',', $_SERVER[$key] ) ) ) as $ip ) {
+					if ( filter_var( $ip, FILTER_VALIDATE_IP, $flag ) !== false ) {
+						$remote_ip = $ip;
+						break;
+					}
+				}
+			}
+		}
+
+		return $remote_ip;
 	}
 
 }

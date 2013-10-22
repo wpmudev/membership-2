@@ -1,5 +1,4 @@
 <?php
-
 // +----------------------------------------------------------------------+
 // | Copyright Incsub (http://incsub.com/)                                |
 // +----------------------------------------------------------------------+
@@ -19,65 +18,49 @@
 // +----------------------------------------------------------------------+
 
 /**
- * Base class for all modules. Implements routine methods required by all modules.
+ * Renders Authorize.net settings page.
  *
  * @category Membership
- * @package Module
+ * @package Render
+ * @subpackage Gateway
  *
  * @since 3.5
  */
-class Membership_Module extends Membership_Hooker {
+class Membership_Render_Gateway_Authorize_Settings extends Membership_Render {
 
 	/**
-	 * The instance of wpdb class.
+	 * Renders button template.
 	 *
 	 * @since 3.5
-	 *
-	 * @access protected
-	 * @var wpdb
-	 */
-	protected $_wpdb = null;
-
-	/**
-	 * The plugin instance.
-	 *
-	 * @since 3.5
-	 *
-	 * @access protected
-	 * @var Membership_Plugin
-	 */
-	protected $_plugin = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.5
-	 * @global wpdb $wpdb Current database connection.
 	 *
 	 * @access public
-	 * @param Membership_Plugin $plugin The instance of the plugin.
 	 */
-	public function __construct( Membership_Plugin $plugin ) {
-		global $wpdb;
+	protected function _to_html() {
+		?><table class="form-table">
+			<tbody>
+				<tr valign="top">
+					<th scope="row"><?php esc_html_e( 'Mode', 'membership' ) ?></th>
+					<td>
+						<select name="mode">
+							<?php foreach ( $this->modes as $mode => $label ) : ?>
+								<option value="<?php echo esc_attr( $mode ) ?>"<?php selected( $mode, $this->mode ) ?>><?php
+									echo esc_html( $label )
+								?></option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
 
-		$this->_wpdb = $wpdb;
-		$this->_plugin = $plugin;
-	}
-
-	/**
-	 * Registers a hook for shortcode tag.
-	 *
-	 * @since 3.5
-	 * @uses add_shortcode() To register shortcode hook.
-	 *
-	 * @access protected
-	 * @param string $tag Shortcode tag to be searched in post content.
-	 * @param string $method Hook to run when shortcode is found.
-	 * @return Membership_Module
-	 */
-	protected function _add_shortcode( $tag, $method ) {
-		add_shortcode( $tag, array( $this, $method ) );
-		return $this;
+				<tr valign="top">
+					<th scope="row"><?php esc_html_e( 'Login ID', 'membership' ) ?></th>
+					<td><input type="text" name="api_user" value="<?php echo esc_attr( $this->api_user ) ?>"></td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><?php _e( 'Transaction key', 'membership' ) ?></th>
+					<td><input type="text" name="api_key" value="<?php echo esc_attr( $this->api_key ) ?>"></td>
+				</tr>
+			</tbody>
+		</table><?php
 	}
 
 }

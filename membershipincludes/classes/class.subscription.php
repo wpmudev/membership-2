@@ -37,10 +37,6 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
-		function M_Subscription( $id = false ) {
-			$this->__construct( $id );
-		}
-
 		// Fields
 
 		function sub_id() {
@@ -108,32 +104,24 @@ if(!class_exists('M_Subscription')) {
 		}
 
 		function get_pricingarray() {
-
-			$levels = $this->get_levels();
-
 			$prices = array();
+			$levels = $this->get_levels();
+			foreach ( (array)$levels as $level ) {
+				$prices[] = array(
+					'type'     => $level->sub_type,
+					'amount'   => $level->level_price,
+					'period'   => $level->level_period,
+					'unit'     => $level->level_period_unit,
+					'level_id' => $level->level_id,
+				);
 
-			foreach( (array) $levels as $key => $level ) {
-
-				if($level->sub_type == 'indefinite') {
+				if ( $level->sub_type == 'indefinite' || $level->sub_type == 'serial' ) {
 					// This will be the last item in any list
-					$prices[] = array( 'period' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type, 'unit' => $level->level_period_unit);
 					break;
-				} elseif($level->sub_type == 'serial') {
-					// This will be the last item in any list
-					$prices[] = array( 'period' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type, 'unit' => $level->level_period_unit);
-					break;
-				} else {
-					$prices[] = array( 'period' => $level->level_period, 'amount' => $level->level_price, 'type' => $level->sub_type, 'unit' => $level->level_period_unit);
 				}
 			}
 
-			if(!empty($prices)) {
-				return $prices;
-			} else {
-				return false;
-			}
-
+			return !empty( $prices ) ? $prices : false;
 		}
 
 		// Gets
@@ -204,13 +192,9 @@ if(!class_exists('M_Subscription')) {
 		}
 
 		function get_levels() {
-
 			$sql = $this->db->prepare( "SELECT * FROM {$this->subscriptions_levels} sl INNER JOIN {$this->membership_levels} l on sl.level_id = l.id WHERE sub_id = %d ORDER BY level_order ASC", $this->id );
-
 			$this->levels = $this->db->get_results( $sql );
-
 			return $this->levels;
-
 		}
 
 		function get_level_at($level_id, $level_order) {

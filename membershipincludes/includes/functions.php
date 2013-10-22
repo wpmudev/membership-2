@@ -94,23 +94,25 @@ function load_membership_gateways() {
 	global $M_Gateways;
 
 	$M_Gateways = array();
-	$gateways = get_option('membership_activated_gateways', array());
+	$gateways = get_option( 'membership_activated_gateways', array() );
 
-	if ( is_dir( membership_dir('membershipincludes/gateways') ) ) {
-		if ( $dh = opendir( membership_dir('membershipincludes/gateways') ) ) {
+	if ( is_dir( membership_dir( 'membershipincludes/gateways' ) ) ) {
+		if ( ( $dh = opendir( membership_dir( 'membershipincludes/gateways' ) ) ) ) {
 			$mem_gateways = array();
-			while ( ( $gateway = readdir( $dh ) ) !== false )
-				if ( substr( $gateway, -4 ) == '.php' )
+			while ( ( $gateway = readdir( $dh ) ) !== false ) {
+				if ( substr( $gateway, -4 ) == '.php' ) {
 					$mem_gateways[] = $gateway;
+				}
+			}
 			closedir( $dh );
 			sort( $mem_gateways );
 
-			$mem_gateways = apply_filters('membership_available_gateways', $mem_gateways);
+			$mem_gateways = apply_filters( 'membership_available_gateways', $mem_gateways );
 
-			foreach( $mem_gateways as $mem_gateway ) {
-				$check_gateway = str_replace('gateway.', '', str_replace('.php', '', $mem_gateway));
-				if(in_array($check_gateway, $gateways)) {
-					include_once( membership_dir('membershipincludes/gateways/' . $mem_gateway) );
+			foreach ( $mem_gateways as $mem_gateway ) {
+				$check_gateway = str_replace( 'gateway.', '', str_replace( '.php', '', $mem_gateway ) );
+				if ( in_array( $check_gateway, $gateways ) ) {
+					include_once( membership_dir( 'membershipincludes/gateways/' . $mem_gateway ) );
 				}
 			}
 		}
@@ -645,18 +647,14 @@ function M_strip_decimal_places( $amount ) {
 }
 add_filter('membership_amount_JPY', 'M_strip_decimal_places');
 
-function M_get_option($key, $default = false) {
-
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('get_blog_option')) {
-			return get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, $key, $default);
-		} else {
-			return get_option( $key , $default);
-		}
+function M_get_option( $key, $default = false ) {
+	if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+		return function_exists( 'get_blog_option' )
+			? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, $key, $default )
+			: get_option( $key, $default );
 	} else {
-		return get_option( $key, $default);
+		return get_option( $key, $default );
 	}
-
 }
 
 function M_update_option($key, $value) {
@@ -686,17 +684,15 @@ function M_delete_option($key) {
 	}
 
 }
+
+/**
+ * Returns currently using coupon.
+ *
+ * @return M_Coupon Object of M_Coupon class if a coupon is used, otherwise FALSE.
+ */
 function membership_get_current_coupon() {
-
-	if(isset($_POST['coupon_code']) && !empty($_POST['coupon_code'])) {
-		// Check that it is a valid coupon code - otherwise we'll return an error.
-		$coupon = new M_Coupon( $_POST['coupon_code'] );
-
-		return $coupon;
-	} else {
-		return false;
-	}
-
+	$coupon_code = trim( filter_input( INPUT_POST, 'coupon_code' ) );
+	return !empty( $coupon_code ) ? new M_Coupon( $coupon_code ) : false;
 }
 
 function membership_price_in_text( $pricing ) {

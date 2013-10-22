@@ -7,7 +7,7 @@ if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
 	if ( $gateway && is_object( $gateway ) && $gateway->haspaymentform == true ) {
 		$sub = new M_Subscription( $subscription );
 		$pricing = $sub->get_pricingarray();
-		do_action( 'membership_payment_form', $sub, $pricing, $member->ID );
+		do_action( 'membership_payment_form_' . $_REQUEST['gateway'], $sub, $pricing, $member->ID );
 	}
 } else if ( $member->on_sub( $subscription ) ) {
 

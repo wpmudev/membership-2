@@ -24,7 +24,7 @@ class M_authorizenetarb extends Membership_Gateway {
 		if ( $this->is_active() ) {
 			// Subscription form gateway
 			add_action( 'membership_purchase_button', array( &$this, 'display_subscribe_button' ), 1, 3 );
-			add_action( 'membership_payment_form', array( &$this, 'display_payment_form' ), 10, 3 );
+			add_action( 'membership_payment_form_' . $this->gateway, array( &$this, 'display_payment_form' ), 10, 3 );
 
 			// Payment return
 			add_action( 'membership_handle_payment_return_' . $this->gateway, array( &$this, 'handle_payment_return' ) );

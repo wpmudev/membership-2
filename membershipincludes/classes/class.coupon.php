@@ -192,96 +192,21 @@ if ( !class_exists( 'M_Coupon', false ) ) {
 		}
 
 		function apply_coupon_pricing( $pricing = false ) {
-
-			if( $pricing === false ) {
-				return false;
-			}
-
-			if(empty($this->_coupon)) {
-				// We don't have a coupon so there wasn't a valid one
+			if ( $pricing === false || empty( $this->_coupon ) ) {
 				return $pricing;
 			}
 
 			// Cycle through the pricing array
-			foreach($pricing as $key => $price) {
-
-				switch( $this->_coupon->coupon_apply_to ) {
-
-					case 'serial':			// Update the price for only the serial parts of the subscription
-											if($price['amount'] != 0 && $price['type'] == 'serial') {
-												$pricing[$key]['amount'] = $this->apply_price($price['amount']);
-											}
-											break;
-
-					case 'finite':			// Update the price for only the finite parts of the subscription
-											if($price['amount'] != 0 && $price['type'] == 'finite') {
-												$pricing[$key]['amount'] = $this->apply_price($price['amount']);
-											}
-											break;
-
-					case 'indefinite':		// Update the price for only the indefinite parts of the subscription
-											if($price['amount'] != 0 && $price['type'] == 'indefinite') {
-												$pricing[$key]['amount'] = $this->apply_price($price['amount']);
-											}
-											break;
-
-					default:
-					case 'all':				// Update the price for all parts of the subscription
-											if($price['amount'] != 0 ) {
-												$pricing[$key]['amount'] = $this->apply_price($price['amount']);
-											}
-											break;
+			$types = array( 'serial', 'finite', 'indefinite' );
+			$apply_to = $this->_coupon->coupon_apply_to;
+			foreach ( $pricing as $key => $price ) {
+				if ( $price['amount'] != 0 && ( $apply_to == $price['type'] || !in_array( $apply_to, $types ) ) ) {
+					$pricing[$key]['origin'] = $price['amount'];
+					$pricing[$key]['amount'] = $this->apply_price( $price['amount'] );
 				}
-
 			}
 
-			// Return the updated pricing array
 			return $pricing;
-
-			// OLD CODE BELOW
-
-			/*
-			// We should always have a user_id at this point so we are going to
-			// create a transient to help us log when a coupon is used.
-			$user = wp_get_current_user();
-
-			$trans = array(
-				'code' => $coupon_code,
-				'user_id' => $user->ID,
-				'sub_id' => $this->id,
-				'prices_w_coupon' => array(),
-			);
-
-			foreach($pricing as $key => $value) {
-				// For every possible price they could have paid we put the total into the transient to check if the coupon was set and never used
-				$pricing[$key]['amount'] = $coupon->apply_price($value['amount']);
-				$trans['prices_w_coupon'][$key] = $coupon->apply_price($value['amount']);
-				$this->coupon_label = $coupon->coupon_label;
-			}
-
-			if( function_exists('is_multisite') && is_multisite() )
-				global $blog_id;
-
-			// Check if a transient already exists and delete it if it does
-			if( function_exists('is_multisite') && is_multisite() ) {
-				if( get_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id) )
-					delete_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id );
-			} else {
-				if( get_transient( 'm_coupon_'.$user->ID.'_'.$this->id) )
-					delete_transient( 'm_coupon_'.$user->ID.'_'.$this->id );
-			}
-
-			// Create transient for 1 hour.  This means the user has 1 hour to redeem the coupon after its been applied before it goes back into the pool.
-			// If you want to use a different time limit use the filter below
-			$time = apply_filters('membership_apply_coupon_redemption_time', 60*60);
-
-			if( function_exists('is_multisite') && is_multisite() ) {
-				set_site_transient( 'm_coupon_'.$blog_id.'_'.$user->ID.'_'.$this->id, $trans, $time );
-			} else {
-				set_transient( 'm_coupon_'.$user->ID.'_'.$this->id, $trans, $time );
-			}
-			return apply_filters('membership_apply_coupon_pricingarray', $pricing, $coupon_code);
-			*/
 		}
 
 		function get_not_valid_message( $sub_id ) {

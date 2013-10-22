@@ -37,7 +37,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			<h1><?php echo __('Enter Your Credit Card Information','membership') . " " . $sub->sub_name(); ?></h1>
 		</div>
 		<div class='fullwidth'>
-			<?php do_action('membership_payment_form', $sub, $pricing, $member->ID); ?>
+			<?php do_action( 'membership_payment_form_' . $_REQUEST['gateway'], $sub, $pricing, $member->ID ) ?>
 		</div>
 		<?php
 	} else {
