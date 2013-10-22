@@ -1,45 +1,47 @@
-(function($) {
-	function cc_card_pick(card_image, card_num) {
-		if (card_image == null) {
-			card_image = '#cardimage';
-		}
+function cc_card_pick(card_image, card_num) {
+	var $ = jQuery;
 
-		if (card_num == null) {
-			card_num = '#card_num';
-		}
-
-		numLength = $(card_num).val().length;
-		number = $(card_num).val();
-		if (numLength > 10) {
-			if ((number.charAt(0) == '4') && ((numLength == 13) || (numLength == 16))) {
-				$(card_image).removeClass();
-				$(card_image).addClass('cardimage visa_card');
-			}
-			else if ((number.charAt(0) == '5' && ((number.charAt(1) >= '1') && (number.charAt(1) <= '5'))) && (numLength == 16)) {
-				$(card_image).removeClass();
-				$(card_image).addClass('cardimage mastercard');
-			}
-			else if (number.substring(0, 4) == "6011" && (numLength == 16)) {
-				$(card_image).removeClass();
-				$(card_image).addClass('cardimage amex');
-			}
-			else if ((number.charAt(0) == '3' && ((number.charAt(1) == '4') || (number.charAt(1) == '7'))) && (numLength == 15)) {
-				$(card_image).removeClass();
-				$(card_image).addClass('cardimage discover_card');
-			}
-			else {
-				$(card_image).removeClass();
-				$(card_image).addClass('cardimage nocard');
-			}
-		}
+	if (card_image == null) {
+		card_image = '#cardimage';
 	}
 
+	if (card_num == null) {
+		card_num = '#card_num';
+	}
+
+	var numLength = $(card_num).val().length;
+	var number = $(card_num).val();
+	if (numLength > 10) {
+		if ((number.charAt(0) == '4') && ((numLength == 13) || (numLength == 16))) {
+			$(card_image).removeClass();
+			$(card_image).addClass('cardimage visa_card');
+		}
+		else if ((number.charAt(0) == '5' && ((number.charAt(1) >= '1') && (number.charAt(1) <= '5'))) && (numLength == 16)) {
+			$(card_image).removeClass();
+			$(card_image).addClass('cardimage mastercard');
+		}
+		else if (number.substring(0, 4) == "6011" && (numLength == 16)) {
+			$(card_image).removeClass();
+			$(card_image).addClass('cardimage amex');
+		}
+		else if ((number.charAt(0) == '3' && ((number.charAt(1) == '4') || (number.charAt(1) == '7'))) && (numLength == 15)) {
+			$(card_image).removeClass();
+			$(card_image).addClass('cardimage discover_card');
+		}
+		else {
+			$(card_image).removeClass();
+			$(card_image).addClass('cardimage nocard');
+		}
+	}
+}
+
+(function($) {
 	$(document).ready(function() {
 		$(".noautocomplete").attr("autocomplete", "off");
 
 		$("head").append('<link href="' + membership_authorize.stylesheet_url + '" rel="stylesheet" type="text/css">');
 
-		$("form.membership_payment_form.authorizenet").submit(function() {
+		$('body').on('submit', "form.membership_payment_form.authorizenet", function() {
 			$.ajax({
 				url: membership_authorize.return_url,
 				type: 'POST',

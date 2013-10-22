@@ -102,11 +102,29 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		parent::__construct();
 
 		$this->_add_action( 'M_gateways_settings_' . $this->gateway, 'render_settings' );
-
 		$this->_add_action( 'membership_purchase_button', 'render_subscribe_button', 10, 3 );
-		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
+		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form' );
+		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
+		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 
 		$this->_add_ajax_action( 'processpurchase_' . $this->gateway, 'process_purchase', true, true );
+		$this->_add_ajax_action( 'purchaseform', 'render_popover_payment_form' );
+	}
+
+	/**
+	 * Propagates SSL cookies when user logs in.
+	 *
+	 * @since 3.5
+	 * @action wp_login 10 2
+	 *
+	 * @access public
+	 * @param type $login
+	 * @param WP_User $user
+	 */
+	public function propagate_ssl_cookie( $login, WP_User $user ) {
+		if ( !is_ssl() ) {
+			wp_set_auth_cookie( $user->ID, true, true );
+		}
 	}
 
 	/**
@@ -200,21 +218,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * Renders payment form.
 	 *
 	 * @since 3.5
-	 * @action membership_payment_form_authorize 10 3
+	 * @action membership_payment_form_authorize
 	 *
 	 * @access public
 	 * @param M_Subscription $subscription The current subscription to subscribe to.
-	 * @param array $pricing The pricing information.
-	 * @param int $user_id The current user id.
 	 */
-	public function render_payment_form( M_Subscription $subscription, $pricing, $user_id ) {
-		wp_enqueue_script( 'membership-authorize', MEMBERSHIP_ABSURL . 'membershipincludes/js/authorizenet.js', array( 'jquery' ), Membership_Plugin::VERSION, true );
-		wp_localize_script( 'membership-authorize', 'membership_authorize', array(
-			'return_url'        => add_query_arg( 'action', 'processpurchase_' . $this->gateway, admin_url( 'admin-ajax.php', 'https' ) ),
-			'payment_error_msg' => __( 'There was an unknown error encountered with your payment. Please contact the site administrator.', 'membership' ),
-			'stylesheet_url'    => MEMBERSHIP_ABSURL . 'membershipincludes/css/authorizenet.css',
-		) );
-
+	public function render_payment_form( M_Subscription $subscription ) {
 		$coupon = membership_get_current_coupon();
 
 		$api_u = get_option( $this->gateway . "_api_user" );
@@ -243,6 +252,24 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	}
 
 	/**
+	 * Renders popover payment form.
+	 *
+	 * @since 3.5
+	 * @action wp_ajax_purchaseform
+	 *
+	 * @access public
+	 * @global WP_Scripts $wp_scripts
+	 */
+	public function render_popover_payment_form() {
+		if ( filter_input( INPUT_POST, 'gateway' ) != $this->gateway ) {
+			return;
+		}
+
+		$subscription = new M_Subscription( filter_input( INPUT_POST, 'subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) ) );
+		do_action( 'membership_payment_form_' . $this->gateway, $subscription, null, get_current_user_id() );
+	}
+
+	/**
 	 * Processes purchase action.
 	 *
 	 * @since 3.5
@@ -267,7 +294,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_subscription = new M_Subscription( $sub_id );
 		$pricing = $this->_subscription->get_pricingarray();
 		if ( !$pricing ) {
-			// TODO: return something
 			status_header( 404 );
 			exit;
 		}
@@ -591,6 +617,17 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		return defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN )
 			? get_site_option( $key, $default )
 			: get_option( $key, $default );
+	}
+
+	public function enqueue_scripts() {
+		if ( membership_is_registration_page() || membership_is_subscription_page() ) {
+			wp_enqueue_script( 'membership-authorize', MEMBERSHIP_ABSURL . 'membershipincludes/js/authorizenet.js', array( 'jquery' ), Membership_Plugin::VERSION, true );
+			wp_localize_script( 'membership-authorize', 'membership_authorize', array(
+				'return_url'        => add_query_arg( 'action', 'processpurchase_' . $this->gateway, admin_url( 'admin-ajax.php', 'https' ) ),
+				'payment_error_msg' => __( 'There was an unknown error encountered with your payment. Please contact the site administrator.', 'membership' ),
+				'stylesheet_url'    => MEMBERSHIP_ABSURL . 'membershipincludes/css/authorizenet.css',
+			) );
+		}
 	}
 
 }
