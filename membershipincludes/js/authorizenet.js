@@ -37,17 +37,28 @@ function cc_card_pick(card_image, card_num) {
 
 (function($) {
 	$(document).ready(function() {
+		var locked = false;
+
 		$(".noautocomplete").attr("autocomplete", "off");
 
 		$("head").append('<link href="' + membership_authorize.stylesheet_url + '" rel="stylesheet" type="text/css">');
 
 		$('body').on('submit', "form.membership_payment_form.authorizenet", function() {
+			if (locked) {
+				return;
+			}
+
+			locked = true;
+			$('html').css('cursor', 'wait');
+
 			$.ajax({
 				url: membership_authorize.return_url,
 				type: 'POST',
 				dataType: 'json',
 				data: $(this).serialize(),
 				success: function(data) {
+					locked = false;
+					$('html').css('cursor', 'normal');
 					if (typeof data != 'object') {
 						alert(membership_authorize.payment_error_msg);
 						return;
@@ -79,6 +90,8 @@ function cc_card_pick(card_image, card_num) {
 					}
 				},
 				error: function() {
+					locked = false;
+					$('html').css('cursor', 'normal');
 					alert(membership_authorize.payment_error_msg);
 				}
 			});

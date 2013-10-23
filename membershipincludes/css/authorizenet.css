@@ -52,6 +52,10 @@
 	padding: 3px;
 }
 
+.auth-block {
+	margin-bottom: 10px;
+}
+
 .auth-billing {
 	padding: 10px;
 	background: white;
@@ -82,6 +86,10 @@
 	margin-right: 15px;
 }
 
+.auth-billing-lname {
+	margin-bottom: 20px;
+}
+
 .auth-billing-lname .input_field {
 	width: 160px;
 }
@@ -93,26 +101,24 @@
 	margin-top: 5px;
 }
 
+.auth-billing-country .input_field,
+.auth-billing-city .input_field,
+.auth-billing-state .input_field,
+.auth-billing-zip .input_field,
 .auth-billing-address .input_field {
 	width: 460px;
 }
 
+.auth-billing-country-label,
+.auth-billing-city-label,
+.auth-billing-state-label,
+.auth-billing-zip-label,
 .auth-billing-address-label {
-	float: left;
-	padding-top: 5px;
-	margin-right: 30px;
-	margin-top: 5px;
-}
-
-.auth-billing-zip .input_field {
-	width: 80px;
-}
-
-.auth-billing-zip-label {
 	float: left;
 	padding-top: 5px;
 	margin-right: 10px;
 	margin-top: 5px;
+	width: 80px;
 }
 
 .auth-cc {
@@ -147,7 +153,6 @@
 	height: 23px;
 	width: 157px;
 	display: inline-table;
-	margin-left: 20px;
 }
 
 .auth-exp-input .inputLabel {

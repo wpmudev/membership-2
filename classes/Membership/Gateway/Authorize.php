@@ -649,10 +649,13 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$payment = new AuthorizeNetPaymentProfile();
 
 		// billing information
-		$payment->billTo->address = trim( filter_input( INPUT_POST, 'address' ) );
-		$payment->billTo->firstName = trim( filter_input( INPUT_POST, 'first_name' ) );
-		$payment->billTo->lastName = trim( filter_input( INPUT_POST, 'last_name' ) );
-		$payment->billTo->zip = trim( filter_input( INPUT_POST, 'zip' ) );
+		$payment->billTo->firstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
+		$payment->billTo->lastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+		$payment->billTo->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
+		$payment->billTo->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
+		$payment->billTo->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
+		$payment->billTo->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
+		$payment->billTo->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
 
 		// card information
 		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
@@ -706,28 +709,23 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		if ( $pre_fill ) {
 			// card information
-			$card_number = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-			$card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
-			$expire_date = sprintf( '%02d/%02d', filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), -2 ) );
-
-			// billing information
-			$address = trim( filter_input( INPUT_POST, 'address' ) );
-			$first_name = trim( filter_input( INPUT_POST, 'first_name' ) );
-			$last_name = trim( filter_input( INPUT_POST, 'last_name' ) );
-			$zip = trim( filter_input( INPUT_POST, 'zip' ) );
-
-			$aim->card_num = $card_number;
-			$aim->card_code = $card_code;
-			$aim->exp_date = $expire_date;
+			$aim->card_num = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
+			$aim->card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
+			$aim->exp_date = sprintf( '%02d/%02d', filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), -2 ) );
 			$aim->duplicate_window = MINUTE_IN_SECONDS;
 
+			// customer information
 			$aim->cust_id = $this->_member->ID;
 			$aim->customer_ip = self::_get_remote_ip();
 
-			$aim->first_name = $first_name;
-			$aim->last_name = $last_name;
-			$aim->address = $address;
-			$aim->zip = $zip;
+			// billing information
+			$aim->first_name = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
+			$aim->last_name = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+			$aim->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
+			$aim->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
+			$aim->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
+			$aim->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
+			$aim->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
 		}
 
 		return $aim;
