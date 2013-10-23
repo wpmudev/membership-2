@@ -106,6 +106,16 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	private $_transaction;
 
 	/**
+	 * User's Authorize.net CIM profile ID.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @var int
+	 */
+	private $_cim_profile_id;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.5
@@ -121,8 +131,60 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 
+		$this->_add_action( 'wpmu_delete_user', 'save_cim_profile_id' );
+		$this->_add_action( 'delete_user', 'save_cim_profile_id' );
+		$this->_add_action( 'deleted_user', 'delete_cim_profile' );
+
 		$this->_add_ajax_action( 'processpurchase_' . $this->gateway, 'process_purchase', true, true );
 		$this->_add_ajax_action( 'purchaseform', 'render_popover_payment_form' );
+	}
+
+	/**
+	 * Saves Authorize.net CIM profile ID before delete an user.
+	 *
+	 * @since 3.5
+	 * @action delete_user
+	 *
+	 * @access public
+	 * @param int $user_id User's ID which will be deleted.
+	 */
+	public function save_cim_profile_id( $user_id ) {
+		$this->_cim_profile_id = get_user_meta( $user_id, 'authorize_cim_id', true );
+	}
+
+	/**
+	 * Voids all authorized payements, delete subscriptions and removes
+	 * Authorize.net CIM profile when an user is deleted. And finally deletes
+	 * transaction log.
+	 *
+	 * @since 3.5
+	 * @action deleted_user
+	 *
+	 * @access public
+	 * @param int $user_id The ID of an user which was deleted.
+	 */
+	public function delete_cim_profile( $user_id ) {
+		$transactions = $this->db->get_results( sprintf(
+			'SELECT transaction_paypal_ID AS id, transaction_status AS status FROM %s WHERE transaction_user_ID = %d AND transaction_status IN (%d, %d)',
+			MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
+			$user_id,
+			self::TRANSACTION_TYPE_AUTHORIZED,
+			self::TRANSACTION_TYPE_RECURING
+		) );
+
+		foreach ( $transactions as $transaction ) {
+			if ( $transaction->status == self::TRANSACTION_TYPE_AUTHORIZED ) {
+				$this->_get_aim( false, false )->void( $transaction->id );
+			} elseif ( $transaction->status == self::TRANSACTION_TYPE_RECURING ) {
+				$this->_get_arb()->cancelSubscription( $transaction->id );
+			}
+		}
+
+		$this->db->delete( MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION, array( 'transaction_user_ID' => $user_id ), array( '%d' ) );
+
+		if ( $this->_cim_profile_id ) {
+			$this->_get_cim()->deleteCustomerProfile( $this->_cim_profile_id );
+		}
 	}
 
 	/**
@@ -535,7 +597,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 				// capture first transaction
 				if ( $index == 0 ) {
-					$this->_get_aim( true )->priorAuthCapture( $info['transaction'] );
+					$this->_get_aim( true, false )->priorAuthCapture( $info['transaction'] );
 					$status = self::TRANSACTION_TYPE_CAPTURED;
 				}
 			} elseif ( $info['method'] == 'arb' ) {
@@ -621,9 +683,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access private
 	 * @staticvar AuthorizeNetAIM $aim The instance of AuthorizeNetAIM class.
 	 * @param boolean $refresh Determines whether we need to refresh $aim object or not.
+	 * @param boolean $pre_fill Determines whether we need to pre fill AIM object with posted data or not.
 	 * @return AuthorizeNetAIM The instance of AuthorizeNetAIM class.
 	 */
-	private function _get_aim( $refresh = false ) {
+	private function _get_aim( $refresh = false, $pre_fill = true ) {
 		static $aim = null;
 
 		if ( !$refresh && !is_null( $aim ) ) {
@@ -637,33 +700,35 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$transaction_key = $this->_get_option( 'api_key' );
 		$mode = $this->_get_option( 'mode', self::MODE_SANDBOX );
 
-		// card information
-		$card_number = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-		$card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
-		$expire_date = sprintf( '%02d/%02d', filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), -2 ) );
-
-		// billing information
-		$address = trim( filter_input( INPUT_POST, 'address' ) );
-		$first_name = trim( filter_input( INPUT_POST, 'first_name' ) );
-		$last_name = trim( filter_input( INPUT_POST, 'last_name' ) );
-		$zip = trim( filter_input( INPUT_POST, 'zip' ) );
-
 		// create new AIM
 		$aim = new AuthorizeNetAIM( $login_id, $transaction_key );
 		$aim->setSandbox( $mode != self::MODE_LIVE );
 
-		$aim->card_num = $card_number;
-		$aim->card_code = $card_code;
-		$aim->exp_date = $expire_date;
-		$aim->duplicate_window = MINUTE_IN_SECONDS;
+		if ( $pre_fill ) {
+			// card information
+			$card_number = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
+			$card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
+			$expire_date = sprintf( '%02d/%02d', filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), -2 ) );
 
-		$aim->cust_id = $this->_member->ID;
-		$aim->customer_ip = self::_get_remote_ip();
+			// billing information
+			$address = trim( filter_input( INPUT_POST, 'address' ) );
+			$first_name = trim( filter_input( INPUT_POST, 'first_name' ) );
+			$last_name = trim( filter_input( INPUT_POST, 'last_name' ) );
+			$zip = trim( filter_input( INPUT_POST, 'zip' ) );
 
-		$aim->first_name = $first_name;
-		$aim->last_name = $last_name;
-		$aim->address = $address;
-		$aim->zip = $zip;
+			$aim->card_num = $card_number;
+			$aim->card_code = $card_code;
+			$aim->exp_date = $expire_date;
+			$aim->duplicate_window = MINUTE_IN_SECONDS;
+
+			$aim->cust_id = $this->_member->ID;
+			$aim->customer_ip = self::_get_remote_ip();
+
+			$aim->first_name = $first_name;
+			$aim->last_name = $last_name;
+			$aim->address = $address;
+			$aim->zip = $zip;
+		}
 
 		return $aim;
 	}
