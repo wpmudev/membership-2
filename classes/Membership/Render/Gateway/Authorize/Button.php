@@ -43,8 +43,11 @@ class Membership_Render_Gateway_Authorize_Button extends Membership_Render {
 			<input type="hidden" name="subscription" id="subscription_id" value="<?php echo $this->subscription_id ?>">
 			<input type="hidden" name="user" id="subscription_user_id" value="<?php echo $this->user_id ?>">
 			<input type="hidden" name="coupon_code" id="subscription_coupon_code" value="<?php echo esc_attr( $this->coupon_code ) ?>">
+			<?php if ( !empty( $this->from_subscription_id ) ) : ?>
+			<input type="hidden" name="from_subscription" value="<?php echo $this->from_subscription_id ?>">
+			<?php endif; ?>
 
-			<input type="submit" class="button <?php echo esc_attr( apply_filters( 'membership_subscription_button_color', 'blue' ) ) ?>" value="<?php esc_attr_e( 'Pay Now', 'membership' ) ?>">
+			<input type="submit" class="button <?php echo esc_attr( apply_filters( 'membership_subscription_button_color', 'blue' ) ) ?>" value="<?php echo $this->button_label ?>">
 		</form><?php
 	}
 

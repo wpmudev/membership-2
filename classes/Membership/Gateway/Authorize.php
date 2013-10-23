@@ -31,6 +31,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	const MODE_SANDBOX = 'sandbox';
 	const MODE_LIVE    = 'live';
 
+	const TRANSACTION_TYPE_AUTHORIZED = 1;
+	const TRANSACTION_TYPE_CAPTURED   = 2;
+	const TRANSACTION_TYPE_RECURING   = 3;
+
 	/**
 	 * Gateway id.
 	 *
@@ -90,6 +94,16 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @var M_Subscription
 	 */
 	private $_subscription;
+
+	/**
+	 * The array of transaction processed during payment.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @var array
+	 */
+	private $_transaction;
 
 	/**
 	 * Constructor.
@@ -187,11 +201,43 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 *
 	 * @access public
 	 * @global array $M_options The array of membership options.
-	 * @param M_Subscription $subscription
+	 * @param M_Subscription $subscription New subscription.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
 	 */
 	public function render_subscribe_button( M_Subscription $subscription, $pricing, $user_id ) {
+		$this->_render_button( esc_attr__( 'Pay Now', 'membership' ), $subscription, $user_id, false );
+	}
+
+	/**
+	 * Displays upgrade subscription button.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @global array $M_options The array of membership options.
+	 * @param M_Subscription $subscription New subscription.
+	 * @param array $pricing The pricing information.
+	 * @param int $user_id The current user id.
+	 * @param type $fromsub_id From subscription ID.
+	 */
+	public function display_upgrade_button( $subscription, $pricing, $user_id, $fromsub_id = false ) {
+		$this->_render_button( esc_attr__( 'Upgrade', 'membership' ), $subscription, $user_id, $fromsub_id );
+	}
+
+	/**
+	 * Renders gateway button.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @global array $M_options The array of membership options.
+	 * @param string $label The button label.
+	 * @param M_Subscription $subscription New subscription.
+	 * @param int $user_id The current user id.
+	 * @param type $fromsub_id From subscription ID.
+	 */
+	private function _render_button( $label, M_Subscription $subscription, $user_id, $fromsub_id = false ) {
 		global $M_options;
 
 		$actionurl = isset( $M_options['registration_page'] ) ? str_replace('http:', 'https:', get_permalink( $M_options['registration_page'] ) ) : '';
@@ -203,7 +249,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$template->gateway = $this->gateway;
 		$template->subscription_id = $subscription->id;
+		$template->from_subscription_id = (int)$fromsub_id;
 		$template->user_id = $user_id;
+		$template->button_label = $label;
 
 		$actionurl = add_query_arg( array( 'action' => 'registeruser', 'subscription' => $subscription->id ), $actionurl );
 		$template->actionurl = $actionurl;
@@ -228,8 +276,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	public function render_payment_form( M_Subscription $subscription, $pricing, $user_id ) {
 		$coupon = membership_get_current_coupon();
 
-		$api_u = get_option( $this->gateway . "_api_user" );
-		$api_k = get_option( $this->gateway . "_api_key" );
 		$error = false;
 		if ( isset( $_GET['errors'] ) ) {
 			if ( $_GET['errors'] == 1 ) {
@@ -238,10 +284,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$error = __( 'There was a problem processing your purchase. Please, try again.', 'membership' );
 			}
 		}
-		if ( !isset( $api_u ) || $api_u == '' || $api_u == false || !isset( $api_k ) || $api_k == '' || $api_k == false ) {
+
+		$api_u = trim( $this->_get_option( 'api_user' ) );
+		$api_k = trim( $this->_get_option( 'api_key' ) );
+		if ( empty( $api_u ) || empty( $api_k ) ) {
 			$error = __( 'This payment gateway has not been configured. Your transaction will not be processed.', 'membership' );
 		}
-
 
 		$template = new Membership_Render_Gateway_Authorize_Form();
 
@@ -315,6 +363,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// process payments
 		$started = new DateTime();
 		$this->_payment_result = array( 'status' => '', 'errors' => array() );
+		$this->_transaction = array();
 		for ( $i = 0, $count = count( $pricing ); $i < $count; $i++ ) {
 			switch ( $pricing[$i]['type'] ) {
 				case 'finite':
@@ -326,7 +375,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 						case 'y': $unit = 'year';  break;
 					}
 
-					$this->_process_nonserial_purchase( $pricing[$i], $started, $i );
+					$this->_process_nonserial_purchase( $pricing[$i], $started );
 					$started->modify( sprintf( '+%d %s', $pricing[$i]['period'], $unit ) );
 					break;
 				case 'indefinite':
@@ -338,11 +387,16 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			}
 
 			if ( $this->_payment_result['status'] == 'error' ) {
+				$this->_rollback_transactions();
 				break;
 			}
 		}
 
 		if ( $this->_payment_result['status'] == 'success' ) {
+			// process transactions
+			$this->_commit_transactions();
+
+			// create member subscription
 			if ( $this->_member->has_subscription() && $this->_member->on_sub( $sub_id ) ) {
 				$this->_member->expire_subscription( $sub_id );
 				$this->_member->create_subscription( $sub_id, $this->gateway );
@@ -350,6 +404,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$this->_member->create_subscription( $sub_id, $this->gateway );
 			}
 
+			// process response message and redirect
 			$popup = isset( $M_options['formtype'] ) && $M_options['formtype'] == 'new';
 			if ( $popup && !empty( $M_options['registrationcompleted_message'] ) ) {
 				$html = '<div class="header" style="width: 750px"><h1>';
@@ -378,14 +433,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access private
-	 * @global array $M_options The array of plugin options.
 	 * @param array $price The array with current price information.
 	 * @param DateTime $date The date when to process this transaction.
-	 * @param int $index The index in queue of levels.
 	 */
-	private function _process_nonserial_purchase( $price, $date, $index ) {
-		global $M_options;
-
+	private function _process_nonserial_purchase( $price, $date ) {
 		if ( $price['amount'] == 0 ) {
 			$this->_payment_result['status'] = 'success';
 			return;
@@ -393,46 +444,18 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$aim = $this->_get_aim();
 		$aim->amount = $amount = number_format( $price['amount'], 2, '.', '' );
-		if ( $index == 0 ) {
-			// this level is the first in the queue, so just perform simple AIM payment
-			$response = $aim->authorizeAndCapture();
-			if ( $response->approved ) {
-				$this->_payment_result['status'] = 'success';
-
-				$this->_record_transaction(
-					$this->_member->ID,
-					$this->_subscription->sub_id(),
-					$amount,
-					$M_options['paymentcurrency'],
-					time(),
-					$response->transaction_id,
-					'Processed',
-					$this->_get_option( 'mode', self::MODE_SANDBOX ) != self::MODE_LIVE ? 'Sandbox' : ''
-				);
-			} else {
-				$this->_payment_result['status'] = 'error';
-				$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
-			}
+		$response = $aim->authorizeOnly();
+		if ( $response->approved ) {
+			$this->_payment_result['status'] = 'success';
+			$this->_transaction[] = array(
+				'method'      => 'aim',
+				'transaction' => $response->transaction_id,
+				'date'        => $date->getTimestamp(),
+				'amount'      => $amount,
+			);
 		} else {
-			// this level is not the first level in the queue, so perform delayed ARB payment
-			$response = $aim->authorizeOnly();
-			if ( $response->approved ) {
-				$this->_payment_result['status'] = 'success';
-
-				$this->_record_transaction(
-					$this->_member->ID,
-					$this->_subscription->sub_id(),
-					$amount,
-					$M_options['paymentcurrency'],
-					$date->getTimestamp(),
-					$response->transaction_id,
-					'Future',
-					$this->_get_option( 'mode', self::MODE_SANDBOX ) != self::MODE_LIVE ? 'Sandbox' : ''
-				);
-			} else {
-				$this->_payment_result['status'] = 'error';
-				$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
-			}
+			$this->_payment_result['status'] = 'error';
+			$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
 		}
 	}
 
@@ -473,11 +496,121 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$response = $arb->createSubscription( $subscription );
 		if ( $response->isOk() ) {
 			$this->_payment_result['status'] = 'success';
-			add_user_meta( $this->_member->ID, $this->gateway . '_subscription_' . $this->_subscription->sub_id(), $response->getSubscriptionId() );
+			$this->_transaction[] = array(
+				'method'      => 'arb',
+				'transaction' => $response->getSubscriptionId(),
+				'date'        => $date->getTimestamp(),
+				'amount'      => $amount,
+			);
 		} else {
 			$this->_payment_result['status'] = 'error';
 			$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
 		}
+	}
+
+	/**
+	 * Processes transactions.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @global array $M_options The array of plugin options.
+	 */
+	private function _commit_transactions() {
+		global $M_options;
+
+		$sub_id = $this->_subscription->sub_id();
+		$notes = $this->_get_option( 'mode', self::MODE_SANDBOX ) != self::MODE_LIVE ? 'Sandbox' : '';
+
+		// create CIM profile it is not exists
+		if ( !get_user_meta( $this->_member->ID, 'authorize_cim_id', true ) ) {
+			$this->_create_cim_profile();
+		}
+
+		// process each transaction information and save it to CIM
+		foreach ( $this->_transaction as $index => $info ) {
+			$status = 0;
+			if ( $info['method'] == 'aim' ) {
+				$status = self::TRANSACTION_TYPE_AUTHORIZED;
+
+				// capture first transaction
+				if ( $index == 0 ) {
+					$this->_get_aim( true )->priorAuthCapture( $info['transaction'] );
+					$status = self::TRANSACTION_TYPE_CAPTURED;
+				}
+			} elseif ( $info['method'] == 'arb' ) {
+				$status = self::TRANSACTION_TYPE_RECURING;
+			}
+
+			// save transaction information in the database
+			$this->_record_transaction(
+				$this->_member->ID,
+				$sub_id,
+				$info['amount'],
+				$M_options['paymentcurrency'],
+				$info['date'],
+				$info['transaction'],
+				$status,
+				$notes
+			);
+		}
+	}
+
+	/**
+	 * Rollbacks transactions all transactions and subscriptions.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 */
+	private function _rollback_transactions() {
+		foreach ( $this->_transaction as $info ) {
+			if ( $info['method'] == 'aim' ) {
+				$this->_get_aim()->void( $info['transaction'] );
+			} elseif ( $info['method'] == 'arb' ) {
+				$this->_get_arb()->cancelSubscription( $info['transaction'] );
+			}
+		}
+	}
+
+	/**
+	 * Creates Authorize.net CIM profile for current user.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @return int Customer profile ID on success, otherwise FALSE.
+	 */
+	private function _create_cim_profile() {
+		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
+
+		$payment = new AuthorizeNetPaymentProfile();
+
+		// billing information
+		$payment->billTo->address = trim( filter_input( INPUT_POST, 'address' ) );
+		$payment->billTo->firstName = trim( filter_input( INPUT_POST, 'first_name' ) );
+		$payment->billTo->lastName = trim( filter_input( INPUT_POST, 'last_name' ) );
+		$payment->billTo->zip = trim( filter_input( INPUT_POST, 'zip' ) );
+
+		// card information
+		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
+		$payment->payment->creditCard->cardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
+		$payment->payment->creditCard->expirationDate = sprintf( '%04d-%02d', filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 ) );
+
+		$customer = new AuthorizeNetCustomer();
+		$customer->merchantCustomerId = $this->_member->ID;
+		$customer->email = $this->_member->user_email;
+		$customer->paymentProfiles[] = $payment;
+
+		$response = $this->_get_cim()->createCustomerProfile( $customer );
+		if ( $response->isError() ) {
+			return false;
+		}
+
+		$profile_id = $response->getCustomerProfileId();
+		update_user_meta( $this->_member->ID, 'authorize_cim_id', $profile_id );
+
+		return $profile_id;
 	}
 
 	/**
@@ -486,9 +619,17 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access private
+	 * @staticvar AuthorizeNetAIM $aim The instance of AuthorizeNetAIM class.
+	 * @param boolean $refresh Determines whether we need to refresh $aim object or not.
 	 * @return AuthorizeNetAIM The instance of AuthorizeNetAIM class.
 	 */
-	private function _get_aim() {
+	private function _get_aim( $refresh = false ) {
+		static $aim = null;
+
+		if ( !$refresh && !is_null( $aim ) ) {
+			return $aim;
+		}
+
 		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
 
 		// merchant information
@@ -533,9 +674,16 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access private
+	 * @staticvar AuthorizeNetARB $arb The instance of AuthorizeNetARB class.
 	 * @return AuthorizeNetARB The instance of AuthorizeNetARB class.
 	 */
 	private function _get_arb() {
+		static $arb = null;
+
+		if ( !is_null( $arb ) ) {
+			return $arb;
+		}
+
 		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
 
 		// merchant information
@@ -604,6 +752,34 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$subscription->billToZip = $zip;
 
 		return $subscription;
+	}
+
+	/**
+	 * Returns the instance of AuthorizeNetCIM class.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @staticvar AuthorizeNetCIM $cim The instance of AuthorizeNetCIM class.
+	 * @return AuthorizeNetCIM The instance of AuthorizeNetCIM class.
+	 */
+	private function _get_cim() {
+		static $cim = null;
+
+		if ( !is_null( $cim ) ) {
+			return $cim;
+		}
+
+		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
+
+		// merchant information
+		$login_id = $this->_get_option( 'api_user' );
+		$transaction_key = $this->_get_option( 'api_key' );
+		$mode = $this->_get_option( 'mode', self::MODE_SANDBOX );
+
+		$cim = new AuthorizeNetCIM( $login_id, $transaction_key );
+		$cim->setSandbox( $mode != self::MODE_LIVE );
+		return $cim;
 	}
 
 	/**
