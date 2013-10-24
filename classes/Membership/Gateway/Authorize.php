@@ -33,7 +33,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 	const TRANSACTION_TYPE_AUTHORIZED        = 1;
 	const TRANSACTION_TYPE_CAPTURED          = 2;
-	const TRANSACTION_TYPE_RECURING          = 3;
+	const TRANSACTION_TYPE_RECURRING         = 3;
 	const TRANSACTION_TYPE_VOIDED            = 4;
 	const TRANSACTION_TYPE_CANCELED_RECURING = 5;
 	const TRANSACTION_TYPE_CIM_AUTHORIZED    = 6;
@@ -201,7 +201,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
 			$user_id,
 			self::TRANSACTION_TYPE_AUTHORIZED,
-			self::TRANSACTION_TYPE_RECURING,
+			self::TRANSACTION_TYPE_RECURRING,
 			self::TRANSACTION_TYPE_CIM_AUTHORIZED,
 			!empty( $sub_id ) ? ' AND transaction_subscription_ID = ' . $sub_id : ''
 		) );
@@ -211,7 +211,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			if ( $transaction->status == self::TRANSACTION_TYPE_AUTHORIZED ) {
 				$this->_get_aim( false, false )->void( $transaction->id );
 				$status = self::TRANSACTION_TYPE_VOIDED;
-			} elseif ( $transaction->status == self::TRANSACTION_TYPE_RECURING ) {
+			} elseif ( $transaction->status == self::TRANSACTION_TYPE_RECURRING ) {
 				$this->_get_arb()->cancelSubscription( $transaction->id );
 				$status = self::TRANSACTION_TYPE_CANCELED_RECURING;
 			} elseif ( $transaction->status == self::TRANSACTION_TYPE_CIM_AUTHORIZED ) {
@@ -721,7 +721,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 					$status = self::TRANSACTION_TYPE_CAPTURED;
 				}
 			} elseif ( $info['method'] == 'arb' ) {
-				$status = self::TRANSACTION_TYPE_RECURING;
+				$status = self::TRANSACTION_TYPE_RECURRING;
 			}
 
 			// save transaction information in the database
@@ -1063,6 +1063,35 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				'stylesheet_url'    => MEMBERSHIP_ABSURL . 'membershipincludes/css/authorizenet.css',
 			) );
 		}
+	}
+
+	/**
+	 * Renders gateway transactions.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 */
+	public function transactions() {
+		// prepare table
+		$table = new Membership_Table_Gateway_Transaction_Authorize( array(
+			'gateway'       => $this->gateway,
+			'subscriptions' => $this->db->get_results( 'SELECT * FROM ' . MEMBERSHIP_TABLE_SUBSCRIPTIONS, ARRAY_A ),
+			'statuses'      => array(
+				self::TRANSACTION_TYPE_AUTHORIZED        => esc_html__( 'Authorized', 'membership' ),
+				self::TRANSACTION_TYPE_CAPTURED          => esc_html__( 'Captured', 'membership' ),
+				self::TRANSACTION_TYPE_RECURRING         => esc_html__( 'Recurring', 'membership' ),
+				self::TRANSACTION_TYPE_VOIDED            => esc_html__( 'Voided', 'membership' ),
+				self::TRANSACTION_TYPE_CANCELED_RECURING => esc_html__( 'Cancelled Recurring', 'membership' ),
+				self::TRANSACTION_TYPE_CIM_AUTHORIZED    => esc_html__( 'Authorized', 'membership' ),
+			),
+		) );
+		$table->prepare_items();
+
+		// render template
+		$template = new Membership_Render_Gateway_Authorize_Transactions();
+		$template->table = $table;
+		$template->render();
 	}
 
 }
