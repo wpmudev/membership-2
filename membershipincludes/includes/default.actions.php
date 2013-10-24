@@ -22,17 +22,6 @@ function M_drop_subscription( $user_id, $sub_id ) {
 }
 add_action( 'membership_drop_subscription', 'M_drop_subscription', 10, 2 );
 
-function M_expire_subscription( $user_id, $sub_id ) {
-
-	$member = new M_Membership( $user_id );
-
-	if( !empty($member) && method_exists( $member, 'expire_subscription') ) {
-		$member->expire_subscription( $sub_id );
-	}
-
-}
-add_action( 'membership_expire_subscription', 'M_expire_subscription', 10, 2 );
-
 /*
 * Redirect actions
 */

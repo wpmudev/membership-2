@@ -43,6 +43,10 @@ function cc_card_pick(card_image, card_num) {
 
 		$("head").append('<link href="' + membership_authorize.stylesheet_url + '" rel="stylesheet" type="text/css">');
 
+		$('body').on('change', '#auth-cim-profiles input', function() {
+			$('#auth-new-cc-body').toggle($(this).parents('li').attr('id') == 'auth-new-cc');
+		});
+
 		$('body').on('submit', "form.membership_payment_form.authorizenet", function() {
 			if (locked) {
 				return;

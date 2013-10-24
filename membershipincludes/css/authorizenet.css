@@ -1,9 +1,5 @@
-/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/authorizenet.css */
-
 /* Thanks to Kevin D. Lyons for the initial Form HTML and CSS  */
-.membership_cart_billing {
 
-}
 .purchase-wrapper {
 	padding: 10px;
 	border: 1px solid #d6d6d6;
@@ -130,7 +126,7 @@
 }
 
 .auth-cc-cardnum {
-	width: 30em;
+	width: 25em;
 }
 
 .auth-exp {
@@ -187,4 +183,29 @@
 }
 .auth-sec-input .input_field {
 	width: 70px;
+}
+
+#auth-cim-profiles {
+	margin-bottom: 20px;
+}
+
+#auth-cim-profiles ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#auth-cim-profiles li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-weight: bold;
+}
+
+#auth-cim-profiles li#auth-new-cc {
+	font-weight: normal;
+}
+
+.auth-has-cim #auth-new-cc-body {
+	display: none;
 }
