@@ -674,7 +674,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$subscription->name = $name;
 		$subscription->amount = $amount;
 		$subscription->startDate = $date->format( 'Y-m-d' );
-		$subscription->totalOccurrences = 1;
+		$subscription->totalOccurrences = 9999;
+
+		if ( isset( $price['origin'] ) ) {
+			// coupon is applied, so we need to add trial period
+			$subscription->amount = $amount = number_format( $price['origin'], 2, '.', '' );
+			$subscription->trialAmount = number_format( $price['amount'], 2, '.', '' );
+			$subscription->trialOccurrences = 1;
+		}
 
 		$arb = $this->_get_arb();
 		$response = $arb->createSubscription( $subscription );
@@ -937,19 +944,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	protected function _get_arb_subscription( $pricing ) {
 		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
 
-		// card information
-		$card_number = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-		$card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
-		$expire_date = sprintf( '%04d-%02d', filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ) );
-
-		// billing information
-		$address = trim( filter_input( INPUT_POST, 'address' ) );
-		$first_name = trim( filter_input( INPUT_POST, 'first_name' ) );
-		$last_name = trim( filter_input( INPUT_POST, 'last_name' ) );
-		$zip = trim( filter_input( INPUT_POST, 'zip' ) );
-
 		// create new subscription
 		$subscription = new AuthorizeNet_Subscription();
+		$subscription->customerId = $this->_member->ID;
 
 		switch ( $pricing['unit'] ) {
 			case 'd':
@@ -970,16 +967,19 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				break;
 		}
 
-		$subscription->creditCardCardNumber = $card_number;
-		$subscription->creditCardCardCode = $card_code;
-		$subscription->creditCardExpirationDate = $expire_date;
+		// card information
+		$subscription->creditCardCardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
+		$subscription->creditCardCardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
+		$subscription->creditCardExpirationDate = sprintf( '%04d-%02d', filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ) );
 
-		$subscription->customerId = $this->_member->ID;
-
-		$subscription->billToFirstName = $first_name;
-		$subscription->billToLastName = $last_name;
-		$subscription->billToAddress = $address;
-		$subscription->billToZip = $zip;
+		// billing information
+		$subscription->billToFirstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
+		$subscription->billToLastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+		$subscription->billToAddress = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
+		$subscription->billToCity = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
+		$subscription->billToState = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
+		$subscription->billToZip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
+		$subscription->billToCountry = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
 
 		return $subscription;
 	}
