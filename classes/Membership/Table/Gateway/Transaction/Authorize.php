@@ -40,7 +40,7 @@ class Membership_Table_Gateway_Transaction_Authorize extends Membership_Table {
 	 */
 	public function column_subscription( $item ) {
 		$subscription = new M_Subscription( $item['transaction_subscription_ID'] );
-		return sprintf( '<b>%s</b>', $subscription->sub_name() );
+		return sprintf( '<b>%s</b>%s', $subscription->sub_name(), $this->row_actions( array( '&nbsp;' ) ) );
 	}
 
 	/**

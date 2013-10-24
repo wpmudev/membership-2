@@ -141,6 +141,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_add_action( 'M_gateways_settings_' . $this->gateway, 'render_settings' );
 		$this->_add_action( 'membership_purchase_button', 'render_subscribe_button', 10, 3 );
 		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
+		$this->_add_action( 'membership_expire_subscription', 'cancel_subscription_transactions', 10, 2 );
+
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 
@@ -177,7 +179,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @param int $user_id The ID of an user which was deleted.
 	 */
 	public function delete_cim_profile( $user_id ) {
-		$this->_cancel_subscription_transactions( $user_id );
+		$this->cancel_subscription_transactions( false, $user_id );
 		$this->db->delete( MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION, array( 'transaction_user_ID' => $user_id ), array( '%d' ) );
 
 		if ( $this->_cim_profile_id ) {
@@ -190,12 +192,13 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * for specific or all subscriptions.
 	 *
 	 * @since 3.5
+	 * @action membership_expire_subscription 10 2
 	 *
-	 * @access protected
-	 * @param int $user_id The user ID.
+	 * @access public
 	 * @param int $sub_id The subscription ID.
+	 * @param int $user_id The user ID.
 	 */
-	protected function _cancel_subscription_transactions( $user_id, $sub_id = false ) {
+	public function cancel_subscription_transactions( $sub_id, $user_id ) {
 		$transactions = $this->db->get_results( sprintf(
 			'SELECT transaction_ID AS record_id, transaction_paypal_ID AS id, transaction_status AS status FROM %s WHERE transaction_user_ID = %d AND transaction_status IN (%d, %d, %d)%s',
 			MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
@@ -215,9 +218,13 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$this->_get_arb()->cancelSubscription( $transaction->id );
 				$status = self::TRANSACTION_TYPE_CANCELED_RECURING;
 			} elseif ( $transaction->status == self::TRANSACTION_TYPE_CIM_AUTHORIZED ) {
-				$transaction = $this->_get_cim_transaction( false );
-				$transaction->transId = $transaction->id;
-				$this->_get_cim()->createCustomerProfileTransaction( 'Void', $transaction );
+				if ( !$this->_cim_profile_id ) {
+					$this->_cim_profile_id = get_user_meta( $user_id, 'authorize_cim_id', true );
+				}
+
+				$cim_transaction = $this->_get_cim_transaction();
+				$cim_transaction->transId = $transaction->id;
+				$this->_get_cim()->createCustomerProfileTransaction( 'Void', $cim_transaction );
 				$status = self::TRANSACTION_TYPE_VOIDED;
 			}
 
@@ -492,7 +499,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// fetch CIM user and payment profiles info
 		// pay attention that CIM can't handle recurring transaction, so we need
 		// to use standard ARB aproach and full cards details
-		if ( !in_array( 'serial', wp_list_pluck( $pricing, 'type' ) ) ) {
+		$has_serial = in_array( 'serial', wp_list_pluck( $pricing, 'type' ) );
+		if ( !$has_serial ) {
 			$this->_cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) );
 			if ( !empty( $this->_cim_payment_profile_id ) ) {
 				$this->_cim_profile_id = get_user_meta( $this->_member->ID, 'authorize_cim_id', true );
@@ -543,7 +551,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$from_sub_id = filter_input( INPUT_POST, 'from_subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
 				if ( $this->_member->on_sub( $from_sub_id ) ) {
 					$this->_member->expire_subscription( $from_sub_id );
-					$this->_cancel_subscription_transactions( $this->_member->ID, $from_sub_id );
 				}
 
 				if ( $this->_member->on_sub( $sub_id ) ) {
@@ -551,6 +558,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				}
 			}
 			$this->_member->create_subscription( $sub_id, $this->gateway );
+
+			// create CIM profile it is not exists, otherwise update it if new card was added
+			$this->_cim_profile_id = get_user_meta( $this->_member->ID, 'authorize_cim_id', true );
+			if ( !$this->_cim_profile_id ) {
+				$this->_create_cim_profile();
+			} elseif ( !$has_serial && empty( $this->_cim_payment_profile_id ) ) {
+				$this->_update_cim_profile();
+			}
 
 			// process transactions
 			$this->_commit_transactions();
@@ -691,14 +706,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$sub_id = $this->_subscription->sub_id();
 		$notes = $this->_get_option( 'mode', self::MODE_SANDBOX ) != self::MODE_LIVE ? 'Sandbox' : '';
 
-		// create CIM profile it is not exists, otherwise update it if new card was added
-		$this->_cim_profile_id = get_user_meta( $this->_member->ID, 'authorize_cim_id', true );
-		if ( !$this->_cim_profile_id ) {
-			$this->_create_cim_profile();
-		} elseif ( empty( $this->_cim_payment_profile_id ) ) {
-			$this->_update_cim_profile();
-		}
-
 		// process each transaction information and save it to CIM
 		foreach ( $this->_transaction as $index => $info ) {
 			$status = 0;
@@ -715,8 +722,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 				// capture first transaction
 				if ( $index == 0 ) {
-					$transaction = $this->_get_cim_transaction( false );
+					$transaction = $this->_get_cim_transaction();
 					$transaction->transId = $info['transaction'];
+					$transaction->amount = $info['amount'];
 					$this->_get_cim()->createCustomerProfileTransaction( 'PriorAuthCapture', $transaction );
 					$status = self::TRANSACTION_TYPE_CAPTURED;
 				}
@@ -1014,17 +1022,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access protected
-	 * @param boolean $init Determines whether we need to initialize transaction or not.
 	 * @return AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
 	 */
-	protected function _get_cim_transaction( $init = true ) {
+	protected function _get_cim_transaction() {
 		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
 
 		$transaction = new AuthorizeNetTransaction();
-		if ( $init ) {
-			$transaction->customerProfileId = $this->_cim_profile_id;
-			$transaction->customerPaymentProfileId = $this->_cim_payment_profile_id;
-		}
+		$transaction->customerProfileId = $this->_cim_profile_id;
+		$transaction->customerPaymentProfileId = $this->_cim_payment_profile_id;
 
 		return $transaction;
 	}
@@ -1078,12 +1083,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			'gateway'       => $this->gateway,
 			'subscriptions' => $this->db->get_results( 'SELECT * FROM ' . MEMBERSHIP_TABLE_SUBSCRIPTIONS, ARRAY_A ),
 			'statuses'      => array(
-				self::TRANSACTION_TYPE_AUTHORIZED        => esc_html__( 'Authorized', 'membership' ),
+				self::TRANSACTION_TYPE_AUTHORIZED        => esc_html__( 'Authorized (ARB)', 'membership' ),
+				self::TRANSACTION_TYPE_CIM_AUTHORIZED    => esc_html__( 'Authorized (CIM)', 'membership' ),
 				self::TRANSACTION_TYPE_CAPTURED          => esc_html__( 'Captured', 'membership' ),
-				self::TRANSACTION_TYPE_RECURRING         => esc_html__( 'Recurring', 'membership' ),
 				self::TRANSACTION_TYPE_VOIDED            => esc_html__( 'Voided', 'membership' ),
+				self::TRANSACTION_TYPE_RECURRING         => esc_html__( 'Recurring', 'membership' ),
 				self::TRANSACTION_TYPE_CANCELED_RECURING => esc_html__( 'Cancelled Recurring', 'membership' ),
-				self::TRANSACTION_TYPE_CIM_AUTHORIZED    => esc_html__( 'Authorized', 'membership' ),
 			),
 		) );
 		$table->prepare_items();
