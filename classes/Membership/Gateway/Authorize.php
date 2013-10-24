@@ -858,6 +858,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// create new AIM
 		$aim = new AuthorizeNetAIM( $login_id, $transaction_key );
 		$aim->setSandbox( $mode != self::MODE_LIVE );
+		if ( defined( 'MEMBERSHIP_AUTHORIZE_LOGFILE' ) ) {
+			$aim->setLogFile( MEMBERSHIP_AUTHORIZE_LOGFILE );
+		}
 
 		if ( $pre_fill ) {
 			// card information
@@ -908,6 +911,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$arb = new AuthorizeNetARB( $login_id, $transaction_key );
 		$arb->setSandbox( $mode != self::MODE_LIVE );
+		if ( defined( 'MEMBERSHIP_AUTHORIZE_LOGFILE' ) ) {
+			$arb->setLogFile( MEMBERSHIP_AUTHORIZE_LOGFILE );
+		}
+
 		return $arb;
 	}
 
@@ -994,6 +1001,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$cim = new AuthorizeNetCIM( $login_id, $transaction_key );
 		$cim->setSandbox( $mode != self::MODE_LIVE );
+		if ( defined( 'MEMBERSHIP_AUTHORIZE_LOGFILE' ) ) {
+			$cim->setLogFile( MEMBERSHIP_AUTHORIZE_LOGFILE );
+		}
+
 		return $cim;
 	}
 
