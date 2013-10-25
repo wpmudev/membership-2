@@ -1835,7 +1835,7 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 
         function handle_members_panel() {
 
-            global $action, $page;
+			global $action, $page;
 
             wp_reset_vars(array('action', 'page'));
 
@@ -2337,14 +2337,17 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                                         <?php
                                         $subs = $user_object->get_relationships();
                                         //print_r($subs);
-                                        if ($subs) {
+                                        if ( $subs ) {
                                             $gates = array();
-                                            foreach ($subs as $sub) {
-                                                $gates[] = $sub->usinggateway;
+                                            foreach ( $subs as $sub ) {
+												$gateway = Membership_Gateway::get_gateway( $sub->usinggateway );
+												$gates[] = is_object( $gateway )
+													? $gateway->title
+													: sprintf( '<i>%s</i><!-- %s -->', esc_html__( 'not found or deactivated', 'membership' ), $sub->usinggateway );
                                             }
-                                            echo implode(", ", $gates);
+                                            echo implode( ", ", $gates );
 
-                                            if ($user_object->has_cap('membershipadmin')) {
+											if ($user_object->has_cap('membershipadmin')) {
                                                 $actions = array();
                                             } else {
                                                 $actions = array();
