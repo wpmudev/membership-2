@@ -143,6 +143,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
 		$this->_add_action( 'membership_expire_subscription', 'cancel_subscription_transactions', 10, 2 );
 		$this->_add_action( 'membership_move_subscription', 'capture_next_transaction', 10, 6 );
+		$this->_add_filter( 'membership_unsubscribe_subscription', 'process_unsubscribe_subscription', 10, 3 );
 
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
@@ -308,6 +309,31 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	}
 
 	/**
+	 * Cancels subscription transactions if the subscription has to be expired.
+	 *
+	 * @since 3.5
+	 * @filter membership_unsubscribe_subscription 10 3
+	 *
+	 * @access public
+	 * @param boolean $expire Determines whether to mark a subscription to expire or not.
+	 * @param int $sub_id Current subscription to unsubscribe from.
+	 * @param int $user_id The user ID.
+	 * @return boolean Incoming value for $expire variable.
+	 */
+	public function process_unsubscribe_subscription( $expire, $sub_id, $user_id ) {
+		if ( $expire ) {
+			if ( get_current_user_id() == $user_id ) {
+				$this->_member = new M_Membership( $user_id );
+				if ( $this->_member->has_subscription() && $this->_member->on_sub( $sub_id ) ) {
+					$this->cancel_subscription_transactions( $sub_id, $user_id );
+				}
+			}
+		}
+
+		return $expire;
+	}
+
+	/**
 	 * Propagates SSL cookies when user logs in.
 	 *
 	 * @since 3.5
@@ -405,6 +431,25 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 */
 	public function display_upgrade_button( $subscription, $pricing, $user_id, $fromsub_id = false ) {
 		$this->_render_button( esc_attr__( 'Upgrade', 'membership' ), $subscription, $user_id, $fromsub_id );
+	}
+
+	/**
+	 * Displays unsubscribe button.
+	 *
+	 * @access public
+	 * @param type $subscription
+	 * @param type $pricing
+	 * @param type $user_id
+	 */
+	public function display_cancel_button( $subscription, $pricing, $user_id ) {
+		?><form class="unsubbutton" method="post">
+			<?php wp_nonce_field( 'cancel-sub_' . $subscription->sub_id() ) ?>
+			<input type="hidden" name="action" value="unsubscribe">
+			<input type="hidden" name="gateway" value="<?php echo esc_attr( $this->gateway ) ?>">
+			<input type="hidden" name="subscription" value="<? echo esc_attr( $subscription->sub_id() ) ?>">
+			<input type="hidden" name="user" value="<?php echo esc_attr( $user_id ) ?>">
+			<input type="submit" value="<?php esc_attr_e( 'Unsubscribe', 'membership' ) ?>" class="button <?php echo apply_filters( 'membership_subscription_button_color', 'blue' ) ?>">
+		</form><?php
 	}
 
 	/**
