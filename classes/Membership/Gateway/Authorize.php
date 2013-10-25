@@ -142,6 +142,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_add_action( 'membership_purchase_button', 'render_subscribe_button', 10, 3 );
 		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
 		$this->_add_action( 'membership_expire_subscription', 'cancel_subscription_transactions', 10, 2 );
+		$this->_add_action( 'membership_move_subscription', 'capture_next_transaction', 10, 6 );
 
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
@@ -229,6 +230,72 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			}
 
 			if ( $status && $sub_id ) {
+				$this->db->update(
+					MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
+					array( 'transaction_status' => $status ),
+					array( 'transaction_ID'     => $transaction->record_id ),
+					array( '%d' ),
+					array( '%d' )
+				);
+			}
+		}
+	}
+
+	/**
+	 * Captures next transaction accordingly to subscription settings.
+	 *
+	 * @since 3.5
+	 * @action membership_move_subscription 10 6
+	 *
+	 * @access public
+	 */
+	public function capture_next_transaction( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $to_order, $user_id ) {
+		// don't do anything if subscription has been changed
+		if ( $fromsub_id != $tosub_id ) {
+			return;
+		}
+
+		// fetch next authorized transaction
+		$transactions = $this->db->get_results( sprintf( '
+			SELECT transaction_ID AS record_id, transaction_paypal_ID AS id, transaction_status AS status, transaction_total_amount/100 AS amount, transaction_stamp AS stamp
+			  FROM %s
+			 WHERE transaction_user_ID = %d
+			   AND transaction_subscription_ID = %d
+			   AND transaction_status IN (%d, %d)
+			 ORDER BY transaction_ID ASC
+			 LIMIT 1',
+			MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
+			$user_id,
+			$tosub_id,
+			self::TRANSACTION_TYPE_AUTHORIZED,
+			self::TRANSACTION_TYPE_CIM_AUTHORIZED
+		) );
+
+		foreach ( $transactions as $transaction ) {
+			// don't capture future transactions
+			if ( $transaction->stamp > time() ) {
+				continue;
+			}
+
+			// capture transaction
+			$status = false;
+			if ( $transaction->status == self::TRANSACTION_TYPE_AUTHORIZED ) {
+				$this->_get_aim( false, false )->priorAuthCapture( $transaction->id, $transaction->amount );
+				$status = self::TRANSACTION_TYPE_CAPTURED;
+			} elseif ( $transaction->status == self::TRANSACTION_TYPE_CIM_AUTHORIZED ) {
+				if ( !$this->_cim_profile_id ) {
+					$this->_cim_profile_id = get_user_meta( $user_id, 'authorize_cim_id', true );
+				}
+
+				$cim_transaction = $this->_get_cim_transaction();
+				$cim_transaction->transId = $transaction->id;
+				$cim_transaction->amount = $transaction->amount;
+				$this->_get_cim()->createCustomerProfileTransaction( 'PriorAuthCapture', $cim_transaction );
+				$status = self::TRANSACTION_TYPE_CAPTURED;
+			}
+
+			// update transaction status
+			if ( $status && $tosub_id ) {
 				$this->db->update(
 					MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION,
 					array( 'transaction_status' => $status ),
