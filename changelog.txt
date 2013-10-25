@@ -2,6 +2,7 @@
 
 * Fixed communication issue when all subscription is selected
 * Fixed user display name and level name issues for ping data
+* Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 
 == 3.4.6 ==
 
