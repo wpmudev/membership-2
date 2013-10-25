@@ -1,8 +1,8 @@
 <?php
 /*
 Addon Name: PayPal Single Payments Gateway
-Author: Barry (Incsub)
-Author URI: http://caffeinatedb.com
+Author: Incsub
+Author URI: http://premium.wpmudev.org
 Gateway ID: paypalsolo
 */
 

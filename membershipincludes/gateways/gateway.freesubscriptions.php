@@ -1,8 +1,8 @@
 <?php
 /*
 Addon Name: Free subscriptions gateway
-Author: Barry (Incsub)
-Author URI: http://caffeinatedb.com
+Author: Incsub
+Author URI: http://premium.wpmudev.org
 Gateway ID: freesubscriptions
 */
 
@@ -33,7 +33,7 @@ class freesubscriptions extends Membership_Gateway {
 		}
 	}
 
-	protected function _render_transactions() {
+	protected function _render_transactions( $type = 'past' ) {
 		echo '<div class="tablenav"></div>';
 		echo "<p>" . __( 'No transactions data for the Free gateway', 'membership' ) . "</p>";
 	}
@@ -131,34 +131,29 @@ class freesubscriptions extends Membership_Gateway {
 
 	}
 
-	function single_free_button($pricing, $subscription, $user_id, $norepeat = false) {
-
+	function single_free_button( $pricing, $subscription, $user_id, $norepeat = false ) {
 		global $M_options;
 
-		if(empty($M_options['paymentcurrency'])) {
+		if ( empty( $M_options['paymentcurrency'] ) ) {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 
 		$form = '';
 
 		$form .= '<form action="' . M_get_returnurl_permalink() . '" method="post">';
-		$form .=  wp_nonce_field('free-sub_' . $subscription->sub_id(), "_wpnonce", true, false);
-		$form .=  "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
+		$form .= wp_nonce_field( 'free-sub_' . $subscription->sub_id(), "_wpnonce", true, false );
+		$form .= "<input type='hidden' name='gateway' value='" . $this->gateway . "' />";
 		$form .= '<input type="hidden" name="action" value="subscriptionsignup" />';
-		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, '0') .'">';
+		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom( $user_id, $subscription->id, '0' ) . '">';
 
 		$button = get_option( $this->gateway . "_payment_button", '' );
-		if( empty($button) ) {
-			$form .= '<input type="submit" class="button ' . apply_filters('membership_subscription_button_color', 'blue') . '" value="' . __('Sign Up','membership') . '" />';
-		} else {
-			$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
-		}
+		$form .= empty( $button )
+			? '<input type="submit" class="button ' . apply_filters( 'membership_subscription_button_color', 'blue' ) . '" value="' . __( 'Sign Up', 'membership' ) . '" />'
+			: '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 
-		$form .= '<input type="image" name="submit" border="0" src="' . $button . '" alt="PayPal - The safer, easier way to pay online">';
 		$form .= '</form>';
 
 		return $form;
-
 	}
 
 	function build_subscribe_button($subscription, $pricing, $user_id) {

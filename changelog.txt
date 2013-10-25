@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed free subscription gateway doubling buttons issue
 * Fixed members pagination issue
 * Fixed issue with not loaded coupon forms
 * Fixed communication issue when all subscription is selected
