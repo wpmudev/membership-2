@@ -40,7 +40,7 @@ class Membership_Module_System extends Membership_Module {
 	 */
 	public function __construct( Membership_Plugin $plugin ) {
 		parent::__construct( $plugin );
-		$this->_add_action( 'plugins_loaded', 'upgrade', 999 );
+		$this->_upgrade();
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Membership_Module_System extends Membership_Module {
 	 *
 	 * @access private
 	 */
-	public function upgrade() {
+	private function _upgrade() {
 		$filter = 'membership_upgrade';
 		$option = 'membership_version';
 
@@ -105,11 +105,52 @@ class Membership_Module_System extends Membership_Module {
 			return;
 		}
 
+		// add upgrade functions
+		$this->_add_filter( $filter, 'upgrade_to_3_5_beta_1', 10 );
+
 		// upgrade database version to current plugin version
-		update_site_option( $option, apply_filters( $filter, Membership_Plugin::VERSION ) );
+		$db_version = apply_filters( $filter, $db_version );
+		$db_version = version_compare( $db_version, Membership_Plugin::VERSION, '>=' )
+			? $db_version
+			: Membership_Plugin::VERSION;
+
+		update_site_option( $option, $db_version );
 
 		// flush rewrite rules
 		add_action( 'init', 'flush_rewrite_rules' );
+	}
+
+	/**
+	 * Upgrades to version 3.5.beta.1
+	 *
+	 * @since 3.5.beta.1
+	 *
+	 * @access public
+	 * @param string $current_version The current plugin version.
+	 * @return string Upgraded version if the current version is less, otherwise current version.
+	 */
+	public function upgrade_to_3_5_beta_1( $current_version ) {
+		$this_version = '3.5.beta.1';
+		if ( version_compare( $current_version, $this_version, '>=' ) ) {
+			return $current_version;
+		}
+
+		$method = 'update_option';
+		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) ) {
+			$method = 'update_site_option';
+		}
+
+		$method( 'authorize_mode', get_option( 'authorizenetarb_mode' ) );
+		$method( 'authorize_api_user', get_option( 'authorizenetarb_api_user' ) );
+		$method( 'authorize_api_key', get_option( 'authorizenetarb_api_key' ) );
+
+		$active = get_option( 'membership_activated_gateways', array() );
+		if ( in_array( 'authorizenetarb', $active ) ) {
+			$active[array_search( 'authorizenetarb', $active )] = 'authorize';
+			update_option( 'membership_activated_gateways', $active );
+		}
+
+		return $this_version;
 	}
 
 }
