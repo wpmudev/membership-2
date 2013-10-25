@@ -143,7 +143,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			<?php
 				if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
 					if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
-						include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+						include( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
 					}
 
 				}
@@ -234,7 +234,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			<?php
 					if(!defined('MEMBERSHIP_HIDE_COUPON_FORM')) {
 						if( !isset($M_options['show_coupons_form']) || $M_options['show_coupons_form'] == 'yes' ) {
-							include_once( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
+							include( membership_dir( 'membershipincludes/includes/coupon.form.php' ) );
 						}
 
 					}
