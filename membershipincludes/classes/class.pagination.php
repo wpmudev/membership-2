@@ -97,7 +97,7 @@ class M_Pagination {
     var $pagination;
 
     function pagination() {
-        
+
     }
 
     function show() {
@@ -168,20 +168,11 @@ class M_Pagination {
                 else
                     $this->pagination .= "<a class=\"first-page disabled\">&laquo;</a>&nbsp;<a class=\"prev-page disabled\">&lsaquo;</a>&nbsp;"; //<span class=\"disabled\">&lsaquo;</span>";
             }
-            //pages	
-            if ($lastpage < 7 + ($this->adjacents * 2)) {//not enough pages to bother breaking it up
-                for ($counter = 1; $counter <= $lastpage; $counter++) {
-                    /* if ($counter == $this->page)
-                      $this->pagination .= "<span class=\"current-page\">$counter</span>";
-                      else
-                      $this->pagination .= "<a href=\"" . $this->get_pagenum_link($counter) . "\">$counter</a>"; */
-                }
-            }
 
             $this->pagination .= '&nbsp;<span class="paging-input">' . $this->page . ' of <span class="total-pages">' . $lastpage . '</span></span>&nbsp;';
 
             if ($this->page) {
-                if ($this->page < $counter - 1)
+                if ($this->page < $lastpage)
                     $this->pagination .= "&nbsp;<a href=\"" . $this->get_pagenum_link($next) . "\" class=\"next-page\">&rsaquo;</a>&nbsp;<a href=\"" . $this->get_pagenum_link($lastpage) . "\" class=\"last-page\">&raquo;</a>";
                 else
                     $this->pagination .= "&nbsp;<a class=\"next-page disabled\">&rsaquo;</a>&nbsp;<a class=\"last-page disabled\">&raquo;</a>";
