@@ -262,6 +262,10 @@ if ( !class_exists( 'M_Ping' ) ) {
 			}
 
 			$this->ping = $this->get_ping();
+			if ( !$this->ping ) {
+				return;
+			}
+			
 			$pingdata = apply_filters( 'membership_ping_constants_list', $this->pingconstants );
 
 			$member = new M_Membership( empty( $user_id ) ? get_current_user_id() : $user_id );

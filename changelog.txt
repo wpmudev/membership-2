@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed deleted ping warnings
 * Fixed warning which appears after coupon deletion from admin dashboard
 * Fixed free subscription gateway doubling buttons issue
 * Fixed members pagination issue
