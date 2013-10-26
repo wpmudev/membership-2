@@ -357,22 +357,16 @@ if ( !class_exists( 'M_Coupon', false ) ) {
 
 		}
 
-		function delete( $id ) {
-
-			if(!apply_filters( 'pre_membership_delete_coupon', true, $this->id )) {
-				return false;
+		function delete() {
+			if ( apply_filters( 'pre_membership_delete_coupon', true, $this->id ) ) {
+				$deleted = $this->db->delete( $this->coupons, array( 'id' => $this->id ), array( '%d' ) );
+				if ( $deleted ) {
+					do_action( 'membership_delete_coupon', $this->id );
+					return true;
+				}
 			}
 
-			$sql = $this->db->prepare( "DELETE FROM {$this->coupons} WHERE id = %d", $this->id);
-
-			if($this->db->query($sql)) {
-				do_action( 'membership_delete_coupon', $this->id );
-
-				return true;
-			} else {
-				return false;
-			}
-
+			return false;
 		}
 
 		private function get_subscriptions() {

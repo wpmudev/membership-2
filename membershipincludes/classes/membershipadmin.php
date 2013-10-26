@@ -7280,39 +7280,32 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                     }
 
                     break;
-                case 'updated': $id = (int) $_POST['ID'];
-                    check_admin_referer('update-coupon_' . $id);
-                    if ($id) {
-                        $coupon = new M_Coupon($id);
+                case 'updated':
+					$id = (int)$_POST['ID'];
+					check_admin_referer( 'update-coupon_' . $id );
 
-                        $errors = $coupon->update($_POST);
+					$msg = 5;
+					if ( $id ) {
+						$coupon = new M_Coupon( $id );
+						$errors = $coupon->update( $_POST );
+						if ( $errors !== true ) {
+							$msg = 3;
+						}
+					}
 
-                        if ($errors !== true) {
-                            wp_safe_redirect(add_query_arg('msg', 3, 'admin.php?page=' . $page));
-                        } else {
-                            wp_safe_redirect(add_query_arg('msg', 5, 'admin.php?page=' . $page));
-                        }
-                    } else {
-                        wp_safe_redirect(add_query_arg('msg', 5, 'admin.php?page=' . $page));
-                    }
-                    break;
+					wp_safe_redirect( add_query_arg( 'msg', $msg, 'admin.php?page=' . $page ) );
+					break;
 
-                case 'delete': if (isset($_GET['coupon_id'])) {
-                        $coupon_id = (int) $_GET['coupon_id'];
+				case 'delete':
+					if ( isset( $_GET['coupon_id'] ) ) {
+						$coupon_id = (int) $_GET['coupon_id'];
+						check_admin_referer( 'delete-coupon_' . $coupon_id );
+						$coupon = new M_Coupon( $coupon_id );
+						wp_safe_redirect( add_query_arg( 'msg', $coupon->delete() ? 5 : 6, wp_get_referer() ) );
+					}
+					break;
 
-                        check_admin_referer('delete-coupon_' . $coupon_id);
-
-                        $coupon = new M_Coupon($coupon_id);
-
-                        if ($coupon->delete()) {
-                            wp_safe_redirect(add_query_arg('msg', 5, wp_get_referer()));
-                        } else {
-                            wp_safe_redirect(add_query_arg('msg', 6, wp_get_referer()));
-                        }
-                    }
-                    break;
-
-                case 'bulk-delete':
+				case 'bulk-delete':
                     check_admin_referer('bulk-coupon-actions');
 
                     foreach ($_GET['coupons_checks'] as $value) {
