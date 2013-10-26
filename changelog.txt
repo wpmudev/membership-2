@@ -8,6 +8,7 @@
 * Fixed user display name and level name issues for ping data
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 * Improved rendering gateway information at the members list table
+* Improved ping argument processing
 
 == 3.4.6 ==
 

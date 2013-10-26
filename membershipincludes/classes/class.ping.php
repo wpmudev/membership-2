@@ -355,7 +355,9 @@ if ( !class_exists( 'M_Ping' ) ) {
 			$pingtosend = array();
 			foreach ( $pingmessage as $key => $value ) {
 				$temp = explode( "=", $value );
-				$pingtosend[$temp[0]] = $temp[1];
+				if ( count( $temp ) == 2 ) {
+					$pingtosend[$temp[0]] = $temp[1];
+				}
 			}
 
 			// Send the request
