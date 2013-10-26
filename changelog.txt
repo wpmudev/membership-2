@@ -10,6 +10,7 @@
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
+* Improved 100% coupon gateway setup
 
 == 3.4.6 ==
 

@@ -2340,10 +2340,14 @@ if ( !class_exists( 'membershipadmin', false ) ) :
                                         if ( $subs ) {
                                             $gates = array();
                                             foreach ( $subs as $sub ) {
-												$gateway = Membership_Gateway::get_gateway( $sub->usinggateway );
-												$gates[] = is_object( $gateway )
-													? $gateway->title
-													: sprintf( '<i>%s</i><!-- %s -->', esc_html__( 'not found or deactivated', 'membership' ), $sub->usinggateway );
+												if ( $sub->usinggateway != 'admin' ) {
+													$gateway = Membership_Gateway::get_gateway( $sub->usinggateway );
+													$gates[] = is_object( $gateway )
+														? $gateway->title
+														: sprintf( '<i>%s</i><!-- %s -->', esc_html__( 'not found or deactivated', 'membership' ), $sub->usinggateway );
+												} else {
+													$gates[] = esc_html__( 'Admin', 'membership' );
+												}
                                             }
                                             echo implode( ", ", $gates );
 

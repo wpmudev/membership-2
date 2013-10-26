@@ -1730,8 +1730,13 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					$coupon_obj = $coupon->get_coupon();
 
 					if ( $coupon->valid_coupon() && $coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct' ) {
+						$gateways = get_option( 'membership_activated_gateways', array() );
+						$gateway = count( $gateways ) == 1
+							? current( $gateways )
+							: 'admin';
+
 						$membership = new M_Membership( get_current_user_id() );
-						$membership->create_subscription( $sub_id );
+						$membership->create_subscription( $sub_id, $gateway );
 
 						$coupon->increment_coupon_used();
 
