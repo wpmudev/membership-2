@@ -189,3 +189,7 @@ td.buynowcolumn {
 	width: 70%;
 }
 
+#fancybox-content #tos_content p {
+	padding-top: 0;
+	padding-bottom: 20px;
+}

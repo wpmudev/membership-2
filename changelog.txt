@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed Terms Of Service plugin compatibility
 * Fixed deleted ping warnings
 * Fixed warning which appears after coupon deletion from admin dashboard
 * Fixed free subscription gateway doubling buttons issue

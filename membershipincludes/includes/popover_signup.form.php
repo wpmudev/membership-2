@@ -23,6 +23,13 @@
 		<input type="password" autocomplete="off" class="regtext" name="password2" id='reg_password2'>
 	</div>
 
+	<?php if ( function_exists( 'signup_tos_shortcode' ) ) : ?>
+		<div style="width:280px">
+			<label id="tos_content"><?php _e( 'Terms Of Service','membership' ) ?> <span>*</span></label>
+			<?php echo signup_tos_shortcode( array( 'checkbox' => 1, 'show_label' => 0 ) ) ?>
+		</div>
+	<?php endif; ?>
+
 	<?php do_action('membership_popover_extend_registration_form'); ?>
 
 	<p><input type="submit" value="<?php _e('Register My Account &raquo;','membership'); ?>" class="button <?php echo apply_filters('membership_subscription_button_color', 'blue'); ?>" name="register"></p>

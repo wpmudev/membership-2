@@ -7688,13 +7688,11 @@ if ( !class_exists( 'membershipadmin', false ) ) :
 			}
 
 			$error = apply_filters('membership_subscription_form_before_registration_process', $error);
-
-			if (is_wp_error($error)) {
-				$anyerrors = $error->get_error_messages();
-			} else {
-				$anyerrors = array();
+			if ( function_exists( 'signup_tos_filter_wpmu' ) ) {
+				$error = signup_tos_filter_wpmu( $error );
 			}
 
+			$anyerrors = is_wp_error( $error ) ? $error->get_error_messages() : array();
 			if (empty($anyerrors)) {
 				// Pre - error reporting check for final add user
 				$user_id = wp_create_user(sanitize_user($_POST['user_login']), $_POST['password'], $email);
