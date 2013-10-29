@@ -144,12 +144,6 @@ class Membership_Module_System extends Membership_Module {
 		$method( 'authorize_api_user', get_option( 'authorizenetarb_api_user' ) );
 		$method( 'authorize_api_key', get_option( 'authorizenetarb_api_key' ) );
 
-		$active = get_option( 'membership_activated_gateways', array() );
-		if ( in_array( 'authorizenetarb', $active ) ) {
-			$active[array_search( 'authorizenetarb', $active )] = 'authorize';
-			update_option( 'membership_activated_gateways', $active );
-		}
-
 		return $this_version;
 	}
 
