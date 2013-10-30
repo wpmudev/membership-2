@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed leaving ping issue for expired subscriptions
 * Fixed Terms Of Service plugin compatibility
 * Fixed deleted ping warnings
 * Fixed warning which appears after coupon deletion from admin dashboard
