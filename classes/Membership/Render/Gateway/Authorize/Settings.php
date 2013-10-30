@@ -52,12 +52,19 @@ class Membership_Render_Gateway_Authorize_Settings extends Membership_Render {
 				</tr>
 
 				<tr valign="top">
-					<th scope="row"><?php esc_html_e( 'Login ID', 'membership' ) ?></th>
+					<th scope="row"><?php esc_html_e( 'API Login ID', 'membership' ) ?></th>
 					<td><input type="text" name="api_user" value="<?php echo esc_attr( $this->api_user ) ?>"></td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Transaction key', 'membership' ) ?></th>
+					<th scope="row"><?php _e( 'API Transaction Key', 'membership' ) ?></th>
 					<td><input type="text" name="api_key" value="<?php echo esc_attr( $this->api_key ) ?>"></td>
+				</tr>
+				<tr valign="top">
+					<td colspan="2">
+						<span class="description"><?php
+							esc_html_e( 'Pay attention that API login ID is not the same login as you use to login into your Authorize.net account. You can find your API Login ID value at the same page where you create your transaction key.', 'membership' )
+						?></span>
+					</td>
 				</tr>
 			</tbody>
 		</table><?php

@@ -358,16 +358,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access public
 	 */
 	public function render_settings() {
-		$method = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN )
-			? 'get_site_option'
-			: 'get_option';
-
 		$template = new Membership_Render_Gateway_Authorize_Settings();
 
-		$template->api_user = $method( $this->gateway . "_api_user" );
-		$template->api_key = $method( $this->gateway . "_api_key" );
+		$template->api_user = $this->_get_option( 'api_user' );
+		$template->api_key = $this->_get_option( 'api_key' );
 
-		$template->mode = $method( $this->gateway . "_mode", self::MODE_SANDBOX );
+		$template->mode = $this->_get_option( 'mode', self::MODE_SANDBOX );
 		$template->modes = array(
 			self::MODE_SANDBOX => __( 'Sandbox', 'membership' ),
 			self::MODE_LIVE    => __( 'Live', 'membership' ),
