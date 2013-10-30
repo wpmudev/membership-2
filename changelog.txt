@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed protection issue, when protection is disabled
 * Fixed leaving ping issue for expired subscriptions
 * Fixed Terms Of Service plugin compatibility
 * Fixed deleted ping warnings
