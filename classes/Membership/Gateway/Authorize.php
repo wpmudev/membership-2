@@ -636,14 +636,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 						case 'y': $unit = 'year';  break;
 					}
 
-					$this->_process_nonserial_purchase( $pricing[$i], $started );
+					$this->_transaction[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
 					$started->modify( sprintf( '+%d %s', $pricing[$i]['period'], $unit ) );
 					break;
 				case 'indefinite':
-					$this->_process_nonserial_purchase( $pricing[$i], $started, $i );
+					$this->_transaction[] = $this->_process_nonserial_purchase( $pricing[$i], $started, $i );
 					break 2;
 				case 'serial':
-					$this->_process_serial_purchase( $pricing[$i], $started, $i );
+					$this->_transaction[] = $this->_process_serial_purchase( $pricing[$i], $started, $i );
 					break 2;
 			}
 
@@ -709,11 +709,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access protected
 	 * @param array $price The array with current price information.
 	 * @param DateTime $date The date when to process this transaction.
+	 * @return array Returns transaction information on success, otherwise NULL.
 	 */
 	protected function _process_nonserial_purchase( $price, $date ) {
 		if ( $price['amount'] == 0 ) {
 			$this->_payment_result['status'] = 'success';
-			return;
+			return null;
 		}
 
 		$success = $transaction_id = $method = false;
@@ -739,16 +740,18 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		if ( $success ) {
 			$this->_payment_result['status'] = 'success';
-			$this->_transaction[] = array(
+			return array(
 				'method'      => $method,
 				'transaction' => $transaction_id,
-				'date'        => $date->getTimestamp(),
+				'date'        => $date->format( 'U' ),
 				'amount'      => $amount,
 			);
-		} else {
-			$this->_payment_result['status'] = 'error';
-			$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
 		}
+
+		$this->_payment_result['status'] = 'error';
+		$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
+
+		return null;
 	}
 
 	/**
@@ -760,11 +763,12 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @global array $M_options The array of plugin options.
 	 * @param array $price The array with current price information.
 	 * @param DateTime $date The date when to process this transaction.
+	 * @return array Returns transaction information on success, otherwise NULL.
 	 */
 	protected function _process_serial_purchase( $price, $date ) {
 		if ( $price['amount'] == 0 ) {
 			$this->_payment_result['status'] = 'success';
-			return;
+			return null;
 		}
 
 		$amount = number_format( $price['amount'], 2, '.', '' );
@@ -795,16 +799,18 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$response = $arb->createSubscription( $subscription );
 		if ( $response->isOk() ) {
 			$this->_payment_result['status'] = 'success';
-			$this->_transaction[] = array(
+			return array(
 				'method'      => 'arb',
 				'transaction' => $response->getSubscriptionId(),
-				'date'        => $date->getTimestamp(),
+				'date'        => $date->format( 'U' ),
 				'amount'      => $amount,
 			);
-		} else {
-			$this->_payment_result['status'] = 'error';
-			$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
 		}
+
+		$this->_payment_result['status'] = 'error';
+		$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
+
+		return null;
 	}
 
 	/**
@@ -823,6 +829,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		// process each transaction information and save it to CIM
 		foreach ( $this->_transaction as $index => $info ) {
+			if ( is_null( $info ) ) {
+				continue;
+			}
+
 			$status = 0;
 			if ( $info['method'] == 'aim' ) {
 				$status = self::TRANSACTION_TYPE_AUTHORIZED;
@@ -847,17 +857,19 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$status = self::TRANSACTION_TYPE_RECURRING;
 			}
 
-			// save transaction information in the database
-			$this->_record_transaction(
-				$this->_member->ID,
-				$sub_id,
-				$info['amount'],
-				$M_options['paymentcurrency'],
-				$info['date'],
-				$info['transaction'],
-				$status,
-				$notes
-			);
+			if ( $status ) {
+				// save transaction information in the database
+				$this->_record_transaction(
+					$this->_member->ID,
+					$sub_id,
+					$info['amount'],
+					$M_options['paymentcurrency'],
+					$info['date'],
+					$info['transaction'],
+					$status,
+					$notes
+				);
+			}
 		}
 	}
 
