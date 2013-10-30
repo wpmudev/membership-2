@@ -14,6 +14,7 @@
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
+* Reworked purchase free subscription process
 
 == 3.4.6 ==
 

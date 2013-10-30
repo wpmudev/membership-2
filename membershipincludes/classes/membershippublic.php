@@ -1448,18 +1448,15 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		function process_subscription_form() {
 			global $M_options, $bp;
 
-			$subscription = isset( $_REQUEST['subscription'] )
-				? $_REQUEST['subscription']
-				: 0;
-
-			$page = isset( $_REQUEST['action'] )
-				? $_REQUEST['action']
-				: 'subscriptionform';
+			$logged_in = is_user_logged_in();
+			$subscription = isset( $_REQUEST['subscription'] ) ? $_REQUEST['subscription'] : 0;
+			$page = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'subscriptionform';
 
 			switch ( $page ) {
 				case 'validatepage1':
-					// Page 1 of the form has been submitted - validate
-					//include_once(ABSPATH . WPINC . '/registration.php');
+					if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
+						return;
+					}
 
 					$required = array(
 						'user_login' => __( 'Username', 'membership' ),
@@ -1568,11 +1565,14 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					break;
 
 				case 'validatepage1bp':
-					//include_once(ABSPATH . WPINC . '/registration.php');
+					if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
+						return;
+					}
 
-					$required = array( 'signup_username' => __( 'Username', 'membership' ),
-						'signup_email' => __( 'Email address', 'membership' ),
-						'signup_password' => __( 'Password', 'membership' ),
+					$required = array(
+						'signup_username'         => __( 'Username', 'membership' ),
+						'signup_email'            => __( 'Email address', 'membership' ),
+						'signup_password'         => __( 'Password', 'membership' ),
 						'signup_password_confirm' => __( 'Password confirmation', 'membership' ),
 					);
 
@@ -1722,25 +1722,35 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				case 'registeruser':
 				case 'subscriptionsignup':
-					$coupon = filter_input( INPUT_POST, 'coupon_code' );
-					$sub_id = filter_input( INPUT_POST, 'coupon_sub_id', FILTER_VALIDATE_INT );
-					if ( !is_user_logged_in() || !$coupon || !$sub_id ) {
-						return;
+					$to_sub_id = false;
+
+					// free subscription processing
+					if ( $logged_in && $subscription ) {
+						$sub = new M_Subscription( $subscription );
+						if ( $sub->is_free() ) {
+							$to_sub_id = $subscription;
+						}
 					}
 
-					$coupon = new M_Coupon( $coupon );
-					$coupon_obj = $coupon->get_coupon();
+					// coupon processing
+					$coupon = filter_input( INPUT_POST, 'coupon_code' );
+					$sub_id = filter_input( INPUT_POST, 'coupon_sub_id', FILTER_VALIDATE_INT );
+					if ( $logged_in && $coupon && $sub_id ) {
+						$coupon = new M_Coupon( $coupon );
+						$coupon_obj = $coupon->get_coupon();
 
-					if ( $coupon->valid_coupon() && $coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct' ) {
+						if ( $coupon->valid_coupon() && $coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct' ) {
+							$to_sub_id = $sub_id;
+							$coupon->increment_coupon_used();
+						}
+					}
+
+					if ( $to_sub_id ) {
 						$gateways = get_option( 'membership_activated_gateways', array() );
-						$gateway = count( $gateways ) == 1
-							? current( $gateways )
-							: 'admin';
+						$gateway = count( $gateways ) == 1 ? current( $gateways ) : 'admin';
 
 						$membership = new M_Membership( get_current_user_id() );
-						$membership->create_subscription( $sub_id, $gateway );
-
-						$coupon->increment_coupon_used();
+						$membership->create_subscription( $to_sub_id, $gateway );
 
 						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
 							wp_redirect( get_permalink( $M_options['registrationcompleted_page'] ) );
@@ -1856,9 +1866,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			if ( membership_is_registration_page( $post->ID, false ) ) {
-				if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-					add_action( 'template_redirect', array( $this, 'process_subscription_form' ) );
-				}
+				add_action( 'template_redirect', array( $this, 'process_subscription_form' ) );
 
 				// check if page contains a shortcode
 				if ( strstr( $post->post_content, '[subscriptionform]' ) !== false ) {

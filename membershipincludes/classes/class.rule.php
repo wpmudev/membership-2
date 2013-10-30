@@ -1,6 +1,6 @@
 <?php
 
-if ( !class_exists( 'M_Rule', false ) ) :
+if ( !class_exists( 'M_Rule' ) ) :
 	class M_Rule {
 
 		var $data;

@@ -1,6 +1,6 @@
 <?php
 
-if ( !class_exists( 'M_Coupon', false ) ) {
+if ( !class_exists( 'M_Coupon' ) ) {
 
 	class M_Coupon {
 

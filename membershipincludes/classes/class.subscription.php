@@ -1,5 +1,6 @@
 <?php
-if(!class_exists('M_Subscription')) {
+
+if ( !class_exists( 'M_Subscription' ) ) {
 
 	class M_Subscription {
 
@@ -682,7 +683,16 @@ if(!class_exists('M_Subscription')) {
 
 		}
 
+		function is_free() {
+			foreach ( $this->get_pricingarray() as $price ) {
+				if ( $price['amount'] > 0 ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 	}
 
 }
-?>

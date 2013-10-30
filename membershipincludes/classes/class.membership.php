@@ -1,6 +1,6 @@
 <?php
 
-if ( !class_exists( 'M_Membership', false ) ) :
+if ( !class_exists( 'M_Membership' ) ) :
 
 	class M_Membership extends WP_User {
 

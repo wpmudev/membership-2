@@ -1,6 +1,6 @@
 <?php
 
-if ( !class_exists( 'membershipadmin', false ) ) :
+if ( !class_exists( 'membershipadmin' ) ) :
 
     class membershipadmin {
 

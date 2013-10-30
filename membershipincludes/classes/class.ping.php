@@ -1,6 +1,6 @@
 <?php
 
-if ( !class_exists( 'M_Ping', false ) ) {
+if ( !class_exists( 'M_Ping' ) ) {
 
 	class M_Ping {
 
