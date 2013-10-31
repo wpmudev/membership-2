@@ -135,14 +135,18 @@ class Membership_Module_System extends Membership_Module {
 			return $current_version;
 		}
 
-		$method = 'update_option';
+		$blog_id = get_current_blog_id();
+		$set_method = 'update_option';
 		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) ) {
-			$method = 'update_site_option';
+			$set_method = 'update_site_option';
+			if ( defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
+				$blog_id = absint( MEMBERSHIP_GLOBAL_MAINSITE );
+			}
 		}
 
-		$method( 'authorize_mode', get_option( 'authorizenetarb_mode' ) );
-		$method( 'authorize_api_user', get_option( 'authorizenetarb_api_user' ) );
-		$method( 'authorize_api_key', get_option( 'authorizenetarb_api_key' ) );
+		$set_method( 'authorize_mode', get_blog_option( $blog_id, 'authorizenetarb_mode' ) );
+		$set_method( 'authorize_api_user', get_blog_option( $blog_id, 'authorizenetarb_api_user' ) );
+		$set_method( 'authorize_api_key', get_blog_option( $blog_id, 'authorizenetarb_api_key' ) );
 
 		return $this_version;
 	}
