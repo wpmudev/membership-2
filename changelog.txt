@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed [renewform] shortcode styling issue
 * Fixed protection issue, when protection is disabled
 * Fixed leaving ping issue for expired subscriptions
 * Fixed Terms Of Service plugin compatibility
