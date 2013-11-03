@@ -9,69 +9,62 @@ class M_Posts extends M_Rule {
 	var $rulearea = 'public';
 
 	function admin_main($data) {
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-posts'>
+		global $M_options;
+
+		if ( !$data ) {
+			$data = array();
+		}
+
+		$posts_to_show = !empty( $M_options['membership_post_count'] ) ? $M_options['membership_post_count'] : MEMBERSHIP_POST_COUNT;
+		$posts = get_posts( array(
+			'numberposts' => $posts_to_show,
+			'offset'      => 0,
+			'orderby'     => 'post_date',
+			'order'       => 'DESC',
+			'post_type'   => 'post',
+			'post_status' => 'publish'
+		) );
+
+		?><div class='level-operation' id='main-posts'>
 			<h2 class='sidebar-name'><?php _e('Posts', 'membership');?><span><a href='#remove' id='remove-posts' class='removelink' title='<?php _e("Remove Posts from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
 				<p><?php _e('Select the posts to be covered by this rule by checking the box next to the relevant posts title.','membership'); ?></p>
-				<?php
-					$args = array(
-						'numberposts' => MEMBERSHIP_POST_COUNT,
-						'offset' => 0,
-						'orderby' => 'post_date',
-						'order' => 'DESC',
-						'post_type' => 'post',
-						'post_status' => 'publish'
-					);
+				<?php if ( $posts ) : ?>
+					<table cellspacing="0" class="widefat fixed">
+						<thead>
+						<tr>
+							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
+							<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
+						</tr>
+						</thead>
 
-					$posts = get_posts($args);
-					if($posts) {
-						?>
-						<table cellspacing="0" class="widefat fixed">
-							<thead>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-							</tr>
-							</thead>
+						<tfoot>
+						<tr>
+							<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+							<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
+							<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
+						</tr>
+						</tfoot>
 
-							<tfoot>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Post title', 'membership'); ?></th>
-								<th style="" class="manage-column column-date" id="date" scope="col"><?php _e('Post date', 'membership'); ?></th>
-							</tr>
-							</tfoot>
-
-							<tbody>
-						<?php
-						foreach($posts as $key => $post) {
-							?>
+						<tbody>
+						<?php foreach( $posts as $post ) : ?>
 							<tr valign="middle" class="alternate" id="post-<?php echo $post->ID; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $post->ID; ?>" name="posts[]" <?php if(in_array($post->ID, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $post->ID; ?>" name="posts[]"<?php checked( in_array( $post->ID, $data ) ) ?>>
 								</th>
 								<td class="column-name">
 									<strong><?php echo esc_html($post->post_title); ?></strong>
 								</td>
 								<td class="column-date">
-									<?php
-										echo date("Y/m/d", strtotime($post->post_date));
-									?>
+									<?php echo date( 'd M y', strtotime( $post->post_date ) ); ?>
 								</td>
 						    </tr>
-							<?php
-						}
-						?>
-							</tbody>
-						</table>
-						<?php
-					}
-
-				?>
-				<p class='description'><?php echo sprintf(__("Only the most recent %d posts are shown above, if you have more than that then you should consider using categories instead.",'membership'), MEMBERSHIP_POST_COUNT); ?></p>
+						<?php endforeach; ?>
+						</tbody>
+					</table>
+				<?php endif; ?>
+				<p class='description'><?php printf( __( "Only the most recent %d posts are shown above, if you have more than that then you should consider using categories instead.", 'membership' ), $posts_to_show ) ?></p>
 			</div>
 		</div>
 		<?php
@@ -138,17 +131,28 @@ class M_Pages extends M_Rule {
 	var $rulearea = 'public';
 
 	function admin_main( $data ) {
+		global $M_options;
+
 		if ( !$data ) {
 			$data = array();
 		}
 
+		$exclude = array();
+		foreach ( array( 'registration_page', 'account_page', 'subscriptions_page', 'nocontent_page', 'registrationcompleted_page' ) as $page ) {
+			if ( isset( $M_options[$page] ) && is_numeric( $M_options[$page] ) ) {
+				$exclude[] = $M_options[$page];
+			}
+		}
+
+		$posts_to_show = !empty( $M_options['membership_page_count'] ) ? $M_options['membership_page_count'] : MEMBERSHIP_PAGE_COUNT;
 		$posts = apply_filters( 'staypress_hide_protectable_pages', get_posts( array(
-			'numberposts' => MEMBERSHIP_PAGE_COUNT,
+			'numberposts' => $posts_to_show,
 			'offset'      => 0,
 			'orderby'     => 'post_date',
 			'order'       => 'DESC',
 			'post_type'   => 'page',
-			'post_status' => 'publish'
+			'post_status' => 'publish',
+			'exclude'     => $exclude,
 		) ) );
 
 		?>
@@ -197,7 +201,7 @@ class M_Pages extends M_Rule {
 				</table>
 				<?php endif; ?>
 
-				<p class="description"><?php printf( __( "Only the most recent %d pages are shown above.", 'membership' ), MEMBERSHIP_PAGE_COUNT ) ?></p>
+				<p class="description"><?php printf( __( "Only the most recent %d pages are shown above.", 'membership' ), $posts_to_show ) ?></p>
 			</div>
 		</div><?php
 	}
@@ -922,10 +926,7 @@ class M_URLGroups extends M_Rule {
 
 	function get_groups() {
 		global $wpdb;
-		return $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname NOT LIKE (%s) ORDER BY id ASC",
-			'\_%'
-		) );
+		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname NOT LIKE (\_%) ORDER BY id ASC" );
 	}
 
 	function admin_main($data) {

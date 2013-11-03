@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed rule counts settings issue
 * Fixed [renewform] shortcode styling issue
 * Fixed protection issue, when protection is disabled
 * Fixed leaving ping issue for expired subscriptions

@@ -3554,20 +3554,6 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                             ?>' />
                                         </td>
                                     </tr>
-                                    <tr valign="top">
-                                        <th scope="row"><?php _e('Group count', 'membership'); ?></th>
-                                        <td>
-                                            <input type='text' name='membership_group_count' value='<?php
-                                                   if (!empty($M_options['membership_group_count'])) {
-                                                       echo $M_options['membership_group_count'];
-                                                   } else {
-                                                       if (defined('MEMBERSHIP_GROUP_COUNT')) {
-                                                           echo MEMBERSHIP_GROUP_COUNT;
-                                                       }
-                                                   }
-                                                   ?>' />
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
