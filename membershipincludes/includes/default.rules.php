@@ -926,7 +926,7 @@ class M_URLGroups extends M_Rule {
 
 	function get_groups() {
 		global $wpdb;
-		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE groupname NOT LIKE (\_%) ORDER BY id ASC" );
+		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE SUBSTR(groupname, 1, 1) <> '_' ORDER BY id ASC" );
 	}
 
 	function admin_main($data) {
