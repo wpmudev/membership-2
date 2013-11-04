@@ -40,8 +40,8 @@ class Membership_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
 	 */
-	protected function _add_action( $tag, $method, $priority = 10, $accepted_args = 1 ) {
-		add_action( $tag, array( $this, $method ), $priority, $accepted_args );
+	protected function _add_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+		add_action( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
 
@@ -82,8 +82,8 @@ class Membership_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
 	 */
-	protected function _add_filter( $tag, $method, $priority = 10, $accepted_args = 1 ) {
-		add_filter( $tag, array( $this, $method ), $priority, $accepted_args );
+	protected function _add_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+		add_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
 

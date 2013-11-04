@@ -165,8 +165,6 @@ function membership_init_db_table_constants() {
  * Instantiates the plugin and setups all modules.
  *
  * @since 3.5
- *
- * @global wpdb $wpdb The database connection.
  */
 function membership_launch() {
 	// setup environment
@@ -187,6 +185,7 @@ function membership_launch() {
 	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 	} else {
 		if ( is_admin() ) {
+			$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME );
 		} else {
 		}
 	}
