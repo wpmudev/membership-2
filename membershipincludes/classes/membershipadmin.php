@@ -262,7 +262,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
         }
 
         function add_user_permissions_column( $columns ) {
-			$columns['membershippermissions'] = __( 'Permissions', 'membership' );
+			$columns['membershippermissions'] = __( 'Membership Permissions', 'membership' );
 			return $columns;
 		}
 

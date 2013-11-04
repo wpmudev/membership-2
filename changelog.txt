@@ -1,6 +1,6 @@
 == 3.5 ==
 
-* Fixed database table verification and repairment processes
+* Fixed database table verification and repairing processes
 * Fixed rule counts settings issue
 * Fixed [renewform] shortcode styling issue
 * Fixed protection issue, when protection is disabled
