@@ -1834,8 +1834,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
         }
 
         function handle_members_panel() {
-
-			global $action, $page;
+			global $action, $page, $M_options;
 
             wp_reset_vars(array('action', 'page'));
 
@@ -2216,9 +2215,22 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         <tbody>
                             <?php
+
+							$default_subscription = '';
+							$default_level = '';
+							if ( !empty( $M_options['freeusersubscription'] ) ) {
+								$subscription = new M_Subscription( $M_options['freeusersubscription'] );
+								$default_subscription = $subscription->sub_name() . ' <span style="font-size:80%;color:gray">(set by default)</span>';
+								$levels = $subscription->get_levels();
+								if ( !empty( $levels ) ) {
+									$default_level = $levels[0]->level_title . ' <span style="font-size:80%;color:gray">(set by default)</span>';
+								}
+							}
+
                             $style = '';
                             foreach ($wp_user_search->get_results() as $user) {
                                 $user_object = new M_Membership($user->ID);
+								$is_membership_admin = $user_object->has_cap( 'membershipadmin' );
                                 $roles = $user_object->roles;
                                 $role = array_shift($roles);
 
@@ -2257,20 +2269,23 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                     <td <?php echo $style; ?>>
                                         <?php
                                         $subs = $user_object->get_subscription_ids();
-                                        if (!empty($subs)) {
-                                            $rows = array();
-                                            foreach ((array) $subs as $key) {
-                                                $sub = new M_Subscription($key);
-                                                if (!empty($sub)) {
-                                                    $rows[] = $sub->sub_name();
-                                                }
-                                            }
-                                            echo implode(", ", $rows);
-                                        }
+										if ( !empty( $subs ) ) {
+											$rows = array();
+											foreach ( (array) $subs as $key ) {
+												$sub = new M_Subscription( $key );
+												if ( !empty( $sub ) ) {
+													$rows[] = $sub->sub_name();
+												}
+											}
+											echo implode( ", ", $rows );
+										} elseif ( $is_membership_admin ) {
+											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?
+										} else {
+											echo $default_subscription;
+										}
 
-                                        $actions = array();
-
-                                        if (!$user_object->has_cap('membershipadmin')) {
+										$actions = array();
+                                        if (!$is_membership_admin) {
                                             $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
                                         }
 
@@ -2302,7 +2317,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                                 }
                                             }
                                             echo implode(", ", $rows);
-                                        }
+										} elseif ( $is_membership_admin ) {
+											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?
+										} else {
+											echo $default_level;
+										}
 
                                         $actions = array();
                                         if (!$user_object->has_cap('membershipadmin')) {

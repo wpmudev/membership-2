@@ -260,18 +260,17 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		}
 
-		function initialise_membership_protection($wp) {
+		function initialise_membership_protection( $wp ) {
 			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
-			// Set up some common defaults
 
 			static $initialised = false;
-
-			if($initialised) {
+			if ( $initialised ) {
 				// ensure that this is only called once, so return if we've been here already.
 				return;
 			}
 
-			if(empty($user) || !method_exists($user, 'has_cap')) {
+			// Set up some common defaults
+			if ( empty( $user ) || !method_exists( $user, 'has_cap' ) ) {
 				$user = wp_get_current_user();
 			}
 
@@ -280,76 +279,80 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				add_action( 'template_redirect', array( $this, 'complete_url_protection_processing' ), 1 );
 			}
 
-			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
+			if ( !method_exists( $user, 'has_cap' ) || $user->has_cap( 'membershipadmin' ) ) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
-				if(!empty($_COOKIE['membershipuselevel']) && $_COOKIE['membershipuselevel'] != '0') {
-
-					$level_id = (int) $_COOKIE['membershipuselevel'];
-
-					$member = new M_Membership($user->ID);
-					$member->assign_level( $level_id, true );
+				if ( !empty( $_COOKIE['membershipuselevel'] ) && $_COOKIE['membershipuselevel'] != '0' ) {
+					$member = new M_Membership( $user->ID );
+					$member->assign_level( (int)$_COOKIE['membershipuselevel'], true );
 				} else {
 					return;
 				}
 			} else {
 				// We are not a membershipadmin user
-				if(!empty($wp->query_vars['feed'])) {
-					// This is a feed access
-					// Set the feed rules
-					if(isset($_GET['k'])) {
-						$key = $_GET['k'];
-
-						$user_id = $this->find_user_from_key($key);
-						$user_id = (int) $user_id;
-						if($user_id > 0) {
+				if ( !empty( $wp->query_vars['feed'] ) ) {
+					// This is a feed access, then set the feed rules
+					if ( isset( $_GET['k'] ) ) {
+						$user_id = (int)$this->find_user_from_key( $_GET['k'] );
+						if ( $user_id > 0 ) {
 							// Logged in - check there settings, if they have any.
-							$member = new M_Membership($user_id);
+							$member = new M_Membership( $user_id );
 							// Load the levels for this member - and associated rules
 							$member->load_levels( true );
 						} else {
-							$member = new M_Membership(false);
-							if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-								$member->assign_level($M_options['strangerlevel'], true );
+							$member = new M_Membership( false );
+							if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+								$member->assign_level( $M_options['strangerlevel'], true );
 							} else {
 								// This user can't access anything on the site - show a blank feed.
-								add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
+								add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
 							}
 						}
-
 					} else {
 						// not passing a key so limit based on stranger settings
 						// need to grab the stranger settings
-						$member = new M_Membership($user->ID);
-						if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-							$member->assign_level($M_options['strangerlevel'], true );
+						$member = new M_Membership( $user->ID );
+						if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+							$member->assign_level( $M_options['strangerlevel'], true );
 						} else {
 							// This user can't access anything on the site - show a blank feed.
-							add_filter('the_posts', array(&$this, 'show_noaccess_feed'), 1 );
+							add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
 						}
 					}
 				} else {
 					// Users
-					$member = new M_Membership($user->ID);
+					$assinged = false;
+					$member = new M_Membership( $user->ID );
+					if ( $user->ID > 0 ) {
+						if ( $member->has_levels() ) {
+							// Load the levels for this member - and associated rules
+							$member->load_levels( true );
+							$assinged = true;
+						} elseif ( !empty( $M_options['freeusersubscription'] ) ) {
+							$subscription = new M_Subscription( $M_options['freeusersubscription'] );
+							$levels = $subscription->get_levels();
+							if ( !empty( $levels ) ) {
+								$member->assign_level( $levels[0]->level_id );
+								$assinged = true;
+							}
+						}
+					}
 
-					if($user->ID > 0 && $member->has_levels()) {
-						// Load the levels for this member - and associated rules
-						$member->load_levels( true );
-					} else {
+					if ( !$assinged ) {
 						// not logged in so limit based on stranger settings
 						// need to grab the stranger settings
-						if(isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
+						if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
 							$member->assign_level( $M_options['strangerlevel'], true );
 						} else {
 							// This user can't access anything on the site - .
-							add_filter('comments_open', array(&$this, 'close_comments'), 99, 2);
+							add_filter( 'comments_open', array( &$this, 'close_comments' ), 99, 2 );
 							// Changed for this version to see if it helps to get around changed in WP 3.5
 							//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-							add_action('the_posts', array(&$this, 'show_noaccess_page'), 1 );
+							add_action( 'the_posts', array( &$this, 'show_noaccess_page' ), 1 );
 							//the_posts
 							// Hide all pages from menus - except the signup one
-							add_filter('get_pages', array(&$this, 'remove_pages_menu'));
+							add_filter( 'get_pages', array( &$this, 'remove_pages_menu' ) );
 							// Hide all categories from lists
-							add_filter( 'get_terms', array(&$this, 'remove_categories'), 1, 3 );
+							add_filter( 'get_terms', array( &$this, 'remove_categories' ), 1, 3 );
 						}
 					}
 				}
@@ -700,54 +703,45 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		// Show the level based protected shortcode message
-		function do_levelprotected_shortcode($atts, $content = null, $code = "") {
-
+		function do_levelprotected_shortcode( $atts, $content = null, $code = "" ) {
 			global $M_options;
 
-			// Set up the level shortcodes here
-			$shortcodes = apply_filters('membership_level_shortcodes', array() );
-			$notshortcodes = apply_filters('membership_not_level_shortcodes', array() );
-
 			$code = strtolower( $code );
-
-			if( substr( $code, 0, 4 ) !== "not-" ) {
-				if(!empty($shortcodes)) {
+			if ( substr( $code, 0, 4 ) !== "not-" ) {
+				$shortcodes = apply_filters( 'membership_level_shortcodes', array() );
+				if ( !empty( $shortcodes ) ) {
 					// search positive shortcodes first
 					$id = array_search( $code, $shortcodes );
-					if($id !== false) {
+					if ( $id !== false ) {
 						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
 						$level = new M_Level( $id );
 						$message = $level->get_meta( 'level_protectedcontent' );
-						if(!empty($message)) {
-							return stripslashes($message);
+						if ( !empty( $message ) ) {
+							return do_shortcode( stripslashes( $message ) );
 						}
 					}
 				}
 			} else {
-				if(!empty($notshortcodes)) {
+				$notshortcodes = apply_filters( 'membership_not_level_shortcodes', array() );
+				if ( !empty( $notshortcodes ) ) {
 					// search positive shortcodes first
 					$id = array_search( $code, $notshortcodes );
-					if($id !== false) {
+					if ( $id !== false ) {
 						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
 						$level = new M_Level( $id );
 						$message = $level->get_meta( 'level_protectedcontent' );
-						if(!empty($message)) {
-							return stripslashes($message);
+						if ( !empty( $message ) ) {
+							return do_shortcode( stripslashes( $message ) );
 						}
 					}
 				}
 			}
 
 			// If we are here then we have no custom message, or the shortcode wasn't found so just output the standard message
-			if(isset($M_options['shortcodemessage'])) {
-				return stripslashes($M_options['shortcodemessage']);
-			} else {
-				return '';
-			}
-
-
+			return isset( $M_options['shortcodemessage'] )
+				? do_shortcode( stripslashes( $M_options['shortcodemessage'] ) )
+				: '';
 		}
-
 
 		function override_shortcodes() {
 			// By default all the shortcodes are protected to override them here

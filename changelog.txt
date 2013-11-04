@@ -19,6 +19,7 @@
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
 * Reworked purchase free subscription process
+* Reworked default subscription setup for users without subscriptions
 
 == 3.4.6 ==
 

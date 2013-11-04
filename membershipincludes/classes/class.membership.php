@@ -390,29 +390,25 @@ if ( !class_exists( 'M_Membership' ) ) :
 		}
 
 		function get_subscription_ids() {
-
-			if(empty($this->subids)) {
-
-				$sql = $this->db->prepare( "SELECT sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id > 0", $this->ID );
-
-				$this->subids = $this->db->get_col( $sql );
+			if ( empty( $this->subids ) ) {
+				$this->subids = $this->db->get_col( $this->db->prepare(
+					"SELECT sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id > 0",
+					$this->ID
+				) );
 			}
 
 			return $this->subids;
 		}
 
 		function get_level_ids() {
-
-			if(empty($this->levids)) {
-
-				$sql = $this->db->prepare( "SELECT level_id, sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id > 0", $this->ID );
-
-				$this->levids = $this->db->get_results( $sql );
-
+			if ( empty( $this->levids ) ) {
+				$this->levids = (array)$this->db->get_results( $this->db->prepare(
+					"SELECT level_id, sub_id FROM {$this->membership_relationships} WHERE user_id = %d AND level_id > 0",
+					$this->ID
+				) );
 			}
 
 			return $this->levids;
-
 		}
 
 		function update_relationship_gateway( $rel_id, $fromgateway, $togateway ) {
@@ -811,18 +807,13 @@ if ( !class_exists( 'M_Membership' ) ) :
 			$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('core') );
 		}
 
-		function load_levels($fullload = false) {
-
-			$levels = $this->get_level_ids();
-
-			if(!empty($levels)) {
-				foreach( (array) $levels as $key => $lev ) {
-					if(!isset( $this->levels[$lev->level_id] )) {
-						$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('public', 'core') );
-					}
+		function load_levels( $fullload = false ) {
+			$levels = (array)$this->get_level_ids();
+			foreach ( $levels as $lev ) {
+				if ( !isset( $this->levels[$lev->level_id] ) ) {
+					$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array( 'public', 'core' ) );
 				}
 			}
-
 		}
 
 		function load_public_levels($fullload = false) {
