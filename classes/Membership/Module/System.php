@@ -135,18 +135,24 @@ class Membership_Module_System extends Membership_Module {
 			return $current_version;
 		}
 
-		$blog_id = get_current_blog_id();
-		$set_method = 'update_option';
-		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) ) {
-			$set_method = 'update_site_option';
-			if ( defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
-				$blog_id = absint( MEMBERSHIP_GLOBAL_MAINSITE );
+		if ( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$set_method = 'update_option';
+			if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) ) {
+				$set_method = 'update_site_option';
+				if ( defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
+					$blog_id = absint( MEMBERSHIP_GLOBAL_MAINSITE );
+				}
 			}
-		}
 
-		$set_method( 'authorize_mode', get_blog_option( $blog_id, 'authorizenetarb_mode' ) );
-		$set_method( 'authorize_api_user', get_blog_option( $blog_id, 'authorizenetarb_api_user' ) );
-		$set_method( 'authorize_api_key', get_blog_option( $blog_id, 'authorizenetarb_api_key' ) );
+			$set_method( 'authorize_mode', get_blog_option( $blog_id, 'authorizenetarb_mode' ) );
+			$set_method( 'authorize_api_user', get_blog_option( $blog_id, 'authorizenetarb_api_user' ) );
+			$set_method( 'authorize_api_key', get_blog_option( $blog_id, 'authorizenetarb_api_key' ) );
+		} else {
+			update_option( 'authorize_mode', get_option( 'authorizenetarb_mode' ) );
+			update_option( 'authorize_api_user', get_option( 'authorizenetarb_api_user' ) );
+			update_option( 'authorize_api_key', get_option( 'authorizenetarb_api_key' ) );
+		}
 
 		return $this_version;
 	}
