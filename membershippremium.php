@@ -179,7 +179,7 @@ function membership_launch() {
 			// set WPMUDEV Dashboard notice
 			$wpmudev_notice = new WPMUDEV_Dashboard_Notice();
 			// set admin modules
-			$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME );
+			// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
 		}
 	}
 }
