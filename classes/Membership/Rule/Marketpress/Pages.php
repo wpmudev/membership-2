@@ -1,12 +1,31 @@
 <?php
-/*
-Addon Name: Default MarketPress Rules
-Description: If you are using MarketPress then activate this add-on for specific MarketPress rules.
-Author: Barry (Incsub)
-Author URI: http://caffeinatedb.com
-*/
 
-class M_Marketpress extends M_Rule {
+// +----------------------------------------------------------------------+
+// | Copyright Incsub (http://incsub.com/)                                |
+// +----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify |
+// | it under the terms of the GNU General Public License, version 2, as  |
+// | published by the Free Software Foundation.                           |
+// |                                                                      |
+// | This program is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        |
+// | GNU General Public License for more details.                         |
+// |                                                                      |
+// | You should have received a copy of the GNU General Public License    |
+// | along with this program; if not, write to the Free Software          |
+// | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               |
+// | MA 02110-1301 USA                                                    |
+// +----------------------------------------------------------------------+
+
+/**
+ * Rule class responsible for MarketPress pages protection.
+ *
+ * @category Membership
+ * @package Rule
+ * @subpackage Marketpress
+ */
+class Membership_Rule_Marketpress_Pages extends Membership_Rule {
 
 	var $name = 'marketpress';
 	var $label = 'MarketPress Pages';
@@ -147,14 +166,3 @@ class M_Marketpress extends M_Rule {
 
 	}
 }
-
-
-function M_setup_MP_addons() {
-	if(class_exists('MarketPress')) {
-		M_register_rule('marketpress', 'M_Marketpress', 'content');
-	}
-
-}
-add_action('plugins_loaded', 'M_setup_MP_addons', 99);
-
-?>

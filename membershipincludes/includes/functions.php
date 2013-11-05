@@ -1240,3 +1240,198 @@ function membership_get_expire_date( $sub_id = null, $date_format = null ) {
 
 	return __( 'unknown', 'membership' );
 }
+
+// Rules stuff below
+
+/**
+ * Registers rule in the system.
+ *
+ * @global array $M_Rules The array of registered rules.
+ * @global array $M_SectionRules The array of sections and associated rules.
+ * @param string $rule_name The name of the rule.
+ * @param string $class_name The class name of the rule.
+ * @param string $section The section where the rule belongs to.
+ */
+function M_register_rule( $rule_name, $class_name, $section ) {
+	global $M_Rules, $M_SectionRules;
+
+	if ( !is_array( $M_Rules ) ) {
+		$M_Rules = array();
+	}
+
+	if ( !is_array( $M_SectionRules ) ) {
+		$M_SectionRules = array();
+	}
+
+	if ( !isset( $M_SectionRules[$section] ) ) {
+		$M_SectionRules[$section] = array();
+	}
+
+	$M_SectionRules[$section][$rule_name] = $class_name;
+	$M_Rules[$rule_name] = $class_name;
+}
+
+add_action( 'plugins_loaded', 'M_setup_default_rules', 99 );
+function M_setup_default_rules() {
+	M_register_rule( 'comments',   'Membership_Rule_Comments',   'main' );
+	M_register_rule( 'more',       'Membership_Rule_More',       'main' );
+	M_register_rule( 'categories', 'Membership_Rule_Categories', 'main' );
+	M_register_rule( 'pages',      'Membership_Rule_Pages',      'main' );
+	M_register_rule( 'posts',      'Membership_Rule_Posts',      'main' );
+	M_register_rule( 'menu',       'Membership_Rule_Menu',       'main' );
+	M_register_rule( 'urlgroups',  'Membership_Rule_URLGroups',  'main' );
+	M_register_rule( 'downloads',  'Membership_Rule_Downloads',  'content' );
+	M_register_rule( 'shortcodes', 'Membership_Rule_Shortcodes', 'content' );
+
+	if ( is_multisite() ) {
+		M_register_rule( 'blogcreation', 'Membership_Rule_Blogcreation', 'admin' );
+	}
+}
+
+function M_cache_favourite_actions( $actions = false ) {
+	static $M_actions;
+
+	if ( $actions !== false ) {
+		$M_actions = $actions;
+	} else {
+		$actions = $M_actions;
+	}
+
+	return $actions;
+}
+
+function M_AddAdminSection( $sections ) {
+	$sections['admin'] = array( "title" => __( 'Administration', 'membership' ) );
+	return $sections;
+}
+
+add_action( 'plugins_loaded', 'M_setup_Admin_addons', 99 );
+function M_setup_Admin_addons() {
+	M_register_rule( 'mainmenus', 'Membership_Rule_Admin_Mainmenus',        'admin' );
+	M_register_rule( 'submenus',  'Membership_Rule_Admin_Submenus',         'admin' );
+	M_register_rule( 'dashboard', 'Membership_Rule_Admin_Dashboardwidgets', 'admin' );
+	M_register_rule( 'plugins',   'Membership_Rule_Admin_Plugins',          'admin' );
+
+	add_filter( 'favorite_actions', 'M_cache_favourite_actions', 999 );
+	add_filter( 'membership_level_sections', 'M_AddAdminSection', 99 );
+}
+
+// Pass thru function
+function MBP_can_access_page( $page ) {
+	global $member;
+	if ( !empty( $member ) && method_exists( $member, 'pass_thru' ) ) {
+		return $member->pass_thru( 'bppages', array( 'can_access_page' => $page ) );
+	}
+}
+
+function M_AddBuddyPressSection( $sections ) {
+	$sections['bp'] = array( "title" => __( 'BuddyPress', 'membership' ) );
+	return $sections;
+}
+
+// BuddyPress options
+function M_AddBuddyPressOptions() {
+	if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+		if ( function_exists( 'get_blog_option' ) ) {
+			$MBP_options = get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array() );
+		} else {
+			$MBP_options = get_option( 'membership_bp_options', array() );
+		}
+	} else {
+		$MBP_options = get_option( 'membership_bp_options', array() );
+	}
+
+	?><div class="postbox">
+		<h3 class="hndle" style="cursor:auto;"><span><?php _e( 'BuddyPress protected content message','membership' ) ?></span></h3>
+		<div class="inside">
+			<p class='description'><?php _e( 'This is the message that is displayed when a BuddyPress related operation is restricted. Depending on your theme this is displayed in a red bar, and so should be short and concise.', 'membership' ) ?></p>
+
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><?php _e( 'BuddyPress No access message', 'membership' ) ?></th>
+					<td>
+						<?php wp_editor( stripslashes( $MBP_options['buddypressmessage'] ), "buddypressmessage", array( "textarea_name" => "buddypressmessage" ) ) ?>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div><?php
+}
+
+function M_AddBuddyPressOptionsProcess() {
+	if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+		if ( function_exists( 'get_blog_option' ) ) {
+			$MBP_options = get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array() );
+		} else {
+			$MBP_options = get_option( 'membership_bp_options', array() );
+		}
+	} else {
+		$MBP_options = get_option( 'membership_bp_options', array() );
+	}
+
+	$MBP_options['buddypressmessage'] = $_POST['buddypressmessage'];
+
+	if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
+		if ( function_exists( 'get_blog_option' ) ) {
+			update_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', $MBP_options );
+		} else {
+			update_option( 'membership_bp_options', $MBP_options );
+		}
+	} else {
+		update_option( 'membership_bp_options', $MBP_options );
+	}
+}
+
+function M_HideBuddyPressPages( $pages ) {
+	if ( function_exists( 'bp_core_get_directory_page_ids' ) ) {
+		$existing_pages = bp_core_get_directory_page_ids();
+	}
+
+	foreach ( $pages as $key => $page ) {
+		if ( in_array( $page->ID, (array) $existing_pages ) ) {
+			unset( $pages[$key] );
+		}
+	}
+
+	return $pages;
+}
+
+function M_KeepBuddyPressPages( $pages ) {
+	$existing_pages = bp_core_get_directory_page_ids();
+	if ( !empty( $existing_pages ) ) {
+		$pages = array_merge( $pages, $existing_pages );
+	}
+
+	return $pages;
+}
+
+function M_overrideBPSignupSlug( $slug ) {
+	$permalink = M_get_registration_permalink();
+	return !empty( $permalink ) ? basename( $permalink ) : $slug;
+}
+
+add_action( 'plugins_loaded', 'M_setup_BP_addons', 99 );
+function M_setup_BP_addons() {
+	if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), "1.5", '>=' ) ) {
+		M_register_rule( 'bppages',          'Membership_Rule_Buddypress_Pages',          'bp' );
+		M_register_rule( 'bpprivatemessage', 'Membership_Rule_Buddypress_Privatemessage', 'bp' );
+		M_register_rule( 'bpblogs',          'Membership_Rule_Buddypress_Blogs',          'bp' );
+		M_register_rule( 'bpgroupcreation',  'Membership_Rule_Buddypress_Groupcreation',  'bp' );
+		M_register_rule( 'bpgroups',         'Membership_Rule_Buddypress_Groups',         'bp' );
+
+		add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
+		add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
+
+		add_filter( 'membership_level_sections', 'M_AddBuddyPressSection' );
+		add_filter( 'membership_hide_protectable_pages', 'M_HideBuddyPressPages' );
+		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
+		add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
+	}
+}
+
+add_action( 'plugins_loaded', 'M_setup_MP_addons', 99 );
+function M_setup_MP_addons() {
+	if ( class_exists( 'MarketPress' ) ) {
+		M_register_rule( 'marketpress', 'Membership_Rule_Marketpress_Pages', 'content' );
+	}
+}

@@ -35,67 +35,56 @@ require_once('membershipincludes/includes/membership-config.php');
 // Load the common functions
 require_once('membershipincludes/includes/functions.php');
 // Set up my location
-set_membership_url(__FILE__);
-set_membership_dir(__FILE__);
+set_membership_url( __FILE__ );
+set_membership_dir( __FILE__ );
 
 // Load required classes
-// Rules class
-require_once( membership_dir('membershipincludes/classes/class.rule.php') );
-// Rules class
-require_once( membership_dir('membershipincludes/classes/class.advancedrule.php') );
 // Levels class
-require_once( membership_dir('membershipincludes/classes/class.level.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.level.php' ) );
 // Subscriptions class
-require_once( membership_dir('membershipincludes/classes/class.subscription.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.subscription.php' ) );
 // Pagination class
-require_once( membership_dir('membershipincludes/classes/class.pagination.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.pagination.php' ) );
 // Members class
-require_once( membership_dir('membershipincludes/classes/class.membership.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.membership.php' ) );
 // Shortcodes class
-require_once( membership_dir('membershipincludes/classes/class.shortcodes.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.shortcodes.php' ) );
 // Communications class
-require_once( membership_dir('membershipincludes/classes/class.communication.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.communication.php' ) );
 // URL groups class
-require_once( membership_dir('membershipincludes/classes/class.urlgroup.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.urlgroup.php' ) );
 // Pings class
-require_once( membership_dir('membershipincludes/classes/class.ping.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.ping.php' ) );
 // Add in the coupon
-require_once( membership_dir('membershipincludes/classes/class.coupon.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.coupon.php' ) );
 // Add in the Admin bar
-require_once( membership_dir('membershipincludes/classes/class.adminbar.php') );
-// Set up the default rules
-require_once( membership_dir('membershipincludes/includes/default.rules.php') );
-// Set up the default advanced rules
-require_once( membership_dir('membershipincludes/includes/default.advrules.php') );
+require_once( membership_dir( 'membershipincludes/classes/class.adminbar.php' ) );
 
 // Load the Cron process
-require_once( membership_dir('membershipincludes/classes/membershipcron.php') );
+require_once( membership_dir( 'membershipincludes/classes/membershipcron.php' ) );
 
 // Create the default actions
-require_once( membership_dir('membershipincludes/includes/default.actions.php') );
+require_once( membership_dir( 'membershipincludes/includes/default.actions.php' ) );
 
-if (is_admin()) {
-    include_once( membership_dir('membershipincludes/external/wpmudev-dash-notification.php') );
-    // Administration interface
-    // Add in the contextual help
-    require_once( membership_dir('membershipincludes/classes/class.help.php') );
-    // Add in the wizard and tutorial
-    require_once( membership_dir('membershipincludes/classes/class.wizard.php') );
-    require_once( membership_dir('membershipincludes/classes/class.tutorial.php') );
-    // Add in the tooltips class - from social marketing app by Ve
-    require_once( membership_dir('membershipincludes/includes/class_wd_help_tooltips.php') );
-    // Add in the main class
-    require_once( membership_dir('membershipincludes/classes/membershipadmin.php') );
+if ( is_admin() ) {
+	// Administration interface
+	// Add in the contextual help
+	require_once( membership_dir( 'membershipincludes/classes/class.help.php' ) );
+	// Add in the wizard and tutorial
+	require_once( membership_dir( 'membershipincludes/classes/class.wizard.php' ) );
+	require_once( membership_dir( 'membershipincludes/classes/class.tutorial.php' ) );
+	// Add in the main class
+	require_once( membership_dir( 'membershipincludes/classes/membershipadmin.php' ) );
 
-    $membershipadmin = new membershipadmin();
+	$membershipadmin = new membershipadmin();
 
-    // Register an activation hook
-    register_activation_hook(__FILE__, 'M_activation_function');
+	// Register an activation hook
+	register_activation_hook( __FILE__, 'M_activation_function' );
 } else {
-    // Public interface
-    require_once( membership_dir('membershipincludes/classes/membershippublic.php') );
+	// Public interface
+	require_once( membership_dir( 'membershipincludes/classes/membershippublic.php' ) );
 
-    $membershippublic = new membershippublic();
+	$membershippublic = new membershippublic();
 }
 
 
@@ -116,7 +105,7 @@ if (is_admin()) {
  */
 function membership_autoloader( $class ) {
 	$basedir = dirname( __FILE__ );
-	$namespaces = array( 'Membership' );
+	$namespaces = array( 'Membership', 'WPMUDEV' );
 	foreach ( $namespaces as $namespace ) {
 		if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
 			$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_classes_{$class}.php" );
@@ -185,8 +174,10 @@ function membership_launch() {
 	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 	} else {
 		if ( is_admin() ) {
+			// set WPMUDEV Dashboard notice
+			$wpmudev_notice = new WPMUDEV_Dashboard_Notice();
+			// set admin modules
 			$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME );
-		} else {
 		}
 	}
 }

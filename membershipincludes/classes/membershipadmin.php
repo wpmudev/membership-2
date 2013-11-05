@@ -33,104 +33,97 @@ if ( !class_exists( 'membershipadmin' ) ) :
         var $language;
 
         function __construct() {
+			global $wpdb;
 
-            global $wpdb;
+			$this->db = $wpdb;
+			foreach ( $this->tables as $table ) {
+				$this->$table = membership_db_prefix( $this->db, $table );
+			}
 
-            $this->db = & $wpdb;
+			// Initiate the wizard class
+			$this->potter = new M_Wizard();
 
-            foreach ($this->tables as $table) {
-                $this->$table = membership_db_prefix($this->db, $table);
-            }
+			// Add administration actions
+			add_action( 'init', array( $this, 'initialise_plugin' ), 1 );
+			// Add in admin area membership levels
+			add_action( 'init', array( $this, 'initialise_membership_protection' ), 999 );
 
-            // Instantiate the tooltips class and set the icon
-            $this->_tips = new WpmuDev_HelpTooltips();
-            $this->_tips->set_icon_url(membership_url('membershipincludes/images/information.png'));
+			if ( (function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'membership/membershippremium.php' )) && (defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES == true) ) {
+				add_action( 'network_admin_menu', array( $this, 'add_admin_menu' ) );
+			} else {
+				add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+			}
 
-            // Initiate the wizard class
-            $this->potter = new M_Wizard();
+			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 
-            // Add administration actions
-            add_action('init', array(&$this, 'initialise_plugin'), 1);
+			// Header actions for users page
+			add_action( 'load-users.php', array( $this, 'add_header_users_page' ) );
 
-            // Add in admin area membership levels
-            add_action('init', array(&$this, 'initialise_membership_protection'), 999);
+			// Custom header actions
+			add_action( 'load-toplevel_page_membership', array( $this, 'add_admin_header_membership' ) );
+			add_action( 'load-membership_page_membershipmembers', array( $this, 'add_admin_header_members' ) );
+			add_action( 'load-membership_page_membershiplevels', array( $this, 'add_admin_header_membershiplevels' ) );
+			add_action( 'load-membership_page_membershipsubs', array( $this, 'add_admin_header_membershipsubs' ) );
+			add_action( 'load-membership_page_membershipcoupons', array( $this, 'add_admin_header_membershipcoupons' ) );
+			add_action( 'load-membership_page_membershipgateways', array( $this, 'add_admin_header_membershipgateways' ) );
+			add_action( 'load-membership_page_membershipoptions', array( $this, 'add_admin_header_membershipoptions' ) );
+			add_action( 'load-membership_page_membershipcommunication', array( $this, 'add_admin_header_membershipcommunication' ) );
+			add_action( 'load-membership_page_membershipurlgroups', array( $this, 'add_admin_header_membershipurlgroups' ) );
+			add_action( 'load-membership_page_membershippings', array( $this, 'add_admin_header_membershippings' ) );
 
-            if ((function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('membership/membershippremium.php')) && (defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES == true)) {
-                add_action( 'network_admin_menu', array( $this, 'add_admin_menu' ) );
-            } else {
-                add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-            }
+			add_action( 'load-users_page_membershipuser', array( $this, 'add_admin_header_membershipuser' ) );
 
-            add_action('plugins_loaded', array(&$this, 'load_textdomain'));
+			add_filter( 'membership_level_sections', array( $this, 'default_membership_sections' ) );
 
-            // Header actions for users page
-            add_action('load-users.php', array(&$this, 'add_header_users_page'));
+			// Media management additional fields
+			add_filter( 'attachment_fields_to_edit', array( $this, 'add_media_protection_settings' ), 99, 2 );
+			add_filter( 'attachment_fields_to_save', array( $this, 'save_media_protection_settings' ), 99, 2 );
 
-            // Custom header actions
-            add_action('load-toplevel_page_membership', array(&$this, 'add_admin_header_membership'));
-            add_action('load-membership_page_membershipmembers', array(&$this, 'add_admin_header_members'));
-            add_action('load-membership_page_membershiplevels', array(&$this, 'add_admin_header_membershiplevels'));
-            add_action('load-membership_page_membershipsubs', array(&$this, 'add_admin_header_membershipsubs'));
-            add_action('load-membership_page_membershipcoupons', array(&$this, 'add_admin_header_membershipcoupons'));
-            add_action('load-membership_page_membershipgateways', array(&$this, 'add_admin_header_membershipgateways'));
-            add_action('load-membership_page_membershipoptions', array(&$this, 'add_admin_header_membershipoptions'));
-            add_action('load-membership_page_membershipcommunication', array(&$this, 'add_admin_header_membershipcommunication'));
-            add_action('load-membership_page_membershipurlgroups', array(&$this, 'add_admin_header_membershipurlgroups'));
-            add_action('load-membership_page_membershippings', array(&$this, 'add_admin_header_membershippings'));
+			// rewrites
+			add_action( 'generate_rewrite_rules', array( $this, 'add_rewrites' ) );
+			add_filter( 'query_vars', array( $this, 'add_queryvars' ) );
 
-            add_action('load-users_page_membershipuser', array(&$this, 'add_admin_header_membershipuser'));
-
-            add_filter('membership_level_sections', array(&$this, 'default_membership_sections'));
-
-            // Media management additional fields
-            add_filter('attachment_fields_to_edit', array(&$this, 'add_media_protection_settings'), 99, 2);
-            add_filter('attachment_fields_to_save', array(&$this, 'save_media_protection_settings'), 99, 2);
-
-            // rewrites
-            add_action('generate_rewrite_rules', array(&$this, 'add_rewrites'));
-            add_filter('query_vars', array(&$this, 'add_queryvars'));
-
-            // profile field for feeds
-            add_action('show_user_profile', array(&$this, 'add_profile_feed_key'));
+			// profile field for feeds
+			add_action( 'show_user_profile', array( $this, 'add_profile_feed_key' ) );
 
 			// users
 			add_action( 'deleted_user', array( $this, 'cleanup_user' ) );
 
-            // Pings
-            add_action('membership_subscription_form_after_levels', array(&$this, 'show_subscription_ping_information'));
-            add_action('membership_subscription_add', array(&$this, 'update_subscription_ping_information'));
-            add_action('membership_subscription_update', array(&$this, 'update_subscription_ping_information'));
+			// Pings
+			add_action( 'membership_subscription_form_after_levels', array( $this, 'show_subscription_ping_information' ) );
+			add_action( 'membership_subscription_add', array( $this, 'update_subscription_ping_information' ) );
+			add_action( 'membership_subscription_update', array( $this, 'update_subscription_ping_information' ) );
 
-            add_action('membership_level_form_after_rules', array(&$this, 'show_level_ping_information'));
-            add_action('membership_level_add', array(&$this, 'update_level_ping_information'));
-            add_action('membership_level_update', array(&$this, 'update_level_ping_information'));
+			add_action( 'membership_level_form_after_rules', array( $this, 'show_level_ping_information' ) );
+			add_action( 'membership_level_add', array( $this, 'update_level_ping_information' ) );
+			add_action( 'membership_level_update', array( $this, 'update_level_ping_information' ) );
 
-            // Ajax calls have to go here because admin-ajax.php is an admin call even though we're calling it from the front end.
-            add_action('wp_ajax_nopriv_buynow', array(&$this, 'popover_signup_form'));
+			// Ajax calls have to go here because admin-ajax.php is an admin call even though we're calling it from the front end.
+			add_action( 'wp_ajax_nopriv_buynow', array( $this, 'popover_signup_form' ) );
 
-            //login and register are no-priv only because, well they aren't logged in or registered
-            add_action('wp_ajax_nopriv_register_user', array(&$this, 'popover_register_process'));
-            add_action('wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process'));
+			//login and register are no-priv only because, well they aren't logged in or registered
+			add_action( 'wp_ajax_nopriv_register_user', array( $this, 'popover_register_process' ) );
+			add_action( 'wp_ajax_nopriv_login_user', array( $this, 'popover_login_process' ) );
 
-            // if logged in:
-            add_action('wp_ajax_buynow', array(&$this, 'popover_sendpayment_form'));
-            add_action('wp_ajax_extra_form', array(&$this, 'popover_extraform_process'));
-            add_action('wp_ajax_register_user', array(&$this, 'popover_register_process'));
-            add_action('wp_ajax_login_user', array(&$this, 'popover_login_process'));
+			// if logged in:
+			add_action( 'wp_ajax_buynow', array( $this, 'popover_sendpayment_form' ) );
+			add_action( 'wp_ajax_extra_form', array( $this, 'popover_extraform_process' ) );
+			add_action( 'wp_ajax_register_user', array( $this, 'popover_register_process' ) );
+			add_action( 'wp_ajax_login_user', array( $this, 'popover_login_process' ) );
 
-            // Helper actions
-            add_action('membership_activate_addon', array(&$this, 'activate_addon'), 10, 1);
-            add_action('membership_deactivate_addon', array(&$this, 'deactivate_addon'), 10, 1);
+			// Helper actions
+			add_action( 'membership_activate_addon', array( $this, 'activate_addon' ), 10, 1 );
+			add_action( 'membership_deactivate_addon', array( $this, 'deactivate_addon' ), 10, 1 );
 
-            // Level shortcodes filters
-            add_filter('membership_level_shortcodes', array(&$this, 'build_level_shortcode_list'));
+			// Level shortcodes filters
+			add_filter( 'membership_level_shortcodes', array( $this, 'build_level_shortcode_list' ) );
 
-            add_action('plugins_loaded', array(&$this, 'load_tutorial'), 11); //init tutorial after translation loaded
-            // Add in the coupon class
-            $this->_coupons = new M_Coupon();
-        }
+			add_action( 'plugins_loaded', array( $this, 'load_tutorial' ), 11 ); //init tutorial after translation loaded
+			// Add in the coupon class
+			$this->_coupons = new M_Coupon();
+		}
 
-        function membershipadmin() {
+		function membershipadmin() {
             $this->__construct();
         }
 
@@ -155,8 +148,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
         }
 
         function initialise_plugin() {
-
             global $user, $M_options;
+
+            // Instantiate the tooltips class and set the icon
+            $this->_tips = new WPMUDEV_Help_Tooltips();
+            $this->_tips->set_icon_url(membership_url('membershipincludes/images/information.png'));
 
             $installed = get_option('M_Installed', false);
 
@@ -4136,18 +4132,13 @@ if ( !class_exists( 'membershipadmin' ) ) :
                             <div class="section-holder" id="sidebar-<?php echo $key; ?>" style="min-height: 98px;">
                                 <ul class='levels level-levels-draggable'>
                                     <?php
-                                    if (isset($M_SectionRules[$key])) {
-                                        foreach ($M_SectionRules[$key] as $mrule => $mclass) {
-                                            $rule = new $mclass();
-
-                                            if (!array_key_exists($mrule, $rules)) {
-                                                $rule->admin_sidebar(false);
-                                            } else {
-                                                $rule->admin_sidebar(true);
-                                            }
-                                        }
-                                    }
-                                    ?>
+                                    if ( isset( $M_SectionRules[$key] ) ) {
+										foreach ( $M_SectionRules[$key] as $mrule => $mclass ) {
+											$rule = new $mclass();
+											$rule->admin_sidebar( array_key_exists( $mrule, $rules ) );
+										}
+									}
+									?>
                                 </ul>
                             </div>
                 <?php

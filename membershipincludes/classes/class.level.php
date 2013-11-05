@@ -26,22 +26,19 @@ if(!class_exists('M_Level')) {
 
 		var $lastlevelid;
 
-		function __construct( $id = false , $fullload = false, $loadtype = array('public', 'core') ) {
-
+		function __construct( $id = false, $fullload = false, $loadtype = array( 'public', 'core' ) ) {
 			global $wpdb;
 
-			$this->db =& $wpdb;
+			$this->id = $id;
+			$this->db = $wpdb;
 
-			foreach($this->tables as $table) {
-				$this->$table = membership_db_prefix($this->db, $table);
+			foreach ( $this->tables as $table ) {
+				$this->$table = membership_db_prefix( $this->db, $table );
 			}
 
-			$this->id = $id;
-
-			if($fullload) {
+			if ( $fullload ) {
 				$this->load_rules( $loadtype );
 			}
-
 		}
 
 		function M_Level( $id = false, $fullload = false, $admin = false ) {
