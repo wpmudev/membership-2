@@ -26,18 +26,42 @@
  */
 class Membership_Rule_URLGroups extends Membership_Rule {
 
-	var $name = 'urlgroups';
-	var $label = 'URL Groups';
-	var $description = "Allows specific URL's to be protected (includes ability to protect using regular expressions).";
-
-	var $rulearea = 'core';
-
-	function get_groups() {
+	/**
+	 * Retrives array of URL groups created in the system.
+	 *
+	 * @access public
+	 * @global wpdb $wpdb Current database connection.
+	 * @return array Array of URL groups.
+	 */
+	public function get_groups() {
 		global $wpdb;
-		return $wpdb->get_results( "SELECT * FROM " . membership_db_prefix( $wpdb, 'urlgroups' ) . " WHERE SUBSTR(groupname, 1, 1) <> '_' ORDER BY id ASC" );
+
+		return $wpdb->get_results( sprintf(
+			"SELECT * FROM %s WHERE SUBSTR(groupname, 1, 1) <> '_' ORDER BY id ASC",
+			MEMBERSHIP_TABLE_URLGROUPS
+		) );
 	}
 
-	function admin_main($data) {
+	/**
+	 * Handles rule's stuff initialization.
+	 *
+	 * @access public
+	 */
+	public function on_creation() {
+		$this->name = 'urlgroups';
+		$this->rulearea = 'core';
+
+		$this->label = esc_html__( 'URL Groups', 'membership' );
+		$this->description = esc_html__( "Allows specific URL's to be protected (includes ability to protect using regular expressions).", 'membership' );
+	}
+
+	/**
+	 * Renders rule settings at access level edit form.
+	 *
+	 * @access public
+	 * @param mixed $data The data associated with this rule.
+	 */
+	public function admin_main($data) {
 		if(!$data) $data = array();
 		?>
 		<div class='level-operation' id='main-urlgroups'>
@@ -90,7 +114,13 @@ class Membership_Rule_URLGroups extends Membership_Rule {
 		<?php
 	}
 
-	function on_positive( $data ) {
+	/**
+	 * Associates positive data with this rule.
+	 *
+	 * @access public
+	 * @param mixed $data The positive data to associate with the rule.
+	 */
+	public function on_positive( $data ) {
 		$this->data = $data;
 		if ( !empty( $this->data ) && is_array( $this->data ) ) {
 			foreach ( $this->data as $group_id ) {
@@ -100,7 +130,13 @@ class Membership_Rule_URLGroups extends Membership_Rule {
 		}
 	}
 
-	function on_negative( $data ) {
+	/**
+	 * Associates negative data with this rule.
+	 *
+	 * @access public
+	 * @param mixed $data The negative data to associate with the rule.
+	 */
+	public function on_negative( $data ) {
 		$this->data = $data;
 		if ( !empty( $this->data ) && is_array( $this->data ) ) {
 			foreach ( $this->data as $group_id ) {
@@ -110,7 +146,13 @@ class Membership_Rule_URLGroups extends Membership_Rule {
 		}
 	}
 
-	function validate_negative() {
+	/**
+	 * Validates the rule on negative assertion.
+	 *
+	 * @access public
+	 * @return boolean TRUE if assertion is successfull, otherwise FALSE.
+	 */
+	public function validate_negative() {
 		global $M_global_groups;
 
 		$host = is_ssl() ? "https://" : "http://";
@@ -132,10 +174,15 @@ class Membership_Rule_URLGroups extends Membership_Rule {
 		}
 
 		return !$found;
-
 	}
 
-	function validate_positive() {
+	/**
+	 * Validates the rule on positive assertion.
+	 *
+	 * @access public
+	 * @return boolean TRUE if assertion is successfull, otherwise FALSE.
+	 */
+	public function validate_positive() {
 		global $M_global_groups;
 
 		$host = is_ssl() ? "https://" : "http://";
@@ -157,6 +204,19 @@ class Membership_Rule_URLGroups extends Membership_Rule {
 		}
 
 		return $found;
+	}
+
+	/**
+	 * Determines whether current rule should handle other blogs protection in
+	 * the network. Used only for global table installation case.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @return boolean TRUE if the rule should be handled, otherwise FALSE.
+	 */
+	public function is_network_wide() {
+		return true;
 	}
 
 }

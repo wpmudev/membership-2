@@ -180,4 +180,17 @@ class Membership_Rule {
 		return in_array( $this->rulearea, array( 'admin', 'core' ) );
 	}
 
+	/**
+	 * Determines whether current rule should handle other blogs protection in
+	 * the network. Used only for global table installation case.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @return boolean TRUE if the rule should be handled, otherwise FALSE.
+	 */
+	public function is_network_wide() {
+		return false;
+	}
+
 }

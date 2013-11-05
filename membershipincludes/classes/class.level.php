@@ -430,7 +430,16 @@ if(!class_exists('M_Level')) {
 		function validate_credentials() {
 			$valid = true;
 
+			$global = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+			if ( $global ) {
+				$global = MEMBERSHIP_GLOBAL_MAINSITE != get_current_blog_id();
+			}
+
 			foreach ( $this->positiverules as $rule ) {
+				if ( $global && !$rule->is_network_wide() ) {
+					continue;
+				}
+
 				if ( !$rule->validate_positive() ) {
 					$valid = false;
 					break;
@@ -439,6 +448,10 @@ if(!class_exists('M_Level')) {
 
 			if ( $valid ) {
 				foreach ( $this->negativerules as $rule ) {
+					if ( $global && !$rule->is_network_wide() ) {
+						continue;
+					}
+
 					if ( !$rule->validate_negative() ) {
 						$valid = false;
 						break;

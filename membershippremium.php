@@ -139,6 +139,7 @@ function membership_init_db_table_constants() {
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS',      "{$prefix}m_subscriptions_levels" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION', "{$prefix}m_subscription_transaction" );
 	define( 'MEMBERSHIP_TABLE_RELATIONS',                "{$prefix}m_membership_relationships" );
+	define( 'MEMBERSHIP_TABLE_URLGROUPS',                "{$prefix}m_urlgroups" );
 
 	if ( $global && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
 		add_global_table( MEMBERSHIP_TABLE_LEVELS );
@@ -147,6 +148,7 @@ function membership_init_db_table_constants() {
 		add_global_table( MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS );
 		add_global_table( MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION );
 		add_global_table( MEMBERSHIP_TABLE_RELATIONS );
+		add_global_table( MEMBERSHIP_TABLE_URLGROUPS );
 	}
 }
 
