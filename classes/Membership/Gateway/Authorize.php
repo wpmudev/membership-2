@@ -442,7 +442,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			<?php wp_nonce_field( 'cancel-sub_' . $subscription->sub_id() ) ?>
 			<input type="hidden" name="action" value="unsubscribe">
 			<input type="hidden" name="gateway" value="<?php echo esc_attr( $this->gateway ) ?>">
-			<input type="hidden" name="subscription" value="<? echo esc_attr( $subscription->sub_id() ) ?>">
+			<input type="hidden" name="subscription" value="<?php echo esc_attr( $subscription->sub_id() ) ?>">
 			<input type="hidden" name="user" value="<?php echo esc_attr( $user_id ) ?>">
 			<input type="submit" value="<?php esc_attr_e( 'Unsubscribe', 'membership' ) ?>" class="button <?php echo apply_filters( 'membership_subscription_button_color', 'blue' ) ?>">
 		</form><?php

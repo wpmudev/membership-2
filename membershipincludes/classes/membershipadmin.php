@@ -2275,7 +2275,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 											}
 											echo implode( ", ", $rows );
 										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?
+											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
 										} else {
 											echo $default_subscription;
 										}
@@ -2314,7 +2314,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                             }
                                             echo implode(", ", $rows);
 										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?
+											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
 										} else {
 											echo $default_level;
 										}
