@@ -27,109 +27,96 @@
  */
 class Membership_Rule_Admin_Plugins extends Membership_Rule {
 
-	var $name = 'plugins';
-	var $adminside = true;
-	var $label = 'Plugins';
-	var $description = 'Allows activation of specific plugins to be protected.';
+	public function on_creation() {
+		$this->name = 'plugins';
+		$this->label = __( 'Plugins', 'membership' );
+		$this->description = __( 'Allows activation of specific plugins to be protected.', 'membership' );
+		$this->rulearea = 'admin';
+	}
 
-	var $rulearea = 'admin';
+	public function admin_main( $data ) {
+		$plugins = get_plugins();
+		if ( !$data ) {
+			$data = array();
+		}
 
-	function admin_main($data) {
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-plugins'>
-			<h2 class='sidebar-name'><?php _e('Plugins', 'membership');?><span><a href='#remove' class='removelink' id='remove-plugins' title='<?php _e("Remove Main Menus from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
-			<div class='inner-operation'>
-				<p><?php _e('Select the Plugins to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
-				<?php
+		?><div class="level-operation" id="main-plugins">
+			<h2 class="sidebar-name">
+				<?php _e( 'Plugins', 'membership' ) ?>
+				<span>
+					<a href="#remove" class="removelink" id="remove-plugins" title="<?php _e( "Remove Main Menus from this rules area.", 'membership' ); ?>">
+						<?php _e( 'Remove', 'membership' ); ?>
+					</a>
+				</span>
+			</h2>
 
-					$plugins = get_plugins();
+			<div class="inner-operation">
+				<p><?php _e( 'Select the Plugins to be covered by this rule by checking the box next to the relevant pages title.', 'membership' ); ?></p>
 
-					if(!empty($plugins)) {
-						?>
-						<table cellspacing="0" class="widefat fixed">
-							<thead>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Plugin', 'membership'); ?></th>
-								</tr>
-							</thead>
+				<?php if ( !empty( $plugins ) ) : ?>
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+						<tr>
+							<th class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+							<th class="manage-column column-name" id="name" scope="col"><?php _e( 'Plugin', 'membership' ) ?></th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+							<th class="manage-column column-name" id="name" scope="col"><?php _e( 'Plugin', 'membership' ) ?></th>
+						</tr>
+					</tfoot>
 
-							<tfoot>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Plugin', 'membership'); ?></th>
-								</tr>
-							</tfoot>
-
-							<tbody>
-						<?php
-						foreach($plugins as $key => $plugin) {
-							if(!empty($plugin['Name'])) {
-							?>
+					<tbody>
+					<?php foreach ( $plugins as $key => $plugin ) : ?>
+						<?php if ( !empty( $plugin['Name'] ) ) : ?>
 							<tr valign="middle" class="alternate" id="mainmenus-<?php echo $key; ?>">
 								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $key; ?>" name="plugins[]" <?php if(in_array($key, $data)) echo 'checked="checked"'; ?>>
+									<input type="checkbox" value="<?php echo $key; ?>" name="plugins[]" <?php if ( in_array( $key, $data ) ) echo 'checked="checked"'; ?>>
 								</th>
 								<td class="column-name">
-									<strong><?php echo esc_html(strip_tags($plugin['Name'])); ?></strong><br/>
-									<?php echo esc_html(strip_tags($plugin['Version'])); ?>
+									<strong><?php echo esc_html( strip_tags( $plugin['Name'] ) ) ?></strong><br/>
+									<?php echo esc_html( strip_tags( $plugin['Version'] ) ) ?>
 								</td>
 						    </tr>
-							<?php
-							}
-						}
-						?>
-							</tbody>
-						</table>
-						<?php
-					}
-
-				?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+				<?php endif; ?>
 			</div>
-		</div>
-		<?php
+		</div><?php
 	}
 
-	function on_positive($data) {
-
+	public function on_positive( $data ) {
 		$this->data = $data;
-
-		add_filter('all_plugins', array(&$this, 'pos_all_plugins'), 999);
-
-
+		add_filter( 'all_plugins', array( $this, 'pos_all_plugins' ), 999 );
 	}
 
-	function on_negative($data) {
-
+	public function on_negative( $data ) {
 		$this->data = $data;
-
-		add_filter('all_plugins', array(&$this, 'neg_all_plugins'), 999);
-
+		add_filter( 'all_plugins', array( $this, 'neg_all_plugins' ), 999 );
 	}
 
-	function pos_all_plugins( $plugins ) {
-
-		foreach($plugins as $key => $plugin) {
-			if(!in_array($key, (array) $this->data)) {
-				unset($plugins[$key]);
+	public function pos_all_plugins( $plugins ) {
+		foreach ( $plugins as $key => $plugin ) {
+			if ( !in_array( $key, (array) $this->data ) ) {
+				unset( $plugins[$key] );
 			}
 		}
 
 		return $plugins;
-
 	}
 
-	function neg_all_plugins( $plugins ) {
-
-		foreach($plugins as $key => $plugin) {
-			if(in_array($key, (array) $this->data)) {
-				unset($plugins[$key]);
+	public function neg_all_plugins( $plugins ) {
+		foreach ( $plugins as $key => $plugin ) {
+			if ( in_array( $key, (array) $this->data ) ) {
+				unset( $plugins[$key] );
 			}
 		}
 
 		return $plugins;
-
 	}
 
 }

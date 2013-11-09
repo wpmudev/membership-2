@@ -27,113 +27,97 @@
  */
 class Membership_Rule_Admin_Mainmenus extends Membership_Rule {
 
-	var $name = 'mainmenus';
-	var $adminside = true;
-	var $label = 'Main Menus';
-	var $description = 'Allows admin side main menus to be protected.';
+	public function on_creation() {
+		$this->name = 'mainmenus';
+		$this->label = __( 'Main Menus', 'membership' );
+		$this->description = __( 'Allows admin side main menus to be protected.', 'membership' );
+		$this->rulearea = 'admin';
+	}
 
-	var $rulearea = 'admin';
+	public function admin_main( $data ) {
+		global $menu;
 
-	function admin_main($data) {
-		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-mainmenus'>
-			<h2 class='sidebar-name'><?php _e('Main Menus', 'membership');?><span><a href='#remove' class='removelink' id='remove-mainmenus' title='<?php _e("Remove Main Menus from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
+		if ( !$data ) {
+			$data = array();
+		}
+
+		?><div class='level-operation' id='main-mainmenus'>
+			<h2 class='sidebar-name'>
+				<?php _e( 'Main Menus', 'membership' ); ?>
+				<span>
+					<a href='#remove' class='removelink' id='remove-mainmenus' title='<?php _e( "Remove Main Menus from this rules area.", 'membership' ) ?>'>
+						<?php _e( 'Remove', 'membership' ); ?>
+					</a>
+				</span>
+			</h2>
+
 			<div class='inner-operation'>
-				<p><?php _e('Select the Main menus to be covered by this rule by checking the box next to the relevant pages title.','membership'); ?></p>
-				<?php
+				<p><?php _e( 'Select the Main menus to be covered by this rule by checking the box next to the relevant pages title.', 'membership' ) ?></p>
 
-					global $menu;
+				<?php if ( !empty( $menu ) ) : ?>
+				<table cellspacing="0" class="widefat fixed">
+					<thead>
+					<tr>
+						<th class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+						<th class="manage-column column-name" id="name" scope="col"><?php _e( 'Menu title', 'membership' ) ?></th>
+						</tr>
+					</thead>
 
-					if(!empty($menu)) {
-						?>
-						<table cellspacing="0" class="widefat fixed">
-							<thead>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
+					<tfoot>
+					<tr>
+						<th class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+						<th class="manage-column column-name" id="name" scope="col"><?php _e( 'Menu title', 'membership' ) ?></th>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<?php foreach ( $menu as $key => $m ) : ?>
+							<?php if ( !empty( $m[0] ) ) : ?>
+								<tr valign="middle" class="alternate" id="mainmenus-<?php echo esc_attr( $key ) ?>">
+									<th class="check-column" scope="row">
+										<input type="checkbox" value="<?php echo esc_attr( $m[2] ) ?>" name="mainmenus[]"<?php checked( in_array( $m[2], $data ) ) ?>>
+									</th>
+									<td class="column-name">
+										<strong><?php echo esc_html( strip_tags( $m[0] ) ) ?></strong>
+									</td>
 								</tr>
-							</thead>
-
-							<tfoot>
-							<tr>
-								<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-								<th style="" class="manage-column column-name" id="name" scope="col"><?php _e('Menu title', 'membership'); ?></th>
-								</tr>
-							</tfoot>
-
-							<tbody>
-						<?php
-						foreach($menu as $key => $m) {
-							if(!empty($m[0])) {
-							?>
-							<tr valign="middle" class="alternate" id="mainmenus-<?php echo $key; ?>">
-								<th class="check-column" scope="row">
-									<input type="checkbox" value="<?php echo $m[2]; ?>" name="mainmenus[]" <?php if(in_array($m[2], $data)) echo 'checked="checked"'; ?>>
-								</th>
-								<td class="column-name">
-									<strong><?php echo esc_html(strip_tags($m[0])); ?></strong>
-								</td>
-						    </tr>
-							<?php
-							}
-						}
-						?>
-							</tbody>
-						</table>
-						<?php
-					}
-
-				?>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<?php endif; ?>
 			</div>
-		</div>
-		<?php
+		</div><?php
 	}
 
-	function on_positive($data) {
-
-		global $menu;
-
+	public function on_positive( $data ) {
 		$this->data = $data;
-
-		add_action('admin_menu', array(&$this, 'pos_admin_menu'), 999);
-
-
+		add_action( 'admin_menu', array( $this, 'pos_admin_menu' ), 999 );
 	}
 
-	function on_negative($data) {
-
-		global $menu;
-
+	public function on_negative( $data ) {
 		$this->data = $data;
-
-		add_action('admin_menu', array(&$this, 'neg_admin_menu'), 999);
-
+		add_action( 'admin_menu', array( $this, 'neg_admin_menu' ), 999 );
 	}
 
-	function pos_admin_menu() {
-
+	public function pos_admin_menu() {
 		global $menu;
 
-		foreach($menu as $key => $m) {
-			if(!in_array($m[2], (array) $this->data)) {
-				unset($menu[$key]);
+		foreach ( $menu as $key => $m ) {
+			if ( !in_array( $m[2], (array) $this->data ) ) {
+				unset( $menu[$key] );
 			}
 		}
-
 	}
 
-	function neg_admin_menu() {
-
+	public function neg_admin_menu() {
 		global $menu;
 
-		foreach($menu as $key => $m) {
-			if(in_array($m[2], (array) $this->data)) {
-				unset($menu[$key]);
+		foreach ( $menu as $key => $m ) {
+			if ( in_array( $m[2], (array) $this->data ) ) {
+				unset( $menu[$key] );
 			}
 		}
-
-
 	}
 
 }
