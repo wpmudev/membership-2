@@ -123,4 +123,37 @@ class Membership_Plugin {
 		$this->_modules[$class] = new $class( $this );
 	}
 
+	/**
+	 * Determines whether global tables are used or not.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access public
+	 * @return boolean TRUE if global tables are used, otherwise FALSE.
+	 */
+	public static function is_global_tables() {
+		return defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
+	 * Determines whether the protection is enabled or not.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access public
+	 * @return boolean TRUE if protection enabled, otherwise FALSE
+	 */
+	public static function is_enabled() {
+		$option = 'membership_active';
+		$default = 'no';
+
+		$value = self::is_global_tables()
+			? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, $option, $default )
+			: get_option( $option, $default );
+
+		return $value != 'no';
+	}
+
 }
