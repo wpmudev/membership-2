@@ -717,7 +717,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			return null;
 		}
 
-		$success = $transaction_id = $method = false;
+		$success = $transaction_id = $method = $error = false;
 		$amount = number_format( $price['amount'], 2, '.', '' );
 		if ( !empty( $this->_cim_profile_id ) && !empty( $this->_cim_payment_profile_id ) ) {
 			$transaction = $this->_get_cim_transaction();
@@ -728,6 +728,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$success = true;
 				$method = 'cim';
 				$transaction_id = $response->getTransactionResponse()->transaction_id;
+			} else {
+				$error = $response->getMessageText();
 			}
 		} else {
 			$response = $this->_get_aim()->authorizeOnly( $amount );
@@ -735,6 +737,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$success = true;
 				$transaction_id = $response->transaction_id;
 				$method = 'aim';
+			} elseif ( $response->error ) {
+				$error = $response->response_reason_text;
 			}
 		}
 
@@ -749,7 +753,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		}
 
 		$this->_payment_result['status'] = 'error';
-		$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
+		$this->_payment_result['errors'][] = $error;
 
 		return null;
 	}
@@ -808,7 +812,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		}
 
 		$this->_payment_result['status'] = 'error';
-		$this->_payment_result['errors'][] = __( 'Your payment was declined. Please, check all your details or use a different card.', 'membership' );
+		$this->_payment_result['errors'][] = $response->getMessageText();
 
 		return null;
 	}

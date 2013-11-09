@@ -131,43 +131,43 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 				<label class="inputLabel" for="first_name"><?php esc_html_e( 'First Name:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-fname auth-field">
-				<input id="first_name" name="first_name" class="input_field" type="text" maxlength="50">
+				<input id="first_name" name="first_name" x-autocompletetype="given-name" class="input_field" type="text" maxlength="50">
 			</div>
 			<div class="auth-billing-lname-label auth-field">
 				<label class="inputLabel" for="last_name"><?php esc_html_e( 'Last Name:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-lname auth-field">
-				<input id="last_name" name="last_name" class="input_field" type="text" maxlength="50">
+				<input id="last_name" name="last_name" x-autocompletetype="family-name" class="input_field" type="text" maxlength="50">
 			</div>
 			<div class="auth-billing-address-label auth-field">
 				<label class="inputLabel" for="address"><?php esc_html_e( 'Address:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-address auth-field">
-				<input id="address" name="address" class="input_field" type="text" maxlength="60">
+				<input id="address" name="address" class="input_field" type="text" x-autocompletetype="address-line1" maxlength="60">
 			</div>
 			<div class="auth-billing-city-label auth-field">
 				<label class="inputLabel" for="city"><?php esc_html_e( 'City:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-city auth-field">
-				<input id="city" name="city" class="input_field" type="text" maxlength="40">
+				<input id="city" name="city" class="input_field" type="text" x-autocompletetype="city" maxlength="40">
 			</div>
 			<div class="auth-billing-state-label auth-field">
 				<label class="inputLabel" for="state"><?php esc_html_e( 'State:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-state auth-field">
-				<input id="state" name="state" class="input_field" type="text" maxlength="40">
+				<input id="state" name="state" class="input_field" x-autocompletetype="administrative-area" type="text" maxlength="40">
 			</div>
 			<div class="auth-billing-zip-label auth-field">
 				<label class="inputLabel" for="zip"><?php esc_html_e( 'Zip Code:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-zip auth-field">
-				<input id="zip" name="zip" class="input_field" type="text" maxlength="20">
+				<input id="zip" name="zip" class="input_field" x-autocompletetype="postal-code" type="text" maxlength="20">
 			</div>
 			<div class="auth-billing-country-label auth-field">
 				<label class="inputLabel" for="country"><?php esc_html_e( 'Country:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-country auth-field">
-				<input id="country" name="country" class="input_field" type="text" maxlength="60">
+				<input id="country" name="country" x-autocompletetype="country-name" class="input_field" type="text" maxlength="60">
 			</div>
 		</div><?php
 	}
@@ -184,15 +184,15 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 			<div class="auth-block">
 				<div class="auth-cc-label auth-field"><?php esc_html_e( 'Credit Card Number:', 'membership' ) ?>*</div>
 				<div class="auth-cc-input auth-field">
-					<input class="auth-cc-cardnum" name="card_num" onkeyup="cc_card_pick('#cardimage', '#card_num')" id="card_num" class="credit_card_number input_field noautocomplete" type="text" size="22" maxlength="22">
-					<div class="hide_after_success nocard cardimage"  id="cardimage" style="background: url(<?php echo MEMBERSHIP_ABSURL ?>membershipincludes/images/card_array.png) no-repeat;"></div>
+					<input type="text" id="card_num" class="auth-cc-cardnum credit_card_number input_field" name="card_num" x-autocompletetype="cc-number" onkeyup="cc_card_pick('#cardimage', '#card_num')" size="22" maxlength="22">
+					<div class="hide_after_success nocard cardimage" id="cardimage" style="background: url(<?php echo MEMBERSHIP_ABSURL ?>membershipincludes/images/card_array.png) no-repeat;"></div>
 				</div>
 			</div>
 			<div class="auth-block">
 				<div class="auth-exp-label auth-field"><?php esc_html_e( 'Expiration Date:', 'membership' ) ?>*</div>
 				<div class="auth-exp-input auth-field">
-					<select name="exp_month" id="exp_month"><?php echo $this->_render_months() ?></select>
-					<select name="exp_year" id="exp_year"><?php echo $this->_render_years() ?></select>
+					<select name="exp_month" x-autocompletetype="cc-exp-month" id="exp_month"><?php echo $this->_render_months() ?></select>
+					<select name="exp_year" x-autocompletetype="cc-exp-year" id="exp_year"><?php echo $this->_render_years() ?></select>
 				</div>
 			</div>
 			<div>
