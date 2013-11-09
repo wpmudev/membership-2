@@ -42,6 +42,13 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 			return;
 		}
 
+		// if we have custom implementation of Authorize.net payment form, then use it
+		if ( defined( 'MEMBERSHIP_GATEWAY_AUTHORIZE_FORM' ) && is_readable( MEMBERSHIP_GATEWAY_AUTHORIZE_FORM ) ) {
+			include MEMBERSHIP_GATEWAY_AUTHORIZE_FORM;
+			return;
+		}
+
+		// render form
 		$cim_class = !empty( $this->cim_profiles ) ? ' auth-has-cim' : '';
 
 		?><form class="membership_payment_form authorizenet single" method="post">
