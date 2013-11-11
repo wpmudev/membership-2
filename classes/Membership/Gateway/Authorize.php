@@ -138,22 +138,21 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	public function __construct() {
 		parent::__construct();
 
-		$this->_add_action( 'M_gateways_settings_' . $this->gateway, 'render_settings' );
-		$this->_add_action( 'membership_purchase_button', 'render_subscribe_button', 10, 3 );
+		$this->_add_action( 'M_gateways_settings_' . $this->gateway,     'render_settings' );
+		$this->_add_action( 'membership_purchase_button',                'render_subscribe_button', 10, 3 );
 		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
-		$this->_add_action( 'membership_expire_subscription', 'cancel_subscription_transactions', 10, 2 );
-		$this->_add_action( 'membership_move_subscription', 'capture_next_transaction', 10, 6 );
-		$this->_add_filter( 'membership_unsubscribe_subscription', 'process_unsubscribe_subscription', 10, 3 );
+		$this->_add_action( 'membership_expire_subscription',            'cancel_subscription_transactions', 10, 2 );
+		$this->_add_action( 'membership_move_subscription',              'capture_next_transaction', 10, 6 );
+		$this->_add_filter( 'membership_unsubscribe_subscription',       'process_unsubscribe_subscription', 10, 3 );
 
 		$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
-		$this->_add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
-
-		$this->_add_action( 'wpmu_delete_user', 'save_cim_profile_id' );
-		$this->_add_action( 'delete_user', 'save_cim_profile_id' );
-		$this->_add_action( 'deleted_user', 'delete_cim_profile' );
+		$this->_add_action( 'wp_login',           'propagate_ssl_cookie', 10, 2 );
+		$this->_add_action( 'wpmu_delete_user',   'save_cim_profile_id' );
+		$this->_add_action( 'delete_user',        'save_cim_profile_id' );
+		$this->_add_action( 'deleted_user',       'delete_cim_profile' );
 
 		$this->_add_ajax_action( 'processpurchase_' . $this->gateway, 'process_purchase', true, true );
-		$this->_add_ajax_action( 'purchaseform', 'render_popover_payment_form' );
+		$this->_add_ajax_action( 'purchaseform',                      'render_popover_payment_form' );
 	}
 
 	/**
@@ -562,7 +561,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$subscription = new M_Subscription( filter_input( INPUT_POST, 'subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) ) );
 		$user_id = filter_input( INPUT_POST, 'user', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1, 'default' => get_current_user_id() ) ) );
-		do_action( 'membership_payment_form_' . $this->gateway, $subscription, null, $user_id );
+		do_action( 'membership_payment_form_' . $this->gateway, $subscription, $subscription->get_pricingarray(), $user_id );
+
+		exit;
 	}
 
 	/**
