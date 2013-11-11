@@ -63,9 +63,6 @@ require_once( membership_dir( 'membershipincludes/classes/class.adminbar.php' ) 
 // Load the Cron process
 require_once( membership_dir( 'membershipincludes/classes/membershipcron.php' ) );
 
-// Create the default actions
-require_once( membership_dir( 'membershipincludes/includes/default.actions.php' ) );
-
 if ( is_admin() ) {
 	// Administration interface
 	// Add in the contextual help
