@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed internal issue with actions collision
 * Fixed network wide protection issue when global installation is used
 * Fixed database table verification and repairing processes
 * Fixed rule counts settings issue

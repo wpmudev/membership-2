@@ -32,21 +32,13 @@ if ( !class_exists( 'M_Membership' ) ) :
 		}
 
 		function active_member() {
-
-			$active = get_user_meta( $this->ID, membership_db_prefix($this->db, 'membership_active', false), true);
-
-			if(empty($active) || $active == 'yes') {
-				return apply_filters( 'membership_active_member', true, $this->ID);
-			} else {
-				return apply_filters( 'membership_active_member', false, $this->ID);
-			}
+			$active = get_user_meta( $this->ID, membership_db_prefix( $this->db, 'membership_active', false ), true );
+			return apply_filters( 'membership_active_member', empty( $active ) || $active == 'yes', $this->ID );
 		}
 
 		function mark_for_expire( $sub_id ) {
-			update_user_meta( $this->ID, '_membership_expire_next', $sub_id);
-
-			do_action('membership_mark_for_expire', $sub_id, $this->ID);
-
+			update_user_meta( $this->ID, '_membership_expire_next', $sub_id );
+			do_action( 'membership_mark_for_expire', $sub_id, $this->ID );
 		}
 
 		function is_marked_for_expire($sub_id) {
@@ -62,17 +54,9 @@ if ( !class_exists( 'M_Membership' ) ) :
 		}
 
 		function is_member() {
-
 			$sql = $this->db->prepare( "SELECT count(*) FROM {$this->membership_relationships} WHERE user_id = %d", $this->ID );
-
-			$res = $this->db->get_var($sql);
-
-			if($res > 0) {
-				return apply_filters('membership_is_member', true, $this->ID);
-			} else {
-				return apply_filters('membership_is_member', false, $this->ID);
-			}
-
+			$res = $this->db->get_var( $sql );
+			return apply_filters( 'membership_is_member', $res > 0, $this->ID );
 		}
 
 		function has_subscription() {

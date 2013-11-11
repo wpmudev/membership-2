@@ -1094,58 +1094,54 @@ class paypalexpress extends Membership_Gateway {
             //check for subscription details
             switch ($_POST['txn_type']) {
                 case 'subscr_signup':
-                    // start the subscription
-                    $amount = $_POST['mc_amount3'];
-                    list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					// start the subscription
+					$amount = $_POST['mc_amount3'];
+					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
 
-                    $newkey = md5('MEMBERSHIP' . $amount);
-                    if ($key != $newkey) {
-                        $member = new M_Membership($user_id);
-                        if ($member) {
-                            if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true) {
-                                $member->deactivate();
-                            }
-                        }
+					$member = new M_Membership( $user_id );
 
-                        membership_debug_log(sprintf(__('Key does not match for amount - not creating subscription for user %d with key ', 'membership'), $user_id) . $newkey);
-                    } else {
-                        // create_subscription
-                        do_action('membership_create_subscription', $user_id, $sub_id, $this->gateway);
+					$newkey = md5( 'MEMBERSHIP' . $amount );
+					if ( $key != $newkey ) {
+						if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION' ) && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+							$member->deactivate();
+						}
 
-                        membership_debug_log(sprintf(__('Creating subscription %d for user %d', 'membership'), $sub_id, $user_id));
+						membership_debug_log( sprintf( __( 'Key does not match for amount - not creating subscription for user %d with key ', 'membership' ), $user_id ) . $newkey );
+					} else {
+						// create_subscription
+						$member->create_subscription( $sub_id, $this->gateway );
 
-                        do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-                    }
-                    break;
+						membership_debug_log( sprintf( __( 'Creating subscription %d for user %d', 'membership' ), $sub_id, $user_id ) );
 
-                case 'subscr_modify':
+						do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+					}
+					break;
+
+				case 'subscr_modify':
                     // modify the subscription
-                    list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
 
-                    // drop subscription
-                    do_action('membership_drop_subscription', $user_id, $sub_id);
+					$member = new M_Membership( $user_id );
 
-                    // create_subscription
-                    do_action('membership_create_subscription', $user_id, (int) $_POST['item_number'], $this->gateway);
+					$member->drop_subscription( $sub_id );
+					$member->create_subscription( (int)$_POST['item_number'], $this->gateway );
 
-                    // Timestamp the update
-                    update_user_meta($user_id, '_membership_last_upgraded', time());
+					// Timestamp the update
+					update_user_meta( $user_id, '_membership_last_upgraded', time() );
 
-                    membership_debug_log(sprintf(__('Moved from subscription - %d to subscription %d for user %d', 'membership'), $sub_id, (int) $_POST['item_number'], $user_id));
+					membership_debug_log( sprintf( __( 'Moved from subscription - %d to subscription %d for user %d', 'membership' ), $sub_id, (int)$_POST['item_number'], $user_id ) );
 
-                    do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-                    break;
+					do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
+					break;
 
                 case 'subscr_cancel':
                     // mark for removal
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
                     $member = new M_Membership($user_id);
-                    if ($member) {
-                        $member->mark_for_expire($sub_id);
+					$member->mark_for_expire($sub_id);
 
-                        membership_debug_log(sprintf(__('Marked for expiration %d on %d', 'membership'), $user_id, $sub_id));
-                    }
+					membership_debug_log(sprintf(__('Marked for expiration %d on %d', 'membership'), $user_id, $sub_id));
 
                     do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
                     break;
@@ -1155,11 +1151,9 @@ class paypalexpress extends Membership_Gateway {
                     if ($_POST['case_type'] == 'dispute') {
                         // immediately suspend the account
                         $member = new M_Membership($user_id);
-                        if ($member) {
-                            $member->deactivate();
+						$member->deactivate();
 
-                            membership_debug_log(sprintf(__('Dispute for %d', 'membership'), $user_id));
-                        }
+						membership_debug_log(sprintf(__('Dispute for %d', 'membership'), $user_id));
                     }
 
                     do_action('membership_payment_new_case', $user_id, $sub_id, $_POST['case_type']);

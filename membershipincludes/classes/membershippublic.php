@@ -1899,7 +1899,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
 							$gateway = $_POST['gateway'];
 							// Join the new subscription
-							do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+							$member->create_subscription( $sub_id, $gateway );
 							do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
 							// Timestamp the update
@@ -1917,7 +1917,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
 								$gateway = $_POST['gateway'];
 								// Join the new subscription
-								do_action( 'membership_create_subscription', $user_id, $sub_id, $gateway );
+								$member = new M_Membership( $user_id );
+								$member->create_subscription( $sub_id, $gateway );
 								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
 								// Timestamp the update
@@ -1962,7 +1963,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					if ( is_user_logged_in() && isset( $_POST['custom'] ) ) {
 						list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
 						if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
-							do_action( 'membership_create_subscription', $user_id, $sub_id, $_POST['gateway'] );
+							$member = new M_Membership( $user_id );
+							$member->create_subscription( $sub_id, $_POST['gateway'] );
 							do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
 							// Timestamp the update
@@ -1978,7 +1980,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						if ( isset( $_POST['custom'] ) ) {
 							list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
 							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
-								do_action( 'membership_create_subscription', $user_id, $sub_id, $_POST['gateway'] );
+								$member = new M_Membership( $user_id );
+								$member->create_subscription( $sub_id, $_POST['gateway'] );
 								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
 								// Timestamp the update

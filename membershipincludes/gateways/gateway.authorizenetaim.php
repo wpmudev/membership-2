@@ -275,7 +275,7 @@ class M_authorizenetaim extends Membership_Gateway {
 				// We are on a free signup - check the subscription then set it up
 				if( isset($pricing[0]) && $pricing[0]['amount'] < 1 ) {
 					// We have a free level
-					do_action( 'membership_create_subscription', $user_id, $subscription_id, $this->gateway );
+					$member->create_subscription( $subscription_id, $this->gateway );
 					if( !empty($M_options['registrationcompleted_message']) ) {
 						echo $this->get_completed_message( $sub );
 					} else {
