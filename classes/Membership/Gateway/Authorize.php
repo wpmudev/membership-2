@@ -780,9 +780,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$level = new M_Level( $price['level_id'] );
 		$name = substr( sprintf(
-			$price['type'] == 'finite'
-				? __( '%s / %s', 'membership' )
-				: __( '%s / %s', 'membership' ),
+			'%s / %s',
 			$level->level_title(),
 			$this->_subscription->sub_name()
 		), 0, 50 );
