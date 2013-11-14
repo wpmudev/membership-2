@@ -151,7 +151,7 @@ class WPMUDEV_Help_Tooltips {
 	public function add_tip ($tip) {
 		if (!$this->_check_screen()) return false;
 		$this->_inline_tips[] = $tip;
-		return $this->_get_tip_markup($tip);
+		return $this->_get_tip_markup($tip, 'style="display:none"');
 	}
 
 	/**
