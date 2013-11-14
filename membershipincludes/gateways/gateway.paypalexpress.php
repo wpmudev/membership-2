@@ -36,9 +36,9 @@ class paypalexpress extends Membership_Gateway {
         <table class="form-table">
             <tbody>
                 <tr valign="top">
-                    <th scope="row"><?php _e('PayPal Email', 'membership') ?></th>
-                    <td><input type="text" name="paypal_email" value="<?php esc_attr_e(get_option($this->gateway . "_paypal_email")); ?>" />
-                        <br />
+                    <th scope="row"><?php _e('PayPal Merchant Account ID', 'membership') ?></th>
+                    <td>
+						<input type="text" name="paypal_email" value="<?php esc_attr_e(get_option($this->gateway . "_paypal_email")); ?>" />
                     </td>
                 </tr>
                 <tr valign="top">
@@ -973,14 +973,11 @@ class paypalexpress extends Membership_Gateway {
                 }
             }
 
-            // handle cases that the system must ignore
-            //if ($_POST['payment_status'] == 'In-Progress' || $_POST['payment_status'] == 'Partially-Refunded') exit;
             $new_status = false;
             // process PayPal response
-            switch ($_POST['payment_status']) {
+            switch (filter_input( INPUT_POST, 'payment_status' ) ) {
                 case 'Partially-Refunded':
                     break;
-
                 case 'In-Progress':
                     break;
 
@@ -1088,7 +1085,8 @@ class paypalexpress extends Membership_Gateway {
                     break;
 
                 default:
-                // case: various error cases
+	                // case: various error cases
+					break;
             }
 
             //check for subscription details

@@ -315,13 +315,12 @@
 										}
 
 									?></div>
-									<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
-											if($gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' ) && !$member->is_marked_for_expire($rel->sub_id)) {
-												$pricing = $sub->get_pricingarray();
-												$gateway->display_cancel_button( $sub, $pricing, $member->ID );
-											}
-									?></span>
-								</div>
+									<div class='price' style='float:right; margin-right: 10px;margin-bottom: 10px;'><?php
+									if ( $gatewayissingle != 'admin' && method_exists( $gateway, 'display_cancel_button' ) && !$member->is_marked_for_expire( $rel->sub_id ) ) {
+										$pricing = $sub->get_pricingarray();
+										$gateway->display_cancel_button( $sub, $pricing, $member->ID );
+									}
+									?></div>
 								</div> <!-- price box -->
 								<?php
 								if( $upgradedat <= strtotime('-' . $period . ' days') ) {
@@ -343,7 +342,7 @@
 														<div class="pricedetails">
 															<?php echo $subscription->sub_description(); ?>
 														</div>
-														<div class=""><span class='price' style='float:right; margin-right: 10px;'><?php
+														<div class='price' style='float:right; margin-right: 10px;'><?php
 																// do an upgrade button
 																$pricing = $subscription->get_pricingarray();
 																if($pricing) {
@@ -360,8 +359,7 @@
 																		}
 																	}
 																}
-														?></span>
-														</div>
+														?></div>
 													</div> <!-- pricebox -->
 											<?php
 											}
