@@ -1845,7 +1845,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			if ( membership_is_registration_page( $post->ID, false ) ) {
-				add_action( 'template_redirect', array( $this, 'process_subscription_form' ) );
+				add_action( 'template_redirect', array( $this, 'process_subscription_form' ), 1 );
 
 				// check if page contains a shortcode
 				if ( strstr( $post->post_content, '[subscriptionform]' ) !== false ) {
