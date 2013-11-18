@@ -106,7 +106,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_transaction;
+	protected $_transactions;
 
 	/**
 	 * User's Authorize.net CIM profile ID.
@@ -625,26 +625,20 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// process payments
 		$started = new DateTime();
 		$this->_payment_result = array( 'status' => '', 'errors' => array() );
-		$this->_transaction = array();
+		$this->_transactions = array();
 		for ( $i = 0, $count = count( $pricing ); $i < $count; $i++ ) {
 			switch ( $pricing[$i]['type'] ) {
 				case 'finite':
-					$unit = false;
-					switch ( $pricing[$i]['unit'] ) {
-						case 'd': $unit = 'day';   break;
-						case 'w': $unit = 'week';  break;
-						case 'm': $unit = 'month'; break;
-						case 'y': $unit = 'year';  break;
-					}
+					$this->_transactions[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
 
-					$this->_transaction[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
-					$started->modify( sprintf( '+%d %s', $pricing[$i]['period'], $unit ) );
+					$interval = self::_get_period_interval_in_date_format( $pricing[$i]['unit'] );
+					$started->modify( sprintf( '+%d %s', $pricing[$i]['period'], $interval ) );
 					break;
 				case 'indefinite':
-					$this->_transaction[] = $this->_process_nonserial_purchase( $pricing[$i], $started, $i );
+					$this->_transactions[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
 					break 2;
 				case 'serial':
-					$this->_transaction[] = $this->_process_serial_purchase( $pricing[$i], $started, $i );
+					$this->_transactions[] = $this->_process_serial_purchase( $pricing[$i], $started );
 					break 2;
 			}
 
@@ -776,6 +770,19 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			return null;
 		}
 
+		// initialize AIM transaction to check CC
+		if ( count( array_filter( $this->_transactions ) ) == 0 ) {
+			$transaction = $this->_process_nonserial_purchase( $price, $date );
+			if ( is_null( $transaction ) ) {
+				return null;
+			}
+
+			$this->_transactions[] = $transaction;
+
+			$interval = self::_get_period_interval_in_date_format( $price['unit'] );
+			$date->modify( sprintf( '+%d %s', $price['period'], $interval ) );
+		}
+
 		$amount = number_format( $price['amount'], 2, '.', '' );
 
 		$level = new M_Level( $price['level_id'] );
@@ -817,6 +824,26 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	}
 
 	/**
+	 * Converts period interval into date modification format.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access private
+	 * @param string $code Period interval abbriviation.
+	 * @return string Date modification interval.
+	 */
+	private static function _get_period_interval_in_date_format( $code ) {
+		switch ( $code ) {
+			case 'w': return 'week';
+			case 'm': return 'month';
+			case 'y': return 'year';
+		}
+
+		return 'day';
+	}
+
+	/**
 	 * Processes transactions.
 	 *
 	 * @since 3.5
@@ -831,7 +858,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$notes = $this->_get_option( 'mode', self::MODE_SANDBOX ) != self::MODE_LIVE ? 'Sandbox' : '';
 
 		// process each transaction information and save it to CIM
-		foreach ( $this->_transaction as $index => $info ) {
+		foreach ( $this->_transactions as $index => $info ) {
 			if ( is_null( $info ) ) {
 				continue;
 			}
@@ -884,7 +911,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access protected
 	 */
 	protected function _rollback_transactions() {
-		foreach ( $this->_transaction as $info ) {
+		foreach ( $this->_transactions as $info ) {
 			if ( $info['method'] == 'aim' ) {
 				$this->_get_aim()->void( $info['transaction'] );
 			} elseif ( $info['method'] == 'arb' ) {
