@@ -1725,11 +1725,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					}
 
 					if ( $to_sub_id ) {
-						$gateways = get_option( 'membership_activated_gateways', array() );
-						$gateway = count( $gateways ) == 1 ? current( $gateways ) : 'admin';
-
 						$membership = new M_Membership( get_current_user_id() );
-						$membership->create_subscription( $to_sub_id, $gateway );
+						$membership->create_subscription( $to_sub_id );
 
 						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
 							wp_redirect( get_permalink( $M_options['registrationcompleted_page'] ) );

@@ -7786,22 +7786,61 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			exit;
 		}
 
-		function popover_sendpayment_form($user_id = false) {
+		function popover_sendpayment_form( $user_id = false ) {
+			global $M_options;
 
-			$content = '';
-			$content = apply_filters('membership_popover_sendpayment_form_before_content', $content);
-			ob_start();
-			if (defined('MEMBERSHIP_POPOVER_SENDPAYMENT_FORM') && file_exists(MEMBERSHIP_POPOVER_SENDPAYMENT_FORM)) {
-				include_once( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM );
-			} elseif (file_exists(apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')))) {
-				include_once( apply_filters('membership_override_popover_sendpayment_form', membership_dir('membershipincludes/includes/popover_payment.form.php')) );
+			$sub = $to_sub_id = false;
+			$logged_in = is_user_logged_in();
+			$subscription = isset( $_REQUEST['subscription'] ) ? $_REQUEST['subscription'] : 0;
+
+			// free subscription processing
+			if ( $logged_in && $subscription ) {
+				$sub = new M_Subscription( $subscription );
+				if ( $sub->is_free() ) {
+					$to_sub_id = $subscription;
+				}
 			}
-			$content .= ob_get_contents();
-			ob_end_clean();
 
-			$content = apply_filters('membership_popover_sendpayment_form_after_content', $content);
-			echo $content;
+			// coupon processing
+			$coupon = filter_input( INPUT_POST, 'coupon_code' );
+			if ( $logged_in && $coupon && $subscription ) {
+				$coupon = new M_Coupon( $coupon );
+				$coupon_obj = $coupon->get_coupon();
 
+				if ( $coupon->valid_coupon() && $coupon_obj->discount >= 100 && $coupon_obj->discount_type == 'pct' ) {
+					$to_sub_id = $subscription;
+					$coupon->increment_coupon_used();
+				}
+			}
+
+			if ( $to_sub_id ) {
+				$membership = new M_Membership( get_current_user_id() );
+				$membership->create_subscription( $to_sub_id );
+
+				$html = '<div class="header" style="width: 750px"><h1>';
+				$html .= sprintf( __( 'Subscription %s has been added.', 'membership' ), $sub ? $sub->sub_name() : '' );
+				$html .= '</h1></div><div class="fullwidth">';
+				$html .= wpautop( $M_options['registrationcompleted_message'] );
+				$html .= '</div>';
+
+				echo $html;
+				exit;
+			}
+
+			// render template
+			ob_start();
+
+			echo apply_filters( 'membership_popover_sendpayment_form_before_content', '' );
+			if ( defined( 'MEMBERSHIP_POPOVER_SENDPAYMENT_FORM' ) && is_readable( MEMBERSHIP_POPOVER_SENDPAYMENT_FORM ) ) {
+				include MEMBERSHIP_POPOVER_SENDPAYMENT_FORM;
+			} else {
+				$filename = apply_filters( 'membership_override_popover_sendpayment_form', membership_dir( 'membershipincludes/includes/popover_payment.form.php' ) );
+				if ( is_readable( $filename ) ) {
+					include $filename;
+				}
+			}
+
+			echo apply_filters( 'membership_popover_sendpayment_form_after_content', ob_get_clean() );
 			exit;
 		}
 
