@@ -117,6 +117,10 @@
 	width: 80px;
 }
 
+.auth-body div.auth-billing-country-label {
+	padding: 0 3px;
+}
+
 .auth-cc {
 	padding: 10px;
 	background: white;

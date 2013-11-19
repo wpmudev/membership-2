@@ -174,7 +174,12 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 				<label class="inputLabel" for="country"><?php esc_html_e( 'Country:', 'membership' ) ?></label>
 			</div>
 			<div class="auth-billing-country auth-field">
-				<input id="country" name="country" x-autocompletetype="country-name" class="input_field" type="text" maxlength="60">
+				<select id="country" x-autocompletetype="country-name" class="input_field" name="country">
+					<option></option>
+					<?php foreach( self::get_countries() as $country ) : ?>
+					<option><?php echo esc_html( $country ) ?></option>
+					<?php endforeach; ?>
+				</select>
 			</div>
 		</div><?php
 	}
@@ -242,6 +247,76 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 			$date->setDate( 2013, $i, 1 );
 			echo '<option value="', $i, '">', $date->format( 'm - M' ), '</option>';
 		}
+	}
+
+	/**
+	 * Returns the associated array of country codes and country names.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access public
+	 * @return array The associated array of country codes and country names.
+	 */
+	public static function get_countries() {
+		return array(
+			"Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra",
+			"Angola", "Anguilla", "Antarctica", "Antigua and Barbuda",
+			"Argentina", "Armenia", "Aruba", "Australia", "Austria",
+			"Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+			"Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan",
+			"Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil",
+			"British Indian Ocean Territory", "Brunei", "Bulgaria",
+			"Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+			"Cape Verde", "Cayman Islands", "Central African Republic", "Chad",
+			"Chile", "China", "Christmas Islands", "Cocos (Keeling) Islands",
+			"Colombia", "Comoros", "Congo", "Congo, Democratic Republic of",
+			"Cook Island", "Costa Rica", "Cote d'lvoire", "Croatia", "Curacao",
+			"Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
+			"Dominican Republic", "East Timor", "Egypt", "El Salvador",
+			"Ecuador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia",
+			"Falkland Islands", "Faroe Islands",
+			"Federated States of Micronesia", "Fiji", "Finland", "France",
+			"French Guiana", "French Polynesia", "French Southern Territories",
+			"Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar",
+			"Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala",
+			"Guinea", "Guinea-Bissau", "Guyana", "Haiti",
+			"Heard and Macdonald Islands", "Honduras", "Hong Kong", "Hungary",
+			"Iceland", "India", "Indonesia", "Iraq", "Ireland", "Israel",
+			"Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
+			"Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan",
+			"Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya",
+			"Liechtenstein", "Lithuania", "Luxembourg", "Macau",
+			"Macedonia (Rep. of Fmr Yugoslav)", "Madagascar", "Malawi",
+			"Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands",
+			"Martinique", "Mauritania", "Mauritius", "Mayotte",
+			"Metropolitan France", "Mexico", "Moldova", "Monaco", "Mongolia",
+			"Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar",
+			"Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia",
+			"New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue",
+			"Norfolk Island", "Northern Mariana Islands", "Norway", "Oman",
+			"Pakistan", "Palau", "Palestinian Territory, Occupied", "Panama",
+			"Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn",
+			"Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania",
+			"Russia", "Rwanda", "S. Georgia and S. Sandwich Islands", "Samoa",
+			"San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal",
+			"Serbia, Republic of", "Seychelles", "Sierra Leone", "Singapore",
+			"Sint Maarten", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+			"South Africa", "Spain", "Sri Lanka", "St Helena",
+			"St Kitts and Nevis", "St Lucia", "St Pierre and Miquelon",
+			"St Vincent and the Grenadines", "Suriname",
+			"Svalbard and Jan Mayen Islands", "Swaziland", "Sweden",
+			"Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+			"Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago",
+			"Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands",
+			"Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
+			"United Kingdom", "United States",
+			"United States Minor Outlying Islands", "Uruguay", "Uzbekistan",
+			"Vanuatu", "Vatican City", "Venezuela", "Vietnam",
+			"Virgin Islands - British", "Virgin Islands - US",
+			"Wallis and Futuna Islands", "Western Sahara", "Yemen", "Zaire",
+			"Zambia", "Zimbabwe",
+		);
 	}
 
 }
