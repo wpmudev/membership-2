@@ -1067,40 +1067,37 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		// Shortcodes
 
 		function show_account_page( $content = null ) {
+			global $bp, $profileuser;
 
-			global $bp, $profileuser, $user, $user_id;
-
-			if(!is_user_logged_in()) {
-				return apply_filters('membership_account_form_not_logged_in', $content );
+			if ( !is_user_logged_in() ) {
+				return apply_filters( 'membership_account_form_not_logged_in', $content );
 			}
 
-			require_once(ABSPATH . 'wp-admin/includes/user.php');
+			require_once ABSPATH . 'wp-admin/includes/user.php';
 
-			$user = wp_get_current_user();
+			$user_id = get_current_user_id();
+			$profileuser = get_user_to_edit( $user_id );
 
-			$user_id = $user->ID;
-
-			$profileuser = get_user_to_edit($user_id);
-
-			$content = '';
-
-			$content = apply_filters('membership_account_form_before_content', $content);
+			$content = apply_filters( 'membership_account_form_before_content', '' );
 
 			ob_start();
-			if( defined('MEMBERSHIP_ACCOUNT_FORM') && file_exists( MEMBERSHIP_ACCOUNT_FORM ) ) {
+			if ( defined( 'MEMBERSHIP_ACCOUNT_FORM' ) && file_exists( MEMBERSHIP_ACCOUNT_FORM ) ) {
 				include( MEMBERSHIP_ACCOUNT_FORM );
-			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpaccount_form', membership_dir('membershipincludes/includes/bp.account.form.php'), $user_id) )) {
-				include( apply_filters('membership_override_bpaccount_form', membership_dir('membershipincludes/includes/bp.account.form.php'), $user_id) );
-			} elseif( file_exists( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) ) ) {
-				include( apply_filters('membership_override_account_form', membership_dir('membershipincludes/includes/account.form.php'), $user_id) );
+			} else {
+				$bp_account_form = apply_filters( 'membership_override_bpaccount_form', membership_dir( 'membershipincludes/includes/bp.account.form.php' ), $user_id );
+				if ( !empty( $bp ) && file_exists( $bp_account_form ) ) {
+					include $bp_account_form;
+				} else {
+					$account_form = apply_filters( 'membership_override_account_form', membership_dir( 'membershipincludes/includes/account.form.php' ), $user_id );
+					if ( file_exists( $account_form ) ) {
+						include $account_form;
+					}
+				}
 			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
-			$content = apply_filters('membership_account_form_after_content', $content, $user_id);
+			$content .= ob_get_clean();
+			$content = apply_filters( 'membership_account_form_after_content', $content, $user_id );
 
 			return $content;
-
 		}
 
 		function show_subpage_one($error = false) {
@@ -1235,32 +1232,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		}
 
-		function do_account_shortcode($atts, $content = null, $code = "") {
-
-			global $wp_query;
-
-			$error = array();
-
-			$page = addslashes($_REQUEST['action']);
-
-			$M_options = get_option('membership_options', array());
-
-			$content = $this->show_account_page( $content );
-
-			$content = apply_filters('membership_account_form', $content);
-
-			return $content;
-
-		}
-
-		function do_account_form() {
-
-			global $wp_query, $M_options, $bp;
-
-			$content = $this->show_account_page();
-
-			return $content;
-
+		function do_account_shortcode( $atts, $content = null, $code = "" ) {
+			return apply_filters( 'membership_account_form', $this->show_account_page( $content ) );
 		}
 
 		function do_renew_form() {
@@ -1766,10 +1739,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function enqueue_public_form_styles() {
-
-			wp_enqueue_style('publicformscss', membership_url('membershipincludes/css/publicforms.css'));
-			wp_enqueue_style('buttoncss', membership_url('membershipincludes/css/buttons.css'));
-
+			wp_enqueue_style( 'membership-publicformscss', MEMBERSHIP_ABSURL . 'membershipincludes/css/publicforms.css' );
+			wp_enqueue_style( 'membership-buttoncss', MEMBERSHIP_ABSURL . 'membershipincludes/css/buttons.css' );
 		}
 
 		function check_for_membership_pages_content($content) {
@@ -1796,7 +1767,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// There is no shortcode in there, so override
 				remove_filter( 'the_content', 'wpautop' );
-				$content .= $this->do_account_form();
+				$content .= $this->show_account_page();
 			} elseif ( membership_is_subscription_page( $post->ID, false ) ) {
 
 				// account page - check if page contains a shortcode
@@ -1837,7 +1808,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// registration page found - add in the styles
 				if ( !current_theme_supports( 'membership_subscription_form' ) ) {
-					wp_enqueue_style( 'subscriptionformcss', membership_url( 'membershipincludes/css/subscriptionform.css' ) );
+					wp_enqueue_style( 'membership-subscriptionformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/subscriptionform.css' );
 
 					add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
 					$this->enqueue_fancybox_scripts();
@@ -1857,8 +1828,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// account page found - add in the styles
 				if ( !current_theme_supports( 'membership_account_form' ) ) {
-					wp_enqueue_style( 'accountformcss', membership_url( 'membershipincludes/css/accountform.css' ) );
-					wp_enqueue_script( 'accountformjs', membership_url( 'membershipincludes/js/accountform.js' ), array( 'jquery' ) );
+					wp_enqueue_style( 'membership-accountformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/accountform.css' );
+					wp_enqueue_script( 'membership-accountformjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/accountform.js', array( 'jquery' ) );
 
 					add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
 				}
@@ -1986,12 +1957,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function enqueue_subscription_scripts() {
-			wp_enqueue_style( 'subscriptionformcss', membership_url( 'membershipincludes/css/subscriptionform.css' ) );
-			wp_enqueue_style( 'upgradeformcss', membership_url( 'membershipincludes/css/upgradeform.css' ) );
+			wp_enqueue_style( 'membership-subscriptionformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/subscriptionform.css' );
+			wp_enqueue_style( 'membership-upgradeformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/upgradeform.css' );
 
-			wp_enqueue_style( 'renewformcss', membership_url( 'membershipincludes/css/renewform.css' ) );
-			wp_enqueue_script( 'renewformjs', membership_url( 'membershipincludes/js/renewform.js' ), array( 'jquery' ) );
-			wp_localize_script( 'renewformjs', 'membership', array(
+			wp_enqueue_style( 'membership-renewformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/renewform.css' );
+			wp_enqueue_script( 'membership-renewformjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/renewform.js', array( 'jquery' ) );
+			wp_localize_script( 'membership-renewformjs', 'membership', array(
 				'unsubscribe'     => __( 'Are you sure you want to unsubscribe from this subscription?', 'membership' ),
 				'deactivatelevel' => __( 'Are you sure you want to deactivate this level?', 'membership' ),
 			) );
@@ -2003,13 +1974,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		function enqueue_fancybox_scripts() {
 			global $M_options;
 			if ( $M_options['formtype'] == 'new' ) {
-				wp_enqueue_style( 'fancyboxcss', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css' ) );
-				wp_enqueue_script( 'fancyboxjs', membership_url( 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js' ), array( 'jquery' ), false, true );
+				wp_enqueue_style( 'membership-fancyboxcss', MEMBERSHIP_ABSURL . 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.css' );
+				wp_enqueue_script( 'membership-fancyboxjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/fancybox/jquery.fancybox-1.3.4.pack.js', array( 'jquery' ), false, true );
 
-				wp_enqueue_script( 'popupmemjs', membership_url( 'membershipincludes/js/popupregistration.js' ), array( 'jquery' ), false, true );
-				wp_enqueue_style( 'popupmemcss', membership_url( 'membershipincludes/css/popupregistration.css' ) );
-
-				wp_localize_script( 'popupmemjs', 'membership', array(
+				wp_enqueue_script( 'membership-popupmemjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/popupregistration.js', array( 'jquery' ), false, true );
+				wp_enqueue_style( 'membership-popupmemcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/popupregistration.css' );
+				wp_localize_script( 'membership-popupmemjs', 'membership', array(
 					'ajaxurl'       => admin_url( 'admin-ajax.php' ),
 					'registernonce' => wp_create_nonce( 'membership_register' ),
 					'loginnonce'    => wp_create_nonce( 'membership_login' ),
@@ -2038,8 +2008,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				if ( strstr( $post->post_content, '[accountform]' ) !== false ) {
 					// The shortcode is in a post on this page, add the header
 					if ( !current_theme_supports( 'membership_account_form' ) ) {
-						wp_enqueue_style( 'accountformcss', membership_url( 'membershipincludes/css/accountform.css' ) );
-						wp_enqueue_script( 'accountformjs', membership_url( 'membershipincludes/js/accountform.js' ), array( 'jquery' ) );
+						wp_enqueue_style( 'membership-accountformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/accountform.css' );
+						wp_enqueue_script( 'membership-accountformjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/accountform.js', array( 'jquery' ) );
 						add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
 					}
 				}
@@ -2047,7 +2017,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				if ( strstr( $post->post_content, '[upgradeform]' ) !== false ) {
 					// The shortcode is in a post on this page, add the header
 					if ( !current_theme_supports( 'membership_account_form' ) ) {
-						wp_enqueue_style( 'upgradeformcss', membership_url( 'membershipincludes/css/upgradeform.css' ) );
+						wp_enqueue_style( 'membership-upgradeformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/upgradeform.css' );
 						add_action( 'wp_head', array( $this, 'enqueue_public_form_styles' ), 99 );
 					}
 				}
@@ -2055,10 +2025,10 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				if ( strstr( $post->post_content, '[renewform]' ) !== false ) {
 					// The shortcode is in a post on this page, add the header
 					if ( !current_theme_supports( 'membership_account_form' ) ) {
-						wp_enqueue_style( 'renewformcss', membership_url( 'membershipincludes/css/renewform.css' ) );
+						wp_enqueue_style( 'membership-renewformcss', MEMBERSHIP_ABSURL . 'membershipincludes/css/renewform.css' );
 
-						wp_enqueue_script( 'renewformjs', membership_url( 'membershipincludes/js/renewform.js' ), array( 'jquery' ) );
-						wp_localize_script( 'renewformjs', 'membership', array(
+						wp_enqueue_script( 'membership-renewformjs', MEMBERSHIP_ABSURL . 'membershipincludes/js/renewform.js', array( 'jquery' ) );
+						wp_localize_script( 'membership-renewformjs', 'membership', array(
 							'unsubscribe'     => __( 'Are you sure you want to unsubscribe from this subscription?', 'membership' ),
 							'deactivatelevel' => __( 'Are you sure you want to deactivate this level?', 'membership' )
 						) );
