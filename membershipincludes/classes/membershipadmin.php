@@ -509,50 +509,47 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
         // Admin area protection
         function initialise_membership_protection() {
+			global $user, $member, $M_options;
 
-            global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active;
-            // Set up some common defaults
+			static $initialised = false;
 
-            static $initialised = false;
+			if ( $initialised ) {
+				// ensure that this is only called once, so return if we've been here already.
+				return;
+			}
 
-            if ($initialised) {
-                // ensure that this is only called once, so return if we've been here already.
-                return;
-            }
+			$M_options = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true && function_exists( 'get_blog_option' )
+				? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array() )
+				: get_option( 'membership_options', array() );
 
-            $M_options = get_option('membership_options', array());
-            // Check if the membership plugin is active
-            $M_active = get_option('membership_active', 'no');
+			if ( !is_a( $user, 'WP_User' ) ) {
+				$user = wp_get_current_user();
+			}
 
-            if (empty($user) || !method_exists($user, 'has_cap')) {
-                $user = wp_get_current_user();
-            }
+			if ( $user->has_cap( 'membershipadmin' ) || M_get_membership_active() == 'no' ) {
+				// Admins can see everything
+				return;
+			}
 
-            if (!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin') || $M_active == 'no') {
-                // Admins can see everything
-                return;
-            }
+			// Users
+			$member = new M_Membership( $user->ID );
+			if ( $user->ID > 0 && $member->has_levels() ) {
+				// Load the levels for this member - and associated rules
+				$member->load_admin_levels( true );
+			} else {
+				// need to grab the stranger settings
+				if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+					$member->assign_admin_level( $M_options['strangerlevel'], true );
+				}
+			}
 
-            // Users
-            $member = new M_Membership($user->ID);
+			do_action( 'membership-admin-add-shortcodes' );
 
-            if ($user->ID > 0 && $member->has_levels()) {
-                // Load the levels for this member - and associated rules
-                $member->load_admin_levels(true);
-            } else {
-                // need to grab the stranger settings
-                if (isset($M_options['strangerlevel']) && $M_options['strangerlevel'] != 0) {
-                    $member->assign_admin_level($M_options['strangerlevel'], true);
-                }
-            }
+			// Set the initialisation status
+			$initialised = true;
+		}
 
-            do_action('membership-admin-add-shortcodes');
-
-            // Set the initialisation status
-            $initialised = true;
-        }
-
-        // Add admin headers
+		// Add admin headers
 
         function add_admin_header_core() {
 

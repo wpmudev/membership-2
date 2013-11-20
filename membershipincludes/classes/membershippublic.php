@@ -21,7 +21,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		var $redirect_defaults_set = false;
 
 		function __construct() {
-			global $wpdb, $M_active;
+			global $wpdb;
 
 			$this->db = $wpdb;
 			foreach($this->tables as $table) {
@@ -36,7 +36,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites') );
 
 			// Add protection
-			if ( $M_active != 'no' ) {
+			if ( M_get_membership_active() != 'no' ) {
 				add_action( 'parse_request', array( $this, 'initialise_membership_protection' ), 2 );
 			}
 
@@ -68,10 +68,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			return $url;
 		}
 
-		function membershippublic() {
-			$this->__construct();
-		}
-
 		function load_textdomain() {
 
 			$locale = apply_filters( 'membership_locale', get_locale() );
@@ -83,47 +79,37 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function initialise_plugin() {
+			global $user, $M_options;
 
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite, $M_active, $bp;
-
-			if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true ) {
-				if(function_exists('get_blog_option')) {
-					$M_options = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array());
-				} else {
-					$M_options = get_option('membership_options', array());
-				}
-			} else {
-				$M_options = get_option('membership_options', array());
-			}
-
-			// Check if the membership plugin is active
-			$M_active = M_get_membership_active();
+			$M_options = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true && function_exists( 'get_blog_option' )
+				? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_options', array() )
+				: get_option( 'membership_options', array() );
 
 			// Create our subscription page shortcode
-			add_shortcode('subscriptionform', array(&$this, 'do_subscription_shortcode') );
-			add_shortcode('accountform', array(&$this, 'do_account_shortcode') );
-			add_shortcode('upgradeform', array(&$this, 'do_upgrade_shortcode') );
-			add_shortcode('renewform', array(&$this, 'do_renew_shortcode') );
+			add_shortcode( 'subscriptionform', array( $this, 'do_subscription_shortcode' ) );
+			add_shortcode( 'accountform', array( $this, 'do_account_shortcode' ) );
+			add_shortcode( 'upgradeform', array( $this, 'do_upgrade_shortcode' ) );
+			add_shortcode( 'renewform', array( $this, 'do_renew_shortcode' ) );
 
-			do_action('membership_register_shortcodes');
+			do_action( 'membership_register_shortcodes' );
 
 			// Check if we are on a membership specific page
-			add_filter('the_posts', array(&$this, 'check_for_membership_pages'), 99);
-			add_filter('the_content', array(&$this, 'check_for_membership_pages_content'), 1);
+			add_filter( 'the_posts', array( $this, 'check_for_membership_pages' ), 99 );
+			add_filter( 'the_content', array( $this, 'check_for_membership_pages_content' ), 1 );
 
 			// Check for subscription shortcodes - and if needed queue styles
-			add_filter('the_posts', array(&$this, 'add_subscription_styles'));
+			add_filter( 'the_posts', array( $this, 'add_subscription_styles' ) );
 
 			$user = wp_get_current_user();
 
-			if( $M_active == 'no' ) {
+			if ( M_get_membership_active() == 'no' ) {
 				// The plugin isn't active so just return
 				return;
 			}
 
-			if(!method_exists($user, 'has_cap') || $user->has_cap('membershipadmin')) {
+			if ( !method_exists( $user, 'has_cap' ) || $user->has_cap( 'membershipadmin' ) ) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
-				if(empty($_COOKIE['membershipuselevel']) || $_COOKIE['membershipuselevel'] == '0') {
+				if ( empty( $_COOKIE['membershipuselevel'] ) || $_COOKIE['membershipuselevel'] == '0' ) {
 					return;
 				}
 			}
@@ -137,10 +123,10 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			// Shortcodes setup
-			if(!empty($M_options['membershipshortcodes'])) {
-				foreach($M_options['membershipshortcodes'] as $key => $value) {
-					if(!empty($value)) {
-						add_shortcode(stripslashes(trim($value)), array(&$this, 'do_membership_shortcode') );
+			if ( !empty( $M_options['membershipshortcodes'] ) ) {
+				foreach ( $M_options['membershipshortcodes'] as $value ) {
+					if ( !empty( $value ) ) {
+						add_shortcode( stripslashes( trim( $value ) ), array( $this, 'do_membership_shortcode' ) );
 					}
 				}
 
@@ -149,29 +135,28 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			// Downloads protection
-			if(!empty($M_options['membershipdownloadgroups'])) {
-				add_filter('the_content', array(&$this, 'protect_download_content') );
+			if ( !empty( $M_options['membershipdownloadgroups'] ) ) {
+				add_filter( 'the_content', array( $this, 'protect_download_content' ) );
 			}
 
 			// check for a no-access page and always filter it if needed
-			if(!empty($M_options['nocontent_page']) && $M_options['nocontent_page'] != $M_options['registration_page']) {
-				add_filter('get_pages', array(&$this, 'hide_nocontent_page_from_menu'), 99);
+			if ( !empty( $M_options['nocontent_page'] ) && $M_options['nocontent_page'] != $M_options['registration_page'] ) {
+				add_filter( 'get_pages', array( $this, 'hide_nocontent_page_from_menu' ), 99 );
 			}
 
 			// New registration form settings
-			if( (isset($M_options['formtype']) && $M_options['formtype'] == 'new') ) {
-				add_action( 'wp_ajax_nopriv_buynow', array(&$this, 'popover_signup_form') );
+			if ( (isset( $M_options['formtype'] ) && $M_options['formtype'] == 'new' ) ) {
+				add_action( 'wp_ajax_nopriv_buynow', array( $this, 'popover_signup_form' ) );
 
 				//login and register are no-priv only because, well they aren't logged in or registered
-				add_action( 'wp_ajax_nopriv_register_user', array(&$this, 'popover_register_process') );
-				add_action( 'wp_ajax_nopriv_login_user', array(&$this, 'popover_login_process') );
+				add_action( 'wp_ajax_nopriv_register_user', array( $this, 'popover_register_process' ) );
+				add_action( 'wp_ajax_nopriv_login_user', array( $this, 'popover_login_process' ) );
 
 				// if logged in:
-				add_action( 'wp_ajax_buynow', array(&$this, 'popover_sendpayment_form') );
-				add_action( 'wp_ajax_register_user', array(&$this, 'popover_register_process') );
-				add_action( 'wp_ajax_login_user', array(&$this, 'popover_login_process') );
+				add_action( 'wp_ajax_buynow', array( $this, 'popover_sendpayment_form' ) );
+				add_action( 'wp_ajax_register_user', array( $this, 'popover_register_process' ) );
+				add_action( 'wp_ajax_login_user', array( $this, 'popover_login_process' ) );
 			}
-
 		}
 
 		function add_queryvars($vars) {

@@ -149,7 +149,7 @@ class Membership_Plugin {
 		$option = 'membership_active';
 		$default = 'no';
 
-		$value = self::is_global_tables()
+		$value = self::is_global_tables() && function_exists( 'get_blog_option' )
 			? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, $option, $default )
 			: get_option( $option, $default );
 

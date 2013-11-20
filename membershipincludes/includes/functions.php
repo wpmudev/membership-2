@@ -451,25 +451,12 @@ function get_last_transaction_for_user_and_sub($user_id, $sub_id) {
 }
 
 function M_get_membership_active() {
-
-	if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
-		if(function_exists('get_blog_option')) {
-			if(function_exists('switch_to_blog')) {
-				switch_to_blog(MEMBERSHIP_GLOBAL_MAINSITE);
-			}
-			$membershipactive = get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'no');
-			if(function_exists('restore_current_blog')) {
-				restore_current_blog();
-			}
-		} else {
-			$membershipactive = get_option('membership_active', 'no');
-		}
-	} else {
-		$membershipactive = get_option('membership_active', 'no');
+	$global = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+	if ( $global && function_exists( 'get_blog_option' ) ) {
+		return get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'no' );
 	}
 
-	return $membershipactive;
-
+	return get_option( 'membership_active', 'no' );
 }
 
 // Pages permalink functions
