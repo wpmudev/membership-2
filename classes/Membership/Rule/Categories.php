@@ -93,7 +93,7 @@ class Membership_Rule_Categories extends Membership_Rule {
 	}
 
 	function validate_negative() {
-		if ( is_single() ) {
+		if ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
 			$categories = wp_get_post_categories( get_the_ID() );
 			$intersect = array_intersect( $categories, $this->data );
 			return empty( $intersect );
@@ -107,7 +107,7 @@ class Membership_Rule_Categories extends Membership_Rule {
 	}
 
 	function validate_positive() {
-		if ( is_single() ) {
+		if ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
 			$categories = wp_get_post_categories( get_the_ID() );
 			$intersect = array_intersect( $categories, $this->data );
 			return !empty( $intersect );
