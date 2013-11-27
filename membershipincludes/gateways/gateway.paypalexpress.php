@@ -1132,6 +1132,7 @@ class paypalexpress extends Membership_Gateway {
 					do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 					break;
 
+				case 'recurring_payment_profile_canceled':
                 case 'subscr_cancel':
                     // mark for removal
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
@@ -1144,7 +1145,22 @@ class paypalexpress extends Membership_Gateway {
                     do_action('membership_payment_subscr_cancel', $user_id, $sub_id);
                     break;
 
-                case 'new_case':
+				case 'recurring_payment_suspended':
+					$member = new M_Membership( $user_id );
+					$member->deactivate();
+
+					membership_debug_log( sprintf( __( 'Recurring payment has been suspended - for %d', 'membership' ), $user_id ) );
+					break;
+
+				case 'recurring_payment_suspended_due_to_max_failed_payment':
+				case 'recurring_payment_failed':
+					$member = new M_Membership( $user_id );
+					$member->deactivate();
+
+					membership_debug_log( sprintf( __( 'Recurring payment failed - the number of attempts to collect payment has exceeded the value specified for "max failed payments" - for %d', 'membership' ), $user_id ) );
+					break;
+
+				case 'new_case':
                     // a dispute
                     if ($_POST['case_type'] == 'dispute') {
                         // immediately suspend the account

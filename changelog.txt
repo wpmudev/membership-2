@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed PayPal subscription suspended issue due to max fails limit settings
 * Fixed category protection issue
 * Fixed internal issue with actions collision
 * Fixed network wide protection issue when global installation is used
