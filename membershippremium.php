@@ -139,13 +139,13 @@ function membership_init_db_table_constants() {
 	define( 'MEMBERSHIP_TABLE_URLGROUPS',                "{$prefix}m_urlgroups" );
 
 	if ( $global && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
-		add_global_table( MEMBERSHIP_TABLE_LEVELS );
-		add_global_table( MEMBERSHIP_TABLE_RULES );
-		add_global_table( MEMBERSHIP_TABLE_SUBSCRIPTIONS );
-		add_global_table( MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS );
-		add_global_table( MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION );
-		add_global_table( MEMBERSHIP_TABLE_RELATIONS );
-		add_global_table( MEMBERSHIP_TABLE_URLGROUPS );
+		add_global_table( 'm_membership_levels' );
+		add_global_table( 'm_membership_rules' );
+		add_global_table( 'm_subscriptions' );
+		add_global_table( 'm_subscriptions_levels' );
+		add_global_table( 'm_subscription_transaction' );
+		add_global_table( 'm_membership_relationships' );
+		add_global_table( 'm_urlgroups' );
 	}
 }
 

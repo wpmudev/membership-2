@@ -345,24 +345,21 @@ function membership_assign_subscription( $user_id ) {
 	}
 }
 
-function membership_db_prefix(&$wpdb, $table, $useprefix = true) {
-
-	if($useprefix) {
+function membership_db_prefix( wpdb $wpdb, $table, $useprefix = true ) {
+	$membership_prefix = '';
+	if ( $useprefix ) {
 		$membership_prefix = 'm_';
-	} else {
-		$membership_prefix = '';
 	}
 
-	if( defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES == true ) {
-		if(!empty($wpdb->base_prefix)) {
-			return $wpdb->base_prefix . $membership_prefix . $table;
-		} else {
-			return $wpdb->prefix . $membership_prefix . $table;
-		}
-	} else {
-		return $wpdb->prefix . $membership_prefix . $table;
+	$global_tables = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) && isset( $wpdb->base_prefix );
+	$prefix = $global_tables ? $wpdb->base_prefix : $wpdb->prefix;
+	$table_name = $prefix . $membership_prefix . $table;
+
+	if ( $global_tables && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
+		add_global_table( $membership_prefix . $table );
 	}
 
+	return $table_name;
 }
 
 // Template based functions
