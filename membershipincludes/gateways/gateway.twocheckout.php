@@ -14,6 +14,8 @@ class twocheckout extends Membership_Gateway {
 	public function __construct() {
 		parent::__construct();
 
+		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
+
 		// If I want to override the transactions output - then I can use this action
 		//add_action('M_gateways_transactions_' . $this->gateway, array(&$this, 'mytransactions'));
 
@@ -117,6 +119,113 @@ class twocheckout extends Membership_Gateway {
 		}
 
 	}
+	function mysettings() {
+		global $M_options, $M_membership_url;
+
+		?>
+		<table class="form-table">
+		<tbody>
+		  <tr valign="top">
+		  	<th scope="row" colspan="2"><div class="updated below-h2"><p><?php _e('In order for recurring payments to log properly you must enable your global instant notifications url pointing to '.home_url('paymentreturn/' . esc_attr($this->gateway)).' ', 'membership') ?></p></div></th>
+		  </tr>
+		  <tr valign="top">
+		  	<th scope="row"><?php _e('2Checkout Username', 'membership') ?></th>
+		  	<td><input type="text" name="twocheckout_username" value="<?php esc_attr_e(get_option( $this->gateway . "_twocheckout_username" )); ?>" />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('2Checkout Password', 'membership') ?></th>
+		  <td><input type="password" name="twocheckout_password" value="" />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('2Checkout Seller ID', 'membership') ?></th>
+		  <td><input type="text" name="twocheckout_sid" value="<?php esc_attr_e(get_option( $this->gateway . "_twocheckout_sid" )); ?>" />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('2Checkout Secret Word', 'membership') ?></th>
+		  <td><input type="text" name="twocheckout_secret_word" value="<?php esc_attr_e(get_option( $this->gateway . "_twocheckout_secret_word" )); ?>" />
+		  </td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('2Checkout Currency', 'membership') ?></th>
+		  <td><?php
+			if(empty($M_options['paymentcurrency'])) {
+				$M_options['paymentcurrency'] = 'USD';
+			}
+			echo esc_html($M_options['paymentcurrency']); ?></td>
+		  </tr>
+		  <tr valign="top">
+		  <th scope="row"><?php _e('2Checkout Mode', 'membership') ?></th>
+		  <td><select name="twocheckout_status">
+		  <option value="live" <?php if (get_option( $this->gateway . "_twocheckout_status" ) == 'live') echo 'selected="selected"'; ?>><?php _e('Live Site', 'membership') ?></option>
+		  <option value="test" <?php if (get_option( $this->gateway . "_twocheckout_status" ) == 'test') echo 'selected="selected"'; ?>><?php _e('Test Mode', 'membership') ?></option>
+		  </select>
+		  <br />
+		  </td>
+		  </tr>
+
+		<tr valign="top">
+			<th scope="row"><?php _e('2Checkout Language', 'membership') ?></th>
+			<td>
+				<select name="twocheckout_lang">
+					<?php $lang = get_option($this->gateway.'_twocheckout_lang'); ?>
+					<option value="en" <?php selected($lang,'en'); ?>><?php _e('English','membership') ?></option>
+					<option value="zh" <?php selected($lang,'zh'); ?>><?php _e('Chinese','membership') ?></option>
+					<option value="da" <?php selected($lang,'da'); ?>><?php _e('Danish','membership') ?></option>
+					<option value="fr" <?php selected($lang,'fr'); ?>><?php _e('French','membership') ?></option>
+					<option value="gr" <?php selected($lang,'gr'); ?>><?php _e('German','membership') ?></option>
+					<option value="el" <?php selected($lang,'el'); ?>><?php _e('Greek','membership') ?></option>
+					<option value="it" <?php selected($lang,'it'); ?>><?php _e('Italian','membership') ?></option>
+					<option value="jp" <?php selected($lang,'jp'); ?>><?php _e('Japanese','membership') ?></option>
+					<option value="no" <?php selected($lang,'no'); ?>><?php _e('Norwegian','membership') ?></option>
+					<option value="pt" <?php selected($lang,'pt'); ?>><?php _e('Portuguese','membership') ?></option>
+					<option value="sl" <?php selected($lang,'sl'); ?>><?php _e('Slovenian','membership') ?></option>
+					<option value="es_ib" <?php selected($lang,'es_ib'); ?>><?php _e('Spanish','membership') ?></option>
+					<option value="es_la" <?php selected($lang,'es_la'); ?>><?php _e('Spanish (Latin America)','membership') ?></option>
+					<option value="sv" <?php selected($lang,'sv'); ?>><?php _e('Swedish','membership') ?></option>
+				</select>
+				<br />
+			</td>
+		</tr>
+
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Skip Order Review Page', 'membership') ?></th>
+		  <td><select name="twocheckout_skip_landing">
+		  <?php $skip = get_option($this->gateway.'_twocheckout_skip_landing'); ?>
+		  <option value="1" <?php selected($skip,'1'); ?>><?php _e('Yes','membership') ?></option>
+		  <option value="0" <?php selected($skip,'0'); ?>><?php _e('No','membership') ?></option>
+		  </select>
+		  <br />
+		  </td>
+		  </tr>
+
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Checkout Style', 'membership') ?></th>
+		  <td><select name="twocheckout_checkout_type">
+		  <?php $checkout_type = get_option($this->gateway.'_twocheckout_checkout_type'); ?>
+		  <option value="multi" <?php selected($checkout_type,'multi'); ?>><?php _e('Multi Page Checkout','membership') ?></option>
+		  <option value="single" <?php selected($checkout_type,'single'); ?>><?php _e('Single Page Checkout','membership') ?></option>
+		  </select>
+		  <br />
+		  </td>
+		  </tr>
+
+		  <tr valign="top">
+		  <th scope="row"><?php _e('Subscription button', 'membership') ?></th>
+		  <?php
+		  	$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url.'membershipincludes/images/2co_logo_64.png');
+		  ?>
+		  <td><input type="text" name="twocheckout_button" value="<?php esc_attr_e($button); ?>" style='width: 40em;' />
+		  <br />
+		  </td>
+		  </tr>
+		</tbody>
+		</table>
+		<?php
+	}
+
 
 	function update() {
 
@@ -534,5 +643,4 @@ class twocheckout extends Membership_Gateway {
 
 }
 
-//Membership_Gateway::register_gateway( 'twocheckout', 'twocheckout' );
-Membership_Gateway::register_gateway( 'twocheckout', 'Membership_Gateway_Twocheckout' );
+Membership_Gateway::register_gateway( 'twocheckout', 'twocheckout' );
