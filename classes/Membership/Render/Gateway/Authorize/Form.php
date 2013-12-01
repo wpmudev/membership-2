@@ -69,7 +69,7 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 					</div>
 					<div class="auth-submit">
 						<div class="auth-submit-button auth-field">
-							<input type="image" src="<?php echo MEMBERSHIP_ABSURL ?>membershipincludes/images/cc_process_payment.png" alt="<?php esc_html_e( 'Pay with Credit Card', 'membership' ) ?>">
+							<input type="image" src="<?php echo MEMBERSHIP_ABSURL ?>images/cc_process_payment.png" alt="<?php esc_html_e( 'Pay with Credit Card', 'membership' ) ?>">
 						</div>
 					</div>
 				</div>
@@ -197,7 +197,7 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 				<div class="auth-cc-label auth-field"><?php esc_html_e( 'Credit Card Number:', 'membership' ) ?>*</div>
 				<div class="auth-cc-input auth-field">
 					<input type="text" id="card_num" class="auth-cc-cardnum credit_card_number input_field" name="card_num" x-autocompletetype="cc-number" onkeyup="cc_card_pick('#cardimage', '#card_num')" size="22" maxlength="22">
-					<div class="hide_after_success nocard cardimage" id="cardimage" style="background: url(<?php echo MEMBERSHIP_ABSURL ?>membershipincludes/images/card_array.png) no-repeat;"></div>
+					<div class="hide_after_success nocard cardimage" id="cardimage" style="background: url(<?php echo MEMBERSHIP_ABSURL ?>images/card_array.png) no-repeat;"></div>
 				</div>
 			</div>
 			<div class="auth-block">

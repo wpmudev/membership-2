@@ -1211,11 +1211,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 */
 	public function enqueue_scripts() {
 		if ( membership_is_registration_page() || membership_is_subscription_page() ) {
-			wp_enqueue_script( 'membership-authorize', MEMBERSHIP_ABSURL . 'membershipincludes/js/authorizenet.js', array( 'jquery' ), Membership_Plugin::VERSION, true );
+			wp_enqueue_script( 'membership-authorize', MEMBERSHIP_ABSURL . 'js/authorizenet.js', array( 'jquery' ), Membership_Plugin::VERSION, true );
 			wp_localize_script( 'membership-authorize', 'membership_authorize', array(
 				'return_url'        => add_query_arg( 'action', 'processpurchase_' . $this->gateway, admin_url( 'admin-ajax.php', 'https' ) ),
 				'payment_error_msg' => __( 'There was an unknown error encountered with your payment. Please contact the site administrator.', 'membership' ),
-				'stylesheet_url'    => MEMBERSHIP_ABSURL . 'membershipincludes/css/authorizenet.css',
+				'stylesheet_url'    => MEMBERSHIP_ABSURL . 'css/authorizenet.css',
 			) );
 		}
 	}

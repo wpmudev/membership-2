@@ -57,7 +57,7 @@ class Membership_Module_Backend_Rules_Metabox extends Membership_Module {
 			return;
 		}
 
-		wp_enqueue_style( 'membership-metaboxes', MEMBERSHIP_ABSURL . 'membershipincludes/css/metaboxes.css', array(), Membership_Plugin::VERSION );
+		wp_enqueue_style( 'membership-metaboxes', MEMBERSHIP_ABSURL . 'css/metaboxes.css', array(), Membership_Plugin::VERSION );
 
 		$id = 'membership-access-level';
 		$title = esc_html__( 'Membership Access Levels', 'membership' );

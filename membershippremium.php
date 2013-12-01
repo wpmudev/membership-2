@@ -157,7 +157,7 @@ function membership_init_db_table_constants() {
 function membership_launch() {
 	// setup environment
 	define( 'MEMBERSHIP_BASEFILE', __FILE__ );
-	define( 'MEMBERSHIP_ABSURL', plugins_url( '/', __FILE__ ) );
+	define( 'MEMBERSHIP_ABSURL', plugins_url( '/membershipincludes/', __FILE__ ) );
 	define( 'MEMBERSHIP_ABSPATH', dirname( __FILE__ ) );
 
 	// database tables
