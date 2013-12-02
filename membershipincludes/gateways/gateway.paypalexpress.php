@@ -1136,16 +1136,20 @@ class paypalexpress extends Membership_Gateway {
                     break;
 
 				case 'recurring_payment_suspended':
+                    list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
 					$member = new M_Membership( $user_id );
-					$member->deactivate();
+					$member->drop_subscription($sub_id);
 
 					membership_debug_log( sprintf( __( 'Recurring payment has been suspended - for %d', 'membership' ), $user_id ) );
 					break;
 
 				case 'recurring_payment_suspended_due_to_max_failed_payment':
 				case 'recurring_payment_failed':
+                    list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
+
 					$member = new M_Membership( $user_id );
-					$member->deactivate();
+					$member->drop_subscription($sub_id);
 
 					membership_debug_log( sprintf( __( 'Recurring payment failed - the number of attempts to collect payment has exceeded the value specified for "max failed payments" - for %d', 'membership' ), $user_id ) );
 					break;
