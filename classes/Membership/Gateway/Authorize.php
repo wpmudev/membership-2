@@ -142,6 +142,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$this->_add_action( 'membership_purchase_button',                'render_subscribe_button', 10, 3 );
 		$this->_add_action( 'membership_payment_form_' . $this->gateway, 'render_payment_form', 10, 3 );
 		$this->_add_action( 'membership_expire_subscription',            'cancel_subscription_transactions', 10, 2 );
+		$this->_add_action( 'membership_drop_subscription',              'drop_subscription_transactions', 10, 3 );
 		$this->_add_action( 'membership_move_subscription',              'capture_next_transaction', 10, 6 );
 		$this->_add_filter( 'membership_unsubscribe_subscription',       'process_unsubscribe_subscription', 10, 3 );
 
@@ -239,6 +240,21 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Cancels transactions when subscription is dropped.
+	 *
+	 * @since 3.5
+	 * @action membership_drop_subscription 10 3
+	 *
+	 * @access public
+	 * @param int $fromsub_id The subscription ID to drop.
+	 * @param int $fromlevel_id The subscription's level ID.
+	 * @param int $user_id The member ID.
+	 */
+	public function drop_subscription_transactions( $fromsub_id, $fromlevel_id, $user_id ) {
+		$this->cancel_subscription_transactions( $fromsub_id, $user_id );
 	}
 
 	/**
