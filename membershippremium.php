@@ -57,8 +57,6 @@ require_once( membership_dir( 'membershipincludes/classes/class.urlgroup.php' ) 
 require_once( membership_dir( 'membershipincludes/classes/class.ping.php' ) );
 // Add in the coupon
 require_once( membership_dir( 'membershipincludes/classes/class.coupon.php' ) );
-// Add in the Admin bar
-require_once( membership_dir( 'membershipincludes/classes/class.adminbar.php' ) );
 
 // Load the Cron process
 require_once( membership_dir( 'membershipincludes/classes/membershipcron.php' ) );
@@ -175,6 +173,8 @@ function membership_launch() {
 	} elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 	} else {
+		$plugin->set_module( Membership_Module_Adminbar::NAME );
+
 		if ( is_admin() ) {
 			// set admin modules
 			// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release

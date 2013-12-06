@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed admin bar issue which appear when global tables are used
 * Fixed account page submission issue.
 * Fixed login widget redirect issue
 * Fixed PayPal Standard Payment gateway transactions date issue
