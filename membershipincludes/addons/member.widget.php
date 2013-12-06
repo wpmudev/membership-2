@@ -11,12 +11,6 @@ class membershipleveltext extends WP_Widget {
 	const NAME = __CLASS__;
 
 	function membershipleveltext() {
-		$locale = apply_filters( 'membership_locale', get_locale() );
-		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-		if ( file_exists( $mofile ) ) {
-			load_textdomain( 'membership', $mofile );
-		}
-
 		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __( 'Membership Level Text', 'membership' ) );
 		$control_ops = array( 'id_base' => 'membershipleveltext' );
 		$this->WP_Widget( 'membershipleveltext', __( 'Membership Level Text', 'membership' ), $widget_ops, $control_ops );
@@ -143,12 +137,6 @@ class membershipsubtext extends WP_Widget {
 	const NAME = __CLASS__;
 
 	function membershipsubtext() {
-		$locale = apply_filters( 'membership_locale', get_locale() );
-		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-		if ( file_exists( $mofile ) ) {
-			load_textdomain( 'membership', $mofile );
-		}
-
 		$widget_ops = array( 'classname' => 'membershipsubtext', 'description' => __( 'Membership Subscription Text', 'membership' ) );
 		$control_ops = array( 'id_base' => 'membershipsubtext' );
 		$this->WP_Widget( 'membershipsubtext', __( 'Membership Subscription Text', 'membership' ), $widget_ops, $control_ops );

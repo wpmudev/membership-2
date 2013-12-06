@@ -42,6 +42,7 @@ class Membership_Module_System extends Membership_Module {
 		parent::__construct( $plugin );
 
 		$this->_add_action( 'widgets_init', 'register_widgets' );
+		$this->_add_action( 'plugins_loaded', 'load_textdomain' );
 	}
 
 	/**
@@ -54,6 +55,18 @@ class Membership_Module_System extends Membership_Module {
 	 */
 	public function register_widgets() {
 		register_widget( Membership_Widget_Login::NAME );
+	}
+
+	/**
+	 * Loads text domain for the plugin.
+	 *
+	 * @since 3.5
+	 * @action plugins_loaded
+	 *
+	 * @access public
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'membership', false, dirname( plugin_basename( MEMBERSHIP_BASEFILE ) ) . '/languages/' );
 	}
 
 }

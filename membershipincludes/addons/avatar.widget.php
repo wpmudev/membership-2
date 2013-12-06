@@ -9,13 +9,6 @@ Author URI: http://premium.wpmudev.org
 class membershipavatarwidget extends WP_Widget {
 
 	function membershipavatarwidget() {
-
-		$locale = apply_filters( 'membership_locale', get_locale() );
-		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-
-		if ( file_exists( $mofile ) )
-			load_textdomain( 'membership', $mofile );
-
 		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __('Membership Level Text', 'membership') );
 		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipleveltext');
 		$this->WP_Widget( 'membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops );
@@ -147,6 +140,3 @@ function membershipavatarwidget_register() {
 }
 
 add_action( 'widgets_init', 'membershipavatarwidget_register' );
-
-
-?>

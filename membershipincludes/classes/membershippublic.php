@@ -28,8 +28,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$this->$table = membership_db_prefix($this->db, $table);
 			}
 
-			add_action('plugins_loaded', array(&$this, 'load_textdomain'));
-
 			// Set up Actions
 			add_action('init', array(&$this, 'initialise_plugin'), 1 );
 			add_filter('query_vars', array(&$this, 'add_queryvars') );
@@ -58,24 +56,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			// Level shortcodes filters
 			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
 			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
-
-
 		}
 
 		function wdfb_registration_redirect_url($url) {
 			global $M_options;
 			$url = get_permalink($M_options['registration_page']);
 			return $url;
-		}
-
-		function load_textdomain() {
-
-			$locale = apply_filters( 'membership_locale', get_locale() );
-			$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
-
-			if ( file_exists( $mofile ) )
-				load_textdomain( 'membership', $mofile );
-
 		}
 
 		function initialise_plugin() {

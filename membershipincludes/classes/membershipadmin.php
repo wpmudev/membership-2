@@ -29,8 +29,6 @@ if ( !class_exists( 'membershipadmin' ) ) :
         var $tutorial;
         // Coupons
         var $_coupons;
-        // For the coupons datepicker
-        var $language;
 
         function __construct() {
 			global $wpdb;
@@ -53,8 +51,6 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			} else {
 				add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 			}
-
-			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 
 			// Header actions for users page
 			add_action( 'load-users.php', array( $this, 'add_header_users_page' ) );
@@ -122,25 +118,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 		}
-
-		function membershipadmin() {
-            $this->__construct();
-        }
-
-        function load_textdomain() {
-
-            $locale = apply_filters('membership_locale', get_locale());
-            $mofile = membership_dir("membershipincludes/languages/membership-$locale.mo");
-
-            if (file_exists($mofile)) {
-                load_textdomain('membership', $mofile);
-            }
-
-            //setup language code for jquery datepicker translation
-            $temp_locales = explode('_', get_locale());
-            $this->language = ($temp_locales[0]) ? $temp_locales[0] : 'en';
-        }
-
+		
         function load_tutorial() {
             // Add in pointer tutorial
             $this->tutorial = new M_Tutorial();
@@ -698,35 +676,33 @@ if ( !class_exists( 'membershipadmin' ) ) :
         }
 
         function add_admin_header_membershipcoupons() {
+			// Run the core header
+			$this->add_admin_header_core();
 
-            global $wp_version;
-            // Run the core header
-            $this->add_admin_header_core();
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-ui-timepicker', membership_url( 'membershipincludes/js/datepicker/js/jquery.timepicker.min.js' ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker' ), $this->build );
 
-            wp_enqueue_script('jquery-ui-datepicker');
-            wp_enqueue_script('jquery-ui-timepicker', membership_url('membershipincludes/js/datepicker/js/jquery.timepicker.min.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker'), $this->build);
+			//only load languages for datepicker if not english (or it will show Chinese!)
+			$lang = current( explode( '_', get_locale() ) );
+			if ( $lang != 'en' ) {
+				wp_enqueue_script( 'jquery-datepicker-i18n', membership_url( 'membershipincludes/js/datepicker/js/datepicker-i18n.min.js' ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker' ), $this->build );
+			}
 
-            //only load languages for datepicker if not english (or it will show Chinese!)
-            if ($this->language != 'en')
-                wp_enqueue_script('jquery-datepicker-i18n', membership_url('membershipincludes/js/datepicker/js/datepicker-i18n.min.js'), array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker'), $this->build);
+			wp_enqueue_style( 'jquery-datepicker-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.19/themes/base/jquery-ui.css', false, $this->build );
 
-            wp_enqueue_style('jquery-datepicker-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.19/themes/base/jquery-ui.css', false, $this->build);
+			// Queue scripts and localise
+			wp_enqueue_script( 'couponsjs', membership_url( 'membershipincludes/js/coupons.js' ), array(), $this->build );
+			wp_enqueue_style( 'couponscss', membership_url( 'membershipincludes/css/coupons.css' ), array(), $this->build );
 
-            // Queue scripts and localise
-            wp_enqueue_script('couponsjs', membership_url('membershipincludes/js/coupons.js'), array(), $this->build);
-            wp_enqueue_style('couponscss', membership_url('membershipincludes/css/coupons.css'), array(), $this->build);
+			wp_localize_script( 'couponsjs', 'membership', array( 'deletecoupon' => __( 'Are you sure you want to delete this coupon?', 'membership' ),
+				'setlangugae'   => $lang,
+				'start_of_week' => (get_option( 'start_of_week' ) == '0') ? 7 : get_option( 'start_of_week' )
+			) );
 
-            wp_localize_script('couponsjs', 'membership', array('deletecoupon' => __('Are you sure you want to delete this coupon?', 'membership'),
-                'setlangugae' => $this->language,
-                'start_of_week' => (get_option('start_of_week') == '0') ? 7 : get_option('start_of_week')
-            ));
+			$this->handle_coupons_updates();
+		}
 
-
-
-            $this->handle_coupons_updates();
-        }
-
-        function add_admin_header_members() {
+		function add_admin_header_members() {
 
             global $wp_version;
             // Run the core header
