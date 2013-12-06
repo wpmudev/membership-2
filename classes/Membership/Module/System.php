@@ -40,121 +40,20 @@ class Membership_Module_System extends Membership_Module {
 	 */
 	public function __construct( Membership_Plugin $plugin ) {
 		parent::__construct( $plugin );
-		$this->_upgrade();
+
+		$this->_add_action( 'widgets_init', 'register_widgets' );
 	}
 
 	/**
-	 * Executes an array of sql queries.
+	 * Register widgets.
 	 *
 	 * @since 3.5
-	 *
-	 * @access private
-	 * @param array $queries The arrayof queries to execute.
-	 */
-	private function _exec_queries( array $queries ) {
-		foreach ( $queries as $query ) {
-			$this->_wpdb->query( $query );
-		}
-	}
-
-	/**
-	 * Generates CREATE TABLE sql script for provided table name and columns list.
-	 *
-	 * @since 3.5
-	 *
-	 * @access private
-	 * @param string $name The name of a table.
-	 * @param array $columns The array  of columns, indexes, constraints.
-	 * @return string The sql script for table creation.
-	 */
-	private function _create_table( $name, array $columns ) {
-		$charset = '';
-		if ( !empty( $this->_wpdb->charset ) ) {
-			$charset = " DEFAULT CHARACTER SET " . $this->_wpdb->charset;
-		}
-
-		$collate = '';
-		if ( !empty( $this->_wpdb->collate ) ) {
-			$collate .= " COLLATE " . $this->_wpdb->collate;
-		}
-
-		return sprintf( 'CREATE TABLE IF NOT EXISTS `%s` (%s)%s%s', $name, implode( ', ', $columns ), $charset, $collate );
-	}
-
-	/**
-	 * Performs upgrade plugin evnironment to up to date version.
-	 *
-	 * @since 3.5
-	 * @action init 999
-	 *
-	 * @access private
-	 */
-	private function _upgrade() {
-		$filter = 'membership_upgrade';
-		$option = 'membership_version';
-
-		// fetch current database version
-		$db_version = get_site_option( $option );
-		if ( $db_version === false ) {
-			$db_version = '0.0.0';
-			update_option( $option, $db_version );
-		}
-
-		// check if current version is equal to database version, then there is nothing to upgrade
-		if ( version_compare( $db_version, Membership_Plugin::VERSION, '=' ) ) {
-			return;
-		}
-
-		// add upgrade functions
-		$this->_add_filter( $filter, 'upgrade_to_3_5_beta_1', 10 );
-
-		// upgrade database version to current plugin version
-		$db_version = apply_filters( $filter, $db_version );
-		$db_version = version_compare( $db_version, Membership_Plugin::VERSION, '>=' )
-			? $db_version
-			: Membership_Plugin::VERSION;
-
-		update_site_option( $option, $db_version );
-
-		// flush rewrite rules
-		add_action( 'init', 'flush_rewrite_rules' );
-	}
-
-	/**
-	 * Upgrades to version 3.5.beta.1
-	 *
-	 * @since 3.5.beta.1
+	 * @action widgets_init
 	 *
 	 * @access public
-	 * @param string $current_version The current plugin version.
-	 * @return string Upgraded version if the current version is less, otherwise current version.
 	 */
-	public function upgrade_to_3_5_beta_1( $current_version ) {
-		$this_version = '3.5.beta.1';
-		if ( version_compare( $current_version, $this_version, '>=' ) ) {
-			return $current_version;
-		}
-
-		if ( is_multisite() ) {
-			$blog_id = get_current_blog_id();
-			$set_method = 'update_option';
-			if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) ) {
-				$set_method = 'update_site_option';
-				if ( defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
-					$blog_id = absint( MEMBERSHIP_GLOBAL_MAINSITE );
-				}
-			}
-
-			$set_method( 'authorize_mode', get_blog_option( $blog_id, 'authorizenetarb_mode' ) );
-			$set_method( 'authorize_api_user', get_blog_option( $blog_id, 'authorizenetarb_api_user' ) );
-			$set_method( 'authorize_api_key', get_blog_option( $blog_id, 'authorizenetarb_api_key' ) );
-		} else {
-			update_option( 'authorize_mode', get_option( 'authorizenetarb_mode' ) );
-			update_option( 'authorize_api_user', get_option( 'authorizenetarb_api_user' ) );
-			update_option( 'authorize_api_key', get_option( 'authorizenetarb_api_key' ) );
-		}
-
-		return $this_version;
+	public function register_widgets() {
+		register_widget( Membership_Widget_Login::NAME );
 	}
 
 }

@@ -167,6 +167,7 @@ function membership_launch() {
 	$plugin = Membership_Plugin::instance();
 
 	$plugin->set_module( Membership_Module_System::NAME );
+	$plugin->set_module( Membership_Module_Upgrade::NAME );
 
 	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
 	} elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {

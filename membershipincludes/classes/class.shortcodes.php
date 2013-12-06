@@ -63,7 +63,13 @@ if (!class_exists('M_extrashortcodes')) {
 				$html .= "<{$wrapwith} class='{$wrapwithclass}'>";
 			}
 
-			$html .= wp_login_form( array( 'echo' => false, 'redirect' => $redirect ? $redirect : get_permalink() ) );
+			$html .= wp_login_form( array(
+				'echo'     => false,
+				'redirect' => !empty( $redirect )
+					? $redirect
+					: home_url( $_SERVER['REQUEST_URI'] )
+			) );
+
 			if ( !empty( $lostpass ) ) {
 				$html .= sprintf( '<a href="%s">%s</a>', esc_url( $lostpass ), __( 'Lost password?', 'membership' ) );
 			}

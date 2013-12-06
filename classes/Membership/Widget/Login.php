@@ -1,12 +1,30 @@
 <?php
-/*
-Addon Name: Membership Login Widget
-Description: Membership widgets
-Author: Incsub
-Author URI: http://premium.wpmudev.org
-*/
 
-class membershiploginwidget extends WP_Widget {
+// +----------------------------------------------------------------------+
+// | Copyright Incsub (http://incsub.com/)                                |
+// +----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify |
+// | it under the terms of the GNU General Public License, version 2, as  |
+// | published by the Free Software Foundation.                           |
+// |                                                                      |
+// | This program is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        |
+// | GNU General Public License for more details.                         |
+// |                                                                      |
+// | You should have received a copy of the GNU General Public License    |
+// | along with this program; if not, write to the Free Software          |
+// | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               |
+// | MA 02110-1301 USA                                                    |
+// +----------------------------------------------------------------------+
+
+/**
+ * Login widget.
+ *
+ * @category Membership
+ * @package Widget
+ */
+class Membership_Widget_Login extends WP_Widget {
 
 	const NAME = __CLASS__;
 
@@ -23,7 +41,6 @@ class membershiploginwidget extends WP_Widget {
 			'id_base' => 'membershiploginwidget'
 		) );
 	}
-
 
 	/**
 	 * Renders the widget content
@@ -93,9 +110,4 @@ class membershiploginwidget extends WP_Widget {
 		</p><?php
 	}
 
-}
-
-add_action( 'widgets_init', 'membershiploginwidget_register' );
-function membershiploginwidget_register() {
-	register_widget( membershiploginwidget::NAME );
 }
