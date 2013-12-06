@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed account page submission issue.
 * Fixed login widget redirect issue
 * Fixed PayPal Standard Payment gateway transactions date issue
 * Fixed PayPal subscription suspended issue due to max fails limit settings
