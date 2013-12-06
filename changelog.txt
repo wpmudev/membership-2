@@ -24,6 +24,7 @@
 * Fixed user display name and level name issues for ping data
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 * Implemented membership access level meta box for posts and pages editing form
+* Implemented functionality which hides inactive members from BuddyPress members list
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup

@@ -1399,3 +1399,21 @@ function M_setup_MP_addons() {
 		M_register_rule( 'marketpress', 'Membership_Rule_Marketpress_Pages', 'content' );
 	}
 }
+
+
+// BuddyPress compatibility
+
+add_action( 'bp_pre_user_query_construct', 'membership_exclude_inactive_users' );
+function membership_exclude_inactive_users( BP_User_Query $bp_user_query ) {
+	global $wpdb;
+
+	$query = new WP_User_Query( array(
+		'meta_key'     => membership_db_prefix( $wpdb, 'membership_active', false ),
+		'meta_value'   => 'no',
+		'meta_compare' => '=',
+	) );
+
+	if ( $query->get_total() > 0 ) {
+		$bp_user_query->query_vars['exclude'] = wp_list_pluck( $query->get_results(), 'ID' );
+	}
+}
