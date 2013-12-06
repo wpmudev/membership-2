@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership Premium\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-06 18:21+0300\n"
-"PO-Revision-Date: 2013-12-06 18:27+0300\n"
+"POT-Creation-Date: 2013-12-06 23:16+0300\n"
+"PO-Revision-Date: 2013-12-06 23:16+0300\n"
 "Last-Translator: Eugene Manuilov <eugene@manuilov.org>\n"
 "Language-Team: Incsub <devs@incsub.com>\n"
 "Language: en_US\n"
@@ -294,6 +294,48 @@ msgstr "Lost Password Link:"
 msgid "Set a URL to lost password restoring page or leave it blank to skip it."
 msgstr ""
 "Set a URL to lost password restoring page or leave it blank to skip it."
+
+#: classes/Membership/Module/Adminbar.php:86
+msgid "View site as: "
+msgstr "View site as: "
+
+#: classes/Membership/Module/Adminbar.php:88
+msgid "Membership Admin"
+msgstr "Membership Admin"
+
+#: classes/Membership/Module/Adminbar.php:102
+msgid "Select a level to view your site as"
+msgstr "Select a level to view your site as"
+
+#: classes/Membership/Module/Adminbar.php:124
+#: membershipincludes/classes/membershipadmin.php:5308
+#: membershipincludes/classes/membershipadmin.php:5335
+#: membershipincludes/classes/membershipadmin.php:5737
+msgid "Reset"
+msgstr "Reset"
+
+#: classes/Membership/Module/Adminbar.php:147
+#: membershipincludes/classes/membershipadmin.php:450
+#: membershipincludes/help/help.sidebar.php:1
+msgid "Membership"
+msgstr "Membership"
+
+#: classes/Membership/Module/Adminbar.php:147
+msgid "Disabled"
+msgstr "Disabled"
+
+#: classes/Membership/Module/Adminbar.php:150
+msgid "Click to Enable the Membership protection"
+msgstr "Click to Enable the Membership protection"
+
+#: classes/Membership/Module/Adminbar.php:157
+#: membershipincludes/classes/class.tutorial.php:632
+msgid "Enable Membership"
+msgstr "Enable Membership"
+
+#: classes/Membership/Module/Protection.php:89
+msgid "Sorry, this account is deactivated."
+msgstr "Sorry, this account is deactivated."
 
 #: classes/Membership/Module/Backend/Rules/Metabox.php:63
 msgid "Membership Access Levels"
@@ -3249,11 +3291,6 @@ msgstr ""
 "subscription). They are useful for things like registering users on external "
 "support forums."
 
-#: membershipincludes/classes/class.tutorial.php:632
-#: membershipincludes/classes/class.adminbar.php:118
-msgid "Enable Membership"
-msgstr "Enable Membership"
-
 #: membershipincludes/classes/class.tutorial.php:634
 msgid ""
 "Once you have everything set up you should enable the membership plugins "
@@ -3631,12 +3668,6 @@ msgid ""
 msgstr ""
 "You are logged in as a <strong>Membership Admin</strong> user, you will "
 "therefore see all protected content on this site."
-
-#: membershipincludes/classes/membershipadmin.php:450
-#: membershipincludes/classes/class.adminbar.php:99
-#: membershipincludes/help/help.sidebar.php:1
-msgid "Membership"
-msgstr "Membership"
 
 #: membershipincludes/classes/membershipadmin.php:459
 msgid "All Members"
@@ -5493,13 +5524,6 @@ msgstr "Add Message"
 msgid "Add message"
 msgstr "Add message"
 
-#: membershipincludes/classes/membershipadmin.php:5308
-#: membershipincludes/classes/membershipadmin.php:5335
-#: membershipincludes/classes/membershipadmin.php:5737
-#: membershipincludes/classes/class.adminbar.php:183
-msgid "Reset"
-msgstr "Reset"
-
 #: membershipincludes/classes/membershipadmin.php:5321
 msgid "Edit Message"
 msgstr "Edit Message"
@@ -6237,26 +6261,6 @@ msgstr ""
 #: membershipincludes/classes/class.wizard.php:561
 msgid "Close this wizard"
 msgstr "Close this wizard"
-
-#: membershipincludes/classes/class.adminbar.php:99
-msgid "Disabled"
-msgstr "Disabled"
-
-#: membershipincludes/classes/class.adminbar.php:100
-msgid "Click to Enable the Membership protection"
-msgstr "Click to Enable the Membership protection"
-
-#: membershipincludes/classes/class.adminbar.php:143
-msgid "View site as : "
-msgstr "View site as : "
-
-#: membershipincludes/classes/class.adminbar.php:145
-msgid "Membership Admin"
-msgstr "Membership Admin"
-
-#: membershipincludes/classes/class.adminbar.php:152
-msgid "Select a level to view your site as"
-msgstr "Select a level to view your site as"
 
 #: membershipincludes/classes/class.membersearch.php:102
 #, php-format
@@ -7498,176 +7502,172 @@ msgstr "New Password"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: membershipincludes/includes/functions.php:322
-msgid "Sorry, this account is not active."
-msgstr "Sorry, this account is not active."
-
-#: membershipincludes/includes/functions.php:730
-#: membershipincludes/includes/functions.php:799
+#: membershipincludes/includes/functions.php:710
+#: membershipincludes/includes/functions.php:779
 #, php-format
 msgid "%s for "
 msgstr "%s for "
 
-#: membershipincludes/includes/functions.php:730
-#: membershipincludes/includes/functions.php:764
-#: membershipincludes/includes/functions.php:878
+#: membershipincludes/includes/functions.php:710
+#: membershipincludes/includes/functions.php:744
+#: membershipincludes/includes/functions.php:858
+#: membershipincludes/includes/functions.php:860
 #: membershipincludes/includes/functions.php:880
-#: membershipincludes/includes/functions.php:900
-#: membershipincludes/includes/functions.php:932
+#: membershipincludes/includes/functions.php:912
 msgid "free"
 msgstr "free"
 
-#: membershipincludes/includes/functions.php:734
-#: membershipincludes/includes/functions.php:768
-#: membershipincludes/includes/functions.php:803
-#: membershipincludes/includes/functions.php:837
+#: membershipincludes/includes/functions.php:714
+#: membershipincludes/includes/functions.php:748
+#: membershipincludes/includes/functions.php:783
+#: membershipincludes/includes/functions.php:817
 msgid " day"
 msgstr " day"
 
-#: membershipincludes/includes/functions.php:736
-#: membershipincludes/includes/functions.php:770
-#: membershipincludes/includes/functions.php:805
-#: membershipincludes/includes/functions.php:839
-#: membershipincludes/includes/functions.php:906
-#: membershipincludes/includes/functions.php:938
-#: membershipincludes/includes/functions.php:974
-#: membershipincludes/includes/functions.php:1006
+#: membershipincludes/includes/functions.php:716
+#: membershipincludes/includes/functions.php:750
+#: membershipincludes/includes/functions.php:785
+#: membershipincludes/includes/functions.php:819
+#: membershipincludes/includes/functions.php:886
+#: membershipincludes/includes/functions.php:918
+#: membershipincludes/includes/functions.php:954
+#: membershipincludes/includes/functions.php:986
 msgid " days"
 msgstr " days"
 
-#: membershipincludes/includes/functions.php:741
-#: membershipincludes/includes/functions.php:775
-#: membershipincludes/includes/functions.php:810
-#: membershipincludes/includes/functions.php:844
+#: membershipincludes/includes/functions.php:721
+#: membershipincludes/includes/functions.php:755
+#: membershipincludes/includes/functions.php:790
+#: membershipincludes/includes/functions.php:824
 msgid " week"
 msgstr " week"
 
-#: membershipincludes/includes/functions.php:743
-#: membershipincludes/includes/functions.php:777
-#: membershipincludes/includes/functions.php:812
-#: membershipincludes/includes/functions.php:846
-#: membershipincludes/includes/functions.php:913
-#: membershipincludes/includes/functions.php:945
-#: membershipincludes/includes/functions.php:981
-#: membershipincludes/includes/functions.php:1013
+#: membershipincludes/includes/functions.php:723
+#: membershipincludes/includes/functions.php:757
+#: membershipincludes/includes/functions.php:792
+#: membershipincludes/includes/functions.php:826
+#: membershipincludes/includes/functions.php:893
+#: membershipincludes/includes/functions.php:925
+#: membershipincludes/includes/functions.php:961
+#: membershipincludes/includes/functions.php:993
 msgid " weeks"
 msgstr " weeks"
 
-#: membershipincludes/includes/functions.php:748
-#: membershipincludes/includes/functions.php:782
-#: membershipincludes/includes/functions.php:817
-#: membershipincludes/includes/functions.php:851
+#: membershipincludes/includes/functions.php:728
+#: membershipincludes/includes/functions.php:762
+#: membershipincludes/includes/functions.php:797
+#: membershipincludes/includes/functions.php:831
 msgid " month"
 msgstr " month"
 
-#: membershipincludes/includes/functions.php:750
-#: membershipincludes/includes/functions.php:784
-#: membershipincludes/includes/functions.php:819
-#: membershipincludes/includes/functions.php:853
-#: membershipincludes/includes/functions.php:920
-#: membershipincludes/includes/functions.php:952
-#: membershipincludes/includes/functions.php:988
-#: membershipincludes/includes/functions.php:1020
+#: membershipincludes/includes/functions.php:730
+#: membershipincludes/includes/functions.php:764
+#: membershipincludes/includes/functions.php:799
+#: membershipincludes/includes/functions.php:833
+#: membershipincludes/includes/functions.php:900
+#: membershipincludes/includes/functions.php:932
+#: membershipincludes/includes/functions.php:968
+#: membershipincludes/includes/functions.php:1000
 msgid " months"
 msgstr " months"
 
-#: membershipincludes/includes/functions.php:755
-#: membershipincludes/includes/functions.php:789
-#: membershipincludes/includes/functions.php:824
-#: membershipincludes/includes/functions.php:858
+#: membershipincludes/includes/functions.php:735
+#: membershipincludes/includes/functions.php:769
+#: membershipincludes/includes/functions.php:804
+#: membershipincludes/includes/functions.php:838
 msgid " year"
 msgstr " year"
 
-#: membershipincludes/includes/functions.php:757
-#: membershipincludes/includes/functions.php:791
-#: membershipincludes/includes/functions.php:826
-#: membershipincludes/includes/functions.php:860
-#: membershipincludes/includes/functions.php:927
-#: membershipincludes/includes/functions.php:959
-#: membershipincludes/includes/functions.php:995
-#: membershipincludes/includes/functions.php:1027
+#: membershipincludes/includes/functions.php:737
+#: membershipincludes/includes/functions.php:771
+#: membershipincludes/includes/functions.php:806
+#: membershipincludes/includes/functions.php:840
+#: membershipincludes/includes/functions.php:907
+#: membershipincludes/includes/functions.php:939
+#: membershipincludes/includes/functions.php:975
+#: membershipincludes/includes/functions.php:1007
 msgid " years"
 msgstr " years"
 
-#: membershipincludes/includes/functions.php:764
-#: membershipincludes/includes/functions.php:833
+#: membershipincludes/includes/functions.php:744
+#: membershipincludes/includes/functions.php:813
 #, php-format
 msgid "and then %s for "
 msgstr "and then %s for "
 
-#: membershipincludes/includes/functions.php:878
-#: membershipincludes/includes/functions.php:886
+#: membershipincludes/includes/functions.php:858
+#: membershipincludes/includes/functions.php:866
 #, php-format
 msgid "%s "
 msgstr "%s "
 
-#: membershipincludes/includes/functions.php:880
-#: membershipincludes/includes/functions.php:888
+#: membershipincludes/includes/functions.php:860
+#: membershipincludes/includes/functions.php:868
 #, php-format
 msgid "and then %s "
 msgstr "and then %s "
 
-#: membershipincludes/includes/functions.php:900
-#: membershipincludes/includes/functions.php:968
+#: membershipincludes/includes/functions.php:880
+#: membershipincludes/includes/functions.php:948
 #, php-format
 msgid "%s every "
 msgstr "%s every "
 
-#: membershipincludes/includes/functions.php:904
-#: membershipincludes/includes/functions.php:936
-#: membershipincludes/includes/functions.php:972
-#: membershipincludes/includes/functions.php:1004
+#: membershipincludes/includes/functions.php:884
+#: membershipincludes/includes/functions.php:916
+#: membershipincludes/includes/functions.php:952
+#: membershipincludes/includes/functions.php:984
 msgid "day"
 msgstr "day"
 
-#: membershipincludes/includes/functions.php:911
-#: membershipincludes/includes/functions.php:943
-#: membershipincludes/includes/functions.php:979
-#: membershipincludes/includes/functions.php:1011
+#: membershipincludes/includes/functions.php:891
+#: membershipincludes/includes/functions.php:923
+#: membershipincludes/includes/functions.php:959
+#: membershipincludes/includes/functions.php:991
 msgid "week"
 msgstr "week"
 
-#: membershipincludes/includes/functions.php:918
-#: membershipincludes/includes/functions.php:950
-#: membershipincludes/includes/functions.php:986
-#: membershipincludes/includes/functions.php:1018
+#: membershipincludes/includes/functions.php:898
+#: membershipincludes/includes/functions.php:930
+#: membershipincludes/includes/functions.php:966
+#: membershipincludes/includes/functions.php:998
 msgid "month"
 msgstr "month"
 
-#: membershipincludes/includes/functions.php:925
-#: membershipincludes/includes/functions.php:957
-#: membershipincludes/includes/functions.php:993
-#: membershipincludes/includes/functions.php:1025
+#: membershipincludes/includes/functions.php:905
+#: membershipincludes/includes/functions.php:937
+#: membershipincludes/includes/functions.php:973
+#: membershipincludes/includes/functions.php:1005
 msgid "year"
 msgstr "year"
 
-#: membershipincludes/includes/functions.php:932
-#: membershipincludes/includes/functions.php:1000
+#: membershipincludes/includes/functions.php:912
+#: membershipincludes/includes/functions.php:980
 #, php-format
 msgid "and then %s every "
 msgstr "and then %s every "
 
-#: membershipincludes/includes/functions.php:1089
+#: membershipincludes/includes/functions.php:1069
 msgid "Membership Debug Message"
 msgstr "Membership Debug Message"
 
-#: membershipincludes/includes/functions.php:1225
+#: membershipincludes/includes/functions.php:1205
 msgid "unknown"
 msgstr "unknown"
 
-#: membershipincludes/includes/functions.php:1288
+#: membershipincludes/includes/functions.php:1268
 msgid "Administration"
 msgstr "Administration"
 
-#: membershipincludes/includes/functions.php:1312
+#: membershipincludes/includes/functions.php:1292
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#: membershipincludes/includes/functions.php:1329
+#: membershipincludes/includes/functions.php:1309
 msgid "BuddyPress protected content message"
 msgstr "BuddyPress protected content message"
 
-#: membershipincludes/includes/functions.php:1331
+#: membershipincludes/includes/functions.php:1311
 msgid ""
 "This is the message that is displayed when a BuddyPress related operation is "
 "restricted. Depending on your theme this is displayed in a red bar, and so "
@@ -7677,7 +7677,7 @@ msgstr ""
 "restricted. Depending on your theme this is displayed in a red bar, and so "
 "should be short and concise."
 
-#: membershipincludes/includes/functions.php:1335
+#: membershipincludes/includes/functions.php:1315
 msgid "BuddyPress No access message"
 msgstr "BuddyPress No access message"
 
