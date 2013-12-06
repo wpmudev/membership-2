@@ -460,51 +460,63 @@ if ( !class_exists( 'membershipadmin' ) ) :
         }
 
         function add_admin_menu() {
-			global $menu, $admin_page_hooks;
+			global $admin_page_hooks, $wpmudev_notices;
 
-			if ( current_user_can( 'membershipadmindashboard' ) ) {
-				// Add the menu page
-				add_menu_page( __( 'Membership', 'membership' ), __( 'Membership', 'membership' ), 'membershipadmindashboard', 'membership', array( $this, 'handle_membership_panel' ), membership_url( 'membershipincludes/images/members.png' ) );
-				//echo $hook;
-				// Fix WP translation hook issue
-				if ( isset( $admin_page_hooks['membership'] ) ) {
-					$admin_page_hooks['membership'] = 'membership';
-				}
-
-				do_action( 'membership_add_menu_items_top' );
-				// Add the sub menu
-				add_submenu_page( 'membership', __( 'Members', 'membership' ), __( 'All Members', 'membership' ), 'membershipadminmembers', "membershipmembers", array( $this, 'handle_members_panel' ) );
-				do_action( 'membership_add_menu_items_after_members' );
-
-				add_submenu_page( 'membership', __( 'Membership Levels', 'membership' ), __( 'Access Levels', 'membership' ), 'membershipadminlevels', "membershiplevels", array( $this, 'handle_levels_panel' ) );
-				do_action( 'membership_add_menu_items_after_levels' );
-
-				add_submenu_page( 'membership', __( 'Membership Subscriptions', 'membership' ), __( 'Subscription Plans', 'membership' ), 'membershipadminsubscriptions', "membershipsubs", array( $this, 'handle_subs_panel' ) );
-				do_action( 'membership_add_menu_items_after_subscriptions' );
-
-				add_submenu_page( 'membership', __( 'Membership Coupons', 'membership' ), __( 'Coupons', 'membership' ), 'membershipadmincoupons', "membershipcoupons", array( $this, 'handle_coupons_panel' ) );
-				do_action( 'membership_add_menu_items_after_coupons' );
-
-				//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadminpurchases', "membershippurchases", array(&$this,'handle_purchases_panel'));
-				do_action( 'membership_add_menu_items_after_purchases' );
-
-				add_submenu_page( 'membership', __( 'Membership Communication', 'membership' ), __( 'Communications', 'membership' ), 'membershipadmincommunications', "membershipcommunication", array( $this, 'handle_communication_panel' ) );
-				do_action( 'membership_add_menu_items_after_communications' );
-
-				add_submenu_page( 'membership', __( 'Membership URL Groups', 'membership' ), __( 'URL Groups', 'membership' ), 'membershipadmingroups', "membershipurlgroups", array( $this, 'handle_urlgroups_panel' ) );
-				do_action( 'membership_add_menu_items_after_urlgroups' );
-
-				add_submenu_page( 'membership', __( 'Membership Pings', 'membership' ), __( 'Remote Pings', 'membership' ), 'membershipadminpings', "membershippings", array( $this, 'handle_pings_panel' ) );
-				do_action( 'membership_add_menu_items_after_pings' );
-
-				add_submenu_page( 'membership', __( 'Membership Gateways', 'membership' ), __( 'Payment Gateways', 'membership' ), 'membershipadmingateways', "membershipgateways", array( $this, 'handle_gateways_panel' ) );
-				do_action( 'membership_add_menu_items_after_gateways' );
-
-				add_submenu_page( 'membership', __( 'Membership Options', 'membership' ), __( 'Options', 'membership' ), 'membershipadminoptions', "membershipoptions", array( $this, 'handle_options_panel' ) );
-				do_action( 'membership_add_menu_items_after_options' );
-
-				do_action( 'membership_add_menu_items_bottom' );
+			if ( !current_user_can( 'membershipadmindashboard' ) ) {
+				return;
 			}
+
+			$pages = array();
+
+			// Add the menu page
+			$pages[] = add_menu_page( __( 'Membership', 'membership' ), __( 'Membership', 'membership' ), 'membershipadmindashboard', 'membership', array( $this, 'handle_membership_panel' ), membership_url( 'membershipincludes/images/members.png' ) );
+			//echo $hook;
+			// Fix WP translation hook issue
+			if ( isset( $admin_page_hooks['membership'] ) ) {
+				$admin_page_hooks['membership'] = 'membership';
+			}
+
+			do_action( 'membership_add_menu_items_top' );
+			// Add the sub menu
+			$pages[] = add_submenu_page( 'membership', __( 'Members', 'membership' ), __( 'All Members', 'membership' ), 'membershipadminmembers', "membershipmembers", array( $this, 'handle_members_panel' ) );
+			do_action( 'membership_add_menu_items_after_members' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Levels', 'membership' ), __( 'Access Levels', 'membership' ), 'membershipadminlevels', "membershiplevels", array( $this, 'handle_levels_panel' ) );
+			do_action( 'membership_add_menu_items_after_levels' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Subscriptions', 'membership' ), __( 'Subscription Plans', 'membership' ), 'membershipadminsubscriptions', "membershipsubs", array( $this, 'handle_subs_panel' ) );
+			do_action( 'membership_add_menu_items_after_subscriptions' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Coupons', 'membership' ), __( 'Coupons', 'membership' ), 'membershipadmincoupons', "membershipcoupons", array( $this, 'handle_coupons_panel' ) );
+			do_action( 'membership_add_menu_items_after_coupons' );
+
+			//add_submenu_page('membership', __('Membership Purchases','membership'), __('Extra Purchases','membership'), 'membershipadminpurchases', "membershippurchases", array(&$this,'handle_purchases_panel'));
+			do_action( 'membership_add_menu_items_after_purchases' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Communication', 'membership' ), __( 'Communications', 'membership' ), 'membershipadmincommunications', "membershipcommunication", array( $this, 'handle_communication_panel' ) );
+			do_action( 'membership_add_menu_items_after_communications' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership URL Groups', 'membership' ), __( 'URL Groups', 'membership' ), 'membershipadmingroups', "membershipurlgroups", array( $this, 'handle_urlgroups_panel' ) );
+			do_action( 'membership_add_menu_items_after_urlgroups' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Pings', 'membership' ), __( 'Remote Pings', 'membership' ), 'membershipadminpings', "membershippings", array( $this, 'handle_pings_panel' ) );
+			do_action( 'membership_add_menu_items_after_pings' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Gateways', 'membership' ), __( 'Payment Gateways', 'membership' ), 'membershipadmingateways', "membershipgateways", array( $this, 'handle_gateways_panel' ) );
+			do_action( 'membership_add_menu_items_after_gateways' );
+
+			$pages[] = add_submenu_page( 'membership', __( 'Membership Options', 'membership' ), __( 'Options', 'membership' ), 'membershipadminoptions', "membershipoptions", array( $this, 'handle_options_panel' ) );
+			do_action( 'membership_add_menu_items_after_options' );
+
+			do_action( 'membership_add_menu_items_bottom' );
+
+			$is_network_admin = is_network_admin();
+			$membership_notices = array( 'id' => 140, 'name' => 'Membership Premium', 'screens' => array() );
+			foreach ( $pages as $page ) {
+				$membership_notices['screens'][] = $is_network_admin ? "{$page}-network" : $page;
+			}
+
+			$wpmudev_notices[] = $membership_notices;
 		}
 
         // Admin area protection

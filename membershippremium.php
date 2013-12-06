@@ -90,6 +90,8 @@ if ( is_admin() ) {
 /********** EVERYTHING ABOVE IS OLD VERSION AND BELOW IS NEW VERSION **********/
 /******************************************************************************/
 
+// include WPMUDev Dashboard class
+require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
 /**
  * Automatically loads classes for the plugin. Checks a namespace and loads only
@@ -174,8 +176,6 @@ function membership_launch() {
 	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 	} else {
 		if ( is_admin() ) {
-			// set WPMUDEV Dashboard notice
-			$wpmudev_notice = new WPMUDEV_Dashboard_Notice();
 			// set admin modules
 			// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
 		}
