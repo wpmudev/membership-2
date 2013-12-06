@@ -118,7 +118,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 		}
-		
+
         function load_tutorial() {
             // Add in pointer tutorial
             $this->tutorial = new M_Tutorial();
@@ -3349,7 +3349,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                             <table class="form-table">
                                 <tbody>
                                     <tr valign="top">
-                                        <th scope="row"><?php _e('Payment currencys', 'membership'); ?></th>
+                                        <th scope="row"><?php _e('Payment currencies', 'membership'); ?></th>
                                         <td>
                                             <select name="paymentcurrency">
                                                 <?php
