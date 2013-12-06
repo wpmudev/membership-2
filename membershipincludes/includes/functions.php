@@ -310,26 +310,6 @@ function membership_upload_url() {
 
 }
 
-function membership_is_active($userdata, $password) {
-
-	global $wpdb;
-
-	// Checks if this member is an active one.
-	if(!empty($userdata) && !is_wp_error($userdata)) {
-		$id = $userdata->ID;
-
-		if(get_user_meta($id, $wpdb->prefix . 'membership_active', true) == 'no') {
-			return new WP_Error('member_inactive', __('Sorry, this account is not active.', 'membership'));
-		}
-
-	}
-
-	return $userdata;
-
-}
-
-add_filter('wp_authenticate_user', 'membership_is_active', 30, 2);
-
 add_action( 'user_register', 'membership_assign_subscription', 30 );
 function membership_assign_subscription( $user_id ) {
 	global $M_options;

@@ -170,14 +170,20 @@ function membership_launch() {
 	$plugin->set_module( Membership_Module_Upgrade::NAME );
 
 	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
-	} elseif ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 	} else {
-		$plugin->set_module( Membership_Module_Adminbar::NAME );
+		if ( Membership_Plugin::is_enabled() ) {
+			$plugin->set_module( Membership_Module_Protection::NAME );
+		}
 
-		if ( is_admin() ) {
-			// set admin modules
-			// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		} else {
+			$plugin->set_module( Membership_Module_Adminbar::NAME );
+
+			if ( is_admin() ) {
+				// set admin modules
+				// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
+			}
 		}
 	}
 }
