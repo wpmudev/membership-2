@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed &USD; rendering issue
 * Fixed issue which allows deactivated users to have access to a site
 * Fixed admin bar issue which appear when global tables are used
 * Fixed account page submission issue.

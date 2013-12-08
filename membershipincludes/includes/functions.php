@@ -681,22 +681,23 @@ function membership_price_in_text( $pricing ) {
 	$pd = array();
 	$count = 1;
 
-	if(empty($M_options['paymentcurrency'])) {
-		$M_options['paymentcurrency'] = '&USD;';
+	if ( empty( $M_options['paymentcurrency'] ) ) {
+		$M_options['paymentcurrency'] = 'USD';
 	}
 
-	switch( $M_options['paymentcurrency'] ) {
-		case "USD": $cur = "$";
-					break;
-
-		case "GBP":	$cur = "&pound;";
-					break;
-
-		case "EUR":	$cur = "&euro;";
-					break;
-
-		default:	$cur = $M_options['paymentcurrency'];
-					break;
+	switch ( $M_options['paymentcurrency'] ) {
+		case "USD":
+			$cur = "$";
+			break;
+		case "GBP":
+			$cur = "&pound;";
+			break;
+		case "EUR":
+			$cur = "&euro;";
+			break;
+		default:
+			$cur = $M_options['paymentcurrency'];
+			break;
 	}
 
 	foreach((array) $pricing as $key => $price) {
