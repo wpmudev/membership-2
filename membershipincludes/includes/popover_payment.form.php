@@ -57,7 +57,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
 		</div>
 		<div class='fullwidth'>
-			<p class='alreadybought'><?php echo __('You currently have a subscription for the <strong>', 'membership') . $sub->sub_name() . __('</strong> subscription. If you wish to sign up a different subscription then you can do below.','membership'); ?></p>
+			<p class='alreadybought'><?php printf( __( 'You currently have a subscription for the %s subscription. If you wish to sign up a different subscription then you can do below.', 'membership' ), '<strong>' . $sub->sub_name() . '</strong>' ) ?></p>
 
 			<table class='purchasetable'>
 				<?php $subs = $this->get_public_subscriptions();
@@ -129,7 +129,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 													<td colspan='3'>
 														<?php
 															// Decipher the pricing array and display it
-															echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
+															echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . $pricetext;
 														?>
 													</td>
 												</tr>
@@ -223,7 +223,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 									<td colspan='3'>
 										<?php
 											// Decipher the pricing array and display it
-											echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . membership_price_in_text( $pricing );
+											echo '<strong>' . __('You will pay : ', 'membership') . '</strong> ' . $pricetext;
 										?>
 									</td>
 								</tr>
