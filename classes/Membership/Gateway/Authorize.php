@@ -434,7 +434,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access public
-	 * @global array $M_options The array of membership options.
 	 * @param M_Subscription $subscription New subscription.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
@@ -442,6 +441,21 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 */
 	public function display_upgrade_button( $subscription, $pricing, $user_id, $fromsub_id = false ) {
 		$this->_render_button( esc_attr__( 'Upgrade', 'membership' ), $subscription, $user_id, $fromsub_id );
+	}
+
+	/**
+	 * Displays upgrade subscription button.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @param M_Subscription $subscription New subscription.
+	 * @param array $pricing The pricing information.
+	 * @param int $user_id The current user id.
+	 * @param type $fromsub_id From subscription ID.
+	 */
+	public function display_upgrade_from_free_button( $subscription, $pricing, $user_id, $fromsub_id = false ) {
+		$this->display_upgrade_button( $subscription, $pricing, $user_id, $fromsub_id );
 	}
 
 	/**
