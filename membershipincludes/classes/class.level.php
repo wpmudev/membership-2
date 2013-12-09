@@ -41,10 +41,6 @@ if(!class_exists('M_Level')) {
 			}
 		}
 
-		function M_Level( $id = false, $fullload = false, $admin = false ) {
-			$this->__construct( $id, $fullload, $admin );
-		}
-
 		// Fields
 
 		function level_title() {

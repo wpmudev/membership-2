@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed infinite transition issue for indefinite subscriptions when period set improperly
 * Fixed &USD; rendering issue
 * Fixed issue which allows deactivated users to have access to a site
 * Fixed admin bar issue which appear when global tables are used

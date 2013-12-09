@@ -4,6 +4,9 @@ if ( !class_exists( 'M_Membership' ) ) :
 
 	class M_Membership extends WP_User {
 
+		/**
+		 * @var wpdb
+		 */
 		var $db;
 
 		var $tables = array('membership_relationships', 'membership_levels', 'subscriptions', 'user_queue', 'member_payments');
@@ -126,12 +129,15 @@ if ( !class_exists( 'M_Membership' ) ) :
 			do_action('membership_start_transition', $this->ID);
 
 			$relationships = $this->get_relationships();
-
 			if( $relationships !== false ) {
 
 				membership_debug_log( __('MEMBER: Have relationships so starting transition check' , 'membership') );
 
-				foreach($relationships as $key => $rel) {
+				foreach($relationships as $rel) {
+					$sub_type = $this->db->get_var( sprintf( 'SELECT sub_type FROM %s WHERE sub_id = %d AND level_id = %d', membership_db_prefix( $this->db, 'subscriptions_levels' ), $rel->sub_id, $rel->level_id ) );
+					if ( $sub_type != 'finite' ) {
+						continue;
+					}
 
 					membership_debug_log( __('MEMBER: Processing transition - ' , 'membership') . print_r($rel, true) );
 
