@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership Premium\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-09 18:29+0300\n"
-"PO-Revision-Date: 2013-12-09 18:29+0300\n"
+"POT-Creation-Date: 2013-12-10 17:13+0300\n"
+"PO-Revision-Date: 2013-12-10 17:13+0300\n"
 "Last-Translator: Eugene Manuilov <eugene@incsub.com>\n"
 "Language-Team: Incsub <devs@incsub.com>\n"
 "Language: en_US\n"
@@ -21,21 +21,26 @@ msgstr ""
 "X-Poedit-SearchPath-0: classes/Membership\n"
 "X-Poedit-SearchPath-1: membershipincludes\n"
 
-#: classes/Membership/Rule.php:106
-msgid "Add this rule to the positive area of the membership level"
-msgstr "Add this rule to the positive area of the membership level"
+#: classes/Membership/Plugin.php:178
+msgid "Current member has admin capabilities."
+msgstr "Current member has admin capabilities."
 
-#: classes/Membership/Rule.php:107
-msgid "Add to Positive rules"
-msgstr "Add to Positive rules"
+#: classes/Membership/Plugin.php:183
+#, php-format
+msgid "Switching membership level to %d for current member."
+msgstr "Switching membership level to %d for current member."
 
-#: classes/Membership/Rule.php:109
-msgid "Add this rule to the negative area of the membership level"
-msgstr "Add this rule to the negative area of the membership level"
+#: classes/Membership/Plugin.php:190
+msgid "Standard levels are loaded for current member."
+msgstr "Standard levels are loaded for current member."
 
-#: classes/Membership/Rule.php:110
-msgid "Add to Negative rules"
-msgstr "Add to Negative rules"
+#: classes/Membership/Plugin.php:197
+msgid ""
+"Default subscription for registered users is used to assign a level for "
+"current member."
+msgstr ""
+"Default subscription for registered users is used to assign a level for "
+"current member."
 
 #: classes/Membership/Gateway.php:173
 #, php-format
@@ -140,7 +145,8 @@ msgid "Unsubscribe not available"
 msgstr "Unsubscribe not available"
 
 #: classes/Membership/Gateway.php:538 classes/Membership/Gateway.php:553
-#: classes/Membership/Render/Page/Subscription/Renew.php:107
+#: classes/Membership/Render/Page/Subscription/Renew.php:126
+#: classes/Membership/Render/Page/Subscription/Renew.php:440
 #: membershipincludes/gateways/gateway.authorizenetaim.php:617
 #: membershipincludes/gateways/gateway.paypalsolo.php:262
 #: membershipincludes/gateways/gateway.paypalsolo.php:277
@@ -270,8 +276,8 @@ msgid "Month"
 msgstr "Month"
 
 #: classes/Membership/Render/Page/Subscription/Renew.php:46
-#: classes/Membership/Render/Page/Subscription/Renew.php:72
-#: classes/Membership/Render/Page/Subscription/Renew.php:227
+#: classes/Membership/Render/Page/Subscription/Renew.php:71
+#: classes/Membership/Render/Page/Subscription/Renew.php:250
 msgid "Your Subscriptions"
 msgstr "Your Subscriptions"
 
@@ -281,7 +287,7 @@ msgid ""
 msgstr ""
 "You are not currently logged in. Please login to view your subscriptions."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:75
+#: classes/Membership/Render/Page/Subscription/Renew.php:74
 msgid ""
 "You do not currently have any subscriptions in place. You can sign up for a "
 "new subscription by selecting one below"
@@ -289,47 +295,47 @@ msgstr ""
 "You do not currently have any subscriptions in place. You can sign up for a "
 "new subscription by selecting one below"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:197
-#: membershipincludes/includes/functions.php:883
-#: membershipincludes/includes/functions.php:915
-#: membershipincludes/includes/functions.php:951
-#: membershipincludes/includes/functions.php:983
+#: classes/Membership/Render/Page/Subscription/Renew.php:219
+#: membershipincludes/includes/functions.php:868
+#: membershipincludes/includes/functions.php:900
+#: membershipincludes/includes/functions.php:936
+#: membershipincludes/includes/functions.php:968
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weeks"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:199
-#: membershipincludes/includes/functions.php:890
-#: membershipincludes/includes/functions.php:922
-#: membershipincludes/includes/functions.php:958
-#: membershipincludes/includes/functions.php:990
+#: classes/Membership/Render/Page/Subscription/Renew.php:221
+#: membershipincludes/includes/functions.php:875
+#: membershipincludes/includes/functions.php:907
+#: membershipincludes/includes/functions.php:943
+#: membershipincludes/includes/functions.php:975
 msgid "month"
 msgid_plural "months"
 msgstr[0] "month"
 msgstr[1] "months"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:201
-#: membershipincludes/includes/functions.php:897
-#: membershipincludes/includes/functions.php:929
-#: membershipincludes/includes/functions.php:965
-#: membershipincludes/includes/functions.php:997
+#: classes/Membership/Render/Page/Subscription/Renew.php:223
+#: membershipincludes/includes/functions.php:882
+#: membershipincludes/includes/functions.php:914
+#: membershipincludes/includes/functions.php:950
+#: membershipincludes/includes/functions.php:982
 msgid "year"
 msgid_plural "years"
 msgstr[0] "year"
 msgstr[1] "years"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:204
-#: membershipincludes/includes/functions.php:876
-#: membershipincludes/includes/functions.php:908
-#: membershipincludes/includes/functions.php:944
-#: membershipincludes/includes/functions.php:976
+#: classes/Membership/Render/Page/Subscription/Renew.php:226
+#: membershipincludes/includes/functions.php:861
+#: membershipincludes/includes/functions.php:893
+#: membershipincludes/includes/functions.php:929
+#: membershipincludes/includes/functions.php:961
 msgid "day"
 msgid_plural "days"
 msgstr[0] "day"
 msgstr[1] "days"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:230
+#: classes/Membership/Render/Page/Subscription/Renew.php:253
 msgid ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
@@ -337,37 +343,37 @@ msgstr ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:259
+#: classes/Membership/Render/Page/Subscription/Renew.php:282
 msgid "Your membership has been cancelled and will expire on : "
 msgstr "Your membership has been cancelled and will expire on : "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:263
+#: classes/Membership/Render/Page/Subscription/Renew.php:286
 msgid "You are on an <strong>indefinite</strong> membership."
 msgstr "You are on an <strong>indefinite</strong> membership."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:265
+#: classes/Membership/Render/Page/Subscription/Renew.php:288
 msgid "Your membership is due to expire on : "
 msgstr "Your membership is due to expire on : "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:271
-#: classes/Membership/Render/Page/Subscription/Renew.php:277
+#: classes/Membership/Render/Page/Subscription/Renew.php:294
+#: classes/Membership/Render/Page/Subscription/Renew.php:300
 msgid "Your membership is set to <strong>automatically renew</strong>"
 msgstr "Your membership is set to <strong>automatically renew</strong>"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:279
+#: classes/Membership/Render/Page/Subscription/Renew.php:302
 msgid "Your membership is due to expire on: "
 msgstr "Your membership is due to expire on: "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:304
+#: classes/Membership/Render/Page/Subscription/Renew.php:327
 msgid "Renewal your subscription"
 msgstr "Renewal your subscription"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:309
+#: classes/Membership/Render/Page/Subscription/Renew.php:332
 #, php-format
 msgid "Renewal for the %s following %s has been completed."
 msgstr "Renewal for the %s following %s has been completed."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:322
+#: classes/Membership/Render/Page/Subscription/Renew.php:345
 #, php-format
 msgid ""
 "To renew your subscription for another %s following %s you will need to pay "
@@ -376,7 +382,7 @@ msgstr ""
 "To renew your subscription for another %s following %s you will need to pay "
 "%s."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:323
+#: classes/Membership/Render/Page/Subscription/Renew.php:346
 #, php-format
 msgid ""
 "To renew your subscription for another %s following %s click on the button "
@@ -385,8 +391,8 @@ msgstr ""
 "To renew your subscription for another %s following %s click on the button "
 "to the right."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:352
-#: classes/Membership/Gateway/Authorize.php:462
+#: classes/Membership/Render/Page/Subscription/Renew.php:375
+#: classes/Membership/Gateway/Authorize.php:476
 #: membershipincludes/gateways/gateway.paypalexpress.php:830
 #: membershipincludes/gateways/gateway.paypalsolo.php:340
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1209
@@ -396,13 +402,13 @@ msgstr ""
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:364
+#: classes/Membership/Render/Page/Subscription/Renew.php:387
 #, php-format
 msgctxt "Upgrade from subscription plan"
 msgid "Upgrade from %s"
 msgstr "Upgrade from %s"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:380
+#: classes/Membership/Render/Page/Subscription/Renew.php:403
 msgctxt "Move to another subscription"
 msgid "Move to:"
 msgstr "Move to:"
@@ -471,9 +477,17 @@ msgstr "Click to Enable the Membership protection"
 msgid "Enable Membership"
 msgstr "Enable Membership"
 
-#: classes/Membership/Module/Protection.php:89
+#: classes/Membership/Module/Protection.php:92
 msgid "Sorry, this account is deactivated."
 msgstr "Sorry, this account is deactivated."
+
+#: classes/Membership/Module/Protection.php:163
+msgid "Current member can not view current page."
+msgstr "Current member can not view current page."
+
+#: classes/Membership/Module/Protection.php:168
+msgid "Current member can view current page."
+msgstr "Current member can view current page."
 
 #: classes/Membership/Module/Backend/Rules/Metabox.php:63
 msgid "Membership Access Levels"
@@ -608,7 +622,7 @@ msgstr "Live"
 msgid "Pay Now"
 msgstr "Pay Now"
 
-#: classes/Membership/Gateway/Authorize.php:444
+#: classes/Membership/Gateway/Authorize.php:443
 #: membershipincludes/gateways/gateway.paypalexpress.php:876
 #: membershipincludes/gateways/gateway.authorizenetaim.php:640
 #: membershipincludes/gateways/gateway.authorizenetaim.php:648
@@ -620,17 +634,17 @@ msgstr "Pay Now"
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: classes/Membership/Gateway/Authorize.php:519
+#: classes/Membership/Gateway/Authorize.php:533
 #: membershipincludes/gateways/gateway.authorizenetaim.php:334
 #: membershipincludes/gateways/gateway.authorizenetarb.php:336
 msgid "Payment method not supported for the payment"
 msgstr "Payment method not supported for the payment"
 
-#: classes/Membership/Gateway/Authorize.php:521
+#: classes/Membership/Gateway/Authorize.php:535
 msgid "There was a problem processing your purchase. Please, try again."
 msgstr "There was a problem processing your purchase. Please, try again."
 
-#: classes/Membership/Gateway/Authorize.php:529
+#: classes/Membership/Gateway/Authorize.php:543
 msgid ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
@@ -638,18 +652,18 @@ msgstr ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
 
-#: classes/Membership/Gateway/Authorize.php:601
+#: classes/Membership/Gateway/Authorize.php:615
 #: membershipincludes/gateways/gateway.authorizenetaim.php:416
 #: membershipincludes/gateways/gateway.authorizenetarb.php:519
 msgid "You must use HTTPS in order to do this"
 msgstr "You must use HTTPS in order to do this"
 
-#: classes/Membership/Gateway/Authorize.php:696
+#: classes/Membership/Gateway/Authorize.php:710
 #, php-format
 msgid "Sign up for %s completed"
 msgstr "Sign up for %s completed"
 
-#: classes/Membership/Gateway/Authorize.php:1233
+#: classes/Membership/Gateway/Authorize.php:1247
 msgid ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
@@ -657,29 +671,614 @@ msgstr ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
 
-#: classes/Membership/Gateway/Authorize.php:1252
+#: classes/Membership/Gateway/Authorize.php:1266
 msgid "Authorized (ARB)"
 msgstr "Authorized (ARB)"
 
-#: classes/Membership/Gateway/Authorize.php:1253
+#: classes/Membership/Gateway/Authorize.php:1267
 msgid "Authorized (CIM)"
 msgstr "Authorized (CIM)"
 
-#: classes/Membership/Gateway/Authorize.php:1254
+#: classes/Membership/Gateway/Authorize.php:1268
 msgid "Captured"
 msgstr "Captured"
 
-#: classes/Membership/Gateway/Authorize.php:1255
+#: classes/Membership/Gateway/Authorize.php:1269
 msgid "Voided"
 msgstr "Voided"
 
-#: classes/Membership/Gateway/Authorize.php:1256
+#: classes/Membership/Gateway/Authorize.php:1270
 msgid "Recurring"
 msgstr "Recurring"
 
-#: classes/Membership/Gateway/Authorize.php:1257
+#: classes/Membership/Gateway/Authorize.php:1271
 msgid "Cancelled Recurring"
 msgstr "Cancelled Recurring"
+
+#: classes/Membership/Model/Rule.php:107
+msgid "Add this rule to the positive area of the membership level"
+msgstr "Add this rule to the positive area of the membership level"
+
+#: classes/Membership/Model/Rule.php:108
+msgid "Add to Positive rules"
+msgstr "Add to Positive rules"
+
+#: classes/Membership/Model/Rule.php:110
+msgid "Add this rule to the negative area of the membership level"
+msgstr "Add this rule to the negative area of the membership level"
+
+#: classes/Membership/Model/Rule.php:111
+msgid "Add to Negative rules"
+msgstr "Add to Negative rules"
+
+#: classes/Membership/Model/Rule/Menu.php:40
+msgid "Menu"
+msgstr "Menu"
+
+#: classes/Membership/Model/Rule/Menu.php:40
+msgid "Remove Menu from this rules area."
+msgstr "Remove Menu from this rules area."
+
+#: classes/Membership/Model/Rule/Menu.php:40
+#: classes/Membership/Model/Rule/Comments.php:42
+#: classes/Membership/Model/Rule/Blogcreation.php:40
+#: classes/Membership/Model/Rule/Pages.php:67
+#: classes/Membership/Model/Rule/Downloads.php:44
+#: classes/Membership/Model/Rule/URLGroups.php:69
+#: classes/Membership/Model/Rule/More.php:40
+#: classes/Membership/Model/Rule/Posts.php:54
+#: classes/Membership/Model/Rule/Shortcodes.php:43
+#: classes/Membership/Model/Rule/Categories.php:40
+#: classes/Membership/Model/Rule/Admin/Submenus.php:53
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:54
+#: classes/Membership/Model/Rule/Admin/Plugins.php:49
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:50
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:61
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:41
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:69
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:41
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:41
+#: membershipincludes/classes/class.subscription.php:460
+#: membershipincludes/classes/class.subscription.php:546
+msgid "Remove"
+msgstr "Remove"
+
+#: classes/Membership/Model/Rule/Menu.php:42
+msgid ""
+"Select the Menu items to be covered by this rule by checking the box next to "
+"the relevant menu labels."
+msgstr ""
+"Select the Menu items to be covered by this rule by checking the box next to "
+"the relevant menu labels."
+
+#: classes/Membership/Model/Rule/Menu.php:53
+#: classes/Membership/Model/Rule/Menu.php:60
+msgid "Menu / Item title"
+msgstr "Menu / Item title"
+
+#: classes/Membership/Model/Rule/Menu.php:70
+msgid "MENU"
+msgstr "MENU"
+
+#: classes/Membership/Model/Rule/Comments.php:39
+msgid "Comments"
+msgstr "Comments"
+
+#: classes/Membership/Model/Rule/Comments.php:41
+msgid "Remove Comments from this rules area."
+msgstr "Remove Comments from this rules area."
+
+#: classes/Membership/Model/Rule/Comments.php:47
+#: classes/Membership/Model/Rule/Blogcreation.php:47
+#: classes/Membership/Model/Rule/More.php:42
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:43
+msgid "Positive : "
+msgstr "Positive : "
+
+#: classes/Membership/Model/Rule/Comments.php:47
+msgid "User gets read and make comments of posts."
+msgstr "User gets read and make comments of posts."
+
+#: classes/Membership/Model/Rule/Comments.php:48
+#: classes/Membership/Model/Rule/Blogcreation.php:48
+#: classes/Membership/Model/Rule/More.php:43
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:44
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:44
+msgid "Negative : "
+msgstr "Negative : "
+
+#: classes/Membership/Model/Rule/Comments.php:48
+msgid "User can not read or comment on posts."
+msgstr "User can not read or comment on posts."
+
+#: classes/Membership/Model/Rule/Blogcreation.php:40
+msgid "Blog Creation"
+msgstr "Blog Creation"
+
+#: classes/Membership/Model/Rule/Blogcreation.php:40
+msgid "Remove Blog Creation from this rules area."
+msgstr "Remove Blog Creation from this rules area."
+
+#: classes/Membership/Model/Rule/Blogcreation.php:47
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
+msgid "User can create "
+msgstr "User can create "
+
+#: classes/Membership/Model/Rule/Blogcreation.php:47
+msgid " blogs."
+msgstr " blogs."
+
+#: classes/Membership/Model/Rule/Blogcreation.php:47
+msgid "Leave blank for unlimited blogs."
+msgstr "Leave blank for unlimited blogs."
+
+#: classes/Membership/Model/Rule/Blogcreation.php:48
+msgid "User is unable to create any blogs."
+msgstr "User is unable to create any blogs."
+
+#: classes/Membership/Model/Rule/Pages.php:64
+#: classes/Membership/Model/Rule/Pages.php:121
+msgid "Pages"
+msgstr "Pages"
+
+#: classes/Membership/Model/Rule/Pages.php:66
+msgid "Remove Pages from this rules area."
+msgstr "Remove Pages from this rules area."
+
+#: classes/Membership/Model/Rule/Pages.php:73
+msgid ""
+"Select the Pages to be covered by this rule by checking the box next to the "
+"relevant pages title. Pay attention that pages selected as Membership page "
+"(in the options) are not listed below."
+msgstr ""
+"Select the Pages to be covered by this rule by checking the box next to the "
+"relevant pages title. Pay attention that pages selected as Membership page "
+"(in the options) are not listed below."
+
+#: classes/Membership/Model/Rule/Pages.php:80
+#: classes/Membership/Model/Rule/Pages.php:87
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:84
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:91
+msgid "Page title"
+msgstr "Page title"
+
+#: classes/Membership/Model/Rule/Pages.php:107
+#, php-format
+msgid "Only the most recent %d pages are shown above."
+msgstr "Only the most recent %d pages are shown above."
+
+#: classes/Membership/Model/Rule/Pages.php:122
+msgid "Allows specific pages to be protected."
+msgstr "Allows specific pages to be protected."
+
+#: classes/Membership/Model/Rule/Downloads.php:44
+msgid "Downloads"
+msgstr "Downloads"
+
+#: classes/Membership/Model/Rule/Downloads.php:44
+msgid "Remove Downloads from this rules area."
+msgstr "Remove Downloads from this rules area."
+
+#: classes/Membership/Model/Rule/Downloads.php:46
+msgid ""
+"Select the Downloads / Media to be covered by this rule by checking the box "
+"next to the relevant group name."
+msgstr ""
+"Select the Downloads / Media to be covered by this rule by checking the box "
+"next to the relevant group name."
+
+#: classes/Membership/Model/Rule/Downloads.php:62
+#: classes/Membership/Model/Rule/Downloads.php:68
+msgid "Download / Group name"
+msgstr "Download / Group name"
+
+#: classes/Membership/Model/Rule/Downloads.php:95
+msgid ""
+"You have no download groups set, please visit the membership options page to "
+"set them up."
+msgstr ""
+"You have no download groups set, please visit the membership options page to "
+"set them up."
+
+#: classes/Membership/Model/Rule/URLGroups.php:55
+#: classes/Membership/Model/Rule/URLGroups.php:69
+#: membershipincludes/classes/class.tutorial.php:607
+#: membershipincludes/classes/class.help.php:204
+#: membershipincludes/classes/membershipadmin.php:260
+#: membershipincludes/classes/membershipadmin.php:386
+#: membershipincludes/classes/membershipadmin.php:477
+msgid "URL Groups"
+msgstr "URL Groups"
+
+#: classes/Membership/Model/Rule/URLGroups.php:56
+msgid ""
+"Allows specific URL's to be protected (includes ability to protect using "
+"regular expressions)."
+msgstr ""
+"Allows specific URL's to be protected (includes ability to protect using "
+"regular expressions)."
+
+#: classes/Membership/Model/Rule/URLGroups.php:69
+msgid "Remove URL Groups from this rules area."
+msgstr "Remove URL Groups from this rules area."
+
+#: classes/Membership/Model/Rule/URLGroups.php:71
+msgid ""
+"Select the URL Groups to be covered by this rule by checking the box next to "
+"the relevant URL Group name."
+msgstr ""
+"Select the URL Groups to be covered by this rule by checking the box next to "
+"the relevant URL Group name."
+
+#: classes/Membership/Model/Rule/URLGroups.php:81
+#: classes/Membership/Model/Rule/URLGroups.php:88
+msgid "URL Group"
+msgstr "URL Group"
+
+#: classes/Membership/Model/Rule/More.php:40
+msgid "More tag"
+msgstr "More tag"
+
+#: classes/Membership/Model/Rule/More.php:40
+msgid "Remove More tag from this rules area."
+msgstr "Remove More tag from this rules area."
+
+#: classes/Membership/Model/Rule/More.php:42
+msgid "User can read full post content beyond the More tag."
+msgstr "User can read full post content beyond the More tag."
+
+#: classes/Membership/Model/Rule/More.php:43
+msgid "User is unable to read full post content beyond the More tag."
+msgstr "User is unable to read full post content beyond the More tag."
+
+#: classes/Membership/Model/Rule/Posts.php:54
+msgid "Posts"
+msgstr "Posts"
+
+#: classes/Membership/Model/Rule/Posts.php:54
+msgid "Remove Posts from this rules area."
+msgstr "Remove Posts from this rules area."
+
+#: classes/Membership/Model/Rule/Posts.php:56
+msgid ""
+"Select the posts to be covered by this rule by checking the box next to the "
+"relevant posts title."
+msgstr ""
+"Select the posts to be covered by this rule by checking the box next to the "
+"relevant posts title."
+
+#: classes/Membership/Model/Rule/Posts.php:62
+#: classes/Membership/Model/Rule/Posts.php:70
+msgid "Post title"
+msgstr "Post title"
+
+#: classes/Membership/Model/Rule/Posts.php:63
+#: classes/Membership/Model/Rule/Posts.php:71
+msgid "Post date"
+msgstr "Post date"
+
+#: classes/Membership/Model/Rule/Posts.php:92
+#, php-format
+msgid ""
+"Only the most recent %d posts are shown above, if you have more than that "
+"then you should consider using categories instead."
+msgstr ""
+"Only the most recent %d posts are shown above, if you have more than that "
+"then you should consider using categories instead."
+
+#: classes/Membership/Model/Rule/Shortcodes.php:43
+msgid "Shortcodes"
+msgstr "Shortcodes"
+
+#: classes/Membership/Model/Rule/Shortcodes.php:43
+msgid "Remove Shortcodes from this rules area."
+msgstr "Remove Shortcodes from this rules area."
+
+#: classes/Membership/Model/Rule/Shortcodes.php:45
+msgid ""
+"Select the Shortcodes to be covered by this rule by checking the box next to "
+"the relevant shortcode tag."
+msgstr ""
+"Select the Shortcodes to be covered by this rule by checking the box next to "
+"the relevant shortcode tag."
+
+#: classes/Membership/Model/Rule/Shortcodes.php:53
+#: classes/Membership/Model/Rule/Shortcodes.php:60
+msgid "Shortcode tag"
+msgstr "Shortcode tag"
+
+#: classes/Membership/Model/Rule/Categories.php:40
+msgid "Categories"
+msgstr "Categories"
+
+#: classes/Membership/Model/Rule/Categories.php:40
+msgid "Remove Categories from this rules area."
+msgstr "Remove Categories from this rules area."
+
+#: classes/Membership/Model/Rule/Categories.php:42
+msgid ""
+"Select the Categories to be covered by this rule by checking the box next to "
+"the relevant categories name."
+msgstr ""
+"Select the Categories to be covered by this rule by checking the box next to "
+"the relevant categories name."
+
+#: classes/Membership/Model/Rule/Categories.php:52
+#: classes/Membership/Model/Rule/Categories.php:59
+msgid "Category name"
+msgstr "Category name"
+
+#: classes/Membership/Model/Rule/Admin/Submenus.php:50
+#: classes/Membership/Model/Rule/Admin/Submenus.php:109
+msgid "Sub Menus"
+msgstr "Sub Menus"
+
+#: classes/Membership/Model/Rule/Admin/Submenus.php:52
+msgid "Remove Sub Menus from this rules area."
+msgstr "Remove Sub Menus from this rules area."
+
+#: classes/Membership/Model/Rule/Admin/Submenus.php:59
+msgid ""
+"Select the Sub menu items to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+"Select the Sub menu items to be covered by this rule by checking the box "
+"next to the relevant pages title."
+
+#: classes/Membership/Model/Rule/Admin/Submenus.php:66
+#: classes/Membership/Model/Rule/Admin/Submenus.php:73
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:63
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:70
+msgid "Menu title"
+msgstr "Menu title"
+
+#: classes/Membership/Model/Rule/Admin/Submenus.php:110
+msgid "Allows admin side sub menus to be protected."
+msgstr "Allows admin side sub menus to be protected."
+
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:33
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:51
+msgid "Dashboard Widgets"
+msgstr "Dashboard Widgets"
+
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:34
+msgid "Allows admin side dashboard widgets to be protected."
+msgstr "Allows admin side dashboard widgets to be protected."
+
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:53
+msgid "Remove Dashboard Widgets from this rules area."
+msgstr "Remove Dashboard Widgets from this rules area."
+
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:60
+msgid ""
+"Select the Dashboard widgets to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+"Select the Dashboard widgets to be covered by this rule by checking the box "
+"next to the relevant pages title."
+
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:67
+#: classes/Membership/Model/Rule/Admin/Dashboardwidgets.php:74
+msgid "Dashboard Widget"
+msgstr "Dashboard Widget"
+
+#: classes/Membership/Model/Rule/Admin/Plugins.php:33
+#: classes/Membership/Model/Rule/Admin/Plugins.php:46
+msgid "Plugins"
+msgstr "Plugins"
+
+#: classes/Membership/Model/Rule/Admin/Plugins.php:34
+msgid "Allows activation of specific plugins to be protected."
+msgstr "Allows activation of specific plugins to be protected."
+
+#: classes/Membership/Model/Rule/Admin/Plugins.php:48
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:49
+msgid "Remove Main Menus from this rules area."
+msgstr "Remove Main Menus from this rules area."
+
+#: classes/Membership/Model/Rule/Admin/Plugins.php:55
+msgid ""
+"Select the Plugins to be covered by this rule by checking the box next to "
+"the relevant pages title."
+msgstr ""
+"Select the Plugins to be covered by this rule by checking the box next to "
+"the relevant pages title."
+
+#: classes/Membership/Model/Rule/Admin/Plugins.php:62
+#: classes/Membership/Model/Rule/Admin/Plugins.php:68
+msgid "Plugin"
+msgstr "Plugin"
+
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:33
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:47
+msgid "Main Menus"
+msgstr "Main Menus"
+
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:34
+msgid "Allows admin side main menus to be protected."
+msgstr "Allows admin side main menus to be protected."
+
+#: classes/Membership/Model/Rule/Admin/Mainmenus.php:56
+msgid ""
+"Select the Main menus to be covered by this rule by checking the box next to "
+"the relevant pages title."
+msgstr ""
+"Select the Main menus to be covered by this rule by checking the box next to "
+"the relevant pages title."
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:35
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:58
+msgid "MarketPress Pages"
+msgstr "MarketPress Pages"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:36
+msgid "Allows MarketPress pages to be protected."
+msgstr "Allows MarketPress pages to be protected."
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:40
+msgid "Global Products"
+msgstr "Global Products"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:41
+msgid "Global Categories"
+msgstr "Global Categories"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:42
+msgid "Global Tags"
+msgstr "Global Tags"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:43
+msgid "Product List"
+msgstr "Product List"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:44
+msgid "Cart"
+msgstr "Cart"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:45
+msgid "Order Status"
+msgstr "Order Status"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:60
+msgid "Remove MarketPress Pages from this rules area."
+msgstr "Remove MarketPress Pages from this rules area."
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:67
+msgid ""
+"Select the MarketPress pages to be covered by this rule by checking the box "
+"next to the relevant page name."
+msgstr ""
+"Select the MarketPress pages to be covered by this rule by checking the box "
+"next to the relevant page name."
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:73
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:79
+msgid "Page type"
+msgstr "Page type"
+
+#: classes/Membership/Model/Rule/Marketpress/Pages.php:100
+msgid ""
+"You have no pages available, please ensure you have MarketPress installed."
+msgstr ""
+"You have no pages available, please ensure you have MarketPress installed."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+msgid "Group Creation"
+msgstr "Group Creation"
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+msgid "Remove Group Creation from this rules area."
+msgstr "Remove Group Creation from this rules area."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
+msgid " groups."
+msgstr " groups."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
+msgid "Leave blanks for unlimited groups."
+msgstr "Leave blanks for unlimited groups."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:44
+msgid "User is unable to create any groups."
+msgstr "User is unable to create any groups."
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:41
+msgid "Blogs"
+msgstr "Blogs"
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:41
+msgid "Remove Blogs from this rules area."
+msgstr "Remove Blogs from this rules area."
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:43
+msgid ""
+"Select the blogs to be covered by this rule by checking the box next to the "
+"relevant blogs name."
+msgstr ""
+"Select the blogs to be covered by this rule by checking the box next to the "
+"relevant blogs name."
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:56
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:64
+msgid "Blog title"
+msgstr "Blog title"
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:57
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:65
+msgid "Last activity"
+msgstr "Last activity"
+
+#: classes/Membership/Model/Rule/Buddypress/Blogs.php:96
+msgid "Only the most recently updated 50 blogs are shown above."
+msgstr "Only the most recently updated 50 blogs are shown above."
+
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:69
+msgid "BuddyPress Pages"
+msgstr "BuddyPress Pages"
+
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:69
+msgid "Remove BuddyPress Pages from this rules area."
+msgstr "Remove BuddyPress Pages from this rules area."
+
+#: classes/Membership/Model/Rule/Buddypress/Pages.php:71
+msgid ""
+"Select the BuddyPress Pages to be covered by this rule by checking the box "
+"next to the relevant pages title."
+msgstr ""
+"Select the BuddyPress Pages to be covered by this rule by checking the box "
+"next to the relevant pages title."
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:41
+msgid "Groups"
+msgstr "Groups"
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:41
+msgid "Remove Groups from this rules area."
+msgstr "Remove Groups from this rules area."
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:43
+msgid ""
+"Select the groups to be covered by this rule by checking the box next to the "
+"relevant groups title."
+msgstr ""
+"Select the groups to be covered by this rule by checking the box next to the "
+"relevant groups title."
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:56
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:64
+msgid "Group title"
+msgstr "Group title"
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:57
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:65
+msgid "Group created"
+msgstr "Group created"
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:96
+msgid "Only the most recent "
+msgstr "Only the most recent "
+
+#: classes/Membership/Model/Rule/Buddypress/Groups.php:96
+msgid " groups are shown above."
+msgstr " groups are shown above."
+
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:41
+msgid "Private Messaging"
+msgstr "Private Messaging"
+
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:41
+msgid "Remove Private Messaging from this rules area."
+msgstr "Remove Private Messaging from this rules area."
+
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:43
+msgid "User can send messages."
+msgstr "User can send messages."
+
+#: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:44
+msgid "User is unable to send messages."
+msgstr "User is unable to send messages."
 
 #: classes/Membership/Table/Gateway/Transaction/Authorize.php:124
 msgid "unkonwn"
@@ -716,568 +1315,6 @@ msgstr "Show all subscriptions"
 #: membershipincludes/classes/membershipadmin.php:5438
 msgid "Filter"
 msgstr "Filter"
-
-#: classes/Membership/Rule/Menu.php:39
-msgid "Menu"
-msgstr "Menu"
-
-#: classes/Membership/Rule/Menu.php:39
-msgid "Remove Menu from this rules area."
-msgstr "Remove Menu from this rules area."
-
-#: classes/Membership/Rule/Menu.php:39 classes/Membership/Rule/Comments.php:41
-#: classes/Membership/Rule/Blogcreation.php:39
-#: classes/Membership/Rule/Pages.php:66
-#: classes/Membership/Rule/Downloads.php:43
-#: classes/Membership/Rule/URLGroups.php:68
-#: classes/Membership/Rule/More.php:39 classes/Membership/Rule/Posts.php:53
-#: classes/Membership/Rule/Shortcodes.php:42
-#: classes/Membership/Rule/Categories.php:39
-#: classes/Membership/Rule/Admin/Submenus.php:52
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:53
-#: classes/Membership/Rule/Admin/Plugins.php:48
-#: classes/Membership/Rule/Admin/Mainmenus.php:49
-#: classes/Membership/Rule/Marketpress/Pages.php:60
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:40
-#: classes/Membership/Rule/Buddypress/Blogs.php:40
-#: classes/Membership/Rule/Buddypress/Pages.php:68
-#: classes/Membership/Rule/Buddypress/Groups.php:40
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:40
-#: membershipincludes/classes/class.subscription.php:460
-#: membershipincludes/classes/class.subscription.php:546
-msgid "Remove"
-msgstr "Remove"
-
-#: classes/Membership/Rule/Menu.php:41
-msgid ""
-"Select the Menu items to be covered by this rule by checking the box next to "
-"the relevant menu labels."
-msgstr ""
-"Select the Menu items to be covered by this rule by checking the box next to "
-"the relevant menu labels."
-
-#: classes/Membership/Rule/Menu.php:52 classes/Membership/Rule/Menu.php:59
-msgid "Menu / Item title"
-msgstr "Menu / Item title"
-
-#: classes/Membership/Rule/Menu.php:69
-msgid "MENU"
-msgstr "MENU"
-
-#: classes/Membership/Rule/Comments.php:38
-msgid "Comments"
-msgstr "Comments"
-
-#: classes/Membership/Rule/Comments.php:40
-msgid "Remove Comments from this rules area."
-msgstr "Remove Comments from this rules area."
-
-#: classes/Membership/Rule/Comments.php:46
-#: classes/Membership/Rule/Blogcreation.php:46
-#: classes/Membership/Rule/More.php:41
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:42
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:42
-msgid "Positive : "
-msgstr "Positive : "
-
-#: classes/Membership/Rule/Comments.php:46
-msgid "User gets read and make comments of posts."
-msgstr "User gets read and make comments of posts."
-
-#: classes/Membership/Rule/Comments.php:47
-#: classes/Membership/Rule/Blogcreation.php:47
-#: classes/Membership/Rule/More.php:42
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:43
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:43
-msgid "Negative : "
-msgstr "Negative : "
-
-#: classes/Membership/Rule/Comments.php:47
-msgid "User can not read or comment on posts."
-msgstr "User can not read or comment on posts."
-
-#: classes/Membership/Rule/Blogcreation.php:39
-msgid "Blog Creation"
-msgstr "Blog Creation"
-
-#: classes/Membership/Rule/Blogcreation.php:39
-msgid "Remove Blog Creation from this rules area."
-msgstr "Remove Blog Creation from this rules area."
-
-#: classes/Membership/Rule/Blogcreation.php:46
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:42
-msgid "User can create "
-msgstr "User can create "
-
-#: classes/Membership/Rule/Blogcreation.php:46
-msgid " blogs."
-msgstr " blogs."
-
-#: classes/Membership/Rule/Blogcreation.php:46
-msgid "Leave blank for unlimited blogs."
-msgstr "Leave blank for unlimited blogs."
-
-#: classes/Membership/Rule/Blogcreation.php:47
-msgid "User is unable to create any blogs."
-msgstr "User is unable to create any blogs."
-
-#: classes/Membership/Rule/Pages.php:63 classes/Membership/Rule/Pages.php:120
-msgid "Pages"
-msgstr "Pages"
-
-#: classes/Membership/Rule/Pages.php:65
-msgid "Remove Pages from this rules area."
-msgstr "Remove Pages from this rules area."
-
-#: classes/Membership/Rule/Pages.php:72
-msgid ""
-"Select the Pages to be covered by this rule by checking the box next to the "
-"relevant pages title. Pay attention that pages selected as Membership page "
-"(in the options) are not listed below."
-msgstr ""
-"Select the Pages to be covered by this rule by checking the box next to the "
-"relevant pages title. Pay attention that pages selected as Membership page "
-"(in the options) are not listed below."
-
-#: classes/Membership/Rule/Pages.php:79 classes/Membership/Rule/Pages.php:86
-#: classes/Membership/Rule/Buddypress/Pages.php:83
-#: classes/Membership/Rule/Buddypress/Pages.php:90
-msgid "Page title"
-msgstr "Page title"
-
-#: classes/Membership/Rule/Pages.php:106
-#, php-format
-msgid "Only the most recent %d pages are shown above."
-msgstr "Only the most recent %d pages are shown above."
-
-#: classes/Membership/Rule/Pages.php:121
-msgid "Allows specific pages to be protected."
-msgstr "Allows specific pages to be protected."
-
-#: classes/Membership/Rule/Downloads.php:43
-msgid "Downloads"
-msgstr "Downloads"
-
-#: classes/Membership/Rule/Downloads.php:43
-msgid "Remove Downloads from this rules area."
-msgstr "Remove Downloads from this rules area."
-
-#: classes/Membership/Rule/Downloads.php:45
-msgid ""
-"Select the Downloads / Media to be covered by this rule by checking the box "
-"next to the relevant group name."
-msgstr ""
-"Select the Downloads / Media to be covered by this rule by checking the box "
-"next to the relevant group name."
-
-#: classes/Membership/Rule/Downloads.php:61
-#: classes/Membership/Rule/Downloads.php:67
-msgid "Download / Group name"
-msgstr "Download / Group name"
-
-#: classes/Membership/Rule/Downloads.php:94
-msgid ""
-"You have no download groups set, please visit the membership options page to "
-"set them up."
-msgstr ""
-"You have no download groups set, please visit the membership options page to "
-"set them up."
-
-#: classes/Membership/Rule/URLGroups.php:54
-#: classes/Membership/Rule/URLGroups.php:68
-#: membershipincludes/classes/class.tutorial.php:607
-#: membershipincludes/classes/class.help.php:204
-#: membershipincludes/classes/membershipadmin.php:260
-#: membershipincludes/classes/membershipadmin.php:386
-#: membershipincludes/classes/membershipadmin.php:477
-msgid "URL Groups"
-msgstr "URL Groups"
-
-#: classes/Membership/Rule/URLGroups.php:55
-msgid ""
-"Allows specific URL's to be protected (includes ability to protect using "
-"regular expressions)."
-msgstr ""
-"Allows specific URL's to be protected (includes ability to protect using "
-"regular expressions)."
-
-#: classes/Membership/Rule/URLGroups.php:68
-msgid "Remove URL Groups from this rules area."
-msgstr "Remove URL Groups from this rules area."
-
-#: classes/Membership/Rule/URLGroups.php:70
-msgid ""
-"Select the URL Groups to be covered by this rule by checking the box next to "
-"the relevant URL Group name."
-msgstr ""
-"Select the URL Groups to be covered by this rule by checking the box next to "
-"the relevant URL Group name."
-
-#: classes/Membership/Rule/URLGroups.php:80
-#: classes/Membership/Rule/URLGroups.php:87
-msgid "URL Group"
-msgstr "URL Group"
-
-#: classes/Membership/Rule/More.php:39
-msgid "More tag"
-msgstr "More tag"
-
-#: classes/Membership/Rule/More.php:39
-msgid "Remove More tag from this rules area."
-msgstr "Remove More tag from this rules area."
-
-#: classes/Membership/Rule/More.php:41
-msgid "User can read full post content beyond the More tag."
-msgstr "User can read full post content beyond the More tag."
-
-#: classes/Membership/Rule/More.php:42
-msgid "User is unable to read full post content beyond the More tag."
-msgstr "User is unable to read full post content beyond the More tag."
-
-#: classes/Membership/Rule/Posts.php:53
-msgid "Posts"
-msgstr "Posts"
-
-#: classes/Membership/Rule/Posts.php:53
-msgid "Remove Posts from this rules area."
-msgstr "Remove Posts from this rules area."
-
-#: classes/Membership/Rule/Posts.php:55
-msgid ""
-"Select the posts to be covered by this rule by checking the box next to the "
-"relevant posts title."
-msgstr ""
-"Select the posts to be covered by this rule by checking the box next to the "
-"relevant posts title."
-
-#: classes/Membership/Rule/Posts.php:61 classes/Membership/Rule/Posts.php:69
-msgid "Post title"
-msgstr "Post title"
-
-#: classes/Membership/Rule/Posts.php:62 classes/Membership/Rule/Posts.php:70
-msgid "Post date"
-msgstr "Post date"
-
-#: classes/Membership/Rule/Posts.php:91
-#, php-format
-msgid ""
-"Only the most recent %d posts are shown above, if you have more than that "
-"then you should consider using categories instead."
-msgstr ""
-"Only the most recent %d posts are shown above, if you have more than that "
-"then you should consider using categories instead."
-
-#: classes/Membership/Rule/Shortcodes.php:42
-msgid "Shortcodes"
-msgstr "Shortcodes"
-
-#: classes/Membership/Rule/Shortcodes.php:42
-msgid "Remove Shortcodes from this rules area."
-msgstr "Remove Shortcodes from this rules area."
-
-#: classes/Membership/Rule/Shortcodes.php:44
-msgid ""
-"Select the Shortcodes to be covered by this rule by checking the box next to "
-"the relevant shortcode tag."
-msgstr ""
-"Select the Shortcodes to be covered by this rule by checking the box next to "
-"the relevant shortcode tag."
-
-#: classes/Membership/Rule/Shortcodes.php:52
-#: classes/Membership/Rule/Shortcodes.php:59
-msgid "Shortcode tag"
-msgstr "Shortcode tag"
-
-#: classes/Membership/Rule/Categories.php:39
-msgid "Categories"
-msgstr "Categories"
-
-#: classes/Membership/Rule/Categories.php:39
-msgid "Remove Categories from this rules area."
-msgstr "Remove Categories from this rules area."
-
-#: classes/Membership/Rule/Categories.php:41
-msgid ""
-"Select the Categories to be covered by this rule by checking the box next to "
-"the relevant categories name."
-msgstr ""
-"Select the Categories to be covered by this rule by checking the box next to "
-"the relevant categories name."
-
-#: classes/Membership/Rule/Categories.php:51
-#: classes/Membership/Rule/Categories.php:58
-msgid "Category name"
-msgstr "Category name"
-
-#: classes/Membership/Rule/Admin/Submenus.php:49
-#: classes/Membership/Rule/Admin/Submenus.php:108
-msgid "Sub Menus"
-msgstr "Sub Menus"
-
-#: classes/Membership/Rule/Admin/Submenus.php:51
-msgid "Remove Sub Menus from this rules area."
-msgstr "Remove Sub Menus from this rules area."
-
-#: classes/Membership/Rule/Admin/Submenus.php:58
-msgid ""
-"Select the Sub menu items to be covered by this rule by checking the box "
-"next to the relevant pages title."
-msgstr ""
-"Select the Sub menu items to be covered by this rule by checking the box "
-"next to the relevant pages title."
-
-#: classes/Membership/Rule/Admin/Submenus.php:65
-#: classes/Membership/Rule/Admin/Submenus.php:72
-#: classes/Membership/Rule/Admin/Mainmenus.php:62
-#: classes/Membership/Rule/Admin/Mainmenus.php:69
-msgid "Menu title"
-msgstr "Menu title"
-
-#: classes/Membership/Rule/Admin/Submenus.php:109
-msgid "Allows admin side sub menus to be protected."
-msgstr "Allows admin side sub menus to be protected."
-
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:32
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:50
-msgid "Dashboard Widgets"
-msgstr "Dashboard Widgets"
-
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:33
-msgid "Allows admin side dashboard widgets to be protected."
-msgstr "Allows admin side dashboard widgets to be protected."
-
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:52
-msgid "Remove Dashboard Widgets from this rules area."
-msgstr "Remove Dashboard Widgets from this rules area."
-
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:59
-msgid ""
-"Select the Dashboard widgets to be covered by this rule by checking the box "
-"next to the relevant pages title."
-msgstr ""
-"Select the Dashboard widgets to be covered by this rule by checking the box "
-"next to the relevant pages title."
-
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:66
-#: classes/Membership/Rule/Admin/Dashboardwidgets.php:73
-msgid "Dashboard Widget"
-msgstr "Dashboard Widget"
-
-#: classes/Membership/Rule/Admin/Plugins.php:32
-#: classes/Membership/Rule/Admin/Plugins.php:45
-msgid "Plugins"
-msgstr "Plugins"
-
-#: classes/Membership/Rule/Admin/Plugins.php:33
-msgid "Allows activation of specific plugins to be protected."
-msgstr "Allows activation of specific plugins to be protected."
-
-#: classes/Membership/Rule/Admin/Plugins.php:47
-#: classes/Membership/Rule/Admin/Mainmenus.php:48
-msgid "Remove Main Menus from this rules area."
-msgstr "Remove Main Menus from this rules area."
-
-#: classes/Membership/Rule/Admin/Plugins.php:54
-msgid ""
-"Select the Plugins to be covered by this rule by checking the box next to "
-"the relevant pages title."
-msgstr ""
-"Select the Plugins to be covered by this rule by checking the box next to "
-"the relevant pages title."
-
-#: classes/Membership/Rule/Admin/Plugins.php:61
-#: classes/Membership/Rule/Admin/Plugins.php:67
-msgid "Plugin"
-msgstr "Plugin"
-
-#: classes/Membership/Rule/Admin/Mainmenus.php:32
-#: classes/Membership/Rule/Admin/Mainmenus.php:46
-msgid "Main Menus"
-msgstr "Main Menus"
-
-#: classes/Membership/Rule/Admin/Mainmenus.php:33
-msgid "Allows admin side main menus to be protected."
-msgstr "Allows admin side main menus to be protected."
-
-#: classes/Membership/Rule/Admin/Mainmenus.php:55
-msgid ""
-"Select the Main menus to be covered by this rule by checking the box next to "
-"the relevant pages title."
-msgstr ""
-"Select the Main menus to be covered by this rule by checking the box next to "
-"the relevant pages title."
-
-#: classes/Membership/Rule/Marketpress/Pages.php:34
-#: classes/Membership/Rule/Marketpress/Pages.php:57
-msgid "MarketPress Pages"
-msgstr "MarketPress Pages"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:35
-msgid "Allows MarketPress pages to be protected."
-msgstr "Allows MarketPress pages to be protected."
-
-#: classes/Membership/Rule/Marketpress/Pages.php:39
-msgid "Global Products"
-msgstr "Global Products"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:40
-msgid "Global Categories"
-msgstr "Global Categories"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:41
-msgid "Global Tags"
-msgstr "Global Tags"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:42
-msgid "Product List"
-msgstr "Product List"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:43
-msgid "Cart"
-msgstr "Cart"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:44
-msgid "Order Status"
-msgstr "Order Status"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:59
-msgid "Remove MarketPress Pages from this rules area."
-msgstr "Remove MarketPress Pages from this rules area."
-
-#: classes/Membership/Rule/Marketpress/Pages.php:66
-msgid ""
-"Select the MarketPress pages to be covered by this rule by checking the box "
-"next to the relevant page name."
-msgstr ""
-"Select the MarketPress pages to be covered by this rule by checking the box "
-"next to the relevant page name."
-
-#: classes/Membership/Rule/Marketpress/Pages.php:72
-#: classes/Membership/Rule/Marketpress/Pages.php:78
-msgid "Page type"
-msgstr "Page type"
-
-#: classes/Membership/Rule/Marketpress/Pages.php:99
-msgid ""
-"You have no pages available, please ensure you have MarketPress installed."
-msgstr ""
-"You have no pages available, please ensure you have MarketPress installed."
-
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:40
-msgid "Group Creation"
-msgstr "Group Creation"
-
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:40
-msgid "Remove Group Creation from this rules area."
-msgstr "Remove Group Creation from this rules area."
-
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:42
-msgid " groups."
-msgstr " groups."
-
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:42
-msgid "Leave blanks for unlimited groups."
-msgstr "Leave blanks for unlimited groups."
-
-#: classes/Membership/Rule/Buddypress/Groupcreation.php:43
-msgid "User is unable to create any groups."
-msgstr "User is unable to create any groups."
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:40
-msgid "Blogs"
-msgstr "Blogs"
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:40
-msgid "Remove Blogs from this rules area."
-msgstr "Remove Blogs from this rules area."
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:42
-msgid ""
-"Select the blogs to be covered by this rule by checking the box next to the "
-"relevant blogs name."
-msgstr ""
-"Select the blogs to be covered by this rule by checking the box next to the "
-"relevant blogs name."
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:55
-#: classes/Membership/Rule/Buddypress/Blogs.php:63
-msgid "Blog title"
-msgstr "Blog title"
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:56
-#: classes/Membership/Rule/Buddypress/Blogs.php:64
-msgid "Last activity"
-msgstr "Last activity"
-
-#: classes/Membership/Rule/Buddypress/Blogs.php:95
-msgid "Only the most recently updated 50 blogs are shown above."
-msgstr "Only the most recently updated 50 blogs are shown above."
-
-#: classes/Membership/Rule/Buddypress/Pages.php:68
-msgid "BuddyPress Pages"
-msgstr "BuddyPress Pages"
-
-#: classes/Membership/Rule/Buddypress/Pages.php:68
-msgid "Remove BuddyPress Pages from this rules area."
-msgstr "Remove BuddyPress Pages from this rules area."
-
-#: classes/Membership/Rule/Buddypress/Pages.php:70
-msgid ""
-"Select the BuddyPress Pages to be covered by this rule by checking the box "
-"next to the relevant pages title."
-msgstr ""
-"Select the BuddyPress Pages to be covered by this rule by checking the box "
-"next to the relevant pages title."
-
-#: classes/Membership/Rule/Buddypress/Groups.php:40
-msgid "Groups"
-msgstr "Groups"
-
-#: classes/Membership/Rule/Buddypress/Groups.php:40
-msgid "Remove Groups from this rules area."
-msgstr "Remove Groups from this rules area."
-
-#: classes/Membership/Rule/Buddypress/Groups.php:42
-msgid ""
-"Select the groups to be covered by this rule by checking the box next to the "
-"relevant groups title."
-msgstr ""
-"Select the groups to be covered by this rule by checking the box next to the "
-"relevant groups title."
-
-#: classes/Membership/Rule/Buddypress/Groups.php:55
-#: classes/Membership/Rule/Buddypress/Groups.php:63
-msgid "Group title"
-msgstr "Group title"
-
-#: classes/Membership/Rule/Buddypress/Groups.php:56
-#: classes/Membership/Rule/Buddypress/Groups.php:64
-msgid "Group created"
-msgstr "Group created"
-
-#: classes/Membership/Rule/Buddypress/Groups.php:95
-msgid "Only the most recent "
-msgstr "Only the most recent "
-
-#: classes/Membership/Rule/Buddypress/Groups.php:95
-msgid " groups are shown above."
-msgstr " groups are shown above."
-
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:40
-msgid "Private Messaging"
-msgstr "Private Messaging"
-
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:40
-msgid "Remove Private Messaging from this rules area."
-msgstr "Remove Private Messaging from this rules area."
-
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:42
-msgid "User can send messages."
-msgstr "User can send messages."
-
-#: classes/Membership/Rule/Buddypress/Privatemessage.php:43
-msgid "User is unable to send messages."
-msgstr "User is unable to send messages."
 
 #: membershipincludes/gateways/gateway.paypalexpress.php:39
 msgid "PayPal Merchant Account ID"
@@ -3868,8 +3905,8 @@ msgid "Are you sure you want to delete this level?"
 msgstr "Are you sure you want to delete this level?"
 
 #: membershipincludes/classes/membershipadmin.php:650
-#: membershipincludes/classes/membershippublic.php:1937
-#: membershipincludes/classes/membershippublic.php:2003
+#: membershipincludes/classes/membershippublic.php:1892
+#: membershipincludes/classes/membershippublic.php:1958
 msgid "Are you sure you want to deactivate this level?"
 msgstr "Are you sure you want to deactivate this level?"
 
@@ -4400,8 +4437,8 @@ msgid "&larr; Back to All Users"
 msgstr "&larr; Back to All Users"
 
 #: membershipincludes/classes/membershipadmin.php:2154
-#: membershipincludes/classes/membershippublic.php:1369
-#: membershipincludes/classes/membershippublic.php:1480
+#: membershipincludes/classes/membershippublic.php:1324
+#: membershipincludes/classes/membershippublic.php:1435
 #: membershipincludes/includes/bp.registration.form.php:41
 #: membershipincludes/includes/account.form.php:43
 #: membershipincludes/includes/popover_signup.form.php:9
@@ -6124,26 +6161,26 @@ msgid "Invalid form submission."
 msgstr "Invalid form submission."
 
 #: membershipincludes/classes/membershipadmin.php:7656
-#: membershipincludes/classes/membershippublic.php:1387
-#: membershipincludes/classes/membershippublic.php:1499
+#: membershipincludes/classes/membershippublic.php:1342
+#: membershipincludes/classes/membershippublic.php:1454
 msgid "The username is not valid, sorry."
 msgstr "The username is not valid, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7660
-#: membershipincludes/classes/membershippublic.php:1391
-#: membershipincludes/classes/membershippublic.php:1503
+#: membershipincludes/classes/membershippublic.php:1346
+#: membershipincludes/classes/membershippublic.php:1458
 msgid "That username is already taken, sorry."
 msgstr "That username is already taken, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7664
-#: membershipincludes/classes/membershippublic.php:1395
-#: membershipincludes/classes/membershippublic.php:1507
+#: membershipincludes/classes/membershippublic.php:1350
+#: membershipincludes/classes/membershippublic.php:1462
 msgid "The email address is not valid, sorry."
 msgstr "The email address is not valid, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7668
-#: membershipincludes/classes/membershippublic.php:1399
-#: membershipincludes/classes/membershippublic.php:1511
+#: membershipincludes/classes/membershippublic.php:1354
+#: membershipincludes/classes/membershippublic.php:1466
 msgid "That email address is already taken, sorry."
 msgstr "That email address is already taken, sorry."
 
@@ -6172,68 +6209,68 @@ msgstr "Lost password?"
 msgid "Subscribe"
 msgstr "Subscribe"
 
-#: membershipincludes/classes/class.membership.php:26
+#: membershipincludes/classes/class.membership.php:28
 #, php-format
 msgid "MEMBER: Loaded member %d"
 msgstr "MEMBER: Loaded member %d"
 
-#: membershipincludes/classes/class.membership.php:134
+#: membershipincludes/classes/class.membership.php:136
 msgid "MEMBER: Have relationships so starting transition check"
 msgstr "MEMBER: Have relationships so starting transition check"
 
-#: membershipincludes/classes/class.membership.php:142
+#: membershipincludes/classes/class.membership.php:144
 msgid "MEMBER: Processing transition - "
 msgstr "MEMBER: Processing transition - "
 
-#: membershipincludes/classes/class.membership.php:147
+#: membershipincludes/classes/class.membership.php:149
 msgid "MEMBER: Transition has passed expiration timestamp - "
 msgstr "MEMBER: Transition has passed expiration timestamp - "
 
-#: membershipincludes/classes/class.membership.php:154
+#: membershipincludes/classes/class.membership.php:156
 #, php-format
 msgid "MEMBER: Membership has been marked for expiration - %d"
 msgstr "MEMBER: Membership has been marked for expiration - %d"
 
-#: membershipincludes/classes/class.membership.php:168
-#: membershipincludes/classes/class.membership.php:202
+#: membershipincludes/classes/class.membership.php:170
+#: membershipincludes/classes/class.membership.php:204
 #, php-format
 msgid "MEMBER: Membership level to move to for subscription - %d - "
 msgstr "MEMBER: Membership level to move to for subscription - %d - "
 
-#: membershipincludes/classes/class.membership.php:176
-#: membershipincludes/classes/class.membership.php:183
-#: membershipincludes/classes/class.membership.php:206
+#: membershipincludes/classes/class.membership.php:178
+#: membershipincludes/classes/class.membership.php:185
+#: membershipincludes/classes/class.membership.php:208
 #, php-format
 msgid "MEMBER: Moved to new level for - %d"
 msgstr "MEMBER: Moved to new level for - %d"
 
-#: membershipincludes/classes/class.membership.php:188
-#: membershipincludes/classes/class.membership.php:195
-#: membershipincludes/classes/class.membership.php:211
+#: membershipincludes/classes/class.membership.php:190
+#: membershipincludes/classes/class.membership.php:197
+#: membershipincludes/classes/class.membership.php:213
 #, php-format
 msgid "MEMBER: Expired subscription as no next level for - %d"
 msgstr "MEMBER: Expired subscription as no next level for - %d"
 
-#: membershipincludes/classes/class.membership.php:217
+#: membershipincludes/classes/class.membership.php:219
 msgid "MEMBER: Transition check not expired - "
 msgstr "MEMBER: Transition check not expired - "
 
-#: membershipincludes/classes/class.membership.php:612
+#: membershipincludes/classes/class.membership.php:607
 #, php-format
 msgid "MEMBER: Moving subscription from %d to %d"
 msgstr "MEMBER: Moving subscription from %d to %d"
 
-#: membershipincludes/classes/class.membership.php:620
+#: membershipincludes/classes/class.membership.php:615
 #, php-format
 msgid "MEMBER: New level to move to %d on order %d"
 msgstr "MEMBER: New level to move to %d on order %d"
 
-#: membershipincludes/classes/class.membership.php:665
+#: membershipincludes/classes/class.membership.php:660
 #, php-format
 msgid "MEMBER: Completed move to %d on order %d on sub %d"
 msgstr "MEMBER: Completed move to %d on order %d on sub %d"
 
-#: membershipincludes/classes/class.membership.php:670
+#: membershipincludes/classes/class.membership.php:665
 #, php-format
 msgid "MEMBER: Already on level %d on order %d"
 msgstr "MEMBER: Already on level %d on order %d"
@@ -6403,81 +6440,73 @@ msgstr "members"
 msgid "My Account"
 msgstr "My Account"
 
-#: membershipincludes/classes/membershippublic.php:823
+#: membershipincludes/classes/membershippublic.php:778
 msgid "No access to this content"
 msgstr "No access to this content"
 
-#: membershipincludes/classes/membershippublic.php:1370
-#: membershipincludes/classes/membershippublic.php:1481
+#: membershipincludes/classes/membershippublic.php:1325
+#: membershipincludes/classes/membershippublic.php:1436
 msgid "Email address"
 msgstr "Email address"
 
-#: membershipincludes/classes/membershippublic.php:1371
-#: membershipincludes/classes/membershippublic.php:1482
+#: membershipincludes/classes/membershippublic.php:1326
+#: membershipincludes/classes/membershippublic.php:1437
 #: membershipincludes/includes/popover_signup.form.php:17
 #: membershipincludes/includes/popover_signup.form.php:49
 #: membershipincludes/includes/registration.form.php:51
 msgid "Password"
 msgstr "Password"
 
-#: membershipincludes/classes/membershippublic.php:1372
-#: membershipincludes/classes/membershippublic.php:1483
+#: membershipincludes/classes/membershippublic.php:1327
+#: membershipincludes/classes/membershippublic.php:1438
 msgid "Password confirmation"
 msgstr "Password confirmation"
 
-#: membershipincludes/classes/membershippublic.php:1378
-#: membershipincludes/classes/membershippublic.php:1490
-#: membershipincludes/classes/membershippublic.php:1548
+#: membershipincludes/classes/membershippublic.php:1333
+#: membershipincludes/classes/membershippublic.php:1445
+#: membershipincludes/classes/membershippublic.php:1503
 msgid "Please ensure that the "
 msgstr "Please ensure that the "
 
-#: membershipincludes/classes/membershippublic.php:1378
-#: membershipincludes/classes/membershippublic.php:1490
-#: membershipincludes/classes/membershippublic.php:1548
+#: membershipincludes/classes/membershippublic.php:1333
+#: membershipincludes/classes/membershippublic.php:1445
+#: membershipincludes/classes/membershippublic.php:1503
 msgid " information is completed."
 msgstr " information is completed."
 
-#: membershipincludes/classes/membershippublic.php:1383
-#: membershipincludes/classes/membershippublic.php:1495
+#: membershipincludes/classes/membershippublic.php:1338
+#: membershipincludes/classes/membershippublic.php:1450
 msgid "Please ensure the passwords match."
 msgstr "Please ensure the passwords match."
 
-#: membershipincludes/classes/membershippublic.php:1936
-#: membershipincludes/classes/membershippublic.php:2002
+#: membershipincludes/classes/membershippublic.php:1891
+#: membershipincludes/classes/membershippublic.php:1957
 msgid "Are you sure you want to unsubscribe from this subscription?"
 msgstr "Are you sure you want to unsubscribe from this subscription?"
 
-#: membershipincludes/classes/membershippublic.php:1956
+#: membershipincludes/classes/membershippublic.php:1911
 msgid "Problem with registration."
 msgstr "Problem with registration."
 
-#: membershipincludes/classes/membershippublic.php:1957
+#: membershipincludes/classes/membershippublic.php:1912
 msgid "Problem with Login."
 msgstr "Problem with Login."
 
-#: membershipincludes/classes/membershippublic.php:1958
+#: membershipincludes/classes/membershippublic.php:1913
 msgid "Please ensure you have completed all the fields"
 msgstr "Please ensure you have completed all the fields"
 
-#: membershipincludes/classes/membershippublic.php:1959
+#: membershipincludes/classes/membershippublic.php:1914
 msgid "Please ensure passwords match"
 msgstr "Please ensure passwords match"
 
-#: membershipincludes/classes/membershippublic.php:1960
+#: membershipincludes/classes/membershippublic.php:1915
 msgid "Please ensure you have entered an username or password"
 msgstr "Please ensure you have entered an username or password"
 
-#: membershipincludes/classes/membershippublic.php:2063
+#: membershipincludes/classes/membershippublic.php:2018
 msgid "Could not create your user account."
 msgstr "Could not create your user account."
-
-#: membershipincludes/classes/membershippublic.php:2166
-msgid "About to redirect to the protected page"
-msgstr "About to redirect to the protected page"
-
-#: membershipincludes/classes/membershippublic.php:2170
-msgid "Not going to redirect to the protected page"
-msgstr "Not going to redirect to the protected page"
 
 #: membershipincludes/help/help.subs.php:1
 #: membershipincludes/help/help.optionsextras.php:1
@@ -7518,144 +7547,144 @@ msgstr "New Password"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: membershipincludes/includes/functions.php:702
-#: membershipincludes/includes/functions.php:771
+#: membershipincludes/includes/functions.php:687
+#: membershipincludes/includes/functions.php:756
 #, php-format
 msgid "%s for "
 msgstr "%s for "
 
-#: membershipincludes/includes/functions.php:702
-#: membershipincludes/includes/functions.php:736
-#: membershipincludes/includes/functions.php:850
-#: membershipincludes/includes/functions.php:852
-#: membershipincludes/includes/functions.php:872
-#: membershipincludes/includes/functions.php:904
+#: membershipincludes/includes/functions.php:687
+#: membershipincludes/includes/functions.php:721
+#: membershipincludes/includes/functions.php:835
+#: membershipincludes/includes/functions.php:837
+#: membershipincludes/includes/functions.php:857
+#: membershipincludes/includes/functions.php:889
 msgid "free"
 msgstr "free"
 
-#: membershipincludes/includes/functions.php:706
-#: membershipincludes/includes/functions.php:740
-#: membershipincludes/includes/functions.php:775
-#: membershipincludes/includes/functions.php:809
+#: membershipincludes/includes/functions.php:691
+#: membershipincludes/includes/functions.php:725
+#: membershipincludes/includes/functions.php:760
+#: membershipincludes/includes/functions.php:794
 msgid " day"
 msgstr " day"
 
-#: membershipincludes/includes/functions.php:708
-#: membershipincludes/includes/functions.php:742
-#: membershipincludes/includes/functions.php:777
-#: membershipincludes/includes/functions.php:811
-#: membershipincludes/includes/functions.php:878
-#: membershipincludes/includes/functions.php:910
-#: membershipincludes/includes/functions.php:946
-#: membershipincludes/includes/functions.php:978
+#: membershipincludes/includes/functions.php:693
+#: membershipincludes/includes/functions.php:727
+#: membershipincludes/includes/functions.php:762
+#: membershipincludes/includes/functions.php:796
+#: membershipincludes/includes/functions.php:863
+#: membershipincludes/includes/functions.php:895
+#: membershipincludes/includes/functions.php:931
+#: membershipincludes/includes/functions.php:963
 msgid " days"
 msgstr " days"
 
-#: membershipincludes/includes/functions.php:713
-#: membershipincludes/includes/functions.php:747
-#: membershipincludes/includes/functions.php:782
-#: membershipincludes/includes/functions.php:816
+#: membershipincludes/includes/functions.php:698
+#: membershipincludes/includes/functions.php:732
+#: membershipincludes/includes/functions.php:767
+#: membershipincludes/includes/functions.php:801
 msgid " week"
 msgstr " week"
 
-#: membershipincludes/includes/functions.php:715
-#: membershipincludes/includes/functions.php:749
-#: membershipincludes/includes/functions.php:784
-#: membershipincludes/includes/functions.php:818
-#: membershipincludes/includes/functions.php:885
-#: membershipincludes/includes/functions.php:917
-#: membershipincludes/includes/functions.php:953
-#: membershipincludes/includes/functions.php:985
+#: membershipincludes/includes/functions.php:700
+#: membershipincludes/includes/functions.php:734
+#: membershipincludes/includes/functions.php:769
+#: membershipincludes/includes/functions.php:803
+#: membershipincludes/includes/functions.php:870
+#: membershipincludes/includes/functions.php:902
+#: membershipincludes/includes/functions.php:938
+#: membershipincludes/includes/functions.php:970
 msgid " weeks"
 msgstr " weeks"
 
-#: membershipincludes/includes/functions.php:720
-#: membershipincludes/includes/functions.php:754
-#: membershipincludes/includes/functions.php:789
-#: membershipincludes/includes/functions.php:823
+#: membershipincludes/includes/functions.php:705
+#: membershipincludes/includes/functions.php:739
+#: membershipincludes/includes/functions.php:774
+#: membershipincludes/includes/functions.php:808
 msgid " month"
 msgstr " month"
 
-#: membershipincludes/includes/functions.php:722
-#: membershipincludes/includes/functions.php:756
-#: membershipincludes/includes/functions.php:791
-#: membershipincludes/includes/functions.php:825
-#: membershipincludes/includes/functions.php:892
-#: membershipincludes/includes/functions.php:924
-#: membershipincludes/includes/functions.php:960
-#: membershipincludes/includes/functions.php:992
+#: membershipincludes/includes/functions.php:707
+#: membershipincludes/includes/functions.php:741
+#: membershipincludes/includes/functions.php:776
+#: membershipincludes/includes/functions.php:810
+#: membershipincludes/includes/functions.php:877
+#: membershipincludes/includes/functions.php:909
+#: membershipincludes/includes/functions.php:945
+#: membershipincludes/includes/functions.php:977
 msgid " months"
 msgstr " months"
 
-#: membershipincludes/includes/functions.php:727
-#: membershipincludes/includes/functions.php:761
-#: membershipincludes/includes/functions.php:796
-#: membershipincludes/includes/functions.php:830
+#: membershipincludes/includes/functions.php:712
+#: membershipincludes/includes/functions.php:746
+#: membershipincludes/includes/functions.php:781
+#: membershipincludes/includes/functions.php:815
 msgid " year"
 msgstr " year"
 
-#: membershipincludes/includes/functions.php:729
-#: membershipincludes/includes/functions.php:763
-#: membershipincludes/includes/functions.php:798
-#: membershipincludes/includes/functions.php:832
-#: membershipincludes/includes/functions.php:899
-#: membershipincludes/includes/functions.php:931
-#: membershipincludes/includes/functions.php:967
-#: membershipincludes/includes/functions.php:999
+#: membershipincludes/includes/functions.php:714
+#: membershipincludes/includes/functions.php:748
+#: membershipincludes/includes/functions.php:783
+#: membershipincludes/includes/functions.php:817
+#: membershipincludes/includes/functions.php:884
+#: membershipincludes/includes/functions.php:916
+#: membershipincludes/includes/functions.php:952
+#: membershipincludes/includes/functions.php:984
 msgid " years"
 msgstr " years"
 
-#: membershipincludes/includes/functions.php:736
-#: membershipincludes/includes/functions.php:805
+#: membershipincludes/includes/functions.php:721
+#: membershipincludes/includes/functions.php:790
 #, php-format
 msgid "and then %s for "
 msgstr "and then %s for "
 
-#: membershipincludes/includes/functions.php:850
-#: membershipincludes/includes/functions.php:858
+#: membershipincludes/includes/functions.php:835
+#: membershipincludes/includes/functions.php:843
 #, php-format
 msgid "%s "
 msgstr "%s "
 
-#: membershipincludes/includes/functions.php:852
-#: membershipincludes/includes/functions.php:860
+#: membershipincludes/includes/functions.php:837
+#: membershipincludes/includes/functions.php:845
 #, php-format
 msgid "and then %s "
 msgstr "and then %s "
 
-#: membershipincludes/includes/functions.php:872
-#: membershipincludes/includes/functions.php:940
+#: membershipincludes/includes/functions.php:857
+#: membershipincludes/includes/functions.php:925
 #, php-format
 msgid "%s every "
 msgstr "%s every "
 
-#: membershipincludes/includes/functions.php:904
-#: membershipincludes/includes/functions.php:972
+#: membershipincludes/includes/functions.php:889
+#: membershipincludes/includes/functions.php:957
 #, php-format
 msgid "and then %s every "
 msgstr "and then %s every "
 
-#: membershipincludes/includes/functions.php:1061
+#: membershipincludes/includes/functions.php:1046
 msgid "Membership Debug Message"
 msgstr "Membership Debug Message"
 
-#: membershipincludes/includes/functions.php:1197
+#: membershipincludes/includes/functions.php:1182
 msgid "unknown"
 msgstr "unknown"
 
-#: membershipincludes/includes/functions.php:1260
+#: membershipincludes/includes/functions.php:1230
 msgid "Administration"
 msgstr "Administration"
 
-#: membershipincludes/includes/functions.php:1284
+#: membershipincludes/includes/functions.php:1243
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#: membershipincludes/includes/functions.php:1301
+#: membershipincludes/includes/functions.php:1260
 msgid "BuddyPress protected content message"
 msgstr "BuddyPress protected content message"
 
-#: membershipincludes/includes/functions.php:1303
+#: membershipincludes/includes/functions.php:1262
 msgid ""
 "This is the message that is displayed when a BuddyPress related operation is "
 "restricted. Depending on your theme this is displayed in a red bar, and so "
@@ -7665,7 +7694,7 @@ msgstr ""
 "restricted. Depending on your theme this is displayed in a red bar, and so "
 "should be short and concise."
 
-#: membershipincludes/includes/functions.php:1307
+#: membershipincludes/includes/functions.php:1266
 msgid "BuddyPress No access message"
 msgstr "BuddyPress No access message"
 
@@ -7765,3 +7794,9 @@ msgstr "edit"
 #: membershipincludes/includes/bp.account.form.php:89
 msgid "Display name publicly as"
 msgstr "Display name publicly as"
+
+#~ msgid "About to redirect to the protected page"
+#~ msgstr "About to redirect to the protected page"
+
+#~ msgid "Not going to redirect to the protected page"
+#~ msgstr "Not going to redirect to the protected page"
