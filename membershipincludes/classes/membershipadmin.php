@@ -2685,13 +2685,13 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     wp_nonce_field('update-membership-options');
                     ?>
                     <div class="postbox">
-                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Stranger settings', 'membership'); ?></span></h3>
+                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Stranger access level', 'membership'); ?></span></h3>
                         <div class="inside">
-                            <p class='description'><?php _e('A &quot;stranger&quot; is a visitor to your website who is either not logged in, or does not have an active membership or subscription to your website.', 'membership'); ?></p>
+                            <p class='description'><?php _e( 'A stranger is a visitor to your website who is not logged in.', 'membership' ) ?></p>
                             <table class="form-table">
                                 <tbody>
                                     <tr valign="top">
-                                        <th scope="row"><?php _e('Use membership level', 'membership'); ?></th>
+                                        <th scope="row"><?php _e('Use level', 'membership'); ?></th>
                                         <td>
                                             <select name='strangerlevel' id='strangerlevel'>
                                                 <option value="0"><?php _e('None - No access to content', 'membership'); ?></option>
@@ -2710,16 +2710,13 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                     </tr>
                                 </tbody>
                             </table>
-                            <p class='description'><?php _e('If the above is set to &quot;None&quot; then you can pick the page you want strangers directed to below in the &quot;Membership Pages&quot; options.', 'membership'); ?></p>
-
                         </div>
                     </div>
 
                     <div class="postbox">
-                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('User registration', 'membership'); ?></span></h3>
+                        <h3 class="hndle" style='cursor:auto;'><span><?php _e('Default subscription for registered users', 'membership'); ?></span></h3>
                         <div class="inside">
-                            <p class='description'><?php _e('If you have free user registration enabled on your site, select the subscription they will be assigned to initially.', 'membership'); ?></p>
-                            <p class='description'><?php _e('If you are using a paid subscription model - it is probably best to set this to &quot;none&quot;.', 'membership'); ?></p>
+                            <p class="description"><?php _e( 'Select default subscription which will be assigned to a registered user, which does not have any access level.', 'membership' ) ?></p>
 
                             <table class="form-table">
                                 <tbody>
