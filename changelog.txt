@@ -29,6 +29,7 @@
 * Implemented membership access level meta box for posts and pages editing form
 * Implemented functionality which hides inactive members from BuddyPress members list
 * Implemented ability to upgrade subscription for admin gateway
+* Implemented redirect back to a secure page when an user logins on protected page
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup

@@ -1,33 +1,27 @@
 <?php
 
 // Added some extra helpfull shortcodes to the membership system
-if (!class_exists('M_extrashortcodes')) {
+if ( !class_exists( 'M_extrashortcodes' ) ) {
 
-    class M_extrashortcodes {
+	class M_extrashortcodes {
 
-        // PHP 5+ constructor
-        function __construct() {
+		function __construct() {
 
-            add_action('membership_register_shortcodes', array(&$this, 'register_shortcodes'));
-        }
+			add_action( 'membership_register_shortcodes', array( $this, 'register_shortcodes' ) );
+		}
 
-        // PHP 4 constructor
-        function M_shortcodes() {
-            $this->__construct();
-        }
+		function register_shortcodes() {
 
-        function register_shortcodes() {
+			// Registration form building shortcodes
+			add_shortcode( 'subscriptiontitle', array( $this, 'do_subscriptiontitle_shortcode' ) );
+			add_shortcode( 'subscriptiondetails', array( $this, 'do_subscriptiondetails_shortcode' ) );
+			add_shortcode( 'subscriptionprice', array( $this, 'do_subscriptionprice_shortcode' ) );
+			add_shortcode( 'subscriptionbutton', array( $this, 'do_subscriptionbutton_shortcode' ) );
 
-            // Registration form building shortcodes
-            add_shortcode('subscriptiontitle', array(&$this, 'do_subscriptiontitle_shortcode'));
-            add_shortcode('subscriptiondetails', array(&$this, 'do_subscriptiondetails_shortcode'));
-            add_shortcode('subscriptionprice', array(&$this, 'do_subscriptionprice_shortcode'));
-            add_shortcode('subscriptionbutton', array(&$this, 'do_subscriptionbutton_shortcode'));
+			add_shortcode( 'membershiplogin', array( $this, 'do_membershiplogin_shortcode' ) );
+		}
 
-            add_shortcode('membershiplogin', array(&$this, 'do_membershiplogin_shortcode'));
-        }
-
-        // Based on an original plugin by Pippin - http://pippinsplugins.com/wordpress-login-form-short-code/
+		// Based on an original plugin by Pippin - http://pippinsplugins.com/wordpress-login-form-short-code/
         function do_membershiplogin_shortcode( $atts ) {
 			if ( is_user_logged_in() ) {
 				return '';
@@ -42,7 +36,7 @@ if (!class_exists('M_extrashortcodes')) {
 				"prefix"        => apply_filters( 'membership_short_login_form_prefix', '' ),
 				"wrapwith"      => apply_filters( 'membership_short_login_form_wrapwith', '' ),
 				"wrapwithclass" => apply_filters( 'membership_short_login_form_wrapwithclass', '' ),
-				"redirect"      => apply_filters( 'membership_short_login_form_redirect', '' ),
+				"redirect"      => apply_filters( 'membership_short_login_form_redirect', filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ) ),
 				"lostpass"      => apply_filters( 'membership_short_login_form_lostpassword', '' ),
 			), $atts ) );
 
@@ -328,4 +322,3 @@ if (!class_exists('M_extrashortcodes')) {
 }
 
 $M_extrashortcodes = new M_extrashortcodes();
-?>

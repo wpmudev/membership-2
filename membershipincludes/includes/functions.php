@@ -1006,11 +1006,11 @@ function membership_redirect_to_protected() {
 		}
 	}
 
-	$url = get_permalink( (int)$M_options['nocontent_page'] );
+	$url = get_permalink( absint( $M_options['nocontent_page'] ) );
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 	if ( $url != $current_url && !headers_sent() ) {
-		wp_safe_redirect( $url );
+		wp_safe_redirect( add_query_arg( 'redirect_to', urlencode( $current_url ), $url ) );
 		exit;
 	}
 }
@@ -1330,7 +1330,7 @@ function M_setup_BP_addons() {
 	if ( !defined( 'BP_VERSION' ) || version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), "1.5", '<' ) ) {
 		return;
 	}
-	
+
 	add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
 	add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
 
