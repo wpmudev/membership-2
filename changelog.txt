@@ -1,5 +1,7 @@
 == 3.5 ==
 
+* Fixed coupons start date issue
+* Fixed coupons timezones issue
 * Fixed multiple levels compatibility issue
 * Fixed infinite transition issue for indefinite subscriptions when period set improperly
 * Fixed &USD; rendering issue

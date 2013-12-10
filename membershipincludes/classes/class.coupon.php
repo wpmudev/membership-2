@@ -131,33 +131,26 @@ if ( !class_exists( 'M_Coupon' ) ) {
 		}
 
 		function valid_coupon() {
-
-			if(empty($this->_coupon)) {
+			if ( empty( $this->_coupon ) ) {
 				// We don't have a coupon so there wasn't a valid one
 				return false;
 			}
 
-			if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || (!empty($this->_coupon->coupon_enddate) && strtotime( $this->_coupon->coupon_enddate ) < time()) ) {
-				return false;
-			} else {
-				return true;
-			}
+			$timestamp = current_time( 'timestamp', true );
+			$used_out = !empty( $this->_coupon->coupon_uses ) && absint( $this->_coupon->coupon_used ) >= absint( $this->_coupon->coupon_uses );
+			$too_early = !empty( $this->_coupon->coupon_startdate ) && strtotime( $this->_coupon->coupon_startdate ) > $timestamp;
+			$too_late = !empty( $this->_coupon->coupon_enddate ) && strtotime( $this->_coupon->coupon_enddate ) < $timestamp;
 
+			return !$used_out && !$too_early && !$too_late;
 		}
 
 		function valid_for_subscription( $sub_id ) {
-
-			if(empty($this->_coupon)) {
+			if ( !$this->valid_coupon() ) {
 				// We don't have a coupon so there wasn't a valid one
 				return false;
 			}
 
-			if( ( !empty($this->_coupon->coupon_uses) && (int) $this->_coupon->coupon_used >= (int) $this->_coupon->coupon_uses) || (!empty($this->_coupon->coupon_enddate) && strtotime( $this->_coupon->coupon_enddate ) < time()) || ( $this->_coupon->coupon_sub_id != 0 && $this->_coupon->coupon_sub_id != $sub_id )  ) {
-				return false;
-			} else {
-				return true;
-			}
-
+			return $this->_coupon->coupon_sub_id == 0 || $this->_coupon->coupon_sub_id == $sub_id;
 		}
 
 		function get_coupon_code() {
