@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed multiple levels compatibility issue
 * Fixed infinite transition issue for indefinite subscriptions when period set improperly
 * Fixed &USD; rendering issue
 * Fixed issue which allows deactivated users to have access to a site

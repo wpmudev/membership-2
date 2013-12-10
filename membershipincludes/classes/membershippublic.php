@@ -232,7 +232,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function initialise_membership_protection( $wp ) {
-			global $user, $member, $M_options, $M_Rules, $wp_query, $wp_rewrite;
+			global $user, $member, $M_options;
 
 			static $initialised = false;
 			if ( $initialised ) {
@@ -245,87 +245,41 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$user = wp_get_current_user();
 			}
 
-			// New url protection processing - rewriting
-			if ( M_get_membership_active() != 'no' ) {
-				add_action( 'template_redirect', array( $this, 'complete_url_protection_processing' ), 1 );
-			}
+			// We are not a membershipadmin user
+			if ( !empty( $wp->query_vars['feed'] ) ) {
+				// This is a feed access, then set the feed rules
+				$user_id = (int)$this->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
+				if ( $user_id > 0 ) {
+					// Logged in - check there settings, if they have any.
+					$member = new M_Membership( $user_id );
+					// Load the levels for this member - and associated rules
+					$member->load_levels( true );
+				}
 
-			if ( !method_exists( $user, 'has_cap' ) || $user->has_cap( 'membershipadmin' ) ) {
-				// Admins can see everything - unless we have a cookie set to limit viewing
-				if ( !empty( $_COOKIE['membershipuselevel'] ) && $_COOKIE['membershipuselevel'] != '0' ) {
+				if ( !$member ) {
+					// not passing a key so limit based on stranger settings
+					// need to grab the stranger settings
 					$member = new M_Membership( $user->ID );
-					$member->assign_level( (int)$_COOKIE['membershipuselevel'], true );
-				} else {
-					return;
+					if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+						$member->assign_level( $M_options['strangerlevel'], true );
+					} else {
+						// This user can't access anything on the site - show a blank feed.
+						add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
+					}
 				}
 			} else {
-				// We are not a membershipadmin user
-				if ( !empty( $wp->query_vars['feed'] ) ) {
-					// This is a feed access, then set the feed rules
-					if ( isset( $_GET['k'] ) ) {
-						$user_id = (int)$this->find_user_from_key( $_GET['k'] );
-						if ( $user_id > 0 ) {
-							// Logged in - check there settings, if they have any.
-							$member = new M_Membership( $user_id );
-							// Load the levels for this member - and associated rules
-							$member->load_levels( true );
-						} else {
-							$member = new M_Membership( false );
-							if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
-								$member->assign_level( $M_options['strangerlevel'], true );
-							} else {
-								// This user can't access anything on the site - show a blank feed.
-								add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
-							}
-						}
-					} else {
-						// not passing a key so limit based on stranger settings
-						// need to grab the stranger settings
-						$member = new M_Membership( $user->ID );
-						if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
-							$member->assign_level( $M_options['strangerlevel'], true );
-						} else {
-							// This user can't access anything on the site - show a blank feed.
-							add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
-						}
-					}
-				} else {
-					// Users
-					$assinged = false;
-					$member = new M_Membership( $user->ID );
-					if ( $user->ID > 0 ) {
-						if ( $member->has_levels() ) {
-							// Load the levels for this member - and associated rules
-							$member->load_levels( true );
-							$assinged = true;
-						} elseif ( !empty( $M_options['freeusersubscription'] ) ) {
-							$subscription = new M_Subscription( $M_options['freeusersubscription'] );
-							$levels = $subscription->get_levels();
-							if ( !empty( $levels ) ) {
-								$member->assign_level( $levels[0]->level_id );
-								$assinged = true;
-							}
-						}
-					}
-
-					if ( !$assinged ) {
-						// not logged in so limit based on stranger settings
-						// need to grab the stranger settings
-						if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
-							$member->assign_level( $M_options['strangerlevel'], true );
-						} else {
-							// This user can't access anything on the site - .
-							add_filter( 'comments_open', array( &$this, 'close_comments' ), 99, 2 );
-							// Changed for this version to see if it helps to get around changed in WP 3.5
-							//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-							add_action( 'the_posts', array( &$this, 'show_noaccess_page' ), 1 );
-							//the_posts
-							// Hide all pages from menus - except the signup one
-							add_filter( 'get_pages', array( &$this, 'remove_pages_menu' ) );
-							// Hide all categories from lists
-							add_filter( 'get_terms', array( &$this, 'remove_categories' ), 1, 3 );
-						}
-					}
+				$member = Membership_Plugin::current_member();
+				if ( !$member->has_cap( M_Membership::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
+					// This user can't access anything on the site - .
+					add_filter( 'comments_open', array( &$this, 'close_comments' ), 99, 2 );
+					// Changed for this version to see if it helps to get around changed in WP 3.5
+					//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
+					add_action( 'the_posts', array( &$this, 'show_noaccess_page' ), 1 );
+					//the_posts
+					// Hide all pages from menus - except the signup one
+					add_filter( 'get_pages', array( &$this, 'remove_pages_menu' ) );
+					// Hide all categories from lists
+					add_filter( 'get_terms', array( &$this, 'remove_categories' ), 1, 3 );
 				}
 			}
 
@@ -618,17 +572,18 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		}
 
-		function find_user_from_key($key = false) {
-
+		function find_user_from_key( $key = false ) {
 			global $wpdb;
+
+			if ( !$key ) {
+				return 0;
+			}
 
 			//$key = get_usermeta($user->ID, '_membership_key');
 			$sql = $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 0,1", '_membership_key', $key );
-
-			$user_id = $wpdb->get_var($sql);
+			$user_id = $wpdb->get_var( $sql );
 
 			return $user_id;
-
 		}
 
 		// loop and page overrides
@@ -2149,26 +2104,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			return $shortcodes;
 
-		}
-
-		// Check the results and handle the outcome - redirecting if necessary
-		function complete_url_protection_processing() {
-			global $member;
-
-			if ( membership_is_special_page() || !is_object( $member ) || !is_a( $member, 'M_Membership' ) ) {
-				if ( membership_is_account_page() && !is_user_logged_in() ) {
-					membership_redirect_to_protected();
-				}
-				return;
-			}
-
-			if ( !$member->validate_credentials() ) {
-				membership_debug_log( __( 'About to redirect to the protected page', 'membership' ) );
-				membership_redirect_to_protected();
-				exit;
-			} else {
-				membership_debug_log( __( 'Not going to redirect to the protected page', 'membership' ) );
-			}
 		}
 
 	}

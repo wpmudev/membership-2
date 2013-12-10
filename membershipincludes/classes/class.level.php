@@ -423,14 +423,14 @@ if(!class_exists('M_Level')) {
 
 		}
 
-		function validate_credentials() {
+		function can_view_current_page() {
 			$valid = true;
 
-			$global = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
-			if ( $global ) {
-				$global = MEMBERSHIP_GLOBAL_MAINSITE != get_current_blog_id();
-			}
+			$global = Membership_Plugin::is_global_tables()
+				? MEMBERSHIP_GLOBAL_MAINSITE != get_current_blog_id()
+				: false;
 
+			// validate positive rules
 			foreach ( $this->positiverules as $rule ) {
 				if ( $global && !$rule->is_network_wide() ) {
 					continue;
@@ -443,6 +443,7 @@ if(!class_exists('M_Level')) {
 			}
 
 			if ( $valid ) {
+				// validate negative rules
 				foreach ( $this->negativerules as $rule ) {
 					if ( $global && !$rule->is_network_wide() ) {
 						continue;
@@ -455,7 +456,7 @@ if(!class_exists('M_Level')) {
 				}
 			}
 
-			return apply_filters( 'membership_validate_credentials', $valid );
+			return $valid;
 		}
 
 	}

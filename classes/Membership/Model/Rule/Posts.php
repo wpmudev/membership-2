@@ -130,19 +130,17 @@ class Membership_Model_Rule_Posts extends Membership_Model_Rule {
 	}
 
 	function validate_negative() {
-		if ( !is_single() || is_attachment() ) {
-			return parent::validate_negative();
-		}
-
-		return !in_array( get_the_ID(), $this->data );
+		$page = get_queried_object();
+		return is_a( $page, 'WP_Post' ) && $page->post_type == 'post'
+			? !in_array( $page->ID, $this->data )
+			: parent::validate_positive();
 	}
 
 	function validate_positive() {
-		if ( !is_single() || is_attachment() ) {
-			return parent::validate_positive();
-		}
-
-		return in_array( get_the_ID(), $this->data );
+		$page = get_queried_object();
+		return is_a( $page, 'WP_Post' ) && $page->post_type == 'post'
+			? in_array( $page->ID, $this->data )
+			: parent::validate_positive();
 	}
 
 }

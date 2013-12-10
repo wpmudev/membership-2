@@ -43,6 +43,7 @@ class Membership_Module_Protection extends Membership_Module {
 
 		$this->_add_action( 'plugins_loaded', 'register_rules' );
 		$this->_add_action( 'plugins_loaded', 'check_membership_status' );
+		$this->_add_action( 'template_redirect', 'protect_current_page', 1 );
 
 		$this->_add_filter( 'wp_authenticate_user', 'check_membership_is_active_on_signin', 30 );
 	}
@@ -140,6 +141,31 @@ class Membership_Module_Protection extends Membership_Module {
 		}
 
 		do_action( 'membership_register_rules' );
+	}
+
+	/**
+	 * Checks member permissions and protects current page.
+	 *
+	 * @since 3.5
+	 * @action template_redirect 1
+	 *
+	 * @access public
+	 */
+	public function protect_current_page() {
+		if ( membership_is_special_page() ) {
+			if ( membership_is_account_page() && !is_user_logged_in() ) {
+				membership_redirect_to_protected();
+			}
+			return;
+		}
+
+		if ( !Membership_Plugin::current_member()->can_view_current_page() ) {
+			membership_debug_log( __( 'Current member can not view current page.', 'membership' ) );
+			membership_redirect_to_protected();
+			exit;
+		}
+
+		membership_debug_log( __( 'Current member can view current page.', 'membership' ) );
 	}
 
 }

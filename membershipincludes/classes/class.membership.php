@@ -4,6 +4,8 @@ if ( !class_exists( 'M_Membership' ) ) :
 
 	class M_Membership extends WP_User {
 
+		const CAP_MEMBERSHIP_ADMIN = 'membershipadmin';
+
 		/**
 		 * @var wpdb
 		 */
@@ -696,17 +698,7 @@ if ( !class_exists( 'M_Membership' ) ) :
 		// Levels functions
 
 		function has_levels() {
-			if(!empty($this->levels)) {
-				return true;
-			} else {
-				$levels = $this->get_level_ids();
-
-				if(!empty($levels)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
+			return !empty( $this->levels ) || count( $this->get_level_ids() ) > 0;
 		}
 
 		function has_level($level_id = false) {
@@ -784,8 +776,7 @@ if ( !class_exists( 'M_Membership' ) ) :
 		}
 
 		function load_levels( $fullload = false ) {
-			$levels = (array)$this->get_level_ids();
-			foreach ( $levels as $lev ) {
+			foreach ( (array)$this->get_level_ids() as $lev ) {
 				if ( !isset( $this->levels[$lev->level_id] ) ) {
 					$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array( 'public', 'core' ) );
 				}
@@ -826,13 +817,17 @@ if ( !class_exists( 'M_Membership' ) ) :
 
 		}
 
-		function validate_credentials() {
-			foreach ( $this->levels as $level ) {
-				if ( !$level->validate_credentials() ) {
-					return false;
-				}
+		function can_view_current_page() {
+			if ( empty( $this->levels ) && $this->has_cap( self::CAP_MEMBERSHIP_ADMIN ) ) {
+				return true;
 			}
-			return true;
+
+			$can_view = false;
+			foreach ( $this->levels as $level ) {
+				$can_view |= $level->can_view_current_page();
+			}
+
+			return apply_filters( 'membership_member_can_view_current_page', $can_view, $this );
 		}
 
 	}

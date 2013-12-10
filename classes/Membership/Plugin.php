@@ -156,4 +156,57 @@ class Membership_Plugin {
 		return $value != 'no';
 	}
 
+	/**
+	 * Returns current member.
+	 *
+	 * @sicne 3.5
+	 *
+	 * @access public
+	 * @global array $M_options The array of the plugin options.
+	 * @staticvar M_Membership $member
+	 * @return M_Membership Current member.
+	 */
+	public static function current_member() {
+		global $M_options;
+		static $member = null;
+
+		if ( is_null( $member ) ) {
+			$member = new M_Membership( get_current_user_id() );
+
+			if ( $member->has_cap( M_Membership::CAP_MEMBERSHIP_ADMIN ) ) {
+				// member has admin capabilities
+				membership_debug_log( __( 'Current member has admin capabilities.', 'membership' ) );
+
+				// check whether we need to switch membership level or not
+				if ( !empty( $_COOKIE['membershipuselevel'] ) && ( $membershipuselevel = absint( $_COOKIE['membershipuselevel'] ) ) ) {
+					$member->assign_level( $membershipuselevel, true );
+					membership_debug_log( sprintf( __( 'Switching membership level to %d for current member.', 'membership' ), $membershipuselevel ) );
+				}
+			} else {
+				if ( $member->ID > 0 ) {
+					if ( $member->has_levels() ) {
+						// load the levels for this member
+						$member->load_levels( true );
+						membership_debug_log( __( 'Standard levels are loaded for current member.', 'membership' ) );
+					} elseif ( !empty( $M_options['freeusersubscription'] ) ) {
+						// load default subscription for registered users
+						$subscription = new M_Subscription( $M_options['freeusersubscription'] );
+						$levels = $subscription->get_levels();
+						if ( !empty( $levels ) ) {
+							$member->assign_level( $levels[0]->level_id );
+							membership_debug_log( __( 'Default subscription for registered users is used to assign a level for current member.', 'membership' ) );
+						}
+					}
+				}
+
+				// if no levels were assigned, then assign stanger level
+				if ( !$member->has_levels() && isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+					$member->assign_level( $M_options['strangerlevel'] );
+				}
+			}
+		}
+
+		return $member;
+	}
+
 }
