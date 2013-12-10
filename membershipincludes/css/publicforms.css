@@ -258,3 +258,6 @@
 #membership-wrapper .alert-error .alert-heading {
   color: #b94a48;
 }
+#membership-wrapper .bottombar input[type="submit"] {
+	margin-bottom: 0;
+}

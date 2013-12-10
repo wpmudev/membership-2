@@ -426,17 +426,10 @@ if ( !class_exists( 'M_Membership' ) ) :
 		}
 
 		function get_relationships() {
-
 			$sql = $this->db->prepare( "SELECT * FROM {$this->membership_relationships} WHERE user_id = %d AND sub_id != 0", $this->ID );
-
 			$result = $this->db->get_results( $sql );
 
-			if(empty($result)) {
-				return false;
-			} else {
-				return $result;
-			}
-
+			return empty( $result ) ? false : $result;
 		}
 
 		function on_level($level_id, $include_subs = false, $check_order = false) {

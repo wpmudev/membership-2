@@ -1175,25 +1175,9 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function show_renew_page( $user_id = false ) {
-			global $M_options;
-
 			$content = apply_filters( 'membership_renew_form_member_before_content', '', $user_id );
-
-			ob_start();
-			if ( defined( 'MEMBERSHIP_RENEW_FORM' ) && file_exists( MEMBERSHIP_RENEW_FORM ) ) {
-				include MEMBERSHIP_RENEW_FORM;
-			} else {
-				$renew_form = apply_filters( 'membership_override_renew_form', membership_dir( 'membershipincludes/includes/renew.form.php' ) );
-				if ( is_readable( $renew_form ) ) {
-					include $renew_form;
-				}
-			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
-			$content = apply_filters( 'membership_renew_form_member_after_content', $content, $user_id );
-
-			return $content;
+			$template = new Membership_Render_Page_Subscription_Renew();
+			return apply_filters( 'membership_renew_form_member_after_content', $content . $template->to_html(), $user_id );
 		}
 
 		function do_renew_shortcode() {

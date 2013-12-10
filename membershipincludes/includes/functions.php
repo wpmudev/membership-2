@@ -344,16 +344,7 @@ function membership_db_prefix( wpdb $wpdb, $table, $useprefix = true ) {
 
 // Template based functions
 function current_member() {
-
-	$user = wp_get_current_user();
-	$member = new M_Membership( $user->ID );
-
-	if(!empty($member)) {
-		return $member;
-	} else {
-		return false;
-	}
-
+	return new M_Membership( get_current_user_id() );
 }
 
 function current_user_is_member() {
