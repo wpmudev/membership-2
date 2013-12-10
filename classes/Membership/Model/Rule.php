@@ -22,9 +22,10 @@
  * Base rule class.
  *
  * @category Membership
- * @package Rule
+ * @package Model
+ * @subpackage Rule
  */
-class Membership_Rule {
+class Membership_Model_Rule {
 
 	/**
 	 * The data associated with this rule.

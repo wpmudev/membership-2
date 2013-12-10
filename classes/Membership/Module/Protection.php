@@ -41,7 +41,9 @@ class Membership_Module_Protection extends Membership_Module {
 	public function __construct( Membership_Plugin $plugin ) {
 		parent::__construct( $plugin );
 
+		$this->_add_action( 'plugins_loaded', 'register_rules' );
 		$this->_add_action( 'plugins_loaded', 'check_membership_status' );
+
 		$this->_add_filter( 'wp_authenticate_user', 'check_membership_is_active_on_signin', 30 );
 	}
 
@@ -90,6 +92,54 @@ class Membership_Module_Protection extends Membership_Module {
 		}
 
 		return $user;
+	}
+
+	/**
+	 * Registers membership rules.
+	 *
+	 * @since 3.5
+	 * @action plugins_loaded
+	 *
+	 * @access public
+	 */
+	public function register_rules() {
+		// general rules
+		M_register_rule( 'comments',   'Membership_Model_Rule_Comments',   'main' );
+		M_register_rule( 'more',       'Membership_Model_Rule_More',       'main' );
+		M_register_rule( 'categories', 'Membership_Model_Rule_Categories', 'main' );
+		M_register_rule( 'pages',      'Membership_Model_Rule_Pages',      'main' );
+		M_register_rule( 'posts',      'Membership_Model_Rule_Posts',      'main' );
+		M_register_rule( 'menu',       'Membership_Model_Rule_Menu',       'main' );
+		M_register_rule( 'urlgroups',  'Membership_Model_Rule_URLGroups',  'main' );
+		M_register_rule( 'downloads',  'Membership_Model_Rule_Downloads',  'content' );
+		M_register_rule( 'shortcodes', 'Membership_Model_Rule_Shortcodes', 'content' );
+
+		// multisites rules
+		if ( is_multisite() ) {
+			M_register_rule( 'blogcreation', 'Membership_Model_Rule_Blogcreation', 'admin' );
+		}
+
+		// admin rules
+		M_register_rule( 'mainmenus', 'Membership_Model_Rule_Admin_Mainmenus',        'admin' );
+		M_register_rule( 'submenus',  'Membership_Model_Rule_Admin_Submenus',         'admin' );
+		M_register_rule( 'dashboard', 'Membership_Model_Rule_Admin_Dashboardwidgets', 'admin' );
+		M_register_rule( 'plugins',   'Membership_Model_Rule_Admin_Plugins',          'admin' );
+
+		// buddypress rules
+		if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), '1.5', '>=' ) ) {
+			M_register_rule( 'bppages',          'Membership_Model_Rule_Buddypress_Pages',          'bp' );
+			M_register_rule( 'bpprivatemessage', 'Membership_Model_Rule_Buddypress_Privatemessage', 'bp' );
+			M_register_rule( 'bpblogs',          'Membership_Model_Rule_Buddypress_Blogs',          'bp' );
+			M_register_rule( 'bpgroupcreation',  'Membership_Model_Rule_Buddypress_Groupcreation',  'bp' );
+			M_register_rule( 'bpgroups',         'Membership_Model_Rule_Buddypress_Groups',         'bp' );
+		}
+
+		// marketpress rules
+		if ( class_exists( 'MarketPress' ) ) {
+			M_register_rule( 'marketpress', 'Membership_Model_Rule_Marketpress_Pages', 'content' );
+		}
+
+		do_action( 'membership_register_rules' );
 	}
 
 }

@@ -1212,25 +1212,9 @@ function M_register_rule( $rule_name, $class_name, $section ) {
 	$M_Rules[$rule_name] = $class_name;
 }
 
-add_action( 'plugins_loaded', 'M_setup_default_rules', 99 );
-function M_setup_default_rules() {
-	M_register_rule( 'comments',   'Membership_Rule_Comments',   'main' );
-	M_register_rule( 'more',       'Membership_Rule_More',       'main' );
-	M_register_rule( 'categories', 'Membership_Rule_Categories', 'main' );
-	M_register_rule( 'pages',      'Membership_Rule_Pages',      'main' );
-	M_register_rule( 'posts',      'Membership_Rule_Posts',      'main' );
-	M_register_rule( 'menu',       'Membership_Rule_Menu',       'main' );
-	M_register_rule( 'urlgroups',  'Membership_Rule_URLGroups',  'main' );
-	M_register_rule( 'downloads',  'Membership_Rule_Downloads',  'content' );
-	M_register_rule( 'shortcodes', 'Membership_Rule_Shortcodes', 'content' );
-
-	if ( is_multisite() ) {
-		M_register_rule( 'blogcreation', 'Membership_Rule_Blogcreation', 'admin' );
-	}
-}
-
+add_filter( 'favorite_actions', 'M_cache_favourite_actions', 999 );
 function M_cache_favourite_actions( $actions = false ) {
-	static $M_actions;
+	static $M_actions = null;
 
 	if ( $actions !== false ) {
 		$M_actions = $actions;
@@ -1241,20 +1225,10 @@ function M_cache_favourite_actions( $actions = false ) {
 	return $actions;
 }
 
+add_filter( 'membership_level_sections', 'M_AddAdminSection', 99 );
 function M_AddAdminSection( $sections ) {
 	$sections['admin'] = array( "title" => __( 'Administration', 'membership' ) );
 	return $sections;
-}
-
-add_action( 'plugins_loaded', 'M_setup_Admin_addons', 99 );
-function M_setup_Admin_addons() {
-	M_register_rule( 'mainmenus', 'Membership_Rule_Admin_Mainmenus',        'admin' );
-	M_register_rule( 'submenus',  'Membership_Rule_Admin_Submenus',         'admin' );
-	M_register_rule( 'dashboard', 'Membership_Rule_Admin_Dashboardwidgets', 'admin' );
-	M_register_rule( 'plugins',   'Membership_Rule_Admin_Plugins',          'admin' );
-
-	add_filter( 'favorite_actions', 'M_cache_favourite_actions', 999 );
-	add_filter( 'membership_level_sections', 'M_AddAdminSection', 99 );
 }
 
 // Pass thru function
@@ -1353,30 +1327,18 @@ function M_overrideBPSignupSlug( $slug ) {
 
 add_action( 'plugins_loaded', 'M_setup_BP_addons', 99 );
 function M_setup_BP_addons() {
-	if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), "1.5", '>=' ) ) {
-		M_register_rule( 'bppages',          'Membership_Rule_Buddypress_Pages',          'bp' );
-		M_register_rule( 'bpprivatemessage', 'Membership_Rule_Buddypress_Privatemessage', 'bp' );
-		M_register_rule( 'bpblogs',          'Membership_Rule_Buddypress_Blogs',          'bp' );
-		M_register_rule( 'bpgroupcreation',  'Membership_Rule_Buddypress_Groupcreation',  'bp' );
-		M_register_rule( 'bpgroups',         'Membership_Rule_Buddypress_Groups',         'bp' );
-
-		add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
-		add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
-
-		add_filter( 'membership_level_sections', 'M_AddBuddyPressSection' );
-		add_filter( 'membership_hide_protectable_pages', 'M_HideBuddyPressPages' );
-		add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
-		add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
+	if ( !defined( 'BP_VERSION' ) || version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), "1.5", '<' ) ) {
+		return;
 	}
-}
+	
+	add_action( 'membership_postoptions_page', 'M_AddBuddyPressOptions', 11 );
+	add_action( 'membership_option_menu_process_posts', 'M_AddBuddyPressOptionsProcess', 11 );
 
-add_action( 'plugins_loaded', 'M_setup_MP_addons', 99 );
-function M_setup_MP_addons() {
-	if ( class_exists( 'MarketPress' ) ) {
-		M_register_rule( 'marketpress', 'Membership_Rule_Marketpress_Pages', 'content' );
-	}
+	add_filter( 'membership_level_sections', 'M_AddBuddyPressSection' );
+	add_filter( 'membership_hide_protectable_pages', 'M_HideBuddyPressPages' );
+	add_filter( 'membership_override_viewable_pages_menu', 'M_KeepBuddyPressPages' );
+	add_filter( 'bp_get_signup_slug', 'M_overrideBPSignupSlug' );
 }
-
 
 // BuddyPress compatibility
 
