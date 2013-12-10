@@ -303,13 +303,6 @@ if ( !class_exists( 'M_Membership' ) ) :
 					}
 				}
 
-				// drop default subscription
-				$freesubscription = get_user_meta( $this->ID, 'membership_freesubscription', true );
-				if ( $freesubscription ) {
-					$this->drop_subscription( $freesubscription );
-					delete_user_meta( $this->ID, 'membership_freesubscription' );
-				}
-
 				return true;
 			}
 
