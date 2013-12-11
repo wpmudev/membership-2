@@ -382,19 +382,24 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 
 					if ( $upgradedat <= strtotime( '-' . $period . ' days' ) ) {
 
-						// Show upgrades
-						?><legend class="upgradefrom-<?php echo $sub->id ?>">
-							<?php printf( _x( 'Upgrade from %s', 'Upgrade from subscription plan', 'membership' ), $sub->sub_name() ) ?>
-						</legend>
-
-						<?php
-						$upgradesubs = array_filter( (array)apply_filters( 'membership_override_upgrade_subscriptions', $membershippublic->get_subscriptions() ) );
-						foreach ( $upgradesubs as $upgradesub ) {
+						$upgradesubs = array();
+						foreach ( array_filter( (array)apply_filters( 'membership_override_upgrade_subscriptions', $membershippublic->get_subscriptions() ) ) as $upgradesub ) {
 							if ( $upgradesub->id == $rel->sub_id || $member->on_sub( $upgradesub->id ) ) {
 								// Don't want to show our current subscription as we will display this above.
 								continue;
 							}
 
+							$upgradesubs[] = $upgradesub;
+						}
+
+						// Show upgrades
+						if ( !empty( $upgradesubs ) ) :
+						?><legend class="upgradefrom-<?php echo $sub->id ?>">
+							<?php printf( _x( 'Upgrade from %s', 'Upgrade from subscription plan', 'membership' ), $sub->sub_name() ) ?>
+						</legend><?php
+						endif;
+
+						foreach ( $upgradesubs as $upgradesub ) {
 							$subscription = new M_Subscription( $upgradesub->id );
 
 							?><div class="pricebox upgradebox upgradefrom-<?php echo $sub->id; ?>" id="upgradebox-<?php echo $subscription->id ?>">
