@@ -32,7 +32,8 @@ if ( !class_exists( 'M_Member_Search' ) ) {
 				'search' => $this->search_term,
 				'number' => $this->users_per_page,
 				'offset' => ( $this->page_num - 1 ) * $this->users_per_page,
-				'fields' => 'all'
+				'fields' => 'all',
+				'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name' ),
 			);
 
 			$this->query_vars = wp_parse_args( $args, array(
@@ -200,7 +201,7 @@ if ( !class_exists( 'M_Member_Search' ) ) {
 
                 $search_columns = array();
                 if ($qv['search_columns'])
-                    $search_columns = array_intersect($qv['search_columns'], array('ID', 'user_login', 'user_email', 'user_url', 'user_nicename'));
+                    $search_columns = array_intersect($qv['search_columns'], array('ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name'));
                 if (!$search_columns) {
                     if (false !== strpos($search, '@'))
                         $search_columns = array('user_email');
