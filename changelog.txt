@@ -37,6 +37,7 @@
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
+* Improved BuddyPress registration form compatibility
 * Reworked purchase free subscription process
 * Reworked default subscription setup for users without subscriptions
 

@@ -14,29 +14,31 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 } else {
 	$errormessages = '';
 }
+
+
 ?>
-	<form action="<?php echo add_query_arg( 'action', 'validatepage1bp', get_permalink() ) ?>" name="signup_form" id="signup_form" class="standard-form" method="post" enctype="multipart/form-data">
+<div id="buddypress">
+	<?php do_action( 'bp_before_register_page' ); ?>
+	<div class="page" id="register-page">
 
-	<input type='hidden' name='subscription' value='<?php echo esc_attr($_REQUEST['subscription']); ?>' />
+		<form action="<?php echo add_query_arg( 'action', 'validatepage1bp', get_permalink() ) ?>" name="signup_form" id="signup_form" class="standard-form" method="post" enctype="multipart/form-data">
 
-	<h2><?php _e( 'Create an Account', 'membership' ) ?></h2>
+			<input type='hidden' name='subscription' value='<?php echo esc_attr($_REQUEST['subscription']); ?>' />
 
-	<?php do_action( 'template_notices' ) ?>
-	<?php
-		if(!empty($errormessages)) {
-			echo $errormessages;
-		}
-	?>
+			<h2><?php _e( 'Create an Account', 'membership' ) ?></h2>
 
-	<p><?php _e( 'Registering for this site is easy, just fill in the fields below and we\'ll get a new account set up for you in no time.', 'membership' ) ?></p>
+			<?php do_action( 'template_notices' ) ?>
+			<?php if ( !empty( $errormessages ) ) { echo $errormessages; } ?>
 
-	<?php do_action( 'bp_before_account_details_fields' ) ?>
+			<p><?php _e( 'Registering for this site is easy, just fill in the fields below and we\'ll get a new account set up for you in no time.', 'membership' ) ?></p>
 
-	<div class="register-section" id="basic-details-section">
+			<?php do_action( 'bp_before_account_details_fields' ) ?>
 
-		<?php /***** Basic Account Details ******/ ?>
+			<div class="register-section" id="basic-details-section">
 
-		<h4><?php _e( 'Account Details', 'membership' ) ?></h4>
+				<?php /***** Basic Account Details ******/ ?>
+
+				<h4><?php _e( 'Account Details', 'membership' ) ?></h4>
 
 				<label for="signup_username"><?php _e( 'Username', 'membership' ) ?> <?php _e( '(required)', 'membership' ) ?></label>
 				<?php do_action( 'bp_signup_username_errors' ) ?>
@@ -56,24 +58,25 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 
 				<?php do_action( 'bp_before_account_details_end' ) ?>
 
-	</div><!-- #basic-details-section -->
+			</div><!-- #basic-details-section -->
 
-	<?php do_action( 'bp_after_account_details_fields' ) ?>
+			<?php do_action( 'bp_after_account_details_fields' ) ?>
 
-	<?php /***** Extra Profile Details ******/ ?>
 
-	<?php if ( bp_is_active( 'xprofile' ) ) : ?>
+			<?php /***** Extra Profile Details ******/ ?>
 
-	<?php do_action( 'bp_before_signup_profile_fields' ) ?>
+			<?php if ( bp_is_active( 'xprofile' ) ) : ?>
 
-	<div class="register-section" id="profile-details-section">
+				<?php do_action( 'bp_before_signup_profile_fields' ) ?>
 
-		<h4><?php _e( 'Profile Details', 'membership' ) ?></h4>
+				<div class="register-section" id="profile-details-section">
 
-		<?php /* Use the profile field loop to render input fields for the 'base' profile field group */ ?>
-		<?php if ( function_exists('bp_is_active') && bp_is_active( 'xprofile' ) ) : if ( bp_has_profile( 'profile_group_id=1&hide_empty_fields=0' ) ) : while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
+					<h4><?php _e( 'Profile Details', 'membership' ) ?></h4>
 
-					<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
+					<?php /* Use the profile field loop to render input fields for the 'base' profile field group */ ?>
+					<?php if ( function_exists('bp_is_active') && bp_is_active( 'xprofile' ) ) : if ( bp_has_profile( 'profile_group_id=1&hide_empty_fields=0' ) ) : while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
+
+						<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
 
 						<div class="editfield">
 
@@ -191,5 +194,6 @@ if(is_wp_error($error) && method_exists($error, 'get_error_code')) {
 
 		<?php do_action( 'bp_custom_signup_steps' ) ?>
 		</form>
-<?php
-?>
+	</div>
+	<?php do_action( 'bp_after_register_page' ); ?>
+</div>

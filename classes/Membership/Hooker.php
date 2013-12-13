@@ -87,4 +87,22 @@ class Membership_Hooker {
 		return $this;
 	}
 
+	/**
+	 * Removes a filter hook.
+	 *
+	 * @since 3.5
+	 * @uses remove_filter() To remove filter hook.
+	 *
+	 * @access protected
+	 * @param string $tag The name of the filter to remove the $method to.
+	 * @param type $method The name of the method to remove.
+	 * @param int $priority optional. The priority of the function (default: 10).
+	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
+	 * @return Membership_Module
+	 */
+	protected function _remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+		remove_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		return $this;
+	}
+
 }

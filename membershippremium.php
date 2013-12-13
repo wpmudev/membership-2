@@ -183,6 +183,8 @@ function membership_launch() {
 			if ( is_admin() ) {
 				// set admin modules
 				// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
+			} else {
+				$plugin->set_module( Membership_Module_Frontend::NAME );
 			}
 		}
 	}
