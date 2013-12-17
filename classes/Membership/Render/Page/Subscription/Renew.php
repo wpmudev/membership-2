@@ -100,6 +100,8 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	private function _render_buy_subscription( M_Subscription $subscription ) {
 		global $M_options;
 
+		$pricing = $subscription->get_pricingarray();
+
 		?><div class="pricebox subscriptionbox" id="subscriptionbox-<?php echo $subscription->id ?>">
 			<div class="topbar">
 				<span class="title"><?php echo $subscription->sub_name() ?></span>
@@ -110,7 +112,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 			</div>
 
 			<div class="bottombar">
-				<?php if ( !empty( $subscription->get_pricingarray() ) ) : ?>
+				<?php if ( !empty( $pricing ) ) : ?>
 					<div class="link" style="float:right;margin-right:10px">
 						<?php
 						$class = '';
