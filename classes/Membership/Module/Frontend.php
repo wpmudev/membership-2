@@ -77,9 +77,6 @@ class Membership_Module_Frontend extends Membership_Module {
 			$this->_add_filter( 'bp_is_current_component', 'determine_bp_component', 10, 2 );
 
 			$classes = array_unique( bp_get_the_body_class( $classes ) );
-
-			$this->_remove_filter( 'bp_is_current_component', 'determine_bp_component', 10, 2 );
-			remove_filter( 'bp_is_blog_page', '__return_false' );
 		}
 
 		return $classes;
