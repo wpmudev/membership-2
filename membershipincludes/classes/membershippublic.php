@@ -1270,16 +1270,14 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function output_paymentpage( $user_id = false ) {
-
 			global $wp_query, $M_options;
 
 			$subscription = (int) $_REQUEST['subscription'];
 
-			if(!$user_id) {
+			if ( !$user_id ) {
 				$user = wp_get_current_user();
-
-				if(!empty($user->ID) && is_numeric($user->ID) ) {
-					$member = new M_Membership( $user->ID);
+				if ( !empty( $user->ID ) && is_numeric( $user->ID ) ) {
+					$member = new M_Membership( $user->ID );
 				} else {
 					$member = current_member();
 				}
@@ -1287,24 +1285,21 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$member = new M_Membership( $user_id );
 			}
 
-			if(empty($error)) {
-				$error = '';
-			}
-
-			$content = apply_filters('membership_subscription_form_payment_before_content', '', $error);
+			$error = '';
+			$content = apply_filters( 'membership_subscription_form_payment_before_content', '', $error );
 			ob_start();
-			if( defined('MEMBERSHIP_PAYMENT_FORM') && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
+			if ( defined( 'MEMBERSHIP_PAYMENT_FORM' ) && file_exists( MEMBERSHIP_PAYMENT_FORM ) ) {
 				include( MEMBERSHIP_PAYMENT_FORM );
-			} elseif( file_exists( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) ) ) {
-				include( apply_filters('membership_override_payment_form', membership_dir('membershipincludes/includes/payment.form.php'), $error) );
+			} else {
+				$filename = apply_filters( 'membership_override_payment_form', membership_dir( 'membershipincludes/includes/payment.form.php' ), $error );
+				if ( file_exists( $filename ) ) {
+					include $filename;
+				}
 			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
-			$content = apply_filters('membership_subscription_form_payment_after_content', $content, $error);
+			$content .= ob_get_clean();
+			$content = apply_filters( 'membership_subscription_form_payment_after_content', $content, $error );
 
 			return $content;
-
 		}
 
 		function process_subscription_form() {
@@ -1477,7 +1472,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						}
 					}
 
-					$meta_array = array( );
+					$meta_array = array();
 
 					// xprofile required fields
 					/* Now we've checked account details, we can check profile information */
@@ -1523,15 +1518,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION' ) && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true ) {
 								$member->deactivate();
 							} else {
-								$creds = array(
-									'user_login' => $_POST['signup_username'],
-									'user_password' => $_POST['signup_password'],
-									'remember' => true
-								);
-
 								if ( !headers_sent() ) {
-									$is_ssl = (isset( $_SERVER['https'] ) && strtolower( $_SERVER['https'] ) == 'on' ? true : false);
-									$user = @wp_signon( $creds, $is_ssl );
+									$user = @wp_signon( array(
+										'user_login'    => $_POST['signup_username'],
+										'user_password' => $_POST['signup_password'],
+										'remember'      => true
+									) );
 
 									if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
 										$this->_register_errors->add( 'userlogin', $user->get_error_message() );
@@ -1556,30 +1548,31 @@ if ( !class_exists( 'membershippublic', false ) ) :
 								$meta_array = apply_filters( 'bp_signup_usermeta', $meta_array );
 								foreach ( (array)$meta_array as $field_id => $field_content ) {
 									xprofile_set_field_data( $field_id, $user_id, $field_content );
+									$visibility_level = !empty( $_POST['field_' . $field_id . '_visibility'] ) ? $_POST['field_' . $field_id . '_visibility'] : 'public';
+									xprofile_set_field_visibility_level( $field_id, $user_id, $visibility_level );
 								}
 							}
 						}
 
 						do_action( 'membership_subscription_form_registration_process', $this->_register_errors, $user_id );
+
+						// Hack for now - eeek
+						$anyerrors = $this->_register_errors->get_error_code();
+						if ( empty( $anyerrors ) ) {
+							// everything seems fine (so far), so we have our queued user so let's
+							// run the bp complete signup action
+							do_action( 'bp_complete_signup' );
+
+							// redirect to payments page
+							wp_redirect( add_query_arg( array(
+								'action'       => 'subscriptionsignup',
+								'subscription' => $subscription,
+							) ) );
+							exit;
+						}
 					} else {
 						do_action( 'membership_subscription_form_registration_process', $this->_register_errors, 0 );
 					}
-
-					// Hack for now - eeek
-					$anyerrors = $this->_register_errors->get_error_code();
-					if ( empty( $anyerrors ) ) {
-						// everything seems fine (so far), so we have our queued user so let's
-						// run the bp complete signup action
-						do_action( 'bp_complete_signup' );
-
-						// redirect to payments page
-						wp_redirect( add_query_arg( array(
-							'action'       => 'subscriptionsignup',
-							'subscription' => $subscription,
-						) ) );
-						exit;
-					}
-
 					break;
 
 				case 'registeruser':
