@@ -153,7 +153,7 @@ class Membership_Plugin {
 			? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, $option, $default )
 			: get_option( $option, $default );
 
-		return $value != 'no';
+		return apply_filters( 'membership_enabled', $value != 'no' );
 	}
 
 	/**
