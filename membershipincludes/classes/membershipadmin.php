@@ -7678,24 +7678,19 @@ if ( !class_exists( 'membershipadmin' ) ) :
 				if (is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
 					$error->add('userid', $user_id->get_error_message());
 				} else {
-					$member = new M_Membership($user_id);
-					if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION') && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true) {
-						$member->deactivate();
-					} else {
-						$creds = array(
-							'user_login' => $_POST['user_login'],
-							'user_password' => $_POST['password'],
-							'remember' => true
-						);
-						$is_ssl = (isset($_SERVER['https']) && strtolower($_SERVER['https']) == 'on' ? true : false);
-						$user = wp_signon($creds, $is_ssl);
+					$member = new M_Membership( $user_id );
+					
+					$user = wp_signon( array(
+						'user_login' => $_POST['user_login'],
+						'user_password' => $_POST['password'],
+						'remember' => true
+					) );
 
-						if (is_wp_error($user) && method_exists($user, 'get_error_message')) {
-							$error->add('userlogin', $user->get_error_message());
-						} else {
-							// Set the current user up
-							wp_set_current_user($user_id);
-						}
+					if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
+						$error->add( 'userlogin', $user->get_error_message() );
+					} else {
+						// Set the current user up
+						wp_set_current_user( $user_id );
 					}
 
 					if (has_action('membership_susbcription_form_registration_notification')) {

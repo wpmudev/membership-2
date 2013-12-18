@@ -1,8 +1,6 @@
 <?php
-/*
-*	Membership plugin configuration file v2.0
-*
-*/
+
+// Membership plugin configuration file v2.0
 
 // Debug notifications - if debug activation is requested for support
 if(!defined('MEMBERSHIP_DEBUG')) define( 'MEMBERSHIP_DEBUG', false);
@@ -43,7 +41,4 @@ if(!defined('MEMBERSHIP_FILE_NAME_INCREMENT')) define( 'MEMBERSHIP_FILE_NAME_INC
 if(!defined('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE')) define('MEMBERSHIP_REDIRECT_ON_EMPTY_CATEGORYPAGE', false);
 
 // Re-enable the deactivate user on registration and cancellation facility
-if(!defined('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION')) define('MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION', false);
 if(!defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION')) define('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION', false);
-
-if(!defined('MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION')) define('MEMBERSHIP_EXCLUDE_HOMEPAGE_FROM_PROTECTION', true);

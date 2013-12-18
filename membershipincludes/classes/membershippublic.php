@@ -1370,30 +1370,23 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
 							$member = new M_Membership( $user_id );
-
-							if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION' ) && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true ) {
-								$member->deactivate();
-							} else {
-								$creds = array(
+							if ( !headers_sent() ) {
+								$is_ssl = (isset( $_SERVER['https'] ) && strtolower( $_SERVER['https'] ) == 'on' ? true : false);
+								$user = @wp_signon( array(
 									'user_login' => $_POST['user_login'],
 									'user_password' => $_POST['password'],
 									'remember' => true
-								);
+								), $is_ssl );
 
-								if ( !headers_sent() ) {
-									$is_ssl = (isset( $_SERVER['https'] ) && strtolower( $_SERVER['https'] ) == 'on' ? true : false);
-									$user = @wp_signon( $creds, $is_ssl );
-
-									if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
-										$this->_register_errors->add( 'userlogin', $user->get_error_message() );
-									} else {
-										// Set the current user up
-										wp_set_current_user( $user_id );
-									}
+								if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
+									$this->_register_errors->add( 'userlogin', $user->get_error_message() );
 								} else {
 									// Set the current user up
 									wp_set_current_user( $user_id );
 								}
+							} else {
+								// Set the current user up
+								wp_set_current_user( $user_id );
 							}
 
 							if ( has_action( 'membership_susbcription_form_registration_notification' ) ) {
@@ -1515,26 +1508,22 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
 							$member = new M_Membership( $user_id );
-							if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION' ) && MEMBERSHIP_DEACTIVATE_USER_ON_REGISTRATION == true ) {
-								$member->deactivate();
-							} else {
-								if ( !headers_sent() ) {
-									$user = @wp_signon( array(
-										'user_login'    => $_POST['signup_username'],
-										'user_password' => $_POST['signup_password'],
-										'remember'      => true
-									) );
+							if ( !headers_sent() ) {
+								$user = @wp_signon( array(
+									'user_login'    => $_POST['signup_username'],
+									'user_password' => $_POST['signup_password'],
+									'remember'      => true
+								) );
 
-									if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
-										$this->_register_errors->add( 'userlogin', $user->get_error_message() );
-									} else {
-										// Set the current user up
-										wp_set_current_user( $user_id );
-									}
+								if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
+									$this->_register_errors->add( 'userlogin', $user->get_error_message() );
 								} else {
 									// Set the current user up
 									wp_set_current_user( $user_id );
 								}
+							} else {
+								// Set the current user up
+								wp_set_current_user( $user_id );
 							}
 
 							if ( has_action( 'membership_susbcription_form_registration_notification' ) ) {

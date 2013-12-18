@@ -41,6 +41,7 @@
 * Improved BuddyPress registration form compatibility
 * Reworked purchase free subscription process
 * Reworked default subscription setup for users without subscriptions
+* Removed ability to deactivate user on registration
 
 == 3.4.6 ==
 
