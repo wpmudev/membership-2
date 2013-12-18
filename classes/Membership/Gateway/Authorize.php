@@ -341,6 +341,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$this->_member = new M_Membership( $user_id );
 				if ( $this->_member->has_subscription() && $this->_member->on_sub( $sub_id ) ) {
 					$this->cancel_subscription_transactions( $sub_id, $user_id );
+					if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION' ) && filter_var( MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION, FILTER_VALIDATE_BOOLEAN ) ) {
+						$this->_member->deactivate();
+					}
 				}
 			}
 		}
