@@ -346,8 +346,6 @@ if(!class_exists('M_Communication')) {
 
 			$this->comm = $this->get_communication();
 
-			$M_options = get_option( 'membership_options' );
-
 			$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
 
 			$member = new M_Membership( $user_id );
@@ -424,8 +422,10 @@ if(!class_exists('M_Communication')) {
 			// Globally replace the values in the ping and then make it into an array to send
 			$commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
 
-			if ( !empty( $member->user_email ) ) {
-				$res = @wp_mail( $member->user_email, stripslashes( $this->comm->subject ), stripslashes( $commmessage ) );
+			if ( filter_var( $member->user_email, FILTER_VALIDATE_EMAIL ) ) {
+				add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+				@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), stripslashes( $commmessage ) );
+				remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
 			}
 		}
 
@@ -616,4 +616,8 @@ function M_setup_communications() {
 	if ( !wp_next_scheduled( 'membership_communications_process' ) ) {
 		wp_schedule_event( time(), $checkperiod, 'membership_communications_process' );
 	}
+}
+
+function M_Communications_set_html_content_type() {
+	return 'text/html';
 }

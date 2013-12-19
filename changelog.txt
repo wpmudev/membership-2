@@ -35,6 +35,7 @@
 * Implemented redirect back to a secure page when an user logins on protected page
 * Implemented ability to search members by ID, login, email, url, nice name and display name
 * Implemented ability to edit BuddyPress xprofile fields visibility settings
+* Implemented ability to send HTML content in communication messages
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
