@@ -1008,11 +1008,14 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// billing information
 		$payment->billTo->firstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
 		$payment->billTo->lastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+		$payment->billTo->company = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
 		$payment->billTo->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
 		$payment->billTo->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
 		$payment->billTo->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
 		$payment->billTo->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
 		$payment->billTo->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
+		$payment->billTo->phoneNumber = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
+		$payment->billTo->faxNumber = substr( trim( filter_input( INPUT_POST, 'fax' ) ), 0, 25 );
 
 		// card information
 		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
@@ -1064,15 +1067,19 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			// customer information
 			$aim->cust_id = $this->_member->ID;
 			$aim->customer_ip = self::_get_remote_ip();
+			$aim->email = $this->_member->user_email;
 
 			// billing information
 			$aim->first_name = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
 			$aim->last_name = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+			$aim->company = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
 			$aim->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
 			$aim->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
 			$aim->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
 			$aim->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
 			$aim->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
+			$aim->phone = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
+			$aim->fax = substr( trim( filter_input( INPUT_POST, 'fax' ) ), 0, 25 );
 		}
 
 		return $aim;
@@ -1124,6 +1131,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// create new subscription
 		$subscription = new AuthorizeNet_Subscription();
 		$subscription->customerId = $this->_member->ID;
+		$subscription->customerEmail = $this->_member->user_email;
+		$subscription->customerPhoneNumber = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
+		$subscription->customerFaxNumber = substr( trim( filter_input( INPUT_POST, 'fax' ) ), 0, 25 );
 
 		switch ( $pricing['unit'] ) {
 			case 'd':
@@ -1152,6 +1162,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// billing information
 		$subscription->billToFirstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
 		$subscription->billToLastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+		$subscription->billToCompany = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
 		$subscription->billToAddress = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
 		$subscription->billToCity = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
 		$subscription->billToState = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );

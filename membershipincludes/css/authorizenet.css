@@ -1,44 +1,46 @@
 .authorize-form-block {
-	margin-bottom: 3em;
+    margin-bottom: 3em
 }
 
 .authorize-form-block-title {
-	font-size: 125%;
-	font-weight: bold;
-	margin-bottom: 1em;
+    font-size: 125%;
+    font-weight: bold;
+    margin-bottom: 1em
 }
 
 .authorize-form-field {
-	margin-bottom: 1em;
+    margin-bottom: 1em
 }
 
 .authorize-form-field label {
-	display: block;
+    display: block
 }
 
 .authorize-form-input {
-	display: block;
-	width: 100%;
-	box-sizing: border-box;
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
 }
 
 #auth-cim-profiles ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none
 }
 
 #auth-cim-profiles li {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	font-weight: bold;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: bold
 }
 
 #auth-cim-profiles li#auth-new-cc {
-	font-weight: normal;
+    font-weight: normal
 }
 
 .auth-has-cim #auth-new-cc-body {
-	display: none;
+    display: none
 }

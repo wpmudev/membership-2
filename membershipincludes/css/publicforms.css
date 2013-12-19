@@ -8,7 +8,7 @@
   margin: 0;
   border: 0;
 }
-#membership-wrapper legend {
+.membership-page-header, #membership-wrapper legend {
   display: block;
   width: 100%;
   padding: 0;

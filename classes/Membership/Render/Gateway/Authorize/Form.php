@@ -54,6 +54,9 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 				<h1><?php printf( esc_html_x( 'Sign up for %s', 'Sing up for SUBSCRIPTION_NAME', 'membership' ), $this->subscription_name ) ?></h1>
 			</div>
 			<div class="fullwidth">
+		<?php else: ?>
+			<div>
+				<legend class="membership-page-header"><?php printf( esc_html_x( 'Sign up for %s', 'Sing up for SUBSCRIPTION_NAME', 'membership' ), $this->subscription_name ) ?></legend>
 		<?php endif; ?>
 				<form class="membership_payment_form authorizenet single" method="post">
 					<input type="hidden" name="gateway" value="<?php echo esc_attr( $this->gateway ) ?>">
@@ -152,6 +155,11 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 			</div>
 
 			<div class="authorize-form-field">
+				<label for="company"><?php esc_html_e( 'Company:', 'membership' ) ?></label>
+				<input id="company" name="company" x-autocompletetype="org" class="authorize-form-input" type="text" maxlength="50">
+			</div>
+
+			<div class="authorize-form-field">
 				<label for="address"><?php esc_html_e( 'Address:', 'membership' ) ?></label>
 				<input id="address" name="address" class="authorize-form-input" type="text" x-autocompletetype="address-line1" maxlength="60">
 			</div>
@@ -179,6 +187,16 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 					<option><?php echo esc_html( $country ) ?></option>
 					<?php endforeach; ?>
 				</select>
+			</div>
+
+			<div class="authorize-form-field">
+				<label for="phone"><?php esc_html_e( 'Phone:', 'membership' ) ?></label>
+				<input id="phone" name="phone" x-autocompletetype="tel" class="authorize-form-input" type="text" maxlength="25">
+			</div>
+
+			<div class="authorize-form-field">
+				<label for="fax"><?php esc_html_e( 'Fax:', 'membership' ) ?></label>
+				<input id="fax" name="fax" x-autocompletetype="fax" class="authorize-form-input" type="text" maxlength="25">
 			</div>
 		</div><?php
 	}
