@@ -1,8 +1,14 @@
+.membership-popover-signup-wrapper {
+    width: 700px;
+    background-color: white
+}
+
 #fancybox-wrap #fancybox-content div.header {
     width: 100%;
     background: #333;
     padding: 10px;
-	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
 }
 
 #fancybox-wrap #fancybox-content div.header h1 {
@@ -15,9 +21,11 @@
 #fancybox-content div div.leftside {
     float: left;
     width: 340px;
-    padding: 10px;
+    padding: 20px 20px 0;
     border-right: 1px dashed #ddd;
-	overflow: hidden;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
 }
 
 #fancybox-content div div.leftside p {
@@ -27,8 +35,10 @@
 #fancybox-content div div.rightside {
     float: right;
     width: 350px;
-    padding: 10px;
-    overflow: hidden
+    padding: 20px 20px 0;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
 }
 
 #fancybox-content div {
@@ -40,12 +50,8 @@
 }
 
 form#reg-form, form#login-form {
-    margin: 10px;
-    padding: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: #fff
+    background: #fff;
+    margin-top: 10px
 }
 
 #reg-form div label, #login-form div label {
@@ -54,7 +60,7 @@ form#reg-form, form#login-form {
 }
 
 #reg-form div input.regtext, #login-form div input.regtext {
-    width: 280px;
+    width: 100%;
     background: none repeat scroll 0 0 #FBFBFB;
     border: 1px solid #E5E5E5;
     -moz-box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.2) inset;
@@ -67,7 +73,9 @@ form#reg-form, form#login-form {
     margin-right: 6px;
     margin-top: 2px;
     outline: medium none;
-    padding: 3px
+    padding: 3px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
 }
 
 #reg-form p, #login-form p {
@@ -192,4 +200,19 @@ td.buynowcolumn {
 #fancybox-content #tos_content p {
     padding-top: 0;
     padding-bottom: 20px
+}
+
+@media all and (max-width: 768px) {
+    .membership-popover-signup-wrapper {
+        width: 350px
+	}
+
+    #fancybox-content div div.leftside, #fancybox-content div div.rightside {
+        float: none;
+        width: 100%
+	}
+	
+    #fancybox-content div div.leftside {
+        border-right: none
+	}
 }

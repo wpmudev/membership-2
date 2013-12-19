@@ -41,6 +41,7 @@
 * Improved 100% coupon gateway setup
 * Improved BuddyPress registration form compatibility
 * Improved Fancybox styles
+* Improved popup registration form styles to look better on mobile devices
 * Reworked purchase free subscription process
 * Reworked default subscription setup for users without subscriptions
 * Removed ability to deactivate user on registration
