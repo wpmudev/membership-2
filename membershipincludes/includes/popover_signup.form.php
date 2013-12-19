@@ -1,4 +1,4 @@
-<div class='header' style='width: 750px'>
+<div class='header'>
 <h1><?php _e('Register or Login to purchase','membership'); ?></h1>
 </div>
 <div class='leftside'>

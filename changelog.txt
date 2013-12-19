@@ -40,6 +40,7 @@
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
 * Improved BuddyPress registration form compatibility
+* Improved Fancybox styles
 * Reworked purchase free subscription process
 * Reworked default subscription setup for users without subscriptions
 * Removed ability to deactivate user on registration

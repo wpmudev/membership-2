@@ -33,7 +33,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 		}
 
 		?>
-		<div class='header' style='width: 750px'>
+		<div class='header'>
 			<h1><?php echo __('Enter Your Credit Card Information','membership') . " " . $sub->sub_name(); ?></h1>
 		</div>
 		<div class='fullwidth'>
@@ -53,7 +53,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 	?>
-		<div class='header' style='width: 750px'>
+		<div class='header'>
 		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
 		</div>
 		<div class='fullwidth'>
@@ -163,7 +163,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 			$pricing = $coupon->apply_coupon_pricing( $pricing );
 	}
 	?>
-		<div class='header' style='width: 750px'>
+		<div class='header'>
 		<h1><?php echo __('Sign up for','membership') . " " . $sub->sub_name(); ?></h1>
 		</div>
 		<div class='fullwidth'>

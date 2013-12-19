@@ -531,13 +531,6 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	public function render_payment_form( M_Subscription $subscription, $pricing, $user_id ) {
 		// check errors
 		$error = false;
-		if ( isset( $_GET['errors'] ) ) {
-			if ( $_GET['errors'] == 1 ) {
-				$error = __( 'Payment method not supported for the payment', 'membership' );
-			} elseif ( $_GET['errors'] == 2 ) {
-				$error = __( 'There was a problem processing your purchase. Please, try again.', 'membership' );
-			}
-		}
 
 		// check API user login and transaction key
 		$api_u = trim( $this->_get_option( 'api_user' ) );
@@ -567,9 +560,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		// initialize and render form template
 		$template = new Membership_Render_Gateway_Authorize_Form();
 
+		$template->is_popup = self::is_popup();
 		$template->error = $error;
 		$template->coupon = $coupon;
 		$template->subscription_id = $subscription->id;
+		$template->subscription_name = $subscription->sub_name();
 		$template->gateway = $this->gateway;
 		$template->user_id = $user_id;
 		$template->cim_profiles = $cim_profiles;
@@ -707,8 +702,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			$this->_commit_transactions();
 
 			// process response message and redirect
-			$popup = isset( $M_options['formtype'] ) && $M_options['formtype'] == 'new';
-			if ( $popup && !empty( $M_options['registrationcompleted_message'] ) ) {
+			if ( self::is_popup() && !empty( $M_options['registrationcompleted_message'] ) ) {
 				$html = '<div class="header" style="width: 750px"><h1>';
 				$html .= sprintf( __( 'Sign up for %s completed', 'membership' ), $this->_subscription->sub_name() );
 				$html .= '</h1></div><div class="fullwidth">';
@@ -1280,6 +1274,21 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$template = new Membership_Render_Gateway_Authorize_Transactions();
 		$template->table = $table;
 		$template->render();
+	}
+
+	/**
+	 * Determines whether popup form is used or not.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access private
+	 * @global array $M_options The plugin options.
+	 * @return boolean TRUE if popup form is used, otherwise false.
+	 */
+	private static function is_popup() {
+		global $M_options;
+		return isset( $M_options['formtype'] ) && $M_options['formtype'] == 'new';
 	}
 
 }

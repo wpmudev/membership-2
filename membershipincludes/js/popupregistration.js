@@ -270,22 +270,18 @@ function m_loginsubmit() {
 }
 
 jQuery(document).ready(function() {
-
-    /* This is basic - uses default settings */
-
     jQuery("a.popover").fancybox({
-        'transitionIn': 'elastic',
-        'transitionOut': 'elastic',
-        'speedIn': 200,
-        'speedOut': 200,
-        'overlayShow': false,
-        'padding': 0,
-        'scrolling': 'no',
-        'width': 750,
-        'autoDimensions': true,
-        'onComplete': m_register_events
+        transitionIn: 'elastic',
+        transitionOut: 'elastic',
+        speedIn: 200,
+        speedOut: 200,
+        overlayShow: true,
+		overlayOpacity: 0.4,
+		overlayColor: '#000',
+		showCloseButton: false,
+        padding: 0,
+        scrolling: 'no',
+        autoDimensions: true,
+        onComplete: m_register_events
     });
-
-
-
 });

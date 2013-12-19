@@ -33,6 +33,10 @@ Buttons CSS from http://webdesignerwall.com/tutorials/css3-gradient-buttons
 	top: 1px;
 }
 
+a.button {
+	text-decoration: none !important;
+}
+
 .bigrounded {
 	-webkit-border-radius: 2em;
 	-moz-border-radius: 2em;
