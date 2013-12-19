@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership Premium\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-10 18:08+0300\n"
-"PO-Revision-Date: 2013-12-10 18:09+0300\n"
+"POT-Creation-Date: 2013-12-19 19:02+0300\n"
+"PO-Revision-Date: 2013-12-19 19:02+0300\n"
 "Last-Translator: Eugene Manuilov <eugene@incsub.com>\n"
 "Language-Team: Incsub <devs@incsub.com>\n"
 "Language: en_US\n"
@@ -21,20 +21,20 @@ msgstr ""
 "X-Poedit-SearchPath-0: classes/Membership\n"
 "X-Poedit-SearchPath-1: membershipincludes\n"
 
-#: classes/Membership/Plugin.php:178
+#: classes/Membership/Plugin.php:201
 msgid "Current member has admin capabilities."
 msgstr "Current member has admin capabilities."
 
-#: classes/Membership/Plugin.php:183
+#: classes/Membership/Plugin.php:206
 #, php-format
 msgid "Switching membership level to %d for current member."
 msgstr "Switching membership level to %d for current member."
 
-#: classes/Membership/Plugin.php:190
+#: classes/Membership/Plugin.php:213
 msgid "Standard levels are loaded for current member."
 msgstr "Standard levels are loaded for current member."
 
-#: classes/Membership/Plugin.php:197
+#: classes/Membership/Plugin.php:220
 msgid ""
 "Default subscription for registered users is used to assign a level for "
 "current member."
@@ -76,8 +76,8 @@ msgstr "transactions"
 
 #: classes/Membership/Gateway.php:336
 #: classes/Membership/Table/Gateway/Transaction/Authorize.php:240
-#: membershipincludes/classes/class.coupon.php:425
-#: membershipincludes/classes/class.coupon.php:511
+#: membershipincludes/classes/class.coupon.php:418
+#: membershipincludes/classes/class.coupon.php:504
 #: membershipincludes/classes/membershipadmin.php:2158
 #: membershipincludes/classes/membershipadmin.php:5452
 #: membershipincludes/classes/membershipadmin.php:7432
@@ -145,14 +145,14 @@ msgid "Unsubscribe not available"
 msgstr "Unsubscribe not available"
 
 #: classes/Membership/Gateway.php:538 classes/Membership/Gateway.php:553
-#: classes/Membership/Render/Page/Subscription/Renew.php:126
-#: classes/Membership/Render/Page/Subscription/Renew.php:440
+#: classes/Membership/Render/Page/Subscription/Renew.php:128
+#: classes/Membership/Render/Page/Subscription/Renew.php:447
 #: membershipincludes/gateways/gateway.authorizenetaim.php:617
 #: membershipincludes/gateways/gateway.paypalsolo.php:262
 #: membershipincludes/gateways/gateway.paypalsolo.php:277
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1118
 #: membershipincludes/gateways/gateway.freesubscriptions.php:151
-#: membershipincludes/includes/bp.registration.form.php:184
+#: membershipincludes/includes/bp.registration.form.php:207
 #: membershipincludes/includes/subscription.form.php:32
 msgid "Sign Up"
 msgstr "Sign Up"
@@ -197,87 +197,110 @@ msgstr ""
 msgid "Authorize.Net transactions"
 msgstr "Authorize.Net transactions"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:72
-#: membershipincludes/gateways/gateway.authorizenetaim.php:401
-#: membershipincludes/gateways/gateway.authorizenetarb.php:403
-msgid "Pay with Credit Card"
-msgstr "Pay with Credit Card"
+#: classes/Membership/Render/Gateway/Authorize/Form.php:54
+#: classes/Membership/Render/Gateway/Authorize/Form.php:59
+#, php-format
+msgctxt "Sing up for SUBSCRIPTION_NAME"
+msgid "Sign up for %s"
+msgstr "Sign up for %s"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:120
+#: classes/Membership/Render/Gateway/Authorize/Form.php:78
+msgid "Process Payment"
+msgstr "Process Payment"
+
+#: classes/Membership/Render/Gateway/Authorize/Form.php:107
+msgid "Payment Profile"
+msgstr "Payment Profile"
+
+#: classes/Membership/Render/Gateway/Authorize/Form.php:129
 msgid "Enter a new credit card"
 msgstr "Enter a new credit card"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:136
-msgid "Billing Information:"
-msgstr "Billing Information:"
+#: classes/Membership/Render/Gateway/Authorize/Form.php:145
+msgid "Billing Information"
+msgstr "Billing Information"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:138
+#: classes/Membership/Render/Gateway/Authorize/Form.php:148
 #: membershipincludes/gateways/gateway.authorizenetaim.php:355
 #: membershipincludes/gateways/gateway.authorizenetarb.php:357
 msgid "First Name:"
 msgstr "First Name:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:144
+#: classes/Membership/Render/Gateway/Authorize/Form.php:153
 #: membershipincludes/gateways/gateway.authorizenetaim.php:361
 #: membershipincludes/gateways/gateway.authorizenetarb.php:363
 msgid "Last Name:"
 msgstr "Last Name:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:150
+#: classes/Membership/Render/Gateway/Authorize/Form.php:158
+msgid "Company:"
+msgstr "Company:"
+
+#: classes/Membership/Render/Gateway/Authorize/Form.php:163
 #: membershipincludes/gateways/gateway.authorizenetaim.php:365
 #: membershipincludes/gateways/gateway.authorizenetarb.php:367
 msgid "Address:"
 msgstr "Address:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:156
+#: classes/Membership/Render/Gateway/Authorize/Form.php:168
 msgid "City:"
 msgstr "City:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:162
+#: classes/Membership/Render/Gateway/Authorize/Form.php:173
 msgid "State:"
 msgstr "State:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:168
+#: classes/Membership/Render/Gateway/Authorize/Form.php:178
 msgid "Zip Code:"
 msgstr "Zip Code:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:174
+#: classes/Membership/Render/Gateway/Authorize/Form.php:183
 msgid "Country:"
 msgstr "Country:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:197
-#: membershipincludes/gateways/gateway.authorizenetaim.php:378
-#: membershipincludes/gateways/gateway.authorizenetarb.php:380
-msgid "Credit Card Number:"
-msgstr "Credit Card Number:"
+#: classes/Membership/Render/Gateway/Authorize/Form.php:193
+msgid "Phone:"
+msgstr "Phone:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:204
-#: membershipincludes/gateways/gateway.authorizenetaim.php:385
-#: membershipincludes/gateways/gateway.authorizenetarb.php:387
-msgid "Expiration Date:"
-msgstr "Expiration Date:"
+#: classes/Membership/Render/Gateway/Authorize/Form.php:198
+msgid "Fax:"
+msgstr "Fax:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:211
+#: classes/Membership/Render/Gateway/Authorize/Form.php:213
+msgid "Credit Card Information"
+msgstr "Credit Card Information"
+
+#: classes/Membership/Render/Gateway/Authorize/Form.php:216
+msgid "Number:"
+msgstr "Number:"
+
+#: classes/Membership/Render/Gateway/Authorize/Form.php:221
 #: membershipincludes/gateways/gateway.authorizenetaim.php:394
 #: membershipincludes/gateways/gateway.authorizenetarb.php:396
 msgid "Security Code:"
 msgstr "Security Code:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:230
-#: membershipincludes/gateways/gateway.authorizenetaim.php:389
-#: membershipincludes/gateways/gateway.authorizenetarb.php:391
-msgid "Year"
-msgstr "Year"
+#: classes/Membership/Render/Gateway/Authorize/Form.php:226
+#: membershipincludes/gateways/gateway.authorizenetaim.php:385
+#: membershipincludes/gateways/gateway.authorizenetarb.php:387
+msgid "Expiration Date:"
+msgstr "Expiration Date:"
 
-#: classes/Membership/Render/Gateway/Authorize/Form.php:244
+#: classes/Membership/Render/Gateway/Authorize/Form.php:229
 #: membershipincludes/gateways/gateway.authorizenetaim.php:387
 #: membershipincludes/gateways/gateway.authorizenetarb.php:389
 msgid "Month"
 msgstr "Month"
 
+#: classes/Membership/Render/Gateway/Authorize/Form.php:235
+#: membershipincludes/gateways/gateway.authorizenetaim.php:389
+#: membershipincludes/gateways/gateway.authorizenetarb.php:391
+msgid "Year"
+msgstr "Year"
+
 #: classes/Membership/Render/Page/Subscription/Renew.php:46
 #: classes/Membership/Render/Page/Subscription/Renew.php:71
-#: classes/Membership/Render/Page/Subscription/Renew.php:250
+#: classes/Membership/Render/Page/Subscription/Renew.php:252
 msgid "Your Subscriptions"
 msgstr "Your Subscriptions"
 
@@ -295,7 +318,7 @@ msgstr ""
 "You do not currently have any subscriptions in place. You can sign up for a "
 "new subscription by selecting one below"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:219
+#: classes/Membership/Render/Page/Subscription/Renew.php:221
 #: membershipincludes/includes/functions.php:868
 #: membershipincludes/includes/functions.php:900
 #: membershipincludes/includes/functions.php:936
@@ -305,7 +328,7 @@ msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weeks"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:221
+#: classes/Membership/Render/Page/Subscription/Renew.php:223
 #: membershipincludes/includes/functions.php:875
 #: membershipincludes/includes/functions.php:907
 #: membershipincludes/includes/functions.php:943
@@ -315,7 +338,7 @@ msgid_plural "months"
 msgstr[0] "month"
 msgstr[1] "months"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:223
+#: classes/Membership/Render/Page/Subscription/Renew.php:225
 #: membershipincludes/includes/functions.php:882
 #: membershipincludes/includes/functions.php:914
 #: membershipincludes/includes/functions.php:950
@@ -325,7 +348,7 @@ msgid_plural "years"
 msgstr[0] "year"
 msgstr[1] "years"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:226
+#: classes/Membership/Render/Page/Subscription/Renew.php:228
 #: membershipincludes/includes/functions.php:861
 #: membershipincludes/includes/functions.php:893
 #: membershipincludes/includes/functions.php:929
@@ -335,7 +358,7 @@ msgid_plural "days"
 msgstr[0] "day"
 msgstr[1] "days"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:253
+#: classes/Membership/Render/Page/Subscription/Renew.php:255
 msgid ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
@@ -343,37 +366,37 @@ msgstr ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:282
+#: classes/Membership/Render/Page/Subscription/Renew.php:284
 msgid "Your membership has been cancelled and will expire on : "
 msgstr "Your membership has been cancelled and will expire on : "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:286
+#: classes/Membership/Render/Page/Subscription/Renew.php:288
 msgid "You are on an <strong>indefinite</strong> membership."
 msgstr "You are on an <strong>indefinite</strong> membership."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:288
+#: classes/Membership/Render/Page/Subscription/Renew.php:290
 msgid "Your membership is due to expire on : "
 msgstr "Your membership is due to expire on : "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:294
-#: classes/Membership/Render/Page/Subscription/Renew.php:300
+#: classes/Membership/Render/Page/Subscription/Renew.php:296
+#: classes/Membership/Render/Page/Subscription/Renew.php:302
 msgid "Your membership is set to <strong>automatically renew</strong>"
 msgstr "Your membership is set to <strong>automatically renew</strong>"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:302
+#: classes/Membership/Render/Page/Subscription/Renew.php:304
 msgid "Your membership is due to expire on: "
 msgstr "Your membership is due to expire on: "
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:327
+#: classes/Membership/Render/Page/Subscription/Renew.php:329
 msgid "Renewal your subscription"
 msgstr "Renewal your subscription"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:332
+#: classes/Membership/Render/Page/Subscription/Renew.php:334
 #, php-format
 msgid "Renewal for the %s following %s has been completed."
 msgstr "Renewal for the %s following %s has been completed."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:345
+#: classes/Membership/Render/Page/Subscription/Renew.php:347
 #, php-format
 msgid ""
 "To renew your subscription for another %s following %s you will need to pay "
@@ -382,7 +405,7 @@ msgstr ""
 "To renew your subscription for another %s following %s you will need to pay "
 "%s."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:346
+#: classes/Membership/Render/Page/Subscription/Renew.php:348
 #, php-format
 msgid ""
 "To renew your subscription for another %s following %s click on the button "
@@ -391,8 +414,8 @@ msgstr ""
 "To renew your subscription for another %s following %s click on the button "
 "to the right."
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:375
-#: classes/Membership/Gateway/Authorize.php:476
+#: classes/Membership/Render/Page/Subscription/Renew.php:377
+#: classes/Membership/Gateway/Authorize.php:479
 #: membershipincludes/gateways/gateway.paypalexpress.php:830
 #: membershipincludes/gateways/gateway.paypalsolo.php:340
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1209
@@ -402,13 +425,13 @@ msgstr ""
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:387
+#: classes/Membership/Render/Page/Subscription/Renew.php:400
 #, php-format
 msgctxt "Upgrade from subscription plan"
 msgid "Upgrade from %s"
 msgstr "Upgrade from %s"
 
-#: classes/Membership/Render/Page/Subscription/Renew.php:403
+#: classes/Membership/Render/Page/Subscription/Renew.php:410
 msgctxt "Move to another subscription"
 msgid "Move to:"
 msgstr "Move to:"
@@ -602,19 +625,19 @@ msgstr ""
 "This page will only be displayed if the user has tried to access the post / "
 "page / content directly or via a link."
 
-#: classes/Membership/Gateway/Authorize.php:383
+#: classes/Membership/Gateway/Authorize.php:386
 #: membershipincludes/gateways/gateway.authorizenetaim.php:71
 #: membershipincludes/gateways/gateway.authorizenetarb.php:73
 msgid "Sandbox"
 msgstr "Sandbox"
 
-#: classes/Membership/Gateway/Authorize.php:384
+#: classes/Membership/Gateway/Authorize.php:387
 #: membershipincludes/gateways/gateway.authorizenetaim.php:72
 #: membershipincludes/gateways/gateway.authorizenetarb.php:74
 msgid "Live"
 msgstr "Live"
 
-#: classes/Membership/Gateway/Authorize.php:428
+#: classes/Membership/Gateway/Authorize.php:431
 #: membershipincludes/gateways/gateway.authorizenetaim.php:216
 #: membershipincludes/gateways/gateway.authorizenetarb.php:218
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1016
@@ -622,7 +645,7 @@ msgstr "Live"
 msgid "Pay Now"
 msgstr "Pay Now"
 
-#: classes/Membership/Gateway/Authorize.php:443
+#: classes/Membership/Gateway/Authorize.php:446
 #: membershipincludes/gateways/gateway.paypalexpress.php:876
 #: membershipincludes/gateways/gateway.authorizenetaim.php:640
 #: membershipincludes/gateways/gateway.authorizenetaim.php:648
@@ -634,17 +657,7 @@ msgstr "Pay Now"
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: classes/Membership/Gateway/Authorize.php:533
-#: membershipincludes/gateways/gateway.authorizenetaim.php:334
-#: membershipincludes/gateways/gateway.authorizenetarb.php:336
-msgid "Payment method not supported for the payment"
-msgstr "Payment method not supported for the payment"
-
-#: classes/Membership/Gateway/Authorize.php:535
-msgid "There was a problem processing your purchase. Please, try again."
-msgstr "There was a problem processing your purchase. Please, try again."
-
-#: classes/Membership/Gateway/Authorize.php:543
+#: classes/Membership/Gateway/Authorize.php:539
 msgid ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
@@ -652,18 +665,18 @@ msgstr ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
 
-#: classes/Membership/Gateway/Authorize.php:615
+#: classes/Membership/Gateway/Authorize.php:613
 #: membershipincludes/gateways/gateway.authorizenetaim.php:416
 #: membershipincludes/gateways/gateway.authorizenetarb.php:519
 msgid "You must use HTTPS in order to do this"
 msgstr "You must use HTTPS in order to do this"
 
-#: classes/Membership/Gateway/Authorize.php:710
+#: classes/Membership/Gateway/Authorize.php:709
 #, php-format
 msgid "Sign up for %s completed"
 msgstr "Sign up for %s completed"
 
-#: classes/Membership/Gateway/Authorize.php:1247
+#: classes/Membership/Gateway/Authorize.php:1257
 msgid ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
@@ -671,27 +684,27 @@ msgstr ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
 
-#: classes/Membership/Gateway/Authorize.php:1266
+#: classes/Membership/Gateway/Authorize.php:1276
 msgid "Authorized (ARB)"
 msgstr "Authorized (ARB)"
 
-#: classes/Membership/Gateway/Authorize.php:1267
+#: classes/Membership/Gateway/Authorize.php:1277
 msgid "Authorized (CIM)"
 msgstr "Authorized (CIM)"
 
-#: classes/Membership/Gateway/Authorize.php:1268
+#: classes/Membership/Gateway/Authorize.php:1278
 msgid "Captured"
 msgstr "Captured"
 
-#: classes/Membership/Gateway/Authorize.php:1269
+#: classes/Membership/Gateway/Authorize.php:1279
 msgid "Voided"
 msgstr "Voided"
 
-#: classes/Membership/Gateway/Authorize.php:1270
+#: classes/Membership/Gateway/Authorize.php:1280
 msgid "Recurring"
 msgstr "Recurring"
 
-#: classes/Membership/Gateway/Authorize.php:1271
+#: classes/Membership/Gateway/Authorize.php:1281
 msgid "Cancelled Recurring"
 msgstr "Cancelled Recurring"
 
@@ -2399,6 +2412,11 @@ msgstr ""
 "There was an unknown error encountered with your payment.  Please contact "
 "the site administrator."
 
+#: membershipincludes/gateways/gateway.authorizenetaim.php:334
+#: membershipincludes/gateways/gateway.authorizenetarb.php:336
+msgid "Payment method not supported for the payment"
+msgstr "Payment method not supported for the payment"
+
 #: membershipincludes/gateways/gateway.authorizenetaim.php:336
 #: membershipincludes/gateways/gateway.authorizenetarb.php:338
 msgid "There was a problem processing your purchase. Please try again"
@@ -2422,6 +2440,16 @@ msgstr "Credit Card Billing Information:"
 #: membershipincludes/gateways/gateway.authorizenetarb.php:373
 msgid "Billing 5-Digit Zipcode:"
 msgstr "Billing 5-Digit Zipcode:"
+
+#: membershipincludes/gateways/gateway.authorizenetaim.php:378
+#: membershipincludes/gateways/gateway.authorizenetarb.php:380
+msgid "Credit Card Number:"
+msgstr "Credit Card Number:"
+
+#: membershipincludes/gateways/gateway.authorizenetaim.php:401
+#: membershipincludes/gateways/gateway.authorizenetarb.php:403
+msgid "Pay with Credit Card"
+msgstr "Pay with Credit Card"
 
 #: membershipincludes/gateways/gateway.authorizenetaim.php:486
 #: membershipincludes/gateways/gateway.authorizenetarb.php:494
@@ -3464,104 +3492,104 @@ msgstr ""
 "Once you have everything set up you should enable the membership plugins "
 "protection system."
 
-#: membershipincludes/classes/class.coupon.php:216
+#: membershipincludes/classes/class.coupon.php:209
 msgid "The Coupon code is invalid."
 msgstr "The Coupon code is invalid."
 
-#: membershipincludes/classes/class.coupon.php:220
+#: membershipincludes/classes/class.coupon.php:213
 msgid "No Coupons remaining for this code."
 msgstr "No Coupons remaining for this code."
 
-#: membershipincludes/classes/class.coupon.php:224
+#: membershipincludes/classes/class.coupon.php:217
 msgid "This Coupon has expired."
 msgstr "This Coupon has expired."
 
-#: membershipincludes/classes/class.coupon.php:228
+#: membershipincludes/classes/class.coupon.php:221
 msgid "The Coupon is not valid for this subscription."
 msgstr "The Coupon is not valid for this subscription."
 
-#: membershipincludes/classes/class.coupon.php:248
-#: membershipincludes/classes/class.coupon.php:317
+#: membershipincludes/classes/class.coupon.php:241
+#: membershipincludes/classes/class.coupon.php:310
 msgid "Please enter a valid Coupon Code"
 msgstr "Please enter a valid Coupon Code"
 
-#: membershipincludes/classes/class.coupon.php:252
-#: membershipincludes/classes/class.coupon.php:321
+#: membershipincludes/classes/class.coupon.php:245
+#: membershipincludes/classes/class.coupon.php:314
 msgid "Please enter a valid Discount Amount"
 msgstr "Please enter a valid Discount Amount"
 
-#: membershipincludes/classes/class.coupon.php:256
-#: membershipincludes/classes/class.coupon.php:325
+#: membershipincludes/classes/class.coupon.php:249
+#: membershipincludes/classes/class.coupon.php:318
 msgid "Please choose a valid Discount Type"
 msgstr "Please choose a valid Discount Type"
 
-#: membershipincludes/classes/class.coupon.php:264
-#: membershipincludes/classes/class.coupon.php:333
+#: membershipincludes/classes/class.coupon.php:257
+#: membershipincludes/classes/class.coupon.php:326
 msgid "Please enter a valid Start Date"
 msgstr "Please enter a valid Start Date"
 
-#: membershipincludes/classes/class.coupon.php:273
-#: membershipincludes/classes/class.coupon.php:342
+#: membershipincludes/classes/class.coupon.php:266
+#: membershipincludes/classes/class.coupon.php:335
 msgid "Please enter a valid End Date not earlier than the Start Date"
 msgstr "Please enter a valid End Date not earlier than the Start Date"
 
-#: membershipincludes/classes/class.coupon.php:288
-#: membershipincludes/classes/class.coupon.php:355
+#: membershipincludes/classes/class.coupon.php:281
+#: membershipincludes/classes/class.coupon.php:348
 msgid "Please ensure you complete the form."
 msgstr "Please ensure you complete the form."
 
-#: membershipincludes/classes/class.coupon.php:398
-#: membershipincludes/classes/class.coupon.php:399
-#: membershipincludes/classes/class.coupon.php:476
-#: membershipincludes/classes/class.coupon.php:477
+#: membershipincludes/classes/class.coupon.php:391
+#: membershipincludes/classes/class.coupon.php:392
+#: membershipincludes/classes/class.coupon.php:469
+#: membershipincludes/classes/class.coupon.php:470
 #: membershipincludes/classes/membershipadmin.php:7428
 msgid "Coupon Code"
 msgstr "Coupon Code"
 
-#: membershipincludes/classes/class.coupon.php:398
-#: membershipincludes/classes/class.coupon.php:476
+#: membershipincludes/classes/class.coupon.php:391
+#: membershipincludes/classes/class.coupon.php:469
 msgid "The Coupon code should contain letters and numbers only."
 msgstr "The Coupon code should contain letters and numbers only."
 
-#: membershipincludes/classes/class.coupon.php:403
-#: membershipincludes/classes/class.coupon.php:481
+#: membershipincludes/classes/class.coupon.php:396
+#: membershipincludes/classes/class.coupon.php:474
 #: membershipincludes/classes/membershipadmin.php:7429
 msgid "Discount"
 msgstr "Discount"
 
-#: membershipincludes/classes/class.coupon.php:403
-#: membershipincludes/classes/class.coupon.php:481
+#: membershipincludes/classes/class.coupon.php:396
+#: membershipincludes/classes/class.coupon.php:474
 msgid "The amount or percantage of a discount the coupon is valid for."
 msgstr "The amount or percantage of a discount the coupon is valid for."
 
-#: membershipincludes/classes/class.coupon.php:404
-#: membershipincludes/classes/class.coupon.php:482
+#: membershipincludes/classes/class.coupon.php:397
+#: membershipincludes/classes/class.coupon.php:475
 msgid "discount"
 msgstr "discount"
 
-#: membershipincludes/classes/class.coupon.php:415
-#: membershipincludes/classes/class.coupon.php:416
-#: membershipincludes/classes/class.coupon.php:499
-#: membershipincludes/classes/class.coupon.php:500
+#: membershipincludes/classes/class.coupon.php:408
+#: membershipincludes/classes/class.coupon.php:409
+#: membershipincludes/classes/class.coupon.php:492
+#: membershipincludes/classes/class.coupon.php:493
 #: membershipincludes/classes/membershipadmin.php:7430
 msgid "Start Date"
 msgstr "Start Date"
 
-#: membershipincludes/classes/class.coupon.php:415
-#: membershipincludes/classes/class.coupon.php:499
+#: membershipincludes/classes/class.coupon.php:408
+#: membershipincludes/classes/class.coupon.php:492
 msgid "The date that the Coupon code should be valid from."
 msgstr "The date that the Coupon code should be valid from."
 
-#: membershipincludes/classes/class.coupon.php:420
-#: membershipincludes/classes/class.coupon.php:421
-#: membershipincludes/classes/class.coupon.php:504
-#: membershipincludes/classes/class.coupon.php:505
+#: membershipincludes/classes/class.coupon.php:413
+#: membershipincludes/classes/class.coupon.php:414
+#: membershipincludes/classes/class.coupon.php:497
+#: membershipincludes/classes/class.coupon.php:498
 #: membershipincludes/classes/membershipadmin.php:7431
 msgid "Expire Date"
 msgstr "Expire Date"
 
-#: membershipincludes/classes/class.coupon.php:420
-#: membershipincludes/classes/class.coupon.php:504
+#: membershipincludes/classes/class.coupon.php:413
+#: membershipincludes/classes/class.coupon.php:497
 msgid ""
 "The date that the Coupon code should be valid until. Leave this blank if "
 "there is no end date."
@@ -3569,26 +3597,26 @@ msgstr ""
 "The date that the Coupon code should be valid until. Leave this blank if "
 "there is no end date."
 
-#: membershipincludes/classes/class.coupon.php:425
-#: membershipincludes/classes/class.coupon.php:511
+#: membershipincludes/classes/class.coupon.php:418
+#: membershipincludes/classes/class.coupon.php:504
 msgid "The subscription that this coupon can be used on."
 msgstr "The subscription that this coupon can be used on."
 
-#: membershipincludes/classes/class.coupon.php:428
-#: membershipincludes/classes/class.coupon.php:514
+#: membershipincludes/classes/class.coupon.php:421
+#: membershipincludes/classes/class.coupon.php:507
 #: membershipincludes/classes/membershipadmin.php:7548
 msgid "Any Subscription"
 msgstr "Any Subscription"
 
-#: membershipincludes/classes/class.coupon.php:441
-#: membershipincludes/classes/class.coupon.php:442
-#: membershipincludes/classes/class.coupon.php:527
-#: membershipincludes/classes/class.coupon.php:528
+#: membershipincludes/classes/class.coupon.php:434
+#: membershipincludes/classes/class.coupon.php:435
+#: membershipincludes/classes/class.coupon.php:520
+#: membershipincludes/classes/class.coupon.php:521
 msgid "Allowed Uses"
 msgstr "Allowed Uses"
 
-#: membershipincludes/classes/class.coupon.php:441
-#: membershipincludes/classes/class.coupon.php:527
+#: membershipincludes/classes/class.coupon.php:434
+#: membershipincludes/classes/class.coupon.php:520
 msgid ""
 "The number of times the coupon can be used. Leave this blank if there is no "
 "limit."
@@ -3596,33 +3624,33 @@ msgstr ""
 "The number of times the coupon can be used. Leave this blank if there is no "
 "limit."
 
-#: membershipincludes/classes/class.coupon.php:446
-#: membershipincludes/classes/class.coupon.php:534
+#: membershipincludes/classes/class.coupon.php:439
+#: membershipincludes/classes/class.coupon.php:527
 msgid "Apply Coupon to"
 msgstr "Apply Coupon to"
 
-#: membershipincludes/classes/class.coupon.php:446
-#: membershipincludes/classes/class.coupon.php:534
+#: membershipincludes/classes/class.coupon.php:439
+#: membershipincludes/classes/class.coupon.php:527
 msgid "The parts of a subscription that the coupon should be applied to."
 msgstr "The parts of a subscription that the coupon should be applied to."
 
-#: membershipincludes/classes/class.coupon.php:449
-#: membershipincludes/classes/class.coupon.php:537
+#: membershipincludes/classes/class.coupon.php:442
+#: membershipincludes/classes/class.coupon.php:530
 msgid "All Levels"
 msgstr "All Levels"
 
-#: membershipincludes/classes/class.coupon.php:450
-#: membershipincludes/classes/class.coupon.php:538
+#: membershipincludes/classes/class.coupon.php:443
+#: membershipincludes/classes/class.coupon.php:531
 msgid "Only Finite Levels"
 msgstr "Only Finite Levels"
 
-#: membershipincludes/classes/class.coupon.php:451
-#: membershipincludes/classes/class.coupon.php:539
+#: membershipincludes/classes/class.coupon.php:444
+#: membershipincludes/classes/class.coupon.php:532
 msgid "Only Serial Levels"
 msgstr "Only Serial Levels"
 
-#: membershipincludes/classes/class.coupon.php:452
-#: membershipincludes/classes/class.coupon.php:540
+#: membershipincludes/classes/class.coupon.php:445
+#: membershipincludes/classes/class.coupon.php:533
 msgid "Only Indefinite Levels"
 msgstr "Only Indefinite Levels"
 
@@ -3905,8 +3933,8 @@ msgid "Are you sure you want to delete this level?"
 msgstr "Are you sure you want to delete this level?"
 
 #: membershipincludes/classes/membershipadmin.php:650
-#: membershipincludes/classes/membershippublic.php:1892
-#: membershipincludes/classes/membershippublic.php:1958
+#: membershipincludes/classes/membershippublic.php:1874
+#: membershipincludes/classes/membershippublic.php:1940
 msgid "Are you sure you want to deactivate this level?"
 msgstr "Are you sure you want to deactivate this level?"
 
@@ -4437,12 +4465,12 @@ msgid "&larr; Back to All Users"
 msgstr "&larr; Back to All Users"
 
 #: membershipincludes/classes/membershipadmin.php:2154
-#: membershipincludes/classes/membershippublic.php:1324
-#: membershipincludes/classes/membershippublic.php:1435
-#: membershipincludes/includes/bp.registration.form.php:41
+#: membershipincludes/classes/membershippublic.php:1319
+#: membershipincludes/classes/membershippublic.php:1423
+#: membershipincludes/includes/bp.registration.form.php:43
 #: membershipincludes/includes/account.form.php:43
-#: membershipincludes/includes/popover_signup.form.php:9
-#: membershipincludes/includes/popover_signup.form.php:45
+#: membershipincludes/includes/popover_signup.form.php:11
+#: membershipincludes/includes/popover_signup.form.php:48
 #: membershipincludes/includes/bp.account.form.php:65
 msgid "Username"
 msgstr "Username"
@@ -4526,25 +4554,25 @@ msgid "Admin"
 msgstr "Admin"
 
 #: membershipincludes/classes/membershipadmin.php:2614
-#: membershipincludes/classes/membershipadmin.php:7875
+#: membershipincludes/classes/membershipadmin.php:7870
 #: membershipincludes/classes/membershippublic.php:189
 msgid "Register"
 msgstr "Register"
 
 #: membershipincludes/classes/membershipadmin.php:2620
-#: membershipincludes/classes/membershipadmin.php:7879
+#: membershipincludes/classes/membershipadmin.php:7874
 msgid "Account"
 msgstr "Account"
 
 #: membershipincludes/classes/membershipadmin.php:2632
-#: membershipincludes/classes/membershipadmin.php:7883
+#: membershipincludes/classes/membershipadmin.php:7878
 msgid ""
 "The content you are trying to access is only available to members. Sorry."
 msgstr ""
 "The content you are trying to access is only available to members. Sorry."
 
 #: membershipincludes/classes/membershipadmin.php:2633
-#: membershipincludes/classes/membershipadmin.php:7884
+#: membershipincludes/classes/membershipadmin.php:7879
 msgid "Protected Content"
 msgstr "Protected Content"
 
@@ -6136,56 +6164,56 @@ msgid "No coupons yet."
 msgstr "No coupons yet."
 
 #: membershipincludes/classes/membershipadmin.php:7649
-#: membershipincludes/classes/membershipadmin.php:7733
+#: membershipincludes/classes/membershipadmin.php:7728
 msgid "Invalid form submission."
 msgstr "Invalid form submission."
 
 #: membershipincludes/classes/membershipadmin.php:7653
-#: membershipincludes/classes/membershippublic.php:1342
-#: membershipincludes/classes/membershippublic.php:1454
+#: membershipincludes/classes/membershippublic.php:1337
+#: membershipincludes/classes/membershippublic.php:1442
 msgid "The username is not valid, sorry."
 msgstr "The username is not valid, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7657
-#: membershipincludes/classes/membershippublic.php:1346
-#: membershipincludes/classes/membershippublic.php:1458
+#: membershipincludes/classes/membershippublic.php:1341
+#: membershipincludes/classes/membershippublic.php:1446
 msgid "That username is already taken, sorry."
 msgstr "That username is already taken, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7661
-#: membershipincludes/classes/membershippublic.php:1350
-#: membershipincludes/classes/membershippublic.php:1462
+#: membershipincludes/classes/membershippublic.php:1345
+#: membershipincludes/classes/membershippublic.php:1450
 msgid "The email address is not valid, sorry."
 msgstr "The email address is not valid, sorry."
 
 #: membershipincludes/classes/membershipadmin.php:7665
-#: membershipincludes/classes/membershippublic.php:1354
-#: membershipincludes/classes/membershippublic.php:1466
+#: membershipincludes/classes/membershippublic.php:1349
+#: membershipincludes/classes/membershippublic.php:1454
 msgid "That email address is already taken, sorry."
 msgstr "That email address is already taken, sorry."
 
-#: membershipincludes/classes/membershipadmin.php:7748
+#: membershipincludes/classes/membershipadmin.php:7743
 msgid "User not found."
 msgstr "User not found."
 
-#: membershipincludes/classes/membershipadmin.php:7803
+#: membershipincludes/classes/membershipadmin.php:7798
 #, php-format
 msgid "Subscription %s has been added."
 msgstr "Subscription %s has been added."
 
-#: membershipincludes/classes/membershipadmin.php:7912
+#: membershipincludes/classes/membershipadmin.php:7907
 msgid "default"
 msgstr "default"
 
-#: membershipincludes/classes/membershipadmin.php:7917
+#: membershipincludes/classes/membershipadmin.php:7912
 msgid "downloads"
 msgstr "downloads"
 
-#: membershipincludes/classes/class.shortcodes.php:74
+#: membershipincludes/classes/class.shortcodes.php:68
 msgid "Lost password?"
 msgstr "Lost password?"
 
-#: membershipincludes/classes/class.shortcodes.php:297
+#: membershipincludes/classes/class.shortcodes.php:291
 msgid "Subscribe"
 msgstr "Subscribe"
 
@@ -6407,12 +6435,12 @@ msgstr ""
 msgid "Close this wizard"
 msgstr "Close this wizard"
 
-#: membershipincludes/classes/class.membersearch.php:102
+#: membershipincludes/classes/class.membersearch.php:103
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
 msgstr "Displaying %s&#8211;%s of %s"
 
-#: membershipincludes/classes/class.membersearch.php:117
+#: membershipincludes/classes/class.membersearch.php:118
 msgid "members"
 msgstr "members"
 
@@ -6424,67 +6452,67 @@ msgstr "My Account"
 msgid "No access to this content"
 msgstr "No access to this content"
 
-#: membershipincludes/classes/membershippublic.php:1325
-#: membershipincludes/classes/membershippublic.php:1436
+#: membershipincludes/classes/membershippublic.php:1320
+#: membershipincludes/classes/membershippublic.php:1424
 msgid "Email address"
 msgstr "Email address"
 
-#: membershipincludes/classes/membershippublic.php:1326
-#: membershipincludes/classes/membershippublic.php:1437
-#: membershipincludes/includes/popover_signup.form.php:17
-#: membershipincludes/includes/popover_signup.form.php:49
+#: membershipincludes/classes/membershippublic.php:1321
+#: membershipincludes/classes/membershippublic.php:1425
+#: membershipincludes/includes/popover_signup.form.php:19
+#: membershipincludes/includes/popover_signup.form.php:52
 #: membershipincludes/includes/registration.form.php:51
 msgid "Password"
 msgstr "Password"
 
-#: membershipincludes/classes/membershippublic.php:1327
-#: membershipincludes/classes/membershippublic.php:1438
+#: membershipincludes/classes/membershippublic.php:1322
+#: membershipincludes/classes/membershippublic.php:1426
 msgid "Password confirmation"
 msgstr "Password confirmation"
 
-#: membershipincludes/classes/membershippublic.php:1333
-#: membershipincludes/classes/membershippublic.php:1445
-#: membershipincludes/classes/membershippublic.php:1503
+#: membershipincludes/classes/membershippublic.php:1328
+#: membershipincludes/classes/membershippublic.php:1433
+#: membershipincludes/classes/membershippublic.php:1491
 msgid "Please ensure that the "
 msgstr "Please ensure that the "
 
-#: membershipincludes/classes/membershippublic.php:1333
-#: membershipincludes/classes/membershippublic.php:1445
-#: membershipincludes/classes/membershippublic.php:1503
+#: membershipincludes/classes/membershippublic.php:1328
+#: membershipincludes/classes/membershippublic.php:1433
+#: membershipincludes/classes/membershippublic.php:1491
 msgid " information is completed."
 msgstr " information is completed."
 
-#: membershipincludes/classes/membershippublic.php:1338
-#: membershipincludes/classes/membershippublic.php:1450
+#: membershipincludes/classes/membershippublic.php:1333
+#: membershipincludes/classes/membershippublic.php:1438
 msgid "Please ensure the passwords match."
 msgstr "Please ensure the passwords match."
 
-#: membershipincludes/classes/membershippublic.php:1891
-#: membershipincludes/classes/membershippublic.php:1957
+#: membershipincludes/classes/membershippublic.php:1873
+#: membershipincludes/classes/membershippublic.php:1939
 msgid "Are you sure you want to unsubscribe from this subscription?"
 msgstr "Are you sure you want to unsubscribe from this subscription?"
 
-#: membershipincludes/classes/membershippublic.php:1911
+#: membershipincludes/classes/membershippublic.php:1893
 msgid "Problem with registration."
 msgstr "Problem with registration."
 
-#: membershipincludes/classes/membershippublic.php:1912
+#: membershipincludes/classes/membershippublic.php:1894
 msgid "Problem with Login."
 msgstr "Problem with Login."
 
-#: membershipincludes/classes/membershippublic.php:1913
+#: membershipincludes/classes/membershippublic.php:1895
 msgid "Please ensure you have completed all the fields"
 msgstr "Please ensure you have completed all the fields"
 
-#: membershipincludes/classes/membershippublic.php:1914
+#: membershipincludes/classes/membershippublic.php:1896
 msgid "Please ensure passwords match"
 msgstr "Please ensure passwords match"
 
-#: membershipincludes/classes/membershippublic.php:1915
+#: membershipincludes/classes/membershippublic.php:1897
 msgid "Please ensure you have entered an username or password"
 msgstr "Please ensure you have entered an username or password"
 
-#: membershipincludes/classes/membershippublic.php:2018
+#: membershipincludes/classes/membershippublic.php:2000
 msgid "Could not create your user account."
 msgstr "Could not create your user account."
 
@@ -7386,12 +7414,12 @@ msgstr "&laquo; Previous"
 msgid "%s: Step %d of %d"
 msgstr "%s: Step %d of %d"
 
-#: membershipincludes/includes/bp.registration.form.php:22
+#: membershipincludes/includes/bp.registration.form.php:28
 #: membershipincludes/includes/registration.form.php:33
 msgid "Create an Account"
 msgstr "Create an Account"
 
-#: membershipincludes/includes/bp.registration.form.php:31
+#: membershipincludes/includes/bp.registration.form.php:33
 msgid ""
 "Registering for this site is easy, just fill in the fields below and we'll "
 "get a new account set up for you in no time."
@@ -7399,48 +7427,69 @@ msgstr ""
 "Registering for this site is easy, just fill in the fields below and we'll "
 "get a new account set up for you in no time."
 
-#: membershipincludes/includes/bp.registration.form.php:39
+#: membershipincludes/includes/bp.registration.form.php:41
 msgid "Account Details"
 msgstr "Account Details"
 
-#: membershipincludes/includes/bp.registration.form.php:41
-#: membershipincludes/includes/bp.registration.form.php:45
-#: membershipincludes/includes/bp.registration.form.php:49
-#: membershipincludes/includes/bp.registration.form.php:53
-#: membershipincludes/includes/bp.registration.form.php:82
-#: membershipincludes/includes/bp.registration.form.php:90
-#: membershipincludes/includes/bp.registration.form.php:98
-#: membershipincludes/includes/bp.registration.form.php:108
-#: membershipincludes/includes/bp.registration.form.php:119
-#: membershipincludes/includes/bp.registration.form.php:134
-#: membershipincludes/includes/bp.registration.form.php:145
+#: membershipincludes/includes/bp.registration.form.php:43
+#: membershipincludes/includes/bp.registration.form.php:47
+#: membershipincludes/includes/bp.registration.form.php:51
+#: membershipincludes/includes/bp.registration.form.php:55
+#: membershipincludes/includes/bp.registration.form.php:85
+#: membershipincludes/includes/bp.registration.form.php:93
+#: membershipincludes/includes/bp.registration.form.php:101
+#: membershipincludes/includes/bp.registration.form.php:111
+#: membershipincludes/includes/bp.registration.form.php:122
+#: membershipincludes/includes/bp.registration.form.php:137
+#: membershipincludes/includes/bp.registration.form.php:148
 msgid "(required)"
 msgstr "(required)"
 
-#: membershipincludes/includes/bp.registration.form.php:45
-#: membershipincludes/includes/popover_signup.form.php:13
+#: membershipincludes/includes/bp.registration.form.php:47
+#: membershipincludes/includes/popover_signup.form.php:15
 #: membershipincludes/includes/registration.form.php:43
 msgid "Email Address"
 msgstr "Email Address"
 
-#: membershipincludes/includes/bp.registration.form.php:49
+#: membershipincludes/includes/bp.registration.form.php:51
 msgid "Choose a Password"
 msgstr "Choose a Password"
 
-#: membershipincludes/includes/bp.registration.form.php:53
+#: membershipincludes/includes/bp.registration.form.php:55
 #: membershipincludes/includes/account.form.php:127
-#: membershipincludes/includes/popover_signup.form.php:22
+#: membershipincludes/includes/popover_signup.form.php:24
 #: membershipincludes/includes/registration.form.php:58
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
-#: membershipincludes/includes/bp.registration.form.php:71
+#: membershipincludes/includes/bp.registration.form.php:74
 msgid "Profile Details"
 msgstr "Profile Details"
 
-#: membershipincludes/includes/bp.registration.form.php:125
+#: membershipincludes/includes/bp.registration.form.php:128
 msgid "Clear"
 msgstr "Clear"
+
+#: membershipincludes/includes/bp.registration.form.php:170
+#: membershipincludes/includes/bp.registration.form.php:182
+#, php-format
+msgid ""
+"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
+msgstr ""
+"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
+
+#: membershipincludes/includes/bp.registration.form.php:170
+msgctxt "Change profile field visibility level"
+msgid "Change"
+msgstr "Change"
+
+#: membershipincludes/includes/bp.registration.form.php:175
+msgid "Who can see this field?"
+msgstr "Who can see this field?"
+
+#: membershipincludes/includes/bp.registration.form.php:178
+msgid "Close"
+msgstr "Close"
 
 #: membershipincludes/includes/subscription.form.php:4
 msgid "Select a Subscription"
@@ -7678,33 +7727,33 @@ msgstr ""
 msgid "BuddyPress No access message"
 msgstr "BuddyPress No access message"
 
-#: membershipincludes/includes/popover_signup.form.php:2
+#: membershipincludes/includes/popover_signup.form.php:3
 msgid "Register or Login to purchase"
 msgstr "Register or Login to purchase"
 
-#: membershipincludes/includes/popover_signup.form.php:5
+#: membershipincludes/includes/popover_signup.form.php:7
 msgid "Enter your details below to create a new account."
 msgstr "Enter your details below to create a new account."
 
-#: membershipincludes/includes/popover_signup.form.php:6
-#: membershipincludes/includes/popover_signup.form.php:42
+#: membershipincludes/includes/popover_signup.form.php:8
+#: membershipincludes/includes/popover_signup.form.php:45
 msgid "This is an error"
 msgstr "This is an error"
 
-#: membershipincludes/includes/popover_signup.form.php:28
+#: membershipincludes/includes/popover_signup.form.php:30
 msgid "Terms Of Service"
 msgstr "Terms Of Service"
 
-#: membershipincludes/includes/popover_signup.form.php:35
+#: membershipincludes/includes/popover_signup.form.php:37
 #: membershipincludes/includes/registration.form.php:72
 msgid "Register My Account &raquo;"
 msgstr "Register My Account &raquo;"
 
-#: membershipincludes/includes/popover_signup.form.php:41
+#: membershipincludes/includes/popover_signup.form.php:44
 msgid "Login below if you're already registered."
 msgstr "Login below if you're already registered."
 
-#: membershipincludes/includes/popover_signup.form.php:55
+#: membershipincludes/includes/popover_signup.form.php:58
 msgid "Login &raquo;"
 msgstr "Login &raquo;"
 
