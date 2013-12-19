@@ -124,6 +124,29 @@ class Membership_Plugin {
 	}
 
 	/**
+	 * Removes module from the plugin.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @param string $module The name of the module to use in the plugin.
+	 * @return boolean TRUE if a module has been unset, otherwise FALSE.
+	 */
+	public function unset_module( $class ) {
+		if ( !isset( $this->_modules[$class] ) ) {
+			return false;
+		}
+
+		$module = $this->_modules[$class];
+		$module->unbind();
+		$module = null;
+		
+		unset( $this->_modules[$class], $module );
+
+		return true;
+	}
+
+	/**
 	 * Determines whether global tables are used or not.
 	 *
 	 * @since 3.5

@@ -41,6 +41,36 @@ abstract class Membership_Render {
 	protected $_data;
 
 	/**
+	 * Determines whether we need to cache output or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $_cache = false;
+
+	/**
+	 * Time to live for cached HTML.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @var int
+	 */
+	protected $_cache_ttl;
+
+	/**
+	 * Determines whether we need to use network wide cache or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $_use_network_cache = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.5
@@ -50,6 +80,7 @@ abstract class Membership_Render {
 	 */
 	public function __construct( $data = array() ) {
 		$this->_data = $data;
+		$this->_cache_ttl = 10 * MINUTE_IN_SECONDS;
 	}
 
 	/**
@@ -104,6 +135,42 @@ abstract class Membership_Render {
 	}
 
 	/**
+	 * Sets flags to cache or not output.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 * @param boolean $cache New cache output directive.
+	 * @return boolean Previous value of cache output directive.
+	 */
+	public function cache_output( $cache = null ) {
+		$old = $this->_cache;
+		if ( func_num_args() > 0 ) {
+			$this->_cache = (bool)$cache;
+		}
+
+		return $old;
+	}
+
+	/**
+	 * Sets cache time to live value.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 * @param int $new_ttl New time to live value.
+	 * @return int Old time to live value.
+	 */
+	public function cache_ttl( $new_ttl = null ) {
+		$old = $this->_cache_ttl;
+		if ( func_num_args() > 0 ) {
+			$this->_cache_ttl = absint( $new_ttl );
+		}
+
+		return $old;
+	}
+
+	/**
 	 * Renders template.
 	 *
 	 * @since 3.5
@@ -114,6 +181,48 @@ abstract class Membership_Render {
 	protected abstract function _to_html();
 
 	/**
+	 * Returns cache key.
+	 *
+	 * @sicne 4.0.0
+	 *
+	 * @access protected
+	 * @return string Cache key.
+	 */
+	protected function _get_cache_key() {
+		return __CLASS__;
+	}
+
+	/**
+	 * Returns HTML from cache.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 * @return string|boolean HTML on success, otherwise FALSE.
+	 */
+	public function get_html_from_cahce() {
+		return $this->_use_network_cache
+			? get_site_transient( $this->_get_cache_key() )
+			: get_transient( $this->_get_cache_key() );
+	}
+
+	/**
+	 * Caches generated HTML.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param string $html HTML to cache.
+	 */
+	protected function _cache_html( $html ) {
+		if ( $this->_use_network_cache ) {
+			set_site_transient( $this->_get_cache_key(), $html, $this->_cache_ttl );
+		} else {
+			set_transient( $this->_get_cache_key(), $html, $this->_cache_ttl );
+		}
+	}
+
+	/**
 	 * Builds template and return it as string.
 	 *
 	 * @since 3.5
@@ -122,9 +231,17 @@ abstract class Membership_Render {
 	 * @return string
 	 */
 	public function to_html() {
+		// render template
 		ob_start();
 		$this->_to_html();
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		// cache template if need be
+		if ( $this->_cache ) {
+			$this->_cache_html( $html );
+		}
+
+		return $html;
 	}
 
 	/**
@@ -147,7 +264,7 @@ abstract class Membership_Render {
 	 * @access public
 	 */
 	public function render() {
-		$this->_to_html();
+		echo $this->to_html();
 	}
 
 }
