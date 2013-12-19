@@ -396,6 +396,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access public
+	 * @return boolean TRUE on success, otherwise FALSE.
 	 */
 	public function update() {
 		$method = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN )
@@ -413,6 +414,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$method( $key, filter_input( INPUT_POST, $option ) );
 			}
 		}
+
+		return true;
 	}
 
 	/**
