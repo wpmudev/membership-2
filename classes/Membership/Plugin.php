@@ -28,7 +28,7 @@
 class Membership_Plugin {
 
 	const NAME    = 'membership';
-	const VERSION = '3.5.beta.5';
+	const VERSION = '3.5.beta.7';
 
 	/**
 	 * Singletone instance of the plugin.
@@ -140,7 +140,7 @@ class Membership_Plugin {
 		$module = $this->_modules[$class];
 		$module->unbind();
 		$module = null;
-		
+
 		unset( $this->_modules[$class], $module );
 
 		return true;
