@@ -410,23 +410,25 @@ if ( !class_exists( 'M_Communication' ) ) {
 			// Globally replace the values in the ping and then make it into an array to send
 			$original_commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
 
-			$hmlt_message = wpautop( $original_commmessage );
+			$html_message = wpautop( $original_commmessage );
 			$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $original_commmessage ) );
 
 			add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
 
 			$lambda_function = false;
 			if ( $wp_better_emails ) {
+				$html_message = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $html_message, 'template' ) ) );
+				$text_message = apply_filters( 'wpbe_plaintext_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $text_message, 'plaintext_template' ) ) );
+
 				// lets use WP Better Email to wrap communication content if the plugin is used
 				$lambda_function = create_function( '', sprintf( 'return "%s";', addslashes( $text_message ) ) );
 				add_filter( 'wpbe_plaintext_body', $lambda_function );
 				add_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
-				$hmlt_message = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $hmlt_message ) ) );
 			} elseif ( !defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
-				$hmlt_message = "<html><head></head><body>{$hmlt_message}</body></html>";
+				$html_message = "<html><head></head><body>{$html_message}</body></html>";
 			}
 
-			@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $hmlt_message );
+			@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $html_message );
 
 			remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
 			if ( $lambda_function ) {
