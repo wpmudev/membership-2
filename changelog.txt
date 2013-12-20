@@ -40,6 +40,7 @@
 * Implemented ability to send test communication message to myself
 * Implemented ability to use user display name, first and last name in a communication message
 * Implemented ability to use first and last name in a ping
+* Improved compatibility with WP Better Email plugin
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup

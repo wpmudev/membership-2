@@ -316,6 +316,8 @@ if ( !class_exists( 'M_Communication' ) ) {
 		}
 
 		function send_message( $user_id, $sub_id = false, $level_id = false ) {
+			global $wp_better_emails;
+
 			$this->comm = $this->get_communication();
 			$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
 
@@ -407,7 +409,16 @@ if ( !class_exists( 'M_Communication' ) ) {
 
 			if ( filter_var( $member->user_email, FILTER_VALIDATE_EMAIL ) ) {
 				add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
-				@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), "<html><head></head><body>{$commmessage}</body></html>" );
+
+				// lets use WP Better Email to wrap communication content if the plugin is used
+				if ( $wp_better_emails ) {
+					$commmessage = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $commmessage ) ) );
+				} elseif ( !defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
+					$commmessage = "<html><head></head><body>{$commmessage}</body></html>";
+				}
+
+				@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $commmessage );
+
 				remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
 			}
 		}
