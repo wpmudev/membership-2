@@ -5218,7 +5218,19 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     }
                     break;
 
-                case 'deactivate':
+				case 'sendme':
+					$id = filter_input( INPUT_GET, 'comm', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+					if ( $id ) {
+						check_admin_referer( 'sendme-' . $id );
+
+						$comm = new M_Communication( $id );
+						$comm->send_message( get_current_user_id() );
+
+						wp_safe_redirect( add_query_arg( 'msg', 12, wp_get_referer() ) );
+					}
+					break;
+
+				case 'deactivate':
                     if (isset($_GET['comm'])) {
                         $id = (int) $_GET['comm'];
 
@@ -5344,43 +5356,45 @@ if ( !class_exists( 'membershipadmin' ) ) :
         function handle_communication_panel() {
             global $action, $page;
 
-            wp_reset_vars(array('action', 'page'));
+			wp_reset_vars( array( 'action', 'page' ) );
 
-            switch (addslashes($action)) {
+			switch ( addslashes( $action ) ) {
+				case 'edit':
+					if ( !empty( $_GET['comm'] ) ) {
+						// Make a communication
+						$this->show_communication_edit( $_GET['comm'] );
+					} else {
+						// Add a communication
+						$this->show_communication_edit( false );
+					}
+					return;
+			}
 
-                case 'edit': if (!empty($_GET['comm'])) {
-                        // Make a communication
-                        $this->show_communication_edit($_GET['comm']);
-                    } else {
-                        // Add a communication
-                        $this->show_communication_edit(false);
-                    }
-                    return; // so we don't show the list below
-                    break;
-            }
 
+			$messages = array();
+			$messages[1] = __( 'Message updated.', 'membership' );
+			$messages[2] = __( 'Message not updated.', 'membership' );
 
-            $messages = array();
-            $messages[1] = __('Message updated.', 'membership');
-            $messages[2] = __('Message not updated.', 'membership');
+			$messages[3] = __( 'Message activated.', 'membership' );
+			$messages[4] = __( 'Message not activated.', 'membership' );
 
-            $messages[3] = __('Message activated.', 'membership');
-            $messages[4] = __('Message not activated.', 'membership');
+			$messages[5] = __( 'Message deactivated.', 'membership' );
+			$messages[6] = __( 'Message not deactivated.', 'membership' );
 
-            $messages[5] = __('Message deactivated.', 'membership');
-            $messages[6] = __('Message not deactivated.', 'membership');
+			$messages[7] = __( 'Message activation toggled.', 'membership' );
 
-            $messages[7] = __('Message activation toggled.', 'membership');
+			$messages[8] = __( 'Message added.', 'membership' );
+			$messages[9] = __( 'Message not added.', 'membership' );
 
-            $messages[8] = __('Message added.', 'membership');
-            $messages[9] = __('Message not added.', 'membership');
+			$messages[10] = __( 'Message deleted.', 'membership' );
+			$messages[11] = __( 'Message not deleted.', 'membership' );
 
-            $messages[10] = __('Message deleted.', 'membership');
-            $messages[11] = __('Message not deleted.', 'membership');
-            ?>
+			$messages[12] = __( 'Message has been sent.', 'membership' );
+
+			?>
             <div class='wrap'>
                 <div class="icon32" id="icon-edit-comments"><br></div>
-                <h2><?php _e('Edit Communication', 'membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;comm="><?php _e('Add New', 'membership'); ?></a></h2>
+                <h2><?php _e('Membership Communication', 'membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;comm="><?php _e('Add New', 'membership'); ?></a></h2>
 
                 <?php
                 if (isset($_GET['msg'])) {
@@ -5504,6 +5518,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                                 $actions['toggle'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=activate&amp;comm=" . $comm->id . "", 'toggle-comm_' . $comm->id) . "'>" . __('Activate', 'membership') . "</a></span>";
                                             }
 
+											$actions['sendme'] = sprintf( '<span class="sendme"><a href="%s" title="%s">%s</a></span>', wp_nonce_url( add_query_arg( array( 'action' => 'sendme', 'comm' => $comm->id ) ), 'sendme-' . $comm->id ), __( 'Send this communication message to me', 'membership' ), _x( 'Send Me', 'Send this communication message to me', 'membership' ) );
                                             $actions['delete'] = "<span class='delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=delete&amp;comm=" . $comm->id . "", 'delete-comm_' . $comm->id) . "'>" . __('Delete', 'membership') . "</a></span>";
                                             ?>
                                             <br><div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
@@ -7679,7 +7694,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 					$error->add('userid', $user_id->get_error_message());
 				} else {
 					$member = new M_Membership( $user_id );
-					
+
 					$user = wp_signon( array(
 						'user_login' => $_POST['user_login'],
 						'user_password' => $_POST['password'],

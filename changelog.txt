@@ -36,6 +36,8 @@
 * Implemented ability to search members by ID, login, email, url, nice name and display name
 * Implemented ability to edit BuddyPress xprofile fields visibility settings
 * Implemented ability to send HTML content in communication messages
+* Implemented HTML editor for communication message at communication edit page
+* Implemented ability to send test communication message to myself
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup
