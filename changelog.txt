@@ -38,7 +38,8 @@
 * Implemented ability to send HTML content in communication messages
 * Implemented HTML editor for communication message at communication edit page
 * Implemented ability to send test communication message to myself
-* Implemented ability to use user display name, first and last name in communication message
+* Implemented ability to use user display name, first and last name in a communication message
+* Implemented ability to use first and last name in a ping
 * Improved rendering gateway information at the members list table
 * Improved ping argument processing
 * Improved 100% coupon gateway setup

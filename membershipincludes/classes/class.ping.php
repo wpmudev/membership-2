@@ -32,6 +32,8 @@ if ( !class_exists( 'M_Ping' ) ) {
 			'%username%'         => '',
 			'%usernicename%'     => '',
 			'%userdisplayname%'  => '',
+			'%userfirstname%'    => '',
+			'%userlastname%'     => '',
 			'%useremail%'        => '',
 			'%userid%'           => '',
 			'%networkname%'      => '',
@@ -304,6 +306,14 @@ if ( !class_exists( 'M_Ping' ) ) {
 
 					case '%userdisplayname%':
 						$pingdata[$key] = $member->display_name;
+						break;
+
+					case '%userfirstname%':
+						$pingdata[$key] = $member->user_firstname;
+						break;
+
+					case '%userlastname%':
+						$pingdata[$key] = $member->user_lastname;
 						break;
 
 					case '%useremail%':
