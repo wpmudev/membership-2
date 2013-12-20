@@ -15,15 +15,18 @@ if ( !class_exists( 'M_Communication' ) ) {
 		var $id;
 
 		var $commconstants = array(
-			'%blogname%' => '',
-			'%blogurl%' => '',
-			'%username%' => '',
-			'%usernicename%' => '',
-			'%networkname%' => '',
-			'%networkurl%' => '',
+			'%blogname%'         => '',
+			'%blogurl%'          => '',
+			'%username%'         => '',
+			'%usernicename%'     => '',
+			'%userdisplayname%'  => '',
+			'%userfirstname%'    => '',
+			'%userlastname%'     => '',
+			'%networkname%'      => '',
+			'%networkurl%'       => '',
 			'%subscriptionname%' => '',
-			'%levelname%' => '',
-			'%accounturl%' => ''
+			'%levelname%'        => '',
+			'%accounturl%'       => ''
 		);
 
 		function __construct( $id = false ) {
@@ -317,7 +320,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 			$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
 
 			$member = new M_Membership( $user_id );
-			foreach ( $commdata as $key => $value ) {
+			foreach ( array_keys( $commdata ) as $key ) {
 				switch ( $key ) {
 					case '%blogname%':
 						$commdata[$key] = get_option( 'blogname' );
@@ -333,6 +336,18 @@ if ( !class_exists( 'M_Communication' ) ) {
 
 					case '%usernicename%':
 						$commdata[$key] = $member->user_nicename;
+						break;
+
+					case '%userdisplayname%':
+						$commdata[$key] = $member->display_name;
+						break;
+
+					case '%userfirstname%':
+						$commdata[$key] = $member->user_firstname;
+						break;
+
+					case '%userlastname%':
+						$commdata[$key] = $member->user_lastname;
 						break;
 
 					case '%networkname%':
@@ -398,7 +413,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 		}
 
 	}
-	
+
 }
 
 function M_Communication_get_members( $startatid = 0, $limit = 25 ) {
