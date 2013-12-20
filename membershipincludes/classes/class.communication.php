@@ -318,10 +318,14 @@ if ( !class_exists( 'M_Communication' ) ) {
 		function send_message( $user_id, $sub_id = false, $level_id = false ) {
 			global $wp_better_emails;
 
+			$member = new M_Membership( $user_id );
+			if ( !filter_var( $member->user_email, FILTER_VALIDATE_EMAIL ) ) {
+				return;
+			}
+
 			$this->comm = $this->get_communication();
 			$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
 
-			$member = new M_Membership( $user_id );
 			foreach ( array_keys( $commdata ) as $key ) {
 				switch ( $key ) {
 					case '%blogname%':
@@ -404,22 +408,30 @@ if ( !class_exists( 'M_Communication' ) ) {
 			}
 
 			// Globally replace the values in the ping and then make it into an array to send
-			$commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
-			$commmessage = wpautop( $commmessage );
+			$original_commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
 
-			if ( filter_var( $member->user_email, FILTER_VALIDATE_EMAIL ) ) {
-				add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+			$hmlt_message = wpautop( $original_commmessage );
+			$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $original_commmessage ) );
 
+			add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+
+			$lambda_function = false;
+			if ( $wp_better_emails ) {
 				// lets use WP Better Email to wrap communication content if the plugin is used
-				if ( $wp_better_emails ) {
-					$commmessage = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $commmessage ) ) );
-				} elseif ( !defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
-					$commmessage = "<html><head></head><body>{$commmessage}</body></html>";
-				}
+				$lambda_function = create_function( '', sprintf( 'return "%s";', addslashes( $text_message ) ) );
+				add_filter( 'wpbe_plaintext_body', $lambda_function );
+				add_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
+				$hmlt_message = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $hmlt_message ) ) );
+			} elseif ( !defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
+				$hmlt_message = "<html><head></head><body>{$hmlt_message}</body></html>";
+			}
 
-				@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $commmessage );
+			@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $hmlt_message );
 
-				remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+			remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+			if ( $lambda_function ) {
+				remove_filter( 'wpbe_plaintext_body', $lambda_function );
+				remove_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
 			}
 		}
 
