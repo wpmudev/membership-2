@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed warning message which appear for subscriptions without access levels
 * Fixed members pagination issue when filter becomes reset after going to the next page
 * Fixed coupons start date issue
 * Fixed coupons timezones issue
