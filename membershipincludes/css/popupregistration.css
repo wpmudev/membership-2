@@ -1,5 +1,5 @@
 .membership-popover-signup-wrapper {
-    width: 700px;
+    width: 100%;
     background-color: white
 }
 
@@ -202,16 +202,18 @@ td.buynowcolumn {
     padding-bottom: 20px
 }
 
-@media all and (max-width: 768px) {
+@media all and (min-width: 768px) {
     .membership-popover-signup-wrapper {
-        width: 350px
+        width: 700px
 	}
+}
 
-    #fancybox-content div div.leftside, #fancybox-content div div.rightside {
+@media all and (max-width: 767px) {
+	#fancybox-content div div.leftside, #fancybox-content div div.rightside {
         float: none;
         width: 100%
 	}
-	
+
     #fancybox-content div div.leftside {
         border-right: none
 	}
