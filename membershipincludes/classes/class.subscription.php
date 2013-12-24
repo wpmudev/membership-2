@@ -686,7 +686,7 @@ if ( !class_exists( 'M_Subscription' ) ) {
 		function is_free() {
 			$prices = $this->get_pricingarray();
 			if ( !empty( $prices ) ) {
-				foreach ( $priecs as $price ) {
+				foreach ( $prices as $price ) {
 					if ( $price['amount'] > 0 ) {
 						return false;
 					}
