@@ -96,7 +96,7 @@ class Membership_Hooker {
 	 * @return Membership_Module
 	 */
 	protected function _remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		add_action( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		remove_action( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
 
