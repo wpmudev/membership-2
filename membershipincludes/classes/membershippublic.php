@@ -1041,31 +1041,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			return $content;
 		}
 
-		function show_subpage_one($error = false) {
-
-			global $bp;
-
-			$content = '';
-
-			$content = apply_filters('membership_subscription_form_registration_before_content', $content, $error);
-
-			ob_start();
-			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-				include( MEMBERSHIP_REGISTRATION_FORM );
-			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-				include( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
-			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-				include( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
-			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
-			$content = apply_filters('membership_subscription_form_registration_after_content', $content, $error);
-
-			return $content;
-
-		}
-
 		function show_subpage_two($user_id) {
 
 			$content = '';
@@ -1248,22 +1223,13 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function output_registeruser( $error = false ) {
+			$template = new Membership_Render_Page_Registration_Standard();
 
-			global $wp_query, $M_options, $bp;
+			$template->error = $error;
+			$template->subscription = isset( $_REQUEST['subscription'] ) ? absint( $_REQUEST['subscription'] ) : 0;
 
-			$subscription = (int) $_REQUEST['subscription'];
 			$content = apply_filters('membership_subscription_form_registration_before_content', '', $error);
-			ob_start();
-			if( defined('MEMBERSHIP_REGISTRATION_FORM') && file_exists( MEMBERSHIP_REGISTRATION_FORM ) ) {
-				include( MEMBERSHIP_REGISTRATION_FORM );
-			} elseif(!empty($bp) && file_exists( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) )) {
-				include( apply_filters('membership_override_bpregistration_form', membership_dir('membershipincludes/includes/bp.registration.form.php'), $error) );
-			} elseif( file_exists( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) ) ) {
-				include( apply_filters('membership_override_registration_form', membership_dir('membershipincludes/includes/registration.form.php'), $error) );
-			}
-			$content .= ob_get_contents();
-			ob_end_clean();
-
+			$content .= $template->to_html();
 			$content = apply_filters('membership_subscription_form_registration_after_content', $content, $error);
 
 			return $content;
@@ -1366,17 +1332,16 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 						$user_id = wp_create_user( sanitize_user( $_POST['user_login'] ), $_POST['password'], $_POST['user_email'] );
 
-						if ( is_wp_error( $user_id ) && method_exists( $userid, 'get_error_message' ) ) {
+						if ( is_wp_error( $user_id ) ) {
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
 							$member = new M_Membership( $user_id );
 							if ( !headers_sent() ) {
-								$is_ssl = (isset( $_SERVER['https'] ) && strtolower( $_SERVER['https'] ) == 'on' ? true : false);
 								$user = @wp_signon( array(
-									'user_login' => $_POST['user_login'],
+									'user_login'    => $_POST['user_login'],
 									'user_password' => $_POST['password'],
-									'remember' => true
-								), $is_ssl );
+									'remember'      => true,
+								) );
 
 								if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
 									$this->_register_errors->add( 'userlogin', $user->get_error_message() );
@@ -1504,7 +1469,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
 						$user_id = wp_create_user( sanitize_user( $_POST['signup_username'] ), $_POST['signup_password'], $_POST['signup_email'] );
 
-						if ( is_wp_error( $user_id ) && method_exists( $userid, 'get_error_message' ) ) {
+						if ( is_wp_error( $user_id ) ) {
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
 							$member = new M_Membership( $user_id );

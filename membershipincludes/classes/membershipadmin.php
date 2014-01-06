@@ -7632,21 +7632,13 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 		// The popover registration functions added to the bottom of this class until a new more suitable home can be found
 		function popover_signup_form() {
+			$template = new Membership_Render_Page_Registration_Popup();
 
-			$content = '';
-			$content = apply_filters('membership_popover_signup_form_before_content', $content);
-			ob_start();
-			if (defined('MEMBERSHIP_POPOVER_SIGNUP_FORM') && file_exists(MEMBERSHIP_POPOVER_SIGNUP_FORM)) {
-				include_once( MEMBERSHIP_POPOVER_SIGNUP_FORM );
-			} elseif (file_exists(apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')))) {
-				include_once( apply_filters('membership_override_popover_signup_form', membership_dir('membershipincludes/includes/popover_signup.form.php')) );
-			}
-			$content .= ob_get_contents();
-			ob_end_clean();
+			$content = apply_filters('membership_popover_signup_form_before_content', '' );
+			$content .= $template->to_html();
+			$content = apply_filters('membership_popover_signup_form_after_content', $content );
 
-			$content = apply_filters('membership_popover_signup_form_after_content', $content);
 			echo $content;
-
 			die();
 		}
 

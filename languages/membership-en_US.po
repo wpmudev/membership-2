@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership Premium\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-19 19:02+0300\n"
-"PO-Revision-Date: 2013-12-19 19:02+0300\n"
-"Last-Translator: Eugene Manuilov <eugene@incsub.com>\n"
+"POT-Creation-Date: 2014-01-06 18:31+0300\n"
+"PO-Revision-Date: 2014-01-06 18:31+0300\n"
+"Last-Translator: Eugene Manuilov <eugene@manuilov.org>\n"
 "Language-Team: Incsub <devs@incsub.com>\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
@@ -79,8 +79,8 @@ msgstr "transactions"
 #: membershipincludes/classes/class.coupon.php:418
 #: membershipincludes/classes/class.coupon.php:504
 #: membershipincludes/classes/membershipadmin.php:2158
-#: membershipincludes/classes/membershipadmin.php:5452
-#: membershipincludes/classes/membershipadmin.php:7432
+#: membershipincludes/classes/membershipadmin.php:5466
+#: membershipincludes/classes/membershipadmin.php:7447
 msgid "Subscription"
 msgstr "Subscription"
 
@@ -91,7 +91,7 @@ msgstr "User"
 
 #: classes/Membership/Gateway.php:338
 #: classes/Membership/Table/Gateway/Transaction/Authorize.php:245
-#: membershipincludes/classes/membershipadmin.php:6126
+#: membershipincludes/classes/membershipadmin.php:6141
 msgid "Date"
 msgstr "Date"
 
@@ -106,7 +106,7 @@ msgstr "Transaction id"
 
 #: classes/Membership/Gateway.php:341
 #: classes/Membership/Table/Gateway/Transaction/Authorize.php:244
-#: membershipincludes/classes/membershipadmin.php:6125
+#: membershipincludes/classes/membershipadmin.php:6140
 msgid "Status"
 msgstr "Status"
 
@@ -123,11 +123,11 @@ msgstr "None yet"
 #: membershipincludes/classes/membershipadmin.php:275
 #: membershipincludes/classes/membershipadmin.php:2727
 #: membershipincludes/classes/membershipadmin.php:2827
-#: membershipincludes/classes/membershipadmin.php:6493
-#: membershipincludes/classes/membershipadmin.php:6844
-#: membershipincludes/classes/membershipadmin.php:6858
-#: membershipincludes/classes/membershipadmin.php:6898
-#: membershipincludes/classes/membershipadmin.php:6912
+#: membershipincludes/classes/membershipadmin.php:6508
+#: membershipincludes/classes/membershipadmin.php:6859
+#: membershipincludes/classes/membershipadmin.php:6873
+#: membershipincludes/classes/membershipadmin.php:6913
+#: membershipincludes/classes/membershipadmin.php:6927
 msgid "None"
 msgstr "None"
 
@@ -145,6 +145,7 @@ msgid "Unsubscribe not available"
 msgstr "Unsubscribe not available"
 
 #: classes/Membership/Gateway.php:538 classes/Membership/Gateway.php:553
+#: classes/Membership/Render/Page/Registration/Standard.php:406
 #: classes/Membership/Render/Page/Subscription/Renew.php:128
 #: classes/Membership/Render/Page/Subscription/Renew.php:447
 #: membershipincludes/gateways/gateway.authorizenetaim.php:617
@@ -152,7 +153,6 @@ msgstr "Unsubscribe not available"
 #: membershipincludes/gateways/gateway.paypalsolo.php:277
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1118
 #: membershipincludes/gateways/gateway.freesubscriptions.php:151
-#: membershipincludes/includes/bp.registration.form.php:207
 #: membershipincludes/includes/subscription.form.php:32
 msgid "Sign Up"
 msgstr "Sign Up"
@@ -298,6 +298,190 @@ msgstr "Month"
 msgid "Year"
 msgstr "Year"
 
+#: classes/Membership/Render/Page/Registration/Popup.php:63
+msgid "Register or Login to purchase"
+msgstr "Register or Login to purchase"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:67
+msgid "Enter your details below to create a new account."
+msgstr "Enter your details below to create a new account."
+
+#: classes/Membership/Render/Page/Registration/Popup.php:76
+#: classes/Membership/Render/Page/Registration/Standard.php:106
+#: classes/Membership/Render/Page/Registration/Standard.php:175
+#: membershipincludes/includes/account.form.php:51
+#: membershipincludes/includes/bp.account.form.php:71
+msgid "First Name"
+msgstr "First Name"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:81
+#: classes/Membership/Render/Page/Registration/Standard.php:113
+#: classes/Membership/Render/Page/Registration/Standard.php:178
+#: membershipincludes/includes/account.form.php:58
+#: membershipincludes/includes/bp.account.form.php:77
+msgid "Last Name"
+msgstr "Last Name"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:86
+#: classes/Membership/Render/Page/Registration/Popup.php:127
+#: membershipincludes/classes/membershipadmin.php:2154
+#: membershipincludes/classes/membershippublic.php:1285
+#: membershipincludes/classes/membershippublic.php:1388
+#: membershipincludes/includes/account.form.php:43
+#: membershipincludes/includes/bp.account.form.php:65
+msgid "Username"
+msgstr "Username"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:91
+#: classes/Membership/Render/Page/Registration/Standard.php:129
+msgid "Email Address"
+msgstr "Email Address"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:96
+#: classes/Membership/Render/Page/Registration/Popup.php:131
+#: classes/Membership/Render/Page/Registration/Standard.php:138
+#: membershipincludes/classes/membershippublic.php:1287
+#: membershipincludes/classes/membershippublic.php:1390
+msgid "Password"
+msgstr "Password"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:101
+#: classes/Membership/Render/Page/Registration/Standard.php:145
+#: membershipincludes/includes/account.form.php:127
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:107
+msgid "Terms Of Service"
+msgstr "Terms Of Service"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:115
+#: classes/Membership/Render/Page/Registration/Standard.php:156
+msgid "Register My Account"
+msgstr "Register My Account"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:121
+msgid "Login below if you are already registered."
+msgstr "Login below if you are already registered."
+
+#: classes/Membership/Render/Page/Registration/Popup.php:122
+msgid "This is an error"
+msgstr "This is an error"
+
+#: classes/Membership/Render/Page/Registration/Popup.php:138
+#: classes/Membership/Render/Page/Registration/Standard.php:158
+msgid "Login"
+msgstr "Login"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:103
+#: classes/Membership/Render/Page/Registration/Standard.php:391
+msgid "Create an Account"
+msgstr "Create an Account"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:118
+msgid "Please enter desired username and your email address."
+msgstr "Please enter desired username and your email address."
+
+#: classes/Membership/Render/Page/Registration/Standard.php:122
+msgid "Choose a Username"
+msgstr "Choose a Username"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:134
+msgid ""
+"Please enter a new password, and then verify your new password by entering "
+"it again."
+msgstr ""
+"Please enter a new password, and then verify your new password by entering "
+"it again."
+
+#: classes/Membership/Render/Page/Registration/Standard.php:150
+msgid ""
+"Hint: The password should be at least 5 characters long. To make it "
+"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
+"$ % ^ &amp; )."
+msgstr ""
+"Hint: The password should be at least 5 characters long. To make it "
+"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
+"$ % ^ &amp; )."
+
+#: classes/Membership/Render/Page/Registration/Standard.php:158
+msgid "Already have a user account?"
+msgstr "Already have a user account?"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:173
+msgid "Account Details"
+msgstr "Account Details"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:181
+msgid "Username (required)"
+msgstr "Username (required)"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:185
+msgid "Email Address (required)"
+msgstr "Email Address (required)"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:189
+msgid "Choose a Password (required)"
+msgstr "Choose a Password (required)"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:193
+msgid "Confirm Password (required)"
+msgstr "Confirm Password (required)"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:216
+msgid "Profile Details"
+msgstr "Profile Details"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:230
+#: classes/Membership/Render/Page/Registration/Standard.php:242
+#: classes/Membership/Render/Page/Registration/Standard.php:254
+#: classes/Membership/Render/Page/Registration/Standard.php:268
+#: classes/Membership/Render/Page/Registration/Standard.php:283
+#: classes/Membership/Render/Page/Registration/Standard.php:302
+#: classes/Membership/Render/Page/Registration/Standard.php:317
+#, php-format
+msgctxt "{Profile field} (required)"
+msgid "%s (required)"
+msgstr "%s (required)"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:293
+msgid "Clear"
+msgstr "Clear"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:344
+#, php-format
+msgctxt "This field can be seen by: {Administrator}"
+msgid "This field can be seen by: %s"
+msgstr "This field can be seen by: %s"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:346
+msgctxt "Change profile field visibility level"
+msgid "Change"
+msgstr "Change"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:351
+msgid "Who can see this field?"
+msgstr "Who can see this field?"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:354
+msgid "Close"
+msgstr "Close"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:358
+#, php-format
+msgid ""
+"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
+msgstr ""
+"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
+
+#: classes/Membership/Render/Page/Registration/Standard.php:396
+msgid ""
+"Registering for this site is easy, just fill in the fields below and we'll "
+"get a new account set up for you in no time."
+msgstr ""
+"Registering for this site is easy, just fill in the fields below and we'll "
+"get a new account set up for you in no time."
+
 #: classes/Membership/Render/Page/Subscription/Renew.php:46
 #: classes/Membership/Render/Page/Subscription/Renew.php:71
 #: classes/Membership/Render/Page/Subscription/Renew.php:252
@@ -415,7 +599,7 @@ msgstr ""
 "to the right."
 
 #: classes/Membership/Render/Page/Subscription/Renew.php:377
-#: classes/Membership/Gateway/Authorize.php:479
+#: classes/Membership/Gateway/Authorize.php:482
 #: membershipincludes/gateways/gateway.paypalexpress.php:830
 #: membershipincludes/gateways/gateway.paypalsolo.php:340
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1209
@@ -475,9 +659,9 @@ msgid "Select a level to view your site as"
 msgstr "Select a level to view your site as"
 
 #: classes/Membership/Module/Adminbar.php:124
-#: membershipincludes/classes/membershipadmin.php:5305
-#: membershipincludes/classes/membershipadmin.php:5332
-#: membershipincludes/classes/membershipadmin.php:5734
+#: membershipincludes/classes/membershipadmin.php:5317
+#: membershipincludes/classes/membershipadmin.php:5344
+#: membershipincludes/classes/membershipadmin.php:5749
 msgid "Reset"
 msgstr "Reset"
 
@@ -637,7 +821,7 @@ msgstr "Sandbox"
 msgid "Live"
 msgstr "Live"
 
-#: classes/Membership/Gateway/Authorize.php:431
+#: classes/Membership/Gateway/Authorize.php:434
 #: membershipincludes/gateways/gateway.authorizenetaim.php:216
 #: membershipincludes/gateways/gateway.authorizenetarb.php:218
 #: membershipincludes/gateways/gateway.authorizenetarb.php:1016
@@ -645,7 +829,7 @@ msgstr "Live"
 msgid "Pay Now"
 msgstr "Pay Now"
 
-#: classes/Membership/Gateway/Authorize.php:446
+#: classes/Membership/Gateway/Authorize.php:449
 #: membershipincludes/gateways/gateway.paypalexpress.php:876
 #: membershipincludes/gateways/gateway.authorizenetaim.php:640
 #: membershipincludes/gateways/gateway.authorizenetaim.php:648
@@ -657,7 +841,7 @@ msgstr "Pay Now"
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: classes/Membership/Gateway/Authorize.php:539
+#: classes/Membership/Gateway/Authorize.php:542
 msgid ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
@@ -665,18 +849,18 @@ msgstr ""
 "This payment gateway has not been configured. Your transaction will not be "
 "processed."
 
-#: classes/Membership/Gateway/Authorize.php:613
+#: classes/Membership/Gateway/Authorize.php:616
 #: membershipincludes/gateways/gateway.authorizenetaim.php:416
 #: membershipincludes/gateways/gateway.authorizenetarb.php:519
 msgid "You must use HTTPS in order to do this"
 msgstr "You must use HTTPS in order to do this"
 
-#: classes/Membership/Gateway/Authorize.php:709
+#: classes/Membership/Gateway/Authorize.php:712
 #, php-format
 msgid "Sign up for %s completed"
 msgstr "Sign up for %s completed"
 
-#: classes/Membership/Gateway/Authorize.php:1257
+#: classes/Membership/Gateway/Authorize.php:1260
 msgid ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
@@ -684,27 +868,27 @@ msgstr ""
 "There was an unknown error encountered with your payment. Please contact the "
 "site administrator."
 
-#: classes/Membership/Gateway/Authorize.php:1276
+#: classes/Membership/Gateway/Authorize.php:1279
 msgid "Authorized (ARB)"
 msgstr "Authorized (ARB)"
 
-#: classes/Membership/Gateway/Authorize.php:1277
+#: classes/Membership/Gateway/Authorize.php:1280
 msgid "Authorized (CIM)"
 msgstr "Authorized (CIM)"
 
-#: classes/Membership/Gateway/Authorize.php:1278
+#: classes/Membership/Gateway/Authorize.php:1281
 msgid "Captured"
 msgstr "Captured"
 
-#: classes/Membership/Gateway/Authorize.php:1279
+#: classes/Membership/Gateway/Authorize.php:1282
 msgid "Voided"
 msgstr "Voided"
 
-#: classes/Membership/Gateway/Authorize.php:1280
+#: classes/Membership/Gateway/Authorize.php:1283
 msgid "Recurring"
 msgstr "Recurring"
 
-#: classes/Membership/Gateway/Authorize.php:1281
+#: classes/Membership/Gateway/Authorize.php:1284
 msgid "Cancelled Recurring"
 msgstr "Cancelled Recurring"
 
@@ -747,7 +931,7 @@ msgstr "Remove Menu from this rules area."
 #: classes/Membership/Model/Rule/Admin/Plugins.php:49
 #: classes/Membership/Model/Rule/Admin/Mainmenus.php:50
 #: classes/Membership/Model/Rule/Marketpress/Pages.php:61
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:61
 #: classes/Membership/Model/Rule/Buddypress/Blogs.php:41
 #: classes/Membership/Model/Rule/Buddypress/Pages.php:69
 #: classes/Membership/Model/Rule/Buddypress/Groups.php:41
@@ -785,7 +969,6 @@ msgstr "Remove Comments from this rules area."
 #: classes/Membership/Model/Rule/Comments.php:47
 #: classes/Membership/Model/Rule/Blogcreation.php:47
 #: classes/Membership/Model/Rule/More.php:42
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
 #: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:43
 msgid "Positive : "
 msgstr "Positive : "
@@ -797,7 +980,6 @@ msgstr "User gets read and make comments of posts."
 #: classes/Membership/Model/Rule/Comments.php:48
 #: classes/Membership/Model/Rule/Blogcreation.php:48
 #: classes/Membership/Model/Rule/More.php:43
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:44
 #: classes/Membership/Model/Rule/Buddypress/Privatemessage.php:44
 msgid "Negative : "
 msgstr "Negative : "
@@ -815,7 +997,6 @@ msgid "Remove Blog Creation from this rules area."
 msgstr "Remove Blog Creation from this rules area."
 
 #: classes/Membership/Model/Rule/Blogcreation.php:47
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
 msgid "User can create "
 msgstr "User can create "
 
@@ -1177,25 +1358,51 @@ msgid ""
 msgstr ""
 "You have no pages available, please ensure you have MarketPress installed."
 
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:40
+msgctxt ""
+"The rule title which restricts the ability to create BuddyPress rules."
 msgid "Group Creation"
 msgstr "Group Creation"
 
 #: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:41
+msgctxt ""
+"The rule description which restricts the ability to create BuddyPress groups."
+msgid "Allows group creation to be allowed to members only."
+msgstr "Allows group creation to be allowed to members only."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:58
+msgid "Group Creation"
+msgstr "Group Creation"
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:60
 msgid "Remove Group Creation from this rules area."
 msgstr "Remove Group Creation from this rules area."
 
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
-msgid " groups."
-msgstr " groups."
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:67
+msgid "Positive:"
+msgstr "Positive:"
 
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:43
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:68
+#, php-format
+msgctxt "User can create {number input field} groups."
+msgid "User can create %s groups."
+msgstr "User can create %s groups."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:70
 msgid "Leave blanks for unlimited groups."
 msgstr "Leave blanks for unlimited groups."
 
-#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:44
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:72
+msgid "Negative:"
+msgstr "Negative:"
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:72
 msgid "User is unable to create any groups."
 msgstr "User is unable to create any groups."
+
+#: classes/Membership/Model/Rule/Buddypress/Groupcreation.php:181
+msgid "You can not create new group."
+msgstr "You can not create new group."
 
 #: classes/Membership/Model/Rule/Buddypress/Blogs.php:41
 msgid "Blogs"
@@ -1298,9 +1505,9 @@ msgid "unkonwn"
 msgstr "unkonwn"
 
 #: classes/Membership/Table/Gateway/Transaction/Authorize.php:182
-#: membershipincludes/classes/class.communication.php:135
-#: membershipincludes/classes/class.communication.php:230
-#: membershipincludes/classes/membershipadmin.php:5514
+#: membershipincludes/classes/class.communication.php:117
+#: membershipincludes/classes/class.communication.php:216
+#: membershipincludes/classes/membershipadmin.php:5529
 msgid "All"
 msgstr "All"
 
@@ -1325,7 +1532,7 @@ msgstr "Show all subscriptions"
 #: membershipincludes/classes/membershipadmin.php:2443
 #: membershipincludes/classes/membershipadmin.php:4380
 #: membershipincludes/classes/membershipadmin.php:4999
-#: membershipincludes/classes/membershipadmin.php:5435
+#: membershipincludes/classes/membershipadmin.php:5449
 msgid "Filter"
 msgstr "Filter"
 
@@ -2793,29 +3000,29 @@ msgstr "Regular Expression"
 msgid "If any of the page URLs are regular expressions then set this to yes."
 msgstr "If any of the page URLs are regular expressions then set this to yes."
 
-#: membershipincludes/classes/class.ping.php:101
-#: membershipincludes/classes/class.ping.php:102
-#: membershipincludes/classes/class.ping.php:148
-#: membershipincludes/classes/class.ping.php:149
+#: membershipincludes/classes/class.ping.php:103
+#: membershipincludes/classes/class.ping.php:104
+#: membershipincludes/classes/class.ping.php:150
+#: membershipincludes/classes/class.ping.php:151
 msgid "Ping name"
 msgstr "Ping name"
 
-#: membershipincludes/classes/class.ping.php:106
-#: membershipincludes/classes/class.ping.php:107
-#: membershipincludes/classes/class.ping.php:153
-#: membershipincludes/classes/class.ping.php:154
+#: membershipincludes/classes/class.ping.php:108
+#: membershipincludes/classes/class.ping.php:109
+#: membershipincludes/classes/class.ping.php:155
+#: membershipincludes/classes/class.ping.php:156
 msgid "Ping URL"
 msgstr "Ping URL"
 
-#: membershipincludes/classes/class.ping.php:111
-#: membershipincludes/classes/class.ping.php:158
+#: membershipincludes/classes/class.ping.php:113
+#: membershipincludes/classes/class.ping.php:160
 msgid "Ping data"
 msgstr "Ping data"
 
-#: membershipincludes/classes/class.ping.php:115
-#: membershipincludes/classes/class.ping.php:162
-#: membershipincludes/classes/class.communication.php:157
-#: membershipincludes/classes/class.communication.php:253
+#: membershipincludes/classes/class.ping.php:117
+#: membershipincludes/classes/class.ping.php:164
+#: membershipincludes/classes/class.communication.php:138
+#: membershipincludes/classes/class.communication.php:238
 msgid ""
 "You can use the following constants within the message body to embed "
 "database information."
@@ -2823,34 +3030,34 @@ msgstr ""
 "You can use the following constants within the message body to embed "
 "database information."
 
-#: membershipincludes/classes/class.ping.php:120
-#: membershipincludes/classes/class.ping.php:167
+#: membershipincludes/classes/class.ping.php:122
+#: membershipincludes/classes/class.ping.php:169
 msgid "One entry per line. e.g. key=value"
 msgstr "One entry per line. e.g. key=value"
 
-#: membershipincludes/classes/class.ping.php:127
-#: membershipincludes/classes/class.ping.php:174
+#: membershipincludes/classes/class.ping.php:129
+#: membershipincludes/classes/class.ping.php:176
 msgid "Ping method"
 msgstr "Ping method"
 
-#: membershipincludes/classes/class.ping.php:132
-#: membershipincludes/classes/class.ping.php:178
+#: membershipincludes/classes/class.ping.php:134
+#: membershipincludes/classes/class.ping.php:180
 msgid "GET"
 msgstr "GET"
 
-#: membershipincludes/classes/class.ping.php:135
-#: membershipincludes/classes/class.ping.php:180
+#: membershipincludes/classes/class.ping.php:137
+#: membershipincludes/classes/class.ping.php:182
 msgid "POST"
 msgstr "POST"
 
-#: membershipincludes/classes/class.communication.php:88
-#: membershipincludes/classes/class.communication.php:177
+#: membershipincludes/classes/class.communication.php:70
+#: membershipincludes/classes/class.communication.php:157
 #: membershipincludes/help/help.communicationedit.php:2
 msgid "Message to be sent"
 msgstr "Message to be sent"
 
-#: membershipincludes/classes/class.communication.php:102
-#: membershipincludes/classes/class.communication.php:193
+#: membershipincludes/classes/class.communication.php:84
+#: membershipincludes/classes/class.communication.php:175
 #: membershipincludes/classes/class.subscription.php:482
 #: membershipincludes/classes/class.subscription.php:568
 #: membershipincludes/classes/membershipadmin.php:3420
@@ -2858,58 +3065,58 @@ msgstr "Message to be sent"
 msgid "day(s)"
 msgstr "day(s)"
 
-#: membershipincludes/classes/class.communication.php:107
-#: membershipincludes/classes/class.communication.php:199
+#: membershipincludes/classes/class.communication.php:89
+#: membershipincludes/classes/class.communication.php:182
 #: membershipincludes/classes/class.subscription.php:484
 #: membershipincludes/classes/class.subscription.php:570
 msgid "month(s)"
 msgstr "month(s)"
 
-#: membershipincludes/classes/class.communication.php:112
-#: membershipincludes/classes/class.communication.php:205
+#: membershipincludes/classes/class.communication.php:94
+#: membershipincludes/classes/class.communication.php:189
 #: membershipincludes/classes/class.subscription.php:485
 #: membershipincludes/classes/class.subscription.php:571
 msgid "year(s)"
 msgstr "year(s)"
 
-#: membershipincludes/classes/class.communication.php:118
-#: membershipincludes/classes/class.communication.php:212
+#: membershipincludes/classes/class.communication.php:100
+#: membershipincludes/classes/class.communication.php:197
 msgid "before a subscription expires"
 msgstr "before a subscription expires"
 
-#: membershipincludes/classes/class.communication.php:123
-#: membershipincludes/classes/class.communication.php:218
+#: membershipincludes/classes/class.communication.php:105
+#: membershipincludes/classes/class.communication.php:204
 msgid "after a subscription is paid"
 msgstr "after a subscription is paid"
 
-#: membershipincludes/classes/class.communication.php:131
-#: membershipincludes/classes/class.communication.php:226
+#: membershipincludes/classes/class.communication.php:113
+#: membershipincludes/classes/class.communication.php:212
 msgid "For subscription"
 msgstr "For subscription"
 
-#: membershipincludes/classes/class.communication.php:148
-#: membershipincludes/classes/class.communication.php:244
-#: membershipincludes/classes/membershipadmin.php:5451
+#: membershipincludes/classes/class.communication.php:128
+#: membershipincludes/classes/class.communication.php:228
+#: membershipincludes/classes/membershipadmin.php:5465
 msgid "Message Subject"
 msgstr "Message Subject"
 
-#: membershipincludes/classes/class.communication.php:149
-#: membershipincludes/classes/class.communication.php:245
+#: membershipincludes/classes/class.communication.php:129
+#: membershipincludes/classes/class.communication.php:229
 #: membershipincludes/help/help.communicationedit.php:4
 msgid "Message subject"
 msgstr "Message subject"
 
-#: membershipincludes/classes/class.communication.php:153
-#: membershipincludes/classes/class.communication.php:249
+#: membershipincludes/classes/class.communication.php:133
+#: membershipincludes/classes/class.communication.php:233
 #: membershipincludes/help/help.communicationedit.php:6
 msgid "Message"
 msgstr "Message"
 
-#: membershipincludes/classes/class.communication.php:606
+#: membershipincludes/classes/class.communication.php:605
 msgid "Every 10 Mins"
 msgstr "Every 10 Mins"
 
-#: membershipincludes/classes/class.communication.php:607
+#: membershipincludes/classes/class.communication.php:606
 msgid "Every 5 Mins"
 msgstr "Every 5 Mins"
 
@@ -3542,7 +3749,7 @@ msgstr "Please ensure you complete the form."
 #: membershipincludes/classes/class.coupon.php:392
 #: membershipincludes/classes/class.coupon.php:469
 #: membershipincludes/classes/class.coupon.php:470
-#: membershipincludes/classes/membershipadmin.php:7428
+#: membershipincludes/classes/membershipadmin.php:7443
 msgid "Coupon Code"
 msgstr "Coupon Code"
 
@@ -3553,7 +3760,7 @@ msgstr "The Coupon code should contain letters and numbers only."
 
 #: membershipincludes/classes/class.coupon.php:396
 #: membershipincludes/classes/class.coupon.php:474
-#: membershipincludes/classes/membershipadmin.php:7429
+#: membershipincludes/classes/membershipadmin.php:7444
 msgid "Discount"
 msgstr "Discount"
 
@@ -3571,7 +3778,7 @@ msgstr "discount"
 #: membershipincludes/classes/class.coupon.php:409
 #: membershipincludes/classes/class.coupon.php:492
 #: membershipincludes/classes/class.coupon.php:493
-#: membershipincludes/classes/membershipadmin.php:7430
+#: membershipincludes/classes/membershipadmin.php:7445
 msgid "Start Date"
 msgstr "Start Date"
 
@@ -3584,7 +3791,7 @@ msgstr "The date that the Coupon code should be valid from."
 #: membershipincludes/classes/class.coupon.php:414
 #: membershipincludes/classes/class.coupon.php:497
 #: membershipincludes/classes/class.coupon.php:498
-#: membershipincludes/classes/membershipadmin.php:7431
+#: membershipincludes/classes/membershipadmin.php:7446
 msgid "Expire Date"
 msgstr "Expire Date"
 
@@ -3604,7 +3811,7 @@ msgstr "The subscription that this coupon can be used on."
 
 #: membershipincludes/classes/class.coupon.php:421
 #: membershipincludes/classes/class.coupon.php:507
-#: membershipincludes/classes/membershipadmin.php:7548
+#: membershipincludes/classes/membershipadmin.php:7563
 msgid "Any Subscription"
 msgstr "Any Subscription"
 
@@ -3811,13 +4018,13 @@ msgstr "Superuser"
 #: membershipincludes/classes/membershipadmin.php:2229
 #: membershipincludes/classes/membershipadmin.php:4447
 #: membershipincludes/classes/membershipadmin.php:5070
-#: membershipincludes/classes/membershipadmin.php:5496
-#: membershipincludes/classes/membershipadmin.php:5499
-#: membershipincludes/classes/membershipadmin.php:5891
-#: membershipincludes/classes/membershipadmin.php:5894
-#: membershipincludes/classes/membershipadmin.php:6354
-#: membershipincludes/classes/membershipadmin.php:6357
-#: membershipincludes/classes/membershipadmin.php:7495
+#: membershipincludes/classes/membershipadmin.php:5510
+#: membershipincludes/classes/membershipadmin.php:5513
+#: membershipincludes/classes/membershipadmin.php:5906
+#: membershipincludes/classes/membershipadmin.php:5909
+#: membershipincludes/classes/membershipadmin.php:6369
+#: membershipincludes/classes/membershipadmin.php:6372
+#: membershipincludes/classes/membershipadmin.php:7510
 msgid "Edit"
 msgstr "Edit"
 
@@ -3884,6 +4091,7 @@ msgid "Membership Coupons"
 msgstr "Membership Coupons"
 
 #: membershipincludes/classes/membershipadmin.php:474
+#: membershipincludes/classes/membershipadmin.php:5397
 msgid "Membership Communication"
 msgstr "Membership Communication"
 
@@ -3933,8 +4141,8 @@ msgid "Are you sure you want to delete this level?"
 msgstr "Are you sure you want to delete this level?"
 
 #: membershipincludes/classes/membershipadmin.php:650
-#: membershipincludes/classes/membershippublic.php:1874
-#: membershipincludes/classes/membershippublic.php:1940
+#: membershipincludes/classes/membershippublic.php:1839
+#: membershipincludes/classes/membershippublic.php:1905
 msgid "Are you sure you want to deactivate this level?"
 msgstr "Are you sure you want to deactivate this level?"
 
@@ -3995,7 +4203,7 @@ msgid "Add Page URLs to the group in case you want to test it against"
 msgstr "Add Page URLs to the group in case you want to test it against"
 
 #: membershipincludes/classes/membershipadmin.php:767
-#: membershipincludes/classes/membershipadmin.php:5757
+#: membershipincludes/classes/membershipadmin.php:5772
 msgid "Enter an URL above to test against rules in the group"
 msgstr "Enter an URL above to test against rules in the group"
 
@@ -4098,8 +4306,8 @@ msgstr "Select the gateway to move to."
 #: membershipincludes/classes/membershipadmin.php:4065
 #: membershipincludes/classes/membershipadmin.php:4647
 #: membershipincludes/classes/membershipadmin.php:4655
-#: membershipincludes/classes/membershipadmin.php:7331
-#: membershipincludes/classes/membershipadmin.php:7360
+#: membershipincludes/classes/membershipadmin.php:7346
+#: membershipincludes/classes/membershipadmin.php:7375
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -4309,11 +4517,11 @@ msgstr "Edit Members"
 #: membershipincludes/classes/membershipadmin.php:2033
 #: membershipincludes/classes/membershipadmin.php:4333
 #: membershipincludes/classes/membershipadmin.php:4950
-#: membershipincludes/classes/membershipadmin.php:5403
-#: membershipincludes/classes/membershipadmin.php:5811
-#: membershipincludes/classes/membershipadmin.php:6274
-#: membershipincludes/classes/membershipadmin.php:7053
-#: membershipincludes/classes/membershipadmin.php:7415
+#: membershipincludes/classes/membershipadmin.php:5417
+#: membershipincludes/classes/membershipadmin.php:5826
+#: membershipincludes/classes/membershipadmin.php:6289
+#: membershipincludes/classes/membershipadmin.php:7068
+#: membershipincludes/classes/membershipadmin.php:7430
 #: membershipincludes/classes/class.wizard.php:192
 #: membershipincludes/includes/pointer-tutorials.php:436
 #: membershipincludes/includes/pointer-tutorials.php:458
@@ -4333,15 +4541,15 @@ msgstr "Search Members"
 #: membershipincludes/classes/membershipadmin.php:4499
 #: membershipincludes/classes/membershipadmin.php:4980
 #: membershipincludes/classes/membershipadmin.php:5139
-#: membershipincludes/classes/membershipadmin.php:5422
-#: membershipincludes/classes/membershipadmin.php:5584
-#: membershipincludes/classes/membershipadmin.php:5830
-#: membershipincludes/classes/membershipadmin.php:5919
-#: membershipincludes/classes/membershipadmin.php:6293
-#: membershipincludes/classes/membershipadmin.php:6383
-#: membershipincludes/classes/membershipadmin.php:7072
-#: membershipincludes/classes/membershipadmin.php:7199
-#: membershipincludes/classes/membershipadmin.php:7444
+#: membershipincludes/classes/membershipadmin.php:5436
+#: membershipincludes/classes/membershipadmin.php:5599
+#: membershipincludes/classes/membershipadmin.php:5845
+#: membershipincludes/classes/membershipadmin.php:5934
+#: membershipincludes/classes/membershipadmin.php:6308
+#: membershipincludes/classes/membershipadmin.php:6398
+#: membershipincludes/classes/membershipadmin.php:7087
+#: membershipincludes/classes/membershipadmin.php:7214
+#: membershipincludes/classes/membershipadmin.php:7459
 msgid "Bulk Actions"
 msgstr "Bulk Actions"
 
@@ -4351,10 +4559,10 @@ msgstr "Bulk Actions"
 #: membershipincludes/classes/membershipadmin.php:4501
 #: membershipincludes/classes/membershipadmin.php:4982
 #: membershipincludes/classes/membershipadmin.php:5141
-#: membershipincludes/classes/membershipadmin.php:5424
-#: membershipincludes/classes/membershipadmin.php:5586
-#: membershipincludes/classes/membershipadmin.php:7073
-#: membershipincludes/classes/membershipadmin.php:7200
+#: membershipincludes/classes/membershipadmin.php:5438
+#: membershipincludes/classes/membershipadmin.php:5601
+#: membershipincludes/classes/membershipadmin.php:7088
+#: membershipincludes/classes/membershipadmin.php:7215
 msgid "Toggle activation"
 msgstr "Toggle activation"
 
@@ -4398,15 +4606,15 @@ msgstr "Move gateway"
 #: membershipincludes/classes/membershipadmin.php:4503
 #: membershipincludes/classes/membershipadmin.php:4985
 #: membershipincludes/classes/membershipadmin.php:5143
-#: membershipincludes/classes/membershipadmin.php:5426
-#: membershipincludes/classes/membershipadmin.php:5588
-#: membershipincludes/classes/membershipadmin.php:5833
-#: membershipincludes/classes/membershipadmin.php:5922
-#: membershipincludes/classes/membershipadmin.php:6296
-#: membershipincludes/classes/membershipadmin.php:6386
-#: membershipincludes/classes/membershipadmin.php:7075
-#: membershipincludes/classes/membershipadmin.php:7202
-#: membershipincludes/classes/membershipadmin.php:7447
+#: membershipincludes/classes/membershipadmin.php:5440
+#: membershipincludes/classes/membershipadmin.php:5603
+#: membershipincludes/classes/membershipadmin.php:5848
+#: membershipincludes/classes/membershipadmin.php:5937
+#: membershipincludes/classes/membershipadmin.php:6311
+#: membershipincludes/classes/membershipadmin.php:6401
+#: membershipincludes/classes/membershipadmin.php:7090
+#: membershipincludes/classes/membershipadmin.php:7217
+#: membershipincludes/classes/membershipadmin.php:7462
 msgid "Apply"
 msgstr "Apply"
 
@@ -4433,10 +4641,10 @@ msgstr "Filter by status"
 #: membershipincludes/classes/membershipadmin.php:4464
 #: membershipincludes/classes/membershipadmin.php:5018
 #: membershipincludes/classes/membershipadmin.php:5097
-#: membershipincludes/classes/membershipadmin.php:5453
-#: membershipincludes/classes/membershipadmin.php:5526
-#: membershipincludes/classes/membershipadmin.php:7091
-#: membershipincludes/classes/membershipadmin.php:7172
+#: membershipincludes/classes/membershipadmin.php:5467
+#: membershipincludes/classes/membershipadmin.php:5541
+#: membershipincludes/classes/membershipadmin.php:7106
+#: membershipincludes/classes/membershipadmin.php:7187
 msgid "Active"
 msgstr "Active"
 
@@ -4445,35 +4653,24 @@ msgstr "Active"
 #: membershipincludes/classes/membershipadmin.php:2440
 #: membershipincludes/classes/membershipadmin.php:4462
 #: membershipincludes/classes/membershipadmin.php:5095
-#: membershipincludes/classes/membershipadmin.php:5528
-#: membershipincludes/classes/membershipadmin.php:7174
+#: membershipincludes/classes/membershipadmin.php:5543
+#: membershipincludes/classes/membershipadmin.php:7189
 msgid "Inactive"
 msgstr "Inactive"
 
 #: membershipincludes/classes/membershipadmin.php:2129
 #: membershipincludes/classes/membershipadmin.php:4322
 #: membershipincludes/classes/membershipadmin.php:4939
-#: membershipincludes/classes/membershipadmin.php:5383
-#: membershipincludes/classes/membershipadmin.php:5797
-#: membershipincludes/classes/membershipadmin.php:6260
-#: membershipincludes/classes/membershipadmin.php:7404
+#: membershipincludes/classes/membershipadmin.php:5397
+#: membershipincludes/classes/membershipadmin.php:5812
+#: membershipincludes/classes/membershipadmin.php:6275
+#: membershipincludes/classes/membershipadmin.php:7419
 msgid "Add New"
 msgstr "Add New"
 
 #: membershipincludes/classes/membershipadmin.php:2146
 msgid "&larr; Back to All Users"
 msgstr "&larr; Back to All Users"
-
-#: membershipincludes/classes/membershipadmin.php:2154
-#: membershipincludes/classes/membershippublic.php:1319
-#: membershipincludes/classes/membershippublic.php:1423
-#: membershipincludes/includes/bp.registration.form.php:43
-#: membershipincludes/includes/account.form.php:43
-#: membershipincludes/includes/popover_signup.form.php:11
-#: membershipincludes/includes/popover_signup.form.php:48
-#: membershipincludes/includes/bp.account.form.php:65
-msgid "Username"
-msgstr "Username"
 
 #: membershipincludes/classes/membershipadmin.php:2155
 msgid "Name"
@@ -4499,16 +4696,16 @@ msgstr "Gateway"
 #: membershipincludes/classes/membershipadmin.php:2231
 #: membershipincludes/classes/membershipadmin.php:4451
 #: membershipincludes/classes/membershipadmin.php:5078
-#: membershipincludes/classes/membershipadmin.php:5502
-#: membershipincludes/classes/membershipadmin.php:7161
+#: membershipincludes/classes/membershipadmin.php:5516
+#: membershipincludes/classes/membershipadmin.php:7176
 msgid "Deactivate"
 msgstr "Deactivate"
 
 #: membershipincludes/classes/membershipadmin.php:2233
 #: membershipincludes/classes/membershipadmin.php:4449
 #: membershipincludes/classes/membershipadmin.php:5076
-#: membershipincludes/classes/membershipadmin.php:5504
-#: membershipincludes/classes/membershipadmin.php:7163
+#: membershipincludes/classes/membershipadmin.php:5518
+#: membershipincludes/classes/membershipadmin.php:7178
 msgid "Activate"
 msgstr "Activate"
 
@@ -4554,25 +4751,25 @@ msgid "Admin"
 msgstr "Admin"
 
 #: membershipincludes/classes/membershipadmin.php:2614
-#: membershipincludes/classes/membershipadmin.php:7870
+#: membershipincludes/classes/membershipadmin.php:7877
 #: membershipincludes/classes/membershippublic.php:189
 msgid "Register"
 msgstr "Register"
 
 #: membershipincludes/classes/membershipadmin.php:2620
-#: membershipincludes/classes/membershipadmin.php:7874
+#: membershipincludes/classes/membershipadmin.php:7881
 msgid "Account"
 msgstr "Account"
 
 #: membershipincludes/classes/membershipadmin.php:2632
-#: membershipincludes/classes/membershipadmin.php:7878
+#: membershipincludes/classes/membershipadmin.php:7885
 msgid ""
 "The content you are trying to access is only available to members. Sorry."
 msgstr ""
 "The content you are trying to access is only available to members. Sorry."
 
 #: membershipincludes/classes/membershipadmin.php:2633
-#: membershipincludes/classes/membershipadmin.php:7879
+#: membershipincludes/classes/membershipadmin.php:7886
 msgid "Protected Content"
 msgstr "Protected Content"
 
@@ -5438,16 +5635,16 @@ msgstr "Search Levels"
 #: membershipincludes/classes/membershipadmin.php:4981
 #: membershipincludes/classes/membershipadmin.php:5088
 #: membershipincludes/classes/membershipadmin.php:5140
-#: membershipincludes/classes/membershipadmin.php:5423
-#: membershipincludes/classes/membershipadmin.php:5507
-#: membershipincludes/classes/membershipadmin.php:5585
-#: membershipincludes/classes/membershipadmin.php:5831
-#: membershipincludes/classes/membershipadmin.php:5895
-#: membershipincludes/classes/membershipadmin.php:5920
-#: membershipincludes/classes/membershipadmin.php:6294
-#: membershipincludes/classes/membershipadmin.php:6359
-#: membershipincludes/classes/membershipadmin.php:6384
-#: membershipincludes/classes/membershipadmin.php:7497
+#: membershipincludes/classes/membershipadmin.php:5437
+#: membershipincludes/classes/membershipadmin.php:5522
+#: membershipincludes/classes/membershipadmin.php:5600
+#: membershipincludes/classes/membershipadmin.php:5846
+#: membershipincludes/classes/membershipadmin.php:5910
+#: membershipincludes/classes/membershipadmin.php:5935
+#: membershipincludes/classes/membershipadmin.php:6309
+#: membershipincludes/classes/membershipadmin.php:6374
+#: membershipincludes/classes/membershipadmin.php:6399
+#: membershipincludes/classes/membershipadmin.php:7512
 msgid "Delete"
 msgstr "Delete"
 
@@ -5688,309 +5885,318 @@ msgstr "Private"
 msgid "No Subscriptions where found, click above to add one."
 msgstr "No Subscriptions where found, click above to add one."
 
-#: membershipincludes/classes/membershipadmin.php:5292
+#: membershipincludes/classes/membershipadmin.php:5304
 msgid "Add Message"
 msgstr "Add Message"
 
-#: membershipincludes/classes/membershipadmin.php:5296
-#: membershipincludes/classes/membershipadmin.php:5306
+#: membershipincludes/classes/membershipadmin.php:5308
+#: membershipincludes/classes/membershipadmin.php:5318
 msgid "Add message"
 msgstr "Add message"
 
-#: membershipincludes/classes/membershipadmin.php:5318
+#: membershipincludes/classes/membershipadmin.php:5330
 msgid "Edit Message"
 msgstr "Edit Message"
 
-#: membershipincludes/classes/membershipadmin.php:5323
+#: membershipincludes/classes/membershipadmin.php:5335
 msgid "Edit message"
 msgstr "Edit message"
 
-#: membershipincludes/classes/membershipadmin.php:5333
+#: membershipincludes/classes/membershipadmin.php:5345
 msgid "Update message"
 msgstr "Update message"
 
-#: membershipincludes/classes/membershipadmin.php:5364
+#: membershipincludes/classes/membershipadmin.php:5375
 msgid "Message updated."
 msgstr "Message updated."
 
-#: membershipincludes/classes/membershipadmin.php:5365
+#: membershipincludes/classes/membershipadmin.php:5376
 msgid "Message not updated."
 msgstr "Message not updated."
 
-#: membershipincludes/classes/membershipadmin.php:5367
+#: membershipincludes/classes/membershipadmin.php:5378
 msgid "Message activated."
 msgstr "Message activated."
 
-#: membershipincludes/classes/membershipadmin.php:5368
+#: membershipincludes/classes/membershipadmin.php:5379
 msgid "Message not activated."
 msgstr "Message not activated."
 
-#: membershipincludes/classes/membershipadmin.php:5370
+#: membershipincludes/classes/membershipadmin.php:5381
 msgid "Message deactivated."
 msgstr "Message deactivated."
 
-#: membershipincludes/classes/membershipadmin.php:5371
+#: membershipincludes/classes/membershipadmin.php:5382
 msgid "Message not deactivated."
 msgstr "Message not deactivated."
 
-#: membershipincludes/classes/membershipadmin.php:5373
+#: membershipincludes/classes/membershipadmin.php:5384
 msgid "Message activation toggled."
 msgstr "Message activation toggled."
 
-#: membershipincludes/classes/membershipadmin.php:5375
+#: membershipincludes/classes/membershipadmin.php:5386
 msgid "Message added."
 msgstr "Message added."
 
-#: membershipincludes/classes/membershipadmin.php:5376
+#: membershipincludes/classes/membershipadmin.php:5387
 msgid "Message not added."
 msgstr "Message not added."
 
-#: membershipincludes/classes/membershipadmin.php:5378
+#: membershipincludes/classes/membershipadmin.php:5389
 msgid "Message deleted."
 msgstr "Message deleted."
 
-#: membershipincludes/classes/membershipadmin.php:5379
+#: membershipincludes/classes/membershipadmin.php:5390
 msgid "Message not deleted."
 msgstr "Message not deleted."
 
-#: membershipincludes/classes/membershipadmin.php:5383
-msgid "Edit Communication"
-msgstr "Edit Communication"
+#: membershipincludes/classes/membershipadmin.php:5392
+msgid "Message has been sent."
+msgstr "Message has been sent."
 
-#: membershipincludes/classes/membershipadmin.php:5429
+#: membershipincludes/classes/membershipadmin.php:5443
 msgid "View all Messages"
 msgstr "View all Messages"
 
-#: membershipincludes/classes/membershipadmin.php:5430
+#: membershipincludes/classes/membershipadmin.php:5444
 msgid "View active Messages"
 msgstr "View active Messages"
 
-#: membershipincludes/classes/membershipadmin.php:5431
+#: membershipincludes/classes/membershipadmin.php:5445
 msgid "View inactive Messages"
 msgstr "View inactive Messages"
 
-#: membershipincludes/classes/membershipadmin.php:5454
+#: membershipincludes/classes/membershipadmin.php:5468
 msgid "Pre-expiry period"
 msgstr "Pre-expiry period"
 
-#: membershipincludes/classes/membershipadmin.php:5535
+#: membershipincludes/classes/membershipadmin.php:5521
+msgid "Send this communication message to me"
+msgstr "Send this communication message to me"
+
+#: membershipincludes/classes/membershipadmin.php:5521
+msgctxt "Send this communication message to me"
+msgid "Send Me"
+msgstr "Send Me"
+
+#: membershipincludes/classes/membershipadmin.php:5550
 msgid "Signup message"
 msgstr "Signup message"
 
-#: membershipincludes/classes/membershipadmin.php:5547
+#: membershipincludes/classes/membershipadmin.php:5562
 msgid "Minute(s)"
 msgstr "Minute(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5549
+#: membershipincludes/classes/membershipadmin.php:5564
 msgid "Hour(s)"
 msgstr "Hour(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5551
+#: membershipincludes/classes/membershipadmin.php:5566
 msgid "Day(s)"
 msgstr "Day(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5553
+#: membershipincludes/classes/membershipadmin.php:5568
 msgid "Week(s)"
 msgstr "Week(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5555
+#: membershipincludes/classes/membershipadmin.php:5570
 msgid "Month(s)"
 msgstr "Month(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5557
+#: membershipincludes/classes/membershipadmin.php:5572
 msgid "Year(s)"
 msgstr "Year(s)"
 
-#: membershipincludes/classes/membershipadmin.php:5570
+#: membershipincludes/classes/membershipadmin.php:5585
 msgid "No communication messages have been set up."
 msgstr "No communication messages have been set up."
 
-#: membershipincludes/classes/membershipadmin.php:5720
-#: membershipincludes/classes/membershipadmin.php:5725
+#: membershipincludes/classes/membershipadmin.php:5735
+#: membershipincludes/classes/membershipadmin.php:5740
 msgid "Add URL group"
 msgstr "Add URL group"
 
-#: membershipincludes/classes/membershipadmin.php:5720
-#: membershipincludes/classes/membershipadmin.php:5725
+#: membershipincludes/classes/membershipadmin.php:5735
+#: membershipincludes/classes/membershipadmin.php:5740
 msgid "Edit URL group"
 msgstr "Edit URL group"
 
-#: membershipincludes/classes/membershipadmin.php:5735
+#: membershipincludes/classes/membershipadmin.php:5750
 msgid "Add group"
 msgstr "Add group"
 
-#: membershipincludes/classes/membershipadmin.php:5735
+#: membershipincludes/classes/membershipadmin.php:5750
 msgid "Update group"
 msgstr "Update group"
 
-#: membershipincludes/classes/membershipadmin.php:5753
+#: membershipincludes/classes/membershipadmin.php:5768
 msgid "Test URL group"
 msgstr "Test URL group"
 
-#: membershipincludes/classes/membershipadmin.php:5784
+#: membershipincludes/classes/membershipadmin.php:5799
 msgid "Group updated."
 msgstr "Group updated."
 
-#: membershipincludes/classes/membershipadmin.php:5785
+#: membershipincludes/classes/membershipadmin.php:5800
 msgid "Group not updated."
 msgstr "Group not updated."
 
-#: membershipincludes/classes/membershipadmin.php:5787
+#: membershipincludes/classes/membershipadmin.php:5802
 msgid "Group added."
 msgstr "Group added."
 
-#: membershipincludes/classes/membershipadmin.php:5788
+#: membershipincludes/classes/membershipadmin.php:5803
 msgid "Group not added."
 msgstr "Group not added."
 
-#: membershipincludes/classes/membershipadmin.php:5790
+#: membershipincludes/classes/membershipadmin.php:5805
 msgid "Group deleted."
 msgstr "Group deleted."
 
-#: membershipincludes/classes/membershipadmin.php:5791
+#: membershipincludes/classes/membershipadmin.php:5806
 msgid "Group not deleted."
 msgstr "Group not deleted."
 
-#: membershipincludes/classes/membershipadmin.php:5793
+#: membershipincludes/classes/membershipadmin.php:5808
 msgid "Groups deleted."
 msgstr "Groups deleted."
 
-#: membershipincludes/classes/membershipadmin.php:5797
+#: membershipincludes/classes/membershipadmin.php:5812
 msgid "Edit URL Groups"
 msgstr "Edit URL Groups"
 
-#: membershipincludes/classes/membershipadmin.php:5849
+#: membershipincludes/classes/membershipadmin.php:5864
 msgid "Group Name"
 msgstr "Group Name"
 
-#: membershipincludes/classes/membershipadmin.php:5906
+#: membershipincludes/classes/membershipadmin.php:5921
 msgid "No URL groups have been set up."
 msgstr "No URL groups have been set up."
 
-#: membershipincludes/classes/membershipadmin.php:6035
+#: membershipincludes/classes/membershipadmin.php:6050
 msgid "Add Ping details"
 msgstr "Add Ping details"
 
-#: membershipincludes/classes/membershipadmin.php:6040
-#: membershipincludes/classes/membershipadmin.php:6049
+#: membershipincludes/classes/membershipadmin.php:6055
+#: membershipincludes/classes/membershipadmin.php:6064
 msgid "Add ping details"
 msgstr "Add ping details"
 
-#: membershipincludes/classes/membershipadmin.php:6062
+#: membershipincludes/classes/membershipadmin.php:6077
 msgid "Edit Ping details"
 msgstr "Edit Ping details"
 
-#: membershipincludes/classes/membershipadmin.php:6067
+#: membershipincludes/classes/membershipadmin.php:6082
 msgid "Edit ping details"
 msgstr "Edit ping details"
 
-#: membershipincludes/classes/membershipadmin.php:6076
+#: membershipincludes/classes/membershipadmin.php:6091
 msgid "Update ping details"
 msgstr "Update ping details"
 
-#: membershipincludes/classes/membershipadmin.php:6106
+#: membershipincludes/classes/membershipadmin.php:6121
 msgid "Ping resent."
 msgstr "Ping resent."
 
-#: membershipincludes/classes/membershipadmin.php:6107
+#: membershipincludes/classes/membershipadmin.php:6122
 msgid "Ping not resent."
 msgstr "Ping not resent."
 
-#: membershipincludes/classes/membershipadmin.php:6111
+#: membershipincludes/classes/membershipadmin.php:6126
 msgid "Pings History"
 msgstr "Pings History"
 
-#: membershipincludes/classes/membershipadmin.php:6123
-#: membershipincludes/classes/membershipadmin.php:6312
+#: membershipincludes/classes/membershipadmin.php:6138
+#: membershipincludes/classes/membershipadmin.php:6327
 msgid "Ping Name"
 msgstr "Ping Name"
 
-#: membershipincludes/classes/membershipadmin.php:6124
+#: membershipincludes/classes/membershipadmin.php:6139
 msgid "URL"
 msgstr "URL"
 
-#: membershipincludes/classes/membershipadmin.php:6167
+#: membershipincludes/classes/membershipadmin.php:6182
 msgid "Resend as new ping"
 msgstr "Resend as new ping"
 
-#: membershipincludes/classes/membershipadmin.php:6168
+#: membershipincludes/classes/membershipadmin.php:6183
 msgid "Resend and overwrite"
 msgstr "Resend and overwrite"
 
-#: membershipincludes/classes/membershipadmin.php:6208
+#: membershipincludes/classes/membershipadmin.php:6223
 msgid "No History available for this ping."
 msgstr "No History available for this ping."
 
-#: membershipincludes/classes/membershipadmin.php:6247
+#: membershipincludes/classes/membershipadmin.php:6262
 msgid "Ping details updated."
 msgstr "Ping details updated."
 
-#: membershipincludes/classes/membershipadmin.php:6248
+#: membershipincludes/classes/membershipadmin.php:6263
 msgid "Ping details not updated."
 msgstr "Ping details not updated."
 
-#: membershipincludes/classes/membershipadmin.php:6250
+#: membershipincludes/classes/membershipadmin.php:6265
 msgid "Ping details added."
 msgstr "Ping details added."
 
-#: membershipincludes/classes/membershipadmin.php:6251
+#: membershipincludes/classes/membershipadmin.php:6266
 msgid "Ping details not added."
 msgstr "Ping details not added."
 
-#: membershipincludes/classes/membershipadmin.php:6253
-#: membershipincludes/classes/membershipadmin.php:6256
+#: membershipincludes/classes/membershipadmin.php:6268
+#: membershipincludes/classes/membershipadmin.php:6271
 msgid "Ping details deleted."
 msgstr "Ping details deleted."
 
-#: membershipincludes/classes/membershipadmin.php:6254
+#: membershipincludes/classes/membershipadmin.php:6269
 msgid "Ping details not deleted."
 msgstr "Ping details not deleted."
 
-#: membershipincludes/classes/membershipadmin.php:6260
+#: membershipincludes/classes/membershipadmin.php:6275
 msgid "Edit Pings"
 msgstr "Edit Pings"
 
-#: membershipincludes/classes/membershipadmin.php:6358
+#: membershipincludes/classes/membershipadmin.php:6373
 msgid "History"
 msgstr "History"
 
-#: membershipincludes/classes/membershipadmin.php:6370
+#: membershipincludes/classes/membershipadmin.php:6385
 msgid "No Pings have been set up."
 msgstr "No Pings have been set up."
 
-#: membershipincludes/classes/membershipadmin.php:6403
+#: membershipincludes/classes/membershipadmin.php:6418
 msgid "Membership details"
 msgstr "Membership details"
 
-#: membershipincludes/classes/membershipadmin.php:6415
-#: membershipincludes/classes/membershipadmin.php:6416
-#: membershipincludes/classes/membershipadmin.php:6465
-#: membershipincludes/classes/membershipadmin.php:6466
+#: membershipincludes/classes/membershipadmin.php:6430
+#: membershipincludes/classes/membershipadmin.php:6431
+#: membershipincludes/classes/membershipadmin.php:6480
+#: membershipincludes/classes/membershipadmin.php:6481
 msgid "Not called yet"
 msgstr "Not called yet"
 
-#: membershipincludes/classes/membershipadmin.php:6419
+#: membershipincludes/classes/membershipadmin.php:6434
 msgid "Select a subscription"
 msgstr "Select a subscription"
 
-#: membershipincludes/classes/membershipadmin.php:6421
+#: membershipincludes/classes/membershipadmin.php:6436
 msgid "Please select a subscription from the options below."
 msgstr "Please select a subscription from the options below."
 
-#: membershipincludes/classes/membershipadmin.php:6509
+#: membershipincludes/classes/membershipadmin.php:6524
 msgid "Protected content group"
 msgstr "Protected content group"
 
-#: membershipincludes/classes/membershipadmin.php:6512
+#: membershipincludes/classes/membershipadmin.php:6527
 msgid "Is this an item you may want to restrict access to?"
 msgstr "Is this an item you may want to restrict access to?"
 
-#: membershipincludes/classes/membershipadmin.php:6773
-#: membershipincludes/classes/membershipadmin.php:6777
+#: membershipincludes/classes/membershipadmin.php:6788
+#: membershipincludes/classes/membershipadmin.php:6792
 msgid "Membership key"
 msgstr "Membership key"
 
-#: membershipincludes/classes/membershipadmin.php:6780
+#: membershipincludes/classes/membershipadmin.php:6795
 msgid ""
 "This key is used to give you access the the members RSS feed, keep it safe "
 "and secret."
@@ -5998,20 +6204,20 @@ msgstr ""
 "This key is used to give you access the the members RSS feed, keep it safe "
 "and secret."
 
-#: membershipincludes/classes/membershipadmin.php:6802
-#: membershipincludes/classes/membershipadmin.php:6806
+#: membershipincludes/classes/membershipadmin.php:6817
+#: membershipincludes/classes/membershipadmin.php:6821
 msgid "Membership Administration"
 msgstr "Membership Administration"
 
-#: membershipincludes/classes/membershipadmin.php:6810
+#: membershipincludes/classes/membershipadmin.php:6825
 msgid "This user has access to administer the Membership system."
 msgstr "This user has access to administer the Membership system."
 
-#: membershipincludes/classes/membershipadmin.php:6837
+#: membershipincludes/classes/membershipadmin.php:6852
 msgid "Subscription Pings"
 msgstr "Subscription Pings"
 
-#: membershipincludes/classes/membershipadmin.php:6838
+#: membershipincludes/classes/membershipadmin.php:6853
 msgid ""
 "If you want any pings to be sent when a member joins and/or leaves this "
 "subscription then set them below."
@@ -6019,21 +6225,21 @@ msgstr ""
 "If you want any pings to be sent when a member joins and/or leaves this "
 "subscription then set them below."
 
-#: membershipincludes/classes/membershipadmin.php:6842
-#: membershipincludes/classes/membershipadmin.php:6896
+#: membershipincludes/classes/membershipadmin.php:6857
+#: membershipincludes/classes/membershipadmin.php:6911
 msgid "Joining Ping"
 msgstr "Joining Ping"
 
-#: membershipincludes/classes/membershipadmin.php:6856
-#: membershipincludes/classes/membershipadmin.php:6910
+#: membershipincludes/classes/membershipadmin.php:6871
+#: membershipincludes/classes/membershipadmin.php:6925
 msgid "Leaving Ping"
 msgstr "Leaving Ping"
 
-#: membershipincludes/classes/membershipadmin.php:6891
+#: membershipincludes/classes/membershipadmin.php:6906
 msgid "Level Pings"
 msgstr "Level Pings"
 
-#: membershipincludes/classes/membershipadmin.php:6892
+#: membershipincludes/classes/membershipadmin.php:6907
 msgid ""
 "If you want any pings to be sent when a member joins and/or leaves this "
 "level then set them below."
@@ -6041,171 +6247,171 @@ msgstr ""
 "If you want any pings to be sent when a member joins and/or leaves this "
 "level then set them below."
 
-#: membershipincludes/classes/membershipadmin.php:7029
+#: membershipincludes/classes/membershipadmin.php:7044
 msgid "Gateway updated."
 msgstr "Gateway updated."
 
-#: membershipincludes/classes/membershipadmin.php:7030
+#: membershipincludes/classes/membershipadmin.php:7045
 msgid "Gateway not updated."
 msgstr "Gateway not updated."
 
-#: membershipincludes/classes/membershipadmin.php:7032
+#: membershipincludes/classes/membershipadmin.php:7047
 msgid "Gateway activated."
 msgstr "Gateway activated."
 
-#: membershipincludes/classes/membershipadmin.php:7033
+#: membershipincludes/classes/membershipadmin.php:7048
 msgid "Gateway not activated."
 msgstr "Gateway not activated."
 
-#: membershipincludes/classes/membershipadmin.php:7035
+#: membershipincludes/classes/membershipadmin.php:7050
 msgid "Gateway deactivated."
 msgstr "Gateway deactivated."
 
-#: membershipincludes/classes/membershipadmin.php:7036
+#: membershipincludes/classes/membershipadmin.php:7051
 msgid "Gateway not deactivated."
 msgstr "Gateway not deactivated."
 
-#: membershipincludes/classes/membershipadmin.php:7038
+#: membershipincludes/classes/membershipadmin.php:7053
 msgid "Gateway activation toggled."
 msgstr "Gateway activation toggled."
 
-#: membershipincludes/classes/membershipadmin.php:7042
+#: membershipincludes/classes/membershipadmin.php:7057
 msgid "Edit Gateways"
 msgstr "Edit Gateways"
 
-#: membershipincludes/classes/membershipadmin.php:7090
+#: membershipincludes/classes/membershipadmin.php:7105
 msgid "Gateway Name"
 msgstr "Gateway Name"
 
-#: membershipincludes/classes/membershipadmin.php:7159
+#: membershipincludes/classes/membershipadmin.php:7174
 msgid "Settings"
 msgstr "Settings"
 
-#: membershipincludes/classes/membershipadmin.php:7160
+#: membershipincludes/classes/membershipadmin.php:7175
 msgid "View transactions"
 msgstr "View transactions"
 
-#: membershipincludes/classes/membershipadmin.php:7185
+#: membershipincludes/classes/membershipadmin.php:7200
 msgid "No Gateways where found for this install."
 msgstr "No Gateways where found for this install."
 
-#: membershipincludes/classes/membershipadmin.php:7317
-#: membershipincludes/classes/membershipadmin.php:7321
+#: membershipincludes/classes/membershipadmin.php:7332
+#: membershipincludes/classes/membershipadmin.php:7336
 msgid "Add Coupon"
 msgstr "Add Coupon"
 
-#: membershipincludes/classes/membershipadmin.php:7330
+#: membershipincludes/classes/membershipadmin.php:7345
 msgid "Add coupon"
 msgstr "Add coupon"
 
-#: membershipincludes/classes/membershipadmin.php:7345
-#: membershipincludes/classes/membershipadmin.php:7350
+#: membershipincludes/classes/membershipadmin.php:7360
+#: membershipincludes/classes/membershipadmin.php:7365
 msgid "Edit Coupon"
 msgstr "Edit Coupon"
 
-#: membershipincludes/classes/membershipadmin.php:7359
+#: membershipincludes/classes/membershipadmin.php:7374
 msgid "Update coupon"
 msgstr "Update coupon"
 
-#: membershipincludes/classes/membershipadmin.php:7392
+#: membershipincludes/classes/membershipadmin.php:7407
 msgid "Coupon added."
 msgstr "Coupon added."
 
-#: membershipincludes/classes/membershipadmin.php:7393
+#: membershipincludes/classes/membershipadmin.php:7408
 msgid "Coupon not added."
 msgstr "Coupon not added."
 
-#: membershipincludes/classes/membershipadmin.php:7395
+#: membershipincludes/classes/membershipadmin.php:7410
 msgid "Coupon updated."
 msgstr "Coupon updated."
 
-#: membershipincludes/classes/membershipadmin.php:7396
+#: membershipincludes/classes/membershipadmin.php:7411
 msgid "Coupon not updated."
 msgstr "Coupon not updated."
 
-#: membershipincludes/classes/membershipadmin.php:7398
+#: membershipincludes/classes/membershipadmin.php:7413
 msgid "Coupon deleted."
 msgstr "Coupon deleted."
 
-#: membershipincludes/classes/membershipadmin.php:7399
+#: membershipincludes/classes/membershipadmin.php:7414
 msgid "Coupon not deleted."
 msgstr "Coupon not deleted."
 
-#: membershipincludes/classes/membershipadmin.php:7400
+#: membershipincludes/classes/membershipadmin.php:7415
 msgid "Coupons deleted."
 msgstr "Coupons deleted."
 
-#: membershipincludes/classes/membershipadmin.php:7404
+#: membershipincludes/classes/membershipadmin.php:7419
 msgid "Edit Coupons"
 msgstr "Edit Coupons"
 
-#: membershipincludes/classes/membershipadmin.php:7433
+#: membershipincludes/classes/membershipadmin.php:7448
 msgid "Used"
 msgstr "Used"
 
-#: membershipincludes/classes/membershipadmin.php:7434
+#: membershipincludes/classes/membershipadmin.php:7449
 msgid "Remaining Uses"
 msgstr "Remaining Uses"
 
-#: membershipincludes/classes/membershipadmin.php:7445
+#: membershipincludes/classes/membershipadmin.php:7460
 msgid "Delete Coupon"
 msgstr "Delete Coupon"
 
-#: membershipincludes/classes/membershipadmin.php:7533
+#: membershipincludes/classes/membershipadmin.php:7548
 msgid "No End"
 msgstr "No End"
 
-#: membershipincludes/classes/membershipadmin.php:7570
+#: membershipincludes/classes/membershipadmin.php:7585
 msgid "Unlimited"
 msgstr "Unlimited"
 
-#: membershipincludes/classes/membershipadmin.php:7585
+#: membershipincludes/classes/membershipadmin.php:7600
 msgid "No coupons yet."
 msgstr "No coupons yet."
 
-#: membershipincludes/classes/membershipadmin.php:7649
-#: membershipincludes/classes/membershipadmin.php:7728
+#: membershipincludes/classes/membershipadmin.php:7656
+#: membershipincludes/classes/membershipadmin.php:7735
 msgid "Invalid form submission."
 msgstr "Invalid form submission."
 
-#: membershipincludes/classes/membershipadmin.php:7653
-#: membershipincludes/classes/membershippublic.php:1337
-#: membershipincludes/classes/membershippublic.php:1442
+#: membershipincludes/classes/membershipadmin.php:7660
+#: membershipincludes/classes/membershippublic.php:1303
+#: membershipincludes/classes/membershippublic.php:1407
 msgid "The username is not valid, sorry."
 msgstr "The username is not valid, sorry."
 
-#: membershipincludes/classes/membershipadmin.php:7657
-#: membershipincludes/classes/membershippublic.php:1341
-#: membershipincludes/classes/membershippublic.php:1446
+#: membershipincludes/classes/membershipadmin.php:7664
+#: membershipincludes/classes/membershippublic.php:1307
+#: membershipincludes/classes/membershippublic.php:1411
 msgid "That username is already taken, sorry."
 msgstr "That username is already taken, sorry."
 
-#: membershipincludes/classes/membershipadmin.php:7661
-#: membershipincludes/classes/membershippublic.php:1345
-#: membershipincludes/classes/membershippublic.php:1450
+#: membershipincludes/classes/membershipadmin.php:7668
+#: membershipincludes/classes/membershippublic.php:1311
+#: membershipincludes/classes/membershippublic.php:1415
 msgid "The email address is not valid, sorry."
 msgstr "The email address is not valid, sorry."
 
-#: membershipincludes/classes/membershipadmin.php:7665
-#: membershipincludes/classes/membershippublic.php:1349
-#: membershipincludes/classes/membershippublic.php:1454
+#: membershipincludes/classes/membershipadmin.php:7672
+#: membershipincludes/classes/membershippublic.php:1315
+#: membershipincludes/classes/membershippublic.php:1419
 msgid "That email address is already taken, sorry."
 msgstr "That email address is already taken, sorry."
 
-#: membershipincludes/classes/membershipadmin.php:7743
+#: membershipincludes/classes/membershipadmin.php:7750
 msgid "User not found."
 msgstr "User not found."
 
-#: membershipincludes/classes/membershipadmin.php:7798
+#: membershipincludes/classes/membershipadmin.php:7805
 #, php-format
 msgid "Subscription %s has been added."
 msgstr "Subscription %s has been added."
 
-#: membershipincludes/classes/membershipadmin.php:7907
+#: membershipincludes/classes/membershipadmin.php:7914
 msgid "default"
 msgstr "default"
 
-#: membershipincludes/classes/membershipadmin.php:7912
+#: membershipincludes/classes/membershipadmin.php:7919
 msgid "downloads"
 msgstr "downloads"
 
@@ -6452,67 +6658,59 @@ msgstr "My Account"
 msgid "No access to this content"
 msgstr "No access to this content"
 
-#: membershipincludes/classes/membershippublic.php:1320
-#: membershipincludes/classes/membershippublic.php:1424
+#: membershipincludes/classes/membershippublic.php:1286
+#: membershipincludes/classes/membershippublic.php:1389
 msgid "Email address"
 msgstr "Email address"
 
-#: membershipincludes/classes/membershippublic.php:1321
-#: membershipincludes/classes/membershippublic.php:1425
-#: membershipincludes/includes/popover_signup.form.php:19
-#: membershipincludes/includes/popover_signup.form.php:52
-#: membershipincludes/includes/registration.form.php:51
-msgid "Password"
-msgstr "Password"
-
-#: membershipincludes/classes/membershippublic.php:1322
-#: membershipincludes/classes/membershippublic.php:1426
+#: membershipincludes/classes/membershippublic.php:1288
+#: membershipincludes/classes/membershippublic.php:1391
 msgid "Password confirmation"
 msgstr "Password confirmation"
 
-#: membershipincludes/classes/membershippublic.php:1328
-#: membershipincludes/classes/membershippublic.php:1433
-#: membershipincludes/classes/membershippublic.php:1491
+#: membershipincludes/classes/membershippublic.php:1294
+#: membershipincludes/classes/membershippublic.php:1398
+#: membershipincludes/classes/membershippublic.php:1456
 msgid "Please ensure that the "
 msgstr "Please ensure that the "
 
-#: membershipincludes/classes/membershippublic.php:1328
-#: membershipincludes/classes/membershippublic.php:1433
-#: membershipincludes/classes/membershippublic.php:1491
+#: membershipincludes/classes/membershippublic.php:1294
+#: membershipincludes/classes/membershippublic.php:1398
+#: membershipincludes/classes/membershippublic.php:1456
 msgid " information is completed."
 msgstr " information is completed."
 
-#: membershipincludes/classes/membershippublic.php:1333
-#: membershipincludes/classes/membershippublic.php:1438
+#: membershipincludes/classes/membershippublic.php:1299
+#: membershipincludes/classes/membershippublic.php:1403
 msgid "Please ensure the passwords match."
 msgstr "Please ensure the passwords match."
 
-#: membershipincludes/classes/membershippublic.php:1873
-#: membershipincludes/classes/membershippublic.php:1939
+#: membershipincludes/classes/membershippublic.php:1838
+#: membershipincludes/classes/membershippublic.php:1904
 msgid "Are you sure you want to unsubscribe from this subscription?"
 msgstr "Are you sure you want to unsubscribe from this subscription?"
 
-#: membershipincludes/classes/membershippublic.php:1893
+#: membershipincludes/classes/membershippublic.php:1858
 msgid "Problem with registration."
 msgstr "Problem with registration."
 
-#: membershipincludes/classes/membershippublic.php:1894
+#: membershipincludes/classes/membershippublic.php:1859
 msgid "Problem with Login."
 msgstr "Problem with Login."
 
-#: membershipincludes/classes/membershippublic.php:1895
+#: membershipincludes/classes/membershippublic.php:1860
 msgid "Please ensure you have completed all the fields"
 msgstr "Please ensure you have completed all the fields"
 
-#: membershipincludes/classes/membershippublic.php:1896
+#: membershipincludes/classes/membershippublic.php:1861
 msgid "Please ensure passwords match"
 msgstr "Please ensure passwords match"
 
-#: membershipincludes/classes/membershippublic.php:1897
+#: membershipincludes/classes/membershippublic.php:1862
 msgid "Please ensure you have entered an username or password"
 msgstr "Please ensure you have entered an username or password"
 
-#: membershipincludes/classes/membershippublic.php:2000
+#: membershipincludes/classes/membershippublic.php:1965
 msgid "Could not create your user account."
 msgstr "Could not create your user account."
 
@@ -7414,83 +7612,6 @@ msgstr "&laquo; Previous"
 msgid "%s: Step %d of %d"
 msgstr "%s: Step %d of %d"
 
-#: membershipincludes/includes/bp.registration.form.php:28
-#: membershipincludes/includes/registration.form.php:33
-msgid "Create an Account"
-msgstr "Create an Account"
-
-#: membershipincludes/includes/bp.registration.form.php:33
-msgid ""
-"Registering for this site is easy, just fill in the fields below and we'll "
-"get a new account set up for you in no time."
-msgstr ""
-"Registering for this site is easy, just fill in the fields below and we'll "
-"get a new account set up for you in no time."
-
-#: membershipincludes/includes/bp.registration.form.php:41
-msgid "Account Details"
-msgstr "Account Details"
-
-#: membershipincludes/includes/bp.registration.form.php:43
-#: membershipincludes/includes/bp.registration.form.php:47
-#: membershipincludes/includes/bp.registration.form.php:51
-#: membershipincludes/includes/bp.registration.form.php:55
-#: membershipincludes/includes/bp.registration.form.php:85
-#: membershipincludes/includes/bp.registration.form.php:93
-#: membershipincludes/includes/bp.registration.form.php:101
-#: membershipincludes/includes/bp.registration.form.php:111
-#: membershipincludes/includes/bp.registration.form.php:122
-#: membershipincludes/includes/bp.registration.form.php:137
-#: membershipincludes/includes/bp.registration.form.php:148
-msgid "(required)"
-msgstr "(required)"
-
-#: membershipincludes/includes/bp.registration.form.php:47
-#: membershipincludes/includes/popover_signup.form.php:15
-#: membershipincludes/includes/registration.form.php:43
-msgid "Email Address"
-msgstr "Email Address"
-
-#: membershipincludes/includes/bp.registration.form.php:51
-msgid "Choose a Password"
-msgstr "Choose a Password"
-
-#: membershipincludes/includes/bp.registration.form.php:55
-#: membershipincludes/includes/account.form.php:127
-#: membershipincludes/includes/popover_signup.form.php:24
-#: membershipincludes/includes/registration.form.php:58
-msgid "Confirm Password"
-msgstr "Confirm Password"
-
-#: membershipincludes/includes/bp.registration.form.php:74
-msgid "Profile Details"
-msgstr "Profile Details"
-
-#: membershipincludes/includes/bp.registration.form.php:128
-msgid "Clear"
-msgstr "Clear"
-
-#: membershipincludes/includes/bp.registration.form.php:170
-#: membershipincludes/includes/bp.registration.form.php:182
-#, php-format
-msgid ""
-"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
-msgstr ""
-"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
-
-#: membershipincludes/includes/bp.registration.form.php:170
-msgctxt "Change profile field visibility level"
-msgid "Change"
-msgstr "Change"
-
-#: membershipincludes/includes/bp.registration.form.php:175
-msgid "Who can see this field?"
-msgstr "Who can see this field?"
-
-#: membershipincludes/includes/bp.registration.form.php:178
-msgid "Close"
-msgstr "Close"
-
 #: membershipincludes/includes/subscription.form.php:4
 msgid "Select a Subscription"
 msgstr "Select a Subscription"
@@ -7528,16 +7649,6 @@ msgstr "Edit your details"
 #: membershipincludes/includes/bp.account.form.php:67
 msgid "Usernames cannot be changed."
 msgstr "Usernames cannot be changed."
-
-#: membershipincludes/includes/account.form.php:51
-#: membershipincludes/includes/bp.account.form.php:71
-msgid "First Name"
-msgstr "First Name"
-
-#: membershipincludes/includes/account.form.php:58
-#: membershipincludes/includes/bp.account.form.php:77
-msgid "Last Name"
-msgstr "Last Name"
 
 #: membershipincludes/includes/account.form.php:65
 #: membershipincludes/includes/bp.account.form.php:83
@@ -7727,36 +7838,6 @@ msgstr ""
 msgid "BuddyPress No access message"
 msgstr "BuddyPress No access message"
 
-#: membershipincludes/includes/popover_signup.form.php:3
-msgid "Register or Login to purchase"
-msgstr "Register or Login to purchase"
-
-#: membershipincludes/includes/popover_signup.form.php:7
-msgid "Enter your details below to create a new account."
-msgstr "Enter your details below to create a new account."
-
-#: membershipincludes/includes/popover_signup.form.php:8
-#: membershipincludes/includes/popover_signup.form.php:45
-msgid "This is an error"
-msgstr "This is an error"
-
-#: membershipincludes/includes/popover_signup.form.php:30
-msgid "Terms Of Service"
-msgstr "Terms Of Service"
-
-#: membershipincludes/includes/popover_signup.form.php:37
-#: membershipincludes/includes/registration.form.php:72
-msgid "Register My Account &raquo;"
-msgstr "Register My Account &raquo;"
-
-#: membershipincludes/includes/popover_signup.form.php:44
-msgid "Login below if you're already registered."
-msgstr "Login below if you're already registered."
-
-#: membershipincludes/includes/popover_signup.form.php:58
-msgid "Login &raquo;"
-msgstr "Login &raquo;"
-
 #: membershipincludes/includes/member.form.php:5
 msgid "Completed: Thank you for joining"
 msgstr "Completed: Thank you for joining"
@@ -7780,32 +7861,6 @@ msgstr ""
 #: membershipincludes/includes/popover_payment.form.php:46
 msgid "Misconfigured Custom Payment Gateway: haspaymentform must be true."
 msgstr "Misconfigured Custom Payment Gateway: haspaymentform must be true."
-
-#: membershipincludes/includes/registration.form.php:36
-msgid "Choose a Username"
-msgstr "Choose a Username"
-
-#: membershipincludes/includes/registration.form.php:48
-msgid ""
-"Please enter a new password, and then verify your new password by entering "
-"it again."
-msgstr ""
-"Please enter a new password, and then verify your new password by entering "
-"it again."
-
-#: membershipincludes/includes/registration.form.php:63
-msgid ""
-"Hint: The password should be at least 5 characters long. To make it "
-"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
-"$ % ^ &amp; )."
-msgstr ""
-"Hint: The password should be at least 5 characters long. To make it "
-"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
-"$ % ^ &amp; )."
-
-#: membershipincludes/includes/registration.form.php:74
-msgid "Already have a user account?"
-msgstr "Already have a user account?"
 
 #: membershipincludes/includes/bp.account.form.php:50
 #, php-format

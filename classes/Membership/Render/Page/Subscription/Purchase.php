@@ -30,7 +30,7 @@
 class Membership_Render_Page_Subscription_Purchase extends Membership_Render {
 
 	/**
-	 * Renders button template.
+	 * Renders purchase subscription form template.
 	 *
 	 * @since 3.5
 	 *

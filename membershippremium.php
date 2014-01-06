@@ -178,16 +178,15 @@ function membership_launch() {
 			$plugin->set_module( Membership_Module_Protection::NAME );
 		}
 
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-		} else {
+		if ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) {
 			$plugin->set_module( Membership_Module_Adminbar::NAME );
+		}
 
-			if ( is_admin() ) {
-				// set admin modules
-				// $plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
-			} else {
-				$plugin->set_module( Membership_Module_Frontend::NAME );
-			}
+		$plugin->set_module( Membership_Module_Frontend_Registration::NAME );
+		if ( is_admin() ) {
+//			$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
+		} else {
+			$plugin->set_module( Membership_Module_Frontend::NAME );
 		}
 	}
 }
