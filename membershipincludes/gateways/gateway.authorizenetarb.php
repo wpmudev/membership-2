@@ -982,11 +982,11 @@ class M_authorizenetarb extends Membership_Gateway {
 
 		$html = '';
 
-		$html .= "<div class='header' style='width: 750px'><h1>";
+		$html .= "<div class='header'><h1>";
 		$html .= __('Sign up for','membership') . " " . $sub->sub_name() . " " . __('completed', 'membership');
 		$html .= "</h1></div><div class='fullwidth'>";
 
-		$html .= wpautop( $M_options['registrationcompleted_message'] );
+		$html .= stripslashes( wpautop( $M_options['registrationcompleted_message'] ) );
 
 		$html .= "</div>";
 

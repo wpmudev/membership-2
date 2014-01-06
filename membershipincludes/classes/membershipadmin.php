@@ -7809,10 +7809,10 @@ if ( !class_exists( 'membershipadmin' ) ) :
 				$membership = new M_Membership( get_current_user_id() );
 				$membership->create_subscription( $to_sub_id );
 
-				$html = '<div class="header" style="width: 750px"><h1>';
+				$html = '<div class="header"><h1>';
 				$html .= sprintf( __( 'Subscription %s has been added.', 'membership' ), $sub ? $sub->sub_name() : '' );
 				$html .= '</h1></div><div class="fullwidth">';
-				$html .= wpautop( $M_options['registrationcompleted_message'] );
+				$html .= stripslashes( wpautop( $M_options['registrationcompleted_message'] ) );
 				$html .= '</div>';
 
 				echo $html;

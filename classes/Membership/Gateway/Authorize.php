@@ -711,7 +711,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$html = '<div class="header" style="width: 750px"><h1>';
 				$html .= sprintf( __( 'Sign up for %s completed', 'membership' ), $this->_subscription->sub_name() );
 				$html .= '</h1></div><div class="fullwidth">';
-				$html .= wpautop( $M_options['registrationcompleted_message'] );
+				$html .= stripslashes( wpautop( $M_options['registrationcompleted_message'] ) );
 				$html .= '</div>';
 
 				$this->_payment_result['redirect'] = 'no';
