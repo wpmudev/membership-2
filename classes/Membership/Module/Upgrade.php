@@ -97,7 +97,7 @@ class Membership_Module_Upgrade extends Membership_Module {
 		$db_version = get_site_option( $option );
 		if ( $db_version === false ) {
 			$db_version = '0.0.0';
-			update_option( $option, $db_version );
+			update_site_option( $option, $db_version );
 		}
 
 		// check if current version is equal to database version, then there is nothing to upgrade
