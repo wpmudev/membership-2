@@ -13,10 +13,9 @@ function m_couponsuccess(data) {
 
     try
     {
-        returned = jQuery.parseJSON(data);
-        if (typeof returned.errormsg != 'undefined') {
+        if (typeof data.errormsg != 'undefined') {
             // Oops an error
-            alert(returned.errormsg);
+            alert(data.errormsg);
         } else {
             // Content is being passed back so display
             jQuery('#fancybox-content div').html(data);
@@ -34,7 +33,6 @@ function m_couponsuccess(data) {
 
 function m_couponerror(data) {
     jQuery.fancybox.hideActivity();
-
     alert('Coupon error');
 }
 
@@ -65,10 +63,11 @@ function m_signupsuccess(data) {
 
     try
     {
-        returned = jQuery.parseJSON(data);
-        if (typeof returned.errormsg != 'undefined') {
+        if (typeof data.errormsg != 'undefined') {
             // Oops an error
-            alert(returned.errormsg);
+            alert(data.errormsg);
+		} else if (typeof data.redirect != 'undefined') {
+			window.location.href = data.redirect;
         } else {
             // Content is being passed back so display
             jQuery('#fancybox-content div').html(data);
@@ -129,10 +128,9 @@ function m_extraformsuccess(data) {
 
     try
     {
-        returned = jQuery.parseJSON(data);
-        if (typeof returned.errormsg != 'undefined') {
+        if (typeof data.errormsg != 'undefined') {
             // Oops an error
-            jQuery("#reg-error").html(returned.errormsg).show('fast', function() {
+            jQuery("#reg-error").html(data.errormsg).show('fast', function() {
                 jQuery.fancybox.resize();
             });
         } else {
@@ -154,12 +152,13 @@ function m_registersuccess(data) {
 
     try
     {
-        returned = jQuery.parseJSON(data);
-        if (typeof returned.errormsg != 'undefined') {
+        if (typeof data.errormsg != 'undefined') {
             // Oops an error
-            jQuery("#reg-error").html(returned.errormsg).show('fast', function() {
+            jQuery("#reg-error").html(data.errormsg).show('fast', function() {
                 jQuery.fancybox.resize();
             });
+		} else if (typeof data.redirect != 'undefined') {
+			window.location.href = data.redirect;
         } else {
             // Content is being passed back so display
             jQuery('#fancybox-content div').html(data);
@@ -187,10 +186,9 @@ function m_loginsuccess(data) {
 
     try
     {
-        returned = jQuery.parseJSON(data);
-        if (typeof returned.errormsg != 'undefined') {
+        if (typeof data.errormsg != 'undefined') {
             // Oops an error
-            jQuery("#login-error").html(returned.errormsg).show('fast', function() {
+            jQuery("#login-error").html(data.errormsg).show('fast', function() {
                 jQuery.fancybox.resize();
             });
         } else {
