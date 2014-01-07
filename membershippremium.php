@@ -167,6 +167,7 @@ function membership_launch() {
 
 	// plugin setup
 	$plugin = Membership_Plugin::instance();
+	$plugin->set_factory( new Membership_Factory() );
 
 	$plugin->set_module( Membership_Module_System::NAME );
 	$plugin->set_module( Membership_Module_Upgrade::NAME );
@@ -189,6 +190,8 @@ function membership_launch() {
 			$plugin->set_module( Membership_Module_Frontend::NAME );
 		}
 	}
+
+	do_action( 'membership_loaded', $plugin );
 }
 
 // register autoloader function

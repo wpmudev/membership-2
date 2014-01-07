@@ -51,6 +51,16 @@ class Membership_Plugin {
 	private $_modules = array();
 
 	/**
+	 * The factory instance.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @var Membership_Factory
+	 */
+	private $_factory = null;
+
+	/**
 	 * Private constructor.
 	 *
 	 * @since 3.5
@@ -83,6 +93,43 @@ class Membership_Plugin {
 		}
 
 		return self::$_instance;
+	}
+
+	/**
+	 * Sets membership classes factory.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @param Membership_Factory $factory The factory instance.
+	 */
+	public function set_factory( Membership_Factory $factory ) {
+		$this->_factory = $factory;
+	}
+
+	/**
+	 * Returns membership facotry.
+	 *
+	 * @since 3.5
+	 *
+	 * @access public
+	 * @return Membership_Factory The factory instance.
+	 */
+	public function get_factory() {
+		return $this->_factory;
+	}
+
+	/**
+	 * Returns membership factory for current instance of the plguin.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access public
+	 * @return Membership_Factory The factory instance.
+	 */
+	public static function factory() {
+		return self::instance()->get_factory();
 	}
 
 	/**
