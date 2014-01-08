@@ -91,7 +91,7 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 
 	// Set up the level and find out if it has a joining ping
 	$level = new M_Level( $tolevel_id );
-	$member = new M_Membership( $user_id );
+	$member = Membership_Plugin::factory()->get_member( $user_id );
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
@@ -108,7 +108,7 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 
 	// Set up the level and find out if it has a leaving ping
 	$level = new M_Level( $fromlevel_id );
-	$member = new M_Membership( $user_id );
+	$member = Membership_Plugin::factory()->get_member( $user_id );
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
@@ -137,7 +137,7 @@ add_action( 'membership_move_level', 'M_Roles_movedlevel', 10, 3 );
 function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
 	$level = new M_Level( $tolevel_id );
-	$member = new M_Membership( $user_id );
+	$member = Membership_Plugin::factory()->get_member( $user_id );
 	$wprole = $level->get_meta( 'associated_wp_role' );
 
 	if(!empty($wprole)) {
@@ -153,7 +153,7 @@ function M_Roles_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
 	M_Roles_leftlevel( $fromlevel_id, $user_id );
 
-	$member = new M_Membership( $user_id );
+	$member = Membership_Plugin::factory()->get_member( $user_id );
 	if(!$member->has_levels()) {
 		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
 			$member->set_role( get_option('default_role') );

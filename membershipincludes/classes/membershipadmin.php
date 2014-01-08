@@ -522,7 +522,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			}
 
 			// Users
-			$member = new M_Membership( $user->ID );
+			$member = Membership_Plugin::factory()->get_member( $user->ID );
 			if ( $user->ID > 0 && $member->has_levels() ) {
 				// Load the levels for this member - and associated rules
 				$member->load_admin_levels( true );
@@ -1147,18 +1147,21 @@ if ( !class_exists( 'membershipadmin' ) ) :
                 }
             }
 
+			$factory = Membership_Plugin::factory();
             switch (addslashes($action)) {
 
-                case 'removeheader': $this->dismiss_user_help($page);
+                case 'removeheader':
+					$this->dismiss_user_help($page);
                     wp_safe_redirect(remove_query_arg('action'));
                     break;
 
-                case 'toggle': if (isset($_GET['member_id'])) {
+                case 'toggle':
+					if (isset($_GET['member_id'])) {
                         $user_id = (int) $_GET['member_id'];
 
                         check_admin_referer('toggle-member_' . $user_id);
 
-                        $member = new M_Membership($user_id);
+                        $member = $factory->get_member($user_id);
 
                         if ($member->toggle_activation()) {
                             wp_safe_redirect(add_query_arg('msg', 7, wp_get_referer()));
@@ -1174,7 +1177,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $user_id = (int) $value;
 
-                            $member = new M_Membership($user_id);
+                            $member = $factory->get_member($user_id);
 
                             $member->toggle_activation();
                         }
@@ -1191,7 +1194,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $tolevel_id = (int) $_POST['tolevel_id'];
                             if ($tolevel_id) {
@@ -1213,7 +1216,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $fromlevel_id = (int) $_POST['fromlevel_id'];
                             if ($fromlevel_id) {
@@ -1235,7 +1238,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $fromlevel_id = (int) $_POST['fromlevel_id'];
                             $tolevel_id = (int) $_POST['tolevel_id'];
@@ -1258,7 +1261,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $tosub_id = $_POST['tosub_id'];
                             if ($tosub_id) {
@@ -1284,7 +1287,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $fromsub_id = (int) $_POST['fromsub_id'];
                             if ($fromsub_id) {
@@ -1307,7 +1310,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $fromsub_id = (int) $_POST['fromsub_id'];
                             $tosub_id = $_POST['tosub_id'];
@@ -1335,7 +1338,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     $members = explode(',', $members_id);
                     if ($members) {
                         foreach ($members as $member_id) {
-                            $member = new M_Membership($member_id);
+                            $member = $factory->get_member($member_id);
 
                             $fromgateway = $_POST['fromgateway'];
                             $togateway = $_POST['togateway'];
@@ -2209,8 +2212,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 							}
 
                             $style = '';
+							$factory = Membership_Plugin::factory();
                             foreach ($wp_user_search->get_results() as $user) {
-                                $user_object = new M_Membership($user->ID);
+                                $user_object = $factory->get_member($user->ID);
 								$is_membership_admin = $user_object->has_cap( 'membershipadmin' );
                                 $roles = $user_object->roles;
                                 $role = array_shift($roles);
@@ -6775,7 +6779,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
             $id = $profileuser->ID;
 
-            $member = new M_Membership($id);
+            $member = Membership_Plugin::factory()->get_member($id);
 
             if ($member->is_member()) {
                 $key = get_user_meta($id, '_membership_key', true);
@@ -7685,7 +7689,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 				if (is_wp_error($user_id) && method_exists($user_id, 'get_error_message')) {
 					$error->add('userid', $user_id->get_error_message());
 				} else {
-					$member = new M_Membership( $user_id );
+					$member = Membership_Plugin::factory()->get_member( $user_id );
 
 					$user = wp_signon( array(
 						'user_login' => $_POST['user_login'],
@@ -7798,7 +7802,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			}
 
 			if ( $to_sub_id ) {
-				$membership = new M_Membership( get_current_user_id() );
+				$membership = Membership_Plugin::factory()->get_member( get_current_user_id() );
 				$membership->create_subscription( $to_sub_id );
 
 				if ( !empty( $M_options['registrationcompleted_message'] ) ) {

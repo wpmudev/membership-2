@@ -332,6 +332,8 @@ abstract class Membership_Gateway extends Membership_Hooker {
 	 * @param string $type Transaction type to render.
 	 */
 	protected function _render_transactions( $type = 'past' ) {
+		$factory = Membership_Plugin::factory();
+
 		$columns = array(
 			'subscription' => __( 'Subscription', 'membership' ),
 			'user'         => __( 'User', 'membership' ),
@@ -386,7 +388,7 @@ abstract class Membership_Gateway extends Membership_Hooker {
 				<?php if ( $transactions ) : ?>
 					<?php foreach ( $transactions as $key => $transaction ) : ?>
 						<?php $subscription = new M_Subscription( $transaction->transaction_subscription_ID ) ?>
-						<?php $member = new M_Membership( $transaction->transaction_user_ID ) ?>
+						<?php $member = $factory->get_member( $transaction->transaction_user_ID ) ?>
 						<tr valign="middle" class="alternate">
 							<td class="column-subscription">
 								<?php echo $subscription->sub_name() ?>
@@ -574,7 +576,7 @@ abstract class Membership_Gateway extends Membership_Hooker {
 		}
 
 		// create_subscription
-		$member = new M_Membership( $user_id );
+		$member = Membership_Plugin::factory()->get_member( $user_id );
 		if ( $member ) {
 			$member->create_subscription( $sub_id, $this->gateway );
 		}

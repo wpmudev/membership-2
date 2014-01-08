@@ -550,7 +550,7 @@ class twocheckout extends Membership_Gateway {
 				// Added for affiliate system link
 				do_action('membership_payment_processed', $user_id, $sub_id, $_REQUEST['total'], $_REQUEST['currency'], $_REQUEST['order_number']);
 
-				$member = new M_Membership($user_id);
+				$member = Membership_Plugin::factory()->get_member($user_id);
 				if($member) {
 					$member->create_subscription($sub_id, $this->gateway);
 
@@ -575,7 +575,7 @@ class twocheckout extends Membership_Gateway {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
 						if ( !$this->_check_duplicate_transaction( $user_id, $sub_id, $timestamp, $_POST['invoice_id'] ) ) {
 							$this->_record_transaction( $user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '' );
-							$member = new M_Membership( $user_id );
+							$member = Membership_Plugin::factory()->get_member( $user_id );
 							if ( $member ) {
 								remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
 								remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
@@ -595,7 +595,7 @@ class twocheckout extends Membership_Gateway {
 					case 'ORDER_CREATED':
 					case 'RECURRING_RESTARTED':
 						$this->_record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
-						$member = new M_Membership($user_id);
+						$member = Membership_Plugin::factory()->get_member($user_id);
 						if($member) {
 							$member->create_subscription($sub_id, $this->gateway);
 
@@ -606,7 +606,7 @@ class twocheckout extends Membership_Gateway {
 					case 'RECURRING_COMPLETE':
 					case 'RECURRING_INSTALLMENT_FAILED':
 					default:
-						$member = new M_Membership($user_id);
+						$member = Membership_Plugin::factory()->get_member($user_id);
 						if($member) {
 							$member->mark_for_expire($sub_id);
 

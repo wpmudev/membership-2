@@ -84,7 +84,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access protected
-	 * @var M_Membership
+	 * @var Membership_Model_Member
 	 */
 	protected $_member;
 
@@ -338,7 +338,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	public function process_unsubscribe_subscription( $expire, $sub_id, $user_id ) {
 		if ( $expire ) {
 			if ( get_current_user_id() == $user_id ) {
-				$this->_member = new M_Membership( $user_id );
+				$this->_member = Membership_Plugin::factory()->get_member( $user_id );
 				if ( $this->_member->has_subscription() && $this->_member->on_sub( $sub_id ) ) {
 					$this->cancel_subscription_transactions( $sub_id, $user_id );
 					if ( defined( 'MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION' ) && filter_var( MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION, FILTER_VALIDATE_BOOLEAN ) ) {
@@ -634,7 +634,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		// fetch member
 		$user_id = is_user_logged_in() ? get_current_user_id() : $_POST['user_id'];
-		$this->_member = new M_Membership( $user_id );
+		$this->_member = Membership_Plugin::factory()->get_member( $user_id );
 
 		// fetch CIM user and payment profiles info
 		// pay attention that CIM can't handle recurring transaction, so we need

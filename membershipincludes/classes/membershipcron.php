@@ -108,7 +108,7 @@ if(!class_exists('membershipcron')) {
 					// start the transition through the subscription
 					membership_debug_log( sprintf(__('CRON: Processing member %d' , 'membership'), $rel->user_id ) );
 
-					$member = new M_Membership( $rel->user_id );
+					$member = Membership_Plugin::factory()->get_member( $rel->user_id );
 
 				}
 

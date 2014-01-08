@@ -215,7 +215,7 @@ class paypalsolo extends Membership_Gateway {
 		}
 
 		// create_subscription
-		$member = new M_Membership($user_id);
+		$member = Membership_Plugin::factory()->get_member($user_id);
 		if($member) {
 			$member->create_subscription($sub_id, $this->gateway);
 		}
@@ -439,6 +439,7 @@ class paypalsolo extends Membership_Gateway {
 			//if ($_POST['payment_status'] == 'In-Progress' || $_POST['payment_status'] == 'Partially-Refunded') exit;
 			$new_status = false;
 			// process PayPal response
+			$factory = Membership_Plugin::factory();
 			switch ($_POST['payment_status']) {
 				case 'Partially-Refunded':
 					break;
@@ -455,7 +456,7 @@ class paypalsolo extends Membership_Gateway {
 
 					$newkey = md5('MEMBERSHIP' . $amount);
 					if($key != $newkey) {
-						$member = new M_Membership($user_id);
+						$member = $factory->get_member($user_id);
 						if($member) {
 							if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
 								$member->deactivate();
@@ -466,13 +467,13 @@ class paypalsolo extends Membership_Gateway {
 
 						if ( $sublevel == '1' ) {
 							// This is the first level of a subscription so we need to create one if it doesn't already exist
-							$member = new M_Membership( $user_id );
+							$member = $factory->get_member( $user_id );
 							if ( $member ) {
 								$member->create_subscription( $sub_id, $this->gateway );
 								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 							}
 						} else {
-							$member = new M_Membership( $user_id );
+							$member = $factory->get_member( $user_id );
 							if ( $member ) {
 								// Mark the payment so that we can move through ok
 								$member->record_active_payment( $sub_id, $sublevel, $timestamp );
@@ -502,7 +503,7 @@ class paypalsolo extends Membership_Gateway {
 
 					membership_debug_log( __('Reversed transaction received - ','membership') . print_r($_POST, true) );
 
-					$member = new M_Membership($user_id);
+					$member = $factory->get_member($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
 						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
@@ -524,7 +525,7 @@ class paypalsolo extends Membership_Gateway {
 
 					membership_debug_log( __('Refunded transaction received - ','membership') . print_r($_POST, true) );
 
-					$member = new M_Membership($user_id);
+					$member = $factory->get_member($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
 					}
@@ -543,7 +544,7 @@ class paypalsolo extends Membership_Gateway {
 
 					membership_debug_log( __('Denied transaction received - ','membership') . print_r($_POST, true) );
 
-					$member = new M_Membership($user_id);
+					$member = $factory->get_member($user_id);
 					if($member) {
 						$member->expire_subscription($sub_id);
 						if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
@@ -592,7 +593,7 @@ class paypalsolo extends Membership_Gateway {
 					if($_POST['case_type'] == 'dispute') {
 						list($timestamp, $user_id, $sub_id, $key, $sublevel) = explode(':', $_POST['custom']);
 						// immediately suspend the account
-						$member = new M_Membership($user_id);
+						$member = $factory->get_member($user_id);
 						if($member) {
 							$member->deactivate();
 

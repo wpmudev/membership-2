@@ -62,7 +62,7 @@ class Membership_Module_Protection extends Membership_Module {
 			return;
 		}
 
-		$member = new M_Membership( get_current_user_id() );
+		$member = $this->_plugin->get_factory()->get_member( get_current_user_id() );
 		if ( !$member->active_member() ) {
 			// member is not active, then logout and refresh page
 			wp_logout();
@@ -87,7 +87,7 @@ class Membership_Module_Protection extends Membership_Module {
 			return $user;
 		}
 
-		$member = new M_Membership( $user->ID );
+		$member = $this->_plugin->get_factory()->get_member( $user->ID );
 		if ( !$member->active_member() ) {
 			return new WP_Error( 'member_inactive', __( 'Sorry, this account is deactivated.', 'membership' ) );
 		}

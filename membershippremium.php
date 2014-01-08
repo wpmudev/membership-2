@@ -45,8 +45,6 @@ require_once( membership_dir( 'membershipincludes/classes/class.level.php' ) );
 require_once( membership_dir( 'membershipincludes/classes/class.subscription.php' ) );
 // Pagination class
 require_once( membership_dir( 'membershipincludes/classes/class.pagination.php' ) );
-// Members class
-require_once( membership_dir( 'membershipincludes/classes/class.membership.php' ) );
 // Shortcodes class
 require_once( membership_dir( 'membershipincludes/classes/class.shortcodes.php' ) );
 // Communications class
@@ -101,6 +99,12 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
  * @return boolean Returns TRUE if the class is located. Otherwise FALSE.
  */
 function membership_autoloader( $class ) {
+	// backward compatibility
+	switch ( $class ) {
+		case 'M_Membership': $class = 'Membership_Model_Member'; break;
+	}
+
+	// class loading
 	$basedir = dirname( __FILE__ );
 	$namespaces = array( 'Membership', 'WPMUDEV' );
 	foreach ( $namespaces as $namespace ) {
@@ -132,20 +136,22 @@ function membership_init_db_table_constants() {
 	$prefix = $global && isset( $wpdb->base_prefix ) ? $wpdb->base_prefix : $wpdb->prefix;
 	define( 'MEMBERSHIP_TABLE_LEVELS',                   "{$prefix}m_membership_levels" );
 	define( 'MEMBERSHIP_TABLE_RULES',                    "{$prefix}m_membership_rules" );
+	define( 'MEMBERSHIP_TABLE_RELATIONS',                "{$prefix}m_membership_relationships" );
+	define( 'MEMBERSHIP_TABLE_MEMBER_PAYMENTS',          "{$prefix}m_member_payments" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTIONS',            "{$prefix}m_subscriptions" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS',      "{$prefix}m_subscriptions_levels" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION', "{$prefix}m_subscription_transaction" );
-	define( 'MEMBERSHIP_TABLE_RELATIONS',                "{$prefix}m_membership_relationships" );
 	define( 'MEMBERSHIP_TABLE_URLGROUPS',                "{$prefix}m_urlgroups" );
 	define( 'MEMBERSHIP_TABLE_COMMUNICATIONS',           "{$prefix}m_communications" );
 
 	if ( $global && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
 		add_global_table( 'm_membership_levels' );
 		add_global_table( 'm_membership_rules' );
+		add_global_table( 'm_membership_relationships' );
+		add_global_table( 'm_member_payments' );
 		add_global_table( 'm_subscriptions' );
 		add_global_table( 'm_subscriptions_levels' );
 		add_global_table( 'm_subscription_transaction' );
-		add_global_table( 'm_membership_relationships' );
 		add_global_table( 'm_urlgroups' );
 		add_global_table( 'm_communications' );
 	}

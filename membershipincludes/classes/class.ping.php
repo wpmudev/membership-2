@@ -270,7 +270,7 @@ if ( !class_exists( 'M_Ping' ) ) {
 
 			$pingdata = apply_filters( 'membership_ping_constants_list', $this->pingconstants );
 
-			$member = new M_Membership( empty( $user_id ) ? get_current_user_id() : $user_id );
+			$member = Membership_Plugin::factory()->get_member( empty( $user_id ) ? get_current_user_id() : $user_id );
 
 			if ( !$sub_id ) {
 				$ids = $member->get_subscription_ids();

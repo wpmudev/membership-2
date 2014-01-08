@@ -107,7 +107,7 @@ class freesubscriptions extends Membership_Gateway {
 		}
 
 		// create_subscription
-		$member = new M_Membership($user_id);
+		$member = Membership_Plugin::factory()->get_member($user_id);
 		if($member) {
 			$member->create_subscription($sub_id, $this->gateway);
 		}

@@ -8,12 +8,12 @@ if(!$user_id) {
 	$spmemuserid = $user->ID;
 
 	if(!empty($user->ID) && is_numeric($user->ID) ) {
-		$member = new M_Membership( $user->ID);
+		$member = Membership_Plugin::factory()->get_member( $user->ID);
 	} else {
 		$member = current_member();
 	}
 } else {
-	$member = new M_Membership( $user_id );
+	$member = Membership_Plugin::factory()->get_member( $user_id );
 }
 
 $subscription = (int) $_REQUEST['subscription'];

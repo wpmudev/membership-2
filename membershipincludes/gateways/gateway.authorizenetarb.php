@@ -250,12 +250,12 @@ class M_authorizenetarb extends Membership_Gateway {
 				$spmemuserid = $user->ID;
 
 				if(!empty($user->ID) && is_numeric($user->ID) ) {
-					$member = new M_Membership( $user->ID);
+					$member = Membership_Plugin::factory()->get_member( $user->ID);
 				} else {
 					$member = current_member();
 				}
 			} else {
-				$member = new M_Membership( $user_id );
+				$member = Membership_Plugin::factory()->get_member( $user_id );
 			}
 
 			$subscription = (int) $_REQUEST['subscription'];
@@ -556,7 +556,7 @@ class M_authorizenetarb extends Membership_Gateway {
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
-							$member = new M_Membership($user_id);
+							$member = Membership_Plugin::factory()->get_member($user_id);
 							if($member) {
 								if($member->has_subscription() && $member->on_sub($sub_id)) {
 									//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
@@ -649,7 +649,7 @@ class M_authorizenetarb extends Membership_Gateway {
 								// Get the subscription ID
 								$subscription_id = $arbsubscription->getSubscriberID();
 
-								$member = new M_Membership($user_id);
+								$member = Membership_Plugin::factory()->get_member($user_id);
 								if($member) {
 									if($member->has_subscription() && $member->on_sub($sub_id)) {
 										//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
@@ -726,7 +726,7 @@ class M_authorizenetarb extends Membership_Gateway {
 
 												if( !empty($return) && $return['status'] == 'success' ) {
 													// The payment went through ok
-													$member = new M_Membership($user_id);
+													$member = Membership_Plugin::factory()->get_member($user_id);
 													if($member) {
 														if($member->has_subscription() && $member->on_sub($sub_id)) {
 															//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
@@ -812,7 +812,7 @@ class M_authorizenetarb extends Membership_Gateway {
 														// Get the subscription ID
 														$subscription_id = $arbsubscription->getSubscriberID();
 
-														$member = new M_Membership($user_id);
+														$member = Membership_Plugin::factory()->get_member($user_id);
 														if($member) {
 															if($member->has_subscription() && $member->on_sub($sub_id)) {
 																//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
@@ -928,7 +928,7 @@ class M_authorizenetarb extends Membership_Gateway {
 								// Get the subscription ID
 								$subscription_id = $arbsubscription->getSubscriberID();
 
-								$member = new M_Membership($user_id);
+								$member = Membership_Plugin::factory()->get_member($user_id);
 								if($member) {
 									if($member->has_subscription() && $member->on_sub($sub_id)) {
 										//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );

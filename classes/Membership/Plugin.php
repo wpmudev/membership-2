@@ -233,17 +233,17 @@ class Membership_Plugin {
 	 *
 	 * @access public
 	 * @global array $M_options The array of the plugin options.
-	 * @staticvar M_Membership $member
-	 * @return M_Membership Current member.
+	 * @staticvar Membership_Model_Member $member
+	 * @return Membership_Model_Member Current member.
 	 */
 	public static function current_member() {
 		global $M_options;
 		static $member = null;
 
 		if ( is_null( $member ) ) {
-			$member = new M_Membership( get_current_user_id() );
+			$member = self::factory()->get_member( get_current_user_id() );
 
-			if ( $member->has_cap( M_Membership::CAP_MEMBERSHIP_ADMIN ) ) {
+			if ( $member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) ) {
 				// member has admin capabilities
 				membership_debug_log( __( 'Current member has admin capabilities.', 'membership' ) );
 

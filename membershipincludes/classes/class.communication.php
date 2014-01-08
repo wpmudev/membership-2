@@ -318,7 +318,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 		function send_message( $user_id, $sub_id = false, $level_id = false ) {
 			global $wp_better_emails;
 
-			$member = new M_Membership( $user_id );
+			$member = Membership_Plugin::factory()->get_member( $user_id );
 			if ( !filter_var( $member->user_email, FILTER_VALIDATE_EMAIL ) ) {
 				return;
 			}

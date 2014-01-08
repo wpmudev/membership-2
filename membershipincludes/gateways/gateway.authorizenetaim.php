@@ -248,12 +248,12 @@ class M_authorizenetaim extends Membership_Gateway {
 				$spmemuserid = $user->ID;
 
 				if(!empty($user->ID) && is_numeric($user->ID) ) {
-					$member = new M_Membership( $user->ID);
+					$member = Membership_Plugin::factory()->get_member( $user->ID);
 				} else {
 					$member = current_member();
 				}
 			} else {
-				$member = new M_Membership( $user_id );
+				$member = Membership_Plugin::factory()->get_member( $user_id );
 			}
 
 			$subscription = (int) $_REQUEST['subscription'];
@@ -486,7 +486,7 @@ class M_authorizenetaim extends Membership_Gateway {
 				$status = __('Processed','membership');
 				$note = '';
 
-				$member = new M_Membership($user_id);
+				$member = Membership_Plugin::factory()->get_member($user_id);
 				if($member) {
 					if($member->has_subscription() && $member->on_sub($sub_id)) {
 						remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );

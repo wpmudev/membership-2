@@ -210,7 +210,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			if($user->ID > 0) {
 
-				$member = new M_Membership($user->ID);
+				$member = Membership_Plugin::factory()->get_member($user->ID);
 
 				if($member->is_member()) {
 					$key = get_user_meta($user->ID, '_membership_key', true);
@@ -241,6 +241,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			// Set up some common defaults
+			$factory = Membership_Plugin::factory();
 			if ( empty( $user ) || !method_exists( $user, 'has_cap' ) ) {
 				$user = wp_get_current_user();
 			}
@@ -251,7 +252,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$user_id = (int)$this->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
 				if ( $user_id > 0 ) {
 					// Logged in - check there settings, if they have any.
-					$member = new M_Membership( $user_id );
+					$member = $factory->get_member( $user_id );
 					// Load the levels for this member - and associated rules
 					$member->load_levels( true );
 				}
@@ -259,7 +260,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				if ( !$member ) {
 					// not passing a key so limit based on stranger settings
 					// need to grab the stranger settings
-					$member = new M_Membership( $user->ID );
+					$member = $factory->get_member( $user->ID );
 					if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
 						$member->assign_level( $M_options['strangerlevel'], true );
 					} else {
@@ -269,7 +270,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				}
 			} else {
 				$member = Membership_Plugin::current_member();
-				if ( !$member->has_cap( M_Membership::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
+				if ( !$member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
 					// This user can't access anything on the site - .
 					add_filter( 'comments_open', array( &$this, 'close_comments' ), 99, 2 );
 					// Changed for this version to see if it helps to get around changed in WP 3.5
@@ -429,7 +430,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						// check we can see it
 						if ( empty( $member ) || !method_exists( $member, 'has_level_rule' ) ) {
 							$user = wp_get_current_user();
-							$member = new M_Membership( $user->ID );
+							$member = Membership_Plugin::factory()->get_member( $user->ID );
 						}
 
 						if ( method_exists( $member, 'has_level_rule' ) && $member->has_level_rule( 'downloads' ) && $member->pass_thru( 'downloads', array( 'can_view_download' => $group ) ) ) {
@@ -1169,7 +1170,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 													if( wp_verify_nonce($_REQUEST['_wpnonce'], 'free-sub_' . $sub_id) ) {
 														$gateway = $_POST['gateway'];
 														// Join the new subscription
-														$member = new M_Membership( $user_id );
+														$member = Membership_Plugin::factory()->get_member( $user_id );
 														$member->create_subscription($sub_id, $gateway);
 														// Timestamp the update
 														update_user_meta( $user_id, '_membership_last_upgraded', time());
@@ -1243,12 +1244,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			if ( !$user_id ) {
 				$user = wp_get_current_user();
 				if ( !empty( $user->ID ) && is_numeric( $user->ID ) ) {
-					$member = new M_Membership( $user->ID );
+					$member = Membership_Plugin::factory()->get_member( $user->ID );
 				} else {
 					$member = current_member();
 				}
 			} else {
-				$member = new M_Membership( $user_id );
+				$member = Membership_Plugin::factory()->get_member( $user_id );
 			}
 
 			$error = '';
@@ -1335,7 +1336,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						if ( is_wp_error( $user_id ) ) {
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
-							$member = new M_Membership( $user_id );
+							$member = Membership_Plugin::factory()->get_member( $user_id );
 							if ( !headers_sent() ) {
 								$user = @wp_signon( array(
 									'user_login'    => $_POST['user_login'],
@@ -1472,7 +1473,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						if ( is_wp_error( $user_id ) ) {
 							$this->_register_errors->add( 'userid', $user_id->get_error_message() );
 						} else {
-							$member = new M_Membership( $user_id );
+							$member = Membership_Plugin::factory()->get_member( $user_id );
 							if ( !headers_sent() ) {
 								$user = @wp_signon( array(
 									'user_login'    => $_POST['signup_username'],
@@ -1555,7 +1556,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					}
 
 					if ( $to_sub_id ) {
-						$membership = new M_Membership( get_current_user_id() );
+						$membership = Membership_Plugin::factory()->get_member( get_current_user_id() );
 						$membership->create_subscription( $to_sub_id );
 
 						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
@@ -1742,7 +1743,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
 								$gateway = $_POST['gateway'];
 								// Join the new subscription
-								$member = new M_Membership( $user_id );
+								$member = Membership_Plugin::factory()->get_member( $user_id );
 								$member->create_subscription( $sub_id, $gateway );
 								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
@@ -1788,7 +1789,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					if ( is_user_logged_in() && isset( $_POST['custom'] ) ) {
 						list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
 						if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
-							$member = new M_Membership( $user_id );
+							$member = Membership_Plugin::factory()->get_member( $user_id );
 							$member->create_subscription( $sub_id, $_POST['gateway'] );
 							do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 
@@ -1805,7 +1806,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 						if ( isset( $_POST['custom'] ) ) {
 							list( $timestamp, $user_id, $sub_id, $key, $sublevel ) = explode( ':', $_POST['custom'] );
 							if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'free-sub_' . $sub_id ) ) {
-								$member = new M_Membership( $user_id );
+								$member = Membership_Plugin::factory()->get_member( $user_id );
 								$member->create_subscription( $sub_id, $_POST['gateway'] );
 								do_action( 'membership_payment_subscr_signup', $user_id, $sub_id );
 

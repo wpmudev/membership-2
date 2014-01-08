@@ -329,13 +329,13 @@ function membership_db_prefix( wpdb $wpdb, $table, $useprefix = true ) {
 
 // Template based functions
 function current_member() {
-	return new M_Membership( get_current_user_id() );
+	return Membership_Plugin::factory()->get_member( get_current_user_id() );
 }
 
 function current_user_is_member() {
 
 	$user = wp_get_current_user();
-	$member = new M_Membership( $user->ID );
+	$member = Membership_Plugin::factory()->get_member( $user->ID );
 
 	if(!empty($member)) {
 		return $member->is_member();
@@ -346,42 +346,33 @@ function current_user_is_member() {
 }
 
 function current_user_has_subscription() {
+	$member = current_member();
 
-	$user = wp_get_current_user();
-	$member = new M_Membership( $user->ID );
-
-	if(!empty($member)) {
+	if ( !empty( $member ) ) {
 		return $member->has_subscription();
 	} else {
 		return false;
 	}
-
 }
 
 function current_user_on_level( $level_id ) {
+	$member = current_member();
 
-	$user = wp_get_current_user();
-	$member = new M_Membership( $user->ID );
-
-	if(!empty($member)) {
+	if ( !empty( $member ) ) {
 		return $member->on_level( $level_id, true );
 	} else {
 		return false;
 	}
-
 }
 
 function current_user_on_subscription( $sub_id ) {
+	$member = current_member();
 
-	$user = wp_get_current_user();
-	$member = new M_Membership( $user->ID );
-
-	if(!empty($member)) {
+	if ( !empty( $member ) ) {
 		return $member->on_sub( $sub_id );
 	} else {
 		return false;
 	}
-
 }
 
 function M_remove_old_plugin( $plugins ) {
@@ -1160,7 +1151,7 @@ function membership_is_special_page( $page_id = null, $check_is_page = true ) {
 function membership_get_expire_date( $sub_id = null, $date_format = null ) {
 	global $member;
 
-	if ( $member && is_a( $member, 'M_Membership' ) ) {
+	if ( $member && is_a( $member, 'Membership_Model_Member' ) ) {
 		if ( !$sub_id ) {
 			$sub_ids = $member->get_subscription_ids();
 			if ( count( $sub_ids ) > 0 ) {

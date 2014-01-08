@@ -101,7 +101,7 @@ class Membership_Factory {
 	 * @param int|string|stdClass|WP_User $id User's ID, a WP_User object, or a user object from the DB.
 	 * @param string $name Optional. User's username
 	 * @param int $blog_id Optional Blog ID, defaults to current blog.
-	 * @return null
+	 * @return Membership_Model_Member The member object.
 	 */
 	public function get_member( $id = 0, $name = '', $blog_id = '' ) {
 		$object = null;
@@ -110,14 +110,16 @@ class Membership_Factory {
 		}
 
 		if ( !isset( $this->_classes_cache[self::TYPE_MEMBER] ) ) {
-			$this->_classes_cache[self::TYPE_MEMBER] = apply_filters( 'membership_factory_class', 'M_Membership', self::TYPE_MEMBER );
+			$this->_classes_cache[self::TYPE_MEMBER] = apply_filters( 'membership_factory_class', 'Membership_Model_Member', self::TYPE_MEMBER );
 		}
 
 		$class = $this->_classes_cache[self::TYPE_MEMBER];
-		if ( class_exists( $class ) ) {
-			$object = new $class( $id, $name, $blog_id );
-			$this->_put_into_cache( self::TYPE_MEMBER, $id, $object );
+		if ( !class_exists( $class ) ) {
+			$class = 'Membership_Model_Member';
 		}
+
+		$object = new $class( $id, $name, $blog_id );
+		$this->_put_into_cache( self::TYPE_MEMBER, $id, $object );
 
 		return $object;
 	}

@@ -974,6 +974,7 @@ class paypalexpress extends Membership_Gateway {
             }
 
             // process PayPal response
+			$factory = Membership_Plugin::factory();
             switch (filter_input( INPUT_POST, 'payment_status' ) ) {
                 case 'Completed':
                 case 'Processed':
@@ -1000,7 +1001,7 @@ class paypalexpress extends Membership_Gateway {
 
                     membership_debug_log(__('Reversed transaction received - ', 'membership') . print_r($_POST, true));
 
-                    $member = new M_Membership($user_id);
+                    $member = $factory->get_member($user_id);
                     if ($member) {
                         $member->expire_subscription($sub_id);
                         if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true) {
@@ -1022,7 +1023,7 @@ class paypalexpress extends Membership_Gateway {
 
                     membership_debug_log(__('Refunded transaction received - ', 'membership') . print_r($_POST, true));
 
-                    $member = new M_Membership($user_id);
+                    $member = $factory->get_member($user_id);
                     if ($member) {
                         $member->expire_subscription($sub_id);
                     }
@@ -1041,7 +1042,7 @@ class paypalexpress extends Membership_Gateway {
 
                     membership_debug_log(__('Denied transaction received - ', 'membership') . print_r($_POST, true));
 
-                    $member = new M_Membership($user_id);
+                    $member = $factory->get_member($user_id);
                     if ($member) {
                         $member->expire_subscription($sub_id);
                         if (defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true) {
@@ -1086,7 +1087,7 @@ class paypalexpress extends Membership_Gateway {
 					$amount = $_POST['mc_amount3'];
 					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
 
-					$member = new M_Membership( $user_id );
+					$member = $factory->get_member( $user_id );
 
 					$newkey = md5( 'MEMBERSHIP' . $amount );
 					if ( $key != $newkey ) {
@@ -1109,7 +1110,7 @@ class paypalexpress extends Membership_Gateway {
                     // modify the subscription
 					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
 
-					$member = new M_Membership( $user_id );
+					$member = $factory->get_member( $user_id );
 
 					$member->drop_subscription( $sub_id );
 					$member->create_subscription( (int)$_POST['item_number'], $this->gateway );
@@ -1127,7 +1128,7 @@ class paypalexpress extends Membership_Gateway {
                     // mark for removal
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-                    $member = new M_Membership($user_id);
+                    $member = $factory->get_member($user_id);
 					$member->mark_for_expire($sub_id);
 
 					membership_debug_log(sprintf(__('Marked for expiration %d on %d', 'membership'), $user_id, $sub_id));
@@ -1138,7 +1139,7 @@ class paypalexpress extends Membership_Gateway {
 				case 'recurring_payment_suspended':
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					$member = new M_Membership( $user_id );
+					$member = $factory->get_member( $user_id );
 					$member->drop_subscription($sub_id);
 
 					membership_debug_log( sprintf( __( 'Recurring payment has been suspended - for %d', 'membership' ), $user_id ) );
@@ -1148,7 +1149,7 @@ class paypalexpress extends Membership_Gateway {
 				case 'recurring_payment_failed':
                     list($timestamp, $user_id, $sub_id, $key) = explode(':', $_POST['custom']);
 
-					$member = new M_Membership( $user_id );
+					$member = $factory->get_member( $user_id );
 					$member->drop_subscription($sub_id);
 
 					membership_debug_log( sprintf( __( 'Recurring payment failed - the number of attempts to collect payment has exceeded the value specified for "max failed payments" - for %d', 'membership' ), $user_id ) );
@@ -1158,7 +1159,7 @@ class paypalexpress extends Membership_Gateway {
                     // a dispute
                     if ($_POST['case_type'] == 'dispute') {
                         // immediately suspend the account
-                        $member = new M_Membership($user_id);
+                        $member = $factory->get_member($user_id);
 						$member->deactivate();
 
 						membership_debug_log(sprintf(__('Dispute for %d', 'membership'), $user_id));
