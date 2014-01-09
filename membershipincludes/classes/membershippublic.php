@@ -1556,8 +1556,14 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					}
 
 					if ( $to_sub_id ) {
-						$membership = Membership_Plugin::factory()->get_member( get_current_user_id() );
-						$membership->create_subscription( $to_sub_id );
+						$member = Membership_Plugin::factory()->get_member( get_current_user_id() );
+
+						$from_sub_id = isset( $_REQUEST['from_subscription'] ) ? absint( $_REQUEST['from_subscription'] ) : 0;
+						if ( $from_sub_id ) {
+							$member->drop_subscription( $from_sub_id );
+						}
+
+						$member->create_subscription( $to_sub_id );
 
 						if ( isset( $M_options['registrationcompleted_page'] ) && absint( $M_options['registrationcompleted_page'] ) ) {
 							wp_redirect( get_permalink( $M_options['registrationcompleted_page'] ) );

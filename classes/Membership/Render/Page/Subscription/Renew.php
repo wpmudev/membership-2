@@ -399,9 +399,9 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 
 						// Show upgrades
 						if ( !empty( $upgradesubs ) ) :
-						?><legend class="upgradefrom-<?php echo $sub->id ?>">
-							<?php printf( _x( 'Upgrade from %s', 'Upgrade from subscription plan', 'membership' ), $sub->sub_name() ) ?>
-						</legend><?php
+							?><legend class="upgradefrom-<?php echo $sub->id ?>">
+								<?php printf( _x( 'Upgrade from %s', 'Upgrade from {subscription name}', 'membership' ), $sub->sub_name() ) ?>
+							</legend><?php
 						endif;
 
 						foreach ( $upgradesubs as $upgradesub ) {
@@ -440,11 +440,11 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 												$class = '';
 												if ( $M_options['formtype'] == 'new' ) {
 													// pop up form
-													$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id ), admin_url( 'admin-ajax.php' ) );
+													$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id, 'from_subscription' => $rel->sub_id ), admin_url( 'admin-ajax.php' ) );
 													$class = 'popover';
 												} else {
 													// original form
-													$link = add_query_arg( array( 'action' => 'registeruser', 'subscription' => $subscription->id ), get_permalink( $M_options['registration_page'] ) );
+													$link = add_query_arg( array( 'action' => 'registeruser', 'subscription' => $subscription->id, 'from_subscription' => $rel->sub_id ), get_permalink( $M_options['registration_page'] ) );
 												}
 												?><a href="<?php echo esc_url( $link ) ?>" class="button <?php echo $class ?> <?php echo esc_attr( apply_filters( 'membership_subscription_button_color', 'blue' ) ) ?>">
 												<?php echo esc_html( apply_filters( 'membership_subscription_signup_text', __( 'Sign Up', 'membership' ) ) ) ?>

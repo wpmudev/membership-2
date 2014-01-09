@@ -339,29 +339,29 @@ class paypalexpress extends Membership_Gateway {
         <?php
     }
 
-    function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
+    function build_custom( $user_id, $sub_id, $amount, $fromsub_id = false ) {
 
-        global $M_options;
+		global $M_options;
 
-        $custom = '';
+		$custom = '';
 
-        //fake:user:sub:key
+		//fake:user:sub:key
 
-        $custom = time() . ':' . $user_id . ':' . $sub_id . ':';
-        $key = md5('MEMBERSHIP' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], $amount));
+		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
+		$key = md5( 'MEMBERSHIP' . apply_filters( 'membership_amount_' . $M_options['paymentcurrency'], $amount ) );
 
-        $custom .= $key;
+		$custom .= $key;
 
-        if ($fromsub_id !== false) {
-            $custom .= ":" . $fromsub_id;
-        } else {
-            $custom .= ":0";
-        }
+		if ( $fromsub_id === false ) {
+			$fromsub_id = filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT );
+		}
 
-        return $custom;
-    }
+		$custom .= ":" . absint( $fromsub_id );
 
-    function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
+		return $custom;
+	}
+
+	function single_sub_button($pricing, $subscription, $user_id, $norepeat = false) {
 
         global $M_options;
 

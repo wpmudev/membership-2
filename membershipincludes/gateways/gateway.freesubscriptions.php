@@ -58,19 +58,19 @@ class freesubscriptions extends Membership_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount, $fromsub_id = false) {
+	function build_custom( $user_id, $sub_id, $amount, $fromsub_id = false ) {
 		$custom = '';
 
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
-		$key = md5('MEMBERSHIP' . $amount);
+		$key = md5( 'MEMBERSHIP' . $amount );
 
 		$custom .= $key;
 
-		if($fromsub_id !== false) {
-			$custom .= ":" . $fromsub_id;
-		} else {
-			$custom .= ":0";
+		if ( $fromsub_id === false ) {
+			$fromsub_id = filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT );
 		}
+
+		$custom .= ":" . absint( $fromsub_id );
 
 		return $custom;
 	}

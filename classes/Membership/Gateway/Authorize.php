@@ -431,7 +431,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @param int $user_id The current user id.
 	 */
 	public function render_subscribe_button( $subscription, $pricing, $user_id ) {
-		$this->_render_button( esc_attr__( 'Pay Now', 'membership' ), $subscription, $user_id, false );
+		$this->_render_button( esc_attr__( 'Pay Now', 'membership' ), $subscription, $user_id, filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT ) );
 	}
 
 	/**
@@ -684,11 +684,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			if ( $this->_member->has_subscription() ) {
 				$from_sub_id = filter_input( INPUT_POST, 'from_subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
 				if ( $this->_member->on_sub( $from_sub_id ) ) {
-					$this->_member->expire_subscription( $from_sub_id );
+					$this->_member->drop_subscription( $from_sub_id );
 				}
 
 				if ( $this->_member->on_sub( $sub_id ) ) {
-					$this->_member->expire_subscription( $sub_id );
+					$this->_member->drop_subscription( $sub_id );
 				}
 			}
 			$this->_member->create_subscription( $sub_id, $this->gateway );

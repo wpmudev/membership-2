@@ -226,35 +226,32 @@ class twocheckout extends Membership_Gateway {
 		<?php
 	}
 
-
 	function update() {
-
-		if(isset($_POST['twocheckout_sid'])) {
-			update_option( $this->gateway . "_twocheckout_username", $_POST[ 'twocheckout_username' ] );
-			if (isset($_POST[ 'twocheckout_password' ]) && !empty($_POST[ 'twocheckout_password' ])) {
-				update_option( $this->gateway . "_twocheckout_password", $_POST[ 'twocheckout_password' ] );
+		if ( isset( $_POST['twocheckout_sid'] ) ) {
+			update_option( $this->gateway . "_twocheckout_username", $_POST['twocheckout_username'] );
+			if ( isset( $_POST['twocheckout_password'] ) && !empty( $_POST['twocheckout_password'] ) ) {
+				update_option( $this->gateway . "_twocheckout_password", $_POST['twocheckout_password'] );
 			}
-			update_option( $this->gateway . "_twocheckout_sid", $_POST[ 'twocheckout_sid' ] );
-			update_option( $this->gateway . "_twocheckout_secret_word", $_POST[ 'twocheckout_secret_word' ] );
-			update_option( $this->gateway . "_currency", $_POST[ 'currency' ] );
-			update_option( $this->gateway . "_twocheckout_status", $_POST[ 'twocheckout_status' ] );
-			update_option( $this->gateway . "_twocheckout_button", $_POST[ 'twocheckout_button' ] );
-			update_option( $this->gateway . "_twocheckout_lang", $_POST[ 'twocheckout_lang' ] );
-			update_option( $this->gateway . "_twocheckout_skip_landing", $_POST[ 'twocheckout_skip_landing' ] );
-			update_option( $this->gateway . "_twocheckout_checkout_type", $_POST[ 'twocheckout_checkout_type' ] );
+			update_option( $this->gateway . "_twocheckout_sid", $_POST['twocheckout_sid'] );
+			update_option( $this->gateway . "_twocheckout_secret_word", $_POST['twocheckout_secret_word'] );
+			update_option( $this->gateway . "_currency", $_POST['currency'] );
+			update_option( $this->gateway . "_twocheckout_status", $_POST['twocheckout_status'] );
+			update_option( $this->gateway . "_twocheckout_button", $_POST['twocheckout_button'] );
+			update_option( $this->gateway . "_twocheckout_lang", $_POST['twocheckout_lang'] );
+			update_option( $this->gateway . "_twocheckout_skip_landing", $_POST['twocheckout_skip_landing'] );
+			update_option( $this->gateway . "_twocheckout_checkout_type", $_POST['twocheckout_checkout_type'] );
 		}
 
 		// default action is to return true
 		return true;
-
 	}
 
-	function build_custom($user_id, $sub_id, $amount) {
-		$custom = '';
-
+	function build_custom( $user_id, $sub_id, $amount ) {
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
-		$key = md5('MEMBERSHIP' . $amount);
+		$key = md5( 'MEMBERSHIP' . $amount );
 		$custom .= $key;
+		$custom .= ":" . absint( filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT ) );
+
 		return $custom;
 	}
 
@@ -400,7 +397,7 @@ class twocheckout extends Membership_Gateway {
 			$form .= '<input type="hidden" name="li_1_recurrence" value="'.$this->convert_duration($pricing[0]['period'], $pricing[0]['unit']).'" />';
 			$form .= '<input type="hidden" name="li_1_duration" value="Forever" />';
 		}
-		$form .= '<input type="hidden" name="merchant_order_id" value="'.$subscription->id.':'.$user_id.'" />';
+		$form .= '<input type="hidden" name="merchant_order_id" value="'.$subscription->id.':'.$user_id.':' . absint( filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT ) ) . '"/>';
 		$form .= '<input type="hidden" name="skip_landing" value="'.esc_attr(get_option($this->gateway.'_twocheckout_skip_landing')).'" />';
 		$form .= '<input type="hidden" name="lang" value="'.esc_attr(get_option( $this->gateway . "_twocheckout_lang" )).'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
@@ -568,7 +565,7 @@ class twocheckout extends Membership_Gateway {
 			$user_id = false;
 
 			//$product_id = $_REQUEST['item_id_1'];
-			list($sub_id, $user_id) = explode(':', $_REQUEST['vendor_order_id']);
+			list($sub_id, $user_id, $from_sub_id) = explode(':', $_REQUEST['vendor_order_id']);
 
 			if ($md5_hash == $_REQUEST['md5_hash']) {
 				switch ($_REQUEST['message_type']) {
@@ -579,6 +576,10 @@ class twocheckout extends Membership_Gateway {
 							if ( $member ) {
 								remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );
 								remove_action( 'membership_add_subscription', 'membership_record_user_subscribe', 10, 4 );
+								if ( $from_sub_id ) {
+									$member->drop_subscription( $from_sub_id );
+								}
+
 								$member->expire_subscription( $sub_id );
 								$member->create_subscription( $sub_id, $this->gateway );
 
@@ -597,6 +598,9 @@ class twocheckout extends Membership_Gateway {
 						$this->_record_transaction($user_id, $sub_id, $_REQUEST['item_rec_list_amount_1'], $_REQUEST['list_currency'], $timestamp, $_POST['invoice_id'], 'Processed', '');
 						$member = Membership_Plugin::factory()->get_member($user_id);
 						if($member) {
+							if ( $from_sub_id ) {
+								$member->drop_subscription( $from_sub_id );
+							}
 							$member->create_subscription($sub_id, $this->gateway);
 
 							membership_debug_log( sprintf(__('Recurring restarted for user %d on subscription %d.', 'membership'), $user_id, $sub_id ) );

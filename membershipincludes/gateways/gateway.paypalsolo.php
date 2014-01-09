@@ -152,6 +152,10 @@ class paypalsolo extends Membership_Gateway {
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
 		$key = md5('MEMBERSHIP' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], $amount));
 
+		if ( $fromsub_id === false ) {
+			$fromsub_id = filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT );
+		}
+
 		$custom .= $key;
 		$custom .= ":" . $sublevel . ":" . $fromsub;
 
