@@ -1710,7 +1710,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         }
                         $html .= "</select>\n";
                     } else {
-                        $sub = new M_Subscription($fromsub);
+                        $sub = Membership_Plugin::factory()->get_subscription($fromsub);
                         $html .= __('Moving from :', 'membership') . " <strong>" . $sub->sub_name() . "</strong>";
                         $html .= "<input type='hidden' name='fromsub_id' value='" . esc_attr($fromsub) . "' />";
                     }
@@ -2200,10 +2200,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         <tbody>
                             <?php
 
+							$factory = Membership_Plugin::factory();
 							$default_subscription = '';
 							$default_level = '';
 							if ( !empty( $M_options['freeusersubscription'] ) ) {
-								$subscription = new M_Subscription( $M_options['freeusersubscription'] );
+								$subscription = $factory->get_subscription( $M_options['freeusersubscription'] );
 								$default_subscription = $subscription->sub_name() . ' <span style="font-size:80%;color:gray">(set by default)</span>';
 								$levels = $subscription->get_levels();
 								if ( !empty( $levels ) ) {
@@ -2212,7 +2213,6 @@ if ( !class_exists( 'membershipadmin' ) ) :
 							}
 
                             $style = '';
-							$factory = Membership_Plugin::factory();
                             foreach ($wp_user_search->get_results() as $user) {
                                 $user_object = $factory->get_member($user->ID);
 								$is_membership_admin = $user_object->has_cap( 'membershipadmin' );
@@ -2257,7 +2257,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										if ( !empty( $subs ) ) {
 											$rows = array();
 											foreach ( (array) $subs as $key ) {
-												$sub = new M_Subscription( $key );
+												$sub = $factory->get_subscription( $key );
 												if ( !empty( $sub ) ) {
 													$rows[] = $sub->sub_name();
 												}
@@ -4523,7 +4523,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
             global $page;
 
-            $msub = new M_Subscription($sub_id);
+            $msub = Membership_Plugin::factory()->get_subscription($sub_id);
             if ($sub_id && !$clone) {
                 $sub = $msub->get();
             } else {
@@ -4757,7 +4757,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     check_admin_referer('add-' . $id);
 
                     if ($id) {
-                        $sub = new M_Subscription($id);
+                        $sub = Membership_Plugin::factory()->get_subscription($id);
 
                         if ($sub->add()) {
                             wp_safe_redirect(add_query_arg('msg', 1, 'admin.php?page=' . $page));
@@ -4772,7 +4772,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                 case 'updated': $id = (int) $_POST['sub_id'];
                     check_admin_referer('update-' . $id);
                     if ($id) {
-                        $sub = new M_Subscription($id);
+                        $sub = Membership_Plugin::factory()->get_subscription($id);
 
                         if ($sub->update()) {
                             wp_safe_redirect(add_query_arg('msg', 3, 'admin.php?page=' . $page));
@@ -4789,7 +4789,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('delete-sub_' . $sub_id);
 
-                        $sub = new M_Subscription($sub_id);
+                        $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                         if ($sub->delete()) {
                             wp_safe_redirect(add_query_arg('msg', 2, wp_get_referer()));
@@ -4805,7 +4805,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('togglemakepublic-sub_' . $sub_id);
 
-                        $sub = new M_Subscription($sub_id);
+                        $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                         $sub->toggleactivation();
 
@@ -4822,7 +4822,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('toggle-sub_' . $sub_id);
 
-                        $sub = new M_Subscription($sub_id);
+                        $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                         if ($sub->toggleactivation()) {
                             wp_safe_redirect(add_query_arg('msg', 7, wp_get_referer()));
@@ -4838,7 +4838,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('toggle-pubsub_' . $sub_id);
 
-                        $sub = new M_Subscription($sub_id);
+                        $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                         if ($sub->togglepublic()) {
                             wp_safe_redirect(add_query_arg('msg', 9, wp_get_referer()));
@@ -4854,7 +4854,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $sub_id = (int) $value;
 
-                            $sub = new M_Subscription($sub_id);
+                            $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                             $sub->delete();
                         }
@@ -4869,7 +4869,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $sub_id = (int) $value;
 
-                            $sub = new M_Subscription($sub_id);
+                            $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                             $sub->toggleactivation();
                         }
@@ -4884,7 +4884,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $sub_id = (int) $value;
 
-                            $sub = new M_Subscription($sub_id);
+                            $sub = Membership_Plugin::factory()->get_subscription($sub_id);
 
                             $sub->togglepublic();
                         }
@@ -5532,7 +5532,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                             if (empty($comm->sub_id) || $comm->sub_id == 0) {
                                                 echo __('All', 'membership');
                                             } else {
-                                                $sub = new M_Subscription($comm->sub_id);
+                                                $sub = Membership_Plugin::factory()->get_subscription($comm->sub_id);
                                                 if (!empty($sub)) {
                                                     echo $sub->sub_name();
                                                 }
@@ -6446,9 +6446,10 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         do_action('membership_subscription_form_before_paid_subscriptions', $user_id);
 
+						$factory = Membership_Plugin::factory();
                         foreach ((array) $subs as $key => $sub) {
 
-                            $subscription = new M_Subscription($sub->id);
+                            $subscription = $factory->get_subscription($sub->id);
                             ?>
                             <div class="subscription">
                                 <div class="description">
@@ -6836,7 +6837,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
         function update_subscription_ping_information($sub_id) {
 
-            $subscription = new M_Subscription($sub_id);
+            $subscription = Membership_Plugin::factory()->get_subscription($sub_id);
 
             $subscription->update_meta('joining_ping', $_POST['joiningping']);
             $subscription->update_meta('leaving_ping', $_POST['leavingping']);
@@ -6848,7 +6849,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
             $pings = $this->get_pings();
 
             // Get the currentlt set ping for each level
-            $subscription = new M_Subscription($sub_id);
+            $subscription = Membership_Plugin::factory()->get_subscription($sub_id);
 
             $joinping = $subscription->get_meta('joining_ping', '');
             $leaveping = $subscription->get_meta('leaving_ping', '');
@@ -7561,7 +7562,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                             <td scope="row">
                                                 <?php
                                                 if ($coupon->coupon_sub_id != 0) {
-                                                    $sub = new M_Subscription($coupon->coupon_sub_id);
+                                                    $sub = Membership_Plugin::factory()->get_subscription($coupon->coupon_sub_id);
                                                     echo $sub->sub_name();
                                                 } else {
                                                     _e('Any Subscription', 'membership');
@@ -7783,7 +7784,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 			// free subscription processing
 			if ( $logged_in && $subscription ) {
-				$sub = new M_Subscription( $subscription );
+				$sub = Membership_Plugin::factory()->get_subscription( $subscription );
 				if ( $sub->is_free() ) {
 					$to_sub_id = $subscription;
 				}

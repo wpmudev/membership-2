@@ -49,7 +49,7 @@ function membership_record_user_subscribe($tosub_id, $tolevel_id, $to_order, $us
 
 	// Get the information
 	$user = new WP_User( $user_id );
-	$sub = new M_Subscription( $tosub_id );
+	$sub = Membership_Plugin::factory()->get_subscription( $tosub_id );
 	$level = new M_Level( $tolevel_id );
 
 	$message = sprintf(__( '<strong>%s</strong> has joined level <strong>%s</strong> on subscription <strong>%s</strong>','membership' ), $user->display_name, $level->level_title(), $sub->sub_name() );
@@ -84,7 +84,7 @@ function membership_record_user_expire($sub_id, $user_id) {
 
 	// Get the information
 	$user = new WP_User( $user_id );
-	$sub = new M_Subscription( $sub_id );
+	$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 
 	$message = sprintf(__( '<strong>%s</strong> has left subscription <strong>%s</strong>','membership' ), $user->display_name, $sub->sub_name() );
 
@@ -101,7 +101,7 @@ function membership_record_sub_drop($sub_id, $level_id, $user_id) {
 
 	// Get the information
 	$user = new WP_User( $user_id );
-	$sub = new M_Subscription( $sub_id );
+	$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 	$level = new M_Level( $level_id );
 
 	$message = sprintf(__( '<strong>%s</strong> has left level <strong>%s</strong> on subscription <strong>%s</strong>','membership' ), $user->display_name, $level->level_title(), $sub->sub_name() );
@@ -135,9 +135,10 @@ function membership_record_sub_move($fromsub_id, $fromlevel_id, $tosub_id, $tole
 	$table = membership_db_prefix($wpdb, 'membership_news');
 
 	// Get the information
+	$factory = Membership_Plugin::factory();
 	$user = new WP_User( $user_id );
-	$fromsub = new M_Subscription( $fromsub_id );
-	$tosub = new M_Subscription( $tosub_id );
+	$fromsub = $factory->get_subscription( $fromsub_id );
+	$tosub = $factory->get_subscription( $tosub_id );
 	$fromlevel = new M_Level( $fromlevel_id );
 	$level = new M_Level( $tolevel_id );
 

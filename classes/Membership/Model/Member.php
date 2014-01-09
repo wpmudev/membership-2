@@ -170,7 +170,7 @@ class Membership_Model_Member extends WP_User {
 					if(!empty($onsolo) && $onsolo == 'yes') {
 						// We are on a solo gateway so need some extra checks
 						// Grab the subscription
-						$subscription = new M_Subscription($rel->sub_id);
+						$subscription = Membership_Plugin::factory()->get_subscription($rel->sub_id);
 						// Get the next level we will be moving onto
 						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
@@ -205,7 +205,7 @@ class Membership_Model_Member extends WP_User {
 						}
 
 					} else {
-						$subscription = new M_Subscription($rel->sub_id);
+						$subscription = Membership_Plugin::factory()->get_subscription($rel->sub_id);
 						$nextlevel = $subscription->get_next_level($rel->level_id, $rel->order_instance);
 
 						membership_debug_log( sprintf(__('MEMBER: Membership level to move to for subscription - %d - ' , 'membership'), $rel->sub_id) . print_r($nextlevel, true) );
@@ -269,7 +269,7 @@ class Membership_Model_Member extends WP_User {
 			$this->toggle_activation();
 		}
 
-		$subscription = new M_Subscription( $sub_id );
+		$subscription = Membership_Plugin::factory()->get_subscription( $sub_id );
 		$levels = $subscription->get_levels();
 		if ( !empty( $levels ) ) {
 			foreach ( $levels as $level ) {
@@ -319,7 +319,7 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function remove_active_payment( $sub_id, $level_order, $stamp ) {
-		$subscription = new M_Subscription( $sub_id );
+		$subscription = Membership_Plugin::factory()->get_subscription( $sub_id );
 		$level = $subscription->get_level_at_position( $level_order );
 
 		return $this->_wpdb->query( sprintf(
@@ -339,7 +339,7 @@ class Membership_Model_Member extends WP_User {
 			return;
 		}
 
-		$subscription = new M_Subscription( $sub_id );
+		$subscription = Membership_Plugin::factory()->get_subscription( $sub_id );
 		$level = $subscription->get_level_at_position( $level_order );
 		if ( !$level ) {
 			return;
@@ -516,7 +516,7 @@ class Membership_Model_Member extends WP_User {
 		}
 
 		// grab the level information for this position
-		$subscription = new M_Subscription( $tosub_id );
+		$subscription = Membership_Plugin::factory()->get_subscription( $tosub_id );
 		$level = $subscription->get_level_at( $tolevel_id, $to_order );
 
 		if ( $level ) {
@@ -604,8 +604,10 @@ class Membership_Model_Member extends WP_User {
 
 		membership_debug_log( sprintf( __( 'MEMBER: Moving subscription from %d to %d', 'membership' ), $fromsub_id, $tosub_id ) );
 
+		$factory = Membership_Plugin::factory();
+
 		// Check if existing level matches new one but it is a serial or indefinite level
-		$subscription = new M_Subscription( $tosub_id );
+		$subscription = $factory->get_subscription( $tosub_id );
 		$nextlevel = $subscription->get_next_level( $tolevel_id, $to_order );
 
 		if ( (!$this->on_level( $tolevel_id, true, $to_order ) ) || ( $this->on_level( $tolevel_id, true, $to_order ) && ( $nextlevel->sub_type == 'serial' || $nextlevel->sub_type == 'indefinite' ) ) && $this->on_sub( $fromsub_id ) ) {
@@ -616,7 +618,7 @@ class Membership_Model_Member extends WP_User {
 			$fromlevel_id = $this->get_level_for_sub( $fromsub_id );
 
 			// grab the level information for this position
-			$subscription = new M_Subscription( $tosub_id );
+			$subscription = $factory->get_subscription( $tosub_id );
 			$level = $subscription->get_level_at( $tolevel_id, $to_order );
 
 			if ( $level ) {

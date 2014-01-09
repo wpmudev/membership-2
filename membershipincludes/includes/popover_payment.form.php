@@ -2,18 +2,19 @@
 
 Global $M_options;
 
+$factory = Membership_Plugin::factory();
 if(!$user_id) {
 	$user = wp_get_current_user();
 
 	$spmemuserid = $user->ID;
 
 	if(!empty($user->ID) && is_numeric($user->ID) ) {
-		$member = Membership_Plugin::factory()->get_member( $user->ID);
+		$member = $factory->get_member( $user->ID);
 	} else {
 		$member = current_member();
 	}
 } else {
-	$member = Membership_Plugin::factory()->get_member( $user_id );
+	$member = $factory->get_member( $user_id );
 }
 
 $subscription = (int) $_REQUEST['subscription'];
@@ -22,7 +23,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 
 	$gateway = Membership_Gateway::get_gateway($_REQUEST['gateway']);
 	if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
-		$sub =  new M_Subscription( $subscription );
+		$sub =  $factory->get_subscription( $subscription );
 		// Get the coupon
 		$coupon = membership_get_current_coupon();
 		// Build the pricing array
@@ -49,7 +50,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	}
 } else if($member->on_sub( $subscription )) {
 
-	$sub =  new M_Subscription( $subscription );
+	$sub =  $factory->get_subscription( $subscription );
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 	?>
@@ -66,7 +67,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 							if($s->id == $subscription) {
 								continue;
 							}
-							$sub =  new M_Subscription( $s->id );
+							$sub =  $factory->get_subscription( $s->id );
 							// Build the pricing array
 							$pricing = $sub->get_pricingarray();
 
@@ -153,7 +154,7 @@ if( isset($_REQUEST['gateway']) && isset($_REQUEST['extra_form']) ) {
 	<?php
 } else {
 
-	$sub =  new M_Subscription( $subscription );
+	$sub =  $factory->get_subscription( $subscription );
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 	// Build the pricing array

@@ -41,8 +41,6 @@ set_membership_dir( __FILE__ );
 // Load required classes
 // Levels class
 require_once( membership_dir( 'membershipincludes/classes/class.level.php' ) );
-// Subscriptions class
-require_once( membership_dir( 'membershipincludes/classes/class.subscription.php' ) );
 // Pagination class
 require_once( membership_dir( 'membershipincludes/classes/class.pagination.php' ) );
 // Shortcodes class
@@ -101,7 +99,8 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 function membership_autoloader( $class ) {
 	// backward compatibility
 	switch ( $class ) {
-		case 'M_Membership': $class = 'Membership_Model_Member'; break;
+		case 'M_Membership':   $class = 'Membership_Model_Member';       break;
+		case 'M_Subscription': $class = 'Membership_Model_Subscription'; break;
 	}
 
 	// class loading
@@ -141,6 +140,7 @@ function membership_init_db_table_constants() {
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTIONS',            "{$prefix}m_subscriptions" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS',      "{$prefix}m_subscriptions_levels" );
 	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_TRANSACTION', "{$prefix}m_subscription_transaction" );
+	define( 'MEMBERSHIP_TABLE_SUBSCRIPTION_META',        "{$prefix}m_subscriptionmeta" );
 	define( 'MEMBERSHIP_TABLE_URLGROUPS',                "{$prefix}m_urlgroups" );
 	define( 'MEMBERSHIP_TABLE_COMMUNICATIONS',           "{$prefix}m_communications" );
 
@@ -152,6 +152,7 @@ function membership_init_db_table_constants() {
 		add_global_table( 'm_subscriptions' );
 		add_global_table( 'm_subscriptions_levels' );
 		add_global_table( 'm_subscription_transaction' );
+		add_global_table( 'm_subscriptionmeta' );
 		add_global_table( 'm_urlgroups' );
 		add_global_table( 'm_communications' );
 	}

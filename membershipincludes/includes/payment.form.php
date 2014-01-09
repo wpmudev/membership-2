@@ -2,17 +2,18 @@
 
 global $M_options;
 
+$factory = Membership_Plugin::factory();
 if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
 	$gateway = Membership_Gateway::get_gateway( $_REQUEST['gateway'] );
 	if ( $gateway && is_object( $gateway ) && $gateway->haspaymentform == true ) {
-		$sub = new M_Subscription( $subscription );
+		$sub = $factory->get_subscription( $subscription );
 		$pricing = $sub->get_pricingarray();
 		do_action( 'membership_payment_form_' . $_REQUEST['gateway'], $sub, $pricing, $member->ID );
 	}
 } else if ( $member->on_sub( $subscription ) ) {
 
 
-	$sub = new M_Subscription( $subscription );
+	$sub = $factory->get_subscription( $subscription );
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 
@@ -31,7 +32,7 @@ if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
 				if ( $s->id == $subscription ) {
 					continue;
 				}
-				$sub = new M_Subscription( $s->id );
+				$sub = $factory->get_subscription( $s->id );
 				// Build the pricing array
 				$pricing = $sub->get_pricingarray();
 
@@ -118,7 +119,7 @@ if ( isset( $_REQUEST['gateway'] ) && isset( $_REQUEST['extra_form'] ) ) {
 	<?php
 } else {
 
-	$sub = new M_Subscription( $subscription );
+	$sub = $factory->get_subscription( $subscription );
 	// Get the coupon
 	$coupon = membership_get_current_coupon();
 	// Build the pricing array

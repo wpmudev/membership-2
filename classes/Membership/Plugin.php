@@ -241,7 +241,8 @@ class Membership_Plugin {
 		static $member = null;
 
 		if ( is_null( $member ) ) {
-			$member = self::factory()->get_member( get_current_user_id() );
+			$factory = self::factory();
+			$member = $factory->get_member( get_current_user_id() );
 
 			if ( $member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) ) {
 				// member has admin capabilities
@@ -260,7 +261,7 @@ class Membership_Plugin {
 						membership_debug_log( __( 'Standard levels are loaded for current member.', 'membership' ) );
 					} elseif ( !empty( $M_options['freeusersubscription'] ) ) {
 						// load default subscription for registered users
-						$subscription = new M_Subscription( $M_options['freeusersubscription'] );
+						$subscription = $factory->get_subscription( $M_options['freeusersubscription'] );
 						$levels = $subscription->get_levels();
 						if ( !empty( $levels ) ) {
 							$member->assign_level( $levels[0]->level_id );

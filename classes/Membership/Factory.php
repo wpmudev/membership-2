@@ -28,7 +28,8 @@
  */
 class Membership_Factory {
 
-	const TYPE_MEMBER = 'member';
+	const TYPE_MEMBER       = 'member';
+	const TYPE_SUBSCRIPTION = 'subscription';
 
 	/**
 	 * Objects cache.
@@ -120,6 +121,36 @@ class Membership_Factory {
 
 		$object = new $class( $id, $name, $blog_id );
 		$this->_put_into_cache( self::TYPE_MEMBER, $id, $object );
+
+		return $object;
+	}
+
+	/**
+	 * Returns a subscription object.
+	 *
+	 * @sicne 3.5
+	 *
+	 * @access public
+	 * @param int $id The subscription's id.
+	 * @return Membership_Model_Subscription The subscription object.
+	 */
+	public function get_subscription( $id = false ) {
+		$object = null;
+		if ( $this->_extract_from_cache( self::TYPE_SUBSCRIPTION, $id, $object ) ) {
+			return $object;
+		}
+
+		if ( !isset( $this->_classes_cache[self::TYPE_SUBSCRIPTION] ) ) {
+			$this->_classes_cache[self::TYPE_SUBSCRIPTION] = apply_filters( 'membership_factory_class', 'Membership_Model_Subscription', self::TYPE_SUBSCRIPTION );
+		}
+
+		$class = $this->_classes_cache[self::TYPE_SUBSCRIPTION];
+		if ( !class_exists( $class ) ) {
+			$class = 'Membership_Model_Subscription';
+		}
+
+		$object = new $class( $id );
+		$this->_put_into_cache( self::TYPE_SUBSCRIPTION, $id, $object );
 
 		return $object;
 	}

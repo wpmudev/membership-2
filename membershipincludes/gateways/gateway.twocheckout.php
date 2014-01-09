@@ -68,7 +68,7 @@ class twocheckout extends Membership_Gateway {
 				$lineitem_id = false;
 				$product_id = false;
 
-				$subscription = new M_Subscription($sub_id);
+				$subscription = Membership_Plugin::factory()->get_subscription($sub_id);
 				if($subscription) {
 					$product_id = $this->get_product_id($subscription, $subscription->get_pricingarray());
 				}

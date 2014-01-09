@@ -422,7 +422,7 @@ if(!class_exists('M_Wizard')) {
 					$this->add_level_to_subscription( $level_id, $sub_id );
 
 					// Activate and make public the levels and subscriptions
-					$sub = new M_Subscription( $sub_id );
+					$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 					$sub->toggleactivation();
 					$sub->togglepublic();
 					$level = new M_Level( $level_id );
@@ -480,7 +480,7 @@ if(!class_exists('M_Wizard')) {
 			if(isset($_POST['levelname'])) {
 				// Create an initial subscription
 				$sub_id = $this->create_subscription( __('Dripped Subscription', 'membership') );
-				$sub = new M_Subscription( $sub_id );
+				$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 				$sub->toggleactivation();
 				$sub->togglepublic();
 

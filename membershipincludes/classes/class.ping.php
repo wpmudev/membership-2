@@ -334,7 +334,7 @@ if ( !class_exists( 'M_Ping' ) ) {
 
 					case '%subscriptionname%':
 						if ( !empty( $sub_id ) ) {
-							$sub = new M_Subscription( $sub_id );
+							$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 							$pingdata[$key] = $sub->sub_name();
 						} else {
 							$pingdata[$key] = '';
@@ -479,7 +479,7 @@ function M_ping_movedlevel( $fromlevel_id, $tolevel_id, $user_id ) {
 
 add_action( 'membership_add_subscription', 'M_ping_joinedsub', 10, 4 );
 function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
-	$sub = new M_Subscription( $tosub_id );
+	$sub = Membership_Plugin::factory()->get_subscription( $tosub_id );
 	$subjoiningping_id = $sub->get_meta( 'joining_ping' );
 	if ( !empty( $subjoiningping_id ) ) {
 		$ping = new M_Ping( $subjoiningping_id );
@@ -504,7 +504,7 @@ function M_ping_leftsub( $fromsub_id, $fromlevel_id, $user_id ) {
 
 add_action( 'membership_expire_subscription', 'M_ping_expiresub', 10, 2 );
 function M_ping_expiresub( $sub_id, $user_id ) {
-	$sub = new M_Subscription( $sub_id );
+	$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 	$subleavingping_id = $sub->get_meta( 'leaving_ping' );
 	if ( !empty( $subleavingping_id ) ) {
 		$ping = new M_Ping( $subleavingping_id );

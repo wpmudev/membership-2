@@ -373,7 +373,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 						}
 
 						if ( !empty( $sub_id ) ) {
-							$sub = new M_Subscription( $sub_id );
+							$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
 							$commdata[$key] = $sub->sub_name();
 						} else {
 							$commdata[$key] = '';

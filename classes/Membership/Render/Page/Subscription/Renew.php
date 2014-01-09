@@ -63,6 +63,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	private function _render_select_subscriptions() {
 		global $membershippublic;
 
+		$factory = Membership_Plugin::factory();
 		$subs = array_filter( (array) apply_filters( 'membership_override_subscriptions', $membershippublic->get_subscriptions() ) );
 
 		?><div id="membership-wrapper">
@@ -78,7 +79,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 						do_action( 'membership_subscription_form_before_subscriptions' );
 
 						foreach ( $subs as $sub ) :
-							$this->_render_buy_subscription( new M_Subscription( $sub->id ) );
+							$this->_render_buy_subscription( $factory->get_subscription( $sub->id ) );
 						endforeach;
 
 						do_action( 'membership_subscription_form_after_subscriptions' );
@@ -95,9 +96,9 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	 *
 	 * @access private
 	 * @global array $M_options The settings array.
-	 * @param M_Subscription $subscription
+	 * @param Membership_Model_Subscription $subscription
 	 */
-	private function _render_buy_subscription( M_Subscription $subscription ) {
+	private function _render_buy_subscription( Membership_Model_Subscription $subscription ) {
 		global $M_options;
 
 		$pricing = $subscription->get_pricingarray();
@@ -240,6 +241,8 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	private function _render_renew_subscription() {
 		global $membershippublic, $M_options;
 
+		$factory = Membership_Plugin::factory();
+
 		// The user has a subscription so we can display it with the information
 		$member = current_member();
 		$rels = array_filter( (array)$member->get_relationships() );
@@ -257,7 +260,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 
 			<div class="priceboxes"><?php
 				foreach ( $rels as $rel ) {
-					$sub = new M_Subscription( $rel->sub_id );
+					$sub = $factory->get_subscription( $rel->sub_id );
 
 					$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
 					$currentlevel = $sub->get_level_at( $rel->level_id, $rel->order_instance );
@@ -402,7 +405,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 						endif;
 
 						foreach ( $upgradesubs as $upgradesub ) {
-							$subscription = new M_Subscription( $upgradesub->id );
+							$subscription = $factory->get_subscription( $upgradesub->id );
 
 							?><div class="pricebox upgradebox upgradefrom-<?php echo $sub->id; ?>" id="upgradebox-<?php echo $subscription->id ?>">
 								<div class="topbar">

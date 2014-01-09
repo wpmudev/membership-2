@@ -94,7 +94,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access protected
-	 * @var M_Subscription
+	 * @var Membership_Model_Subscription
 	 */
 	protected $_subscription;
 
@@ -426,11 +426,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 *
 	 * @access public
 	 * @global array $M_options The array of membership options.
-	 * @param M_Subscription $subscription New subscription.
+	 * @param Membership_Model_Subscription $subscription New subscription.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
 	 */
-	public function render_subscribe_button( M_Subscription $subscription, $pricing, $user_id ) {
+	public function render_subscribe_button( $subscription, $pricing, $user_id ) {
 		$this->_render_button( esc_attr__( 'Pay Now', 'membership' ), $subscription, $user_id, false );
 	}
 
@@ -440,7 +440,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access public
-	 * @param M_Subscription $subscription New subscription.
+	 * @param Membership_Model_Subscription $subscription New subscription.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
 	 * @param type $fromsub_id From subscription ID.
@@ -455,7 +455,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access public
-	 * @param M_Subscription $subscription New subscription.
+	 * @param Membership_Model_Subscription $subscription New subscription.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
 	 * @param type $fromsub_id From subscription ID.
@@ -491,11 +491,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @access protected
 	 * @global array $M_options The array of membership options.
 	 * @param string $label The button label.
-	 * @param M_Subscription $subscription New subscription.
+	 * @param Membership_Model_Subscription $subscription New subscription.
 	 * @param int $user_id The current user id.
 	 * @param type $fromsub_id From subscription ID.
 	 */
-	protected function _render_button( $label, M_Subscription $subscription, $user_id, $fromsub_id = false ) {
+	protected function _render_button( $label, $subscription, $user_id, $fromsub_id = false ) {
 		global $M_options;
 
 		$actionurl = isset( $M_options['registration_page'] ) ? str_replace('http:', 'https:', get_permalink( $M_options['registration_page'] ) ) : '';
@@ -527,11 +527,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @action membership_payment_form_authorize
 	 *
 	 * @access public
-	 * @param M_Subscription $subscription The current subscription to subscribe to.
+	 * @param Membership_Model_Subscription $subscription The current subscription to subscribe to.
 	 * @param array $pricing The pricing information.
 	 * @param int $user_id The current user id.
 	 */
-	public function render_payment_form( M_Subscription $subscription, $pricing, $user_id ) {
+	public function render_payment_form( $subscription, $pricing, $user_id ) {
 		// check errors
 		$error = false;
 
@@ -590,7 +590,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			return;
 		}
 
-		$subscription = new M_Subscription( filter_input( INPUT_POST, 'subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) ) );
+		$subscription = Membership_Plugin::factory()->get_subscription( filter_input( INPUT_POST, 'subscription', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) ) );
 		$user_id = filter_input( INPUT_POST, 'user', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1, 'default' => get_current_user_id() ) ) );
 		do_action( 'membership_payment_form_' . $this->gateway, $subscription, $subscription->get_pricingarray(), $user_id );
 
@@ -619,7 +619,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		// fetch subscription and pricing
 		$sub_id = filter_input( INPUT_POST, 'subscription_id', FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
-		$this->_subscription = new M_Subscription( $sub_id );
+		$this->_subscription = Membership_Plugin::factory()->get_subscription( $sub_id );
 		$pricing = $this->_subscription->get_pricingarray();
 		if ( !$pricing ) {
 			status_header( 404 );

@@ -123,7 +123,7 @@ if ( !class_exists( 'M_extrashortcodes' ) ) {
                 $html .= "<{$wrapwith} class='{$wrapwithclass}'>";
             }
 
-            $sub = new M_Subscription((int) $subscription);
+            $sub = Membership_Plugin::factory()->get_subscription((int) $subscription);
             $html .= $sub->sub_name();
 
             if (!empty($wrapwith)) {
@@ -176,7 +176,7 @@ if ( !class_exists( 'M_extrashortcodes' ) ) {
                 $html .= "<{$wrapwith} class='{$wrapwithclass}'>";
             }
 
-            $sub = new M_Subscription((int) $subscription);
+            $sub = Membership_Plugin::factory()->get_subscription((int) $subscription);
             $html .= stripslashes($sub->sub_description());
 
             if (!empty($wrapwith)) {
@@ -230,7 +230,7 @@ if ( !class_exists( 'M_extrashortcodes' ) ) {
                 $html .= "<{$wrapwith} class='{$wrapwithclass}'>";
             }
 
-            $sub = new M_Subscription((int) $subscription);
+            $sub = Membership_Plugin::factory()->get_subscription((int) $subscription);
             $first = $sub->get_level_at_position(1);
 
             if (!empty($first)) {

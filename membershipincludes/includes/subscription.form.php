@@ -7,8 +7,9 @@
 		<form class="form-membership" method="post">
 			<div class="priceboxes">
 				<?php do_action( 'membership_subscription_form_before_subscriptions' ) ?>
+				<?php $facotry = Membership_Plugin::factory() ?>
 				<?php foreach ( (array)apply_filters( 'membership_override_subscriptions', $this->get_subscriptions() ) as $sub ) : ?>
-					<?php $subscription = new M_Subscription( $sub->id ) ?>
+					<?php $subscription = $facotry->get_subscription( $sub->id ) ?>
 					<div id="subscriptionbox-<?php echo $subscription->id ?>" class="pricebox subscriptionbox">
 						<div class="topbar">
 							<span class="title"><?php echo $subscription->sub_name() ?></span>

@@ -244,18 +244,19 @@ class M_authorizenetarb extends Membership_Gateway {
 			$coupon_code = $_POST['coupon_code'];
 			$user_id = $_POST['user'];
 
+			$factory = Membership_Plugin::factory();
 			if( empty($user_id) ) {
 				$user = wp_get_current_user();
 
 				$spmemuserid = $user->ID;
 
 				if(!empty($user->ID) && is_numeric($user->ID) ) {
-					$member = Membership_Plugin::factory()->get_member( $user->ID);
+					$member = $factory->get_member( $user->ID);
 				} else {
 					$member = current_member();
 				}
 			} else {
-				$member = Membership_Plugin::factory()->get_member( $user_id );
+				$member = $factory->get_member( $user_id );
 			}
 
 			$subscription = (int) $_REQUEST['subscription'];
@@ -263,7 +264,7 @@ class M_authorizenetarb extends Membership_Gateway {
 			$gateway = M_get_class_for_gateway($gateway);
 
 			if($gateway && is_object($gateway) && $gateway->haspaymentform == true) {
-				$sub =  new M_Subscription( $subscription );
+				$sub =  $factory->get_subscription( $subscription );
 				// Get the coupon
 				$coupon = membership_get_current_coupon();
 				// Build the pricing array
@@ -527,7 +528,8 @@ class M_authorizenetarb extends Membership_Gateway {
 			$M_options['paymentcurrency'] = 'USD';
 		}
 
-		$subscription = new M_Subscription($_POST['subscription_id']);
+		$factory = Membership_Plugin::factory();
+		$subscription = $factory->get_subscription($_POST['subscription_id']);
 		$pricing = $subscription->get_pricingarray();
 
 		if(!empty($pricing) && !empty($coupon) && method_exists( $coupon, 'valid_for_subscription') && $coupon->valid_for_subscription( $subscription->id ) ) {
@@ -556,7 +558,7 @@ class M_authorizenetarb extends Membership_Gateway {
 
 						if( !empty($return) && $return['status'] == 'success' ) {
 							// The payment went through ok
-							$member = Membership_Plugin::factory()->get_member($user_id);
+							$member = $factory->get_member($user_id);
 							if($member) {
 								if($member->has_subscription() && $member->on_sub($sub_id)) {
 									//remove_action( 'membership_expire_subscription', 'membership_record_user_expire', 10, 2 );

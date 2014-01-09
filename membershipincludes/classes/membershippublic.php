@@ -1536,7 +1536,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 					// free subscription processing
 					if ( $logged_in && $subscription ) {
-						$sub = new M_Subscription( $subscription );
+						$sub = Membership_Plugin::factory()->get_subscription( $subscription );
 						if ( $sub->is_free() ) {
 							$to_sub_id = $subscription;
 						}

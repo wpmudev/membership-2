@@ -387,7 +387,7 @@ abstract class Membership_Gateway extends Membership_Hooker {
 			<tbody>
 				<?php if ( $transactions ) : ?>
 					<?php foreach ( $transactions as $key => $transaction ) : ?>
-						<?php $subscription = new M_Subscription( $transaction->transaction_subscription_ID ) ?>
+						<?php $subscription = $factory->get_subscription( $transaction->transaction_subscription_ID ) ?>
 						<?php $member = $factory->get_member( $transaction->transaction_user_ID ) ?>
 						<tr valign="middle" class="alternate">
 							<td class="column-subscription">
