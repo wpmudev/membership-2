@@ -172,12 +172,6 @@ class Membership_Render_Page_Registration_Standard extends Membership_Render {
 		?><div class="register-section" id="basic-details-section">
 			<h4><?php _e( 'Account Details', 'membership' ) ?></h4>
 
-			<label for="first_name"><?php _e( 'First Name', 'membership' ) ?></label>
-			<input type="text" name="first_name" id="first_name" x-autocompletetype="given-name" value="<?php echo esc_attr( filter_input( INPUT_POST, 'first_name' ) ) ?>">
-
-			<label for="last_name"><?php _e( 'Last Name', 'membership' ) ?></label>
-			<input type="text" name="last_name" id="last_name" x-autocompletetype="family-name" value="<?php echo esc_attr( filter_input( INPUT_POST, 'last_name' ) ) ?>">
-
 			<label for="signup_username"><?php _e( 'Username (required)', 'membership' ) ?></label>
 			<?php do_action( 'bp_signup_username_errors' ) ?>
 			<input type="text" name="signup_username" id="signup_username" required x-autocompletetype="nickname" value="<?php bp_signup_username_value() ?>">
