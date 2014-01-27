@@ -1,42 +1,27 @@
 <?php
-	global $profileuser, $user_id, $user;
 
-	if(isset($_POST['action']) && $_POST['action'] == 'update') {
+$msg = '';
+$user_id = get_current_user_id();
 
-		if( wp_verify_nonce($_REQUEST['_wpnonce'], 'update-user_' . $user_id) ) {
-			$msg = __('Your details have been updated.','membership');
-
-			$user = array( 	'ID'			=>	$_POST['user_id'],
-							'first_name'	=>	$_POST['first_name'],
-							'last_name'		=>	$_POST['last_name'],
-							'nickname'		=>	$_POST['nickname'],
-							'display_name'	=>	$_POST['display_name'],
-							'user_email'	=>	$_POST['email'],
-							'user_url'		=>	$_POST['url']
-						);
-
-			if(!empty($_POST['pass1'])) {
-				if(($_POST['pass1'] == $_POST['pass2'])) {
-					$user['user_pass'] = $_POST['pass1'];
-				} else {
-					$msg = __('Your password settings do not match','membership');
-				}
-			}
-
-			$errors = edit_user( $user['ID'] );
-			$profileuser = get_user_to_edit($user_id);
-
-			if ( isset( $errors ) && is_wp_error( $errors ) ) {
-				$msg = implode( "</p>\n<p>", $errors->get_error_messages() );
-			}
-
+if ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
+	if ( wp_verify_nonce( $_REQUEST['_wpnonce'], 'update-user_' . $user_id ) ) {
+		$msg = '<div class="alert alert-success">' . __( 'Your details have been updated.', 'membership' ) . '</div>';
+		if ( !empty( $_POST['pass1'] ) && $_POST['pass1'] != $_POST['pass2'] ) {
+			$msg = '<div class="alert alert-error">' . __( 'Your password settings do not match', 'membership' ) . "</div>";
 		} else {
-			$msg = __('Your details could not be updated.','membership');
+			$errors = edit_user( $_POST['user_id'] );
+			if ( isset( $errors ) && is_wp_error( $errors ) ) {
+				$msg = '<div class="alert alert-error">' . implode( '<br>', $errors->get_error_messages() ) . '</div>';
+			}
 		}
-
-		do_action('edit_user_profile_update', $user_id);
+	} else {
+		$msg = '<div class="alert alert-error">' . __( 'Your details could not be updated.', 'membership' ) . '</div>';
 	}
 
+	do_action( 'edit_user_profile_update', $user_id );
+}
+
+$profileuser = get_user_to_edit( $user_id );
 
 ?>
 <div id="account-form">

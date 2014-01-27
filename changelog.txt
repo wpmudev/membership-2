@@ -32,6 +32,7 @@
 * Fixed communication issue when all subscription is selected
 * Fixed user display name and level name issues for ping data
 * Fixed protection issue for BuddyPress group creation rule
+* Fixed BuddyPress account editing issue
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 * Implemented membership access level meta box for posts and pages editing form
 * Implemented functionality which hides inactive members from BuddyPress members list
