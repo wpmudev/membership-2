@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed BuddyPress private messages protection rule
 * Fixed issue with showing posts from protected categories
 * Fixed popup complete message links rendering issue
 * Fixed warning message which appear for subscriptions without access levels

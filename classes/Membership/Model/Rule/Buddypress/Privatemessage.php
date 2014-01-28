@@ -28,16 +28,30 @@
  */
 class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_Rule {
 
-	var $name = 'bpprivatemessage';
-	var $label = 'Private Messaging';
-	var $description = 'Allows the sending of private messages to be limited to members.';
+	/**
+	 * Handles rule's stuff initialization.
+	 *
+	 * @access public
+	 */
+	public function on_creation() {
+		parent::on_creation();
 
-	var $rulearea = 'public';
+		$this->name = 'bpprivatemessage';
+		$this->label = __( 'Private Messaging', 'membership' );
+		$this->description = __( 'Allows the sending of private messages to be limited to members.', 'membership' );
+		$this->rulearea = 'public';
+	}
 
-	function admin_main($data) {
+	/**
+	 * Renders rule settings at access level edit form.
+	 *
+	 * @access public
+	 * @param mixed $data The data associated with this rule.
+	 */
+	public function admin_main($data) {
 		if(!$data) $data = array();
-		?>
-		<div class='level-operation' id='main-bpprivatemessage'>
+
+		?><div class='level-operation' id='main-bpprivatemessage'>
 			<h2 class='sidebar-name'><?php _e('Private Messaging', 'membership');?><span><a href='#remove' id='remove-bpprivatemessage' class='removelink' title='<?php _e("Remove Private Messaging from this rules area.",'membership'); ?>'><?php _e('Remove','membership'); ?></a></span></h2>
 			<div class='inner-operation'>
 				<p><strong><?php _e('Positive : ','membership'); ?></strong><?php _e('User can send messages.','membership'); ?></p>
@@ -48,26 +62,44 @@ class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_R
 		<?php
 	}
 
-	function on_positive( $data ) {
+	/**
+	 * Associates negative data with this rule.
+	 *
+	 * @access public
+	 * @param mixed $data The negative data to associate with the rule.
+	 */
+	public function on_negative( $data ) {
 		$this->data = $data;
-		add_filter( 'messages_template_compose', array( $this, 'pos_bp_messages_template' ) );
+		add_filter( 'bp_get_template_part', array( $this, 'get_messages_template' ), 10, 2 );
 	}
 
-	function on_negative( $data ) {
-		$this->data = $data;
-		add_filter( 'messages_template_compose', array( $this, 'neg_bp_messages_template' ) );
+	/**
+	 * Overrides messages template.
+	 *
+	 * @filter bp_get_template_part 10 2
+	 *
+	 * @access public
+	 * @param array $templates Income templates.
+	 * @param string $slug The template slug.
+	 * @return array The new template for messages pages or original for else pages.
+	 */
+	public function get_messages_template( $templates, $slug ) {
+		if ( $slug != 'members/single/messages' ) {
+			return $templates;
+		}
+
+		add_action( 'bp_template_content', array( $this, 'render_protection_message' ) );
+		return array( 'members/single/plugins.php' );
 	}
 
-	function pos_bp_messages_template( $template ) {
-		return $template;
-	}
-
-	function neg_bp_messages_template( $template ) {
-		add_action( 'bp_template_content', array( $this, 'neg_bp_message' ) );
-		return 'members/single/plugins';
-	}
-
-	function neg_bp_message() {
+	/**
+	 * Renders protection message.
+	 *
+	 * @action bp_template_content
+	 *
+	 * @access public
+	 */
+	public function render_protection_message() {
 		if ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES === true ) {
 			$MBP_options = function_exists( 'get_blog_option' )
 				? get_blog_option( MEMBERSHIP_GLOBAL_MAINSITE, 'membership_bp_options', array() )
