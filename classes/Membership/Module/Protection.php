@@ -130,6 +130,7 @@ class Membership_Module_Protection extends Membership_Module {
 		if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), '1.5', '>=' ) ) {
 			M_register_rule( 'bppages',          'Membership_Model_Rule_Buddypress_Pages',          'bp' );
 			M_register_rule( 'bpprivatemessage', 'Membership_Model_Rule_Buddypress_Privatemessage', 'bp' );
+			M_register_rule( 'bpfriendship',     'Membership_Model_Rule_Buddypress_Friendship',     'bp' );
 			M_register_rule( 'bpblogs',          'Membership_Model_Rule_Buddypress_Blogs',          'bp' );
 			M_register_rule( 'bpgroupcreation',  'Membership_Model_Rule_Buddypress_Groupcreation',  'bp' );
 			M_register_rule( 'bpgroups',         'Membership_Model_Rule_Buddypress_Groups',         'bp' );

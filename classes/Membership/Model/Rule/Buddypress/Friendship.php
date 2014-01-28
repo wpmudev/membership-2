@@ -19,14 +19,16 @@
 // +----------------------------------------------------------------------+
 
 /**
- * Rule class responsible for BuddyPress private messages protection.
+ * Rule class responsible for BuddyPress friendship protection.
+ *
+ * @since 3.5
  *
  * @category Membership
  * @package Model
  * @subpackage Rule
  * @subpackage Buddypress
  */
-class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_Rule {
+class Membership_Model_Rule_Buddypress_Friendship extends Membership_Model_Rule {
 
 	/**
 	 * Handles rule's stuff initialization.
@@ -36,9 +38,9 @@ class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_R
 	public function on_creation() {
 		parent::on_creation();
 
-		$this->name = 'bpprivatemessage';
-		$this->label = __( 'Private Messaging', 'membership' );
-		$this->description = __( 'Allows the sending of private messages to be limited to members.', 'membership' );
+		$this->name = 'bpfriendship';
+		$this->label = __( 'Friend Connections', 'membership' );
+		$this->description = __( 'Allows the sending friendship requests to be limited to members.', 'membership' );
 		$this->rulearea = 'public';
 	}
 
@@ -49,17 +51,17 @@ class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_R
 	 * @param mixed $data The data associated with this rule.
 	 */
 	public function admin_main( $data ) {
-		?><div class="level-operation" id="main-bpprivatemessage">
-			<h2 class="sidebar-name"id>
-				<?php _e( 'Private Messaging', 'membership' ); ?>
-				<span><a href="#remove" id="remove-bpprivatemessage" class="removelink" title="<?php _e( "Remove Private Messaging from this rules area.", 'membership' ); ?>">
+		?><div class="level-operation" id="main-bpfriendship">
+			<h2 class="sidebar-name">
+				<?php _e( 'Friend Connections', 'membership' ); ?>
+				<span><a href="#remove" id="remove-bpfriendship" class="removelink" title="<?php _e( "Remove Private Messaging from this rules area.", 'membership' ); ?>">
 					<?php _e( 'Remove', 'membership' ); ?>
 				</a></span>
 			</h2>
 			<div class="inner-operation">
-				<p><strong><?php _e( 'Positive:', 'membership' ); ?></strong> <?php _e( 'User can send messages.', 'membership' ); ?></p>
-				<p><strong><?php _e( 'Negative:', 'membership' ); ?></strong> <?php _e( 'User is unable to send messages.', 'membership' ); ?></p>
-				<input type="hidden" name="bpprivatemessage[]" value="yes">
+				<p><strong><?php _e( 'Positive:', 'membership' ); ?></strong> <?php _e( 'User can send friendship requests.', 'membership' ); ?></p>
+				<p><strong><?php _e( 'Negative:', 'membership' ); ?></strong> <?php _e( 'User is unable to send friendship requests.', 'membership' ); ?></p>
+				<input type="hidden" name="bpfriendship[]" value="yes">
 			</div>
 		</div><?php
 	}
@@ -72,21 +74,51 @@ class Membership_Model_Rule_Buddypress_Privatemessage extends Membership_Model_R
 	 */
 	public function on_negative( $data ) {
 		$this->data = $data;
-		add_filter( 'bp_get_template_part', array( $this, 'get_messages_template' ), 10, 2 );
+		add_filter( 'bp_get_add_friend_button', array( $this, 'hide_add_friend_button' ) );
+		add_filter( 'bp_get_template_part', array( $this, 'get_friends_template' ), 10, 2 );
 	}
 
 	/**
-	 * Overrides messages template.
+	 * Adds filter to prevent friendship button rendering.
+	 *
+	 * @since 3.5
+	 * @filter bp_get_add_friend_button
+	 *
+	 * @access public
+	 * @param array $button The button settings.
+	 * @return array The current button settings.
+	 */
+	public function hide_add_friend_button( $button ) {
+		add_filter( 'bp_get_button', array( $this, 'prevent_button_rendering' ) );
+		return $button;
+	}
+
+	/**
+	 * Prevents button rendering.
+	 *
+	 * @since 3.5
+	 * @filter bp_get_button
+	 *
+	 * @access public
+	 * @return boolean FALSE to prevent button rendering.
+	 */
+	public function prevent_button_rendering() {
+		remove_filter( 'bp_get_button', array( $this, 'prevent_button_rendering' ) );
+		return false;
+	}
+
+	/**
+	 * Overrides friends template.
 	 *
 	 * @filter bp_get_template_part 10 2
 	 *
 	 * @access public
 	 * @param array $templates Income templates.
 	 * @param string $slug The template slug.
-	 * @return array The new template for messages pages or original for else pages.
+	 * @return array The new template for friends pages or original for else pages.
 	 */
-	public function get_messages_template( $templates, $slug ) {
-		if ( $slug != 'members/single/messages' ) {
+	public function get_friends_template( $templates, $slug ) {
+		if ( $slug != 'members/single/friends' ) {
 			return $templates;
 		}
 
