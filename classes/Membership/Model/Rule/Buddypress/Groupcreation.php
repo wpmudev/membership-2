@@ -135,7 +135,7 @@ class Membership_Model_Rule_Buddypress_Groupcreation extends Membership_Model_Ru
 	 */
 	public function on_negative( $data ) {
 		$this->data = $data;
-		add_filter( 'groups_template_create_group', array( $this, 'neg_bp_groups_template' ) );
+		add_filter( 'groups_template_create_group', array( $this, 'protect_group_creation' ) );
 	}
 
 	/**
