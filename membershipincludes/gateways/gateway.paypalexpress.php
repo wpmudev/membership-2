@@ -1085,7 +1085,7 @@ class paypalexpress extends Membership_Gateway {
                 case 'subscr_signup':
 					// start the subscription
 					$amount = $_POST['mc_amount3'];
-					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
+					list( $timestamp, $user_id, $sub_id, $key, $from_sub ) = explode( ':', $_POST['custom'] );
 
 					$member = $factory->get_member( $user_id );
 
@@ -1097,6 +1097,9 @@ class paypalexpress extends Membership_Gateway {
 
 						membership_debug_log( sprintf( __( 'Key does not match for amount - not creating subscription for user %d with key ', 'membership' ), $user_id ) . $newkey );
 					} else {
+						if ( $from_sub ) {
+							$member->drop_subscription( $from_sub );
+						}
 						// create_subscription
 						$member->create_subscription( $sub_id, $this->gateway );
 
@@ -1108,11 +1111,11 @@ class paypalexpress extends Membership_Gateway {
 
 				case 'subscr_modify':
                     // modify the subscription
-					list( $timestamp, $user_id, $sub_id, $key ) = explode( ':', $_POST['custom'] );
+					list( $timestamp, $user_id, $sub_id, $key, $from_sub ) = explode( ':', $_POST['custom'] );
 
 					$member = $factory->get_member( $user_id );
 
-					$member->drop_subscription( $sub_id );
+					$member->drop_subscription( $from_sub ? $from_sub : $sub_id );
 					$member->create_subscription( (int)$_POST['item_number'], $this->gateway );
 
 					// Timestamp the update

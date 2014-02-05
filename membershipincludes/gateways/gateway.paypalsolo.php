@@ -141,26 +141,20 @@ class paypalsolo extends Membership_Gateway {
 		<?php
 	}
 
-	function build_custom($user_id, $sub_id, $amount, $sublevel = 0, $fromsub = 0) {
-
+	function build_custom( $user_id, $sub_id, $amount, $sublevel = 0, $fromsub = 0 ) {
 		global $M_options;
 
-		$custom = '';
-
-		//fake:user:sub:key
-
 		$custom = time() . ':' . $user_id . ':' . $sub_id . ':';
-		$key = md5('MEMBERSHIP' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], $amount));
+		$key = md5( 'MEMBERSHIP' . apply_filters( 'membership_amount_' . $M_options['paymentcurrency'], $amount ) );
 
-		if ( $fromsub_id === false ) {
-			$fromsub_id = filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT );
+		if ( $fromsub === false ) {
+			$fromsub = filter_input( INPUT_GET, 'from_subscription', FILTER_VALIDATE_INT );
 		}
 
 		$custom .= $key;
 		$custom .= ":" . $sublevel . ":" . $fromsub;
 
 		return $custom;
-
 	}
 
 	function single_button($pricing, $subscription, $user_id, $sublevel = 0, $fromsub = 0) {
