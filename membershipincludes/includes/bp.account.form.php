@@ -9,7 +9,7 @@ if ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
 		if ( !empty( $_POST['pass1'] ) && $_POST['pass1'] != $_POST['pass2'] ) {
 			$msg = '<div class="alert alert-error">' . __( 'Your password settings do not match', 'membership' ) . "</div>";
 		} else {
-			$errors = edit_user( $_POST['user_id'] );
+			$errors = edit_user( $user_id );
 			if ( isset( $errors ) && is_wp_error( $errors ) ) {
 				$msg = '<div class="alert alert-error">' . implode( '<br>', $errors->get_error_messages() ) . '</div>';
 			}
@@ -143,5 +143,3 @@ $profileuser = get_user_to_edit( $user_id );
 		</form>
 	</div>
 </div>
-<?php
-?>
