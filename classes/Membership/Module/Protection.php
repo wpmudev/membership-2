@@ -50,6 +50,14 @@ class Membership_Module_Protection extends Membership_Module {
 		$this->_add_filter( 'wp_authenticate_user', 'check_membership_is_active_on_signin', 30 );
 	}
 
+	/**
+	 * Initializes current member.
+	 *
+	 * @since 3.5
+	 * @action init
+	 *
+	 * @global Membership_Model_Member $member Current member.
+	 */
 	public function init_current_member() {
 		global $member;
 		$member = Membership_Plugin::current_member();
@@ -176,6 +184,18 @@ class Membership_Module_Protection extends Membership_Module {
 		membership_debug_log( __( 'Current member can view current page.', 'membership' ) );
 	}
 
+	/**
+	 * Initializes initial protection.
+	 *
+	 * @since 3.5
+	 * @action parse_request
+	 *
+	 * @access public
+	 * @global Membership_Model_Member $member Current member
+	 * @global array $M_options The plugin settings.
+	 * @staticvar boolean $initialised Determines whether or not protection has been initialized.
+	 * @param WP $wp Instance of WP class.
+	 */
 	public function initialise_protection( WP $wp ) {
 		global $member, $M_options;
 		static $initialised = false;
@@ -230,7 +250,17 @@ class Membership_Module_Protection extends Membership_Module {
 		$initialised = true;
 	}
 
-	public function show_noaccess_feed( $wp_query ) {
+	/**
+	 * Protects feed from non authorized access.
+	 *
+	 * @since 3.5
+	 * @filter the_posts
+	 *
+	 * @access public
+	 * @global array $M_options The plugin options.
+	 * @return array Array which contains only one post with protected content message.
+	 */
+	public function show_noaccess_feed() {
 		global $M_options;
 
 		//$wp_query->query_vars['post__in'] = array(0);
@@ -268,6 +298,16 @@ class Membership_Module_Protection extends Membership_Module {
 		return array( $post );
 	}
 
+	/**
+	 * Removes categories from the terms list for not authorized access.
+	 *
+	 * @since 3.5
+	 * @filter get_terms 1
+	 *
+	 * @access public
+	 * @param array $terms The income array of terms.
+	 * @return array The filtered array of terms.
+	 */
 	public function remove_categories( $terms ) {
 		foreach ( (array)$terms as $key => $term ) {
 			if ( $term->taxonomy == 'category' ) {
@@ -278,6 +318,17 @@ class Membership_Module_Protection extends Membership_Module {
 		return $terms;
 	}
 
+	/**
+	 * Removes pages from menu for not authorized access.
+	 *
+	 * @since 3.5
+	 * @filter get_pages
+	 *
+	 * @access public
+	 * @global array $M_options The plguins options.
+	 * @param array $pages The income array of pages.
+	 * @return array The fitlered array of pages.
+	 */
 	public function remove_pages_menu( $pages ) {
 		global $M_options;
 
@@ -290,6 +341,17 @@ class Membership_Module_Protection extends Membership_Module {
 		return $pages;
 	}
 
+	/**
+	 * Redirects to protection page if need be.
+	 *
+	 * @since 3.5
+	 * @action the_posts 1
+	 *
+	 * @access public
+	 * @global array $M_options The plguins options.
+	 * @param array $posts The array of posts.
+	 * @return array The array of posts.
+	 */
 	public function show_noaccess_page( $posts ) {
 		global $M_options;
 
@@ -297,9 +359,7 @@ class Membership_Module_Protection extends Membership_Module {
 			// We don't have any posts, so we should just redirect to the no content page.
 			if ( !empty( $M_options['nocontent_page'] ) && !headers_sent() ) {
 				// grab the content form the no content page
-				$url = get_permalink( (int) $M_options['nocontent_page'] );
-
-				wp_safe_redirect( $url );
+				wp_safe_redirect( get_permalink( absint( $M_options['nocontent_page'] ) ) );
 				exit;
 			} else {
 				return $posts;
