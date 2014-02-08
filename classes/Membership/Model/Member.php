@@ -753,10 +753,9 @@ class Membership_Model_Member extends WP_User {
 
 	}
 
-	public function assign_level($level_id, $fullload = true) {
+	public function assign_level( $level_id, $fullload = true ) {
 		// Used to force assign a level on a user - mainly for non logged in users
-		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('public', 'core') );
-
+		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array( 'public', 'core', 'admin' ) );
 	}
 
 	public function assign_public_level($level_id, $fullload = true) {

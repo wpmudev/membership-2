@@ -44,8 +44,15 @@ class Membership_Module_Protection extends Membership_Module {
 		$this->_add_action( 'plugins_loaded', 'register_rules' );
 		$this->_add_action( 'plugins_loaded', 'check_membership_status' );
 		$this->_add_action( 'template_redirect', 'protect_current_page', 1 );
+		$this->_add_action( 'parse_request', 'initialise_protection', 2 );
+		$this->_add_action( 'init', 'init_current_member' );
 
 		$this->_add_filter( 'wp_authenticate_user', 'check_membership_is_active_on_signin', 30 );
+	}
+
+	public function init_current_member() {
+		global $member;
+		$member = Membership_Plugin::current_member();
 	}
 
 	/**
@@ -167,6 +174,188 @@ class Membership_Module_Protection extends Membership_Module {
 		}
 
 		membership_debug_log( __( 'Current member can view current page.', 'membership' ) );
+	}
+
+	public function initialise_protection( WP $wp ) {
+		global $member, $M_options;
+		static $initialised = false;
+
+		if ( $initialised ) {
+			// ensure that this is only called once, so return if we've been here already.
+			return;
+		}
+
+		// Set up some common defaults
+		$factory = Membership_Plugin::factory();
+
+		// We are not a membershipadmin user
+		if ( !empty( $wp->query_vars['feed'] ) ) {
+			// This is a feed access, then set the feed rules
+			$user_id = (int)$this->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
+			if ( $user_id > 0 ) {
+				// Logged in - check there settings, if they have any.
+				$member = $factory->get_member( $user_id );
+				// Load the levels for this member - and associated rules
+				$member->load_levels( true );
+			}
+
+			if ( !$member ) {
+				// not passing a key so limit based on stranger settings
+				// need to grab the stranger settings
+				$member = $factory->get_member( get_current_user_id() );
+				if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+					$member->assign_level( $M_options['strangerlevel'], true );
+				} else {
+					// This user can't access anything on the site - show a blank feed.
+					$this->_add_filter( 'the_posts', 'show_noaccess_feed', 1 );
+				}
+			}
+		} else {
+			$member = Membership_Plugin::current_member();
+			if ( !$member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
+				// This user can't access anything on the site - .
+				add_filter( 'comments_open', '__return_false', PHP_INT_MAX );
+				// Changed for this version to see if it helps to get around changed in WP 3.5
+				$this->_add_action( 'the_posts', 'show_noaccess_page', 1 );
+				// Hide all pages from menus - except the signup one
+				$this->_add_filter( 'get_pages', 'remove_pages_menu' );
+				// Hide all categories from lists
+				$this->_add_filter( 'get_terms', 'remove_categories', 1 );
+			}
+		}
+
+		do_action( 'membership-add-shortcodes' );
+
+		// Set the initialisation status
+		$initialised = true;
+	}
+
+	public function show_noaccess_feed( $wp_query ) {
+		global $M_options;
+
+		//$wp_query->query_vars['post__in'] = array(0);
+		/**
+		 * What we are going to do here, is create a fake post.  A post
+		 * that doesn't actually exist. We're gonna fill it up with
+		 * whatever values you want.  The content of the post will be
+		 * the output from your plugin.  The questions and answers.
+		 */
+		if ( !empty( $M_options['nocontent_page'] ) ) {
+			// grab the content form the no content page
+			$post = get_post( $M_options['nocontent_page'] );
+		} else {
+			if ( empty( $M_options['protectedmessagetitle'] ) ) {
+				$M_options['protectedmessagetitle'] = __( 'No access to this content', 'membership' );
+			}
+
+			$post = new stdClass;
+			$post->post_author = 1;
+			$post->post_name = 'membershipnoaccess';
+			add_filter( 'the_permalink', create_function( '$permalink', 'return "' . get_option( 'home' ) . '";' ) );
+			$post->guid = get_bloginfo( 'wpurl' );
+			$post->post_title = esc_html( stripslashes( $M_options['protectedmessagetitle'] ) );
+			$post->post_content = stripslashes( $M_options['protectedmessage'] );
+			$post->ID = -1;
+			$post->post_status = 'publish';
+			$post->post_type = 'post';
+			$post->comment_status = 'closed';
+			$post->ping_status = 'open';
+			$post->comment_count = 0;
+			$post->post_date = current_time( 'mysql' );
+			$post->post_date_gmt = current_time( 'mysql', 1 );
+		}
+
+		return array( $post );
+	}
+
+	public function remove_categories( $terms ) {
+		foreach ( (array)$terms as $key => $term ) {
+			if ( $term->taxonomy == 'category' ) {
+				unset( $terms[$key] );
+			}
+		}
+
+		return $terms;
+	}
+
+	public function remove_pages_menu( $pages ) {
+		global $M_options;
+
+		foreach ( (array)$pages as $key => $page ) {
+			if ( empty( $M_options['registration_page'] ) || $page->ID != $M_options['registration_page'] ) {
+				unset( $pages[$key] );
+			}
+		}
+
+		return $pages;
+	}
+
+	public function show_noaccess_page( $posts ) {
+		global $M_options;
+
+		if ( empty( $posts ) ) {
+			// We don't have any posts, so we should just redirect to the no content page.
+			if ( !empty( $M_options['nocontent_page'] ) && !headers_sent() ) {
+				// grab the content form the no content page
+				$url = get_permalink( (int) $M_options['nocontent_page'] );
+
+				wp_safe_redirect( $url );
+				exit;
+			} else {
+				return $posts;
+			}
+		}
+
+		if ( count( $posts ) == 1 && isset( $posts[0]->post_type ) && $posts[0]->post_type == 'page' ) {
+			// We are on a page so get the first page and then check for ones we want to allow
+			$page = $posts[0];
+			if ( membership_is_special_page( $page->ID, false ) ) {
+				return $posts;
+			}
+
+			// We are still here so we may be at a page that we shouldn't be able to see
+			if ( !empty( $M_options['nocontent_page'] ) && $page->ID != $M_options['nocontent_page'] && !headers_sent() ) {
+				// grab the content form the no content page
+				wp_safe_redirect( get_permalink( absint( $M_options['nocontent_page'] ) ) );
+				exit;
+			}
+
+			return $posts;
+		} else {
+			// We could be on a posts page / or on a single post.
+			if ( count( $posts ) == 1 ) {
+				// We could be on a single posts page, or only have the one post to view
+				if ( isset( $posts[0]->post_type ) && $posts[0]->post_type != 'nav_menu_item' ) {
+					// We'll redirect if this isn't a navigation menu item
+					$post = $posts[0];
+
+					if ( !empty( $M_options['nocontent_page'] ) && isset( $post->ID ) && $post->ID != $M_options['nocontent_page'] && !headers_sent() ) {
+						// grab the content form the no content page
+						wp_safe_redirect( get_permalink( absint( $M_options['nocontent_page'] ) ) );
+						exit;
+					}
+
+					return $posts;
+				}
+			} else {
+				// Check the first post in the list
+				if ( isset( $posts[0]->post_type ) && $posts[0]->post_type != 'nav_menu_item' ) {
+					// We'll redirect if this isn't a navigation menu item
+					$post = $posts[0];
+
+					if ( !empty( $M_options['nocontent_page'] ) && isset( $post->ID ) && $post->ID != $M_options['nocontent_page'] && !headers_sent() ) {
+						// grab the content form the no content page
+						wp_safe_redirect( get_permalink( absint( $M_options['nocontent_page'] ) ) );
+						exit;
+					}
+
+					return $posts;
+				}
+			}
+		}
+
+		// If we've reached here then something weird has happened :/
+		return $posts;
 	}
 
 }

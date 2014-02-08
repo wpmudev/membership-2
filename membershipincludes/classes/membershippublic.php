@@ -24,38 +24,50 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			global $wpdb;
 
 			$this->db = $wpdb;
-			foreach($this->tables as $table) {
-				$this->$table = membership_db_prefix($this->db, $table);
+			foreach ( $this->tables as $table ) {
+				$this->$table = membership_db_prefix( $this->db, $table );
 			}
 
 			// Set up Actions
-			add_action('init', array(&$this, 'initialise_plugin'), 1 );
-			add_filter('query_vars', array(&$this, 'add_queryvars') );
-			add_action('generate_rewrite_rules', array(&$this, 'add_rewrites') );
-
-			// Add protection
-			if ( M_get_membership_active() != 'no' ) {
-				add_action( 'parse_request', array( $this, 'initialise_membership_protection' ), 2 );
-			}
+			add_action( 'init', array( &$this, 'initialise_plugin' ), 1 );
+			add_filter( 'query_vars', array( &$this, 'add_queryvars' ) );
+			add_action( 'generate_rewrite_rules', array( &$this, 'add_rewrites' ) );
+			add_action( 'membership-add-shortcodes', array( $this, 'register_shortcodes' ), 1 );
 
 			// Payment return
-			add_action('pre_get_posts', array(&$this, 'handle_paymentgateways'), 1 );
+			add_action( 'pre_get_posts', array( &$this, 'handle_paymentgateways' ), 1 );
 
 			// Download protection
-			add_action('pre_get_posts', array(&$this, 'handle_download_protection'), 3 );
+			add_action( 'pre_get_posts', array( &$this, 'handle_download_protection' ), 3 );
 
 			// add feed protection
-			add_filter('feed_link', array(&$this, 'add_feed_key'), 99, 2);
+			add_filter( 'feed_link', array( &$this, 'add_feed_key' ), 99, 2 );
 
 			// Register
-			add_filter('register', array(&$this, 'override_register') );
+			add_filter( 'register', array( &$this, 'override_register' ) );
 
 			// Ultimate Facebook Compatibility
-			add_filter( 'wdfb_registration_redirect_url', array(&$this, 'wdfb_registration_redirect_url') );
+			add_filter( 'wdfb_registration_redirect_url', array( &$this, 'wdfb_registration_redirect_url' ) );
 
 			// Level shortcodes filters
-			add_filter( 'membership_level_shortcodes', array(&$this, 'build_level_shortcode_list' ) );
-			add_filter( 'membership_not_level_shortcodes', array(&$this, 'build_not_level_shortcode_list' ) );
+			add_filter( 'membership_level_shortcodes', array( &$this, 'build_level_shortcode_list' ) );
+			add_filter( 'membership_not_level_shortcodes', array( &$this, 'build_not_level_shortcode_list' ) );
+		}
+
+		function register_shortcodes() {
+			global $member;
+
+			foreach ( array( 'membership_level_shortcodes', 'membership_not_level_shortcodes' ) as $index => $filter ) {
+				$shortcodes = apply_filters( $filter, array() );
+				if ( !empty( $shortcodes ) ) {
+					foreach ( $shortcodes as $key => $value ) {
+						if ( !empty( $value ) ) {
+							$valid = $index ? !$member->has_level( $key ) : $member->has_level( $key );
+							add_shortcode( stripslashes( trim( $value ) ), array( $this, $valid ? 'do_level_shortcode' : 'do_levelprotected_shortcode' ) );
+						}
+					}
+				}
+			}
 		}
 
 		function wdfb_registration_redirect_url($url) {
@@ -229,103 +241,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			return $output;
 
-		}
-
-		function initialise_membership_protection( $wp ) {
-			global $user, $member, $M_options;
-
-			static $initialised = false;
-			if ( $initialised ) {
-				// ensure that this is only called once, so return if we've been here already.
-				return;
-			}
-
-			// Set up some common defaults
-			$factory = Membership_Plugin::factory();
-			if ( empty( $user ) || !method_exists( $user, 'has_cap' ) ) {
-				$user = wp_get_current_user();
-			}
-
-			// We are not a membershipadmin user
-			if ( !empty( $wp->query_vars['feed'] ) ) {
-				// This is a feed access, then set the feed rules
-				$user_id = (int)$this->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
-				if ( $user_id > 0 ) {
-					// Logged in - check there settings, if they have any.
-					$member = $factory->get_member( $user_id );
-					// Load the levels for this member - and associated rules
-					$member->load_levels( true );
-				}
-
-				if ( !$member ) {
-					// not passing a key so limit based on stranger settings
-					// need to grab the stranger settings
-					$member = $factory->get_member( $user->ID );
-					if ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
-						$member->assign_level( $M_options['strangerlevel'], true );
-					} else {
-						// This user can't access anything on the site - show a blank feed.
-						add_filter( 'the_posts', array( &$this, 'show_noaccess_feed' ), 1 );
-					}
-				}
-			} else {
-				$member = Membership_Plugin::current_member();
-				if ( !$member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
-					// This user can't access anything on the site - .
-					add_filter( 'comments_open', array( &$this, 'close_comments' ), 99, 2 );
-					// Changed for this version to see if it helps to get around changed in WP 3.5
-					//add_action('pre_get_posts', array(&$this, 'show_noaccess_page'), 1 );
-					add_action( 'the_posts', array( &$this, 'show_noaccess_page' ), 1 );
-					//the_posts
-					// Hide all pages from menus - except the signup one
-					add_filter( 'get_pages', array( &$this, 'remove_pages_menu' ) );
-					// Hide all categories from lists
-					add_filter( 'get_terms', array( &$this, 'remove_categories' ), 1, 3 );
-				}
-			}
-
-			foreach ( array( 'membership_level_shortcodes', 'membership_not_level_shortcodes' ) as $index => $filter ) {
-				$shortcodes = apply_filters( $filter, array() );
-				if ( !empty( $shortcodes ) ) {
-					foreach ( $shortcodes as $key => $value ) {
-						if ( !empty( $value ) ) {
-							$valid = $index ? !$member->has_level( $key ) : $member->has_level( $key );
-							add_shortcode( stripslashes( trim( $value ) ), array( $this, $valid ? 'do_level_shortcode' : 'do_levelprotected_shortcode' ) );
-						}
-					}
-				}
-			}
-
-			do_action( 'membership-add-shortcodes' );
-
-			// Set the initialisation status
-			$initialised = true;
-		}
-
-		function remove_categories($terms, $taxonomies, $args) {
-
-			foreach( (array) $terms as $key => $value ) {
-				if($value->taxonomy == 'category') {
-					unset($terms[$key]);
-				}
-			}
-
-			return $terms;
-		}
-
-		function remove_pages_menu($pages) {
-
-			global $M_options;
-
-			foreach( (array) $pages as $key => $page ) {
-				if(!empty($M_options['registration_page']) && $page->ID == $M_options['registration_page']) {
-					// We want to keep this page available
-				} else {
-					unset($pages[$key]);
-				}
-			}
-
-			return $pages;
 		}
 
 		function handle_paymentgateways($wp_query) {
@@ -759,47 +674,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		}
 
-		function show_noaccess_feed($wp_query) {
-
-			global $M_options;
-
-			//$wp_query->query_vars['post__in'] = array(0);
-			/**
-			 * What we are going to do here, is create a fake post.  A post
-			 * that doesn't actually exist. We're gonna fill it up with
-			 * whatever values you want.  The content of the post will be
-			 * the output from your plugin.  The questions and answers.
-			 */
-
-			if(!empty($M_options['nocontent_page'])) {
-				// grab the content form the no content page
-				$post = get_post( $M_options['nocontent_page'] );
-			} else {
-				if(empty($M_options['protectedmessagetitle'])) {
-					$M_options['protectedmessagetitle'] = __('No access to this content','membership');
-				}
-
-				$post = new stdClass;
-				$post->post_author = 1;
-				$post->post_name = 'membershipnoaccess';
-				add_filter('the_permalink',create_function('$permalink', 'return "' . get_option('home') . '";'));
-				$post->guid = get_bloginfo('wpurl');
-				$post->post_title = esc_html(stripslashes($M_options['protectedmessagetitle']));
-				$post->post_content = stripslashes($M_options['protectedmessage']);
-				$post->ID = -1;
-				$post->post_status = 'publish';
-				$post->post_type = 'post';
-				$post->comment_status = 'closed';
-				$post->ping_status = 'open';
-				$post->comment_count = 0;
-				$post->post_date = current_time('mysql');
-				$post->post_date_gmt = current_time('mysql', 1);
-			}
-
-			return array($post);
-
-		}
-
 		function hide_nocontent_page_from_menu( $pages ) {
 			global $M_options;
 
@@ -919,12 +793,6 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				return;
 			}
 			*/
-
-		}
-
-		function close_comments($open, $postid) {
-
-			return false;
 
 		}
 

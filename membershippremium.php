@@ -179,23 +179,19 @@ function membership_launch() {
 	$plugin->set_module( Membership_Module_System::NAME );
 	$plugin->set_module( Membership_Module_Upgrade::NAME );
 
-	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
-	} elseif ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+	if ( Membership_Plugin::is_enabled() ) {
+		$plugin->set_module( Membership_Module_Protection::NAME );
+	}
+
+	if ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) {
+		$plugin->set_module( Membership_Module_Adminbar::NAME );
+	}
+
+	$plugin->set_module( Membership_Module_Frontend_Registration::NAME );
+	if ( is_admin() ) {
+//		$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
 	} else {
-		if ( Membership_Plugin::is_enabled() ) {
-			$plugin->set_module( Membership_Module_Protection::NAME );
-		}
-
-		if ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) {
-			$plugin->set_module( Membership_Module_Adminbar::NAME );
-		}
-
-		$plugin->set_module( Membership_Module_Frontend_Registration::NAME );
-		if ( is_admin() ) {
-//			$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release
-		} else {
-			$plugin->set_module( Membership_Module_Frontend::NAME );
-		}
+		$plugin->set_module( Membership_Module_Frontend::NAME );
 	}
 
 	do_action( 'membership_loaded', $plugin );

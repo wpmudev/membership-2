@@ -114,11 +114,13 @@ class Membership_Model_Rule_Admin_Submenus extends Membership_Model_Rule {
 	public function on_positive( $data ) {
 		$this->data = $data;
 		add_action( 'admin_menu', array( $this, 'pos_admin_menu' ), 999 );
+		add_action( 'network_admin_menu', array( $this, 'pos_admin_menu' ), 999 );
 	}
 
 	public function on_negative( $data ) {
 		$this->data = $data;
 		add_action( 'admin_menu', array( $this, 'neg_admin_menu' ), 999 );
+		add_action( 'network_admin_menu', array( $this, 'neg_admin_menu' ), 999 );
 	}
 
 	public function pos_admin_menu() {
@@ -131,6 +133,8 @@ class Membership_Model_Rule_Admin_Submenus extends Membership_Model_Rule {
 				}
 			}
 		}
+
+		$this->_clear_menu();
 	}
 
 	public function neg_admin_menu() {
@@ -141,6 +145,24 @@ class Membership_Model_Rule_Admin_Submenus extends Membership_Model_Rule {
 				if ( in_array( $s[2], (array) $this->data ) ) {
 					unset( $submenu[$key][$skey] );
 				}
+			}
+		}
+
+		$this->_clear_menu();
+	}
+
+	private function _clear_menu() {
+		global $menu, $submenu;
+
+		foreach ( $submenu as $key => $items ) {
+			if ( empty( $items ) ) {
+				foreach ( $menu as $index => $item ) {
+					if ( isset( $item[2] ) && $item[2] == $key ) {
+						unset( $menu[$index] );
+						break;
+					}
+				}
+				unset( $submenu[$key] );
 			}
 		}
 	}

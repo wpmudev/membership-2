@@ -1,5 +1,6 @@
 == 3.5 ==
 
+* Fixed admin menu protection rules
 * Fixed BuddyPress private messages protection rule
 * Fixed issue with showing posts from protected categories
 * Fixed popup complete message links rendering issue

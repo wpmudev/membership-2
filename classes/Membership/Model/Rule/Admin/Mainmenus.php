@@ -94,11 +94,13 @@ class Membership_Model_Rule_Admin_Mainmenus extends Membership_Model_Rule {
 	public function on_positive( $data ) {
 		$this->data = $data;
 		add_action( 'admin_menu', array( $this, 'pos_admin_menu' ), 999 );
+		add_action( 'network_admin_menu', array( $this, 'pos_admin_menu' ), 999 );
 	}
 
 	public function on_negative( $data ) {
 		$this->data = $data;
 		add_action( 'admin_menu', array( $this, 'neg_admin_menu' ), 999 );
+		add_action( 'network_admin_menu', array( $this, 'neg_admin_menu' ), 999 );
 	}
 
 	public function pos_admin_menu() {
