@@ -202,6 +202,10 @@ td.buynowcolumn {
     padding-bottom: 20px
 }
 
+#fancybox-loading, #fancybox-loading div {
+	z-index: 9999999 !important;
+}
+
 @media all and (min-width: 768px) {
     .membership-popover-signup-wrapper {
         width: 700px
