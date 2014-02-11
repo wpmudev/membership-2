@@ -120,6 +120,32 @@ function membership_autoloader( $class ) {
 }
 
 /**
+ * Initializes membership constants.
+ *
+ * @since 3.5
+ */
+function membership_setup_contsants() {
+	// prevent double initialization
+	if ( defined( 'MEMBERSHIP_BASEFILE' ) ) {
+		return;
+	}
+
+	define( 'MEMBERSHIP_BASEFILE', __FILE__ );
+	define( 'MEMBERSHIP_ABSURL', plugins_url( '/membershipincludes/', __FILE__ ) );
+	define( 'MEMBERSHIP_ABSPATH', dirname( __FILE__ ) );
+
+	// determines whether or not to use global tables
+	if ( !defined( 'MEMBERSHIP_GLOBAL_TABLES' ) ) {
+		define( 'MEMBERSHIP_GLOBAL_TABLES', false );
+	}
+
+	// determines main site for global tables
+	if ( !defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
+		define( 'MEMBERSHIP_GLOBAL_MAINSITE', 1 );
+	}
+}
+
+/**
  * Initializes database table constants and add them to global tables if MultiDB
  * is used.
  *
@@ -127,12 +153,17 @@ function membership_autoloader( $class ) {
  *
  * @global wpdb $wpdb
  */
-function membership_init_db_table_constants() {
+function membership_setup_db_table_constants() {
 	global $wpdb;
 
-	$global = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+	// prevent double initialization
+	if ( defined( 'MEMBERSHIP_TABLE_LEVELS' ) ) {
+		return;
+	}
 
-	$prefix = $global && isset( $wpdb->base_prefix ) ? $wpdb->base_prefix : $wpdb->prefix;
+	$global = is_multisite() && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+	$prefix = $wpdb->get_blog_prefix( $global ? MEMBERSHIP_GLOBAL_MAINSITE : null );
+
 	define( 'MEMBERSHIP_TABLE_LEVELS',                   "{$prefix}m_membership_levels" );
 	define( 'MEMBERSHIP_TABLE_RULES',                    "{$prefix}m_membership_rules" );
 	define( 'MEMBERSHIP_TABLE_RELATIONS',                "{$prefix}m_membership_relationships" );
@@ -165,12 +196,9 @@ function membership_init_db_table_constants() {
  */
 function membership_launch() {
 	// setup environment
-	define( 'MEMBERSHIP_BASEFILE', __FILE__ );
-	define( 'MEMBERSHIP_ABSURL', plugins_url( '/membershipincludes/', __FILE__ ) );
-	define( 'MEMBERSHIP_ABSPATH', dirname( __FILE__ ) );
-
+	membership_setup_contsants();
 	// database tables
-	membership_init_db_table_constants();
+	membership_setup_db_table_constants();
 
 	// plugin setup
 	$plugin = Membership_Plugin::instance();

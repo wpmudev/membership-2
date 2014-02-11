@@ -316,11 +316,11 @@ function membership_db_prefix( wpdb $wpdb, $table, $useprefix = true ) {
 		$membership_prefix = 'm_';
 	}
 
-	$global_tables = defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN ) && isset( $wpdb->base_prefix );
-	$prefix = $global_tables ? $wpdb->base_prefix : $wpdb->prefix;
+	$global = is_multisite() && filter_var( MEMBERSHIP_GLOBAL_TABLES, FILTER_VALIDATE_BOOLEAN );
+	$prefix = $wpdb->get_blog_prefix( $global ? MEMBERSHIP_GLOBAL_MAINSITE : null );
 	$table_name = $prefix . $membership_prefix . $table;
 
-	if ( $global_tables && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
+	if ( $global && defined( 'MULTI_DB_VERSION' ) && function_exists( 'add_global_table' ) ) {
 		add_global_table( $membership_prefix . $table );
 	}
 
