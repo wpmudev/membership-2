@@ -777,7 +777,7 @@ class Membership_Model_Member extends WP_User {
 	public function load_levels( $fullload = false ) {
 		foreach ( (array)$this->get_level_ids() as $lev ) {
 			if ( !isset( $this->levels[$lev->level_id] ) ) {
-				$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array( 'public', 'core' ) );
+				$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array( 'public', 'core', 'admin' ) );
 			}
 		}
 	}
