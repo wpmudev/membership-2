@@ -705,6 +705,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			$this->_commit_transactions();
 
 			do_action( 'membership_authorizenet_payment_processed', $this->_member->ID, $sub_id );
+			do_action( 'membership_payment_processed', $this->_member->ID, $sub_id, $pricing[0]['amount'], $M_options['paymentcurrency'], $this->_transactions[0]['transaction'] );
 
 			// process response message and redirect
 			if ( self::is_popup() && !empty( $M_options['registrationcompleted_message'] ) ) {
