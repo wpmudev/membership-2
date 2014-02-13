@@ -654,10 +654,15 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		}
 
 		// process payments
+		$first_payment = false;
 		$started = new DateTime();
 		$this->_payment_result = array( 'status' => '', 'errors' => array() );
 		$this->_transactions = array();
 		for ( $i = 0, $count = count( $pricing ); $i < $count; $i++ ) {
+			if ( $first_payment === false && $pricing[$i]['amount'] > 0 ) {
+				$first_payment = $pricing[$i]['amount'];
+			}
+
 			switch ( $pricing[$i]['type'] ) {
 				case 'finite':
 					$this->_transactions[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
@@ -704,8 +709,10 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			// process transactions
 			$this->_commit_transactions();
 
-			do_action( 'membership_authorizenet_payment_processed', $this->_member->ID, $sub_id );
-			do_action( 'membership_payment_processed', $this->_member->ID, $sub_id, $pricing[0]['amount'], $M_options['paymentcurrency'], $this->_transactions[0]['transaction'] );
+			if ( $first_payment ) {
+				do_action( 'membership_authorizenet_payment_processed', $this->_member->ID, $sub_id );
+				do_action( 'membership_payment_processed', $this->_member->ID, $sub_id, $first_payment, $M_options['paymentcurrency'], $this->_transactions[0]['transaction'] );
+			}
 
 			// process response message and redirect
 			if ( self::is_popup() && !empty( $M_options['registrationcompleted_message'] ) ) {
