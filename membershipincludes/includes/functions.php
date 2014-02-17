@@ -1160,10 +1160,10 @@ function membership_get_expire_date( $sub_id = null, $date_format = null ) {
 		}
 
 		if ( $sub_id ) {
-			$expired = get_user_meta( $member->ID, 'expire_current_' . $sub_ids[0], true );
+			$expired = get_user_meta( $member->ID, 'expire_current_' . $sub_id, true );
 			if ( $expired ) {
 				if ( !$date_format ) {
-					$date_format = DATE_COOKIE;
+					$date_format = get_option( 'date_format' );
 				}
 				return date( $date_format, $expired );
 			}
