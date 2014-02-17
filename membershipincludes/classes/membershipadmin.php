@@ -1540,7 +1540,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         }
                         $html .= "</select>\n";
                     } else {
-                        $level = new M_Level($fromlevel);
+                        $level = Membership_Plugin::factory()->get_level($fromlevel);
                         $html .= __('Moving from :', 'membership') . " <strong>" . $level->level_title() . "</strong>";
                         $html .= "<input type='hidden' name='fromlevel_id' value='" . esc_attr($fromlevel) . "' />";
                     }
@@ -2292,7 +2292,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                                         if (!empty($levels)) {
                                             $rows = array();
                                             foreach ((array) $levels as $key => $value) {
-                                                $level = new M_Level($value->level_id);
+                                                $level = Membership_Plugin::factory()->get_level($value->level_id);
                                                 if (!empty($level)) {
                                                     if ((int) $value->sub_id != 0) {
                                                         $rows[] = "<strong>" . $level->level_title() . "</strong>";
@@ -3850,13 +3850,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
             global $page, $M_Rules, $M_SectionRules;
 
+			$factory = Membership_Plugin::factory();
+
             if ($level_id && !$clone) {
-                $mlevel = new M_Level($level_id);
+                $mlevel = $factory->get_level($level_id);
                 $level = $mlevel->get();
             } else {
 
                 if ($clone) {
-                    $mlevel = new M_Level($level_id);
+                    $mlevel = $factory->get_level($level_id);
                     $level = $mlevel->get();
 
                     $level->level_title .= __(' clone', 'membership');
@@ -4155,6 +4157,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                 }
             }
 
+			$factory = Membership_Plugin::factory();
             switch (addslashes($action)) {
 
                 case 'removeheader': $this->dismiss_user_help($page);
@@ -4165,7 +4168,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     check_admin_referer('add-' . $id);
                     if ($id) {
 
-                        $level = new M_Level($id);
+                        $level = $factory->get_level($id);
 
                         if ($level->add()) {
                             // Add in the meta information
@@ -4186,7 +4189,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                     check_admin_referer('update-' . $id);
                     if ($id) {
 
-                        $level = new M_Level($id);
+                        $level = $factory->get_level($id);
 
                         if ($level->update()) {
                             // update the meta information
@@ -4210,7 +4213,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('delete-level_' . $level_id);
 
-                        $level = new M_Level($level_id);
+                        $level = $factory->get_level($level_id);
 
                         if ($level->delete($level_id)) {
                             // delete the meta information
@@ -4228,7 +4231,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
                         check_admin_referer('toggle-level_' . $level_id);
 
-                        $level = new M_Level($level_id);
+                        $level = $factory->get_level($level_id);
 
                         if ($level->toggleactivation()) {
                             wp_safe_redirect(add_query_arg('msg', 7, wp_get_referer()));
@@ -4244,7 +4247,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $level_id = (int) $value;
 
-                            $level = new M_Level($level_id);
+                            $level = $factory->get_level($level_id);
 
                             $level->delete();
                         }
@@ -4259,7 +4262,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
                         if (is_numeric($value)) {
                             $level_id = (int) $value;
 
-                            $level = new M_Level($level_id);
+                            $level = $factory->get_level($level_id);
 
                             $level->toggleactivation();
                         }
@@ -6892,7 +6895,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
         function update_level_ping_information($level_id) {
 
-            $level = new M_Level($level_id);
+            $level = Membership_Plugin::factory()->get_level($level_id);
 
             $level->update_meta('joining_ping', $_POST['joiningping']);
             $level->update_meta('leaving_ping', $_POST['leavingping']);
@@ -6903,7 +6906,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
             $pings = $this->get_pings();
 
             // Get the currentlt set ping for each level
-            $level = new M_Level($level_id);
+            $level = Membership_Plugin::factory()->get_level($level_id);
 
             $joinping = $level->get_meta('joining_ping', '');
             $leaveping = $level->get_meta('leaving_ping', '');

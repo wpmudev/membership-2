@@ -825,7 +825,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$amount = number_format( $price['amount'], 2, '.', '' );
 
-		$level = new M_Level( $price['level_id'] );
+		$level = Membership_Plugin::factory()->get_level( $price['level_id'] );
 		$name = substr( sprintf(
 			'%s / %s',
 			$level->level_title(),

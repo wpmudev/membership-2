@@ -11,7 +11,7 @@ function M_Roles_show_information( $level_id ) {
 	global $wp_roles;
 
 	// Get the currentlt set ping for each level
-	$level = new M_Level( $level_id );
+	$level = Membership_Plugin::factory()->get_level( $level_id );
 
 	$levelrole = $level->get_meta( 'associated_wp_role', '' );
 
@@ -49,7 +49,7 @@ function M_Roles_show_information( $level_id ) {
 
 function M_Roles_update_level_information( $level_id ) {
 
-	$level = new M_Level( $level_id );
+	$level = Membership_Plugin::factory()->get_level( $level_id );
 
 	$level->update_meta( 'associated_wp_role', $_POST['levelrole'] );
 
@@ -88,10 +88,11 @@ function M_Roles_restoresart( $user_id ) {
 }
 
 function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
+	$factory = Membership_Plugin::factory();
 
 	// Set up the level and find out if it has a joining ping
-	$level = new M_Level( $tolevel_id );
-	$member = Membership_Plugin::factory()->get_member( $user_id );
+	$level = $factory->get_level( $tolevel_id );
+	$member = $factory->get_member( $user_id );
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if(!empty($wprole)) {
@@ -105,9 +106,10 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 add_action( 'membership_add_level', 'M_Roles_joinedlevel', 10, 2 );
 
 function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
+	$factory = Membership_Plugin::factory();
 	// Set up the level and find out if it has a leaving ping
-	$level = new M_Level( $fromlevel_id );
-	$member = Membership_Plugin::factory()->get_member( $user_id );
+	$level = $factory->get_level( $fromlevel_id );
+	$member = $factory->get_member( $user_id );
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
 	if ( !empty( $wprole ) ) {
@@ -134,9 +136,10 @@ function M_Roles_movedlevel( $fromlevel_id, $tolevel_id, $user_id ) {
 add_action( 'membership_move_level', 'M_Roles_movedlevel', 10, 3 );
 
 function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
+	$factory = Membership_Plugin::factory();
 
-	$level = new M_Level( $tolevel_id );
-	$member = Membership_Plugin::factory()->get_member( $user_id );
+	$level = $factory->get_level( $tolevel_id );
+	$member = $factory->get_member( $user_id );
 	$wprole = $level->get_meta( 'associated_wp_role' );
 
 	if(!empty($wprole)) {

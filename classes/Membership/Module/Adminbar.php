@@ -88,7 +88,7 @@ class Membership_Module_Adminbar extends Membership_Module {
 			$title .= __( 'Membership Admin', 'membership' );
 		} else {
 			$level_id = (int)$_COOKIE['membershipuselevel'];
-			$level = new M_Level( $level_id );
+			$level = Membership_Plugin::factory()->get_level( $level_id );
 			$title .= $level->level_title();
 		}
 

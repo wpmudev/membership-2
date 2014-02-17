@@ -39,8 +39,6 @@ set_membership_url( __FILE__ );
 set_membership_dir( __FILE__ );
 
 // Load required classes
-// Levels class
-require_once( membership_dir( 'membershipincludes/classes/class.level.php' ) );
 // Pagination class
 require_once( membership_dir( 'membershipincludes/classes/class.pagination.php' ) );
 // Shortcodes class
@@ -101,6 +99,7 @@ function membership_autoloader( $class ) {
 	switch ( $class ) {
 		case 'M_Membership':   $class = 'Membership_Model_Member';       break;
 		case 'M_Subscription': $class = 'Membership_Model_Subscription'; break;
+		case 'M_Level':        $class = 'Membership_Model_Level';        break;
 	}
 
 	// class loading

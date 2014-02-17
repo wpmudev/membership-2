@@ -344,7 +344,7 @@ if ( !class_exists( 'M_Ping' ) ) {
 
 					case '%levelname%':
 						if ( !empty( $level_id ) ) {
-							$level = new M_Level( $level_id );
+							$level = Membership_Plugin::factory()->get_level( $level_id );
 							$pingdata[$key] = $level->level_title();
 						} else {
 							$pingdata[$key] = '';
@@ -452,7 +452,7 @@ if ( !class_exists( 'M_Ping' ) ) {
 add_action( 'membership_add_level', 'M_ping_joinedlevel', 10, 2 );
 function M_ping_joinedlevel( $tolevel_id, $user_id ) {
 	// Set up the level and find out if it has a joining ping
-	$level = new M_Level( $tolevel_id );
+	$level = Membership_Plugin::factory()->get_level( $tolevel_id );
 	$joiningping_id = $level->get_meta( 'joining_ping' );
 	if ( !empty( $joiningping_id ) ) {
 		$ping = new M_Ping( $joiningping_id );
@@ -463,7 +463,7 @@ function M_ping_joinedlevel( $tolevel_id, $user_id ) {
 add_action( 'membership_drop_level', 'M_ping_leftlevel', 10, 2 );
 function M_ping_leftlevel( $fromlevel_id, $user_id ) {
 	// Set up the level and find out if it has a leaving ping
-	$level = new M_Level( $fromlevel_id );
+	$level = Membership_Plugin::factory()->get_level( $fromlevel_id );
 	$leavingping_id = $level->get_meta( 'leaving_ping' );
 	if ( !empty( $leavingping_id ) ) {
 		$ping = new M_Ping( $leavingping_id );
@@ -486,7 +486,7 @@ function M_ping_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 		$ping->send_ping( $tosub_id, $tolevel_id, $user_id );
 	}
 
-	$level = new M_Level( $tolevel_id );
+	$level = Membership_Plugin::factory()->get_level( $tolevel_id );
 	$joiningping_id = $level->get_meta( 'joining_ping' );
 	if ( !empty( $joiningping_id ) ) {
 		$ping = new M_Ping( $joiningping_id );

@@ -390,7 +390,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 						}
 
 						if ( !empty( $level_id ) ) {
-							$level = new M_Level( $level_id );
+							$level = Membership_Plugin::factory()->get_level( $level_id );
 							$commdata[$key] = $level->level_title();
 						} else {
 							$commdata[$key] = '';

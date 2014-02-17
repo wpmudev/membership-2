@@ -30,16 +30,7 @@ class Membership_Factory {
 
 	const TYPE_MEMBER       = 'member';
 	const TYPE_SUBSCRIPTION = 'subscription';
-
-	/**
-	 * Objects cache.
-	 *
-	 * @since 3.5
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $_object_cache = array();
+	const TYPE_LEVEL        = 'level';
 
 	/**
 	 * Classes cache.
@@ -49,7 +40,7 @@ class Membership_Factory {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_classes_cache = array();
+	private $_classes_cache = array();
 
 	/**
 	 * Extracts object from objects cache.
@@ -63,16 +54,9 @@ class Membership_Factory {
 	 * @return boolean TRUE if object has been extracted, otherwise FALSE.
 	 */
 	protected function _extract_from_cache( $type, $key, &$object = null ) {
-		if ( !isset( $this->_object_cache[$type] ) ) {
-			$this->_object_cache[$type] = array();
-		}
-
-		if ( array_key_exists( $key, $this->_object_cache[$type] ) ) {
-			$object = $this->_object_cache[$type][$key];
-			return true;
-		}
-
-		return false;
+		$found = false;
+		$object = wp_cache_get( $key, $type, false, $found );
+		return $found;
 	}
 
 	/**
@@ -86,11 +70,7 @@ class Membership_Factory {
 	 * @param mixed $object The object to put into the cache.
 	 */
 	protected function _put_into_cache( $type, $key, $object ) {
-		if ( !isset( $this->_object_cache[$type] ) ) {
-			$this->_object_cache[$type] = array();
-		}
-
-		$this->_object_cache[$type][$key] = $object;
+		wp_cache_add( $key, $object, $type );
 	}
 
 	/**
@@ -151,6 +131,39 @@ class Membership_Factory {
 
 		$object = new $class( $id );
 		$this->_put_into_cache( self::TYPE_SUBSCRIPTION, $id, $object );
+
+		return $object;
+	}
+
+	/**
+	 * Returns a level object.
+	 *
+	 * @sicne 3.5
+	 *
+	 * @access public
+	 * @param int $id The level's id.
+	 * @param boolean $fullload Determines whether or not we need to load level rules.
+	 * @param array $loadtype Determines what rules we need to load.
+	 * @return Membership_Model_Level The level object.
+	 */
+	public function get_level( $id = false, $fullload = false, $loadtype = array( 'public', 'core' ) ) {
+		$object = null;
+		$key = $id . ( $fullload ? 'yes' : 'no' ) . implode( '', $loadtype );
+		if ( $this->_extract_from_cache( self::TYPE_LEVEL, $key, $object ) ) {
+			return $object;
+		}
+
+		if ( !isset( $this->_classes_cache[self::TYPE_LEVEL] ) ) {
+			$this->_classes_cache[self::TYPE_LEVEL] = apply_filters( 'membership_factory_class', 'Membership_Model_Level', self::TYPE_LEVEL );
+		}
+
+		$class = $this->_classes_cache[self::TYPE_LEVEL];
+		if ( !class_exists( $class ) ) {
+			$class = 'Membership_Model_Level';
+		}
+
+		$object = new $class( $id, $fullload, $loadtype );
+		$this->_put_into_cache( self::TYPE_LEVEL, $key, $object );
 
 		return $object;
 	}

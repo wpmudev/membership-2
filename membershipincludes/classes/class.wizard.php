@@ -408,6 +408,7 @@ if(!class_exists('M_Wizard')) {
 
 		function process_normal_wizard_step() {
 			// This function sets up the normal wizard
+			$factory = Membership_Plugin::factory();
 
 			if(isset($_POST['levelname'])) {
 				foreach($_POST['levelname'] as $key => $value) {
@@ -422,10 +423,10 @@ if(!class_exists('M_Wizard')) {
 					$this->add_level_to_subscription( $level_id, $sub_id );
 
 					// Activate and make public the levels and subscriptions
-					$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
+					$sub = $factory->get_subscription( $sub_id );
 					$sub->toggleactivation();
 					$sub->togglepublic();
-					$level = new M_Level( $level_id );
+					$level = $factory->get_level( $level_id );
 					$level->toggleactivation();
 				}
 			}
@@ -433,7 +434,7 @@ if(!class_exists('M_Wizard')) {
 			// Create a visitor level and set it in the options
 			if(isset($_POST['creatavisitorlevel']) && $_POST['creatavisitorlevel'] == 'yes') {
 				$level_id = $this->create_level( __('Visitors','membership') );
-				$level = new M_Level( $level_id );
+				$level = $factory->get_level( $level_id );
 				$level->toggleactivation();
 
 				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {
@@ -476,11 +477,12 @@ if(!class_exists('M_Wizard')) {
 		}
 
 		function process_dripped_wizard_step() {
+			$factory = Membership_Plugin::factory();
 
 			if(isset($_POST['levelname'])) {
 				// Create an initial subscription
 				$sub_id = $this->create_subscription( __('Dripped Subscription', 'membership') );
-				$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
+				$sub = $factory->get_subscription( $sub_id );
 				$sub->toggleactivation();
 				$sub->togglepublic();
 
@@ -493,14 +495,14 @@ if(!class_exists('M_Wizard')) {
 					// Add the level to the subscription
 					$this->add_level_to_subscription( $level_id, $sub_id, 'finite' );
 					// Activate and make public the levels and subscriptions
-					$level = new M_Level( $level_id );
+					$level = $factory->get_level( $level_id );
 					$level->toggleactivation();
 				}
 			}
 			// Create a visitor level and set it in the options
 			if(isset($_POST['creatavisitorlevel']) && $_POST['creatavisitorlevel'] == 'yes') {
 				$level_id = $this->create_level( __('Visitors','membership') );
-				$level = new M_Level( $level_id );
+				$level = $factory->get_level( $level_id );
 				$level->toggleactivation();
 
 				if(defined('MEMBERSHIP_GLOBAL_TABLES') && MEMBERSHIP_GLOBAL_TABLES === true) {

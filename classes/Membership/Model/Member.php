@@ -755,29 +755,29 @@ class Membership_Model_Member extends WP_User {
 
 	public function assign_level( $level_id, $fullload = true ) {
 		// Used to force assign a level on a user - mainly for non logged in users
-		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array( 'public', 'core', 'admin' ) );
+		$this->levels[$level_id] = Membership_Plugin::factory()->get_level( $level_id, $fullload, array( 'public', 'core', 'admin' ) );
 	}
 
 	public function assign_public_level($level_id, $fullload = true) {
 		// Used to force assign a level on a user - mainly for non logged in users
-		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('public', 'core') );
+		$this->levels[$level_id] = Membership_Plugin::factory()->get_level( $level_id, $fullload, array('public', 'core') );
 
 	}
 
 	public function assign_admin_level($level_id, $fullload) {
 		// Used to force assign a level on a user - mainly for non logged in users
-		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('admin','core') );
+		$this->levels[$level_id] = Membership_Plugin::factory()->get_level( $level_id, $fullload, array('admin','core') );
 	}
 
 	public function assign_core_level($level_id, $fullload) {
 		// Used to force assign a level on a user - mainly for non logged in users
-		$this->levels[$level_id] = new M_Level( $level_id, $fullload, array('core') );
+		$this->levels[$level_id] = Membership_Plugin::factory()->get_level( $level_id, $fullload, array('core') );
 	}
 
 	public function load_levels( $fullload = false ) {
 		foreach ( (array)$this->get_level_ids() as $lev ) {
 			if ( !isset( $this->levels[$lev->level_id] ) ) {
-				$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array( 'public', 'core', 'admin' ) );
+				$this->levels[$lev->level_id] = Membership_Plugin::factory()->get_level( $lev->level_id, $fullload, array( 'public', 'core', 'admin' ) );
 			}
 		}
 	}
@@ -795,7 +795,7 @@ class Membership_Model_Member extends WP_User {
 		if(!empty($levels)) {
 			foreach( (array) $levels as $key => $lev ) {
 				if(!isset( $this->levels[$lev->level_id] )) {
-					$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('admin','core') );
+					$this->levels[$lev->level_id] = Membership_Plugin::factory()->get_level( $lev->level_id, $fullload, array('admin','core') );
 				}
 			}
 		}
@@ -809,7 +809,7 @@ class Membership_Model_Member extends WP_User {
 		if(!empty($levels)) {
 			foreach( (array) $levels as $key => $lev ) {
 				if(!isset( $this->levels[$lev->level_id] )) {
-					$this->levels[$lev->level_id] = new M_Level( $lev->level_id, $fullload, array('core') );
+					$this->levels[$lev->level_id] = Membership_Plugin::factory()->get_level( $lev->level_id, $fullload, array('core') );
 				}
 			}
 		}

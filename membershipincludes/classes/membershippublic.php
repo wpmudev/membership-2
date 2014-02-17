@@ -548,6 +548,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		function do_levelprotected_shortcode( $atts, $content = null, $code = "" ) {
 			global $M_options;
 
+			$factory = Membership_Plugin::factory();
+
 			$code = strtolower( $code );
 			if ( substr( $code, 0, 4 ) !== "not-" ) {
 				$shortcodes = apply_filters( 'membership_level_shortcodes', array() );
@@ -556,7 +558,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					$id = array_search( $code, $shortcodes );
 					if ( $id !== false ) {
 						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
-						$level = new M_Level( $id );
+						$level = $factory->get_level( $id );
 						$message = $level->get_meta( 'level_protectedcontent' );
 						if ( !empty( $message ) ) {
 							return do_shortcode( stripslashes( $message ) );
@@ -570,7 +572,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					$id = array_search( $code, $notshortcodes );
 					if ( $id !== false ) {
 						// we have found a level so we need to check if it has a custom protected message, otherwise we'll just output the default main on
-						$level = new M_Level( $id );
+						$level = $factory->get_level( $id );
 						$message = $level->get_meta( 'level_protectedcontent' );
 						if ( !empty( $message ) ) {
 							return do_shortcode( stripslashes( $message ) );
