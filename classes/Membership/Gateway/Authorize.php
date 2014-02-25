@@ -551,7 +551,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 				$response = $this->_get_cim()->getCustomerProfile( $cim_profile_id );
 				if ( $response->isOk() ) {
 					$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
-					$cim_profiles = $cim_profiles['paymentProfiles'];
+					$cim_profiles = is_array( $cim_profiles ) && !empty( $cim_profiles['paymentProfiles'] ) && is_array( $cim_profiles['paymentProfiles'] )
+						? $cim_profiles['paymentProfiles']
+						: array();
 				}
 			}
 		}
