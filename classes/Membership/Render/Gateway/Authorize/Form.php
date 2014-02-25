@@ -108,20 +108,22 @@ class Membership_Render_Gateway_Authorize_Form extends Membership_Render {
 
 			<ul>
 				<?php foreach ( $this->cim_profiles as $index => $profile ) : ?>
-				<li>
-					<label>
-						<input type="radio" name="profile" value="<?php echo esc_attr( $profile['customerPaymentProfileId'] ) ?>"<?php checked( $index, 0 ) ?>>
-						<?php echo esc_html( sprintf(
-							"%s %s's - XXXXXXX%s - %s, %s, %s",
-							$profile['billTo']['firstName'],
-							$profile['billTo']['lastName'],
-							$profile['payment']['creditCard']['cardNumber'],
-							$profile['billTo']['address'],
-							$profile['billTo']['city'],
-							$profile['billTo']['country']
-						) ) ?>
-					</label>
-				</li>
+					<?php if ( is_array( $profile ) && !empty( $profile['customerPaymentProfileId'] ) ) : ?>
+					<li>
+						<label>
+							<input type="radio" name="profile" value="<?php echo esc_attr( $profile['customerPaymentProfileId'] ) ?>"<?php checked( $index, 0 ) ?>>
+							<?php echo esc_html( sprintf(
+								"%s %s's - XXXXXXX%s - %s, %s, %s",
+								$profile['billTo']['firstName'],
+								$profile['billTo']['lastName'],
+								$profile['payment']['creditCard']['cardNumber'],
+								$profile['billTo']['address'],
+								$profile['billTo']['city'],
+								$profile['billTo']['country']
+							) ) ?>
+						</label>
+					</li>
+					<?php endif; ?>
 				<?php endforeach; ?>
 				<li id="auth-new-cc">
 					<label>
