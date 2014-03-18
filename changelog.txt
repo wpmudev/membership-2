@@ -1,5 +1,7 @@
 == 3.5 ==
 
+* Fixed network/super admin permissions
+* Fixed bugs with global cart
 * Fixed admin menu protection rules
 * Fixed BuddyPress private messages protection rule
 * Fixed issue with showing posts from protected categories
@@ -36,6 +38,8 @@
 * Fixed protection issue for BuddyPress group creation rule
 * Fixed BuddyPress account editing issue
 * Fixed reverting roles issue for expired subscription
+* Added ability to use array variables when setting up ping data
+* Added response column to ping history screen - useful for debugging
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
 * Implemented membership access level meta box for posts and pages editing form
 * Implemented functionality which hides inactive members from BuddyPress members list
@@ -60,6 +64,7 @@
 * Reworked purchase free subscription process
 * Reworked default subscription setup for users without subscriptions
 * Removed ability to deactivate user on registration
+* Removed ability to move member level (this is the same as moving to the same subscription, but a new level)
 
 == 3.4.6 ==
 

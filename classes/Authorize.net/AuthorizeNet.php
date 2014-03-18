@@ -4,6 +4,9 @@
  *
  * @package AuthorizeNet
  */
+
+if ( !class_exists('AuthorizeNetException') ) :
+
 require dirname(__FILE__) . '/lib/shared/AuthorizeNetRequest.php';
 require dirname(__FILE__) . '/lib/shared/AuthorizeNetTypes.php';
 require dirname(__FILE__) . '/lib/shared/AuthorizeNetXMLResponse.php';
@@ -27,3 +30,5 @@ if (class_exists("SoapClient")) {
 class AuthorizeNetException extends Exception
 {
 }
+
+endif;

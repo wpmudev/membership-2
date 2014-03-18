@@ -440,7 +440,7 @@ class Membership_Model_Member extends WP_User {
 		if ( $check_order !== false ) {
 			$sql .= $this->_wpdb->prepare( " AND order_instance = %d", $check_order );
 		}
-
+		
 		$result = $this->_wpdb->get_col( $sql );
 
 		return apply_filters( 'membership_on_level', !empty( $result ), $level_id, $this->ID );
@@ -491,7 +491,7 @@ class Membership_Model_Member extends WP_User {
 		}
 	}
 
-	public function move_level( $fromlevel_id, $tolevel_id ) {
+	public function move_level( $fromlevel_id, $tolevel_id, $sub_id = 0 ) {
 		if ( !apply_filters( 'pre_membership_move_level', true, $fromlevel_id, $tolevel_id, $this->ID ) ) {
 			return false;
 		}
@@ -503,7 +503,7 @@ class Membership_Model_Member extends WP_User {
 			), array(
 				'level_id' => $fromlevel_id,
 				'user_id'  => $this->ID,
-				'sub_id'   => 0
+				'sub_id'   => $sub_id,
 			), array( '%d', '%s' ), array( '%d', '%d', '%d' ) );
 
 			do_action( 'membership_move_level', $fromlevel_id, $tolevel_id, $this->ID );

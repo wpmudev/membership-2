@@ -1,13 +1,14 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 3.5.beta.8
+Version: 3.5.beta.11
 Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
 WDP ID: 140
 License: GNU General Public License (Version 2 - GPLv2)
+Text Domain: membership
  */
 
 // +----------------------------------------------------------------------+
@@ -30,7 +31,7 @@ License: GNU General Public License (Version 2 - GPLv2)
 
 // Load the new config file
 require_once('membershipincludes/includes/config.php');
-// Load the old config file - depreciated
+// Load the old config file - deprecated
 require_once('membershipincludes/includes/membership-config.php');
 // Load the common functions
 require_once('membershipincludes/includes/functions.php');

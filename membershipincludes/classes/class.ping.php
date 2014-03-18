@@ -115,13 +115,14 @@ if ( !class_exists( 'M_Ping' ) ) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br /><em>';
+			echo '<br /><br /><em style="font-family:monospace">';
 
 			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
 
-			echo '</em><br/>' . __('One entry per line. e.g. key=value','membership');
+			echo '</em><br/><br />';
+			echo __('You can also make a variable an array. (e.g. merge_vars[FNAME]=%userfirstname%)', 'membership') . '<br /><br />';
+			echo __('One entry per line. e.g. key=value','membership');
 			echo '</div>';
-
 			echo '</td>';
 			echo '</tr>';
 
@@ -162,16 +163,17 @@ if ( !class_exists( 'M_Ping' ) ) {
 			// Display some instructions for the message.
 			echo '<div class="instructions" style="float: left; width: 40%; margin-left: 10px;">';
 			echo __('You can use the following constants within the message body to embed database information.','membership');
-			echo '<br /><em>';
+			echo '<br /><br /><em style="font-family:monospace">';
 
 			echo implode('<br/>', array_keys(apply_filters('membership_ping_constants_list', $this->pingconstants)) );
 
-			echo '</em><br/>' . __('One entry per line. e.g. key=value','membership');
-
+			echo '</em><br/><br />';
+			echo __('You can also make a variable an array. (e.g. merge_vars[FNAME]=%userfirstname%)', 'membership') . '<br /><br />';
+			echo __('One entry per line. e.g. key=value','membership');
 			echo '</div>';
 			echo '</td>';
 			echo '</tr>';
-
+			
 			echo '<tr class="form-field form-required">';
 			echo '<th style="" scope="row" valign="top">' . __('Ping method','membership') . '</th>';
 			echo '<td valign="top" align="left">';
@@ -360,7 +362,7 @@ if ( !class_exists( 'M_Ping' ) ) {
 						break;
 				}
 			}
-
+			
 			// Globally replace the values in the ping and then make it into an array to send
 			$pingmessage = str_replace( array_keys( $pingdata ), array_values( $pingdata ), $this->ping->pinginfo );
 			$pingmessage = array_map( 'trim', explode( PHP_EOL, $pingmessage ) );
@@ -369,11 +371,27 @@ if ( !class_exists( 'M_Ping' ) ) {
 			$pingtosend = array();
 			foreach ( $pingmessage as $key => $value ) {
 				$temp = explode( "=", $value );
-				if ( count( $temp ) == 2 ) {
+				
+				if ( strpos($temp[0], '[') !== false && strpos($temp[0], ']') !== false ) {
+					//this key is an array - let's add to the $pingtosend array as an array
+					$varname = $temp[0];
+					$value = $temp[1];
+					
+					$start = strpos($varname, '[');
+					$end = strpos($varname, ']');
+					$key = substr($varname, 0, $start);
+					$subkey = substr($varname, $start+1, $end-$start-1);
+					
+					if ( !isset($pingtosend[$key]) ) {
+						$pingtosend[$key] = array($subkey => $value);
+					} else {
+						$pingtosend[$key][$subkey] = $value;
+					}
+				} elseif ( count( $temp ) == 2 ) {
 					$pingtosend[$temp[0]] = $temp[1];
 				}
 			}
-
+			
 			// Send the request
 			$request = new WP_Http();
 			$url = $this->ping->pingurl;
