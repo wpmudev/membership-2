@@ -1,0 +1,9 @@
+<h2><?php _e( 'Stranger Settings', 'membership' ) ?></h2>
+<p><?php _e( 'If you used the Wizard and selected "Also create a level to control what non- members can see?" then a default Visitors level will have been created and that will be the default option selected here. If there is no Stranger level then all of your content will be protected regardless which is probably not what you want because you would want to pop some blurb on there about why people need your critical subscription offerings.', 'membership' ) ?></p>
+<p><?php _e( 'It will then be down to each level to decide who has what access.', 'membership' ) ?></p>
+<p><?php _e( 'If you set this to none, then you can choose a page in the Membership Pages tab where users will be directed to if they do not have a subscription with you when viewing protected content.', 'membership' ) ?></p>
+<p><?php _e( 'As the description points out, this level will be used for visitors and members without a free or paid subscription to your site (free as in you give it them for free. Not free as in Stranger Level free). If you did not insert a visitor level you can go create that and then come back here to finish the set up.', 'membership' ) ?></p>
+
+<h2><?php _e( 'User Registration', 'membership' ) ?></h2>
+<p><?php _e( 'You might want to offer a free subscription, like "signup for 10 days free", you can set which subscription they are assigned to by default. Most people will probably just create a stranger level as described previously in the Stranger Settings. But if you wanted to limit the time access then a free subscription is something to consider as well.', 'membership' ) ?></p>
+<p><?php _e( 'You can also choose to allow incomplete signups, so if your user registers but does not complete the signup process they would still be assigned an account for subscriptions.', 'membership' ) ?></p>

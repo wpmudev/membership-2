@@ -1,0 +1,1 @@
+<p><?php _e('This is where you can create groups of URLs (web pages) that you want to prevent access to. A URL group can contain as many URLs as you want, and can even include regular expressions so that you can prevent access to large areas of your website in one go.', 'membership'); ?></p>

@@ -1,0 +1,30 @@
+#poststuff #membership-access-level .inside {
+	padding: 0;
+	margin: 0;
+}
+
+#poststuff #membership-access-level .misc-pub-section:last-child {
+	border-bottom-width: 0;
+}
+
+#poststuff #membership-access-level .membership-level-rule-ive {
+	margin-left: 5px;
+	font-weight: bold;
+}
+
+#poststuff #membership-access-level .membership-level-rule-ive.negative {
+	color: red;
+}
+
+#poststuff #membership-access-level .membership-level-rule-ive.positive {
+	color: green;
+}
+
+#poststuff #membership-access-level .membership-access-info {
+	padding: 0 12px 0 10px;
+	margin: 6px 0 8px;
+}
+
+#poststuff #membership-access-level .membership-access-info p > code {
+	font-weight: bold;
+}
