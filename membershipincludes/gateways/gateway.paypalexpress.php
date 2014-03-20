@@ -911,17 +911,20 @@ class paypalexpress extends Membership_Gateway {
 
             membership_debug_log(__('Received PayPal IPN from - ', 'membership') . $domain);
 
-            //Paypal post authenticity verification
+			//Paypal post authenticity verification
 			$ipn_data = (array) stripslashes_deep( $_POST );
-			$ipn_data['cmd'] = '_notify-validate';			
-			$response = wp_remote_post("$domain/cgi-bin/webscr", array(
+			$ipn_data['cmd'] = '_notify-validate';
+			//sslverify set to false to avoid certification verification issues (lots of problems reported in forums) 			
+			$response = wp_remote_post( "$domain/cgi-bin/webscr", array(
+					'method' => 'POST',
 					'timeout' => 60,
+					'httpversion' => '1.1',
 					'sslverify' => false,
 					'body' => $ipn_data,
 				) );
 
 			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
-				membership_debug_log( 'PayPal Transaction Verified' );	
+				membership_debug_log( 'PayPal Transaction Verified' );
 			} else {
 				$error = 'Response Error: Unexpected transaction response';
 				membership_debug_log( $error );
