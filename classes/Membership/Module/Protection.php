@@ -197,7 +197,7 @@ class Membership_Module_Protection extends Membership_Module {
 	 * @param WP $wp Instance of WP class.
 	 */
 	public function initialise_protection( WP $wp ) {
-		global $member, $M_options;
+		global $member, $M_options, $membershippublic;
 		static $initialised = false;
 
 		if ( $initialised ) {
@@ -211,7 +211,7 @@ class Membership_Module_Protection extends Membership_Module {
 		// We are not a membershipadmin user
 		if ( !empty( $wp->query_vars['feed'] ) ) {
 			// This is a feed access, then set the feed rules
-			$user_id = (int)$this->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
+			$user_id = (int)$membershippublic->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
 			if ( $user_id > 0 ) {
 				// Logged in - check there settings, if they have any.
 				$member = $factory->get_member( $user_id );

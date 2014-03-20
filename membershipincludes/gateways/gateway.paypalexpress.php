@@ -911,70 +911,28 @@ class paypalexpress extends Membership_Gateway {
 
             membership_debug_log(__('Received PayPal IPN from - ', 'membership') . $domain);
 
-            $req = 'cmd=_notify-validate';
-            if (!isset($_POST))
-                $_POST = $HTTP_POST_VARS;
-            foreach ($_POST as $k => $v) {
-                if (get_magic_quotes_gpc())
-                    $v = stripslashes($v);
-                $req .= '&' . $k . '=' . $v;
-            }
-
-            $header = 'POST /cgi-bin/webscr HTTP/1.0' . "\r\n"
-                    . 'Content-Type: application/x-www-form-urlencoded' . "\r\n"
-                    . 'Content-Length: ' . strlen($req) . "\r\n"
-                    . "\r\n";
-
-            @set_time_limit(60);
-            if ($conn = @fsockopen($domain, 80, $errno, $errstr, 30)) {
-                fputs($conn, $header . $req);
-                socket_set_timeout($conn, 30);
-
-                $response = '';
-                $close_connection = false;
-                while (true) {
-                    if (feof($conn) || $close_connection) {
-                        fclose($conn);
-                        break;
-                    }
-
-                    $st = @fgets($conn, 4096);
-                    if ($st === false) {
-                        $close_connection = true;
-                        continue;
-                    }
-
-                    $response .= $st;
-                }
-
-                $error = '';
-                $lines = explode("\n", str_replace("\r\n", "\n", $response));
-                // looking for: HTTP/1.1 200 OK
-                if (count($lines) == 0)
-                    $error = 'Response Error: Header not found';
-                else if (substr($lines[0], -7) != ' 200 OK')
-                    $error = 'Response Error: Unexpected HTTP response';
-                else {
-                    // remove HTTP header
-                    while (count($lines) > 0 && trim($lines[0]) != '')
-                        array_shift($lines);
-
-                    // first line will be empty, second line will have the result
-                    if (count($lines) < 2)
-                        $error = 'Response Error: No content found in transaction response';
-                    else if (strtoupper(trim($lines[1])) != 'VERIFIED')
-                        $error = 'Response Error: Unexpected transaction response';
-                }
-
-                if ($error != '') {
-                    echo $error;
-                    membership_debug_log($error);
-                    exit;
-                }
-            }
+            //Paypal post authenticity verification
+						$ipn_data = (array) stripslashes_deep( $_POST );
+						$ipn_data['cmd'] = '_notify-validate';			
+						$response = wp_remote_post("$domain/cgi-bin/webscr", array(
+								'timeout' => 60,
+								'httpversion' => '1.1',
+								'sslverify' => false,
+								'body' => $ipn_data,
+							) );
+			
+						if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
+							membership_debug_log( 'PayPal Transaction Verified' );	
+						} else {
+							$error = 'Response Error: Unexpected transaction response';
+							membership_debug_log( $error );
+							membership_debug_log( $response );
+							echo $error;
+							exit;
+						}
 
             // process PayPal response
-			$factory = Membership_Plugin::factory();
+						$factory = Membership_Plugin::factory();
             switch (filter_input( INPUT_POST, 'payment_status' ) ) {
                 case 'Completed':
                 case 'Processed':

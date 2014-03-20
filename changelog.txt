@@ -38,6 +38,7 @@
 * Fixed protection issue for BuddyPress group creation rule
 * Fixed BuddyPress account editing issue
 * Fixed reverting roles issue for expired subscription
+* Fixed Paypal gateway issue with post transaction not being verified and therefore not activating the subscription paid
 * Added ability to use array variables when setting up ping data
 * Added response column to ping history screen - useful for debugging
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways
