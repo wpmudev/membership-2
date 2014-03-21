@@ -23,7 +23,9 @@ add_action( 'init', 'membership_news_install');
 function membership_newsstreamcreatetables($installed = false) {
 
 	global $wpdb;
-
+	
+	$charset_collate = M_get_charset_collate();
+	
 	if($installed !== false) {
 		$sql = "RENAME TABLE " . membership_db_prefix($wpdb, 'membership_news', false) . " TO " . membership_db_prefix($wpdb, 'membership_news') . ";";
 		$wpdb->query($sql);
@@ -34,7 +36,7 @@ function membership_newsstreamcreatetables($installed = false) {
 		  `newsitem` text,
 		  `newsdate` datetime default NULL,
 		  PRIMARY KEY  (`id`)
-		);";
+		) $charset_collate;";
 
 		$wpdb->query($sql);
 	}
