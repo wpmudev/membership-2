@@ -1,6 +1,7 @@
 <?php
 
 function M_get_charset_collate() {
+	global $wpdb;
 	$charset_collate = '';
 	if ( !empty( $wpdb->charset ) ) {
 		$charset_collate = " DEFAULT CHARACTER SET " . $wpdb->charset;
@@ -55,10 +56,56 @@ function M_Upgrade( $from = false ) {
 		case 16:
 		case 17:
 			M_Alterfor16();
+			
+		case 18:
+		case 19:
+			M_Alterfor18();
 			break;
 	}
 }
-
+/**
+ * Convert Membership tables charset and collate.
+ * 
+ * Fix to convert membership tables to default charset and collate defined in wp-config.php.
+ * Before this version, a bug was not considering charset and collate.
+ *  
+ */
+function M_Alterfor18() {
+	global $wpdb;
+	
+	$charset_collate = '';
+	if ( !empty( $wpdb->charset ) ) {
+		$charset_collate = $wpdb->charset;
+	}
+	if ( !empty( $wpdb->collate ) ) {
+		$charset_collate .= " COLLATE {$wpdb->collate}";
+	}
+	
+	$tables = array(
+			membership_db_prefix( $wpdb, 'communications' ),
+			membership_db_prefix( $wpdb, 'coupons' ),
+			membership_db_prefix( $wpdb, 'levelmeta' ),
+			membership_db_prefix( $wpdb, 'membership_levels' ),
+			membership_db_prefix( $wpdb, 'membership_news' ),
+			membership_db_prefix( $wpdb, 'member_payments' ),
+			membership_db_prefix( $wpdb, 'membership_relationships' ),
+			membership_db_prefix( $wpdb, 'membership_rules' ),
+			membership_db_prefix( $wpdb, 'subscriptions' ),
+			membership_db_prefix( $wpdb, 'subscriptionmeta' ),
+			membership_db_prefix( $wpdb, 'subscriptions_levels' ),
+			membership_db_prefix( $wpdb, 'subscription_transaction' ),
+			membership_db_prefix( $wpdb, 'pings' ),
+			membership_db_prefix( $wpdb, 'ping_history' ),
+			membership_db_prefix( $wpdb, 'urlgroups' ),
+	);
+	if( ! empty( $charset_collate ) )
+	{
+		foreach ( $tables as $table )
+		{
+			$wpdb->query( "ALTER TABLE $table CONVERT TO CHARACTER SET $charset_collate" );
+		}
+	}
+}
 function M_Alterfor16() {
 	global $wpdb;
 
