@@ -1,3 +1,7 @@
+== 3.5.0.1 ==
+
+* Fixed bug with Chinese characters in form fields not saving/rendering properly http://wp.mu/925
+
 == 3.5 ==
 
 * Fixed network/super admin permissions
