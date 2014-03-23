@@ -206,7 +206,8 @@ function membership_launch() {
 
 	$plugin->set_module( Membership_Module_System::NAME );
 	$plugin->set_module( Membership_Module_Upgrade::NAME );
-
+	$plugin->set_module( Membership_Module_Menu::NAME );
+	
 	if ( Membership_Plugin::is_enabled() ) {
 		$plugin->set_module( Membership_Module_Protection::NAME );
 	}
