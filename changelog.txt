@@ -1,3 +1,11 @@
+== 3.5.0.4 ==
+
+* Additional fixes for category rules
+ 
+== 3.5.0.3 ==
+
+* Fixed: notices/warnings in menu
+
 == 3.5.0.2 ==
 
 * Fixed: category rules would apply to custom post types (e.g. menu items, etc) causing those elements to not show up

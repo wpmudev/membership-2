@@ -136,7 +136,7 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function filter_viewable_posts( WP_Query $query ) {
-		if ( isset($wp_query->post_type) && $wp_query->post_type == 'post' )	//don't apply these rules to custom post types!
+		if ( isset($query->post_type) && $query->post_type == 'post' )	//don't apply these rules to custom post types!
 			$query->query_vars['category__in'] = array_unique( array_merge( $query->query_vars['category__in'], $this->data ) );
 	}
 
