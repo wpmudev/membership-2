@@ -667,8 +667,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 			switch ( $pricing[$i]['type'] ) {
 				case 'finite':
-					$this->_transactions[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
-
+					//Call ARB with only one recurrency for each subscription level.
+					$this->_transactions[] = $this->_process_serial_purchase( $pricing[$i], $started, 1 );
 					$interval = self::_get_period_interval_in_date_format( $pricing[$i]['unit'] );
 					$started->modify( sprintf( '+%d %s', $pricing[$i]['period'], $interval ) );
 					break;
@@ -676,7 +676,8 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 					$this->_transactions[] = $this->_process_nonserial_purchase( $pricing[$i], $started );
 					break 2;
 				case 'serial':
-					$this->_transactions[] = $this->_process_serial_purchase( $pricing[$i], $started );
+					//Call ARB with no end date (an ongoing subscription).
+					$this->_transactions[] = $this->_process_serial_purchase( $pricing[$i], $started, 9999 );
 					break 2;
 			}
 
@@ -804,9 +805,11 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @global array $M_options The array of plugin options.
 	 * @param array $price The array with current price information.
 	 * @param DateTime $date The date when to process this transaction.
+	 * @param int $total_occurencies The number of billing occurrences or payments for the subscription. 
+	 * 		To submit a subscription with no end date, this field must be submitted with a value of 9999
 	 * @return array Returns transaction information on success, otherwise NULL.
 	 */
-	protected function _process_serial_purchase( $price, $date ) {
+	protected function _process_serial_purchase( $price, $date, $total_occurencies) {
 		if ( $price['amount'] == 0 ) {
 			$this->_payment_result['status'] = 'success';
 			return null;
@@ -838,7 +841,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$subscription->name = $name;
 		$subscription->amount = $amount;
 		$subscription->startDate = $date->format( 'Y-m-d' );
-		$subscription->totalOccurrences = 9999;
+		$subscription->totalOccurrences = $total_occurencies;
 
 		if ( isset( $price['origin'] ) ) {
 			// coupon is applied, so we need to add trial period
@@ -1106,15 +1109,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 	 * @since 3.5
 	 *
 	 * @access protected
-	 * @staticvar AuthorizeNetARB $arb The instance of AuthorizeNetARB class.
 	 * @return AuthorizeNetARB The instance of AuthorizeNetARB class.
 	 */
 	protected function _get_arb() {
-		static $arb = null;
-
-		if ( !is_null( $arb ) ) {
-			return $arb;
-		}
 
 		require_once MEMBERSHIP_ABSPATH . '/classes/Authorize.net/AuthorizeNet.php';
 
