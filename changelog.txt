@@ -1,3 +1,10 @@
+== 3.5.0.2 ==
+
+* Fixed: category rules would apply to custom post types (e.g. menu items, etc) causing those elements to not show up
+* Fixed: authorize.net errors when using a dripped content setup http://wp.mu/92g
+* Fixed: remove old subscription when updating http://wp.mu/92h
+* Fixed: membership menu would some times not show up in wp-admin
+ 
 == 3.5.0.1 ==
 
 * Fixed bug with Chinese characters in form fields not saving/rendering properly http://wp.mu/925

@@ -52,7 +52,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 					}
 				} else {
-					add_action( 'network_admin_menu', array( $this, 'add_admin_menu' ) );
+					add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 				}
 			} else {
 				add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -158,8 +158,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 */
 		
 		function is_main_site() {
-			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') && MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() ) {
-				return true;
+			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') ) {
+				return ( MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() );
 			}
 			
 			return ( is_main_site() );

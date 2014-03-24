@@ -179,7 +179,7 @@ class Membership_Menu_Walker extends Walker_Nav_Menu {
 			$member = Membership_Plugin::factory()->get_member( $current_user->ID );
 			if ( $member->has_subscription() )
 			{
-				if ( $item->title != get_the_title( $M_options['registration_page'] ) ) {
+				if ( $item->object_id != $M_options['registration_page'] ) {
 					$output .= $menu_item_output;
 				}
 			} else {
@@ -201,7 +201,7 @@ class Membership_Menu_Walker extends Walker_Nav_Menu {
 	* @param array  $args   An array of arguments. @see wp_nav_menu()
 	*/
 	function end_el( &$output, $item, $depth = 0, $args = array() ) {
-		if ( $item->title != get_the_title( $M_options['registration_page'] ) ) {	
+		if ( $item->object_id != $M_options['registration_page'] ) {	
 			$output .= "</li>\n";
 		}
 	}

@@ -136,7 +136,8 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function filter_viewable_posts( WP_Query $query ) {
-		$query->query_vars['category__in'] = array_unique( array_merge( $query->query_vars['category__in'], $this->data ) );
+		if ( isset($wp_query->post_type) && $wp_query->post_type == 'post' )	//don't apply these rules to custom post types!
+			$query->query_vars['category__in'] = array_unique( array_merge( $query->query_vars['category__in'], $this->data ) );
 	}
 
 	/**
@@ -150,7 +151,8 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function filter_unviewable_posts( WP_Query $wp_query ) {
-		$wp_query->query_vars['category__not_in'] = array_unique( array_merge( $wp_query->query_vars['category__not_in'], $this->data ) );
+		if ( isset($wp_query->post_type) && $wp_query->post_type == 'post' )	//don't apply these rules to custom post types!
+			$wp_query->query_vars['category__not_in'] = array_unique( array_merge( $wp_query->query_vars['category__not_in'], $this->data ) );
 	}
 
 	/**
