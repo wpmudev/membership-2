@@ -41,88 +41,66 @@ class Membership_Module_Menu extends Membership_Module {
 	public function __construct( Membership_Plugin $plugin ) {
 		parent::__construct( $plugin );
 
-		$this->_add_filter( 'wp_nav_menu_args', 'remove_register_menu' );
+		if ( is_admin() ) {
+			//bail if in admin
+			return;
+		}
+		
+		$this->_add_filter( 'wp_get_nav_menu_items', 'filter_nav_menu_items', 10, 3);
+		$this->_add_filter( 'wp_list_pages_excludes', 'filter_wp_list_pages');
 	}
 
 	/**
-	 * Removes registration menu item from Members with subscriptions.
+	 * Removes registration page from menus that use wp_list_pages
 	 *
-	 * @since 3.5
-	 * @action widgets_init
+	 * @since 3.5.0.6
 	 *
 	 * @access public
 	 */
-	function remove_register_menu( $original ) {
-	     $original['walker'] = new Membership_Menu_Walker();
-	     return $original;
-	}
-
-}
-
-
-
-/**
- * The class responsible for the menu walker.
- *
- * @category Membership
- * @package Module
- *
- * @since 3.5
- */
-class Membership_Menu_Walker extends Walker_Nav_Menu {
-	/**
-	* Start the element output.
-	*
-	* @see Walker::start_el()
-	*
-	* @since 3.0.0
-	*
-	* @param string $output Passed by reference. Used to append additional content.
-	* @param object $item   Menu item data object.
-	* @param int    $depth  Depth of menu item. Used for padding.
-	* @param array  $args   An array of arguments. @see wp_nav_menu()
-	* @param int    $id     Current item ID.
-	*/
-	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+	function filter_wp_list_pages( $items ) {
 		global $M_options;
 		
 		if ( is_user_logged_in() ) {
 			$current_user = wp_get_current_user();
 			$member = Membership_Plugin::factory()->get_member( $current_user->ID );
 
-			if ( $member->has_subscription() && $item->object_id == $M_options['registration_page'] ) {
-				return;
+			if ( $member->has_subscription() ) {
+				$items[] = $M_options['registration_page'];
 			}
 		}
 		
-		parent::start_el($output, $item, $depth, $args, $id);
+		return $items;
 	}
-
+	
 	/**
-	* Ends the element output, if needed.
-	*
-	* @see Walker::end_el()
-	*
-	* @since 3.0.0
-	*
-	* @param string $output Passed by reference. Used to append additional content.
-	* @param object $item   Page data object. Not used.
-	* @param int    $depth  Depth of page. Not Used.
-	* @param array  $args   An array of arguments. @see wp_nav_menu()
-	*/
-	function end_el( &$output, $item, $depth = 0, $args = array() ) {
+	 * Removes registration page from menus that use wp_nav_menu
+	 *
+	 * @since 3.5.0.6
+	 *
+	 * @access public
+	 */
+	function filter_nav_menu_items( $items, $menu, $args ) {
 		global $M_options;
 		
-		if ( is_user_logged_in() ) {
-			$current_user = wp_get_current_user();
-			$member = Membership_Plugin::factory()->get_member( $current_user->ID );
+		if ( ! is_user_logged_in() ) {
+			//bail if not logged in
+			return $items;
+		}
+		
+		$current_user = wp_get_current_user();
+		$member = Membership_Plugin::factory()->get_member( $current_user->ID );
 
-			if ( $member->has_subscription() && $item->object_id == $M_options['registration_page'] ) {
-				return;
+		if ( ! $member->has_subscription() ) {
+			//bail if member doesn't have subscription
+			return $items;
+		}
+			
+		foreach ( $items as $key => $item ) {
+			if ( $item->object_id == $M_options['registration_page'] ) {
+				unset($items[$key]);
 			}
 		}
 		
-		parent::end_el($output, $item, $depth, $args);
+		return $items;
 	}
-
 }

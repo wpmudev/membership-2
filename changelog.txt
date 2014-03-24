@@ -1,3 +1,7 @@
+== 3.5.0.6 ==
+
+* Fixed: disappearing menu bug
+
 == 3.5.0.5 ==
 
 * Fixed: rules in inactive access levels were still being applied
