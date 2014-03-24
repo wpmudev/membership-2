@@ -107,7 +107,7 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 */
 	public function on_positive( $data ) {
 		$this->data = array_filter( array_map( 'intval', (array)$data ) );
-
+		
 		add_action( 'pre_get_posts', array( $this, 'filter_viewable_posts' ), 1 );
 		add_filter( 'get_terms', array( $this, 'filter_viewable_categories' ), 1 );
 	}
@@ -235,8 +235,7 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 		if ( is_category() ) {
 			return in_array( get_queried_object_id(), $this->data );
 		}
-
+		
 		return parent::validate_positive();
 	}
-
 }

@@ -1,3 +1,7 @@
+== 3.5.0.5 ==
+
+* Fixed: rules in inactive access levels were still being applied
+
 == 3.5.0.4 ==
 
 * Additional fixes for category rules

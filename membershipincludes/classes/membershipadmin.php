@@ -3942,7 +3942,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$positives = $mlevel->get_rules('positive');
 								$negatives = $mlevel->get_rules('negative');
 						}
-
+						
 						// Re-arrange the rules
 						$rules = array();
 						$p = array();
