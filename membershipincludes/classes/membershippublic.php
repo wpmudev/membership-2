@@ -1547,6 +1547,20 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			}
 
 			if ( membership_is_registration_page( $post->ID, false ) ) {
+
+				// Redirect members with subscriptions to the subscriptions page if it exists, else account page.
+				global $member;
+				if ( $member->has_subscription() )
+				{
+					if( isset( $M_options['subscriptions_page'] ) ){
+						wp_redirect( get_permalink( $M_options['subscriptions_page'] ) );
+						exit;						
+					} else {
+						wp_redirect( get_permalink( $M_options['account_page'] ) );
+						exit;						
+					}
+				}				
+				
 				add_action( 'template_redirect', array( $this, 'process_subscription_form' ), 1 );
 
 				// check if page contains a shortcode
