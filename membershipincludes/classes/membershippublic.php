@@ -1550,7 +1550,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// Redirect members with subscriptions to the subscriptions page if it exists, else account page.
 				global $member;
-				if ( $member->has_subscription() )
+				if ( $member->has_subscription() && !isset( $_GET['from_subscription'] ) )
 				{
 					if( isset( $M_options['subscriptions_page'] ) ){
 						wp_redirect( get_permalink( $M_options['subscriptions_page'] ) );
