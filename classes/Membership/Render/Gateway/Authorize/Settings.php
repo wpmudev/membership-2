@@ -60,6 +60,10 @@ class Membership_Render_Gateway_Authorize_Settings extends Membership_Render {
 					<td><input type="text" name="api_key" value="<?php echo esc_attr( $this->api_key ) ?>"></td>
 				</tr>
 				<tr valign="top">
+					<th scope="row"><?php _e( 'Pay Button Label', 'membership' ) ?></th>
+					<td><input type="text" name="pay_button_label" value="<?php echo esc_attr( $this->pay_button_label ) ?>"></td>
+				</tr>
+				<tr valign="top">
 					<td colspan="2">
 						<span class="description"><?php
 							esc_html_e( 'Pay attention that API login ID is not the same login as you use to login into your Authorize.net account. You can find your API Login ID value at the same page where you create your transaction key.', 'membership' )
