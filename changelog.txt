@@ -1,3 +1,7 @@
+== 3.5.0.8 ==
+
+* Fixed: buddypress bug resolved where first name and last name weren't written to the database 
+
 == 3.5.0.7 ==
 
 * Fixed: tables with mediumtext columns data type modified to text data type 
