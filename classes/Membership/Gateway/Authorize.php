@@ -380,7 +380,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 
 		$template->api_user = $this->_get_option( 'api_user' );
 		$template->api_key = $this->_get_option( 'api_key' );
-
+		
+		$template->pay_button_label = $this->_get_option( 'pay_button_label' );
+		
 		$template->mode = $this->_get_option( 'mode', self::MODE_SANDBOX );
 		$template->modes = array(
 			self::MODE_SANDBOX => __( 'Sandbox', 'membership' ),
@@ -408,7 +410,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			$method( $this->gateway . "_mode", $mode );
 		}
 
-		foreach ( array( 'api_user', 'api_key' ) as $option ) {
+		foreach ( array( 'api_user', 'api_key' , 'pay_button_label' ) as $option ) {
 			$key = "{$this->gateway}_{$option}";
 			if ( isset( $_POST[$option] ) ) {
 				$method( $key, filter_input( INPUT_POST, $option ) );
@@ -509,7 +511,9 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 		$template->subscription_id = $subscription->id;
 		$template->from_subscription_id = (int)$fromsub_id;
 		$template->user_id = $user_id;
-		$template->button_label = $label;
+		
+		$pay_button_label = trim( $this->_get_option( 'pay_button_label' ) );
+		$template->button_label = !empty( $pay_button_label ) ? $pay_button_label : $label;
 
 		$actionurl = add_query_arg( array( 'action' => 'registeruser', 'subscription' => $subscription->id ), $actionurl );
 		$template->actionurl = $actionurl;
