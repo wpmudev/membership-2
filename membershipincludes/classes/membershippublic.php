@@ -1376,6 +1376,13 @@ if ( !class_exists( 'membershippublic', false ) ) :
 									$visibility_level = !empty( $_POST['field_' . $field_id . '_visibility'] ) ? $_POST['field_' . $field_id . '_visibility'] : 'public';
 									xprofile_set_field_visibility_level( $field_id, $user_id, $visibility_level );
 								}
+								
+								// Make sure the User Meta is updated with the xprofile name
+							 	$data = explode( ' ', xprofile_get_field_data( 'Name', $user_id, 'array' ) );
+								$firstname = array_shift( $data );
+								$lastname = implode( ' ', $data );
+								update_user_meta( $user_id, 'first_name', $firstname );
+								update_user_meta( $user_id, 'last_name', $lastname );				
 							}
 						}
 

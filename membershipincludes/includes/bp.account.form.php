@@ -14,6 +14,11 @@ if ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
 				$msg = '<div class="alert alert-error">' . implode( '<br>', $errors->get_error_messages() ) . '</div>';
 			}
 		}
+		
+		// Set xprofile 'Name'
+		$xprofile_name = filter_input( INPUT_POST, 'first_name' ) . ' ' . filter_input( INPUT_POST, 'last_name' );
+		xprofile_set_field_data( 'Name', $user_id, $xprofile_name );
+		
 	} else {
 		$msg = '<div class="alert alert-error">' . __( 'Your details could not be updated.', 'membership' ) . '</div>';
 	}
