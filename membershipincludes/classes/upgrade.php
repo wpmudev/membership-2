@@ -59,6 +59,7 @@ function M_Upgrade( $from = false ) {
 			
 		case 18:
 		case 19:
+		case 20:
 			M_Alterfor18();
 			M_repair_tables( false );
 			break;

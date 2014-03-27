@@ -4,7 +4,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 		class membershipadmin {
 
-				var $build = 19;
+				var $build = 20;
 				var $db;
 				//
 				var $showposts = 25;
