@@ -60,6 +60,7 @@ function M_Upgrade( $from = false ) {
 		case 18:
 		case 19:
 			M_Alterfor18();
+			M_repair_tables( false );
 			break;
 	}
 }
@@ -764,6 +765,14 @@ function M_add_possible_missing_fields( $table, $name, $type, $after, $key = fal
 	}
 }
 
+function M_repair_field_type ( $table, $name, $type ) {
+	global $wpdb;
+	
+	$sql = "ALTER TABLE $table MODIFY $name $type";
+	$wpdb->query( $sql );
+	
+}
+
 function M_verify_tables() {
 
 	global $wpdb;
@@ -813,24 +822,23 @@ function M_verify_tables() {
 
 }
 
-function M_repair_tables() {
-
+function M_repair_tables( $print = true ) {
 	global $wpdb;
 
 	$tables = M_build_database_structure();
-
+	$html = '';
 	foreach( $tables as $name => $fields ) {
 
-		echo "<p>" . __('Checking table : ', 'membership') . $name . " - ";
+		$html .= "<p>" . __('Checking table : ', 'membership') . $name . " - ";
 
 		$sql = "SHOW TABLES LIKE '{$name}';";
 		$t = $wpdb->get_var( $sql );
 
 		if($t == $name) {
-			echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
-			echo "</p>";
+			$html .= "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
+			$html .= "</p>";
 
-			echo "<p>" . __('Checking fields in table : ', 'membership') . $name . " - ";
+			$html .= "<p>" . __('Checking fields in table : ', 'membership') . $name . " - ";
 
 			$sql = "SHOW COLUMNS FROM {$name};";
 			$t = $wpdb->get_results( $sql );
@@ -838,37 +846,49 @@ function M_repair_tables() {
 			$pfield = '';
 			foreach( $fields as $fieldname => $type ) {
 				$found = false;
-				echo "<br/>" . $fieldname . " - ";
+				$incorrect_type = false;
+				$html .= "<br/>" . $fieldname . " - ";
 				foreach($t as $dbf) {
 					//print_r($dbf);
 					if($dbf->Field == $fieldname && $dbf->Type == $type) {
 						$found = true;
 						break;
 					}
+					//Column Field found, but with incorrect data type
+					if($dbf->Field == $fieldname && $dbf->Type != $type) {
+						$incorrect_type = true;
+						break;
+					}
 				}
 				if($found) {
-					echo "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
+					$html .= "<span style='color: green;'>" . __('Ok', 'membership') . "</span>";
 				} else {
+					if( $incorrect_type ) {
+						M_repair_field_type( $name, $fieldname, $type );
+					} else {
+						M_add_possible_missing_fields( $name, $fieldname, $type, $pfield );
+					}
 
-					M_add_possible_missing_fields( $name, $fieldname, $type, $pfield );
-
-					echo "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
+					$html .= "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
 				}
 				$pfield = $fieldname;
 			}
 
-			echo "</p>";
+			$html .= "</p>";
 
 		} else {
 
 			M_Create_single_table( $name );
 
-			echo "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
-			echo "</p>";
+			$html .= "<span style='color: red;'>" . __('Fixed', 'membership') . "</span>";
+			$html .= "</p>";
 		}
 
 	}
-
+	
+	if( $print ) {
+		echo $html;
+	}
 }
 
 function M_build_database_structure() {
