@@ -52,7 +52,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 					}
 				} else {
-					add_action( 'network_admin_menu', array( $this, 'add_admin_menu' ) );
+					add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 				}
 			} else {
 				add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -158,8 +158,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 */
 		
 		function is_main_site() {
-			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') && MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() ) {
-				return true;
+			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') ) {
+				return ( MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() );
 			}
 			
 			return ( is_main_site() );
@@ -2031,6 +2031,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						} else {
 								$s = '';
 						}
+						
+						if ( isset( $_GET['subscription-search-filter'] ) ) {
+								$search_field = stripslashes( $_GET['subscription-search-filter'] );
+						} else {
+								$search_field = 'all';
+						}						
 
 						$sub_id = null;
 						$level_id = null;
@@ -2079,7 +2085,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$active_op = '';
 
 						// Query the users
-						$wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id, $active_op);
+						$wp_user_search = new M_Member_Search( $usersearch, $userspage, $sub_id, $level_id, $active_op, $search_field );
 
 						$messages = array();
 						$messages[1] = __('Member added.', 'membership');
@@ -2119,12 +2125,40 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								?>
 
 								<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
-										<p class="search-box">
-												<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
-												<label for="membership-search-input" class="screen-reader-text"><?php _e('Search Members', 'membership'); ?>:</label>
-												<input type="text" value="<?php echo esc_attr($s); ?>" name="s" id="membership-search-input">
-												<input type="submit" class="button" value="<?php _e('Search Members', 'membership'); ?>">
-										</p>
+							
+									<p class="search-box">										
+										<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+										<label for="membership-search-input" class="screen-reader-text"><?php _e('Search Members', 'membership'); ?>:</label>
+										<input type="text" value="<?php echo esc_attr($s); ?>" name="s" id="membership-search-input">
+										<input type="submit" class="button" value="<?php _e('Search Members', 'membership'); ?>">
+									</p>
+
+									<p class="search-box">
+											<label class="description" for="subscription-search-filter"><?php _e('Search Fields', 'membership'); ?></label>     
+										<select name="subscription-search-filter" id="subscription-search-filter">         
+										     <?php
+										          $option_array = array(
+										               array( 'filter' => 'all', 'display' => 'All' ),
+										               array( 'filter' => 'display_name', 'display' => 'Display Name' ),
+										               array( 'filter' => 'user_email', 'display' => 'E-mail' ),
+										               array( 'filter' => 'first_name', 'display' => 'First Name' ),
+										               array( 'filter' => 'last_name', 'display' => 'Last Name' ),
+										               array( 'filter' => 'user_nicename', 'display' => 'Nice Name' ),
+										               array( 'filter' => 'user_login', 'display' => 'User Login' ),
+										               array( 'filter' => 'user_url', 'display' => 'User URL' ),
+										          );
+										      ?>
+										   <?php foreach($option_array as $option_item) {  ?>
+										          <?php if( $option_item == $POSTED_VAR ) {
+										                    $selected = 'selected="selected"';
+										               } else {
+										                    $selected = '';
+										               } ?>    
+										          <option value="<?php echo $option_item['filter']; ?>" <?php echo $selected; ?>><?php echo $option_item['display']; ?></option>                   
+										   <?php } ?>
+										</select>&nbsp;
+									</p>
+								
 								</form>
 
 								<br class='clear' />
@@ -3942,7 +3976,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$positives = $mlevel->get_rules('positive');
 								$negatives = $mlevel->get_rules('negative');
 						}
-
+						
 						// Re-arrange the rules
 						$rules = array();
 						$p = array();
@@ -4987,7 +5021,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						} else {
 								$s = '';
 						}
-
+						
 						if (isset($_GET['sub_status'])) {
 								$filter['sub_status'] = stripslashes($_GET['sub_status']);
 						}
