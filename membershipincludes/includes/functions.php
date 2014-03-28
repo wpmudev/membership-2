@@ -1334,7 +1334,7 @@ function M_setup_BP_addons() {
 // BuddyPress compatibility
 
 add_action( 'bp_pre_user_query_construct', 'membership_exclude_inactive_users' );
-function membership_exclude_inactive_users( BP_User_Query $bp_user_query ) {
+function membership_exclude_inactive_users( $bp_user_query ) {
 	global $wpdb;
 
 	if ( Membership_Plugin::is_enabled() ) {

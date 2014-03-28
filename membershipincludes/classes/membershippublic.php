@@ -1509,14 +1509,14 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			if ( membership_is_registration_page( $post->ID, false ) ) {
 
 				// check if page contains a shortcode
-				if ( strstr( $content, '[subscriptionform]' ) === false ) {
+				if ( strpos( $content, '[subscriptionform]' ) === false ) {
 					// There is no shortcode content in there, so override
 					remove_filter( 'the_content', 'wpautop' );
 					$content .= $this->do_subscription_form();
 				}
 			} elseif ( membership_is_account_page( $post->ID, false ) ) {
 				// account page - check if page contains a shortcode
-				if ( strstr( $content, '[accountform]' ) !== false || strstr( $content, '[upgradeform]' ) !== false || strstr( $content, '[renewform]' ) !== false ) {
+				if ( strpos( $content, '[accountform]' ) !== false || strpos( $content, '[upgradeform]' ) !== false || strpos( $content, '[renewform]' ) !== false ) {
 					// There is content in there with the shortcode so just return it
 					return $content;
 				}
@@ -1527,7 +1527,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			} elseif ( membership_is_subscription_page( $post->ID, false ) ) {
 
 				// account page - check if page contains a shortcode
-				if ( strstr( $content, '[upgradeform]' ) !== false || strstr( $content, '[renewform]' ) !== false ) {
+				if ( strpos( $content, '[upgradeform]' ) !== false || strpos( $content, '[renewform]' ) !== false ) {
 					// There is content in there with the shortcode so just return it
 					return $content;
 				}
@@ -1557,9 +1557,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// Redirect members with subscriptions to the subscriptions page if it exists, else account page.
 				global $member;
-				if ( $member->has_subscription() && !isset( $_GET['from_subscription'] ) )
-				{
-					if( isset( $M_options['subscriptions_page'] ) ){
+				if ( $member->has_subscription() && ! isset( $_GET['from_subscription'] ) ) {
+					if( ! empty( $M_options['subscriptions_page'] ) ) {
 						wp_redirect( get_permalink( $M_options['subscriptions_page'] ) );
 						exit;						
 					} else {
@@ -1570,9 +1569,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				
 				add_action( 'template_redirect', array( $this, 'process_subscription_form' ), 1 );
 
-				// check if page contains a shortcode
-				if ( strstr( $post->post_content, '[subscriptionform]' ) !== false ) {
-					// There is content in there with the shortcode so just return it
+				if ( strpos( $post->post_content, '[subscriptionform]' ) !== false || strpos( $post->post_content, '[renewform]' ) !== false) {
+					// bail - shortcode found
 					return $posts;
 				}
 
@@ -1591,7 +1589,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 			} elseif ( membership_is_account_page( $post->ID, false ) ) {
 				// account page - check if page contains a shortcode
-				if ( strstr( $post->post_content, '[accountform]' ) !== false || strstr( $post->post_content, '[upgradeform]' ) !== false || strstr( $post->post_content, '[renewform]' ) !== false ) {
+				if ( strpos( $post->post_content, '[accountform]' ) !== false || strpos( $post->post_content, '[upgradeform]' ) !== false || strpos( $post->post_content, '[renewform]' ) !== false ) {
 					// There is content in there with the shortcode so just return it
 					return $posts;
 				}

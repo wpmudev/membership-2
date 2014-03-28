@@ -28,7 +28,7 @@
 class Membership_Plugin {
 
 	const NAME    = 'membership';
-	const VERSION = '3.5.0.6';
+	const VERSION = '3.5.0.8';
 
 	/**
 	 * Singletone instance of the plugin.
