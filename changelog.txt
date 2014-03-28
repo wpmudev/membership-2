@@ -4,7 +4,6 @@
 * Fixed: BuddyPress bug where first name and last name weren't saved correctly
 * Fixed: CSS styling on renew form when using [renewform] shortcode
 * Fixed: bug with category rules hiding some member's menus
-* Fixed: subscriptions not assigning, tables broken missing and incorrect on installation/upgrade
 * Fixed: call to undefined method Membership_Render_Page_Subscription_Renew::get_subscriptions() on renew form
 * Fixed: BuddyPress compatability issues
 * Fixed: bug with membership blocking Classifieds plugin virtual pages
