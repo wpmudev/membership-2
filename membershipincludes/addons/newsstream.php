@@ -24,6 +24,8 @@ function membership_newsstreamcreatetables($installed = false) {
 
 	global $wpdb;
 	
+	require_once membership_dir('membershipincludes/classes/upgrade.php');
+	
 	$charset_collate = M_get_charset_collate();
 	
 	if($installed !== false) {

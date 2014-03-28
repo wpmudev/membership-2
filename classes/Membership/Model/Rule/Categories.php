@@ -107,9 +107,9 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 */
 	public function on_positive( $data ) {
 		$this->data = array_filter( array_map( 'intval', (array)$data ) );
-
+		
 		add_action( 'pre_get_posts', array( $this, 'filter_viewable_posts' ), 1 );
-		add_filter( 'get_terms', array( $this, 'filter_viewable_categories' ), 1 );
+		add_filter( 'get_terms', array( $this, 'filter_viewable_categories' ), 1, 3 );
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 		$this->data = array_filter( array_map( 'intval', (array)$data ) );
 
 		add_action( 'pre_get_posts', array( $this, 'filter_unviewable_posts' ), 1 );
-		add_filter( 'get_terms', array( $this, 'filter_unviewable_categories' ), 1 );
+		add_filter( 'get_terms', array( $this, 'filter_unviewable_categories' ), 1, 3 );
 	}
 
 	/**
@@ -135,8 +135,9 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @access public
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function filter_viewable_posts( WP_Query $query ) {
-		$query->query_vars['category__in'] = array_unique( array_merge( $query->query_vars['category__in'], $this->data ) );
+	public function filter_viewable_posts( $query ) {
+		if ( $query->get('post_type') == 'post' )	//don't apply these rules to custom post types!
+			$query->set('category__in', array_unique(array_merge((array) $query->query_vars['category__in'], $this->data)));
 	}
 
 	/**
@@ -149,8 +150,9 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @access public
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function filter_unviewable_posts( WP_Query $wp_query ) {
-		$wp_query->query_vars['category__not_in'] = array_unique( array_merge( $wp_query->query_vars['category__not_in'], $this->data ) );
+	public function filter_unviewable_posts( $wp_query ) {
+		if ( $wp_query->get('post_type') == 'post' )	//don't apply these rules to custom post types!
+			$wp_query->set('category__not_in', array_unique(array_merge((array) $wp_query->query_vars['category__not_in'], $this->data)));
 	}
 
 	/**
@@ -162,16 +164,25 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @param array $terms The terms array.
 	 * @return array Fitlered terms array.
 	 */
-	public function filter_viewable_categories( $terms ) {
+	public function filter_viewable_categories( $terms, $taxonomies, $args ) {
 		$new_terms = array();
+		
+		if ( ! in_array('category', $taxonomies) ) {
+			// bail - not fetching category taxonomy
+			return $terms;
+		}
+
 		foreach ( (array)$terms as $key => $term ) {
-			if ( $term->taxonomy == 'category' ) {
+			if ( $term->taxonomy == 'category' ) { //still do this check here - could be fetching multiple taxonomies
 				if ( in_array( $term->term_id, $this->data ) ) {
 					$new_terms[$key] = $term;
 				}
+			} else {
+				// this taxonomy isn't category so add it so custom taxonomies don't break
+				$new_terms[$key] = $term;
 			}
 		}
-
+		
 		return $new_terms;
 	}
 
@@ -184,16 +195,25 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 	 * @param array $terms The terms array.
 	 * @return array Fitlered terms array.
 	 */
-	public function filter_unviewable_categories( $terms ) {
+	public function filter_unviewable_categories( $terms, $taxonomies, $args ) {
 		$new_terms = array();
-		foreach ( (array)$terms as $key => $term ) {
-			if ( $term->taxonomy == 'category' ) {
+		
+		if ( ! in_array('category', $taxonomies) ) {
+			// bail - not fetching category taxonomy
+			return $terms;
+		}
+		
+		foreach ( (array) $terms as $key => $term ) {
+			if ( $term->taxonomy == 'category' ) { //still do this check here - could be fetching multiple taxonomies
 				if ( !in_array( $term->term_id, $this->data ) ) {
 					$new_terms[$key] = $term;
 				}
+			} else {
+				// this taxonomy isn't category so add it so custom taxonomies don't break
+				$new_terms[$key] = $term;
 			}
 		}
-
+		
 		return $new_terms;
 	}
 
@@ -233,8 +253,7 @@ class Membership_Model_Rule_Categories extends Membership_Model_Rule {
 		if ( is_category() ) {
 			return in_array( get_queried_object_id(), $this->data );
 		}
-
+		
 		return parent::validate_positive();
 	}
-
 }

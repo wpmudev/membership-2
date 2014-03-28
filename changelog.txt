@@ -1,3 +1,44 @@
+
+== 3.5.0.8 ==
+
+* Fixed: BuddyPress bug where first name and last name weren't saved correctly
+* Fixed: CSS styling on renew form when using [renewform] shortcode
+* Fixed: bug with category rules hiding some member's menus
+* Fixed: call to undefined method Membership_Render_Page_Subscription_Renew::get_subscriptions() on renew form
+* Fixed: BuddyPress compatability issues
+* Fixed: bug with membership blocking Classifieds plugin virtual pages
+
+== 3.5.0.7 ==
+
+* Fixed: tables with mediumtext columns data type modified to text data type 
+
+== 3.5.0.6 ==
+
+* Fixed: disappearing menu bug
+
+== 3.5.0.5 ==
+
+* Fixed: rules in inactive access levels were still being applied
+
+== 3.5.0.4 ==
+
+* Additional fixes for category rules
+ 
+== 3.5.0.3 ==
+
+* Fixed: notices/warnings in menu
+
+== 3.5.0.2 ==
+
+* Fixed: category rules would apply to custom post types (e.g. menu items, etc) causing those elements to not show up
+* Fixed: authorize.net errors when using a dripped content setup http://wp.mu/92g
+* Fixed: remove old subscription when updating http://wp.mu/92h
+* Fixed: membership menu would some times not show up in wp-admin
+ 
+== 3.5.0.1 ==
+
+* Fixed bug with Chinese characters in form fields not saving/rendering properly http://wp.mu/925
+
 == 3.5 ==
 
 * Fixed network/super admin permissions
@@ -38,6 +79,7 @@
 * Fixed protection issue for BuddyPress group creation rule
 * Fixed BuddyPress account editing issue
 * Fixed reverting roles issue for expired subscription
+* Fixed Paypal gateway issue with post transaction not being verified and therefore not activating the subscription paid
 * Added ability to use array variables when setting up ping data
 * Added response column to ping history screen - useful for debugging
 * Implemented new Authorize.net gateway which changes Authorize ARB and AIM gateways

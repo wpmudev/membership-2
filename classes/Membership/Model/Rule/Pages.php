@@ -46,7 +46,7 @@ class Membership_Model_Rule_Pages extends Membership_Model_Rule {
 				$exclude[] = $M_options[$page];
 			}
 		}
-
+		
 		$posts_to_show = !empty( $M_options['membership_page_count'] ) ? $M_options['membership_page_count'] : MEMBERSHIP_PAGE_COUNT;
 		$posts = apply_filters( 'staypress_hide_protectable_pages', get_posts( array(
 			'numberposts' => $posts_to_show,
@@ -54,7 +54,7 @@ class Membership_Model_Rule_Pages extends Membership_Model_Rule {
 			'orderby'     => 'post_date',
 			'order'       => 'DESC',
 			'post_type'   => 'page',
-			'post_status' => 'publish',
+			'post_status' => array('publish', 'virtual'), //Classifieds plugin uses a "virtual" status for some of it's pages
 			'exclude'     => $exclude,
 		) ) );
 
