@@ -135,20 +135,27 @@ class Membership_Module_Protection extends Membership_Module {
 			M_register_rule( 'blogcreation', 'Membership_Model_Rule_Blogcreation', 'admin' );
 		}
 
-		// admin rules
-		M_register_rule( 'mainmenus', 'Membership_Model_Rule_Admin_Mainmenus',        'admin' );
-		M_register_rule( 'submenus',  'Membership_Model_Rule_Admin_Submenus',         'admin' );
-		M_register_rule( 'dashboard', 'Membership_Model_Rule_Admin_Dashboardwidgets', 'admin' );
-		M_register_rule( 'plugins',   'Membership_Model_Rule_Admin_Plugins',          'admin' );
+		if ( defined( 'M_LITE' ) ) {
+			M_register_rule( 'upgrade', 'Membership_Model_Rule_Upgrade',        'admin' );
+			M_register_rule( 'upgrade', 'Membership_Model_Rule_Upgrade',        'bp' );
+		}
+		else {
+				
+			// admin rules
+			M_register_rule( 'mainmenus', 'Membership_Model_Rule_Admin_Mainmenus',        'admin' );
+			M_register_rule( 'submenus',  'Membership_Model_Rule_Admin_Submenus',         'admin' );
+			M_register_rule( 'dashboard', 'Membership_Model_Rule_Admin_Dashboardwidgets', 'admin' );
+			M_register_rule( 'plugins',   'Membership_Model_Rule_Admin_Plugins',          'admin' );
 
-		// buddypress rules
-		if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), '1.5', '>=' ) ) {
-			M_register_rule( 'bppages',          'Membership_Model_Rule_Buddypress_Pages',          'bp' );
-			M_register_rule( 'bpprivatemessage', 'Membership_Model_Rule_Buddypress_Privatemessage', 'bp' );
-			M_register_rule( 'bpfriendship',     'Membership_Model_Rule_Buddypress_Friendship',     'bp' );
-			M_register_rule( 'bpblogs',          'Membership_Model_Rule_Buddypress_Blogs',          'bp' );
-			M_register_rule( 'bpgroupcreation',  'Membership_Model_Rule_Buddypress_Groupcreation',  'bp' );
-			M_register_rule( 'bpgroups',         'Membership_Model_Rule_Buddypress_Groups',         'bp' );
+			// buddypress rules
+			if ( defined( 'BP_VERSION' ) && version_compare( preg_replace( '/-.*$/', '', BP_VERSION ), '1.5', '>=' ) ) {
+				M_register_rule( 'bppages',          'Membership_Model_Rule_Buddypress_Pages',          'bp' );
+				M_register_rule( 'bpprivatemessage', 'Membership_Model_Rule_Buddypress_Privatemessage', 'bp' );
+				M_register_rule( 'bpfriendship',     'Membership_Model_Rule_Buddypress_Friendship',     'bp' );
+				M_register_rule( 'bpblogs',          'Membership_Model_Rule_Buddypress_Blogs',          'bp' );
+				M_register_rule( 'bpgroupcreation',  'Membership_Model_Rule_Buddypress_Groupcreation',  'bp' );
+				M_register_rule( 'bpgroups',         'Membership_Model_Rule_Buddypress_Groups',         'bp' );
+			}
 		}
 
 		// marketpress rules

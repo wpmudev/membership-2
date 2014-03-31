@@ -75,6 +75,9 @@ function M_Upgrade( $from = false ) {
 function M_Alterfor18() {
 	global $wpdb;
 	
+	if ( defined( 'M_LITE' ) ) {
+		return;
+	}
 	$charset_collate = '';
 	if ( !empty( $wpdb->charset ) ) {
 		$charset_collate = $wpdb->charset;

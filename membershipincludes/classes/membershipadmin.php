@@ -30,6 +30,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 				// Coupons
 				var $_coupons;
 
+				var $lite_limit = 3;
+
 				function __construct() {
 			global $wpdb;
 
@@ -4377,10 +4379,21 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Membership Level activation not toggled.', 'membership');
 
 						$messages[9] = __('Membership Levels updated.', 'membership');
+						
+						$levels = $this->get_membership_levels($filter);
+						
+						if ( defined( 'M_LITE' ) && count($levels) < $this->lite_limit )  {
+							$add_new = __('Add New', 'membership');
+							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;level_id='>$add_new</a>";
+						} else {
+							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
+							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
+						}
+						
 						?>
 						<div class='wrap nosubsub'>
 								<div class="icon32" id="icon-link-manager"><br></div>
-								<h2><?php _e('Access Levels', 'membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;level_id="><?php _e('Add New', 'membership'); ?></a></h2>
+								<h2><?php _e('Access Levels', 'membership'); echo $btn_add_new; ?></h2>
 
 								<?php
 								if (isset($_GET['msg'])) {
@@ -4496,7 +4509,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 												<tbody>
 																		<?php
 																		if ($levels) {
+																				$levelcount = 0;
 																				foreach ($levels as $key => $level) {
+																					if( defined( 'M_LITE' ) && ( ++$levelcount > $this->lite_limit) ) break;
 																						?>
 																		<tr valign="middle" class="alternate" id="level-<?php echo $level->id; ?>">
 																				<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $level->id; ?>" name="levelcheck[]"></th>
@@ -4994,10 +5009,20 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Subscription activation not toggled.', 'membership');
 
 						$messages[9] = __('Subscriptions updated.', 'membership');
+						
+						$subs = $this->get_subscriptions($filter);
+						
+						if ( defined( 'M_LITE' ) && count($subs) < $this->lite_limit )  {
+							$add_new = __('Add New', 'membership');
+							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;sub_id='>$add_new</a>";
+						} else {
+							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
+							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";	
+						}
 						?>
 						<div class='wrap nosubsub'>
 								<div class="icon32" id="icon-link-manager"><br></div>
-								<h2><?php _e('Subscription Plans', 'membership'); ?><a class="add-new-h2" href="admin.php?page=<?php echo $page; ?>&amp;action=edit&amp;sub_id="><?php _e('Add New', 'membership'); ?></a></h2>
+								<h2><?php _e('Subscription Plans', 'membership'); echo $btn_add_new; ?></h2>
 
 								<?php
 								if (isset($_GET['msg'])) {
@@ -5119,7 +5144,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 												<tbody>
 																		<?php
 																		if ($subs) {
+																				$subcount = 0;
 																				foreach ($subs as $key => $sub) {
+																					if( defined( 'M_LITE' ) && ( ++$subcount > $this->lite_limit) ) break;
 																						?>
 																		<tr valign="middle" class="alternate" id="sub-<?php echo $sub->id; ?>">
 																				<th class="check-column" scope="row"><input type="checkbox" value="<?php echo $sub->id; ?>" name="subcheck[]"></th>
@@ -7042,12 +7069,17 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										if (!empty($key)) {
 												check_admin_referer('toggle-gateway-' . $key);
 
-												if (!in_array($key, $active)) {
-														$active[] = $key;
-														update_option('membership_activated_gateways', array_unique($active));
-														wp_safe_redirect(add_query_arg('msg', 3, wp_get_referer()));
+												if ( defined( 'M_LITE' ) && ! in_array( $key, array( 'freesubscriptions', 'paypalexpress', 'paypalsolo' ) ) ) {
+													wp_safe_redirect(add_query_arg('msg', 8, wp_get_referer()));
 												} else {
-														wp_safe_redirect(add_query_arg('msg', 4, wp_get_referer()));
+													
+													if (!in_array($key, $active)) {
+															$active[] = $key;
+															update_option('membership_activated_gateways', array_unique($active));
+															wp_safe_redirect(add_query_arg('msg', 3, wp_get_referer()));
+													} else {
+															wp_safe_redirect(add_query_arg('msg', 4, wp_get_referer()));
+													}
 												}
 										}
 										break;
@@ -7119,6 +7151,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[6] = __('Gateway not deactivated.', 'membership');
 
 						$messages[7] = __('Gateway activation toggled.', 'membership');
+						
+						$messages[8] = __('Only Paypal and Free Subscriptions gateway available. <a class="m-pro-update" href="http://premium.wpmudev.org/project/membership/">Upgrade to activate this Gateway &raquo</a>', 'membership');
 						?>
 						<div class='wrap'>
 								<div class="icon32" id="icon-plugins"><br></div>

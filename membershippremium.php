@@ -143,6 +143,8 @@ function membership_setup_contsants() {
 	if ( !defined( 'MEMBERSHIP_GLOBAL_MAINSITE' ) ) {
 		define( 'MEMBERSHIP_GLOBAL_MAINSITE', 1 );
 	}
+	
+// 	define( 'M_LITE', true );
 }
 
 /**

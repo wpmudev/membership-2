@@ -83,6 +83,11 @@ abstract class Membership_Gateway extends Membership_Hooker {
 
 		$this->_add_action( 'membership_process_payment_return', 'process_payment_return' );
 		$this->_add_action( 'membership_record_user_gateway', 'record_user_gateway' );
+		
+		if ( defined( 'M_LITE' ) && ! in_array( $this->gateway, array( 'freesubscriptions', 'paypalexpress', 'paypalsolo' ) ) ) {
+			$this->deactivate();
+		}
+		
 	}
 
 	/**
@@ -143,9 +148,10 @@ abstract class Membership_Gateway extends Membership_Hooker {
 	public function deactivate() {
 		$active = get_option( 'membership_activated_gateways', array() );
 
-		if ( in_array( $this->gateway, $active ) ) {
-			unset( $active[$this->gateway] );
-			update_option( 'membership_activated_gateways', $active );
+		$key = array_search( $this->gateway, $active );
+		if ($key !== false) {
+			unset( $active[ $key ] );
+			update_option('membership_activated_gateways', array_unique($active));
 			return true;
 		}
 

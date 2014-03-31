@@ -65,5 +65,13 @@ div.tablenav div.alignleft.actions input.action {
 	margin-left: 0px;
 }
 
+.m-pro-update {
+    color: #FF0000;
+    font-weight: bold;
+    margin: 1em;
+}
 
+h2 .m-pro-update {
+	font-size: .7em;
+}
 
