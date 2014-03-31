@@ -28,7 +28,7 @@
 class Membership_Plugin {
 
 	const NAME    = 'membership';
-	const VERSION = '3.5.0.8';
+	const VERSION = '3.5.0.9';
 
 	/**
 	 * Singletone instance of the plugin.
@@ -244,7 +244,7 @@ class Membership_Plugin {
 			$factory = self::factory();
 			$member = $factory->get_member( get_current_user_id() );
 
-			if ( $member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) ) {
+			if ( $member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) || $member->has_cap('manage_options') || is_super_admin($member->ID) ) {
 				// member has admin capabilities
 				membership_debug_log( __( 'Current member has admin capabilities.', 'membership' ) );
 

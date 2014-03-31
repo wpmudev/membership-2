@@ -161,9 +161,11 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 			case 'unsubscribe':
 				// Unsubscribe button has been clicked for solo gateways
 				if ( apply_filters( 'membership_unsubscribe_subscription', true, $sub_id, $user ) && wp_verify_nonce( $nonce, 'cancel-sub_' . $sub_id ) ) {
-					if ( filter_input( INPUT_POST, 'gateway' ) == 'admin' ) {
+					if ( is_admin() && filter_input( INPUT_POST, 'gateway' ) == 'admin' ) {
+						//drop the subscription immediately, unless this was a user-initiated event (e.g. unsubscribe clicked on frontend)
 						$member->expire_subscription( $sub_id );
 					} else {
+						//otherwise, mark the subscription for expiration
 						$member->mark_for_expire( $sub_id );
 					}
 				}

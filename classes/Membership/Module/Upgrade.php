@@ -106,7 +106,7 @@ class Membership_Module_Upgrade extends Membership_Module {
 		}
 
 		// add upgrade functions
-		$this->_add_filter( $filter, 'upgrade_to_3_5_beta_1', 10 );
+		$this->_add_filter( $filter, 'upgrade_to_3_5', 10 );
 
 		// upgrade database version to current plugin version
 		$db_version = apply_filters( $filter, $db_version );
@@ -121,16 +121,16 @@ class Membership_Module_Upgrade extends Membership_Module {
 	}
 
 	/**
-	 * Upgrades to version 3.5.beta.1
+	 * Upgrades to version 3.5
 	 *
-	 * @since 3.5.beta.1
+	 * @since 3.5
 	 *
 	 * @access public
 	 * @param string $current_version The current plugin version.
 	 * @return string Upgraded version if the current version is less, otherwise current version.
 	 */
-	public function upgrade_to_3_5_beta_1( $current_version ) {
-		$this_version = '3.5.beta.1';
+	public function upgrade_to_3_5( $current_version ) {
+		$this_version = '3.5';
 		if ( version_compare( $current_version, $this_version, '>=' ) ) {
 			return $current_version;
 		}

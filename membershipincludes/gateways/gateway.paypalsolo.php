@@ -380,18 +380,16 @@ class paypalsolo extends Membership_Gateway {
 
 			//Paypal post authenticity verification
 			$ipn_data = (array) stripslashes_deep( $_POST );
-			$ipn_data['cmd'] = '_notify-validate';
-			//sslverify set to false to avoid certification verification issues (lots of problems reported in forums) 			
-			$response = wp_remote_post( "$domain/cgi-bin/webscr", array(
-					'method' => 'POST',
+			$ipn_data['cmd'] = '_notify-validate';			
+			$response = wp_remote_post("$domain/cgi-bin/webscr", array(
 					'timeout' => 60,
-					'httpversion' => '1.1',
 					'sslverify' => false,
+					'httpversion' => '1.1',
 					'body' => $ipn_data,
 				) );
 
 			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
-				membership_debug_log( 'PayPal Transaction Verified' );
+				membership_debug_log( 'PayPal Transaction Verified' );	
 			} else {
 				$error = 'Response Error: Unexpected transaction response';
 				membership_debug_log( $error );
@@ -399,7 +397,7 @@ class paypalsolo extends Membership_Gateway {
 				echo $error;
 				exit;
 			}
-							
+
 			// handle cases that the system must ignore
 			//if ($_POST['payment_status'] == 'In-Progress' || $_POST['payment_status'] == 'Partially-Refunded') exit;
 			$new_status = false;

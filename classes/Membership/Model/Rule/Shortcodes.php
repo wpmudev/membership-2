@@ -108,7 +108,7 @@ class Membership_Model_Rule_Shortcodes extends Membership_Model_Rule {
 		global $M_options, $M_shortcode_tags, $shortcode_tags;
 
 		$this->data = $data;
-
+		
 		if ( $M_options['shortcodedefault'] == 'no' ) {
 			// Need to re-enable some shortcodes
 			foreach ( (array) $data as $key => $code ) {

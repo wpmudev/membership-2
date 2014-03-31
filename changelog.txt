@@ -1,3 +1,8 @@
+== 3.5.0.9 ==
+
+*	Fixed: super admins and admins not able to view all content
+*	Fixed: "view site as" not working when on front-end pages
+*	Fixed: if using admin gateway and member clicks unsubscribe their subscription is instantly dropped instead of being flagged to expire at the subscription end period NOTE: if admin drops a member’s subscription from within wp-admin this will still instantly drop the member’s subscription.
 
 == 3.5.0.8 ==
 

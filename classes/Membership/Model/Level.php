@@ -37,6 +37,7 @@ class Membership_Model_Level {
 	var $subscriptions_levels;
 	var $membership_relationships;
 	var $levelmeta;
+	var $active = null;
 	// if the data needs reloaded, or hasn't been loaded yet
 	var $dirty = true;
 	var $level;
@@ -48,15 +49,25 @@ class Membership_Model_Level {
 
 	public function __construct( $id = false, $fullload = false, $loadtype = array( 'public', 'core' ) ) {
 		global $wpdb;
-
+		
 		$this->id = $id;
 		$this->db = $wpdb;
 
 		foreach ( $this->tables as $table ) {
 			$this->$table = membership_db_prefix( $this->db, $table );
 		}
-
-		if ( $fullload ) {
+		
+		if ( is_null($this->active) ) {	//only run if hasn't been run before
+			//check if this level is active - if it isn't we don't want to load it's rules
+			$this->active = (bool) $wpdb->get_var($wpdb->prepare("
+				SELECT level_active
+				FROM {$this->membership_levels}
+				WHERE level_active = 1
+					AND id = %d", $this->id
+			));
+		}
+		
+		if ( $fullload && $this->active ) {
 			$this->load_rules( $loadtype );
 		}
 	}
@@ -112,11 +123,11 @@ class Membership_Model_Level {
 	}
 
 	function get_rules($type) {
-
+	
 		$sql = $this->db->prepare( "SELECT * FROM {$this->membership_rules} WHERE level_id = %d AND rule_ive = %s ORDER BY rule_order ASC", $this->id, $type );
 
 		$this->ruledetails[$type] = $this->db->get_results( $sql );
-
+		
 		return $this->ruledetails[$type];
 
 	}
@@ -273,7 +284,7 @@ class Membership_Model_Level {
 
 	function load_rules( $loadtype = array( 'public', 'core' ) ) {
 		global $M_Rules;
-
+		
 		membership_debug_log( __( 'Loading level - ', 'membership' ) . $this->level_title() );
 
 		$positive = $this->get_rules( 'positive' );

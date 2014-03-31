@@ -80,6 +80,12 @@ class Membership_Model_Member extends WP_User {
 		}
 
 		$this->_wpdb = $wpdb;
+		
+		if ( $id != 0 && ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) ) {
+			// bail - user is admin or super admin
+			return;
+		}
+		
 		$this->transition_through_subscription();
 	}
 
@@ -106,6 +112,11 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function is_member() {
+		if ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) {
+			// bail, user is admin or super admin
+			return true;
+		}
+		
 		$res = $this->_wpdb->get_var( sprintf(
 			'SELECT count(*) FROM %s WHERE user_id = %d',
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -116,6 +127,11 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function has_subscription() {
+		if ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) {
+			// bail, user is admin or super admin
+			return true;
+		}
+		
 		$res = $this->_wpdb->get_var( sprintf(
 			"SELECT count(*) FROM %s WHERE user_id = %d AND sub_id != 0",
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -136,8 +152,9 @@ class Membership_Model_Member extends WP_User {
 	private function transition_through_subscription() {
 
 		do_action('membership_start_transition', $this->ID);
-
+		
 		$relationships = $this->get_relationships();
+		
 		if( $relationships !== false ) {
 
 			membership_debug_log( __('MEMBER: Have relationships so starting transition check' , 'membership') );
@@ -694,7 +711,7 @@ class Membership_Model_Member extends WP_User {
 	public function deactivate() {
 		update_user_meta($this->ID, membership_db_prefix($this->_wpdb, 'membership_active', false), 'no');
 	}
-
+	
 	// Levels functions
 
 	public function has_levels() {
@@ -702,9 +719,12 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function has_level($level_id = false) {
-		// Returns true if the user has a level to process
-
-		if($level_id && isset($this->levels[$level_id])) {
+		if ( empty($this->levels) && ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) ) {
+			// User is admin or super admin and isn't using "view as" feature so can view everything
+			return true;
+		}
+		
+		if( $level_id && isset($this->levels[$level_id]) ) {
 			return true;
 		} else {
 			return false;
@@ -817,7 +837,8 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function can_view_current_page() {
-		if ( empty( $this->levels ) && $this->has_cap( self::CAP_MEMBERSHIP_ADMIN ) ) {
+		if ( empty($this->levels) && ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) ) {
+			// bail, user is admin/super admin and is not using "view as" feature so can view everything
 			return true;
 		}
 
