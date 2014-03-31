@@ -105,7 +105,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				return;
 			}
 
-			if ( !method_exists( $user, 'has_cap' ) || $user->has_cap( 'membershipadmin' ) ) {
+			if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) {
 				// Admins can see everything - unless we have a cookie set to limit viewing
 				if ( empty( $_COOKIE['membershipuselevel'] ) || $_COOKIE['membershipuselevel'] == '0' ) {
 					return;

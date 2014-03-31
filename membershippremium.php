@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Membership Premium
-Version: 3.5.0.8
+Version: 3.5.0.9
 Plugin URI: http://premium.wpmudev.org/project/membership
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: WPMU DEV
@@ -212,10 +212,7 @@ function membership_launch() {
 		$plugin->set_module( Membership_Module_Protection::NAME );
 	}
 
-	if ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) {
-		$plugin->set_module( Membership_Module_Adminbar::NAME );
-	}
-
+	$plugin->set_module( Membership_Module_Adminbar::NAME );
 	$plugin->set_module( Membership_Module_Frontend_Registration::NAME );
 	if ( is_admin() ) {
 //		$plugin->set_module( Membership_Module_Backend_Rules_Metabox::NAME ); // temporary deactivated, not ready to release

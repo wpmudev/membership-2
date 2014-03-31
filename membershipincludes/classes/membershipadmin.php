@@ -237,7 +237,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 				// Update the membership capabillities for the new layout
 				$updated = get_user_meta($user->ID, 'membership_permissions_updated', true);
-				if ( $user->has_cap('membershipadmin') && $updated != 'yes' ) {
+				if ( ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) && $updated != 'yes' ) {
 					// We are here is the user has the old permissions but doesn't have the new default dashboard permissions
 					// Which likely means that they have not been upgraded - so let's do that :)
 					$user->add_cap('membershipadmindashboard');
@@ -269,7 +269,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						add_filter('ms_user_row_actions', array(&$this, 'add_user_permissions_link'), 11, 2);
 				}
 
-				if ($user->has_cap('membershipadmin')) {
+				if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) {
 						// If the user is a membershipadmin user then we can add in notices
 						add_action('all_admin_notices', array(&$this, 'show_membership_status_notice'));
 				}
@@ -504,7 +504,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$user = wp_get_current_user();
 						}
 
-						if ($user->has_cap('membershipadmin')) {
+						if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) {
 								// Show a notice to say that they are logged in as the membership admin user and protection isn't enabled on the front end
 								echo '<div class="update-nag">' . __("You are logged in as a <strong>Membership Admin</strong> user, you will therefore see all protected content on this site.", 'membership') . '</div>';
 						}
@@ -589,8 +589,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 				$user = wp_get_current_user();
 			}
 
-			if ( $user->has_cap( 'membershipadmin' ) || M_get_membership_active() == 'no' ) {
-				// Admins can see everything
+			if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) || M_get_membership_active() == 'no' ) {
+				// Admins can see everything or protection is not activated
 				return;
 			}
 
@@ -2283,7 +2283,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 														$style = '';
 														foreach ($wp_user_search->get_results() as $user) {
 																$user_object = $factory->get_member($user->ID);
-								$is_membership_admin = $user_object->has_cap( 'membershipadmin' );
+																$is_membership_admin = $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID);
 																$roles = $user_object->roles;
 																$role = array_shift($roles);
 
@@ -2376,20 +2376,6 @@ if ( !class_exists( 'membershipadmin' ) ) :
 											echo $default_level;
 										}
 
-																				/*$actions = array();
-																				if (!$user_object->has_cap('membershipadmin')) {
-																						$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
-																				}
-
-																				if (!empty($levels)) {
-																						if (count($levels) == 1) {
-																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-																						} else {
-																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-																						}
-																				}*/
 																				?>
 																				<div class="row-actions"><?php //echo implode(" | ", $actions); ?></div>
 																		</td>
@@ -2423,7 +2409,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																						}
 																						echo implode( ", ", $gates );
 
-											if ($user_object->has_cap('membershipadmin')) {
+											if ( $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID) ) {
 																								$actions = array();
 																						} else {
 																								$actions = array();
@@ -3755,7 +3741,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																										<?php
 																										if ($user_id != $admin->ID) {
 																												$user = new WP_User($admin->ID);
-																												if ($user->has_cap('membershipadmin')) {
+																												if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) {
 																														?>
 																														<input type="checkbox" value="<?php echo esc_attr($admin->ID); ?>" name="admincheck[]" checked='checked'>
 																														<?php
@@ -7888,6 +7874,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 					$html .= sprintf( __( 'Subscription %s has been added.', 'membership' ), $sub ? $sub->sub_name() : '' );
 					$html .= '</h1></div><div class="fullwidth">';
 					$html .= stripslashes( wpautop( $M_options['registrationcompleted_message'] ) );
+					$html .= '<a class="button blue" href="' . M_get_account_permalink() . '">' . __('Go to your account', 'membership') . '</a>';
 					$html .= '</div>';
 
 					echo $html;

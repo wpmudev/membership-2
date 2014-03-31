@@ -208,7 +208,6 @@ class Membership_Module_Protection extends Membership_Module {
 		// Set up some common defaults
 		$factory = Membership_Plugin::factory();
 
-		// We are not a membershipadmin user
 		if ( !empty( $wp->query_vars['feed'] ) ) {
 			// This is a feed access, then set the feed rules
 			$user_id = (int)$membershippublic->find_user_from_key( filter_input( INPUT_GET, 'k' ) );
@@ -232,7 +231,7 @@ class Membership_Module_Protection extends Membership_Module {
 			}
 		} else {
 			$member = Membership_Plugin::current_member();
-			if ( !$member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) && !$member->has_levels() ) {
+			if ( !$member->has_cap( Membership_Model_Member::CAP_MEMBERSHIP_ADMIN ) && !$member->has_cap('manage_options') && !is_super_admin($member->ID) && !$member->has_levels() ) {
 				// This user can't access anything on the site - .
 				add_filter( 'comments_open', '__return_false', PHP_INT_MAX );
 				// Changed for this version to see if it helps to get around changed in WP 3.5

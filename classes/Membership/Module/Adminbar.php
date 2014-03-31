@@ -40,9 +40,54 @@ class Membership_Module_Adminbar extends Membership_Module {
 	 */
 	public function __construct( Membership_Plugin $plugin ) {
 		parent::__construct( $plugin );
+		
+		if ( defined('DOING_AJAX') && DOING_AJAX ) {
+			$this->_add_action( 'wp_ajax_membershipuselevel', 'switch_membership_level' );
+		} else {
+			$this->_add_action( 'add_admin_bar_menus', 'add_admin_bar_items' );
+			$this->_add_action( 'admin_enqueue_scripts', 'enqueue_scripts');
+			$this->_add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
+			$this->_add_action( 'admin_footer', 'print_scripts');
+			$this->_add_action( 'wp_footer', 'print_scripts');
+		}
+	}
 
-		$this->_add_action( 'add_admin_bar_menus', 'add_admin_bar_items' );
-		$this->_add_action( 'membership_dashboard_membershipuselevel', 'switch_membership_level' );
+	/**
+	 * Enqueues necessary javascript
+	 *
+	 * @since 3.5.0.8
+	 * @action wp_enqueue_scripts, admin_enqueue_scripts
+	 */
+	
+	function enqueue_scripts() {
+		wp_enqueue_script('jquery');
+	}
+	
+	/**
+	 * Prints necessary javascript
+	 *
+	 * @since 3.5.0.8
+	 * @action wp_footer
+	 */
+	
+	function print_scripts() {
+		?>
+		<script type="text/javascript">
+			jQuery(document).ready(function($){
+				$('#wp-admin-bar-membershipuselevel').find('a').click(function(e){
+					e.preventDefault();
+					
+					var $this = $(this);
+					
+					$('#wp-admin-bar-membershipuselevel').removeClass('hover').find('> div').filter(':first-child').html('<?php _e('Switching...', 'membership'); ?>');
+					
+					$.get($this.attr('href')).done(function(data){
+						window.location.href = window.location.href;
+					});
+				});
+			});
+		</script>
+		<?php
 	}
 
 	/**
@@ -57,8 +102,10 @@ class Membership_Module_Adminbar extends Membership_Module {
 		if ( !is_user_logged_in() ) {
 			return;
 		}
+		
+		$user = wp_get_current_user();
 
-		if ( wp_get_current_user()->has_cap( 'membershipadmin' ) ) {
+		if ( $user->has_cap('membershipadmin') || $user->has_cap('manage_options') || is_super_admin($user->ID) ) {
 			$method = Membership_Plugin::is_enabled()
 				? 'add_view_site_as_menu'
 				: 'add_enabled_protection_menu';
@@ -106,7 +153,7 @@ class Membership_Module_Adminbar extends Membership_Module {
 		$levels = $wpdb->get_results( sprintf( 'SELECT * FROM %s WHERE level_active = 1 ORDER BY id ASC', MEMBERSHIP_TABLE_LEVELS ) );
 		if ( !empty( $levels ) ) {
 			foreach ( $levels as $level ) {
-				$linkurl = wp_nonce_url( $admin_url_func( "admin.php?page=membership&action=membershipuselevel&level_id=" . $level->id ), 'membershipuselevel-' . $level->id );
+				$linkurl = wp_nonce_url( $admin_url_func( "admin-ajax.php?action=membershipuselevel&level_id=" . $level->id, ( is_ssl() ? 'https' : 'http' ) ), 'membershipuselevel-' . $level->id );
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'membershipuselevel',
 					'id' => 'membershipuselevel-' . $level->id,
@@ -117,7 +164,7 @@ class Membership_Module_Adminbar extends Membership_Module {
 		}
 
 		if ( !empty( $_COOKIE['membershipuselevel'] ) && $_COOKIE['membershipuselevel'] != '0' ) {
-			$linkurl = wp_nonce_url( $admin_url_func( "admin.php?page=membership&action=membershipuselevel&level_id=0" ), 'membershipuselevel-0' );
+			$linkurl = wp_nonce_url( $admin_url_func( "admin-ajax.php?action=membershipuselevel&level_id=0", ( is_ssl() ? 'https' : 'http' ) ), 'membershipuselevel-0' );
 			$wp_admin_bar->add_menu( array(
 				'parent' => 'membershipuselevel',
 				'id'     => 'membershipuselevel-0',
@@ -138,7 +185,7 @@ class Membership_Module_Adminbar extends Membership_Module {
 	 */
 	public function add_enabled_protection_menu( WP_Admin_Bar $wp_admin_bar ) {
 		$linkurl = "admin.php?page=membership&action=activate";
-		$linkurl = Membership_Plugin::is_global_tables() ? network_admin_url( $linkurl ) : admin_url( $linkurl );
+		$linkurl = Membership_Plugin::is_global_tables() ? network_admin_url( $linkurl, ( is_ssl() ? 'https' : 'http' ) ) : admin_url( $linkurl, ( is_ssl() ? 'https' : 'http' ) );
 		$linkurl = wp_nonce_url( $linkurl, 'toggle-plugin' );
 
 		$wp_admin_bar->add_menu( array(
@@ -163,19 +210,18 @@ class Membership_Module_Adminbar extends Membership_Module {
 	 * Switches membership protection level to view site as.
 	 *
 	 * @since 3.5
-	 * @action membership_dashboard_membershipuselevel
+	 * @action wp_ajax_membershipuselevel
 	 *
 	 * @access public
 	 */
 	public function switch_membership_level() {
 		if ( isset( $_GET['level_id'] ) ) {
 			$level_id = (int) $_GET['level_id'];
-			check_admin_referer( 'membershipuselevel-' . $level_id );
-
-			@setcookie( 'membershipuselevel', $level_id, 0, COOKIEPATH, COOKIE_DOMAIN );
+			
+			check_ajax_referer('membershipuselevel-' . $level_id);
+			@setcookie('membershipuselevel', $level_id, 0, COOKIEPATH, COOKIE_DOMAIN);
 		}
-
-		wp_safe_redirect( wp_get_referer() );
+		
 		exit;
 	}
 
