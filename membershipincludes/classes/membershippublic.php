@@ -1230,6 +1230,12 @@ if ( !class_exists( 'membershippublic', false ) ) :
 							} else {
 								wp_new_user_notification( $user_id, $_POST['password'] );
 							}
+							
+							if ( ! empty($M_options['freeusersubscription']) ) {
+								$level = ! empty($M_options['strangerlevel']) ? $M_options['strangerlevel'] : 0;
+								//free subscription is active - do 'membership_add_subscription' action so pings are triggered, etc
+								do_action('membership_add_subscription', $M_options['freeusersubscription'], $level, false, $user_id);
+							}
 						}
 
 						do_action( 'membership_subscription_form_registration_process', $this->_register_errors, $user_id );

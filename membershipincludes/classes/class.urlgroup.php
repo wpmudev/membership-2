@@ -134,7 +134,7 @@ if ( !class_exists( 'M_Urlgroup' ) ) :
 
 		function url_matches( $host, $exclude = array() ) {
 			$this->group = $this->get_group();
-
+			
 			$groups = array_map( 'strtolower', array_map( 'trim', explode( "\n", $this->group->groupurls ) ) );
 
 			if ( $this->group->stripquerystring == 1 ) {

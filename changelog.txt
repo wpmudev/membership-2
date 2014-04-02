@@ -1,3 +1,12 @@
+== 3.5.1 ==
+
+* Fixed: pings don't send when using "Default subscription for registered users" setting
+* Fixed: default membership is not truly added as a subscription http://wp.mu/94f
+* Fixed: date format in settings not being used on subscriptions page
+* Fixed: streamlined PayPal checkout process (will no longer request shipping address or notes)
+* Fixed: PHP warning in free subscription gateway
+* Fixed: when using PayPal Single Payments the member's existing subscription is not being dropped after upgrading
+
 == 3.5.0.9 ==
 
 *	Fixed: super admins and admins not able to view all content
