@@ -4382,11 +4382,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						
 						$levels = $this->get_membership_levels($filter);
 						
-						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $levels ) < $this->lite_limit ) ) {
+						if ( ( defined( 'M_LITE' ) && count($levels) < $this->lite_limit ) || ! defined('M_LITE') )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;level_id='>$add_new</a>";
 						} else {
-							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
+							$upgrade = __('Upgrade to add unlimited levels &raquo;', 'membership');
 							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
 						}
 						
@@ -5012,11 +5012,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						
 						$subs = $this->get_subscriptions($filter);
 						
-						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $subs ) < $this->lite_limit ) ) {
+						if ( ( defined( 'M_LITE' ) && count($subs) < $this->lite_limit ) || ! defined( 'M_LITE' ) )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;sub_id='>$add_new</a>";
 						} else {
-							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
+							$upgrade = __('Upgrade to add unlimited subscriptions &raquo;', 'membership');
 							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";	
 						}
 						?>
@@ -7806,6 +7806,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 					} else {
 						wp_new_user_notification($user_id, $_POST['password']);
+					}
+					
+					if ( ! empty($M_options['freeusersubscription']) ) {
+						$level = ! empty($M_options['strangerlevel']) ? $M_options['strangerlevel'] : 0;
+						//free subscription is active - do 'membership_add_subscription' action so pings are triggered, etc
+						do_action('membership_add_subscription', $M_options['freeusersubscription'], $level, false, $user_id);
 					}
 
 					do_action('membership_subscription_form_registration_process', $error, $user_id);
