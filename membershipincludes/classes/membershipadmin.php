@@ -4382,7 +4382,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						
 						$levels = $this->get_membership_levels($filter);
 						
-						if ( defined( 'M_LITE' ) && count($levels) < $this->lite_limit )  {
+						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $levels ) < $this->lite_limit ) ) {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;level_id='>$add_new</a>";
 						} else {
@@ -5012,7 +5012,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						
 						$subs = $this->get_subscriptions($filter);
 						
-						if ( defined( 'M_LITE' ) && count($subs) < $this->lite_limit )  {
+						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $subs ) < $this->lite_limit ) ) {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;sub_id='>$add_new</a>";
 						} else {
