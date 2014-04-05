@@ -97,18 +97,43 @@ class MS_Plugin {
 	private $_url;
 
 	/**
+	 * Instance of MS_Model_Plugin
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _model
+	 */
+	private $_model;
+
+	/**
+	 * Instance of MS_View_Plugin
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _view
+	 */
+	private $_view;
+
+	/**
 	 * Register hooks and loads the plugin.
 	 */
 	function __construct() {
 		
 		/** Actions to execute before construction is complete. */
 		do_action( 'membership_plugin_loading' ); 
-		
+				
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
+
+		/** Instantiate Plugin model */
+		$this->_model = new MS_Model_Plugin();
+		/** Instantiate Plugin view */
+		$this->_view = new MS_View_Plugin();
+		
+		
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
-// 		spl_autoload_register( array($this, 'plugin_loader' ));
+
 		$this->_name = plugin_basename(__FILE__);
 		$this->_file = __FILE__;
 		$this->_dir = plugin_dir_path(__FILE__) . 'app/';

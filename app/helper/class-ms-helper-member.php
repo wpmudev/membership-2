@@ -20,14 +20,14 @@
  *
 */
 
-class MS_Helper_Member {
+class MS_Helper_Member extends MS_Helper {
 	
 	public function __construct() {
 
 	}
 	
 	public static function demo() {
-		
+		echo "Helping...";
 	}
 	
 }

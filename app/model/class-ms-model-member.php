@@ -20,7 +20,7 @@
  *
 */
 
-class MS_Model_Member extends MS_Hooker {
+class MS_Model_Member extends MS_Model {
 	
 	public function __construct() {
 

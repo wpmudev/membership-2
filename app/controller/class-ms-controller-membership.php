@@ -20,7 +20,7 @@
  *
 */
 
-class MS_Controller_Membership extends MS_Hooker {
+class MS_Controller_Membership extends MS_Controller {
 	
 	public function __construct() {
 	}

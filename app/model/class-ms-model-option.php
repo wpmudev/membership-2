@@ -21,7 +21,7 @@
 */
 
 
-class MS_Model_Option extends MS_Hooker {
+class MS_Model_Option extends MS_Model {
 	
 	public function __construct() {
 

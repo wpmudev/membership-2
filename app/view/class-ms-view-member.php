@@ -20,7 +20,7 @@
  *
 */
 
-class MS_View_Member extends MS_Hooker {
+class MS_View_Member extends MS_View {
 	
 	public function __construct() {
 		MS_Helper_Member::demo();

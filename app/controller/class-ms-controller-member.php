@@ -20,9 +20,29 @@
  *
 */
 
-class MS_Controller_Member {
+class MS_Controller_Member extends MS_Controller {
+
+	/**
+	 * Instance of MS_Model_Member.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _model
+	 */
+	private $_model;
+	
+	/**
+	 * Instance of MS_View_Member.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _view
+	 */
+	private $_view;	
 	
 	public function __construct() {
+		$this->_model = new MS_Model_Member();
+		$this->_view = new MS_View_Member();
 	}
 	
 	
