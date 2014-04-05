@@ -1,3 +1,5 @@
+== 3.5.1.1 ==
+
 * Fixed: when using PayPal Single Payments the member's existing subscription is not being dropped after upgrading
 * Fixed: stranger access level some times isn't being determined correctly
 * Fixed: subscriptions are not being dropped after member cancels their subscription with PayPal
