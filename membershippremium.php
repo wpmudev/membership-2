@@ -109,10 +109,10 @@ class MS_Plugin {
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 // 		spl_autoload_register( array($this, 'plugin_loader' ));
-		$plugin = plugin_basename(__FILE__);
-		$this->plugin_file = __FILE__;
-		$this->plugin_dir = plugin_dir_path(__FILE__) . 'app/';
-		$this->plugin_url = plugin_dir_url(__FILE__) . 'app/';
+		$this->_name = plugin_basename(__FILE__);
+		$this->_file = __FILE__;
+		$this->_dir = plugin_dir_path(__FILE__) . 'app/';
+		$this->_url = plugin_dir_url(__FILE__) . 'app/';
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
 
