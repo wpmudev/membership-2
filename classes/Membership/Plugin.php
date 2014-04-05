@@ -268,10 +268,8 @@ class Membership_Plugin {
 							membership_debug_log( __( 'Default subscription for registered users is used to assign a level for current member.', 'membership' ) );
 						}
 					}
-				}
-				
-				// if no levels were assigned, then assign stanger level
-				if ( !$member->has_levels() && isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+				} elseif ( isset( $M_options['strangerlevel'] ) && $M_options['strangerlevel'] != 0 ) {
+					// assign stanger level
 					$member->assign_level( $M_options['strangerlevel'] );
 				}
 			}

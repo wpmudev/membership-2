@@ -279,7 +279,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 					$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
 					$currentlevel = $sub->get_level_at( $rel->level_id, $rel->order_instance );
 					$expire_date = mysql2date('U', $rel->expirydate);
-					$expire_date_string = date_i18n(get_option('date_format', $expire_date));
+					$expire_date_string = date_i18n(get_option('date_format'), $expire_date);
 
 					if ( !empty( $rel->usinggateway ) && $rel->usinggateway != 'admin' ) {
 						$gateway = Membership_Gateway::get_gateway( $rel->usinggateway );

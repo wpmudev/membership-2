@@ -28,11 +28,14 @@ class paypalexpress extends Membership_Gateway {
 			add_filter( 'membership_subscription_form_subscription_process', array( &$this, 'signup_free_subscription' ), 10, 2 );
 		}
 	}
-
+	
 		function mysettings() {
 
 				global $M_options;
 				?>
+				<h3><?php _e('IPN Setup Instructions', 'membership'); ?></h3>
+				<p><?php printf(__('In order for Membership to function correctly you must setup an IPN listening URL with PayPal. Failure to do so will prevent your site from being notified when a member cancels their subscription.<br />Your IPN listening URL is: <strong>%s</strong><br /><a target="_blank" href="https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/">Instructions &raquo;</a></p></p>', 'membership'), trailingslashit(home_url('paymentreturn/' . $this->gateway))); ?></p>
+				
 				<table class="form-table">
 						<tbody>
 								<tr valign="top">
@@ -378,18 +381,8 @@ class paypalexpress extends Membership_Gateway {
 			$form .= '<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">';
 		}
 		
-		// the charset to use
-		$form .= '<input type="hidden" name="charset" value="utf-8">';
-		// the merchant account id OR email address
-		$form .= '<input type="hidden" name="business" value="' . esc_attr(get_option($this->gateway . "_paypal_email")) . '">';
-		// tell PayPal we're using subscription button
-		$form .= '<input type="hidden" name="cmd" value="_xclick-subscriptions">';
-		// the name of the subscription
-		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
-		// the subscription id
-		$form .= '<input type="hidden" name="item_number" value="' . $subscription->sub_id() . '">';
-		// the currency to use
-		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] . '">';
+		$form .= $this->common_button_fields($subscription);
+		
 		// the sub amount
 		$form .= '<input type="hidden" name="a3" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[0]['amount'], 2)) . '">';
 		// the period of the sub
@@ -398,18 +391,6 @@ class paypalexpress extends Membership_Gateway {
 		$form .= '<input type="hidden" name="t3" value="' . strtoupper($pricing[0]['unit']) . '">';
 		// a custom field - contains data like user_id, sub_id, etc
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[0]['amount'], 2)) . '">';
-		// what url to go to after payment has been completed
-		$form .= '<input type="hidden" name="return" value="' . apply_filters('membership_return_url_' . $this->gateway, M_get_returnurl_permalink()) . '">';
-		// what url to go to when user hits cancel
-		$form .= '<input type="hidden" name="cancel_return" value="' . apply_filters('membership_cancel_url_' . $this->gateway, M_get_subscription_permalink()) . '">';
-		// the locale 
-		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option($this->gateway . "_paypal_site")) . '">';
-		// where IPN webhooks will be sent to
-		$form .= '<input type="hidden" name="notify_url" value="' . apply_filters('membership_notify_url_' . $this->gateway, home_url('paymentreturn/' . esc_attr($this->gateway))) . '">';
-		// don't allow notes to entered
-		$form .= '<input type="hidden" name="no_note" value="1" />';
-		// don't ask for a shipping address
-		$form .= '<input type="hidden" name="no_shipping" value="1" />';
 
 		if ( $norepeat ) {
 			// the sub doesn't recur
@@ -555,6 +536,8 @@ class paypalexpress extends Membership_Gateway {
 	}
 	
 	function common_button_fields( $subscription ) {
+		global $M_options;
+		
 		$form = '';
 		// the charset to use
     $form .= '<input type="hidden" name="charset" value="utf-8">';

@@ -46,8 +46,16 @@ class Membership_Module_Menu extends Membership_Module {
 			return;
 		}
 		
+		/*
+		
+		These aren't really required any more as we have a redirect in place on the
+		registration page itself and can mess up people's menus if they have menu
+		items nested under the registration menu item
+
 		$this->_add_filter( 'wp_get_nav_menu_items', 'filter_nav_menu_items', 10, 3);
 		$this->_add_filter( 'wp_list_pages_excludes', 'filter_wp_list_pages');
+		
+		*/
 	}
 
 	/**

@@ -35,6 +35,8 @@ class paypalsolo extends Membership_Gateway {
 		global $M_options;
 
 		?>
+		<h3><?php _e('IPN Setup Instructions', 'membership'); ?></h3>
+		<p><?php printf(__('In order for Membership to function correctlty you must setup an IPN listening URL with PayPal. Failure to do so will prevent your site from being notified when a member cancels their subscription.<br />Your IPN listening URL is: <strong>%s</strong><br /><a target="_blank" href="https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/">Instructions &raquo;</a></p></p>', 'membership'), trailingslashit(home_url('paymentreturn/' . $this->gateway))); ?></p>		
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
@@ -443,7 +445,14 @@ class paypalsolo extends Membership_Gateway {
 						}
 
 						// remove any current subs for upgrades
-						$member->drop_subscription( $fromsub );
+						$sub_ids = $member->get_subscription_ids();
+						foreach ( $sub_ids as $fromsub ) {
+							if ( $sub_id == $fromsub ) {
+								continue;
+							}
+							
+							$member->drop_subscription($fromsub);
+						}
 
 						// Added for affiliate system link
 						do_action( 'membership_payment_processed', $user_id, $sub_id, $amount, $currency, $_POST['txn_id'] );

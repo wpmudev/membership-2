@@ -1893,12 +1893,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						<?php
 				}
 
-				function handle_members_panel() {
+			function handle_members_panel() {
 			global $action, $page, $M_options;
 
 						wp_reset_vars(array('action', 'page'));
 
 						require_once('class.membersearch.php');
+						
+						// get all ACTIVE subscriptions
+						$subs = $this->get_subscriptions(array('sub_status' => 'active'));
 
 						// bulk actions
 						if (isset($_GET['doaction'])) {
@@ -2146,11 +2149,25 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
 																<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
 
+																<?php
+																if ( !empty($subs) ) : ?>
 																<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
 																		<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
 																		<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
 																		<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
 																</optgroup>
+																<?php
+																endif; ?>
+																
+																<?php
+																if ( empty($subs) ) : ?> 
+																<optgroup label="<?php _e('Levels', 'membership'); ?>">
+                                    <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
+                                    <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
+                                    <option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
+                                </optgroup>
+                                <?php
+                                endif; ?>
 
 																<optgroup label="<?php _e('Gateways', 'membership'); ?>">
 																		<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
@@ -2158,20 +2175,21 @@ if ( !class_exists( 'membershipadmin' ) ) :
 														</select>
 														<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>" />
 
+														<?php
+														if ( !empty($subs) ) : ?>
 														<select name="sub_op" style='float:none;'>
 																<option value=""><?php _e('Filter by subscription', 'membership'); ?></option>
 																<?php
-																$subs = $this->get_subscriptions();
-																if ($subs) {
-																		foreach ($subs as $key => $sub) {
-																				?>
-																				<option value="<?php echo $sub->id; ?>" <?php if (isset($_GET['sub_op']) && $_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
-																				<?php
-																		}
+																foreach ($subs as $key => $sub) {
+																		?>
+																		<option value="<?php echo $sub->id; ?>" <?php if (isset($_GET['sub_op']) && $_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
+																		<?php
 																}
 																?>
 														</select>
 														<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter', 'membership'); ?>">
+														<?php
+														endif; ?>
 
 														<select name="level_op" style='float:none;'>
 																<option value=""><?php _e('Filter by level', 'membership'); ?></option>
@@ -2245,6 +2263,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
 																<?php
 																foreach ($columns as $key => $col) {
+																	if ( $key == 'sub' && empty($subs) ) {
+																		continue;
+																	}
 																		?>
 																		<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
 																		<?php
@@ -2259,6 +2280,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																<?php
 																reset($columns);
 																foreach ($columns as $key => $col) {
+																	if ( $key == 'sub' && empty($subs) ) {
+																		continue;
+																	}
 																		?>
 																		<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
 																		<?php
@@ -2321,6 +2345,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				}
 																				?>
 																		</td>
+																		<?php
+																		if ( ! empty($subs) ) : ?>
 																		<td <?php echo $style; ?>>
 																				<?php
 																				$subs = $user_object->get_subscription_ids();
@@ -2356,6 +2382,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				?>
 																				<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
 																		</td>
+																		<?php
+																		endif; ?>
 																		<td <?php echo $style; ?>>
 																				<?php
 																				$levels = $user_object->get_level_ids();
@@ -2372,14 +2400,29 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																								}
 																						}
 																						echo implode(", ", $rows);
-										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
-										} else {
-											echo $default_level;
-										}
+																				} elseif ( $is_membership_admin ) {
+																					?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
+																				} else {
+																					echo $default_level;
+																				}
+																				
+																				$actions = array();
+                                        if ( ! $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID) ) {
+                                            $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+                                        }
+
+                                        if (!empty($levels)) {
+                                            if (count($levels) == 1) {
+                                                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+                                                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+                                            } else {
+                                                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+                                                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+                                            }
+                                        }
 
 																				?>
-																				<div class="row-actions"><?php //echo implode(" | ", $actions); ?></div>
+																				<div class="row-actions"><?php echo ( empty($subs) ) ? implode(" | ", $actions) : ''; ?></div>
 																		</td>
 																		<td <?php echo $style; ?>>
 																				<?php

@@ -1,3 +1,10 @@
+* Fixed: when using PayPal Single Payments the member's existing subscription is not being dropped after upgrading
+* Fixed: stranger access level some times isn't being determined correctly
+* Fixed: subscriptions are not being dropped after member cancels their subscription with PayPal
+* Fixed: on subscription screen the member's subscription expiration date is always the current date
+* Added: IPN setup instructions on PayPal gateways settings screens
+* Added: ability to add/move/drop access levels. NOTE: this feature will only be available when there are no subscriptions in the system
+
 == 3.5.1 ==
 
 * Fixed: pings don't send when using "Default subscription for registered users" setting

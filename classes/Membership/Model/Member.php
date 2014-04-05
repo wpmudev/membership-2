@@ -80,16 +80,21 @@ class Membership_Model_Member extends WP_User {
 		}
 
 		$this->_wpdb = $wpdb;
-		
+
 		if ( $id != 0 && ( $this->has_cap('membershipadmin') || $this->has_cap('manage_options') || is_super_admin($this->ID) ) ) {
 			// bail - user is admin or super admin
 			return;
 		}
-		
+
 		$this->transition_through_subscription();
 	}
 
 	public function active_member() {
+		if ( $this->ID == 0 ) {
+			// bail, stranger level is never considered an active member
+			return false;
+		}
+		
 		$active = get_user_meta( $this->ID, membership_db_prefix( $this->_wpdb, 'membership_active', false ), true );
 		return apply_filters( 'membership_active_member', empty( $active ) || $active == 'yes', $this->ID );
 	}
@@ -117,6 +122,10 @@ class Membership_Model_Member extends WP_User {
 			return true;
 		}
 		
+		if ( $this->ID == 0 ) {
+			// bail, stranger level is never considered a member
+		}
+
 		$res = $this->_wpdb->get_var( sprintf(
 			'SELECT count(*) FROM %s WHERE user_id = %d',
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -132,6 +141,11 @@ class Membership_Model_Member extends WP_User {
 			return true;
 		}
 		
+		if ( $this->ID == 0 ) {
+			// bail, stranger level never has subscriptions
+			return false;
+		}
+
 		$res = $this->_wpdb->get_var( sprintf(
 			"SELECT count(*) FROM %s WHERE user_id = %d AND sub_id != 0",
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -152,16 +166,16 @@ class Membership_Model_Member extends WP_User {
 	private function transition_through_subscription() {
 
 		do_action('membership_start_transition', $this->ID);
-		
+
 		$relationships = $this->get_relationships();
-		
+
 		if( $relationships !== false ) {
 
 			membership_debug_log( __('MEMBER: Have relationships so starting transition check' , 'membership') );
 
 			foreach($relationships as $rel) {
 				$sub_type = $this->_wpdb->get_var( sprintf( 'SELECT sub_type FROM %s WHERE sub_id = %d AND level_id = %d', membership_db_prefix( $this->_wpdb, 'subscriptions_levels' ), $rel->sub_id, $rel->level_id ) );
-				if ( $sub_type != 'finite' ) {
+				if ( $sub_type == 'indefinite' ) {
 					continue;
 				}
 
@@ -400,7 +414,15 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function get_subscription_ids() {
-		if ( empty( $this->subids ) ) {
+		global $M_options;
+		
+		if ( $this->ID == 0 ) {
+			if ( isset($M_options['freeusersubscription']) ) {
+				$this->subids = array(
+					$M_options['freeusersubscription'],
+				);
+			}
+		} elseif ( empty( $this->subids ) ) {
 			$this->subids = $this->_wpdb->get_col( sprintf(
 				'SELECT sub_id FROM %s WHERE user_id = %d AND sub_id > 0',
 				MEMBERSHIP_TABLE_RELATIONS,
@@ -411,8 +433,19 @@ class Membership_Model_Member extends WP_User {
 		return $this->subids;
 	}
 
-	public function get_level_ids() {
-		if ( empty( $this->levids ) ) {
+	public function get_level_ids() {	
+		global $M_options;
+		
+		if ( $this->ID == 0 ) {
+			if ( isset($M_options['strangerlevel']) ) {
+				$this->levids = array(
+					(object) array(
+						'level_id' => $M_options['strangerlevel'],
+						'sub_id' => 0,
+					),
+				);
+			}
+		} elseif ( empty( $this->levids ) ) {
 			$this->levids = (array)$this->_wpdb->get_results( sprintf(
 				'SELECT level_id, sub_id FROM %s WHERE user_id = %d AND level_id > 0',
 				MEMBERSHIP_TABLE_RELATIONS,
@@ -433,6 +466,10 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function get_relationships() {
+		if ( $this->ID == 0 ) {
+			return false;
+		}
+		
 		$result = $this->_wpdb->get_results( sprintf(
 			'SELECT * FROM %s WHERE user_id = %d AND sub_id != 0',
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -443,6 +480,10 @@ class Membership_Model_Member extends WP_User {
 	}
 
 	public function on_level( $level_id, $include_subs = false, $check_order = false ) {
+		if ( $this->ID == 0 ) {
+			return false;
+		}
+		
 		$sql = sprintf(
 			"SELECT rel_id FROM %s WHERE user_id = %d AND level_id = %d",
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -457,13 +498,17 @@ class Membership_Model_Member extends WP_User {
 		if ( $check_order !== false ) {
 			$sql .= $this->_wpdb->prepare( " AND order_instance = %d", $check_order );
 		}
-		
+
 		$result = $this->_wpdb->get_col( $sql );
 
 		return apply_filters( 'membership_on_level', !empty( $result ), $level_id, $this->ID );
 	}
 
 	public function on_sub( $sub_id ) {
+		if ( $this->ID == 0 ) {
+			return false;
+		}
+		
 		$result = $this->_wpdb->get_col( sprintf(
 			'SELECT rel_id FROM %s WHERE user_id = %d AND sub_id = %d',
 			MEMBERSHIP_TABLE_RELATIONS,
@@ -711,7 +756,7 @@ class Membership_Model_Member extends WP_User {
 	public function deactivate() {
 		update_user_meta($this->ID, membership_db_prefix($this->_wpdb, 'membership_active', false), 'no');
 	}
-	
+
 	// Levels functions
 
 	public function has_levels() {
@@ -723,7 +768,7 @@ class Membership_Model_Member extends WP_User {
 			// User is admin or super admin and isn't using "view as" feature so can view everything
 			return true;
 		}
-		
+
 		if( $level_id && isset($this->levels[$level_id]) ) {
 			return true;
 		} else {
