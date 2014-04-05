@@ -126,11 +126,9 @@ class MS_Plugin {
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
 		/** Instantiate Plugin model */
-		$this->_model = new MS_Model_Plugin();
+		$this->_model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
 		/** Instantiate Plugin view */
-		$this->_view = new MS_View_Plugin();
-		
-		
+		$this->_view = apply_filters( 'membership_plugin_view', new MS_View_Plugin() );		
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
