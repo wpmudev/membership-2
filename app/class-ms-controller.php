@@ -61,6 +61,6 @@ class MS_Controller extends MS_Hooker {
 
 	public function __construct() {
 	}
-
+	
 	
 }

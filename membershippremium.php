@@ -44,6 +44,9 @@ define('MS_VERSION_DT', '2014-04-04' );
 /** Plugin name dir constant */
 define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 
+/** Plugin name dir constant */
+define( 'MS_PLUGIN_VERSION', '4.0.0.0' );
+
 /** Instantiate the plugin */
 MS_Plugin::instance( new MS_Plugin() );
 
@@ -84,8 +87,8 @@ add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides'
  */
 class MS_Plugin {
 
-	const NAME = "membership";
-	const VERSION = '4.0.0.0';
+	const NAME = MS_PLUGIN_NAME;
+	const VERSION = MS_PLUGIN_VERSION;
 	
 	/**
 	 * Singletone instance of the plugin.
@@ -102,27 +105,37 @@ class MS_Plugin {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var _name
+	 * @var name
 	 */
-	private $_name;
+	private $name;
+	
+	
+	/**
+	 * The plugin version.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var version
+	 */
+	private $version;
 	
 	/**
 	 * The plugin file.
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var _file
+	 * @var file
 	 */
-	private $_file;	
+	private $file;	
 	
 	/**
 	 * The plugin path.
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var _dir
+	 * @var dir
 	 */
-	private $_dir;	
+	private $dir;	
 
 	/**
 	 * The plugin URL.
@@ -131,7 +144,7 @@ class MS_Plugin {
 	 * @access private
 	 * @var _url
 	 */
-	private $_url;
+	private $url;
 
 	/**
 	 * Instance of MS_Model_Plugin
@@ -156,6 +169,9 @@ class MS_Plugin {
 	 */
 	function __construct() {
 		
+		/** Load textdomain, localization. */
+		load_plugin_textdomain( MS_TEXT_DOMAIN, false, MS_PLUGIN_NAME . '/languages/' );
+		
 		/** Actions to execute before construction is complete. */
 		do_action( 'membership_plugin_loading' ); 
 				
@@ -169,26 +185,29 @@ class MS_Plugin {
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
-		$this->_name = self::NAME;
-		$this->_file = __FILE__;
-		$this->_dir = plugin_dir_path(__FILE__) . 'app/';
-		$this->_url = plugin_dir_url(__FILE__) . 'app/';
+		$this->name = self::NAME;
+		$this->version = self::VERSION;		
+		$this->file = __FILE__;
+		$this->dir = plugin_dir_path(__FILE__) . 'app/';
+		$this->url = plugin_dir_url(__FILE__) . 'app/';
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
 
 		/** Grab instance of self. */
 		self::$_instance = $this;
+		
+		/** Setup plugin admin UI */
+		add_action( 'admin_menu', array( $this, 'add_menu_pages' ) );
 
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 
 	}
 	
-	public function set_test( $s ) {
-		$this->_test = $s;
+	public function add_menu_pages() {
+		MS_Helper_Plugin::create_admin_pages( $this->_view );
 	}
 	
-
 	/**
 	 * Class autoloading callback function.
 	 *
@@ -301,5 +320,28 @@ class MS_Plugin {
 	
 		return self::$_instance;
 	}	
+	
+	/**
+	 * Override __get() to return only properties not starting with underscore.
+	 *
+	 * @since 4.0.0.0
+	 *
+	 * @access public
+	 *
+	 * @param Object $property Uses PHP magic method param.
+	 * @return Object
+	 */	
+	public function __get( $property ) {
+		if ( property_exists( $this, $property ) ) {
+			if ( '_' != $property[0] ) {
+				return $this->$property;
+		    }
+		}
+	}
+	
+	
+	
+	
+	
 	
 }

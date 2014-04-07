@@ -32,8 +32,5 @@
  */
 class MS_View extends MS_Hooker {
 	
-	function __construct() {
-		
-	}
 	
 }

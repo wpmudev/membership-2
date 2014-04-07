@@ -22,8 +22,29 @@
 
 class MS_View_Plugin extends MS_View {
 	
+	private $data;
+	
 	public function __construct() {
 	}
 	
+	public function render() {
+		ob_start();
+		call_user_func( array( $this, 'render_' . str_replace('-', '_', $_GET['page'] ) ) );
+		$html = ob_get_clean();
+		echo $html;
+	}
+
+	// Render Membership Page
+	public function render_membership() {
+		?>
+		<h1>Membership</h1>
+		<?php
+	}
 	
+	public function render_membership_settings() {
+		?>
+		<h1>Membership Settings</h1>
+		<?php
+	}
+		
 }
