@@ -1,0 +1,74 @@
+.ms-wrap .form-table td,
+.ms-wrap .form-table th {
+    vertical-align: top;
+}
+.ms-wrap {
+	margin:10px 20px 0 2px;
+}
+.ms-wrap .ms-tabs {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+}
+.ms-wrap .ms-tab {
+    position: relative;
+    z-index: 10;
+    border: 1px solid transparent;
+    border-radius: 4px 0 0 4px;
+    border-width: 1px 0 1px 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.ms-wrap .ms-tab.active {
+    background: #fff;
+    border-color: #ccc;
+}
+.ms-wrap .ms-tab.active:after {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: 0;
+    background: #fff;
+    content: "";
+    display: block;
+    font-size: 0;
+    line-height: 0;
+    width: 1px;
+}
+.ms-wrap .ms-tab.active .ms-tab-link {
+    color: #222;
+}
+.ms-wrap .ms-tab-link {
+    display: block;
+    padding: 8px 15px;
+    text-decoration: none;
+}
+
+.ms-wrap .ms-settings-title {
+  font-size:25px; 
+  font-weight:400;
+  line-height:29px;
+  padding:9px 15px 30px 0;
+  margin:0;
+}
+
+.ms-wrap .ms-settings {
+    background: #fff;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.ms-wrap .ms-label {
+    display: block;
+    padding-bottom: 5px;
+}
+.ms-margin-right{
+    margin-right: 10px;
+}
+.ms-wrap.ms-postbox.ms-default-margin{
+    margin-right: 15px;
+    margin-left: 15px;
+    margin-top: 5px;
+}

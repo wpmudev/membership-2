@@ -193,12 +193,18 @@ class MS_Plugin {
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
 
+		/** Enque admin styles (CSS) */
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_styles' ) );
+
+		/** Enque admin scripts (JS) */
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_scripts' ) );
+
 		/** Grab instance of self. */
 		self::$_instance = $this;
 		
 		/** Setup plugin admin UI */
 		add_action( 'admin_menu', array( $this, 'add_menu_pages' ) );
-
+//echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 
@@ -207,6 +213,23 @@ class MS_Plugin {
 	public function add_menu_pages() {
 		MS_Helper_Plugin::create_admin_pages( $this->_view );
 	}
+	
+	
+	public function register_plugin_admin_styles() {
+		
+		wp_register_style( 'membership_admin_css', plugin_dir_url(__FILE__) . 'app/assets/css/settings.css' );
+		wp_enqueue_style( 'membership_admin_css' );
+
+	}
+
+	public function register_plugin_admin_scripts() {
+
+		// wp_register_script( 'membership_admin_js', plugin_dir_url(__FILE__) . 'app/assets/js/settings.js' );
+		// wp_enqueue_script( 'membership_admin_js' );
+
+		
+	}
+	
 	
 	/**
 	 * Class autoloading callback function.

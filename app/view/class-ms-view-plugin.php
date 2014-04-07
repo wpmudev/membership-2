@@ -27,9 +27,31 @@ class MS_View_Plugin extends MS_View {
 	public function __construct() {
 	}
 	
-	public function render() {
+	public function render() {		
 		ob_start();
+		?>
+		<div class='ms-wrap'>
+		<h2 class='ms-settings-title'>Title</h2>		
+			<div class='ms-tab-container'>
+		       <ul id="sortable-units" class="ms-tabs" style="">
+		               <li class="ms-tab">
+		                   <a class="ms-tab-link" href="#">Link Title</a>                                                         
+		               </li>
+
+		               <li class="ms-tab active">
+		                   <a class="ms-tab-link" href="#">Active Link Title</a>                                                         
+		               </li>
+
+		               <li class="ms-tab">
+		                   <a class="ms-tab-link" href="#">Link Title</a>                                                         
+		               </li>
+		       </ul>
+		   </div>		
+		<?php
 		call_user_func( array( $this, 'render_' . str_replace('-', '_', $_GET['page'] ) ) );
+		?>
+		</div>
+		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
@@ -37,13 +59,19 @@ class MS_View_Plugin extends MS_View {
 	// Render Membership Page
 	public function render_membership() {
 		?>
-		<h1>Membership</h1>
+	   <div class='ms-settings'>
+		   Membership
+	       <form>....</form>
+	   </div>
 		<?php
 	}
 	
 	public function render_membership_settings() {
 		?>
-		<h1>Membership Settings</h1>
+	   <div class='ms-settings'>
+		   Membership Settings
+	       <form>....</form>
+	   </div>
 		<?php
 	}
 		
