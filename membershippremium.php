@@ -47,8 +47,29 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 /** Instantiate the plugin */
 MS_Plugin::instance( new MS_Plugin() );
 
+/**
+ * Hooks 'membership_class_path_overrides'. 
+ *
+ * Overrides plugin class paths to adhere to naming conventions
+ * where object names are separated by underscores or for special cases.
+ *
+ * @since 4.0.0.0
+ *
+ * @param  array $overrides Array passed in by filter.
+ * @return array(class=>path) Classes with new file paths.
+ */
+function membership_class_path_overrides( $overrides ) {
+	
+	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
+	
+	return $overrides;
+}
+add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides' );
+
+
 // TESTING TO SEE IF CLASSES ARE LOADED
-//echo ( "<h1>" . class_exists( 'MS_Model_CustomPostType' ) . "</h1>" );
+// echo ( "<h1>" . class_exists( 'MS_Model_CustomPostType' ) . "</h1>" );
+// echo ( "<h1>" . class_exists( 'MS_Model_Custom_Post_Type' ) . "</h1>" );
 
 /**
  * Sets up and loads the Membership plugin.
@@ -185,23 +206,35 @@ class MS_Plugin {
 
 		$basedir = dirname( __FILE__ );
 		$namespaces = array( 'MS_' );
+		
+		$path_overrides = apply_filters( 'membership_class_path_overrides', array() );
+		
 		foreach ( $namespaces as $namespace ) {
 			switch ( $namespace ) {
 			
 				/** Use /app/ path and structure only for MS_ classes */
 				case "MS_":
 				
-					if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
-						$sub_path = strtolower( str_replace( 'MS_', '', $class ) );
-						$path_array = explode( '_', $sub_path );
-						array_pop( $path_array );
-						$sub_path = implode( '_', $path_array );
-						$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_', 
-						'-', "class-{$class}.php" ) );
+					
+					if ( !array_key_exists( trim( $class ), $path_overrides ) ) {
+						if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
+							$sub_path = strtolower( str_replace( 'MS_', '', $class ) );
+							$path_array = explode( '_', $sub_path );
+							array_pop( $path_array );
+							$sub_path = implode( '_', $path_array );
+							$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_', 
+							'-', "class-{$class}.php" ) );
+							if ( is_readable( $filename ) ) {
+								require $filename;
+								return true;
+							}
+						}						
+					} else {
+						$filename = $basedir . '/' . $path_overrides[ $class ];
 						if ( is_readable( $filename ) ) {
 							require $filename;
 							return true;
-						}
+						}						
 					}
 					break; 
 			}

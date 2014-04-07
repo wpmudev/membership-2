@@ -20,7 +20,7 @@
  *
 */
 
-class MS_Model_CustomPostType extends MS_Model {
+class MS_Model_Custom_Post_Type extends MS_Model {
 	
 	protected $custom_post_type;
 	
