@@ -20,6 +20,17 @@
  *
 */
 
+/**
+ * Abstract class for all Models.
+ *
+ * All models will extend or inherit from the MS_Model class.
+ * Methods of this class will prepare objects for the database and
+ * manipulate data to be used in a MS_Controller.
+ *
+ * @since 4.0.0
+ *
+ * @return object
+ */
 class MS_Model extends MS_Hooker {
 	
 	public function __construct() {

@@ -45,7 +45,10 @@ define('MS_VERSION_DT', '2014-04-04' );
 define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 
 /** Instantiate the plugin */
-new MS_Plugin();
+MS_Plugin::instance( new MS_Plugin() );
+
+// TESTING TO SEE IF CLASSES ARE LOADED
+//echo ( "<h1>" . class_exists( 'MS_Model_CustomPostType' ) . "</h1>" );
 
 /**
  * Sets up and loads the Membership plugin.
@@ -59,6 +62,19 @@ new MS_Plugin();
  * @return object
  */
 class MS_Plugin {
+
+	const NAME = "membership";
+	const VERSION = '4.0.0.0';
+	
+	/**
+	 * Singletone instance of the plugin.
+	 *
+	 * @since 3.5
+	 *
+	 * @access private
+	 * @var MS_Plugin
+	 */
+	private static $_instance = null;
 
 	/**
 	 * The plugin name.
@@ -132,18 +148,25 @@ class MS_Plugin {
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
-		$this->_name = plugin_basename(__FILE__);
+		$this->_name = self::NAME;
 		$this->_file = __FILE__;
 		$this->_dir = plugin_dir_path(__FILE__) . 'app/';
 		$this->_url = plugin_dir_url(__FILE__) . 'app/';
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
 
+		/** Grab instance of self. */
+		self::$_instance = $this;
+
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 
 	}
-
+	
+	public function set_test( $s ) {
+		$this->_test = $s;
+	}
+	
 
 	/**
 	 * Class autoloading callback function.
@@ -187,7 +210,6 @@ class MS_Plugin {
 		return false;
 	}
 	
-	
 	/**
 	 * Load plugin localization files.
 	 *
@@ -221,4 +243,30 @@ class MS_Plugin {
 		array_unshift( $links, $settings_link );
 		return $links;
 	}	
+	
+	/**
+	 * Returns singletone instance of the plugin.
+	 *
+	 * @since 3.5
+	 *
+	 * @static
+	 * @access public
+	 *
+	 * @param Object $instance Can use "new MS_Plugin()" to instantiate. Only once.
+	 * @return MS_Plugin
+	 */
+	public static function instance( $instance = null ) {
+		if ( !$instance || 'MS_Plugin' != get_class( $instance ) ){
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance = new MS_Plugin();
+			}
+		} else {
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance = $instance;
+			}
+		}
+	
+		return self::$_instance;
+	}	
+	
 }

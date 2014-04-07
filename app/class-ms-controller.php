@@ -20,10 +20,47 @@
  *
 */
 
+/**
+ * Abstract class for all Controllers.
+ *
+ * All controllers will extend or inherit from the MS_Controller class.
+ * Methods of this class will control the flow and behaviour of the plugin
+ * by using MS_Model and MS_View objects.
+ *
+ * @since 4.0.0
+ *
+ * @uses MS_Model
+ * @uses MS_View
+ *
+ * @return object
+ */
 class MS_Controller extends MS_Hooker {
 	
+	/**
+	 * Instance of MS_Model object
+	 *
+	 * **Note:** Could be a keyed array of MS_Model objects
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _model
+	 */
+	private $_model;
+
+	/**
+	 * Instance of MS_View object
+	 * 
+	 * **Note:** Could be a keyed array of MS_Model objects
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var _view
+	 */
+	private $_view;
+
+
 	public function __construct() {
 	}
-	
+
 	
 }

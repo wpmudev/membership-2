@@ -20,10 +20,27 @@
  *
 */
 
+/**
+ * Abstract class for all Helpers.
+ *
+ * All Helpers will extend or inherit from the MS_Helper class.
+ * Methods of this class will be used to identify the purpose and
+ * and actions of a helper.
+ *
+ * Almost all functionality will be created with in an extended class.
+ *
+ * @since 4.0.0
+ *
+ * @uses MS_Model
+ * @uses MS_View
+ *
+ * @return object
+ */
 class MS_Helper extends MS_Hooker {
 	
 	public function __construct() {
 	}
 	
+
 	
 }
