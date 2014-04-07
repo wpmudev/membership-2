@@ -66,6 +66,7 @@ class paypalsolo extends Membership_Gateway {
 		          'NL'	=> __('Netherlands', 'membership'),
 				  'NZ'	=> __('New Zealand', 'membership'),
 		          'PL'	=> __('Poland', 'membership'),
+				  'RU'  => __('Russia', 'membership'),
 		          'SG'	=> __('Singapore', 'membership'),
 		          'ES'	=> __('Spain', 'membership'),
 		          'SE'	=> __('Sweden', 'membership'),

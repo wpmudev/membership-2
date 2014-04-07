@@ -1,4 +1,6 @@
+== 3.5.1.2 ==
 
+* Added: Russian Ruble to currency options and PayPal solo
 * Fixed: in the "all members" screen some times the subscription/level columns weren’t showing any data
 
 == 3.5.1.1 ==

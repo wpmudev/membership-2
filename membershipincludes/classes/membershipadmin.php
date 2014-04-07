@@ -3473,6 +3473,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																										'NZD' => __('NZD - New Zealand Dollar', 'membership'),
 																										'PHP' => __('PHP - Philippine Pesos', 'membership'),
 																										'PLN' => __('PLN - Polish Zloty', 'membership'),
+																										'RUB' => __('RUB - Russian Ruble', 'membership'),
 																										'SEK' => __('SEK - Swedish Krona', 'membership'),
 																										'SGD' => __('SGD - Singapore Dollar', 'membership'),
 																										'TWD' => __('TWD - Taiwan New Dollars', 'membership'),
