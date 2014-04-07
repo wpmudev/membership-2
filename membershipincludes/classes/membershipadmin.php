@@ -126,7 +126,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 		}
-		
+
 		/**
 		 * Checks to see if the plugin is network activated and global tables are being used
 		 *
@@ -134,11 +134,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_network_active() {
 			return ( (function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'membership/membershippremium.php' )) );
 		}
-		
+
 		/**
 		 * Check to see if the plugin is using global tables
 		 *
@@ -146,11 +146,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function using_global_tables() {
 			return ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES == true );
 		}
-		
+
 		/**
 		 * Check to see if the current site is the main site
 		 *
@@ -158,15 +158,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_main_site() {
 			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') ) {
 				return ( MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() );
 			}
-			
+
 			return ( is_main_site() );
 		}
-		
+
 		/**
 		 * Checks to see if the plugin has the latest build installed
 		 *
@@ -174,12 +174,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_installed() {
 			if ( $this->is_network_active() && $this->using_global_tables() ) {
 				return ( get_site_option('M_Installed', false) == $this->build  && get_option('M_Installed', false) == $this->build );
 			}
-			
+
 			return ( get_option('M_Installed', false) == $this->build );
 		}
 
@@ -202,16 +202,16 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 				if ( !$this->is_installed() ) {
 					include_once membership_dir( 'membershipincludes/classes/upgrade.php' );
-					
+
 					$installed = get_option('M_Installed', false);
 
 					M_Upgrade($installed);
 					update_option('M_Installed', $this->build);
-					
+
 					if ( $this->is_network_active() ) {
 						update_site_option('M_Installed', $this->build);
 					}
-						
+
 
 					// Add in our new capability
 					if (!$user->has_cap('membershipadmin') && defined('MEMBERSHIP_SETACTIVATORAS_ADMIN') && MEMBERSHIP_SETACTIVATORAS_ADMIN == 'yes') {
@@ -220,18 +220,18 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 					$this->create_defaults();
 				}
-				
+
 				//if is network activated and using global tables then force protection on all sites
 				if ( $this->is_network_active() && $this->using_global_tables() ) {
 					if ( get_option('membership_active') != 'yes' ) {
 						update_option('membership_active', 'yes');
 					}
-					
+
 					if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') && is_numeric(MEMBERSHIP_GLOBAL_MAINSITE) && get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', false) != 'yes' ) {
 						update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'yes');
 					}
 				}
-				
+
 				// Add in our new capability
 				if ( $user->user_login == MEMBERSHIP_MASTER_ADMIN && !$user->has_cap('membershipadmin') ) {
 					$user->add_cap('membershipadmin');
@@ -1317,7 +1317,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 														$fromlevel_id = (int) $_POST['fromlevel_id'];
 														$tolevel_id = (int) $_POST['tolevel_id'];
-														
+
 														if ($fromlevel_id && $tolevel_id) {
 																$member->move_level($fromlevel_id, $tolevel_id);
 														}
@@ -1899,7 +1899,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						wp_reset_vars(array('action', 'page'));
 
 						require_once('class.membersearch.php');
-						
+
 						// get all ACTIVE subscriptions
 						$subs = $this->get_subscriptions(array('sub_status' => 'active'));
 
@@ -2158,9 +2158,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																</optgroup>
 																<?php
 																endif; ?>
-																
+
 																<?php
-																if ( empty($subs) ) : ?> 
+																if ( empty($subs) ) : ?>
 																<optgroup label="<?php _e('Levels', 'membership'); ?>">
                                     <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
                                     <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
@@ -2349,31 +2349,31 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		if ( ! empty($subs) ) : ?>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$subs = $user_object->get_subscription_ids();
-										if ( !empty( $subs ) ) {
-											$rows = array();
-											foreach ( (array) $subs as $key ) {
-												$sub = $factory->get_subscription( $key );
-												if ( !empty( $sub ) ) {
-													$rows[] = $sub->sub_name();
-												}
-											}
-											echo implode( ", ", $rows );
-										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
-										} else {
-											echo $default_subscription;
-										}
-
-										$actions = array();
+																				$usersubs = $user_object->get_subscription_ids();
+																				if ( !empty( $usersubs ) ) {
+																					$rows = array();
+																					foreach ( (array) $usersubs as $key ) {
+																						$sub = $factory->get_subscription( $key );
+																						if ( !empty( $sub ) ) {
+																							$rows[] = $sub->sub_name();
+																						}
+																					}
+																					echo implode( ", ", $rows );
+																				} elseif ( $is_membership_admin ) {
+																					?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
+																				} else {
+																					echo $default_subscription;
+																				}
+										
+																				$actions = array();
 																				if (!$is_membership_admin) {
 																						$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
 																				}
 
-																				if (!empty($subs)) {
+																				if (!empty($usersubs)) {
 																						if (count($subs) == 1) {
-																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $usersubs[0], 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $usersubs[0], 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
 																						} else {
 																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
 																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
@@ -2386,10 +2386,10 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		endif; ?>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$levels = $user_object->get_level_ids();
-																				if (!empty($levels)) {
+																				$userlevels = $user_object->get_level_ids();
+																				if ( ! empty($userlevels) ) {
 																						$rows = array();
-																						foreach ((array) $levels as $key => $value) {
+																						foreach ((array) $userlevels as $key => $value) {
 																								$level = Membership_Plugin::factory()->get_level($value->level_id);
 																								if (!empty($level)) {
 																										if ((int) $value->sub_id != 0) {
@@ -2405,16 +2405,16 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				} else {
 																					echo $default_level;
 																				}
-																				
+
 																				$actions = array();
                                         if ( ! $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID) ) {
                                             $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
                                         }
 
-                                        if (!empty($levels)) {
+                                        if (!empty($userlevels)) {
                                             if (count($levels) == 1) {
-                                                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-                                                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $levels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+                                                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $userlevels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+                                                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $userlevels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
                                             } else {
                                                 $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
                                                 $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
@@ -2426,10 +2426,10 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		</td>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$subs = $user_object->get_relationships();
-																				if ($subs) {
+																				$usersubs = $user_object->get_relationships();
+																				if ($usersubs) {
 																						$exps = array();
-																						foreach ($subs as $sub) {
+																						foreach ($usersubs as $sub) {
 																								$exps[] = date("Y-m-d H:i", mysql2date("U", $sub->expirydate));
 																						}
 																						echo implode(", ", $exps);
@@ -2438,11 +2438,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		</td>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$subs = $user_object->get_relationships();
+																				$usersubs = $user_object->get_relationships();
 																				//print_r($subs);
-																				if ( $subs ) {
+																				if ( $usersubs ) {
 																						$gates = array();
-																						foreach ( $subs as $sub ) {
+																						foreach ( $usersubs as $sub ) {
 												if ( $sub->usinggateway != 'admin' ) {
 													$gateway = Membership_Gateway::get_gateway( $sub->usinggateway );
 													$gates[] = is_object( $gateway )
@@ -3973,7 +3973,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$positives = $mlevel->get_rules('positive');
 								$negatives = $mlevel->get_rules('negative');
 						}
-						
+
 						// Re-arrange the rules
 						$rules = array();
 						$p = array();
@@ -4422,9 +4422,9 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Membership Level activation not toggled.', 'membership');
 
 						$messages[9] = __('Membership Levels updated.', 'membership');
-						
+
 						$levels = $this->get_membership_levels($filter);
-						
+
 						if ( ( defined( 'M_LITE' ) && count($levels) < $this->lite_limit ) || ! defined('M_LITE') )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;level_id='>$add_new</a>";
@@ -4432,7 +4432,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 							$upgrade = __('Upgrade to add unlimited levels &raquo;', 'membership');
 							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
 						}
-						
+
 						?>
 						<div class='wrap nosubsub'>
 								<div class="icon32" id="icon-link-manager"><br></div>
@@ -5052,15 +5052,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Subscription activation not toggled.', 'membership');
 
 						$messages[9] = __('Subscriptions updated.', 'membership');
-						
+
 						$subs = $this->get_subscriptions($filter);
-						
+
 						if ( ( defined( 'M_LITE' ) && count($subs) < $this->lite_limit ) || ! defined( 'M_LITE' ) )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;sub_id='>$add_new</a>";
 						} else {
 							$upgrade = __('Upgrade to add unlimited subscriptions &raquo;', 'membership');
-							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";	
+							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
 						}
 						?>
 						<div class='wrap nosubsub'>
@@ -7115,7 +7115,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 												if ( defined( 'M_LITE' ) && ! in_array( $key, array( 'freesubscriptions', 'paypalexpress', 'paypalsolo' ) ) ) {
 													wp_safe_redirect(add_query_arg('msg', 8, wp_get_referer()));
 												} else {
-													
+
 													if (!in_array($key, $active)) {
 															$active[] = $key;
 															update_option('membership_activated_gateways', array_unique($active));
@@ -7194,7 +7194,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[6] = __('Gateway not deactivated.', 'membership');
 
 						$messages[7] = __('Gateway activation toggled.', 'membership');
-						
+
 						$messages[8] = __('Only Paypal and Free Subscriptions gateway available. <a class="m-pro-update" href="http://premium.wpmudev.org/project/membership/">Upgrade to activate this Gateway &raquo</a>', 'membership');
 						?>
 						<div class='wrap'>
@@ -7850,7 +7850,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 					} else {
 						wp_new_user_notification($user_id, $_POST['password']);
 					}
-					
+
 					if ( ! empty($M_options['freeusersubscription']) ) {
 						$level = ! empty($M_options['strangerlevel']) ? $M_options['strangerlevel'] : 0;
 						//free subscription is active - do 'membership_add_subscription' action so pings are triggered, etc

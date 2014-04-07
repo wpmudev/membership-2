@@ -1,3 +1,6 @@
+
+* Fixed: in the "all members" screen some times the subscription/level columns weren’t showing any data
+
 == 3.5.1.1 ==
 
 * Fixed: when using PayPal Single Payments the member's existing subscription is not being dropped after upgrading
