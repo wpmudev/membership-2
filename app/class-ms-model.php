@@ -33,8 +33,49 @@
  */
 class MS_Model extends MS_Hooker {
 	
+	/**
+	 * Dynamic data for MS_Model.
+	 *
+	 * Allows dynamic properties to be called on model object.
+	 * e.g. my_model->new_property
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var array data
+	 */
+	private $data = array();
+	
+	
 	public function __construct() {
 	}
 	
+
+	/**
+	 * Creates/sets MS_Model properties.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 * @param object $index The property.
+	 * @param object $value The property value.
+	 */
+	public function __set($index, $value)
+ 	{
+        $this->data[$index] = $value;
+ 	}
+
+	/**
+	 * Returns MS_Model properties.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 * @param object $index The property.
+	 * @return object The property value.
+	 */	
+	public function __get($index)
+	{
+		return $this->vars[$index];
+	}
 	
 }
