@@ -94,7 +94,7 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 	$level = $factory->get_level( $tolevel_id );
 	$member = $factory->get_member( $user_id );
 
-	$wprole = $level->get_meta( 'associated_wp_role' );
+	$wprole = M_Roles_getassociatedrole( $tolevel_id );
     if( empty( $wp_role ) ) { $wp_role = get_option( 'default_role' ); }
 	if(!empty($wprole)) {
 		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
@@ -112,7 +112,7 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 	$level = $factory->get_level( $fromlevel_id );
 	$member = $factory->get_member( $user_id );
 
-	$wprole = $level->get_meta( 'associated_wp_role' );
+		$wprole = M_Roles_getassociatedrole( $fromlevel_id );
 	if ( !empty( $wprole ) ) {
 		if ( method_exists( $member, 'has_cap' ) && !$member->has_cap( 'activate_plugins' ) ) {
 			$member->remove_role( $wprole );
@@ -141,8 +141,8 @@ function M_Roles_joinedsub( $tosub_id, $tolevel_id, $to_order, $user_id ) {
 
 	$level = $factory->get_level( $tolevel_id );
 	$member = $factory->get_member( $user_id );
-	$wprole = $level->get_meta( 'associated_wp_role' );
-
+	$wprole = M_Roles_getassociatedrole( $tolevel_id );
+    if( empty( $wp_role ) ) { $wp_role = get_option( 'default_role' ); }
 	if(!empty($wprole)) {
 		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
 			$member->set_role( $wprole );
@@ -181,3 +181,47 @@ function M_Roles_movedsub( $fromsub_id, $fromlevel_id, $tosub_id, $tolevel_id, $
 
 }
 add_action( 'membership_move_subscription', 'M_Roles_movedsub', 10, 6 );
+
+
+function M_Roles_updateonaddlevel( $tolevel_id, $user_id ) {
+	M_Roles_updatelevelrole( $tolevel_id, $user_id );
+}
+add_action( 'membership_add_level', 'M_Roles_updateonaddlevel', 10, 2 );
+
+
+function M_Roles_updateonmovelevel( $fromlevel_id, $tolevel_id, $user_id ) {
+	M_Roles_updatelevelrole( $tolevel_id, $user_id );	
+}
+add_action( 'membership_add_level', 'M_Roles_updateonmovelevel', 10, 3 );
+
+function M_Roles_updateonaddsubscription( $tosub_id, $tolevel_id, $to_order, $user_id ) {
+	M_Roles_updatelevelrole( $tolevel_id, $user_id );	
+}
+add_action( 'membership_add_level', 'M_Roles_updateonaddsubscription', 10, 4 );
+
+function M_Roles_updatelevelrole( $level_id, $user_id ) {
+	$member = Membership_Plugin::factory()->get_member( $user_id );
+	$wprole = M_Roles_getassociatedrole( $level_id );
+    if( empty( $wp_role ) ) { $wp_role = get_option( 'default_role' ); }
+	if(!empty($wprole)) {
+		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
+			$member->set_role( $wprole );
+		}
+	}
+}
+
+function M_Roles_getassociatedrole( $id ) {
+	global $wpdb;
+	
+	$role = '';
+	
+	$table_name = $wpdb->prefix . "m_levelmeta";
+
+	$retrieve_data = $wpdb->get_results( "SELECT meta_value FROM $table_name WHERE level_id = {$id} AND meta_key='associated_wp_role' LIMIT 1" );
+
+	foreach ( $retrieve_data as $retrieved_data ) { 
+		$role = $retrieved_data->meta_value;
+	}
+	return $role;
+}
+
