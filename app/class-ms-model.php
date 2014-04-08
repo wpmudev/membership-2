@@ -75,7 +75,7 @@ class MS_Model extends MS_Hooker {
 	 */	
 	public function __get($index)
 	{
-		return $this->vars[$index];
+		return $this->data[$index];
 	}
 	
 }
