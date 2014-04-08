@@ -95,6 +95,7 @@ function M_Roles_joinedlevel( $tolevel_id, $user_id ) {
 	$member = $factory->get_member( $user_id );
 
 	$wprole = $level->get_meta( 'associated_wp_role' );
+    if( empty( $wp_role ) ) { $wp_role = get_option( 'default_role' ); }
 	if(!empty($wprole)) {
 		if(method_exists($member, 'has_cap') && !$member->has_cap('activate_plugins')) {
 			$member->set_role( $wprole );
