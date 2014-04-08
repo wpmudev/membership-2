@@ -21,77 +21,79 @@
 */
 
 class MS_Model_Custom_Post_Type extends MS_Model {
-	
+
+	protected static $CLASS_NAME = __CLASS__;
+
 	protected $custom_post_type;
-	
-	protected $id;
-	
-	protected $name;
-	
-	protected $description;
-	
-	protected $user_id;
-	
-	protected $modified;
-	
-	protected static $ignore_fields;
+
+	protected $post_modified;
 	
 	public function __construct() {
-		$this->_add_action( 'init', 'register_custom_post_type', 0 );
 	}
-	
-	public function register_custom_post_type() {
-		
-	}
-	
-	public function save()
-	{
-// 		switch_to_blog(1);
-	
-		if(empty($this->id))
-		{
-			$post = array(
-					'comment_status' =>  'closed',
-					'ping_status' => 'closed',
-					'post_author' => $this->user_id,
-					'post_content' => $this->description,
-					'post_excerpt' => $this->description,
-					'post_name' => $this->name,
-					'post_status' => 'private',
-					'post_title' => $this->name,
-					'post_type' => $custom_post_type
-			);
-			$this->id = wp_insert_post($post);
+
+	public function save() {
+		$this->post_modified = date( 'Y-m-d H:i:s' );
+// 		$this->description = $this->custom_post_type;
+		$post = array(
+				'comment_status' => 'closed',
+				'ping_status' => 'closed',
+				'post_author' => $this->user_id,
+				'post_content' => $this->description,
+				'post_excerpt' => $this->description,
+				'post_name' => $this->name,
+				'post_status' => 'private',
+				'post_title' => ! empty( $this->title ) ? $this->name : $this->title,
+				'post_type' => $this->custom_post_type,
+				'post_modified' => $this->post_modified, 
+		);
+		if ( empty( $this->id ) ) {
+			$this->id = wp_insert_post( $post );
+		} else {
+			$post[ 'ID' ] = $this->id;
+			wp_update_post( $post );
 		}
-		//update details in postmeta table
-		$this->modified = date('Y-m-d H:i:s');
-		$post_meta = get_post_meta($this->id, '',false);
-		$fields = get_object_vars($this);
-		foreach($fields as $field => $val)
-		{
-			if(in_array($field, self::$ignore_fields))
-			{
+		
+		// save attributes in postmeta table
+		$post_meta = get_post_meta( $this->id );
+		
+		$fields = get_object_vars( $this );
+		foreach ( $fields as $field => $val) {
+			if ( in_array( $field, self::$ignore_fields ) ) {
 				continue;
 			}
-			if(isset($this->$field) && (!isset($post_meta[$field][0]) || $post_meta[$field][0] != $this->$field))
-			{
-				update_post_meta( $this->id, $field, $this->$field);
+			if ( isset( $this->$field ) && ( !isset( $post_meta[ $field ][ 0 ] ) || $post_meta[ $field ][ 0 ] != $this->$field ) ) {
+				update_post_meta( $this->id, $field, $this->$field );
 			}
 		}
-// 		restore_current_blog();
 	}
-	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
+
+	/**
+	 * Loads post and postmeta into a object.
+	 * 
+	 * @param int $model_id
+	 * @return MS_Model_Custom_Post_Type
+	 */
+	public static function load( $model_id ) {
+		$model = null;
+		if ( !empty( $model_id ) ) {
+			$model = new static::$CLASS_NAME();
+			
+			$post = get_post( $model_id );
+			$model->id = $model_id;
+			$model->name = $post->post_name;
+			$mode->description = $post->post_content;
+			
+			$model_details = get_post_meta( $model_id );
+			$fields = get_object_vars( $model );
+			foreach ( $fields as $field => $val) {
+				if ( in_array( $field, self::$ignore_fields ) ) {
+					continue;
+				}
+				if ( isset( $model_details[ $field ][ 0 ] ) ) {
+					$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
+				}
+			}
 		}
+		return $model;
 	}
-	
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			$this->$property = $value;
-		}
-	
-		return $this;
-	}
-	
 }

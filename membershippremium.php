@@ -64,6 +64,8 @@ MS_Plugin::instance( new MS_Plugin() );
 function membership_class_path_overrides( $overrides ) {
 	
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
+	$overrides['MS_Model_Rule_Post'] =  "app/model/class-ms-model-rule-post.php";
+	$overrides['MS_Model_Gateway_Free'] =  "app/model/class-ms-model-gateway-free.php";
 	
 	return $overrides;
 }
@@ -178,6 +180,8 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
+		add_action( 'init', array(&$this, 'register_custom_post_type'), 0 );
+		
 		/** Instantiate Plugin model */
 		$this->_model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
 		/** Instantiate Plugin view */
@@ -208,6 +212,35 @@ class MS_Plugin {
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 
+	}
+	
+	/*
+	 * Register custom post type used.
+	 * TODO better configure custom post type args
+	 */
+	public function register_custom_post_type() {
+		//register the orders post type
+		register_post_type('ms_membership', apply_filters('ms_register_post_type_ms_order', array(
+				'labels' => array(
+						'name' => __( 'Memberships', 'mp' ),
+						'singular_name' => __( 'Membership', 'mp' ),
+						'edit' => __( 'Edit', 'mp' ),
+						'view_item' => __( 'View Membership', 'mp' ),
+						'search_items' => __( 'Search Memberships', 'mp' ),
+						'not_found' => __( 'No Memberships Found', 'mp' ) 
+				),
+				'description' => __( 'Memberships user can join to.', 'mp' ),
+				'public' => false,
+				'has_archive' => false,
+				'publicly_queryable' => false,
+				'supports' => array(
+						'title',
+						'author',
+						'custom-fields' 
+				),
+				'capability_type' => apply_filters( 'mp_memberships_capability', 'page' ),
+				'hierarchical' => false 
+		) ) );
 	}
 	
 	public function add_menu_pages() {
@@ -361,10 +394,5 @@ class MS_Plugin {
 		    }
 		}
 	}
-	
-	
-	
-	
-	
 	
 }

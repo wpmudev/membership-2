@@ -23,9 +23,26 @@
 
 class MS_Model_Rule extends MS_Model {
 	
+	protected static $CLASS_NAME = __CLASS__;
+	
+	protected $rule_type;
+	
+	protected $rule_value;
+	
+	protected $delayed_period;
+	
+	protected $delayed_period_type;
+	
 	public function __construct() {
 
 	}
 	
+	public function on_protection() {
+		throw new Exception ("Method to be implemented in child class");
+	}
 	
+	public function validate_protection() {
+		throw new Exception ("Method to be implemented in child class");
+	}
+
 }
