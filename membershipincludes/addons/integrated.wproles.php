@@ -115,7 +115,7 @@ function M_Roles_leftlevel( $fromlevel_id, $user_id ) {
 		$wprole = M_Roles_getassociatedrole( $fromlevel_id );
 	if ( !empty( $wprole ) ) {
 		if ( method_exists( $member, 'has_cap' ) && !$member->has_cap( 'activate_plugins' ) ) {
-			$member->remove_role( $wprole );
+			$member->set_role( get_option( 'default_role' ) );
 		}
 	}
 
