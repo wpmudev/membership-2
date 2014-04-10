@@ -64,8 +64,6 @@ MS_Plugin::instance( new MS_Plugin() );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
-	$overrides['MS_Model_Rule_Post'] =  "app/model/class-ms-model-rule-post.php";
-	$overrides['MS_Model_Gateway_Free'] =  "app/model/class-ms-model-gateway-free.php";
 
 	return $overrides;
 }
