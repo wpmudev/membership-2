@@ -62,11 +62,11 @@ MS_Plugin::instance( new MS_Plugin() );
  * @return array(class=>path) Classes with new file paths.
  */
 function membership_class_path_overrides( $overrides ) {
-	
+
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Rule_Post'] =  "app/model/class-ms-model-rule-post.php";
 	$overrides['MS_Model_Gateway_Free'] =  "app/model/class-ms-model-gateway-free.php";
-	
+
 	return $overrides;
 }
 add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides' );
@@ -75,6 +75,7 @@ add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides'
 // TESTING TO SEE IF CLASSES ARE LOADED
 // echo ( "<h1>" . class_exists( 'MS_Model_CustomPostType' ) . "</h1>" );
 // echo ( "<h1>" . class_exists( 'MS_Model_Custom_Post_Type' ) . "</h1>" );
+// $this->_model->blah = "blah";
 
 /**
  * Sets up and loads the Membership plugin.
@@ -155,7 +156,7 @@ class MS_Plugin {
 	 * @access private
 	 * @var _model
 	 */
-	private $_model;
+	public $_model;
 
 	/**
 	 * Instance of MS_View_Plugin
@@ -185,7 +186,7 @@ class MS_Plugin {
 		/** Instantiate Plugin model */
 		$this->_model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
 		/** Instantiate Plugin view */
-		$this->_view = apply_filters( 'membership_plugin_view', new MS_View_Plugin() );		
+		$this->_view = apply_filters( 'membership_plugin_view', new MS_View_Plugin( array( 'test'=>'two' )) );		
 				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
@@ -196,6 +197,7 @@ class MS_Plugin {
 		$this->url = plugin_dir_url(__FILE__) . 'app/';
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
+		$this->_view->render();
 
 		/** Enque admin styles (CSS) */
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_styles' ) );
@@ -211,9 +213,9 @@ class MS_Plugin {
 //echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
-		
 
 	}
+
 	/*
 	 * Register membership plugin custom post types. 
 	 * TODO better configure custom post type args
@@ -284,6 +286,7 @@ class MS_Plugin {
 	
 	
 	}
+	
 	public function add_menu_pages() {
 		MS_Helper_Plugin::create_admin_pages( $this->_view );
 	}
@@ -428,11 +431,11 @@ class MS_Plugin {
 	 * @param Object $property Uses PHP magic method param.
 	 * @return Object
 	 */	
-	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
-			if ( '_' != $property[0] ) {
-				return $this->$property;
-		    }
-		}
-	}
+	// public function __get( $property ) {
+	// 	if ( property_exists( $this, $property ) ) {
+	// 		if ( '_' != $property[0] ) {
+	// 			return $this->$property;
+	// 	    }
+	// 	}
+	// }
 }
