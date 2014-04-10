@@ -180,7 +180,7 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
-		add_action( 'init', array(&$this, 'register_custom_post_type'), 0 );
+		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
 		/** Instantiate Plugin model */
 		$this->_model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
@@ -211,38 +211,79 @@ class MS_Plugin {
 //echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
+		
 
 	}
-	
 	/*
-	 * Register custom post type used.
+	 * Register membership plugin custom post types. 
 	 * TODO better configure custom post type args
-	 */
+	*/
 	public function register_custom_post_type() {
-		//register the orders post type
-		register_post_type('ms_membership', apply_filters('ms_register_post_type_ms_order', array(
-				'labels' => array(
+		// register the orders post type
+		register_post_type( 'ms_membership',
+			apply_filters( 'ms_register_post_type_ms_membership',
+				array(
+					'labels' => array(
 						'name' => __( 'Memberships', 'mp' ),
 						'singular_name' => __( 'Membership', 'mp' ),
 						'edit' => __( 'Edit', 'mp' ),
 						'view_item' => __( 'View Membership', 'mp' ),
 						'search_items' => __( 'Search Memberships', 'mp' ),
-						'not_found' => __( 'No Memberships Found', 'mp' ) 
-				),
-				'description' => __( 'Memberships user can join to.', 'mp' ),
-				'public' => false,
-				'has_archive' => false,
-				'publicly_queryable' => false,
-				'supports' => array(
-						'title',
-						'author',
-						'custom-fields' 
-				),
-				'capability_type' => apply_filters( 'mp_memberships_capability', 'page' ),
-				'hierarchical' => false 
-		) ) );
-	}
+						'not_found' => __( 'No Memberships Found', 'mp' )
+					),
+					'description' => __( 'Memberships user can join to.', 'mp' ),
+					'show_ui' => false,
+					'show_in_menu' => true,
+					'public' => true,
+					'has_archive' => false,
+					'publicly_queryable' => false,
+					'supports' => false,
+					'capability_type' => apply_filters( 'mp_memberships_capability', 'page' ),
+					'hierarchical' => false
+					) ) );
+		
+		register_post_type( 'ms_transaction',
+			apply_filters( 'ms_register_post_type_ms_transaction',
+				array(
+					'labels' => array(
+						'name' => __( 'transactions', 'mp' ),
+						'singular_name' => __( 'transaction', 'mp' ),
+						'edit' => __( 'Edit', 'mp' ),
+						'view_item' => __( 'View transaction', 'mp' ),
+						'search_items' => __( 'Search transactions', 'mp' ),
+						'not_found' => __( 'No transactions Found', 'mp' )
+					),
+					'description' => __( 'transactions user can join to.', 'mp' ),
+					'public' => false,
+					'has_archive' => false,
+					'publicly_queryable' => false,
+					'supports' => false,
+					'capability_type' => apply_filters( 'mp_transactions_capability', 'page' ),
+					'hierarchical' => false
+					) ) );
+		
+		register_post_type( 'ms_communication',
+			apply_filters( 'ms_register_post_type_ms_communication',
+				array(
+					'labels' => array(
+						'name' => __( 'communications', 'mp' ),
+						'singular_name' => __( 'communication', 'mp' ),
+						'edit' => __( 'Edit', 'mp' ),
+						'view_item' => __( 'View communication', 'mp' ),
+						'search_items' => __( 'Search communications', 'mp' ),
+						'not_found' => __( 'No communications Found', 'mp' )
+					),
+					'description' => __( 'communications user can join to.', 'mp' ),
+					'public' => false,
+					'has_archive' => false,
+					'publicly_queryable' => false,
+					'supports' => false,
+					'capability_type' => apply_filters( 'mp_communications_capability', 'page' ),
+					'hierarchical' => false
+					) ) );
 	
+	
+	}
 	public function add_menu_pages() {
 		MS_Helper_Plugin::create_admin_pages( $this->_view );
 	}
@@ -394,5 +435,4 @@ class MS_Plugin {
 		    }
 		}
 	}
-	
 }

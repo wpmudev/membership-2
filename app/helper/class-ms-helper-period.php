@@ -21,45 +21,35 @@
 */
 
 /**
- * Abstract class for all Models.
- *
- * All models will extend or inherit from the MS_Model class.
- * Methods of this class will prepare objects for the database and
- * manipulate data to be used in a MS_Controller.
+ * Utilities class
  *
  * @since 4.0.0
  *
- * @return object
  */
-class MS_Model extends MS_Hooker {
+class MS_Helper_Period extends MS_Helper {
 	
-	protected $id;
+	const PERIOD_TYPE_DAYS = 'days';
 	
-	protected $name;
-			
-	protected static $ignore_fields = array( 'actions', 'filters' );
+	const PERIOD_TYPE_WEEKS = 'weeks';
+
+	const PERIOD_TYPE_MONTHS = 'months';
 	
-	public function __construct() {
-	}
+	const PERIOD_TYPE_YEARS = 'years';
 	
-	public function save(){
-		throw new Exception ("Method to be implemented in child class");
-	}
+	const PERIOD_FORMAT = 'Y-m-d H:i:s';
 	
-	public static function load( $model_id ) {
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
+	public static function add_interval( $period_unit, $period_type, $start_date ) {
+		if( empty ( $start_date ) ) {
+			$start_date = date( self::PERIOD_FORMAT );
 		}
+		
+		$end_dt = strtotime( '+' . $period_unit . $period_type , strtotime( $start_date ) ); 
+		if ( $end_dt === false) {
+			throw new Exception( 'error add_interval' );
+		} 
+		return date( self::PERIOD_FORMAT, $end_dt ); 
 	}
-	
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			$this->$property = $value;
-		}
+	public static function current_date() {
+		return date( self::PERIOD_FORMAT );
 	}
-	
 }

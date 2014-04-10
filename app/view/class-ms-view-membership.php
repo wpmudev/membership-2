@@ -20,46 +20,25 @@
  *
 */
 
-/**
- * Abstract class for all Models.
- *
- * All models will extend or inherit from the MS_Model class.
- * Methods of this class will prepare objects for the database and
- * manipulate data to be used in a MS_Controller.
- *
- * @since 4.0.0
- *
- * @return object
- */
-class MS_Model extends MS_Hooker {
-	
-	protected $id;
-	
-	protected $name;
-			
-	protected static $ignore_fields = array( 'actions', 'filters' );
+class MS_View_Membership extends MS_View {
 	
 	public function __construct() {
+		
 	}
-	
-	public function save(){
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public static function load( $model_id ) {
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
-		}
-	}
-	
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			$this->$property = $value;
-		}
+	public static function membership_definition_metabox( $post ) {
+		$membership = MS_Model_Membership::load( $post->ID );
+		ob_start();
+		?>
+			<div id="post-body-content">
+				<div id="titlediv">
+					<div id="titlewrap">
+						<input id="title" type="text" autocomplete="off" value="<?php echo $membership->name; ?>" size="30" name="post_title">
+					</div>
+				</div>
+			</div>	
+		<?php
+		$html = ob_get_clean();
+		echo $html;
 	}
 	
 }

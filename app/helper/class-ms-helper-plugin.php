@@ -34,6 +34,7 @@ class MS_Helper_Plugin extends MS_Helper {
 		
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
 		
+		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'edit.php?post_type=ms_membership' );
 	}
 	
 	

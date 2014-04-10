@@ -22,10 +22,16 @@
 
 class MS_Model_Custom_Post_Type extends MS_Model {
 
+	public static $POST_TYPE;
+	
 	protected static $CLASS_NAME = __CLASS__;
-
-	protected $custom_post_type;
-
+	
+	protected $title;
+	
+	protected $description;
+	
+	protected $user_id;
+	
 	protected $post_modified;
 	
 	public function __construct() {
@@ -43,7 +49,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_name' => $this->name,
 				'post_status' => 'private',
 				'post_title' => ! empty( $this->title ) ? $this->name : $this->title,
-				'post_type' => $this->custom_post_type,
+				'post_type' => self::$POST_TYPE,
 				'post_modified' => $this->post_modified, 
 		);
 		if ( empty( $this->id ) ) {

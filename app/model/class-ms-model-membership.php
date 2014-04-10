@@ -22,22 +22,24 @@
 
 class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
+	public static $POST_TYPE = 'ms_membership';
+	
 	protected static $CLASS_NAME = __CLASS__;
-	
-	protected $custom_post_type = 'ms_membership';
-	
+		
 	protected $membership_type;
 	
 	protected $price;
 	
-	protected $period;
+	protected $period_unit;
 	
 	protected $period_type;
 	
-	protected $trial_period;
-	
 	protected $trial_price;
 	
+	protected $trial_period_unit;
+	
+	protected $trial_period_type;
+
 	protected $next_membership_id;
 	
 	protected $linked_membership_ids;
@@ -51,4 +53,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function __construct() {
 	}
 	
+	public function get_trial_expiry_date( $start_date = null ) {
+		if( $this->trial_period_unit && $this->trial_period_type ) {
+			$expiry_date = MS_Helper_Period::add_interval ( $this->trial_period_unit, $this->trial_period_type , $start_date );
+		}
+		else {
+			$expiry_date = MS_Helper_Period::current_date();
+		}
+		return $expiry_date;
+	}
+	
+	public function get_expiry_date( $start_date = null ) {
+		$start_date = $this->get_trial_expiry_date( $start_date );
+		return MS_Helper_Period::add_interval ( $this->period_unit, $this->period_type , $start_date );		
+	}
 }

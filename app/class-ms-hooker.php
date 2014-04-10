@@ -37,7 +37,7 @@ class MS_Hooker {
 	 * @access private
 	 * @var array
 	 */
-	private $_actions = array();
+	private $actions = array();
 
 	/**
 	 * The array of registered filters hooks.
@@ -47,7 +47,7 @@ class MS_Hooker {
 	 * @access private
 	 * @var array
 	 */
-	private $_filters = array();
+	private $filters = array();
 
 	/**
 	 * Builds and returns hook key.
@@ -59,7 +59,7 @@ class MS_Hooker {
 	 * @param array $args The hook arguments.
 	 * @return string The hook key.
 	 */
-	private static function _get_hook_key( array $args ) {
+	private static function get_hook_key( array $args ) {
 		return md5( implode( '/', $args ) );
 	}
 
@@ -76,11 +76,11 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
 	 */
-	protected function _add_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+	protected function add_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
-		$this->_actions[self::_get_hook_key( $args )] = $args;
+		$this->actions[ self::get_hook_key( $args ) ] = $args;
 
-		add_action( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		add_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
 
@@ -97,8 +97,8 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
 	 */
-	protected function _remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_action( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+		remove_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
 
@@ -114,13 +114,13 @@ class MS_Hooker {
 	 * @param boolean $public Optional. Determines if we should register hook for not logged in users.
 	 * @return Membership_Module
 	 */
-	protected function _add_ajax_action( $tag, $method = '', $private = true, $public = false ) {
+	protected function add_ajax_action( $tag, $method = '', $private = true, $public = false ) {
 		if ( $private ) {
-			$this->_add_action( 'wp_ajax_' . $tag, $method );
+			$this->add_action( 'wp_ajax_' . $tag, $method );
 		}
 
 		if ( $public ) {
-			$this->_add_action( 'wp_ajax_nopriv_' . $tag, $method );
+			$this->add_action( 'wp_ajax_nopriv_' . $tag, $method );
 		}
 
 		return $this;
@@ -138,13 +138,13 @@ class MS_Hooker {
 	 * @param boolean $public Optional. Determines if we should register hook for not logged in users.
 	 * @return Membership_Module
 	 */
-	protected function _remove_ajax_action( $tag, $method = '', $private = true, $public = false ) {
+	protected function remove_ajax_action( $tag, $method = '', $private = true, $public = false ) {
 		if ( $private ) {
-			$this->_remove_action( 'wp_ajax_' . $tag, $method );
+			$this->remove_action( 'wp_ajax_' . $tag, $method );
 		}
 
 		if ( $public ) {
-			$this->_remove_action( 'wp_ajax_nopriv_' . $tag, $method );
+			$this->remove_action( 'wp_ajax_nopriv_' . $tag, $method );
 		}
 
 		return $this;
@@ -163,9 +163,9 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
 	 */
-	protected function _add_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+	protected function add_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
-		$this->_filters[self::_get_hook_key( $args )] = $args;
+		$this->filters[ self::get_hook_key( $args ) ] = $args;
 
 		add_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
@@ -184,7 +184,7 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
 	 * @return Membership_Module
 	 */
-	protected function _remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
+	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		remove_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
 		return $this;
 	}
@@ -202,11 +202,11 @@ class MS_Hooker {
 		$types = array();
 
 		if ( $actions ) {
-			$types['_actions'] = 'remove_action';
+			$types['actions'] = 'remove_action';
 		}
 
 		if ( $filters ) {
-			$types['_filters'] = 'remove_filter';
+			$types['filters'] = 'remove_filter';
 		}
 
 		foreach ( $types as $hooks => $method ) {

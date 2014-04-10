@@ -20,46 +20,33 @@
  *
 */
 
-/**
- * Abstract class for all Models.
- *
- * All models will extend or inherit from the MS_Model class.
- * Methods of this class will prepare objects for the database and
- * manipulate data to be used in a MS_Controller.
- *
- * @since 4.0.0
- *
- * @return object
- */
-class MS_Model extends MS_Hooker {
+class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
-	protected $id;
+	public static $POST_TYPE = 'ms_transaction';
 	
-	protected $name;
-			
-	protected static $ignore_fields = array( 'actions', 'filters' );
+	protected static $CLASS_NAME = __CLASS__;
+		
+	protected $amount;
 	
+	protected $currency;
+	
+	protected $status;
+	
+	protected $due_date;
+	
+	protected $notes;
+	
+	protected $expire_date;
+	
+	protected $invoice;
+	
+	protected $taxable;
+	
+	protected $tax_rate;
+	
+	protected $tax_description;
+
 	public function __construct() {
-	}
-	
-	public function save(){
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public static function load( $model_id ) {
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
-		}
-	}
-	
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			$this->$property = $value;
-		}
 	}
 	
 }
