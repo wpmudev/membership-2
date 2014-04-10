@@ -22,12 +22,14 @@
 
 class MS_View_Plugin extends MS_View {
 	
-	private $data;
 	
-	public function __construct() {
+	public function _to_html() {
+		echo $this->test; ?>
+		<h1>TO HTML</h1>
+		<?php
 	}
 	
-	public function render() {		
+	public function render_me() {		
 		ob_start();
 		?>
 		<div class='ms-wrap'>

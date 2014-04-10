@@ -23,9 +23,16 @@
 
 class MS_Model_Plugin extends MS_Model {
 	
+	
+	
 	public function __construct() {
-
+		$this->test_property = "TEST VALUE";
+	}
+	
+	public function show_property() {
+		echo "<h1>{$this->test_property}</h1>";
 	}
 	
 	
+		
 }
