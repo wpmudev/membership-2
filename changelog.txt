@@ -1,5 +1,6 @@
 == 3.5.1.2 ==
 
+* Fixed: Communications were using levels expire date instead of the subscription expire date 
 * Added: Russian Ruble to currency options and PayPal solo
 * Fixed: in the "all members" screen some times the subscription/level columns weren’t showing any data
 

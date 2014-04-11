@@ -596,6 +596,9 @@ class Membership_Model_Member extends WP_User {
 				default: $period = 'days';
 					break;
 			}
+			//subscription end date
+			$expires_sub = $this->get_subscription_expire_date( $subscription, $tolevel_id );
+			//level end date
 			$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
 			$expires = gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start )  );
 
@@ -612,7 +615,7 @@ class Membership_Model_Member extends WP_User {
 
 			// Update users start and expiry meta
 			update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
-			update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime( $expires ) );
+			update_user_meta( $this->ID, 'expire_current_' . $tosub_id, $expires_sub );
 			update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
 
 			do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID );
@@ -685,15 +688,19 @@ class Membership_Model_Member extends WP_User {
 
 			if ( $level ) {
 				$period = 'days';
-				$start = current_time( 'mysql' );
+				$now = current_time( 'mysql' );
+				$start = strtotime( $now );
 				switch ( $level->level_period_unit ) {
 					case 'd': $period = 'days';   break;
 					case 'w': $period = 'weeks';  break;
 					case 'm': $period = 'months'; break;
 					case 'y': $period = 'years';  break;
 				}
-
-				$expires = gmdate( 'Y-m-d H:i:s', strtotime( '+' . $level->level_period . ' ' . $period, strtotime( $start ) ) );
+				//subscription start and end date
+				$start_sub = ( $tosub_id == $fromsub_id ) ? get_user_meta( $this->ID, 'start_current_' . $fromsub_id, true ) : $start;
+				$expires_sub = $this->get_subscription_expire_date( $subscription, $tolevel_id, $fromsub_id, $fromlevel_id );
+				//level end date
+				$expires = gmdate( 'Y-m-d H:i:s', strtotime( '+' . $level->level_period . ' ' . $period, $start ) );
 
 				// Update users start and expiry meta
 				delete_user_meta( $this->ID, 'start_current_' . $fromsub_id );
@@ -704,14 +711,14 @@ class Membership_Model_Member extends WP_User {
 				$gateway = get_user_meta( $this->ID, 'using_gateway_' . $fromsub_id, true );
 				delete_user_meta( $this->ID, 'using_gateway_' . $fromsub_id );
 
-				update_user_meta( $this->ID, 'start_current_' . $tosub_id, strtotime( $start ) );
-				update_user_meta( $this->ID, 'expire_current_' . $tosub_id, strtotime( $expires ) );
+				update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start_sub );
+				update_user_meta( $this->ID, 'expire_current_' . $tosub_id, $expires_sub );
 				update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
 
 				$this->_wpdb->update( MEMBERSHIP_TABLE_RELATIONS, array(
 					'sub_id'         => $tosub_id,
 					'level_id'       => $tolevel_id,
-					'updateddate'    => $start,
+					'updateddate'    => $now,
 					'expirydate'     => $expires,
 					'order_instance' => $level->level_order
 				), array(
@@ -728,6 +735,57 @@ class Membership_Model_Member extends WP_User {
 		}
 	}
 
+	private function get_subscription_expire_date( $subscription, $tolevel_id = null, $fromsub_id = null, $fromlevel_id = null, $start = null ) {
+		$now = strtotime( current_time( 'mysql' ) );
+		$expires = ! empty( $start ) ? $start : $now ;
+
+		//get ordered subscription levels
+		$levels = $subscription->get_levels();
+
+		$tolevel_order = 1;
+		$fromlevel_order = 1;
+		foreach( $levels as $level ) {
+			if( ! empty( $tolevel_id ) && $level->level_id == $tolevel_id ) {
+				$tolevel_order = $level->level_order;
+				continue; 
+			}
+			if( ! empty( $fromsub_id ) && ! empty( $fromlevel_id ) && $fromsub_id == $subscription->id && $level->level_id == $fromlevel_id ) {
+				$fromlevel_order = $level->level_order;
+				continue;
+			}
+		}
+
+		//sum every level period to get the subscription end date.		
+		foreach( $levels as $level ) {
+			if ( $level->level_order < $tolevel_order ) {
+				//if entering in the middle of a subscription, jumping beginning levels, those not count
+				continue;
+			}
+			if ( ($fromlevel_order < $tolevel_order) && $level->level_order == $fromlevel_order ) {
+				//reset to current date if already a subscription member and moving to another level
+				$expires = $now;
+			}
+			switch ( $level->level_period_unit ) {
+				case 'd': $period = 'days';   break;
+				case 'w': $period = 'weeks';  break;
+				case 'm': $period = 'months'; break;
+				case 'y': $period = 'years';  break;
+			}
+			$expires = strtotime( '+' . $level->level_period . ' ' . $period, $expires ) ;
+			
+			if( $level->sub_type == 'indefinite') {
+				//never expires
+				$expires = strtotime( '+10 years', $expires ); 
+
+				break;
+			}
+			elseif( $level->sub_type == 'serial') {
+				//sum only once and break - will not go to next level if exists
+				break;			
+			}
+		}
+		return $expires;
+	}
 	// Member operations
 
 	public function toggle_activation() {
