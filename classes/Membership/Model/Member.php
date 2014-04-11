@@ -662,6 +662,8 @@ class Membership_Model_Member extends WP_User {
 		if ( $expiring == $fromsub_id ) {
 			delete_user_meta( $this->ID, '_membership_expire_next' );
 		}
+		
+		$this->set_role( get_option( 'default_role' ) );
 
 		do_action( 'membership_drop_subscription', $fromsub_id, $fromlevel_id, $this->ID );
 
