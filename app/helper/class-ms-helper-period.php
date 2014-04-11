@@ -38,6 +38,7 @@ class MS_Helper_Period extends MS_Helper {
 	
 	const PERIOD_FORMAT = 'Y-m-d H:i:s';
 	
+	
 	public static function add_interval( $period_unit, $period_type, $start_date ) {
 		if( empty ( $start_date ) ) {
 			$start_date = date( self::PERIOD_FORMAT );
@@ -51,5 +52,13 @@ class MS_Helper_Period extends MS_Helper {
 	}
 	public static function current_date() {
 		return date( self::PERIOD_FORMAT );
+	}
+	public static function get_periods() {
+		return array (
+				self::PERIOD_TYPE_DAYS => __( self::PERIOD_TYPE_DAYS, MS_TEXT_DOMAIN ),
+				self::PERIOD_TYPE_WEEKS =>__( self::PERIOD_TYPE_WEEKS, MS_TEXT_DOMAIN ),
+				self::PERIOD_TYPE_MONTHS => __( self::PERIOD_TYPE_MONTHS, MS_TEXT_DOMAIN ),
+				self::PERIOD_TYPE_YEARS => __( self::PERIOD_TYPE_YEARS, MS_TEXT_DOMAIN ),
+		);
 	}
 }

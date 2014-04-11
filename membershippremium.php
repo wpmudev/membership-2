@@ -195,7 +195,7 @@ class MS_Plugin {
 		$this->url = plugin_dir_url(__FILE__) . 'app/';
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
-		$this->_view->render();
+// 		$this->_view->render();
 
 		/** Enque admin styles (CSS) */
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_styles' ) );
@@ -211,9 +211,11 @@ class MS_Plugin {
 //echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
-
+		add_action( 'init', array( &$this, 'tst' ));
 	}
-
+	public function tst() {
+		new MS_Controller_Membership();
+	}
 	/*
 	 * Register membership plugin custom post types. 
 	 * TODO better configure custom post type args
@@ -224,15 +226,17 @@ class MS_Plugin {
 			apply_filters( 'ms_register_post_type_ms_membership',
 				array(
 					'labels' => array(
-						'name' => __( 'Memberships', 'mp' ),
-						'singular_name' => __( 'Membership', 'mp' ),
-						'edit' => __( 'Edit', 'mp' ),
-						'view_item' => __( 'View Membership', 'mp' ),
-						'search_items' => __( 'Search Memberships', 'mp' ),
-						'not_found' => __( 'No Memberships Found', 'mp' )
+						'name' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'singular_name' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'add_new' => __('New Membership', MS_TEXT_DOMAIN ),
+						'add_new_item' => __('New Membership', MS_TEXT_DOMAIN ),
+						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+						'view_item' => __( 'View Membership', MS_TEXT_DOMAIN ),
+						'search_items' => __( 'Search Memberships', MS_TEXT_DOMAIN ),
+						'not_found' => __( 'No Memberships Found', MS_TEXT_DOMAIN )
 					),
-					'description' => __( 'Memberships user can join to.', 'mp' ),
-					'show_ui' => false,
+					'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
+					'show_ui' => true,
 					'show_in_menu' => true,
 					'public' => true,
 					'has_archive' => false,
@@ -246,14 +250,14 @@ class MS_Plugin {
 			apply_filters( 'ms_register_post_type_ms_transaction',
 				array(
 					'labels' => array(
-						'name' => __( 'transactions', 'mp' ),
-						'singular_name' => __( 'transaction', 'mp' ),
-						'edit' => __( 'Edit', 'mp' ),
-						'view_item' => __( 'View transaction', 'mp' ),
-						'search_items' => __( 'Search transactions', 'mp' ),
-						'not_found' => __( 'No transactions Found', 'mp' )
+						'name' => __( 'transactions', MS_TEXT_DOMAIN ),
+						'singular_name' => __( 'transaction', MS_TEXT_DOMAIN ),
+						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+						'view_item' => __( 'View transaction', MS_TEXT_DOMAIN ),
+						'search_items' => __( 'Search transactions', MS_TEXT_DOMAIN ),
+						'not_found' => __( 'No transactions Found', MS_TEXT_DOMAIN )
 					),
-					'description' => __( 'transactions user can join to.', 'mp' ),
+					'description' => __( 'transactions user can join to.', MS_TEXT_DOMAIN ),
 					'public' => false,
 					'has_archive' => false,
 					'publicly_queryable' => false,
@@ -266,14 +270,14 @@ class MS_Plugin {
 			apply_filters( 'ms_register_post_type_ms_communication',
 				array(
 					'labels' => array(
-						'name' => __( 'communications', 'mp' ),
-						'singular_name' => __( 'communication', 'mp' ),
-						'edit' => __( 'Edit', 'mp' ),
-						'view_item' => __( 'View communication', 'mp' ),
-						'search_items' => __( 'Search communications', 'mp' ),
-						'not_found' => __( 'No communications Found', 'mp' )
+						'name' => __( 'communications', MS_TEXT_DOMAIN ),
+						'singular_name' => __( 'communication', MS_TEXT_DOMAIN ),
+						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+						'view_item' => __( 'View communication', MS_TEXT_DOMAIN ),
+						'search_items' => __( 'Search communications', MS_TEXT_DOMAIN ),
+						'not_found' => __( 'No communications Found', MS_TEXT_DOMAIN )
 					),
-					'description' => __( 'communications user can join to.', 'mp' ),
+					'description' => __( 'communications user can join to.', MS_TEXT_DOMAIN ),
 					'public' => false,
 					'has_archive' => false,
 					'publicly_queryable' => false,

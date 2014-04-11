@@ -63,7 +63,8 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function cfg_meta_boxes() {
-		add_meta_box( 'ms_membership_definition_metabox', __('Membership Definitions', MS_TEXT_DOMAIN ), 'MS_View_Membership::membership_definition_metabox', $this->post_type, 'normal', 'high' );
+		add_meta_box( 'ms_membership_general_metabox', __('Membership Definitions', MS_TEXT_DOMAIN ), 
+			'MS_View_Membership::membership_general_metabox', $this->post_type, 'normal', 'high' );
 	}
 	
 	public function post_updated_messages( $messages ) {
