@@ -175,6 +175,8 @@ class Membership_Model_Member extends WP_User {
 
 			foreach($relationships as $rel) {
 				$sub_type = $this->_wpdb->get_var( sprintf( 'SELECT sub_type FROM %s WHERE sub_id = %d AND level_id = %d', membership_db_prefix( $this->_wpdb, 'subscriptions_levels' ), $rel->sub_id, $rel->level_id ) );
+				
+				// If indefinite, skip the rest of the check, else, if serial or finite, keep checking.
 				if ( $sub_type == 'indefinite' ) {
 					continue;
 				}
@@ -284,6 +286,7 @@ class Membership_Model_Member extends WP_User {
 		delete_user_meta( $this->ID, 'expire_current_' . $sub_id );
 		delete_user_meta( $this->ID, 'sent_msgs_' . $sub_id );
 
+		// Remove the set for expiration flag
 		$expiring = get_user_meta( $this->ID, '_membership_expire_next', true );
 		if ( $expiring == $sub_id ) {
 			delete_user_meta( $this->ID, '_membership_expire_next' );
@@ -617,6 +620,9 @@ class Membership_Model_Member extends WP_User {
 			update_user_meta( $this->ID, 'start_current_' . $tosub_id, $start );
 			update_user_meta( $this->ID, 'expire_current_' . $tosub_id, $expires_sub );
 			update_user_meta( $this->ID, 'using_gateway_' . $tosub_id, $gateway );
+			
+			// Update associated role
+			$this->set_role( Membership_Model_Level::get_associated_role( $level->level_id ) );
 
 			do_action( 'membership_add_subscription', $tosub_id, $tolevel_id, $to_order, $this->ID );
 		}
@@ -687,6 +693,7 @@ class Membership_Model_Member extends WP_User {
 			$level = $subscription->get_level_at( $tolevel_id, $to_order );
 
 			if ( $level ) {
+				
 				$period = 'days';
 				$now = current_time( 'mysql' );
 				$start = strtotime( $now );
@@ -725,6 +732,9 @@ class Membership_Model_Member extends WP_User {
 					'sub_id'  => $fromsub_id,
 					'user_id' => $this->ID
 				) );
+				
+				// Update the associated role
+				$this->set_role( Membership_Model_Level::get_associated_role( $level->level_id ) );
 
 				membership_debug_log( sprintf( __( 'MEMBER: Completed move to %d on order %d on sub %d', 'membership' ), $tolevel_id, $to_order, $tosub_id ) );
 
