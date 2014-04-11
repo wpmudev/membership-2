@@ -1,10 +1,8 @@
-== 3.5.1.3 ==
-
-* Fixed: Associated role are now 'sticky'. Where roles are not explicitly defined they will revert to site default role.
-* Updates: Updated Member model, Level model and removed legacy code where redundant.
 
 == 3.5.1.2 ==
 
+* Fixed: Associated role are now 'sticky'. Where roles are not explicitly defined they will revert to site default role.
+* Updates: Updated Member model, Level model and removed legacy code where redundant.
 * Fixed: Communications were using levels expire date instead of the subscription expire date 
 * Added: Russian Ruble to currency options and PayPal solo
 * Fixed: in the "all members" screen some times the subscription/level columns weren’t showing any data
