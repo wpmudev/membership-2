@@ -60,9 +60,27 @@ if ( !class_exists( 'membershippublic', false ) ) :
 			foreach ( array( 'membership_level_shortcodes', 'membership_not_level_shortcodes' ) as $index => $filter ) {
 				$shortcodes = apply_filters( $filter, array() );
 				if ( !empty( $shortcodes ) ) {
+
+					// $key is the level_id
 					foreach ( $shortcodes as $key => $value ) {
 						if ( !empty( $value ) ) {
+							
 							$valid = $index ? !$member->has_level( $key ) : $member->has_level( $key );
+
+							// If member has admin capabilities then do the valid shortcode.	
+							if ($member->has_cap('membershipadmin') || $member->has_cap('manage_options') || is_super_admin($member->ID)) {
+								
+								// Override admin access when using "View site as:"
+								if ( !empty( $_COOKIE['membershipuselevel'] ) ) {
+									if ( $key != $_COOKIE['membershipuselevel'] ) {
+										$valid = $index ? 1 : 0;
+									}
+								} else {
+									$valid = true;
+								}
+								
+							}
+							
 							add_shortcode( stripslashes( trim( $value ) ), array( $this, $valid ? 'do_level_shortcode' : 'do_levelprotected_shortcode' ) );
 						}
 					}
