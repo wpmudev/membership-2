@@ -23,34 +23,44 @@
 class MS_View_Plugin extends MS_View {
 	
 	
-	public function _to_html() {
+	// public function _to_html() {
+	public function _test() {		
 		echo $this->test; ?>
 		<h1>TO HTML</h1>
 		<?php
 	}
 	
-	public function render_me() {		
+	public function _to_html() {		
 		ob_start();
+
+		/** Setup navigation tabs. */
+		$tabs = array(
+			'settings' => __( 'General Settings', MS_TEXT_DOMAIN ),
+			'advanced' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),						
+		);
+		
+		$active_tab = $_GET['tab'] ? $_GET['tab'] : 'settings';
+
+		if ( !array_key_exists( $active_tab, $tabs ) ) { $active_tab = 'settings'; }
+		
+		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'>Title</h2>		
+		<h2 class='ms-settings-title'>Membership Settings</h2>		
 			<div class='ms-tab-container'>
 		       <ul id="sortable-units" class="ms-tabs" style="">
-		               <li class="ms-tab">
-		                   <a class="ms-tab-link" href="#">Link Title</a>                                                         
+					<?php foreach( $tabs as $tab => $title ) { ?>
+		               <li class="ms-tab <?php echo $tab == $active_tab ? 'active' : ''; ?> ">
+		                   <a class="ms-tab-link" href="edit.php?post_type=ms_membership&page=membership-settings&tab=<?php echo $tab; ?>"><?php echo $title; ?></a>                                                         
 		               </li>
-
-		               <li class="ms-tab active">
-		                   <a class="ms-tab-link" href="#">Active Link Title</a>                                                         
-		               </li>
-
-		               <li class="ms-tab">
-		                   <a class="ms-tab-link" href="#">Link Title</a>                                                         
-		               </li>
+					<?php } ?>
 		       </ul>
 		   </div>		
 		<?php
-		call_user_func( array( $this, 'render_' . str_replace('-', '_', $_GET['page'] ) ) );
+
+		/** Call the appropriate form to render. */
+		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
+
 		?>
 		</div>
 		<?php
@@ -58,23 +68,23 @@ class MS_View_Plugin extends MS_View {
 		echo $html;
 	}
 
-	// Render Membership Page
-	public function render_membership() {
+	public function render_settings() {
 		?>
 	   <div class='ms-settings'>
-		   Membership
+		   General Settings
 	       <form>....</form>
 	   </div>
 		<?php
 	}
 	
-	public function render_membership_settings() {
+	public function render_advanced() {
 		?>
 	   <div class='ms-settings'>
-		   Membership Settings
+		   Advanced Settings
 	       <form>....</form>
 	   </div>
 		<?php
 	}
+	
 		
 }

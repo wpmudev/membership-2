@@ -211,7 +211,9 @@ class MS_Plugin {
 //echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
-		add_action( 'init', array( &$this, 'tst' ));
+		
+		// Maybe creare a new hook that uses 'membership_plugin_loaded'
+		add_action( 'init', array( &$this, 'tst' ));  
 	}
 	public function tst() {
 		new MS_Controller_Membership();
@@ -226,8 +228,10 @@ class MS_Plugin {
 			apply_filters( 'ms_register_post_type_ms_membership',
 				array(
 					'labels' => array(
-						'name' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'name' => __( 'Memberships', MS_TEXT_DOMAIN ),
 						'singular_name' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'menu_name' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'all_items' => __( 'All Memberships', MS_TEXT_DOMAIN ),
 						'add_new' => __('New Membership', MS_TEXT_DOMAIN ),
 						'add_new_item' => __('New Membership', MS_TEXT_DOMAIN ),
 						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
@@ -238,6 +242,8 @@ class MS_Plugin {
 					'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
 					'show_ui' => true,
 					'show_in_menu' => true,
+					'menu_position' => 70, // below Users
+					'menu_icon' => $this->url . "/assets/images/members.png",
 					'public' => true,
 					'has_archive' => false,
 					'publicly_queryable' => false,
@@ -257,7 +263,7 @@ class MS_Plugin {
 						'search_items' => __( 'Search transactions', MS_TEXT_DOMAIN ),
 						'not_found' => __( 'No transactions Found', MS_TEXT_DOMAIN )
 					),
-					'description' => __( 'transactions user can join to.', MS_TEXT_DOMAIN ),
+					'description' => __( 'transactions user can join to.', MS_TEXT_DOMAIN ),					
 					'public' => false,
 					'has_archive' => false,
 					'publicly_queryable' => false,
@@ -290,7 +296,7 @@ class MS_Plugin {
 	}
 	
 	public function add_menu_pages() {
-		MS_Helper_Plugin::create_admin_pages( $this->_view );
+		MS_Helper_Plugin::create_admin_pages( &$this->_view );
 	}
 	
 	
