@@ -1,6 +1,7 @@
 
 == 3.5.1.2 ==
 
+* Fixed: Shortcode bug preventing admin from seeing content.  New behaviour, administrator will see all shortcode content. To test restricted content use "View site as:"
 * Fixed: Associated role are now 'sticky'. Where roles are not explicitly defined they will revert to site default role.
 * Updates: Updated Member model, Level model and removed legacy code where redundant.
 * Fixed: Communications were using levels expire date instead of the subscription expire date 
