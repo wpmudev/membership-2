@@ -215,6 +215,34 @@ class MS_Hooker {
 			}
 		}
 	}
+	/**
+	 * Returns property associated with the render.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+		if ( property_exists( $this, $property ) ) {
+			return $this->$property;
+		}
+	}
 	
+	/**
+	 * Associates the render with specific property.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			$this->$property = $value;
+		}
+	}
 
 }

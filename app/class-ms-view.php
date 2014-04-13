@@ -86,19 +86,6 @@ class MS_View extends MS_Hooker {
 	}
 
 	/**
-	 * Returns property associated with the render.
-	 *
-	 * @since 3.5
-	 *
-	 * @access public
-	 * @param string $name The name of a property.
-	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
-	 */
-	public function __get( $name ) {
-		return array_key_exists( $name, $this->_data ) ? $this->_data[$name] : null;
-	}
-	
-	/**
 	 * Checks whether the render has specific property or not.
 	 *
 	 * @since 3.5
@@ -107,34 +94,21 @@ class MS_View extends MS_Hooker {
 	 * @param string $name
 	 * @return boolean TRUE if the property exists, otherwise FALSE.
 	 */
-	public function __isset( $name ) {
-		return array_key_exists( $name, $this->_data );
-	}
-	
-	/**
-	 * Associates the render with specific property.
-	 *
-	 * @since 3.5
-	 *
-	 * @access public
-	 * @param string $name The name of a property to associate.
-	 * @param mixed $value The value of a property.
-	 */
-	public function __set( $name, $value ) {
-		$this->_data[$name] = $value;
-	}
-	
-	/**
-	 * Unassociates specific property from the render.
-	 *
-	 * @since 3.5
-	 *
-	 * @access public
-	 * @param string $name The name of the property to unassociate.
-	 */
-	public function __unset( $name ) {
-		unset( $this->_data[$name] );
-	}
+// 	public function __isset( $name ) {
+// 		return array_key_exists( $name, $this->_data );
+// 	}
+		
+// 	/**
+// 	 * Unassociates specific property from the render.
+// 	 *
+// 	 * @since 3.5
+// 	 *
+// 	 * @access public
+// 	 * @param string $name The name of the property to unassociate.
+// 	 */
+// 	public function __unset( $name ) {
+// 		unset( $this->_data[$name] );
+// 	}
 	
 	/**
 	 * Sets flags to cache or not output.

@@ -27,21 +27,26 @@ class MS_Helper_Plugin extends MS_Helper {
 	}
 	
 	public static function create_admin_pages( $view ) {
-		global $submenu;
+// 		global $submenu;
 		
-		unset( $submenu['edit.php?post_type=ms_membership'][10] );
+// 		unset( $submenu['edit.php?post_type=ms_membership'][10] );
 		$pages = array();
+		$membership_controller = new MS_Controller_Membership();
+		
+		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $membership_controller, 'membership_dashboard' ) );
 
-// 		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this, 'handle_membership_panel' ), membership_url( 'membershipincludes/images/members.png' ) );
-
+		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $membership_controller, 'admin_membership_list' ) );
+		
 		// $pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership', array( $view, 'render' ) );
 		
-		// $pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
 // 		
 		// $pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
 		
 		
-		$pages[] = add_submenu_page( 'edit.php?post_type=ms_membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
+// 		$pages[] = add_submenu_page( 'edit.php?post_type=ms_membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $view, 'render' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Membership Details', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'membership-details', array( $membership_controller, 'membership_details' ) );
+// 		$pages[] = add_submenu_page( 'edit.php?post_type=ms_membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Details', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $membership_controller, 'membership_details' ) );
 		
 // 		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'edit.php?post_type=ms_membership' );
 	}

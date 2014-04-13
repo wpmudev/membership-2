@@ -24,65 +24,57 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	private $post_type;
 	
+	private $capability = 'manage_options';
+	
+	private $membership;
+	
+	private $view;
+	
 	public function __construct() {
+
 		$this->post_type = MS_Model_Membership::$POST_TYPE;
 		
-		$this->add_filter( 'manage_edit-ms_membership_columns', 'add_manage_columns');
+		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
 		
-		$this->add_action( "add_meta_boxes_$this->post_type", 'cfg_meta_boxes', 50 );
-				
-		$this->add_action( "manage_{$this->post_type}_posts_custom_column", 'manage_columns', 10, 2);
+		$this->membership = MS_Model_Membership::load( $membership_id );
 		
-		$this->add_filter('post_updated_messages', 'post_updated_messages' );
+		$this->view = new MS_View_Membership( $this->membership );
+		
+	}
+	public function membership_dashboard() {
+	
 	}
 	
-	public function add_manage_columns( $columns ) {
-		$columns = array();
-
-		$columns['cb'] =  '<input type="checkbox" />';
-		$columns['title'] = __('Membership Name', MS_TEXT_DOMAIN);
-		$columns['active'] = __('Active', MS_TEXT_DOMAIN);
-		$columns['members'] = __('Members', MS_TEXT_DOMAIN);
+	public function admin_membership_list() {
 		
-		return $columns;
+		$this->view->admin_membership_list();
 	}
 	
-	public function manage_columns( $column_name, $id ) {
-		$membership = MS_Model_Membership::load( $id );
+	public function membership_edit() {
 		
-		switch ($column_name) {
-			case 'active':
-				echo ( $membership->active ) ? 'Active' : 'Deactivated';
-				break;
-		
-			case 'members':
-				break;
-			default:
-				break;
+		if( ! empty( $_POST['submit'] ) )
+		{
+			$membership_id = $this->save_membership();
 		}
+		$this->view->membership_edit( $this->membership );
 	}
 	
-	public function cfg_meta_boxes() {
-		add_meta_box( 'ms_membership_general_metabox', __('Membership Definitions', MS_TEXT_DOMAIN ), 
-			'MS_View_Membership::membership_general_metabox', $this->post_type, 'normal', 'high' );
+	/*
+	 * Save membership details
+	 * TODO better sanitize and validate fields in model
+	 */
+	public function save_membership() {
+		
+		if ( ! current_user_can( $this->capability ) ) return;
+		if ( empty( $_POST[ MS_View_Membership::SAVE_NONCE ] ) || 
+			! wp_verify_nonce( $_POST[ MS_View_Membership::SAVE_NONCE ], MS_View_Membership::SAVE_NONCE ) ) return;
+		
+		foreach( $this->view->fields as $field ) {
+			$this->membership->$field['id'] = (! empty( $_POST[ $this->view->section ][ $field['id'] ] ) ) 
+				? sanitize_text_field( $_POST[ $this->view->section ][ $field ['id'] ] )
+				: '';
+		}
+		$this->membership->save();
+		return $this->membership->id;
 	}
-	
-	public function post_updated_messages( $messages ) {
-		global $post;
-		$messages[$this->post_type] = array(
-				0 => '', // Unused. Messages start at index 1.
-				1 => __( 'Membership updated', MS_TEXT_DOMAIN ),
-				2 => __( 'Field updated', MS_TEXT_DOMAIN ),
-				3 => __( 'Field deleted', MS_TEXT_DOMAIN ),
-				4 => __( 'Membership updated', MS_TEXT_DOMAIN ),
-				5 => isset($_GET['revision']) ? __( 'Membership restaured', MS_TEXT_DOMAIN ) : false,
-				6 => __( 'Membership published', MS_TEXT_DOMAIN ),
-				7 => __( 'Membership saved', MS_TEXT_DOMAIN ),
-				8 => __( 'Membership sent', MS_TEXT_DOMAIN ),
-				9 => __( 'Membership agended', MS_TEXT_DOMAIN ),
-				10 => __( 'Membership draft updated', MS_TEXT_DOMAIN ),
-		);
-		return $messages;
-	}
-	
 }

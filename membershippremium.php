@@ -64,6 +64,7 @@ MS_Plugin::instance( new MS_Plugin() );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
+	$overrides['MS_Membership_List_Table'] =  "app/helper/class-ms-membership-list-table.php";
 
 	return $overrides;
 }
@@ -148,24 +149,6 @@ class MS_Plugin {
 	private $url;
 
 	/**
-	 * Instance of MS_Model_Plugin
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var _model
-	 */
-	public $_model;
-
-	/**
-	 * Instance of MS_View_Plugin
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var _view
-	 */
-	private $_view;
-
-	/**
 	 * Register hooks and loads the plugin.
 	 */
 	function __construct() {
@@ -181,42 +164,30 @@ class MS_Plugin {
 
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
-		/** Instantiate Plugin model */
-		$this->_model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
-		/** Instantiate Plugin view */
-		$this->_view = apply_filters( 'membership_plugin_view', new MS_View_Plugin( array( 'test'=>'two' )) );		
-				
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
+		// Maybe creare a new hook that uses 'membership_plugin_loaded'
+		add_action( 'membership_plugin_loaded', array( &$this, 'membership_plugin_loaded' ));
+		
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		
 		$this->file = __FILE__;
-		$this->dir = plugin_dir_path(__FILE__) . 'app/';
-		$this->url = plugin_dir_url(__FILE__) . 'app/';
+		$this->dir = plugin_dir_path(__FILE__);
+		$this->url = plugin_dir_url(__FILE__);
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
 // 		$this->_view->render();
 
-		/** Enque admin styles (CSS) */
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_styles' ) );
-
-		/** Enque admin scripts (JS) */
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_plugin_admin_scripts' ) );
-
 		/** Grab instance of self. */
 		self::$_instance = $this;
 		
-		/** Setup plugin admin UI */
-		add_action( 'admin_menu', array( $this, 'add_menu_pages' ) );
 //echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 		
-		// Maybe creare a new hook that uses 'membership_plugin_loaded'
-		add_action( 'init', array( &$this, 'tst' ));  
 	}
-	public function tst() {
-		new MS_Controller_Membership();
+	public function membership_plugin_loaded() {
+		$this->conrtoller = new MS_Controller_Plugin();
 	}
 	/*
 	 * Register membership plugin custom post types. 
@@ -240,8 +211,8 @@ class MS_Plugin {
 						'not_found' => __( 'No Memberships Found', MS_TEXT_DOMAIN )
 					),
 					'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
-					'show_ui' => true,
-					'show_in_menu' => true,
+					'show_ui' => false,
+					'show_in_menu' => false,
 					'menu_position' => 70, // below Users
 					'menu_icon' => $this->url . "/assets/images/members.png",
 					'public' => true,
@@ -293,26 +264,6 @@ class MS_Plugin {
 					) ) );
 	
 	
-	}
-	
-	public function add_menu_pages() {
-		MS_Helper_Plugin::create_admin_pages( &$this->_view );
-	}
-	
-	
-	public function register_plugin_admin_styles() {
-		
-		wp_register_style( 'membership_admin_css', plugin_dir_url(__FILE__) . 'app/assets/css/settings.css' );
-		wp_enqueue_style( 'membership_admin_css' );
-
-	}
-
-	public function register_plugin_admin_scripts() {
-
-		// wp_register_script( 'membership_admin_js', plugin_dir_url(__FILE__) . 'app/assets/js/settings.js' );
-		// wp_enqueue_script( 'membership_admin_js' );
-
-		
 	}
 	
 	
@@ -428,22 +379,18 @@ class MS_Plugin {
 	
 		return self::$_instance;
 	}	
-	
 	/**
-	 * Override __get() to return only properties not starting with underscore.
+	 * Returns property associated with the plugin.
 	 *
-	 * @since 4.0.0.0
+	 * @since 4.0
 	 *
 	 * @access public
-	 *
-	 * @param Object $property Uses PHP magic method param.
-	 * @return Object
-	 */	
-	// public function __get( $property ) {
-	// 	if ( property_exists( $this, $property ) ) {
-	// 		if ( '_' != $property[0] ) {
-	// 			return $this->$property;
-	// 	    }
-	// 	}
-	// }
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+		if ( property_exists( $this, $property ) ) {
+			return $this->$property;
+		}
+	}
 }

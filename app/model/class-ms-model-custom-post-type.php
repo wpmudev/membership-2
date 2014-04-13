@@ -80,9 +80,9 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 * @return MS_Model_Custom_Post_Type
 	 */
 	public static function load( $model_id ) {
-		$model = null;
+		$model = new static::$CLASS_NAME();
+		
 		if ( !empty( $model_id ) ) {
-			$model = new static::$CLASS_NAME();
 			
 			$post = get_post( $model_id );
 			$model->id = $model_id;
