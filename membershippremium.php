@@ -163,40 +163,56 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
+		// RK: Fabio, do we need to register custom post types with every init?
+		/** Hook method to register custom post types */
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
-// 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
-
 		// RK: Changed the function name to avoid confusion with the the action at the end of the constructor
+		/** Add additional constructing code, e.g. loading controllers */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
+		/** Setup plugin properties */
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		
 		$this->file = __FILE__;
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
+
+		// RK: Fabio, is this still required?
 // 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
 // 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
-// 		$this->_view->render();
 
 		/** Grab instance of self. */
 		self::$_instance = $this;
 		
-//echo plugin_dir_url(__FILE__) . 'app/assets/css/dashboard.css';
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
 		
 	}
 
+	/**
+	 * Additional plugin preparation.
+	 *
+	 * Used to load controllers and/or views.
+	 *
+	 * @since 4.0.0
+	 * @return void
+	 */	
 	public function membership_plugin_constructing() {
+		
+		/** Main entry point controller for plugin. */
 		$this->controller = new MS_Controller_Plugin();
+		
 	}
 
-
-	/*
+	/**
 	 * Register membership plugin custom post types. 
-	 * TODO better configure custom post type args
-	*/
+	 *
+	 * @todo Better configure custom post type args
+	 *
+	 * @since 4.0.0
+	 * @return void
+	 */	
 	public function register_custom_post_type() {
 		// register the orders post type
 		register_post_type( 'ms_membership',
@@ -325,20 +341,6 @@ class MS_Plugin {
 		return false;
 	}
 	
-	/**
-	 * Load plugin localization files.
-	 *
-	 * Files located in plugin subfolder ./languages.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 *
-	 * @return void
-	 */	
-	private function plugin_localization() {
-		load_plugin_textdomain( MS_TEXT_DOMAIN, false, MS_PLUGIN_NAME . '/languages/' );
-	}
-
 
 	/**
 	 * Add link to settings page in plugins page.
@@ -383,12 +385,35 @@ class MS_Plugin {
 	
 		return self::$_instance;
 	}
+
+	/**
+	 * Returns plugin url.
+	 *
+	 * @since 4.0
+	 * @access public
+	 *
+	 * @static
+	 *	
+	 * @return string Returns plugin url.
+	 */
 	public static function get_plugin_url() {
 		return self::instance()->url;
-	}	
+	}
+	
+	/**
+	 * Returns plugin version.
+	 *
+	 * @since 4.0
+	 * @access public
+	 *
+	 * @static
+	 *	
+	 * @return string Returns plugin version.
+	 */
 	public static function get_plugin_version() {
 		return  self::instance()->version;
 	}	
+
 	/**
 	 * Returns property associated with the plugin.
 	 *

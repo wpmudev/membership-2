@@ -20,6 +20,15 @@
  *
 */
 
+/**
+ * Primary controller for Membership Plugin.
+ *
+ * Responsible for flow control, navigation and invoking other controllers.
+ *
+ * @since 4.0.0
+ *
+ * @return object
+ */
 class MS_Controller_Plugin extends MS_Controller {
 
 	/**
@@ -39,9 +48,30 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @var view
 	 */
 	private $view;	
+
+	/**
+	 * Pointer array for other controllers.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var controllers
+	 */	
+	private $controllers = array();
 	
-	private $controllers;
-	
+	/**
+	 * Pointer array for all Admin pages.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var admin_pages
+	 */
+	private $admin_pages = array();	
+		
+	/** 
+	 * Constructs the primary Plugin controller.
+	 *
+	 * @since 4.0.0
+	 */
 	public function __construct() {
 		/** Instantiate Plugin model */
 		$this->model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
@@ -60,33 +90,51 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership'] = new MS_Controller_Membership();
 		
 	}
-	public function add_menu_pages() {
-		
-		$pages = array();
 
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this->controllers['membership'], 'membership_dashboard' ) );
+	
+	/**
+	 * Adds Dashboard navigation menus.
+	 *
+	 * @since 4.0.0
+	 *	
+	 * @return void
+	 */
+	public function add_menu_pages() {
+
+		$this->admin_pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this->controllers['membership'], 'membership_dashboard' ) );
 		
-		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
+		$this->admin_pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
-		$pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+		$this->admin_pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 		
-		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
+		$this->admin_pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
 		
 	}
-	
+
+	/**
+	 * Adds CSS for Membership settings pages.
+	 *
+	 * @since 4.0.0
+	 *	
+	 * @return void
+	 */	
 	public function register_plugin_admin_styles() {
-		$plugin = MS_Plugin::instance();
-		wp_register_style( 'membership_admin_css', $plugin->url. 'app/assets/css/settings.css' );
+		wp_register_style( 'membership_admin_css', MS_Plugin::instance()->url. 'app/assets/css/settings.css' );
 		wp_enqueue_style( 'membership_admin_css' );
-	
 	}
 	
+	/**
+	 * Adds JavasSript for Membership settings pages.
+	 *
+	 * @todo Perhaps remove this method if we don't have global JS to apply to plugin
+	 *
+	 * @since 4.0.0
+	 *	
+	 * @return void
+	 */	
 	public function register_plugin_admin_scripts() {
-	
-		// wp_register_script( 'membership_admin_js', plugin_dir_url(__FILE__) . 'app/assets/js/settings.js' );
+		// wp_register_script( 'membership_admin_js', MS_Plugin::instance()->url . 'app/assets/js/settings.js' );
 		// wp_enqueue_script( 'membership_admin_js' );
-	
-	
 	}
 	
 	
