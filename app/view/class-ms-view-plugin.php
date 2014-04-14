@@ -23,9 +23,9 @@
 class MS_View_Plugin extends MS_View {
 	
 	
-	// public function _to_html() {
+	// Example of how to access passed data
 	public function _test() {		
-		echo $this->test; ?>
+		echo $this->_data['test']; ?>
 		<h1>TO HTML</h1>
 		<?php
 	}
@@ -35,14 +35,30 @@ class MS_View_Plugin extends MS_View {
 
 		/** Setup navigation tabs. */
 		$tabs = array(
-				'settings' => array(
-						'title' =>	__( 'General Settings', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=settings',
-				),
-				'advanced' => array(
-						'title' =>	__( 'Advanced Settings', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=advanced',
-				),
+			'settings' => array(
+					'title' =>	__( 'General Settings', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=settings',
+			),
+			'pages' => array(
+					'title' =>	__( 'Membership Pages', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=pages',
+			),
+			'messages' => array(
+					'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=messages',
+			),
+			'media' => array(
+					'title' =>	__( 'Media Protection', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=media',
+			),
+			'defaults' => array(
+					'title' =>	__( 'Default Settings', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=defaults',
+			),
+			'advanced' => array(
+					'title' =>	__( 'Advanced', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=advanced',
+			),												
 		);
 		
 		/** Render tabbed interface. */
@@ -66,8 +82,54 @@ class MS_View_Plugin extends MS_View {
 	public function render_settings() {
 		?>
 	   <div class='ms-settings'>
-		   General Settings
-	       <form>....</form>
+	       <form id="setting_form" method="post">
+			<h3>Default Subscription</h3>
+	
+		   </form>
+	   </div>
+		<?php
+	}
+	
+	public function render_pages() {
+		?>
+	   <div class='ms-settings'>
+		   Pages Settings
+	       <form id="setting_form" method="post">
+	
+		   </form>
+	   </div>
+		<?php
+	}
+
+	public function render_messages() {
+		?>
+	   <div class='ms-settings'>
+		   Messages Settings
+	       <form id="setting_form" method="post">
+	
+		   </form>
+	   </div>
+		<?php
+	}
+	
+	public function render_media() {
+		?>
+	   <div class='ms-settings'>
+		   Media Settings
+	       <form id="setting_form" method="post">
+	
+		   </form>
+	   </div>
+		<?php
+	}
+
+	public function render_defaults() {
+		?>
+	   <div class='ms-settings'>
+		   Default Settings
+	       <form id="setting_form" method="post">
+	
+		   </form>
 	   </div>
 		<?php
 	}
@@ -76,7 +138,9 @@ class MS_View_Plugin extends MS_View {
 		?>
 	   <div class='ms-settings'>
 		   Advanced Settings
-	       <form>....</form>
+	       <form id="setting_form" method="post">
+	
+		   </form>
 	   </div>
 		<?php
 	}
