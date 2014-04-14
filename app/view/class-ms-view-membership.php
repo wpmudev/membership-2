@@ -31,7 +31,77 @@ class MS_View_Membership extends MS_View {
 	protected $membership;
 	
 	public function __construct( $membership ) {
+				
+		$this->set_membership( $membership );
+	}
+	public function membership_edit( $tabs ) {
+				
+		ob_start();
+		?>
+		<div class='ms-wrap'>
+		<h2 class='ms-settings-title'>Membership Details</h2>		
 		
+		<?php 
+		
+		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+		
+		$this->render_general();
+
+		?>
+		</div>
+		<?php
+		
+		$html = ob_get_clean();
+		
+		echo $html;
+	}
+		
+	public function render_general() {
+
+		$nonce = wp_create_nonce( self::SAVE_NONCE );
+		ob_start();
+		?>
+		<div class='ms-settings'>
+			<form id="setting_form" action="<?php echo add_query_arg( array( 'membership_id' => $this->membership->id ) ); ?>" method="post">
+				<?php wp_nonce_field( self::SAVE_NONCE, self::SAVE_NONCE ); ?>
+				<table class="form-table">
+					<tbody>
+						<?php foreach ($this->fields as $field): ?>
+							<tr valign="top">
+								<td>
+									<?php MS_Helper_Html::html_input( $field );?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_submit();?>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<div class="clear"></div>
+		</div>
+		<?php
+		$html = ob_get_clean();
+		echo $html;
+	}
+	
+	public function admin_membership_list() {
+		$membership_list = new MS_Membership_List_Table();
+		$membership_list->prepare_items();
+		?>
+		<div class="wrap">
+			<h2><?php  _e( 'Memberships', MS_TEXT_DOMAIN ) ; ?>
+				<a class="add-new-h2" href="/wp-admin/admin.php?page=membership-edit"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
+			</h2>
+			<?php $membership_list->display(); ?>
+		</div>
+		<?php 
+	}
+	
+	public function set_membership( $membership ) {
 		$this->membership = $membership;
 
 		$this->fields = array(
@@ -108,8 +178,16 @@ class MS_View_Membership extends MS_View {
 				array(
 						'id' => 'trial_period_unit',
 						'section' => $this->section,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
 						'value' => $this->membership->trial_period_unit,
+						'class' => '',
+				),
+				array(
+						'id' => 'trial_period_type',
+						'section' => $this->section,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $this->membership->trial_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
@@ -119,85 +197,7 @@ class MS_View_Membership extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->membership->id,
 				),
-				
+		
 		);
 	}
-	public function membership_edit() {
-		ob_start();
-	
-		$tabs = array(
-				'general' => array(
-					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-details&tab=general',
-					),	
-				'rules' => array(
-					'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-details&tab=rules',
-					),
-			);
-		?>
-		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'>Membership Details</h2>		
-		
-		<?php 
-		
-		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
-		
-		/** Call the appropriate form to render. */
-		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
-
-		?>
-		</div>
-		<?php
-		
-		$html = ob_get_clean();
-		
-		echo $html;
-	}
-		
-	public function render_general() {
-
-		$nonce = wp_create_nonce( self::SAVE_NONCE );
-		ob_start();
-		?>
-		<div class='ms-settings'>
-			<form id="setting_form" action="<?php echo add_query_arg( array( 'membership_id' => $this->membership->id ) ); ?>" method="post">
-				<?php wp_nonce_field( self::SAVE_NONCE, self::SAVE_NONCE ); ?>
-				<table class="form-table">
-					<tbody>
-						<?php foreach ($this->fields as $field): ?>
-							<tr valign="top">
-								<td>
-									<?php MS_Helper_Html::html_input( $field );?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_submit();?>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</form>
-			<div class="clear"></div>
-		</div>
-		<?php
-		$html = ob_get_clean();
-		echo $html;
-	}
-	
-	public function admin_membership_list() {
-		$membership_list = new MS_Membership_List_Table();
-		$membership_list->prepare_items();
-		?>
-		<div class="wrap">
-			<h2><?php  _e( 'Memberships', MS_TEXT_DOMAIN ) ; ?>
-				<a class="add-new-h2" href="/wp-admin/admin.php?page=membership-details"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
-			</h2>
-			<?php $membership_list->display(); ?>
-		</div>
-		<?php 
-	}
-	
 }

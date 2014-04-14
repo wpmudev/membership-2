@@ -28,6 +28,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_SELECT = 'select';
 	const INPUT_TYPE_RADIO = 'radio';
 	const INPUT_TYPE_SUBMIT = 'submit';
+	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	
 	public function __construct() {
@@ -88,7 +89,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo "</span>";
 				echo "</div>";
 				break;
-		
+			case self::INPUT_TYPE_BUTTON:
+				echo "<input class='ms-field-input button button-primary' type='button' id='$id' name='" . $section . "[$id]' value='$value' />";
+				break;
+				
 		}		
 	}
 	public static function html_submit( $field_args = array() ) {

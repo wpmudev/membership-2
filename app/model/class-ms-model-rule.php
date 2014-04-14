@@ -45,6 +45,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $rule_value;
 	
+	protected $inherit_rules;
+	
 	protected $delay_access_enabled; 
 	
 	protected $delayed_period;

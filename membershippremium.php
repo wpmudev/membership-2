@@ -65,6 +65,7 @@ function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Membership_List_Table'] =  "app/helper/class-ms-membership-list-table.php";
+	$overrides['MS_Rule_List_Table'] =  "app/helper/class-ms-rule-list-table.php";
 
 	return $overrides;
 }
@@ -167,7 +168,7 @@ class MS_Plugin {
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
 		// Maybe creare a new hook that uses 'membership_plugin_loaded'
-		add_action( 'membership_plugin_loaded', array( &$this, 'membership_plugin_loaded' ));
+		add_action( 'init', array( &$this, 'membership_plugin_loaded' ));
 		
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		
@@ -187,7 +188,7 @@ class MS_Plugin {
 		
 	}
 	public function membership_plugin_loaded() {
-		$this->conrtoller = new MS_Controller_Plugin();
+		$this->controller = new MS_Controller_Plugin();
 	}
 	/*
 	 * Register membership plugin custom post types. 
@@ -378,6 +379,12 @@ class MS_Plugin {
 		}
 	
 		return self::$_instance;
+	}
+	public static function get_plugin_url() {
+		return self::instance()->url;
+	}	
+	public static function get_plugin_version() {
+		return  self::instance()->version;
 	}	
 	/**
 	 * Returns property associated with the plugin.

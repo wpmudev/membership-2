@@ -24,15 +24,77 @@ class MS_View_Rule extends MS_View {
 	
 	const SAVE_NONCE = 'rule_save_nonce';
 	
-	public function __construct() {
+	protected $section = 'ms_rule';
+	
+	protected $fields;
+	
+	protected $membership;
+	
+	public function __construct( $membership ) {
+	
+		$this->set_membership( $membership );
 		
 	}
-	public static function protection_rules_metabox( $post ) {
-		$membership = MS_Model_Membership::load( $post->ID );
+	
+	public function membership_rule_edit( $tabs ) {
+	
+		ob_start();
+		?>
+			<div class='ms-wrap'>
+				<h2 class='ms-settings-title'>Membership Details</h2>		
+			
+		<?php 
+			
+			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+			
+			$this->render_rule();
+	
+		?>
+			</div>
+		<?php
+			
+		$html = ob_get_clean();
+		
+		echo $html;
+		}
+	public function render_rule() {
+	
+		$nonce = wp_create_nonce( self::SAVE_NONCE );
+		$rule_list = new MS_Rule_List_Table( $this->membership );
+		$rule_list->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<table class="form-table">
+					<tbody>
+						<?php foreach ($this->fields as $field): ?>
+							<tr valign="top">
+								<td>
+									<?php MS_Helper_Html::html_input( $field );?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<form id="setting_form" action="<?php echo add_query_arg( array( 'membership_id' => $this->membership->id ) ); ?>" method="post">
+					<?php wp_nonce_field( self::SAVE_NONCE, self::SAVE_NONCE ); ?>
+					<?php $rule_list->display(); ?>
+					<?php MS_Helper_Html::html_submit();?>
+				</form>
+				<div class="clear"></div>
+			</div>
+			<?php
+			$html = ob_get_clean();
+			echo $html;
+		}
+	public function set_membership( $membership ) {
+
+		$this->membership = $membership;
 		$rule_types = MS_Model_Rule::get_rule_types();
 		$section = 'ms_rule';
 		
-		$fields = array( 
+		$this->fields = array( 
 			array( 
 				'id' => 'rule_type', 
 				'section' => $section, 
@@ -75,40 +137,15 @@ class MS_View_Rule extends MS_View {
 				'field_options' => MS_Helper_Period::get_periods(),
 				'class' => '',
 			),
+			array(
+				'id' => 'btn_add_rule',
+				'section' => $section,
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'value' => __( 'Add Rule', MS_TEXT_DOMAIN ),
+				'class' => '',
+			),
 				
 		);
-		ob_start();
-		?>
-		<div class="wrap">
-			<div class="postbox metabox-holder">
-				<h3><label for="title">Membership protection rules</label></h3>
-				<div class="inside">
-					<form id="setting_form" action="" method="post">
-						<?php wp_nonce_field( self::SAVE_NONCE, $section .'['.self::SAVE_NONCE.']' ); ?>
-						<table class="form-table">
-							<tbody>
-								<?php foreach ($fields as $field): ?>
-									<tr valign="top">
-										<td>
-											<?php MS_Helper_Html::html_input( $field );?>
-										</td>
-									</tr>
-								<?php endforeach; ?>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_submit();?>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</form>
-					<div style="clear:both;"></div>
-				</div>
-			</div>
-		</div>
-		<?php
-		$html = ob_get_clean();
-		echo $html;
 	}
 	
 }

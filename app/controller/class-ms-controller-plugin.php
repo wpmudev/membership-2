@@ -40,6 +40,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	private $view;	
 	
+	private $controllers;
+	
 	public function __construct() {
 		/** Instantiate Plugin model */
 		$this->model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
@@ -55,18 +57,18 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
 		
+		$this->controllers['membership'] = new MS_Controller_Membership();
+		
 	}
 	public function add_menu_pages() {
-
+		
 		$pages = array();
 
-		$membership_controller = new MS_Controller_Membership();
+		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this->controllers['membership'], 'membership_dashboard' ) );
 		
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $membership_controller, 'membership_dashboard' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
-		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $membership_controller, 'admin_membership_list' ) );
-		
-		$pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-details', array( $membership_controller, 'membership_edit' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 		
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
 		
