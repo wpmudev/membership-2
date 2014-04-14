@@ -87,8 +87,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
 		
-		$this->controllers['membership'] = new MS_Controller_Membership();
-		
+		/** Membership controller */
+		$this->controllers['membership'] = apply_filter( 'membership_membership_controller', new MS_Controller_Membership() );		
 	}
 
 	
@@ -101,12 +101,23 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function add_menu_pages() {
 
+		/** 
+		 * Primary navigation page.
+		 *
+		 * Dashboard page to be configured in instance of MS_Controller_Membership
+		 *
+		 * @uses MS_Controller_Membership
+		 */
 		$this->admin_pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this->controllers['membership'], 'membership_dashboard' ) );
 		
+		//RK: Perhaps as addon? Core will only have 1 or 2 memberships.
+		/** Lists all memberships. */
 		$this->admin_pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
+		/** Manage membership */
 		$this->admin_pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
-		
+
+		/** Global Membership Plugin settings. */
 		$this->admin_pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
 		
 	}
