@@ -57,7 +57,8 @@
     background: #fff;
     border: 1px solid #ccc;
     overflow: hidden;
-    padding: 20px;
+    padding: 10px 20px;
+	min-height: 300px;
 }
 
 .ms-wrap .ms-label {
@@ -80,4 +81,23 @@
 }
 .ms-field-input {
 	
+}
+
+@media (max-width: 900px) {
+    .ms-wrap .ms-settings {
+	}
+	.ms-wrap .ms-tabs {
+	    float: left;
+	    margin: 0;
+	    padding: 0;
+	    width: 100px;
+		
+	}
+	.ms-wrap .ms-tabs a {
+		padding: 5px;
+		min-height: 40px;
+	}
+	.ms-wrap .ms-settings {
+		min-height: 350px;
+	}	
 }
