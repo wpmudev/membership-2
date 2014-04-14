@@ -167,8 +167,8 @@ class MS_Plugin {
 		
 // 		add_action( 'plugins_loaded', array( &$this,'plugin_localization' ) );
 
-		// Maybe creare a new hook that uses 'membership_plugin_loaded'
-		add_action( 'init', array( &$this, 'membership_plugin_loaded' ));
+		// RK: Changed the function name to avoid confusion with the the action at the end of the constructor
+		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		
@@ -187,9 +187,12 @@ class MS_Plugin {
 		do_action( 'membership_plugin_loaded' ); 
 		
 	}
-	public function membership_plugin_loaded() {
+
+	public function membership_plugin_constructing() {
 		$this->controller = new MS_Controller_Plugin();
 	}
+
+
 	/*
 	 * Register membership plugin custom post types. 
 	 * TODO better configure custom post type args
