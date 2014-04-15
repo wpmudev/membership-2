@@ -2397,7 +2397,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								if ((int) $value->sub_id != 0) {
 										$rows[] = "<strong>" . $level->level_title() . "</strong>";
 								} else {
-										$rows[] = $level->level_title();
+								//		$rows[] = $level->level_title();
 								}
 						}
 				}
