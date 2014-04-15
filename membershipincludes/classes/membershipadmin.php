@@ -2349,16 +2349,18 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		if ( ! empty($subs) ) : ?>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$usersubs = $user_object->get_subscription_ids();
-																				if ( !empty( $usersubs ) ) {
-																					$rows = array();
-																					foreach ( (array) $usersubs as $key ) {
-																						$sub = $factory->get_subscription( $key );
-																						if ( !empty( $sub ) ) {
-																							$rows[] = $sub->sub_name();
-																						}
-																					}
-																					echo implode( ", ", $rows );
+		$usersubs = $user_object->get_subscription_ids();
+		if ( !empty( $usersubs ) ) {
+			$rows = array();
+			foreach ( (array) $usersubs as $key ) {
+				if( !empty( $key ) ){
+					$sub = $factory->get_subscription( $key );
+					if ( !empty( $sub ) ) {
+						$rows[] = $sub->sub_name();
+					}
+				}
+			}
+			echo implode( ", ", $rows );
 																				} elseif ( $is_membership_admin ) {
 																					?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
 																				} else {
@@ -2386,20 +2388,20 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																		endif; ?>
 																		<td <?php echo $style; ?>>
 																				<?php
-																				$userlevels = $user_object->get_level_ids();
-																				if ( ! empty($userlevels) ) {
-																						$rows = array();
-																						foreach ((array) $userlevels as $key => $value) {
-																								$level = Membership_Plugin::factory()->get_level($value->level_id);
-																								if (!empty($level)) {
-																										if ((int) $value->sub_id != 0) {
-																												$rows[] = "<strong>" . $level->level_title() . "</strong>";
-																										} else {
-																												$rows[] = $level->level_title();
-																										}
-																								}
-																						}
-																						echo implode(", ", $rows);
+		$userlevels = $user_object->get_level_ids();
+		if ( ! empty($userlevels) ) {
+				$rows = array();
+				foreach ((array) $userlevels as $key => $value) {
+						$level = Membership_Plugin::factory()->get_level($value->level_id);
+						if (!empty($level)) {
+								if ((int) $value->sub_id != 0) {
+										$rows[] = "<strong>" . $level->level_title() . "</strong>";
+								} else {
+										$rows[] = $level->level_title();
+								}
+						}
+				}
+				echo implode(", ", $rows);
 																				} elseif ( $is_membership_admin ) {
 																					?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
 																				} else {
