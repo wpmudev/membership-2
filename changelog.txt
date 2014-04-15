@@ -1,5 +1,7 @@
 
 == 3.5.1.2 ==
+* Fixed: 'All Members' page no longer displays empty levels and subscriptions.
+* Fixed: Repair tables will now clean up empty subscription and level assignment (e.g. where id's are 0).
 * Fixed: Deleting subscriptions and levels already assigned to users no longer creates empty entries.
 * Fixed: Shortcode bug preventing admin from seeing content.  New behaviour, administrator will see all shortcode content. To test restricted content use "View site as:"
 * Fixed: Associated role are now 'sticky'. Where roles are not explicitly defined they will revert to site default role.
