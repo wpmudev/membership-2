@@ -20,8 +20,21 @@
  *
 */
 
+/**
+ * Helper class for rendering HTML components.
+ *
+ * Methods for creating form INPUT components.
+ * Method for creating vertical tabbed navigation.
+ *
+ * @todo Create add methods to parent class or remove 'extends MS_Helper' to use standalone.
+ *
+ * @since 4.0.0
+ *
+ * @return object
+ */
 class MS_Helper_Html extends MS_Helper {
 	
+	/** Constants for HTML elements. */
 	const INPUT_TYPE_HIDDEN = 'hidden';
 	const INPUT_TYPE_TEXT = 'text';
 	const INPUT_TYPE_TEXT_AREA = 'textarea';
@@ -31,10 +44,16 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	
-	public function __construct() {
-
-	}
-	
+	/**
+	 * Method for creating FORM elements/fields. 
+	 *
+	 * Pass in array with field arguments. See $defaults for argmuments.
+	 * Use constants to specify field type. e.g. MS_Helper_Html::INPUT_TYPE_TEXT
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void But does output HTML.
+	 */
 	public static function html_input( $field_args ) {
 		
 		$defaults = array(
@@ -95,6 +114,16 @@ class MS_Helper_Html extends MS_Helper {
 				
 		}		
 	}
+	
+	/**
+	 * Method for creating submit button. 
+	 *
+	 * Pass in array with field arguments. See $defaults for argmuments.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void But does output HTML.
+	 */	
 	public static function html_submit( $field_args = array() ) {
 		$defaults = array(
 			'id'      	=> 'submit',
@@ -105,7 +134,16 @@ class MS_Helper_Html extends MS_Helper {
 		
 		echo "<input class='ms-field-input ms-submit $class' type='submit' id='$id' name='$id' value='$value'/>";
 	}
-	
+
+	/**
+	 * Method for outputting vertical tabs. 
+	 *
+	 * Returns the active tab key. Vertical tabs need to be wrapped in additional code.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void But does output HTML.
+	 */	
 	public static function html_admin_vertical_tabs( $tabs ) {
 		
 		reset($tabs);
@@ -128,6 +166,8 @@ class MS_Helper_Html extends MS_Helper {
 		       </ul>
 		   </div>
 		<?php
+		
+		/** Return current active tab. */
 		return $active_tab;
 	}
 }

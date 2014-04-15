@@ -20,16 +20,34 @@
  *
 */
 
+/**
+ * Renders Plugin options.
+ *
+ * Extends MS_View for rendering methods and magic methods.
+ *
+ * @uses MS_Helper_Html Helper used to create form elements and vertical navigation.
+ *
+ * @since 4.0.0
+ *
+ * @return object
+ */
 class MS_View_Plugin extends MS_View {
-	
-	
-	// Example of how to access passed data
-	public function _test() {		
-		echo $this->_data['test']; ?>
-		<h1>TO HTML</h1>
-		<?php
-	}
-	
+		
+	/**
+	 * Overrides parent's _to_html() method.
+	 *
+	 * Creates an output buffer, outputs the HTML and grabs the buffer content before releasing it.
+	 * Creates a wrapper 'ms-wrap' HTML element to contain content and navigation. The content inside
+	 * the navigation gets loaded with dynamic method calls.
+	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
+	 *
+	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
+	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return object
+	 */
 	public function _to_html() {		
 		ob_start();
 
