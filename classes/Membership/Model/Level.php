@@ -70,6 +70,8 @@ class Membership_Model_Level {
 		if ( $fullload && $this->active ) {
 			$this->load_rules( $loadtype );
 		}
+		
+		add_action( 'remove_this_level_members', 'remove_level_members', 10, 1);
 	}
 
 	// Fields
@@ -152,6 +154,8 @@ class Membership_Model_Level {
 		} else {
 			return false;
 		}
+		
+		do_action( 'remove_this_level_members', $this->id );
 
 	}
 
@@ -490,6 +494,15 @@ class Membership_Model_Level {
 		return $valid;
 	}
 	
+	
+	// Remove members at this levels when this level is deleted
+	function remove_level_members( $id )
+	{
+		$this->db->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'level_id' => $id ), array( '%d' ) );
+	}
+	
+	
+	
 	public static function get_associated_role( $id ) {
 		global $wpdb;
 
@@ -510,7 +523,7 @@ class Membership_Model_Level {
 		
 		return $role;
 	}
-
+	
 }
 
 /**
