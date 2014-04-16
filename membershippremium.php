@@ -64,8 +64,8 @@ MS_Plugin::instance( new MS_Plugin() );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
-	$overrides['MS_Model_Membership_List_Table'] =  "app/model/membership/class-ms-model-membership-list-table.php";
-	$overrides['MS_Model_Rule_List_Table'] =  "app/model/rule/class-ms-model-rule-list-table.php";
+	$overrides['MS_Helper_Membership_List_Table'] =  "app/helper/class-ms-helper-membership-list-table.php";
+	$overrides['MS_Helper_Rule_List_Table'] =  "app/helper/class-ms-helper-rule-list-table.php";
 
 	return $overrides;
 }

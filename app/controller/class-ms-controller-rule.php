@@ -36,7 +36,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 				
-		// $this->view = apply_filters( 'membership_rule_view', new MS_View_Rule( $this->model ) );
+		// $this->view = apply_filters( 'membership_rule_view', MS_Helper_Membership_List_Table( $this->model ) );
 		
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit-rules', 'enqueue_styles' );
 		

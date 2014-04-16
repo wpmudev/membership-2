@@ -89,7 +89,7 @@ class MS_View_Membership extends MS_View {
 	}
 	
 	public function admin_membership_list() {
-		$membership_list = new MS_Model_Membership_List_Table();
+		$membership_list = new MS_Helper_Membership_List_Table();
 		$membership_list->prepare_items();
 		?>
 		<div class="wrap">

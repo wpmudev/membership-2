@@ -80,7 +80,7 @@ class MS_View_Membership_Edit extends MS_View {
 
 	public function render_rules() {	
 		$nonce = wp_create_nonce( self::RULE_SAVE_NONCE );
-		$rule_list = new MS_Model_Rule_List_Table( $this->data['model'] );
+		$rule_list = new MS_Helper_Rule_List_Table( $this->data['model'] );
 		$rule_list->prepare_items();
 		
 		ob_start();

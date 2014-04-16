@@ -27,17 +27,23 @@
  * @since 4.0.0
  *
  */
-class MS_Model_Membership_List_Table extends WP_List_Table {
-		
-	public function __construct() {
+class MS_Helper_Rule_List_Table extends WP_List_Table {
+
+	private $membership;
+	
+	public function __construct( $membership ) {
 		parent::__construct();
+		
+		$this->membership = $membership; 
 	}
 	
 	public function get_columns() {
 		$columns = array(
-			'name' => __('Membership Name', MS_TEXT_DOMAIN ),
-			'active' => __('Active', MS_TEXT_DOMAIN ),
-			'members' => __('Members', MS_TEXT_DOMAIN ),
+			'content_col' => __( 'Content', MS_TEXT_DOMAIN ),
+			'rule_type_col' => __( 'Rule type', MS_TEXT_DOMAIN ),
+			'delayed_period_col' => __( 'Delayed access', MS_TEXT_DOMAIN ),
+			'inherit_col' => __( 'Inherit parent access', MS_TEXT_DOMAIN ),
+			'actions_col' => __( 'Actions', MS_TEXT_DOMAIN ),
 		);
 		return $columns;
 	}
@@ -66,21 +72,27 @@ class MS_Model_Membership_List_Table extends WP_List_Table {
 			'order' => 'DESC',
 		);
 		$query = new WP_Query($args);
-		$items = $query->get_posts();
+		$items = $this->membership->rules;
 
 		return $items;
 	}
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
-				$html = "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>$item->name</a>";
+			case 'content_col':
+				$html = print_r( $item->rule_value, true );
 				break;
-			case 'active':
-				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
+			case 'rule_type_col':
+				$html = $item->rule_type;
 				break;
-			case 'members':
-				$html = 0;
+			case 'delayed_period_col':
+				$html = $item->delayed_period;
+				break;
+			case 'inherit_col':
+				$html = $item->inherit_rules;
+				break;
+			case 'actions_col':
+				$html = "delete | edit";
 				break;
 			default:
 				$html = print_r( $item, true ) ;
