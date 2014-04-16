@@ -164,13 +164,16 @@ class MS_Plugin {
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
 		// RK: Fabio, do we need to register custom post types with every init?
+		// FJ: I think so. Which hook should use? https://codex.wordpress.org/Function_Reference/register_post_type 
 		/** Hook method to register custom post types */
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
 		// RK: Changed the function name to avoid confusion with the the action at the end of the constructor
+		// FJ: OK
 		/** Add additional constructing code, e.g. loading controllers */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
+		//FJ: Do we need static and private name and version?
 		/** Setup plugin properties */
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		
@@ -178,9 +181,8 @@ class MS_Plugin {
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
 
-		// RK: Fabio, is this still required?
-// 		add_filter( "plugin_action_links_$plugin", array( &$this,'plugin_settings_link' ) );
-// 		add_filter( "network_admin_plugin_action_links_$plugin", array( &$this, 'plugin_settings_link' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
+		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
 
 		/** Grab instance of self. */
 		self::$_instance = $this;
@@ -344,6 +346,8 @@ class MS_Plugin {
 
 	/**
 	 * Add link to settings page in plugins page.
+	 * 
+	 * @todo Adjust multisite link. Maybe show wizard link for first access.
 	 *
 	 * @since 4.0.0
 	 * @access private
@@ -351,13 +355,15 @@ class MS_Plugin {
 	 * @param array $links Wordpress default array of links.
 	 * @return array Array of links with settings page links added.
 	 */
-	private function plugin_settings_link( $links ) {
+	public function plugin_settings_link( $links ) {
+		$settings = __( 'Settings', MS_TEXT_DOMAIN );
 		if ( is_multisite() ) {
-			$settings_link = '';
+			$settings_link = "<a href='admin.php?page=membership-settings'>$settings</a>";
 		} else {
-			$settings_link = '';
+			$settings_link = "<a href='admin.php?page=membership-settings'>$settings</a>";
 		}
 		array_unshift( $links, $settings_link );
+
 		return $links;
 	}	
 	
@@ -385,7 +391,7 @@ class MS_Plugin {
 	
 		return self::$_instance;
 	}
-
+	
 	/**
 	 * Returns plugin url.
 	 *

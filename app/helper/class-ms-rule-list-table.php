@@ -39,11 +39,11 @@ class MS_Rule_List_Table extends WP_List_Table {
 	
 	public function get_columns() {
 		$columns = array(
-			'content' => __( 'Content', MS_TEXT_DOMAIN ),
-			'rule_type' => __( 'Rule type', MS_TEXT_DOMAIN ),
-			'delayed_period' => __( 'Delayed access', MS_TEXT_DOMAIN ),
-			'inherit' => __( 'Inherit parent access', MS_TEXT_DOMAIN ),
-			'actions' => __( 'Actions', MS_TEXT_DOMAIN ),
+			'content_col' => __( 'Content', MS_TEXT_DOMAIN ),
+			'rule_type_col' => __( 'Rule type', MS_TEXT_DOMAIN ),
+			'delayed_period_col' => __( 'Delayed access', MS_TEXT_DOMAIN ),
+			'inherit_col' => __( 'Inherit parent access', MS_TEXT_DOMAIN ),
+			'actions_col' => __( 'Actions', MS_TEXT_DOMAIN ),
 		);
 		return $columns;
 	}
@@ -79,19 +79,19 @@ class MS_Rule_List_Table extends WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'content':
+			case 'content_col':
 				$html = print_r( $item->rule_value, true );
 				break;
-			case 'rule_type':
+			case 'rule_type_col':
 				$html = $item->rule_type;
 				break;
-			case 'delayed_period':
+			case 'delayed_period_col':
 				$html = $item->delayed_period;
 				break;
-			case 'inherit':
+			case 'inherit_col':
 				$html = $item->inherit_rules;
 				break;
-			case 'actions':
+			case 'actions_col':
 				$html = "delete | edit";
 				break;
 			default:

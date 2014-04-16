@@ -29,5 +29,14 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		
 	}
 	
+	public function get_content() {
+		$content = array();
+		$posts_to_show = 10; //TODO
+		$categories = get_categories( 'get=all' );
+		foreach( $categories as $category ) {
+			$content[ $category->term_id ] = esc_html( $category->name );
+		}
+		return $content;
+	}
 	
 }

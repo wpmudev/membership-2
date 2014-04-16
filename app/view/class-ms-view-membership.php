@@ -39,7 +39,7 @@ class MS_View_Membership extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'>Membership Details</h2>		
+		<h2 class='ms-settings-title'>Manage Membership</h2>		
 		
 		<?php 
 		

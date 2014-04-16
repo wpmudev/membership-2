@@ -29,5 +29,11 @@ class MS_Model_Rule_Download extends MS_Model_Rule {
 		
 	}
 	
+	public function get_content() {
+		return array (
+				'0' => 'todo',
+				'1' => 'todo',
+		);
+	}
 	
 }

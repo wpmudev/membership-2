@@ -87,8 +87,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
 		
+		//FJ: we need to define if we will use class name MS_Controller_Membership and membership_controller_membership filter or
+		//MS_Membership_Controller and membership_membership_controller
 		/** Membership controller */
 		$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
+
+		/** Rule controller */
+		$this->controllers['rule'] = apply_filters( 'membership_rule_controller', new MS_Controller_Rule() );		
 	}
 
 	
@@ -115,8 +120,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
 		/** Manage membership */
-		$pages[] = add_submenu_page( 'membership', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
+		/** Manage membership rules */
+		$pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );
+		
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
 		

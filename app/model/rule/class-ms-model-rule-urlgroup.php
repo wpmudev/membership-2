@@ -21,7 +21,7 @@
 */
 
 
-class MS_Model_Rule_Menu extends MS_Model_Rule {
+class MS_Model_Rule_URLGroup extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
@@ -29,21 +29,5 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		
 	}
 	
-	public function get_content() {
-		$content = array();
-		$navs = wp_get_nav_menus( array('orderby' => 'name') );
-		if( ! empty( $navs ) ) {
-			foreach( $navs as $nav ) {
-				$content[ $nav->term_id ] = esc_html( $nav->name );
-				$items = wp_get_nav_menu_items($nav->term_id);
-				if( ! empty( $items ) ) {
-					foreach( $items as $item ) {
-						$content[ $item->ID ] = esc_html( $item->title );
-					}
-				}
-			}
-		}
-		return $content;
-	}
 	
 }

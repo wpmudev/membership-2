@@ -28,6 +28,22 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	public function on_protection() {
 		
 	}
-	
-	
+	public function get_content() {
+		$content = array();
+		$posts_to_show = 10; //TODO
+		$posts = get_posts( array(
+			'numberposts' => $posts_to_show,
+			'offset'      => 0,
+			'orderby'     => 'post_date',
+			'order'       => 'DESC',
+			'post_type'   => 'post',
+			'post_status' => 'publish'
+		) );
+		if( ! empty( $posts ) ) {
+			foreach( $posts as $post ) {
+				$content[ $post->ID ] = esc_html( $post->post_title ); 
+			}
+		}
+		return $content;
+	}
 }

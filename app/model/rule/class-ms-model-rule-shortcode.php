@@ -29,5 +29,13 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		
 	}
 	
-	
+	public function get_content() {
+		global $shortcode_tags;
+		
+		$content = array();
+		foreach( $shortcode_tags as $key => $function ) {
+			$content[ esc_html( trim( $key ) ) ] = "[$key]";
+		}
+		return $content;
+	}
 }

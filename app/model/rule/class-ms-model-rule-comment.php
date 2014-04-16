@@ -29,5 +29,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		
 	}
 	
+	public function get_content() {
+		return array (
+			'0' => __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN ),
+			'1' => __( 'User can not read or comment on posts.', MS_TEXT_DOMAIN ),
+		);
+	}
 	
 }

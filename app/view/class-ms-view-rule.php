@@ -30,6 +30,8 @@ class MS_View_Rule extends MS_View {
 	
 	protected $membership;
 	
+	protected $rule_types;
+	
 	public function __construct( $membership ) {
 	
 		$this->set_membership( $membership );
@@ -41,11 +43,11 @@ class MS_View_Rule extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-wrap'>
-				<h2 class='ms-settings-title'>Membership Details</h2>		
+				<h2 class='ms-settings-title'>Manage Membership</h2>		
 			
 		<?php 
 			
-			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+			MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 			
 			$this->render_rule();
 	
@@ -56,7 +58,7 @@ class MS_View_Rule extends MS_View {
 		$html = ob_get_clean();
 		
 		echo $html;
-		}
+	}
 	public function render_rule() {
 	
 		$nonce = wp_create_nonce( self::SAVE_NONCE );
@@ -68,13 +70,40 @@ class MS_View_Rule extends MS_View {
 			<div class='ms-settings'>
 				<table class="form-table">
 					<tbody>
-						<?php foreach ($this->fields as $field): ?>
-							<tr valign="top">
-								<td>
-									<?php MS_Helper_Html::html_input( $field );?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
+						<tr valign="top">
+							<td>
+								<div>
+									<span class='ms-field-label'><?php echo __( 'Content to protect', MS_TEXT_DOMAIN ); ?></span>
+									<?php MS_Helper_Html::html_input( $this->fields['rule_type'] );?>
+									<?php 
+										foreach ($this->rule_types as $rule_type ) {
+ 											MS_Helper_Html::html_input( $rule_type );
+										}
+									?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['delay_access_enabled'] );?>
+								<div id="ms-delayed-period-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['delayed_period'] );?>
+									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="ms-inherit-rules-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['inherit_rules'] );?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['btn_add_rule'] );?>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 				<form id="setting_form" action="<?php echo add_query_arg( array( 'membership_id' => $this->membership->id ) ); ?>" method="post">
@@ -91,29 +120,19 @@ class MS_View_Rule extends MS_View {
 	public function set_membership( $membership ) {
 
 		$this->membership = $membership;
-		$rule_types = MS_Model_Rule::get_rule_types();
+		$rule_types = MS_Model_Rule::get_rule_type_titles();
 		$section = 'ms_rule';
 		
 		$this->fields = array( 
-			array( 
+			'rule_type' => array( 
 				'id' => 'rule_type', 
 				'section' => $section, 
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Content to protect', MS_TEXT_DOMAIN ), 
 				'value' => '', 
 				'field_options' => $rule_types,
 				'class' => '',
 			),
-			array( 
-				'id' => 'rule_value', 
-				'section' => $section, 
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => '', 
-				'field_options' => $rule_types,
-				'class' => '',
-				'multiple' => 'multiple',
-			),
-			array(
+			'delay_access_enabled' => array(
 				'id' => 'delay_access_enabled',
 				'section' => $section,
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
@@ -121,7 +140,7 @@ class MS_View_Rule extends MS_View {
 				'value' => '',
 				'class' => '',
 			),
-			array(
+			'delayed_period' => array(
 				'id' => 'delayed_period',
 				'section' => $section,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -129,7 +148,7 @@ class MS_View_Rule extends MS_View {
 				'value' => '',
 				'class' => '',
 			),
-			array(
+			'delayed_period_type' => array(
 				'id' => 'delayed_period_type',
 				'section' => $section,
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -137,7 +156,15 @@ class MS_View_Rule extends MS_View {
 				'field_options' => MS_Helper_Period::get_periods(),
 				'class' => '',
 			),
-			array(
+			'inherit_rules' => array(
+					'id' => 'inherit_rules',
+					'section' => $section,
+					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+					'title' => __( 'Inherit parents access by default (recommended)', MS_TEXT_DOMAIN ),
+					'value' => '1',
+					'class' => '',
+			),
+			'btn_add_rule' => array(
 				'id' => 'btn_add_rule',
 				'section' => $section,
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
@@ -146,6 +173,17 @@ class MS_View_Rule extends MS_View {
 			),
 				
 		);
+		foreach ( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $class ) {
+			$this->rule_types["rule_value_$rule_type"] = array (
+						'id' => "rule_value_$rule_type",
+						'section' => $section,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => '',
+						'field_options' => MS_Model_Rule::rule_factory( $rule_type )->get_content(),
+						'class' => 'ms-select-rule-type',
+						'multiple' => 'multiple',
+			);
+		}
 	}
 	
 }

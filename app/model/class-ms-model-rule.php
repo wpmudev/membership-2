@@ -23,22 +23,32 @@
 
 class MS_Model_Rule extends MS_Model {
 	
-	const RULE_TYPE_CATEGORY = 'MS_Model_Rule_Category';
+	const RULE_TYPE_CATEGORY = 'category';
 	
-	const RULE_TYPE_COMMENT = 'MS_Model_Rule_Comment';
+	const RULE_TYPE_COMMENT = 'comment';
 	
-	const RULE_TYPE_DOWNLOAD = 'MS_Model_Rule_Download';
+	const RULE_TYPE_DOWNLOAD = 'download';
 	
-	const RULE_TYPE_MENU = 'MS_Model_Rule_Menu';
+	const RULE_TYPE_MENU = 'menu';
 	
-	const RULE_TYPE_PAGE = 'MS_Model_Rule_Page';
+	const RULE_TYPE_PAGE = 'page';
 	
-	const RULE_TYPE_POST = 'MS_Model_Rule_Post';
+	const RULE_TYPE_POST = 'post';
 	
-	const RULE_TYPE_SHORTCODE = 'MS_Model_Rule_Shortcode';
+	const RULE_TYPE_SHORTCODE = 'shortcode';
 	
-	const RULE_TYPE_URL_GROUP = 'MS_Model_Rule_Url_Group';
+	const RULE_TYPE_URL_GROUP = 'url_group';
 	
+	public static $RULE_TYPE_CLASSES = array (
+			 self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
+			 self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
+			 self::RULE_TYPE_DOWNLOAD => 'MS_Model_Rule_Download',
+			 self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
+			 self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
+			 self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
+			 self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
+			 self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_URLGroup',
+	);
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $rule_type;
@@ -65,7 +75,7 @@ class MS_Model_Rule extends MS_Model {
 		throw new Exception ("Method to be implemented in child class");
 	}
 
-	public static function get_rule_types() {
+	public static function get_rule_type_titles() {
 		return array(
 				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
@@ -76,5 +86,18 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
 		);
+	}
+	
+	public static function rule_factory( $rule_type ) {
+		if( ! in_array( $rule_type, self::$RULE_TYPE_CLASSES ) ) {
+			return new self::$RULE_TYPE_CLASSES[ $rule_type ]();
+		}
+		else {
+			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
+		}
+	}
+	
+	public function get_content() {
+		return array();
 	}
 }

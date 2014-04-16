@@ -26,9 +26,9 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	private $capability = 'manage_options';
 	
-	private $membership;
+	private $model;
 	
-	private $views;
+	private $view;
 		
 	public function __construct() {
 
@@ -36,13 +36,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
 		
-		$this->membership = MS_Model_Membership::load( $membership_id );
+		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 		
-		$this->views['membership'] = new MS_View_Membership( $this->membership );
-		
-		$this->views['rule'] = new MS_View_Rule( $this->membership );
-		
-		$this->add_action( 'admin_print_scripts-membership_page_membership-edit', 'enqueue_scripts' );
+		$this->view = apply_filters( 'membership_membership_view', new MS_View_Membership( $this->model ) );
+				
+		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		
 	}
 	public function membership_dashboard() {
@@ -55,35 +53,23 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function membership_edit() {
-		
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
-		
-		if( ! empty( $_POST['submit'] ) )
-		{
-			if( 'general' == $active_tab ) {
-				$this->save_membership();
-				$this->views['membership']->set_membership( $this->membership );				
-			}
-			elseif ( 'rules' == $active_tab ) {
-				$this->save_rules();
-			}
-		}
+				
 		$tabs = array(
 			'general' => array(
 					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->membership->id,
+					'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
 			),
 			'rules' => array(
 					'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit&tab=rules&membership_id=' . $this->membership->id,
+					'url' => 'admin.php?page=membership-edit-rules&tab=rules&membership_id=' . $this->model->id,
 			),
 		);
-		if( 'general' == $active_tab ) {
-			$this->views['membership']->membership_edit( $tabs );
+		if( ! empty( $_POST['submit'] ) )
+		{
+			$this->save_membership();
+			$this->view->set_membership( $this->model );
 		}
-		elseif ( 'rules' == $active_tab ) {
-			$this->views['rule']->membership_rule_edit( $tabs );
-		}
+		$this->view->membership_edit( $tabs );
 	}
 	
 	/*
@@ -99,30 +85,19 @@ class MS_Controller_Membership extends MS_Controller {
 		 * Membership general fields. 
 		 */	
 		foreach( $this->views['membership']->fields as $field ) {
-			$this->membership->$field['id'] = (! empty( $_POST[ $this->views['membership']->section ][ $field['id'] ] ) ) 
+			$this->model->$field['id'] = (! empty( $_POST[ $this->views['membership']->section ][ $field['id'] ] ) ) 
 				? sanitize_text_field( $_POST[ $this->views['membership']->section ][ $field ['id'] ] )
 				: '';
 		}
-		$this->membership->save();
-	}
-	public function save_rules() {
-		if ( ! current_user_can( $this->capability ) ) return;
-		if ( empty( $_POST[ MS_View_Rule::SAVE_NONCE ] ) ||
-			! wp_verify_nonce( $_POST[ MS_View_Rule::SAVE_NONCE ], MS_View_Rule::SAVE_NONCE ) ) return;
-		
-		/**
-		 * Membership protection rules fields
-		 */
-// 		$this->membership->save();
-		
+		$this->model->save();
 	}
 	public function enqueue_scripts() {
 	
 		$plugin_url = MS_Plugin::get_plugin_url();
 		$version = MS_Plugin::get_plugin_version();
 
-		wp_register_script( 'render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
-		wp_enqueue_script( 'render_rule' );
+		wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
+		wp_enqueue_script( 'view_membership_render_general' );
 	
 	}
 	
