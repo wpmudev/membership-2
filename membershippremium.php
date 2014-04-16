@@ -64,8 +64,8 @@ MS_Plugin::instance( new MS_Plugin() );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
-	$overrides['MS_Membership_List_Table'] =  "app/helper/class-ms-membership-list-table.php";
-	$overrides['MS_Rule_List_Table'] =  "app/helper/class-ms-rule-list-table.php";
+	$overrides['MS_Model_Membership_List_Table'] =  "app/model/membership/class-ms-model-membership-list-table.php";
+	$overrides['MS_Model_Rule_List_Table'] =  "app/model/rule/class-ms-model-rule-list-table.php";
 
 	return $overrides;
 }
@@ -174,6 +174,7 @@ class MS_Plugin {
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
 		//FJ: Do we need static and private name and version?
+		//RK: Good question. It might be good to define it in the class, just in case of name conflicts with other plugins. So we can get it with MS_Plugin::name() and MS_Plugin::version(). What do you think?
 		/** Setup plugin properties */
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		

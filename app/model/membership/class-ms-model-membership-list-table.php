@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Membership_List_Table extends WP_List_Table {
+class MS_Model_Membership_List_Table extends WP_List_Table {
 		
 	public function __construct() {
 		parent::__construct();

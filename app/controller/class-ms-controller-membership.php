@@ -28,7 +28,7 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	private $model;
 	
-	private $view;
+	private $views;
 		
 	public function __construct() {
 
@@ -38,9 +38,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 		
-		$this->view = apply_filters( 'membership_membership_view', new MS_View_Membership( $this->model ) );
-				
+		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
+		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
+		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
 	public function membership_dashboard() {
@@ -48,22 +50,16 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function admin_membership_list() {
-		
-		$this->views['membership']->admin_membership_list();
+		$this->views['membership_list']->data['model'] = $this->model;
+		$this->views['membership_list']->render();
+		// $this->views['membership']->admin_membership_list();
 	}
 	
 	public function membership_edit() {
-				
-		$tabs = array(
-			'general' => array(
-					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
-			),
-			'rules' => array(
-					'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit-rules&tab=rules&membership_id=' . $this->model->id,
-			),
-		);
+		$this->views['membership_edit']->data['id'] = $this->model->id;
+		$this->views['membership_list']->data['model'] = $this->model;		
+		$this->views['membership_edit']->render();
+
 		if( ! empty( $_POST['submit'] ) )
 		{
 			$this->save_membership();
@@ -91,6 +87,14 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		$this->model->save();
 	}
+	
+	
+	public function enqueue_styles() {
+		wp_register_style( 'ms_rule_view_render_rule_css', MS_Plugin::get_plugin_url(). 'app/assets/css/ms-view-rule-render-rule.css', null, MS_Plugin::get_plugin_version() );
+		wp_enqueue_style( 'ms_rule_view_render_rule_css' );
+	}
+	
+		
 	public function enqueue_scripts() {
 	
 		$plugin_url = MS_Plugin::get_plugin_url();
@@ -98,6 +102,10 @@ class MS_Controller_Membership extends MS_Controller {
 
 		wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
 		wp_enqueue_script( 'view_membership_render_general' );
+		
+		wp_register_script( 'ms_rule_view_render_rule_js', MS_Plugin::get_plugin_url(). 'app/assets/js/ms-view-rule-render-rule.js', null, MS_Plugin::get_plugin_version() );
+		wp_enqueue_script( 'ms_rule_view_render_rule_js' );
+		
 	
 	}
 	

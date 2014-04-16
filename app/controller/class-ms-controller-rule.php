@@ -36,7 +36,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 				
-		$this->view = apply_filters( 'membership_rule_view', new MS_View_Rule( $this->model ) );
+		// $this->view = apply_filters( 'membership_rule_view', new MS_View_Rule( $this->model ) );
 		
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit-rules', 'enqueue_styles' );
 		
@@ -46,24 +46,28 @@ class MS_Controller_Rule extends MS_Controller {
 	
 	public function membership_edit_rules() {
 				
-		$tabs = array(
-			'general' => array(
-					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
-			),
-			'rules' => array(
-					'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-edit-rules&tab=rules&membership_id=' . $this->model->id,
-			),
-		);
-		
-		if( ! empty( $_POST['submit'] ) )
-		{
-			$this->save_rules();
-		}
-		
-		$this->view->membership_rule_edit( $tabs );
+		// $tabs = array(
+		// 	'general' => array(
+		// 			'title' =>	__( 'General', MS_TEXT_DOMAIN ),
+		// 			'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
+		// 	),
+		// 	'rules' => array(
+		// 			'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
+		// 			'url' => 'admin.php?page=membership-edit-rules&tab=rules&membership_id=' . $this->model->id,
+		// 	),
+		// );
+		// 
+		// if( ! empty( $_POST['submit'] ) )
+		// {
+		// 	$this->save_rules();
+		// }
+		// 
+		// $this->view->membership_rule_edit( $tabs );
 	}
+	
+	
+	
+	
 	
 	/*
 	 * Save membership rule details

@@ -123,7 +123,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
 		/** Manage membership rules */
-		$pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );
+		// $pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );
 		
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
