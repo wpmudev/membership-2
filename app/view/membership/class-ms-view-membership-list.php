@@ -2,7 +2,7 @@
 
 class MS_View_Membership_List extends MS_View {
 
-	public function _to_html() {		
+	public function to_html() {		
 
 		$membership_list = new MS_Helper_Membership_List_Table();
 		$membership_list->prepare_items();

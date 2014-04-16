@@ -168,13 +168,12 @@ class MS_Plugin {
 		/** Hook method to register custom post types */
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
-		// RK: Changed the function name to avoid confusion with the the action at the end of the constructor
-		// FJ: OK
 		/** Add additional constructing code, e.g. loading controllers */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
 		//FJ: Do we need static and private name and version?
 		//RK: Good question. It might be good to define it in the class, just in case of name conflicts with other plugins. So we can get it with MS_Plugin::name() and MS_Plugin::version(). What do you think?
+		//FJ: OK
 		/** Setup plugin properties */
 		$this->name = self::NAME;
 		$this->version = self::VERSION;		

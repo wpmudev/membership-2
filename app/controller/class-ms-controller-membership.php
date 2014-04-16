@@ -50,22 +50,22 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function admin_membership_list() {
-		$this->views['membership_list']->data['model'] = $this->model;
+// 		$this->views['membership_list']->data['membership'] = $this->model;
 		$this->views['membership_list']->render();
-		// $this->views['membership']->admin_membership_list();
 	}
 	
 	public function membership_edit() {
-		$this->views['membership_edit']->data['id'] = $this->model->id;
-		$this->views['membership_list']->data['model'] = $this->model;		
-		$this->views['membership_edit']->render();
+// 		$this->views['membership_list']->data['model'] = $this->model;		
+// 		$this->views['membership_edit']->render();
+		
+		$this->views['membership_edit']->model = $this->model;
 
 		if( ! empty( $_POST['submit'] ) )
 		{
 			$this->save_membership();
-			$this->view->set_membership( $this->model );
+			$this->views['membership_edit']->model = $this->model;
 		}
-		$this->view->membership_edit( $tabs );
+		$this->views['membership_edit']->render();
 	}
 	
 	/*
@@ -73,25 +73,52 @@ class MS_Controller_Membership extends MS_Controller {
 	 * TODO better sanitize and validate fields in model
 	 */
 	public function save_membership() {
-		if ( ! current_user_can( $this->capability ) ) return;
-		if ( empty( $_POST[ MS_View_Membership::SAVE_NONCE ] ) || 
-			! wp_verify_nonce( $_POST[ MS_View_Membership::SAVE_NONCE ], MS_View_Membership::SAVE_NONCE ) ) return;
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
 		
 		/**
-		 * Membership general fields. 
+		 * Save membership general fields. 
 		 */	
-		foreach( $this->views['membership']->fields as $field ) {
-			$this->model->$field['id'] = (! empty( $_POST[ $this->views['membership']->section ][ $field['id'] ] ) ) 
-				? sanitize_text_field( $_POST[ $this->views['membership']->section ][ $field ['id'] ] )
-				: '';
+		$nonce = MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE;
+		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+			
+			$this->views['membership_edit']->prepare_general();
+			
+			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
+			foreach( $this->views['membership_edit']->fields as $field ) {
+				$this->model->$field['id'] = ( ! empty( $_POST[ $section ][ $field['id'] ] ) ) 
+					? sanitize_text_field( $_POST[ $section ][ $field ['id'] ] )
+					: '';
+			}
+			$this->model->save();
 		}
-		$this->model->save();
+		/*
+		 * Save protection rules fields.
+		 */
+		$nonce = MS_View_Membership_Edit::RULE_SAVE_NONCE;
+		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+			
+			$section = MS_View_Membership_Edit::RULE_SECTION;
+// 			$this->model->save();
+		}
+		
 	}
 	
 	
 	public function enqueue_styles() {
-		wp_register_style( 'ms_rule_view_render_rule_css', MS_Plugin::get_plugin_url(). 'app/assets/css/ms-view-rule-render-rule.css', null, MS_Plugin::get_plugin_version() );
-		wp_enqueue_style( 'ms_rule_view_render_rule_css' );
+		
+		$plugin_url = MS_Plugin::get_plugin_url();
+		$version = MS_Plugin::get_plugin_version();
+
+		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
+		
+		if( $active_tab == 'general' ) {
+		}
+		else if( $active_tab == 'rules' ) {		
+			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
+			wp_enqueue_style( 'ms_rule_view_render_rule' );
+		}
 	}
 	
 		
@@ -99,13 +126,17 @@ class MS_Controller_Membership extends MS_Controller {
 	
 		$plugin_url = MS_Plugin::get_plugin_url();
 		$version = MS_Plugin::get_plugin_version();
-
-		wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
-		wp_enqueue_script( 'view_membership_render_general' );
 		
-		wp_register_script( 'ms_rule_view_render_rule_js', MS_Plugin::get_plugin_url(). 'app/assets/js/ms-view-rule-render-rule.js', null, MS_Plugin::get_plugin_version() );
-		wp_enqueue_script( 'ms_rule_view_render_rule_js' );
+		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
+		if( $active_tab == 'general' ) {
+			wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
+			wp_enqueue_script( 'view_membership_render_general' );
+		}
+		else if( $active_tab == 'rules' ) {		
+			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
+			wp_enqueue_script( 'ms_rule_view_render_rule' );
+		}
 	
 	}
 	

@@ -40,7 +40,7 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_data;
+	protected $data;
 
 	/**
 	 * Determines whether we need to cache output or not.
@@ -50,7 +50,7 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @var boolean
 	 */
-	protected $_cache = false;
+	protected $cache = false;
 
 	/**
 	 * Time to live for cached HTML.
@@ -60,7 +60,7 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @var int
 	 */
-	protected $_cache_ttl;
+	protected $cache_ttl;
 
 	/**
 	 * Determines whether we need to use network wide cache or not.
@@ -70,7 +70,7 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @var boolean
 	 */
-	protected $_use_network_cache = false;
+	protected $use_network_cache = false;
 
 	/**
 	 * Constructor.
@@ -81,23 +81,49 @@ class MS_View extends MS_Hooker {
 	 * @param array $data The data what has to be associated with this render.
 	 */
 	public function __construct( $data = array() ) {
-		$this->_data = $data;
-		$this->_cache_ttl = 10 * MINUTE_IN_SECONDS;
+		$this->data = $data;
+		$this->cache_ttl = 10 * MINUTE_IN_SECONDS;
 	}
 
 	/**
-	 * Checks whether the render has specific property or not.
+	 * Returns property associated with the render.
 	 *
 	 * @since 3.5
 	 *
 	 * @access public
-	 * @param string $name
-	 * @return boolean TRUE if the property exists, otherwise FALSE.
+	 * @param string $name The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
-// 	public function __isset( $name ) {
-// 		return array_key_exists( $name, $this->_data );
+// 	public function __get( $name ) {
+// 		return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : null;
 // 	}
-		
+	
+// 	/**
+// 	 * Checks whether the render has specific property or not.
+// 	 *
+// 	 * @since 3.5
+// 	 *
+// 	 * @access public
+// 	 * @param string $name
+// 	 * @return boolean TRUE if the property exists, otherwise FALSE.
+// 	 */
+// 	public function __isset( $name ) {
+// 		return array_key_exists( $name, $this->data );
+// 	}
+	
+// 	/**
+// 	 * Associates the render with specific property.
+// 	 *
+// 	 * @since 3.5
+// 	 *
+// 	 * @access public
+// 	 * @param string $name The name of a property to associate.
+// 	 * @param mixed $value The value of a property.
+// 	 */
+// 	public function __set( $name, $value ) {
+// 		$this->data[ $name ] = $value;
+// 	}
+	
 // 	/**
 // 	 * Unassociates specific property from the render.
 // 	 *
@@ -107,9 +133,9 @@ class MS_View extends MS_Hooker {
 // 	 * @param string $name The name of the property to unassociate.
 // 	 */
 // 	public function __unset( $name ) {
-// 		unset( $this->_data[$name] );
+// 		unset( $this->data[ $name ] );
 // 	}
-	
+		
 	/**
 	 * Sets flags to cache or not output.
 	 *
@@ -120,9 +146,9 @@ class MS_View extends MS_Hooker {
 	 * @return boolean Previous value of cache output directive.
 	 */
 	public function cache_output( $cache = null ) {
-		$old = $this->_cache;
+		$old = $this->cache;
 		if ( func_num_args() > 0 ) {
-			$this->_cache = (bool)$cache;
+			$this->cache = (bool)$cache;
 		}
 	
 		return $old;
@@ -138,25 +164,13 @@ class MS_View extends MS_Hooker {
 	 * @return int Old time to live value.
 	 */
 	public function cache_ttl( $new_ttl = null ) {
-		$old = $this->_cache_ttl;
+		$old = $this->cache_ttl;
 		if ( func_num_args() > 0 ) {
-			$this->_cache_ttl = absint( $new_ttl );
+			$this->cache_ttl = absint( $new_ttl );
 		}
 	
 		return $old;
 	}
-
-
-	/**
-	 * Renders template.
-	 *
-	 * @since 3.5
-	 *
-	 * @abstract
-	 * @access protected
-	 */
-	protected function _to_html() {}
-	
 	
 	/**
 	 * Returns cache key.
@@ -166,7 +180,7 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @return string Cache key.
 	 */
-	protected function _get_cache_key() {
+	protected function get_cache_key() {
 		return __CLASS__;
 	}
 	
@@ -179,9 +193,9 @@ class MS_View extends MS_Hooker {
 	 * @return string|boolean HTML on success, otherwise FALSE.
 	 */
 	public function get_html_from_cahce() {
-		return $this->_use_network_cache
-			? get_site_transient( $this->_get_cache_key() )
-			: get_transient( $this->_get_cache_key() );
+		return $this->use_network_cache
+			? get_site_transient( $this->get_cache_key() )
+			: get_transient( $this->get_cache_key() );
 	}
 	
 	/**
@@ -192,11 +206,11 @@ class MS_View extends MS_Hooker {
 	 * @access protected
 	 * @param string $html HTML to cache.
 	 */
-	protected function _cache_html( $html ) {
-		if ( $this->_use_network_cache ) {
-			set_site_transient( $this->_get_cache_key(), $html, $this->_cache_ttl );
+	protected function cache_html( $html ) {
+		if ( $this->use_network_cache ) {
+			set_site_transient( $this->get_cache_key(), $html, $this->cache_ttl );
 		} else {
-			set_transient( $this->_get_cache_key(), $html, $this->_cache_ttl );
+			set_transient( $this->get_cache_key(), $html, $this->cache_ttl );
 		}
 	}
 	
@@ -208,18 +222,7 @@ class MS_View extends MS_Hooker {
 	 * @access public
 	 * @return string
 	 */
-	public function to_html() {
-		// render template
-		ob_start();
-		$this->_to_html();
-		$html = ob_get_clean();
-	
-		// cache template if need be
-		if ( $this->_cache ) {
-			$this->_cache_html( $html );
-		}
-	
-		return $html;
+	protected function to_html() {
 	}
 	
 	/**
@@ -230,7 +233,7 @@ class MS_View extends MS_Hooker {
 	 * @access public
 	 * @return type
 	 */
-	public function __toString() {
+	public function toString() {
 		return $this->to_html();
 	}
 	
@@ -242,7 +245,17 @@ class MS_View extends MS_Hooker {
 	 * @access public
 	 */
 	public function render() {
-		echo $this->to_html();
-	}
+		// render template
+		ob_start();
+		$this->to_html();
+		$html = ob_get_clean();
 	
+		// cache template if need be
+		if ( $this->cache ) {
+			$this->cache_html( $html );
+		}
+	
+		echo $html;
+		
+	}	
 }
