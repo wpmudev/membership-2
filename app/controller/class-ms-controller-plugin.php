@@ -87,6 +87,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
 		
+		
+		/// ------------ ^  ^ ----------------
+		///             = .. =            
+		/// RK: Now that I have your attention ;)
+		///     What do you think about selectively adding controllers based on the current URI?
+		///     I'm wondering if loading all the controllers wouldn't create too much overhead
+		
 		//FJ: we need to define if we will use class name MS_Controller_Membership and membership_controller_membership filter or
 		//MS_Membership_Controller and membership_membership_controller
 		/** Membership controller */
