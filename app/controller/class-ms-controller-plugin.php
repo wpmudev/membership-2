@@ -86,51 +86,63 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
-		
-		//FJ: we need to define if we will use class name MS_Controller_Membership and membership_controller_membership filter or
-		//MS_Membership_Controller and membership_membership_controller
-		//RK: I followed your lead here... going with the line above.
-		
+				
+		//FJ: it is breaking add_menu_pages, commented for now.
 		/** ONLY load controllers when we are going to need them. */
-		switch( $_GET['page'] ) {
+// 		if( ! empty( $_GET['page'] ) ) {
+// 			switch( $_GET['page'] ) {
+				
+// 				/** Membership controller */
+// 				case 'all-memberships':
+// 				case 'membership-edit':
+// 					$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
+// 					break;
 			
-			/** Membership controller */
-			case 'all-memberships':
-			case 'membership-edit':
-				$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
-				break;
+// 				/** Dashboard controller */
+// 				case 'membership-dashboard':
+// 					$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );		
+// 					break;
+	
+// 				/** Member controller */
+// 				case 'membership-members':
+// 					$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );				
+// 					break;
+			
+// 				/** Billing controller */
+// 				case 'membership-billing':
+// 					$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );				
+// 					break;
+	
+// 				/** Coupon controller */
+// 				case 'membership-coupons':
+// 					$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );				
+// 					break;
+	
+// 				/** Add-on controller */
+// 				case 'membership-addons':
+// 					$this->controllers['addon'] = apply_filters( 'membership_addon_controller', new MS_Controller_Addon() );				
+// 					break;
+			
+// 			} /** End switch( $_GET['page'] ) */
+// 		}
 		
-			/** Dashboard controller */
-			case 'membership-dashboard':
-				$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );		
-				break;
-
-			/** Member controller */
-			case 'membership-members':
-				$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );				
-				break;
+		/** Membership controller */
+		$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );
 		
-			/** Billing controller */
-			case 'membership-billing':
-				$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );				
-				break;
-
-			/** Coupon controller */
-			case 'membership-coupons':
-				$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );				
-				break;
-
-			/** Add-on controller */
-			case 'membership-addons':
-				$this->controllers['addon'] = apply_filters( 'membership_addpm_controller', new MS_Controller_Addon() );				
-				break;
+		/** Dashboard controller */
+		$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );
 		
-		} /** End switch( $_GET['page'] ) */
+		/** Member controller */
+		$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );
 		
-		// RK: Do we still need this here?
-		/** Rule controller */
-		// $this->controllers['rule'] = apply_filters( 'membership_rule_controller', new MS_Controller_Rule() );		
+		/** Billing controller */
+		$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );
 		
+		/** Coupon controller */
+		$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );
+		
+		/** Add-on controller */
+		$this->controllers['addon'] = apply_filters( 'membership_addon_controller', new MS_Controller_Addon() );
 	}
 
 	
@@ -174,6 +186,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Manage membership rules */
 		// $pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );
 		
+		//FJ: think it might be better to create a MS_Controller_Settings and MS_Model_Settings (see class diagram). 
+		//	My understanding of this MS_Controller_PLugin is something like Front Controller pattern
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
 		
