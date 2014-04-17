@@ -96,6 +96,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			
 			/** Membership controller */
 			case 'all-memberships':
+			case 'membership-edit':
 				$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
 				break;
 		
@@ -128,7 +129,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		// RK: Do we still need this here?
 		/** Rule controller */
-		$this->controllers['rule'] = apply_filters( 'membership_rule_controller', new MS_Controller_Rule() );		
+		// $this->controllers['rule'] = apply_filters( 'membership_rule_controller', new MS_Controller_Rule() );		
 		
 	}
 
@@ -154,7 +155,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
 		/** Manage membership */
-		// $pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
 		/** Create Members Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_members' ) );

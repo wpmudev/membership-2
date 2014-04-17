@@ -32,8 +32,19 @@ Text Domain: wpmudev_membership
  *
 */
 
-/**  Include WPMUDev Dashboard class */
+/** Include WPMUDev Dashboard class */
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
+
+/** Add WordPress core functionality: WP_List_Table */
+if( ! class_exists( 'WP_List_Table' ) ) {
+	/** Pull from core. */
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	/** If it still doesn't exist, pull from /exra/ */
+	if( ! class_exists( 'WP_List_Table' ) ) {
+		/** Put on its own line to include WP_List_Table if core changes */
+		require_once dirname( __FILE__ ) . '/extra/class-wp-list-table.php';
+	}
+}
 
 /** Constant defineing plugin text domain. */
 define('MS_TEXT_DOMAIN', 'wpmudev_membership' );
