@@ -57,13 +57,55 @@ class MS_View_Membership_Edit extends MS_View {
 				<?php wp_nonce_field( self::MEMBERSHIP_SAVE_NONCE, self::MEMBERSHIP_SAVE_NONCE ); ?>
 				<table class="form-table">
 					<tbody>
-						<?php foreach ( $this->fields as $field ): ?>
-							<tr valign="top">
-								<td>
-									<?php MS_Helper_Html::html_input( $field );?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['name'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['description'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['price'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['membership_type'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="ms-membership-type-finite" class="ms-period-wrapper ms-membership-type">
+									<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
+									<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
+								</div>
+								<div id="ms-membership-type-recurring" class="ms-period-wrapper ms-membership-type">
+									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_unit'] );?>
+									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_type'] );?>
+								</div>
+								<div id="ms-membership-type-date-range" class="ms-membership-type">
+									<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
+									<span> to </span>
+									<?php MS_Helper_Html::html_input( $this->fields['period_date_end'] );?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'] );?>
+								<div id="ms-trial-period-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['trial_price'] );?>
+									<div class="ms-period-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'] );?>
+									</div>
+								</div>
+							</td>
+						</tr>
 						<tr>
 							<td>
 								<?php MS_Helper_Html::html_submit();?>
@@ -104,7 +146,7 @@ class MS_View_Membership_Edit extends MS_View {
 						<tr>
 							<td>
 								<?php MS_Helper_Html::html_input( $this->fields['delay_access_enabled'] );?>
-								<div id="ms-delayed-period-wrapper">
+								<div id="ms-delayed-period-wrapper" class="ms-period-wrapper">
 									<?php MS_Helper_Html::html_input( $this->fields['delayed_period'] );?>
 									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
 								</div>
@@ -139,7 +181,7 @@ class MS_View_Membership_Edit extends MS_View {
 	public function prepare_general() {
 
 		$this->fields = array(
-				array(
+				'name' => array(
 						'id' => 'name',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -147,7 +189,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->name,
 						'class' => '',
 				),
-				array(
+				'description' => array(
 						'id' => 'description',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
@@ -155,7 +197,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->description,
 						'class' => '',
 				),
-				array(
+				'price' => array(
 						'id' => 'price',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -163,7 +205,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->price,
 						'class' => '',
 				),
-				array(
+				'membership_type' => array(
 						'id' => 'membership_type',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -172,12 +214,28 @@ class MS_View_Membership_Edit extends MS_View {
 						'field_options' => array (
 								'permanent' => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
 								'finite' => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
-								'dt_range' => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
+								'date-range' => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
 								'recurring' => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 						),
 						'class' => '',
 				),
-				array(
+				'period_unit' => array(
+						'id' => 'period_unit',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Period', MS_TEXT_DOMAIN ),
+						'value' => $this->model->period_unit,
+						'class' => '',
+				),
+				'period_type' => array(
+						'id' => 'period_type',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $this->model->period_type,
+						'field_options' => MS_Helper_Period::get_periods(),
+						'class' => '',
+				),
+				'pay_cicle_period_unit' => array(
 						'id' => 'pay_cicle_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -185,7 +243,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->pay_cicle_period_unit,
 						'class' => '',
 				),
-				array(
+				'pay_cicle_period_type' => array(
 						'id' => 'pay_cicle_period_type',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -193,7 +251,22 @@ class MS_View_Membership_Edit extends MS_View {
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
-				array(
+				'period_date_start' => array(
+						'id' => 'period_unit',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
+						'value' => $this->model->period_date_start,
+						'class' => '',
+				),
+				'period_date_end' => array(
+						'id' => 'period_date_end',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'value' => $this->model->period_unit,
+						'class' => '',
+				),
+				'trial_period_enabled' => array(
 						'id' => 'trial_period_enabled',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
@@ -201,7 +274,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->trial_period_enabled,
 						'class' => '',
 				),
-				array(
+				'trial_price' => array(
 						'id' => 'trial_price',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -209,7 +282,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->trial_price,
 						'class' => '',
 				),
-				array(
+				'trial_period_unit' => array(
 						'id' => 'trial_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -217,7 +290,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->trial_period_unit,
 						'class' => '',
 				),
-				array(
+				'trial_period_type' => array(
 						'id' => 'trial_period_type',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -225,7 +298,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
-				array(
+				'membership_id' => array(
 						'id' => 'membership_id',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

@@ -64,8 +64,10 @@ class MS_Controller_Membership extends MS_Controller {
 		{
 			$this->save_membership();
 			$this->views['membership_edit']->model = $this->model;
+// 			$this->view->set_membership( $this->model );
 		}
 		$this->views['membership_edit']->render();
+// 		$this->view->membership_edit( $tabs );
 	}
 	
 	/*
@@ -113,9 +115,11 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
-		if( $active_tab == 'general' ) {
+		if( 'general' == $active_tab ) {
+			wp_register_style( 'ms_membership_view_render_general', $plugin_url. 'app/assets/css/ms-view-membership-render-general.css', null, $version );
+			wp_enqueue_style( 'ms_membership_view_render_general' );
 		}
-		else if( $active_tab == 'rules' ) {		
+		else if( 'rules' == $active_tab ) {		
 			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
 			wp_enqueue_style( 'ms_rule_view_render_rule' );
 		}
@@ -129,11 +133,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
-		if( $active_tab == 'general' ) {
+		if( 'general' == $active_tab ) {
 			wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
-			wp_enqueue_script( 'view_membership_render_general' );
+			wp_enqueue_script( 'ms_view_membership_render_general' );
 		}
-		else if( $active_tab == 'rules' ) {		
+		else if( 'rules' == $active_tab ) {		
 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
 			wp_enqueue_script( 'ms_rule_view_render_rule' );
 		}

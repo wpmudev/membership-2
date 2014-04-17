@@ -47,7 +47,7 @@ class MS_Model_Rule extends MS_Model {
 			 self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
 			 self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
 			 self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
-			 self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_URLGroup',
+			 self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
 	);
 	protected static $CLASS_NAME = __CLASS__;
 	

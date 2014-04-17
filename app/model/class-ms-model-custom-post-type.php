@@ -49,7 +49,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_name' => $this->name,
 				'post_status' => 'private',
 				'post_title' => ! empty( $this->title ) ? $this->name : $this->title,
-				'post_type' => self::$POST_TYPE,
+				'post_type' => static::$POST_TYPE,
 				'post_modified' => $this->post_modified, 
 		);
 		if ( empty( $this->id ) ) {
@@ -64,7 +64,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
+			if ( in_array( $field, static::$ignore_fields ) ) {
 				continue;
 			}
 			if ( isset( $this->$field ) && ( !isset( $post_meta[ $field ][ 0 ] ) || $post_meta[ $field ][ 0 ] != $this->$field ) ) {
@@ -92,7 +92,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			$model_details = get_post_meta( $model_id );
 			$fields = get_object_vars( $model );
 			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, self::$ignore_fields ) ) {
+				if ( in_array( $field, static::$ignore_fields ) ) {
 					continue;
 				}
 				if ( isset( $model_details[ $field ][ 0 ] ) ) {

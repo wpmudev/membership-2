@@ -5,10 +5,10 @@
 jQuery( document ).ready( function( $ ) {
 	$( '#rule_type').change( function() {
 		rule_type = $( this ).val();
-		$('.ms-select-rule-type').hide();
-		$('#rule_value_' +  rule_type ).show();
+		$( '.ms-select-rule-type' ).hide();
+		$( '#rule_value_' +  rule_type ).show();
 		if( 'page' == rule_type || 'menu' == rule_type ) {
-			$('#ms-inherit-rules-wrapper').show();
+			$('#ms-inherit-rules-wrapper' ).show();
 		}
 		else {
 			$('#ms-inherit-rules-wrapper').hide();
@@ -16,10 +16,10 @@ jQuery( document ).ready( function( $ ) {
 	});
 	function show_delayed_access() {
 		if( $( '#delay_access_enabled' ).is( ':checked' ) ) {
-			$("#ms-delayed-period-wrapper").show();
+			$( '#ms-delayed-period-wrapper' ).show();
 		}
 		else {
-			$("#ms-delayed-period-wrapper").hide();
+			$( '#ms-delayed-period-wrapper' ).hide();
 		}
 	}
 	

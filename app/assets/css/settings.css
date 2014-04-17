@@ -82,6 +82,15 @@
 .ms-field-input {
 	
 }
+.ms-period-wrapper {
+	margin: 1em 0;
+}
+.ms-period-wrapper input[type="text"] {
+	width: 5em;
+}
+.ms-period-wrapper select {
+	width: 7em;
+}
 
 @media (max-width: 900px) {
     .ms-wrap .ms-settings {

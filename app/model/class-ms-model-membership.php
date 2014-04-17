@@ -30,13 +30,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $price;
 	
+	protected $period_unit;
+	
+	protected $period_type;
+	
 	protected $pay_cicle_period_unit;
 	
 	protected $pay_cicle_period_type;
 	
-	protected $period_unit;
+	protected $period_date_start;
 	
-	protected $period_type;
+	protected $period_date_end;
 	
 	protected $trial_price;
 	
