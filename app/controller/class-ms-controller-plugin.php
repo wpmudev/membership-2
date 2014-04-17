@@ -89,6 +89,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		//FJ: we need to define if we will use class name MS_Controller_Membership and membership_controller_membership filter or
 		//MS_Membership_Controller and membership_membership_controller
+		//RK: I followed your lead here... going with the line above.
 		
 		/** ONLY load controllers when we are going to need them. */
 		switch( $_GET['page'] ) {

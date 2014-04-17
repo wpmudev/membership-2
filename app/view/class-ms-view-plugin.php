@@ -53,29 +53,33 @@ class MS_View_Plugin extends MS_View {
 
 		/** Setup navigation tabs. */
 		$tabs = array(
-			'settings' => array(
-					'title' =>	__( 'General Settings', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=settings',
+			'general' => array(
+					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=general',
 			),
 			'pages' => array(
-					'title' =>	__( 'Membership Pages', MS_TEXT_DOMAIN ),
+					'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
 					'url' => 'admin.php?page=membership-settings&tab=pages',
 			),
-			'messages' => array(
+			'payment' => array(
+					'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=payment',
+			),
+			'messages-protection' => array(
 					'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=messages',
+					'url' => 'admin.php?page=membership-settings&tab=messages-protection',
 			),
-			'media' => array(
-					'title' =>	__( 'Media Protection', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=media',
+			'messages-automated' => array(
+					'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=messages-automated',
+			),			
+			'downloads' => array(
+					'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=downloads',
 			),
-			'defaults' => array(
-					'title' =>	__( 'Default Settings', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=defaults',
-			),
-			'advanced' => array(
-					'title' =>	__( 'Advanced', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=advanced',
+			'repair' => array(
+					'title' =>	__( 'Verify and Repair', MS_TEXT_DOMAIN ),
+					'url' => 'admin.php?page=membership-settings&tab=repair',
 			),												
 		);
 		
@@ -97,11 +101,11 @@ class MS_View_Plugin extends MS_View {
 		echo $html;
 	}
 
-	public function render_settings() {
+	public function render_general() {
 		?>
 	   <div class='ms-settings'>
+		   <?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?>	
 	       <form id="setting_form" method="post">
-			<h3><?php  _e( 'Default Subscriptions', MS_TEXT_DOMAIN ) ; ?></h3>
 	
 		   </form>
 	   </div>
@@ -119,10 +123,10 @@ class MS_View_Plugin extends MS_View {
 		<?php
 	}
 
-	public function render_messages() {
+	public function render_payment() {
 		?>
 	   <div class='ms-settings'>
-		   <?php  _e( 'Message Settings', MS_TEXT_DOMAIN ) ; ?>
+		   <?php  _e( 'Payment Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -130,10 +134,10 @@ class MS_View_Plugin extends MS_View {
 		<?php
 	}
 	
-	public function render_media() {
+	public function render_messages_protection() {
 		?>
 	   <div class='ms-settings'>
-		   <?php  _e( 'Media Settings', MS_TEXT_DOMAIN ) ; ?>
+		   <?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -141,10 +145,21 @@ class MS_View_Plugin extends MS_View {
 		<?php
 	}
 
-	public function render_defaults() {
+	public function render_messages_automated() {
 		?>
 	   <div class='ms-settings'>
-		   <?php  _e( 'Default Settings', MS_TEXT_DOMAIN ) ; ?>
+		   <?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?>
+	       <form id="setting_form" method="post">
+	
+		   </form>
+	   </div>
+		<?php
+	}
+
+	public function render_downloads() {
+		?>
+	   <div class='ms-settings'>
+		   <?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -152,10 +167,10 @@ class MS_View_Plugin extends MS_View {
 		<?php
 	}
 	
-	public function render_advanced() {
+	public function render_repair() {
 		?>
 	   <div class='ms-settings'>
-		   <?php  _e( 'Advanced Settings', MS_TEXT_DOMAIN ) ; ?>
+		   <?php  _e( 'Verify and Repair', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
