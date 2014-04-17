@@ -1,7 +1,3 @@
-/**
- * Add rule 
- * TODO http://stackoverflow.com/questions/2196036/jquery-the-right-way-to-add-a-child-element
- */
 jQuery( document ).ready(function( $ ) {
 	$( '#membership_type').change( function() {
 		$( '.ms-membership-type' ).hide();

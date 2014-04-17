@@ -122,23 +122,44 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 
 	public function render_rules() {	
-		$rule_list = new MS_Helper_Rule_List_Table( $this->model );
+		$rule_list = new MS_Helper_List_Table_Rule( $this->model );
 		$rule_list->prepare_items();
 		
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<table class="form-table">
+				<table>
 					<tbody>
 						<tr valign="top">
 							<td>
 								<div>
 									<span class='ms-field-label'><?php echo __( 'Content to protect', MS_TEXT_DOMAIN ); ?></span>
 									<?php MS_Helper_Html::html_input( $this->fields['rule_type'] );?>
+									<div id="ms-wrapper-rule-type-category" class="ms-rule-type-wrapper">
 									<?php 
-										foreach ( $this->rule_types as $rule_type ) {
- 											MS_Helper_Html::html_input( $rule_type );
-										}
+										$rule_list_table = new MS_Helper_List_Table_Rule_Category();
+										$rule_list_table->prepare_items();
+										$rule_list_table->display();
+									?>
+									</div>
+									<div id="ms-wrapper-rule-type-page" class="ms-rule-type-wrapper">
+									<?php 
+										$rule_list_table = new MS_Helper_List_Table_Rule_Page();
+										$rule_list_table->prepare_items();
+										$rule_list_table->display();
+									?>
+									</div>
+									<div id="ms-wrapper-rule-type-post" class="ms-rule-type-wrapper">
+									<?php 
+										$rule_list_table = new MS_Helper_List_Table_Rule_Post();
+										$rule_list_table->prepare_items();
+										$rule_list_table->display();
+									?>
+									</div>
+									<?php 
+// 										foreach ( $this->rule_types as $rule_type ) {
+//  											MS_Helper_Html::html_input( $rule_type );
+// 										}
 									?>
 								</div>
 							</td>
@@ -147,7 +168,7 @@ class MS_View_Membership_Edit extends MS_View {
 							<td>
 								<?php MS_Helper_Html::html_input( $this->fields['delay_access_enabled'] );?>
 								<div id="ms-delayed-period-wrapper" class="ms-period-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['delayed_period'] );?>
+									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_unit'] );?>
 									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
 								</div>
 							</td>
@@ -173,6 +194,30 @@ class MS_View_Membership_Edit extends MS_View {
 				</form>
 				<div class="clear"></div>
 			</div>
+			<script id="rule_template" type="text/x-jquery-tmpl">
+				<tr class="alternate">
+					<td class="content_col column-content_col">
+						${content}
+						<input type="hidden" name="ms_rule[${counter}][rule_value]" value="${rule_value}">
+					</td>
+					<td class="rule_type column-rule_type">
+						${rule_type}
+						<input type="hidden" name="ms_rule[${counter}][rule_type]" value="${rule_type}">
+					</td>
+					<td class="delayed_period_unit_col column-delayed_period_unit_col">
+						${delayed_period_unit} ${delayed_period_type}
+						<input type="hidden" name="ms_rule[${counter}][delayed_period_unit]" value="${delayed_period_unit}">
+						<input type="hidden" name="ms_rule[${counter}][delayed_period_type]" value="${delayed_period_type}">
+					</td>
+					<td class="inherit_col column-inherit_col">
+						${inherit_rules}
+						<input type="hidden" name="ms_rule[${counter}][inherit_rules]" value="${inherit_rules}">
+					</td>
+					<td class="actions_col column-actions_col">
+						delete | edit
+					</td>
+				</tr> 
+			</script>
 			<?php
 			$html = ob_get_clean();
 			echo $html;
@@ -330,8 +375,8 @@ class MS_View_Membership_Edit extends MS_View {
 				'value' => '',
 				'class' => '',
 			),
-			'delayed_period' => array(
-				'id' => 'delayed_period',
+			'delayed_period_unit' => array(
+				'id' => 'delayed_period_unit',
 				'section' => self::RULE_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Delayed period', MS_TEXT_DOMAIN ),

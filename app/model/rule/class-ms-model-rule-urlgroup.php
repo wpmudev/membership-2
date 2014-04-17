@@ -25,8 +25,8 @@ class MS_Model_Rule_URLGroup extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
-		
+	public static function on_protection() {
+		return array("todo");
 	}
 	
 	

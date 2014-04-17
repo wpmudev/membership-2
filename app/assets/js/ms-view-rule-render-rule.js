@@ -5,8 +5,8 @@
 jQuery( document ).ready( function( $ ) {
 	$( '#rule_type').change( function() {
 		rule_type = $( this ).val();
-		$( '.ms-select-rule-type' ).hide();
-		$( '#rule_value_' +  rule_type ).show();
+		$( '.ms-rule-type-wrapper' ).hide();
+		$( '#ms-wrapper-rule-type-' +  rule_type ).show();
 		if( 'page' == rule_type || 'menu' == rule_type ) {
 			$('#ms-inherit-rules-wrapper' ).show();
 		}
@@ -30,26 +30,31 @@ jQuery( document ).ready( function( $ ) {
 	$( '#rule_type').change();
 	
 	rule_counter = 0;
-	
 	$( "#btn_add_rule" ).click( function() {
-		content = 'content';
-		rule_type = 'post';
-		delayed_period_unit = '2';
-		delayed_period_type = 'days';
-		inherit_rules = 'no';
-		input = "<input type='hidden' name='ms_rule[" + rule_counter + "][rule_type]' value='" + rule_type + "' />";
-		input += "<input type='hidden' name='ms_rule[" + rule_counter + "][rule_value]' value='" + content + "' />";
-		input += "<input type='hidden' name='ms_rule[" + rule_counter + "][delayed_period_unit]' value='" + delayed_period_unit + "' />";
-		input += "<input type='hidden' name='ms_rule[" + rule_counter + "][delayed_period_type]' value='" + delayed_period_type + "' />";
-		input += "<input type='hidden' name='ms_rule[" + rule_counter + "][inherit_rules]' value='" + inherit_rules + "' />";
-		row = 	$("<tr class='alternate'>" + input +  
-				"<td class='content column-content'>" + content + "</td>" +
-				"<td class='rule_type column-rule_type'>" + rule_type + "</td>" + 
-				"<td class='delayed_period column-delayed_period'>"+ delayed_period_unit + delayed_period_type + "</td>"  + 
-				"<td class='inherit column-inherit'>" + inherit_rules + "</td>" +
-				"<td class='actions column-actions'>delete | edit</td>" +
-				"</tr>");
-		$( "#the-list" ).append( row );
-		rule_counter++;
+		var content = [], rule_value = [], rule_type, delayed_period_unit, delayed_period_type, inherit_rules = false;
+		$( '.ms-rule-type-wrapper:visible input:checked' ).each( function() {
+			rule_value.push( $( this ).val() );
+			content.push( $( this ).parent().next('td').text() );
+			$( '#delay_access_enabled:checked' ).each( function() {
+				console.log("enabled");
+				delayed_period_unit = $( '#delayed_period_unit' ).val();
+				delayed_period_type = $( '#delayed_period_type' ).val();
+			});
+			$( '#inherit_rules:checked' ).each( function() {
+				inherit_rules = true;
+			});
+		});
+		protect = [
+		           	{
+		           		content: content, 
+		           		rule_value: rule_value,
+		           		rule_type: "post",
+		           		delayed_period_unit: delayed_period_unit,
+		           		delayed_period_type: delayed_period_type,
+		           		inherit_rules : inherit_rules,
+		           		counter: rule_counter++,
+		            },
+		          ];
+		$( "#rule_template" ).tmpl( protect ).appendTo( "#the-list" );
 	});
 });

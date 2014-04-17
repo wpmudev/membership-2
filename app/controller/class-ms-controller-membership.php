@@ -134,6 +134,8 @@ class MS_Controller_Membership extends MS_Controller {
 		else if( 'rules' == $active_tab ) {		
 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
 			wp_enqueue_script( 'ms_rule_view_render_rule' );
+			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
+			wp_enqueue_script( 'jquery_tmpl' );
 		}
 	
 	}

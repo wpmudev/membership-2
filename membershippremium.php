@@ -77,9 +77,11 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
-	$overrides['MS_Helper_Membership_List_Table'] =  "app/helper/class-ms-helper-membership-list-table.php";
-	$overrides['MS_Helper_Rule_List_Table'] =  "app/helper/class-ms-helper-rule-list-table.php";
-	
+	$overrides['MS_Helper_List_Table_Membership'] =  "app/helper/list-table/class-ms-helper-list-table-membership.php";
+	$overrides['MS_Helper_List_Table_Rule'] =  "app/helper/list-table/class-ms-helper-list-table-rule.php";
+	$overrides['MS_Helper_List_Table_Rule_Post'] =  "app/helper/list-table/class-ms-helper-list-table-rule-post.php";
+	$overrides['MS_Helper_List_Table_Rule_Page'] =  "app/helper/list-table/class-ms-helper-list-table-rule-page.php";
+	$overrides['MS_Helper_List_Table_Rule_Category'] =  "app/helper/list-table/class-ms-helper-list-table-rule-category.php";
 
 	return $overrides;
 }

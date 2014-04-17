@@ -29,7 +29,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		
 	}
 	
-	public function get_content() {
+	public static function get_content() {
 		$content = array();
 		$navs = wp_get_nav_menus( array('orderby' => 'name') );
 		if( ! empty( $navs ) ) {

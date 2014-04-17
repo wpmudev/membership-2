@@ -97,7 +97,7 @@ class MS_Model_Rule extends MS_Model {
 		}
 	}
 	
-	public function get_content() {
+	public static function get_content() {
 		return array();
 	}
 }

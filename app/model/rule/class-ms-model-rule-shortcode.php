@@ -29,7 +29,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		
 	}
 	
-	public function get_content() {
+	public static function get_content() {
 		global $shortcode_tags;
 		
 		$content = array();

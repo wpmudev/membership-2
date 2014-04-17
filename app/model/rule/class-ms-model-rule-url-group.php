@@ -29,7 +29,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		
 	}
 	
-	public function get_content() {
+	public static function get_content() {
 		return array('todo');
 	}
 }
