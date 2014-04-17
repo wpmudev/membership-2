@@ -39,10 +39,10 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 if( ! class_exists( 'WP_List_Table' ) ) {
 	/** Pull from core. */
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	/** If it still doesn't exist, pull from /exra/ */
+	/** If it still doesn't exist, pull from /lib/ */
 	if( ! class_exists( 'WP_List_Table' ) ) {
 		/** Put on its own line to include WP_List_Table if core changes */
-		require_once dirname( __FILE__ ) . '/extra/class-wp-list-table.php';
+		require_once dirname( __FILE__ ) . '/lib/class-wp-list-table.php';
 	}
 }
 
