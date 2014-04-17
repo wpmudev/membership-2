@@ -20,7 +20,7 @@
  *
 */
 
-class MS_Controller_Member extends MS_Controller {
+class MS_Controller_Dashboard extends MS_Controller {
 
 	private $post_type;
 	
@@ -31,12 +31,12 @@ class MS_Controller_Member extends MS_Controller {
 	private $views;
 		
 	public function __construct() {
-		/** Menu: Members */
-		$this->views['members'] = apply_filters( 'membership_dashboard_view', new MS_View_Member() );			
+		/** Menu: Dashboard */
+		$this->views['dashboard'] = apply_filters( 'membership_dashboard_view', new MS_View_Dashboard() );			
 	}
 	
-	public function admin_members() {
-		$this->views['members']->render();
+	public function admin_dashboard() {
+		$this->views['dashboard']->render();
 	}
 	
 	

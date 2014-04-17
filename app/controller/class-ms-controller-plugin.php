@@ -91,6 +91,22 @@ class MS_Controller_Plugin extends MS_Controller {
 		//MS_Membership_Controller and membership_membership_controller
 		/** Membership controller */
 		$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
+		
+		/** Dashboard controller */
+		$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );		
+
+		/** Member controller */
+		$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );				
+		
+		/** Billing controller */
+		$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );				
+
+		/** Coupon controller */
+		$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );				
+
+		/** Add-on controller */
+		$this->controllers['addon'] = apply_filters( 'membership_addpm_controller', new MS_Controller_Addon() );				
+		
 
 		/** Rule controller */
 		$this->controllers['rule'] = apply_filters( 'membership_rule_controller', new MS_Controller_Rule() );		
@@ -106,21 +122,33 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function add_menu_pages() {
 		$pages = array();
-		/** 
-		 * Primary navigation page.
-		 *
-		 * Dashboard page to be configured in instance of MS_Controller_Membership
-		 *
-		 * @uses MS_Controller_Membership
-		 */
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership', array( $this->controllers['membership'], 'membership_dashboard' ) );
+
+		/** Create primary menu item: Membership */
+		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership');
+
+		/** Create Membership Dashboard */
+		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), 'manage_options', 'membership-dashboard', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
 		
 		//RK: Perhaps as addon? Core will only have 1 or 2 memberships.
 		/** Lists all memberships. */
-		$pages[] = add_submenu_page( 'membership', __( 'All Memberships', MS_TEXT_DOMAIN ), __( 'All Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
 		/** Manage membership */
-		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+		// $pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+
+		/** Create Members Page */
+		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_members' ) );
+
+		/** Create Billings Page */
+		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), 'manage_options', 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
+
+		/** Create Coupons Page */
+		$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), 'manage_options', 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
+		
+		$pages = apply_filters( 'membership_submenu_pages', $pages );
+
+		/** Create Add-ons Page */
+		$pages[] = add_submenu_page( 'membership', __( 'Add-ons', MS_TEXT_DOMAIN ), __( 'Add-ons', MS_TEXT_DOMAIN ), 'manage_options', 'membership-addons', array( $this->controllers['addon'], 'admin_addon' ) );
 
 		/** Manage membership rules */
 		// $pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );

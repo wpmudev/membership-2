@@ -48,7 +48,7 @@ class MS_View_Plugin extends MS_View {
 	 *
 	 * @return object
 	 */
-	public function _to_html() {		
+	public function to_html() {		
 		ob_start();
 
 		/** Setup navigation tabs. */
@@ -82,7 +82,7 @@ class MS_View_Plugin extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'>Membership Settings</h2>		
+		<h2 class='ms-settings-title'><?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
 
 		<?php
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
@@ -101,7 +101,7 @@ class MS_View_Plugin extends MS_View {
 		?>
 	   <div class='ms-settings'>
 	       <form id="setting_form" method="post">
-			<h3>Default Subscription</h3>
+			<h3><?php  _e( 'Default Subscriptions', MS_TEXT_DOMAIN ) ; ?></h3>
 	
 		   </form>
 	   </div>
@@ -111,7 +111,7 @@ class MS_View_Plugin extends MS_View {
 	public function render_pages() {
 		?>
 	   <div class='ms-settings'>
-		   Pages Settings
+		   <?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -122,7 +122,7 @@ class MS_View_Plugin extends MS_View {
 	public function render_messages() {
 		?>
 	   <div class='ms-settings'>
-		   Messages Settings
+		   <?php  _e( 'Message Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -133,7 +133,7 @@ class MS_View_Plugin extends MS_View {
 	public function render_media() {
 		?>
 	   <div class='ms-settings'>
-		   Media Settings
+		   <?php  _e( 'Media Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -144,7 +144,7 @@ class MS_View_Plugin extends MS_View {
 	public function render_defaults() {
 		?>
 	   <div class='ms-settings'>
-		   Default Settings
+		   <?php  _e( 'Default Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>
@@ -155,7 +155,7 @@ class MS_View_Plugin extends MS_View {
 	public function render_advanced() {
 		?>
 	   <div class='ms-settings'>
-		   Advanced Settings
+		   <?php  _e( 'Advanced Settings', MS_TEXT_DOMAIN ) ; ?>
 	       <form id="setting_form" method="post">
 	
 		   </form>

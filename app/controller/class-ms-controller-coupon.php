@@ -20,7 +20,7 @@
  *
 */
 
-class MS_Controller_Member extends MS_Controller {
+class MS_Controller_Coupon extends MS_Controller {
 
 	private $post_type;
 	
@@ -31,12 +31,12 @@ class MS_Controller_Member extends MS_Controller {
 	private $views;
 		
 	public function __construct() {
-		/** Menu: Members */
-		$this->views['members'] = apply_filters( 'membership_dashboard_view', new MS_View_Member() );			
+		/** Menu: Coupons */
+		$this->views['coupon'] = apply_filters( 'membership_coupon_view', new MS_View_Coupon() );			
 	}
 	
-	public function admin_members() {
-		$this->views['members']->render();
+	public function admin_coupon() {
+		$this->views['coupon']->render();
 	}
 	
 	

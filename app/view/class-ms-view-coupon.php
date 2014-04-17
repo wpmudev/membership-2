@@ -21,7 +21,7 @@
 */
 
 /**
- * Renders Members.
+ * Renders Coupon.
  *
  * Extends MS_View for rendering methods and magic methods.
  *
@@ -29,7 +29,7 @@
  *
  * @return object
  */
-class MS_View_Member extends MS_View {
+class MS_View_Coupon extends MS_View {
 		
 	/**
 	 * Overrides parent's to_html() method.
@@ -50,10 +50,10 @@ class MS_View_Member extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Members', MS_TEXT_DOMAIN ) ; ?></h2>		
+		<h2 class='ms-settings-title'><?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?></h2>		
 
 		<?php
-			$this->render_members();
+			$this->render_coupons();
 		?>
 		
 		</div>
@@ -62,9 +62,9 @@ class MS_View_Member extends MS_View {
 		echo $html;
 	}
 
-	public function render_members() {
+	public function render_coupons() {
 		?>
-		MEMBERS GO HERE
+		COUPONS GO HERE
 		<?php
 	}
 	

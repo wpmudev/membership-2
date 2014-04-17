@@ -38,36 +38,30 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 		
+		/** Menu: Memberships */
 		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
+		
+		/** New/Edit: Membership */ 
 		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
 		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
-	public function membership_dashboard() {
-	
-	}
 	
 	public function admin_membership_list() {
-// 		$this->views['membership_list']->data['membership'] = $this->model;
 		$this->views['membership_list']->render();
 	}
 	
 	public function membership_edit() {
-// 		$this->views['membership_list']->data['model'] = $this->model;		
-// 		$this->views['membership_edit']->render();
-		
 		$this->views['membership_edit']->model = $this->model;
 
 		if( ! empty( $_POST['submit'] ) )
 		{
 			$this->save_membership();
 			$this->views['membership_edit']->model = $this->model;
-// 			$this->view->set_membership( $this->model );
 		}
 		$this->views['membership_edit']->render();
-// 		$this->view->membership_edit( $tabs );
 	}
 	
 	/*
