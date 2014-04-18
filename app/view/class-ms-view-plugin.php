@@ -50,127 +50,25 @@ class MS_View_Plugin extends MS_View {
 	 */
 	public function to_html() {		
 		ob_start();
-
-		/** Setup navigation tabs. */
-		$tabs = array(
-			'general' => array(
-					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=general',
-			),
-			'pages' => array(
-					'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=pages',
-			),
-			'payment' => array(
-					'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=payment',
-			),
-			'messages-protection' => array(
-					'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=messages-protection',
-			),
-			'messages-automated' => array(
-					'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=messages-automated',
-			),			
-			'downloads' => array(
-					'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=downloads',
-			),
-			'repair' => array(
-					'title' =>	__( 'Verify and Repair', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=repair',
-			),												
-		);
-		
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
+		<h2 class='ms-settings-title'><?php  _e( 'PLugin View', MS_TEXT_DOMAIN ) ; ?></h2>		
 
 		<?php
-		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
-		
-		/** Call the appropriate form to render. */
-		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
-
+			$this->render_plugin();
 		?>
+		
 		</div>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
 
-	public function render_general() {
+	public function render_plugin() {
 		?>
 	   <div class='ms-settings'>
-		   <?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?>	
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-	
-	public function render_pages() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-
-	public function render_payment() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Payment Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-	
-	public function render_messages_protection() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-
-	public function render_messages_automated() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-
-	public function render_downloads() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}
-	
-	public function render_repair() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Verify and Repair', MS_TEXT_DOMAIN ) ; ?>
+		   <?php  _e( 'Plugin View Content', MS_TEXT_DOMAIN ) ; ?>	
 	       <form id="setting_form" method="post">
 	
 		   </form>

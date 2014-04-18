@@ -143,6 +143,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		/** Add-on controller */
 		$this->controllers['addon'] = apply_filters( 'membership_addon_controller', new MS_Controller_Addon() );
+		
+		/** Settings controller */
+		$this->controllers['settings'] = apply_filters( 'membership_settings_controller', new MS_Controller_Settings() );
+		
+		
+		
 	}
 
 	
@@ -178,6 +184,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Create Coupons Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), 'manage_options', 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
 		
+		/** Filter to hook in other addon pages. */
 		$pages = apply_filters( 'membership_submenu_pages', $pages );
 
 		/** Create Add-ons Page */
@@ -189,7 +196,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		//FJ: think it might be better to create a MS_Controller_Settings and MS_Model_Settings (see class diagram). 
 		//	My understanding of this MS_Controller_PLugin is something like Front Controller pattern
 		/** Global Membership Plugin settings. */
-		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
+		// $pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
+		
+		//RK: Can make it happen... extracting Settings from Plugin
+		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
+		
 		
 	}
 
