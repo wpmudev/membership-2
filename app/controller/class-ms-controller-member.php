@@ -26,19 +26,42 @@ class MS_Controller_Member extends MS_Controller {
 	
 	private $capability = 'manage_options';
 	
-	private $model;
+	private $models;
 	
 	private $views;
 		
 	public function __construct() {
+		
+		$member_id = ! empty( $_GET['member_id'] ) ? $_GET['member_id'] : 0;
+		
+		/** Member Model */
+		$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
+
 		/** Menu: Members */
-		$this->views['members'] = apply_filters( 'membership_dashboard_view', new MS_View_Member() );			
+		$this->views['member_list'] = apply_filters( 'membership_member_list_view', new MS_View_Member_List() );
+		
+		/** New/Edit: Member */ 
+		$this->views['member_edit'] = apply_filters( 'membership_member_edit_view', new MS_View_Member_Edit() );
+		
+		// $this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
+		// $this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
+		
 	}
 	
-	public function admin_members() {
-		$this->views['members']->render();
+	public function admin_member_list() {
+		$this->views['member_list']->render();
 	}
-	
+		
+	public function membership_edit() {
+		$this->views['membership_edit']->model = $this->model;
+
+		if( ! empty( $_POST['submit'] ) )
+		{
+			$this->save_membership();
+			$this->views['membership_edit']->model = $this->model;
+		}
+		$this->views['membership_edit']->render();
+	}
 	
 	
 	

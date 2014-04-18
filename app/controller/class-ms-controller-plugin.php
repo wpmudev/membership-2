@@ -176,7 +176,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
 		/** Create Members Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_members' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
 
 		/** Create Billings Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), 'manage_options', 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );

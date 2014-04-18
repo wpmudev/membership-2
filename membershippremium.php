@@ -77,15 +77,37 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
-	$overrides['MS_Helper_List_Table_Membership'] =  "app/helper/list-table/class-ms-helper-list-table-membership.php";
-	$overrides['MS_Helper_List_Table_Rule'] =  "app/helper/list-table/class-ms-helper-list-table-rule.php";
-	$overrides['MS_Helper_List_Table_Rule_Post'] =  "app/helper/list-table/class-ms-helper-list-table-rule-post.php";
-	$overrides['MS_Helper_List_Table_Rule_Page'] =  "app/helper/list-table/class-ms-helper-list-table-rule-page.php";
-	$overrides['MS_Helper_List_Table_Rule_Category'] =  "app/helper/list-table/class-ms-helper-list-table-rule-category.php";
+	
+	//RK: See new hook below.
+	
+	// $overrides['MS_Helper_List_Table_Membership'] =  "app/helper/list-table/class-ms-helper-list-table-membership.php";
+	// $overrides['MS_Helper_List_Table_Rule'] =  "app/helper/list-table/class-ms-helper-list-table-rule.php";
+	// $overrides['MS_Helper_List_Table_Rule_Post'] =  "app/helper/list-table/class-ms-helper-list-table-rule-post.php";
+	// $overrides['MS_Helper_List_Table_Rule_Page'] =  "app/helper/list-table/class-ms-helper-list-table-rule-page.php";
+	// $overrides['MS_Helper_List_Table_Rule_Category'] =  "app/helper/list-table/class-ms-helper-list-table-rule-category.php";
 
 	return $overrides;
 }
 add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides' );
+
+/**
+ * Hooks 'membership_class_file_override'. 
+ *
+ * Overrides file class paths.
+ *
+ * @since 4.0.0.0
+ *
+ * @param  array $overrides Array passed in by filter.
+ * @return array(class=>path) Classes with new file paths.
+ */
+function membership_class_file_override( $file ) {
+
+	/** Override all list-table paths. */
+	$file = str_replace( 'list/table', 'list-table', $file );
+
+	return $file;
+}
+add_filter( 'membership_class_file_override', 'membership_class_file_override' );
 
 
 // TESTING TO SEE IF CLASSES ARE LOADED
@@ -340,6 +362,7 @@ class MS_Plugin {
 							$sub_path = implode( '_', $path_array );
 							$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_', 
 							'-', "class-{$class}.php" ) );
+							$filename = apply_filters( 'membership_class_file_override', $filename );
 							if ( is_readable( $filename ) ) {
 								require $filename;
 								return true;
@@ -347,6 +370,7 @@ class MS_Plugin {
 						}						
 					} else {
 						$filename = $basedir . '/' . $path_overrides[ $class ];
+						$filename = apply_filters( 'membership_class_file_override', $filename );
 						if ( is_readable( $filename ) ) {
 							require $filename;
 							return true;
