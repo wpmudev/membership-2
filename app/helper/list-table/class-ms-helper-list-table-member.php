@@ -33,9 +33,9 @@
 class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		
 	private $data = array(
-		array( 'ID' => 1, 'username' => 'user1', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor' ),
-		array( 'ID' => 2, 'username' => 'user2', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor' ),
-		array( 'ID' => 3, 'username' => 'user2', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor' ),				
+		array( 'ID' => 1, 'username' => 'user1', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 3, 'username' => 'user3', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
+		array( 'ID' => 2, 'username' => 'user2', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),						
 	);
 		
 		
@@ -49,6 +49,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'name' => __('Name', MS_TEXT_DOMAIN ),
 			'email' => __('E-mail', MS_TEXT_DOMAIN ),
 			'membership' => __('Membership(s)', MS_TEXT_DOMAIN ),			
+			'status' => __('Status', MS_TEXT_DOMAIN ),				
 		);
 		return $columns;
 	}
@@ -58,7 +59,13 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	public function get_sortable_columns() {
-		return array();
+		return array(
+			'username' => array( 'username', false ),
+			'name' => array( 'name', false ),
+			'email' => array( 'email', false ),
+			'membership' => array( 'membership', false ),
+			'status' => array( 'status', false ),			
+		);
 	}
 	public function prepare_items() {
 		
@@ -66,7 +73,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$hidden = $this->get_hidden_columns();
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array($columns, $hidden, $sortable);
-		
+		usort( $this->data, array( &$this, 'usort_reorder' ) );
 		$this->items = $this->get_items();
 	}
 	public function get_items() {
@@ -90,6 +97,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			case 'email':
 			case 'membership':
 				return $item[ $column_name ];
+				break;
+			case 'status':
+				return 1 == $item['status'] ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
 			default:
 				print_r( $item, true );
 		}
@@ -109,4 +119,39 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		// }
 		return $html;
 	}
+	
+	
+	// FOR CUSTOM DATA, do proper sort in the model using SQL ORDERBY
+	function usort_reorder( $a, $b ) {
+	  // If no sort, default to title
+	  $orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'username';
+	  // If no order, default to asc
+	  $order = ( ! empty($_GET['order'] ) ) ? $_GET['order'] : 'asc';
+	  // Determine sort order
+	  $result = strcmp( $a[$orderby], $b[$orderby] );
+	  // Send final sort direction to usort
+	  return ( $order === 'asc' ) ? $result : -$result;
+	}
+	
+	function column_username( $item ) {
+		$actions = array(
+			'edit' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'edit', $item['ID'], __('Edit', MS_TEXT_DOMAIN ) ),
+			'deactivate' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'deactivate', $item['ID'], __('Deactivate', MS_TEXT_DOMAIN ) ),			
+		);
+		
+		echo sprintf( '%1$s %2$s', $item['username'], $this->row_actions($actions) );
+	}
+
+	function column_membership( $item ) {
+		$actions = array(
+			'add' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'add', $item['ID'], __('Add', MS_TEXT_DOMAIN ) ),
+			'move' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'move', $item['ID'], __('Move', MS_TEXT_DOMAIN ) ),			
+			'drop' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'drop', $item['ID'], __('Drop', MS_TEXT_DOMAIN ) ),
+			
+		);
+		
+		echo sprintf( '%1$s %2$s', $item['membership'], $this->row_actions($actions) );
+	}
+
+	
 }
