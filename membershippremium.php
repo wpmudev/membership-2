@@ -103,7 +103,7 @@ add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides'
 function membership_class_file_override( $file ) {
 
 	/** Override all list-table paths. */
-	$file = str_replace( 'list/table', 'list-table', $file );
+	$file = str_replace( 'helper/list/table', 'helper/list-table', $file );
 
 	return $file;
 }
