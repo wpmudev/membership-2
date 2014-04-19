@@ -27,59 +27,63 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Membership extends WP_List_Table {
+class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		
-	public function __construct() {
-		parent::__construct();
+	protected $id = 'membership';
+		
+	public function get_columns() {
+		return apply_filters( 'membership_helper_list_table_membership_columns', array(
+			'cb'     => '<input type="checkbox" />',
+			'name_col' => __('Membership Name', MS_TEXT_DOMAIN ),
+			'active_col' => __('Active', MS_TEXT_DOMAIN ),
+			'public_col' => __('Public', MS_TEXT_DOMAIN ),
+			'members_col' => __('Members', MS_TEXT_DOMAIN ),
+		) );
 	}
 	
-	public function get_columns() {
-		$columns = array(
-			'name' => __('Membership Name', MS_TEXT_DOMAIN ),
-			'active' => __('Active', MS_TEXT_DOMAIN ),
-			'members' => __('Members', MS_TEXT_DOMAIN ),
-		);
-		return $columns;
+	function column_cb( $item ) {
+		return sprintf( '<input type="checkbox" name="post_id" value="%1$s" />', $item->ID );
 	}
 	
 	public function get_hidden_columns() {
-		return array();
+		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
 	}
 	
 	public function get_sortable_columns() {
-		return array();
+		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array() );
 	}
+	
 	public function prepare_items() {
+	
+		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships() );
 		
-		$columns = $this->get_columns();
-		$hidden = $this->get_hidden_columns();
-		$sortable = $this->get_sortable_columns();
-		$this->_column_headers = array($columns, $hidden, $sortable);
-		
-		$this->items = $this->get_items();
+		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
-	public function get_items() {
-		
-		$args = array(
-			'post_type' => MS_Model_Membership::$POST_TYPE,
-			'posts_per_page' => 10, //TODO 
-			'order' => 'DESC',
-		);
-		$query = new WP_Query($args);
-		$items = $query->get_posts();
 
-		return $items;
+	public function get_column_actions( $item ) {
+		return apply_filters( 'membership_helper_list_table_membership_column_actions', array(
+				'edit' => "<a href='/wp-admin/admin.php?page=all-memberships&action=edit&membership_id={$item->id}'>".__( "Edit", MS_TEXT_DOMAIN )."</a>",
+				'toogle_activation' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toogle_activation&membership_id={$item->id}'>".__( "Deactivate", MS_TEXT_DOMAIN )."</a>",
+				'toogle_public' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toogle_public&membership_id={$item->id}'>".__( "Make Public", MS_TEXT_DOMAIN )."</a>",
+			), 
+			$item 
+		);
+		
 	}
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
+			case 'name_col':
 				$html = "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>$item->name</a>";
+				$html .= $this->row_actions( $this->get_column_actions( $item ), false );
 				break;
-			case 'active':
+			case 'active_col':
 				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
 				break;
-			case 'members':
+			case 'public_col':
+				$html = ( $item->public ) ? __( 'Public', MS_TEXT_DOMAIN ) : __( 'Private', MS_TEXT_DOMAIN );
+				break;
+			case 'members_col':
 				$html = 0;
 				break;
 			default:
@@ -87,5 +91,12 @@ class MS_Helper_List_Table_Membership extends WP_List_Table {
 				break;
 		}
 		return $html;
+	}
+	public function get_bulk_actions() {
+		return apply_filters( 'membership_helper_list_table_membership_bulk_actions', array(
+			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
+			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
+			'toogle_public' => __( 'Toggle Public Status', MS_TEXT_DOMAIN ),
+		) );
 	}
 }

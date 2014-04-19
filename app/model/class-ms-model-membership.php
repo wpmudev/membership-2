@@ -58,6 +58,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $active;
 	
+	protected $public;
+	
 	protected $rules = array();
 
 	public function __construct() {
@@ -76,5 +78,21 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_expiry_date( $start_date = null ) {
 		$start_date = $this->get_trial_expiry_date( $start_date );
 		return MS_Helper_Period::add_interval ( $this->period_unit, $this->period_type , $start_date );		
+	}
+	
+	public static function get_memberships( $limit = 10 ) {
+		$args = array(
+				'post_type' => self::$POST_TYPE,
+				'posts_per_page' => $limit,
+				'order' => 'DESC',
+		);
+		$query = new WP_Query($args);
+		$items = $query->get_posts();
+		
+		$memberships = array();
+		foreach ( $items as $item ) {
+			$memberships[] = self::load( $item->ID );	
+		}
+		return $memberships;
 	}
 }
