@@ -35,7 +35,16 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	private $data = array(
 		array( 'ID' => 1, 'username' => 'user1', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
 		array( 'ID' => 3, 'username' => 'user3', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
-		array( 'ID' => 2, 'username' => 'user2', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),						
+		array( 'ID' => 2, 'username' => 'user2', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 4, 'username' => 'user4', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 6, 'username' => 'user6', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
+		array( 'ID' => 5, 'username' => 'user5', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 7, 'username' => 'user7', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 9, 'username' => 'user9', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
+		array( 'ID' => 8, 'username' => 'user8', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 10, 'username' => 'user10', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
+		array( 'ID' => 12, 'username' => 'user12', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
+		array( 'ID' => 11, 'username' => 'user11', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),											
 	);
 		
 		
@@ -45,11 +54,12 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	
 	public function get_columns() {
 		$columns = array(
-			'username' => __('Username', MS_TEXT_DOMAIN ),
-			'name' => __('Name', MS_TEXT_DOMAIN ),
-			'email' => __('E-mail', MS_TEXT_DOMAIN ),
+			'cb'		 => '<input type="checkbox" />',
+			'username'	 => __('Username', MS_TEXT_DOMAIN ),
+			'name'		 => __('Name', MS_TEXT_DOMAIN ),
+			'email'		 => __('E-mail', MS_TEXT_DOMAIN ),
 			'membership' => __('Membership(s)', MS_TEXT_DOMAIN ),			
-			'status' => __('Status', MS_TEXT_DOMAIN ),				
+			'status' 	 => __('Status', MS_TEXT_DOMAIN ),				
 		);
 		return $columns;
 	}
@@ -75,6 +85,22 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$this->_column_headers = array($columns, $hidden, $sortable);
 		usort( $this->data, array( &$this, 'usort_reorder' ) );
 		$this->items = $this->get_items();
+
+		$per_page = $this->get_items_per_page('members_per_page', 5);
+		$current_page = $this->get_pagenum();
+		$total_items = count($this->data);
+		
+		// Used for testing. Use SQL LIMIT instead
+		$this->found_data = array_slice( $this->data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+
+		$this->set_pagination_args( array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+			)
+		);
+
+		$this->items = $this->found_data;
+		
 	}
 	public function get_items() {
 		
@@ -153,5 +179,17 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		echo sprintf( '%1$s %2$s', $item['membership'], $this->row_actions($actions) );
 	}
 
+	function get_bulk_actions() {
+	  $actions = array(
+	    'deactivate'    => 'Deactivate Membership'
+	  );
+	  return $actions;
+	}
+
+	function column_cb($item) {
+	        return sprintf(
+	            '<input type="checkbox" name="member[]" value="%s" />', $item['ID']
+	        );    
+	    }
 	
 }

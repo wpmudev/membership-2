@@ -35,7 +35,10 @@ class MS_View_Member_List extends MS_View {
 			<h2><?php  _e( 'Members', MS_TEXT_DOMAIN ) ; ?>
 				<a class="add-new-h2" href="/wp-admin/admin.php?page=membership-edit"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
 			</h2>
-			<?php $member_list->display(); ?>
+			<form method="post">
+				<?php $member_list->search_box('search', 'Search'); ?>
+				<?php $member_list->display(); ?>
+			</form>
 		</div>
 		
 		<?php

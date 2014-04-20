@@ -152,6 +152,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	
+
+	
 	/**
 	 * Adds Dashboard navigation menus.
 	 *
@@ -177,6 +179,9 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		/** Create Members Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
+		/** Loading the screen options for Members page. */
+		add_action( 'load-' . end( $pages ), array( $this->controllers['member'], 'table_options' ) );
+
 
 		/** Create Billings Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), 'manage_options', 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
