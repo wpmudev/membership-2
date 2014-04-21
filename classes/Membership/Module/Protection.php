@@ -206,6 +206,7 @@ class Membership_Module_Protection extends Membership_Module {
 	public function initialise_protection( WP $wp ) {
 		global $member, $M_options, $membershippublic;
 		static $initialised = false;
+		$member = Membership_Plugin::current_member();
 
 		if ( $initialised ) {
 			// ensure that this is only called once, so return if we've been here already.

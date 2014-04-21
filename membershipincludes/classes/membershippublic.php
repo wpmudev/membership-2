@@ -56,6 +56,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		function register_shortcodes() {
 			global $member;
+			$member = Membership_Plugin::current_member();
 
 			foreach ( array( 'membership_level_shortcodes', 'membership_not_level_shortcodes' ) as $index => $filter ) {
 				$shortcodes = apply_filters( $filter, array() );
@@ -1581,15 +1582,19 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 				// Redirect members with subscriptions to the subscriptions page if it exists, else account page.
 				global $member;
-				if ( $member->has_subscription() && $member->ID != 0 && ! isset( $_GET['from_subscription'] ) ) {
-					if( ! empty( $M_options['subscriptions_page'] ) ) {
-						wp_redirect( get_permalink( $M_options['subscriptions_page'] ) );
-						exit;						
-					} else {
-						wp_redirect( get_permalink( $M_options['account_page'] ) );
-						exit;						
-					}
-				}				
+				$member = Membership_Plugin::current_member();
+				
+				if ( !empty( $member ) ) {
+					if ( $member->has_subscription() && $member->ID != 0 && ! isset( $_GET['from_subscription'] ) ) {
+						if( ! empty( $M_options['subscriptions_page'] ) ) {
+							wp_redirect( get_permalink( $M_options['subscriptions_page'] ) );
+							exit;						
+						} else {
+							wp_redirect( get_permalink( $M_options['account_page'] ) );
+							exit;						
+						}
+					}				
+				}			
 				
 				add_action( 'template_redirect', array( $this, 'process_subscription_form' ), 1 );
 

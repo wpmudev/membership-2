@@ -1150,6 +1150,7 @@ function membership_is_special_page( $page_id = null, $check_is_page = true ) {
 
 function membership_get_expire_date( $sub_id = null, $date_format = null ) {
 	global $member;
+	$member = Membership_Plugin::current_member();
 
 	if ( $member && is_a( $member, 'Membership_Model_Member' ) ) {
 		if ( !$sub_id ) {
@@ -1224,7 +1225,8 @@ function M_AddAdminSection( $sections ) {
 
 // Pass thru function
 function MBP_can_access_page( $page ) {
-	global $member;
+	global $member
+	$member = Membership_Plugin::current_member();;
 	if ( !empty( $member ) && method_exists( $member, 'pass_thru' ) ) {
 		return $member->pass_thru( 'bppages', array( 'can_access_page' => $page ) );
 	}
