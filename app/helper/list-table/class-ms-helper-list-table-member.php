@@ -190,6 +190,45 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	        return sprintf(
 	            '<input type="checkbox" name="member[]" value="%s" />', $item['ID']
 	        );    
-	    }
+    }
+
+
+
+	function search_box( $text, $input_id ) {
+		if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
+			return;
+
+		$input_id = $input_id . '-search-input';
+
+		if ( ! empty( $_REQUEST['orderby'] ) )
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+		if ( ! empty( $_REQUEST['order'] ) )
+			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+		if ( ! empty( $_REQUEST['post_mime_type'] ) )
+			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
+		if ( ! empty( $_REQUEST['detached'] ) )
+			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+?>
+<div id="member-search-box">
+	<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
+	<div class="input-container">
+<!--		<select id="member-search-options" name="" style="width: 115px;">
+			<option value="Value for Item 1" title="Title for Item 1">Full Name</option>
+			<option value="Value for Item 2" title="Title for Item 2">Membership</option>
+			<option value="Value for Item 3" title="Title for Item 3">E-mail Address</option>
+		</select>  -->
+		<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />		
+		<?php submit_button( $text , 'button', false, false, array('id' => 'search-submit') ); ?>
+	</div>
+</div>
+<?php
+	}
+
+
+
+
+
+
+
 	
 }

@@ -92,6 +92,29 @@
 	width: 7em;
 }
 
+#member-search-box {
+	float:right;
+}
+
+#member-search-box .input-container {
+	position: relative;
+}
+
+#member-search {
+}
+
+#member-search-options
+{
+  position: relative;
+  top: -2px;
+  font-size:13px;
+  height:28px;
+  line-height:26px;
+  margin:0;
+  padding:0 10px 1px;
+}
+
+
 @media (max-width: 900px) {
     .ms-wrap .ms-settings {
 	}
@@ -110,3 +133,5 @@
 		min-height: 350px;
 	}	
 }
+
+
