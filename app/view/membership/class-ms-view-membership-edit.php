@@ -20,9 +20,21 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
 				),
-				'rules' => array(
-						'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=rules&membership_id=' . $this->model->id,
+// 				'rules' => array(
+// 						'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
+// 						'url' => 'admin.php?page=membership-edit&tab=rules&membership_id=' . $this->model->id,
+// 				),
+				'category' => array(
+						'title' => __( 'Categories', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=category&membership_id=' . $this->model->id,
+				),
+				'post' => array(
+						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=post&membership_id=' . $this->model->id,
+				),
+				'page' => array(
+						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=page&membership_id=' . $this->model->id,
 				),
 		);
 		
@@ -37,7 +49,7 @@ class MS_View_Membership_Edit extends MS_View {
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 	
 		/** Call the appropriate form to prepare. */
-		call_user_func( array( $this, 'prepare_' . str_replace('-', '_', $active_tab ) ) );		
+// 		call_user_func( array( $this, 'prepare_' . str_replace('-', '_', $active_tab ) ) );		
 		/** Call the appropriate form to render. */		
 		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
 
@@ -120,7 +132,57 @@ class MS_View_Membership_Edit extends MS_View {
 		$html = ob_get_clean();
 		echo $html;	
 	}
-
+	
+	public function render_category() {
+		$model = $this->model->rules['category'];
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Category access', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="" method="post">
+				<?php 
+					$rule_list_table = new MS_Helper_List_Table_Rule_Category( $model );
+					$rule_list_table->prepare_items();
+					$rule_list_table->display();
+				?>
+				</form>
+			</div>
+		<?php 	
+	}
+	public function render_post() {
+		$model = $this->model->rules['post'];
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Post by post access', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="" method="post">
+				<?php 
+					$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
+					$rule_list_table->prepare_items();
+					$rule_list_table->display();
+				?>
+				</form>
+			</div>
+		<?php 	
+	}
+		
+	public function render_page() {
+		$model = $this->model->rules['page'];
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Page access', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="" method="post">
+				<?php
+					$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
+					$rule_list_table->prepare_items();
+					$rule_list_table->display();
+				?>
+				</form>
+			</div>
+		<?php 	
+	}
+	
 	public function render_rules() {	
 		$rule_list = new MS_Helper_List_Table_Rule( $this->model );
 		$rule_list->prepare_items();

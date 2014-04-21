@@ -28,10 +28,9 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	public function on_protection() {
 		
 	}
-	public static function get_content() {
-		$content = array();
+	public function get_content() {
 		$posts_to_show = 10; //TODO
-		return get_posts( array(
+		$contents = get_posts( array(
 			'numberposts' => $posts_to_show,
 			'offset'      => 0,
 			'orderby'     => 'post_date',
@@ -39,5 +38,23 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			'post_type'   => 'post',
 			'post_status' => 'publish'
 		) );
+				
+		foreach( $contents as $content ) {
+			$content->id = $content->ID;
+			if( in_array( $content->id, $this->rule_value ) ) {
+				$content->access = true;
+			}
+			else {
+				$content->access = false;
+			}
+			if( in_array( $content->id, $this->delayed_access_enabled ) ) {
+				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+			}
+			else {
+				$content->delayed_period = '';
+			}
+		}
+		return $contents;
+		
 	}
 }

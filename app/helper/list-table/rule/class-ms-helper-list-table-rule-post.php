@@ -27,65 +27,37 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table {
+class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_post';
-	
-	private $columns;
-	
-	private $hidden;
-	
-	private $sortable;
-	
+		
 	public function get_columns() {
-		$this->columns = array(
+		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
-			'post_title_col' => __( 'Post title', MS_TEXT_DOMAIN ),
-			'post_date_col' => __( 'Post date', MS_TEXT_DOMAIN ),
-		);
-		return $this->columns;
+			'post_title' => __( 'Post title', MS_TEXT_DOMAIN ),
+			'access' => __( 'Access', MS_TEXT_DOMAIN ),
+			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),
+		) );
 	}
-	
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="post_id" value="%1$s" />', $item->ID );
-	}
-	
-	public function get_hidden_columns() {
-		$this->hidden = array();
 		
-		return $this->hidden;
-	}
-	
 	public function get_sortable_columns() {
-		$this->sortable = array();
-		
-		return $this->sortable;
+		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
+				'name' => 'name',
+				'access' => 'access',
+				'dripped' => 'dripped',
+				'slug' => 'slug',
+				'posts' => 'posts',
+		) );
 	}
-	
-	public function prepare_items() {
-		
-		$this->get_columns();
-		$this->get_hidden_columns();
-		$this->get_sortable_columns();
-		$this->get_items();
-		
-		$this->_column_headers = array( $this->columns, $this->hidden, $this->sortable );
-	}
-	
-	public function get_items() {
-		
-		$this->items = MS_Model_Rule_Post::get_content();
-		
-		return $this->items;
-	}
-	
+			
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'post_title_col':
+			case 'post_title':
 				$html = $item->post_title;
 				break;
-			case 'post_date_col':
+			case 'post_date':
 				$html = $item->post_date;
 				break;
 			default:

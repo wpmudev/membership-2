@@ -27,62 +27,42 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table {
+class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_category';
-	
-	private $columns;
-	
-	private $hidden;
-	
-	private $sortable;
-	
+			
 	public function get_columns() {
-		$this->columns = array(
+		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
-			'category_col' => __( 'Category name', MS_TEXT_DOMAIN ),
-		);
-		return $this->columns;
+			'name' => __( 'Category name', MS_TEXT_DOMAIN ),
+			'access' => __( 'Access', MS_TEXT_DOMAIN ),
+			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+			'slug' => __( 'Slug', MS_TEXT_DOMAIN ),
+			'posts' => __( 'Posts', MS_TEXT_DOMAIN ),
+		) );
 	}
-	
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="category_id" value="%1$s" />', $item->term_id );
-	}
-	
-	public function get_hidden_columns() {
-		$this->hidden = array();
 		
-		return $this->hidden;
-	}
-	
 	public function get_sortable_columns() {
-		$this->sortable = array();
-		
-		return $this->sortable;
+		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
+				'name' => 'name',
+				'access' => 'access',
+				'dripped' => 'dripped',
+				'slug' => 'slug',
+				'posts' => 'posts',
+		) );
 	}
-	
-	public function prepare_items() {
-		
-		$this->get_columns();
-		$this->get_hidden_columns();
-		$this->get_sortable_columns();
-		$this->get_items();
-		
-		$this->_column_headers = array( $this->columns, $this->hidden, $this->sortable );
-	}
-	
-	public function get_items() {
-		
-		$this->items = MS_Model_Rule_Category::get_content(); 
-		
-		return $this->items;
-	}
-	
+				
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'category_col':
+			case 'name':
 				$html = $item->name;
+				break;
+			case 'slug':
+				$html = $item->slug;
+				break;
+			case 'posts':
+				$html = 0;
 				break;
 			default:
 				$html = print_r( $item, true ) ;
@@ -90,5 +70,4 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table {
 		}
 		return $html;
 	}
-
 }

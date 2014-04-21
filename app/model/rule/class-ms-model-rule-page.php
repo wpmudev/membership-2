@@ -29,15 +29,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		
 	}
 	
-	public static function get_content() {
-		$posts_to_show = 10; //TODO
+	public function get_content() {
 // 		$exclude = array();
 // 		foreach ( array( 'registration_page', 'account_page', 'subscriptions_page', 'nocontent_page', 'registrationcompleted_page' ) as $page ) {
 // 			if ( isset( $M_options[$page] ) && is_numeric( $M_options[$page] ) ) {
 // 				$exclude[] = $M_options[$page];
 // 			}
 // 		}
-		return apply_filters( 'membership_hide_protectable_pages', get_posts( array(
+		$posts_to_show = 10; //TODO
+		$contents = get_posts( array(
 				'numberposts' => $posts_to_show,
 				'offset'      => 0,
 				'orderby'     => 'post_date',
@@ -45,7 +45,24 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				'post_type'   => 'page',
 				'post_status' => array('publish', 'virtual'), //Classifieds plugin uses a "virtual" status for some of it's pages
 // 				'exclude'     => $exclude,
-		) ) );
+		) );
+		
+		foreach( $contents as $content ) {
+			$content->id = $content->ID;
+			if( in_array( $content->id, $this->rule_value ) ) {
+				$content->access = true;
+			}
+			else {
+				$content->access = false;
+			}
+			if( in_array( $content->id, $this->delayed_access_enabled ) ) {
+				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+			}
+			else {
+				$content->delayed_period = '';
+			}
+		}
+		return $contents;
+		
 	}
-	
 }

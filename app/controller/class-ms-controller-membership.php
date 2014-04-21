@@ -38,25 +38,24 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 		
-		/** Menu: Memberships */
-		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
-		
-		/** New/Edit: Membership */ 
-		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
-		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
-	
 	public function admin_membership_list() {
+		/** Menu: Memberships */
+		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
+		
 		$this->views['membership_list']->render();
 	}
 	
 	public function membership_edit() {
+		/** New/Edit: Membership */
+		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
+		
 		$this->views['membership_edit']->model = $this->model;
 
-		if( ! empty( $_POST['submit'] ) )
+		if( ! empty( $_POST['action'] ) )
 		{
 			$this->save_membership();
 			$this->views['membership_edit']->model = $this->model;
@@ -69,6 +68,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * TODO better sanitize and validate fields in model
 	 */
 	public function save_membership() {
+		
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
@@ -90,13 +90,51 @@ class MS_Controller_Membership extends MS_Controller {
 			$this->model->save();
 		}
 		/*
-		 * Save protection rules fields.
+		 * Save protection rules.
 		 */
-		$nonce = MS_View_Membership_Edit::RULE_SAVE_NONCE;
+		$nonce = MS_Helper_List_Table_Rule::RULE_SAVE_NONCE;
 		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-			
-			$section = MS_View_Membership_Edit::RULE_SECTION;
-// 			$this->model->save();
+			$action = ! empty( $_POST['action'] ) ? $_POST['action'] : '';
+
+			$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
+			if( array_key_exists( $rule_type, $this->model->rules ) ) {
+				$rule = $this->model->rules[ $rule_type ];
+				$rule_value = $rule->rule_value;
+				$delayed_access_enabled = $rule->delayed_access_enabled;
+				$delayed_period_unit = $rule->delayed_period_unit;
+				$delayed_period_type = $rule->delayed_period_type;
+				switch( $action ) {
+					case 'give_access': 
+						foreach( $_REQUEST[ 'item' ] as $item ) {
+					 		$rule_value[ $item ] = $item;
+						} 
+						break;
+					case 'no_access':
+						foreach( $_REQUEST[ 'item' ] as $item ) {
+					 		unset( $rule_value[ $item ] );
+						} 
+						break;
+					case 'drip_access':
+						$i = 0;
+						foreach( $_REQUEST[ 'item' ] as $item ) {
+					 		$rule_value[ $item ] = $item;
+					 		$delayed_access_enabled[ $item ] = true;
+					 		$delayed_period_unit[ $item ] = ++$i;
+					 		$delayed_period_type[ $item ] = 'days';
+						} 
+						break;
+				}
+				$rule->rule_value = $rule_value;
+				$rule->delayed_access_enabled = $delayed_access_enabled;
+				$rule->delayed_period_unit = $delayed_period_unit;
+				$rule->delayed_period_type = $delayed_period_type;
+				$this->model->set_rule( $rule_type, $rule );
+				//TODO above is a workaround for php array indirect modification of overloaded property has no effect
+// 				$this->model->rules[ $rule_type ]->rule_value = $rule_value;
+// 				$this->model->rules[ $rule_type ]->delayed_access_enabled = $rule_value;
+				$this->model->save();
+			}
+// 			$section = MS_View_Membership_Edit::RULE_SECTION;
 		}
 		
 	}

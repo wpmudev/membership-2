@@ -24,16 +24,27 @@
 class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
-	
-	public function on_protection() {
 		
-	}
-	
-	public static function get_content() {
-		$content = array();
-		$posts_to_show = 10; //TODO
-		$categories = get_categories( 'get=all' );
-		return $categories;
+	public function get_content() {
+		$contents = get_categories( 'get=all' );
+
+			foreach( $contents as $content ) {
+			$content->id = $content->term_id;
+			if( in_array( $content->id, $this->rule_value ) ) {
+				$content->access = true;
+			}
+			else {
+				$content->access = false;
+			}
+			if( in_array( $content->id, $this->delayed_access_enabled ) && ! empty( $this->delayed_period_unit[ $content->id ] ) && ! empty( $this->delayed_period_type[ $content->id ] ) ) {
+				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+			}
+			else {
+				$content->delayed_period = '';
+			}
+		}
+		
+		return $contents;
 	}
 	
 }

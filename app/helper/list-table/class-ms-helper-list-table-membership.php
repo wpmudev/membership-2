@@ -42,7 +42,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 	
 	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="post_id" value="%1$s" />', $item->ID );
+		return sprintf( '<input type="checkbox" name="membership_id[]" value="%1$s" />', $item->ID );
 	}
 	
 	public function get_hidden_columns() {
@@ -62,7 +62,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function get_column_actions( $item ) {
 		return apply_filters( 'membership_helper_list_table_membership_column_actions', array(
-				'edit' => "<a href='/wp-admin/admin.php?page=all-memberships&action=edit&membership_id={$item->id}'>".__( "Edit", MS_TEXT_DOMAIN )."</a>",
+				'edit' => "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>".__( "Edit", MS_TEXT_DOMAIN )."</a>",
 				'toggle_activation' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toggle_activation&membership_id={$item->id}'>".__( "Deactivate", MS_TEXT_DOMAIN )."</a>",
 				'toggle_public' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toggle_public&membership_id={$item->id}'>".__( "Make Public", MS_TEXT_DOMAIN )."</a>",
 			), 

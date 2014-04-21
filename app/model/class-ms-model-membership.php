@@ -62,7 +62,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $rules = array();
 
-	public function __construct() {
+	public function set_rule( $rule_type, $rule ) {
+		$this->rules[ $rule_type ] = $rule;
 	}
 	
 	public function get_trial_expiry_date( $start_date = null ) {
@@ -94,5 +95,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$memberships[] = self::load( $item->ID );	
 		}
 		return $memberships;
+	}
+	public static function load( $model_id ) {
+		$model = parent::load( $model_id );
+		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $type => $class ) {
+			if( empty( $model->rules[ $type ] ) ) {
+				$model->rules[ $type ] = MS_Model_Rule::rule_factory( $type );
+			}
+		}
+		return $model;
 	}
 }

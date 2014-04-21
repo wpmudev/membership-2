@@ -53,19 +53,16 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $rule_type;
 	
-	protected $rule_value;
+	protected $rule_value = array();
 	
 	protected $inherit_rules;
 	
-	protected $delay_access_enabled; 
+	protected $delayed_access_enabled = array(); 
 	
-	protected $delayed_period;
+	protected $delayed_period_unit = array();
 	
-	protected $delayed_period_type;
+	protected $delayed_period_type = array();
 	
-	public function __construct() {
-
-	}
 	
 	public function on_protection() {
 		throw new Exception ("Method to be implemented in child class");
@@ -97,7 +94,7 @@ class MS_Model_Rule extends MS_Model {
 		}
 	}
 	
-	public static function get_content() {
-		return array();
-	}
+// 	public static function get_content() {
+// 		return array();
+// 	}
 }

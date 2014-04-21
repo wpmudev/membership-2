@@ -27,65 +27,27 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table {
+class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_page';
-	
-	private $columns;
-	
-	private $hidden;
-	
-	private $sortable;
-	
+		
 	public function get_columns() {
-		$this->columns = array(
-			'cb'     => '<input type="checkbox" />',
-			'page_title_col' => __( 'Page title', MS_TEXT_DOMAIN ),
-			'page_date_col' => __( 'Page date', MS_TEXT_DOMAIN ),
-		);
-		return $this->columns;
-	}
-	
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="page_id" value="%1$s" />', $item->ID );
-	}
-	
-	public function get_hidden_columns() {
-		$this->hidden = array();
-		
-		return $this->hidden;
-	}
-	
-	public function get_sortable_columns() {
-		$this->sortable = array();
-		
-		return $this->sortable;
-	}
-	
-	public function prepare_items() {
-		
-		$this->get_columns();
-		$this->get_hidden_columns();
-		$this->get_sortable_columns();
-		$this->get_items();
-		
-		$this->_column_headers = array( $this->columns, $this->hidden, $this->sortable );
-	}
-	
-	public function get_items() {
-		
-		$this->items = MS_Model_Rule_Page::get_content();
-		
-		return $this->items;
+		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
+				'cb'     => '<input type="checkbox" />',
+				'page_title' => __( 'Page title', MS_TEXT_DOMAIN ),
+				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+				'page_date' => __( 'Page date', MS_TEXT_DOMAIN ),
+		) );
 	}
 	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'page_title_col':
+			case 'page_title':
 				$html = $item->post_title;
 				break;
-			case 'page_date_col':
+			case 'page_date':
 				$html = $item->post_date;
 				break;
 			default:
@@ -94,5 +56,4 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table {
 		}
 		return $html;
 	}
-
 }
