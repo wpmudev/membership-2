@@ -29,6 +29,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	const RULE_TYPE_DOWNLOAD = 'download';
 	
+	const RULE_TYPE_MEDIA = 'media';
+	
 	const RULE_TYPE_MENU = 'menu';
 	
 	const RULE_TYPE_PAGE = 'page';
@@ -40,14 +42,15 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	
 	public static $RULE_TYPE_CLASSES = array (
-			 self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
-			 self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
-			 self::RULE_TYPE_DOWNLOAD => 'MS_Model_Rule_Download',
-			 self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
-			 self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
-			 self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
-			 self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
-			 self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
+			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
+			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
+			self::RULE_TYPE_DOWNLOAD => 'MS_Model_Rule_Download',
+			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
+			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
+			self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
+			self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
+			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
+			self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
 	);
 	protected static $CLASS_NAME = __CLASS__;
 	
@@ -77,6 +80,7 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_DOWNLOAD => __( 'Donwload', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),

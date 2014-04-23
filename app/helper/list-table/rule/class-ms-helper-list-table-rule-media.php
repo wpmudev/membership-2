@@ -27,56 +27,59 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
+class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 
-	protected $id = 'rule_post';
-	
-// 	protected $model_rule_category;
-	
-// 	public function __construct( $model_rule_post, $model_rule_category ) {
-		
-// 		parent::__construct( $model_rule_post );
-// 	}
+	protected $id = 'rule_media';
 		
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
-			'post_title' => __( 'Post title', MS_TEXT_DOMAIN ),
+			'icon' => '',
+			'file' => __( 'File', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
-			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-			'category' => __( 'Categories', MS_TEXT_DOMAIN ),
-			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),
+			'uploaded' => __( 'Uploaded to', MS_TEXT_DOMAIN ),
+			'date' => __( 'Date', MS_TEXT_DOMAIN ),
 		) );
 	}
 		
 	public function get_sortable_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
-				'name' => 'name',
+				'filename' => 'filename',
 				'access' => 'access',
-				'dripped' => 'dripped',
-				'slug' => 'slug',
-				'posts' => 'posts',
+				'uploaded' => 'uploaded',
+				'date' => 'date',
 		) );
 	}
-
-	public function prepare_items() {
-	
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model['post']->get_content( $this->model['category'] ) );
-	
-		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
-	}
-	
+			
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'post_title':
+			case 'file':
 				$html = $item->post_title;
 				break;
-			case 'post_date':
+			case 'date':
 				$html = $item->post_date;
 				break;
-			case 'category':
-				$html = join( ', ', $item->categories );
+			case 'icon':
+				if ( $thumb = wp_get_attachment_image( $item->ID, array( 80, 60 ), true ) ) {
+					$html = $thumb;
+				}
+				break;
+			case 'uploaded':
+				if ( $item->post_parent > 0 )
+					$parent = get_post( $item->post_parent );
+				else
+					$parent = false;
+				
+				if ( $parent ) {
+					$title = _draft_or_post_title( $item->post_parent );
+					$parent_type = get_post_type_object( $parent->post_type );
+					$url = get_post_permalink( $parent->ID );
+					$html = "<a href='$url'>$title</a>";
+				} 
+				else {
+					$html = __( 'Unattached', MS_TEXT_DOMAIN );
+				}
 				break;
 			default:
 				$html = print_r( $item, true ) ;

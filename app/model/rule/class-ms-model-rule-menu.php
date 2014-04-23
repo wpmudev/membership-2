@@ -29,16 +29,37 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		
 	}
 	
-	public static function get_content() {
+	public function get_content() {
 		$content = array();
 		$navs = wp_get_nav_menus( array('orderby' => 'name') );
 		if( ! empty( $navs ) ) {
 			foreach( $navs as $nav ) {
-				$content[ $nav->term_id ] = esc_html( $nav->name );
-				$items = wp_get_nav_menu_items($nav->term_id);
+				$content[ $nav->term_id ] = $nav;
+				$content[ $nav->term_id ]->id = $nav->term_id;
+				$content[ $nav->term_id ]->title = esc_html( $nav->name );
+				$content[ $nav->term_id ]->parent_id = false;
+				$content[ $nav->term_id ]->delayed_period = '';
+				$items = wp_get_nav_menu_items( $nav->term_id );
 				if( ! empty( $items ) ) {
 					foreach( $items as $item ) {
-						$content[ $item->ID ] = esc_html( $item->title );
+						$item_id = $item->ID;
+						$content[ $item_id ] = $item;
+						$content[ $item_id ]->id = $item_id;
+						$content[ $item_id ]->title = esc_html( $item->title );
+						$content[ $item_id ]->parent_id = $nav->term_id;
+						if( in_array( $content[ $item_id ]->id, $this->rule_value ) ) {
+							$content[ $item_id ]->access = true;
+						}
+						else {
+							$content[ $item_id ]->access = false;
+						}
+						if( in_array( $item_id, $this->delayed_access_enabled ) ) {
+							$content[ $item_id ]->delayed_period = $this->delayed_period_unit[ $item_id ] . $this->delayed_period_type[ $item_id ];
+						}
+						else {
+							$content[ $item_id ]->delayed_period = '';
+						}
+						
 					}
 				}
 			}

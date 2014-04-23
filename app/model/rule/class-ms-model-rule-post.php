@@ -28,7 +28,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	public function on_protection() {
 		
 	}
-	public function get_content() {
+	public function get_content( $model_rule_category ) {
 		$posts_to_show = 10; //TODO
 		$contents = get_posts( array(
 			'numberposts' => $posts_to_show,
@@ -41,6 +41,22 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
+			$content->categories = array();
+			$categories = wp_get_post_categories( $content->id );
+			/* To inherit category access, set default access to false */
+			$content->access = false;
+			if( ! empty( $categories ) ) {
+				foreach( $categories as $cat_id ) {
+					$cat = get_category( $cat_id );
+					$cats[] = $cat->name;
+					/* Inherit category access */ 
+					if( in_array( $cat_id, $model_rule_category->rule_value ) ) {
+						$content->access = true;
+					}
+				}
+				$content->categories = $cats;
+			}
+			/* post by post override */ 
 			if( in_array( $content->id, $this->rule_value ) ) {
 				$content->access = true;
 			}

@@ -27,56 +27,30 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
+class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 
-	protected $id = 'rule_post';
-	
-// 	protected $model_rule_category;
-	
-// 	public function __construct( $model_rule_post, $model_rule_category ) {
-		
-// 		parent::__construct( $model_rule_post );
-// 	}
+	protected $id = 'rule_menu';
 		
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-			'cb'     => '<input type="checkbox" />',
-			'post_title' => __( 'Post title', MS_TEXT_DOMAIN ),
-			'access' => __( 'Access', MS_TEXT_DOMAIN ),
-			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-			'category' => __( 'Categories', MS_TEXT_DOMAIN ),
-			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),
+				'cb'     => '<input type="checkbox" />',
+				'menu' => __( 'Menu title', MS_TEXT_DOMAIN ),
+				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 		) );
-	}
-		
-	public function get_sortable_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
-				'name' => 'name',
-				'access' => 'access',
-				'dripped' => 'dripped',
-				'slug' => 'slug',
-				'posts' => 'posts',
-		) );
-	}
-
-	public function prepare_items() {
-	
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model['post']->get_content( $this->model['category'] ) );
-	
-		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
 	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'post_title':
-				$html = $item->post_title;
-				break;
-			case 'post_date':
-				$html = $item->post_date;
-				break;
-			case 'category':
-				$html = join( ', ', $item->categories );
+			case 'menu':
+				if( $item->parent_id ) {
+					$html = "&#8211;&nbsp; $item->title";
+				}
+				else {
+					$html = "MENU - $item->title";
+				}
+				
 				break;
 			default:
 				$html = print_r( $item, true ) ;
@@ -84,5 +58,28 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		}
 		return $html;
 	}
-
+	
+	public function column_cb( $item ) {
+		
+		$html = '';
+		if( $item->parent_id ) {
+			$html = sprintf( '<input type="checkbox" name="item[]" value="%1$s" %2$s/>', $item->id, checked( $item->access, true, false ) );
+		}
+		return $html;
+	}
+	
+	public function column_access( $item ) {
+	
+		$html = '';
+		if( $item->parent_id ) {
+			
+			if( $item->access ) {
+				$html =  ( $item->delayed_period ) ? __( 'Dripped Content', MS_TEXT_DOMAIN ) : __( 'Has Access', MS_TEXT_DOMAIN );
+			}
+			else {
+				$html = __( 'No Access', MS_TEXT_DOMAIN );
+			}
+		}
+		return $html;
+	}
 }

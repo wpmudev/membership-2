@@ -107,11 +107,13 @@ class MS_Controller_Membership extends MS_Controller {
 					case 'give_access': 
 						foreach( $_REQUEST[ 'item' ] as $item ) {
 					 		$rule_value[ $item ] = $item;
+					 		$delayed_access_enabled[ $item ] = false;
 						} 
 						break;
 					case 'no_access':
 						foreach( $_REQUEST[ 'item' ] as $item ) {
 					 		unset( $rule_value[ $item ] );
+					 		$delayed_access_enabled[ $item ] = false;
 						} 
 						break;
 					case 'drip_access':

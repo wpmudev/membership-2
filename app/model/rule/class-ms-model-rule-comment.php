@@ -29,11 +29,23 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		
 	}
 	
-	public static function get_content() {
-		return array (
-			'0' => __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN ),
-			'1' => __( 'User can not read or comment on posts.', MS_TEXT_DOMAIN ),
-		);
+	public function get_content() {
+		$content = new StdClass();
+		$content->id = 1;
+		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
+
+		if( in_array( $content->id, $this->rule_value ) ) {
+			$content->access = true;
+		}
+		else {
+			$content->access = false;
+		}
+		if( in_array( $content->id, $this->delayed_access_enabled ) ) {
+			$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+		}
+		else {
+			$content->delayed_period = '';
+		}
+		return array( $content );
 	}
-	
 }

@@ -51,6 +51,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 		) );
 	}
+	
 	public function get_hidden_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_hidden_columns", array() );
 	}
@@ -77,6 +78,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
@@ -86,6 +88,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		}
 		return $html;
 	}
+	
 	public function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="item[]" value="%1$s" %2$s/>', $item->id, checked( $item->access, true, false ) );
 	}
@@ -136,6 +139,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$actions = array();
 		return sprintf( '%1$s %2$s', $status, $this->row_actions( $actions ) );
 	}
+	
 	public function column_dripped( $item ) {
 		$actions = array(
 				sprintf( '<a href="?page=%s&tab=%s&membership_id=%s&action=%s&item=%s">%s</a>',
@@ -151,9 +155,19 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 		return sprintf( '%1$s %2$s', $item->delayed_period, $this->row_actions( $actions ) );
 	}
-	function display() {
+	
+	public function display() {
 		wp_nonce_field( self::RULE_SAVE_NONCE, self::RULE_SAVE_NONCE );
 		
 		parent::display();
+	}
+	
+	public function get_views(){
+		return apply_filters( "membership_helper_list_table_{$this->id}_views", array(
+				'all' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'all') ), __( 'All', MS_TEXT_DOMAIN ) ),
+				'has_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'has_access') ), __( 'Has Access', MS_TEXT_DOMAIN ) ),
+				'dripped' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'dripped') ), __( 'Dripped Content', MS_TEXT_DOMAIN ) ),
+				'no_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'no_access') ), __( 'No Access', MS_TEXT_DOMAIN ) ),
+		) );
 	}
 }

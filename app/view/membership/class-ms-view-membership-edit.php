@@ -20,23 +20,43 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
 				),
-// 				'rules' => array(
-// 						'title' =>	__( 'Protection Rules', MS_TEXT_DOMAIN ),
-// 						'url' => 'admin.php?page=membership-edit&tab=rules&membership_id=' . $this->model->id,
-// 				),
+				'page' => array(
+						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=page&membership_id=' . $this->model->id,
+				),
 				'category' => array(
 						'title' => __( 'Categories', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=category&membership_id=' . $this->model->id,
 				),
 				'post' => array(
-						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+						'title' => __( 'Post by post', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=post&membership_id=' . $this->model->id,
 				),
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=page&membership_id=' . $this->model->id,
+				'comment' => array(
+						'title' => __( 'Comments', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=comment&membership_id=' . $this->model->id,
 				),
-		);
+				'media' => array(
+						'title' => __( 'Media', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=media&membership_id=' . $this->model->id,
+				),
+				'menu' => array(
+						'title' => __( 'Menus', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=menu&membership_id=' . $this->model->id,
+				),
+				'shortcode' => array(
+						'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=shortcode&membership_id=' . $this->model->id,
+				),
+				'urlgroup' => array(
+						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=urlgroup&membership_id=' . $this->model->id,
+				),
+				'dripped' => array(
+						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=dripped&membership_id=' . $this->model->id,
+				),
+				);
 		
 		ob_start();
 
@@ -133,160 +153,8 @@ class MS_View_Membership_Edit extends MS_View {
 		echo $html;	
 	}
 	
-	public function render_category() {
-		$model = $this->model->rules['category'];
-		ob_start();
-		?>
-			<div class='ms-settings'>
-				<h2><?php _e( 'Category access', MS_TEXT_DOMAIN ); ?></h2>
-				<form action="" method="post">
-				<?php 
-					$rule_list_table = new MS_Helper_List_Table_Rule_Category( $model );
-					$rule_list_table->prepare_items();
-					$rule_list_table->display();
-				?>
-				</form>
-			</div>
-		<?php 	
-	}
-	public function render_post() {
-		$model = $this->model->rules['post'];
-		ob_start();
-		?>
-			<div class='ms-settings'>
-				<h2><?php _e( 'Post by post access', MS_TEXT_DOMAIN ); ?></h2>
-				<form action="" method="post">
-				<?php 
-					$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
-					$rule_list_table->prepare_items();
-					$rule_list_table->display();
-				?>
-				</form>
-			</div>
-		<?php 	
-	}
-		
-	public function render_page() {
-		$model = $this->model->rules['page'];
-		ob_start();
-		?>
-			<div class='ms-settings'>
-				<h2><?php _e( 'Page access', MS_TEXT_DOMAIN ); ?></h2>
-				<form action="" method="post">
-				<?php
-					$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
-					$rule_list_table->prepare_items();
-					$rule_list_table->display();
-				?>
-				</form>
-			</div>
-		<?php 	
-	}
-	
-	public function render_rules() {	
-		$rule_list = new MS_Helper_List_Table_Rule( $this->model );
-		$rule_list->prepare_items();
-		
-		ob_start();
-		?>
-			<div class='ms-settings'>
-				<table>
-					<tbody>
-						<tr valign="top">
-							<td>
-								<div>
-									<span class='ms-field-label'><?php echo __( 'Content to protect', MS_TEXT_DOMAIN ); ?></span>
-									<?php MS_Helper_Html::html_input( $this->fields['rule_type'] );?>
-									<div id="ms-wrapper-rule-type-category" class="ms-rule-type-wrapper">
-									<?php 
-										$rule_list_table = new MS_Helper_List_Table_Rule_Category();
-										$rule_list_table->prepare_items();
-										$rule_list_table->display();
-									?>
-									</div>
-									<div id="ms-wrapper-rule-type-page" class="ms-rule-type-wrapper">
-									<?php 
-										$rule_list_table = new MS_Helper_List_Table_Rule_Page();
-										$rule_list_table->prepare_items();
-										$rule_list_table->display();
-									?>
-									</div>
-									<div id="ms-wrapper-rule-type-post" class="ms-rule-type-wrapper">
-									<?php 
-										$rule_list_table = new MS_Helper_List_Table_Rule_Post();
-										$rule_list_table->prepare_items();
-										$rule_list_table->display();
-									?>
-									</div>
-									<?php 
-// 										foreach ( $this->rule_types as $rule_type ) {
-//  											MS_Helper_Html::html_input( $rule_type );
-// 										}
-									?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_input( $this->fields['delay_access_enabled'] );?>
-								<div id="ms-delayed-period-wrapper" class="ms-period-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_unit'] );?>
-									<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div id="ms-inherit-rules-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['inherit_rules'] );?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_input( $this->fields['btn_add_rule'] );?>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<form id="setting_form" action="<?php echo add_query_arg( array( 'membership_id' => $this->model->id ) ); ?>" method="post">
-					<?php wp_nonce_field( self::RULE_SAVE_NONCE, self::RULE_SAVE_NONCE ); ?>
-					<?php $rule_list->display(); ?>
-					<?php MS_Helper_Html::html_submit();?>
-				</form>
-				<div class="clear"></div>
-			</div>
-			<script id="rule_template" type="text/x-jquery-tmpl">
-				<tr class="alternate">
-					<td class="content_col column-content_col">
-						${content}
-						<input type="hidden" name="ms_rule[${counter}][rule_value]" value="${rule_value}">
-					</td>
-					<td class="rule_type column-rule_type">
-						${rule_type}
-						<input type="hidden" name="ms_rule[${counter}][rule_type]" value="${rule_type}">
-					</td>
-					<td class="delayed_period_unit_col column-delayed_period_unit_col">
-						${delayed_period_unit} ${delayed_period_type}
-						<input type="hidden" name="ms_rule[${counter}][delayed_period_unit]" value="${delayed_period_unit}">
-						<input type="hidden" name="ms_rule[${counter}][delayed_period_type]" value="${delayed_period_type}">
-					</td>
-					<td class="inherit_col column-inherit_col">
-						${inherit_rules}
-						<input type="hidden" name="ms_rule[${counter}][inherit_rules]" value="${inherit_rules}">
-					</td>
-					<td class="actions_col column-actions_col">
-						delete | edit
-					</td>
-				</tr> 
-			</script>
-			<?php
-			$html = ob_get_clean();
-			echo $html;
-	}
-				
 	public function prepare_general() {
-
+	
 		$this->fields = array(
 				'name' => array(
 						'id' => 'name',
@@ -411,76 +279,181 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->model->id,
 				),
+	
+		);
+	}
+	
+	public function render_page() {
+		$model = $this->model->rules['page'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
+		$rule_list_table->prepare_items();
 		
-		);		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Page access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php
+		$html = ob_get_clean();
+		echo $html;
+	}
+		
+	public function render_category() {
+		$model = $this->model->rules['category'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Category( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Category access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	
+	public function render_post() {
+		$model = array( 
+			'post' => $this->model->rules['post'], 
+			'category'	=> $this->model->rules['category'],
+		);
+		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Post by post access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
 	}
 
-				
-	public function prepare_rules() {
-		$rule_types = MS_Model_Rule::get_rule_type_titles();
-		$section = 'ms_rule';
+	public function render_comment() {
+		$model = $this->model->rules['comment'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Comment( $model );
+		$rule_list_table->prepare_items();
 		
-		$this->fields = array( 
-			'rule_type' => array( 
-				'id' => 'rule_type', 
-				'section' => self::RULE_SECTION, 
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => '', 
-				'field_options' => $rule_types,
-				'class' => '',
-			),
-			'delay_access_enabled' => array(
-				'id' => 'delay_access_enabled',
-				'section' => self::RULE_SECTION,
-				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-				'title' => __( 'Delayed access (dripped content)', MS_TEXT_DOMAIN ),
-				'value' => '',
-				'class' => '',
-			),
-			'delayed_period_unit' => array(
-				'id' => 'delayed_period_unit',
-				'section' => self::RULE_SECTION,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Delayed period', MS_TEXT_DOMAIN ),
-				'value' => '',
-				'class' => '',
-			),
-			'delayed_period_type' => array(
-				'id' => 'delayed_period_type',
-				'section' => self::RULE_SECTION,
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => '',
-				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => '',
-			),
-			'inherit_rules' => array(
-					'id' => 'inherit_rules',
-					'section' => self::RULE_SECTION,
-					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-					'title' => __( 'Inherit parents access by default (recommended)', MS_TEXT_DOMAIN ),
-					'value' => '1',
-					'class' => '',
-			),
-			'btn_add_rule' => array(
-				'id' => 'btn_add_rule',
-				'section' => self::RULE_SECTION,
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Add Rule', MS_TEXT_DOMAIN ),
-				'class' => '',
-			),
-				
-		);
-		foreach ( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $class ) {
-			$this->rule_types["rule_value_$rule_type"] = array (
-						'id' => "rule_value_$rule_type",
-						'section' => self::RULE_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => '',
-						'field_options' => MS_Model_Rule::rule_factory( $rule_type )->get_content(),
-						'class' => 'ms-select-rule-type',
-						'multiple' => 'multiple',
-			);
-		}		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Comments access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+		
+	public function render_menu() {
+		$model = $this->model->rules['menu'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Menu access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	
+	public function render_media() {
+		$model = $this->model->rules['media'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Media( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Media access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	public function render_shortcode() {
+		$model = $this->model->rules['shortcode'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+		<div class='ms-settings'>
+			<h2><?php _e( 'Shortcode access', MS_TEXT_DOMAIN ); ?></h2>
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+			</form>
+		</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	
+	public function render_urlgroup() {
+		$model = $this->model->rules['url_group'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Url_Group( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'URL Groups access', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	
+	public function render_dripped() {
+		$model = $this->model->rules['dripped'];
+		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
+		$rule_list_table->prepare_items();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h2><?php _e( 'Dripped content', MS_TEXT_DOMAIN ); ?></h2>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
 	}
 	
 }

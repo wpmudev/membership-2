@@ -21,30 +21,39 @@
 */
 
 
-class MS_Model_Rule_Category extends MS_Model_Rule {
+class MS_Model_Rule_Media extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
+	
+	public function on_protection() {
 		
+	}
 	public function get_content() {
-		$contents = get_categories( 'get=all' );
-
+		$posts_to_show = 10; //TODO
+		$contents = get_posts( array(
+			'numberposts' => $posts_to_show,
+			'offset'      => 0,
+			'orderby'     => 'post_date',
+			'order'       => 'DESC',
+			'post_type'   => 'attachment',
+		) );
+				
 		foreach( $contents as $content ) {
-			$content->id = $content->term_id;
+			$content->id = $content->ID;
 			if( in_array( $content->id, $this->rule_value ) ) {
 				$content->access = true;
 			}
 			else {
 				$content->access = false;
 			}
-			if( in_array( $content->id, $this->delayed_access_enabled ) && ! empty( $this->delayed_period_unit[ $content->id ] ) && ! empty( $this->delayed_period_type[ $content->id ] ) ) {
+			if( in_array( $content->id, $this->delayed_access_enabled ) ) {
 				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
 			}
 			else {
 				$content->delayed_period = '';
 			}
 		}
-		
 		return $contents;
+		
 	}
-	
 }

@@ -29,12 +29,27 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		
 	}
 	
-	public static function get_content() {
+	public function get_content() {
 		global $shortcode_tags;
 		
 		$content = array();
 		foreach( $shortcode_tags as $key => $function ) {
-			$content[ esc_html( trim( $key ) ) ] = "[$key]";
+			$id = esc_html( trim( $key ) );
+			$content[ $id ]->id = $id;
+			$content[ $id ]->name = "[$key]";
+			
+			if( in_array( $id, $this->rule_value ) ) {
+				$content[ $id ]->access = true;
+			}
+			else {
+				$content[ $id ]->access = false;
+			}
+			if( in_array( $id, $this->delayed_access_enabled ) ) {
+				$content[ $id ]->delayed_period = $this->delayed_period_unit[ $id ] . $this->delayed_period_type[ $id ];
+			}
+			else {
+				$content[ $id ]->delayed_period = '';
+			}
 		}
 		return $content;
 	}
