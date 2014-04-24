@@ -24,6 +24,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_membership';
 	
+	const MEMBERSHIP_TYPE_PERMANENT = 'permanent';
+	
+	const MEMBERSHIP_TYPE_FINITE = 'finite';
+	
+	const MEMBERSHIP_TYPE_DATE_RANGE = 'date-range';
+	
+	const MEMBERSHIP_TYPE_RECURRING = 'recurring';
+	
 	protected static $CLASS_NAME = __CLASS__;
 		
 	protected $membership_type;
@@ -62,11 +70,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $rules = array();
 
+	public static function get_membership_types() {
+		return array(
+				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+		);
+	}
 	public function set_rule( $rule_type, $rule ) {
 		$this->rules[ $rule_type ] = $rule;
 	}
 	
 	public function get_trial_expiry_date( $start_date = null ) {
+		$start_date = MS_Helper_Period::current_date();
 		if( $this->trial_period_unit && $this->trial_period_type ) {
 			$expiry_date = MS_Helper_Period::add_interval ( $this->trial_period_unit, $this->trial_period_type , $start_date );
 		}
@@ -78,7 +95,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public function get_expiry_date( $start_date = null ) {
 		$start_date = $this->get_trial_expiry_date( $start_date );
-		return MS_Helper_Period::add_interval ( $this->period_unit, $this->period_type , $start_date );		
+		$end_date = null;
+		switch( $this->membership_type ){
+			case self::MEMBERSHIP_TYPE_PERMANENT:
+				$end_date = null;
+				break;
+			case self::MEMBERSHIP_TYPE_FINITE:
+				$end_date = MS_Helper_Period::add_interval ( $this->period_unit, $this->period_type , $start_date );
+				break;
+			case self::MEMBERSHIP_TYPE_DATE_RANGE:
+				$end_date = $this->period_end_date;
+				break;
+			case self::MEMBERSHIP_TYPE_RECURRING:
+				$end_date = MS_Helper_Period::add_interval ( $this->pay_cicle_period_unit, $this->pay_cicle_period_type , $start_date );
+				break;
+		}
+		return $end_date;		
 	}
 	
 	public static function get_memberships( $limit = 10 ) {

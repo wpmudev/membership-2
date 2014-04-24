@@ -186,12 +186,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Membership type', MS_TEXT_DOMAIN ),
 						'value' => $this->model->membership_type,
-						'field_options' => array (
-								'permanent' => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
-								'finite' => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
-								'date-range' => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
-								'recurring' => __( 'Recurring payment', MS_TEXT_DOMAIN ),
-						),
+						'field_options' => MS_Model_Membership::get_membership_types(),
 						'class' => '',
 				),
 				'period_unit' => array(
@@ -227,7 +222,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'class' => '',
 				),
 				'period_date_start' => array(
-						'id' => 'period_unit',
+						'id' => 'period_date_start',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
@@ -238,7 +233,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'id' => 'period_date_end',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => $this->model->period_unit,
+						'value' => $this->model->period_date_end,
 						'class' => '',
 				),
 				'trial_period_enabled' => array(

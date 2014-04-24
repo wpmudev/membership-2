@@ -55,7 +55,7 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->views['membership_edit']->model = $this->model;
 
-		if( ! empty( $_POST['action'] ) )
+		if( ! empty( $_POST['submit'] ) || ! empty( $_POST['action'] ) )
 		{
 			$this->save_membership();
 			$this->views['membership_edit']->model = $this->model;

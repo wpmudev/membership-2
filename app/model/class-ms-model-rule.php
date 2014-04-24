@@ -66,12 +66,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $delayed_period_type = array();
 	
-	
-	public function on_protection() {
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public function validate_protection() {
+	function can_view_current_page() {
+		return true;
 		throw new Exception ("Method to be implemented in child class");
 	}
 
@@ -97,8 +93,4 @@ class MS_Model_Rule extends MS_Model {
 			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
 		}
 	}
-	
-// 	public static function get_content() {
-// 		return array();
-// 	}
 }

@@ -30,35 +30,35 @@ class MS_Model_Member extends MS_Model {
 	
 	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
 	
-	private $memberships = array();
+	protected $memberships = array();
 	
-	private $transactions;
+	protected $transactions = array();
 	
-	private $is_admin = false;
+	protected $is_admin = false;
 	
-	private $active = false;
+	protected $active = false;
 	
-	private $username;
+	protected $username;
 	
-	private $email;
+	protected $email;
 	
-	private $phone_number;
+	protected $phone_number;
 		
-	private $address;
+	protected $address;
 	
-	private $address_number;
+	protected $address_number;
 	
-	private $address_comp;
+	protected $address_comp;
 	
-	private $district;
+	protected $district;
 	
-	private $city;
+	protected $city;
 	
-	private $state_cd;
+	protected $state_cd;
 	
-	private $country;
+	protected $country;
 	
-	private $zip_code;
+	protected $zip_code;
 	
 	protected static $ignore_fields = array( 'id', 'username', 'email', 'type_cd_options', 'state_cd_options', 'referer_options', 'actions', 'filters' );
 	
@@ -66,16 +66,20 @@ class MS_Model_Member extends MS_Model {
 		$this->id = $user_id;
 	}
 	
+	public static function get_current_member() {
+		return self::load( get_current_user_id() );
+	}
+	
 	public static function load( $user_id = 0 )
 	{
 		$member = new MS_Model_Member( $user_id );
 		
-		if( ! empty( $member_id ) )
+		if( ! empty( $user_id ) )
 		{
-			$wp_user = new WP_User( $member_id );
+			$wp_user = new WP_User( $user_id );
 
-			$member_details = get_user_meta( $member_id );
-			$member->id = $member_id;
+			$member_details = get_user_meta( $user_id );
+			$member->id = $user_id;
 			$member->username = $wp_user->user_login;
 			$member->email = $wp_user->user_email;
 			$member->name = $wp_user->user_nicename;
@@ -91,7 +95,7 @@ class MS_Model_Member extends MS_Model {
 				}
 				if( isset( $member_details[ $field ][0] ) )
 				{
-					$member->$field = $member_details[ $field ][0];
+					$member->$field = maybe_unserialize( $member_details[ $field ][0] );
 				}
 			}
 		}
@@ -99,10 +103,6 @@ class MS_Model_Member extends MS_Model {
 	}
 	public function save()
 	{
-		if( is_multisite() ) {
-			switch_to_blog( 1 ); //TODO get main blog_id
-		}
-	
 		if( ! empty( $this->id ) )
 		{
 			$user_details = get_user_meta( $this->id );
@@ -134,10 +134,6 @@ class MS_Model_Member extends MS_Model {
 			throw new Exception( "user id is empty" );
 		}
 		
-		if( is_multisite() ) {
-			restore_current_blog();
-		}
-
 		return $this;
 	}
 	
@@ -184,21 +180,20 @@ class MS_Model_Member extends MS_Model {
 				$is_member = true;
 			}
 		}
-		elseif ( ! empty ($this->memberships ) ) {
+		elseif ( ! empty ( $this->memberships ) ) {
 			$is_member = true;
 		}
 		
-		return apply_filters( 'ms_is_member', $is_member, $this->id );
+		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );
 	}
 	
 	public function deactivate() {
 		$this->active = false;
 	}
 
-	public static function is_logged_user()
+	public function is_logged_user()
 	{
-		global $current_user;
-		return $current_user->ID;
+		return is_user_logged_in();
 	}
 	
 	public static function is_admin_user( $wp_user = null )
@@ -209,7 +204,7 @@ class MS_Model_Member extends MS_Model {
 		{
 			$wp_user = wp_get_current_user();
 		}
-		if ( ! empty( $wp_user ) && ( $wp_user->has_cap( 'ms_membershipadmin' ) || $wp_user->has_cap( 'manage_options' ) || is_super_admin( $wp_user->id ) ) ) {
+		if ( ! empty( $wp_user ) && ( $wp_user->has_cap( 'ms_membershipadmin' ) || $wp_user->has_cap( 'manage_options' ) || is_super_admin( $wp_user->ID ) ) ) {
 			$is_admin = true;
 		}
 		return $is_admin;
