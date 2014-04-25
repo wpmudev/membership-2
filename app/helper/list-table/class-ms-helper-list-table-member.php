@@ -20,9 +20,6 @@
  *
 */
 
-// RK: Nothing changed yet. Just a copy of MS_Helper_List_Table_Membership
-
-
 /**
  * Membership List Table 
  *
@@ -31,35 +28,16 @@
  *
  */
 class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
-		
-	private $data = array(
-		array( 'ID' => 1, 'username' => 'user1', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 3, 'username' => 'user3', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
-		array( 'ID' => 2, 'username' => 'user2', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 4, 'username' => 'user4', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 6, 'username' => 'user6', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
-		array( 'ID' => 5, 'username' => 'user5', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 7, 'username' => 'user7', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 9, 'username' => 'user9', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
-		array( 'ID' => 8, 'username' => 'user8', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 10, 'username' => 'user10', 'name' => 'John One', 'email' => 'my1@email.com', 'membership' => 'Visitor', 'status' => 1 ),
-		array( 'ID' => 12, 'username' => 'user12', 'name' => 'Tom Three', 'email' => 'my3@email.com', 'membership' => 'Visitor', 'status' => 0 ),
-		array( 'ID' => 11, 'username' => 'user11', 'name' => 'Tim Two', 'email' => 'my2@email.com', 'membership' => 'Visitor', 'status' => 1 ),											
-	);
-		
-		
-	public function __construct() {
-		parent::__construct();
-	}
-	
+			
 	public function get_columns() {
 		$columns = array(
 			'cb'		 => '<input type="checkbox" />',
 			'username'	 => __('Username', MS_TEXT_DOMAIN ),
 			'name'		 => __('Name', MS_TEXT_DOMAIN ),
 			'email'		 => __('E-mail', MS_TEXT_DOMAIN ),
-			'membership' => __('Membership(s)', MS_TEXT_DOMAIN ),			
-			'status' 	 => __('Status', MS_TEXT_DOMAIN ),				
+			'active' 	 => __('Active', MS_TEXT_DOMAIN ),				
+			'membership' => __('Membership', MS_TEXT_DOMAIN ),
+			'expire' => __('Membership Expire', MS_TEXT_DOMAIN ),
 		);
 		return $columns;
 	}
@@ -73,112 +51,83 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'username' => array( 'username', false ),
 			'name' => array( 'name', false ),
 			'email' => array( 'email', false ),
+			'active' => array( 'active', false ),			
 			'membership' => array( 'membership', false ),
-			'status' => array( 'status', false ),			
+			'expire' => array( 'expire', false ),
 		);
 	}
+	
 	public function prepare_items() {
-		
-		$columns = $this->get_columns();
-		$hidden = $this->get_hidden_columns();
-		$sortable = $this->get_sortable_columns();
-		$this->_column_headers = array($columns, $hidden, $sortable);
-		usort( $this->data, array( &$this, 'usort_reorder' ) );
-		$this->items = $this->get_items();
 
-		$per_page = $this->get_items_per_page('members_per_page', 5);
+		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+
+		$total_items =  MS_Model_Member::get_members_count();
+		$per_page = $this->get_items_per_page( 'members_per_page', 10 );
 		$current_page = $this->get_pagenum();
-		$total_items = count($this->data);
 		
-		// Used for testing. Use SQL LIMIT instead
-		$this->found_data = array_slice( $this->data, ( ( $current_page - 1 ) * $per_page ), $per_page );
-
+		$args = array(
+				'number' => $per_page,
+				'offset' => ( $current_page - 1 ) * $per_page,
+		);
+		
+		$this->items = MS_Model_Member::get_members( $args );
+				
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,
 				'per_page' => $per_page,
 			)
 		);
-
-		$this->items = $this->found_data;
 		
-	}
-	public function get_items() {
-		
-		$items = $this->data;
-		// $args = array(
-		// 			'post_type' => MS_Model_Membership::$POST_TYPE,
-		// 			'posts_per_page' => 10, //TODO 
-		// 			'order' => 'DESC',
-		// 		);
-		// 		$query = new WP_Query($args);
-		// 		$items = $query->get_posts();
-		
-		return $items;
 	}
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'username':
 			case 'name':
 			case 'email':
-			case 'membership':
-				return $item[ $column_name ];
+				$html = $item->$column_name;
 				break;
-			case 'status':
-				return 1 == $item['status'] ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
+			case 'active':
+				$html = ( 1 == $item->active) ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
 			default:
 				print_r( $item, true );
 		}
-		// switch( $column_name ) {
-		// 	case 'name':
-		// 		$html = "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>$item->name</a>";
-		// 		break;
-		// 	case 'active':
-		// 		$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
-		// 		break;
-		// 	case 'members':
-		// 		$html = 0;
-		// 		break;
-		// 	default:
-		// 		$html = print_r( $item, true ) ;
-		// 		break;
-		// }
 		return $html;
-	}
-	
-	
-	// FOR CUSTOM DATA, do proper sort in the model using SQL ORDERBY
-	function usort_reorder( $a, $b ) {
-	  // If no sort, default to title
-	  $orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'username';
-	  // If no order, default to asc
-	  $order = ( ! empty($_GET['order'] ) ) ? $_GET['order'] : 'asc';
-	  // Determine sort order
-	  $result = strcmp( $a[$orderby], $b[$orderby] );
-	  // Send final sort direction to usort
-	  return ( $order === 'asc' ) ? $result : -$result;
 	}
 	
 	function column_username( $item ) {
 		$actions = array(
-			'edit' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'edit', $item['ID'], __('Edit', MS_TEXT_DOMAIN ) ),
-			'deactivate' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'deactivate', $item['ID'], __('Deactivate', MS_TEXT_DOMAIN ) ),			
+			'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+			'deactivate' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'deactivate', $item->id, __('Deactivate', MS_TEXT_DOMAIN ) ),			
 		);
 		
-		echo sprintf( '%1$s %2$s', $item['username'], $this->row_actions($actions) );
+		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions($actions) );
 	}
 
 	function column_membership( $item ) {
+		$html = array();
+		foreach( $item->memberships as $id => $membership_relationship ) {
+			$membership = $membership_relationship->get_membership(); 
+			$html[] = "{$membership->name} ({$membership_relationship->status})";
+		}
+		$html = join(', ', $html);
+		
 		$actions = array(
-			'add' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'add', $item['ID'], __('Add', MS_TEXT_DOMAIN ) ),
-			'move' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'move', $item['ID'], __('Move', MS_TEXT_DOMAIN ) ),			
-			'drop' => sprintf( '<a href="?page=%s&action=%s&member=%s">%s</a>', $_REQUEST['page'], 'drop', $item['ID'], __('Drop', MS_TEXT_DOMAIN ) ),
+			'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
+// 			'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move', $item->id, __('Move', MS_TEXT_DOMAIN ) ),			
+			'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
 			
 		);
 		
-		echo sprintf( '%1$s %2$s', $item['membership'], $this->row_actions($actions) );
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions($actions) );
 	}
-
+	
+	function column_expire( $item ) {
+		$html = array();
+		foreach( $item->memberships as $membership_relationship ) {
+			$html[] = $membership_relationship->expire_date;
+		}
+		return join(', ', $html);
+	}
 	function get_bulk_actions() {
 	  $actions = array(
 	    'deactivate'    => 'Deactivate Membership'
@@ -187,12 +136,10 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 
 	function column_cb($item) {
-	        return sprintf(
-	            '<input type="checkbox" name="member[]" value="%s" />', $item['ID']
-	        );    
+        return sprintf(
+            '<input type="checkbox" name="member[]" value="%s" />', $item->id
+        );    
     }
-
-
 
 	function search_box( $text, $input_id ) {
 		if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
@@ -208,20 +155,20 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
 		if ( ! empty( $_REQUEST['detached'] ) )
 			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
-?>
-<div id="member-search-box">
-	<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
-	<div class="input-container">
-<!--		<select id="member-search-options" name="" style="width: 115px;">
-			<option value="Value for Item 1" title="Title for Item 1">Full Name</option>
-			<option value="Value for Item 2" title="Title for Item 2">Membership</option>
-			<option value="Value for Item 3" title="Title for Item 3">E-mail Address</option>
-		</select>  -->
-		<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />		
-		<?php submit_button( $text , 'button', false, false, array('id' => 'search-submit') ); ?>
-	</div>
-</div>
-<?php
+		?>
+		<div id="member-search-box">
+			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
+			<div class="input-container">
+		<!--		<select id="member-search-options" name="" style="width: 115px;">
+					<option value="Value for Item 1" title="Title for Item 1">Full Name</option>
+					<option value="Value for Item 2" title="Title for Item 2">Membership</option>
+					<option value="Value for Item 3" title="Title for Item 3">E-mail Address</option>
+				</select>  -->
+				<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />		
+				<?php submit_button( $text , 'button', false, false, array('id' => 'search-submit') ); ?>
+			</div>
+		</div>
+		<?php
 	}
 
 

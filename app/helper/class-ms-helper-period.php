@@ -36,7 +36,7 @@ class MS_Helper_Period extends MS_Helper {
 	
 	const PERIOD_TYPE_YEARS = 'years';
 	
-	const PERIOD_FORMAT = 'Y-m-d H:i:s';
+	const PERIOD_FORMAT = 'Y-m-d';
 	
 	
 	public static function add_interval( $period_unit, $period_type, $start_date ) {

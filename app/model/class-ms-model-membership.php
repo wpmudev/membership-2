@@ -82,10 +82,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$this->rules[ $rule_type ] = $rule;
 	}
 	
-	public function get_trial_expiry_date( $start_date = null ) {
+	public function get_trial_expire_date( $start_date = null ) {
 		$start_date = MS_Helper_Period::current_date();
 		if( $this->trial_period_unit && $this->trial_period_type ) {
-			$expiry_date = MS_Helper_Period::add_interval ( $this->trial_period_unit, $this->trial_period_type , $start_date );
+			$expiry_date = MS_Helper_Period::add_interval( $this->trial_period_unit, $this->trial_period_type , $start_date );
 		}
 		else {
 			$expiry_date = MS_Helper_Period::current_date();
@@ -93,21 +93,21 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $expiry_date;
 	}
 	
-	public function get_expiry_date( $start_date = null ) {
-		$start_date = $this->get_trial_expiry_date( $start_date );
+	public function get_expire_date( $start_date = null ) {
+		$start_date = $this->get_trial_expire_date( $start_date );
 		$end_date = null;
 		switch( $this->membership_type ){
 			case self::MEMBERSHIP_TYPE_PERMANENT:
 				$end_date = null;
 				break;
 			case self::MEMBERSHIP_TYPE_FINITE:
-				$end_date = MS_Helper_Period::add_interval ( $this->period_unit, $this->period_type , $start_date );
+				$end_date = MS_Helper_Period::add_interval( $this->period_unit, $this->period_type , $start_date );
 				break;
 			case self::MEMBERSHIP_TYPE_DATE_RANGE:
 				$end_date = $this->period_end_date;
 				break;
 			case self::MEMBERSHIP_TYPE_RECURRING:
-				$end_date = MS_Helper_Period::add_interval ( $this->pay_cicle_period_unit, $this->pay_cicle_period_type , $start_date );
+				$end_date = MS_Helper_Period::add_interval( $this->pay_cicle_period_unit, $this->pay_cicle_period_type , $start_date );
 				break;
 		}
 		return $end_date;		
@@ -128,6 +128,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		return $memberships;
 	}
+	
+	public static function get_membership_names( $args = null ) {
+		$defaults = array(
+				'post_type' => self::$POST_TYPE,
+				'order' => 'DESC',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$query = new WP_Query($args);
+		$items = $query->get_posts();
+		
+		$memberships = array();
+		foreach ( $items as $item ) {
+			$memberships[ $item->ID ] = $item->name;
+		}
+		return $memberships;
+		
+	}
+	
 	public static function load( $model_id ) {
 		$model = parent::load( $model_id );
 		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $type => $class ) {

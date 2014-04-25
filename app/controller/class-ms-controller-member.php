@@ -26,19 +26,11 @@ class MS_Controller_Member extends MS_Controller {
 	
 	private $capability = 'manage_options';
 	
-	private $models;
+	private $model;
 	
 	private $views;
 		
 	public function __construct() {
-		
-		$member_id = ! empty( $_GET['member_id'] ) ? $_GET['member_id'] : 0;
-		
-		/** Member Model */
-		$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
-
-		/** Menu: Members */
-		$this->views['member_list'] = apply_filters( 'membership_member_list_view', new MS_View_Member_List() );
 		
 		/** New/Edit: Member */ 
 		$this->views['member_edit'] = apply_filters( 'membership_member_edit_view', new MS_View_Member_Edit() );
@@ -76,18 +68,76 @@ class MS_Controller_Member extends MS_Controller {
 	
 	
 	public function admin_member_list() {
-		$this->views['member_list']->render();
+		
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id']) ) {
+			/** Menu: Members */
+			$this->views['membership'] = apply_filters( 'membership_view_member_membership', new MS_View_Member_Membership() );
+
+			$member_id = $_GET['member_id'];
+			$action =  $_GET['action'];
+			/** Member Model */
+			$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
+				
+			switch( $action ) {
+				case 'add':
+					$memberships = MS_Model_Membership::get_membership_names();
+					$memberships = array_diff_key( $memberships, $this->model->memberships );
+					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
+					break;
+				case 'drop':
+					$args = array( 'post__in' => array_keys( $this->model->memberships ) ); 
+					$memberships = MS_Model_Membership::get_membership_names( $args );
+					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
+					break;
+				case 'move': 
+					//TODO
+					break;
+			}	
+			$this->views['membership']->action = $action;
+			$this->views['membership']->member_id = $member_id;
+			$this->views['membership']->memberships = $memberships;
+			$this->views['membership']->render();
+		}
+		else {
+			if( ! empty( $_POST['submit'] ) ) {
+				$this->manage_member_membership();
+			}
+			/** Menu: Members */
+			$this->views['member_list'] = apply_filters( 'membership_view_member_list', new MS_View_Member_List() );
+			
+			$this->views['member_list']->render();
+		}
 	}
 		
-	public function membership_edit() {		
-		$this->views['membership_edit']->model = $this->model;
-
-		if( ! empty( $_POST['submit'] ) )
-		{
-			$this->save_membership();
-			$this->views['membership_edit']->model = $this->model;
+	public function manage_member_membership() {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
 		}
-		$this->views['membership_edit']->render();
+		$section = MS_View_Member_Membership::MEMBERSHIP_SECTION;
+		$nonce = MS_View_Member_Membership::MEMBERSHIP_NONCE;
+		if ( ! empty( $_POST[ $section ]['member_id'] ) && ! empty( $_POST[ $section ]['action'] ) && ! empty( $_POST[ $section ]['membership_id'] ) && 
+				! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+
+			$member_id = $_POST[ $section ]['member_id'];
+			$action = $_POST[ $section ]['action'];
+			$membership_id = $_POST[ $section ]['membership_id'];
+			
+			/** Member Model */
+			$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
+
+			switch( $action ) {
+				case 'add':
+					$this->model->add_membership( $membership_id );
+					break;
+				case 'drop':
+					$this->model->drop_membership( $membership_id );
+					break;
+				case 'move':
+					//TODO
+					break;
+			}
+			$this->model->save();
+		}
 	}
 	
 	

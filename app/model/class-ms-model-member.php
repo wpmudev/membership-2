@@ -21,21 +21,14 @@
 */
 
 class MS_Model_Member extends MS_Model {
-	
-	const MEMBERSHIP_STATUS_ACTIVE = 'active';
-	
-	const MEMBERSHIP_STATUS_TRIAL = 'trial';
-
-	const MEMBERSHIP_STATUS_EXPIRED = 'expired';
-	
-	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
-	
+		
 	protected $memberships = array();
 	
 	protected $transactions = array();
 	
 	protected $is_admin = false;
 	
+	/** Staus to activate or deactivate a user independently of the membership status. */
 	protected $active = false;
 	
 	protected $username;
@@ -60,7 +53,7 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $zip_code;
 	
-	protected static $ignore_fields = array( 'id', 'username', 'email', 'type_cd_options', 'state_cd_options', 'referer_options', 'actions', 'filters' );
+	protected static $ignore_fields = array( 'id', 'username', 'email', 'actions', 'filters' );
 	
 	public function __construct( $user_id ) {
 		$this->id = $user_id;
@@ -101,6 +94,7 @@ class MS_Model_Member extends MS_Model {
 		}
 		return $member;
 	}
+	
 	public function save()
 	{
 		if( ! empty( $this->id ) )
@@ -137,33 +131,67 @@ class MS_Model_Member extends MS_Model {
 		return $this;
 	}
 	
+	public static function get_members_count( $args = null ) {
+		$defaults = array(
+				'number' => 10,
+				'offset' => 0,
+				'fields' => 'ID'
+		);
+		$args = wp_parse_args( $args, $defaults );
+		$wp_user_search = new WP_User_Query( $args );
+		
+		return $wp_user_search->get_total();		
+	}
+	public static function get_members( $args = null ) {
+		$defaults = array(
+				'number' => 10,
+				'offset' => 0,
+				'fields' => 'ID'
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		// Query the user IDs for this page
+		$wp_user_search = new WP_User_Query( $args );
+		
+		$users = $wp_user_search->get_results();
+
+		$members = array();
+		foreach( $users as $user_id ) {
+			$members[] = self::load( $user_id );
+		}
+		
+		return $members;
+		
+	}
 	public function add_membership( $membership_id, $gateway = 'admin' )
 	{
 		$membership = MS_Model_Membership::load( $membership_id );
 		
 		if( ! array_key_exists( $membership_id,  $this->memberships ) ) {
-			$this->memberships[ $membership_id ] = array(
-				'start_date' => MS_Helper_Period::current_date(),
-				'update_date' => MS_Helper_Period::current_date(),
-				'trial_expiry_date'	=> $membership->get_trial_expiry_date(),
-				'expiry_date' => $membership->get_expiry_date(),
-				'gateway' => $gateway,
-				'membership_status' => ( $membership->trial_period_unit ) ? self::MEMBERSHIP_STATUS_TRIAL : self::MEMBERSHIP_STATUS_ACTIVE,
-			);
+			$membership_relationship = new MS_Model_Membership_Relationship();
+			$membership_relationship->membership_id = $membership_id;
+			$membership_relationship->start_date = MS_Helper_Period::current_date(); 
+			$membership_relationship->update_date = MS_Helper_Period::current_date();
+			$membership_relationship->trial_expire_date = $membership->get_trial_expire_date();
+			$membership_relationship->expire_date = $membership->get_expire_date();
+			$membership_relationship->gateway = $gateway;
+			$membership_relationship->status = ( $membership->trial_period_enabled ) 
+					? MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL 
+					: MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE; 
+			
+			$this->memberships[ $membership_id ] = $membership_relationship;
 			$this->active = true;
 		}
 	}
 
 	public function deactivate_membership( $membership_id ) {
-		if( ! array_key_exists( $membership_id,  $this->memberships ) )
-		{
-			$this->memberships[ $membership_id ]['membership_status'] = self::MEMBERSHIP_STATUS_DEACTIVATED;
+		if( ! array_key_exists( $membership_id,  $this->memberships ) ) {
+			$this->memberships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
 		}
 	}
 	
 	public function drop_membership( $membership_id ) {
-		if( ! array_key_exists( $membership_id,  $this->memberships ) )
-		{
+		if( array_key_exists( $membership_id,  $this->memberships ) ) {
 			unset( $this->memberships[ $membership_id ] );
 		}
 	}

@@ -20,32 +20,31 @@
  *
 */
 
-
-class MS_Model_Rule_Category extends MS_Model_Rule {
+class MS_Model_Membership_Relationship extends MS_Model {
 	
-	protected static $CLASS_NAME = __CLASS__;
-		
-	public function get_content() {
-// 		$contents = get_categories( 'get=all' );
-		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
+	const MEMBERSHIP_STATUS_ACTIVE = 'active';
+	
+	const MEMBERSHIP_STATUS_TRIAL = 'trial';
 
-		foreach( $contents as $content ) {
-			$content->id = $content->term_id;
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
-			else {
-				$content->access = false;
-			}
-			if( in_array( $content->id, $this->delayed_access_enabled ) && ! empty( $this->delayed_period_unit[ $content->id ] ) && ! empty( $this->delayed_period_type[ $content->id ] ) ) {
-				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
-			}
-			else {
-				$content->delayed_period = '';
-			}
-		}
-		
-		return $contents;
+	const MEMBERSHIP_STATUS_EXPIRED = 'expired';
+	
+	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
+
+	protected $membership_id;
+	
+	protected $start_date;
+	
+	protected $expire_date;
+	
+	protected $update_date;
+	
+	protected $trial_expire_date;
+	
+	protected $gateway;
+	
+	protected $status;
+	
+	public function get_membership() {
+		return MS_Model_Membership::load( $this->membership_id );
 	}
-	
 }

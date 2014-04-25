@@ -109,7 +109,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo "</div>";
 				break;
 			case self::INPUT_TYPE_BUTTON:
-				echo "<input class='ms-field-input button button-primary' type='button' id='$id' name='" . $section . "[$id]' value='$value' />";
+				echo "<input class='ms-field-input button $class' type='button' id='$id' name='" . $section . "[$id]' value='$value' />";
+				break;
+			case self::INPUT_TYPE_SUBMIT:
+				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='" . $section . "[$id]' value='$value' />";
 				break;
 				
 		}		
@@ -134,7 +137,26 @@ class MS_Helper_Html extends MS_Helper {
 		
 		echo "<input class='ms-field-input ms-submit $class' type='submit' id='$id' name='$id' value='$value'/>";
 	}
-
+	/**
+	 * Method for creating html link.
+	 *
+	 * Pass in array with link arguments. See $defaults for argmuments.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void But does output HTML.
+	 */
+	public static function html_link( $args = array() ) {
+		$defaults = array(
+			'title'		=> '',
+			'value'     => '',
+			'class'   	=> '',
+			'url'		=> '',	
+			);
+		extract( wp_parse_args( $args, $defaults ) );
+		
+		echo "<a title='$title' class='$class' href='$url'>$value</a>";
+	}
 	/**
 	 * Method for outputting vertical tabs. 
 	 *
