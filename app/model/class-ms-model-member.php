@@ -21,15 +21,17 @@
 */
 
 class MS_Model_Member extends MS_Model {
-		
-	protected $memberships = array();
+
+	protected $membership_ids = array();
+	
+	protected $membership_relationships = array();
 	
 	protected $transactions = array();
 	
 	protected $is_admin = false;
 	
 	/** Staus to activate or deactivate a user independently of the membership status. */
-	protected $active = false;
+	protected $active = true;
 	
 	protected $username;
 	
@@ -53,7 +55,7 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $zip_code;
 	
-	protected static $ignore_fields = array( 'id', 'username', 'email', 'actions', 'filters' );
+	protected static $ignore_fields = array( 'id', 'name', 'username', 'email', 'actions', 'filters' );
 	
 	public function __construct( $user_id ) {
 		$this->id = $user_id;
@@ -86,12 +88,13 @@ class MS_Model_Member extends MS_Model {
 				{
 					continue;
 				}
-				if( isset( $member_details[ $field ][0] ) )
+				if( isset( $member_details[ "ms_$field" ][0] ) )
 				{
-					$member->$field = maybe_unserialize( $member_details[ $field ][0] );
+					$member->$field = maybe_unserialize( $member_details[ "ms_$field" ][0] );
 				}
 			}
 		}
+
 		return $member;
 	}
 	
@@ -107,9 +110,9 @@ class MS_Model_Member extends MS_Model {
 				{
 					continue;
 				}
-				if(isset( $this->$field ) && ( ! isset( $user_details[ $field ][0]) || $user_details[ $field ][0] != $this->$field ) )
+				if(isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0]) || $user_details[ "ms_$field" ][0] != $this->$field ) )
 				{
-					update_user_meta( $this->id, $field, $this->$field);
+					update_user_meta( $this->id, "ms_$field", $this->$field);
 				}
 			}
 			if(isset( $this->name ) )
@@ -120,8 +123,7 @@ class MS_Model_Member extends MS_Model {
 				$wp_user->user_nicename = $this->name;
 				$wp_user->display_name = $this->name;
 				wp_update_user( get_object_vars( $wp_user ) );
-			}
-				
+			}				
 		}
 		else 
 		{
@@ -165,34 +167,23 @@ class MS_Model_Member extends MS_Model {
 	}
 	public function add_membership( $membership_id, $gateway = 'admin' )
 	{
-		$membership = MS_Model_Membership::load( $membership_id );
-		
-		if( ! array_key_exists( $membership_id,  $this->memberships ) ) {
-			$membership_relationship = new MS_Model_Membership_Relationship();
-			$membership_relationship->membership_id = $membership_id;
-			$membership_relationship->start_date = MS_Helper_Period::current_date(); 
-			$membership_relationship->update_date = MS_Helper_Period::current_date();
-			$membership_relationship->trial_expire_date = $membership->get_trial_expire_date();
-			$membership_relationship->expire_date = $membership->get_expire_date();
-			$membership_relationship->gateway = $gateway;
-			$membership_relationship->status = ( $membership->trial_period_enabled ) 
-					? MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL 
-					: MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE; 
-			
-			$this->memberships[ $membership_id ] = $membership_relationship;
-			$this->active = true;
+		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			$membership_relationship = new MS_Model_Membership_Relationship( $membership_id, $gateway );
+			$this->membership_relationships[ $membership_id ] = $membership_relationship;
+			$this->membership_ids[ $membership_id ] = $membership_id;
 		}
 	}
 
 	public function deactivate_membership( $membership_id ) {
-		if( ! array_key_exists( $membership_id,  $this->memberships ) ) {
-			$this->memberships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
+		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
 		}
 	}
 	
 	public function drop_membership( $membership_id ) {
-		if( array_key_exists( $membership_id,  $this->memberships ) ) {
+		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			unset( $this->memberships[ $membership_id ] );
+			unset( $this->membership_ids[ $membership_id ] );
 		}
 	}
 	
@@ -204,21 +195,17 @@ class MS_Model_Member extends MS_Model {
 		}
 		
 		if( ! empty( $membership_id ) ) {
-			if( array_key_exists( $membership_id,  $this->memberships ) ) {
+			if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 				$is_member = true;
 			}
 		}
-		elseif ( ! empty ( $this->memberships ) ) {
+		elseif ( ! empty ( $this->membership_relationships ) ) {
 			$is_member = true;
 		}
 		
 		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );
 	}
-	
-	public function deactivate() {
-		$this->active = false;
-	}
-
+		
 	public function is_logged_user()
 	{
 		return is_user_logged_in();

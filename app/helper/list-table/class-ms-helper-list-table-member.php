@@ -105,7 +105,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
 	function column_membership( $item ) {
 		$html = array();
-		foreach( $item->memberships as $id => $membership_relationship ) {
+		foreach( $item->membership_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 
 			$html[] = "{$membership->name} ({$membership_relationship->status})";
 		}
@@ -123,7 +123,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	
 	function column_expire( $item ) {
 		$html = array();
-		foreach( $item->memberships as $membership_relationship ) {
+		foreach( $item->membership_relationships as $membership_relationship ) {
 			$html[] = $membership_relationship->expire_date;
 		}
 		return join(', ', $html);

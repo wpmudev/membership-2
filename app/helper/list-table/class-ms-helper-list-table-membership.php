@@ -30,14 +30,27 @@
 class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		
 	protected $id = 'membership';
-		
+
+	const NONCE_ACTION = 'membnonce';
+	
+	protected $nonce;
+	
+	public function __construct(){
+		parent::__construct( array(
+				'singular'  => 'membership',
+				'plural'    => 'memberships',
+				'ajax'      => false
+		) );
+		$this->nonce = wp_create_nonce( self::NONCE_ACTION );
+	}
+	
 	public function get_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb'     => '<input type="checkbox" />',
-			'name_col' => __('Membership Name', MS_TEXT_DOMAIN ),
-			'active_col' => __('Active', MS_TEXT_DOMAIN ),
-			'public_col' => __('Public', MS_TEXT_DOMAIN ),
-			'members_col' => __('Members', MS_TEXT_DOMAIN ),
+			'name' => __('Membership Name', MS_TEXT_DOMAIN ),
+			'active' => __('Active', MS_TEXT_DOMAIN ),
+			'public' => __('Public', MS_TEXT_DOMAIN ),
+			'members' => __('Members', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -70,21 +83,57 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		);
 		
 	}
+	public function column_name( $item ) {
+		$actions = array(
+				sprintf( '<a href="?page=membership-edit&membership_id=%s">%s</a>',
+						$item->id,
+						'edit',
+						__('Edit', MS_TEXT_DOMAIN )
+				),
+				sprintf( '<a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a>',
+						$_REQUEST['page'],
+						$item->id,
+						'toggle_activation',
+						self::NONCE_ACTION,
+						$this->nonce,
+						__('Toggle Activation', MS_TEXT_DOMAIN )
+				),
+				sprintf( '<a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a>',
+						$_REQUEST['page'],
+						$item->id,
+						'toggle_public',
+						self::NONCE_ACTION,
+						$this->nonce,
+						__('Toogle Public', MS_TEXT_DOMAIN )
+				),
+				sprintf( '<span class="delete"><a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a></span>',
+						$_REQUEST['page'],
+						$item->id,
+						'delete',
+						self::NONCE_ACTION,
+						$this->nonce,
+						__('Delete', MS_TEXT_DOMAIN )
+				),
+		);
+		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+		return sprintf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
+		
+	}
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name_col':
+			case 'name':
 				$html = "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>$item->name</a>";
 				$html .= $this->row_actions( $this->get_column_actions( $item ), false );
 				break;
-			case 'active_col':
+			case 'active':
 				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
 				break;
-			case 'public_col':
+			case 'public':
 				$html = ( $item->public ) ? __( 'Public', MS_TEXT_DOMAIN ) : __( 'Private', MS_TEXT_DOMAIN );
 				break;
-			case 'members_col':
-				$html = 0;
+			case 'members':
+				$html = $item->get_members_count();
 				break;
 			default:
 				$html = print_r( $item, true ) ;
@@ -99,4 +148,11 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			'toggle_public' => __( 'Toggle Public Status', MS_TEXT_DOMAIN ),
 		) );
 	}
+	
+	public function display() {
+		wp_nonce_field( self::NONCE_ACTION, self::NONCE_ACTION );
+	
+		parent::display();
+	}
+	
 }

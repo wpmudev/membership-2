@@ -111,18 +111,25 @@ class MS_View_Membership_Edit extends MS_View {
 						</tr>
 						<tr>
 							<td>
-								<div id="ms-membership-type-finite" class="ms-period-wrapper ms-membership-type">
+								<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
 									<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
 									<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
 								</div>
-								<div id="ms-membership-type-recurring" class="ms-period-wrapper ms-membership-type">
+								<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
 									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_unit'] );?>
 									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_type'] );?>
 								</div>
-								<div id="ms-membership-type-date-range" class="ms-membership-type">
+								<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
 									<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
 									<span> to </span>
 									<?php MS_Helper_Html::html_input( $this->fields['period_date_end'] );?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="ms-membership-on-end-membership-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['on_end_membership_id'] );?>
 								</div>
 							</td>
 						</tr>
@@ -234,6 +241,15 @@ class MS_View_Membership_Edit extends MS_View {
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $this->model->period_date_end,
+						'class' => '',
+				),
+				'on_end_membership_id' => array(
+						'id' => 'on_end_membership_id',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'After membership ends, change to', MS_TEXT_DOMAIN ),
+						'value' => $this->model->on_end_membership_id,
+						'field_options' => MS_Model_Membership::get_membership_names(),
 						'class' => '',
 				),
 				'trial_period_enabled' => array(

@@ -26,8 +26,8 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	protected static $CLASS_NAME = __CLASS__;
 		
 	public function get_content() {
-// 		$contents = get_categories( 'get=all' );
-		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
+		$contents = get_categories( 'get=all' );
+// 		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
 
 		foreach( $contents as $content ) {
 			$content->id = $content->term_id;

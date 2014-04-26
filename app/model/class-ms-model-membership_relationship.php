@@ -44,6 +44,22 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	protected $status;
 	
+	public function __construct( $membership_id, $gateway ) {
+		
+		$membership = MS_Model_Membership::load( $membership_id );
+		
+		$this->membership_id = $membership_id;
+		$this->start_date = MS_Helper_Period::current_date();
+		$this->update_date = MS_Helper_Period::current_date();
+		$this->trial_expire_date = $membership->get_trial_expire_date();
+		$this->expire_date = $membership->get_expire_date();
+		$this->gateway = $gateway;
+		$this->status = ( $membership->trial_period_enabled )
+			? MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL
+			: MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE;
+		
+	}
+	
 	public function get_membership() {
 		return MS_Model_Membership::load( $this->membership_id );
 	}

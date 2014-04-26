@@ -31,16 +31,21 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	protected $id = 'rule';
 	
-	const RULE_SAVE_NONCE = 'rule_save_nonce';
+	const NONCE_ACTION = 'rulenonce';
 	
 	protected $nonce;
 	
 	protected $model;
 	
 	public function __construct( $model ) {
-		parent::__construct();
+		parent::__construct( array(
+			'singular'  => "rule_$this->id",
+			'plural'    => "rules_$this->id",
+			'ajax'      => false
+		) );
+		
 		$this->model = $model;
-		$this->nonce = wp_create_nonce( self::RULE_SAVE_NONCE );
+		$this->nonce = wp_create_nonce( self::NONCE_ACTION );
 	}
 		
 	public function get_columns() {
@@ -134,9 +139,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 					),
 			);
 		}
-		//nonce in url is NOT a good pratice
-		//$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_access_actions", $actions, $item );
-		$actions = array();
+		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_access_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $status, $this->row_actions( $actions ) );
 	}
 	
@@ -157,7 +160,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function display() {
-		wp_nonce_field( self::RULE_SAVE_NONCE, self::RULE_SAVE_NONCE );
+		wp_nonce_field( self::NONCE_ACTION, self::NONCE_ACTION );
 		
 		parent::display();
 	}

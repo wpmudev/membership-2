@@ -39,7 +39,7 @@ class MS_Model_Plugin extends MS_Model {
 		
 		/** Visitor: assign a Visitor Membership */
 		if( ! $this->member->is_logged_user() ){
-			//TODO
+			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 		}
 		
 		/** Logged user with no memberships: assign default Membership */
@@ -78,8 +78,8 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		
 		$can_view = false;
-		foreach( $this->member->memberships as $membership_id => $membership_status ) {
-			$membership = MS_Model_Membership::load( $membership_id );
+		foreach( $this->member->memberships as $membership_relationship ) {
+			$membership = $membership_relationship->get_membership();
 			foreach( $membership->rules as $rule ) {
 				$can_view = ( $can_view || $rule->can_view_current_page() );
 			}

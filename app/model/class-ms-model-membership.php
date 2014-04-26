@@ -36,6 +36,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	protected $membership_type;
 	
+	protected $visitor_membership = false;
+	
 	protected $price;
 	
 	protected $period_unit;
@@ -57,6 +59,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $trial_period_unit;
 	
 	protected $trial_period_type;
+	
+	protected $on_end_membership_id;
 
 	protected $next_membership_id;
 	
@@ -155,5 +159,53 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 		return $model;
+	}
+	
+	public static function get_visitor_membership() {
+		$args = array(
+				'post_type' => self::$POST_TYPE,
+				'post_status' => 'any',
+				'meta_query' => array(
+						array(
+								'key' => 'visitor_membership',
+								'value' => '1',
+								'compare' => '='
+						)
+				)
+		);
+		$query = new WP_Query($args);
+		$item = $query->get_posts();
+
+		$visitor_membership = null;
+		if( ! empty( $item[0] ) ) {
+			$visitor_membership = self::load( $item[0]->ID );
+		}
+		else {
+			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
+			$visitor_membership = new self();
+			$visitor_membership->name = 'Visitor';
+			$visitor_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
+			$visitor_membership->title = $description;
+			$visitor_membership->description = $description;
+			$visitor_membership->visitor_membership = true;
+			$visitor_membership->save();
+			$visitor_membership = self::load( $visitor_membership->id );
+		}
+		return $visitor_membership;
+	}
+	
+	public function get_members_count() {
+		$args = array(
+			'meta_query' => array(
+				array(
+					'key'     => 'ms_membership_ids',
+					'value'   => "i:{$this->id};",
+					'compare' => 'LIKE'
+				),
+			)
+		 );
+		$query = new WP_User_Query( $args );
+		return $query->get_total();
+		
 	}
 }

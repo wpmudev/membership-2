@@ -43,6 +43,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 	}
 	public function admin_membership_list() {
+		
+		_vdslog($_POST);
+		if( ! empty( $_POST['action'] ) && ! empty( $_POST['membership_id']) ) {
+			
+		}
 		/** Menu: Memberships */
 		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
 		
@@ -152,11 +157,12 @@ class MS_Controller_Membership extends MS_Controller {
 		if( 'general' == $active_tab ) {
 			wp_register_style( 'ms_membership_view_render_general', $plugin_url. 'app/assets/css/ms-view-membership-render-general.css', null, $version );
 			wp_enqueue_style( 'ms_membership_view_render_general' );
+			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 		}
-		else if( 'rules' == $active_tab ) {		
-			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
-			wp_enqueue_style( 'ms_rule_view_render_rule' );
-		}
+// 		else if( 'rules' == $active_tab ) {		
+// 			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
+// 			wp_enqueue_style( 'ms_rule_view_render_rule' );
+// 		}
 	}
 	
 		
@@ -170,13 +176,14 @@ class MS_Controller_Membership extends MS_Controller {
 		if( 'general' == $active_tab ) {
 			wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
 			wp_enqueue_script( 'ms_view_membership_render_general' );
+			wp_enqueue_script( 'jquery-ui-datepicker' );
 		}
-		else if( 'rules' == $active_tab ) {		
-			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
-			wp_enqueue_script( 'ms_rule_view_render_rule' );
-			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
-			wp_enqueue_script( 'jquery_tmpl' );
-		}
+// 		else if( 'rules' == $active_tab ) {		
+// 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
+// 			wp_enqueue_script( 'ms_rule_view_render_rule' );
+// 			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
+// 			wp_enqueue_script( 'jquery_tmpl' );
+// 		}
 	
 	}
 	

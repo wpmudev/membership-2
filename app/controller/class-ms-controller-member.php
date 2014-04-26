@@ -81,11 +81,11 @@ class MS_Controller_Member extends MS_Controller {
 			switch( $action ) {
 				case 'add':
 					$memberships = MS_Model_Membership::get_membership_names();
-					$memberships = array_diff_key( $memberships, $this->model->memberships );
+					$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
 				case 'drop':
-					$args = array( 'post__in' => array_keys( $this->model->memberships ) ); 
+					$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) ); 
 					$memberships = MS_Model_Membership::get_membership_names( $args );
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 					break;
