@@ -6,6 +6,9 @@ jQuery( document ).ready(function( $ ) {
 		if( 'finite' == membership_type || 'date-range' == membership_type ) {
 			$( '#ms-membership-on-end-membership-wrapper' ).show();
 		}
+		else {
+			$( '#ms-membership-on-end-membership-wrapper' ).hide();
+		}
 	});
 	$( '#period_date_start' ).datepicker({
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format

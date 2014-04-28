@@ -58,7 +58,7 @@ class MS_Helper_Html extends MS_Helper {
 		
 		$defaults = array(
 			'id'      	=> '',
-			'section'	=> 'section',
+			'section'	=> '',
 			'title'   	=> '',
 			'desc'    	=> '',
 			'value'     => '',
@@ -71,26 +71,32 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 	
+		if( ! empty( $section ) ) {
+			$name = $section . "[$id]";
+		}
+		else {
+			$name = $id;
+		}
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
-				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='" . $section . "[$id]' value='$value' />";
+				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				break;
 			case self::INPUT_TYPE_TEXT:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span><br />" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<input class='ms-field-input ms-text $class' type='text' id='$id' name='" . $section . "[$id]' value='$value' $max_attr />";
+				echo "<input class='ms-field-input ms-text $class' type='text' id='$id' name='$name' value='$value' $max_attr />";
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span><br />" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='" . $section . "[$id]'>$value</textarea>";
+				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name'>$value</textarea>";
 				break;
 			case self::INPUT_TYPE_SELECT:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
-				echo "<select id='$id' class='ms-field-input ms-select $class' name='". $section. "[$id]' $multiple >";
+				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple >";
 				foreach ($field_options as $key => $option ) {
 					$selected = selected( $key, $value, false );
 					echo "<option $selected value='$key'>$option</option>";

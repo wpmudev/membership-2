@@ -40,7 +40,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	public function __construct( $model ) {
 		parent::__construct( array(
 			'singular'  => "rule_$this->id",
-			'plural'    => "rules_$this->id",
+			'plural'    => "rules",
 			'ajax'      => false
 		) );
 		
@@ -73,7 +73,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		return apply_filters( "membership_helper_list_table_{$this->id}_bulk_actions", array(
 				'give_access' => __( 'Give Access', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'No Access', MS_TEXT_DOMAIN ),
-				'drip_access' => __( 'Drip Access', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -99,43 +98,42 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_access( $item ) {
-	
+
 		if( $item->access ) {
-			$status =  ( $item->delayed_period ) ? __( 'Dripped Content', MS_TEXT_DOMAIN ) : __( 'Has Access', MS_TEXT_DOMAIN );
-			if( $item->delayed_period ) {
-				$actions = array(
-						sprintf( '<a href="?page=%s&tab=%s&membership_id=%s&action=%s&item=%s&rule_save_nonce=%s">%s</a>',
-								$_REQUEST['page'],
-								$_REQUEST['tab'],
-								$_REQUEST['membership_id'],
-								'no_access',
-								$item->id,
-								$this->nonce,
-								__('Remove Access', MS_TEXT_DOMAIN )
-						),
-				);
-			}
+			$status = __( 'Has Access', MS_TEXT_DOMAIN );
+			
+			$actions = array(
+					sprintf( '<a href="%s">%s</a>',
+							wp_nonce_url(
+									sprintf( '?page=%s&tab=%s&membership_id=%s&action=%s&item=%s',
+											$_REQUEST['page'],
+											$_REQUEST['tab'],
+											$_REQUEST['membership_id'],
+											'no_access',
+											$item->id
+									),
+									'no_access'
+							),
+							__('No Access', MS_TEXT_DOMAIN )
+					),
+			);
 		}
 		else {
 			$status = __( 'No Access', MS_TEXT_DOMAIN );
+			
 			$actions = array(
-					sprintf( '<a href="?page=%s&tab=%s&membership_id=%s&action=%s&item=%s&rule_save_nonce=%s">%s</a>',
-							$_REQUEST['page'],
-							$_REQUEST['tab'],
-							$_REQUEST['membership_id'],
-							'give_access',
-							$item->id,
-							$this->nonce,
+					sprintf( '<a href="%s">%s</a>',
+							wp_nonce_url(
+									sprintf( '?page=%s&tab=%s&membership_id=%s&action=%s&item=%s',
+											$_REQUEST['page'],
+											$_REQUEST['tab'],
+											$_REQUEST['membership_id'],
+											'give_access',
+											$item->id
+									),
+									'give_access'
+							),
 							__('Give Access', MS_TEXT_DOMAIN )
-					),
-					sprintf( '<a href="?page=%s&tab=%s&membership_id=%s&action=%s&item=%s&rule_save_nonce=%s">%s</a>',
-							$_REQUEST['page'],
-							$_REQUEST['tab'],
-							$_REQUEST['membership_id'],
-							'drip_access',
-							$item->id,
-							$this->nonce,
-							__('Drip Access', MS_TEXT_DOMAIN )
 					),
 			);
 		}
@@ -144,23 +142,18 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_dripped( $item ) {
-		$actions = array(
-				sprintf( '<a href="?page=%s&tab=%s&membership_id=%s&action=%s&item=%s">%s</a>',
-						$_REQUEST['page'],
-						$_REQUEST['tab'],
-						$_REQUEST['membership_id'],
-						'drip_edit',
-						$item->id,
-						__('Edit', MS_TEXT_DOMAIN )
-				),
-		);
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_dripped_actions", $actions, $item );
+		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_dripped_actions", null, $item );
 	
 		return sprintf( '%1$s %2$s', $item->delayed_period, $this->row_actions( $actions ) );
 	}
 	
 	public function display() {
-		wp_nonce_field( self::NONCE_ACTION, self::NONCE_ACTION );
+		$membership_id = array(
+				'id' => 'membership_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $_REQUEST['membership_id'],
+		);
+		MS_Helper_Html::html_input( $membership_id );
 		
 		parent::display();
 	}

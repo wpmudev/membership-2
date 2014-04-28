@@ -208,4 +208,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $query->get_total();
 		
 	}
+	
+	public function delete() {
+		if( ! empty( $this->id ) ) {
+			if( $this->get_members_count() > 0 ) {
+				throw new Exception("Could not delete membership with members.");
+			}
+			elseif( $this->visitor_membership ) {
+				throw new Exception("Visitor membership could not be deleted.");
+			}
+			wp_delete_post( $this->id );
+		}
+	}
+	
 }

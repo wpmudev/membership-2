@@ -38,32 +38,153 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
 		
+		$this->add_action( 'load-membership_page_all-memberships', 'admin_membership_list_manager' );
+		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
+		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
-	public function admin_membership_list() {
+	/**
+	 * Show admin notices.
+	 * 
+	 * @todo Improve messaging, hooking into admin_notices or create a html_helper method
+	 * @param number $msg
+	 */
+	public function print_admin_message( $msg = 0 ) {
 		
-		if( ! empty( $_POST['action'] ) && ! empty( $_POST['membership_id']) ) {
-			
+		if( empty( $msg ) ) {
+			$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
+		} 
+		
+		$messages = array(
+				1 => __( 'Membership added.', MS_TEXT_DOMAIN ),
+				2 => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
+				3 => __( 'Membership updated.', MS_TEXT_DOMAIN ),
+				4 => __( 'Membership not added.', MS_TEXT_DOMAIN ),
+				5 => __( 'Membership not updated.', MS_TEXT_DOMAIN ),
+				6 => __( 'Membership not deleted.', MS_TEXT_DOMAIN ),
+				7 => __( 'Membership activation toggled.', MS_TEXT_DOMAIN ),
+				8 => __( 'Membership activation not toggled.', MS_TEXT_DOMAIN ),
+				9 => __( 'Membership status toggled.', MS_TEXT_DOMAIN ),
+				10 => __( 'Membership status not toggled.', MS_TEXT_DOMAIN ),
+				11 => __( 'Memberships updated.', MS_TEXT_DOMAIN ),
+		);
+		
+		if ( array_key_exists( $msg, $messages ) ) {
+			echo '<div id="message" class="updated fade"><p>' . $messages[ $msg ] . '</p></div>';
 		}
+	}
+	
+	/**
+	 * Manages membership actions.
+	 * 
+	 * Verifies GET and POST requests to manage memberships
+	 */
+	public function admin_membership_list_manager() {
+		$msg = 0;
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+			$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'membership_id', 'action', '_wpnonce' ) ) ) ) ;
+		}
+		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-memberships' ) ) {
+			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$msg = $this->membership_list_do_action( $action, $_POST['membership_id'] );
+		}
+		
+		$this->print_admin_message( $msg );
+	}
+	/**
+	 * Execute action in Membership model.
+	 * 
+	 * @param string $action The action to execute.
+	 * @param array $membership_ids The membership ids which action will be taken.
+	 * @return number Resulting message id.
+	 */	
+	private function membership_list_do_action( $action, $membership_ids ) {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
+		
+		$msg = 0;
+		foreach( $membership_ids as $membership_id ) {
+			$membership = MS_Model_Membership::load( $membership_id );
+			switch( $action ) {
+				case 'toggle_activation':
+					$membership->active = ! $membership->active;
+					$membership->save();
+					$msg = 7;
+					break;
+				case 'toggle_public':
+					$membership->public = ! $membership->public;
+					$membership->save();
+					$msg = 9;
+					break;
+				case 'delete':
+					try{
+						$membership->delete();
+						$msg = 2;
+					}
+					catch( Exception $e ) {
+						$msg = 6;
+					}
+					break;
+			}
+		}
+		
+		return $msg;
+	}
+	/**
+	 * Show admin membership list.
+	 * 
+	 * Show all memberships available.
+	 */
+	public function admin_membership_list() {
+	
 		/** Menu: Memberships */
 		$this->views['membership_list'] = apply_filters( 'membership_membership_list_view', new MS_View_Membership_List() );
-		
+	
 		$this->views['membership_list']->render();
 	}
 	
+	public function membership_edit_manager() {
+		$msg = 0;
+		/**
+		 * Save membership general tab
+		 */
+		if( ! empty( $_POST['submit'] ) ) {
+			$msg = $this->save_membership();
+		}
+		/**
+		 * Rule single action 
+		 */
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
+		}
+		/**
+		 * Rule bulk actions
+		 */
+		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
+			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
+		}
+
+		$this->print_admin_message( $msg );
+		
+	}
+	/**
+	 * Edit membership.
+	 * 
+	 */
 	public function membership_edit() {
+		$msg = 0;
 		/** New/Edit: Membership */
 		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
 		
 		$this->views['membership_edit']->model = $this->model;
 
-		if( ! empty( $_POST['submit'] ) || ! empty( $_POST['action'] ) )
-		{
-			$this->save_membership();
-			$this->views['membership_edit']->model = $this->model;
-		}
+		$this->print_admin_message( $msg );
 		$this->views['membership_edit']->render();
 	}
 	
@@ -83,68 +204,54 @@ class MS_Controller_Membership extends MS_Controller {
 		$nonce = MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE;
 		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 			
-			$this->views['membership_edit']->prepare_general();
-			
 			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
-			foreach( $this->views['membership_edit']->fields as $field ) {
-				$this->model->$field['id'] = ( isset( $_POST[ $section ][ $field['id'] ] ) ) 
-					? sanitize_text_field( $_POST[ $section ][ $field ['id'] ] )
-					: '';
+			if( ! empty( $_POST[ $section ] ) ) {
+				foreach( $_POST[ $section ] as $field => $value ) {
+					if( property_exists( $this->model, $field ) ) {
+						$this->model->$field = sanitize_text_field( $value );  
+					}
+				}
+				$this->model->save();
+// 				return 3;
 			}
-			$this->model->save();
 		}
-		/*
-		 * Save protection rules.
-		 */
-		// $nonce = MS_Helper_List_Table_Rule::RULE_SAVE_NONCE;
-		// if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-			$action = ! empty( $_POST['action'] ) ? $_POST['action'] : '';
-
-			$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
-			if( array_key_exists( $rule_type, $this->model->rules ) ) {
-				$rule = $this->model->rules[ $rule_type ];
-				$rule_value = $rule->rule_value;
-				$delayed_access_enabled = $rule->delayed_access_enabled;
-				$delayed_period_unit = $rule->delayed_period_unit;
-				$delayed_period_type = $rule->delayed_period_type;
+	}
+		
+	/**
+	 * Execute action in Rule model.
+	 *
+	 * @param string $action The action to execute.
+	 * @param array $item_ids The item ids which action will be taken.
+	 * @return number Resulting message id.
+	 */
+	
+	public function rule_list_do_action( $action, $items ) {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
+		
+		$msg = 0;
+		$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
+		if( array_key_exists( $rule_type, $this->model->rules ) ) {
+			$rule = $this->model->rules[ $rule_type ];
+			$rule_value = $rule->rule_value;
+				
+			foreach( $items as $item ) {
 				switch( $action ) {
-					case 'give_access': 
-						foreach( $_REQUEST[ 'item' ] as $item ) {
-					 		$rule_value[ $item ] = $item;
-					 		$delayed_access_enabled[ $item ] = false;
-						} 
+					case 'give_access':
+						$rule_value[ $item ] = $item;
 						break;
 					case 'no_access':
-						foreach( $_REQUEST[ 'item' ] as $item ) {
-					 		unset( $rule_value[ $item ] );
-					 		$delayed_access_enabled[ $item ] = false;
-						} 
-						break;
-					case 'drip_access':
-						$i = 0;
-						foreach( $_REQUEST[ 'item' ] as $item ) {
-					 		$rule_value[ $item ] = $item;
-					 		$delayed_access_enabled[ $item ] = true;
-					 		$delayed_period_unit[ $item ] = ++$i;
-					 		$delayed_period_type[ $item ] = 'days';
-						} 
+						unset( $rule_value[ $item ] );
 						break;
 				}
-				$rule->rule_value = $rule_value;
-				$rule->delayed_access_enabled = $delayed_access_enabled;
-				$rule->delayed_period_unit = $delayed_period_unit;
-				$rule->delayed_period_type = $delayed_period_type;
-				$this->model->set_rule( $rule_type, $rule );
-				//TODO above is a workaround for php array indirect modification of overloaded property has no effect
-// 				$this->model->rules[ $rule_type ]->rule_value = $rule_value;
-// 				$this->model->rules[ $rule_type ]->delayed_access_enabled = $rule_value;
-				$this->model->save();
 			}
-// 			$section = MS_View_Membership_Edit::RULE_SECTION;
-		// }
-		
+			$rule->rule_value = $rule_value;
+			$this->model->set_rule( $rule_type, $rule );
+			$this->model->save();
+		}
+		return $msg;
 	}
-	
 	
 	public function enqueue_styles() {
 		

@@ -30,10 +30,6 @@
 class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		
 	protected $id = 'membership';
-
-	const NONCE_ACTION = 'membnonce';
-	
-	protected $nonce;
 	
 	public function __construct(){
 		parent::__construct( array(
@@ -41,7 +37,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				'plural'    => 'memberships',
 				'ajax'      => false
 		) );
-		$this->nonce = wp_create_nonce( self::NONCE_ACTION );
 	}
 	
 	public function get_columns() {
@@ -55,7 +50,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 	
 	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="membership_id[]" value="%1$s" />', $item->ID );
+		return sprintf( '<input type="checkbox" name="membership_id[]" value="%1$s" />', $item->id );
 	}
 	
 	public function get_hidden_columns() {
@@ -73,46 +68,44 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
 
-	public function get_column_actions( $item ) {
-		return apply_filters( 'membership_helper_list_table_membership_column_actions', array(
-				'edit' => "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>".__( "Edit", MS_TEXT_DOMAIN )."</a>",
-				'toggle_activation' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toggle_activation&membership_id={$item->id}'>".__( "Deactivate", MS_TEXT_DOMAIN )."</a>",
-				'toggle_public' => "<a href='/wp-admin/admin.php?page=all-memberships&action=toggle_public&membership_id={$item->id}'>".__( "Make Public", MS_TEXT_DOMAIN )."</a>",
-			), 
-			$item 
-		);
-		
-	}
 	public function column_name( $item ) {
 		$actions = array(
 				sprintf( '<a href="?page=membership-edit&membership_id=%s">%s</a>',
 						$item->id,
-						'edit',
 						__('Edit', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a>',
-						$_REQUEST['page'],
-						$item->id,
-						'toggle_activation',
-						self::NONCE_ACTION,
-						$this->nonce,
-						__('Toggle Activation', MS_TEXT_DOMAIN )
+				sprintf( '<a href="%s">%s</a>',
+					wp_nonce_url( 
+						sprintf( '?page=%s&membership_id=%s&action=%s',
+							$_REQUEST['page'],
+							$item->id,
+							'toggle_activation'
+							),
+						'toggle_activation'
+						),
+					__('Toggle Activation', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a>',
-						$_REQUEST['page'],
-						$item->id,
-						'toggle_public',
-						self::NONCE_ACTION,
-						$this->nonce,
-						__('Toggle Public', MS_TEXT_DOMAIN )
+				sprintf( '<a href="%s">%s</a>',
+					wp_nonce_url( 
+						sprintf( '?page=%s&membership_id=%s&action=%s',
+							$_REQUEST['page'],
+							$item->id,
+							'toggle_public'
+							),
+						'toggle_public'
+						),
+					__('Toggle Public', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<span class="delete"><a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a></span>',
-						$_REQUEST['page'],
-						$item->id,
-						'delete',
-						self::NONCE_ACTION,
-						$this->nonce,
-						__('Delete', MS_TEXT_DOMAIN )
+				sprintf( '<span class="delete"><a href="%s">%s</a></span>',
+					wp_nonce_url( 
+						sprintf( '?page=%s&membership_id=%s&action=%s',
+							$_REQUEST['page'],
+							$item->id,
+							'delete'
+							),
+						'delete'
+						),
+					__('Delete', MS_TEXT_DOMAIN )
 				),
 		);
 		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
@@ -141,18 +134,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		}
 		return $html;
 	}
+	
 	public function get_bulk_actions() {
 		return apply_filters( 'membership_helper_list_table_membership_bulk_actions', array(
 			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
 			'toggle_public' => __( 'Toggle Public Status', MS_TEXT_DOMAIN ),
 		) );
-	}
-	
-	public function display() {
-		wp_nonce_field( self::NONCE_ACTION, self::NONCE_ACTION );
-	
-		parent::display();
 	}
 	
 }

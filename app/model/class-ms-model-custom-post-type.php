@@ -102,4 +102,10 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		}
 		return $model;
 	}
+	
+	public function delete() {
+		if( ! empty( $this->id ) ) {
+			wp_delete_post( $this->id );
+		}
+	}
 }
