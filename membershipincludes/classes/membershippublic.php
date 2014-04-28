@@ -1,5 +1,4 @@
 <?php
-
 if ( !class_exists( 'membershippublic', false ) ) :
 	class membershippublic {
 
@@ -277,7 +276,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$protected = array_pop( $protected );
 			}
 
-			if ( empty( $protected ) && !empty( $_GET['file'] ) ) {
+			if ( empty( $protected ) && !empty( $_GET['file'] ) && 'hybrid' == $M_options['protection_type'] ) {
 				$protected = $_GET['file'];
 			}
 
