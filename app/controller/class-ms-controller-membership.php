@@ -44,7 +44,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	public function admin_membership_list() {
 		
-		_vdslog($_POST);
 		if( ! empty( $_POST['action'] ) && ! empty( $_POST['membership_id']) ) {
 			
 		}
@@ -97,8 +96,8 @@ class MS_Controller_Membership extends MS_Controller {
 		/*
 		 * Save protection rules.
 		 */
-		$nonce = MS_Helper_List_Table_Rule::RULE_SAVE_NONCE;
-		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+		// $nonce = MS_Helper_List_Table_Rule::RULE_SAVE_NONCE;
+		// if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 			$action = ! empty( $_POST['action'] ) ? $_POST['action'] : '';
 
 			$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
@@ -142,7 +141,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$this->model->save();
 			}
 // 			$section = MS_View_Membership_Edit::RULE_SECTION;
-		}
+		// }
 		
 	}
 	
