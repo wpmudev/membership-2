@@ -104,7 +104,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						'toggle_public',
 						self::NONCE_ACTION,
 						$this->nonce,
-						__('Toogle Public', MS_TEXT_DOMAIN )
+						__('Toggle Public', MS_TEXT_DOMAIN )
 				),
 				sprintf( '<span class="delete"><a href="?page=%s&membership_id=%s&action=%s&%s=%s">%s</a></span>',
 						$_REQUEST['page'],
