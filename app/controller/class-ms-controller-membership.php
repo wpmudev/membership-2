@@ -87,7 +87,7 @@ class MS_Controller_Membership extends MS_Controller {
 			
 			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
 			foreach( $this->views['membership_edit']->fields as $field ) {
-				$this->model->$field['id'] = ( ! empty( $_POST[ $section ][ $field['id'] ] ) ) 
+				$this->model->$field['id'] = ( isset( $_POST[ $section ][ $field['id'] ] ) ) 
 					? sanitize_text_field( $_POST[ $section ][ $field ['id'] ] )
 					: '';
 			}
