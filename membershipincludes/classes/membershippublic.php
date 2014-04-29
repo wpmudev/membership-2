@@ -1847,6 +1847,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 					if ( !current_theme_supports( 'membership_subscription_form' ) ) {
 						$this->enqueue_fancybox_scripts();
 					}
+					$this->enqueue_public_form_styles();
 					do_action( 'membership_subscriptionbutton_onpage' );
 				}
 

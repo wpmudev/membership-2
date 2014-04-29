@@ -1,4 +1,5 @@
 == 3.5.1.3 ==
+* Fixed: Including publicform.css and button.css when subscription button shortcode is used. 
 * Fixed: References to 'global $member' where object may not exist. Membership_Plugin::currrent_member() now sets 'global $member'.
 * Fixed: Blocking of $_GET['file'] when media protection is not 'hybrid' causing conflict with other plugins.
 * Fixed: Mixed column bug on Membership listing.
