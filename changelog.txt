@@ -2,7 +2,7 @@
 * Fixed: References to 'global $member' where object may not exist. Membership_Plugin::currrent_member() now sets 'global $member'.
 * Fixed: Blocking of $_GET['file'] when media protection is not 'hybrid' causing conflict with other plugins.
 * Fixed: Mixed column bug on Membership listing.
-* Fixed: Users can remove levels using bulk action.
+* Fixed: Restored all Membership table functionality to reflect Membership 3.4 behaviour.
 
 == 3.5.1.2 ==
 * Fixed: 'All Members' page no longer displays empty levels and subscriptions.

@@ -2169,8 +2169,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 									<?php //endif; ?>
 									<?php //if (empty($subs)): ?>
 										<optgroup label="<?php _e('Levels', 'membership'); ?>">
-				                            <!-- <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option> -->
-				                            <!-- <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option> -->
+				                            <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
+				                            <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
 				                            <option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
 				                        </optgroup>
 			                        <?php //endif; ?>
@@ -2434,9 +2434,14 @@ if ( !class_exists( 'membershipadmin' ) ) :
 					        					}
 
 					        					$actions = array();
-										        if (!$user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID)) {
-										            $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
-										        }
+										        // if (!$user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID)) {
+										        //     $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+										        // }
+									            $actions = array();
+									            if (!$is_membership_admin) {
+									                $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									            }
+										
 
 										        if (!empty($userlevels)) {
 										            if (count($levels) == 1) {
@@ -2449,7 +2454,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										        }
 
 											?>
-											<div class="row-actions"><?php echo (empty($subs)) ? implode(" | ", $actions) : ''; ?></div>
+											<div class="row-actions"><?php echo (!empty($userlevels)) ? implode(" | ", $actions) : $actions['add']; ?></div>
 										</td>
 
 										<?php // LEVEL COLUMN // ?>								
@@ -2514,8 +2519,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
 									</optgroup>
 									<optgroup label="<?php _e('Levels', 'membership'); ?>">
-										<!-- <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option> -->
-										<!-- <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option> -->
+										<option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
+										<option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
 										<option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
 									</optgroup>
 									<optgroup label="<?php _e('Gateways', 'membership'); ?>">
