@@ -890,10 +890,10 @@ function M_repair_tables( $print = true ) {
 
 	}
 	
-	$html .= "<p>" . __('Cleaning up empty subscription/level relationships : ', 'membership');
-	$wpdb->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'sub_id' => 0 ), array( '%d' ) );
-	$wpdb->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'level_id' => 0 ), array( '%d' ) );
-	$html .= "<span style='color: green;'>" . __('Ok', 'membership') . "</span></p>";
+	// $html .= "<p>" . __('Cleaning up empty subscription/level relationships : ', 'membership');
+	// $wpdb->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'sub_id' => 0 ), array( '%d' ) );
+	// $wpdb->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'level_id' => 0 ), array( '%d' ) );
+	// $html .= "<span style='color: green;'>" . __('Ok', 'membership') . "</span></p>";
 	
 	if( $print ) {
 		echo $html;
