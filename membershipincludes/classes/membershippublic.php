@@ -276,8 +276,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 				$protected = array_pop( $protected );
 			}
 
-			if ( empty( $protected ) && !empty( $_GET['file'] ) && 'hybrid' == $M_options['protection_type'] ) {
-				$protected = $_GET['file'];
+			if ( empty( $protected ) && !empty( $_GET['ms_file'] ) && 'hybrid' == $M_options['protection_type'] ) {
+				$protected = $_GET['ms_file'];
 			}
 
 			if ( !empty( $protected ) ) {
@@ -873,7 +873,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 										case 'hybrid' :		$protectedfilename = MEMBERSHIP_FILE_NAME_PREFIX . ($post_id + (int) MEMBERSHIP_FILE_NAME_INCREMENT) . $size_extension;
 															$protectedfilename .= "." . pathinfo($newfile, PATHINFO_EXTENSION);
 
-															$the_content = str_replace( $matches[0][$foundlocal], $newpath . "?file=" . $protectedfilename, $the_content );
+															$the_content = str_replace( $matches[0][$foundlocal], $newpath . "?ms_file=" . $protectedfilename, $the_content );
 															break;
 
 										case 'basic' :

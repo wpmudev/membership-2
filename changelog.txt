@@ -3,6 +3,7 @@
 * Fixed: Blocking of $_GET['file'] when media protection is not 'hybrid' causing conflict with other plugins.
 * Fixed: Mixed column bug on Membership listing.
 * Fixed: Restored all Membership table functionality to reflect Membership 3.4 behaviour.
+* Change: ?file= parameter replaced with ?ms_file= to avoid potential conflicts.
 
 == 3.5.1.2 ==
 * Fixed: 'All Members' page no longer displays empty levels and subscriptions.
