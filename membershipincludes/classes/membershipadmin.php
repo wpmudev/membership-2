@@ -2160,20 +2160,20 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								<select name="action">
 									<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
 									<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
-									<?php if (!empty($subs)): ?>
+									<?php //if (!empty($subs)): ?>
 										<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
 											<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
 											<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
 											<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
 										</optgroup>
-									<?php endif; ?>
-									<?php if (empty($subs)): ?>
+									<?php //endif; ?>
+									<?php //if (empty($subs)): ?>
 										<optgroup label="<?php _e('Levels', 'membership'); ?>">
-				                            <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
-				                            <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
+				                            <!-- <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option> -->
+				                            <!-- <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option> -->
 				                            <option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
 				                        </optgroup>
-			                        <?php endif; ?>
+			                        <?php //endif; ?>
 									<optgroup label="<?php _e('Gateways', 'membership'); ?>">
 										<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
 									</optgroup>
@@ -2514,8 +2514,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
 									</optgroup>
 									<optgroup label="<?php _e('Levels', 'membership'); ?>">
-										<option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
-										<option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
+										<!-- <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option> -->
+										<!-- <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option> -->
 										<option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
 									</optgroup>
 									<optgroup label="<?php _e('Gateways', 'membership'); ?>">
