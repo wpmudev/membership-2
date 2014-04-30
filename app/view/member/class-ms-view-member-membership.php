@@ -11,6 +11,8 @@ class MS_View_Member_Membership extends MS_View {
 	
 	protected $memberships;
 	
+	protected $memberships_move;
+	
 	protected $fields;
 	
 	public function to_html() {
@@ -28,7 +30,12 @@ class MS_View_Member_Membership extends MS_View {
 						<tbody>
 							<tr>
 								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['membership_list'] ); ?>
+									<?php
+										if( ! empty( $this->memberships_move ) ) {
+											MS_Helper_Html::html_input( $this->fields['membership_move'] );
+										} 
+										MS_Helper_Html::html_input( $this->fields['membership_list'] ); 
+									?>
 								</td>
 							</tr>
 							<tr>
@@ -48,15 +55,29 @@ class MS_View_Member_Membership extends MS_View {
 	}
 	
 	function prepare_fields() {
+		$submit_label = array(
+				'add' => __('Add', MS_TEXT_DOMAIN ),
+				'drop' => __('Drop', MS_TEXT_DOMAIN ),
+				'move' => __('Move', MS_TEXT_DOMAIN ),
+			); 
 		$this->fields = array(
 			'membership_list' => array(
 				'id' => 'membership_id',
 				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
+// 				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
 				'value' => 0,
 				'field_options' => $this->memberships,
 				'class' => '',
+			),
+			'membership_move' => array(
+					'id' => 'membership_move_from_id',
+					'section' => self::MEMBERSHIP_SECTION,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' => ( is_array( $this->memberships_move ) && count( $this->memberships_move ) == 2 ? end( $this->memberships_move ) : 0 ),
+					'title' => __( 'Membership to move', MS_TEXT_DOMAIN ),
+					'field_options' => $this->memberships_move,
+					'class' => '',
 			),
 			'member_id' => array(
 				'id' => 'member_id',
@@ -73,7 +94,7 @@ class MS_View_Member_Membership extends MS_View {
 			),
 			'submit' => array(
 				'id' => 'submit',
-				'value' => ( $this->action == 'add' ) ? __('Add', MS_TEXT_DOMAIN ) : __('Drop', MS_TEXT_DOMAIN ),
+				'value' => $submit_label[ $this->action ],
 				'type' => 'submit',
 			),
 			'action' => array(

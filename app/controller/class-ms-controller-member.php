@@ -36,10 +36,12 @@ class MS_Controller_Member extends MS_Controller {
 		$this->views['member_edit'] = apply_filters( 'membership_member_edit_view', new MS_View_Member_Edit() );
 		
 		/** Hook to save screen options for Members screen. */
-		add_filter('set-screen-option', array( $this, 'table_set_option' ), 10, 3);
+		$this->add_filter('set-screen-option', 'table_set_option', 10, 3 );
 		
-		// $this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
-		// $this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
+		$this->add_action( 'load-membership_page_membership-members', 'admin_member_list_manager' );
+		
+		$this->add_action( 'admin_print_scripts-membership_page_membership-members', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-membership_page_membership-members', 'enqueue_styles' );
 		
 	}
 
@@ -65,81 +67,159 @@ class MS_Controller_Member extends MS_Controller {
 	  // return $value;
 	// }
 
-	
-	
-	public function admin_member_list() {
+	/**
+	 * Manages membership actions.
+	 *
+	 * Verifies GET and POST requests to manage members
+	 */
+	public function admin_member_list_manager() {
+		/**
+		 * Execute table single action.
+		 */
+		$msg = 0;
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+			$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
+			die();
+		}
+		/**
+		 * Execute bulk actions.
+		 */
+		elseif( ! empty( $_POST['member_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-members' ) ) {
+			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$msg = $this->member_list_do_action( $action, array( $_POST['member_id'] ) );
+		}
+		/**
+		 * Execute view page action submit.
+		 */
+		elseif( ! empty( $_POST['submit'] ) ) {
+			$section = MS_View_Member_Membership::MEMBERSHIP_SECTION;
+			$nonce = MS_View_Member_Membership::MEMBERSHIP_NONCE;
+			if ( ! empty( $_POST[ $section ]['member_id'] ) && ! empty( $_POST[ $section ]['action'] ) && ! empty( $_POST[ $section ]['membership_id'] ) &&
+				! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+					
+				$this->member_list_do_action( $_POST[ $section ]['action'], array( $_POST[ $section ]['member_id'] ), $_POST[ $section ]['membership_id'] );
+			}
+		}
 		
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id']) ) {
-			/** Menu: Members */
-			$this->views['membership'] = apply_filters( 'membership_view_member_membership', new MS_View_Member_Membership() );
-
-			$member_id = $_GET['member_id'];
-			$action =  $_GET['action'];
-			/** Member Model */
-			$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
-				
-			switch( $action ) {
-				case 'add':
-					$memberships = MS_Model_Membership::get_membership_names();
-					$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
-					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
-					break;
-				case 'drop':
-					$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) ); 
-					$memberships = MS_Model_Membership::get_membership_names( $args );
-					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
-					break;
-				case 'move': 
-					//TODO
-					break;
-			}	
-			$this->views['membership']->action = $action;
-			$this->views['membership']->member_id = $member_id;
-			$this->views['membership']->memberships = $memberships;
-			$this->views['membership']->render();
+	}
+	/**
+	 * Show member list.
+	 * 
+	 * Menu Members, show all users available.
+	 */	
+	public function admin_member_list() {
+		/**
+		 * Action view page request
+		 */
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) ) {
+			$this->prepare_action_view( $_GET['action'] );
 		}
 		else {
-			if( ! empty( $_POST['submit'] ) ) {
-				$this->manage_member_membership();
-			}
-			/** Menu: Members */
 			$this->views['member_list'] = apply_filters( 'membership_view_member_list', new MS_View_Member_List() );
-			
 			$this->views['member_list']->render();
 		}
 	}
+
+	/**
+	 * Prepare and show action view.
+	 * 
+	 * @param string $action The action to execute.
+	 */
+	public function prepare_action_view( $action ) {
+		$view = null;
+		$member_id = $_GET['member_id'];
+		$action =  $_GET['action'];
+		/** Member Model */
+		$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
 		
-	public function manage_member_membership() {
+		switch( $action ) {
+			case 'add':
+				$memberships = MS_Model_Membership::get_membership_names();
+				$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
+				$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
+				break;
+			case 'drop':
+				$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) );
+				$memberships = MS_Model_Membership::get_membership_names( $args );
+				$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
+				break;
+			case 'move':
+				$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) );
+				$memberships_move = MS_Model_Membership::get_membership_names( $args );
+				$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
+					
+				$memberships = MS_Model_Membership::get_membership_names();
+				$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
+				$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
+				break;
+			case 'edit_date':
+				$view = apply_filters( 'membership_view_member_date', new MS_View_Member_Date() );
+				$view->membership_relationships = $this->model->membership_relationships;
+				$view->membership_ids = $this->model->membership_ids;
+				break;
+		}
+		
+		if( in_array( $action, array( 'add', 'move', 'drop' ) ) ) {
+			$view = apply_filters( 'membership_view_member_membership', new MS_View_Member_Membership() );
+			$view->memberships = $memberships;
+			if( 'move' == $action ){
+				$view->memberships_move = $memberships_move;
+			}
+		}
+		$view->action = $action;
+		$view->member_id = $member_id;
+		$view->render();
+	}
+	
+	public function member_list_do_action( $action, $members, $membership_ids = null ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 		$section = MS_View_Member_Membership::MEMBERSHIP_SECTION;
-		$nonce = MS_View_Member_Membership::MEMBERSHIP_NONCE;
-		if ( ! empty( $_POST[ $section ]['member_id'] ) && ! empty( $_POST[ $section ]['action'] ) && ! empty( $_POST[ $section ]['membership_id'] ) && 
-				! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-
-			$member_id = $_POST[ $section ]['member_id'];
-			$action = $_POST[ $section ]['action'];
-			$membership_id = $_POST[ $section ]['membership_id'];
-			
+		foreach( $members as $member_id ){
 			/** Member Model */
-			$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
-
+			$member = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
 			switch( $action ) {
 				case 'add':
-					$this->model->add_membership( $membership_id );
+					$member->add_membership( $membership_id );
 					break;
 				case 'drop':
-					$this->model->drop_membership( $membership_id );
+					$member->drop_membership( $membership_id );
 					break;
 				case 'move':
-					//TODO
+					if( ! empty( $_POST[ $section ]['membership_move_from_id'] ) ) {
+						$member->move_membership( $_POST[ $section ]['membership_move_from_id'], $membership_id );
+					}
+					break;
+				case 'toggle_activation':
+					$member->active = ! $member->active;
+					break;
+				case 'edit_date':
+					$membership_relationships = $member->membership_relationships;
+					foreach ($membership_ids as $membership_id ) {
+						if( ! empty( $_POST[ $section ][ "start_date_$membership_id" ] ) ){
+							$membership_relationships[ $membership_id ]->start_date = $_POST[ $section ][ "start_date_$membership_id" ];
+						}
+						if( ! empty( $_POST[ $section ][ "expire_date_$membership_id" ] ) ){
+							$membership_relationships[ $membership_id ]->expire_date = $_POST[ $section ][ "expire_date_$membership_id" ];
+						}
+					}
+					$member->membership_relationships = $membership_relationships;
 					break;
 			}
-			$this->model->save();
-		}
+			$member->save();
+		}			
+	}
+		
+	public function enqueue_styles() {
+		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 	}
 	
-	
+	public function enqueue_scripts() {
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_register_script( 'ms_view_member_date', MS_Plugin::get_plugin_url(). 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::get_plugin_version() );
+		wp_enqueue_script( 'ms_view_member_date' );
+	}
 	
 }

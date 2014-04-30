@@ -50,9 +50,29 @@ class MS_Helper_Period extends MS_Helper {
 		} 
 		return date( self::PERIOD_FORMAT, $end_dt ); 
 	}
+	
+	/**
+	 * Subtract dates.
+	 * 
+	 * Return (end_date - start_date) in period_type format
+	 *  
+	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
+	 * @param Date $start_date The start date to subtractin the format yyyy-mm-dd
+	 * @param string $period_type const defined in this class
+	 * @return string The resulting of the date subtraction.
+	 */
+	public static function subtract_dates( $end_date, $start_date, $period_type = self::PERIOD_TYPE_DAYS ) {
+		$end_date = new DateTime( $end_date );
+		$start_date = new DateTime( $start_date );
+		$interval = $start_date->diff( $end_date );
+		
+		return $interval->format( "%a $period_type");
+	}
+	
 	public static function current_date() {
 		return date( self::PERIOD_FORMAT );
 	}
+	
 	public static function get_periods() {
 		return array (
 				self::PERIOD_TYPE_DAYS => __( self::PERIOD_TYPE_DAYS, MS_TEXT_DOMAIN ),

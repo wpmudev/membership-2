@@ -58,6 +58,7 @@ class MS_Helper_Html extends MS_Helper {
 		
 		$defaults = array(
 			'id'      	=> '',
+			'name'		=> '',
 			'section'	=> '',
 			'title'   	=> '',
 			'desc'    	=> '',
@@ -71,15 +72,18 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 	
-		if( ! empty( $section ) ) {
-			$name = $section . "[$id]";
-		}
-		else {
-			$name = $id;
+		if( empty( $name ) ) {
+			if( ! empty( $section ) ) {
+				$name = $section . "[$id]";
+			}
+			else {
+				$name = $id;
+			}
 		}
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
+				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				break;
 			case self::INPUT_TYPE_TEXT:

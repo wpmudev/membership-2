@@ -28,16 +28,25 @@
  *
  */
 class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
-			
+
+	public function __construct(){
+		parent::__construct( array(
+				'singular'  => 'member',
+				'plural'    => 'members',
+				'ajax'      => false
+		) );
+	}
+	
 	public function get_columns() {
 		$columns = array(
 			'cb'		 => '<input type="checkbox" />',
 			'username'	 => __('Username', MS_TEXT_DOMAIN ),
-			'name'		 => __('Name', MS_TEXT_DOMAIN ),
 			'email'		 => __('E-mail', MS_TEXT_DOMAIN ),
 			'active' 	 => __('Active', MS_TEXT_DOMAIN ),				
 			'membership' => __('Membership', MS_TEXT_DOMAIN ),
+			'start' => __('Membership Start', MS_TEXT_DOMAIN ),
 			'expire' => __('Membership Expire', MS_TEXT_DOMAIN ),
+			'gateway' => __('Gateway', MS_TEXT_DOMAIN ),
 		);
 		return $columns;
 	}
@@ -49,11 +58,12 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	public function get_sortable_columns() {
 		return array(
 			'username' => array( 'username', false ),
-			'name' => array( 'name', false ),
 			'email' => array( 'email', false ),
 			'active' => array( 'active', false ),			
 			'membership' => array( 'membership', false ),
+			'start' => array( 'start', false ),
 			'expire' => array( 'expire', false ),
+			'gateway' => array( 'gateway', false ),
 		);
 	}
 	
@@ -82,7 +92,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
 			case 'email':
 				$html = $item->$column_name;
 				break;
@@ -97,13 +106,32 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	function column_username( $item ) {
 		$actions = array(
 			'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-			'deactivate' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'deactivate', $item->id, __('Deactivate', MS_TEXT_DOMAIN ) ),			
-		);
+			'toggle_activation' => sprintf( '<a href="%s">%s</a>',
+					wp_nonce_url(
+							sprintf( '?page=%s&member_id=%s&action=%s',
+							$_REQUEST['page'],
+							$item->id,
+							'toggle_activation'
+						),
+						'toggle_activation'
+					),
+					__('Toggle Activation', MS_TEXT_DOMAIN )
+				),
+			);
 		
-		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions($actions) );
+		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
 	}
-
+	
+	/**
+	 * Create membership column.
+	 * 
+	 * Only allow single membership.
+	 * @todo Allow multiple memberships as addon.
+	 * @param MS_Model_Member $item The member object.
+	 */
 	function column_membership( $item ) {
+		$multiple_membership_option = true;
+		
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 
@@ -112,22 +140,72 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = join(', ', $html);
 		
 		$actions = array(
-			'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
-// 			'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move', $item->id, __('Move', MS_TEXT_DOMAIN ) ),			
-			'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
-			
+				'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
+				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
+				'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
 		);
 		
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions($actions) );
+		if( count( $item->membership_ids ) > 0 ) {
+			if( ! $multiple_membership_option ) {
+				unset( $actions['add'] );
+			}
+		}
+		else {
+			unset( $actions['move'] );
+			unset( $actions['drop'] );
+		}
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+	}
+	
+	function column_start( $item ) {
+		$html = array();
+		foreach( $item->membership_relationships as $membership_relationship ) {
+			$period = $membership_relationship->get_current_period();
+			$html[] = "$membership_relationship->start_date ($period)";
+		}
+		$html = join(', ', $html);
+		
+		$actions = array(
+				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+			);
+		
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		
 	}
 	
 	function column_expire( $item ) {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
-			$html[] = $membership_relationship->expire_date;
+			if( $membership_relationship->expire_date )  {
+				$period = $membership_relationship->get_remaining_period();
+				$html[] = "$membership_relationship->expire_date ($period)";
+			}
+			else {
+				$html[] = __('Permanent', MS_TEXT_DOMAIN );
+			}
 		}
-		return join(', ', $html);
+		$html = join(', ', $html);
+		
+		$actions = array(
+				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+		);
+		
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
+
+	function column_gateway( $item ) {
+		$html = array();
+		foreach( $item->membership_relationships as $membership_relationship ) {
+			$html[] = $membership_relationship->gateway;
+		}
+		$html = join(', ', $html);
+		$actions = array(
+				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move_gateway', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
+			);
+		
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+	}
+	
 	function get_bulk_actions() {
 	  $actions = array(
 	    'deactivate'    => 'Deactivate Membership'

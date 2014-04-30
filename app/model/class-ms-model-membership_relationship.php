@@ -63,4 +63,28 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	public function get_membership() {
 		return MS_Model_Membership::load( $this->membership_id );
 	}
+	
+	public function move( $move_from_id, $move_to_id ) {
+		$membership = MS_Model_Membership::load( $move_to_id );
+		
+		$this->membership_id = $move_to_id;
+		$this->update_date = MS_Helper_Period::current_date();
+		$this->trial_expire_date = $membership->get_trial_expire_date( $this->start_date );
+		$this->expire_date = $membership->get_expire_date( $this->start_date );
+		$this->status = ( $membership->trial_period_enabled )
+			? MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL
+			: MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE;
+	}
+	
+	public function get_current_period() {
+		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->start_date );
+	}
+	
+	public function get_remaining_period() {
+		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->expire_date );
+	}
+	
+	public function get_status() {
+// 		if()
+	}
 }

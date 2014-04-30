@@ -165,6 +165,13 @@ class MS_Model_Member extends MS_Model {
 		return $members;
 		
 	}
+	/**
+	 * Add a new membership.
+	 * 
+	 * Only add a membership ff a user is not already a member.
+	 * @param int $membership_id The membership id to add to.
+	 * @param string $gateway The gateway used to add the membership.
+	 */
 	public function add_membership( $membership_id, $gateway = 'admin' )
 	{
 		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
@@ -174,16 +181,46 @@ class MS_Model_Member extends MS_Model {
 		}
 	}
 
+	/**
+	 * Deactivate membership.
+	 * 
+	 * Only update the status to deactivated.
+	 * 
+	 * @param int $membership_id The membership id to deactivate.
+	 */
 	public function deactivate_membership( $membership_id ) {
 		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
 		}
 	}
 	
+	/**
+	 * Drop a membership.
+	 * 
+	 * @param int $membership_id The membership id to drop.
+	 */
 	public function drop_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			unset( $this->memberships[ $membership_id ] );
+			unset( $this->membership_relationships[ $membership_id ] );
 			unset( $this->membership_ids[ $membership_id ] );
+		}
+	}
+
+	/**
+	 * Move a membership.
+	 * 
+	 * Retain start date of the membership.
+	 * @param int $move_from_id The membership id to move from.
+	 * @param int $move_to_id The membership id to move to.
+	 */
+	public function move_membership( $move_from_id, $move_to_id ) {
+		if( array_key_exists( $move_from_id,  $this->membership_relationships ) ) {
+			$move_from = $this->membership_relationships[ $move_from_id ];
+			$move_from->move( $move_from_id, $move_to_id );
+			
+			$this->drop_membership( $move_from_id );
+			$this->membership_relationships[ $move_to_id ] = $move_from;
+			$this->membership_ids[ $move_to_id ] = $move_to_id;
 		}
 	}
 	
