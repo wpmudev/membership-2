@@ -189,7 +189,7 @@ class MS_Controller_Member extends MS_Controller {
 					break;
 				case 'move':
 					if( ! empty( $_POST[ $section ]['membership_move_from_id'] ) ) {
-						$member->move_membership( $_POST[ $section ]['membership_move_from_id'], $membership_id );
+						$member->move_membership( $_POST[ $section ]['membership_move_from_id'], $_POST[ $section ]['membership_id'] );
 					}
 					break;
 				case 'toggle_activation':
