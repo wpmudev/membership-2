@@ -36,7 +36,6 @@ class MS_Helper_List_Table_Rule_Shortcode extends MS_Helper_List_Table_Rule {
 				'cb'     => '<input type="checkbox" />',
 				'name' => __( 'Shortcode', MS_TEXT_DOMAIN ),
 				'access' => __( 'Access', MS_TEXT_DOMAIN ),
-				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -52,4 +51,11 @@ class MS_Helper_List_Table_Rule_Shortcode extends MS_Helper_List_Table_Rule {
 		}
 		return $html;
 	}
+
+	public function get_views(){
+		$views = parent::get_views();
+		unset( $views['dripped'] );
+		return $views;
+	}
+	
 }

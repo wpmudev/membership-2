@@ -25,11 +25,11 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 		
-	public function get_content() {
+	public function get_content( $args = null ) {
 		$contents = get_categories( 'get=all' );
 // 		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
 
-		foreach( $contents as $content ) {
+		foreach( $contents as $key => $content ) {
 			$content->id = $content->term_id;
 			if( in_array( $content->id, $this->rule_value ) ) {
 				$content->access = true;
@@ -44,8 +44,22 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 				$content->delayed_period = '';
 			}
 		}
-		
+		if( ! empty( $args['rule_status'] ) ) {
+			$contents = $this->filter_content( $args['rule_status'], $contents );
+		}
 		return $contents;
+	}
+	
+	/**
+	 * Get content array( id => title )
+	 */
+	public function get_content_array() {
+		$cont = array();
+		$contents = $this->get_content();
+		foreach( $contents as $content ) {
+			$cont[ $content->id ] = $content->name;
+		}
+		return $cont;
 	}
 	
 }

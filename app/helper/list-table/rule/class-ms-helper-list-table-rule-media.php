@@ -88,4 +88,10 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 		return $html;
 	}
 
+	public function get_views(){
+		$views = parent::get_views();
+		unset( $views['dripped'] );
+		return $views;
+	}
+	
 }

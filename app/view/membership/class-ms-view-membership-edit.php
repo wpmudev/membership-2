@@ -56,8 +56,13 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=dripped&membership_id=' . $this->model->id,
 				),
-				);
-		
+			);
+		/**
+		 * Just general tab in the first access.
+		 */
+		if( ! $this->model->id ){
+			$tabs = array( 'general' => $tabs['general'] );
+		}
 		ob_start();
 
 		/** Render tabbed interface. */
@@ -449,8 +454,14 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function render_dripped() {
-		$model = $this->model->rules['dripped'];
-		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
+		$model = array(
+			'post' => $this->model->rules['post'],
+			'category'	=> $this->model->rules['category'],
+			'page'	=> $this->model->rules['page'],
+		);
+		$this->prepare_dripped( $model );
+		
+		$rule_list_table = new MS_Helper_List_Table_Rule_Dripped( $model );
 		$rule_list_table->prepare_items();
 		
 		ob_start();
@@ -459,7 +470,43 @@ class MS_View_Membership_Edit extends MS_View {
 				<h2><?php _e( 'Dripped content', MS_TEXT_DOMAIN ); ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
+					<table class="form-table">
+						<tbody>
+							<tr>
+								<td id="ms-content-type-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['type'] );?>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div id="ms-rule-type-post-wrapper" class="ms-rule-type-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['posts'] );?>
+									</div>
+									<div id="ms-rule-type-page-wrapper" class="ms-rule-type-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['pages'] );?>
+									</div>
+									<div id="ms-rule-type-category-wrapper" class="ms-rule-type-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['categories'] );?>
+									</div>
+								</td>
+							</tr>							
+							<tr>
+								<td>
+									<div class="ms-period-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['delayed_period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_input( $this->fields['add'] );?>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 					<?php $rule_list_table->display(); ?>
+					<?php MS_Helper_Html::html_submit();?>
 				</form>
 			</div>
 		<?php 	
@@ -467,4 +514,72 @@ class MS_View_Membership_Edit extends MS_View {
 		echo $html;	
 	}
 	
+	public function prepare_dripped( $model ) {
+	
+		$this->fields = array(
+				'type' => array(
+						'id' => 'type',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+						'title' => __( 'Select content type', MS_TEXT_DOMAIN ),
+						'field_options' => array( 
+							'post' => __( 'Post', MS_TEXT_DOMAIN ), 
+							'page' => __( 'Page', MS_TEXT_DOMAIN ), 
+							'category' => __( 'Category', MS_TEXT_DOMAIN ),
+						),
+						'value' => null,
+						'class' => '',
+				),
+				'posts' => array(
+						'id' => 'posts',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select Post', MS_TEXT_DOMAIN ),
+						'value' => 0,
+						'field_options' =>$model['post']->get_content_array(),
+						'class' => 'ms-radio-rule-type',
+				),
+				'pages' => array(
+						'id' => 'pages',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select Page', MS_TEXT_DOMAIN ),
+						'value' => 0,
+						'field_options' => $model['page']->get_content_array(),
+						'class' => 'ms-radio-rule-type',
+				),
+				'categories' => array(
+						'id' => 'categories',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select Category', MS_TEXT_DOMAIN ),
+						'value' => 0,
+						'field_options' => $model['category']->get_content_array(),
+						'class' => 'ms-radio-rule-type',
+				),
+				'delayed_period_unit' => array(
+						'id' => 'delayed_period_unit',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Days/Months/Years until the content becomes available', MS_TEXT_DOMAIN ),
+						'value' => null,
+						'class' => '',
+				),
+				'delayed_period_type' => array(
+						'id' => 'delayed_period_type',
+						'section' => self::MEMBERSHIP_SECTION,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => null,
+						'field_options' => MS_Helper_Period::get_periods(),
+						'class' => '',
+				),
+				'add' => array(
+						'id' => 'add',
+						'value' => __('Add', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+// 						'class' => 'button',
+				),
+
+		);
+	}
 }

@@ -28,16 +28,18 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	public function on_protection() {
 		
 	}
-	public function get_content() {
-		$posts_to_show = 10; //TODO
-		$contents = get_posts( array(
-			'numberposts' => $posts_to_show,
-			'offset'      => 0,
-			'orderby'     => 'post_date',
-			'order'       => 'DESC',
-			'post_type'   => 'attachment',
-		) );
-				
+	public function get_content( $args = null ) {
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'post_date',
+				'order'       => 'DESC',
+				'post_type'   => 'attachment',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$contents = get_posts( $args );
+						
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			if( in_array( $content->id, $this->rule_value ) ) {
@@ -53,7 +55,11 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 				$content->delayed_period = '';
 			}
 		}
-		return $contents;
 		
+		if( ! empty( $args['rule_status'] ) ) {
+			$contents = $this->filter_content( $args['rule_status'], $contents );
+		}
+		
+		return $contents;
 	}
 }

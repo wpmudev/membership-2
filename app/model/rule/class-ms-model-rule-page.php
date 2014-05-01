@@ -28,24 +28,35 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function on_protection() {
 		
 	}
+
+	public function get_content_count( $args = null ) {
+		$exclude = $this->get_excluded_content();
+		$defaults = array(
+				'posts_per_page' => -1,
+				'post_type'   => 'page',
+				'post_status' => array('publish', 'virtual'), 
+				'exclude'     => $exclude,
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$query = new WP_Query($args);
+		return $query->found_posts;
+	}
 	
-	public function get_content() {
-// 		$exclude = array();
-// 		foreach ( array( 'registration_page', 'account_page', 'subscriptions_page', 'nocontent_page', 'registrationcompleted_page' ) as $page ) {
-// 			if ( isset( $M_options[$page] ) && is_numeric( $M_options[$page] ) ) {
-// 				$exclude[] = $M_options[$page];
-// 			}
-// 		}
-		$posts_to_show = 10; //TODO
-		$contents = get_posts( array(
-				'numberposts' => $posts_to_show,
+	public function get_content( $args = null ) {
+		$exclude = $this->get_excluded_content();
+		$defaults = array(
+				'posts_per_page' => -1,
 				'offset'      => 0,
 				'orderby'     => 'post_date',
 				'order'       => 'DESC',
 				'post_type'   => 'page',
 				'post_status' => array('publish', 'virtual'), //Classifieds plugin uses a "virtual" status for some of it's pages
-// 				'exclude'     => $exclude,
-		) );
+				'exclude'     => $exclude,
+			);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$contents = get_posts( $args );
 		
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
@@ -62,7 +73,35 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				$content->delayed_period = '';
 			}
 		}
-		return $contents;
 		
+		if( ! empty( $args['rule_status'] ) ) {
+			$contents = $this->filter_content( $args['rule_status'], $contents );
+		}
+		
+		return $contents;
+	}
+	/**
+	 * Get content array( id => title ) 
+	 */
+	public function get_content_array() {
+		$cont = array();
+		$contents = $this->get_content();
+		foreach( $contents as $content ) {
+			$cont[ $content->id ] = $content->post_title;
+		}
+		return $cont;
+	}
+	/**
+	 * Get pages that shall not be protected.
+	 * @return array The page ids.
+	 */
+	private function get_excluded_content() {
+		$exclude = null;
+		// 		foreach ( array( 'registration_page', 'account_page', 'subscriptions_page', 'nocontent_page', 'registrationcompleted_page' ) as $page ) {
+		// 			if ( isset( $M_options[$page] ) && is_numeric( $M_options[$page] ) ) {
+		// 				$exclude[] = $M_options[$page];
+		// 			}
+		// 		}
+		return $exclude;
 	}
 }

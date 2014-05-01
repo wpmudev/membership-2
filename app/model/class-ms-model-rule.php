@@ -41,6 +41,12 @@ class MS_Model_Rule extends MS_Model {
 	
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	
+	const FILTER_HAS_ACCESS = 'has_access';
+	
+	const FILTER_NO_ACCESS = 'no_access';
+	
+	const FILTER_DRIPPED = 'dripped';
+	
 	public static $RULE_TYPE_CLASSES = array (
 			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
 			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
@@ -66,7 +72,53 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $delayed_period_type = array();
 	
-	function can_view_current_page() {
+	/**
+	 * Create rule with default rule_value (has access). 
+	 */
+	public function __construct() {
+		$contents = $this->get_content();
+		if( ! empty( $contents ) ) {
+			foreach( $contents as $content ) {
+				$this->rule_value[ $content->id ] = $content->id;
+			}
+		}
+	}
+	
+	/**
+	 * Get content of this rule domain. 
+	 * @throws Exception
+	 */
+	public function get_content( $args = null ) {
+		throw new Exception ("Method to be implemented in child class");
+	}
+
+	public function filter_content( $status, $contents ) {
+		foreach( $contents as $key => $content ) {
+			if( !empty( $content->ignore ) ) {
+				continue;
+			}
+			switch( $status ) {
+				case self::FILTER_HAS_ACCESS:
+					if( ! $content->access ) {
+						unset( $contents[ $key ] );
+					}
+				break;
+				case self::FILTER_NO_ACCESS:
+					if( $content->access ) {
+						unset( $contents[ $key ] );
+					}
+				break;
+				case self::FILTER_DRIPPED:
+					if( empty( $content->delayed_period ) ) {
+						unset( $contents[ $key ] );
+					}
+				break;
+			}
+		}
+		return $contents;
+	}
+	
+	public function can_view_current_page() {
 		return true;
 		throw new Exception ("Method to be implemented in child class");
 	}

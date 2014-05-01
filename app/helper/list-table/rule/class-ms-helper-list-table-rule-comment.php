@@ -36,7 +36,6 @@ class MS_Helper_List_Table_Rule_Comment extends MS_Helper_List_Table_Rule {
 			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Comments', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
-			'dripped' => __( 'Dripped', MS_TEXT_DOMAIN ),
 		) );
 	}
 		
@@ -56,5 +55,8 @@ class MS_Helper_List_Table_Rule_Comment extends MS_Helper_List_Table_Rule {
 		}
 		return $html;
 	}
-		
+
+	public function get_views() {
+		return array();
+	}
 }

@@ -55,7 +55,6 @@ class MS_Helper_Html extends MS_Helper {
 	 * @return void But does output HTML.
 	 */
 	public static function html_input( $field_args ) {
-		
 		$defaults = array(
 			'id'      	=> '',
 			'name'		=> '',
@@ -106,6 +105,14 @@ class MS_Helper_Html extends MS_Helper {
 					echo "<option $selected value='$key'>$option</option>";
 				}
 				echo "</select>";
+				break;
+			case self::INPUT_TYPE_RADIO:
+				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				foreach ($field_options as $key => $option ) {
+					$checked = checked( $key, $value, false );
+					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked /> ";
+					echo "<label for='{$id}_{$key}'>$option</label>";
+				}
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );

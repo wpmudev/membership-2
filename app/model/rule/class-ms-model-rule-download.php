@@ -29,11 +29,11 @@ class MS_Model_Rule_Download extends MS_Model_Rule {
 		
 	}
 	
-	public static function get_content() {
-		return array (
-				'0' => 'todo',
-				'1' => 'todo',
-		);
+	public function get_content() {
+		$content = array(
+				(object) array( 'id' => 1, 'name' => 'todo', 'access' => false, 'delayed_period' => '' ),
+				);
+		return $content;
 	}
 	
 }

@@ -78,7 +78,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 	public function prepare_items() {
 	
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content() );
+		$args = null;
+		if( ! empty( $_GET['status'] ) ) {
+			$args['rule_status'] = $_GET['status']; 
+		}
+		
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
@@ -94,7 +99,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="item[]" value="%1$s" %2$s/>', $item->id, checked( $item->access, true, false ) );
+		return sprintf( '<input type="checkbox" name="item[]" value="%1$s" />', $item->id );
 	}
 	
 	public function column_access( $item ) {
@@ -160,10 +165,10 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 	public function get_views(){
 		return apply_filters( "membership_helper_list_table_{$this->id}_views", array(
-				'all' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'all') ), __( 'All', MS_TEXT_DOMAIN ) ),
-				'has_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'has_access') ), __( 'Has Access', MS_TEXT_DOMAIN ) ),
-				'dripped' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'dripped') ), __( 'Dripped Content', MS_TEXT_DOMAIN ) ),
-				'no_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ('status' => 'no_access') ), __( 'No Access', MS_TEXT_DOMAIN ) ),
+				'all' => sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) ),
+				'has_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ) ), __( 'Has Access', MS_TEXT_DOMAIN ) ),
+				'dripped' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_DRIPPED ) ), __( 'Dripped Content', MS_TEXT_DOMAIN ) ),
+				'no_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ) ), __( 'No Access', MS_TEXT_DOMAIN ) ),
 		) );
 	}
 }

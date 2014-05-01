@@ -117,12 +117,26 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $end_date;		
 	}
 	
-	public static function get_memberships( $limit = 10 ) {
-		$args = array(
+	public function get_membership_count( $args = null ) {
+		$defaults = array(
 				'post_type' => self::$POST_TYPE,
-				'posts_per_page' => $limit,
+				'post_status' => 'any',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$query = new WP_Query($args);
+		return $query->found_posts;
+		
+	}
+	
+	public static function get_memberships( $args = null ) {
+		$defaults = array(
+				'post_type' => self::$POST_TYPE,
+				'posts_per_page' => 10,
 				'order' => 'DESC',
 		);
+		$args = wp_parse_args( $args, $defaults );
+		
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
 		

@@ -100,28 +100,36 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			default:
 				print_r( $item, true );
 		}
-		return $html;
+		echo $html;
 	}
 	
 	function column_username( $item ) {
 		$actions = array(
-			'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-			'toggle_activation' => sprintf( '<a href="%s">%s</a>',
-					wp_nonce_url(
-							sprintf( '?page=%s&member_id=%s&action=%s',
-							$_REQUEST['page'],
-							$item->id,
-							'toggle_activation'
-						),
-						'toggle_activation'
-					),
-					__('Toggle Activation', MS_TEXT_DOMAIN )
-				),
+				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
 			);
 		
 		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
 	}
 	
+	function column_active( $item ) {
+		$html = ( 1 == $item->active) ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
+		
+		$actions = array(
+				'toggle_activation' => sprintf( '<a href="%s">%s</a>',
+						wp_nonce_url(
+								sprintf( '?page=%s&member_id=%s&action=%s',
+										$_REQUEST['page'],
+										$item->id,
+										'toggle_activation'
+								),
+								'toggle_activation'
+						),
+						__('Toggle Activation', MS_TEXT_DOMAIN )
+				),
+		);
+	
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+	}
 	/**
 	 * Create membership column.
 	 * 
@@ -130,7 +138,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 * @param MS_Model_Member $item The member object.
 	 */
 	function column_membership( $item ) {
-		$multiple_membership_option = true;
+		$multiple_membership_option = false;
 		
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
@@ -206,16 +214,76 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 	
-	function get_bulk_actions() {
+	public function get_bulk_actions() {
 	  $actions = array(
-	    'deactivate'    => 'Deactivate Membership'
-	  );
+	    	'toggle_activation' => __('Toggle Activation', MS_TEXT_DOMAIN ),
+	  		'Memberships' => array(
+  				'add' => __('Add membership', MS_TEXT_DOMAIN ),
+	  			'move' => __('Move membership', MS_TEXT_DOMAIN ),
+  				'drop' => __('Drop membership', MS_TEXT_DOMAIN ),
+	  		),
+	  	);
 	  return $actions;
 	}
 
+	/**
+	 * Display the bulk actions dropdown.
+	 *
+	 * @since 4.0.0
+	 * @access public
+	 */
+	public function bulk_actions() {
+		if ( is_null( $this->_actions ) ) {
+			$no_new_actions = $this->_actions = $this->get_bulk_actions();
+			/**
+			 * Filter the list table Bulk Actions drop-down.
+			 *
+			 * The dynamic portion of the hook name, $this->screen->id, refers
+			 * to the ID of the current screen, usually a string.
+			 *
+			 * This filter can currently only be used to remove bulk actions.
+			 *
+			 * @since 3.5.0
+			 *
+			 * @param array $actions An array of the available bulk actions.
+			*/
+			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions );
+			$this->_actions = array_intersect_assoc( $this->_actions, $no_new_actions );
+			$two = '';
+		} else {
+			$two = '2';
+		}
+	
+		if ( empty( $this->_actions ) )
+			return;
+	
+		echo "<select name='action$two'>\n";
+		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions' ) . "</option>\n";
+	
+		foreach ( $this->_actions as $name => $title ) {
+			if( is_array( $title ) ) {
+				echo "<optgroup label='$name'>";
+				foreach( $title as $value => $label ){
+					echo "<option value='$value'>$label</option>";
+				}				
+				echo "</optgroup>";
+			}
+			else {
+				$class = 'edit' == $name ? ' class="hide-if-no-js"' : '';
+				
+				echo "\t<option value='$name'$class>$title</option>\n";
+			}
+		}
+	
+		echo "</select>\n";
+	
+		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
+			echo "\n";
+	}
+	
 	function column_cb($item) {
-        return sprintf(
-            '<input type="checkbox" name="member[]" value="%s" />', $item->id
+        echo sprintf(
+            '<input type="checkbox" name="member_id[]" value="%s" />', $item->id
         );    
     }
 

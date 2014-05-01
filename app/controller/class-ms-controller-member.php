@@ -71,6 +71,8 @@ class MS_Controller_Member extends MS_Controller {
 	 * Manages membership actions.
 	 *
 	 * Verifies GET and POST requests to manage members
+	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member 
+	 * 	membership fields (active, memberships, start, end, gateway)
 	 */
 	public function admin_member_list_manager() {
 		/**
@@ -87,7 +89,12 @@ class MS_Controller_Member extends MS_Controller {
 		 */
 		elseif( ! empty( $_POST['member_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-members' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->member_list_do_action( $action, array( $_POST['member_id'] ) );
+			if( $action == 'toggle_activation') {
+				$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
+			}
+			else {
+// 				$this->prepare_action_view( $action, $_POST['member_id'] );
+			}
 		}
 		/**
 		 * Execute view page action submit.
@@ -113,7 +120,7 @@ class MS_Controller_Member extends MS_Controller {
 		 * Action view page request
 		 */
 		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) ) {
-			$this->prepare_action_view( $_GET['action'] );
+			$this->prepare_action_view( $_GET['action'], $_GET['member_id'] );
 		}
 		else {
 			$this->views['member_list'] = apply_filters( 'membership_view_member_list', new MS_View_Member_List() );
@@ -126,10 +133,8 @@ class MS_Controller_Member extends MS_Controller {
 	 * 
 	 * @param string $action The action to execute.
 	 */
-	public function prepare_action_view( $action ) {
+	public function prepare_action_view( $action, $member_id ) {
 		$view = null;
-		$member_id = $_GET['member_id'];
-		$action =  $_GET['action'];
 		/** Member Model */
 		$this->model = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
 		
@@ -172,7 +177,7 @@ class MS_Controller_Member extends MS_Controller {
 		$view->render();
 	}
 	
-	public function member_list_do_action( $action, $members, $membership_ids = null ) {
+	public function member_list_do_action( $action, $members, $membership_id = null ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
@@ -196,16 +201,18 @@ class MS_Controller_Member extends MS_Controller {
 					$member->active = ! $member->active;
 					break;
 				case 'edit_date':
-					$membership_relationships = $member->membership_relationships;
-					foreach ($membership_ids as $membership_id ) {
-						if( ! empty( $_POST[ $section ][ "start_date_$membership_id" ] ) ){
-							$membership_relationships[ $membership_id ]->start_date = $_POST[ $section ][ "start_date_$membership_id" ];
+					if( is_array( $membership_id ) ) {
+						$membership_relationships = $member->membership_relationships;
+						foreach ( $membership_id as $id ) {
+							if( ! empty( $_POST[ $section ][ "start_date_$id" ] ) ){
+								$membership_relationships[ $id ]->start_date = $_POST[ $section ][ "start_date_$id" ];
+							}
+							if( ! empty( $_POST[ $section ][ "expire_date_$id" ] ) ){
+								$membership_relationships[ $id ]->expire_date = $_POST[ $section ][ "expire_date_$id" ];
+							}
 						}
-						if( ! empty( $_POST[ $section ][ "expire_date_$membership_id" ] ) ){
-							$membership_relationships[ $membership_id ]->expire_date = $_POST[ $section ][ "expire_date_$membership_id" ];
-						}
+						$member->membership_relationships = $membership_relationships;
 					}
-					$member->membership_relationships = $membership_relationships;
 					break;
 			}
 			$member->save();

@@ -29,28 +29,33 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		
 	}
 	
-	public function get_content() {
+	public function get_content( $args = null ) {
 		global $shortcode_tags;
 		
-		$content = array();
+		$contents = array();
 		foreach( $shortcode_tags as $key => $function ) {
 			$id = esc_html( trim( $key ) );
-			$content[ $id ]->id = $id;
-			$content[ $id ]->name = "[$key]";
+			$contents[ $id ]->id = $id;
+			$contents[ $id ]->name = "[$key]";
 			
 			if( in_array( $id, $this->rule_value ) ) {
-				$content[ $id ]->access = true;
+				$contents[ $id ]->access = true;
 			}
 			else {
-				$content[ $id ]->access = false;
+				$contents[ $id ]->access = false;
 			}
 			if( in_array( $id, $this->delayed_access_enabled ) ) {
-				$content[ $id ]->delayed_period = $this->delayed_period_unit[ $id ] . $this->delayed_period_type[ $id ];
+				$contents[ $id ]->delayed_period = $this->delayed_period_unit[ $id ] . $this->delayed_period_type[ $id ];
 			}
 			else {
-				$content[ $id ]->delayed_period = '';
+				$contents[ $id ]->delayed_period = '';
 			}
 		}
-		return $content;
+		
+		if( ! empty( $args['rule_status'] ) ) {
+			$contents = $this->filter_content( $args['rule_status'], $contents );
+		}
+		
+		return $contents;
 	}
 }

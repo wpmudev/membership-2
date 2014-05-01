@@ -36,7 +36,6 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 				'cb'     => '<input type="checkbox" />',
 				'menu' => __( 'Menu title', MS_TEXT_DOMAIN ),
 				'access' => __( 'Access', MS_TEXT_DOMAIN ),
-				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -63,7 +62,7 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 		
 		$html = '';
 		if( $item->parent_id ) {
-			$html = sprintf( '<input type="checkbox" name="item[]" value="%1$s" %2$s/>', $item->id, checked( $item->access, true, false ) );
+			$html = sprintf( '<input type="checkbox" name="item[]" value="%1$s" />', $item->id );
 		}
 		return $html;
 	}
@@ -73,13 +72,15 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 		$html = '';
 		if( $item->parent_id ) {
 			
-			if( $item->access ) {
-				$html =  ( $item->delayed_period ) ? __( 'Dripped Content', MS_TEXT_DOMAIN ) : __( 'Has Access', MS_TEXT_DOMAIN );
-			}
-			else {
-				$html = __( 'No Access', MS_TEXT_DOMAIN );
-			}
+			$html = parent::column_access( $item );
 		}
 		return $html;
 	}
+
+	public function get_views(){
+		$views = parent::get_views();
+		unset( $views['dripped'] );
+		return $views;
+	}
+	
 }

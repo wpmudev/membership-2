@@ -63,9 +63,24 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	
 	public function prepare_items() {
 	
-		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships() );
-		
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+		
+		$total_items =  MS_Model_Membership::get_membership_count();
+		$per_page = $this->get_items_per_page( 'membership_per_page', 10 );
+		$current_page = $this->get_pagenum();
+		
+		$args = array(
+				'posts_per_page' => $per_page,
+				'offset' => ( $current_page - 1 ) * $per_page,
+			);
+		
+		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships( $args ) );
+		
+		$this->set_pagination_args( array(
+					'total_items' => $total_items,
+					'per_page' => $per_page,
+				)
+			);
 	}
 
 	public function column_name( $item ) {
