@@ -40,12 +40,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		else {
 			$content->access = false;
 		}
-		if( in_array( $content->id, $this->delayed_access_enabled ) ) {
-			$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
-		}
-		else {
-			$content->delayed_period = '';
-		}
+
 		return array( $content );
 	}
 }

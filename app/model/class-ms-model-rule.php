@@ -66,12 +66,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $inherit_rules;
 	
-	protected $delayed_access_enabled = array(); 
-	
-	protected $delayed_period_unit = array();
-	
-	protected $delayed_period_type = array();
-	
+	protected $dripped = array();
+		
 	/**
 	 * Create rule with default rule_value (has access). 
 	 */
@@ -85,7 +81,8 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
-	 * Get content of this rule domain. 
+	 * Get content of this rule domain.
+	 * @todo Specify a return content interface  
 	 * @throws Exception
 	 */
 	public function get_content( $args = null ) {

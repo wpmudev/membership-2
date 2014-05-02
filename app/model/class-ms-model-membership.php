@@ -20,6 +20,12 @@
  *
 */
 
+/**
+ * Membership model class.
+ * 
+ * @todo Maybe create MS_Model_Period to handle these many *_period_unit *_period_type
+ *
+ */
 class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_membership';

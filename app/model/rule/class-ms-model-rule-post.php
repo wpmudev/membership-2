@@ -56,6 +56,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
+			$content->type = MS_Model_RULE::RULE_TYPE_POST;
 			$content->categories = array();
 			$categories = wp_get_post_categories( $content->id );
 			/* To inherit category access, set default access to false */
@@ -78,8 +79,9 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 // 			else {
 // 				$content->access = false;
 // 			}
-			if( in_array( $content->id, $this->delayed_access_enabled ) ) {
-				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+			if( array_key_exists( $content->id, $this->dripped ) ) {
+				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
+				$content->dripped = $this->dripped[ $content->id ];
 			}
 			else {
 				$content->delayed_period = '';

@@ -4,9 +4,11 @@ class MS_View_Membership_Edit extends MS_View {
 
 	const MEMBERSHIP_SAVE_NONCE = 'membership_save_nonce';
 	const RULE_SAVE_NONCE = 'rule_save_nonce';
+	const DRIPPED_NONCE = 'dripped_nonce';
 	
 	const MEMBERSHIP_SECTION = 'membership_section';
-	const RULE_SECTION = 'rule_section';
+// 	const RULE_SECTION = 'rule_section';
+	const DRIPPED_SECTION = 'item';
 	
 	private $rule_types = array();
 	protected $fields = array();
@@ -470,44 +472,72 @@ class MS_View_Membership_Edit extends MS_View {
 				<h2><?php _e( 'Dripped content', MS_TEXT_DOMAIN ); ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
-					<table class="form-table">
-						<tbody>
-							<tr>
-								<td id="ms-content-type-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['type'] );?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div id="ms-rule-type-post-wrapper" class="ms-rule-type-wrapper">
-										<?php MS_Helper_Html::html_input( $this->fields['posts'] );?>
-									</div>
-									<div id="ms-rule-type-page-wrapper" class="ms-rule-type-wrapper">
-										<?php MS_Helper_Html::html_input( $this->fields['pages'] );?>
-									</div>
-									<div id="ms-rule-type-category-wrapper" class="ms-rule-type-wrapper">
-										<?php MS_Helper_Html::html_input( $this->fields['categories'] );?>
-									</div>
-								</td>
-							</tr>							
-							<tr>
-								<td>
-									<div class="ms-period-wrapper">
-										<?php MS_Helper_Html::html_input( $this->fields['delayed_period_unit'] );?>
-										<?php MS_Helper_Html::html_input( $this->fields['delayed_period_type'] );?>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['add'] );?>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<?php $rule_list_table->display(); ?>
-					<?php MS_Helper_Html::html_submit();?>
+					<?php wp_nonce_field( self::DRIPPED_NONCE, self::DRIPPED_NONCE ); ?>
+					<?php MS_Helper_Html::html_input( $this->fields['membership_copy'] );?>
+					<?php MS_Helper_Html::html_submit( $this->fields['copy_dripped'] );?>
 				</form>
+				
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<td id="ms-content-type-wrapper">
+								<?php MS_Helper_Html::html_input( $this->fields['type'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="ms-rule-type-post-wrapper" class="ms-rule-type-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['posts'] );?>
+								</div>
+								<div id="ms-rule-type-page-wrapper" class="ms-rule-type-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['pages'] );?>
+								</div>
+								<div id="ms-rule-type-category-wrapper" class="ms-rule-type-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['categories'] );?>
+								</div>
+							</td>
+						</tr>							
+						<tr>
+							<td>
+								<div class="ms-period-wrapper">
+									<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
+									<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['btn_add'] );?>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<form action="" method="post">
+					<?php MS_Helper_Html::html_input( $this->fields['membership_id'] );?>
+					<?php //MS_Helper_Html::html_input( $this->fields['action'] );?>	
+					<?php $rule_list_table->display(); ?>
+					<?php MS_Helper_Html::html_submit( $this->fields['dripped_submit'] );?>
+				</form>
+				<script id="dripped_template" type="text/x-jquery-tmpl">
+					<tr class="${css_class}">
+						<td class="title column-title">
+							<input type="hidden" id="${full_id}" name="item[${counter}][id]" value="${id}">
+							${title}
+						</td>
+						<td class="dripped column-dripped">
+							${period_unit} ${period_type}
+							<input type="hidden" name="item[${counter}][period_unit]" value="${period_unit}">
+							<input type="hidden" name="item[${counter}][period_type]" value="${period_type}">
+						</td>
+						<td class="type column-type">
+							${type}
+							<input type="hidden" name="item[${counter}][type]" value="${type}">
+						</td>
+						<td class="delete column-delete">
+							<button class="ms-delete" type="button">Delete</button>
+						</td>
+					</tr>
+				</script>
 			</div>
 		<?php 	
 		$html = ob_get_clean();
@@ -515,11 +545,13 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function prepare_dripped( $model ) {
-	
+		$membership_copy = MS_Model_Membership::get_membership_names();
+		unset( $membership_copy[ $this->model->id ] );
+		
 		$this->fields = array(
 				'type' => array(
 						'id' => 'type',
-						'section' => self::MEMBERSHIP_SECTION,
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 						'title' => __( 'Select content type', MS_TEXT_DOMAIN ),
 						'field_options' => array( 
@@ -527,12 +559,12 @@ class MS_View_Membership_Edit extends MS_View {
 							'page' => __( 'Page', MS_TEXT_DOMAIN ), 
 							'category' => __( 'Category', MS_TEXT_DOMAIN ),
 						),
-						'value' => null,
+						'value' => 'post',
 						'class' => '',
 				),
 				'posts' => array(
 						'id' => 'posts',
-						'section' => self::MEMBERSHIP_SECTION,
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Select Post', MS_TEXT_DOMAIN ),
 						'value' => 0,
@@ -541,7 +573,7 @@ class MS_View_Membership_Edit extends MS_View {
 				),
 				'pages' => array(
 						'id' => 'pages',
-						'section' => self::MEMBERSHIP_SECTION,
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Select Page', MS_TEXT_DOMAIN ),
 						'value' => 0,
@@ -550,34 +582,61 @@ class MS_View_Membership_Edit extends MS_View {
 				),
 				'categories' => array(
 						'id' => 'categories',
-						'section' => self::MEMBERSHIP_SECTION,
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Select Category', MS_TEXT_DOMAIN ),
 						'value' => 0,
 						'field_options' => $model['category']->get_content_array(),
 						'class' => 'ms-radio-rule-type',
 				),
-				'delayed_period_unit' => array(
-						'id' => 'delayed_period_unit',
-						'section' => self::MEMBERSHIP_SECTION,
+				'period_unit' => array(
+						'id' => 'period_unit',
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Days/Months/Years until the content becomes available', MS_TEXT_DOMAIN ),
 						'value' => null,
 						'class' => '',
 				),
-				'delayed_period_type' => array(
-						'id' => 'delayed_period_type',
-						'section' => self::MEMBERSHIP_SECTION,
+				'period_type' => array(
+						'id' => 'period_type',
+						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => null,
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
-				'add' => array(
-						'id' => 'add',
+				'membership_id' => array(
+						'id' => 'membership_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->model->id,
+				),
+				'btn_add' => array(
+						'id' => 'btn_add',
+						'section' => self::DRIPPED_SECTION,
 						'value' => __('Add', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-// 						'class' => 'button',
+						'class' => 'button-primary',
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'dripped',
+				),
+				'dripped_submit' => array(
+						'id' => 'dripped_submit',
+						'value' => __('Save Changes', MS_TEXT_DOMAIN ),
+				),
+				'membership_copy' => array(
+						'id' => 'membership_copy',
+						'title' => __('Copy dripped content schedule from another membership', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => null,
+						'field_options' => $membership_copy,
+						'class' => '',
+				),
+				'copy_dripped' => array(
+						'id' => 'copy_dripped',
+						'value' => __('Copy', MS_TEXT_DOMAIN ),
 				),
 
 		);

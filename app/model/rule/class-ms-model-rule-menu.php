@@ -54,13 +54,6 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 						else {
 							$contents[ $item_id ]->access = false;
 						}
-						if( in_array( $item_id, $this->delayed_access_enabled ) ) {
-							$contents[ $item_id ]->delayed_period = $this->delayed_period_unit[ $item_id ] . $this->delayed_period_type[ $item_id ];
-						}
-						else {
-							$contents[ $item_id ]->delayed_period = '';
-						}
-						
 					}
 				}
 			}

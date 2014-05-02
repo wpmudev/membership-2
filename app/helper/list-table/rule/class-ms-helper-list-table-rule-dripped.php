@@ -33,6 +33,8 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 
 	protected $model;
 	
+	private static $counter = 0;
+	
 	public function __construct( $model ) {
 		parent::__construct( array(
 				'singular'  => "rule_$this->id",
@@ -57,6 +59,7 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 				
 // 		);
 		$args['rule_status'] = MS_Model_Rule::FILTER_DRIPPED;
+// 		$args= null;
 		
 		$posts = apply_filters( "membership_helper_list_table_rule_post_items", $this->model['post']->get_content( $args ) );
 		$pages = apply_filters( "membership_helper_list_table_rule_page_items", $this->model['page']->get_content( $args ) );
@@ -73,7 +76,7 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 	
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-				'cb'     => '<input type="checkbox" />',
+// 				'cb'     => '<input type="checkbox" />',
 				'title' => __( 'Title', MS_TEXT_DOMAIN ),
 				'dripped' => __( 'Available after', MS_TEXT_DOMAIN ),
 				'type' => __( 'Type', MS_TEXT_DOMAIN ),
@@ -95,9 +98,32 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 		) );
 	}
 	
+	public function column_cb( $item ) {
+		return sprintf( '<input type="checkbox" name="item[]" value="%1$s" />', $item->id );
+	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
+			case 'title':
+				$html = ! empty( $item->post_title ) ? $item->post_title : $item->name;
+				$html .= sprintf( '<input type="hidden" id="%s_%s" name="item[%s][id]" value="%s">', $item->type, $item->id,self::$counter, $item->id );
+				break;
+			case 'dripped':
+				$html = $item->delayed_period;
+				if( ! empty( $item->dripped ) ) {
+					$html .= sprintf( '<input type="hidden" name="item[%s][period_unit]" value="%s">', self::$counter, $item->dripped['period_unit'] );
+					$html .= sprintf( '<input type="hidden" name="item[%s][period_type]" value="%s">', self::$counter, $item->dripped['period_type'] );
+				}
+				break;
+			case 'type':
+				$html = $item->type;
+				$html .= sprintf( '<input type="hidden" name="item[%s][type]" value="%s">', self::$counter, $item->type );
+				break;
+			case 'delete':
+				$html = '<button type="button" class="ms-delete">Delete</button>';
+				self::$counter++;
+				break;
 			default:
 				$html = print_r( $item, true ) ;
 				break;

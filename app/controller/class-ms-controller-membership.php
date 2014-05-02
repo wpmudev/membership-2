@@ -157,9 +157,26 @@ class MS_Controller_Membership extends MS_Controller {
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
+		 * Copy membership dripped schedule
+		 */
+		elseif( ! empty( $_POST['copy_dripped'] ) ) {
+			$nonce = MS_View_Membership_Edit::DRIPPED_NONCE;
+			if ( ! empty( $_POST['membership_copy'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+				$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
+				wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			}
+		}
+		/**
+		 * Save membership dripped schedule
+		 */
+		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['item'] ) && ! empty( $_POST['membership_id'] ) 
+				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
+			$this->save_dripped_schedule( $_POST['item'] );
+		}
+		/**
 		 * Rule single action 
 		 */
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
 		}
@@ -169,6 +186,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 
 		$this->print_admin_message( $msg );
@@ -193,7 +211,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Save membership details
 	 * TODO better sanitize and validate fields in model
 	 */
-	public function save_membership() {
+	private function save_membership() {
 		
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -227,11 +245,10 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return number Resulting message id.
 	 */
 	
-	public function rule_list_do_action( $action, $items ) {
+	private function rule_list_do_action( $action, $items ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-		
 		$msg = 0;
 		$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
 		if( array_key_exists( $rule_type, $this->model->rules ) ) {
@@ -255,6 +272,36 @@ class MS_Controller_Membership extends MS_Controller {
 		return $msg;
 	}
 	
+	private function copy_dripped_schedule( $copy_from_id ) {
+		$src_membership = MS_Model_Membership::load( $copy_from_id );
+		
+		$rule_types = array( 'post', 'page', 'category' ); 
+		foreach( $rule_types as $rule_type) {
+			$this->model->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
+		}
+		$this->model->save();
+	}
+	
+	private function save_dripped_schedule( $items ) {
+		if( is_array( $items ) ) {
+			$dripped = array();
+		
+			foreach( $items as $item ) {
+				$dripped[ $item['type'] ][ $item['id'] ] = array(
+						'period_unit' => $item['period_unit'],
+						'period_type' => $item['period_type'],
+				);
+			}
+				
+			foreach( $dripped as $rule_type => $drip ) {
+				$rule = $this->model->rules[ $rule_type ];
+				$rule->dripped = $drip;
+				$this->model->set_rule( $rule_type, $rule );
+			}
+			$this->model->save();
+		}
+		
+	}
 	public function enqueue_styles() {
 		
 		$plugin_url = MS_Plugin::get_plugin_url();
@@ -289,12 +336,12 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( 'dripped' == $active_tab ) {
 			wp_register_script( 'ms_view_membership_render_dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
 			wp_enqueue_script( 'ms_view_membership_render_dripped' );
+			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
+			wp_enqueue_script( 'jquery_tmpl' );
 		}
 		// 		else if( 'rules' == $active_tab ) {		
 // 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
 // 			wp_enqueue_script( 'ms_rule_view_render_rule' );
-// 			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
-// 			wp_enqueue_script( 'jquery_tmpl' );
 // 		}
 	
 	}

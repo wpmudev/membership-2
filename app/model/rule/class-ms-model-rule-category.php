@@ -31,14 +31,16 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 		foreach( $contents as $key => $content ) {
 			$content->id = $content->term_id;
+			$content->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
 			if( in_array( $content->id, $this->rule_value ) ) {
 				$content->access = true;
 			}
 			else {
 				$content->access = false;
 			}
-			if( in_array( $content->id, $this->delayed_access_enabled ) && ! empty( $this->delayed_period_unit[ $content->id ] ) && ! empty( $this->delayed_period_type[ $content->id ] ) ) {
-				$content->delayed_period = $this->delayed_period_unit[ $content->id ] . $this->delayed_period_type[ $content->id ];
+			if( array_key_exists( $content->id, $this->dripped ) ) {
+				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
+				$content->dripped = $this->dripped[ $content->id ];
 			}
 			else {
 				$content->delayed_period = '';

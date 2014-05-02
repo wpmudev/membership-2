@@ -44,12 +44,6 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			else {
 				$contents[ $id ]->access = false;
 			}
-			if( in_array( $id, $this->delayed_access_enabled ) ) {
-				$contents[ $id ]->delayed_period = $this->delayed_period_unit[ $id ] . $this->delayed_period_type[ $id ];
-			}
-			else {
-				$contents[ $id ]->delayed_period = '';
-			}
 		}
 		
 		if( ! empty( $args['rule_status'] ) ) {

@@ -71,8 +71,8 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 	public function get_bulk_actions() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_bulk_actions", array(
-				'give_access' => __( 'Give Access', MS_TEXT_DOMAIN ),
-				'no_access' => __( 'No Access', MS_TEXT_DOMAIN ),
+				'give_access' => __( 'Give access', MS_TEXT_DOMAIN ),
+				'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -119,7 +119,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 									),
 									'no_access'
 							),
-							__('No Access', MS_TEXT_DOMAIN )
+							__('Remove access', MS_TEXT_DOMAIN )
 					),
 			);
 		}
