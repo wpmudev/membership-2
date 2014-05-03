@@ -130,10 +130,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
-				$html = "<a href='/wp-admin/admin.php?page=membership-edit&membership_id={$item->id}'>$item->name</a>";
-				$html .= $this->row_actions( $this->get_column_actions( $item ), false );
-				break;
 			case 'active':
 				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
 				break;

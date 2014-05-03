@@ -78,7 +78,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		
 		$can_view = false;
-		foreach( $this->member->memberships as $membership_relationship ) {
+		foreach( $this->member->membership_relationships as $membership_relationship ) {
 			$membership = $membership_relationship->get_membership();
 			foreach( $membership->rules as $rule ) {
 				$can_view = ( $can_view || $rule->can_view_current_page() );

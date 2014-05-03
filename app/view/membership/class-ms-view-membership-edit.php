@@ -92,7 +92,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
-			<form id="setting_form" action="" method="post">
+			<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( self::MEMBERSHIP_SAVE_NONCE, self::MEMBERSHIP_SAVE_NONCE ); ?>
 				<table class="form-table">
 					<tbody>
@@ -106,57 +106,59 @@ class MS_View_Membership_Edit extends MS_View {
 								<?php MS_Helper_Html::html_input( $this->fields['description'] );?>
 							</td>
 						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_input( $this->fields['price'] );?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_input( $this->fields['membership_type'] );?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
-									<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
-									<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
-								</div>
-								<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
-									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_unit'] );?>
-									<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_type'] );?>
-								</div>
-								<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
-									<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
-									<span> to </span>
-									<?php MS_Helper_Html::html_input( $this->fields['period_date_end'] );?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div id="ms-membership-on-end-membership-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['on_end_membership_id'] );?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'] );?>
-								<div id="ms-trial-period-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['trial_price'] );?>
-									<div class="ms-period-wrapper">
-										<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'] );?>
-										<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'] );?>
+						<?php if( ! $this->model->visitor_membership ): ?>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_input( $this->fields['price'] );?>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_input( $this->fields['membership_type'] );?>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
+										<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
 									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_submit();?>
-							</td>
-						</tr>
+									<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
+										<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_type'] );?>
+									</div>
+									<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
+										<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
+										<span> to </span>
+										<?php MS_Helper_Html::html_input( $this->fields['period_date_end'] );?>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div id="ms-membership-on-end-membership-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['on_end_membership_id'] );?>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'] );?>
+									<div id="ms-trial-period-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['trial_price'] );?>
+										<div class="ms-period-wrapper">
+											<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'] );?>
+											<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'] );?>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_submit();?>
+								</td>
+							</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 			</form>
@@ -476,7 +478,7 @@ class MS_View_Membership_Edit extends MS_View {
 					<?php MS_Helper_Html::html_input( $this->fields['membership_copy'] );?>
 					<?php MS_Helper_Html::html_submit( $this->fields['copy_dripped'] );?>
 				</form>
-				
+				<form id="add_form">
 				<table class="form-table">
 					<tbody>
 						<tr>
@@ -512,6 +514,7 @@ class MS_View_Membership_Edit extends MS_View {
 						</tr>
 					</tbody>
 				</table>
+				</form>
 				<form action="" method="post">
 					<?php MS_Helper_Html::html_input( $this->fields['membership_id'] );?>
 					<?php //MS_Helper_Html::html_input( $this->fields['action'] );?>	
@@ -569,7 +572,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Select Post', MS_TEXT_DOMAIN ),
 						'value' => 0,
 						'field_options' =>$model['post']->get_content_array(),
-						'class' => 'ms-radio-rule-type',
+						'class' => 'ms-radio-rule-type chosen-select',
 				),
 				'pages' => array(
 						'id' => 'pages',
@@ -578,7 +581,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Select Page', MS_TEXT_DOMAIN ),
 						'value' => 0,
 						'field_options' => $model['page']->get_content_array(),
-						'class' => 'ms-radio-rule-type',
+						'class' => 'ms-radio-rule-type chosen-select',
 				),
 				'categories' => array(
 						'id' => 'categories',
@@ -587,7 +590,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Select Category', MS_TEXT_DOMAIN ),
 						'value' => 0,
 						'field_options' => $model['category']->get_content_array(),
-						'class' => 'ms-radio-rule-type',
+						'class' => 'ms-radio-rule-type chosen-select',
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
@@ -632,7 +635,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => null,
 						'field_options' => $membership_copy,
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'copy_dripped' => array(
 						'id' => 'copy_dripped',

@@ -38,8 +38,15 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	}
 
 	public function save() {
+		
+		if( empty( $this->title ) ) {
+			$this->title = $this->name;
+		}
+		
+		$this->validate();
+		
 		$this->post_modified = date( 'Y-m-d H:i:s' );
-// 		$this->description = $this->custom_post_type;
+
 		$post = array(
 				'comment_status' => 'closed',
 				'ping_status' => 'closed',

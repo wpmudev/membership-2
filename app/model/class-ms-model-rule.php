@@ -142,4 +142,10 @@ class MS_Model_Rule extends MS_Model {
 			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
 		}
 	}
+	
+	public function get_validation_rules() {
+		return apply_filters( 'membeship_model_rule_validation_rules', array(
+				'dripped' => array( 'function' => array( &$this, 'validate_period' ) ),
+		) );
+	}
 }

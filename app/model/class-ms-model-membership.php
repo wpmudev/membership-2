@@ -57,10 +57,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $period_date_start;
 	
 	protected $period_date_end;
+		
+	protected $trial_period_enabled;
 	
 	protected $trial_price;
-	
-	protected $trial_period_enabled;
 	
 	protected $trial_period_unit;
 	
@@ -74,12 +74,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $linked_weight;
 	
-	protected $active;
+	protected $active = true;
 	
-	protected $public;
+	protected $public = true;
 	
 	protected $rules = array();
-
+	
 	public static function get_membership_types() {
 		return array(
 				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
@@ -208,6 +208,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
+			$visitor_membership->active = true;
+			$visitor_membership->public = true;
 			$visitor_membership->save();
 			$visitor_membership = self::load( $visitor_membership->id );
 		}
@@ -240,5 +242,47 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			wp_delete_post( $this->id );
 		}
 	}
-	
+
+	public function get_validation_rules() {
+		$period_unit = array(
+				'function' => array( &$this, 'validate_min' ),
+				'args' => 1
+		);
+		$period_type = array(
+				'function' => array( $this, 'validate_options' ),
+				'args' => MS_Helper_Period::get_periods(),
+		);
+		$period_date = array(
+				'function' =>	array( &$this, 'validate_date' ),
+				'args' => MS_Helper_Period::PERIOD_FORMAT
+		);
+		$bool = array(
+				'function' => array( &$this, 'validate_bool' )
+		);
+		$membership_type = array(
+				'function' =>	array( &$this, 'validate_options' ),
+				'args' => array_keys( self::get_membership_types() )
+		);
+		return apply_filters( 'membeship_model_membership_validation_rules', array(
+				'name' => 'sanitize_text_field',
+				'title' => 'sanitize_title',
+				'description' => 'sanitize_text_field',
+				'membership_type' => $membership_type,
+				'visitor_membership' => $bool,
+				'price' => 'floatval',
+				'period_unit' => $period_unit,
+				'period_type' => $period_type,
+				'pay_cicle_period_unit' => $period_unit,
+				'pay_cicle_period_type' => $period_type,
+				'period_date_start' => $period_date,
+				'period_date_end' => $period_date,
+				'trial_period_enabled' => $bool,
+				'trial_price' => 'floatval',
+				'trial_period_unit' => $period_unit,
+				'trial_period_type' => $period_type,
+				'on_end_membership_id' => 'intval',
+				'active' => $bool,
+				'public' => $bool,
+		) );
+	}
 }

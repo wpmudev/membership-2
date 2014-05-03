@@ -296,6 +296,7 @@ class MS_Controller_Membership extends MS_Controller {
 			foreach( $dripped as $rule_type => $drip ) {
 				$rule = $this->model->rules[ $rule_type ];
 				$rule->dripped = $drip;
+				$rule->validate();
 				$this->model->set_rule( $rule_type, $rule );
 			}
 			$this->model->save();
@@ -314,6 +315,11 @@ class MS_Controller_Membership extends MS_Controller {
 			wp_enqueue_style( 'ms_membership_view_render_general' );
 			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 		}
+		elseif( 'dripped' == $active_tab ) {
+			wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
+			wp_enqueue_style( 'chosen-jquery' );
+			wp_enqueue_style( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/css/ms-view-membership-render-dripped.css', null, $version );
+		}
 // 		else if( 'rules' == $active_tab ) {		
 // 			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
 // 			wp_enqueue_style( 'ms_rule_view_render_rule' );
@@ -326,18 +332,24 @@ class MS_Controller_Membership extends MS_Controller {
 		$plugin_url = MS_Plugin::get_plugin_url();
 		$version = MS_Plugin::get_plugin_version();
 		
+		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
 		if( 'general' == $active_tab ) {
-			wp_register_script( 'ms_view_membership_render_general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
-			wp_enqueue_script( 'ms_view_membership_render_general' );
+			wp_register_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
+			wp_enqueue_script( 'ms-view-membership-render-general' );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-validate' );
 		}
 		elseif( 'dripped' == $active_tab ) {
-			wp_register_script( 'ms_view_membership_render_dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
-			wp_enqueue_script( 'ms_view_membership_render_dripped' );
-			wp_register_script( 'jquery_tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
-			wp_enqueue_script( 'jquery_tmpl' );
+			wp_register_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
+			wp_enqueue_script( 'ms-view-membership-render-dripped' );
+			wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
+			wp_enqueue_script( 'jquery-tmpl' );
+			wp_enqueue_script( 'jquery-chosen' );
+			wp_enqueue_script( 'jquery-validate' );
 		}
 		// 		else if( 'rules' == $active_tab ) {		
 // 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );

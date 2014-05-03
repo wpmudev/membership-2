@@ -38,7 +38,7 @@ class MS_Model extends MS_Hooker {
 	protected $name;
 			
 	protected static $ignore_fields = array( 'actions', 'filters' );
-	
+		
 	public function __construct() {
 	}
 	
@@ -48,5 +48,76 @@ class MS_Model extends MS_Hooker {
 	
 	public static function load( $model_id ) {
 		throw new Exception ("Method to be implemented in child class");
-	}	
+	}
+
+	public function get_validation_rules() {
+		return array();
+	}
+	
+	public function validate() {
+		$validation = $this->get_validation_rules();
+
+		if( ! empty( $validation ) ) {
+			foreach( $validation as $field => $function ) {
+				if( is_array( $function ) ) {
+					$args = ! empty( $function['args'] ) ? $function['args'] : null; 
+					$this->$field = call_user_func_array( $function['function'],  array( $this->$field , $args ) );	
+				}
+				else{
+					$this->$field  = call_user_func( $function, $this->$field );
+				}
+			}
+		}
+	}
+	
+	public function validate_options( $value, $options ) {
+		if( in_array( $value, $options ) ) {
+			return $value;
+		}
+		else {
+			return reset( $options );
+		}
+	}
+	
+	public function validate_date( $date, $format = 'Y-m-d') {
+		$d = DateTime::createFromFormat( $format, $date );
+		if ( $d && $d->format( $format ) == $date ) {
+			return $date;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public function validate_bool( $value ) {
+		if( function_exists( 'boolval' ) ) {
+			return boolval( $value );
+		}
+		else {
+			return (bool) $value;
+		}
+	}
+	
+	public function validate_min( $value, $min ) {
+		return intval( ( $value > $min ) ? $value : $min ); 
+	}
+	
+	public function validate_period( $periods ) {
+		$default = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
+		foreach( $periods as $key => $period ) {
+			if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
+				$periods[ $key ]['period_unit'] = intval( $periods[ $key ]['period_unit'] ); 
+				if( $periods[ $key ]['period_unit'] < 0 ) {
+					$periods[ $key ]['period_unit'] = $default['period_unit'];
+				}
+				if( ! in_array( $period['period_type'], MS_Helper_Period::get_periods() ) ){
+					$periods[ $key ]['period_type'] = $default['period_type'];
+				}
+			}
+			else {
+				$period = $default;
+			}
+		}
+		return $periods;
+	}
 }

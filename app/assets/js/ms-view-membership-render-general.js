@@ -1,4 +1,13 @@
 jQuery( document ).ready(function( $ ) {
+	function ms_show_trial_period() {
+		if( $( '#trial_period_enabled' ).is( ':checked' ) ) {
+			$( '#ms-trial-period-wrapper' ).show();
+		}
+		else {
+			$( '#ms-trial-period-wrapper' ).hide();
+		}
+	}
+
 	$( '#membership_type').change( function() {
 		$( '.ms-membership-type' ).hide();
 		membership_type = $( this ).val();
@@ -16,17 +25,45 @@ jQuery( document ).ready(function( $ ) {
 	$( '#period_date_end' ).datepicker({
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format
     });
-	function show_trial_period() {
-		if( $( '#trial_period_enabled' ).is( ':checked' ) ) {
-			$( '#ms-trial-period-wrapper' ).show();
-		}
-		else {
-			$( '#ms-trial-period-wrapper' ).hide();
-		}
-	}
 	
-	$( '#trial_period_enabled' ).click( show_trial_period );
+	$( '#trial_period_enabled' ).click( ms_show_trial_period );
 
-	show_trial_period();
+	ms_show_trial_period();
 	$( '#membership_type' ).change();
+	
+	$('.ms-form').validate({
+			onkeyup: false,
+			errorClass: 'ms-validation-error',
+			rules: {
+				'membership_section[name]': 'required',
+				'membership_section[price]': {
+					'required': true,
+					'min': 1,
+				},
+				'membership_section[period_unit]': {
+					'required': true,
+					'min': 1,
+				},
+				'membership_section[period_date_start]': {
+					'required': true,
+					'dateISO': true,
+				},
+				'membership_section[period_date_end]': {
+					'required': true,
+					'dateISO': true,
+				},
+				'membership_section[pay_cicle_period_unit]': {
+					'required': true,
+					'min': 1,
+				},
+				'membership_section[trial_price]': {
+					'required': true,
+					'number': true,
+				},
+				'membership_section[trial_period_unit]': {
+					'required': true,
+					'min': 1,
+				}
+			}
+		});
 });
