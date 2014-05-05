@@ -221,6 +221,9 @@ function membership_launch() {
 	} else {
 		$plugin->set_module( Membership_Module_Frontend::NAME );
 	}
+	
+	// take care of new users
+	Membership_Plugin::factory()->hook_new_user_registration();
 
 	do_action( 'membership_loaded', $plugin );
 }
@@ -234,3 +237,4 @@ membership_launch();
 // Load secondary plugins
 load_all_membership_addons();
 load_membership_gateways();
+

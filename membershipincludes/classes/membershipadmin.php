@@ -2621,6 +2621,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										case 'general': $M_options['strangerlevel'] = (isset($_POST['strangerlevel'])) ? (int) $_POST['strangerlevel'] : '';
 												$M_options['freeusersubscription'] = (isset($_POST['freeusersubscription'])) ? (int) $_POST['freeusersubscription'] : '';
 												$M_options['enableincompletesignups'] = (isset($_POST['enableincompletesignups'])) ? $_POST['enableincompletesignups'] : '';
+												$M_options['assignfirstlevel'] = (isset($_POST['assignfirstlevel'])) ? $_POST['assignfirstlevel'] : '';
+												
 												break;
 
 										case 'pages': $M_options['nocontent_page'] = (isset($_POST['nocontent_page'])) ? $_POST['nocontent_page'] : '';
@@ -2868,6 +2870,30 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				</td>
 																		</tr>
 																</tbody>
+																<tr valign="top">
+																		<th scope="row"><?php _e('Assign first subscription level to new users', 'membership'); ?><span class="description"><br /><small><?php _e('Added on new user registration only', 'membership'); ?></small></span></th>
+																		<td>
+																				<?php
+													                            if (!isset($M_options['assignfirstlevel'])) {
+													                                $M_options['assignfirstlevel'] = '';
+													                            }
+													                            ?>
+																				<input type="checkbox" name="assignfirstlevel" id="assignfirstlevel" value="yes" <?php checked('yes', $M_options['assignfirstlevel']); ?> />
+
+																				
+																		</td>
+																</tr>
+																
+																<!--
+																/** FURTHER ADDITION: Add code to assign default subscription to all users without a subscription. **/
+																<tr valign="top">
+																		<th scope="row"><?php _e('Assign to all users without any subscriptions', 'membership'); ?><br /><span class="description"><small><?php _e('This action cannot be undone', 'membership'); ?></small></span></th>
+																		<td>
+																				<input type="submit" class="button" name="do_assignfirstlevel" id="do_assignfirstlevel" value="<?php _e('Assign Default Subscription','membership'); ?>" />
+																		</td>
+																</tr>																														
+																
+																-->
 														</table>
 
 														<?php
