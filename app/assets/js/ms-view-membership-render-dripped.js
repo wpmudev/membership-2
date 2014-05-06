@@ -1,6 +1,6 @@
 jQuery( document ).ready(function( $ ) {
 	
-	$( '.chosen-select' ).chosen();
+	$( '.chosen-select' ).chosen({disable_search_threshold: 5});
 	ms = { 
 			counter: $( '#the-list-rule_dripped tr' ).size(),
 			id: 0,

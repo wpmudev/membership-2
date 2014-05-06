@@ -21,39 +21,33 @@
 */
 
 
-class MS_Model_Option extends MS_Model {
+class MS_Model_Addon extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
-	public function save() {
-		$settings = array();
-		
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			$settings[ $field ] = $this->$field;
-		}
-// 			$method = ( is_multisite() ) ? 'update_site_option' : 'update_option';
-				
-			update_option( static::$CLASS_NAME, $settings );
-	}
 	
-	public static function load() {
-// 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
-		$settings = get_option( static::$CLASS_NAME );
-		
-		$model = new static::$CLASS_NAME();
-		$fields = get_object_vars( $model );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			if( isset( $settings[ $field ] ) ) {
-				$model->$field = $settings[ $field ];
-			}
-		}
-		return $model;	
+	protected $id =  'addon_options';
+	
+	protected $name = 'Add-on Options';
+	
+	protected $multiple_membership = false;
+	
+	protected $post_by_post = false;
+	
+	
+	public function get_addon_list() {
+		return array( 
+				'multiple_membership' => (object) array(
+					'id' => 'multiple_membership',
+					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ), 	
+					'description' => __( 'Allow members to join multiple memberships.', MS_TEXT_DOMAIN ),
+					'active' => $this->multiple_membership, 	
+				),
+				'post_by_post' => (object) array(
+					'id' => 'post_by_post',
+					'name' => __( 'Post by Post', MS_TEXT_DOMAIN ),
+					'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
+					'active' => $this->post_by_post,
+				),
+		);
 	}
 }

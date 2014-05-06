@@ -133,12 +133,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	/**
 	 * Create membership column.
 	 * 
-	 * Only allow single membership.
-	 * @todo Allow multiple memberships as addon.
 	 * @param MS_Model_Member $item The member object.
 	 */
 	function column_membership( $item ) {
-		$multiple_membership_option = false;
 		
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
@@ -153,8 +150,10 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
 		);
 		
+		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Plugin::instance()->addon->multiple_membership );
+
 		if( count( $item->membership_ids ) > 0 ) {
-			if( ! $multiple_membership_option ) {
+			if( ! $multiple_membership ) {
 				unset( $actions['add'] );
 			}
 		}
@@ -168,7 +167,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	function column_start( $item ) {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
-			$period = $membership_relationship->get_current_period();
+			$period = $membership_relationship->get_current_period()->format( "%a days");
 			$html[] = "$membership_relationship->start_date ($period)";
 		}
 		$html = join(', ', $html);
@@ -185,7 +184,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
 			if( $membership_relationship->expire_date )  {
-				$period = $membership_relationship->get_remaining_period();
+				$period = $membership_relationship->get_remaining_period()->format( "%a days");
 				$html[] = "$membership_relationship->expire_date ($period)";
 			}
 			else {

@@ -24,7 +24,7 @@
 class MS_Model_Plugin extends MS_Model {
 	
 	private $member;
-	
+		
 	public function __construct() {
 		
 		$this->init_member();
@@ -77,16 +77,28 @@ class MS_Model_Plugin extends MS_Model {
 			return true;
 		}
 		
-		$can_view = false;
+		$settings = MS_Plugin::instance()->settings;
+		$addon = MS_Plugin::instance()->addon;
+		$has_access = false;
+		
+		/**
+		 * Search permissions through all memberships joined.
+		 * If one has access is found, it does have access!
+		 */
 		foreach( $this->member->membership_relationships as $membership_relationship ) {
 			$membership = $membership_relationship->get_membership();
 			foreach( $membership->rules as $rule ) {
-				$can_view = ( $can_view || $rule->can_view_current_page() );
+				$has_access = ( $has_access || $rule->has_access( $membership_relationship ) );
+				
+				if( $has_access ) {
+					break 2;
+				}
 			}
 		}
 		
-		if( ! $can_view ) {
-			//TODO redirect to protected page
+		if( ! $has_access ) {
+			$url = get_permalink( $settings->pages['no_access'] );
+			wp_safe_redirect( $url );
 		}
 
 	}

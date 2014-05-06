@@ -124,6 +124,7 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		else {
 			$this->views['member_list'] = apply_filters( 'membership_view_member_list', new MS_View_Member_List() );
+			$this->views['member_list']->multiple_membership_option = apply_filters( 'membership_addon_multiple_membership', MS_Model_Addon::load()->multiple_membership );
 			$this->views['member_list']->render();
 		}
 	}

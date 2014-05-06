@@ -182,6 +182,24 @@ class MS_Plugin {
 	private $url;
 
 	/**
+	 * The plugin settings.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var settings
+	 */
+	private $settings;
+	
+		/**
+	 * The plugin add-on settings.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var addon
+	 */
+	private $addon;
+	
+	/**
 	 * Register hooks and loads the plugin.
 	 */
 	function __construct() {
@@ -212,6 +230,8 @@ class MS_Plugin {
 		$this->file = __FILE__;
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
+		$this->settings = apply_filters( 'membership_model_settings', MS_Model_Settings::load() );
+		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load() );
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );

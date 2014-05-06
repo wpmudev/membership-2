@@ -115,11 +115,34 @@ class MS_Model_Rule extends MS_Model {
 		return $contents;
 	}
 	
-	public function can_view_current_page() {
-		return true;
+	/**
+	 * Verify access to the current asset.
+	 * @param $membership_relationship 
+	 * @return boolean
+	 */
+	public function has_access( $membership_relationship ) {
+		return false;
 		throw new Exception ("Method to be implemented in child class");
 	}
 
+	/**
+	 * Verify access to dripped content.
+	 * @param $id The content id to verify dripped acccess. 
+	 * @param $start_date The start date of the member membership.
+	 */
+	public function has_dripped_access( $id, $start_date ) {
+		if( array_key_exists( $id, $this->dripped ) ) {
+			$dripped = MS_Helper_Period::add_interval( $this->dripped[ $id ]['period_unit'],  $this->dripped[ $id ]['period_type'], $start_date );
+			$now = date('Y-m-d');
+			$interval = MS_Helper_Period::subtract_dates( $now, $dripped );
+			if( 0 <= $interval->days && 0 == $interval->invert ) {
+				return true;
+			}
+			return false;
+		}
+		
+	}
+	
 	public static function get_rule_type_titles() {
 		return array(
 				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),

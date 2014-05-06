@@ -3,18 +3,18 @@
 class MS_View_Membership_Edit extends MS_View {
 
 	const MEMBERSHIP_SAVE_NONCE = 'membership_save_nonce';
-	const RULE_SAVE_NONCE = 'rule_save_nonce';
 	const DRIPPED_NONCE = 'dripped_nonce';
 	
 	const MEMBERSHIP_SECTION = 'membership_section';
-// 	const RULE_SECTION = 'rule_section';
 	const DRIPPED_SECTION = 'item';
 	
-	private $rule_types = array();
 	protected $fields = array();
+	
 	protected $model;
+	
 	protected $section;
 	
+	protected $post_by_post_option;
 
 	public function to_html() {
 		$tabs = array(
@@ -64,6 +64,15 @@ class MS_View_Membership_Edit extends MS_View {
 		 */
 		if( ! $this->model->id ){
 			$tabs = array( 'general' => $tabs['general'] );
+		}
+		/**
+		 * Enable / Disable post by post tab
+		 */
+		if( $this->post_by_post_option ) {
+			unset( $tabs['category'] );
+		}
+		else {
+			unset( $tabs['post'] );
 		}
 		ob_start();
 
@@ -203,15 +212,16 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Membership type', MS_TEXT_DOMAIN ),
 						'value' => $this->model->membership_type,
 						'field_options' => MS_Model_Membership::get_membership_types(),
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->period_unit,
-						'class' => '',
+						'field_options' => MS_Helper_Period::get_period_units(),
+						'class' => 'chosen-select',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
@@ -219,15 +229,16 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'pay_cicle_period_unit' => array(
 						'id' => 'pay_cicle_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Payment Cicle', MS_TEXT_DOMAIN ),
 						'value' => $this->model->pay_cicle_period_unit,
-						'class' => '',
+						'field_options' => MS_Helper_Period::get_period_units(),
+						'class' => 'chosen-select',
 				),
 				'pay_cicle_period_type' => array(
 						'id' => 'pay_cicle_period_type',
@@ -235,7 +246,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->pay_cicle_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'period_date_start' => array(
 						'id' => 'period_date_start',
@@ -280,10 +291,11 @@ class MS_View_Membership_Edit extends MS_View {
 				'trial_period_unit' => array(
 						'id' => 'trial_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period_unit,
-						'class' => '',
+						'field_options' => MS_Helper_Period::get_period_units(),
+						'class' => 'chosen-select',
 				),
 				'trial_period_type' => array(
 						'id' => 'trial_period_type',
@@ -291,7 +303,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->trial_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',
@@ -595,10 +607,11 @@ class MS_View_Membership_Edit extends MS_View {
 				'period_unit' => array(
 						'id' => 'period_unit',
 						'section' => self::DRIPPED_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Days/Months/Years until the content becomes available', MS_TEXT_DOMAIN ),
-						'value' => null,
-						'class' => '',
+						'value' => 1,
+						'field_options' => MS_Helper_Period::get_period_units(),
+						'class' => 'chosen-select',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
@@ -606,7 +619,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => null,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'chosen-select',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',

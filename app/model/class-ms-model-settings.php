@@ -21,39 +21,39 @@
 */
 
 
-class MS_Model_Option extends MS_Model {
+class MS_Model_Settings extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
-	public function save() {
-		$settings = array();
-		
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			$settings[ $field ] = $this->$field;
-		}
-// 			$method = ( is_multisite() ) ? 'update_site_option' : 'update_option';
-				
-			update_option( static::$CLASS_NAME, $settings );
-	}
 	
+	protected $id =  'ms_plugin_settings';
+	
+	protected $name = 'Plugin settings';
+	
+	protected $initial_setup;
+	
+	protected $pages;
+
 	public static function load() {
-// 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
-		$settings = get_option( static::$CLASS_NAME );
-		
-		$model = new static::$CLASS_NAME();
-		$fields = get_object_vars( $model );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			if( isset( $settings[ $field ] ) ) {
-				$model->$field = $settings[ $field ];
-			}
-		}
+		$model = parent::load();
+		$model->create_initial_pages();
 		return $model;	
 	}
+	
+	public function create_initial_pages() {
+		if( ! $this->initial_setup ) {
+			if( empty( $this->pages['no_access'] ) ) {
+				$this->create_no_access_page();
+			}
+			$this->initial_setup = true;
+			$this->save();
+		}
+	}
+	
+	public function create_no_access_page() {
+		$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
+		$pagedetails = array('post_title' => __('Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages['no_access'] = $id;
+	}
+
 }

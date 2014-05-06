@@ -25,8 +25,26 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
+	/**
+	 * Verify access to the current page.
+	 * @param $membership_relationship 
+	 * @return boolean
+	 */
+	public function has_access( $membership_relationship ) {
 		
+		$settings = MS_Plugin::instance()->settings;
+		
+		$page = get_queried_object();
+
+		$has_access = false;
+		if( is_a( $page, 'WP_Post' ) && $page->post_type == 'page' )  {
+			if( in_array( $page->ID, $this->rule_value ) || in_array( $page->ID, $settings->pages ) ) { 
+				$has_access = true;
+			}
+			
+			$has_access = $has_access || $this->has_dripped_access( $page->ID, $membership_relationship->start_date );					
+		}
+		return $has_access;		
 	}
 
 	public function get_content_count( $args = null ) {

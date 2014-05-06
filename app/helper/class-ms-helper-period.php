@@ -39,7 +39,7 @@ class MS_Helper_Period extends MS_Helper {
 	const PERIOD_FORMAT = 'Y-m-d';
 	
 	
-	public static function add_interval( $period_unit, $period_type, $start_date ) {
+	public static function add_interval( $period_unit, $period_type, $start_date = null ) {
 		if( empty ( $start_date ) ) {
 			$start_date = date( self::PERIOD_FORMAT );
 		}
@@ -58,15 +58,14 @@ class MS_Helper_Period extends MS_Helper {
 	 *  
 	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
 	 * @param Date $start_date The start date to subtractin the format yyyy-mm-dd
-	 * @param string $period_type const defined in this class
 	 * @return string The resulting of the date subtraction.
 	 */
-	public static function subtract_dates( $end_date, $start_date, $period_type = self::PERIOD_TYPE_DAYS ) {
+	public static function subtract_dates( $end_date, $start_date ) {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 		$interval = $start_date->diff( $end_date );
 		
-		return $interval->format( "%a $period_type");
+		return $interval;
 	}
 	
 	public static function current_date() {
@@ -80,5 +79,13 @@ class MS_Helper_Period extends MS_Helper {
 				self::PERIOD_TYPE_MONTHS => __( self::PERIOD_TYPE_MONTHS, MS_TEXT_DOMAIN ),
 				self::PERIOD_TYPE_YEARS => __( self::PERIOD_TYPE_YEARS, MS_TEXT_DOMAIN ),
 		);
+	}
+	
+	public static function get_period_units() {
+		$period_units = array();
+		for( $i = 1; $i <= 365; $i++ ){
+			$period_units[ $i ] = $i;
+		}
+		return $period_units;
 	}
 }

@@ -90,6 +90,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-memberships' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->membership_list_do_action( $action, $_POST['membership_id'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) );
 		}
 		
 		$this->print_admin_message( $msg );
@@ -172,6 +173,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['item'] ) && ! empty( $_POST['membership_id'] ) 
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$this->save_dripped_schedule( $_POST['item'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
 		 * Rule single action 
@@ -202,6 +204,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
 		
 		$this->views['membership_edit']->model = $this->model;
+		
+		$this->views['membership_edit']->post_by_post_option = apply_filters( 'membership_addon_post_by_post', MS_Plugin::instance()->addon->post_by_post );
 		
 		$this->print_admin_message( $msg );
 		$this->views['membership_edit']->render();
@@ -307,23 +311,21 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$plugin_url = MS_Plugin::get_plugin_url();
 		$version = MS_Plugin::get_plugin_version();
-
+		
+		wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
+		wp_register_style( 'jquery-ui', 'app/assets/css/jquery-ui.css' );
+		
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
 		if( 'general' == $active_tab ) {
-			wp_register_style( 'ms_membership_view_render_general', $plugin_url. 'app/assets/css/ms-view-membership-render-general.css', null, $version );
-			wp_enqueue_style( 'ms_membership_view_render_general' );
-			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+			wp_enqueue_style( 'ms_membership_view_render_general', $plugin_url. 'app/assets/css/ms-view-membership-render-general.css', null, $version );
+			wp_enqueue_style( 'jquery-ui' );
+			wp_enqueue_style( 'chosen-jquery' );
 		}
 		elseif( 'dripped' == $active_tab ) {
-			wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
 			wp_enqueue_style( 'chosen-jquery' );
 			wp_enqueue_style( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/css/ms-view-membership-render-dripped.css', null, $version );
 		}
-// 		else if( 'rules' == $active_tab ) {		
-// 			wp_register_style( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/css/ms-view-rule-render-rule.css', null, $version );
-// 			wp_enqueue_style( 'ms_rule_view_render_rule' );
-// 		}
 	}
 	
 		
@@ -334,28 +336,22 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
 		
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
 		if( 'general' == $active_tab ) {
-			wp_register_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
-			wp_enqueue_script( 'ms-view-membership-render-general' );
+			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
+			wp_enqueue_script( 'jquery-chosen' );
 		}
 		elseif( 'dripped' == $active_tab ) {
-			wp_register_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
-			wp_enqueue_script( 'ms-view-membership-render-dripped' );
-			wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
+			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
 			wp_enqueue_script( 'jquery-tmpl' );
 			wp_enqueue_script( 'jquery-chosen' );
 			wp_enqueue_script( 'jquery-validate' );
-		}
-		// 		else if( 'rules' == $active_tab ) {		
-// 			wp_register_script( 'ms_rule_view_render_rule', $plugin_url. 'app/assets/js/ms-view-rule-render-rule.js', null, $version );
-// 			wp_enqueue_script( 'ms_rule_view_render_rule' );
-// 		}
-	
+		}	
 	}
 	
 }

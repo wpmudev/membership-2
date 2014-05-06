@@ -30,7 +30,9 @@
  * @return object
  */
 class MS_View_Addon extends MS_View {
-		
+
+	protected $model;
+	
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -48,25 +50,18 @@ class MS_View_Addon extends MS_View {
 	 */
 	public function to_html() {		
 		ob_start();
+		$list_table = new MS_Helper_List_Table_Addon( $this->model );
+		$list_table->prepare_items();
+		
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>		
-
-		<?php
-			$this->render_addons();
-		?>
-		
+			<h2 class='ms-settings-title'><?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>		
+			<form action="" method="post">
+				<?php $list_table->display(); ?>
+			</form>
 		</div>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-
-	public function render_addons() {
-		?>
-		ADDONS GO HERE
-		<?php
-	}
-	
-		
 }

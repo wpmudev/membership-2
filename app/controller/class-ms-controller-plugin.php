@@ -74,9 +74,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function __construct() {
 		/** Instantiate Plugin model */
-		$this->model = apply_filters( 'membership_plugin_model', new MS_Model_Plugin() );
+		$this->model = apply_filters( 'membership_model_plugin', new MS_Model_Plugin() );
 		/** Instantiate Plugin view */
-		$this->view = apply_filters( 'membership_plugin_view', new MS_View_Plugin( array( 'test'=>'two' )) );
+		$this->view = apply_filters( 'membership_view_plugin', new MS_View_Plugin( array( 'test'=>'two' )) );
 
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
