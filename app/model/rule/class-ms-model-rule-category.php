@@ -27,6 +27,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 	/**
 	 * Verify access to the current category.
+	 * @param $membership_relationship 
 	 * @return boolean
 	 */
 	public function has_access( $membership_relationship ) {
@@ -37,12 +38,18 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			$categories = wp_get_post_categories( get_the_ID() );
 			$intersect = array_intersect( $categories, $this->rule_value );
 			$has_access = !empty( $intersect );
+			if( is_array( $categories ) ) {
+				foreach ( $categories as $category_id ) {
+					$has_access = $has_access || $this->has_dripped_access( $category_id, $membership_relationship->start_date );
+				}
+			}
 		}
 		elseif ( is_category() ) {
 			$has_access = in_array( get_queried_object_id(), $this->rule_value );
+			$has_access = $has_access || $this->has_dripped_access( get_queried_object_id(), $membership_relationship->start_date );
 		}
 		
-		$has_access = $has_access || $this->has_dripped_access( $post->ID, $membership_relationship->start_date );
+		
 		
 		return $has_access;
 	}

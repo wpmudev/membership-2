@@ -24,7 +24,9 @@
 class MS_Model_Plugin extends MS_Model {
 	
 	private $member;
-		
+
+	private $simulate_membership_id;
+	
 	public function __construct() {
 		
 		$this->init_member();
@@ -37,14 +39,33 @@ class MS_Model_Plugin extends MS_Model {
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
 		
+		/** Admin user simulating membership */
+		if( $this->member->is_admin_user() && ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_SIMULATE_COOKIE ] ) && 
+			( $membership_id = absint( $_COOKIE[ MS_Controller_Admin_Bar::MS_SIMULATE_COOKIE ] ) ) ) {
+			$this->member->add_membership( $membership_id );
+			$this->simulate_membership_id = $membership_id;
+			if( ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_PERIOD_COOKIE ] ) ) {
+				$period = explode( ';', $_COOKIE[ MS_Controller_Admin_Bar::MS_PERIOD_COOKIE ] );
+				if( count( $period ) == 2 ) {
+					$membership_relationships = $this->member->membership_relationships;
+					$membership_relationships[ $membership_id ]->set_elapsed_period( $period[0], $period[1] );
+					$this->member->membership_relationships = $membership_relationships;
+				}
+			}
+			elseif( ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] ) ) {
+				$membership_relationships = $this->member->membership_relationships;
+				$membership_relationships[ $membership_id ]->set_elapsed_date( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] );
+				$this->member->membership_relationships = $membership_relationships;
+			}
+			
+		}
 		/** Visitor: assign a Visitor Membership */
-		if( ! $this->member->is_logged_user() ){
+		elseif( ! $this->member->is_logged_user() ){
 			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 		}
-		
 		/** Logged user with no memberships: assign default Membership */
 		elseif( $this->member->is_logged_user() && ! $this->member->is_member() ) {
-			//TODO
+			$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
 		}
 	}
 	
@@ -73,10 +94,9 @@ class MS_Model_Plugin extends MS_Model {
 	public function protect_current_page() {
 
 		/** Admin user has access to everything */
-		if( $this->member->is_admin_user() ) {
+		if( $this->member->is_admin_user() && ! $this->simulate_membership_id ) {
 			return true;
 		}
-		
 		$settings = MS_Plugin::instance()->settings;
 		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;

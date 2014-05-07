@@ -29,16 +29,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $name = 'Plugin settings';
 	
+	protected $plugin_enabled = false;
+	
 	protected $initial_setup;
 	
 	protected $pages;
-
-	public static function load() {
-		$model = parent::load();
-		$model->create_initial_pages();
-		return $model;	
-	}
 	
+	protected $show_default_membership;
+
+	public function __construct() {
+		$this->add_action( 'wp_loaded', 'create_initial_pages' );	
+	}
+		
 	public function create_initial_pages() {
 		if( ! $this->initial_setup ) {
 			if( empty( $this->pages['no_access'] ) ) {

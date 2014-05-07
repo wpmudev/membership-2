@@ -118,7 +118,7 @@ class MS_Helper_Html extends MS_Helper {
 				$checked = checked( $value, true, false );
 				echo "<div class='ms-field-container'>";
 				echo "<span class=''>";
-				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='" . $section . "[$id]' value='1' $checked />";
+				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked />";
 				echo "</span>";
 				echo "<span class='vds_label_check'>";
 				echo "<label for='$id'>$title</label>";
@@ -126,10 +126,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo "</div>";
 				break;
 			case self::INPUT_TYPE_BUTTON:
-				echo "<input class='ms-field-input button $class' type='button' id='$id' name='" . $section . "[$id]' value='$value' />";
+				echo "<input class='ms-field-input button $class' type='button' id='$id' name='$name' value='$value' />";
 				break;
 			case self::INPUT_TYPE_SUBMIT:
-				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='" . $section . "[$id]' value='$value' />";
+				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='$name' value='$value' />";
 				break;
 				
 		}		

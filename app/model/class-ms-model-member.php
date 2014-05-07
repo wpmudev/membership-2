@@ -243,8 +243,7 @@ class MS_Model_Member extends MS_Model {
 		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );
 	}
 		
-	public function is_logged_user()
-	{
+	public function is_logged_user() {
 		return is_user_logged_in();
 	}
 	

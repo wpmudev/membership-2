@@ -44,6 +44,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $visitor_membership = false;
 	
+	protected $default_membership = false;
+	
 	protected $price;
 	
 	protected $period_unit;
@@ -208,12 +210,56 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
+			$visitor_membership->defaut_membership = false;
 			$visitor_membership->active = true;
 			$visitor_membership->public = true;
 			$visitor_membership->save();
 			$visitor_membership = self::load( $visitor_membership->id );
 		}
 		return $visitor_membership;
+	}
+	
+	public static function get_default_membership() {
+		$settings = MS_Plugin::instance()->settings;
+		
+		if( $settings->show_default_membership ) {
+			$args = array(
+					'post_type' => self::$POST_TYPE,
+					'post_status' => 'any',
+					'meta_query' => array(
+							array(
+									'key' => 'default_membership',
+									'value' => '1',
+									'compare' => '='
+							)
+					)
+			);
+			$query = new WP_Query($args);
+			$item = $query->get_posts();
+	
+			$default_membership = null;
+			if( ! empty( $item[0] ) ) {
+				$default_membership = self::load( $item[0]->ID );
+			}
+			else {
+				$description = __( 'Default membership for non members', MS_TEXT_DOMAIN );
+				$default_membership = new self();
+				$default_membership->name = 'Default';
+				$default_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
+				$default_membership->title = $description;
+				$default_membership->description = $description;
+				$default_membership->visitor_membership = false;
+				$default_membership->defaut_membership = true;
+				$default_membership->active = true;
+				$default_membership->public = true;
+				$default_membership->save();
+				$default_membership = self::load( $default_membership->id );
+			}
+		}
+		else {
+			$default_membership = self::get_visitor_membership();
+		}
+		return $default_membership;
 	}
 	
 	public function get_members_count() {
@@ -243,6 +289,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 	}
 
+	public function has_dripped_content() {
+		$dripped = array( 'post', 'page', 'category' );
+		foreach( $dripped as $type ) {
+			if( ! empty ( $this->rules[ $type ]->dripped ) ) {
+				return true;
+			}
+		}
+		return false;	
+	}
+	
 	public function get_validation_rules() {
 		$period_unit = array(
 				'function' => array( &$this, 'validate_min' ),

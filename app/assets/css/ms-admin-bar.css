@@ -1,0 +1,21 @@
+/** Admin bar */
+.ms-admin-bar-disabled {
+	color: red;
+	text-shadow: none;
+}
+#simulate_period_unit {
+	width: 3em;
+}
+#simulate_date {
+	width: 6em;
+}
+#simulate_submit {
+   background: none repeat scroll 0 0 #2EA2CC;
+    border-color: #0074A2;
+    color: #FFFFFF;
+    margin: 0 2px;
+    padding: 0 2px;
+    position: relative;
+    text-decoration: none;
+    vertical-align: middle;
+}

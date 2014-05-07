@@ -84,7 +84,27 @@ class MS_Model_Membership_Relationship extends MS_Model {
 		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->expire_date );
 	}
 	
-	public function get_status() {
-// 		if()
+	/**
+	 * Set elapsed period of time of membership.
+	 * 
+	 * @param int $period_unit The elapsed period unit.
+	 * @param string $period_type The elapsed period type.
+	 */
+	public function set_elapsed_period( $period_unit, $period_type ) {
+		if( in_array( $period_type, MS_Helper_Period::get_periods() ) ) {
+			$this->start_date = MS_Helper_Period::subtract_interval( $period_unit, $period_type );
+		}
+	}
+	
+	/**
+	 * Set elapsed date.
+	 * 
+	 * @param string $current_date
+	 */
+	public function set_elapsed_date( $elapsed_date ) {
+		$interval = MS_Helper_Period::subtract_dates( $elapsed_date, $this->start_date );
+		$sign = ( $interval->invert ) ? '' : '-';
+		
+		$this->start_date = date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $sign . $interval->format( "%a days") , strtotime( $this->start_date ) ) );
 	}
 }

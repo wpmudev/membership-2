@@ -170,9 +170,10 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Save membership dripped schedule
 		 */
-		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['item'] ) && ! empty( $_POST['membership_id'] ) 
+		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['membership_id'] ) 
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
-			$this->save_dripped_schedule( $_POST['item'] );
+			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null; 
+			$this->save_dripped_schedule( $items );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
@@ -297,14 +298,26 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 			}
 				
-			foreach( $dripped as $rule_type => $drip ) {
-				$rule = $this->model->rules[ $rule_type ];
-				$rule->dripped = $drip;
-				$rule->validate();
-				$this->model->set_rule( $rule_type, $rule );
-			}
-			$this->model->save();
 		}
+		/**
+		 * Delete everything.
+		 */
+		else {
+			$dripped = array(
+				'post' => array(),
+				'page' => array(),
+				'category' => array(),
+			);
+		}
+		
+		foreach( $dripped as $rule_type => $drip ) {
+			$rule = $this->model->rules[ $rule_type ];
+			$rule->dripped = $drip;
+			$rule->validate();
+			$this->model->set_rule( $rule_type, $rule );
+		}
+		
+		$this->model->save();
 		
 	}
 	public function enqueue_styles() {
@@ -313,7 +326,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$version = MS_Plugin::get_plugin_version();
 		
 		wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
-		wp_register_style( 'jquery-ui', 'app/assets/css/jquery-ui.css' );
 		
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
@@ -331,8 +343,8 @@ class MS_Controller_Membership extends MS_Controller {
 		
 	public function enqueue_scripts() {
 	
-		$plugin_url = MS_Plugin::get_plugin_url();
-		$version = MS_Plugin::get_plugin_version();
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
 		
 		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
@@ -341,13 +353,13 @@ class MS_Controller_Membership extends MS_Controller {
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
 		if( 'general' == $active_tab ) {
-			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', null, $version );
+			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', array( 'jquery' ), $version );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'jquery-chosen' );
+// 			wp_enqueue_script( 'jquery-chosen' );
 		}
 		elseif( 'dripped' == $active_tab ) {
-			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', null, $version );
+			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', array( 'jquery' ), $version );
 			wp_enqueue_script( 'jquery-tmpl' );
 			wp_enqueue_script( 'jquery-chosen' );
 			wp_enqueue_script( 'jquery-validate' );

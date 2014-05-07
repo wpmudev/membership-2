@@ -8,8 +8,6 @@ jQuery( document ).ready(function( $ ) {
 		}
 	}
 
-	$( '.chosen-select' ).chosen({disable_search_threshold: 5});
-	
 	$( '#membership_type').change( function() {
 		$( '.ms-membership-type' ).hide();
 		membership_type = $( this ).val();
@@ -38,7 +36,10 @@ jQuery( document ).ready(function( $ ) {
 			errorClass: 'ms-validation-error',
 			rules: {
 				'membership_section[name]': 'required',
-				'membership_section[price]': 'required',
+				'membership_section[price]': {
+					'required': true,
+					'min': 0,
+				},
 				'membership_section[period_unit]': {
 					'required': true,
 					'min': 1,
@@ -57,7 +58,7 @@ jQuery( document ).ready(function( $ ) {
 				},
 				'membership_section[trial_price]': {
 					'required': true,
-					'number': true,
+					'min': 0,
 				},
 				'membership_section[trial_period_unit]': {
 					'required': true,

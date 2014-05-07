@@ -38,7 +38,15 @@ class MS_Helper_Period extends MS_Helper {
 	
 	const PERIOD_FORMAT = 'Y-m-d';
 	
-	
+	/**
+	 * Add a period interval to a date.
+	 *
+	 * @param int $period_unit The period unit to add.
+	 * @param string $period_type The period type to add.
+	 * @param string $start_date The start date to add to.
+	 * @throws Exception
+	 * @return string The added date.
+	 */
 	public static function add_interval( $period_unit, $period_type, $start_date = null ) {
 		if( empty ( $start_date ) ) {
 			$start_date = date( self::PERIOD_FORMAT );
@@ -49,6 +57,26 @@ class MS_Helper_Period extends MS_Helper {
 			throw new Exception( 'error add_interval' );
 		} 
 		return date( self::PERIOD_FORMAT, $end_dt ); 
+	}
+	/**
+	 * Subtract a period interval to a date.
+	 *
+	 * @param int $period_unit The period unit to subtract.
+	 * @param string $period_type The period type to subtract.
+	 * @param string $start_date The start date to subtract to.
+	 * @throws Exception
+	 * @return string The subtracted date.
+	 */
+	public static function subtract_interval( $period_unit, $period_type, $start_date = null ) {
+		if( empty ( $start_date ) ) {
+			$start_date = date( self::PERIOD_FORMAT );
+		}
+	
+		$end_dt = strtotime( '-' . $period_unit . $period_type , strtotime( $start_date ) );
+		if ( $end_dt === false) {
+			throw new Exception( 'error subtract_interval' );
+		}
+		return date( self::PERIOD_FORMAT, $end_dt );
 	}
 	
 	/**

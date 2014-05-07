@@ -147,6 +147,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Settings controller */
 		$this->controllers['settings'] = apply_filters( 'membership_settings_controller', new MS_Controller_Settings() );
 		
+		/** Admin bar controller */
+		$this->controllers['admin_bar'] = apply_filters( 'membership_controller_admin_bar', new MS_Controller_Admin_Bar() );
 		
 		
 	}
@@ -219,6 +221,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_plugin_admin_styles() {
 		wp_register_style( 'membership_admin_css', MS_Plugin::instance()->url. 'app/assets/css/settings.css' );
 		wp_enqueue_style( 'membership_admin_css' );
+		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui.css' );
 	}
 	
 	/**

@@ -14,8 +14,8 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	protected $section;
 	
-	protected $post_by_post_option;
-
+	protected $title;
+	
 	public function to_html() {
 		$tabs = array(
 				'general' => array(
@@ -75,11 +75,18 @@ class MS_View_Membership_Edit extends MS_View {
 			unset( $tabs['post'] );
 		}
 		ob_start();
-
+		
+		$this->title = __( 'Create New Membership', MS_TEXT_DOMAIN );
+		if( $this->model->name ) {
+			$this->title = $this->model->name;
+			if( false === stripos( $this->title, 'membership' ) ) {
+				$this->title .= ' Membership';
+			}
+		}
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'>Membership Settings</h2>		
+		<h1 class='ms-settings-title'><?php echo $this->title; ?></h1>		
 
 		<?php
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
@@ -101,6 +108,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
+			<h2><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h2>
 			<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( self::MEMBERSHIP_SAVE_NONCE, self::MEMBERSHIP_SAVE_NONCE ); ?>
 				<table class="form-table">
@@ -212,16 +220,15 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Membership type', MS_TEXT_DOMAIN ),
 						'value' => $this->model->membership_type,
 						'field_options' => MS_Model_Membership::get_membership_types(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->period_unit,
-						'field_options' => MS_Helper_Period::get_period_units(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
@@ -229,16 +236,15 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'pay_cicle_period_unit' => array(
 						'id' => 'pay_cicle_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cicle', MS_TEXT_DOMAIN ),
 						'value' => $this->model->pay_cicle_period_unit,
-						'field_options' => MS_Helper_Period::get_period_units(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'pay_cicle_period_type' => array(
 						'id' => 'pay_cicle_period_type',
@@ -246,7 +252,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->pay_cicle_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'period_date_start' => array(
 						'id' => 'period_date_start',
@@ -291,11 +297,10 @@ class MS_View_Membership_Edit extends MS_View {
 				'trial_period_unit' => array(
 						'id' => 'trial_period_unit',
 						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period_unit,
-						'field_options' => MS_Helper_Period::get_period_units(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'trial_period_type' => array(
 						'id' => 'trial_period_type',
@@ -303,7 +308,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->trial_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',
@@ -323,7 +328,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Page access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -342,7 +347,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Category access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Category access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -364,7 +369,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Post by post access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Post by post access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -383,7 +388,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Comments access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Comments access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -402,7 +407,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Menu access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Menu access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -421,7 +426,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Media access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Media access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -439,7 +444,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
-			<h2><?php _e( 'Shortcode access', MS_TEXT_DOMAIN ); ?></h2>
+			<h2><?php echo __( 'Shortcode access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
@@ -458,7 +463,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'URL Groups access', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -483,7 +488,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php _e( 'Dripped content', MS_TEXT_DOMAIN ); ?></h2>
+				<h2><?php echo __( 'Dripped content for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php wp_nonce_field( self::DRIPPED_NONCE, self::DRIPPED_NONCE ); ?>
@@ -607,11 +612,10 @@ class MS_View_Membership_Edit extends MS_View {
 				'period_unit' => array(
 						'id' => 'period_unit',
 						'section' => self::DRIPPED_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Days/Months/Years until the content becomes available', MS_TEXT_DOMAIN ),
 						'value' => 1,
-						'field_options' => MS_Helper_Period::get_period_units(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
@@ -619,7 +623,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => null,
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',
@@ -648,7 +652,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => null,
 						'field_options' => $membership_copy,
-						'class' => 'chosen-select',
+						'class' => '',
 				),
 				'copy_dripped' => array(
 						'id' => 'copy_dripped',
