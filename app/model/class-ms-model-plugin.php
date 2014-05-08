@@ -103,9 +103,20 @@ class MS_Model_Plugin extends MS_Model {
 		
 		/**
 		 * Search permissions through all memberships joined.
-		 * If one has access is found, it does have access!
+		 * Rules are sorted in a hierarchy way. First one has priority.
+		 * If 'has access' is found, it does have access
 		 */
 		foreach( $this->member->membership_relationships as $membership_relationship ) {
+			/**
+			 * Verify status of the membership.
+			 * Only active or trial memberships.
+			 */
+			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
+				continue;
+			}
+			/** Verify membership rules hierachyly 
+			 * @todo implement better hierachy verifying which content type it is.
+			 */
 			$membership = $membership_relationship->get_membership();
 			foreach( $membership->rules as $rule ) {
 				$has_access = ( $has_access || $rule->has_access( $membership_relationship ) );

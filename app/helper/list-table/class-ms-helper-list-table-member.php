@@ -45,6 +45,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'active' 	 => __('Active', MS_TEXT_DOMAIN ),				
 			'membership' => __('Membership', MS_TEXT_DOMAIN ),
 			'start' => __('Membership Start', MS_TEXT_DOMAIN ),
+			'trial' => __('Trial Date', MS_TEXT_DOMAIN ),
 			'expire' => __('Membership Expire', MS_TEXT_DOMAIN ),
 			'gateway' => __('Gateway', MS_TEXT_DOMAIN ),
 		);
@@ -62,6 +63,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'active' => array( 'active', false ),			
 			'membership' => array( 'membership', false ),
 			'start' => array( 'start', false ),
+			'trial' => array( 'trial', false ),
 			'expire' => array( 'expire', false ),
 			'gateway' => array( 'gateway', false ),
 		);
@@ -140,7 +142,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 
-			$html[] = "{$membership->name} ({$membership_relationship->status})";
+			$html[] = "{$membership->name} ({$membership_relationship->get_status()})";
 		}
 		$html = join(', ', $html);
 		
@@ -178,6 +180,26 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		
 		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 		
+	}
+
+	function column_trial( $item ) {
+		$html = array();
+		foreach( $item->membership_relationships as $membership_relationship ) {
+			if( $membership_relationship->trial_expire_date )  {
+				$period = $membership_relationship->get_remaining_trial_period()->format( "%a days");
+				$html[] = "$membership_relationship->trial_expire_date ($period)";
+			}
+			else {
+				$html[] = __('No trial', MS_TEXT_DOMAIN );
+			}
+		}
+		$html = join(', ', $html);
+		
+		$actions = array(
+// 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+		);
+		
+		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 	
 	function column_expire( $item ) {

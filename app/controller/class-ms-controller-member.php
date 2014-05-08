@@ -81,7 +81,7 @@ class MS_Controller_Member extends MS_Controller {
 		$msg = 0;
 		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
 			die();
 		}
 		/**
@@ -91,6 +91,7 @@ class MS_Controller_Member extends MS_Controller {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			if( $action == 'toggle_activation') {
 				$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
+				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 			}
 			else {
 // 				$this->prepare_action_view( $action, $_POST['member_id'] );
@@ -105,7 +106,8 @@ class MS_Controller_Member extends MS_Controller {
 			if ( ! empty( $_POST[ $section ]['member_id'] ) && ! empty( $_POST[ $section ]['action'] ) && ! empty( $_POST[ $section ]['membership_id'] ) &&
 				! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 					
-				$this->member_list_do_action( $_POST[ $section ]['action'], array( $_POST[ $section ]['member_id'] ), $_POST[ $section ]['membership_id'] );
+				$msg = $this->member_list_do_action( $_POST[ $section ]['action'], array( $_POST[ $section ]['member_id'] ), $_POST[ $section ]['membership_id'] );
+				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 			}
 		}
 		
@@ -208,6 +210,9 @@ class MS_Controller_Member extends MS_Controller {
 							if( ! empty( $_POST[ $section ][ "start_date_$id" ] ) ){
 								$membership_relationships[ $id ]->start_date = $_POST[ $section ][ "start_date_$id" ];
 							}
+// 							if( ! empty( $_POST[ $section ][ "trial_expire_date_$id" ] ) ){
+// 								$membership_relationships[ $id ]->trial_expire_date = $_POST[ $section ][ "trial_expire_date_$id" ];
+// 							}
 							if( ! empty( $_POST[ $section ][ "expire_date_$id" ] ) ){
 								$membership_relationships[ $id ]->expire_date = $_POST[ $section ][ "expire_date_$id" ];
 							}

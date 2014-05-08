@@ -109,15 +109,20 @@ class MS_View_Member_Date extends MS_View {
 				'id' => "start_date_$membership_id",
 				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 				'title' => __( 'Start date', MS_TEXT_DOMAIN ),
 				'value' => $membership_relationship->start_date,
 				'class' => 'ms-date',
+			);
+			$this->fields['dates'][$membership_id]['trial_expire_date'] = array(
+					'id' => "trial_expire_date_$membership_id",
+					'section' => self::MEMBERSHIP_SECTION,
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $membership_relationship->trial_expire_date,
+					'class' => 'ms-date',
 			);
 			$this->fields['dates'][$membership_id]['expire_date'] = array(
 				'id' => "expire_date_$membership_id",
 				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 				'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
 				'value' => $membership_relationship->expire_date,
 				'class' => 'ms-date',
 			);

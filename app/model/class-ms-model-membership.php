@@ -95,7 +95,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function get_trial_expire_date( $start_date = null ) {
-		$start_date = MS_Helper_Period::current_date();
+		if( empty( $start_date) ) {
+			$start_date = MS_Helper_Period::current_date();
+		}
 		if( $this->trial_period_unit && $this->trial_period_type ) {
 			$expiry_date = MS_Helper_Period::add_interval( $this->trial_period_unit, $this->trial_period_type , $start_date );
 		}
@@ -180,6 +182,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$model->rules[ $type ] = MS_Model_Rule::rule_factory( $type );
 			}
 		}
+// 		if( empty( $model->rules['category']->post_rule ) ) {
+// 			$category_rule = $model->rules['category'];
+// 			$category_rule->set_post_rule( $model->rules['post'] );
+// 			$model->set_rule( 'category', $category_rule ); 
+// 		}
 		return $model;
 	}
 	

@@ -24,7 +24,9 @@
 class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
-
+	
+// 	protected $post_rule;
+	
 	/**
 	 * Verify access to the current category.
 	 * @param $membership_relationship 
@@ -33,9 +35,9 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	public function has_access( $membership_relationship ) {
 	
 		$has_access = false;
-		
 		if ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-			$categories = wp_get_post_categories( get_the_ID() );
+			$post_id = get_the_ID();
+			$categories = wp_get_post_categories( $post_id );
 			$intersect = array_intersect( $categories, $this->rule_value );
 			$has_access = !empty( $intersect );
 			if( is_array( $categories ) ) {
@@ -43,17 +45,24 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 					$has_access = $has_access || $this->has_dripped_access( $category_id, $membership_relationship->start_date );
 				}
 			}
+// 			/**
+// 			 * Post dripped content has priority.
+// 			 */
+// 			if( array_key_exists( $post_id, $this->dripped ) ) {
+// 				$has_access = $this->post_rule->has_dripped_access( $post_id, $membership_relationship->start_date );
+// 			} 
 		}
 		elseif ( is_category() ) {
 			$has_access = in_array( get_queried_object_id(), $this->rule_value );
 			$has_access = $has_access || $this->has_dripped_access( get_queried_object_id(), $membership_relationship->start_date );
 		}
 		
-		
-		
 		return $has_access;
 	}
-	
+
+	public function set_post_rule( &$post_rule ) {
+		$this->post_rule = $post_rule;
+	}
 	public function get_content( $args = null ) {
 		$contents = get_categories( 'get=all' );
 // 		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );

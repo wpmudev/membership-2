@@ -16,6 +16,8 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	protected $title;
 	
+	protected $post_by_post_option;
+	
 	public function to_html() {
 		$tabs = array(
 				'general' => array(

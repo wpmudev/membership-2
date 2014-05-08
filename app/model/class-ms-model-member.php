@@ -226,18 +226,24 @@ class MS_Model_Member extends MS_Model {
 	
 	public function is_member( $membership_id = 0 ) {
 		$is_member = false;
+		$member_status = array( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE,  MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL );
 		
 		if ( $this->is_admin ) {
 			$is_member = true;
 		}
 		
 		if( ! empty( $membership_id ) ) {
-			if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			if( array_key_exists( $membership_id,  $this->membership_relationships ) && 
+					in_array( $this->membership_relationships[ $membership_id ]->get_status(), $member_status ) ) {
 				$is_member = true;
 			}
 		}
 		elseif ( ! empty ( $this->membership_relationships ) ) {
-			$is_member = true;
+			foreach( $this->membership_relationships as $membership_relationship ) {
+				if( in_array( $this->membership_relationships[ $membership_id ]->get_status(), $member_status ) ) {
+					$is_member = true;
+				}
+			}
 		}
 		
 		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );

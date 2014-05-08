@@ -47,15 +47,22 @@ class MS_Model_Rule extends MS_Model {
 	
 	const FILTER_DRIPPED = 'dripped';
 	
+	/**
+	 * Rule types and respective classes.
+	 * 
+	 * This array is ordered in the hierarchy way.
+	 * First one has more priority than the last one.
+	 * This hierarchy is used to determine access to protected content. 
+	 */
 	public static $RULE_TYPE_CLASSES = array (
+			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
+			self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
+			self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
+			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
 			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
 			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
 			self::RULE_TYPE_DOWNLOAD => 'MS_Model_Rule_Download',
 			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
-			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
-			self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
-			self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
-			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
 			self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
 	);
 	protected static $CLASS_NAME = __CLASS__;
@@ -133,9 +140,8 @@ class MS_Model_Rule extends MS_Model {
 	public function has_dripped_access( $id, $start_date ) {
 		if( array_key_exists( $id, $this->dripped ) ) {
 			$dripped = MS_Helper_Period::add_interval( $this->dripped[ $id ]['period_unit'],  $this->dripped[ $id ]['period_type'], $start_date );
-			$now = date('Y-m-d');
-			$interval = MS_Helper_Period::subtract_dates( $now, $dripped );
-			if( 0 <= $interval->days && 0 == $interval->invert ) {
+			$now = MS_Helper_Period::current_date();
+			if( strtotime( $now ) >= strtotime( $dripped ) ) {
 				return true;
 			}
 			return false;

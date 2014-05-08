@@ -41,9 +41,10 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private $simulate_date;
 		
 	public function __construct() {
+		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
 		if ( defined('DOING_AJAX') && DOING_AJAX ) {
-			$this->add_action( 'wp_ajax_ms_simulate', 'simulate_membership' );
-			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
+// 			$this->add_action( 'wp_ajax_ms_simulate', 'simulate_membership' );
+// 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
 		}
 		else {
 			$this->add_action( 'add_admin_bar_menus', 'add_admin_bar_menus' );
@@ -70,6 +71,17 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$this->add_action( 'admin_bar_menu', $method );
 		}
 
+		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
+		if( ! empty( $_GET['action'] ) && 'ms_simulate' == $_GET['action'] && isset( $_GET['membership_id'] ) ) {
+				$membership_id = (int) $_GET['membership_id'];
+				check_admin_referer( 'ms_simulate-' . $membership_id );
+				@setcookie( self::MS_SIMULATE_COOKIE , $membership_id, 0, COOKIEPATH, COOKIE_DOMAIN );
+				if( empty( $membership_id ) ) {
+					@setcookie( self::MS_PERIOD_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
+					@setcookie( self::MS_DATE_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
+				}
+				wp_safe_redirect( wp_get_referer() );
+		}
 		if( ! empty( $_POST['simulate_submit'] ) ) {
 			if( isset( $_POST['simulate_period_unit'] ) && in_array( $_POST['simulate_period_type'], MS_Helper_Period::get_periods() ) ) {
 				$period = $_POST['simulate_period_unit'] .';'. $_POST['simulate_period_type'];
@@ -152,6 +164,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$memberships[] = $reset_simulation;
 			
 			$membership = MS_Model_Membership::load( $membership_id );
+
 			$title = null;
 			if( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->membership_type || $membership->has_dripped_content() ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
@@ -161,7 +174,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			}
 			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
-				$view->simulate_date = $this->simulate_date;
+				$view->simulate_date = ( $this->simulate_date ) ? $this->simulate_date : '';
 				$title = $view->to_html();
 			}
 			if( $title ) {
@@ -203,7 +216,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			foreach ( $memberships as $membership ) {
 				$link_url = wp_nonce_url( 
 						$admin_url_func( 
-								"admin-ajax.php?action=ms_simulate&membership_id={$membership->id}", 
+								"?action=ms_simulate&membership_id={$membership->id}", 
+								/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
+// 								"admin-ajax.php?action=ms_simulate&membership_id={$membership->id}", 
 								( is_ssl() ? 'https' : 'http' ) 
 						),
 				 		"ms_simulate-{$membership->id}"
@@ -232,7 +247,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		if ( isset( $_GET['membership_id'] ) ) {
 			$membership_id = (int) $_GET['membership_id'];
 				
-			check_ajax_referer('ms_simulate-' . $membership_id);
+			check_ajax_referer( 'ms_simulate-' . $membership_id );
 			@setcookie( self::MS_SIMULATE_COOKIE , $membership_id, 0, COOKIEPATH, COOKIE_DOMAIN );
 			if( empty( $membership_id ) ) {
 				@setcookie( self::MS_PERIOD_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );

@@ -22,7 +22,7 @@
 
 
 class MS_View_Member_List extends MS_View {
-
+	
 	public function to_html() {		
 
 		$member_list = new MS_Helper_List_Table_Member();

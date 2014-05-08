@@ -81,11 +81,15 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 		
-		/** Enque admin styles (CSS) */
+		/** Register admin styles (CSS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_styles' );
+		
+		/** Register admin styles that is used in the front end (CSS) */
+		$this->add_action( 'wp_enqueue_scripts', 'register_plugin_styles');
 		
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
+				
 				
 		//FJ: it is breaking add_menu_pages, commented for now.
 		/** ONLY load controllers when we are going to need them. */
@@ -219,11 +223,21 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */	
 	public function register_plugin_admin_styles() {
-		wp_register_style( 'membership_admin_css', MS_Plugin::instance()->url. 'app/assets/css/settings.css' );
-		wp_enqueue_style( 'membership_admin_css' );
-		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui.css' );
+		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css' );
+		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css' );
+		wp_enqueue_style( 'membership-admin' );
 	}
 	
+	/**
+	 * Adds CSS for Membership settings pages used in the front end.
+	 *
+	 * @since 4.0.0
+	 *	
+	 * @return void
+	 */	
+	public function register_plugin_styles() {
+		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css' );
+	}
 	/**
 	 * Adds JavasSript for Membership settings pages.
 	 *
