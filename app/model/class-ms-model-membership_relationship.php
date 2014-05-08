@@ -195,20 +195,21 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	 *  Verifies start and end date of a membership.
 	 */
 	public function get_status() {
+		$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
 		$membership = $this->get_membership();
 		if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-			return self::MEMBERSHIP_STATUS_TRIAL;
+			$status = self::MEMBERSHIP_STATUS_TRIAL;
 		}
-		if( empty( $this->expire_date ) ) {
-			return self::MEMBERSHIP_STATUS_ACTIVE;
+		elseif( empty( $this->expire_date ) ) {
+			$status = self::MEMBERSHIP_STATUS_ACTIVE;
 		}
-		if( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-			return self::MEMBERSHIP_STATUS_ACTIVE;
+		elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+			$status = self::MEMBERSHIP_STATUS_ACTIVE;
 		}
 		else {
-			return self::MEMBERSHIP_STATUS_EXPIRED;
+			$status = self::MEMBERSHIP_STATUS_EXPIRED;
 		}
-		return self::MEMBERSHIP_STATUS_DEACTIVATED;
+		return apply_filters( 'membership_model_membership_relationship_status', $status, $this );
 	}
 	/**
 	 * Set specific property.

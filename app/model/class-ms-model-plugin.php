@@ -34,6 +34,7 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_action( 'plugins_loaded', 'check_membership_status' );
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 		$this->add_action( 'parse_request', 'setup_protection', 2 );
+// 		$this->add_filter( 'membership_model_plugin_is_simulating_period', 'is_simulating' );
 	}
 	
 	public function init_member() {
@@ -53,18 +54,19 @@ class MS_Model_Plugin extends MS_Model {
 				}
 			}
 			elseif( ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] ) ) {
-				$membership_relationships = $this->member->membership_relationships;
-				$membership_relationships[ $membership_id ]->set_elapsed_date( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] );
-				$this->member->membership_relationships = $membership_relationships;
+				$this->add_filter( 'membership_helper_period_current_date', 'simulate_date' );
+// 				$membership_relationships = $this->member->membership_relationships;
+// 				$membership_relationships[ $membership_id ]->set_elapsed_date( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] );
+// 				$this->member->membership_relationships = $membership_relationships;
 			}
 			
 		}
 		/** Visitor: assign a Visitor Membership */
-		elseif( ! $this->member->is_logged_user() ){
+		if( ! $this->member->is_logged_user() ){
 			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 		}
 		/** Logged user with no memberships: assign default Membership */
-		elseif( $this->member->is_logged_user() && ! $this->member->is_member() ) {
+		if( $this->member->is_logged_user() && ! $this->member->is_member() ) {
 			$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
 		}
 	}
@@ -100,11 +102,9 @@ class MS_Model_Plugin extends MS_Model {
 		$settings = MS_Plugin::instance()->settings;
 		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
-		
+
 		/**
 		 * Search permissions through all memberships joined.
-		 * Rules are sorted in a hierarchy way. First one has priority.
-		 * If 'has access' is found, it does have access
 		 */
 		foreach( $this->member->membership_relationships as $membership_relationship ) {
 			/**
@@ -114,15 +114,34 @@ class MS_Model_Plugin extends MS_Model {
 			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
 				continue;
 			}
-			/** Verify membership rules hierachyly 
-			 * @todo implement better hierachy verifying which content type it is.
-			 */
 			$membership = $membership_relationship->get_membership();
-			foreach( $membership->rules as $rule ) {
+			/** 
+			 * Verify membership rules hierachyly.
+			 * If 'has access' is found, it does have access.
+			 */
+			$rules = $this->get_rules_hierarchy( $membership );
+			foreach( $rules as $rule ) {
 				$has_access = ( $has_access || $rule->has_access( $membership_relationship ) );
 				
 				if( $has_access ) {
-					break 2;
+					break;
+				}
+			}
+			/**
+			 * Verify membership dripped rules hierachyly.
+			 */
+			$dripped = apply_filters( 'membership_model_plugin_dripped_rules', array( 
+						MS_Model_Rule::RULE_TYPE_CATEGORY, 
+						MS_Model_Rule::RULE_TYPE_PAGE, 
+						MS_Model_Rule::RULE_TYPE_POST
+					) 
+			);
+			/**
+			 * Dripped has the final decision.
+			 */
+			foreach( $dripped as $rule_type ) {
+				if( $rules[ $rule_type ]->has_dripped_rules() ) {
+					$has_access = $rules[ $rule_type ]->has_dripped_access( $membership_relationship->start_date ); 
 				}
 			}
 		}
@@ -132,6 +151,18 @@ class MS_Model_Plugin extends MS_Model {
 			wp_safe_redirect( $url );
 		}
 
+	}
+	/**
+	 * Get protection rules sorted.
+	 * First one has priority over the last one.
+	 * These rules are used to determine access.
+	 * Post and category rules are grouped by a post_category wrapper class.
+	 */
+	private function get_rules_hierarchy( $membership ) {
+		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $val ) {
+			$rules[ $rule_type ] = $membership->rules[ $rule_type ];
+		}
+		return $rules;
 	}
 	/**
 	 * Setup initial protection.
@@ -147,5 +178,19 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function setup_protection( WP $wp ){
 		
+	}
+	/**
+	 * Check simulating status
+	 * @return int The simulating membership_id
+	 */
+	public function is_simulating() {
+		return $this->simulate_membership_id;
+	}
+	/**
+	 * Simulate current date.
+	 * @param string $current_date
+	 */
+	public function simulate_date( $current_date ) {
+		return $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ];
 	}
 }

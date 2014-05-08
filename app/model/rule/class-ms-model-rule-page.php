@@ -26,6 +26,22 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	protected static $CLASS_NAME = __CLASS__;
 	
 	/**
+	 * Get the current page id.
+	 * @return int The page id, or null if it is not a page.
+	 */
+	private function get_current_page_id() {
+		
+		$post_id = null;
+		$post = get_queried_object();
+		
+		if( is_a( $post, 'WP_Post' ) && $post->post_type == 'page' )  {
+			$post_id = $post->ID;
+		}
+		
+		return $post_id;
+	}
+	
+	/**
 	 * Verify access to the current page.
 	 * @param $membership_relationship 
 	 * @return boolean
@@ -33,20 +49,47 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function has_access( $membership_relationship ) {
 		
 		$settings = MS_Plugin::instance()->settings;
-		
-		$page = get_queried_object();
-
 		$has_access = false;
-		if( is_a( $page, 'WP_Post' ) && $page->post_type == 'page' )  {
-			if( in_array( $page->ID, $this->rule_value ) || in_array( $page->ID, $settings->pages ) ) { 
-				$has_access = true;
-			}
-			
-			$has_access = $has_access || $this->has_dripped_access( $page->ID, $membership_relationship->start_date );					
+		$page_id = $this->get_current_page_id();
+
+		if( in_array( $page_id, $this->rule_value ) || in_array( $page_id, $settings->pages ) ) { 
+			$has_access = true;
 		}
+
 		return $has_access;		
 	}
 
+	/**
+	 * Verify if has dripped rules.
+	 * @return boolean
+	 */
+	public function has_dripped_rules() {
+
+		$page_id = $this->get_current_page_id();
+
+		return array_key_exists( $page_id, $this->dripped );
+	}
+	
+	/**
+	 * Verify access to dripped content.
+	 * @param $start_date The start date of the member membership.
+	 */
+	public function has_dripped_access( $start_date ) {
+	
+		$has_access = false;
+		$page_id = $this->get_current_page_id();
+
+		$has_access = parent::has_dripped_access( $page_id, $start_date );
+	
+		return $has_access;
+	}
+	
+	/**
+	 * Get the total content count.
+	 * For list table pagination.
+	 * @param string $args The default query post args.
+	 * @return number The total content count.
+	 */
 	public function get_content_count( $args = null ) {
 		$exclude = $this->get_excluded_content();
 		$defaults = array(
@@ -61,6 +104,11 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		return $query->found_posts;
 	}
 	
+	/**
+	 * Prepare content to be shown in list table.
+	 * @param string $args The default query post args.
+	 * @return array The content.
+	 */
 	public function get_content( $args = null ) {
 		$exclude = $this->get_excluded_content();
 		$defaults = array(
@@ -100,8 +148,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		
 		return $contents;
 	}
+
 	/**
-	 * Get content array( id => title ) 
+	 * Get content array( id => title ).
+	 * Used to show content in html select.
 	 */
 	public function get_content_array() {
 		$cont = array();
@@ -111,17 +161,20 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		}
 		return $cont;
 	}
+	
 	/**
-	 * Get pages that shall not be protected.
+	 * Get pages that should not be protected.
+	 * Settings pages like protected, subscribe, etc.
 	 * @return array The page ids.
 	 */
 	private function get_excluded_content() {
+		$settings = MS_Plugin::instance()->settings;
 		$exclude = null;
-		// 		foreach ( array( 'registration_page', 'account_page', 'subscriptions_page', 'nocontent_page', 'registrationcompleted_page' ) as $page ) {
-		// 			if ( isset( $M_options[$page] ) && is_numeric( $M_options[$page] ) ) {
-		// 				$exclude[] = $M_options[$page];
-		// 			}
-		// 		}
+		foreach ( $settings->pages as $page ) {
+			if ( !empty ( $page ) ) {
+				$exclude[] = $page;
+			}
+		}
 		return $exclude;
 	}
 }

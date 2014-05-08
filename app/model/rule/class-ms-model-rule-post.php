@@ -26,26 +26,80 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	protected static $CLASS_NAME = __CLASS__;
 	
 	/**
+	 * Get the current post id.
+	 * @return int The post id, or null if it is not a post.
+	 */
+	private function get_current_post_id() {
+		$post_id = null;
+		$post = get_queried_object();
+		if( is_a( $post, 'WP_Post' ) && $post->post_type == 'post' )  {
+			$post_id = $post->ID;
+		}
+		return $post_id;
+	}
+
+	/**
 	 * Verify access to the current post.
 	 * @return boolean
 	 */
-	public function has_access( $membership_relationship ) {
+	public function has_access() {
 	
-		$settings = MS_Plugin::instance()->settings;
-		
-		$post = get_queried_object();
-
 		$has_access = false;
-		if( is_a( $post, 'WP_Post' ) && $post->post_type == 'post' )  {
-			if( in_array( $post->ID, $this->rule_value ) ) { 
+		
+		/**
+		 * Only verify permission if ruled by post by post.
+		 */
+		if( MS_Plugin::instance()->addon->post_by_post ) {
+			$post = get_queried_object();
+			
+			$has_access = false;
+			$post_id  = $this->get_current_post_id();
+			if( in_array( $post_id, $this->rule_value ) ) {
 				$has_access = true;
 			}
-			
-			$has_access = $has_access || $this->has_dripped_access( $post->ID, $membership_relationship->start_date );
 		}
 		return $has_access;		
 	}
 	
+	/**
+	 * Verify if has dripped rules.
+	 * @return boolean
+	 */
+	public function has_dripped_rules() {
+		$post_id  = $this->get_current_post_id();
+
+		return array_key_exists( $post_id, $this->dripped );
+		
+// 		if( MS_Plugin::instance()->addon->post_by_post ) {
+// 			$post_id  = $this->get_current_post_id();
+// 			return array_key_exists( $post_id, $this->dripped );				
+// 		}
+// 		else {
+// 			return false;
+// 		}
+	
+	}
+	
+	/**
+	 * Verify access to dripped content.
+	 * @param $start_date The start date of the member membership.
+	 */
+	public function has_dripped_access( $start_date ) {
+	
+		$has_access = false;
+	
+		$post_id  = $this->get_current_post_id();
+		$has_access = parent::has_dripped_access( $post_id, $start_date );
+		
+		return $has_access;
+	}
+	
+	/**
+	 * Get the total content count.
+	 * For list table pagination. 
+	 * @param string $args The default query post args.
+	 * @return number The total content count.
+	 */
 	public function get_content_count( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,
@@ -58,7 +112,12 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		return $query->found_posts;
 	}
 	
-	public function get_content( $args = null, MS_Model_Rule_Category $model_rule_category = null) {
+	/**
+	 * Prepare content to be shown in list table.
+	 * @param string $args The default query post args.
+	 * @return array The content.
+	 */
+	public function get_content( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,
 				'offset'      => 0,
@@ -74,28 +133,28 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_POST;
+			$content->access = false;
+				
 			$content->categories = array();
 			$categories = wp_get_post_categories( $content->id );
-			/* To inherit category access, set default access to false */
-			$content->access = false;
-			if( ! empty( $categories ) && ! empty( $model_rule_category ) ) {
+			if( ! empty( $categories ) ) {
 				foreach( $categories as $cat_id ) {
 					$cat = get_category( $cat_id );
 					$cats[] = $cat->name;
-					/* Inherit category access */ 
-					if( in_array( $cat_id, $model_rule_category->rule_value ) ) {
-						$content->access = true;
-					}
 				}
 				$content->categories = $cats;
 			}
-// 			/* post by post override */ 
-// 			if( in_array( $content->id, $this->rule_value ) ) {
-// 				$content->access = true;
-// 			}
-// 			else {
-// 				$content->access = false;
-// 			}
+			else {
+				$content->categories = array();
+			}
+				
+			if( in_array( $content->id, $this->rule_value ) ) {
+				$content->access = true;
+			}
+			else {
+				$content->access = false;
+			}
+			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
 				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
 				$content->dripped = $this->dripped[ $content->id ];
@@ -113,7 +172,8 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Get content array( id => title )
+	 * Get content array( id => title ).
+	 * Used to show content in html select.
 	 */
 	public function get_content_array() {
 		$cont = array();

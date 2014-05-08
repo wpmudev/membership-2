@@ -93,7 +93,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function set_rule( $rule_type, $rule ) {
 		$this->rules[ $rule_type ] = $rule;
 	}
-	
+		
 	public function get_trial_expire_date( $start_date = null ) {
 		if( empty( $start_date) ) {
 			$start_date = MS_Helper_Period::current_date();

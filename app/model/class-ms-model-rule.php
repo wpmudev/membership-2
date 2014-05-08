@@ -55,11 +55,11 @@ class MS_Model_Rule extends MS_Model {
 	 * This hierarchy is used to determine access to protected content. 
 	 */
 	public static $RULE_TYPE_CLASSES = array (
-			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
 			self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
+			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
 			self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
 			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
-			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
+			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
 			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
 			self::RULE_TYPE_DOWNLOAD => 'MS_Model_Rule_Download',
 			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
@@ -131,7 +131,15 @@ class MS_Model_Rule extends MS_Model {
 		return false;
 		throw new Exception ("Method to be implemented in child class");
 	}
-
+	
+	/**
+	 * Verify if has dripped rules.
+	 * @return boolean
+	 */
+	public function has_dripped_rules() {
+		return ! empty( $this->dripped );
+	}
+	
 	/**
 	 * Verify access to dripped content.
 	 * @param $id The content id to verify dripped acccess. 

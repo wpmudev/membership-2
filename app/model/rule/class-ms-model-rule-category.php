@@ -25,44 +25,99 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-// 	protected $post_rule;
-	
 	/**
-	 * Verify access to the current category.
-	 * @param $membership_relationship 
+	 * Verify access to the current category or post belonging to a catogory.
 	 * @return boolean
 	 */
-	public function has_access( $membership_relationship ) {
-	
+	public function has_access() {
+		
 		$has_access = false;
-		if ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-			$post_id = get_the_ID();
-			$categories = wp_get_post_categories( $post_id );
-			$intersect = array_intersect( $categories, $this->rule_value );
-			$has_access = !empty( $intersect );
-			if( is_array( $categories ) ) {
-				foreach ( $categories as $category_id ) {
-					$has_access = $has_access || $this->has_dripped_access( $category_id, $membership_relationship->start_date );
-				}
+		
+		/**
+		 * Only verify permissions if ruled by categories.
+		 */
+		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+			/**
+			 * Verify post access accordinly to category rules.
+			 */
+			if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+				$categories = wp_get_post_categories( get_the_ID() );
+				$intersect = array_intersect( $categories, $this->rule_value );
+				$has_access = ! empty( $intersect );
 			}
-// 			/**
-// 			 * Post dripped content has priority.
-// 			 */
-// 			if( array_key_exists( $post_id, $this->dripped ) ) {
-// 				$has_access = $this->post_rule->has_dripped_access( $post_id, $membership_relationship->start_date );
-// 			} 
+			/**
+			 * Category page.
+			 */
+			elseif( is_category() ) {
+				$has_access = in_array( get_queried_object_id(), $this->rule_value );
+			}
+				
 		}
-		elseif ( is_category() ) {
-			$has_access = in_array( get_queried_object_id(), $this->rule_value );
-			$has_access = $has_access || $this->has_dripped_access( get_queried_object_id(), $membership_relationship->start_date );
+		return $has_access;
+	}
+	
+	/**
+	 * Verify if has dripped rules.
+	 * Only if ruled by categories.
+	 * @return boolean
+	 */
+	public function has_dripped_rules() {
+		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+			/**
+			 * Verify post access accordinly to category rules.
+			 */
+			if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+				$categories = wp_get_post_categories( get_the_ID() );
+				$intersect = array_intersect( $categories, array_keys( $this->dripped ) );
+				return ! empty( $intersect );
+			}
+			/**
+			 * Category page.
+			 */
+			elseif( is_category() ) {
+				return array_key_exists( get_queried_object_id(), $this->dripped );
+			}
+		}
+		else {
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Verify access to dripped content.
+	 * @param $start_date The start date of the member membership.
+	 */
+	public function has_dripped_access( $start_date ) {
+		
+		$has_access = false;
+		
+		/**
+		 * Verify post access accordinly to category rules.
+		 */
+		if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+			$categories = wp_get_post_categories( get_the_ID() );
+			if( ! empty( $categories ) ) {
+				foreach( $categories as $category_id ) {
+					$has_access = $has_access || parent::has_dripped_access( $category_id, $start_date );
+				}				
+			}
+		}
+		/**
+		 * Category page.
+		 */
+		elseif( is_category() ) {
+			$has_access = parent::has_dripped_access( get_queried_object_id(), $start_date );
 		}
 		
 		return $has_access;
 	}
-
-	public function set_post_rule( &$post_rule ) {
-		$this->post_rule = $post_rule;
-	}
+	
+	/**
+	 * Prepare content to be shown in list table.
+	 * @param string $args The default query post args.
+	 * @return array The content.
+	 */
 	public function get_content( $args = null ) {
 		$contents = get_categories( 'get=all' );
 // 		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
@@ -91,7 +146,8 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Get content array( id => title )
+	 * Get content array( id => title ).
+	 * Used to show content in html select.
 	 */
 	public function get_content_array() {
 		$cont = array();
