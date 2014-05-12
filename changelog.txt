@@ -6,6 +6,7 @@
 * Fixed: 0 day time periods will now change to sign up or expiry message depending on the option selected.
 * Fixed: Redirect 'Welcome' page for non-registered users and users without a subscription.
 * Fixed: Coupon now adds trial occurrences to total occurrences - solves "Trial Occurrences must be less than total occurrences." bug.
+* Fixed: 2CO forms now strip tags from subscription descriptions in input boxes. HTML was causing some unexpected behaviour.
 		
 == 3.5.1.4 ==
 * Added: New option for default subscriptions. Explicitly assign default subscription to new users - for creating dripped access levels. Dev note: Implemented via Factory class.

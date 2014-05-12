@@ -392,7 +392,7 @@ class twocheckout extends Membership_Gateway {
 		$form .= '<input type="hidden" name="li_1_price" value="'.number_format($pricing[0]['amount'], 2, '.', '').'" />';
 		$form .= '<input type="hidden" name="li_1_tangible" value="N" />';
 		$form .= '<input type="hidden" name="li_1_product_id" value="'.$subscription->id.'" />';
-		$form .= '<input type="hidden" name="li_1_description" value="'.$subscription->sub_description().'" />';
+		$form .= '<input type="hidden" name="li_1_description" value="'.strip_tags($subscription->sub_description()).'" />';
 		if($repeat) {
 			$form .= '<input type="hidden" name="li_1_recurrence" value="'.$this->convert_duration($pricing[0]['period'], $pricing[0]['unit']).'" />';
 			$form .= '<input type="hidden" name="li_1_duration" value="Forever" />';
@@ -445,7 +445,7 @@ class twocheckout extends Membership_Gateway {
 		$form .= '<input type="hidden" name="li_0_price" value="'.number_format($pricing[0]['amount'], 2, '.', '').'" />';
 		$form .= '<input type="hidden" name="li_0_tangible" value="N" />';
 		$form .= '<input type="hidden" name="li_0_product_id" value="'.$subscription->id.'" />';
-		$form .= '<input type="hidden" name="li_0_description" value="'.$subscription->sub_description().'" />';
+		$form .= '<input type="hidden" name="li_0_description" value="'.strip_tags($subscription->sub_description()).'" />';
 		//$form .= '<input type="hidden" name="li_0_recurrence" value="'.$this->convert_duration($pricing[0]['period'], $pricing[0]['unit']).'" />';
 		//$form .= '<input type="hidden" name="li_0_duration" value="Forever" />';
 		$form .= '<input type="hidden" name="merchant_order_id" value="'.$subscription->id.':'.$user_id.'" />';
