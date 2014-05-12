@@ -175,13 +175,21 @@ class Membership_Module_Protection extends Membership_Module {
 	 * @access public
 	 */
 	public function protect_current_page() {
+		global $post, $M_options;
+
+		// If welcome page then redirect.
+		if ( $post->ID == $M_options['registrationcompleted_page'] && ( !is_user_logged_in() || !Membership_Plugin::current_member()->has_subscription() ) ) {
+			membership_redirect_to_protected();
+			exit;
+		}
+
 		if ( membership_is_special_page() ) {
 			if ( membership_is_account_page() && !is_user_logged_in() ) {
 				membership_redirect_to_protected();
 			}
 			return;
 		}
-
+		
 		if ( !Membership_Plugin::current_member()->can_view_current_page() ) {
 			membership_debug_log( __( 'Current member can not view current page.', 'membership' ) );
 			membership_redirect_to_protected();

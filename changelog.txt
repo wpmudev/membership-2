@@ -4,6 +4,7 @@
 		   E.g. 1 Day(s) before a subscription expired 
 		   E.g. 3 Day(s) after a subscription is paid/activated. 
 * Fixed: 0 day time periods will now change to sign up or expiry message depending on the option selected.
+* Fixed: Redirect 'Welcome' page for non-registered users and users without a subscription.
 		
 == 3.5.1.4 ==
 * Added: New option for default subscriptions. Explicitly assign default subscription to new users - for creating dripped access levels. Dev note: Implemented via Factory class.

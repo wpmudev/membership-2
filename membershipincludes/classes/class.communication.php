@@ -546,7 +546,6 @@ function M_Communication_process() {
 		$timelimit = 3; // max seconds for processing
 
 		foreach ( (array)$members as $user_id ) {
-			error_log("Communication: User: {$user_id}.\n", 3, "/var/tmp/com-errors.log");
 			// Makes sure that messages only takes 3 seconds of processing power. Prevents timeouts.
 			if ( current_time( 'timestamp' ) > $timestart + $timelimit ) {
 				M_update_option( 'membership_communication_last_user_processed', $user_id );
