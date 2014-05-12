@@ -5649,7 +5649,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										$columns = array("name" => __('Message Subject', 'membership'),
 												"sub" => __('Subscription', 'membership'),
 												"active" => __('Active', 'membership'),
-												"transactions" => __('Pre-expiry period', 'membership')
+												"transactions" => __('Period', 'membership')
 										);
 
 										$columns = apply_filters('membership_communicationcolumns', $columns);
@@ -5730,15 +5730,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				</td>
 																				<td class="column-transactions">
 																						<?php
-																						if ($comm->periodstamp == 0) {
+																						if ( 'join' == $comm->periodprepost || ( 0 == $comm->periodstamp && 'post' == $comm->periodprepost ) ) {
 																								echo __("Signup message", 'membership');
+																						} elseif ( 'exp' == $comm->periodprepost || ( 0 == $comm->periodstamp && 'pre' == $comm->periodprepost ) ) {
+																								echo __("Expiry message", 'membership');																							
 																						} else {
-																								// Show pre or post
-																								if ($comm->periodprepost == 'pre') {
-																										echo "-&nbsp;";
-																								} else {
-																										echo "+&nbsp;";
-																								}
 																								// Show period
 																								echo $comm->periodunit . "&nbsp;";
 																								// Show unit
@@ -5755,6 +5751,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																												break;
 																										case 'y': echo __("Year(s)", 'membership');
 																												break;
+																								}
+																								// Show pre or post
+																								if ($comm->periodprepost == 'pre') {
+																										echo " before a subscription expires.";
+																								} else {
+																										echo " after a subscription is paid/activated.";
 																								}
 																						}
 																						?>

@@ -6062,8 +6062,8 @@ msgid "View inactive Messages"
 msgstr "View inactive Messages"
 
 #: membershipincludes/classes/membershipadmin.php:5472
-msgid "Pre-expiry period"
-msgstr "Pre-expiry period"
+msgid "Period"
+msgstr "Period"
 
 #: membershipincludes/classes/membershipadmin.php:5525
 msgid "Send this communication message to me"

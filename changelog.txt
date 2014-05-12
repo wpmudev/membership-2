@@ -1,3 +1,10 @@
+== 3.5.1.5 ==
+* Added: 'Communications' now has explicit options for 'Immediately on signup' and 'Day subscription expires.'
+* Changed: Communication table now has descriptive time periods.
+		   E.g. 1 Day(s) before a subscription expired 
+		   E.g. 3 Day(s) after a subscription is paid/activated. 
+* Fixed: 0 day time periods will now change to sign up or expiry message depending on the option selected.
+		
 == 3.5.1.4 ==
 * Added: New option for default subscriptions. Explicitly assign default subscription to new users - for creating dripped access levels. Dev note: Implemented via Factory class.
 * Fixed: Expiry date now assigned at user creation (where option is enabled in options). Note, user has to be created using standard WordPress function, wp_create_user(). Will not work for direct SQL entries.

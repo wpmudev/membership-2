@@ -599,11 +599,12 @@ class Membership_Model_Member extends WP_User {
 				default: $period = 'days';
 					break;
 			}
-			//subscription end date
-			$expires_sub = $this->get_subscription_expire_date( $subscription, $tolevel_id );
 			//level end date
 			$expires = strtotime( '+' . $level->level_period . ' ' . $period, $start );
 			$expires = gmdate( 'Y-m-d H:i:s', $expires ? $expires : strtotime( '+365 days', $start )  );
+			
+			//subscription end date
+			$expires_sub = $this->get_subscription_expire_date( $subscription, $tolevel_id );
 
 			$this->_wpdb->insert( MEMBERSHIP_TABLE_RELATIONS, array(
 				'user_id' => $this->ID,

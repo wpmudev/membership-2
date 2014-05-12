@@ -1,6 +1,6 @@
 <h2><?php _e('Adding / Editing a message', 'membership'); ?></h2>
 <h3><?php _e('Message to be sent', 'membership'); ?></h3>
-<p><?php _e('The first field in the message add / edit screen is the time period in the lifetime of a membership that the message should be sent. Setting the number of days to 0 will force the message to be sent immediately when a member signs up, alternatively you can set the message to be sent x number of days / months or even years after a member has joined, or before a members subscription is due to expire.', 'membership'); ?></p>
+<p><?php _e('The first field in the message add / edit screen is the time period in the lifetime of a membership that the message should be sent. You can set the message to be sent x number of days / months or even years after a member has joined, or before a members subscription is due to expire. You can also choose to send the message immediately on signup (same behaviour as setting 0 days and \'after subscription is paid\') OR send the message immediately on expiry (same behaviour as setting 0 days and \'before a subscription expires\')', 'membership'); ?></p>
 <h3><?php _e('Message subject', 'membership'); ?></h3>
 <p><?php _e('The message subject is simply the subject that is set on the email for this message.', 'membership'); ?></p>
 <h3><?php _e('Message', 'membership'); ?></h3>
