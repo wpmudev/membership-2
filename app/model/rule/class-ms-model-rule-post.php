@@ -42,18 +42,18 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * Verify access to the current post.
 	 * @return boolean
 	 */
-	public function has_access() {
+	public function has_access( $post_id = null ) {
 	
 		$has_access = false;
 		
 		/**
 		 * Only verify permission if ruled by post by post.
 		 */
-		if( MS_Plugin::instance()->addon->post_by_post ) {
-			$post = get_queried_object();
-			
+		if( MS_Plugin::instance()->addon->post_by_post ) {			
 			$has_access = false;
-			$post_id  = $this->get_current_post_id();
+			if( empty( $post_id ) ) {
+				$post_id  = $this->get_current_post_id();
+			}
 			if( in_array( $post_id, $this->rule_value ) ) {
 				$has_access = true;
 			}
@@ -65,9 +65,12 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * Verify if has dripped rules.
 	 * @return boolean
 	 */
-	public function has_dripped_rules() {
-		$post_id  = $this->get_current_post_id();
-
+	public function has_dripped_rules( $post_id = null ) {
+		
+		if( empty( $post_id ) ) {
+			$post_id  = $this->get_current_post_id();
+		}
+		
 		return array_key_exists( $post_id, $this->dripped );
 		
 // 		if( MS_Plugin::instance()->addon->post_by_post ) {
@@ -84,11 +87,14 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * Verify access to dripped content.
 	 * @param $start_date The start date of the member membership.
 	 */
-	public function has_dripped_access( $start_date ) {
+	public function has_dripped_access( $start_date, $post_id = null ) {
 	
 		$has_access = false;
 	
-		$post_id  = $this->get_current_post_id();
+		if( empty( $post_id ) ) {
+			$post_id  = $this->get_current_post_id();
+		}
+		
 		$has_access = parent::has_dripped_access( $post_id, $start_date );
 		
 		return $has_access;

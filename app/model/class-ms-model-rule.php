@@ -141,6 +141,22 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
+	 * Add single rule value.
+	 * @param int $content_id The content id to add.
+	 */
+	public function add_rule_value( $content_id ) {
+		$this->rule_value[ $content_id ] = $content_id;
+	}
+	
+	/**
+	 * Remove single rule value.
+	 * @param int $content_id The content id to remove.
+	 */
+	public function remove_rule_value( $content_id ) {
+		unset( $this->rule_value[ $content_id ] );
+	}
+	
+	/**
 	 * Verify access to dripped content.
 	 * @param $id The content id to verify dripped acccess. 
 	 * @param $start_date The start date of the member membership.

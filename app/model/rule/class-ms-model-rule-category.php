@@ -29,7 +29,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * Verify access to the current category or post belonging to a catogory.
 	 * @return boolean
 	 */
-	public function has_access() {
+	public function has_access( $post_id = null ) {
 		
 		$has_access = false;
 		
@@ -40,8 +40,11 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */
-			if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-				$categories = wp_get_post_categories( get_the_ID() );
+			if( ! empty( $post_id ) || is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+				if( empty( $post_id ) ) {
+					$post_id = get_the_ID();
+				}
+				$categories = wp_get_post_categories( $post_id );
 				$intersect = array_intersect( $categories, $this->rule_value );
 				$has_access = ! empty( $intersect );
 			}
@@ -61,13 +64,16 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * Only if ruled by categories.
 	 * @return boolean
 	 */
-	public function has_dripped_rules() {
+	public function has_dripped_rules( $post_id = null ) {
 		if( ! MS_Plugin::instance()->addon->post_by_post ) {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */
 			if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-				$categories = wp_get_post_categories( get_the_ID() );
+				if( empty( $post_id ) ) {
+					$post_id = get_the_ID();
+				}
+				$categories = wp_get_post_categories( $post_id );
 				$intersect = array_intersect( $categories, array_keys( $this->dripped ) );
 				return ! empty( $intersect );
 			}
@@ -88,7 +94,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * Verify access to dripped content.
 	 * @param $start_date The start date of the member membership.
 	 */
-	public function has_dripped_access( $start_date ) {
+	public function has_dripped_access( $start_date, $post_id = null ) {
 		
 		$has_access = false;
 		
@@ -96,7 +102,10 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		 * Verify post access accordinly to category rules.
 		 */
 		if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-			$categories = wp_get_post_categories( get_the_ID() );
+			if( empty( $post_id ) ) {
+				$post_id = get_the_ID();
+			}
+			$categories = wp_get_post_categories( $post_id );
 			if( ! empty( $categories ) ) {
 				foreach( $categories as $category_id ) {
 					$has_access = $has_access || parent::has_dripped_access( $category_id, $start_date );

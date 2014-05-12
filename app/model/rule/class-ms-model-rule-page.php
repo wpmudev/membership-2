@@ -46,11 +46,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @param $membership_relationship 
 	 * @return boolean
 	 */
-	public function has_access( $membership_relationship ) {
+	public function has_access( $page_id = null ) {
 		
 		$settings = MS_Plugin::instance()->settings;
 		$has_access = false;
-		$page_id = $this->get_current_page_id();
+		if( empty( $page_id ) ) {
+			$page_id = $this->get_current_page_id();
+		}
 
 		if( in_array( $page_id, $this->rule_value ) || in_array( $page_id, $settings->pages ) ) { 
 			$has_access = true;

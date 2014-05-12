@@ -154,6 +154,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Admin bar controller */
 		$this->controllers['admin_bar'] = apply_filters( 'membership_controller_admin_bar', new MS_Controller_Admin_Bar() );
 		
+		/** Membership metabox controller */
+		$this->controllers['membership_metabox'] = apply_filters( 'membership_controller_membership_metabox', new MS_Controller_Membership_Metabox() );
 		
 	}
 

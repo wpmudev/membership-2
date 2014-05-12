@@ -152,3 +152,49 @@ label.ms-validation-error {
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
+/** radio slider */
+
+.ms-radio-slider:focus {
+  background:none;
+  outline:none;
+}
+.ms-radio-slider {
+  border-radius: 10px;
+  background: rgb(176,176,176);
+  width:40px;
+  height:18px;
+  display:block;
+  margin:10px 20px;
+  position: relative;
+  opacity:.8;
+}
+.ms-radio-slider:hover {
+  cursor: pointer;
+  opacity:1;
+}
+
+.ms-radio-slider .toggle {
+  width:12px;
+  height:12px;
+  margin:3px;
+  background: #F4F4F4;
+  border-radius:50%;
+  display:block;
+  position:absolute;
+  -webkit-transition:all .2s ease-in-out;
+  left:0px;
+}
+.ms-radio-slider .toggle:hover {
+  -webkit-transform:scale(1.1);
+}
+
+.ms-radio-slider.on .toggle {
+  left:21px;
+}
+/*.ms-radio-slider.off .toggle {
+  left:0;
+}*/
+
+.ms-radio-slider.on {
+  background: rgb(107,187,26);
+}

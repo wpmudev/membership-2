@@ -109,7 +109,7 @@ class MS_Model_Plugin extends MS_Model {
 		foreach( $this->member->membership_relationships as $membership_relationship ) {
 			/**
 			 * Verify status of the membership.
-			 * Only active or trial memberships.
+			 * Only active or trial status memberships.
 			 */
 			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
 				continue;
@@ -121,7 +121,7 @@ class MS_Model_Plugin extends MS_Model {
 			 */
 			$rules = $this->get_rules_hierarchy( $membership );
 			foreach( $rules as $rule ) {
-				$has_access = ( $has_access || $rule->has_access( $membership_relationship ) );
+				$has_access = ( $has_access || $rule->has_access() );
 				
 				if( $has_access ) {
 					break;
@@ -156,7 +156,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * Get protection rules sorted.
 	 * First one has priority over the last one.
 	 * These rules are used to determine access.
-	 * Post and category rules are grouped by a post_category wrapper class.
+	 * @since 4.0.0
 	 */
 	private function get_rules_hierarchy( $membership ) {
 		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $val ) {
