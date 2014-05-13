@@ -180,8 +180,7 @@ class Membership_Factory {
 	public function hook_new_user_registration() {
 		add_action( 'user_register', array( $this, 'new_user_assignment' ) , 10, 1 );
 	}
-		
-	
+			
 	/**
 	 * Hook new user registrations.
 	 *
@@ -193,7 +192,11 @@ class Membership_Factory {
 	 */	
 	function new_user_assignment( $user_id ) {
 		global $M_options;
-
+		// If user is signing up using a subscription then bail.
+		if( ! empty( $_REQUEST['subscription'] ) ){
+			return;
+		}
+		
 		// Assign default subscription to new registered user. Sets expiry date on creation.
 		// Only assign when this option is selected in Membership Options->General
 
