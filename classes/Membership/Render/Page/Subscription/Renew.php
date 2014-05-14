@@ -129,7 +129,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 					<div class="link" style="float:right;margin-right:10px">
 						<?php
 						$class = '';
-						if ( $M_options['formtype'] == 'new' ) {
+						if ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ) {
 							// pop up form
 							$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id ), admin_url( 'admin-ajax.php' ) );
 							$class = 'popover';
@@ -450,7 +450,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 												}
 											} else {
 												$class = '';
-												if ( $M_options['formtype'] == 'new' ) {
+												if ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ) {
 													// pop up form
 													$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id, 'from_subscription' => $rel->sub_id ), admin_url( 'admin-ajax.php' ) );
 													$class = 'popover';

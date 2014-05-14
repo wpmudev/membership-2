@@ -1769,7 +1769,7 @@ if ( !class_exists( 'membershippublic', false ) ) :
 
 		function enqueue_fancybox_scripts() {
 			global $M_options;
-			if ( $M_options['formtype'] == 'new' ) {
+			if ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ) {
 				wp_enqueue_style( 'membership-fancyboxcss', MEMBERSHIP_ABSURL . 'js/fancybox/jquery.fancybox-1.3.4.css', null, Membership_Plugin::VERSION );
 				wp_enqueue_script( 'membership-fancyboxjs', MEMBERSHIP_ABSURL . 'js/fancybox/jquery.fancybox-1.3.4.pack.js', array( 'jquery' ), null, true );
 

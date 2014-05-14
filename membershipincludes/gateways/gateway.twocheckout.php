@@ -11,6 +11,9 @@ class twocheckout extends Membership_Gateway {
 	var $gateway = 'twocheckout';
 	var $title = '2Checkout';
 
+	// 2Checkout Root URL
+	var $tco_url = "https://sandbox.2checkout.com";
+
 	public function __construct() {
 		parent::__construct();
 
@@ -56,7 +59,7 @@ class twocheckout extends Membership_Gateway {
 			$args['sslverify'] = false;
 			$args['timeout'] = 30;
 
-			$endpoint = "https://www.2checkout.com/api/sales/detail_sale";
+			$endpoint = $this->tco_url . "/api/sales/detail_sale";
 
 			$response = wp_remote_post($endpoint, $args);
 
@@ -98,7 +101,7 @@ class twocheckout extends Membership_Gateway {
 					$args['sslverify'] = false;
 					$args['timeout'] = 30;
 
-					$endpoint = "https://www.2checkout.com/api/sales/stop_lineitem_recurring";
+					$endpoint = $this->tco_url . "/api/sales/stop_lineitem_recurring";
 
 					$stop_response = wp_remote_post($endpoint, $args);
 
@@ -280,7 +283,7 @@ class twocheckout extends Membership_Gateway {
 		$args['sslverify'] = false;
 		$args['timeout'] = 10;
 
-		$endpoint = "https://www.2checkout.com/api/products/";
+		$endpoint = $this->tco_url . "/api/products/";
 
 		$response = wp_remote_post($endpoint."list_products", $args);
 
@@ -375,9 +378,9 @@ class twocheckout extends Membership_Gateway {
 		$form = '';
 
 		if (get_option( $this->gateway . '_twocheckout_checkout_type') == 'multi') {
-			$endpoint = 'https://www.2checkout.com/checkout/purchase';
+			$endpoint = $this->tco_url . '/checkout/purchase';
 		} else {
-			$endpoint = 'https://www.2checkout.com/checkout/spurchase';
+			$endpoint = $this->tco_url . '/checkout/spurchase';
 		}
 		$form .= sprintf('<form action="%s" method="post">',$endpoint);
 
@@ -409,7 +412,7 @@ class twocheckout extends Membership_Gateway {
 		$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
 		$form .= '<input type="hidden" name="return_url" value="'.trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway).'" />';
 		$form .= '<input type="hidden" name="return_method" value="1" />';
-		//$form .= '<input type="hidden" name="return_url" value="'.M_get_registrationcompleted_permalink().'" />';
+		// $form .= '<input type="hidden" name="completed_url" value="'.M_get_registrationcompleted_permalink().'" />';
 
 		$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
 
@@ -433,7 +436,7 @@ class twocheckout extends Membership_Gateway {
 
 		$form = '';
 
-		$form .= '<form action="https://www.2checkout.com/checkout/spurchase" method="post">';
+		$form .= '<form action="' . $this->tco_url . '/checkout/spurchase" method="post">';
 
 		if (get_option( $this->gateway . "_twocheckout_status" ) != 'live') {
 			$form .= '<input type="hidden" name="demo" value="Y">';
@@ -453,6 +456,7 @@ class twocheckout extends Membership_Gateway {
 		$form .= '<input type="hidden" name="lang" value="'.esc_attr(get_option( $this->gateway . "_twocheckout_lang" )).'" />';
 		$form .= '<input type="hidden" name="user_id" value="'.$user_id.'">';
 		$form .= '<input type="hidden" name="currency" value="'.$M_options['paymentcurrency'].'">';
+		// $form .= '<input type="hidden" name="completed_url" value="'.M_get_registrationcompleted_permalink().'" />';		
 
 		$button = get_option( $this->gateway . "_twocheckout_button", $M_membership_url . 'membershipincludes/images/2co_logo_64.png' );
 
@@ -523,7 +527,7 @@ class twocheckout extends Membership_Gateway {
 
 	// Return stuff
 	function handle_2checkout_return() {
-
+		global $M_options;
 		// Return handling code
 		$timestamp = time();
 		if (isset($_REQUEST['key'])) {
@@ -555,7 +559,13 @@ class twocheckout extends Membership_Gateway {
 				}
 
 				do_action('membership_payment_subscr_signup', $user_id, $sub_id);
-				wp_redirect(get_option('home'));
+
+				if( !isset( $M_options['registrationcompleted_page'] ) || 0 >= $M_options['registrationcompleted_page'] ) {
+					wp_redirect(get_option('home'));	
+				} else {
+					wp_redirect( M_get_registrationcompleted_permalink() );
+				}
+				
 				exit();
 			}
 		} else if (isset($_REQUEST['message_type'])) {

@@ -8,6 +8,9 @@
 * Fixed: Coupon now adds trial occurrences to total occurrences - solves "Trial Occurrences must be less than total occurrences." bug.
 * Fixed: 2CO forms now strip tags from subscription descriptions in input boxes. HTML was causing some unexpected behaviour.
 * Fixed: Forced access level only applied with new user registration (or 3rd party scripts). Does not apply to users using the "Signup" links.
+* Fixed: 2CO redirects to "Registration completed page"/"Welcome" if it exists else redirects to home.
+* Notice: Potential conflict with Gantry framework when using Gantry widgets on Membership special pages. Flagged as known bug to be addressed in future release.
+
 		
 == 3.5.1.4 ==
 * Added: New option for default subscriptions. Explicitly assign default subscription to new users - for creating dripped access levels. Dev note: Implemented via Factory class.
