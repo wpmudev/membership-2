@@ -56,7 +56,6 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			 * Dripped content.
 			 */
 			if( $this->has_dripped_rules( $page->ID ) && ! $this->has_dripped_access( $this->start_date, $page->ID ) ) {
-				_vdslog("not dripped: $key");
 				unset( $pages[ $key ] );
 			}
 				
