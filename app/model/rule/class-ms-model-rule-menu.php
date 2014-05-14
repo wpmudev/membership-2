@@ -24,11 +24,28 @@
 class MS_Model_Rule_Menu extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
+
+	protected $rule_type = self::RULE_TYPE_MENU;
 	
-	public function on_protection() {
-		
+	/**
+	 * Set initial protection.
+	 */
+	public function protect_content( $menu_id = null ) {
+		$this->add_filter( 'wp_get_nav_menu_items', 'filter_menus', 10, 3 );
 	}
 	
+	function filter_menus( $items, $menu, $args ) {
+		if( ! empty( $items ) ) {
+			foreach($items as $key => $item) {
+				if( ! in_array( $item->ID, $this->rule_value ) || ( $item->menu_item_parent != 0 && ! in_array( $item->menu_item_parent, $this->rule_value ) ) ) {
+					unset( $items[ $key ] );
+				}
+		
+			}
+		}
+		return $items;
+	}
+		
 	public function get_content( $args = null ) {
 		$contents = array();
 		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );

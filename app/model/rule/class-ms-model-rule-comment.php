@@ -25,8 +25,18 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
-		
+	protected $rule_type = self::RULE_TYPE_COMMENT;
+	
+	/**
+	 * Set initial protection.
+	 */
+	public function protect_content() {
+		if( ! empty ( $this->rule_value ) ) {
+			add_filter( 'comments_open', '__return_true', 99 );
+		}
+		else {
+			add_filter( 'comments_open', '__return_false', 99 );
+		}
 	}
 	
 	public function get_content() {

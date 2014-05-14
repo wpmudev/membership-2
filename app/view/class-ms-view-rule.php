@@ -173,7 +173,7 @@ class MS_View_Rule extends MS_View {
 			),
 				
 		);
-		foreach ( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $class ) {
+		foreach ( MS_Model_Rule::get_rule_types as $rule_type ) {
 			$this->rule_types["rule_value_$rule_type"] = array (
 						'id' => "rule_value_$rule_type",
 						'section' => $section,

@@ -147,8 +147,15 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_dripped( $item ) {
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_dripped_actions", null, $item );
-	
+		$actions = array( 
+				sprintf( 
+					'<a href="?page=%s&tab=dripped&membership_id=%s">%s</a>',
+					$_REQUEST['page'],
+					$_REQUEST['membership_id'],
+					__('Edit', MS_TEXT_DOMAIN )
+				),
+		);
+		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_dripped_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $item->delayed_period, $this->row_actions( $actions ) );
 	}
 	

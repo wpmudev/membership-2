@@ -231,7 +231,7 @@ class MS_Controller_Member extends MS_Controller {
 	
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_register_script( 'ms_view_member_date', MS_Plugin::get_plugin_url(). 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::get_plugin_version() );
+		wp_register_script( 'ms_view_member_date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );
 		wp_enqueue_script( 'ms_view_member_date' );
 	}
 	

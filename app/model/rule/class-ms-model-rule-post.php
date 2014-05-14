@@ -25,6 +25,47 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected $rule_type = self::RULE_TYPE_POST;
+	
+	private $start_date;
+	
+	/**
+	 * Set initial protection.
+	 */
+	public function protect_content( $start_date ) {
+		$this->start_date = $start_date;
+		$this->add_action( 'pre_get_posts', 'protect_posts', 99 );
+	}
+	
+	public function protect_posts( $wp_query ) {
+		/**
+		 * Only verify permission if ruled by post by post.
+		 */
+		if( MS_Plugin::instance()->addon->post_by_post ) {
+			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
+				&& ( !isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
+				
+				
+				// We are in a list rather than on a single post
+				foreach( $this->rule_value as $value ) {
+					$wp_query->query_vars['post__in'][] = $value;
+				}
+				/**
+				 * Include dripped content.
+				 */
+				foreach( $this->dripped as $post_id => $period ) {
+					if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
+						$wp_query->query_vars['post__in'][] = $post_id;
+					}
+					elseif( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
+						unset( $wp_query->query_vars['post__in'][ $key ] );
+					}
+				}
+					
+				$wp_query->query_vars['post__in'] = array_unique( $wp_query->query_vars['post__in'] );
+			}
+		}
+	}
 	/**
 	 * Get the current post id.
 	 * @return int The post id, or null if it is not a post.
@@ -49,7 +90,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		/**
 		 * Only verify permission if ruled by post by post.
 		 */
-		if( MS_Plugin::instance()->addon->post_by_post ) {			
+		if( MS_Plugin::instance()->addon->post_by_post ) {
 			$has_access = false;
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();
@@ -142,6 +183,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$content->access = false;
 				
 			$content->categories = array();
+			$cats = array();
 			$categories = wp_get_post_categories( $content->id );
 			if( ! empty( $categories ) ) {
 				foreach( $categories as $cat_id ) {

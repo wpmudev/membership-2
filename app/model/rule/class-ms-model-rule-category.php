@@ -25,6 +25,85 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected $rule_type = self::RULE_TYPE_CATEGORY;
+	
+	protected $start_date; 
+	
+	/**
+	 * Set initial protection.
+	 */
+	public function protect_content( $start_date ) {
+		$this->start_date = $start_date;
+		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
+		$this->add_filter( 'get_terms', 'protect_categories', 99, 3 );
+	}
+	
+	/**
+	 * Adds category__in filter for posts query to remove all posts which not
+	 * belong to allowed categories.
+	 *
+	 * @since 4.0
+	 * @action pre_get_posts 
+	 *
+	 * @access public
+	 * @param WP_Query $query The WP_Query object to filter.
+	 */
+	public function protect_posts( $wp_query ) {
+		/**
+		 * Only verify permission if ruled by categories.
+		 */
+		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+			
+			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
+				$categories = array_keys( $this->rule_value );
+				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $this->rule_value ) ) );
+				/**
+				 * Include dripped content.
+				 */
+				foreach( $this->dripped as $cat_id => $period ) {
+					if( parent::has_dripped_access( $this->start_date, $cat_id ) ) {
+						$categories[] = $cat_id;
+					}
+					elseif( $key = array_search( $cat_id, $categories ) ) {
+						unset( $categories[ $key ] );
+					}
+				}
+				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $categories ) ) );
+			}
+		}
+	}
+	
+	/**
+	 * Filters categories and removes all not accessible categories.
+	 *
+	 * @sicne 4.0
+	 *
+	 * @access public
+	 * @param array $terms The terms array.
+	 * @return array Fitlered terms array.
+	 */
+	public function protect_categories( $terms, $taxonomies, $args ) {
+		$new_terms = array();
+	
+		if ( ! in_array( 'category', $taxonomies) ) {
+			// bail - not fetching category taxonomy
+			return $terms;
+		}
+	
+		foreach ( (array) $terms as $key => $term ) {
+			if ( $term->taxonomy == 'category' ) { //still do this check here - could be fetching multiple taxonomies
+				if ( in_array( $term->term_id, $this->rule_value ) ) {
+					$new_terms[$key] = $term;
+				}
+			} else {
+				// this taxonomy isn't category so add it so custom taxonomies don't break
+				$new_terms[$key] = $term;
+			}
+		}
+	
+		return $new_terms;
+	}
+	
 	/**
 	 * Verify access to the current category or post belonging to a catogory.
 	 * @return boolean
@@ -108,7 +187,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			$categories = wp_get_post_categories( $post_id );
 			if( ! empty( $categories ) ) {
 				foreach( $categories as $category_id ) {
-					$has_access = $has_access || parent::has_dripped_access( $category_id, $start_date );
+					$has_access = $has_access || parent::has_dripped_access( $start_date, $category_id );
 				}				
 			}
 		}

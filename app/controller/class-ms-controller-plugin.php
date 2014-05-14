@@ -32,6 +32,15 @@
 class MS_Controller_Plugin extends MS_Controller {
 
 	/**
+	 * Capability to access menu.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var capability
+	 */
+	private $capability = 'manage_options';
+	
+	/**
 	 * Instance of MS_Model_Plugin.
 	 *
 	 * @since 4.0.0
@@ -173,46 +182,36 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages = array();
 
 		/** Create primary menu item: Membership */
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), 'membershipadmindashboard', 'membership');
+		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', null, MS_Plugin::instance()->url . 'app/assets/images/members.png' );
 
 		/** Create Membership Dashboard */
-		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), 'manage_options', 'membership-dashboard', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
 		
-		//RK: Perhaps as addon? Core will only have 1 or 2 memberships.
 		/** Lists all memberships. */
-		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), 'manage_options', 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), $this->capability, 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
 		/** Manage membership */
-		$pages[] = add_submenu_page( 'all-memberships', __( 'New Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+		$pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
 		/** Create Members Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), 'manage_options', 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), $this->capability, 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
 		/** Loading the screen options for Members page. */
 		add_action( 'load-' . end( $pages ), array( $this->controllers['member'], 'table_options' ) );
 
-
 		/** Create Billings Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), 'manage_options', 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), $this->capability, 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
 
 		/** Create Coupons Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), 'manage_options', 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), $this->capability, 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
 		
 		/** Filter to hook in other addon pages. */
 		$pages = apply_filters( 'membership_submenu_pages', $pages );
 
 		/** Create Add-ons Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Add-ons', MS_TEXT_DOMAIN ), __( 'Add-ons', MS_TEXT_DOMAIN ), 'manage_options', 'membership-addons', array( $this->controllers['addon'], 'admin_addon' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Add-ons', MS_TEXT_DOMAIN ), __( 'Add-ons', MS_TEXT_DOMAIN ), $this->capability, 'membership-addons', array( $this->controllers['addon'], 'admin_addon' ) );
 
-		/** Manage membership rules */
-		// $pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), __( 'Edit Membership Rules', MS_TEXT_DOMAIN ), 'manage_options', 'membership-edit-rules', array( $this->controllers['rule'], 'membership_edit_rules' ) );
-		
-		//FJ: think it might be better to create a MS_Controller_Settings and MS_Model_Settings (see class diagram). 
-		//	My understanding of this MS_Controller_PLugin is something like Front Controller pattern
 		/** Global Membership Plugin settings. */
-		// $pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Membership Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->view, 'render' ) );
-		
-		//RK: Can make it happen... extracting Settings from Plugin
-		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), 'manage_options', 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), $this->capability, 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
 		
 		
 	}

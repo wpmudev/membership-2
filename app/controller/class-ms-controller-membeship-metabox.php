@@ -36,11 +36,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	
 	private $context = 'side';
 	
-	private $priority = 'sorted';
+	private $priority = 'default';
 	
 	private $capability = 'manage_options';
-	
-	function __construct() {
+		
+	public function __construct() {		
 		$this->metabox_title = __( 'Membership Access', MS_TEXT_DOMAIN );
 		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', array( 'page', 'post' ) );
 		
@@ -49,29 +49,23 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
 	}
 	
-	function add_meta_boxes() {
+	public function add_meta_boxes() {
 		foreach ($this->post_types as $post_type) {
-			add_meta_box( $this->metabox_id, $this->metabox_title, array($this, 'membership_metabox'), $post_type, $this->context, $this->priority );
+			add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
 		}
 	
 	}
 	
-	function membership_metabox( $post ) {		
-		/** Menu: Memberships */
+	public function membership_metabox( $post ) {	
 		$view = apply_filters( 'ms_view_membership_metabox', new MS_View_Membership_Metabox() );
 		
 		$settings = MS_Plugin::instance()->settings;
 		$data = array();
-		if( 'post' == $post->post_type && ! MS_Plugin::instance()->settings->post_by_post ){
-			$read_only = true;
-		}
-		else {
-			$read_only = false;
-		}
+
 		$memberships = MS_Model_Membership::get_memberships();
 		foreach( $memberships as $membership ) {
 			if( 'post' == $post->post_type ) {
-				$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access() || $membership->rules['category']->has_access();
+				$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
 			}
 			else {
 				$data[ $membership->id ]['has_access'] = $membership->rules['page']->has_access( $post->ID );
@@ -80,33 +74,34 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			
 		}
 		$view->data = $data;
-		$view->read_only = $read_only;
+		$view->read_only = $this->is_read_only( $post->post_type );
 		
 		$view->render();
 		
 	}
 	
-	function save_metabox_data( $post_id, $post ) {
+	public function save_metabox_data( $post_id, $post ) {
 		if ( empty( $post_id ) || empty( $post ) ) return;
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 		if ( is_int( wp_is_post_revision( $post ) ) ) return;
 		if ( is_int( wp_is_post_autosave( $post ) ) ) return;
-		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
-		if ( empty( $_POST[ $nonce ]) || ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) return;
 		if ( ! current_user_can( 'edit_post', $post_id )) return;
 		if ( ! in_array($post->post_type, $this->post_types) ) return;
+		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
+		if ( empty( $_POST[ $nonce ]) || ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) return;
 		
 		$rule_type = $post->post_type;
 		if( ! empty( $_POST['ms_access'] ) && in_array( $post->post_type, $this->post_types ) ) {
 			foreach( $_POST['ms_access'] as $membership_id => $has_access ) {
 				$membership = MS_Model_Membership::load( $membership_id );
-				$rule = $membership->rules[ $rule_type ];
+				$rule = $membership->get_rule( $rule_type );
 				if( $has_access ) {
 					$rule->add_rule_value( $post_id );
 				}
 				else {
 					$rule->remove_rule_value( $post_id );
 				}
+				
 				$membership->set_rule( $rule_type, $rule );
 				$membership->save();
 			}
@@ -114,9 +109,19 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		}
 	}
 	
-	function admin_enqueue_scripts() {
+	public function is_read_only( $post_type ) {
+		if( 'post' == $post_type && ! MS_Plugin::instance()->addon->post_by_post ) {
+			$read_only = true;
+		}
+		else {
+			$read_only = false;
+		}
+		return $read_only;
+	}
+	
+	public function admin_enqueue_scripts() {
 		global $post_type;
-		if( in_array( $post_type, $this->post_types ) ) {
+		if( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
 			wp_register_script( 'membership-metabox', MS_Plugin::instance()->url. 'app/assets/js/ms-view-membership-metabox.js' );
 			wp_enqueue_script( 'membership-metabox' );
 		}

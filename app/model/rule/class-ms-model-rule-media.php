@@ -25,9 +25,12 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
+	protected $rule_type = self::RULE_TYPE_MEDIA;
+	
+	public function protect_content() {
 		
 	}
+	
 	public function get_content( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,

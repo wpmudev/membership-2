@@ -90,10 +90,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 		);
 	}
-	public function set_rule( $rule_type, $rule ) {
-		$this->rules[ $rule_type ] = $rule;
+	public function get_rule( $rule_type ) {
+		if( isset( $this->rules[ $rule_type ] ) ) {
+			return $this->rules[ $rule_type ];
+		};
 	}
 		
+	public function set_rule( $rule_type, $rule ) {
+		if( MS_Model_Rule::is_valid_rule_type( $rule_type) ) {
+			$this->rules[ $rule_type ] = $rule;
+		}
+	}
+	
 	public function get_trial_expire_date( $start_date = null ) {
 		if( empty( $start_date) ) {
 			$start_date = MS_Helper_Period::current_date();
@@ -177,16 +185,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static function load( $model_id ) {
 		$model = parent::load( $model_id );
-		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $type => $class ) {
-			if( empty( $model->rules[ $type ] ) ) {
-				$model->rules[ $type ] = MS_Model_Rule::rule_factory( $type );
-			}
+		
+		if( empty( $model->rules ) ) {
+			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules );
 		}
-// 		if( empty( $model->rules['category']->post_rule ) ) {
-// 			$category_rule = $model->rules['category'];
-// 			$category_rule->set_post_rule( $model->rules['post'] );
-// 			$model->set_rule( 'category', $category_rule ); 
-// 		}
+
 		return $model;
 	}
 	

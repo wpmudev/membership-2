@@ -25,6 +25,45 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected $rule_type = self::RULE_TYPE_PAGE;
+	
+	protected $start_date;
+	
+	/**
+	 * Set initial protection.
+	 */
+	public function protect_content( $start_date ) {
+		$this->start_date = $start_date;
+		$this->add_filter( 'get_pages', 'protect_pages', 99 );
+	}
+	
+	/**
+	 * Filters protected pages.
+	 *
+	 * @action get_pages
+	 *
+	 * @param array $pages The array of pages.
+	 * @return array Filtered array which doesn't include prohibited pages.
+	 */
+	public function protect_pages( $pages ) {
+		$rule_value = apply_filters( 'ms_model_rule_page_protect_pages_rule_value', $this->rule_value );
+	
+		foreach ( (array) $pages as $key => $page ) {
+			if ( ! in_array( $page->ID, $rule_value ) ) {
+				unset( $pages[ $key ] );
+			}
+			/**
+			 * Dripped content.
+			 */
+			if( $this->has_dripped_rules( $page->ID ) && ! $this->has_dripped_access( $this->start_date, $page->ID ) ) {
+				_vdslog("not dripped: $key");
+				unset( $pages[ $key ] );
+			}
+				
+		}
+		return $pages;
+	}
+	
 	/**
 	 * Get the current page id.
 	 * @return int The page id, or null if it is not a page.
@@ -65,9 +104,11 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * Verify if has dripped rules.
 	 * @return boolean
 	 */
-	public function has_dripped_rules() {
+	public function has_dripped_rules( $page_id = null ) {
 
-		$page_id = $this->get_current_page_id();
+		if( empty ( $page_id ) ) {
+			$page_id = $this->get_current_page_id();
+		}
 
 		return array_key_exists( $page_id, $this->dripped );
 	}
@@ -76,12 +117,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * Verify access to dripped content.
 	 * @param $start_date The start date of the member membership.
 	 */
-	public function has_dripped_access( $start_date ) {
+	public function has_dripped_access( $start_date, $page_id = null ) {
 	
 		$has_access = false;
-		$page_id = $this->get_current_page_id();
+		
+		if( empty ( $page_id ) ) {
+			$page_id = $this->get_current_page_id();
+		}
 
-		$has_access = parent::has_dripped_access( $page_id, $start_date );
+		$has_access = parent::has_dripped_access( $start_date, $page_id );
 	
 		return $has_access;
 	}

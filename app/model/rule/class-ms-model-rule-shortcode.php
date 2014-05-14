@@ -25,7 +25,9 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
+	protected $rule_type = self::RULE_TYPE_SHORTCODE;
+	
+	public function protect_content() {
 		
 	}
 	

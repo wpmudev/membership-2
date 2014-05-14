@@ -322,8 +322,8 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	public function enqueue_styles() {
 		
-		$plugin_url = MS_Plugin::get_plugin_url();
-		$version = MS_Plugin::get_plugin_version();
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
 		
 		wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
 		

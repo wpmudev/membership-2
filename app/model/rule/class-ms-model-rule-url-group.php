@@ -25,7 +25,9 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function on_protection() {
+	protected $rule_type = self::RULE_TYPE_URL_GROUP;
+	
+	public function protect_content() {
 		
 	}
 	

@@ -115,11 +115,19 @@ class MS_Model_Plugin extends MS_Model {
 				continue;
 			}
 			$membership = $membership_relationship->get_membership();
+			$rules = $this->get_rules_hierarchy( $membership );
+			/**
+			 * Set initial protection.
+			 * Hide content.
+			 */
+			foreach( $rules as $rule ) {
+				$rule->protect_content( $membership_relationship->start_date );
+			}
 			/** 
 			 * Verify membership rules hierachyly.
+			 * Verify content accessed directly.
 			 * If 'has access' is found, it does have access.
 			 */
-			$rules = $this->get_rules_hierarchy( $membership );
 			foreach( $rules as $rule ) {
 				$has_access = ( $has_access || $rule->has_access() );
 				
@@ -159,10 +167,11 @@ class MS_Model_Plugin extends MS_Model {
 	 * @since 4.0.0
 	 */
 	private function get_rules_hierarchy( $membership ) {
-		foreach( MS_Model_Rule::$RULE_TYPE_CLASSES as $rule_type => $val ) {
+		$rule_types = MS_Model_Rule::get_rule_types();
+		foreach( $rule_types as $rule_type ) {
 			$rules[ $rule_type ] = $membership->rules[ $rule_type ];
 		}
-		return $rules;
+		return apply_filters( 'ms_model_plugin_get_rules_hierarchy', $rules );
 	}
 	/**
 	 * Setup initial protection.

@@ -13,7 +13,8 @@ Text Domain: wpmudev_membership
 
 /**
  * @copyright Incsub (http://incsub.com/)
- *
+ * Author - Fabio Jun, Rheinard Khorf
+ * Contributors - Joji Mori 
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  * 
  * This program is free software; you can redistribute it and/or modify 
@@ -107,12 +108,6 @@ function membership_class_file_override( $file ) {
 }
 add_filter( 'membership_class_file_override', 'membership_class_file_override' );
 
-
-// TESTING TO SEE IF CLASSES ARE LOADED
-// echo ( "<h1>" . class_exists( 'MS_Model_CustomPostType' ) . "</h1>" );
-// echo ( "<h1>" . class_exists( 'MS_Model_Custom_Post_Type' ) . "</h1>" );
-// $this->_model->blah = "blah";
-
 /**
  * Sets up and loads the Membership plugin.
  *
@@ -125,9 +120,6 @@ add_filter( 'membership_class_file_override', 'membership_class_file_override' )
  * @return object
  */
 class MS_Plugin {
-
-	const NAME = MS_PLUGIN_NAME;
-	const VERSION = MS_PLUGIN_VERSION;
 	
 	/**
 	 * Singletone instance of the plugin.
@@ -137,7 +129,7 @@ class MS_Plugin {
 	 * @access private
 	 * @var MS_Plugin
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * The plugin name.
@@ -208,8 +200,15 @@ class MS_Plugin {
 	 */
 	function __construct() {
 		
+		/** Setup plugin properties */
+		$this->name = MS_PLUGIN_NAME;
+		$this->version = MS_PLUGIN_VERSION;		
+		$this->file = __FILE__;
+		$this->dir = plugin_dir_path(__FILE__);
+		$this->url = plugin_dir_url(__FILE__);
+		
 		/** Load textdomain, localization. */
-		load_plugin_textdomain( MS_TEXT_DOMAIN, false, MS_PLUGIN_NAME . '/languages/' );
+		load_plugin_textdomain( MS_TEXT_DOMAIN, false, $this->name . '/languages/' );
 		
 		/** Actions to execute before construction is complete. */
 		do_action( 'membership_plugin_loading' ); 
@@ -217,23 +216,12 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
-		// RK: Fabio, do we need to register custom post types with every init?
-		// FJ: I think so. Which hook should use? https://codex.wordpress.org/Function_Reference/register_post_type 
 		/** Hook method to register custom post types */
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
 		/** Add additional constructing code, e.g. loading controllers */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
-		//FJ: Do we need static and private name and version?
-		//RK: Good question. It might be good to define it in the class, just in case of name conflicts with other plugins. So we can get it with MS_Plugin::name() and MS_Plugin::version(). What do you think?
-		//FJ: OK
-		/** Setup plugin properties */
-		$this->name = self::NAME;
-		$this->version = self::VERSION;		
-		$this->file = __FILE__;
-		$this->dir = plugin_dir_path(__FILE__);
-		$this->url = plugin_dir_url(__FILE__);
 		$this->settings = apply_filters( 'membership_model_settings', MS_Model_Settings::load() );
 		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load() );
 
@@ -241,7 +229,7 @@ class MS_Plugin {
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
 
 		/** Grab instance of self. */
-		self::$_instance = $this;
+		self::$instance = $this;
 		
 		/** Actions to execute when plugin is loaded. */
 		do_action( 'membership_plugin_loaded' ); 
@@ -299,7 +287,9 @@ class MS_Plugin {
 					'supports' => false,
 					'capability_type' => apply_filters( 'mp_memberships_capability', 'page' ),
 					'hierarchical' => false
-					) ) );
+				) 
+			) 
+		);
 		
 		register_post_type( 'ms_transaction',
 			apply_filters( 'ms_register_post_type_ms_transaction',
@@ -319,7 +309,9 @@ class MS_Plugin {
 					'supports' => false,
 					'capability_type' => apply_filters( 'mp_transactions_capability', 'page' ),
 					'hierarchical' => false
-					) ) );
+				) 
+			) 
+		);
 		
 		register_post_type( 'ms_communication',
 			apply_filters( 'ms_register_post_type_ms_communication',
@@ -339,9 +331,9 @@ class MS_Plugin {
 					'supports' => false,
 					'capability_type' => apply_filters( 'mp_communications_capability', 'page' ),
 					'hierarchical' => false
-					) ) );
-	
-	
+				) 
+			) 
+		);
 	}
 	
 	
@@ -437,17 +429,17 @@ class MS_Plugin {
 	 * @return MS_Plugin
 	 */
 	public static function instance( $instance = null ) {
-		if ( !$instance || 'MS_Plugin' != get_class( $instance ) ){
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new MS_Plugin();
+		if ( ! $instance || 'MS_Plugin' != get_class( $instance ) ){
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new MS_Plugin();
 			}
 		} else {
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = $instance;
+			if ( is_null( self::$instance ) ) {
+				self::$instance = $instance;
 			}
 		}
 	
-		return self::$_instance;
+		return self::$instance;
 	}
 	/**
 	 * Returns plugin enabled status.
@@ -461,34 +453,6 @@ class MS_Plugin {
 	 */
 	public static function is_enabled() {
 		return self::instance()->settings->plugin_enabled;
-	}
-	
-	/**
-	 * Returns plugin url.
-	 *
-	 * @since 4.0
-	 * @access public
-	 *
-	 * @static
-	 *	
-	 * @return string Returns plugin url.
-	 */
-	public static function get_plugin_url() {
-		return self::instance()->url;
-	}
-	
-	/**
-	 * Returns plugin version.
-	 *
-	 * @since 4.0
-	 * @access public
-	 *
-	 * @static
-	 *	
-	 * @return string Returns plugin version.
-	 */
-	public static function get_plugin_version() {
-		return  self::instance()->version;
 	}	
 
 	/**
