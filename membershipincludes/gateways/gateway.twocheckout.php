@@ -12,7 +12,7 @@ class twocheckout extends Membership_Gateway {
 	var $title = '2Checkout';
 
 	// 2Checkout Root URL
-	var $tco_url = "https://sandbox.2checkout.com";
+	var $tco_url = "https://www.2checkout.com";
 
 	public function __construct() {
 		parent::__construct();
