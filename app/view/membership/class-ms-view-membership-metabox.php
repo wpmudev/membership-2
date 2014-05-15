@@ -30,7 +30,7 @@ class MS_View_Membership_Metabox extends MS_View {
 						<?php
 							if ( $data['dripped'] ) { 
 								// Using array to notify users which Memberships has dripped content.
-								$dripped[] = $data['name'] . ' ' . __( 'membership', MS_TEXT_DOMAIN );
+								$dripped[] = sprintf( __( '%s membership', MS_TEXT_DOMAIN ), $data['name'] );
 							} 
 						?>
 						<tr>
@@ -60,7 +60,7 @@ class MS_View_Membership_Metabox extends MS_View {
 			</tbody>
 			</table>
 			<?php if ( ! empty( $dripped ) ) : ?>
-					<div class="dripped" title="<?php echo __( 'Set as dripped in: ', MS_TEXT_DOMAIN ) . implode( ', ', $dripped ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?>
+					<div class="dripped" title="<?php printf( __( "Set as dripped in '%s'.", MS_TEXT_DOMAIN ), implode( "', '", $dripped ) ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?>
 					<div class="tooltip">
 						<div class="tooltip-content">
 						<?php echo '- ' . implode( ',<br />- ', $dripped ); ?>
