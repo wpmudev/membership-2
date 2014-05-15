@@ -198,3 +198,9 @@ label.ms-validation-error {
 .ms-radio-slider.on {
   background: rgb(107,187,26);
 }
+
+/* Dripped icon indicator */
+div.dripped { 
+	background: url("../images/dripped-icon.png") no-repeat 3px 1px #efefef;	
+	padding: 2px 2px 2px 30px;
+}

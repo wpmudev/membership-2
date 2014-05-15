@@ -302,7 +302,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function has_dripped_content() {
 		$dripped = array( 'post', 'page', 'category' );
 		foreach( $dripped as $type ) {
-			if( ! empty ( $this->rules[ $type ]->dripped ) ) {
+			//using count() as !empty() never returned true
+			if ( 0 < count( $this->rules[ $type ]->dripped ) ) {
 				return true;
 			}
 		}

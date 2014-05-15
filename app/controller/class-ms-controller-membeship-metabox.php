@@ -71,6 +71,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				$data[ $membership->id ]['has_access'] = $membership->rules['page']->has_access( $post->ID );
 			}
 			$data[ $membership->id ]['name'] = $membership->name;
+			$data[ $membership->id ]['dripped'] = $membership->has_dripped_content();
 			
 		}
 		$view->data = $data;
