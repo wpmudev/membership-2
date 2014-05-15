@@ -32,7 +32,15 @@
  * @return object
  */
 class MS_View_Settings extends MS_View {
-		
+
+	const COMM_NONCE = 'comm_save_nonce';
+	
+	const COMM_SECTION = 'comm_section';
+	
+	protected $model;
+	
+	protected $fields;
+	
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -146,16 +154,137 @@ class MS_View_Settings extends MS_View {
 	}
 
 	public function render_messages_automated() {
+		$this->prepare_messages_automated();
 		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
+		<div class='ms-settings'>
+			<h2><?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?></h2>
+			<form action="" method="post">
+				<?php MS_Helper_Html::html_input( $this->fields['comm_type'] );?>
+				<?php MS_Helper_Html::html_submit( $this->fields['load_comm'] );?>
+				<p><?php echo $this->model->get_description(); ?></p>
+			</form>
+			<form action="" method="post">
+				<?php wp_nonce_field( self::COMM_NONCE, self::COMM_NONCE ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['type'] );?>
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['enabled'] );?>
+							</td>
+						</tr>
+						<?php if( $this->model->period_enabled ) : ?>
+							<tr>
+								<td>
+									<div class="ms-period-wrapper">
+										<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
+									</div>
+								</td>
+							</tr>
+						<?php endif; ?>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['subject'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['message'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['cc_enabled'] );?>
+								<?php MS_Helper_Html::html_input( $this->fields['cc_email'] );?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<?php MS_Helper_Html::html_input( $this->fields['save_email'] );?>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>	
 		<?php
 	}
-
+	public function prepare_messages_automated() {
+		$this->fields = array(
+				'comm_type' => array(
+						'id' => 'comm_type',
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $this->model->type,
+						'field_options' => MS_Model_Communication::get_communication_type_titles(),
+						'class' => '',
+				),
+				'load_comm' => array(
+						'id' => 'load_comm',
+						'value' => __( 'Load Email', MS_TEXT_DOMAIN ),
+				),
+				'type' => array(
+						'id' => 'type',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->model->type,
+				),
+				'enabled' => array(
+						'id' => 'enabled',
+						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+						'title' => __( 'Enabled', MS_TEXT_DOMAIN ),
+						'value' => $this->model->enabled,
+						'class' => '',
+				),
+				'period_unit' => array(
+						'id' => 'period_unit',
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
+						'value' => $this->model->period['period_unit'],
+						'class' => '',
+				),
+				'period_type' => array(
+						'id' => 'period_type',
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $this->model->period['period_type'],
+						'field_options' => MS_Helper_Period::get_periods(),
+						'class' => '',
+				),
+				'subject' => array(
+						'id' => 'subject',
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
+						'value' => $this->model->subject,
+						'class' => '',
+				),
+				'message' => array(
+						'id' => 'message',
+						'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+// 						'title' => __( 'Message', MS_TEXT_DOMAIN ),
+						'value' => $this->model->description,
+						'field_options' => array( 'media_buttons' => false ),
+						'class' => '',
+				),
+				'cc_enabled' => array(
+						'id' => 'cc_enabled',
+						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+						'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
+						'value' => $this->model->cc_enabled,
+						'class' => '',
+				),
+				'cc_email' => array(
+						'id' => 'cc_email',
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $this->model->cc_email,
+						'field_options' => MS_Model_Member::get_admin_user_emails(),
+						'class' => '',
+				),
+				'save_email' => array(
+						'id' => 'save_email',
+						'value' => __( 'Save Automated Email', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				),
+		);
+	}
 	public function render_downloads() {
 		?>
 	   <div class='ms-settings'>

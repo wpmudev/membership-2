@@ -43,6 +43,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_SUBMIT = 'submit';
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
+	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -102,6 +103,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple >";
 				foreach ($field_options as $key => $option ) {
 					$selected = selected( $key, $value, false );
+					$key = esc_attr( $key );
 					echo "<option $selected value='$key'>$option</option>";
 				}
 				echo "</select>";
@@ -124,6 +126,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo "<label for='$id'>$title</label>";
 				echo "</span>";
 				echo "</div>";
+				break;
+			case self::INPUT_TYPE_WP_EDITOR:
+				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				wp_editor( $value, $id, $field_options );
 				break;
 			case self::INPUT_TYPE_BUTTON:
 				echo "<input class='ms-field-input button $class' type='button' id='$id' name='$name' value='$value' />";

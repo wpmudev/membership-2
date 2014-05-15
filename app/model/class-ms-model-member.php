@@ -258,12 +258,10 @@ class MS_Model_Member extends MS_Model {
 		return is_user_logged_in();
 	}
 	
-	public static function is_admin_user( $wp_user = null )
-	{
+	public static function is_admin_user( $wp_user = null ) {
 		$is_admin = false;
 
-		if( empty( $wp_user ) )
-		{
+		if( empty( $wp_user ) ) {
 			$wp_user = wp_get_current_user();
 		}
 		if ( ! empty( $wp_user ) && ( $wp_user->has_cap( 'ms_membershipadmin' ) || $wp_user->has_cap( 'manage_options' ) || is_super_admin( $wp_user->ID ) ) ) {
@@ -272,4 +270,21 @@ class MS_Model_Member extends MS_Model {
 		return $is_admin;
 	}
 	
+	public static function get_admin_user_emails() {
+		$admins = array();
+		
+		$args = array(
+				'role' => 'administrator',
+				'fields' => array( 'ID', 'user_email' ),
+		);
+		
+		$wp_user_search = new WP_User_Query( $args );
+		$users = $wp_user_search->get_results();
+		if( ! empty ($users ) ) {
+			foreach( $users as $user ) {
+				$admins[ $user->user_email ]  = $user->user_email;
+			}
+		}
+		return $admins;
+	}
 }

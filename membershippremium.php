@@ -79,6 +79,14 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membeship-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
 	$overrides['MS_Helper_List_Table_Rule_Url_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php";
+	$overrides['MS_Model_Communication_After_Finishes'] =  "app/model/communication/class-ms-model-communication-after-finishes.php";
+	$overrides['MS_Model_Communication_After_Payment_Made'] =  "app/model/communication/class-ms-model-communication-after-payment-made.php";
+	$overrides['MS_Model_Communication_Before_Finishes'] =  "app/model/communication/class-ms-model-communication-before-finishes.php";
+	$overrides['MS_Model_Communication_Before_Payment_Due'] =  "app/model/communication/class-ms-model-communication-before-payment-due.php";
+	$overrides['MS_Model_Communication_Before_Trial_Finishes'] =  "app/model/communication/class-ms-model-communication-before-trial-finishes.php";
+	$overrides['MS_Model_Communication_Credit_Card_Expire'] =  "app/model/communication/class-ms-model-communication-credit-card-expire.php";
+	$overrides['MS_Model_Communication_Failed_Payment'] =  "app/model/communication/class-ms-model-communication-failed-payment.php";
+	$overrides['MS_Model_Communication_Info_Update'] =  "app/model/communication/class-ms-model-communication-info-update.php";
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Rule_Post_Category'] = "app/model/rule/class-ms-model-rule-post-category.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";

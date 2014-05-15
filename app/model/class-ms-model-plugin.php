@@ -31,6 +31,8 @@ class MS_Model_Plugin extends MS_Model {
 		
 		$this->init_member();
 		
+		$this->setup_communications();
+		
 		$this->add_action( 'plugins_loaded', 'check_membership_status' );
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 		$this->add_action( 'parse_request', 'setup_protection', 2 );
@@ -202,4 +204,29 @@ class MS_Model_Plugin extends MS_Model {
 	public function simulate_date( $current_date ) {
 		return $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ];
 	}
+	
+	public function setup_communications() {
+		
+		$this->add_filter( 'cron_schedules', 'communications_time_period' );
+		
+		MS_Model_Communication::factory();
+		
+		// Action to be called by the cron job
+		$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
+		if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
+			wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
+		}
+		
+	}
+	function communications_time_period( $periods ) {
+		if ( !is_array( $periods ) ) {
+			$periods = array();
+		}
+	
+		$periods['10mins'] = array( 'interval' => 10 * MINUTE_IN_SECONDS, 'display' => __( 'Every 10 Mins', MS_TEXT_DOMAIN ) );
+		$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN ) );
+	
+		return $periods;
+	}
+	
 }

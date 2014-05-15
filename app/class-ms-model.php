@@ -42,14 +42,30 @@ class MS_Model extends MS_Hooker {
 	public function __construct() {
 	}
 	
-	public function save(){
+	public function before_save() {
+		
+	}
+	
+	public function save() {
 		throw new Exception ("Method to be implemented in child class");
+	}
+
+	public function after_save() {
+	
+	}
+	
+	public function before_load() {
+	
 	}
 	
 	public static function load( $model_id ) {
 		throw new Exception ("Method to be implemented in child class");
 	}
 
+	public function after_load() {
+	
+	}
+	
 	public function get_validation_rules() {
 		return array();
 	}
@@ -102,7 +118,23 @@ class MS_Model extends MS_Hooker {
 		return intval( ( $value > $min ) ? $value : $min ); 
 	}
 	
-	public function validate_period( $periods ) {
+	public function validate_period( $period ) {
+		$default = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
+		if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
+			$period['period_unit'] = intval( $period['period_unit'] ); 
+			if( $period['period_unit'] < 0 ) {
+				$period['period_unit'] = $default['period_unit'];
+			}
+			if( ! in_array( $period['period_type'], MS_Helper_Period::get_periods() ) ){
+				$period['period_type'] = $default['period_type'];
+			}
+		}
+		else {
+			$period = $default;
+		}
+		return $period;
+	}
+	public function validate_periods( $periods ) {
 		$default = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
 		foreach( $periods as $key => $period ) {
 			if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {

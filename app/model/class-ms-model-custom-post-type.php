@@ -39,10 +39,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 
 	public function save() {
 		
-		if( empty( $this->title ) ) {
-			$this->title = $this->name;
-		}
-		
+		$this->before_save();
+				
 		$this->validate();
 		
 		$this->post_modified = date( 'Y-m-d H:i:s' );
@@ -53,9 +51,9 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_author' => $this->user_id,
 				'post_content' => $this->description,
 				'post_excerpt' => $this->description,
-				'post_name' => $this->name,
+				'post_name' => sanitize_title( $this->name ),
 				'post_status' => 'private',
-				'post_title' => ! empty( $this->title ) ? $this->name : $this->title,
+				'post_title' => sanitize_text_field( ! empty( $this->title ) ? $this->title : $this->name ),
 				'post_type' => static::$POST_TYPE,
 				'post_modified' => $this->post_modified, 
 		);
@@ -78,6 +76,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				update_post_meta( $this->id, $field, $this->$field );
 			}
 		}
+		$this->after_save();
 	}
 
 	/**
@@ -89,13 +88,15 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	public static function load( $model_id ) {
 		$model = new static::$CLASS_NAME();
 		
+		$model->before_load( $model_id );
+		
 		if ( !empty( $model_id ) ) {
 			
 			$post = get_post( $model_id );
 			$model->id = $model_id;
-			$model->name = $post->post_name;
-			$mode->description = $post->post_content;
-			
+			$model->name = $post->post_title;
+			$model->title = $post->post_title;
+			$model->description = $post->post_content;
 			$model_details = get_post_meta( $model_id );
 			$fields = get_object_vars( $model );
 			foreach ( $fields as $field => $val) {
@@ -107,6 +108,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				}
 			}
 		}
+		
+		$model->after_load();
 		return $model;
 	}
 	

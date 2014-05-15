@@ -240,7 +240,7 @@ class MS_Model_Rule extends MS_Model {
 	
 	public function get_validation_rules() {
 		return apply_filters( 'membeship_model_rule_validation_rules', array(
-				'dripped' => array( 'function' => array( &$this, 'validate_period' ) ),
+				'dripped' => array( 'function' => array( &$this, 'validate_periods' ) ),
 		) );
 	}
 }
