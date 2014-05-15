@@ -60,7 +60,7 @@ class MS_View_Membership_Metabox extends MS_View {
 			</tbody>
 			</table>
 			<?php if ( ! empty( $dripped ) ) : ?>
-					<div class="dripped" title="<?php echo implode( ', ', $dripped ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?></div>
+					<div class="dripped" title="<?php echo __( 'Set as dripped in: ', MS_TEXT_DOMAIN ) . implode( ', ', $dripped ) . __( ' membership(s).', MS_TEXT_DOMAIN ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?></div>
 			<?php endif; ?>
 			
 			
