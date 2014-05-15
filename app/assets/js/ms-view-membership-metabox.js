@@ -10,4 +10,10 @@ jQuery( document ).ready( function( $ ) {
             $( this ).children('input').val( 1 );
         } 
 	});
+	
+	$( '.dripped' ).click( function() {				
+		var tooltip = $( this ).children( '.tooltip' );
+		tooltip.toggle(300);
+	} );	
+	
 });
