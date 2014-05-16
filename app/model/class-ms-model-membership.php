@@ -23,8 +23,6 @@
 /**
  * Membership model class.
  * 
- * @todo Maybe create MS_Model_Period to handle these many *_period_unit *_period_type
- *
  */
 class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
@@ -48,14 +46,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $price;
 	
-	protected $period_unit;
-	
-	protected $period_type;
-	
-	protected $pay_cicle_period_unit;
-	
-	protected $pay_cicle_period_type;
-	
+	protected $period;
+		
+	protected $pay_cicle_period;
+		
 	protected $period_date_start;
 	
 	protected $period_date_end;
@@ -64,10 +58,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $trial_price;
 	
-	protected $trial_period_unit;
-	
-	protected $trial_period_type;
-	
+	protected $trial_period;
+		
 	protected $on_end_membership_id;
 
 	protected $next_membership_id;
@@ -106,8 +98,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if( empty( $start_date) ) {
 			$start_date = MS_Helper_Period::current_date();
 		}
-		if( $this->trial_period_unit && $this->trial_period_type ) {
-			$expiry_date = MS_Helper_Period::add_interval( $this->trial_period_unit, $this->trial_period_type , $start_date );
+		if( $this->trial_period_enabled && $this->trial_period['period_unit'] && $this->trial_period['period_type'] ) {
+			$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $start_date );
 		}
 		else {
 			$expiry_date = MS_Helper_Period::current_date();
@@ -123,13 +115,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$end_date = null;
 				break;
 			case self::MEMBERSHIP_TYPE_FINITE:
-				$end_date = MS_Helper_Period::add_interval( $this->period_unit, $this->period_type , $start_date );
+				$end_date = MS_Helper_Period::add_interval( $this->period['period_unit'], $this->period['period_type'], $start_date );
 				break;
 			case self::MEMBERSHIP_TYPE_DATE_RANGE:
 				$end_date = $this->period_end_date;
 				break;
 			case self::MEMBERSHIP_TYPE_RECURRING:
-				$end_date = MS_Helper_Period::add_interval( $this->pay_cicle_period_unit, $this->pay_cicle_period_type , $start_date );
+				$end_date = MS_Helper_Period::add_interval( $this->pay_cicle_period['period_unit'], $this->pay_cicle_period['period_type'], $start_date );
 				break;
 		}
 		return $end_date;		
@@ -286,13 +278,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $query->get_total();
 		
 	}
-	
-	public function delete() {
+	/**
+	 * Delete membership.
+	 * 
+	 * @param $force To force delete memberships with members, visitor or default memberships.
+	 */
+	public function delete( $force = false ) {
 		if( ! empty( $this->id ) ) {
-			if( $this->get_members_count() > 0 ) {
+			if( $this->get_members_count() > 0 && ! $force ) {
 				throw new Exception("Could not delete membership with members.");
 			}
-			elseif( $this->visitor_membership ) {
+			elseif( $this->visitor_membership && ! $force ) {
 				throw new Exception("Visitor membership could not be deleted.");
 			}
 			wp_delete_post( $this->id );
@@ -310,46 +306,56 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return false;	
 	}
 	
-	public function get_validation_rules() {
-		$period_unit = array(
-				'function' => array( &$this, 'validate_min' ),
-				'args' => 1
-		);
-		$period_type = array(
-				'function' => array( $this, 'validate_options' ),
-				'args' => MS_Helper_Period::get_periods(),
-		);
-		$period_date = array(
-				'function' =>	array( &$this, 'validate_date' ),
-				'args' => MS_Helper_Period::PERIOD_FORMAT
-		);
-		$bool = array(
-				'function' => array( &$this, 'validate_bool' )
-		);
-		$membership_type = array(
-				'function' =>	array( &$this, 'validate_options' ),
-				'args' => array_keys( self::get_membership_types() )
-		);
-		return apply_filters( 'membeship_model_membership_validation_rules', array(
-				'name' => 'sanitize_text_field',
-				'title' => 'sanitize_title',
-				'description' => 'sanitize_text_field',
-				'membership_type' => $membership_type,
-				'visitor_membership' => $bool,
-				'price' => 'floatval',
-				'period_unit' => $period_unit,
-				'period_type' => $period_type,
-				'pay_cicle_period_unit' => $period_unit,
-				'pay_cicle_period_type' => $period_type,
-				'period_date_start' => $period_date,
-				'period_date_end' => $period_date,
-				'trial_period_enabled' => $bool,
-				'trial_price' => 'floatval',
-				'trial_period_unit' => $period_unit,
-				'trial_period_type' => $period_type,
-				'on_end_membership_id' => 'intval',
-				'active' => $bool,
-				'public' => $bool,
-		) );
+	/**
+	 * Validate specific property before set.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'name':
+				case 'title':
+				case 'description':
+					$this->$property = sanitize_text_field( $value );
+					break;
+				case 'membership_type':
+					if( array_key_exists( $value, self::get_membership_types() ) && 0 == $this->get_members_count() ) {
+						$this->$property = $value;
+					}
+					break;
+				case 'visitor_membership':
+				case 'trial_period_enabled':
+				case 'active':
+				case 'public':
+					$this->$property = $this->validate_bool( $value );
+					break;
+				case 'price':
+				case 'trial_price':
+					$this->$property = floatval( $value );
+					break;
+				case 'period':
+				case 'pay_cicle_period':
+				case 'trial_period':
+						$this->$property = $this->validate_period( $value );
+						break;
+				case 'period_date_start':
+				case 'period_date_end':
+					$this->$property = $this->validate_date( $value );
+					break;
+				case 'on_end_membership_id':
+					if( 0 < self::load( $value )->id ) {
+						$this->$property = $value;
+					}
+				default:
+					$this->$property = $value;
+					break;
+			}
+		}
 	}
+
 }

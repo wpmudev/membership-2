@@ -70,42 +70,26 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			
 			$this->add_action( 'admin_bar_menu', $method );
 		}
-
+		$simulate = MS_Model_Simulate::load();
 		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
 		if( ! empty( $_GET['action'] ) && 'ms_simulate' == $_GET['action'] && isset( $_GET['membership_id'] ) ) {
 				$membership_id = (int) $_GET['membership_id'];
 				check_admin_referer( 'ms_simulate-' . $membership_id );
-				@setcookie( self::MS_SIMULATE_COOKIE , $membership_id, 0, COOKIEPATH, COOKIE_DOMAIN );
-				if( empty( $membership_id ) ) {
-					@setcookie( self::MS_PERIOD_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
-					@setcookie( self::MS_DATE_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
-				}
+				$simulate->membership_id = $membership_id;
+				$simulate->save();
 				wp_safe_redirect( wp_get_referer() );
 		}
 		if( ! empty( $_POST['simulate_submit'] ) ) {
 			if( isset( $_POST['simulate_period_unit'] ) && in_array( $_POST['simulate_period_type'], MS_Helper_Period::get_periods() ) ) {
-				$period = $_POST['simulate_period_unit'] .';'. $_POST['simulate_period_type'];
-				$this->simulate_period_unit =  $_POST['simulate_period_unit'];
-				$this->simulate_period_type =  $_POST['simulate_period_type'];
-				@setcookie( self::MS_PERIOD_COOKIE , $period, 0, COOKIEPATH, COOKIE_DOMAIN );
-				@setcookie( self::MS_DATE_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
+				$simulate->period = array( 'period_unit' => $_POST['simulate_period_unit'], 'period_type' => $_POST['simulate_period_type'] );
+				$simulate->save();
 			}
 			elseif( ! empty( $_POST['simulate_date'] ) ) {
-				@setcookie( self::MS_DATE_COOKIE , $_POST['simulate_date'], 0, COOKIEPATH, COOKIE_DOMAIN );
-				@setcookie( self::MS_PERIOD_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
+				$simulate->date = $_POST['simulate_date'];
+				$simulate->save();
 			}
 			wp_safe_redirect( wp_get_referer() );
 		}
-		elseif( ! empty( $_COOKIE[ self::MS_PERIOD_COOKIE ] ) ) {
-			$period = explode( ';', $_COOKIE[ self::MS_PERIOD_COOKIE ] );
-			if( count( $period ) == 2 ) {
-				$this->simulate_period_unit =  $period[0];
-				$this->simulate_period_type =  $period[1];
-			}
-		}
-		elseif( ! empty( $_COOKIE[ self::MS_DATE_COOKIE ] ) ) {
-			$this->simulate_date = $_COOKIE[ self::MS_DATE_COOKIE ];
-		} 
 	}
 	
 	/**
@@ -155,26 +139,28 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		? 'network_admin_url'
 				: 'admin_url';
 		
+		$simulate = MS_Model_Simulate::load();
 		$memberships = MS_Model_Membership::get_memberships();
-		if ( ! empty( $_COOKIE[ self::MS_SIMULATE_COOKIE ] ) && ( $membership_id = absint( $_COOKIE[ self::MS_SIMULATE_COOKIE ] ) ) ) {
+		if ( $simulate->is_simulating() ) {	
 			$reset_simulation = (object) array(
 					'id' => 0,
 					'name' => __( 'Reset', MS_TEXT_DOMAIN ),
 			);
 			$memberships[] = $reset_simulation;
 			
-			$membership = MS_Model_Membership::load( $membership_id );
-
+			$membership = MS_Model_Membership::load( $simulate->membership_id );
+			
 			$title = null;
-			if( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->membership_type || $membership->has_dripped_content() ) {
+			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
-				$view->simulate_period_unit = $this->simulate_period_unit;
-				$view->simulate_period_type = $this->simulate_period_type;
+				$view->simulate_date = $simulate->date;
 				$title = $view->to_html();
 			}
-			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
+			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->membership_type || $membership->has_dripped_content() ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
-				$view->simulate_date = ( $this->simulate_date ) ? $this->simulate_date : '';
+				$view->simulate_period_unit = $simulate->period['period_unit'];
+				$view->simulate_period_type = $simulate->period['period_type'];
+				
 				$title = $view->to_html();
 			}
 			if( $title ) {
@@ -194,14 +180,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		}
 		
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
-		if ( empty( $_COOKIE[ self::MS_SIMULATE_COOKIE ] ) || '0' == $_COOKIE[ self::MS_SIMULATE_COOKIE ] ) {
-			$title .= __( 'Membership Admin', MS_TEXT_DOMAIN );
-		} else {
-			$membership_id = (int)$_COOKIE[ self::MS_SIMULATE_COOKIE ];
-			$membership = MS_Model_Membership::load( $membership_id );
+		
+		if( $simulate->is_simulating() ) {
+			$membership = MS_Model_Membership::load( $simulate->membership_id );
 			$title .= $membership->name;
 		}
-		
+		else {
+			$title .= __( 'Membership Admin', MS_TEXT_DOMAIN );
+		}
 		$wp_admin_bar->add_menu( array(
 				'id'     => 'membership-simulate',
 				'parent' => 'top-secondary',
@@ -237,10 +223,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	
 	/**
 	 * Switches membership protection to view site as.
-	 *
+	 * Ajax callback.
+	 * 
 	 * @since 4.0
 	 * @action wp_ajax_ms_simulate
-	 *
+	 * @deprecated
 	 * @access public
 	 */
 	public function simulate_membership() {

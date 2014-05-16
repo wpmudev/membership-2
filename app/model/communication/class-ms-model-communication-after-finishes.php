@@ -41,7 +41,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	
 		$model->subject = __( 'After Membership finishes', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
-		$model->enabled = true;
+		$model->enabled = false;
 		$model->period_enabled = true;
 		$model->save();
 

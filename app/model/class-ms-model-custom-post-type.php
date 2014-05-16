@@ -41,8 +41,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		
 		$this->before_save();
 				
-		$this->validate();
-		
 		$this->post_modified = date( 'Y-m-d H:i:s' );
 
 		$post = array(
@@ -94,17 +92,19 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			
 			$post = get_post( $model_id );
 			$model->id = $model_id;
-			$model->name = $post->post_title;
-			$model->title = $post->post_title;
-			$model->description = $post->post_content;
-			$model_details = get_post_meta( $model_id );
-			$fields = get_object_vars( $model );
-			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, static::$ignore_fields ) ) {
-					continue;
-				}
-				if ( isset( $model_details[ $field ][ 0 ] ) ) {
-					$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
+			if( ! empty( $post ) ) {
+				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+				$model->description = $post->post_content;
+				$model_details = get_post_meta( $model_id );
+				$fields = get_object_vars( $model );
+				foreach ( $fields as $field => $val) {
+					if ( in_array( $field, static::$ignore_fields ) ) {
+						continue;
+					}
+					if ( isset( $model_details[ $field ][ 0 ] ) ) {
+						$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
+					}
 				}
 			}
 		}

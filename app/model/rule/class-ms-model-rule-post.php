@@ -136,7 +136,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$post_id  = $this->get_current_post_id();
 		}
 		
-		$has_access = parent::has_dripped_access( $post_id, $start_date );
+		$has_access = parent::has_dripped_access( $start_date, $post_id );
 		
 		return $has_access;
 	}

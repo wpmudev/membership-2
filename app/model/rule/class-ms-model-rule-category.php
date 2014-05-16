@@ -195,7 +195,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		 * Category page.
 		 */
 		elseif( is_category() ) {
-			$has_access = parent::has_dripped_access( get_queried_object_id(), $start_date );
+			$has_access = parent::has_dripped_access( $start_date, get_queried_object_id() );
 		}
 		
 		return $has_access;

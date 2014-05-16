@@ -190,7 +190,27 @@ class MS_View_Settings extends MS_View {
 						</tr>
 						<tr>
 							<td>
+								<div id="ms-comm-message-wrapper">
 								<?php MS_Helper_Html::html_input( $this->fields['message'] );?>
+								</div>
+								<div id="ms-comm-var-wrapper">
+									<table>
+										<tr>
+											<th>Variable values</th>
+											<th>Description</th>
+										</tr>
+										<?php foreach( $this->model->comm_vars as $var => $description ): ?>
+											<tr>
+												<td>
+													<?php echo $var;?>
+												</td>
+												<td>
+													<?php echo $description;?>
+												</td>
+											</tr>
+										<?php endforeach; ?>
+									</table>
+								</div>
 							</td>
 						</tr>
 						<tr>

@@ -20,40 +20,42 @@
  *
 */
 
-/**
- * Communicataion model class.
- * 
- */
-class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communication {
-	
-	public static $POST_TYPE = 'ms_communication';
+
+class MS_Model_Update extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $type = self::COMM_TYPE_BEFORE_TRIAL_FINISHES;
+	protected $id =  'ms_model_update';
 	
-	public function get_description() {
-		return __( 'Sent a predefined numer of days before the trial period finishes. You must decide how many days beforehand a message is to be sent', MS_TEXT_DOMAIN );
+	protected $name = 'Update DB';
+		
+	public static function update() {
+		$settings = MS_Plugin::instance()->settings;
+		/** Compare current src version to DB version */
+		if( MS_Plugin::instance()->version > $settings->version ) {
+			switch( $settings->version ) {
+				default:
+					self::cleanup_db();
+					break;
+			}
+		}
+		$settings->version = MS_Plugin::instance()->version;
+		$settings->save();
 	}
-	
-	public static function create_default_communication() {
-		$model = new self();
-	
-		$model->subject = __( 'Before Trial finishes', MS_TEXT_DOMAIN );
-		$model->message = self::get_default_message();
-		$model->enabled = false;
-		$model->period_enabled = true;
-		$model->save();
-	
-		return $model;
-	}
-	
-	public static function get_default_message() {
-		ob_start();
-		?>
-			<h1>MS_Model_Communication_Before_Trial_Finishes</h1>
-		<?php 
-		$html = ob_get_clean();
-		return apply_filters( 'ms_model_communication_before_trial_finishes_get_default_message', $html );
+	private static function cleanup_db() {
+		$users = MS_Model_Member::get_members( );
+		foreach( $users as $user ) {
+			$user->delete_all_membership_usermeta();
+			$user->save();
+		}
+		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => 999 ) );
+		foreach( $memberships as $membership ) {
+			$membership->delete( true );
+		}
+		$comms = MS_Model_Communication::load_communications();
+		foreach( $comms as $comm ) {
+			$comm->delete();
+		}
+		//TODO delete simulation		
 	}
 }

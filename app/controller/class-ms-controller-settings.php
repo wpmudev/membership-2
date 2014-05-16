@@ -32,6 +32,9 @@ class MS_Controller_Settings extends MS_Controller {
 		
 	public function __construct() {
 		$this->add_action( 'load-membership_page_membership-settings', 'admin_settings_manager' );
+
+		$this->add_action( 'admin_print_scripts-membership_page_membership-settings', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-membership_page_membership-settings', 'enqueue_styles' );
 	}
 	
 	public function get_active_tab() {
@@ -122,5 +125,17 @@ class MS_Controller_Settings extends MS_Controller {
 			$this->model->cc_enabled = ! empty( $fields['cc_enabled'] );
 			$this->model->save();
 		}
+	}
+	
+	public function enqueue_styles() {
+		
+		if( 'messages-automated' == $this->active_tab ) {
+			wp_enqueue_style( 'ms-view-settings-render-messages-automated', MS_Plugin::instance()->url. 'app/assets/css/ms-view-settings-render-messages-automated.css', null, MS_Plugin::instance()->version );
+		}
+	}
+	
+	
+	public function enqueue_scripts() {
+		
 	}
 }

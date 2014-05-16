@@ -93,8 +93,6 @@ class MS_View_Membership_Edit extends MS_View {
 		<?php
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 	
-		/** Call the appropriate form to prepare. */
-// 		call_user_func( array( $this, 'prepare_' . str_replace('-', '_', $active_tab ) ) );		
 		/** Call the appropriate form to render. */		
 		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
 
@@ -226,33 +224,37 @@ class MS_View_Membership_Edit extends MS_View {
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
-						'value' => $this->model->period_unit,
+						'value' => $this->model->period['period_unit'],
 						'class' => '',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->model->period_type,
+						'value' => $this->model->period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
 				'pay_cicle_period_unit' => array(
 						'id' => 'pay_cicle_period_unit',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cicle_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cicle', MS_TEXT_DOMAIN ),
-						'value' => $this->model->pay_cicle_period_unit,
+						'value' => $this->model->pay_cicle_period['period_unit'],
 						'class' => '',
 				),
 				'pay_cicle_period_type' => array(
 						'id' => 'pay_cicle_period_type',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cicle_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->model->pay_cicle_period_type,
+						'value' => $this->model->pay_cicle_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
@@ -298,17 +300,19 @@ class MS_View_Membership_Edit extends MS_View {
 				),
 				'trial_period_unit' => array(
 						'id' => 'trial_period_unit',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[trial_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
-						'value' => $this->model->trial_period_unit,
+						'value' => $this->model->trial_period['period_unit'],
 						'class' => '',
 				),
 				'trial_period_type' => array(
 						'id' => 'trial_period_type',
-						'section' => self::MEMBERSHIP_SECTION,
+// 						'section' => self::MEMBERSHIP_SECTION,
+						'name' =>  self::MEMBERSHIP_SECTION. '[trial_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->model->trial_period_type,
+						'value' => $this->model->trial_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),

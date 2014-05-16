@@ -100,23 +100,18 @@ class MS_Model_Member extends MS_Model {
 	
 	public function save()
 	{
-		if( ! empty( $this->id ) )
-		{
+		if( ! empty( $this->id ) ) {
 			$user_details = get_user_meta( $this->id );
 			$fields = get_object_vars( $this );
-			foreach( $fields as $field => $val )
-			{
-				if( in_array( $field, self::$ignore_fields ) )
-				{
+			foreach( $fields as $field => $val ) {
+				if( in_array( $field, self::$ignore_fields ) ) {
 					continue;
 				}
-				if(isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0]) || $user_details[ "ms_$field" ][0] != $this->$field ) )
-				{
+				if( isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0] ) || $user_details[ "ms_$field" ][0] != $this->$field ) ) {
 					update_user_meta( $this->id, "ms_$field", $this->$field);
 				}
 			}
-			if(isset( $this->name ) )
-			{
+			if( isset( $this->name ) ) {
 				$wp_user = new stdClass();
 				$wp_user->ID = $this->id;
 				$wp_user->nickname = $this->name;
@@ -125,8 +120,7 @@ class MS_Model_Member extends MS_Model {
 				wp_update_user( get_object_vars( $wp_user ) );
 			}				
 		}
-		else 
-		{
+		else {
 			throw new Exception( "user id is empty" );
 		}
 		
@@ -253,7 +247,13 @@ class MS_Model_Member extends MS_Model {
 		
 		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );
 	}
-		
+
+	public function delete_all_membership_usermeta() {
+		$this->membership_ids = array();
+		$this->membership_relationships = array();
+		$this->transactions = array();
+	}
+	
 	public function is_logged_user() {
 		return is_user_logged_in();
 	}

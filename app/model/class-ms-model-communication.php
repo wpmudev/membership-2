@@ -70,6 +70,30 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	protected $cc_email;
 	
+	protected $comm_vars;
+	
+	public function __construct() {
+		
+		$this->comm_vars = array(
+				'TODO' => 'config '. $this->type,
+				'%blogname%' => 'Blog/site name',
+				'%blogurl%' => 'Blog/site url',
+				'%username%' => 'Username',
+				'%usernicename%' => 'User nice name',
+				'%userdisplayname%' => 'User display name',
+				'%userfirstname%' => 'User first name',
+				'%userlastname%' => 'User last name',
+				'%networkname%' => 'Network name',
+				'%networkurl%' => 'Network url',
+				'%membershipname%' => 'Membership name',
+				'%total%' => 'Invoice Total',
+				'%taxname%' => 'Tax name',
+				'%taxamount%' => 'Tax amount',
+		);
+		
+		$this->add_action( 'ms_communications_process', 'communication_process' );
+	}
+	
 	protected static $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters' );
 	
 	/**
@@ -169,7 +193,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		return $model;
 	}
 	
-	public static function factory() {
+	public static function load_communications() {
 		$comm_types = self::get_communication_types();
 	
 		foreach( $comm_types as $type ) {
@@ -190,108 +214,75 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function get_description() {
-		return 'tst';	
+			
+	}
+	
+	public function communication_process() {
+
 	}
 	
 	function send_message( $user_id, $membership_id = null ) {
 	
-		$member = MS_Model_Member::loadd( $user_id );
-		if ( !is_email( $member->email ) ) {
+		$wp_user = new WP_User( $user_id );
+		if ( ! is_email( $wp_user->email ) ) {
 			return;
 		}
-	
-		$this->comm = $this->get_communication();
-		$commdata = apply_filters( 'membership_comm_constants_list', $this->commconstants );
-	
-		foreach ( array_keys( $commdata ) as $key ) {
+		
+		$comm_vars = apply_filters( 'membership_comm_vars_list', $this->comm_vars );
+		$keys = array_keys( $comm_vars );
+		foreach ( $keys as $key => $description ) {
 			switch ( $key ) {
 				case '%blogname%':
-					$commdata[$key] = get_option( 'blogname' );
+					$comm_vars[ $key ] = get_option( 'blogname' );
 					break;
-	
 				case '%blogurl%':
-					$commdata[$key] = get_option( 'home' );
+					$comm_vars[ $key ] = get_option( 'home' );
 					break;
-	
 				case '%username%':
-					$commdata[$key] = $member->user_login;
+					$comm_vars[ $key ] = $wp_user->user_login;
 					break;
-	
 				case '%usernicename%':
-					$commdata[$key] = $member->user_nicename;
+					$comm_vars[ $key ] = $wp_user->user_nicename;
 					break;
-	
 				case '%userdisplayname%':
-					$commdata[$key] = $member->display_name;
+					$comm_vars[ $key ] = $wp_user->display_name;
 					break;
-	
 				case '%userfirstname%':
-					$commdata[$key] = $member->user_firstname;
+					$comm_vars[ $key ] = $wp_user->user_firstname;
 					break;
-	
 				case '%userlastname%':
-					$commdata[$key] = $member->user_lastname;
+					$comm_vars[ $key ] = $wp_user->user_lastname;
 					break;
-	
 				case '%networkname%':
-					$commdata[$key] = get_site_option( 'site_name' );
+					$comm_vars[ $key ] = get_site_option( 'site_name' );
 					break;
-	
 				case '%networkurl%':
-					$commdata[$key] = get_site_option( 'siteurl' );
+					$comm_vars[ $key ] = get_site_option( 'siteurl' );
 					break;
-	
-				case '%subscriptionname%':
-					if ( !$sub_id ) {
-						$ids = $member->get_subscription_ids();
-						if ( !empty( $ids ) ) {
-							$sub_id = $ids[0];
-						}
+				case '%membershipname%':
+					if ( $membership_id ) {
+						$membership = MS_Model_Membership::load( $membership_id );
+						$comm_vars[ $key ] = $membership->name;
 					}
-	
-					if ( !empty( $sub_id ) ) {
-						$sub = Membership_Plugin::factory()->get_subscription( $sub_id );
-						$commdata[$key] = $sub->sub_name();
-					} else {
-						$commdata[$key] = '';
-					}
-	
-					break;
-	
-				case '%levelname%':
-					if ( !$level_id ) {
-						$ids = $member->get_level_ids();
-						if ( !empty( $ids ) ) {
-							$level_id = $ids[0]->level_id;
-						}
-					}
-	
-					if ( !empty( $level_id ) ) {
-						$level = Membership_Plugin::factory()->get_level( $level_id );
-						$commdata[$key] = $level->level_title();
-					} else {
-						$commdata[$key] = '';
+					else {
+						$comm_vars[ $key ] = '';
 					}
 					break;
-	
-				case '%accounturl%':
-					$commdata[$key] = M_get_account_permalink();
-					break;
-	
 				default:
-					$commdata[$key] = apply_filters( 'membership_commfield_' . $key, '', $user_id );
+					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $user_id );
 					break;
 			}
 		}
 	
 		// Globally replace the values in the ping and then make it into an array to send
-		$original_commmessage = str_replace( array_keys( $commdata ), array_values( $commdata ), stripslashes( $this->comm->message ) );
+		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
 	
-		$html_message = wpautop( $original_commmessage );
-		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $original_commmessage ) );
+		$html_message = wpautop( $message );
+		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
 	
-		add_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
-	
+		$this->add_filter( 'wp_mail_content_type', 'html_content_type' );
+		
+		global $wp_better_emails;
 		$lambda_function = false;
 		if ( $wp_better_emails ) {
 			$html_message = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $html_message, 'template' ) ) );
@@ -301,17 +292,22 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$lambda_function = create_function( '', sprintf( 'return "%s";', addslashes( $text_message ) ) );
 			add_filter( 'wpbe_plaintext_body', $lambda_function );
 			add_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
-		} elseif ( !defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
+		} 
+		elseif ( ! defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
 			$html_message = "<html><head></head><body>{$html_message}</body></html>";
 		}
 	
-		@wp_mail( $member->user_email, stripslashes( $this->comm->subject ), $html_message );
+		@wp_mail( $user->user_email, stripslashes( $this->subject ), $html_message );
 	
 		remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
 		if ( $lambda_function ) {
 			remove_filter( 'wpbe_plaintext_body', $lambda_function );
 			remove_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
 		}
+	}
+	
+	public function set_html_content_type() {
+		return 'text/html';
 	}
 	/**
 	 * Validate specific property before set.

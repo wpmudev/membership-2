@@ -32,6 +32,22 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_BEFORE_FINISHES;
 	
+	public function __construct() {
+		$this->comm_vars = array(
+				'TODO' => 'configure before finish vars',
+				'%blogname%' => 'Blog/site name',
+				'%blogurl%' => 'Blog/site url',
+				'%username%' => 'Username',
+				'%usernicename%' => 'User nice name',
+				'%userdisplayname%' => 'User display name',
+				'%userfirstname%' => 'User first name',
+				'%userlastname%' => 'User last name',
+				'%networkname%' => 'Network name',
+				'%networkurl%' => 'Network url',
+				'%membershipname%' => 'Membership name',
+		);
+	}
+	
 	public function get_description() {
 		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent', MS_TEXT_DOMAIN );
 	}
@@ -41,7 +57,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	
 		$model->subject = __( 'Membership will finish soon', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
-		$model->enabled = true;
+		$model->enabled = false;
 		$model->period_enabled = true;
 		$model->save();
 	

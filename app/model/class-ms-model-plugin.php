@@ -24,10 +24,10 @@
 class MS_Model_Plugin extends MS_Model {
 	
 	private $member;
-
-	private $simulate_membership_id;
 	
 	public function __construct() {
+		
+		$this->update();
 		
 		$this->init_member();
 		
@@ -39,37 +39,38 @@ class MS_Model_Plugin extends MS_Model {
 // 		$this->add_filter( 'membership_model_plugin_is_simulating_period', 'is_simulating' );
 	}
 	
+	public function update() {
+			
+		MS_Model_Update::update();
+	}
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
+		$simulate = MS_Model_Simulate::load();
 		
 		/** Admin user simulating membership */
-		if( $this->member->is_admin_user() && ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_SIMULATE_COOKIE ] ) && 
-			( $membership_id = absint( $_COOKIE[ MS_Controller_Admin_Bar::MS_SIMULATE_COOKIE ] ) ) ) {
-			$this->member->add_membership( $membership_id );
-			$this->simulate_membership_id = $membership_id;
-			if( ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_PERIOD_COOKIE ] ) ) {
-				$period = explode( ';', $_COOKIE[ MS_Controller_Admin_Bar::MS_PERIOD_COOKIE ] );
-				if( count( $period ) == 2 ) {
+		if( $this->member->is_admin_user() ) {
+			if( $simulate->is_simulating() ) {
+				$this->member->add_membership( $simulate->membership_id );
+				if( $simulate->is_simulating_period() ) {
 					$membership_relationships = $this->member->membership_relationships;
-					$membership_relationships[ $membership_id ]->set_elapsed_period( $period[0], $period[1] );
+					$membership_relationships[ $simulate->membership_id ]->set_elapsed_period( $simulate->period['period_unit'], $simulate->period['period_type'] );
 					$this->member->membership_relationships = $membership_relationships;
 				}
+				elseif( $simulate->is_simulating_date() ) {
+					$simulate->simulate_date();
+// 					$this->add_filter( 'membership_helper_period_current_date', 'simulate_date' );
+				}
 			}
-			elseif( ! empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] ) ) {
-				$this->add_filter( 'membership_helper_period_current_date', 'simulate_date' );
-// 				$membership_relationships = $this->member->membership_relationships;
-// 				$membership_relationships[ $membership_id ]->set_elapsed_date( $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ] );
-// 				$this->member->membership_relationships = $membership_relationships;
+		}
+		else {
+			/** Visitor: assign a Visitor Membership */
+			if( ! $this->member->is_logged_user() ){
+				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
-			
-		}
-		/** Visitor: assign a Visitor Membership */
-		if( ! $this->member->is_logged_user() ){
-			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
-		}
-		/** Logged user with no memberships: assign default Membership */
-		if( $this->member->is_logged_user() && ! $this->member->is_member() ) {
-			$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
+			/** Logged user with no memberships: assign default Membership */
+			if( $this->member->is_logged_user() && ! $this->member->is_member() ) {
+				$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
+			}
 		}
 	}
 	
@@ -98,13 +99,12 @@ class MS_Model_Plugin extends MS_Model {
 	public function protect_current_page() {
 
 		/** Admin user has access to everything */
-		if( $this->member->is_admin_user() && ! $this->simulate_membership_id ) {
+		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
 			return true;
 		}
 		$settings = MS_Plugin::instance()->settings;
 		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
-
 		/**
 		 * Search permissions through all memberships joined.
 		 */
@@ -117,6 +117,7 @@ class MS_Model_Plugin extends MS_Model {
 				continue;
 			}
 			$membership = $membership_relationship->get_membership();
+
 			$rules = $this->get_rules_hierarchy( $membership );
 			/**
 			 * Set initial protection.
@@ -190,35 +191,8 @@ class MS_Model_Plugin extends MS_Model {
 	public function setup_protection( WP $wp ){
 		
 	}
-	/**
-	 * Check simulating status
-	 * @return int The simulating membership_id
-	 */
-	public function is_simulating() {
-		return $this->simulate_membership_id;
-	}
-	/**
-	 * Simulate current date.
-	 * @param string $current_date
-	 */
-	public function simulate_date( $current_date ) {
-		return $_COOKIE[ MS_Controller_Admin_Bar::MS_DATE_COOKIE ];
-	}
-	
-	public function setup_communications() {
 		
-		$this->add_filter( 'cron_schedules', 'communications_time_period' );
-		
-		MS_Model_Communication::factory();
-		
-		// Action to be called by the cron job
-		$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
-		if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
-			wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
-		}
-		
-	}
-	function communications_time_period( $periods ) {
+	public function communications_time_period( $periods ) {
 		if ( !is_array( $periods ) ) {
 			$periods = array();
 		}
@@ -227,6 +201,20 @@ class MS_Model_Plugin extends MS_Model {
 		$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN ) );
 	
 		return $periods;
+	}
+	
+	public function setup_communications() {
+		
+		$this->add_filter( 'cron_schedules', 'communications_time_period' );
+		
+		MS_Model_Communication::load_communications();
+		
+		// Action to be called by the cron job
+		$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
+		if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
+			wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
+		}
+		
 	}
 	
 }

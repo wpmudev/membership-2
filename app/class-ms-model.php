@@ -66,26 +66,6 @@ class MS_Model extends MS_Hooker {
 	
 	}
 	
-	public function get_validation_rules() {
-		return array();
-	}
-	
-	public function validate() {
-		$validation = $this->get_validation_rules();
-
-		if( ! empty( $validation ) ) {
-			foreach( $validation as $field => $function ) {
-				if( is_array( $function ) ) {
-					$args = ! empty( $function['args'] ) ? $function['args'] : null; 
-					$this->$field = call_user_func_array( $function['function'],  array( $this->$field , $args ) );	
-				}
-				else{
-					$this->$field  = call_user_func( $function, $this->$field );
-				}
-			}
-		}
-	}
-	
 	public function validate_options( $value, $options ) {
 		if( in_array( $value, $options ) ) {
 			return $value;
@@ -118,8 +98,8 @@ class MS_Model extends MS_Hooker {
 		return intval( ( $value > $min ) ? $value : $min ); 
 	}
 	
-	public function validate_period( $period ) {
-		$default = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
+	public function validate_period( $period, $default_period_unit = 0, $default_period_type = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
+		$default = array( 'period_unit' => $default_period_unit, 'period_type' => $default_period_type );
 		if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
 			$period['period_unit'] = intval( $period['period_unit'] ); 
 			if( $period['period_unit'] < 0 ) {
@@ -133,23 +113,5 @@ class MS_Model extends MS_Hooker {
 			$period = $default;
 		}
 		return $period;
-	}
-	public function validate_periods( $periods ) {
-		$default = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
-		foreach( $periods as $key => $period ) {
-			if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
-				$periods[ $key ]['period_unit'] = intval( $periods[ $key ]['period_unit'] ); 
-				if( $periods[ $key ]['period_unit'] < 0 ) {
-					$periods[ $key ]['period_unit'] = $default['period_unit'];
-				}
-				if( ! in_array( $period['period_type'], MS_Helper_Period::get_periods() ) ){
-					$periods[ $key ]['period_type'] = $default['period_type'];
-				}
-			}
-			else {
-				$period = $default;
-			}
-		}
-		return $periods;
 	}
 }

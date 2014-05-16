@@ -29,6 +29,9 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $name = 'Plugin settings';
 	
+	/** Current db version */
+	protected $version;
+	
 	protected $plugin_enabled = false;
 	
 	protected $initial_setup;
@@ -38,9 +41,13 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $show_default_membership;
 
 	public function __construct() {
-		$this->add_action( 'wp_loaded', 'create_initial_pages' );	
+		$this->add_action( 'wp_loaded', 'initial_setup' );	
 	}
 		
+	public function initial_setup() {
+		MS_Model_Membership::get_visitor_membership();
+		$this->create_initial_pages();
+	}
 	public function create_initial_pages() {
 		if( ! $this->initial_setup ) {
 			if( empty( $this->pages['no_access'] ) ) {

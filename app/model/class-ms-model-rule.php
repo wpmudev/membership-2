@@ -238,9 +238,35 @@ class MS_Model_Rule extends MS_Model {
 		return $contents;
 	}
 	
-	public function get_validation_rules() {
-		return apply_filters( 'membeship_model_rule_validation_rules', array(
-				'dripped' => array( 'function' => array( &$this, 'validate_periods' ) ),
-		) );
+	/**
+	 * Validate specific property before set.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'rule_type':
+					if( in_array( $value, self::get_rule_types() ) ) {
+						$this->$property = $value;
+					}
+					break;
+				case 'dripped':
+					if( is_array( $value ) ) {
+						foreach( $value as $key => $period ) {
+							$value[ $key ] = $this->validate_period( $period );
+						}
+						$this->$property = $value;
+					}
+					break;
+				default:
+					$this->$property = $value;
+					break;
+			}
+		}
 	}
 }

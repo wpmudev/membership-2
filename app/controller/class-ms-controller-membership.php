@@ -22,8 +22,6 @@
 
 class MS_Controller_Membership extends MS_Controller {
 	
-	private $post_type;
-	
 	private $capability = 'manage_options';
 	
 	private $model;
@@ -32,8 +30,6 @@ class MS_Controller_Membership extends MS_Controller {
 		
 	public function __construct() {
 
-		$this->post_type = MS_Model_Membership::$POST_TYPE;
-		
 		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
 		
 		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
@@ -153,8 +149,12 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Save membership general tab
 		 */
-		if( ! empty( $_POST['submit'] ) ) {
-			$msg = $this->save_membership();
+		$nonce = MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE;
+		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
+			if( ! empty( $_POST[ $section ] ) ) {
+				$msg = $this->save_membership( $_POST[ $section ] );
+			}
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
@@ -196,12 +196,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 	}
 	/**
-	 * Edit membership.
+	 * New/Edit membership.
 	 * 
 	 */
 	public function membership_edit() {
 		$msg = 0;
-		/** New/Edit: Membership */
 		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
 		
 		$this->views['membership_edit']->model = $this->model;
@@ -213,32 +212,23 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	/*
-	 * Save membership details
-	 * TODO better sanitize and validate fields in model
+	 * Save membership general tab fields
+	 * @param array $fields
 	 */
-	private function save_membership() {
+	private function save_membership( $fields ) {
 		
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-		
-		/**
-		 * Save membership general fields. 
-		 */	
-		$nonce = MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE;
-		if ( ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-			
-			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
-			if( ! empty( $_POST[ $section ] ) ) {
-				foreach( $_POST[ $section ] as $field => $value ) {
-					if( property_exists( $this->model, $field ) ) {
-						$this->model->$field = sanitize_text_field( $value );  
-					}
+
+		if( is_array( $fields ) ) {
+			foreach( $fields as $field => $value ) {
+				if( property_exists( $this->model, $field ) ) {
+					$this->model->$field = $value;  
 				}
-				$this->model->save();
-				
-// 				return 3;
 			}
+			$this->model->trial_period_enabled = ! empty( $fields['trial_period_enabled'] );
+			$this->model->save();
 		}
 	}
 		
@@ -313,13 +303,13 @@ class MS_Controller_Membership extends MS_Controller {
 		foreach( $dripped as $rule_type => $drip ) {
 			$rule = $this->model->rules[ $rule_type ];
 			$rule->dripped = $drip;
-			$rule->validate();
 			$this->model->set_rule( $rule_type, $rule );
 		}
 		
 		$this->model->save();
 		
 	}
+	
 	public function enqueue_styles() {
 		
 		$plugin_url = MS_Plugin::instance()->url;
@@ -356,7 +346,6 @@ class MS_Controller_Membership extends MS_Controller {
 			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', array( 'jquery' ), $version );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
-// 			wp_enqueue_script( 'jquery-chosen' );
 		}
 		elseif( 'dripped' == $active_tab ) {
 			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', array( 'jquery' ), $version );
