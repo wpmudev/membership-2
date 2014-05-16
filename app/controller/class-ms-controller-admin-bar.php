@@ -144,7 +144,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		if ( $simulate->is_simulating() ) {	
 			$reset_simulation = (object) array(
 					'id' => 0,
-					'name' => __( 'Reset', MS_TEXT_DOMAIN ),
+					'name' => __( 'Reset simulation', MS_TEXT_DOMAIN ),
 			);
 			$memberships[] = $reset_simulation;
 			
