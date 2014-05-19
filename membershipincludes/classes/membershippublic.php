@@ -1022,7 +1022,8 @@ if ( !class_exists( 'membershippublic', false ) ) :
 		}
 
 		function do_account_shortcode( $atts, $content = null, $code = "" ) {
-			return apply_filters( 'membership_account_form', $this->show_account_page( $content ) );
+			$html = '<div class="membership-shortcode-accountform">' . $this->show_account_page( $content ) . '</div>';
+			return apply_filters( 'membership_account_form', $html );
 		}
 
 		function do_renew_form() {

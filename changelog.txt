@@ -10,7 +10,10 @@
 * Fixed: Forced access level only applied with new user registration (or 3rd party scripts). Does not apply to users using the "Signup" links.
 * Fixed: 2CO redirects to "Registration completed page"/"Welcome" if it exists else redirects to home.
 * Notice: Potential conflict with Gantry framework when using Gantry widgets on Membership special pages. Flagged as known bug to be addressed in future release.
-
+* Changed: New behaviour for BuddyPress Extended Profiles. Extended Profile Fields are now visible and editable on the 'Accounts Page'.
+* Added: CSS classes added to each xprofile field for more styling options.
+* Changed: Account form no longer hidden with 'edit' toggle on Accounts Page. Account form only hidden when using [accountform] shortcode.
+* Changed: Creating pings now better supports arrays in query strings. E.g. using merge_vars[] with MailChimp pings.
 		
 == 3.5.1.4 ==
 * Added: New option for default subscriptions. Explicitly assign default subscription to new users - for creating dripped access levels. Dev note: Implemented via Factory class.

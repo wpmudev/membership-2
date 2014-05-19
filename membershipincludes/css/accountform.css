@@ -47,13 +47,21 @@ div#message {
 	margin: 0;
 }
 
+#account-form .membership-shortcode-accountpage-toggle {
+	display: none;
+}
+
 #account-form div.formleft p {
 	font: 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 	margin-bottom: 5px;
 }
 
-#account-form div.formleft form {
-	display: none;
+.membership-shortcode-accountform #account-form div.formleft form {
+	display: none; 
+}
+
+.membership-shortcode-accountform #account-form .membership-shortcode-accountpage-toggle {
+	display: block;
 }
 
 #account-form div.formleft p span a {
