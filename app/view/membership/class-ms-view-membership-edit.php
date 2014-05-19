@@ -517,9 +517,6 @@ class MS_View_Membership_Edit extends MS_View {
 								<div id="ms-rule-type-page-wrapper" class="ms-rule-type-wrapper">
 									<?php MS_Helper_Html::html_input( $this->fields['pages'] );?>
 								</div>
-								<div id="ms-rule-type-category-wrapper" class="ms-rule-type-wrapper">
-									<?php MS_Helper_Html::html_input( $this->fields['categories'] );?>
-								</div>
 							</td>
 						</tr>							
 						<tr>
@@ -583,7 +580,6 @@ class MS_View_Membership_Edit extends MS_View {
 						'field_options' => array( 
 							'post' => __( 'Post', MS_TEXT_DOMAIN ), 
 							'page' => __( 'Page', MS_TEXT_DOMAIN ), 
-							'category' => __( 'Category', MS_TEXT_DOMAIN ),
 						),
 						'value' => 'post',
 						'class' => '',
@@ -604,15 +600,6 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Select Page', MS_TEXT_DOMAIN ),
 						'value' => 0,
 						'field_options' => $model['page']->get_content_array(),
-						'class' => 'ms-radio-rule-type chosen-select',
-				),
-				'categories' => array(
-						'id' => 'categories',
-						'section' => self::DRIPPED_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Select Category', MS_TEXT_DOMAIN ),
-						'value' => 0,
-						'field_options' => $model['category']->get_content_array(),
 						'class' => 'ms-radio-rule-type chosen-select',
 				),
 				'period_unit' => array(

@@ -57,18 +57,6 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
 				$categories = array_keys( $this->rule_value );
 				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $this->rule_value ) ) );
-				/**
-				 * Include dripped content.
-				 */
-				foreach( $this->dripped as $cat_id => $period ) {
-					if( parent::has_dripped_access( $this->start_date, $cat_id ) ) {
-						$categories[] = $cat_id;
-					}
-					elseif( $key = array_search( $cat_id, $categories ) ) {
-						unset( $categories[ $key ] );
-					}
-				}
-				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $categories ) ) );
 			}
 		}
 	}

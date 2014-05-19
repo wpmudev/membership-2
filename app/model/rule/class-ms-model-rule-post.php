@@ -35,37 +35,66 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	public function protect_content( $start_date ) {
 		$this->start_date = $start_date;
 		$this->add_action( 'pre_get_posts', 'protect_posts', 99 );
+		$this->add_filter( 'posts_where', 'include_dripped', 10, 2 );
 	}
 	
 	public function protect_posts( $wp_query ) {
-		/**
-		 * Only verify permission if ruled by post by post.
-		 */
-		if( MS_Plugin::instance()->addon->post_by_post ) {
-			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
-				&& ( !isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
-				
-				
-				// We are in a list rather than on a single post
+		/* List rather than on a single post */
+		if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
+			&& ( ! isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
+			/**
+			 * Only verify permission if ruled by post by post.
+			 */
+			if( MS_Plugin::instance()->addon->post_by_post ) {
+					
 				foreach( $this->rule_value as $value ) {
 					$wp_query->query_vars['post__in'][] = $value;
 				}
-				/**
-				 * Include dripped content.
-				 */
-				foreach( $this->dripped as $post_id => $period ) {
-					if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
-						$wp_query->query_vars['post__in'][] = $post_id;
-					}
-					elseif( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
+			}
+			/**
+			 * Exclude dripped content.
+			 * Can't include posts, just exclude because of category clause conflict to post_in.
+			 * Using filter 'posts_where' to include dripped content.
+			 */
+			foreach( $this->dripped as $post_id => $period ) {
+				if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
+					$wp_query->query_vars['post__not_in'][] = $post_id;
+					if( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
 						unset( $wp_query->query_vars['post__in'][ $key ] );
 					}
 				}
-					
-				$wp_query->query_vars['post__in'] = array_unique( $wp_query->query_vars['post__in'] );
 			}
 		}
 	}
+	
+	/**
+	 * Include dripped content.
+	 * 
+	 * Workaround to include dripped posts that not belongs to a accessible category.
+	 * 
+	 * @param string $where
+	 * @param WP_Query $wp_query
+	 * @return string
+	 */
+	public function include_dripped( $where, $wp_query ) {
+		global $wpdb;
+		if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
+			&& ( ! isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
+			
+			$posts = array();
+			foreach( $this->dripped as $post_id => $period ) {
+				if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
+					$posts[] = $post_id;
+				}
+			}
+			if( ! empty( $posts ) ) {
+				$post__in = join( ',', $posts );
+				$where .= " OR {$wpdb->posts}.ID IN ($post__in)";
+			}
+		}
+		return $where;
+	}
+	
 	/**
 	 * Get the current post id.
 	 * @return int The post id, or null if it is not a post.
@@ -112,16 +141,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$post_id  = $this->get_current_post_id();
 		}
 		
-		return array_key_exists( $post_id, $this->dripped );
-		
-// 		if( MS_Plugin::instance()->addon->post_by_post ) {
-// 			$post_id  = $this->get_current_post_id();
-// 			return array_key_exists( $post_id, $this->dripped );				
-// 		}
-// 		else {
-// 			return false;
-// 		}
-	
+		return array_key_exists( $post_id, $this->dripped );	
 	}
 	
 	/**

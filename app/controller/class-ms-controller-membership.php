@@ -278,9 +278,13 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	private function save_dripped_schedule( $items ) {
-		if( is_array( $items ) ) {
-			$dripped = array();
+		$dripped = array(
+			'post' => array(),
+			'page' => array(),
+			'category' => array(),
+		);
 		
+		if( is_array( $items ) ) {
 			foreach( $items as $item ) {
 				$dripped[ $item['type'] ][ $item['id'] ] = array(
 						'period_unit' => $item['period_unit'],
@@ -288,16 +292,6 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 			}
 				
-		}
-		/**
-		 * Delete everything.
-		 */
-		else {
-			$dripped = array(
-				'post' => array(),
-				'page' => array(),
-				'category' => array(),
-			);
 		}
 		
 		foreach( $dripped as $rule_type => $drip ) {
@@ -307,7 +301,6 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		
 		$this->model->save();
-		
 	}
 	
 	public function enqueue_styles() {
