@@ -36,7 +36,6 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_action( 'plugins_loaded', 'check_membership_status' );
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 		$this->add_action( 'parse_request', 'setup_protection', 2 );
-// 		$this->add_filter( 'membership_model_plugin_is_simulating_period', 'is_simulating' );
 	}
 	
 	public function update() {
@@ -58,7 +57,6 @@ class MS_Model_Plugin extends MS_Model {
 				}
 				elseif( $simulate->is_simulating_date() ) {
 					$simulate->simulate_date();
-// 					$this->add_filter( 'membership_helper_period_current_date', 'simulate_date' );
 				}
 			}
 		}
@@ -142,7 +140,6 @@ class MS_Model_Plugin extends MS_Model {
 			 * Verify membership dripped rules hierachyly.
 			 */
 			$dripped = apply_filters( 'membership_model_plugin_dripped_rules', array( 
-						MS_Model_Rule::RULE_TYPE_CATEGORY, 
 						MS_Model_Rule::RULE_TYPE_PAGE, 
 						MS_Model_Rule::RULE_TYPE_POST
 					) 

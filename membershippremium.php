@@ -92,6 +92,7 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] =  "app/view/class-ms-view-admin-bar.php";
+	$overrides['MS_View_Shortcode_Membership_Form'] =  "app/view/shortcode/class-ms-view-shortcode-membership-form.php";
 	
 	return $overrides;
 }

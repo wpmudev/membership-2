@@ -46,23 +46,72 @@ class MS_Model_Settings extends MS_Model_Option {
 		
 	public function initial_setup() {
 		MS_Model_Membership::get_visitor_membership();
-		$this->create_initial_pages();
+// 		if( ! $this->initial_setup ) {
+			$this->create_initial_pages();
+// 		}
 	}
 	public function create_initial_pages() {
-		if( ! $this->initial_setup ) {
-			if( empty( $this->pages['no_access'] ) ) {
-				$this->create_no_access_page();
-			}
-			$this->initial_setup = true;
-			$this->save();
+		if( empty( $this->pages['no_access'] ) ) {
+			$this->create_no_access_page();
 		}
+		if( empty( $this->pages['memberships'] ) ) {
+			$this->create_memberships_page();
+		}
+		if( empty( $this->pages['register'] ) ) {
+			$this->create_registration_page();
+		}
+		if( empty( $this->pages['registration_completed'] ) ) {
+			$this->create_registration_completed_page();
+		}
+			
+		$this->initial_setup = true;
+		$this->save();
 	}
 	
 	public function create_no_access_page() {
-		$content = '<p>' . __('The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
-		$pagedetails = array('post_title' => __('Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
+		$pagedetails = array('post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
 		$this->pages['no_access'] = $id;
 	}
-
+	
+	public function create_memberships_page() {
+		$content = '[ms-membership-form]';
+		$pagedetails = array('post_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 'post_name' => 'memberships', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages['memberships'] = $id;
+	}
+	
+	public function create_registration_page() {
+		$content = '<p>' . __( 'Register', MS_TEXT_DOMAIN ) . '</p>';
+		$pagedetails = array('post_title' => __( 'Register', MS_TEXT_DOMAIN ), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages['register'] = $id;
+	}
+	
+	public function create_registration_completed_page() {
+		$content = '<p>' . __( 'Registration Completed.', MS_TEXT_DOMAIN ) . '</p>';
+		$pagedetails = array('post_title' => __( 'Registration completed', MS_TEXT_DOMAIN ), 'post_name' => 'registration_completed', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages['registration_completed'] = $id;
+	}
+	
+	public function get_pages( $args = null ) {
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'post_date',
+				'order'       => 'DESC',
+				'post_type'   => 'page',
+				'post_status' => array('publish'), 
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		$contents = get_posts( $args );
+		$cont = array();
+		foreach( $contents as $content ) {
+			$cont[ $content->ID ] = $content->post_title;
+		}
+		return $cont;
+	}
 }

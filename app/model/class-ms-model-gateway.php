@@ -24,10 +24,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 
-	protected $issingle = false;
+	protected $is_single = false;
 	
 	public function __construct() {
 
 	}
 	
+	public function get_gateways() {
+		return array( 'todo', 'manual' );
+	}
 }

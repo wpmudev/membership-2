@@ -50,6 +50,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->get_active_tab();
 		switch( $this->active_tab ) {
 			case 'general':
+			case 'pages':
 				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
 				break;
 			case 'messages-automated':

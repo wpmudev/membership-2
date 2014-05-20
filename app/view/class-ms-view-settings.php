@@ -41,6 +41,8 @@ class MS_View_Settings extends MS_View {
 	
 	protected $fields;
 	
+	protected $data;
+	
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -121,16 +123,62 @@ class MS_View_Settings extends MS_View {
 	}
 	
 	public function render_pages() {
+		$this->prepare_pages();
 		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
+			<div class='ms-settings'>
+			   	<h2><?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?></h2>
+				<form action="" method="post">
+					<?php foreach( $this->fields as $field ): ?>
+						<div class="postbox metabox-holder">
+							<h3><label for="title"><?php echo $field['title'];?></label></h3>
+							<div class="inside">
+								<?php MS_Helper_Html::html_input( $field );?>
+							</div>
+						</div>
+					<?php endforeach;?>
+					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_pages' ) );?>
+		   		</form>
+			</div>
 		<?php
 	}
 	
+	public function prepare_pages() {
+		$all_pages = $this->model->get_pages();
+		$this->fields = array(
+			'memberships' => array(
+					'id' => 'memberships',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select memberships page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->pages['memberships'],
+					'field_options' => $all_pages,
+					'class' => '',
+			),
+			'no_access' => array(
+					'id' => 'no_access',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->pages['no_access'],
+					'field_options' => $all_pages,
+					'class' => '',
+			),
+			'register' => array(
+					'id' => 'register',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select registration page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->pages['register'],
+					'field_options' => $all_pages,
+					'class' => '',
+			),
+			'registration_completed' => array(
+					'id' => 'registration_completed',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->pages['registration_completed'],
+					'field_options' => $all_pages,
+					'class' => '',
+			),
+		);
+	}
 	public function render_payment() {
 		?>
 	   <div class='ms-settings'>

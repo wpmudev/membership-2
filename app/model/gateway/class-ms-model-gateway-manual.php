@@ -20,15 +20,15 @@
  *
 */
 
-class MS_Model_Gateway_Free extends MS_Model_Gateway {
+class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $id = 'free_gateway';
+	protected $id = 'manual_gateway';
 	
-	protected $name = 'free_gateway';
+	protected $name = 'manual_gateway';
 	
-	protected $title = 'Free Memberships';
+	protected $title = 'Manual Gateway';
 	
 	protected $is_single = true;
 	

@@ -20,21 +20,26 @@
  *
 */
 
-class MS_Model_Gateway_Free extends MS_Model_Gateway {
+class MS_Controller_Registration extends MS_Controller {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
-	protected $id = 'free_gateway';
-	
-	protected $name = 'free_gateway';
-	
-	protected $title = 'Free Memberships';
-	
-	protected $is_single = true;
+	private $allowed_actions = array( 'join_membership' );
 	
 	public function __construct() {
+		$this->add_action( 'the_content', 'process_actions', 1 );
+	}
 
+	public function process_actions( $content ) {
+		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		if( in_array( $action, $this->allowed_actions ) && method_exists( &$this, $action ) ) {
+			return $this->$action();
+		}
+		return $content; 
 	}
 	
-	
+	public function join_membership() {
+		$data['gateways'] = MS_Model_Gateway::get_gateways();
+		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
+		$view->data = $data;
+		return $view->to_html();
+	}
 }

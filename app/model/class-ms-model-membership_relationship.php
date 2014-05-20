@@ -176,19 +176,7 @@ class MS_Model_Membership_Relationship extends MS_Model {
 			$this->start_date = MS_Helper_Period::subtract_interval( $period_unit, $period_type );
 		}
 	}
-	
-	/**
-	 * Set elapsed date.
-	 * 
-	 * @param string $current_date
-	 */
-	public function set_elapsed_date( $elapsed_date ) {
-		$interval = MS_Helper_Period::subtract_dates( $elapsed_date, $this->start_date );
-		$sign = ( $interval->invert ) ? '' : '-';
 		
-		$this->start_date = date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $sign . $interval->format( "%a days") , strtotime( $this->start_date ) ) );
-	}
-	
 	/**
 	 * Get membership status.
 	 * 

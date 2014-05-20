@@ -166,6 +166,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Membership metabox controller */
 		$this->controllers['membership_metabox'] = apply_filters( 'membership_controller_membership_metabox', new MS_Controller_Membership_Metabox() );
 		
+		/** Membership shortcode controller - front end */
+		$this->controllers['membership_shortcode'] = apply_filters( 'membership_controller_shortcode', new MS_Controller_Shortcode() );
+
+		/** Membership registration controller - front end */
+		$this->controllers['registration'] = apply_filters( 'membership_controller_registration', new MS_Controller_Registration() );
 	}
 
 	
@@ -238,6 +243,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */	
 	public function register_plugin_styles() {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css' );
+		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css' );
+		wp_enqueue_style( 'membership-shortcode' );
 	}
 	/**
 	 * Adds JavasSript for Membership settings pages.
