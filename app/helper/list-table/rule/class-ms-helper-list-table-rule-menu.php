@@ -70,9 +70,26 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 	public function column_access( $item ) {
 	
 		$html = '';
-		if( $item->parent_id ) {
-			
-			$html = parent::column_access( $item );
+		if( $item->parent_id ) {			
+			$action = $item->access ? 'no_access' : 'give_access';
+
+			ob_start();
+			/* Render toggles */
+			$nonce_url = wp_nonce_url(
+					sprintf( '%s?page=%s&tab=%s&membership_id=%s&item=%s&action=%s',
+							admin_url('admin.php'),
+							$_REQUEST['page'],
+							$_REQUEST['tab'],
+							$_REQUEST['membership_id'],
+							$item->id,
+							$action  
+					), MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE );
+			?>
+				<div class="ms-radio-slider <?php echo 1 == $item->access ? 'on' : ''; ?>">
+				<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+				</div>
+			<?php
+			$html = ob_get_clean();
 		}
 		return $html;
 	}

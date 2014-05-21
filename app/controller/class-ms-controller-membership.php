@@ -180,7 +180,8 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Rule single action 
 		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		// Changed the nonce for ajax toggles
+		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
 		}
@@ -250,7 +251,7 @@ class MS_Controller_Membership extends MS_Controller {
 		if( array_key_exists( $rule_type, $this->model->rules ) ) {
 			$rule = $this->model->rules[ $rule_type ];
 			$rule_value = $rule->rule_value;
-				
+
 			foreach( $items as $item ) {
 				switch( $action ) {
 					case 'give_access':

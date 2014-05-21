@@ -13,7 +13,7 @@ Text Domain: wpmudev_membership
 
 /**
  * @copyright Incsub (http://incsub.com/)
- * Author - Fabio Jun, Rheinard Khorf
+ * Author - Fabio Jun, Rheinard Korf
  * Contributors - Joji Mori 
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  * 
