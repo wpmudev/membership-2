@@ -77,43 +77,25 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 	}
 	
 	public function column_active( $item ) {
+		$action = $item->active ? 'disable' : 'enable';
 		
-		if( $item->active ) {
-			$html = __( 'Active', MS_TEXT_DOMAIN );
-			$actions = array(
-					sprintf( '<a href="%s">%s</a>',
-						wp_nonce_url( 
-							sprintf( '?page=%s&addon=%s&action=%s',
-								$_REQUEST['page'],
-								$item->id,
-								'disable'
-								),
-							'disable'
-							),
-						__('Disable', MS_TEXT_DOMAIN )
-					),
-			);
-		}
-		else {
-			$html = __( 'Deactivated', MS_TEXT_DOMAIN );
-				$actions = array(
-				sprintf( '<a href="%s">%s</a>',
-					wp_nonce_url( 
-						sprintf( '?page=%s&addon=%s&action=%s',
-							$_REQUEST['page'],
-							$item->id,
-							'enable'
-							),
-						'enable'
-						),
-					__('Enable', MS_TEXT_DOMAIN )
-				),
-		);
-		}
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&addon=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$item->id,
+						$action
+				) );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean();
 		
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_active_actions", $actions, $item );
-		return sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-		
+		echo $html;
 	}
 	
 	public function column_default( $item, $column_name ) {

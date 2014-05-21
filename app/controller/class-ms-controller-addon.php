@@ -33,11 +33,14 @@ class MS_Controller_Addon extends MS_Controller {
 	public function __construct() {
 		$this->add_action( 'load-membership_page_membership-addons', 'membership_addon_manager' );
 		$this->model = apply_filters( 'membership_addon_model', MS_Model_Addon::load() );
+
+		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-membership_page_membership-addons', 'enqueue_styles' );		
 	}
 	
 	public function membership_addon_manager() {
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['addon'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['addon'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
 			$msg = $this->save_addon( $_GET['action'], array( $_GET['addon'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'addon', 'action', '_wpnonce' ) ) ) ) ;
 		}
@@ -72,6 +75,13 @@ class MS_Controller_Addon extends MS_Controller {
 		}
 		$this->model->save();
 	}	
+
+	public function enqueue_styles() {
+	}
 	
-	
+	public function enqueue_scripts() {
+		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+		wp_enqueue_script( 'ms_view_member_ui' );		
+	}
+		
 }
