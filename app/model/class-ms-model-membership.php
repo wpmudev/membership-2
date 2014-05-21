@@ -48,7 +48,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $period;
 		
-	protected $pay_cicle_period;
+	protected $pay_cycle_period;
 		
 	protected $period_date_start;
 	
@@ -121,7 +121,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$end_date = $this->period_end_date;
 				break;
 			case self::MEMBERSHIP_TYPE_RECURRING:
-				$end_date = MS_Helper_Period::add_interval( $this->pay_cicle_period['period_unit'], $this->pay_cicle_period['period_type'], $start_date );
+				$end_date = MS_Helper_Period::add_interval( $this->pay_cycle_period['period_unit'], $this->pay_cycle_period['period_type'], $start_date );
 				break;
 		}
 		return $end_date;		
@@ -339,7 +339,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					$this->$property = floatval( $value );
 					break;
 				case 'period':
-				case 'pay_cicle_period':
+				case 'pay_cycle_period':
 				case 'trial_period':
 						$this->$property = $this->validate_period( $value );
 						break;

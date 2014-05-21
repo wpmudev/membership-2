@@ -141,8 +141,8 @@ class MS_View_Membership_Edit extends MS_View {
 										<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
 									</div>
 									<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
-										<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_unit'] );?>
-										<?php MS_Helper_Html::html_input( $this->fields['pay_cicle_period_type'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['pay_cycle_period_unit'] );?>
+										<?php MS_Helper_Html::html_input( $this->fields['pay_cycle_period_type'] );?>
 									</div>
 									<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
 										<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
@@ -240,21 +240,21 @@ class MS_View_Membership_Edit extends MS_View {
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),
-				'pay_cicle_period_unit' => array(
-						'id' => 'pay_cicle_period_unit',
+				'pay_cycle_period_unit' => array(
+						'id' => 'pay_cycle_period_unit',
 // 						'section' => self::MEMBERSHIP_SECTION,
-						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cicle_period][period_unit]',
+						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cycle_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cicle', MS_TEXT_DOMAIN ),
-						'value' => $this->model->pay_cicle_period['period_unit'],
+						'value' => $this->model->pay_cycle_period['period_unit'],
 						'class' => '',
 				),
-				'pay_cicle_period_type' => array(
-						'id' => 'pay_cicle_period_type',
+				'pay_cycle_period_type' => array(
+						'id' => 'pay_cycle_period_type',
 // 						'section' => self::MEMBERSHIP_SECTION,
-						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cicle_period][period_type]',
+						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cycle_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->model->pay_cicle_period['period_type'],
+						'value' => $this->model->pay_cycle_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => '',
 				),

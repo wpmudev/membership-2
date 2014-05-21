@@ -52,7 +52,7 @@ jQuery( document ).ready(function( $ ) {
 					'required': true,
 					'dateISO': true,
 				},
-				'membership_section[pay_cicle_period_unit]': {
+				'membership_section[pay_cycle_period_unit]': {
 					'required': true,
 					'min': 1,
 				},
