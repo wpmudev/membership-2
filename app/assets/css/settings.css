@@ -158,16 +158,22 @@ label.ms-validation-error {
   background:none;
   outline:none;
 }
+
 .ms-radio-slider {
   border-radius: 10px;
   background: rgb(176,176,176);
   width:40px;
   height:18px;
   display:block;
-  margin:10px 20px;
+  margin:3px 0;
   position: relative;
   opacity:.8;
 }
+
+#membership_access .ms-radio-slider {
+  margin:10px 20px;	
+}
+
 .ms-radio-slider:hover {
   cursor: pointer;
   opacity:1;
@@ -197,6 +203,10 @@ label.ms-validation-error {
 
 .ms-radio-slider.on {
   background: rgb(107,187,26);
+}
+
+.ms-radio-slider.processing {
+	cursor: wait;
 }
 
 /* Dripped icon indicator */

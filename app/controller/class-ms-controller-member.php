@@ -79,7 +79,7 @@ class MS_Controller_Member extends MS_Controller {
 		 * Execute table single action.
 		 */
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
 			$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
 			die();
@@ -232,7 +232,9 @@ class MS_Controller_Member extends MS_Controller {
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_register_script( 'ms_view_member_date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );
+		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
 		wp_enqueue_script( 'ms_view_member_date' );
+		wp_enqueue_script( 'ms_view_member_ui' );		
 	}
 	
 }

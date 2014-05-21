@@ -114,23 +114,23 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_active( $item ) {
-		$html = ( 1 == $item->active) ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&member_id=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$item->id,
+						'toggle_activation'
+				) );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean();
 		
-		$actions = array(
-				'toggle_activation' => sprintf( '<a href="%s">%s</a>',
-						wp_nonce_url(
-								sprintf( '?page=%s&member_id=%s&action=%s',
-										$_REQUEST['page'],
-										$item->id,
-										'toggle_activation'
-								),
-								'toggle_activation'
-						),
-						__('Toggle Activation', MS_TEXT_DOMAIN )
-				),
-		);
-	
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		echo $html;
 	}
 	/**
 	 * Create membership column.
