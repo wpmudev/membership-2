@@ -38,6 +38,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
 		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );		
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
@@ -79,7 +80,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function admin_membership_list_manager() {
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
 			$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'membership_id', 'action', '_wpnonce' ) ) ) ) ;
 		}
@@ -346,6 +347,10 @@ class MS_Controller_Membership extends MS_Controller {
 			wp_enqueue_script( 'jquery-chosen' );
 			wp_enqueue_script( 'jquery-validate' );
 		}	
+
+		/* Toggle Button Behaviour */
+		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+		wp_enqueue_script( 'ms_view_member_ui' );		
 	}
 	
 }

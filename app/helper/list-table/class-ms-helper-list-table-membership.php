@@ -53,6 +53,47 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return sprintf( '<input type="checkbox" name="membership_id[]" value="%1$s" />', $item->id );
 	}
 	
+	function column_active( $item ) {
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&membership_id=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$item->id,
+						'toggle_activation'
+				) );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean();
+		
+		echo $html;		
+	}
+	
+	function column_public( $item ) {
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&membership_id=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$item->id,
+						'toggle_public'
+				) );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->public ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean();
+		
+		echo $html;		
+	}
+	
+	
 	public function get_hidden_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
 	}
@@ -89,7 +130,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						$item->id,
 						__('Edit', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="%s">%s</a>',
+/*				sprintf( '<a href="%s">%s</a>',
 					wp_nonce_url( 
 						sprintf( '?page=%s&membership_id=%s&action=%s',
 							$_REQUEST['page'],
@@ -110,7 +151,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						'toggle_public'
 						),
 					__('Toggle Public', MS_TEXT_DOMAIN )
-				),
+				),*/
 				sprintf( '<span class="delete"><a href="%s">%s</a></span>',
 					wp_nonce_url( 
 						sprintf( '?page=%s&membership_id=%s&action=%s',
