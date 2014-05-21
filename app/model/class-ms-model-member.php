@@ -218,6 +218,10 @@ class MS_Model_Member extends MS_Model {
 		}
 	}
 	
+	public function add_transaction( $transaction_id ) {
+		$this->transactions[ $transaction_id ] = $transaction_id;
+	}
+	
 	public function is_member( $membership_id = 0 ) {
 		$is_member = false;
 		/** Allowed membership status to have access */

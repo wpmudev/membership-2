@@ -21,50 +21,44 @@
 */
 
 
-class MS_Model_Option extends MS_Model {
+class MS_Model_Upgrade extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
+	
+	protected $id =  'ms_model_update';
+	
+	protected $name = 'Update DB';
 		
-	public function save() {
-		
-		$this->before_save();
-		
-		$settings = array();
-		
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
+	public static function upgrade() {
+		$settings = MS_Plugin::instance()->settings;
+		/** Compare current src version to DB version */
+		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
+			switch( $settings->version ) {
+				default:
+					self::cleanup_db();
+					break;
 			}
-			$settings[ $field ] = $this->$field;
 		}
-// 			$method = ( is_multisite() ) ? 'update_site_option' : 'update_option';
-				
-		update_option( static::$CLASS_NAME, $settings );
-		
-		$this->after_save();
+		$settings->version = MS_Plugin::instance()->version;
+		$settings->save();
 	}
 	
-	public static function load() {
-// 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
-		$settings = get_option( static::$CLASS_NAME );
-		
-		$model = new static::$CLASS_NAME();
-		
-		$model->before_load();
-		
-		$fields = get_object_vars( $model );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			if( isset( $settings[ $field ] ) ) {
-				$model->$field = $settings[ $field ];
-			}
+	private static function cleanup_db() {
+		$users = MS_Model_Member::get_members( );
+		foreach( $users as $user ) {
+			$user->delete_all_membership_usermeta();
+			$user->save();
+		}
+		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => 999 ) );
+		foreach( $memberships as $membership ) {
+			$membership->delete( true );
+		}
+		$comms = MS_Model_Communication::load_communications();
+		foreach( $comms as $comm ) {
+			$comm->delete();
 		}
 		
-		$model->after_load();
-		
-		return $model;	
+		$simulate = MS_Model_Simulate::load();
+		$simulate->reset_simulation();
 	}
 }

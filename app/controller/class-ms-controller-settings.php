@@ -53,6 +53,17 @@ class MS_Controller_Settings extends MS_Controller {
 			case 'pages':
 				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
 				break;
+			case 'payment':
+				if( ! empty( $_GET['action'] ) && ! empty( $_GET['gateway_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+					$msg = $this->gateway_list_do_action( $_GET['action'], array( $_GET['gateway_id'] ) );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'gateway_id', 'action', '_wpnonce' ) ) ) ) ;
+				}
+				elseif( ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-gateways' ) ) {
+					$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+					$msg = $this->gateway_list_do_action( $action, $_POST['gateway_id'] );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) );
+				}
+				break;
 			case 'messages-automated':
 				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 				if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
@@ -110,6 +121,25 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 	}
 	
+	public function gateway_list_do_action( $action, $gateways ) {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
+		
+		$msg = 0;
+		foreach( $gateways as $gateway_id ) {
+			$gateway = MS_Model_Gateway::factory( $gateway_id );
+			switch( $action ) {
+				case 'toggle_activation':
+					$gateway->active = ! $gateway->active;
+					$gateway->save();
+					$msg = 7;
+					break;
+			}
+		}
+		
+		return $msg;
+	}
 	public function save_communication( $fields ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;

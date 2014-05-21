@@ -51,32 +51,26 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		return $this->date;
 	}
 	
-// 	public function set_simulation( $membership_id ) {
-// 		$this->membership_id = absint( $membership_id );
-// 	}
-	
-// 	public function set_simulation_period( $period_unit, $period_type ) {
-// 		$period['period_unit'] = $period_unit;
-// 		$period['period_type'] = $period_type;
-// 		$this->period = $this->validate_period( $period );
-// 		if( ! empty ( $this->period ) ) {
-// 			$this->date = null;
-// 		}
-// 	}
-	
-// 	public function set_simulation_date( $date ) {
-// 		if( $date = $this->validate_date( $date ) ){
-// 			$this->date = $date;
-// 			$this->period = null;
-// 		}
-// 	}
 	public function simulate_date() {
 		$this->add_filter( 'membership_helper_period_current_date', 'simulate_date_filter' );
 	}
+	
 	public function simulate_date_filter( $current_date ) {
-		return $this->date;
+		if( ! empty( $this->date ) ) {
+			return $this->date;
+		}
+		return $current_date;
 	}
-	/**
+	
+	public function reset_simulation() {
+		$this->membership_id = 0;
+		$this->date = null;
+		$this->period = null;
+		$this->remove_filter( 'membership_helper_period_current_date', 'simulate_date_filter' );
+		$this->save();
+	}
+	
+ 	/**
 	 * Validate specific property before set.
 	 *
 	 * @since 4.0

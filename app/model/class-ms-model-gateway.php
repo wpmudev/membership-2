@@ -23,14 +23,50 @@
 class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
-
-	protected $is_single = false;
 	
-	public function __construct() {
-
+	protected $id = 'gateway';
+	
+	protected $name = 'Abstract Gateway';
+	
+	protected $description = 'Abstract Gateway Desc';
+	
+	protected $active = false;
+	
+	protected $is_single = true;
+	
+	protected $payment_button;
+	
+	public function after_load() {
+		if( $this->active ) {
+			$this->add_action( 'ms_view_registration_payment_form', 'payment_form', 10, 2 );
+			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
+		}
 	}
 	
-	public function get_gateways() {
-		return array( 'todo', 'manual' );
+	public static function get_gateways() {
+		$gateways = array(
+			'free_gateway' => MS_Model_Gateway_Free::load(),
+			'manual_gateway' => MS_Model_Gateway_Manual::load(),
+		);
+		return apply_filters( 'ms_model_gateway_get_gateways' , $gateways );
+	}
+	
+	public static function factory( $gateway_id ) {
+		$gateway = null;
+		
+		$gateways = self::get_gateways();
+		if( array_key_exists( $gateway_id, $gateways ) ) {
+			$gateway = $gateways[ $gateway_id ];
+		}
+		
+		return apply_filters( 'ms_model_gateway_factory', $gateway, $gateway_id );
+	}
+	
+	public function payment_form( $membership, $member ) {
+		
+	}
+	
+	public function handle_return() {
+		
 	}
 }

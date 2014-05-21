@@ -27,7 +27,7 @@ class MS_Model_Plugin extends MS_Model {
 	
 	public function __construct() {
 		
-		$this->update();
+		$this->upgrade();
 		
 		$this->init_member();
 		
@@ -38,10 +38,14 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_action( 'parse_request', 'setup_protection', 2 );
 	}
 	
-	public function update() {
+	/**
+	 * Upgrade database if needs to.
+	 */
+	public function upgrade() {
 			
-		MS_Model_Update::update();
+		MS_Model_Upgrade::upgrade();
 	}
+	
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
 		$simulate = MS_Model_Simulate::load();

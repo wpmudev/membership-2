@@ -25,7 +25,15 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	public static $POST_TYPE = 'ms_transaction';
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
+	
+	const STATUS_BILLED = 'billed';
+	
+	const STATUS_PAID = 'paid';
+	
+	const STATUS_CANCELED = 'canceled';
+
+	protected $gateway_id;
+	
 	protected $amount;
 	
 	protected $currency;

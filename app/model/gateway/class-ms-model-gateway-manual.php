@@ -26,15 +26,37 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $id = 'manual_gateway';
 	
-	protected $name = 'manual_gateway';
+	protected $name = 'Manual Gateway';
 	
-	protected $title = 'Manual Gateway';
+	protected $description = 'Manual Gateway description';
 	
 	protected $is_single = true;
 	
-	public function __construct() {
-
-	}
-	
-	
+	public function payment_form( $membership, $member ) {
+		$fields = array(
+				'gateway' => array(
+						'id' => 'gateway',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->id,
+				),
+				'membership_id' => array(
+						'id' => 'membership_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $membership->id,
+				),
+				'membership_signup' => array(
+						'id' => 'membership_signup',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Signup', MS_TEXT_DOMAIN ),
+				),
+		);
+		?>
+			<form action="" method="post">
+				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
+				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['membership_signup'] ); ?>
+			</form>
+		<?php 
+		}
 }

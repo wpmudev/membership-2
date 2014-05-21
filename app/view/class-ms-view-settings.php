@@ -180,14 +180,20 @@ class MS_View_Settings extends MS_View {
 		);
 	}
 	public function render_payment() {
+		$list_table = new MS_Helper_List_Table_Gateway();
+		$list_table->prepare_items();
+		
+		ob_start();
 		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Payment Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
+			<div class='ms-settings'>
+				<h2><?php echo __( 'Payment Settings', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="" method="post">
+					<?php $list_table->display(); ?>
+				</form>
+			</div>
 		<?php
+		$html = ob_get_clean();
+		echo $html;
 	}
 	
 	public function render_messages_protection() {

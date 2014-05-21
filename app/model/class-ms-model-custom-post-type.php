@@ -86,7 +86,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	public static function load( $model_id ) {
 		$model = new static::$CLASS_NAME();
 		
-		$model->before_load( $model_id );
+		$model->before_load();
 		
 		if ( !empty( $model_id ) ) {
 			

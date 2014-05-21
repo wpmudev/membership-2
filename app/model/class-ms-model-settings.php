@@ -39,6 +39,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $pages;
 	
 	protected $show_default_membership;
+	
+	protected $currency = 'USD';
 
 	public function __construct() {
 		$this->add_action( 'wp_loaded', 'initial_setup' );	

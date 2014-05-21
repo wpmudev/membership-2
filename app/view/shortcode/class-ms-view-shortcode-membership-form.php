@@ -23,17 +23,15 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 							</div>
 							<div class="ms-price-details"><?php echo $membership->description; ?></div>
 							<div class="ms-bottom-bar">
-								<?php if( $membership->price ) : ?>
-									<span class="ms-link">
-									<?php
-										$link = add_query_arg( array( 'action' => $this->data['action'], 'membership' => $membership->id ) );
-										$class = apply_filters( 'ms_membership_form_button_class', 'ms-join-button' );
-									?>
-									<a href="<?php echo esc_url( $link ) ?>" class="<?php echo $class; ?>">
-										<?php echo esc_html( $this->data['join_text'] ); ?>
-									</a>
-									</span>
-								<?php endif; ?>
+								<span class="ms-link">
+								<?php
+									$link = add_query_arg( array( 'action' => $this->data['action'], 'membership' => $membership->id ) );
+									$class = apply_filters( 'ms_membership_form_button_class', 'ms-signup-button' );
+								?>
+								<a href="<?php echo esc_url( $link ) ?>" class="<?php echo $class; ?>">
+									<?php echo esc_html( $this->data['signup_text'] ); ?>
+								</a>
+								</span>
 							</div>
 						</div>
 					<?php endforeach; ?>

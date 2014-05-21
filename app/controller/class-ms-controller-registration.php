@@ -22,10 +22,11 @@
 
 class MS_Controller_Registration extends MS_Controller {
 	
-	private $allowed_actions = array( 'join_membership' );
+	private $allowed_actions = array( 'membership_signup' );
 	
 	public function __construct() {
-		$this->add_action( 'the_content', 'process_actions', 1 );
+		$this->add_action( 'template_redirect', 'process_actions', 1 );
+		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 	}
 
 	public function process_actions( $content ) {
@@ -36,10 +37,65 @@ class MS_Controller_Registration extends MS_Controller {
 		return $content; 
 	}
 	
-	public function join_membership() {
+	public function membership_signup() {
+		if( ! empty( $_GET['membership'] ) ) {
+			if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
+				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+				
+				$gateway_id = $_POST['gateway'];
+				$membership_id = $_POST['membership_id'];
+				$membership = MS_Model_Membership::load( $membership_id );
+				/**
+				 * Manual gateway.
+				 */
+				if( $membership->price > 0 ) {
+					$gateway = MS_Model_Gateway::factory( $gateway_id );
+					$gateway->handle_return();
+				}
+			}
+			else {
+				$membership_id = $_GET['membership'];
+				$membership = MS_Model_Membership::load( $membership_id );
+				$member = MS_Model_Member::get_current_member();
+				/**
+				 * Free gateway.
+				 */
+				if( $membership->price == 0 ) {
+					$gateway_id = 'free_gateway';
+					$gateway = MS_Model_Gateway::factory( $gateway_id );
+					$gateway->process_payment( $membership_id, $member );
+					$url = get_permalink( MS_Plugin::instance()->settings->pages['registration_completed'] );
+					wp_safe_redirect( $url );
+				}
+				/**
+				 * Show payment table.
+				 */
+				else {
+					$this->add_action( 'the_content', 'payment_table', 1 );
+				}
+			}	
+		}
+		else {
+			return "Membership not found.";
+		}
+	}
+	
+	public function payment_table() {
+		$membership_id = $_GET['membership'];
+		$membership = MS_Model_Membership::load( $membership_id );
+		$member = MS_Model_Member::get_current_member();
+		
+		$data['membership'] = $membership;
 		$data['gateways'] = MS_Model_Gateway::get_gateways();
+		$data['member'] = $member;
+		$data['currency'] = MS_Plugin::instance()->settings->currency;
 		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 		$view->data = $data;
-		return $view->to_html();
+		echo $view->to_html();
+	}
+	public function handle_payment_return( $wp_query ) {
+		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
+			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
+		}
 	}
 }

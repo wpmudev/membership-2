@@ -37,8 +37,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data = shortcode_atts( 
 			array(
 				'title' => '',
-				'join_text' =>  __( 'Join', MS_TEXT_DOMAIN ),
-				'action' => 'join_membership',
+				'signup_text' =>  __( 'Signup', MS_TEXT_DOMAIN ),
+				'action' => 'membership_signup',
 			), 
 			$atts 
 		);

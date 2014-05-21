@@ -26,15 +26,23 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $id = 'free_gateway';
 	
-	protected $name = 'free_gateway';
+	protected $name = 'Free Gateway';
 	
-	protected $title = 'Free Memberships';
+	protected $description = 'Free Memberships';
 	
 	protected $is_single = true;
 	
-	public function __construct() {
-
+	public function process_payment( $membership_id, $member ) {
+		$member->add_membership( $membership_id, $this->id );
+		$transaction = new MS_Model_Transaction();
+		$transaction->gateway_id = $this->id;
+		$transaction->amount = 0;
+		$transaction->status = MS_Model_Transaction::STATUS_PAID;
+		$transaction->user_id = $member->id;
+		$transaction->name = $this->name . ' transaction';
+		$transaction->description = $this->description;
+		$transaction->save();
+		$member->add_transaction( $transaction->id );
+		$member->save();
 	}
-	
-	
 }
