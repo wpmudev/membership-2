@@ -103,47 +103,27 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_access( $item ) {
+		$action = $item->access ? 'no_access' : 'give_access';
 
-		if( $item->access ) {
-			$status = __( 'Has Access', MS_TEXT_DOMAIN );
-			
-			$actions = array(
-					sprintf( '<a href="%s">%s</a>',
-							wp_nonce_url(
-									sprintf( '?page=%s&tab=%s&membership_id=%s&action=%s&item=%s',
-											$_REQUEST['page'],
-											$_REQUEST['tab'],
-											$_REQUEST['membership_id'],
-											'no_access',
-											$item->id
-									),
-									'no_access'
-							),
-							__('Remove access', MS_TEXT_DOMAIN )
-					),
-			);
-		}
-		else {
-			$status = __( 'No Access', MS_TEXT_DOMAIN );
-			
-			$actions = array(
-					sprintf( '<a href="%s">%s</a>',
-							wp_nonce_url(
-									sprintf( '?page=%s&tab=%s&membership_id=%s&action=%s&item=%s',
-											$_REQUEST['page'],
-											$_REQUEST['tab'],
-											$_REQUEST['membership_id'],
-											'give_access',
-											$item->id
-									),
-									'give_access'
-							),
-							__('Give Access', MS_TEXT_DOMAIN )
-					),
-			);
-		}
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_access_actions", $actions, $item );
-		return sprintf( '%1$s %2$s', $status, $this->row_actions( $actions ) );
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&tab=%s&membership_id=%s&item=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$_REQUEST['tab'],
+						$_REQUEST['membership_id'],
+						$item->id,
+						$action  
+				), MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->access ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean();
+		
+		return $html;
 	}
 	
 	public function column_dripped( $item ) {
