@@ -245,7 +245,7 @@ class MS_View_Membership_Edit extends MS_View {
 // 						'section' => self::MEMBERSHIP_SECTION,
 						'name' =>  self::MEMBERSHIP_SECTION. '[pay_cycle_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Payment Cicle', MS_TEXT_DOMAIN ),
+						'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
 						'value' => $this->model->pay_cycle_period['period_unit'],
 						'class' => '',
 				),
