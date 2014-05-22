@@ -79,30 +79,52 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 						$item->id,
 						__('View Transactions', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="%s">%s</a>',
-						wp_nonce_url(
-							sprintf( '?page=%s&tab=%s&gateway_id=%s&action=%s',
-								$_REQUEST['page'],
-								$_REQUEST['tab'],
-								$item->id,
-								'toggle_activation'
-							),
-							'toggle_activation'
-						),
-						__('Toggle Activation', MS_TEXT_DOMAIN )
-				),
-				
+				// sprintf( '<a href="%s">%s</a>',
+				// 		wp_nonce_url(
+				// 			sprintf( '%s?page=%s&tab=%s&gateway_id=%s&action=%s',
+				// 				admin_url('admin.php'),
+				// 				$_REQUEST['page'],
+				// 				$_REQUEST['tab'],
+				// 				$item->id,
+				// 				'toggle_activation'
+				// 			),
+				// 			'toggle_activation'
+				// 		),
+				// 		__('Toggle Activation', MS_TEXT_DOMAIN )
+				// ),				
 		);
 		$actions = apply_filters( "gateway_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 	
+	public function column_active( $item ) {
+		$action = 'toggle_activation';
+		ob_start();
+		/* Render toggles */
+		$nonce_url = wp_nonce_url(
+				sprintf( '%s?page=%s&tab=%s&gateway_id=%s&action=%s',
+						admin_url('admin.php'),
+						$_REQUEST['page'],
+						$_REQUEST['tab'],
+						$item->id,
+						$action  
+				), 'toggle_activation' );
+		?>
+			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
+			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
+			</div>
+		<?php
+		$html = ob_get_clean(); 
+		
+		return $html;		
+	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'active':
-				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
-				break;
+			// case 'active':
+			// 	$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
+			// 	break;
 			default:
 				$html = print_r( $item, true ) ;
 				break;

@@ -54,7 +54,7 @@ class MS_Controller_Settings extends MS_Controller {
 				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
 				break;
 			case 'payment':
-				if( ! empty( $_GET['action'] ) && ! empty( $_GET['gateway_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+				if( ! empty( $_GET['action'] ) && ! empty( $_GET['gateway_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], 'toggle_activation' ) ) {					
 					$msg = $this->gateway_list_do_action( $_GET['action'], array( $_GET['gateway_id'] ) );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'gateway_id', 'action', '_wpnonce' ) ) ) ) ;
 				}
@@ -167,6 +167,7 @@ class MS_Controller_Settings extends MS_Controller {
 	
 	
 	public function enqueue_scripts() {
-		
+		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+		wp_enqueue_script( 'ms_view_member_ui' );				
 	}
 }

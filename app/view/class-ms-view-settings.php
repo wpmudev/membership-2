@@ -34,6 +34,7 @@
 class MS_View_Settings extends MS_View {
 
 	const COMM_NONCE = 'comm_save_nonce';
+	const GATEWAY_NONCE = 'gateway_save_nonce';
 	
 	const COMM_SECTION = 'comm_section';
 	

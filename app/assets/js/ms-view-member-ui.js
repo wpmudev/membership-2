@@ -24,6 +24,7 @@ jQuery( document ).ready( function( $ ) {
 				$( object ).removeClass('processing');
 			})
 			.fail( function (data) {
+				console.log(data);
 		        if ( $( object ).hasClass( 'on' ) ) {
 		            $( object ).removeClass( 'on' );
 		        } 

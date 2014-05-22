@@ -28,7 +28,8 @@ class MS_View_Membership_Metabox extends MS_View {
 					<?php $dripped = array(); ?>
 					<?php foreach( $this->data as $membership_id => $data ): ?>
 						<?php
-							if ( $data['dripped'] ) { 
+							
+							if ( $data['dripped'] && $data['has_access'] ) { 
 								// Using array to notify users which Memberships has dripped content.
 								$dripped[] = sprintf( __( '%s membership', MS_TEXT_DOMAIN ), $data['name'] );
 							} 

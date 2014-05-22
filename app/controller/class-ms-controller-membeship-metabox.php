@@ -66,19 +66,18 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		foreach( $memberships as $membership ) {
 			if( 'post' == $post->post_type ) {
 				$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
+				$data[ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $post->ID );
 			}
 			else {
 				$data[ $membership->id ]['has_access'] = $membership->rules['page']->has_access( $post->ID );
+				$data[ $membership->id ]['dripped'] = $membership->rules['page']->has_dripped_rules( $post->ID );				
 			}
 			$data[ $membership->id ]['name'] = $membership->name;
-			$data[ $membership->id ]['dripped'] = $membership->has_dripped_content();
-			
 		}
 		$view->data = $data;
 		$view->read_only = $this->is_read_only( $post->post_type );
 		
 		$view->render();
-		
 	}
 	
 	public function save_metabox_data( $post_id, $post ) {
