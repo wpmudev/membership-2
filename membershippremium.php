@@ -243,7 +243,7 @@ class MS_Plugin {
 		load_plugin_textdomain( MS_TEXT_DOMAIN, false, $this->name . '/languages/' );
 		
 		/** Actions to execute before construction is complete. */
-		do_action( 'membership_plugin_loading' ); 
+		do_action( 'membership_plugin_loading', $this ); 
 				
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
