@@ -15,8 +15,8 @@ class MS_View_Billing_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2>Add Membership</h2>
-				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post" class="ms-form">
+				<h2>Billing edit</h2>
+				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( self::BILLING_NONCE, self::BILLING_NONCE ); ?>
 					<table class="form-table">
 						<tbody>
@@ -29,6 +29,7 @@ class MS_View_Billing_Edit extends MS_View {
 								<?php endforeach; ?>
 						</tbody>
 					</table>
+					<?php MS_Helper_Html::html_submit(); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -101,11 +102,6 @@ class MS_View_Billing_Edit extends MS_View {
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
-			),
-			'submit' => array(
-				'id' => 'submit',
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
-				'type' => 'submit',
 			),
 		);
 	}

@@ -44,6 +44,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
+	const INPUT_TYPE_IMAGE = 'image';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -137,7 +138,9 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_SUBMIT:
 				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='$name' value='$value' />";
 				break;
-				
+			case self::INPUT_TYPE_IMAGE:
+				echo "<input type='image' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
+				break;	
 		}		
 	}
 	

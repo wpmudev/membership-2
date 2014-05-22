@@ -41,13 +41,19 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 /** 
  * Add WordPress core functionality: WP_List_Table
  */
-if( ! class_exists( 'WP_List_Table' ) ) {
-	/** Pull from core. */
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	/** If it still doesn't exist, pull from /lib/ */
-	if( ! class_exists( 'WP_List_Table' ) ) {
-		/** Put on its own line to include WP_List_Table if core changes */
-		require_once dirname( __FILE__ ) . '/lib/class-wp-list-table.php';
+if( ! function_exists( '_ms_debug_log' ) ) {
+	function _ms_debug_log( $message ) {
+	
+		if( defined( 'MS_MEMBERSHIP_DEBUG' ) && MS_MEMBERSHIP_DEBUG == true ) {
+	
+			if( is_array( $message ) || is_object( $message ) ) {
+				$message = print_r( $message, true );
+			}
+			if( defined( 'MS_MEMBERSHIP_DEBUG_LEVEL' ) && MS_MEMBERSHIP_DEBUG_LEVEL == 'adv' ) {
+				$message .= ' - ' . print_r( debug_backtrace(), true );
+			}
+			error_log( $message );
+		}
 	}
 }
 
@@ -106,10 +112,13 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Communication_Failed_Payment'] =  "app/model/communication/class-ms-model-communication-failed-payment.php";
 	$overrides['MS_Model_Communication_Info_Update'] =  "app/model/communication/class-ms-model-communication-info-update.php";
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
+	$overrides['MS_Model_Gateway_Paypal_Single'] =  "app/model/gateway/class-ms-model-gateway-paypal-single.php";
+	$overrides['MS_Model_Gateway_Paypal_Standard'] =  "app/model/gateway/class-ms-model-gateway-paypal-standard.php";
 	$overrides['MS_Model_Rule_Post_Category'] = "app/model/rule/class-ms-model-rule-post-category.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] =  "app/view/class-ms-view-admin-bar.php";
+	$overrides['MS_View_Settings_Gateway_Paypal'] =  "app/view/settings/class-ms-view-settings-gateway-paypal.php";
 	$overrides['MS_View_Shortcode_Membership_Form'] =  "app/view/shortcode/class-ms-view-shortcode-membership-form.php";
 	$overrides['MS_View_Shortcode_Membership_Login'] =  "app/view/shortcode/class-ms-view-shortcode-membership-login.php";
 	

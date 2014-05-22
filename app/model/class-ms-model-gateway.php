@@ -34,7 +34,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected $is_single = true;
 	
-	protected $payment_button;
+	protected $pay_button_url;
+	
+	protected $upgrade_button_url;
+	
+	protected $cancel_button_url;
 	
 	protected static $gateways;
 	
@@ -50,16 +54,22 @@ class MS_Model_Gateway extends MS_Model_Option {
 			self::$gateways = array(
 				'free_gateway' => MS_Model_Gateway_Free::load(),
 				'manual_gateway' => MS_Model_Gateway_Manual::load(),
+				'paypal_standard_gateway' => MS_Model_Gateway_Paypal_Standard::load(),
+				'paypal_single_gateway' => MS_Model_Gateway_Paypal_Single::load(),
 			);
 		}
 		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
 	}
 	
+	public static function is_valid_gateway( $gateway_id ) {
+		return apply_filters( 'ms_model_gateway_is_valid_gateway', array_key_exists( $gateway_id, self::get_gateways() ) );
+	}
+	
 	public static function factory( $gateway_id ) {
 		$gateway = null;
 		
-		$gateways = self::get_gateways();
-		if( array_key_exists( $gateway_id, $gateways ) ) {
+		if( self::is_valid_gateway( $gateway_id ) ) {
+			$gateways = self::get_gateways();
 			$gateway = $gateways[ $gateway_id ];
 		}
 		
@@ -74,24 +84,59 @@ class MS_Model_Gateway extends MS_Model_Option {
 		
 	}
 	
-	public function add_transaction( $membership, $member, $status ) {
-		
-		$transaction = new MS_Model_Transaction();
-		$transaction->gateway_id = $this->id;
-		$transaction->membership_id = $membership->id;
-		$transaction->amount = $membership->price;
-		$transaction->status = $status;
-		$transaction->user_id = $member->id;
-		$transaction->name = $this->name . ' transaction';
-		$transaction->description = $this->description;
-		$transaction->save();
-		
-		if( MS_Model_Transaction::STATUS_PAID == $status ) {
-			$member->add_membership( $membership->id, $this->id );
-		}
-		
-		$member->add_transaction( $transaction->id );
-		$member->save();
+	/**
+	 * Url that fires handle_return of this gateway.
+	 * 
+	 * @todo Use pretty permalinks structure like /ms-payment-return/{$this->id}
+	 * @return string The return url.
+	 */
+	public function get_return_url() {
+		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '?paymentgateway=' . $this->id ), $this->id );
 	}
 	
+	public function build_custom( $user_id, $membership_id, $amount ) {
+	
+		$custom = time() . ':' . $user_id . ':' . $membership_id . ':';
+		$key = md5( 'MEMBERSHIP' . $amount );
+		
+		$custom .= $key;
+	
+		return $custom;
+	}
+	
+	public function add_transaction( $membership, $member, $status, $external_id, $notes ) {
+		
+		$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $this->id, $status );
+		$transaction->external_id = $external_id;
+		$transaction->notes = $notes;
+		$transaction->save();
+	}
+	
+	/**
+	 * Validate specific property before set.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'id':
+				case 'name':
+					break;
+				case 'description':
+				case 'pay_button_url':
+				case 'upggrade_button_url':
+				case 'cancel_button_url':
+					$this->$property = sanitize_text_field( $value );
+					break;
+				default:
+					$this->$property = $value;
+					break;
+			}
+		}
+	}
 }

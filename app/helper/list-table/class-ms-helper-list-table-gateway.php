@@ -69,29 +69,17 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function column_name( $item ) {
 		$html = sprintf( '<div>%1$s</div><div>%2$s</div>', $item->name, $item->description );
 		$actions = array(
-				sprintf( '<a href="?page=%s&gateway_id=%s">%s</a>',
+				sprintf( '<a href="?page=%s&tab=%s&gateway_id=%s&action=%s">%s</a>',
 						$_REQUEST['page'],
+						$_REQUEST['tab'],
 						$item->id,
+						'edit',
 						__('Settings', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="?page=%s&gateway_id=%s">%s</a>',
-						$_REQUEST['page'],
+				sprintf( '<a href="?page=membership-billing&gateway_id=%s">%s</a>',
 						$item->id,
 						__('View Transactions', MS_TEXT_DOMAIN )
 				),
-				// sprintf( '<a href="%s">%s</a>',
-				// 		wp_nonce_url(
-				// 			sprintf( '%s?page=%s&tab=%s&gateway_id=%s&action=%s',
-				// 				admin_url('admin.php'),
-				// 				$_REQUEST['page'],
-				// 				$_REQUEST['tab'],
-				// 				$item->id,
-				// 				'toggle_activation'
-				// 			),
-				// 			'toggle_activation'
-				// 		),
-				// 		__('Toggle Activation', MS_TEXT_DOMAIN )
-				// ),				
 		);
 		$actions = apply_filters( "gateway_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );

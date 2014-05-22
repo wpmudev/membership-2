@@ -33,7 +33,23 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	const STATUS_CANCELED = 'canceled';
 	
 	const STATUS_FAILED = 'failed';
+	
+	const STATUS_REVERSED = 'reversed';
+	
+	const STATUS_REFUNDED = 'refunded';
+	
+	const STATUS_PENDING = 'pending';
+	
+	const STATUS_DISPUTE = 'dispute';
 
+	/**
+	 * External transaction ID.
+	 * 
+	 * Used to link 3rd party transaction ID to $this->id
+	 * @var $external_id
+	 */
+	protected $external_id;
+	
 	protected $gateway_id;
 	
 	protected $membership_id;
@@ -59,6 +75,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	protected $tax_description;
 	
 	protected $total;
+	
+	protected $timestamp;
 
 	public static function get_status() {
 		return apply_filters( 'ms_model_transaction_get_status', array(
@@ -66,6 +84,10 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
 				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
+				self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
+				self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
+				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+				self::STATUS_DISPUTE => __( 'Dispute', MS_TEXT_DOMAIN ),
 			) 
 		);
 	}
@@ -100,13 +122,83 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		return $transactions;
 	}
 	
+	/**
+	 * Load transaction using external ID.
+	 *  
+	 * @param string $external_id
+	 * @return MS_Model_Transaction, null if not found.
+	 */
+	public static function load_by_external_id( $external_id ) {
+		$args = array(
+				'meta_query' => array(
+						array(
+							'key'     => 'external_id',
+							'value'   => $external_id,
+						),
+				)
+		);
+		$query = new WP_User_Query( $args );
+		
+		$item = $query->get_posts();
+		$transaction = null;
+
+		if( ! empty( $item[0] ) ) {
+			$transaction = self::load( $item[0]->ID );
+		}
+		
+		return $transaction;
+	}
+	/**
+	 * Create new transaction
+	 * 
+	 * @param MS_Model_Membership $membership
+	 * @param MS_Model_Member $member
+	 * @param string $status
+	 */
+	public static function create_transaction( $membership, $member, $gateway_id, $status = self::STATUS_BILLED ) {
+	
+		$transaction = new self();
+		$transaction->gateway_id = $gateway_id;
+		$transaction->membership_id = $membership->id;
+		$transaction->amount = $membership->price;
+		$transaction->status = $status;
+		$transaction->user_id = $member->id;
+		$transaction->name = $gateway_id . ' transaction';
+		$transaction->description = $gateway_id;
+		$transaction->timestamp = time();
+		$transaction->save();
+	
+		$member->add_transaction( $transaction->id );
+		$member->save();
+		
+		$transaction->process_transaction( $status, true );
+		return $transaction;
+	}
+	
+	/**
+	 * Process transaction status change.
+	 *  
+	 * @param string $status The status to change
+	 * @param bool $force Process status change even if status already has the new value. 
+	 */
 	public function process_transaction( $status, $force = false ) {
-		if( $this->status != $status || $force ) {
+		if(  array_key_exists( $value, self::get_status() ) && ( $this->status != $status || $force ) ) {
+			$this->status = $status;
 			$member = MS_Model_Member::load( $this->user_id );
-			if( MS_Model_Transaction::STATUS_PAID == $status ) {
-				$member->add_membership( $this->membership_id, $this->gateway_id );
-				$member->save();
+			switch( $status ) {
+				case self::STATUS_PAID:
+					$member->add_membership( $this->membership_id, $this->gateway_id );
+					break;
+				case self::STATUS_REVERSED:
+				case self::STATUS_REFUNDED:
+				case self::STATUS_DENIED:
+				case self::STATUS_DISPUTE:
+					if( defined( 'MS_MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION' ) && MS_MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
+						$member->active = false;
+					}
+					break;
 			}
+			$member->save();
 		}
 	}
 	
@@ -146,10 +238,27 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
+				case 'name':
+				case 'currency':
+				case 'notes':
+				case 'tax_description':
+					$this->$property = sanitize_text_field( $value );
+					break;
 				case 'status':
 					if( array_key_exists( $value, self::get_status() ) ) {
 						$this->$property = $value;
 					}
+					break;
+				case 'due_date':
+				case 'expire_date':
+					$this->$property = $this->validate_date( $value );
+					break;
+				case 'taxable':
+					$this->$property = $this->validate_bool( $value );
+					break;
+				case 'amount':
+				case 'tax_rate':
+					$this->$property = floatval( $value );
 					break;
 				default:
 					$this->$property = $value;
