@@ -144,7 +144,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$membership = $membership_relationship->get_membership(); 
 			$html[] = "{$membership->name} ({$membership_relationship->get_status()})";
 		}
-		$html = join(', ', $html);
+		$html = join('<br /> ', $html);
 		
 		$actions = array(
 				'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
@@ -172,7 +172,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$period = $membership_relationship->get_current_period()->format( "%a days");
 			$html[] = "$membership_relationship->start_date ($period)";
 		}
-		$html = join(', ', $html);
+		$html = join('<br /> ', $html);
 		
 		$actions = array(
 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
@@ -193,7 +193,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				$html[] = __('No trial', MS_TEXT_DOMAIN );
 			}
 		}
-		$html = join(', ', $html);
+		$html = join('<br /> ', $html);
 		
 		$actions = array(
 // 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
@@ -213,7 +213,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				$html[] = __('Permanent', MS_TEXT_DOMAIN );
 			}
 		}
-		$html = join(', ', $html);
+		$html = join('<br /> ', $html);
 		
 		$actions = array(
 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
@@ -227,7 +227,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		foreach( $item->membership_relationships as $membership_relationship ) {
 			$html[] = $membership_relationship->gateway;
 		}
-		$html = join(', ', $html);
+		$html = join('<br /> ', $html);
 		$actions = array(
 				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move_gateway', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
 			);
