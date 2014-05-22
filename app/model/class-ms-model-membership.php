@@ -185,6 +185,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $model;
 	}
 	
+	public static function is_valid_membership( $membership_id ) {
+		return ( static::load( $membership_id )->id > 0 );
+	}
+	
 	public static function get_visitor_membership() {
 		$args = array(
 				'post_type' => self::$POST_TYPE,

@@ -40,7 +40,7 @@ jQuery( document ).ready(function( $ ) {
 					'required': true,
 					'min': 0,
 				},
-				'membership_section[period_unit]': {
+				'membership_section[period][period_unit]': {
 					'required': true,
 					'min': 1,
 				},
@@ -52,7 +52,7 @@ jQuery( document ).ready(function( $ ) {
 					'required': true,
 					'dateISO': true,
 				},
-				'membership_section[pay_cycle_period_unit]': {
+				'membership_section[pay_cycle][period_unit]': {
 					'required': true,
 					'min': 1,
 				},
@@ -60,7 +60,7 @@ jQuery( document ).ready(function( $ ) {
 					'required': true,
 					'min': 0,
 				},
-				'membership_section[trial_period_unit]': {
+				'membership_section[trial_period][period_unit]': {
 					'required': true,
 					'min': 1,
 				}

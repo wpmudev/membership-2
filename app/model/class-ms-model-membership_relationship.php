@@ -29,6 +29,12 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	const MEMBERSHIP_STATUS_EXPIRED = 'expired';
 	
 	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
+	
+	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';
+	
+	const MEMBERSHIP_ACTION_MOVE = 'membership_move';
+	
+	const MEMBERSHIP_ACTION_CANCEL = 'membership_cancel';
 
 	protected $membership_id;
 	

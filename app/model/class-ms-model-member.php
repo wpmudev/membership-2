@@ -162,13 +162,18 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Add a new membership.
 	 * 
+	 * If multiple membership is disabled, may move existing membership.
+	 * 
 	 * Only add a membership ff a user is not already a member.
 	 * @param int $membership_id The membership id to add to.
 	 * @param string $gateway The gateway used to add the membership.
 	 */
 	public function add_membership( $membership_id, $gateway = 'admin' )
 	{
-		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+		if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id = reset( $this->membership_ids ) ) {
+			$this->move_membership( $move_from_id, $membership_id );
+		}
+		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) && MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			$membership_relationship = new MS_Model_Membership_Relationship( $membership_id, $gateway );
 			$this->membership_relationships[ $membership_id ] = $membership_relationship;
 			$this->membership_ids[ $membership_id ] = $membership_id;
@@ -219,7 +224,9 @@ class MS_Model_Member extends MS_Model {
 	}
 	
 	public function add_transaction( $transaction_id ) {
-		$this->transactions[ $transaction_id ] = $transaction_id;
+		if( ! array_key_exists( $transaction_id, $this->transactions ) ) {
+			$this->transactions[ $transaction_id ] = $transaction_id;
+		}
 	}
 	
 	public function is_member( $membership_id = 0 ) {
@@ -230,8 +237,9 @@ class MS_Model_Member extends MS_Model {
 				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL 
 			)
 		);
+		$simulate = MS_Model_Simulate::load();
 		
-		if ( $this->is_admin && empty( $_COOKIE[ MS_Controller_Admin_Bar::MS_SIMULATE_COOKIE ] ) ) {
+		if ( $this->is_admin && ! $simulate->is_simulating() ) {
 			$is_member = true;
 		}
 		

@@ -36,19 +36,23 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected $payment_button;
 	
+	protected static $gateways;
+	
 	public function after_load() {
 		if( $this->active ) {
-			$this->add_action( 'ms_view_registration_payment_form', 'payment_form', 10, 2 );
+			$this->add_action( 'ms_view_registration_payment_form', 'purchase_button', 10, 2 );
 			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
 		}
 	}
 	
 	public static function get_gateways() {
-		$gateways = array(
-			'free_gateway' => MS_Model_Gateway_Free::load(),
-			'manual_gateway' => MS_Model_Gateway_Manual::load(),
-		);
-		return apply_filters( 'ms_model_gateway_get_gateways' , $gateways );
+		if( empty( self::$gateways ) ) {
+			self::$gateways = array(
+				'free_gateway' => MS_Model_Gateway_Free::load(),
+				'manual_gateway' => MS_Model_Gateway_Manual::load(),
+			);
+		}
+		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
 	}
 	
 	public static function factory( $gateway_id ) {
@@ -62,11 +66,32 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_factory', $gateway, $gateway_id );
 	}
 	
-	public function payment_form( $membership, $member ) {
+	public function purchase_button( $membership, $member ) {
 		
 	}
 	
 	public function handle_return() {
 		
 	}
+	
+	public function add_transaction( $membership, $member, $status ) {
+		
+		$transaction = new MS_Model_Transaction();
+		$transaction->gateway_id = $this->id;
+		$transaction->membership_id = $membership->id;
+		$transaction->amount = $membership->price;
+		$transaction->status = $status;
+		$transaction->user_id = $member->id;
+		$transaction->name = $this->name . ' transaction';
+		$transaction->description = $this->description;
+		$transaction->save();
+		
+		if( MS_Model_Transaction::STATUS_PAID == $status ) {
+			$member->add_membership( $membership->id, $this->id );
+		}
+		
+		$member->add_transaction( $transaction->id );
+		$member->save();
+	}
+	
 }

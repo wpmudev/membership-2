@@ -20,16 +20,10 @@
  *
 */
 
-class MS_Model_Gateway_Free extends MS_Model_Gateway {
+class MS_Controller_Gateway extends MS_Controller {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
-	protected $id = 'free_gateway';
-	
-	protected $name = 'Free Gateway';
-	
-	protected $description = 'Free Memberships';
-	
-	protected $is_single = true;
-	
+	public function __construct() {
+		
+	}
+
 }

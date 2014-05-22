@@ -32,7 +32,9 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $is_single = true;
 	
-	public function payment_form( $membership, $member ) {
+	protected $payment_info;
+	
+	public function purchase_button( $membership, $member ) {
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',
@@ -58,5 +60,30 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				<?php MS_Helper_Html::html_input( $fields['membership_signup'] ); ?>
 			</form>
 		<?php 
+	}
+	
+	public function handle_return() {
+		$this->payment_info = array(
+			'bank' => 'banco',
+			'bank_agency' => 1234,
+			'bank_account' => 1234,
+		);
+		if( ! empty( $_POST['membership_id'] ) ) {
+			$membership = MS_Model_Membership::load( $_POST['membership_id'] );
+			$member = MS_Model_Member::get_current_member();
+			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED );
+			ob_start();
+
+			foreach( $this->payment_info as $key => $value ) {
+				?>
+					<p>
+						<span class"ms-title"><?php echo $key;?></span>: <span class="ms-field"><?php echo $value;?></span>
+					</p>
+				<?php 
+			}
+			$html = ob_get_clean();
+			return $html;
 		}
+	}
+	
 }

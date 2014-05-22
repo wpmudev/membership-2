@@ -87,6 +87,10 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Instantiate Plugin view */
 		$this->view = apply_filters( 'membership_view_plugin', new MS_View_Plugin( array( 'test'=>'two' )) );
 
+		/** Rewrite rules */
+		$this->add_action( 'generate_rewrite_rules', 'add_rewrites', 1 );
+		$this->add_filter( 'query_vars', 'add_query_vars' );
+		
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 		
@@ -173,8 +177,47 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['registration'] = apply_filters( 'membership_controller_registration', new MS_Controller_Registration() );
 	}
 
-	
+	/**
+	 * Rewrite rules for gateway payment return url.
+	 * 
+	 * @todo Not working... Copied from 3.5
+	 * 
+	 * @param WP_Rewrite $wp_rewrite
+	 * @return WP_Rewrite
+	 */
+	public function add_rewrites( $wp_rewrite ) {
+		$new_rules = array();
+// 		if(!empty($M_options['masked_url'])) {
+// 			$new_rules[trailingslashit($M_options['masked_url']) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index(1);
+// 		}
+		
+		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index(1);
+		
+		$new_rules = apply_filters('ms_rewrite_rules', $new_rules);
+		
+		$wp_rewrite->rules = array_merge($new_rules, $wp_rewrite->rules);
+		return $wp_rewrite;
+	}
 
+	/**
+	 * Add custom query vars.
+	 * 
+	 *  @todo configure properly. Copied from 3.5
+	 * @param array $vars
+	 * @return string
+	 */
+	function add_query_vars( $vars ) {
+		if ( ! in_array( 'feedkey', $vars ) ) {
+			$vars[] = 'feedkey';
+		}
+		if ( ! in_array( 'protectedfile', $vars ) ) {
+			$vars[] = 'protectedfile';
+		}
+		if ( ! in_array( 'paymentgateway', $vars ) ) {
+			$vars[] = 'paymentgateway';
+		}
+		return $vars;
+	}
 	
 	/**
 	 * Adds Dashboard navigation menus.

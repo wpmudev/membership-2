@@ -91,8 +91,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		if ( !empty( $model_id ) ) {
 			
 			$post = get_post( $model_id );
-			$model->id = $model_id;
-			if( ! empty( $post ) ) {
+			if( ! empty( $post ) && static::$POST_TYPE == $post->post_type ) {
+				$model->id = $post->ID;
 				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->description = $post->post_content;
