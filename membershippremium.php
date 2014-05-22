@@ -33,10 +33,14 @@ Text Domain: wpmudev_membership
  *
 */
 
-/** Include WPMUDev Dashboard class */
+/**
+ * Include WPMUDev Dashboard
+ */
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
-/** Add WordPress core functionality: WP_List_Table */
+/** 
+ * Add WordPress core functionality: WP_List_Table
+ */
 if( ! class_exists( 'WP_List_Table' ) ) {
 	/** Pull from core. */
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -47,20 +51,34 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 	}
 }
 
-/** Constant defineing plugin text domain. */
+/**
+ * Membership text domain.
+ *
+ * @since 4.0.0
+ */
 define('MS_TEXT_DOMAIN', 'wpmudev_membership' );
 
-/** Constant used in wp_enqueue_style and wp_enqueue_script version. */
+/**
+ * Constant used in wp_enqueue_style and wp_enqueue_script version.
+ *
+ * @since 4.0.0
+ * @todo Decide if its still needed.
+ */
 define('MS_VERSION_DT', '2014-04-04' );
 
-/** Plugin name dir constant */
+/**
+ * Plugin name dir constant.
+ *
+ * @since 4.0.0
+ */
 define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 
-/** Plugin name dir constant */
+/**
+ * Plugin version
+ *
+ * @since 4.0.0
+ */
 define( 'MS_PLUGIN_VERSION', '4.0.0.0' );
-
-/** Instantiate the plugin */
-MS_Plugin::instance( new MS_Plugin() );
 
 /**
  * Hooks 'membership_class_path_overrides'. 
@@ -68,7 +86,7 @@ MS_Plugin::instance( new MS_Plugin() );
  * Overrides plugin class paths to adhere to naming conventions
  * where object names are separated by underscores or for special cases.
  *
- * @since 4.0.0.0
+ * @since 4.0.0
  *
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
@@ -105,7 +123,7 @@ add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides'
  *
  * Overrides file class paths.
  *
- * @since 4.0.0.0
+ * @since 4.0.0
  *
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
@@ -120,7 +138,7 @@ function membership_class_file_override( $file ) {
 add_filter( 'membership_class_file_override', 'membership_class_file_override' );
 
 /**
- * Sets up and loads the Membership plugin.
+ * Primary Membership plugin class.
  *
  * Initialises the autoloader and required plugin hooks.
  * Control of plugin is passed to the MVC implementation found
@@ -128,7 +146,7 @@ add_filter( 'membership_class_file_override', 'membership_class_file_override' )
  *
  * @since 4.0.0
  *
- * @return object
+ * @return object Plugin instance.
  */
 class MS_Plugin {
 	
@@ -150,7 +168,6 @@ class MS_Plugin {
 	 * @var name
 	 */
 	private $name;
-	
 	
 	/**
 	 * The plugin version.
@@ -207,7 +224,11 @@ class MS_Plugin {
 	private $addon;
 	
 	/**
-	 * Register hooks and loads the plugin.
+	 * Plugin constructor.
+	 *
+	 * Set properties, registers hooks and loads the plugin.
+	 *
+	 * @since 4.0.0
 	 */
 	function __construct() {
 		
@@ -227,14 +248,18 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
-		/** Hook method to register custom post types */
+		/** 
+		 * Hooks init to register custom post types.
+		 */
 		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
 		
-		/** Add additional constructing code, e.g. loading controllers */
+		/**
+		 * Hooks init to create the primary plugin controller.
+		 */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
 		
-		$this->settings = apply_filters( 'membership_model_settings', MS_Model_Settings::load() );
-		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load() );
+		$this->settings = apply_filters( 'membership_model_settings', MS_Model_Settings::load(), $this );
+		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load(), $this );
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
@@ -243,14 +268,12 @@ class MS_Plugin {
 		self::$instance = $this;
 		
 		/** Actions to execute when plugin is loaded. */
-		do_action( 'membership_plugin_loaded' ); 
+		do_action( 'membership_plugin_loaded', $this ); 
 		
 	}
 
 	/**
-	 * Additional plugin preparation.
-	 *
-	 * Used to load controllers and/or views.
+	 * Loads primary plugin controllers.
 	 *
 	 * @since 4.0.0
 	 * @return void
@@ -258,8 +281,7 @@ class MS_Plugin {
 	public function membership_plugin_constructing() {
 		
 		/** Main entry point controller for plugin. */
-		$this->controller = new MS_Controller_Plugin();
-		
+		$this->controller = new MS_Controller_Plugin();		
 	}
 
 	/**
@@ -271,7 +293,12 @@ class MS_Plugin {
 	 * @return void
 	 */	
 	public function register_custom_post_type() {
-		// register the orders post type
+		
+		/**
+		 * Register the Membership post type. 
+		 *
+		 * @since 4.0.0
+		 */
 		register_post_type( 'ms_membership',
 			apply_filters( 'ms_register_post_type_ms_membership',
 				array(
@@ -302,6 +329,11 @@ class MS_Plugin {
 			) 
 		);
 		
+		/**
+		 * Register the Transaction post type. 
+		 *
+		 * @since 4.0.0
+		 */		
 		register_post_type( 'ms_transaction',
 			apply_filters( 'ms_register_post_type_ms_transaction',
 				array(
@@ -324,6 +356,11 @@ class MS_Plugin {
 			) 
 		);
 		
+		/**
+		 * Register the Communication post type. 
+		 *
+		 * @since 4.0.0
+		 */		
 		register_post_type( 'ms_communication',
 			apply_filters( 'ms_register_post_type_ms_communication',
 				array(
@@ -368,13 +405,18 @@ class MS_Plugin {
 		
 		$path_overrides = apply_filters( 'membership_class_path_overrides', array() );
 		
+		/** 
+		 * Restrict class autoloading to provided namespaces.
+		 *
+		 * This prevents autoloading from interfering with other plugins in their own namespaces.
+		 *
+		 * @since 4.0.0
+		 */
 		foreach ( $namespaces as $namespace ) {
 			switch ( $namespace ) {
 			
 				/** Use /app/ path and structure only for MS_ classes */
 				case "MS_":
-				
-					
 					if ( !array_key_exists( trim( $class ), $path_overrides ) ) {
 						if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
 							$sub_path = strtolower( str_replace( 'MS_', '', $class ) );
@@ -481,3 +523,12 @@ class MS_Plugin {
 		}
 	}
 }
+
+/**
+ * Create an instance of the plugin object.
+ *
+ * This is the primary entry point for the Membership plugin.
+ *
+ * @since 4.0.0
+ */
+MS_Plugin::instance( new MS_Plugin() );
