@@ -25,6 +25,12 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	const SPECIAL_PAGE_NO_ACCESS = 'no_access';
+	const SPECIAL_PAGE_ACCOUNT = 'account';
+	const SPECIAL_PAGE_MEMBERSHIPS = 'memberships';
+	const SPECIAL_PAGE_REGISTER = 'register';
+	const SPECIAL_PAGE_WELCOME = 'wecolme';
+	
 	protected $id =  'ms_plugin_settings';
 	
 	protected $name = 'Plugin settings';
@@ -48,22 +54,25 @@ class MS_Model_Settings extends MS_Model_Option {
 		
 	public function initial_setup() {
 		MS_Model_Membership::get_visitor_membership();
-// 		if( ! $this->initial_setup ) {
+		if( ! $this->initial_setup ) {
 			$this->create_initial_pages();
-// 		}
+		}
 	}
 	public function create_initial_pages() {
-		if( empty( $this->pages['no_access'] ) ) {
+		if( empty( $this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] ) ) {
 			$this->create_no_access_page();
 		}
-		if( empty( $this->pages['memberships'] ) ) {
+		if( empty( $this->pages[ self::SPECIAL_PAGE_ACOUNT ] ) ) {
+			$this->create_account_page();
+		}
+		if( empty( $this->pages[ self::SPECIAL_PAGE_MEMBERSHIPS ] ) ) {
 			$this->create_memberships_page();
 		}
-		if( empty( $this->pages['register'] ) ) {
-			$this->create_registration_page();
+		if( empty( $this->pages[ self::SPECIAL_PAGE_REGISTER ] ) ) {
+			$this->create_register_page();
 		}
-		if( empty( $this->pages['registration_completed'] ) ) {
-			$this->create_registration_completed_page();
+		if( empty( $this->pages[ self::SPECIAL_PAGE_WELCOME ] ) ) {
+			$this->create_welcome_page();
 		}
 			
 		$this->initial_setup = true;
@@ -77,25 +86,32 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages['no_access'] = $id;
 	}
 	
+	public function create_account_page() {
+		$content = '<p>' . __( 'Your account.', MS_TEXT_DOMAIN ) . '</p>';
+		$pagedetails = array('post_title' => __( 'Account', MS_TEXT_DOMAIN ), 'post_name' => 'account', 'post_status' => 'virtual', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages['welcome'] = $id;
+	}
+	
 	public function create_memberships_page() {
-		$content = '[ms-membership-form]';
+		$content = '';
 		$pagedetails = array('post_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 'post_name' => 'memberships', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
 		$this->pages['memberships'] = $id;
 	}
 	
-	public function create_registration_page() {
-		$content = '<p>' . __( 'Register', MS_TEXT_DOMAIN ) . '</p>';
+	public function create_register_page() {
+		$content = '';
 		$pagedetails = array('post_title' => __( 'Register', MS_TEXT_DOMAIN ), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
 		$this->pages['register'] = $id;
 	}
 	
-	public function create_registration_completed_page() {
-		$content = '<p>' . __( 'Registration Completed.', MS_TEXT_DOMAIN ) . '</p>';
-		$pagedetails = array('post_title' => __( 'Registration completed', MS_TEXT_DOMAIN ), 'post_name' => 'registration_completed', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+	public function create_welcome_page() {
+		$content = '';
+		$pagedetails = array('post_title' => __( 'Welcome', MS_TEXT_DOMAIN ), 'post_name' => 'welcome', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
-		$this->pages['registration_completed'] = $id;
+		$this->pages['welcome'] = $id;
 	}
 	
 	public function get_pages( $args = null ) {
@@ -115,5 +131,27 @@ class MS_Model_Settings extends MS_Model_Option {
 			$cont[ $content->ID ] = $content->post_title;
 		}
 		return $cont;
+	}
+		
+	function is_special_page( $page_id = null, $special_page_type = null ) {
+	
+		$page_id = intval( $page_id );
+		if ( ! $page_id ) {
+			if( is_page() ) {
+				$page_id = get_the_ID();
+			}
+			else {
+				return false;
+			}
+		}
+	
+		if( ! empty( $special_page_type ) ) {
+			$is_special= isset( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ];
+		}
+		else {
+			$is_special = in_array( $page_id, $this->pages );
+		}
+	
+		return $is_special;
 	}
 }

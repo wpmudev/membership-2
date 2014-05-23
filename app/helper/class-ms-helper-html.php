@@ -45,6 +45,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
 	const INPUT_TYPE_IMAGE = 'image';
+	const INPUT_TYPE_PASSWORD = 'password';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -88,10 +89,11 @@ class MS_Helper_Html extends MS_Helper {
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				break;
 			case self::INPUT_TYPE_TEXT:
+			case self::INPUT_TYPE_PASSWORD:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span><br />" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<input class='ms-field-input ms-text $class' type='text' id='$id' name='$name' value='$value' $max_attr />";
+				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr />";
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
@@ -174,14 +176,15 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function html_link( $args = array() ) {
 		$defaults = array(
+			'id' 		=> '',
 			'title'		=> '',
 			'value'     => '',
 			'class'   	=> '',
 			'url'		=> '',	
 			);
 		extract( wp_parse_args( $args, $defaults ) );
-		
-		echo "<a title='$title' class='$class' href='$url'>$value</a>";
+		$url = esc_url( $url );
+		echo "<a id='$id' title='$title' class='$class' href='$url'>$value</a>";
 	}
 	/**
 	 * Method for outputting vertical tabs. 

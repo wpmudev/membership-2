@@ -21,27 +21,93 @@
 */
 
 class MS_Controller_Registration extends MS_Controller {
-	
-	private $allowed_actions = array( 
-			MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_SIGNUP,
-			MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_MOVE,
-			MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL,
-	);
-	
+		
 	public function __construct() {
+		$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
+		$this->add_filter( 'register_url', 'signup_location', 999 );
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
+		$this->add_filter( 'the_content', 'check_for_membership_pages_content', 1 );
+// 		$this->add_action( 'the_posts', 'process_actions', 1 );
 	}
 
 	public function process_actions() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		if( in_array( $action, $this->allowed_actions ) && method_exists( &$this, $action ) ) {
+		if( method_exists( &$this, $action ) ) {
 			$this->$action();
 		} 
 	}
 	
+	public function signup_location( $url ) {
+		if( ! empty( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] ) ) {
+			$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] );
+		}
+
+		return apply_filters( 'ms_controller_registration_signup_location', $url );
+	}
+	
+	public function check_for_membership_pages_content( $content ) {
+
+		global $post;
+		
+		$settings = MS_Plugin::instance()->settings;
+		
+		if ( empty( $post ) || $post->post_type != 'page' ) {
+			return $content;
+		}
+		
+		if ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_REGISTER ) ) {
+		
+			// check if page contains a shortcode
+			if ( strpos( $content, '[ms-membership-register-user]' ) === false ) {
+				// There is no shortcode content in there, so override
+				if( ! empty( $_REQUEST['action'] ) ) {
+					remove_filter( 'the_content', 'wpautop' );
+					$membership_id = 0;
+					if( ! empty( $_REQUEST['membership_id'] ) ) {
+						$membership_id = $_REQUEST['membership_id']; 
+					}
+					$content .= do_shortcode( "[ms-membership-register-user membership_id='$membership_id']" );
+				}
+				else {
+					remove_filter( 'the_content', 'wpautop' );
+					$content .= do_shortcode( '[ms-membership-signup]' );
+				}
+			}
+		}
+		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) ) {
+			// account page - check if page contains a shortcode
+			if ( strpos( $content, '[ms-membership-account]' ) !== false || 
+					strpos( $content, '[ms-membership-upgrade]' ) !== false || 
+					strpos( $content, '[ms-membership-renew]' ) !== false ) {
+				// There is content in there with the shortcode so just return it
+				return $content;
+			}
+			// There is no shortcode in there, so override
+			remove_filter( 'the_content', 'wpautop' );
+			$content .= do_shortcode( '[ms-membership-account]' );
+		} 
+		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ) {
+			// account page - check if page contains a shortcode
+			if ( strpos( $content, '[ms-membership-upgrade]' ) !== false || strpos( $content, '[ms-memberhship-renew]' ) !== false ) {
+				// There is content in there with the shortcode so just return it
+				return $content;
+			}
+			// There is no shortcode in there, so override
+			remove_filter( 'the_content', 'wpautop' );
+			if( MS_Model_Member::is_logged_user() ) {
+				$content .= do_shortcode( '[ms-membership-signup]' );
+			}
+			else {
+				$content .= do_shortcode( '[ms-membership-login]' );
+			}
+		}
+		return $content;
+	}
+	
 	public function membership_signup() {
-		if( ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
+
+		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
 			if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
 				$gateway_id = $_POST['gateway'];
@@ -81,6 +147,108 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 	}
 	
+	public function register_user() {
+		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
+			return;
+		}
+_ms_debug_log($_POST);
+		$required = array(
+				'user_login' => __( 'Username', 'membership' ),
+				'user_email' => __( 'Email address', 'membership' ),
+				'password'   => __( 'Password', 'membership' ),
+				'password2'  => __( 'Password confirmation', 'membership' ),
+		);
+		
+		$this->_register_errors = new WP_Error();
+		foreach ( $required as $key => $message ) {
+			if ( empty( $_POST[$key] ) ) {
+				$this->_register_errors->add( $key, __( 'Please ensure that the ', 'membership' ) . "<strong>" . $message . "</strong>" . __( ' information is completed.', 'membership' ) );
+			}
+		}
+		
+		if ( $_POST['password'] != $_POST['password2'] ) {
+			$this->_register_errors->add( 'passmatch', __( 'Please ensure the passwords match.', 'membership' ) );
+		}
+		
+		if ( !validate_username( $_POST['user_login'] ) ) {
+			$this->_register_errors->add( 'usernamenotvalid', __( 'The username is not valid, sorry.', 'membership' ) );
+		}
+		
+		if ( username_exists( sanitize_user( $_POST['user_login'] ) ) ) {
+			$this->_register_errors->add( 'usernameexists', __( 'That username is already taken, sorry.', 'membership' ) );
+		}
+		
+		if ( !is_email( $_POST['user_email'] ) ) {
+			$this->_register_errors->add( 'emailnotvalid', __( 'The email address is not valid, sorry.', 'membership' ) );
+		}
+		
+		if ( email_exists( $_POST['user_email'] ) ) {
+			$this->_register_errors->add( 'emailexists', __( 'That email address is already taken, sorry.', 'membership' ) );
+		}
+		
+		$this->_register_errors = apply_filters( 'membership_subscription_form_before_registration_process', $this->_register_errors );
+		
+		$result = apply_filters( 'wpmu_validate_user_signup', array(
+				'user_name' => $_POST['user_login'],
+				'orig_username' => $_POST['user_login'],
+				'user_email' => $_POST['user_email'],
+				'errors' => $this->_register_errors
+		) );
+		
+		$this->_register_errors = $result['errors'];
+		
+		// Hack for now - eeek
+		$anyerrors = $this->_register_errors->get_error_code();
+		if ( empty( $anyerrors ) ) {
+			// No errors so far - error reporting check for final add user *note $error should always be an error object becuase we created it as such.
+			$user_id = wp_create_user( sanitize_user( $_POST['user_login'] ), $_POST['password'], $_POST['user_email'] );
+		
+			if ( is_wp_error( $user_id ) ) {
+				$this->_register_errors->add( 'userid', $user_id->get_error_message() );
+			} else {
+				$member = Membership_Plugin::factory()->get_member( $user_id );
+				if ( !headers_sent() ) {
+					$user = @wp_signon( array(
+							'user_login'    => $_POST['user_login'],
+							'user_password' => $_POST['password'],
+							'remember'      => true,
+					) );
+		
+					if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
+						$this->_register_errors->add( 'userlogin', $user->get_error_message() );
+					} else {
+						// Set the current user up
+						wp_set_current_user( $user_id );
+					}
+				} else {
+					// Set the current user up
+					wp_set_current_user( $user_id );
+				}
+		
+				if ( has_action( 'membership_susbcription_form_registration_notification' ) ) {
+					do_action( 'membership_susbcription_form_registration_notification', $user_id, $_POST['password'] );
+				} else {
+					wp_new_user_notification( $user_id, $_POST['password'] );
+				}
+			}
+		
+			do_action( 'membership_subscription_form_registration_process', $this->_register_errors, $user_id );
+		} else {
+			do_action( 'membership_subscription_form_registration_process', $this->_register_errors, 0 );
+		}
+		
+		// Hack for now - eeek
+		$anyerrors = $this->_register_errors->get_error_code();
+		if ( empty( $anyerrors ) ) {
+			// redirect to payments page
+			wp_redirect( add_query_arg( array(
+			'action'       => 'subscriptionsignup',
+			'subscription' => $subscription,
+			) ) );
+			exit;
+		}
+		
+	}
 	public function membership_cancel() {
 		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$membership_id = $_GET['membership'];

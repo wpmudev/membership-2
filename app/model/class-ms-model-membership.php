@@ -144,6 +144,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 10,
 				'order' => 'DESC',
+				'post_status' => 'any',
 		);
 		$args = wp_parse_args( $args, $defaults );
 		

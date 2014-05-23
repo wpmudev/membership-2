@@ -49,7 +49,7 @@ class MS_Model_Plugin extends MS_Model {
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
 		$simulate = MS_Model_Simulate::load();
-		
+
 		/** Admin user simulating membership */
 		if( $this->member->is_admin_user() ) {
 			if( $simulate->is_simulating() ) {

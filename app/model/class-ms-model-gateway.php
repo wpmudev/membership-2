@@ -104,7 +104,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return $custom;
 	}
 	
-	public function add_transaction( $membership, $member, $status, $external_id, $notes ) {
+	public function add_transaction( $membership, $member, $status, $external_id, $notes = null ) {
 		
 		$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $this->id, $status );
 		$transaction->external_id = $external_id;

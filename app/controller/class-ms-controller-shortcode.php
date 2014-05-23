@@ -23,19 +23,40 @@
 class MS_Controller_Shortcode extends MS_Controller {
 	
 	public function __construct() {
-		add_shortcode( 'ms-membership-form', array( $this, 'membership_form' ) );
+		add_shortcode( 'ms-membership-register-user', array( $this, 'membership_register_user' ) );
+		add_shortcode( 'ms-membership-signup', array( $this, 'membership_signup' ) );
+		add_shortcode( 'ms-membership-upgrade', array( $this, 'membership_upgrade' ) );
+		add_shortcode( 'ms-membership-renew', array( $this, 'membership_renew' ) );
+		
 		add_shortcode( 'ms-membership-title', array( $this, 'membership_title' ) );
 		add_shortcode( 'ms-membership-details', array( $this, 'membership_details' ) );
 		add_shortcode( 'ms-membership-price', array( $this, 'membership_price' ) );
 		add_shortcode( 'ms-membership-button', array( $this, 'membership_button' ) );
 		
 		add_shortcode( 'ms-membership-login', array( $this, 'membership_login' ) );
+		add_shortcode( 'ms-membership-account', array( $this, 'membership_account' ) );
 		
 	}
 
-	public function membership_form( $atts ) {
+	public function membership_register_user( $atts ) {
+		$data = apply_filters(
+				'ms_controller_shortcode_membership_register_user_atts',
+				shortcode_atts(
+						array(
+								'title' => '',
+								'membership_id' => 0,
+						),
+						$atts
+				)
+		);
+		$view = apply_filters( 'ms_view_shortcode_membership_register_user', new MS_View_Shortcode_Membership_Register_User() );
+		$view->data = $data;
+		return $view->to_html();
+	}
+	
+	public function membership_signup( $atts ) {
 		$data = apply_filters( 
-				'ms_controller_shortcode_membership_form_atts', 
+				'ms_controller_shortcode_membership_signup_atts', 
 				shortcode_atts( 
 					array(
 						'title' => '',
@@ -46,12 +67,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			) 
 		);
+		$args = null;
 		$data['member'] = MS_Model_Member::get_current_member();
 		$not_in = $data['member']->membership_ids;
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
-		$args = array( 'post__not_in' => $not_in );
+		$args = array( 'post__not_in' => array_unique ( $not_in ) );
+
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
-		$view = apply_filters( 'ms_view_shortcode_membership_form', new MS_View_Shortcode_Membership_Form() );
+
+		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
 		return $view->to_html();
 	}
@@ -73,26 +97,31 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 	
 	public function membership_login( $atts ) {
-		$data = apply_filters(
-				'ms_controller_shortcode_membership_login_atts',
-				shortcode_atts(
+		$data = apply_filters( 'ms_controller_shortcode_membership_login_atts',
+					shortcode_atts(
 						array(
-							"holder"        => '',
-							"holderclass"   => '',
-							"item"          => '',
-							"itemclass"     => '',
-							"postfix"       => '',
-							"prefix"        => '',
-							"wrapwith"      => '',
-							"wrapwithclass" => '',
-							"redirect"      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
-							"lostpass"      => '',
+							'holder'        => '',
+							'holderclass'   => '',
+							'item'          => '',
+							'itemclass'     => '',
+							'postfix'       => '',
+							'prefix'        => '',
+							'wrapwith'      => '',
+							'wrapwithclass' => '',
+							'redirect'      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
+							'lostpass'      => '',
+							'header'		=> true,
+							'register'		=> true,
 						),
 						$atts
-				)
+					)
 		);
 		$view = apply_filters( 'ms_view_shortcode_membership_login', new MS_View_Shortcode_Membership_Login() );
 		$view->data = $data;
 		return $view->to_html();
+	}
+	
+	public function membership_account() {
+		
 	}
 }
