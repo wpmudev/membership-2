@@ -29,6 +29,7 @@
  * Methods of this class will prepare and output views.
  *
  * @since 4.0.0
+ * @package Membership
  */
 class MS_View extends MS_Hooker {
 	

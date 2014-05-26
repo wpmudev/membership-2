@@ -35,6 +35,8 @@
  *
  * @uses MS_Model
  * @uses MS_View
+ *
+ * @package Membership
  */
 class MS_Helper extends MS_Hooker {
 	

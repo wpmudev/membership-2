@@ -30,6 +30,8 @@
  * Adds ability for Membership users to test the behaviour for their end-users.
  *
  * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
  */
 class MS_Controller_Admin_Bar extends MS_Controller {
 	

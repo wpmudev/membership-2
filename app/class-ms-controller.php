@@ -33,6 +33,8 @@
  *
  * @uses MS_Model
  * @uses MS_View
+ *
+ * @package Membership
  */
 class MS_Controller extends MS_Hooker {
 	

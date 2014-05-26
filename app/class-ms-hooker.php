@@ -29,9 +29,8 @@
  * This file is the base object of all other objects in the Membership plugin. 
  * All Membership objects inherit from this class.
  *
- * @category Membership
- *
  * @since 3.5
+ * @package Membership
  */
 class MS_Hooker {
 

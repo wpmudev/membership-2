@@ -28,6 +28,8 @@
  * Manages the activating and deactivating of Memnbership addons.
  *
  * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
  */
 class MS_Controller_Addon extends MS_Controller {
 
