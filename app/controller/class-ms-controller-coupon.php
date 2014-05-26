@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Coupon class.
+ * 
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,28 +20,70 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Controller to manage Membership coupons.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Coupon extends MS_Controller {
 
+	/**
+	 * The custom post type used with Coupons.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $post_type
+	 */
 	private $post_type;
-	
+
+	/**
+	 * Capability required to manage Coupons.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */	
 	private $capability = 'manage_options';
-	
+
+	/**
+	 * The model to use for loading/saving coupon data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
-	
+
+	/**
+	 * View to use for rendering coupon settings.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
 	private $views;
-		
+
+	/**
+	 * Prepare the Coupon manager.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		/** Menu: Coupons */
 		$this->views['coupon'] = apply_filters( 'membership_coupon_view', new MS_View_Coupon() );			
 	}
 	
+	/**
+	 * Render the Coupon admin manager.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function admin_coupon() {
 		$this->views['coupon']->render();
 	}
-	
-	
-	
-	
+
 }

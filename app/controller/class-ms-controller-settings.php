@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Settings class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,18 +20,61 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Controller for managing Membership Plugin settings.
+ *
+ * The primary entry point for managing Membership admin pages.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Settings extends MS_Controller {
 	
+	
+	/**
+	 * Capability required to manage Membership settings.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */	
 	private $capability = 'manage_options';
-	
+
+	/**
+	 * The model to use for loading/saving Membership settings data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
-	
+
+	/**
+	 * View to use for rendering Membership Settings manager.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
 	private $views;
-	
+
+	/**
+	 * The current active tab in the vertical navigation.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $active_tab
+	 */
 	private $active_tab;
-		
+
+	/**
+	 * Prepare Membership settings manager.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		$this->add_action( 'load-membership_page_membership-settings', 'admin_settings_manager' );
 
@@ -37,6 +82,12 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'admin_print_styles-membership_page_membership-settings', 'enqueue_styles' );
 	}
 	
+	
+	/**
+	 * Get the current active settings page/tab.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function get_active_tab() {
 		$this->active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 	}
@@ -45,6 +96,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Manages settings actions.
 	 *
 	 * Verifies GET and POST requests to manage settings.
+	 * @since 4.0.0	
 	 */
 	public function admin_settings_manager() {
 		$this->get_active_tab();
@@ -108,8 +160,13 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		
 	}
+	
 	/**
-	 * Menu Settings.
+	 * Callback function from 'Membership' navigation.
+	 *
+	 * Menu Item: Membership > Settings
+	 *
+	 * @since 4.0.0
 	 */
 	public function admin_settings() {
 		if ( ! empty( $_GET['action'] ) ) {
@@ -121,9 +178,13 @@ class MS_Controller_Settings extends MS_Controller {
 			$view->render();
 		}
 	}
+
 	/**
 	 * Prepare and show action view.
 	 *
+	 * @todo Some more commenting as to the purpose of this function. It seems gateway specific?
+	 *
+	 * @since 4.0.0
 	 */
 	public function prepare_action_view() {
 		if ( 'payment' == $this->active_tab && 'edit' == $_GET['action'] && ! empty( $_GET['gateway_id'] ) ) {
@@ -146,9 +207,12 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 		}
 	}
+
 	/**
 	 * Save general tab settings.
 	 * 
+	 * @since 4.0.0
+	 *
 	 * @param string $action The action to execute.
 	 * @param string $settings Array of settings to which action will be taken.
 	 */
@@ -168,7 +232,16 @@ class MS_Controller_Settings extends MS_Controller {
 			$this->model->save();
 		}
 	}
-	
+
+	/**
+	 * Handle Payment Gateway list actions.
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @param string $action The action to execute.
+	 * @param int[] $gateways The gateways IDs to process.
+	 * @param mixed[] $fields The data to process.
+	 */	
 	public function gateway_list_do_action( $action, $gateways, $fields ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -196,6 +269,14 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		return $msg;
 	}
+	
+	/**
+	 * Handle saving of Communication settings.
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $fields The data to process.
+	 */	
 	public function save_communication( $fields ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -214,6 +295,11 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 	}
 	
+	/**
+	 * Load Membership admin styles.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function enqueue_styles() {
 		
 		if( 'messages-automated' == $this->active_tab ) {
@@ -221,7 +307,11 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 	}
 	
-	
+	/**
+	 * Load Membership admin scripts.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function enqueue_scripts() {
 		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
 		wp_enqueue_script( 'ms_view_member_ui' );				

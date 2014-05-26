@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Gateway class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,10 +20,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Primary Gateway controller.
+ *
+ * **Note :** This one is not like other admin settings controllers.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Gateway extends MS_Controller {
 	
+	/**
+	 * Prepare the gateway controller.
+	 * 
+	 * @since 4.0.0
+	 */
 	public function __construct() {
 		
 	}

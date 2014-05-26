@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Shortcode class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,10 +20,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Controller for managing Membership shortcodes.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Shortcode extends MS_Controller {
 	
+	/**
+	 * Prepare the shortcode hooks.  
+	 *
+	 * @since 4.0.0
+	 */
 	public function __construct() {
 		add_shortcode( 'ms-membership-register-user', array( $this, 'membership_register_user' ) );
 		add_shortcode( 'ms-membership-signup', array( $this, 'membership_signup' ) );
@@ -34,10 +48,16 @@ class MS_Controller_Shortcode extends MS_Controller {
 		add_shortcode( 'ms-membership-button', array( $this, 'membership_button' ) );
 		
 		add_shortcode( 'ms-membership-login', array( $this, 'membership_login' ) );
-		add_shortcode( 'ms-membership-account', array( $this, 'membership_account' ) );
-		
+		add_shortcode( 'ms-membership-account', array( $this, 'membership_account' ) );	
 	}
 
+	/**
+	 * Membership register callback function.  
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
 	public function membership_register_user( $atts ) {
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_register_user_atts',
@@ -53,7 +73,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view->data = $data;
 		return $view->to_html();
 	}
-	
+
+	/**
+	 * Membership signup callback function.  
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */	
 	public function membership_signup( $atts ) {
 		$data = apply_filters( 
 				'ms_controller_shortcode_membership_signup_atts', 
@@ -79,23 +106,49 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view->data = $data;
 		return $view->to_html();
 	}
-	
+
+	/**
+	 * Membership title shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 */	
 	public function membership_title() {
 		
 	}
-	
+
+	/**
+	 * Membership details shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 */		
 	public function membership_details() {
 		
 	}
-	
+
+	/**
+	 * Membership price shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 */		
 	public function membership_price() {
 		
 	}
-	
+
+	/**
+	 * Membership signup button shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 */		
 	public function membership_button() {
 		
 	}
-	
+
+	/**
+	 * Membership login shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 * @param mixed[] $atts Shortcode attributes.	
+	 */		
 	public function membership_login( $atts ) {
 		$data = apply_filters( 'ms_controller_shortcode_membership_login_atts',
 					shortcode_atts(
@@ -120,7 +173,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view->data = $data;
 		return $view->to_html();
 	}
-	
+
+	/**
+	 * Membership account page shortcode callback function.  
+	 *
+	 * @since 4.0.0
+	 */		
 	public function membership_account() {
 		
 	}
