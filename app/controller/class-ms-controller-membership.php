@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Membership class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -20,14 +22,49 @@
  *
 */
 
+/**
+ * Controller for managing Memberships and Membership Rules.
+ *
+ * Focuses on Memberships and specifying access to content.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Membership extends MS_Controller {
 	
+	/**
+	 * Capability required to manage Memberships.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */	
 	private $capability = 'manage_options';
-	
+
+	/**
+	 * The model to use for loading/saving Membership data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
-	
+
+	/**
+	 * View to use for rendering Membership settings.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
 	private $views;
-		
+	
+	/**
+	 * Prepare the Membership manager.
+	 *
+	 * @since 4.0.0
+	 */
 	public function __construct() {
 
 		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
@@ -42,11 +79,15 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 		
 	}
+	
 	/**
 	 * Show admin notices.
 	 * 
 	 * @todo Improve messaging, hooking into admin_notices or create a html_helper method
-	 * @param number $msg
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $msg
 	 */
 	public function print_admin_message( $msg = 0 ) {
 		
@@ -54,6 +95,13 @@ class MS_Controller_Membership extends MS_Controller {
 			$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
 		} 
 		
+		// TODO: We could always create an /app/ level class that only specifies contants (almost like enums)
+		//       E.g. MS_Constant::MEMBERSHIP_MSG_ADDED, MS_Constant::MEMBERSHIP_MSG_DELETED
+		//       Then below,  
+		//       MS_Contant::MEMBERSHIP_MSG_ADDED => __( 'Membership added.', MS_TEXT_DOMAIN ),
+		//       MS_Constant::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
+		//      
+		//       Then we can reuse these constants elsewhere.
 		$messages = array(
 				1 => __( 'Membership added.', MS_TEXT_DOMAIN ),
 				2 => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
@@ -77,6 +125,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Manages membership actions.
 	 * 
 	 * Verifies GET and POST requests to manage memberships
+	 *
+	 * @since 4.0.0
 	 */
 	public function admin_membership_list_manager() {
 		$msg = 0;
@@ -95,8 +145,10 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Execute action in Membership model.
 	 * 
+	 * @since 4.0.0
+	 *
 	 * @param string $action The action to execute.
-	 * @param array $membership_ids The membership ids which action will be taken.
+	 * @param int[] $membership_ids The membership ids which action will be taken.
 	 * @return number Resulting message id.
 	 */	
 	private function membership_list_do_action( $action, $membership_ids ) {
@@ -136,6 +188,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Show admin membership list.
 	 * 
 	 * Show all memberships available.
+	 *
+	 * @since 4.0.0
 	 */
 	public function admin_membership_list() {
 	
@@ -145,6 +199,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->views['membership_list']->render();
 	}
 	
+	/**
+	 * Handles Membership form/AJAX submissions.
+	 * 
+	 * @since 4.0.0
+	 */
 	public function membership_edit_manager() {
 		$msg = 0;
 		/**
@@ -197,9 +256,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->print_admin_message( $msg );
 		
 	}
+
 	/**
 	 * New/Edit membership.
 	 * 
+	 * @since 4.0.0
 	 */
 	public function membership_edit() {
 		$msg = 0;
@@ -213,9 +274,12 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->views['membership_edit']->render();
 	}
 	
-	/*
+	/**
 	 * Save membership general tab fields
-	 * @param array $fields
+	 *
+	 * @since 4.0.0 
+	 *
+	 * @param mixed[] $fields
 	 */
 	private function save_membership( $fields ) {
 		
@@ -237,11 +301,12 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Execute action in Rule model.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $action The action to execute.
-	 * @param array $item_ids The item ids which action will be taken.
-	 * @return number Resulting message id.
+	 * @param int[] $items The item ids which action will be taken.
+	 * @return int Resulting message id.
 	 */
-	
 	private function rule_list_do_action( $action, $items ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -269,6 +334,13 @@ class MS_Controller_Membership extends MS_Controller {
 		return $msg;
 	}
 	
+	/**
+	 * Coppy 'dripped content' schedule from one Membership to another.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $copy_from_id The Membership ID to copy from.
+	 */	
 	private function copy_dripped_schedule( $copy_from_id ) {
 		$src_membership = MS_Model_Membership::load( $copy_from_id );
 		
@@ -279,6 +351,13 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->model->save();
 	}
 	
+	/**
+	 * Save new 'dripped content' schedule(s).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $items The item ids which action will be taken.
+	 */	
 	private function save_dripped_schedule( $items ) {
 		$dripped = array(
 			'post' => array(),
@@ -305,6 +384,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->model->save();
 	}
 	
+	/**
+	 * Load Membership manager specific styles.
+	 *
+	 * @since 4.0.0
+	 */			
 	public function enqueue_styles() {
 		
 		$plugin_url = MS_Plugin::instance()->url;
@@ -325,7 +409,11 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 	}
 	
-		
+	/**
+	 * Load Membership manager specific scripts.
+	 *
+	 * @since 4.0.0
+	 */				
 	public function enqueue_scripts() {
 	
 		$plugin_url = MS_Plugin::instance()->url;
