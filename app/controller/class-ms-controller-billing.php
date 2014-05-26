@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Billing class.
+ * 
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -20,16 +22,56 @@
  *
 */
 
+/**
+ * Controller to manage billing and transactions.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Billing extends MS_Controller {
 
+	/**
+	 * The custom post type used with Add-ons.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $post_type
+	 */
 	private $post_type;
-	
+
+	/**
+	 * Capability required to manage Add-ons.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */		
 	private $capability = 'manage_options';
 	
+	/**
+	 * The model to use for loading/saving billing data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
-	
+
+	/**
+	 * View to use for rendering billing settings and lists.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
 	private $views;
-		
+
+	/**
+	 * Prepare the Billing manager.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		$this->add_action( 'load-membership_page_membership-billing', 'admin_billing_manager' );
 		
@@ -37,11 +79,12 @@ class MS_Controller_Billing extends MS_Controller {
 		$this->add_action( 'admin_print_styles-membership_page_membership-billing', 'enqueue_styles' );
 	}
 	
-	
 	/**
 	 * Manages billing actions.
 	 *
-	 * Verifies GET and POST requests to manage billing
+	 * Verifies GET and POST requests to manage billing.
+	 *
+	 * @since 4.0.0	
 	 */
 	public function admin_billing_manager() {
 		$msg = 0;
@@ -72,11 +115,12 @@ class MS_Controller_Billing extends MS_Controller {
 			$msg = $this->billing_do_action( $action, $_POST['transaction_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 		}
-	
 	}
 	
 	/**
-	 * Menu Billing
+	 * Sets up the 'Billing' navigation and list page.
+	 *
+	 * @since 4.0.0	
 	 */
 	public function admin_billing() {
 		/**
@@ -96,7 +140,16 @@ class MS_Controller_Billing extends MS_Controller {
 			$this->views['billing']->render();
 		}
 	}
-	
+
+	/**
+	 * Perform actions for each transaction.
+	 *
+	 * @todo Still incomplete.
+	 *
+	 * @since 4.0.0	
+	 * @param string $action The action to perform on selected transactions
+	 * @param object[] $transactions The list of transactions to process.
+	 */	
 	public function billing_do_action( $action, $transactions ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -106,7 +159,13 @@ class MS_Controller_Billing extends MS_Controller {
 			
 		}
 	}
-	
+
+	/**
+	 * Save transactions using the transactions model.
+	 *
+	 * @since 4.0.0	
+	 * @param mixed $fields Transaction fields
+	 */	
 	public function save_transaction( $fields ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -125,13 +184,23 @@ class MS_Controller_Billing extends MS_Controller {
 		}
 		
 	}
-	
+
+	/**
+	 * Load Billing specific styles.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function enqueue_styles() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
 			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 		}
 	}
-	
+
+	/**
+	 * Load Billing specific scripts.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function enqueue_scripts() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
