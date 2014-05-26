@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Member class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -20,16 +22,59 @@
  *
 */
 
+/**
+ * Controller for managing Members and Membership relationships.
+ *
+ * Focuses on the Member and the member's Memberships.
+ * Handles Membership movements (add, cancel, move, etc.) and is responsible for the rendering of Member lists and management.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Member extends MS_Controller {
 
+	/**
+	 * The custom post type used with Members.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $post_type
+	 */
 	private $post_type;
 	
+	/**
+	 * Capability required to manage Members.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */	
 	private $capability = 'manage_options';
-	
+
+	/**
+	 * The model to use for loading/saving Member data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
-	
+
+	/**
+	 * View to use for rendering Member management/lists.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
 	private $views;
-		
+	
+	/**
+	 * Prepare the Member manager.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		
 		/** New/Edit: Member */ 
@@ -45,12 +90,36 @@ class MS_Controller_Member extends MS_Controller {
 		
 	}
 
+	/**
+	 * Updates and gets the 'Screen Options' value for 'Members per page'.
+	 *
+	 * **Hooks Filter: **  
+	 *  
+	 * * set-screen-option
+	 *
+	 * @todo See if there is another way to do this in future release.
+	 *
+	 * @since 4.0.0
+	 * @uses set_screen_options()
+	 * @see /wp-admin/includes/misc.php
+	 * 
+	 * @param mixed $status Flag used by set_screen_options. Default is false.
+	 * @param string $option The option name.
+	 * @param int $value The number of rows to use.
+	 */			
 	public function table_set_option($status, $option, $value) {
-	  if ( 'members_per_page' == $option ) return $value;
+	  if ( $option == 'members_per_page' ) return $value;
 	}
 	
-	
-	/** Prepare pagination for member list. */
+	/** 
+	 * Prepare pagination for member list.
+	 *
+	 * **Hooks Action: **  
+	 *  
+	 * * load-[page]
+	 *
+     * @since 4.0.0
+	 */
 	public function table_options() {
 		$option = 'per_page';
 		$args = array(
@@ -71,8 +140,11 @@ class MS_Controller_Member extends MS_Controller {
 	 * Manages membership actions.
 	 *
 	 * Verifies GET and POST requests to manage members
+	 *
 	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member 
 	 * 	membership fields (active, memberships, start, end, gateway)
+	 *
+	 * @since 4.0.0
 	 */
 	public function admin_member_list_manager() {
 		/**
@@ -112,10 +184,12 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		
 	}
+
 	/**
 	 * Show member list.
 	 * 
 	 * Menu Members, show all users available.
+	 * @since 4.0.0
 	 */	
 	public function admin_member_list() {
 		/**
@@ -134,7 +208,10 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Prepare and show action view.
 	 * 
+	 * @since 4.0.0
+	 *
 	 * @param string $action The action to execute.
+	 * @param int $member_id User ID of the member.
 	 */
 	public function prepare_action_view( $action, $member_id ) {
 		$view = null;
@@ -180,6 +257,15 @@ class MS_Controller_Member extends MS_Controller {
 		$view->render();
 	}
 	
+	/**
+	 * Handles Member list actions.
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @param string $action The action to execute.
+	 * @param object[] $members Array of members.	
+	 * @param int $membership_id The Membership to apply action to.
+	 */	
 	public function member_list_do_action( $action, $members, $membership_id = null ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -224,11 +310,21 @@ class MS_Controller_Member extends MS_Controller {
 			$member->save();
 		}			
 	}
-		
+
+	/**
+	 * Load Member manager specific styles.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function enqueue_styles() {
 		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 	}
-	
+
+	/**
+	 * Load Member manager specific scripts.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_register_script( 'ms_view_member_date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );

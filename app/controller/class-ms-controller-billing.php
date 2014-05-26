@@ -32,7 +32,7 @@
 class MS_Controller_Billing extends MS_Controller {
 
 	/**
-	 * The custom post type used with Add-ons.
+	 * The custom post type used with Billing.
 	 *
 	 * @since 4.0.0
 	 * @access private
@@ -41,7 +41,7 @@ class MS_Controller_Billing extends MS_Controller {
 	private $post_type;
 
 	/**
-	 * Capability required to manage Add-ons.
+	 * Capability required to manage Billing.
 	 *
 	 * @since 4.0.0
 	 * @access private
