@@ -133,7 +133,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $cont;
 	}
 		
-	function is_special_page( $page_id = null, $special_page_type = null ) {
+	public function is_special_page( $page_id = null, $special_page_type = null ) {
 	
 		$page_id = intval( $page_id );
 		if ( ! $page_id ) {
