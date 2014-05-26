@@ -1,5 +1,8 @@
 <?php
 /**
+/**
+ * This file defines the MS_Hooker object.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -22,6 +25,9 @@
 
 /**
  * Base hooker class provides generic interface to hook on actions and filters.
+ *
+ * This file is the base object of all other objects in the Membership plugin. 
+ * All Membership objects inherit from this class.
  *
  * @category Membership
  *
@@ -158,7 +164,7 @@ class MS_Hooker {
 	 *
 	 * @access protected
 	 * @param string $tag The name of the filter to hook the $method to.
-	 * @param type $method The name of the method to be called when the filter is applied.
+	 * @param string $method The name of the method to be called when the filter is applied.
 	 * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return Membership_Module
@@ -179,7 +185,7 @@ class MS_Hooker {
 	 *
 	 * @access protected
 	 * @param string $tag The name of the filter to remove the $method to.
-	 * @param type $method The name of the method to remove.
+	 * @param string $method The name of the method to remove.
 	 * @param int $priority optional. The priority of the function (default: 10).
 	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
 	 * @return Membership_Module
@@ -236,7 +242,7 @@ class MS_Hooker {
 	 * @since 4.0
 	 *
 	 * @access public
-	 * @param string $name The name of a property to associate.
+	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
