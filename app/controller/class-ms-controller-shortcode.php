@@ -63,8 +63,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'ms_controller_shortcode_membership_register_user_atts',
 				shortcode_atts(
 						array(
-								'title' => '',
+								'first_name' => '',
+								'last_name' => '',
+								'username' => '',
+								'email' => '',
 								'membership_id' => 0,
+								'errors' => '',
 						),
 						$atts
 				)

@@ -37,28 +37,20 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $email;
 	
-	protected $phone_number;
+	protected $name;
+	
+	protected $first_name;
+	
+	protected $last_name;
+	
+	protected $password;
+	
+	protected $password2;
+	
+	protected static $ignore_fields = array( 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
+	
+	public function __construct() {
 		
-	protected $address;
-	
-	protected $address_number;
-	
-	protected $address_comp;
-	
-	protected $district;
-	
-	protected $city;
-	
-	protected $state_cd;
-	
-	protected $country;
-	
-	protected $zip_code;
-	
-	protected static $ignore_fields = array( 'id', 'name', 'username', 'email', 'actions', 'filters' );
-	
-	public function __construct( $user_id ) {
-		$this->id = $user_id;
 	}
 	
 	public static function get_current_member() {
@@ -67,7 +59,9 @@ class MS_Model_Member extends MS_Model {
 	
 	public static function load( $user_id = 0 )
 	{
-		$member = new MS_Model_Member( $user_id );
+		$member = new MS_Model_Member();
+		
+		$member->id = $user_id;
 		
 		if( ! empty( $user_id ) )
 		{
@@ -78,6 +72,8 @@ class MS_Model_Member extends MS_Model {
 			$member->username = $wp_user->user_login;
 			$member->email = $wp_user->user_email;
 			$member->name = $wp_user->user_nicename;
+			$member->first_name = $wp_user->first_name;
+			$member->last_name = $wp_user->last_name;
 
 			$member->is_admin = self::is_admin_user( $wp_user );
 
@@ -100,31 +96,123 @@ class MS_Model_Member extends MS_Model {
 	
 	public function save()
 	{
-		if( ! empty( $this->id ) ) {
-			$user_details = get_user_meta( $this->id );
-			$fields = get_object_vars( $this );
-			foreach( $fields as $field => $val ) {
-				if( in_array( $field, self::$ignore_fields ) ) {
-					continue;
-				}
-				if( isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0] ) || $user_details[ "ms_$field" ][0] != $this->$field ) ) {
-					update_user_meta( $this->id, "ms_$field", $this->$field);
-				}
-			}
-			if( isset( $this->name ) ) {
-				$wp_user = new stdClass();
-				$wp_user->ID = $this->id;
-				$wp_user->nickname = $this->name;
-				$wp_user->user_nicename = $this->name;
-				$wp_user->display_name = $this->name;
-				wp_update_user( get_object_vars( $wp_user ) );
-			}				
-		}
-		else {
-			throw new Exception( "user id is empty" );
+		if( empty( $this->id ) ) {
+			$this->create_new_user();
 		}
 		
+		$user_details = get_user_meta( $this->id );
+		$fields = get_object_vars( $this );
+		foreach( $fields as $field => $val ) {
+			if( in_array( $field, self::$ignore_fields ) ) {
+				continue;
+			}
+			if( isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0] ) || $user_details[ "ms_$field" ][0] != $this->$field ) ) {
+				update_user_meta( $this->id, "ms_$field", $this->$field);
+			}
+		}
+		if( isset( $this->name ) ) {
+			$wp_user = new stdClass();
+			$wp_user->ID = $this->id;
+			$wp_user->nickname = $this->name;
+			$wp_user->user_nicename = $this->name;
+			$wp_user->first_name = $this->first_name;
+			$wp_user->last_name = $this->last_name;
+			$wp_user->display_name = $this->name;
+			wp_update_user( get_object_vars( $wp_user ) );
+		}				
+				
 		return $this;
+	}
+	
+	/**
+	 * Create new WP user.
+	 * @throws Exception
+	 */
+	private function create_new_user() {
+		$validation_errors = new WP_Error();
+
+		$required = array(
+				'username' => __( 'Username', MS_TEXT_DOMAIN ),
+				'email' => __( 'Email address', MS_TEXT_DOMAIN ),
+				'password'   => __( 'Password', MS_TEXT_DOMAIN ),
+				'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
+		);
+		
+		foreach ( $required as $field => $message ) {
+			if ( empty( $this->$field ) ) {
+				$validation_errors->add( $field, __( 'Please ensure that the ', MS_TEXT_DOMAIN ) . "<strong>$message</strong>" . __( ' information is completed.', MS_TEXT_DOMAIN ) );
+			}
+		}
+		
+		if ( $this->password != $this->password2 ) {
+			$validation_errors->add( 'passmatch', __( 'Please ensure the passwords match.', MS_TEXT_DOMAIN ) );
+		}
+			
+		if( ! validate_username( $this->username ) ) {
+			$validation_errors->add( 'usernamenotvalid', __( 'The username is not valid, sorry.', MS_TEXT_DOMAIN ) );
+		}
+			
+		if ( username_exists( $this->username ) ) {
+			$validation_errors->add( 'usernameexists', __( 'That username is already taken, sorry.', MS_TEXT_DOMAIN ) );
+		}
+			
+		if ( ! is_email( $this->email ) ) {
+			$validation_errors->add( 'emailnotvalid', __( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN ) );
+		}
+			
+		if ( email_exists( $this->email ) ) {
+			$validation_errors->add( 'emailexists', __( 'That email address is already taken, sorry.', MS_TEXT_DOMAIN ) );
+		}
+
+		$validation_errors = apply_filters( 'ms_model_membership_create_new_user_validation_errors', $validation_errors );
+		
+		$result = apply_filters( 'wpmu_validate_user_signup', array(
+				'user_name' => $this->username,
+				'orig_username' => $this->username,
+				'user_email' => $this->email,
+				'errors' => $validation_errors
+		) );
+		
+		$validation_errors = $result['errors'];
+		$errors = $validation_errors->get_error_messages();
+		
+		if( ! empty( $errors ) ) {
+			throw new Exception( implode( '<br/>', $errors ) );
+		}
+		else {
+			$user_id = wp_create_user( $this->username, $this->password, $this->email );
+			if ( is_wp_error( $user_id ) ) {
+				$validation_errors->add( 'userid', $user_id->get_error_message() );
+				throw new Exception( implode( '<br/>', $validation_errors->get_error_messages() ) );
+			}
+			$this->id = $user_id;
+		}
+	}
+	 
+	/**
+	 * Sign on user.
+	 */
+	public function signon_user() {
+		if ( ! headers_sent() ) {
+			$user = @wp_signon( array(
+					'user_login'    => $this->username,
+					'user_password' => $this->password,
+					'remember'      => true,
+				) 
+			);
+			
+			if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
+				return $user;
+			} 
+			else {
+				/** Set the current user up */
+				wp_set_current_user( $this->id );
+			}
+		}
+		else {
+			/** Set the current user up */
+			wp_set_current_user( $this->id );
+		}
 	}
 	
 	public static function get_members_count( $args = null ) {
@@ -298,5 +386,31 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 		return $admins;
+	}
+	
+	/**
+	 * Set specific property.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'username':
+					$this->$property = sanitize_user( $value );
+				case 'name':
+				case 'first_name':
+				case 'last_name':
+					$this->$property = sanitize_text_field( $value );
+					break;
+				default:
+					$this->$property = $value;
+					break;
+			}
+		}
 	}
 }

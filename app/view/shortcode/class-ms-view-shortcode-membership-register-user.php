@@ -17,12 +17,12 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 			'value' => __( 'Already have a user account?', MS_TEXT_DOMAIN ),
 		);
 		?>
-		<div id="membership-wrapper">
+		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors() ?>
-			<form class="form-membership" action="<?php echo add_query_arg( 'action', 'register_user', $permalink ) ?>" method="post">
+			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo add_query_arg( 'action', 'register_user', $permalink ) ?>" method="post">
 				<legend><?php _e( 'Create an Account', 'membership' ) ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
-					<div class="form-element">
+					<div class="ms-form-element">
 						<?php MS_Helper_Html::html_input( $field );?>
 					</div>
 				<?php endforeach;?>
@@ -40,8 +40,8 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 		$data = $this->data;
 		
 		$this->fields = array(
-				'membership_id' => array(
-						'id' => 'membership_id',
+				'membership' => array(
+						'id' => 'membership',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $data['membership_id'],
 				),
@@ -49,25 +49,25 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 						'id' => 'first_name',
 						'title' => __( 'First Name', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => '',
+						'value' => $data['first_name'],
 				),
 				'last_name' => array(
 						'id' => 'last_name',
 						'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => '',
+						'value' => $data['last_name'],
 				),
 				'user_login' => array(
 						'id' => 'user_login',
 						'title' => __( 'Choose a Username', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => '',
+						'value' => $data['username'],
 				),
 				'user_email' => array(
 						'id' => 'user_email',
 						'title' => __( 'Email Address', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => '',
+						'value' => $data['email'],
 				),
 				'password' => array(
 						'id' => 'password',
@@ -95,15 +95,12 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 	 * @access private
 	 */
 	private function render_errors() {
-		if ( is_wp_error( $this->error ) ) {
-			$messages = $this->error->get_error_messages();
-			if ( !empty( $messages ) ) {
-				?>
-					<div class="alert alert-error">
-						<?php echo implode( '<br>', $messages ) ?>
-					</div>
-				<?php
-			}
+		if( ! empty( $this->data['errors'] ) ) {
+		?>
+			<div class="ms-alert-box ms-alert-error">
+				<?php echo $this->data['errors']; ?>
+			</div>
+		<?php
 		}
 	}
 

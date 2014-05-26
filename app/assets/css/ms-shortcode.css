@@ -104,3 +104,32 @@
 	background: -moz-linear-gradient(top,  #0095cc,  #00678e) !Important;
 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#0095cc', endColorstr='#00678e') !Important;
 }
+.ms-form-element {
+	margin: 1em;
+}
+.ms-form-element span {
+	
+}
+.ms-form-element input {
+	margin: 0 0 0 1em;
+	float: right;
+}
+/** jquery validation */
+.ms-validation-error {
+	color: #E46C6E;
+}
+label.ms-validation-error {
+	height: 1.8em;
+	width: auto;
+	clear: both;
+	padding: 4px 4px 4px 25px;
+	border: 1px solid #ffd2d2;
+    background: url("../images/error-icon.png") no-repeat 5px 5px #ffefef;
+	color: #666666;
+	font-size: .8em!important;
+	font-family: verdana;
+	font-size: 2em;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}

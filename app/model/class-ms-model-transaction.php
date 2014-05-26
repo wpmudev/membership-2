@@ -41,6 +41,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	const STATUS_PENDING = 'pending';
 	
 	const STATUS_DISPUTE = 'dispute';
+	
+	const STATUS_DENIED = 'denied';
 
 	/**
 	 * External transaction ID.
@@ -88,6 +90,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
 				self::STATUS_DISPUTE => __( 'Dispute', MS_TEXT_DOMAIN ),
+				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 			) 
 		);
 	}
@@ -171,18 +174,18 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$member->add_transaction( $transaction->id );
 		$member->save();
 		
-		$transaction->process_transaction( $status, true );
 		return $transaction;
 	}
 	
 	/**
 	 * Process transaction status change.
-	 *  
+	 * 
+	 * @todo better handle status change other than paid.   
 	 * @param string $status The status to change
 	 * @param bool $force Process status change even if status already has the new value. 
 	 */
 	public function process_transaction( $status, $force = false ) {
-		if(  array_key_exists( $value, self::get_status() ) && ( $this->status != $status || $force ) ) {
+		if(  array_key_exists( $status, self::get_status() ) && ( $this->status != $status || $force ) ) {
 			$this->status = $status;
 			$member = MS_Model_Member::load( $this->user_id );
 			switch( $status ) {

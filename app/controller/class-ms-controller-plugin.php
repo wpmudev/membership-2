@@ -99,13 +99,15 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Register admin styles (CSS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_styles' );
 		
-		/** Register admin styles that is used in the front end (CSS) */
-		$this->add_action( 'wp_enqueue_scripts', 'register_plugin_styles');
+		/** Register styles used in the front end (CSS) */
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles');
 		
 		/** Enque admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
 				
-				
+		/** Register scripts used in the front end (JS) */
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts');
+		
 		//FJ: it is breaking add_menu_pages, commented for now.
 		/** ONLY load controllers when we are going to need them. */
 // 		if( ! empty( $_GET['page'] ) ) {
@@ -279,23 +281,25 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */	
 	public function register_plugin_admin_styles() {
-		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css' );
-		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css' );
+		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-admin' );
 	}
 	
 	/**
-	 * Adds CSS for Membership settings pages used in the front end.
+	 * Adds CSS for Membership pages used in the front end.
 	 *
 	 * @since 4.0.0
 	 *	
 	 * @return void
 	 */	
-	public function register_plugin_styles() {
-		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css' );
-		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css' );
+	public function enqueue_plugin_styles() {
+		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-shortcode' );
+		
 	}
+	
 	/**
 	 * Adds JavasSript for Membership settings pages.
 	 *
@@ -308,6 +312,20 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_plugin_admin_scripts() {
 		// wp_register_script( 'membership_admin_js', MS_Plugin::instance()->url . 'app/assets/js/settings.js' );
 		// wp_enqueue_script( 'membership_admin_js' );
+	}
+
+	/**
+	 * Adds JavasSript for Membership pages used in the front end.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_plugin_scripts() {
+		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
+		wp_enqueue_script( 'jquery-validate' );
+		wp_register_script( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), MS_Plugin::instance()->version );
+		wp_enqueue_script( 'membership-shortcode' );
 	}
 	
 	
