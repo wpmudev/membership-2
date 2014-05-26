@@ -100,7 +100,7 @@ define( 'MS_PLUGIN_VERSION', '4.0.0.0' );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
-	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membeship-metabox.php";
+	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
 	$overrides['MS_Helper_List_Table_Rule_Url_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php";
 	$overrides['MS_Model_Communication_After_Finishes'] =  "app/model/communication/class-ms-model-communication-after-finishes.php";

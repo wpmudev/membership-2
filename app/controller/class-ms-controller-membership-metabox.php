@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Membership_Metabox class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -21,25 +23,76 @@
 */
 
 /**
- * Membership Metabox
+ * Creates the Membership access metabox.
  *
- * @since 4.0.0
+ * Creates simple access control UI for Posts/Page edit pages.
  *
+ * @package Membership
+ * @subpackage Controller
  */
 class MS_Controller_Membership_Metabox extends MS_Controller {
-	
+
+	/**
+	 * The custom post type used with Memberships and access.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $post_type
+	 */	
 	private $post_types;
 	
+	/**
+	 * The metabox ID.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $metabox_id
+	 */	
 	private $metabox_id = 'membership_access';
 	
+	/**
+	 * The metabox title.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $metabox_title
+	 */
 	private $metabox_title;
 	
+	/**
+	 * Context for showing the metabox.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $context
+	 */
 	private $context = 'side';
-	
+
+	/**
+	 * Metabox priority.
+	 *
+	 * Effects position in the metabox hierarchy.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $priority
+	 */	
 	private $priority = 'default';
 	
+	/**
+	 * Capability required to use access metabox.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */		
 	private $capability = 'manage_options';
 		
+	/**
+	 * Prepare the metabox.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {		
 		$this->metabox_title = __( 'Membership Access', MS_TEXT_DOMAIN );
 		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', array( 'page', 'post' ) );
@@ -49,13 +102,24 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
 	}
 	
+	/**
+	 * Add the metabox for this post/page.
+	 *
+	 * @since 4.0.0
+	 */			
 	public function add_meta_boxes() {
 		foreach ($this->post_types as $post_type) {
 			add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
 		}
 	
 	}
-	
+
+	/**
+	 * Membership metabox callback function for displaying the UI.
+	 *
+	 * @since 4.0.0
+	 * @param object $post The current post object.
+	 */			
 	public function membership_metabox( $post ) {	
 		$view = apply_filters( 'ms_view_membership_metabox', new MS_View_Membership_Metabox() );
 		
@@ -80,6 +144,15 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$view->render();
 	}
 	
+	/**
+	 * Save the metabox data for given post.
+	 *
+	 * @todo Consider whether both parameters are needed.
+	 *
+	 * @since 4.0.0
+	 * @param int $post_id The ID this metabox applies to.
+	 * @param object $post The post object.
+	 */			
 	public function save_metabox_data( $post_id, $post ) {
 		if ( empty( $post_id ) || empty( $post ) ) return;
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -108,7 +181,14 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			
 		}
 	}
-	
+
+	/**
+	 * Determine whether Membership can be changed or is read-only.
+	 *
+	 * @since 4.0.0
+	 * @param string $post_type The post type of the post.
+	 * @return bool 
+	 */		
 	public function is_read_only( $post_type ) {
 		if( 'post' == $post_type && ! MS_Plugin::instance()->addon->post_by_post ) {
 			$read_only = true;
@@ -119,6 +199,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		return $read_only;
 	}
 	
+	/**
+	 * Load Membership Metabox specific scripts.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function admin_enqueue_scripts() {
 		global $post_type;
 		if( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
