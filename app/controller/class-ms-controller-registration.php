@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Registration class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,10 +20,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Creates the controller for Membership/User registration.
+ *
+ * @since 4.0.0
+ * @package Membership
+ * @subpackage Controller
+ */
 class MS_Controller_Registration extends MS_Controller {
-		
+
+	/**
+	 * Prepare for Member registration.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
 		$this->add_filter( 'register_url', 'signup_location', 999 );
@@ -31,13 +45,39 @@ class MS_Controller_Registration extends MS_Controller {
 // 		$this->add_action( 'the_posts', 'process_actions', 1 );
 	}
 
+	/**
+	 * Handle URI actions for registration.
+	 *
+	 * Matches returned 'action' to method to execute.
+	 *
+	 * **Hooks Actions: **  
+	 *  
+	 * * template_redirect	
+	 *
+	 * @todo Sanitize and protect from possible random function calls.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function process_actions() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
 		if( method_exists( &$this, $action ) ) {
 			$this->$action();
 		} 
 	}
-	
+
+	/**
+	 * Get the URL the user used to register for a subscription.
+	 *
+	 * Uses the default registration page unless the registration was embedded on another page (e.g. using a shortcode).
+	 *
+	 * **Hooks Filters: **  
+	 *  
+	 * * wp_signup_location  
+	 * * register_url  
+	 *
+	 * @since 4.0.0
+	 * @param string $url
+	 */
 	public function signup_location( $url ) {
 		if( ! empty( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] ) ) {
 			$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] );
@@ -45,9 +85,25 @@ class MS_Controller_Registration extends MS_Controller {
 
 		return apply_filters( 'ms_controller_registration_signup_location', $url );
 	}
-	
-	public function check_for_membership_pages_content( $content ) {
 
+	/**
+	 * Check pages/posts for the presence of Membership registration shortcodes.
+	 *
+	 * When shortcodes are found then the contents for those pages are loaded.
+	 *
+	 * **Hooks Filters: **  
+	 *  
+	 * * the_content
+	 *
+	 * @todo Check for side effects of using  
+	 *  
+	 *     remove_filter( 'the_content', 'wpautop' );  
+	 *  
+	 * 
+	 * @since 4.0.0
+	 * @param string $content The post content.
+	 */
+	public function check_for_membership_pages_content( $content ) {
 		global $post;
 		
 		$settings = MS_Plugin::instance()->settings;
@@ -105,8 +161,14 @@ class MS_Controller_Registration extends MS_Controller {
 		return $content;
 	}
 	
+	/**
+	 * Handles Membership signup process.
+	 *
+	 * @todo Consider how this will work when reversing the signup order. Example, pay fist, then create user.
+	 *
+	 * @since 4.0.0
+	 */
 	public function membership_signup() {
-
 		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
 			if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
@@ -147,6 +209,13 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 	}
 	
+	/**
+	 * Handles register_user POST action.
+	 *
+	 * @todo Review code copied from 3.5.
+	 * 
+	 * @since 4.0.0
+	 */
 	public function register_user() {
 		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
 			return;
@@ -249,6 +318,12 @@ _ms_debug_log($_POST);
 		}
 		
 	}
+	
+	/**
+	 * Handles membership_cancel action.
+	 * 
+	 * @since 4.0.0
+	 */	
 	public function membership_cancel() {
 		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$membership_id = $_GET['membership'];
@@ -258,7 +333,12 @@ _ms_debug_log($_POST);
 			wp_safe_redirect( remove_query_arg( array( 'action', '_wpnonce', 'membership' ) ) ) ;
 		}
 	}
-	
+
+	/**
+	 * Render membership payment information.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function payment_table() {
 		$membership_id = $_GET['membership'];
 		$membership = MS_Model_Membership::load( $membership_id );
@@ -272,7 +352,19 @@ _ms_debug_log($_POST);
 		$view->data = $data;
 		echo $view->to_html();
 	}
-	
+
+	/**
+	 * Handle payment gateway returns
+	 *
+	 * **Hooks Actions: **  
+	 *  
+	 * * pre_get_posts
+	 *	
+	 * @todo Review how this works when we use OAuth API's with gateways.
+	 * 
+	 * @since 4.0.0
+	 * @param mixed $wp_query The WordPress query object
+	 */	
 	public function handle_payment_return( $wp_query ) {
 		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			MS_Model_Gateway::get_gateways();

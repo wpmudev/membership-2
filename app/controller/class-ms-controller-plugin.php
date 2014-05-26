@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Plugin class.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -26,8 +28,8 @@
  * Responsible for flow control, navigation and invoking other controllers.
  *
  * @since 4.0.0
- *
- * @return object
+ * @package Membership
+ * @subpackage Controller
  */
 class MS_Controller_Plugin extends MS_Controller {
 
@@ -36,7 +38,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var capability
+	 * @var $capability
 	 */
 	private $capability = 'manage_options';
 	
@@ -45,7 +47,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var model
+	 * @var $model
 	 */
 	private $model;
 	
@@ -54,7 +56,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var view
+	 * @var $view
 	 */
 	private $view;	
 
@@ -63,7 +65,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var controllers
+	 * @var $controllers
 	 */	
 	private $controllers = array();
 	
@@ -72,7 +74,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 * @var admin_pages
+	 * @var $admin_pages
 	 */
 	private $admin_pages = array();	
 		
@@ -182,8 +184,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * 
 	 * @todo Not working... Copied from 3.5
 	 * 
-	 * @param WP_Rewrite $wp_rewrite
-	 * @return WP_Rewrite
+	 * @since 3.5
+	 *
+	 * @param object $wp_rewrite WP_Rewrite object.
+	 * @return object WP_Rewrite object.
 	 */
 	public function add_rewrites( $wp_rewrite ) {
 		$new_rules = array();
@@ -202,9 +206,12 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Add custom query vars.
 	 * 
-	 *  @todo configure properly. Copied from 3.5
-	 * @param array $vars
-	 * @return string
+	 * @todo configure properly. Copied from 3.5
+	 *
+	 * @since 3.5
+	 *
+	 * @param mixed[] $vars
+	 * @return mixed[]
 	 */
 	function add_query_vars( $vars ) {
 		if ( ! in_array( 'feedkey', $vars ) ) {
