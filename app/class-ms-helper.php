@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Helper object.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -33,11 +35,14 @@
  *
  * @uses MS_Model
  * @uses MS_View
- *
- * @return object
  */
 class MS_Helper extends MS_Hooker {
 	
+	/**
+	 * Parent constuctor of all helpers.
+	 *
+	 * @since 4.0.0
+	 */	
 	public function __construct() {
 	}
 	

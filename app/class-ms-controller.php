@@ -33,8 +33,6 @@
  *
  * @uses MS_Model
  * @uses MS_View
- *
- * @return object
  */
 class MS_Controller extends MS_Hooker {
 	

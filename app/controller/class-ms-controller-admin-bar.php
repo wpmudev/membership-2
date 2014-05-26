@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller_Admin_Bar class.
+ * 
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -18,28 +20,106 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
  * MA 02110-1301 USA                                                    
  *
-*/
+ */
 
+/**
+ * Controller to add functionality to the admin bar.
+ *
+ * Used extensively for simulating memberships and content access.
+ *
+ * Adds ability for Membership users to test the behaviour for their end-users.
+ *
+ * @since 4.0.0
+ */
 class MS_Controller_Admin_Bar extends MS_Controller {
 	
+	/**
+	 * Cookie name used for simularion.
+	 *
+	 * @since 4.0.0
+	 * @var string MS_SIMULATE_COOKIE
+	 */
 	const MS_SIMULATE_COOKIE = 'ms_simulate';
-	
+
+	/**
+	 * Cookie name to simulate membership period.
+	 *
+	 * @since 4.0.0
+	 * @var string MS_PERIOD_COOKIE
+	 */	
 	const MS_PERIOD_COOKIE = 'ms_simulate_period';
-	
+
+	/**
+	 * Cookie name to simulate date.
+	 *
+	 * @since 4.0.0
+	 * @var string MS_PERIOD_COOKIE
+	 */	
 	const MS_DATE_COOKIE = 'ms_simulate_date';
 	
+	/**
+	 * Capability required to use simulation feature.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */	
 	private $capability = 'manage_options';
 	
+	/**
+	 * The model to use for simulating membership data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */	
 	private $model;
+
+	/**
+	 * Views to use for rendering admin bar features.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $views
+	 */	
+	private $views;	
 	
-	private $views;
-	
+	/**
+	 * Number of unit to simulate.
+	 *
+	 * E.g. 10 days, 5 weeks, x years.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $simulate_period_unit
+	 */	
 	private $simulate_period_unit = 0;
-	
+
+	/**
+	 * Time period to simulate.
+	 *
+	 * Period can be 'days', 'weeks', 'months', 'years'.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $simulate_period_type
+	 */	
 	private $simulate_period_type = MS_Helper_Period::PERIOD_TYPE_DAYS;
-	
+
+	/**
+	 * The date to simulate.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $simulate_date
+	 */	
 	private $simulate_date;
 		
+	/**
+	 * Prepare the Admin Bar simulator.
+	 *
+	 * @since 4.0.0
+	 */		
 	public function __construct() {
 		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
 		if ( defined('DOING_AJAX') && DOING_AJAX ) {
@@ -56,9 +136,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Sets what menu to add to the admin bar.
 	 *
-	 * @since 4.0
-	 * @action add_admin_bar_menus
+	 * **Hooks Actions: **  
+	 *  
+	 * * add_admin_bar_menus
 	 *
+	 * @since 4.0.0
 	 * @access public
 	 */
 	public function add_admin_bar_menus() {
@@ -95,11 +177,13 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Adds "Enable Protection" menu to admin bar.
 	 *
-	 * @since 4.0
-	 * @action admin_bar_menu
+	 * **Hooks Actions: **  
+	 *  
+	 * * add_admin_bar_menus
 	 *
+	 * @since 4.0.0
 	 * @access public
-	 * @param WP_Admin_Bar $wp_admin_bar Admin bar object.
+	 * @param object $wp_admin_bar WP_Admin_Bar object.
 	 */
 	public function add_activate_plugin_menu( WP_Admin_Bar $wp_admin_bar ) {
 		$linkurl = 'admin.php?page=membership-settings&setting=plugin_enabled&action=toggle_activation';
@@ -126,11 +210,13 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Adds "View Site As" menu to admin bar.
 	 *
-	 * @since 4.0
-	 * @action admin_bar_menu
+	 * **Hooks Actions: **  
+	 *  
+	 * * add_admin_bar_menus  
 	 *
+	 * @since 4.0
 	 * @access public
-	 * @param WP_Admin_Bar $wp_admin_bar Admin bar object.
+	 * @param object $wp_admin_bar WP_Admin_Bar object.
 	 */
 	public function add_view_site_as_menu( WP_Admin_Bar $wp_admin_bar ) {
 
@@ -223,10 +309,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	
 	/**
 	 * Switches membership protection to view site as.
+     *
 	 * Ajax callback.
-	 * 
-	 * @since 4.0
-	 * @action wp_ajax_ms_simulate
+	 *
+	 * **Hooks Actions: **  
+	 *  
+	 * * wp_ajax_ms_simulate
+	 *
+	 * @since 4.0.0
 	 * @deprecated
 	 * @access public
 	 */
@@ -246,10 +336,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	}
 	
 	/**
-	 * Enqueues necessary scripts.
+	 * Enqueues necessary scripts and styles.
 	 *
-	 * @since 4.0
-	 * @action wp_enqueue_scripts, admin_enqueue_scripts
+	 * **Hooks Actions: **  
+	 * 
+	 * * wp_enqueue_scripts  
+	 * * admin_enqueue_scripts  
+	 *
+	 * @since 4.0.0
 	 */
 	function enqueue_scripts() {
 		wp_register_script( 'ms-controller-admin-bar', MS_Plugin::instance()->url. 'app/assets/js/ms-controller-admin-bar.js', array( 'jquery' ), MS_Plugin::instance()->version );

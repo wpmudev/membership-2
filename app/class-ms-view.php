@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_View object.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -27,8 +29,6 @@
  * Methods of this class will prepare and output views.
  *
  * @since 4.0.0
- *
- * @return object
  */
 class MS_View extends MS_Hooker {
 	
@@ -231,7 +231,7 @@ class MS_View extends MS_Hooker {
 	 * @since 3.5
 	 *
 	 * @access public
-	 * @return type
+	 * @return string
 	 */
 	public function toString() {
 		return $this->to_html();
