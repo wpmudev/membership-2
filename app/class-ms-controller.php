@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file defines the MS_Controller object.
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -58,7 +60,11 @@ class MS_Controller extends MS_Hooker {
 	 */
 	private $_view;
 
-
+	/**
+	 * Parent constuctor of all controllers.
+	 *
+	 * @since 4.0.0
+	 */
 	public function __construct() {
 	}
 	
