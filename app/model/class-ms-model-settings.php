@@ -62,7 +62,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		if( empty( $this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] ) ) {
 			$this->create_no_access_page();
 		}
-		if( empty( $this->pages[ self::SPECIAL_PAGE_ACOUNT ] ) ) {
+		if( empty( $this->pages[ self::SPECIAL_PAGE_ACCOUNT ] ) ) {
 			$this->create_account_page();
 		}
 		if( empty( $this->pages[ self::SPECIAL_PAGE_MEMBERSHIPS ] ) ) {
