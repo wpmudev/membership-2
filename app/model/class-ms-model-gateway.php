@@ -119,7 +119,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @since 4.0
 	 *
 	 * @access public
-	 * @param string $name The name of a property to associate.
+	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {

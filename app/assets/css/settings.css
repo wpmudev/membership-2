@@ -218,3 +218,8 @@ div.dripped {
 div.dripped .tooltip {
 	display: none;
 }
+
+/* Settings Page Settings */
+#ms-settings-page-links-wrapper {
+	margin: .5em;
+}

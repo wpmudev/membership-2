@@ -2,7 +2,6 @@
 
 class MS_View_Settings_Gateway_Paypal extends MS_View {
 
-	const GATEWAY_SECTION = 'gateway_section';
 	const GATEWAY_NONCE = 'gateway_nonce';
 	
 	protected $fields = array();
@@ -43,7 +42,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 		if( $model->id == 'paypal_single_gateway' ) {
 			$merchant_id_field = array(
 					'id' => 'paypal_email',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Paypal Email', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->paypal_email,
@@ -52,7 +50,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 		else {
 			$merchant_id_field = array(
 					'id' => 'merchant_id',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'PayPal Merchant Account ID', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->merchant_id,
@@ -62,7 +59,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 		$this->fields = array(
 			'description' => array(
 					'id' => 'description',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Description', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->description,
@@ -70,7 +66,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 			'merchant_id' => $merchant_id_field,
 			'paypal_site' => array(
 					'id' => 'paypal_site',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'PayPal Site', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $model->get_paypal_sites(),
@@ -78,7 +73,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 			),
 			'paypal_status' => array(
 					'id' => 'paypal_status',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'PayPal Mode', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'value' => $model->paypal_status,
@@ -86,34 +80,29 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Payment button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),
 			'upgrade_button_url' => array(
 					'id' => 'upgrade_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->upgrade_button_url,
 			),
 			'cancel_button_url' => array(
 					'id' => 'cancel_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->cancel_button_url,
 			),
 			'action' => array(
 					'id' => 'action',
-					'section' => self::GATEWAY_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
 			),
 			'gateway_id' => array(
 					'id' => 'gateway_id',
-					'section' => self::GATEWAY_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $model->id,
 			),

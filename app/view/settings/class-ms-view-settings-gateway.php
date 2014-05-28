@@ -2,7 +2,6 @@
 
 class MS_View_Settings_Gateway extends MS_View {
 
-	const GATEWAY_SECTION = 'gateway_section';
 	const GATEWAY_NONCE = 'gateway_nonce';
 	
 	protected $fields = array();
@@ -43,41 +42,35 @@ class MS_View_Settings_Gateway extends MS_View {
 		$this->fields = array(
 			'description' => array(
 					'id' => 'description',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Description', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->description,
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Payment button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),
 			'upgrade_button_url' => array(
 					'id' => 'upgrade_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->upgrade_button_url,
 			),
 			'cancel_button_url' => array(
 					'id' => 'cancel_button_url',
-					'section' => self::GATEWAY_SECTION,
 					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->cancel_button_url,
 			),
 			'action' => array(
 					'id' => 'action',
-					'section' => self::GATEWAY_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
 			),
 			'gateway_id' => array(
 					'id' => 'gateway_id',
-					'section' => self::GATEWAY_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $model->id,
 			),

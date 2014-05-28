@@ -157,8 +157,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data = apply_filters( 'ms_controller_shortcode_membership_login_atts',
 					shortcode_atts(
 						array(
-							'holder'        => '',
-							'holderclass'   => '',
+							'holder'        => 'div',
+							'holderclass'   => 'ms-login-form',
 							'item'          => '',
 							'itemclass'     => '',
 							'postfix'       => '',
@@ -169,6 +169,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 							'lostpass'      => '',
 							'header'		=> true,
 							'register'		=> true,
+							'title'			=> '',
 						),
 						$atts
 					)
@@ -183,7 +184,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 */		
-	public function membership_account() {
-		
+	public function membership_account( $atts ) {
+		$data = apply_filters( 'ms_controller_shortcode_membership_account_atts',
+				shortcode_atts(
+						array(
+								'user_id' => 0,
+						),
+						$atts
+				)
+		);
+		$data['member'] = MS_Model_Member::get_current_member();
+		$membership_ids = $data['member']->membership_ids;
+		if( ! empty( $membership_ids ) ) {
+			$data['membership'] = MS_Model_Membership::load( reset( $membership_ids ) );
+		}
+		$data['transaction'] = MS_Model_Transaction::get_transactions( array( 'author' => $data['member']->id ) );
+		$view = apply_filters( 'ms_view_shortcode_account', new MS_View_Shortcode_Account() );
+		$view->data = $data;
+		return $view->to_html();
 	}
 }

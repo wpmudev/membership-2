@@ -40,16 +40,17 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 	
 	public function get_columns() {
+		$currency = MS_Plugin::instance()->settings->currency;
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb' => '<input type="checkbox" />',
 			'invoice' => __( 'Invoice #', MS_TEXT_DOMAIN ),
 			'user' => __( 'User', MS_TEXT_DOMAIN ),
 			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
 			'status' => __( 'Status', MS_TEXT_DOMAIN ),
-			'amount' => __( 'Amount', MS_TEXT_DOMAIN ),
-			'tax_description' => __( 'Tax description', MS_TEXT_DOMAIN ),
-			'tax_rate' => __( 'Tax rate', MS_TEXT_DOMAIN ),
-			'total' => __( 'Total', MS_TEXT_DOMAIN ),
+			'amount' => __( 'Amount', MS_TEXT_DOMAIN ) . " ($currency)",
+			'tax_name' => __( 'Tax name', MS_TEXT_DOMAIN ),
+			'tax_rate' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
+			'total' => __( 'Total', MS_TEXT_DOMAIN ) . " ($currency)",
 			'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
 			'gateway' => __( 'Gateway', MS_TEXT_DOMAIN ),
 		) );
@@ -115,8 +116,8 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			case 'amount':
 				$html = $item->amount;
 				break;
-			case 'tax_description':
-				$html = $item->tax_description;
+			case 'tax_name':
+				$html = $item->tax_name;
 				break;
 			case 'tax_rate':
 				$html = $item->tax_rate;

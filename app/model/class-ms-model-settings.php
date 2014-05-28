@@ -29,7 +29,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	const SPECIAL_PAGE_ACCOUNT = 'account';
 	const SPECIAL_PAGE_MEMBERSHIPS = 'memberships';
 	const SPECIAL_PAGE_REGISTER = 'register';
-	const SPECIAL_PAGE_WELCOME = 'wecolme';
+	const SPECIAL_PAGE_WELCOME = 'welcome';
 	
 	protected $id =  'ms_plugin_settings';
 	
@@ -47,6 +47,12 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $show_default_membership;
 	
 	protected $currency = 'USD';
+	
+	protected $tax;
+	
+	protected $invoice_sender_name;
+	
+	protected $protection_message;
 
 	public function __construct() {
 		$this->add_action( 'wp_loaded', 'initial_setup' );	
@@ -55,65 +61,78 @@ class MS_Model_Settings extends MS_Model_Option {
 	public function initial_setup() {
 		MS_Model_Membership::get_visitor_membership();
 		if( ! $this->initial_setup ) {
-			$this->create_initial_pages();
+// 			$this->create_initial_pages();
 		}
 	}
-	public function create_initial_pages() {
-		if( empty( $this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] ) ) {
-			$this->create_no_access_page();
-		}
-		if( empty( $this->pages[ self::SPECIAL_PAGE_ACCOUNT ] ) ) {
-			$this->create_account_page();
-		}
-		if( empty( $this->pages[ self::SPECIAL_PAGE_MEMBERSHIPS ] ) ) {
-			$this->create_memberships_page();
-		}
-		if( empty( $this->pages[ self::SPECIAL_PAGE_REGISTER ] ) ) {
-			$this->create_register_page();
-		}
-		if( empty( $this->pages[ self::SPECIAL_PAGE_WELCOME ] ) ) {
-			$this->create_welcome_page();
-		}
-			
-		$this->initial_setup = true;
-		$this->save();
-	}
-	
-	public function create_no_access_page() {
+
+	public function create_page_no_access() {
 		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
-		$pagedetails = array('post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$pagedetails = array( 'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
-		$this->pages['no_access'] = $id;
+		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
 	}
 	
-	public function create_account_page() {
-		$content = '<p>' . __( 'Your account.', MS_TEXT_DOMAIN ) . '</p>';
-		$pagedetails = array('post_title' => __( 'Account', MS_TEXT_DOMAIN ), 'post_name' => 'account', 'post_status' => 'virtual', 'post_type' => 'page', 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages['welcome'] = $id;
-	}
-	
-	public function create_memberships_page() {
+	public function create_page_account() {
 		$content = '';
-		$pagedetails = array('post_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 'post_name' => 'memberships', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$pagedetails = array( 'post_title' => __( 'Account', MS_TEXT_DOMAIN ), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
-		$this->pages['memberships'] = $id;
+		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
 	}
 	
-	public function create_register_page() {
+	public function create_page_memberships() {
 		$content = '';
-		$pagedetails = array('post_title' => __( 'Register', MS_TEXT_DOMAIN ), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$pagedetails = array( 'post_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 'post_name' => 'memberships', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
-		$this->pages['register'] = $id;
+		$this->pages[ self::SPECIAL_PAGE_MEMBERSHIPS ] = $id;
 	}
 	
-	public function create_welcome_page() {
+	public function create_page_register() {
 		$content = '';
-		$pagedetails = array('post_title' => __( 'Welcome', MS_TEXT_DOMAIN ), 'post_name' => 'welcome', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$pagedetails = array( 'post_title' => __( 'Register', MS_TEXT_DOMAIN ), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
 		$id = wp_insert_post( $pagedetails );
-		$this->pages['welcome'] = $id;
+		$this->pages[ self::SPECIAL_PAGE_REGISTER ] = $id;
 	}
 	
+	public function create_page_welcome() {
+		$content = '';
+		$pagedetails = array( 'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ), 'post_name' => 'welcome', 'post_status' => 'publish', 'post_type' => 'page', 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
+	}
+	
+	public function create_special_page( $type ) {
+		$create_method = "create_page_{$type}";
+		if( in_array( $type, self::get_special_page_types() ) && method_exists( $this, $create_method ) ) {
+			$this->$create_method();
+			$this->save();
+			return $this->pages[ $type ];
+		}
+	}
+	
+	public function get_special_page( $type ) {
+		$page_id = null;
+		if( in_array( $type, self::get_special_page_types() ) ) {
+			if( empty( $this->pages[ $type ] ) ){
+				$page_id = $this->create_special_page( $type );
+			}
+			else{
+				$page_id = $this->pages[ $type ];
+			}
+		}
+		return $page_id;		
+	}
+	
+	public static function get_special_page_types() {
+		return apply_filters( 'ms_model_settings_get_special_page_types', array( 
+				self::SPECIAL_PAGE_NO_ACCESS,
+				self::SPECIAL_PAGE_ACCOUNT,
+				self::SPECIAL_PAGE_MEMBERSHIPS,
+				self::SPECIAL_PAGE_REGISTER,
+				self::SPECIAL_PAGE_WELCOME,
+			)
+		);
+		
+	}
 	public function get_pages( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,
@@ -153,5 +172,65 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 	
 		return $is_special;
+	}
+	
+	public static function get_currencies() {
+		return apply_filters( 'ms_model_settings_get_currencies', array(
+				'AUD' => __( 'AUD - Australian Dollar', MS_TEXT_DOMAIN ),
+				'BRL' => __( 'BRL - Brazilian Real', MS_TEXT_DOMAIN ),
+				'CAD' => __( 'CAD - Canadian Dollar', MS_TEXT_DOMAIN ),
+				'CHF' => __( 'CHF - Swiss Franc', MS_TEXT_DOMAIN ),
+				'CZK' => __( 'CZK - Czech Koruna', MS_TEXT_DOMAIN ),
+				'DKK' => __( 'DKK - Danish Krone', MS_TEXT_DOMAIN ),
+				'EUR' => __( 'EUR - Euro', MS_TEXT_DOMAIN ),
+				'GBP' => __( 'GBP - Pound Sterling', MS_TEXT_DOMAIN ),
+				'HKD' => __( 'HKD - Hong Kong Dollar', MS_TEXT_DOMAIN ),
+				'HUF' => __( 'HUF - Hungarian Forint', MS_TEXT_DOMAIN ),
+				'ILS' => __( 'ILS - Israeli Shekel', MS_TEXT_DOMAIN ),
+				'JPY' => __( 'JPY - Japanese Yen', MS_TEXT_DOMAIN ),
+				'MYR' => __( 'MYR - Malaysian Ringgits', MS_TEXT_DOMAIN ),
+				'MXN' => __( 'MXN - Mexican Peso', MS_TEXT_DOMAIN ),
+				'NOK' => __( 'NOK - Norwegian Krone', MS_TEXT_DOMAIN ),
+				'NZD' => __( 'NZD - New Zealand Dollar', MS_TEXT_DOMAIN ),
+				'PHP' => __( 'PHP - Philippine Pesos', MS_TEXT_DOMAIN ),
+				'PLN' => __( 'PLN - Polish Zloty', MS_TEXT_DOMAIN ),
+				'RUB' => __( 'RUB - Russian Ruble', MS_TEXT_DOMAIN ),
+				'SEK' => __( 'SEK - Swedish Krona', MS_TEXT_DOMAIN ),
+				'SGD' => __( 'SGD - Singapore Dollar', MS_TEXT_DOMAIN ),
+				'TWD' => __( 'TWD - Taiwan New Dollars', MS_TEXT_DOMAIN ),
+				'THB' => __( 'THB - Thai Baht', MS_TEXT_DOMAIN ),
+				'USD' => __( 'USD - U.S. Dollar', MS_TEXT_DOMAIN ),
+				'ZAR' => __( 'ZAR - South African Rand', MS_TEXT_DOMAIN),
+		) );
+	}
+	
+	/**
+	 * Set specific property.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'currency':
+					if( in_array( $value, self::get_currencies() ) ) {
+						$this->$property = $value;
+					}
+					break;
+				case 'protection_message':
+					$this->$property = wp_kses_post( $value );
+					break;
+				case 'invoice_sender_name':
+					$this->$property = sanitize_text_field( $value );
+					break;
+				default:
+					$this->$property = $value;
+					break;
+			}
+		}
 	}
 }

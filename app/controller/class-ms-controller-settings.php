@@ -103,9 +103,35 @@ class MS_Controller_Settings extends MS_Controller {
 		switch( $this->active_tab ) {
 			case 'general':
 			case 'pages':
+				$nonce = MS_View_Settings::PAGE_NONCE;
 				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
+				if( ! empty ($_POST['submit_pages'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+					$special_pages_types = MS_Model_Settings::get_special_page_types();
+					$pages = $this->model->pages;
+					foreach( $special_pages_types as $type ) {
+						if( ! empty( $_POST[ $type ] ) ) {
+							$pages[ $type ] = $_POST[ $type ];
+						}
+					}
+					$this->model->pages = $pages;
+					$this->model->save();
+					$msg = 0; //TODO
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
+				}
+				elseif( ! empty( $_POST['action'] ) && 'create_special_page' == $_POST['action'] && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+					$special_pages_types = MS_Model_Settings::get_special_page_types();
+					foreach( $special_pages_types as $type ) {
+						$submit = "create_page_{$type}";
+						if( ! empty( $_POST[ $submit ] ) ) {
+							$this->model->create_special_page( $type );
+							$msg = 0;
+							wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
+						}
+					}
+				}
 				break;
 			case 'payment':
+				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
 				/**
 				 * Execute table single action.
 				 */
@@ -125,14 +151,37 @@ class MS_Controller_Settings extends MS_Controller {
 				 * Execute view page action submit.
 				 */
 				elseif( ! empty( $_POST['submit'] ) ) {
-					$section = MS_View_Settings_Gateway::GATEWAY_SECTION;
+					$pay_nonce = MS_View_Settings::PAY_NONCE;
 					$nonce = MS_View_Settings_Gateway::GATEWAY_NONCE;
-					if ( ! empty( $_POST[ $section ]['gateway_id'] ) && ! empty( $_POST[ $section ]['action'] )  &&
+					if ( ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['action'] )  &&
 						! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 							
-						$msg = $this->gateway_list_do_action( $_POST[ $section ]['action'], array( $_POST[ $section ]['gateway_id'] ), $_POST[ $section ] );
+						$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 					}
+					/**
+					 * Save payment settings tab
+					 */
+					elseif( ! empty( $_POST[ $pay_nonce ] ) && wp_verify_nonce( $_POST[ $pay_nonce ], $pay_nonce ) ) {
+						foreach( $_POST as $field => $value ) {
+							if( property_exists( $this->model, $field ) ) {
+								$this->model->$field = $value;
+							}
+						}
+						$msg = 0;
+						$this->model->save();
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+					}
+				}
+				break;
+			case 'messages-protection':
+				$nonce = MS_View_Settings::PROTECTION_NONCE;
+				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
+				if( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+					$this->model->protection_message = isset( $_POST['protection_message'] ) ? $_POST['protection_message']: '';
+					$this->model->save();
+					$msg = 0;
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 				}
 				break;
 			case 'messages-automated':

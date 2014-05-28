@@ -133,3 +133,15 @@ label.ms-validation-error {
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
+
+/** login form */
+.ms-login-form {
+	margin: 1em;
+}
+
+.ms-login-form input {
+	float: right;
+}
+.ms-login-form input[type="checkbox"] {
+	float: none;
+}

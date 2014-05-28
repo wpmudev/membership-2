@@ -70,12 +70,12 @@ class MS_View_Billing_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $transaction->amount,
 			),
-			'tax_description' => array(
-					'id' => 'tax_description',
+			'tax_name' => array(
+					'id' => 'tax_name',
 					'section' => self::BILLING_SECTION,
-					'title' => __( 'Tax description', MS_TEXT_DOMAIN ),
+					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $transaction->tax_description,
+					'value' => $transaction->tax_name,
 			),
 			'tax_rate' => array(
 					'id' => 'tax_rate',

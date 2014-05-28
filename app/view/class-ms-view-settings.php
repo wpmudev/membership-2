@@ -35,8 +35,12 @@ class MS_View_Settings extends MS_View {
 
 	const COMM_NONCE = 'comm_save_nonce';
 	const GATEWAY_NONCE = 'gateway_save_nonce';
+	const PAGE_NONCE = 'page_save_nonce';
+	const PAY_NONCE = 'payment_save_nonce';
+	const PROTECTION_NONCE = 'protection_save_nonce';
 	
 	const COMM_SECTION = 'comm_section';
+	const PAGE_SECTION = 'page_section';
 	
 	protected $model;
 	
@@ -129,11 +133,35 @@ class MS_View_Settings extends MS_View {
 			<div class='ms-settings'>
 			   	<h2><?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?></h2>
 				<form action="" method="post">
+					<?php
+						wp_nonce_field( self::PAGE_NONCE, self::PAGE_NONCE );
+						MS_Helper_Html::html_input( array(
+							'id' => 'action',
+							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+							'value' => 'create_special_page',
+						) );
+					?>
 					<?php foreach( $this->fields as $field ): ?>
 						<div class="postbox metabox-holder">
 							<h3><label for="title"><?php echo $field['title'];?></label></h3>
 							<div class="inside">
-								<?php MS_Helper_Html::html_input( $field );?>
+								<?php 
+									MS_Helper_Html::html_input( $field );
+									MS_Helper_Html::html_submit( array( 
+										'id' => "create_page_{$field['id']}", 
+										'value' => __('Create new page', MS_TEXT_DOMAIN ), 
+									) );
+								?>
+								<div id="ms-settings-page-links-wrapper">
+									<?php
+										MS_Helper_Html::html_link( array(
+											'url' => get_permalink( $field['value'] ),
+											'value' => __( 'View', MS_TEXT_DOMAIN ),
+										) );
+									?>
+									<span> | </span>	
+									<?php edit_post_link( __( 'Edit', MS_TEXT_DOMAIN ), '', '', $field['value'] ); ?>
+								</div>
 							</div>
 						</div>
 					<?php endforeach;?>
@@ -147,47 +175,86 @@ class MS_View_Settings extends MS_View {
 		$all_pages = $this->model->get_pages();
 		$this->fields = array(
 			'memberships' => array(
-					'id' => 'memberships',
+					'id' => MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select memberships page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->pages['memberships'],
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ),
 					'field_options' => $all_pages,
 					'class' => '',
 			),
 			'no_access' => array(
-					'id' => 'no_access',
+					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->pages['no_access'],
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ),
+					'field_options' => $all_pages,
+					'class' => '',
+			),
+			'account' => array(
+					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ),
 					'field_options' => $all_pages,
 					'class' => '',
 			),
 			'register' => array(
-					'id' => 'register',
+					'id' => MS_Model_Settings::SPECIAL_PAGE_REGISTER,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select registration page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->pages['register'],
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_REGISTER ),
 					'field_options' => $all_pages,
 					'class' => '',
 			),
-			'registration_completed' => array(
-					'id' => 'registration_completed',
+			'welcome' => array(
+					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->pages['registration_completed'],
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ),
 					'field_options' => $all_pages,
 					'class' => '',
 			),
 		);
 	}
 	public function render_payment() {
+
+		$this->prepare_payment();
+		
 		$list_table = new MS_Helper_List_Table_Gateway();
 		$list_table->prepare_items();
-		
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h2><?php echo __( 'Payment Settings', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="" method="post">
+					<?php wp_nonce_field( self::PAY_NONCE, self::PAY_NONCE ); ?>
+					<div class="postbox metabox-holder">
+						<h3><label for="title"><?php _e( 'Payment currency', MS_TEXT_DOMAIN ) ;?></label></h3>
+						<div class="inside">
+							<p class="description"><?php _e( 'This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.', MS_TEXT_DOMAIN );?> </p>
+							<?php MS_Helper_Html::html_input( $this->fields['currency'] ) ;?>
+						</div>
+					</div>
+					<div class="postbox metabox-holder">
+						<h3><label for="title"><?php _e( 'Invoice sender name', MS_TEXT_DOMAIN ) ;?></label></h3>
+						<div class="inside">
+							<p class="description"><?php _e( 'This is the name used in the invoice.', MS_TEXT_DOMAIN );?> </p>
+							<?php MS_Helper_Html::html_input( $this->fields['invoice_sender_name'] ) ;?>
+						</div>
+					</div>
+					<div class="postbox metabox-holder">
+						<h3><label for="title"><?php _e( 'Tax', MS_TEXT_DOMAIN ) ;?></label></h3>
+						<div class="inside">
+							<p class="description"><?php _e( 'Tax included in the invoice.', MS_TEXT_DOMAIN );?> </p>
+							<?php MS_Helper_Html::html_input( $this->fields['tax_name'] ) ;?>
+							<?php MS_Helper_Html::html_input( $this->fields['tax_rate'] ) ;?>
+						</div>
+					</div>
+					<p>
+						<?php MS_Helper_Html::html_submit() ;?>
+					</p>
+				</form>
 				<form action="" method="post">
 					<?php $list_table->display(); ?>
 				</form>
@@ -197,17 +264,67 @@ class MS_View_Settings extends MS_View {
 		echo $html;
 	}
 	
+	public function prepare_payment() {
+		$this->fields = array(
+			'currency' => array(
+					'id' => 'currency',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select payment currency', MS_TEXT_DOMAIN ),
+					'value' => $this->model->currency,
+					'field_options' => $this->model->get_currencies(),
+					'class' => '',
+			),
+			'invoice_sender_name' => array(
+					'id' => 'invoice_sender_name',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
+					'value' => $this->model->invoice_sender_name,
+					'class' => '',
+			),
+			'tax_name' => array(
+					'id' => 'tax_name',
+					'name' => 'tax[tax_name]',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
+					'value' => $this->model->tax['tax_name'],
+					'class' => '',
+			),
+			'tax_rate' => array(
+					'id' => 'tax_rate',
+					'name' => 'tax[tax_rate]',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
+					'value' => $this->model->tax['tax_rate'],
+					'class' => '',
+			),
+		);
+	}
 	public function render_messages_protection() {
+		$this->prepare_messages_protection();
 		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
+		<div class='ms-settings'>
+	   		<h2><?php  _e( 'Protection Message', MS_TEXT_DOMAIN ) ; ?></h2>
+	   		<p class="description"><?php _e( 'Message displayed when not having access to a protected page.', MS_TEXT_DOMAIN );?></p>
+       		<form action="" method="post">
+				<?php wp_nonce_field( self::PROTECTION_NONCE, self::PROTECTION_NONCE ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['protection_message'] ) ;?>
+				<?php MS_Helper_Html::html_submit() ;?>
+	   		</form>
+   		</div>
 		<?php
 	}
 
+	public function prepare_messages_protection() {
+		$this->fields = array(
+			'protection_message' => array(
+					'id' => 'protection_message',
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'value' => $this->model->protection_message,
+					'class' => '',
+			),
+		);
+	}
+	
 	public function render_messages_automated() {
 		$this->prepare_messages_automated();
 		?>

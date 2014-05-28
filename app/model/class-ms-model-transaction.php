@@ -74,7 +74,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $tax_rate;
 	
-	protected $tax_description;
+	protected $tax_name;
 	
 	protected $total;
 	
@@ -169,6 +169,9 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$transaction->name = $gateway_id . ' transaction';
 		$transaction->description = $gateway_id;
 		$transaction->timestamp = time();
+		$tax = MS_Plugin::instance()->settings->tax;
+		$transaction->tax_name = $tax['tax_name'];
+		$transaction->tax_rate = $tax['tax_rate'];
 		$transaction->save();
 	
 		$member->add_transaction( $transaction->id );
@@ -218,7 +221,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'total':
-					return $this->amount + $this->tax_rate * $this->amount; 
+					return $this->amount + $this->tax_rate/100 * $this->amount; 
 					break;
 				case 'invoice':
 					return $this->id;
@@ -244,7 +247,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'name':
 				case 'currency':
 				case 'notes':
-				case 'tax_description':
+				case 'tax_name':
 					$this->$property = sanitize_text_field( $value );
 					break;
 				case 'status':

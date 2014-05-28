@@ -70,11 +70,39 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			ob_start();
 			?>
 				<p>
-					<?php echo $this->payment_info; ?>
+					<?php
+						 if( empty( $this->payment_info ) ) {
+							$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
+						 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
+						 }
+						echo $this->payment_info; 
+					?>
 				</p>
 			<?php 
 			$html = ob_get_clean();
 			return $html;
+		}
+	}
+	
+	/**
+	 * Validate specific property before set.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'payment_info':
+					$this->$property = wp_kses_post( $value );
+					break;
+				default:
+					parent::__set( $property, $value );
+					break;
+			}
 		}
 	}
 	
