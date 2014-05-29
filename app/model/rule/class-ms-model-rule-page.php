@@ -214,11 +214,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 */
 	private function get_excluded_content() {
 		$settings = MS_Plugin::instance()->settings;
+		$special_page_types = MS_Model_Settings::get_special_page_types();
 		$exclude = null;
-		foreach ( $settings->pages as $page ) {
-			if ( !empty ( $page ) ) {
-				$exclude[] = $page;
-			}
+		foreach ( $special_page_types as $type ) {
+			$exclude[] = $settings->get_special_page( $type );
 		}
 		return $exclude;
 	}

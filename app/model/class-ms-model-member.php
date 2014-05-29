@@ -258,6 +258,10 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function add_membership( $membership_id, $gateway = 'admin' )
 	{
+		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+			return;
+		}
+		
 		if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id = reset( $this->membership_ids ) ) {
 			$this->move_membership( $move_from_id, $membership_id );
 		}

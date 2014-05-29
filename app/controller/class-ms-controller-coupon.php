@@ -32,15 +32,6 @@
 class MS_Controller_Coupon extends MS_Controller {
 
 	/**
-	 * The custom post type used with Coupons.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $post_type
-	 */
-	private $post_type;
-
-	/**
 	 * Capability required to manage Coupons.
 	 *
 	 * @since 4.0.0
@@ -73,8 +64,18 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
-		/** Menu: Coupons */
-		$this->views['coupon'] = apply_filters( 'membership_coupon_view', new MS_View_Coupon() );			
+		$this->add_action( 'load-membership_page_membership-coupons', 'admin_coupon_manager' );
+	}
+	
+	/**
+	 * Manages coupon actions.
+	 *
+	 * Verifies GET and POST requests to manage billing.
+	 *
+	 * @since 4.0.0
+	 */
+	public function admin_coupon_manager() {
+		
 	}
 	
 	/**
@@ -83,7 +84,22 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function admin_coupon() {
-		$this->views['coupon']->render();
+		/**
+		 * Action view page request
+		 */
+		if( ! empty( $_GET['action'] ) && isset( $_GET['coupon_id'] ) ) {
+			if( 'edit' == $_GET['action'] ) {
+				$this->views['edit'] = apply_filters( 'ms_view_coupon_edit', new MS_View_Coupon_Edit() );
+				$data['coupon'] = MS_Model_Coupon::load( $_GET['coupon_id'] );
+				$data['action'] = $_GET['action'];
+				$this->views['edit']->data = $data;
+				$this->views['edit']->render();
+			}
+		}
+		else {
+			$this->views['coupon'] = apply_filters( 'ms_view_coupon_list', new MS_View_Coupon_List() );
+			$this->views['coupon']->render();
+		}
 	}
 
 }

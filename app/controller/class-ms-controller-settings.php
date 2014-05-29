@@ -294,7 +294,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @param int[] $gateways The gateways IDs to process.
 	 * @param mixed[] $fields The data to process.
 	 */	
-	public function gateway_list_do_action( $action, $gateways, $fields ) {
+	public function gateway_list_do_action( $action, $gateways, $fields = null ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}

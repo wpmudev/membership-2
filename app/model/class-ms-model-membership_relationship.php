@@ -52,6 +52,9 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	public function __construct( $membership_id, $gateway ) {
 		
+		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+			return;
+		}
 		$this->membership_id = $membership_id;
 		$this->gateway = $gateway;
 		$this->set_start_date();
@@ -125,8 +128,10 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	public function set_expire_date( $expire_date ) {
 		$membership = $this->get_membership();
 		
-		if( strtotime( $expire_date ) >= strtotime( $this->start_date ) && 
-			( ! empty( $this->trial_expire_date) && strtotime( $expire_date ) >= strtotime( $this->trial_expire_date ) ) ){
+		if( strtotime( $expire_date ) >= strtotime( $this->start_date ) ) { 
+			if( ! empty( $this->trial_expire_date) && strtotime( $expire_date ) >= strtotime( $this->trial_expire_date ) ) {
+				$this->$expire_date = $membership->get_expire_date( $this->start_date );
+			}
 			$this->expire_date = $expire_date;
 		}
 		else {

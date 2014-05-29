@@ -189,6 +189,9 @@ class MS_Controller_Registration extends MS_Controller {
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
 				$gateway_id = $_POST['gateway'];
 				$membership_id = $_POST['membership_id'];
+				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+					return;
+				}
 				$membership = MS_Model_Membership::load( $membership_id );
 				/**
 				 * Manual gateway.
@@ -201,6 +204,10 @@ class MS_Controller_Registration extends MS_Controller {
 			}
 			else {
 				$membership_id = $_GET['membership'];
+				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+					return;
+				}
+				
 				$membership = MS_Model_Membership::load( $membership_id );
 				$member = MS_Model_Member::get_current_member();
 				/**

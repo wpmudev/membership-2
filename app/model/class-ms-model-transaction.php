@@ -140,7 +140,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 						),
 				)
 		);
-		$query = new WP_User_Query( $args );
+		$query = new WP_Query( $args );
 		
 		$item = $query->get_posts();
 		$transaction = null;
@@ -160,6 +160,9 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 */
 	public static function create_transaction( $membership, $member, $gateway_id, $status = self::STATUS_BILLED ) {
 	
+		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
+			return;
+		}
 		$transaction = new self();
 		$transaction->gateway_id = $gateway_id;
 		$transaction->membership_id = $membership->id;

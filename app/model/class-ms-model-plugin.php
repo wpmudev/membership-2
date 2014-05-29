@@ -33,7 +33,6 @@ class MS_Model_Plugin extends MS_Model {
 		
 		$this->setup_communications();
 		
-		$this->add_action( 'plugins_loaded', 'check_membership_status' );
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 		$this->add_action( 'parse_request', 'setup_protection', 2 );
 	}
@@ -48,6 +47,8 @@ class MS_Model_Plugin extends MS_Model {
 	
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
+		$this->check_member_status();
+		
 		$simulate = MS_Model_Simulate::load();
 
 		/** Admin user simulating membership */
@@ -86,8 +87,16 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @access public
 	 */
-	public function check_membership_status() {
+	public function check_member_status() {
+		if ( ! $this->member->is_logged_user() ) {
+			return;
+		}
 		
+		if ( ! $this->member->active ) {
+			wp_logout();
+			wp_redirect( home_url( $_SERVER['REQUEST_URI'] ) );
+			exit;
+		}
 	}
 
 	/**

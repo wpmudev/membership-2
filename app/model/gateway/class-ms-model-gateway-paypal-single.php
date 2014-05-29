@@ -73,12 +73,12 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				'return' => array(
 						'id' => 'return',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->get_return_url(),
+						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) ),
 				),
 				'cancel_return' => array(
 						'id' => 'cancel_return',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => site_url(),
+						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ),
 				),
 				'notify_url' => array(
 						'id' => 'notify_url',
@@ -154,7 +154,6 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			$new_status = false;
 			list( $timestamp, $user_id, $membership_id, $key ) = explode( ':', $_POST['custom'] );
 			
-			$newkey = md5( 'MEMBERSHIP' . $amount );
 			$membership = MS_Model_Membership::load( $membership_id );
 			$member = MS_Model_Member::load( $user_id );
 			$external_id = $_POST['txn_id'];

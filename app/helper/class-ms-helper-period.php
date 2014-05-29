@@ -91,7 +91,7 @@ class MS_Helper_Period extends MS_Helper {
 	public static function subtract_dates( $end_date, $start_date ) {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
-		$interval = $start_date->diff( $end_date );
+		$interval = $end_date->diff( $start_date );
 		
 		return $interval;
 	}

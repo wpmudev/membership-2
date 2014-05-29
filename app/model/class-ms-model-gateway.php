@@ -106,6 +106,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	public function add_transaction( $membership, $member, $status, $external_id = null, $notes = null ) {
 		
+		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
+			return;
+		}
+		
 		$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $this->id, $status );
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;

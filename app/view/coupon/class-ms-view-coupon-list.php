@@ -29,7 +29,7 @@
  *
  * @return object
  */
-class MS_View_Coupon extends MS_View {
+class MS_View_Coupon_List extends MS_View {
 		
 	/**
 	 * Overrides parent's to_html() method.
@@ -47,26 +47,23 @@ class MS_View_Coupon extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {		
+		$coupon_list = new MS_Helper_List_Table_Coupon();
+		$coupon_list->prepare_items();
+
 		ob_start();
 		?>
-		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?></h2>		
-
-		<?php
-			$this->render_coupons();
-		?>
 		
+		<div class="wrap">
+			<h2><?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?>
+				<a class="add-new-h2" href="admin.php?page=membership-coupons&action=edit&coupon_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
+			</h2>
+			<form action="" method="post">
+				<?php $coupon_list->display(); ?>
+			</form>
 		</div>
+		
 		<?php
 		$html = ob_get_clean();
 		echo $html;
-	}
-
-	public function render_coupons() {
-		?>
-		COUPONS GO HERE
-		<?php
-	}
-	
-		
+	}		
 }

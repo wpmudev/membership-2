@@ -186,7 +186,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
 			if( $membership_relationship->trial_expire_date )  {
-				$period = $membership_relationship->get_remaining_trial_period()->format( "%a days");
+				$period = $membership_relationship->get_remaining_trial_period()->format( "%r%a days");
 				$html[] = "$membership_relationship->trial_expire_date ($period)";
 			}
 			else {
@@ -206,7 +206,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
 			if( $membership_relationship->expire_date )  {
-				$period = $membership_relationship->get_remaining_period()->format( "%a days");
+				$period = $membership_relationship->get_remaining_period()->format( "%r%a days");
 				$html[] = "$membership_relationship->expire_date ($period)";
 			}
 			else {

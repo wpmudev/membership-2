@@ -128,7 +128,7 @@ class MS_Controller_Billing extends MS_Controller {
 		 */
 		if( ! empty( $_GET['action'] ) && ! empty( $_GET['transaction_id'] ) ) {
 			if( 'edit' == $_GET['action'] ) {
-				$this->views['edit'] = apply_filters( 'membership_billing_view', new MS_View_Billing_Edit() );
+				$this->views['edit'] = apply_filters( 'ms_view_billing_edit', new MS_View_Billing_Edit() );
 				$data['transaction'] = MS_Model_Transaction::load( $_GET['transaction_id'] );
 				$data['action'] = $_GET['action'];
 				$this->views['edit']->data = $data;
@@ -136,7 +136,7 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 		}
 		else {
-			$this->views['billing'] = apply_filters( 'membership_billing_view', new MS_View_Billing_List() );
+			$this->views['billing'] = apply_filters( 'ms_view_billing_list', new MS_View_Billing_List() );
 			$this->views['billing']->render();
 		}
 	}
