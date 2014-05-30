@@ -33,6 +33,7 @@ class MS_Controller_Registration extends MS_Controller {
 
 	private $register_errors;
 	
+	private $allowed_actions = array( 'membership_signup', 'membership_move', 'membership_cancel', 'register_user' );
 	/**
 	 * Prepare for Member registration.
 	 *
@@ -62,7 +63,7 @@ class MS_Controller_Registration extends MS_Controller {
 	 */	
 	public function process_actions() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		if( method_exists( &$this, $action ) ) {
+		if( method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		} 
 	}
