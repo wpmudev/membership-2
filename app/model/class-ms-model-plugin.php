@@ -83,7 +83,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * If member is deactivated, then he has to be logged out immediately.
 	 *
 	 * @since 4.0.0
-	 * @action plugins_loaded
+	 * @todo Give user a feedback about the lockout
 	 *
 	 * @access public
 	 */
