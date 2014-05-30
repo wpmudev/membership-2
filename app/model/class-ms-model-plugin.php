@@ -92,6 +92,10 @@ class MS_Model_Plugin extends MS_Model {
 			return;
 		}
 		
+		if( $this->member->is_admin_user() ) {
+			return;
+		}
+		
 		if ( ! $this->member->active ) {
 			wp_logout();
 			wp_redirect( home_url( $_SERVER['REQUEST_URI'] ) );
