@@ -307,6 +307,18 @@ class MS_Controller_Registration extends MS_Controller {
 		$data['gateways'] = MS_Model_Gateway::get_gateways();
 		$data['member'] = $member;
 		$data['currency'] = MS_Plugin::instance()->settings->currency;
+
+		$coupon_code = ! empty( $_POST['coupon_code'] ) ? $_POST['coupon_code'] : '';
+		$coupon = MS_Model_Coupon::load_by_coupon_code( $coupon_code );
+		if( ! empty( $_POST['apply_coupon_code'] ) ) {
+			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
+			$coupon->apply_coupon( $membership );
+		}
+		elseif( ! empty( $_POST['remove_coupon_code'] ) ) {
+			$coupon->remove_coupon_application( $membership_id );
+			$coupon = $coupon->load( 0 );
+		}
+		$data['coupon'] = $coupon;
 		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 		$view->data = $data;
 		echo $view->to_html();

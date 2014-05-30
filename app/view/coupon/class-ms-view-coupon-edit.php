@@ -3,7 +3,6 @@
 class MS_View_Coupon_Edit extends MS_View {
 
 	const COUPON_SECTION = 'coupon_section';
-	const COUPON_NONCE = 'coupon_nonce';
 	
 	protected $fields = array();
 	
@@ -15,9 +14,9 @@ class MS_View_Coupon_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2>Coupon edit</h2>
+				<h2><?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( self::COUPON_NONCE, self::COUPON_NONCE ); ?>
+					<?php wp_nonce_field( $this->data['action'] ); ?>
 					<table class="form-table">
 						<tbody>
 							<?php foreach( $this->fields as $field ): ?>
@@ -55,25 +54,36 @@ class MS_View_Coupon_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->discount,
 			),
+			'discount_type' => array(
+					'id' => 'discount_type',
+					'section' => self::COUPON_SECTION,
+					'title' => __( 'Discount Type', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'field_options' => $coupon->get_discount_types(),
+					'value' => $coupon->discount,
+			),
 			'start_date' => array(
-					'id' => 'amount',
+					'id' => 'start_date',
 					'section' => self::COUPON_SECTION,
 					'title' => __( 'Start date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->start_date,
+					'value' => ( $coupon->start_date ) ? $coupon->start_date : MS_Helper_Period::current_date(),
+					'class' => 'ms-date',
 			),
 			'expire_date' => array(
-					'id' => 'tax_name',
+					'id' => 'expire_date',
 					'section' => self::COUPON_SECTION,
 					'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->expire_date,
+					'class' => 'ms-date',
 			),
 			'membership_id' => array(
 					'id' => 'membership_id',
 					'section' => self::COUPON_SECTION,
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'field_options' => $this->data['memberships'],
 					'value' => $coupon->membership_id,
 			),
 			'max_uses' => array(
@@ -82,7 +92,6 @@ class MS_View_Coupon_Edit extends MS_View {
 					'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->max_uses,
-					'class' => 'ms-date',
 			),
 			'coupon_id' => array(
 					'id' => 'coupon_id',

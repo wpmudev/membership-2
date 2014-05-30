@@ -44,9 +44,70 @@ class MS_View_Registration_Payment extends MS_View {
 				</tr>
 			</table>
 		</div>
+		<?php $this->coupon_html(); ?>
 		<div style='clear:both;'></div>
 		<?php 
 		$html = ob_get_clean();
 		return $html;
 	}
+	
+	private function coupon_html() {
+		$coupon = $this->data['coupon'];
+		$coupon_message = '';
+		$fields = array();
+		if( ! empty ( $this->data['coupon_valid'] ) ) {
+			$fields = array(
+				'coupon_code' => array(
+						'id' => 'coupon_code',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $coupon->code,
+				),
+				'remove_coupon_code' => array(
+						'id' => 'remove_coupon_code',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Remove Coupon', MS_TEXT_DOMAIN ),
+				),
+			);
+		}
+		else {
+			$fields = array(
+				'coupon_code' => array(
+						'id' => 'coupon_code',
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'value' => $coupon->code,
+				),
+				'apply_coupon_code' => array(
+						'id' => 'apply_coupon_code',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Apply Coupon', MS_TEXT_DOMAIN ),
+				),
+			);
+		}
+		$coupon_message = $coupon->coupon_message;
+		$have_coupon_message = __( 'Have a coupon code?', MS_TEXT_DOMAIN );
+		?>
+		<div class="membership-coupon">
+			<div class="membership_coupon_form couponbar">
+				<form method="post">
+					<?php if( $coupon_message ):?>
+						<p class="ms-alert-box <?php echo ( ! empty ( $this->data['coupon_valid'] ) ? 'ms-alert-success' : 'ms-alert-error' )?>">
+							<?php echo $coupon_message; ?>
+						</p>
+					<?php endif;?>
+					<div class="couponEntry">
+						<?php 
+							if( empty ( $this->data['coupon_valid'] ) ) {
+								echo "<div class='couponQuestion'>$have_coupon_message</div>";
+							}
+							foreach( $fields as $field ){
+								MS_Helper_Html::html_input( $field );
+							}
+						?>
+					</div>
+				</form>
+			</div>
+		</div>
+	<?php
+	}
+	
 }

@@ -82,16 +82,4 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		</div>
 		<?php 
 	}
-	
-	private function login_html() {
-		?>
-		<div class="ms-membership-form-wrapper">
-			<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
-			<div class="ms-alert-box ms-alert-error">
-				<?php echo __( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<?php echo do_shortcode( '[ms-membership-login]' );?>
-		</div>		
-		<?php
-		}
 }

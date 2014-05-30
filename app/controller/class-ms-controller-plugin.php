@@ -301,17 +301,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 	
 	/**
-	 * Adds JavasSript for Membership settings pages.
-	 *
-	 * @todo Perhaps remove this method if we don't have global JS to apply to plugin
+	 * Register JavasSript for Membership settings pages.
 	 *
 	 * @since 4.0.0
 	 *	
 	 * @return void
 	 */	
 	public function register_plugin_admin_scripts() {
-		// wp_register_script( 'membership_admin_js', MS_Plugin::instance()->url . 'app/assets/js/settings.js' );
-		// wp_enqueue_script( 'membership_admin_js' );
+		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
+		
 	}
 
 	/**

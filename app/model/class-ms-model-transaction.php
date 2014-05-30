@@ -111,6 +111,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 10,
+				'post_status' => 'any',
 				'order' => 'DESC',
 		);
 		$args = wp_parse_args( $args, $defaults );
@@ -133,6 +134,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 */
 	public static function load_by_external_id( $external_id ) {
 		$args = array(
+				'post_type' => self::$POST_TYPE,
+				'posts_per_page' => 1,
 				'meta_query' => array(
 						array(
 							'key'     => 'external_id',

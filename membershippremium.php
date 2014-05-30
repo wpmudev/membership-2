@@ -393,6 +393,33 @@ class MS_Plugin {
 				) 
 			) 
 		);
+		
+		/**
+		 * Register the Coupon post type.
+		 *
+		 * @since 4.0.0
+		 */
+		register_post_type( 'ms_coupon',
+			apply_filters( 'ms_register_post_type_ms_coupon',
+				array(
+					'labels' => array(
+						'name' => __( 'coupons', MS_TEXT_DOMAIN ),
+						'singular_name' => __( 'coupon', MS_TEXT_DOMAIN ),
+						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+						'view_item' => __( 'View coupon', MS_TEXT_DOMAIN ),
+						'search_items' => __( 'Search coupons', MS_TEXT_DOMAIN ),
+						'not_found' => __( 'No coupons Found', MS_TEXT_DOMAIN )
+				),
+				'description' => __( 'coupons code to get discount in membership price.', MS_TEXT_DOMAIN ),
+				'public' => false,
+				'has_archive' => false,
+				'publicly_queryable' => false,
+				'supports' => false,
+				'capability_type' => apply_filters( 'mp_coupons_capability', 'page' ),
+				'hierarchical' => false
+				)
+			)
+		);
 	}
 	
 	

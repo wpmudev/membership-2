@@ -89,7 +89,7 @@ class MS_Controller_Billing extends MS_Controller {
 	public function admin_billing_manager() {
 		$msg = 0;
 		/**
-		 * Save membership general tab
+		 * Save billing edit
 		 */
 		$nonce = MS_View_Billing_Edit::BILLING_NONCE;
 		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
@@ -148,16 +148,23 @@ class MS_Controller_Billing extends MS_Controller {
 	 *
 	 * @since 4.0.0	
 	 * @param string $action The action to perform on selected transactions
-	 * @param object[] $transactions The list of transactions to process.
+	 * @param int[] $transaction_ids The list of transactions ids to process.
 	 */	
-	public function billing_do_action( $action, $transactions ) {
+	public function billing_do_action( $action, $transaction_ids ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-
-		foreach( $transactions as $transaction_id ) {
-			
+		if( is_array( $transaction_ids ) ) {
+			foreach( $transaction_ids as $transaction_id ) {
+				switch( $action ) {
+					case 'delete':
+						$transaction = MS_Model_Coupon::load( $transaction_id );
+						$transaction->delete();
+						break;
+				}
+			}
 		}
+		
 	}
 
 	/**
@@ -192,7 +199,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 */	
 	public function enqueue_styles() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
-			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+			wp_enqueue_style( 'jquery-ui' );
 		}
 	}
 
@@ -204,8 +211,8 @@ class MS_Controller_Billing extends MS_Controller {
 	public function enqueue_scripts() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-validate' );
 			wp_enqueue_script( 'ms-view-billing-edit', MS_Plugin::instance()->url. 'app/assets/js/ms-view-billing-edit.js', null, MS_Plugin::instance()->version );
-			wp_enqueue_script( 'jquery-validate', MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		}
 	}
 	
