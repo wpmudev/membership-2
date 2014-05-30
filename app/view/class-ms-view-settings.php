@@ -303,8 +303,8 @@ class MS_View_Settings extends MS_View {
 		$this->prepare_messages_protection();
 		?>
 		<div class='ms-settings'>
-	   		<h2><?php  _e( 'Protection Message', MS_TEXT_DOMAIN ) ; ?></h2>
-	   		<p class="description"><?php _e( 'Message displayed when not having access to a protected page.', MS_TEXT_DOMAIN );?></p>
+	   		<h2><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h2>
+	   		<p class="description"><?php _e( 'Shortcode message displayed when not having access to a protected page.', MS_TEXT_DOMAIN );?></p>
        		<form action="" method="post">
 				<?php wp_nonce_field( self::PROTECTION_NONCE, self::PROTECTION_NONCE ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['protection_message'] ) ;?>

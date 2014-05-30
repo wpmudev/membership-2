@@ -35,6 +35,8 @@ class paypalsolo extends Membership_Gateway {
 		global $M_options;
 
 		?>
+		<h3><?php _e('IPN Setup Instructions', 'membership'); ?></h3>
+		<p><?php printf(__('In order for Membership to function correctlty you must setup an IPN listening URL with PayPal. Failure to do so will prevent your site from being notified when a member cancels their subscription.<br />Your IPN listening URL is: <strong>%s</strong><br /><a target="_blank" href="https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/">Instructions &raquo;</a></p></p>', 'membership'), trailingslashit(home_url('paymentreturn/' . $this->gateway))); ?></p>		
 		<table class="form-table">
 		<tbody>
 		  <tr valign="top">
@@ -64,6 +66,7 @@ class paypalsolo extends Membership_Gateway {
 		          'NL'	=> __('Netherlands', 'membership'),
 				  'NZ'	=> __('New Zealand', 'membership'),
 		          'PL'	=> __('Poland', 'membership'),
+				  'RU'  => __('Russia', 'membership'),
 		          'SG'	=> __('Singapore', 'membership'),
 		          'ES'	=> __('Spain', 'membership'),
 		          'SE'	=> __('Sweden', 'membership'),
@@ -179,14 +182,13 @@ class paypalsolo extends Membership_Gateway {
 		$form .= '<input type="hidden" name="item_name" value="' . $subscription->sub_name() . '">';
 		$form .= '<input type="hidden" name="amount" value="' . apply_filters('membership_amount_' . $M_options['paymentcurrency'], number_format($pricing[$sublevel -1]['amount'], 2, '.' , '')) . '">';
 		$form .= '<input type="hidden" name="currency_code" value="' . $M_options['paymentcurrency'] .'">';
-
 		$form .= '<input type="hidden" name="return" value="' . apply_filters( 'membership_return_url_' . $this->gateway, M_get_returnurl_permalink()) . '">';
 		$form .= '<input type="hidden" name="cancel_return" value="' . apply_filters( 'membership_cancel_url_' . $this->gateway, M_get_subscription_permalink()) . '">';
-
 		$form .= '<input type="hidden" name="custom" value="' . $this->build_custom($user_id, $subscription->id, number_format($pricing[$sublevel -1]['amount'], 2, '.' , ''), $sublevel, $fromsub) .'">';
-
 		$form .= '<input type="hidden" name="lc" value="' . esc_attr(get_option( $this->gateway . "_paypal_site" )) . '">';
-		$form .= '<input type="hidden" name="notify_url" value="' . apply_filters( 'membership_notify_url_' . $this->gateway, trailingslashit(get_option('home')) . 'paymentreturn/' . esc_attr($this->gateway)) . '">';
+		$form .= '<input type="hidden" name="notify_url" value="' . apply_filters( 'membership_notify_url_' . $this->gateway, home_url('paymentreturn/' . esc_attr($this->gateway))) . '">';
+		$form .= '<input type="hidden" name="no_note" value="1" />';
+		$form .= '<input type="hidden" name="no_shipping" value="1" />';
 
 		if($sublevel == 1) {
 			$button = get_option( $this->gateway . "_paypal_button", 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif' );
@@ -444,8 +446,13 @@ class paypalsolo extends Membership_Gateway {
 						}
 
 						// remove any current subs for upgrades
-						if ( !empty( $fromsub ) && $fromsub != 0 ) {
-							$member->drop_subscription( $fromsub );
+						$sub_ids = $member->get_subscription_ids();
+						foreach ( $sub_ids as $fromsub ) {
+							if ( $sub_id == $fromsub ) {
+								continue;
+							}
+							
+							$member->drop_subscription($fromsub);
 						}
 
 						// Added for affiliate system link

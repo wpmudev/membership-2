@@ -397,7 +397,9 @@ if ( !class_exists( 'M_Ping' ) ) {
 			$url = $this->ping->pingurl;
 			switch ( $this->ping->pingtype ) {
 				case 'GET':
-					$url = add_query_arg( array_map( 'urlencode', $pingtosend ), $url );
+					$url .= http_build_query($pingtosend);
+					// old method kept for consideration as using WP method.
+					// $url = add_query_arg( array_map( 'urlencode', $pingtosend ), $url );
 					$result = $request->request( $url, array( 'method' => 'GET', 'body' => '' ) );
 					break;
 

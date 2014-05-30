@@ -52,6 +52,12 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $invoice_sender_name;
 	
+	/**
+	 * Shortcode protection message.
+	 * 
+	 * @todo change it to array if more protection messages comes (like more tag).
+	 * @var $protection_message
+	 */
 	protected $protection_message;
 
 	public function __construct() {

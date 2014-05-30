@@ -852,6 +852,7 @@ class Membership_Gateway_Authorize extends Membership_Gateway {
 			$subscription->amount = $amount = number_format( $price['origin'], 2, '.', '' );
 			$subscription->trialAmount = number_format( $price['amount'], 2, '.', '' );
 			$subscription->trialOccurrences = 1;
+			$subscription->totalOccurrences = $subscription->totalOccurrences + $subscription->trialOccurrences;
 		}
 
 		$arb = $this->_get_arb();

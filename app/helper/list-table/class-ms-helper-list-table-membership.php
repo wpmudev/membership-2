@@ -42,10 +42,11 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function get_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb'     => '<input type="checkbox" />',
-			'name' => __('Membership Name', MS_TEXT_DOMAIN ),
-			'active' => __('Active', MS_TEXT_DOMAIN ),
-			'public' => __('Public', MS_TEXT_DOMAIN ),
-			'members' => __('Members', MS_TEXT_DOMAIN ),
+			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
+			'active' => __( 'Active', MS_TEXT_DOMAIN ),
+			'public' => __( 'Public', MS_TEXT_DOMAIN ),
+			'members' => __( 'Members', MS_TEXT_DOMAIN ),
+			'shortcode' => __( 'Shortcode', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -130,28 +131,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						$item->id,
 						__('Edit', MS_TEXT_DOMAIN )
 				),
-/*				sprintf( '<a href="%s">%s</a>',
-					wp_nonce_url( 
-						sprintf( '?page=%s&membership_id=%s&action=%s',
-							$_REQUEST['page'],
-							$item->id,
-							'toggle_activation'
-							),
-						'toggle_activation'
-						),
-					__('Toggle Activation', MS_TEXT_DOMAIN )
-				),
-				sprintf( '<a href="%s">%s</a>',
-					wp_nonce_url( 
-						sprintf( '?page=%s&membership_id=%s&action=%s',
-							$_REQUEST['page'],
-							$item->id,
-							'toggle_public'
-							),
-						'toggle_public'
-						),
-					__('Toggle Public', MS_TEXT_DOMAIN )
-				),*/
 				sprintf( '<span class="delete"><a href="%s">%s</a></span>',
 					wp_nonce_url( 
 						sprintf( '?page=%s&membership_id=%s&action=%s',
@@ -179,6 +158,9 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				break;
 			case 'members':
 				$html = $item->get_members_count();
+				break;
+			case 'shortcode':
+				$html = '['. MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE ." id='$item->id']";
 				break;
 			default:
 				$html = print_r( $item, true ) ;

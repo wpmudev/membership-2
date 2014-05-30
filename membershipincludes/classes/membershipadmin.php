@@ -126,7 +126,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 			// Add in the coupon class
 			$this->_coupons = new M_Coupon();
 		}
-		
+
 		/**
 		 * Checks to see if the plugin is network activated and global tables are being used
 		 *
@@ -134,11 +134,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_network_active() {
 			return ( (function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'membership/membershippremium.php' )) );
 		}
-		
+
 		/**
 		 * Check to see if the plugin is using global tables
 		 *
@@ -146,11 +146,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function using_global_tables() {
 			return ( defined( 'MEMBERSHIP_GLOBAL_TABLES' ) && MEMBERSHIP_GLOBAL_TABLES == true );
 		}
-		
+
 		/**
 		 * Check to see if the current site is the main site
 		 *
@@ -158,15 +158,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_main_site() {
 			if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') ) {
 				return ( MEMBERSHIP_GLOBAL_MAINSITE == get_current_blog_id() );
 			}
-			
+
 			return ( is_main_site() );
 		}
-		
+
 		/**
 		 * Checks to see if the plugin has the latest build installed
 		 *
@@ -174,12 +174,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 		 *
 		 * @return bool
 		 */
-		
+
 		function is_installed() {
 			if ( $this->is_network_active() && $this->using_global_tables() ) {
 				return ( get_site_option('M_Installed', false) == $this->build  && get_option('M_Installed', false) == $this->build );
 			}
-			
+
 			return ( get_option('M_Installed', false) == $this->build );
 		}
 
@@ -202,16 +202,16 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 				if ( !$this->is_installed() ) {
 					include_once membership_dir( 'membershipincludes/classes/upgrade.php' );
-					
+
 					$installed = get_option('M_Installed', false);
 
 					M_Upgrade($installed);
 					update_option('M_Installed', $this->build);
-					
+
 					if ( $this->is_network_active() ) {
 						update_site_option('M_Installed', $this->build);
 					}
-						
+
 
 					// Add in our new capability
 					if (!$user->has_cap('membershipadmin') && defined('MEMBERSHIP_SETACTIVATORAS_ADMIN') && MEMBERSHIP_SETACTIVATORAS_ADMIN == 'yes') {
@@ -220,18 +220,18 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 					$this->create_defaults();
 				}
-				
+
 				//if is network activated and using global tables then force protection on all sites
 				if ( $this->is_network_active() && $this->using_global_tables() ) {
 					if ( get_option('membership_active') != 'yes' ) {
 						update_option('membership_active', 'yes');
 					}
-					
+
 					if ( defined('MEMBERSHIP_GLOBAL_MAINSITE') && is_numeric(MEMBERSHIP_GLOBAL_MAINSITE) && get_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', false) != 'yes' ) {
 						update_blog_option(MEMBERSHIP_GLOBAL_MAINSITE, 'membership_active', 'yes');
 					}
 				}
-				
+
 				// Add in our new capability
 				if ( $user->user_login == MEMBERSHIP_MASTER_ADMIN && !$user->has_cap('membershipadmin') ) {
 					$user->add_cap('membershipadmin');
@@ -1317,7 +1317,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 
 														$fromlevel_id = (int) $_POST['fromlevel_id'];
 														$tolevel_id = (int) $_POST['tolevel_id'];
-														
+
 														if ($fromlevel_id && $tolevel_id) {
 																$member->move_level($fromlevel_id, $tolevel_id);
 														}
@@ -1893,664 +1893,699 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						<?php
 				}
 
-				function handle_members_panel() {
-			global $action, $page, $M_options;
+		        // ::LEGACY::
+		        function handle_members_panel()
+		        {
+		            global $action, $page, $M_options;
 
-						wp_reset_vars(array('action', 'page'));
+		            wp_reset_vars(array(
+		                'action',
+		                'page'
+		            ));
 
-						require_once('class.membersearch.php');
+		            require_once('class.membersearch.php');
 
-						// bulk actions
-						if (isset($_GET['doaction'])) {
-								$action = $_GET['action'];
-						} elseif (isset($_GET['doaction2'])) {
-								$action = $_GET['action2'];
-						}
+		            // get all ACTIVE subscriptions
+		            $subs = $this->get_subscriptions(array(
+		                'sub_status' => 'active'
+		            ));
 
-						switch (addslashes($action)) {
+		            // bulk actions
+		            if (isset($_GET['doaction'])) {
+		                $action = $_GET['action'];
+		            } elseif (isset($_GET['doaction2'])) {
+		                $action = $_GET['action2'];
+		            }
 
-								case 'addlevel': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												$this->handle_member_level_op('add', $member_id);
-												return;
-										}
-										break;
+		            switch (addslashes($action)) {
 
-								case 'movelevel': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												check_admin_referer('movelevel-member-' . $member_id);
-												$this->handle_member_level_op('move', $member_id);
-												return;
-										}
-										break;
+		                case 'addlevel':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        $this->handle_member_level_op('add', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'droplevel': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												check_admin_referer('droplevel-member-' . $member_id);
-												$this->handle_member_level_op('drop', $member_id);
-												return;
-										}
-										break;
+		                case 'movelevel':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        check_admin_referer('movelevel-member-' . $member_id);
+		                        $this->handle_member_level_op('move', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'bulkaddlevel':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_level_op('add', $_GET['users']);
-												return;
-										}
-										break;
+		                case 'droplevel':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        check_admin_referer('droplevel-member-' . $member_id);
+		                        $this->handle_member_level_op('drop', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'bulkmovelevel':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_level_op('move', $_GET['users']);
-												return;
-										}
-										break;
+		                case 'bulkaddlevel':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_level_op('add', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
 
-								case 'bulkdroplevel':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_level_op('drop', $_GET['users']);
-												return;
-										}
-										break;
+		                case 'bulkmovelevel':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_level_op('move', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
 
-								case 'addsub': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												$this->handle_member_subscription_op('add', $member_id);
-												return;
-										}
-										break;
+		                case 'bulkdroplevel':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_level_op('drop', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
 
-								case 'movesub': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												check_admin_referer('movesub-member-' . $member_id);
-												$this->handle_member_subscription_op('move', $member_id);
-												return;
-										}
-										break;
+		                case 'addsub':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        $this->handle_member_subscription_op('add', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'dropsub': if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												check_admin_referer('dropsub-member-' . $member_id);
-												$this->handle_member_subscription_op('drop', $member_id);
-												return;
-										}
-										break;
+		                case 'movesub':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        check_admin_referer('movesub-member-' . $member_id);
+		                        $this->handle_member_subscription_op('move', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'bulkaddsub': if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_subscription_op('add', $_GET['users']);
-												return;
-										}
-										break;
-								case 'bulkmovesub':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_subscription_op('move', $_GET['users']);
-												return;
-										}
-										break;
-								case 'bulkdropsub':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_subscription_op('drop', $_GET['users']);
-												return;
-										}
-										break;
+		                case 'dropsub':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        check_admin_referer('dropsub-member-' . $member_id);
+		                        $this->handle_member_subscription_op('drop', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-								case 'bulkmovegateway':
-										if (isset($_GET['users'])) {
-												check_admin_referer('bulk-members');
-												$this->handle_member_gateway_op('move', $_GET['users']);
-												return;
-										}
-										break;
+		                case 'bulkaddsub':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_subscription_op('add', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
+		                case 'bulkmovesub':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_subscription_op('move', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
+		                case 'bulkdropsub':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_subscription_op('drop', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
 
-								case 'movegateway':
-										if (isset($_GET['member_id'])) {
-												$member_id = (int) $_GET['member_id'];
-												check_admin_referer('movegateway-member-' . $member_id);
-												$this->handle_member_gateway_op('move', $member_id);
-												return;
-										}
-										break;
+		                case 'bulkmovegateway':
+		                    if (isset($_GET['users'])) {
+		                        check_admin_referer('bulk-members');
+		                        $this->handle_member_gateway_op('move', $_GET['users']);
+		                        return;
+		                    }
+		                    break;
 
-								case 'edit': if (isset($_GET['level_id'])) {
-												$level_id = (int) $_GET['level_id'];
-												$this->handle_level_edit_form($level_id);
-												return; // So we don't see the rest of this page
-										}
-										break;
-						}
+		                case 'movegateway':
+		                    if (isset($_GET['member_id'])) {
+		                        $member_id = (int) $_GET['member_id'];
+		                        check_admin_referer('movegateway-member-' . $member_id);
+		                        $this->handle_member_gateway_op('move', $member_id);
+		                        return;
+		                    }
+		                    break;
 
-						$filter = array();
+		                case 'edit':
+		                    if (isset($_GET['level_id'])) {
+		                        $level_id = (int) $_GET['level_id'];
+		                        $this->handle_level_edit_form($level_id);
+		                        return; // So we don't see the rest of this page
+		                    }
+		                    break;
+		            }
 
-						if (isset($_GET['s'])) {
-								$s = stripslashes($_GET['s']);
-								$filter['s'] = $s;
-						} else {
-								$s = '';
-						}
-						
-						if ( isset( $_GET['subscription-search-filter'] ) ) {
-								$search_field = stripslashes( $_GET['subscription-search-filter'] );
-						} else {
-								$search_field = 'all';
-						}						
+		            $filter = array();
 
-						$sub_id = null;
-						$level_id = null;
+		            if (isset($_GET['s'])) {
+		                $s           = stripslashes($_GET['s']);
+		                $filter['s'] = $s;
+		            } else {
+		                $s = '';
+		            }
 
-						if (isset($_GET['doactionsub'])) {
-								if (addslashes($_GET['sub_op']) != '') {
-										$sub_id = addslashes($_GET['sub_op']);
-								}
-						}
+		            $sub_id   = null;
+		            $level_id = null;
 
-						if (isset($_GET['doactionsub2'])) {
-								if (addslashes($_GET['sub_op2']) != '') {
-										$sub_id = addslashes($_GET['sub_op2']);
-								}
-						}
+		            if (isset($_GET['doactionsub'])) {
+		                if (addslashes($_GET['sub_op']) != '') {
+		                    $sub_id = addslashes($_GET['sub_op']);
+		                }
+		            }
 
-						if (isset($_GET['doactionlevel'])) {
-								if (addslashes($_GET['level_op']) != '') {
-										$level_id = addslashes($_GET['level_op']);
-								}
-						}
+		            if (isset($_GET['doactionsub2'])) {
+		                if (addslashes($_GET['sub_op2']) != '') {
+		                    $sub_id = addslashes($_GET['sub_op2']);
+		                }
+		            }
 
-						if (isset($_GET['doactionlevel2'])) {
-								if (addslashes($_GET['level_op2']) != '') {
-										$level_id = addslashes($_GET['level_op2']);
-								}
-						}
+		            if (isset($_GET['doactionlevel'])) {
+		                if (addslashes($_GET['level_op']) != '') {
+		                    $level_id = addslashes($_GET['level_op']);
+		                }
+		            }
 
-						if (isset($_GET['doactionactive'])) {
-								if (addslashes($_GET['active_op']) != '') {
-										$active_op = addslashes($_GET['active_op']);
-								}
-						}
+		            if (isset($_GET['doactionlevel2'])) {
+		                if (addslashes($_GET['level_op2']) != '') {
+		                    $level_id = addslashes($_GET['level_op2']);
+		                }
+		            }
 
-						if (isset($_GET['doactionactive2'])) {
-								if (addslashes($_GET['active_op2']) != '') {
-										$active_op = addslashes($_GET['active_op2']);
-								}
-						}
+		            if (isset($_GET['doactionactive'])) {
+		                if (addslashes($_GET['active_op']) != '') {
+		                    $active_op = addslashes($_GET['active_op']);
+		                }
+		            }
 
-						$usersearch = isset($_GET['s']) ? $_GET['s'] : null;
-						$userspage = isset($_GET['page_num']) ? $_GET['page_num'] : null;
-						$role = null;
+		            if (isset($_GET['doactionactive2'])) {
+		                if (addslashes($_GET['active_op2']) != '') {
+		                    $active_op = addslashes($_GET['active_op2']);
+		                }
+		            }
 
-						if (empty($active_op))
-								$active_op = '';
+		            $usersearch = isset($_GET['s']) ? $_GET['s'] : null;
+		            $userspage  = isset($_GET['page_num']) ? $_GET['page_num'] : null;
+		            $role       = null;
 
-						// Query the users
-						$wp_user_search = new M_Member_Search( $usersearch, $userspage, $sub_id, $level_id, $active_op, $search_field );
+		            if (empty($active_op))
+		                $active_op = '';
 
-						$messages = array();
-						$messages[1] = __('Member added.', 'membership');
-						$messages[2] = __('Member deleted.', 'membership');
-						$messages[3] = __('Member updated.', 'membership');
-						$messages[4] = __('Member not added.', 'membership');
-						$messages[5] = __('Member not updated.', 'membership');
-						$messages[6] = __('Member not deleted.', 'membership');
+		            // Query the users
+		            $wp_user_search = new M_Member_Search($usersearch, $userspage, $sub_id, $level_id, $active_op);
 
-						$messages[7] = __('Member activation toggled.', 'membership');
-						$messages[8] = __('Member activation not toggled.', 'membership');
+		            $messages    = array();
+		            $messages[1] = __('Member added.', 'membership');
+		            $messages[2] = __('Member deleted.', 'membership');
+		            $messages[3] = __('Member updated.', 'membership');
+		            $messages[4] = __('Member not added.', 'membership');
+		            $messages[5] = __('Member not updated.', 'membership');
+		            $messages[6] = __('Member not deleted.', 'membership');
 
-						$messages[9] = __('Members updated.', 'membership');
-						?>
-						<div class='wrap nosubsub'>
-								<div class="icon32" id="icon-users"><br></div>
-								<h2><?php _e('Edit Members', 'membership'); ?></h2>
+		            $messages[7] = __('Member activation toggled.', 'membership');
+		            $messages[8] = __('Member activation not toggled.', 'membership');
 
+		            $messages[9] = __('Members updated.', 'membership');
+		?>
+					<div class='wrap nosubsub'>
+						<div class="icon32" id="icon-users"><br></div>
+						<h2><?php _e('Edit Members', 'membership'); ?></h2>
+
+						<?php
+				            if (isset($_GET['msg'])) {
+				                echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
+				                $_SERVER['REQUEST_URI'] = remove_query_arg(array( 'msg' ), $_SERVER['REQUEST_URI']);
+		            		}
+
+				            if ($this->show_user_help($page)) { ?>
+							<div class='screenhelpheader'>
+								<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss', 'membership'); ?></a>
 								<?php
-								if (isset($_GET['msg'])) {
-										echo '<div id="message" class="updated fade"><p>' . $messages[(int) $_GET['msg']] . '</p></div>';
-										$_SERVER['REQUEST_URI'] = remove_query_arg(array('msg'), $_SERVER['REQUEST_URI']);
-								}
-
-								if ($this->show_user_help($page)) {
-										?>
-										<div class='screenhelpheader'>
-												<a href="admin.php?page=<?php echo $page; ?>&amp;action=removeheader" class="welcome-panel-close"><?php _e('Dismiss', 'membership'); ?></a>
-												<?php
-												ob_start();
-												include_once(membership_dir('membershipincludes/help/header.members.php'));
-												echo ob_get_clean();
-												?>
-										</div>
-										<?php
-								}
+					                ob_start();
+					                include_once(membership_dir('membershipincludes/help/header.members.php'));
+					                echo ob_get_clean();
 								?>
+							</div>
+							<?php } ?>
 
-								<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
-							
-									<p class="search-box">										
-										<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
-										<label for="membership-search-input" class="screen-reader-text"><?php _e('Search Members', 'membership'); ?>:</label>
-										<input type="text" value="<?php echo esc_attr($s); ?>" name="s" id="membership-search-input">
-										<input type="submit" class="button" value="<?php _e('Search Members', 'membership'); ?>">
-									</p>
+					<form method="get" action="?page=<?php echo esc_attr($page); ?>" class="search-form">
+						<p class="search-box">
+							<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+							<label for="membership-search-input" class="screen-reader-text"><?php _e('Search Members', 'membership'); ?>:</label>
+							<input type="text" value="<?php echo esc_attr($s); ?>" name="s" id="membership-search-input">
+							<input type="submit" class="button" value="<?php _e('Search Members', 'membership'); ?>">
+						</p>
+					</form>
 
-									<p class="search-box">
-											<label class="description" for="subscription-search-filter"><?php _e('Search Fields', 'membership'); ?></label>     
-										<select name="subscription-search-filter" id="subscription-search-filter">         
-										     <?php
-										          $option_array = array(
-										               array( 'filter' => 'all', 'display' => 'All' ),
-										               array( 'filter' => 'display_name', 'display' => 'Display Name' ),
-										               array( 'filter' => 'user_email', 'display' => 'E-mail' ),
-										               array( 'filter' => 'first_name', 'display' => 'First Name' ),
-										               array( 'filter' => 'last_name', 'display' => 'Last Name' ),
-										               array( 'filter' => 'user_nicename', 'display' => 'Nice Name' ),
-										               array( 'filter' => 'user_login', 'display' => 'User Login' ),
-										               array( 'filter' => 'user_url', 'display' => 'User URL' ),
-										          );
-										      ?>
-										   <?php foreach($option_array as $option_item) {  ?>
-										          <?php if( $option_item == $POSTED_VAR ) {
-										                    $selected = 'selected="selected"';
-										               } else {
-										                    $selected = '';
-										               } ?>    
-										          <option value="<?php echo $option_item['filter']; ?>" <?php echo $selected; ?>><?php echo $option_item['display']; ?></option>                   
-										   <?php } ?>
-										</select>&nbsp;
-									</p>
-								
-								</form>
+					<br class='clear' />
 
-								<br class='clear' />
+					<form method="get" action="?page=<?php echo esc_attr($page);?>" id="members-filter">
 
-								<form method="get" action="?page=<?php echo esc_attr($page); ?>" id="members-filter">
+						<input type='hidden' name='page' value='<?php echo esc_attr($page);?>' />
 
-										<input type='hidden' name='page' value='<?php echo esc_attr($page); ?>' />
+						<div class="tablenav">
+							<?php //if ( $wp_user_search->results_are_paged() ) : ?>
+								<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
+							<?php //endif; ?>
 
-										<div class="tablenav">
+							<div class="alignleft actions">
 
-												<?php //if ( $wp_user_search->results_are_paged() ) :	 ?>
-												<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
-						<?php //endif;	?>
+								<select name="action">
+									<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+									<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
+									<?php //if (!empty($subs)): ?>
+										<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
+											<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
+											<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
+											<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
+										</optgroup>
+									<?php //endif; ?>
+									<?php //if (empty($subs)): ?>
+										<optgroup label="<?php _e('Levels', 'membership'); ?>">
+				                            <option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
+				                            <option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
+				                            <option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
+				                        </optgroup>
+			                        <?php //endif; ?>
+									<optgroup label="<?php _e('Gateways', 'membership'); ?>">
+										<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
+									</optgroup>
+								</select>
+								<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>" />
 
-												<div class="alignleft actions">
-														<select name="action">
-																<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
-																<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
+								<?php if (!empty($subs)): ?>
+									<select name="sub_op" style='float:none;'>
+										<option value=""><?php _e('Filter by subscription', 'membership'); ?></option>
+										<?php foreach ($subs as $key => $sub) { ?>
+											<option value="<?php echo $sub->id; ?>"
+											<?php if (isset($_GET['sub_op']) && $_GET['sub_op'] == $sub->id) 
+													echo 'selected="selected"'; ?>>
+											<?php echo esc_html($sub->sub_name); ?>
+										</option>		
+										<?php } //end foreach ?>
+									</select>
+									<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter', 'membership'); ?>">
+								<?php endif; ?>
 
-																<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
-																		<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
-																		<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
-																		<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
-																</optgroup>
+								<select name="level_op" style='float:none;'>
+									<option value=""><?php _e('Filter by level', 'membership'); ?></option>
+									<?php
+										$levels = $this->get_membership_levels();
+									    if ($levels) {
+									        foreach ($levels as $key => $level) { ?>
+												<option value="<?php echo $level->id;?>" 
+													<?php if (isset($_GET['level_op']) && $_GET['level_op'] == $level->id) echo 'selected="selected"';?>>
+													<?php echo esc_html($level->level_title); ?>
+												</option>
+									<?php
+						        			} //end foreach
+						    			} //end if
+									?>
+									</select>
+									<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter', 'membership'); ?>">
 
-																<optgroup label="<?php _e('Gateways', 'membership'); ?>">
-																		<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
-																</optgroup>
-														</select>
-														<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="<?php _e('Apply', 'membership'); ?>" />
+									<select name="active_op" style='float:none;'>
+										<option value=""><?php _e('Filter by status', 'membership'); ?></option>
+										<option value="yes" 
+											<?php if (isset($_GET['active_op']) && $_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>>
+											<?php _e('Active', 'membership'); ?>
+										</option>
+										<option value="no" 
+											<?php if (isset($_GET['active_op']) && $_GET['active_op'] == 'no') echo 'selected="selected"'; ?>>
+											<?php _e('Inactive', 'membership'); ?>
+										</option>
+									</select>
+									<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter', 'membership'); ?>">
+							</div>  <?php // END <div class="alignleft actions"> // ?>
 
-														<select name="sub_op" style='float:none;'>
-																<option value=""><?php _e('Filter by subscription', 'membership'); ?></option>
-																<?php
-																$subs = $this->get_subscriptions();
-																if ($subs) {
-																		foreach ($subs as $key => $sub) {
-																				?>
-																				<option value="<?php echo $sub->id; ?>" <?php if (isset($_GET['sub_op']) && $_GET['sub_op'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
-																				<?php
-																		}
-																}
-																?>
-														</select>
-														<input type="submit" class="button-secondary action" id="doactionsub" name="doactionsub" value="<?php _e('Filter', 'membership'); ?>">
+							<div class="alignright actions">
+								<!-- <input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel"> -->
+							</div>
 
-														<select name="level_op" style='float:none;'>
-																<option value=""><?php _e('Filter by level', 'membership'); ?></option>
-																<?php
-																$levels = $this->get_membership_levels();
-																if ($levels) {
-																		foreach ($levels as $key => $level) {
-																				?>
-																				<option value="<?php echo $level->id; ?>" <?php if (isset($_GET['level_op']) && $_GET['level_op'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
-																				<?php
-																		}
-																}
-																?>
-														</select>
-														<input type="submit" class="button-secondary action" id="doactionlevel" name="doactionlevel" value="<?php _e('Filter', 'membership'); ?>">
+							<br class="clear">
+						</div> <?php // END <div class="tablenav"> // ?>
 
-														<select name="active_op" style='float:none;'>
-																<option value=""><?php _e('Filter by status', 'membership'); ?></option>
-																<option value="yes" <?php if (isset($_GET['active_op']) && $_GET['active_op'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active', 'membership'); ?></option>
-																<option value="no" <?php if (isset($_GET['active_op']) && $_GET['active_op'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive', 'membership'); ?></option>
-														</select>
-														<input type="submit" class="button-secondary action" id="doactionactive" name="doactionactive" value="<?php _e('Filter', 'membership'); ?>">
-
-
-												</div>
-
-												<div class="alignright actions">
-																<!-- <input type="button" class="button-secondary addnewlevelbutton" value="<?php _e('Add New', 'membership'); ?>" name="addnewlevel"> -->
-												</div>
-
-												<br class="clear">
-										</div>
-						<?php if (is_wp_error($wp_user_search->search_errors)) : ?>
-												<div class="error">
-														<ul>
-																<?php
-																foreach ($wp_user_search->search_errors->get_error_messages() as $message)
-																		echo "<li>$message</li>";
-																?>
-														</ul>
-												</div>
-										<?php endif; ?>
-
-										<?php if ($wp_user_search->is_search()) : ?>
-												<p><a href="?page=<?php echo $page; ?>"><?php _e('&larr; Back to All Users', 'membership'); ?></a></p>
+						<?php if (is_wp_error($wp_user_search->search_errors)): ?>
+							<div class="error">
+								<ul>
+								<?php
+									foreach ($wp_user_search->search_errors->get_error_messages() as $message) echo "<li>$message</li>";
+								?>
+								</ul>
+							</div>
 						<?php endif; ?>
 
-										<div class="clear"></div>
+						<?php if ($wp_user_search->is_search()): ?>
+							<p><a href="?page=<?php echo $page; ?>"><?php _e('&larr; Back to All Users', 'membership'); ?></a></p>
+						<?php endif; ?>
 
-										<?php
-										wp_nonce_field('bulk-members');
+						<div class="clear"></div>
 
-										$columns = array("username" => __('Username', 'membership'),
-												"name" => __('Name', 'membership'),
-												"email" => __('E-mail', 'membership'),
-												"active" => __('Active', 'membership'),
-												"sub" => __('Subscription', 'membership'),
-												"level" => __('Membership Level', 'membership'),
-												"expires" => __('Level Expires', 'membership'),
-												"gateway" => __('Gateway', 'membership')
-										);
-
-										$columns = apply_filters('members_columns', $columns);
-
-										//$levels = $this->get_membership_levels($filter);
-										?>
-
-										<table cellspacing="0" class="widefat fixed">
-												<thead>
-														<tr>
-																<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
-																<?php
-																foreach ($columns as $key => $col) {
-																		?>
-																		<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-																		<?php
-																}
-																?>
-														</tr>
-												</thead>
-
-												<tfoot>
-														<tr>
-																<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
-																<?php
-																reset($columns);
-																foreach ($columns as $key => $col) {
-																		?>
-																		<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
-																		<?php
-																}
-																?>
-														</tr>
-												</tfoot>
-
-												<tbody>
-														<?php
-
-							$factory = Membership_Plugin::factory();
-							$default_subscription = '';
-							$default_level = '';
-							if ( !empty( $M_options['freeusersubscription'] ) ) {
-								$subscription = $factory->get_subscription( $M_options['freeusersubscription'] );
-								$default_subscription = $subscription->sub_name() . ' <span style="font-size:80%;color:gray">(set by default)</span>';
-								$levels = $subscription->get_levels();
-								if ( !empty( $levels ) ) {
-									$default_level = $levels[0]->level_title . ' <span style="font-size:80%;color:gray">(set by default)</span>';
-								}
-							}
-
-														$style = '';
-														foreach ($wp_user_search->get_results() as $user) {
-																$user_object = $factory->get_member($user->ID);
-																$is_membership_admin = $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID);
-																$roles = $user_object->roles;
-																$role = array_shift($roles);
-
-																$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
-																?>
-																<tr id='user-<?php echo $user_object->ID; ?>' <?php echo $style; ?>>
-																		<th scope='row' class='check-column'>
-																				<input type='checkbox' name='users[]' id='user_<?php echo $user_object->ID; ?>' class='$role' value='<?php echo $user_object->ID; ?>' />
-																		</th>
-																		<td <?php echo $style; ?>>
-																				<strong><a href='<?php echo admin_url('user-edit.php?user_id=' . $user_object->ID); ?>' title='User ID: <?php echo $user_object->ID; ?>'><?php echo $user_object->user_login; ?></a></strong>
-																				<?php
-																				$actions = array();
-																				//$actions['id'] = "<strong>" . __('ID : ', 'membership') . $user_object->ID . "</strong>";
-																				$actions['edit'] = "<span class='edit'><a href='" . admin_url('user-edit.php?user_id=' . $user_object->ID) . "'>" . __('Edit', 'membership') . "</a></span>";
-																				if ($user_object->active_member()) {
-																						$actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
-																				} else {
-																						$actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
-																				}
-																				//$actions['history'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=history&amp;member_id=" . $user_object->ID . "", 'history-member_' . $user_object->ID) . "'>" . __('History', 'membership') . "</a></span>";
-																				?>
-																				<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-																		</td>
-																		<td <?php echo $style; ?>><?php echo $user_object->first_name . " " . $user_object->last_name; ?></td>
-																		<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf(__('e-mail: %s', 'membership'), $user_object->user_email); ?>'><?php echo $user_object->user_email; ?></a></td>
-																		<td <?php echo $style; ?>>
-																				<?php
-																				if ($user_object->active_member()) {
-																						echo "<span class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
-																				} else {
-																						echo "<span class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
-																				}
-																				?>
-																		</td>
-																		<td <?php echo $style; ?>>
-																				<?php
-																				$subs = $user_object->get_subscription_ids();
-										if ( !empty( $subs ) ) {
-											$rows = array();
-											foreach ( (array) $subs as $key ) {
-												$sub = $factory->get_subscription( $key );
-												if ( !empty( $sub ) ) {
-													$rows[] = $sub->sub_name();
-												}
-											}
-											echo implode( ", ", $rows );
-										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
-										} else {
-											echo $default_subscription;
-										}
-
-										$actions = array();
-																				if (!$is_membership_admin) {
-																						$actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
-																				}
-
-																				if (!empty($subs)) {
-																						if (count($subs) == 1) {
-																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $subs[0], 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-																						} else {
-																								$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								$actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
-																						}
-																				}
-																				?>
-																				<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-																		</td>
-																		<td <?php echo $style; ?>>
-																				<?php
-																				$levels = $user_object->get_level_ids();
-																				if (!empty($levels)) {
-																						$rows = array();
-																						foreach ((array) $levels as $key => $value) {
-																								$level = Membership_Plugin::factory()->get_level($value->level_id);
-																								if (!empty($level)) {
-																										if ((int) $value->sub_id != 0) {
-																												$rows[] = "<strong>" . $level->level_title() . "</strong>";
-																										} else {
-																												$rows[] = $level->level_title();
-																										}
-																								}
-																						}
-																						echo implode(", ", $rows);
-										} elseif ( $is_membership_admin ) {
-											?><span style="font-style:italic;font-weight:bold"><?php esc_html_e( 'Super User', 'membership' ) ?></span><?php
-										} else {
-											echo $default_level;
-										}
-
-																				?>
-																				<div class="row-actions"><?php //echo implode(" | ", $actions); ?></div>
-																		</td>
-																		<td <?php echo $style; ?>>
-																				<?php
-																				$subs = $user_object->get_relationships();
-																				if ($subs) {
-																						$exps = array();
-																						foreach ($subs as $sub) {
-																								$exps[] = date("Y-m-d H:i", mysql2date("U", $sub->expirydate));
-																						}
-																						echo implode(", ", $exps);
-																				}
-																				?>
-																		</td>
-																		<td <?php echo $style; ?>>
-																				<?php
-																				$subs = $user_object->get_relationships();
-																				//print_r($subs);
-																				if ( $subs ) {
-																						$gates = array();
-																						foreach ( $subs as $sub ) {
-												if ( $sub->usinggateway != 'admin' ) {
-													$gateway = Membership_Gateway::get_gateway( $sub->usinggateway );
-													$gates[] = is_object( $gateway )
-														? $gateway->title
-														: sprintf( '<i>%s</i><!-- %s -->', esc_html__( 'not found or deactivated', 'membership' ), $sub->usinggateway );
-												} else {
-													$gates[] = esc_html__( 'Admin', 'membership' );
-												}
-																						}
-																						echo implode( ", ", $gates );
-
-											if ( $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID) ) {
-																								$actions = array();
-																						} else {
-																								$actions = array();
-
-																								if (count($gates) == 1) {
-																										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "&amp;fromgateway=" . $gates[0], 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								} else {
-																										$actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "", 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
-																								}
-																						}
-																						?>
-																						<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
-																						<?php
-																				}
-																				?>
-																		</td>
-																</tr>
-																<?php
-														}
-														?>
-												</tbody>
-										</table>
-
-
-										<div class="tablenav">
-
-												<div class="alignleft actions">
-														<select name="action2">
-																<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
-																<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
-
-																<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
-																		<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
-																		<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
-																		<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
-																</optgroup>
-
-																<optgroup label="<?php _e('Levels', 'membership'); ?>">
-																		<option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
-																		<option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
-																		<option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
-																</optgroup>
-
-																<optgroup label="<?php _e('Gateways', 'membership'); ?>">
-																		<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
-																</optgroup>
-														</select>
-
-														<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
-
-														<select name="sub_op2">
-																<option value=""><?php _e('Filter by subscription', 'membership'); ?></option>
-																<?php
-																$subs = $this->get_subscriptions();
-																if ($subs) {
-																		foreach ($subs as $key => $sub) {
-																				?>
-																				<option value="<?php echo $sub->id; ?>" <?php if (isset($_GET['sub_op2']) && $_GET['sub_op2'] == $sub->id) echo 'selected="selected"'; ?>><?php echo esc_html($sub->sub_name); ?></option>
-																				<?php
-																		}
-																}
-																?>
-														</select>
-
-														<input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter', 'membership'); ?>">
-
-														<select name="level_op2">
-																<option value=""><?php _e('Filter by level', 'membership'); ?></option>
-																<?php
-																$levels = $this->get_membership_levels();
-																if ($levels) {
-																		foreach ($levels as $key => $level) {
-																				?>
-																				<option value="<?php echo $level->id; ?>" <?php if (isset($_GET['level_op2']) && $_GET['level_op2'] == $level->id) echo 'selected="selected"'; ?>><?php echo esc_html($level->level_title); ?></option>
-																				<?php
-																		}
-																}
-																?>
-														</select>
-
-														<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter', 'membership'); ?>">
-
-														<select name="active_op2">
-																<option value=""><?php _e('Filter by status', 'membership'); ?></option>
-																<option value="yes" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>><?php _e('Active', 'membership'); ?></option>
-																<option value="no" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>><?php _e('Inactive', 'membership'); ?></option>
-														</select>
-
-														<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter', 'membership'); ?>">
-
-												</div>
-
-												<div class="alignright actions">
-														<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
-												</div>
-
-												<br class="clear">
-										</div>
-
-								</form>
-
-						</div> <!-- wrap -->
 						<?php
-				}
+					    	wp_nonce_field('bulk-members');
 
+						    $columns = array(
+						        "username" => __('Username', 'membership'),
+						        "name" => __('Name', 'membership'),
+						        "email" => __('E-mail', 'membership'),
+						        "active" => __('Active', 'membership'),
+						        "sub" => __('Subscription', 'membership'),
+						        "level" => __('Membership Level', 'membership'),
+						        "expires" => __('Level Expires', 'membership'),
+						        "gateway" => __('Gateway', 'membership')
+						    );
+
+						    $columns = apply_filters('members_columns', $columns);
+
+						    //$levels = $this->get_membership_levels($filter);
+						?>
+
+						<table cellspacing="0" class="widefat fixed">
+							<thead>
+								<tr>
+									<th style="" class="manage-column column-cb check-column" id="cb" scope="col"><input type="checkbox"></th>
+									<?php
+					    				foreach ($columns as $key => $col) {
+					        				if ($key == 'sub' && empty($subs)) { continue; }
+											?>
+											<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+											<?php
+										} //end foreach
+									?>
+								</tr>
+							</thead>
+
+							<tfoot>
+								<tr>
+									<th style="" class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
+									<?php 
+										reset($columns);
+					    				foreach ($columns as $key => $col) {
+						        			if ($key == 'sub' && empty($subs)) { continue; }
+											?>
+											<th style="" class="manage-column column-<?php echo $key; ?>" id="<?php echo $key; ?>" scope="col"><?php echo $col; ?></th>
+											<?php
+									    } // end foreach
+									?>
+								</tr>
+							</tfoot>
+
+							<tbody>
+							<?php
+								// Prepare table rows
+							    $factory              = Membership_Plugin::factory();
+							    $default_subscription = '';
+							    $default_level        = '';
+
+							    if (!empty($M_options['freeusersubscription'])) {
+							        $subscription         = $factory->get_subscription($M_options['freeusersubscription']);
+							        $default_subscription = $subscription->sub_name() . ' <span style="font-size:80%;color:gray">(set by default)</span>';
+							        $levels               = $subscription->get_levels();
+							        if (!empty($levels)) {
+							            $default_level = $levels[0]->level_title . ' <span style="font-size:80%;color:gray">(set by default)</span>';
+							        }
+							    }
+
+					    		$style = '';
+					    		foreach ($wp_user_search->get_results() as $user) {
+							        $user_object         = $factory->get_member($user->ID);
+							        $is_membership_admin = $user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID);
+							        $roles               = $user_object->roles;
+							        $role                = array_shift($roles);        
+							        $style = (' class="alternate"' == $style) ? '' : ' class="alternate"';
+
+									// Create the rows
+									?>
+
+									<tr id='user-<?php echo $user_object->ID; ?>' <?php echo $style; ?>>
+										<th scope='row' class='check-column'>
+											<input type='checkbox' name='users[]' id='user_<?php echo $user_object->ID; ?>' class='$role' value='<?php echo $user_object->ID; ?>' />
+										</th>
+
+										<?php // USER COLUMN // ?>
+										<td <?php echo $style;?>>
+											<strong><a href='<?php echo admin_url('user-edit.php?user_id=' . $user_object->ID); ?>' title='User ID: <?php echo $user_object->ID; ?>'><?php echo $user_object->user_login; ?></a></strong>
+											<?php
+												$actions         = array();
+										        //$actions['id'] = "<strong>" . __('ID : ', 'membership') . $user_object->ID . "</strong>";
+										        $actions['edit'] = "<span class='edit'><a href='" . admin_url('user-edit.php?user_id=' . $user_object->ID) . "'>" . __('Edit', 'membership') . "</a></span>";
+										        if ($user_object->active_member()) {
+										            $actions['activate'] = "<span class='edit deactivate'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Deactivate', 'membership') . "</a></span>";
+										        } else {
+										            $actions['activate'] = "<span class='edit activate'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=toggle&amp;member_id=" . $user_object->ID . "", 'toggle-member_' . $user_object->ID) . "'>" . __('Activate', 'membership') . "</a></span>";
+										        }
+										        //$actions['history'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page. "&amp;action=history&amp;member_id=" . $user_object->ID . "", 'history-member_' . $user_object->ID) . "'>" . __('History', 'membership') . "</a></span>";
+											?>
+											<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										</td>
+
+										<?php // NAME COLUMN // ?>
+										<td <?php echo $style; ?>><?php echo $user_object->first_name . " " . $user_object->last_name; ?></td>
+
+										<?php // EMAIL COLUMN // ?>
+										<td <?php echo $style; ?>><a href='mailto:<?php echo $user_object->user_email; ?>' title='<?php echo sprintf(__('e-mail: %s', 'membership'), $user_object->user_email); ?>'><?php echo $user_object->user_email; ?></a></td>
+
+										<?php // STATUS COLUMN // ?>
+										<td <?php echo $style; ?>>
+										<?php
+									        if ($user_object->active_member()) {
+									            echo "<span class='membershipactivestatus'>" . __('Active', 'membership') . "</span>";
+									        } else {
+									            echo "<span class='membershipinactivestatus'>" . __('Inactive', 'membership') . "</span>";
+											}
+										?>
+										</td>
+
+										<?php // SUBSCRIPTION COLUMN // ?>
+										<td <?php echo $style; ?>>										
+										<?php if (!empty($subs)): ?>
+												<?php
+					            				$usersubs = $user_object->get_subscription_ids();
+												if (!empty($usersubs)) {
+													$rows = array();
+													foreach ((array) $usersubs as $key) {
+														if (!empty($key)) {
+															$sub = $factory->get_subscription($key);
+															if (!empty($sub)) {
+																$rows[] = $sub->sub_name();
+															}
+														}
+													} //end foreach
+
+													echo implode(", ", $rows);
+
+												} elseif ($is_membership_admin) { ?>
+													<span style="font-style:italic;font-weight:bold"><?php esc_html_e('Super User', 'membership'); ?></span>
+													<?php
+												} else {
+													echo $default_subscription;
+												}
+
+									            $actions = array();
+									            if (!$is_membership_admin) {
+									                $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addsub&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									            }
+
+									            if (!empty($usersubs)) {
+									                if (count($subs) == 1) {
+									                    $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $usersubs[0], 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+									                    $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "&amp;fromsub=" . $usersubs[0], 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+									                } else {
+									                    $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movesub&amp;member_id=" . $user_object->ID . "", 'movesub-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+									                    $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=dropsub&amp;member_id=" . $user_object->ID . "", 'dropsub-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+									                }
+									            }
+												?>		
+												<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+										<?php endif; ?>
+										</td>		
+																		
+
+										<?php // LEVEL COLUMN // ?>
+										<td <?php echo $style; ?>>
+											<?php
+					        					$userlevels = $user_object->get_level_ids();
+					        					if (!empty($userlevels)) {
+										            $rows = array();
+										            foreach ((array) $userlevels as $key => $value) {
+										                $level = Membership_Plugin::factory()->get_level($value->level_id);
+										                if (!empty($level)) {
+										                    if ((int) $value->sub_id != 0) {
+										                        $rows[] = "<strong>" . $level->level_title() . "</strong>";
+										                    } else {
+								                        		$rows[] = $level->level_title();
+										                    }
+										                }
+										            } //end foreach
+
+									            	echo implode(", ", $rows);
+					        					} elseif ($is_membership_admin) { ?>
+													<span style="font-style:italic;font-weight:bold"><?php esc_html_e('Super User', 'membership'); ?></span>
+												<?php
+					        					} else {
+					            					echo $default_level;
+					        					}
+
+					        					$actions = array();
+										        // if (!$user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID)) {
+										        //     $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+										        // }
+									            $actions = array();
+									            if (!$is_membership_admin) {
+									                $actions['add'] = "<span class='edit'><a href='?page={$page}&amp;action=addlevel&amp;member_id={$user_object->ID}'>" . __('Add', 'membership') . "</a></span>";
+									            }
+										
+
+										        if (!empty($userlevels)) {
+										            if (count($levels) == 1) {
+										                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $userlevels[0]->level_id, 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "&amp;fromlevel=" . $userlevels[0]->level_id, 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										            } else {
+										                $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movelevel&amp;member_id=" . $user_object->ID . "", 'movelevel-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										                $actions['drop'] = "<span class='edit delete'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=droplevel&amp;member_id=" . $user_object->ID . "", 'droplevel-member-' . $user_object->ID) . "'>" . __('Drop', 'membership') . "</a></span>";
+										            }
+										        }
+
+											?>
+											<div class="row-actions"><?php echo (!empty($userlevels)) ? implode(" | ", $actions) : $actions['add']; ?></div>
+										</td>
+
+										<?php // LEVEL COLUMN // ?>								
+										<td <?php echo $style; ?>>
+										<?php
+									        $usersubs = $user_object->get_relationships();
+									        if ($usersubs) {
+									            $exps = array();
+									            foreach ($usersubs as $sub) {
+									                $exps[] = date("Y-m-d H:i", mysql2date("U", $sub->expirydate));
+									            }
+									            echo implode(", ", $exps);
+									        }
+										?>
+										</td>
+
+										<?php // GATEWAY COLUMN // ?>
+										<td <?php echo $style; ?>>
+										<?php $usersubs = $user_object->get_relationships();
+					        				//print_r($subs);
+					        				if ($usersubs) {
+									            $gates = array();
+									            foreach ($usersubs as $sub) {
+									                if ($sub->usinggateway != 'admin') {
+									                    $gateway = Membership_Gateway::get_gateway($sub->usinggateway);
+									                    $gates[] = is_object($gateway) ? $gateway->title : sprintf('<i>%s</i><!-- %s -->', esc_html__('not found or deactivated', 'membership'), $sub->usinggateway);
+									                } else {
+									                    $gates[] = esc_html__('Admin', 'membership');
+									                }
+									            } // end foreach
+									            echo implode(", ", $gates);
+
+					            				if ($user_object->has_cap('membershipadmin') || $user_object->has_cap('manage_options') || is_super_admin($user_object->ID)) {
+									                $actions = array();
+									            } else {
+									                $actions = array();
+									                if (count($gates) == 1) {
+									                    $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "&amp;fromgateway=" . $gates[0], 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+									                } else {
+									                    $actions['move'] = "<span class='edit'><a href='" . wp_nonce_url("?page=" . $page . "&amp;action=movegateway&amp;member_id=" . $user_object->ID . "", 'movegateway-member-' . $user_object->ID) . "'>" . __('Move', 'membership') . "</a></span>";
+										            }
+									            }
+												?>
+
+												<div class="row-actions"><?php echo implode(" | ", $actions); ?></div>
+											<?php } ?>
+										</td>
+									</tr>
+								<?php } ?>
+							</tbody>
+						</table>
+
+						<div class="tablenav">
+
+							<div class="alignleft actions">
+								<select name="action2">
+									<option selected="selected" value=""><?php _e('Bulk Actions', 'membership'); ?></option>
+									<option value="toggle"><?php _e('Toggle activation', 'membership'); ?></option>
+									<optgroup label="<?php _e('Subscriptions', 'membership'); ?>">
+										<option value="bulkaddsub"><?php _e('Add subscription', 'membership'); ?></option>
+										<option value="bulkmovesub"><?php _e('Move subscription', 'membership'); ?></option>
+										<option value="bulkdropsub"><?php _e('Drop subscription', 'membership'); ?></option>
+									</optgroup>
+									<optgroup label="<?php _e('Levels', 'membership'); ?>">
+										<option value="bulkaddlevel"><?php _e('Add level', 'membership'); ?></option>
+										<option value="bulkmovelevel"><?php _e('Move level', 'membership'); ?></option>
+										<option value="bulkdroplevel"><?php _e('Drop level', 'membership'); ?></option>
+									</optgroup>
+									<optgroup label="<?php _e('Gateways', 'membership'); ?>">
+										<option value="bulkmovegateway"><?php _e('Move gateway', 'membership'); ?></option>
+									</optgroup>
+								</select>
+								<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Apply">
+
+								<select name="sub_op2">
+									<option value=""><?php _e('Filter by subscription', 'membership'); ?></option>
+									<?php
+					    				$subs = $this->get_subscriptions();
+									    if ($subs) {
+									        foreach ($subs as $key => $sub) { ?>
+												<option value="<?php echo $sub->id; ?>" 
+												<?php if (isset($_GET['sub_op2']) && $_GET['sub_op2'] == $sub->id) echo 'selected="selected"'; ?>>
+												<?php echo esc_html($sub->sub_name); ?></option>
+												<?php
+					        				} // end foreach
+									    }	
+									?>
+								</select>
+								<input type="submit" class="button-secondary action" id="doactionsub2" name="doactionsub2" value="<?php _e('Filter', 'membership'); ?>">
+
+								<select name="level_op2">
+									<option value=""><?php _e('Filter by level', 'membership'); ?></option>
+									<?php
+										$levels = $this->get_membership_levels();
+					    				if ($levels) {
+									        foreach ($levels as $key => $level) { ?>
+												<option value="<?php echo $level->id; ?>" 
+													<?php if (isset($_GET['level_op2']) && $_GET['level_op2'] == $level->id) echo 'selected="selected"'; ?>>
+													<?php echo esc_html($level->level_title);?></option>
+												<?php
+					        				} //end foreach
+									    }
+									?>
+								</select>
+								<input type="submit" class="button-secondary action" id="doactionlevel2" name="doactionlevel2" value="<?php _e('Filter', 'membership'); ?>">
+
+								<select name="active_op2">
+									<option value=""><?php _e('Filter by status', 'membership'); ?></option>
+									<option value="yes" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'yes') echo 'selected="selected"'; ?>>
+										<?php _e('Active', 'membership'); ?>
+									</option>
+									<option value="no" <?php if (isset($_GET['active_op2']) && $_GET['active_op2'] == 'no') echo 'selected="selected"'; ?>>
+										<?php _e('Inactive', 'membership'); ?>
+									</option>
+								</select>
+								<input type="submit" class="button-secondary action" id="doactionactive2" name="doactionactive2" value="<?php _e('Filter', 'membership'); ?>">
+							</div>
+
+							<div class="alignright actions">
+								<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
+							</div>
+
+							<br class="clear">
+						</div>
+
+					</form>
+
+					</div> <!-- wrap -->
+					<?php
+		        }
+				
 				function handle_options_panel_updates() {
 
 						global $action, $page, $wp_rewrite;
@@ -2586,6 +2621,8 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										case 'general': $M_options['strangerlevel'] = (isset($_POST['strangerlevel'])) ? (int) $_POST['strangerlevel'] : '';
 												$M_options['freeusersubscription'] = (isset($_POST['freeusersubscription'])) ? (int) $_POST['freeusersubscription'] : '';
 												$M_options['enableincompletesignups'] = (isset($_POST['enableincompletesignups'])) ? $_POST['enableincompletesignups'] : '';
+												$M_options['assignfirstlevel'] = (isset($_POST['assignfirstlevel'])) ? $_POST['assignfirstlevel'] : '';
+												
 												break;
 
 										case 'pages': $M_options['nocontent_page'] = (isset($_POST['nocontent_page'])) ? $_POST['nocontent_page'] : '';
@@ -2833,6 +2870,30 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				</td>
 																		</tr>
 																</tbody>
+																<tr valign="top">
+																		<th scope="row"><?php _e('Assign first subscription level to new users', 'membership'); ?><span class="description"><br /><small><?php _e('Added on new user registration only', 'membership'); ?></small></span></th>
+																		<td>
+																				<?php
+													                            if (!isset($M_options['assignfirstlevel'])) {
+													                                $M_options['assignfirstlevel'] = '';
+													                            }
+													                            ?>
+																				<input type="checkbox" name="assignfirstlevel" id="assignfirstlevel" value="yes" <?php checked('yes', $M_options['assignfirstlevel']); ?> />
+
+																				
+																		</td>
+																</tr>
+																
+																<!--
+																/** FURTHER ADDITION: Add code to assign default subscription to all users without a subscription. **/
+																<tr valign="top">
+																		<th scope="row"><?php _e('Assign to all users without any subscriptions', 'membership'); ?><br /><span class="description"><small><?php _e('This action cannot be undone', 'membership'); ?></small></span></th>
+																		<td>
+																				<input type="submit" class="button" name="do_assignfirstlevel" id="do_assignfirstlevel" value="<?php _e('Assign Default Subscription','membership'); ?>" />
+																		</td>
+																</tr>																														
+																
+																-->
 														</table>
 
 														<?php
@@ -3464,6 +3525,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																										'NZD' => __('NZD - New Zealand Dollar', 'membership'),
 																										'PHP' => __('PHP - Philippine Pesos', 'membership'),
 																										'PLN' => __('PLN - Polish Zloty', 'membership'),
+																										'RUB' => __('RUB - Russian Ruble', 'membership'),
 																										'SEK' => __('SEK - Swedish Krona', 'membership'),
 																										'SGD' => __('SGD - Singapore Dollar', 'membership'),
 																										'TWD' => __('TWD - Taiwan New Dollars', 'membership'),
@@ -3964,7 +4026,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 								$positives = $mlevel->get_rules('positive');
 								$negatives = $mlevel->get_rules('negative');
 						}
-						
+
 						// Re-arrange the rules
 						$rules = array();
 						$p = array();
@@ -4413,17 +4475,17 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Membership Level activation not toggled.', 'membership');
 
 						$messages[9] = __('Membership Levels updated.', 'membership');
-						
+
 						$levels = $this->get_membership_levels($filter);
-						
-						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $levels ) < $this->lite_limit ) ) {
+
+						if ( ( defined( 'M_LITE' ) && count($levels) < $this->lite_limit ) || ! defined('M_LITE') )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;level_id='>$add_new</a>";
 						} else {
-							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
+							$upgrade = __('Upgrade to add unlimited levels &raquo;', 'membership');
 							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
 						}
-						
+
 						?>
 						<div class='wrap nosubsub'>
 								<div class="icon32" id="icon-link-manager"><br></div>
@@ -5043,15 +5105,15 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[8] = __('Subscription activation not toggled.', 'membership');
 
 						$messages[9] = __('Subscriptions updated.', 'membership');
-						
+
 						$subs = $this->get_subscriptions($filter);
-						
-						if ( ! defined( 'M_LITE' ) || ( defined( 'M_LITE' ) && count( $subs ) < $this->lite_limit ) ) {
+
+						if ( ( defined( 'M_LITE' ) && count($subs) < $this->lite_limit ) || ! defined( 'M_LITE' ) )  {
 							$add_new = __('Add New', 'membership');
 							$btn_add_new = "<a class='add-new-h2' href='admin.php?page={$page}&amp;action=edit&amp;sub_id='>$add_new</a>";
 						} else {
-							$upgrade = __('Upgrade to unlimited subscriptions &raquo;', 'membership');
-							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";	
+							$upgrade = __('Upgrade to add unlimited subscriptions &raquo;', 'membership');
+							$btn_add_new = "<a class='m-pro-update' href='http://premium.wpmudev.org/project/membership/' title='$upgrade'>$upgrade</a>";
 						}
 						?>
 						<div class='wrap nosubsub'>
@@ -5587,7 +5649,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 										$columns = array("name" => __('Message Subject', 'membership'),
 												"sub" => __('Subscription', 'membership'),
 												"active" => __('Active', 'membership'),
-												"transactions" => __('Pre-expiry period', 'membership')
+												"transactions" => __('Period', 'membership')
 										);
 
 										$columns = apply_filters('membership_communicationcolumns', $columns);
@@ -5668,15 +5730,11 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																				</td>
 																				<td class="column-transactions">
 																						<?php
-																						if ($comm->periodstamp == 0) {
+																						if ( 'join' == $comm->periodprepost || ( 0 == $comm->periodstamp && 'post' == $comm->periodprepost ) ) {
 																								echo __("Signup message", 'membership');
+																						} elseif ( 'exp' == $comm->periodprepost || ( 0 == $comm->periodstamp && 'pre' == $comm->periodprepost ) ) {
+																								echo __("Expiry message", 'membership');																							
 																						} else {
-																								// Show pre or post
-																								if ($comm->periodprepost == 'pre') {
-																										echo "-&nbsp;";
-																								} else {
-																										echo "+&nbsp;";
-																								}
 																								// Show period
 																								echo $comm->periodunit . "&nbsp;";
 																								// Show unit
@@ -5693,6 +5751,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 																												break;
 																										case 'y': echo __("Year(s)", 'membership');
 																												break;
+																								}
+																								// Show pre or post
+																								if ($comm->periodprepost == 'pre') {
+																										echo " before a subscription expires.";
+																								} else {
+																										echo " after a subscription is paid/activated.";
 																								}
 																						}
 																						?>
@@ -7106,7 +7170,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 												if ( defined( 'M_LITE' ) && ! in_array( $key, array( 'freesubscriptions', 'paypalexpress', 'paypalsolo' ) ) ) {
 													wp_safe_redirect(add_query_arg('msg', 8, wp_get_referer()));
 												} else {
-													
+
 													if (!in_array($key, $active)) {
 															$active[] = $key;
 															update_option('membership_activated_gateways', array_unique($active));
@@ -7185,7 +7249,7 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						$messages[6] = __('Gateway not deactivated.', 'membership');
 
 						$messages[7] = __('Gateway activation toggled.', 'membership');
-						
+
 						$messages[8] = __('Only Paypal and Free Subscriptions gateway available. <a class="m-pro-update" href="http://premium.wpmudev.org/project/membership/">Upgrade to activate this Gateway &raquo</a>', 'membership');
 						?>
 						<div class='wrap'>
@@ -7840,6 +7904,12 @@ if ( !class_exists( 'membershipadmin' ) ) :
 						do_action('membership_susbcription_form_registration_notification', $user_id, $_POST['password']);
 					} else {
 						wp_new_user_notification($user_id, $_POST['password']);
+					}
+
+					if ( ! empty($M_options['freeusersubscription']) ) {
+						$level = ! empty($M_options['strangerlevel']) ? $M_options['strangerlevel'] : 0;
+						//free subscription is active - do 'membership_add_subscription' action so pings are triggered, etc
+						do_action('membership_add_subscription', $M_options['freeusersubscription'], $level, false, $user_id);
 					}
 
 					do_action('membership_subscription_form_registration_process', $error, $user_id);

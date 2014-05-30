@@ -70,6 +70,8 @@ class Membership_Model_Level {
 		if ( $fullload && $this->active ) {
 			$this->load_rules( $loadtype );
 		}
+		
+		add_action( 'remove_this_level_members', 'remove_level_members', 10, 1);
 	}
 
 	// Fields
@@ -152,6 +154,8 @@ class Membership_Model_Level {
 		} else {
 			return false;
 		}
+		
+		do_action( 'remove_this_level_members', $this->id );
 
 	}
 
@@ -489,7 +493,37 @@ class Membership_Model_Level {
 
 		return $valid;
 	}
+	
+	
+	// Remove members at this levels when this level is deleted
+	function remove_level_members( $id )
+	{
+		$this->db->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'level_id' => $id ), array( '%d' ) );
+	}
+	
+	
+	
+	public static function get_associated_role( $id ) {
+		global $wpdb;
 
+		$role = '';
+
+		$table_name = $wpdb->prefix . "m_levelmeta";
+
+		$retrieve_data = $wpdb->get_results( "SELECT meta_value FROM $table_name WHERE level_id = {$id} AND meta_key='associated_wp_role' LIMIT 1" );
+
+		foreach ( $retrieve_data as $retrieved_data ) { 
+			$role = $retrieved_data->meta_value;
+		}
+		
+		// If there is no associated role, make it the default site role.
+		if ( 'none' == $role || '' == $role ){
+			$role = get_option( 'default_role' );
+		} 
+		
+		return $role;
+	}
+	
 }
 
 /**

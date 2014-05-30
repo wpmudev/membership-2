@@ -161,6 +161,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_membership_names( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
+				'post_status' => 'any',
 				'order' => 'DESC',
 		);
 		$args = wp_parse_args( $args, $defaults );
@@ -212,7 +213,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		else {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
 			$visitor_membership = new self();
-			$visitor_membership->name = 'Visitor';
+			$visitor_membership->name = __( 'Visitor', MS_TEXT_DOMAIN );
 			$visitor_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
@@ -251,7 +252,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			else {
 				$description = __( 'Default membership for non members', MS_TEXT_DOMAIN );
 				$default_membership = new self();
-				$default_membership->name = 'Default';
+				$default_membership->name = __( 'Default', MS_TEXT_DOMAIN );
 				$default_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
 				$default_membership->title = $description;
 				$default_membership->description = $description;

@@ -167,5 +167,46 @@ class Membership_Factory {
 
 		return $object;
 	}
+	
+	/**
+	 * Add hook to new user registration.
+	 *
+	 * Used to make sure that default subscriptions are applied to new users.
+	 *
+	 * @sicne 3.5.1.4
+	 *
+	 * @access public
+	 */	
+	public function hook_new_user_registration() {
+		add_action( 'user_register', array( $this, 'new_user_assignment' ) , 10, 1 );
+	}
+			
+	/**
+	 * Hook new user registrations.
+	 *
+	 * Assign new users to default subscription if set.
+	 *
+	 * @sicne 3.5.1.4
+	 *
+	 * @access public
+	 */	
+	function new_user_assignment( $user_id ) {
+		global $M_options;
+		// If user is signing up using a subscription then bail.
+		if( ! empty( $_REQUEST['subscription'] ) ){
+			return;
+		}
+		
+		// Assign default subscription to new registered user. Sets expiry date on creation.
+		// Only assign when this option is selected in Membership Options->General
+
+		if ( ! empty( $M_options['freeusersubscription'] ) && 0 != $M_options['freeusersubscription'] && $M_options['assignfirstlevel'] ) {		
+			$member = $this->get_member( $user_id );
+			$subscription = $this->get_subscription( $M_options['freeusersubscription'] );
+			if( ! empty( $subscription ) && 0 != $subscription->id ) {
+				$member->create_subscription( $subscription->id );
+			}
+		}		
+	}
 
 }

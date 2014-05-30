@@ -61,24 +61,36 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	 * @global membershippublic $membershippublic The global membershippublic object.
 	 */
 	private function _render_select_subscriptions() {
-		global $membershippublic;
+		global $membershippublic, $M_options;
 
 		$factory = Membership_Plugin::factory();
 		$subs = array_filter( (array) apply_filters( 'membership_override_subscriptions', $membershippublic->get_subscriptions() ) );
-
+		
+		if ( empty($M_options['freeusersubscription']) ) {
+			$current_sub = null;
+			$alert_class = 'alert-error';
+			$alert_msg = __( 'You do not currently have any subscriptions in place. You can sign up for a new subscription by selecting one below.', 'membership' );
+		} else {
+			$current_sub = $M_options['freeusersubscription'];
+			$sub = $factory->get_subscription($current_sub);
+			$alert_class = 'alert-success';
+			$alert_msg = sprintf(__(' You are currently subscribed to the free <strong>%s</strong> plan. You can upgrade to a different subscription by selecting one below.', 'membership' ), $sub->sub_name() );
+		}
 		?><div id="membership-wrapper">
 			<form class="form-membership" method="post">
 				<fieldset>
 					<legend><?php echo __( 'Your Subscriptions', 'membership' ); ?></legend>
 
-					<div class="alert alert-error"><?php
-						esc_html_e( 'You do not currently have any subscriptions in place. You can sign up for a new subscription by selecting one below', 'membership' )
-					?></div>
+					<div class="alert <?php echo $alert_class; ?>"><?php echo $alert_msg; ?></div>
 
 					<div class="priceboxes"><?php
 						do_action( 'membership_subscription_form_before_subscriptions' );
 
 						foreach ( $subs as $sub ) :
+							if ( $sub->id == $current_sub ) {
+								continue;
+							}
+							
 							$this->_render_buy_subscription( $factory->get_subscription( $sub->id ) );
 						endforeach;
 
@@ -117,7 +129,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 					<div class="link" style="float:right;margin-right:10px">
 						<?php
 						$class = '';
-						if ( $M_options['formtype'] == 'new' ) {
+						if ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ) {
 							// pop up form
 							$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id ), admin_url( 'admin-ajax.php' ) );
 							$class = 'popover';
@@ -248,24 +260,26 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 		// The user has a subscription so we can display it with the information
 		$member = current_member();
 		$rels = array_filter( (array)$member->get_relationships() );
-
+		
 		if ( empty( $M_options['renewalperiod'] ) ) {
 			$M_options['renewalperiod'] = 7;
 		}
-
+		
+		$success_msg = __( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', 'membership' );
 		?><div id="membership-wrapper">
 			<legend><?php echo __( 'Your Subscriptions', 'membership' ) ?></legend>
 
 			<div class="alert alert-success">
-				<?php echo __( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', 'membership' ); ?>
+				<?php echo $success_msg; ?>
 			</div>
 
 			<div class="priceboxes"><?php
 				foreach ( $rels as $rel ) {
 					$sub = $factory->get_subscription( $rel->sub_id );
-
 					$nextlevel = $sub->get_next_level( $rel->level_id, $rel->order_instance );
 					$currentlevel = $sub->get_level_at( $rel->level_id, $rel->order_instance );
+					$expire_date = mysql2date('U', $rel->expirydate);
+					$expire_date_string = date_i18n(get_option('date_format'), $expire_date);
 
 					if ( !empty( $rel->usinggateway ) && $rel->usinggateway != 'admin' ) {
 						$gateway = Membership_Gateway::get_gateway( $rel->usinggateway );
@@ -286,14 +300,12 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 
 						<div class="pricedetails"><?php
 							if ( $member->is_marked_for_expire( $rel->sub_id ) ) {
-								echo __( 'Your membership has been cancelled and will expire on : ', 'membership' );
-								echo date( "jS F Y", mysql2date( "U", $rel->expirydate ) );
+								echo sprintf(__( 'Your membership has been cancelled and will expire on: <strong>%s</strong>', 'membership'), $expire_date_string);
 							} else {
 								if ( $currentlevel->sub_type == 'indefinite' ) {
 									echo __( 'You are on an <strong>indefinite</strong> membership.', 'membership' );
 								} elseif ( $gatewayissingle == 'yes' ) {
-									echo __( 'Your membership is due to expire on : ', 'membership' );
-									echo "<strong>" . date( "jS F Y", mysql2date( "U", $rel->expirydate ) ) . "</strong>";
+										echo sprintf(__( 'Your membership is due to expire on: <strong>%s</strong> ', 'membership' ), $expire_date_string);
 								} else {
 									// Serial gateway
 									switch ( $currentlevel->sub_type ) {
@@ -306,8 +318,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 												// We have a level we can move to next
 												echo __( 'Your membership is set to <strong>automatically renew</strong>', 'membership' );
 											} else {
-												echo __( 'Your membership is due to expire on: ', 'membership' );
-												echo "<strong>" . date( "jS F Y", mysql2date( "U", $rel->expirydate ) ) . "</strong>";
+												echo sprintf(__( 'Your membership is due to expire on: <strong>%s</strong> ', 'membership' ), $expire_date_string);
 											}
 											break;
 									}
@@ -326,7 +337,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 							}
 
 							if ( !$member->is_marked_for_expire( $rel->sub_id ) && $gatewayissingle == 'yes' ) {
-								$renewalperiod = strtotime( '-' . $M_options['renewalperiod'] . ' days', mysql2date( "U", $rel->expirydate ) );
+								$renewalperiod = strtotime( '-' . $M_options['renewalperiod'] . ' days', mysql2date( "U", $expire_date ) );
 
 								if ( $nextlevel && time() >= $renewalperiod ) {
 									// we have a next level so we can display the details and form for it
@@ -338,7 +349,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 													printf(
 														__( 'Renewal for the %s following %s has been completed.', 'membership' ),
 														sprintf( '<strong>%s %s</strong>', $nextlevel->level_period, $this->_get_period( $nextlevel->level_period_unit, $nextlevel->level_period ) ),
-														date( "jS F Y", mysql2date( "U", $rel->expirydate ) )
+														$expire_date_string
 													)
 												?></p>
 											</div>
@@ -352,7 +363,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 															? __( 'To renew your subscription for another %s following %s you will need to pay %s.', 'membership' )
 															: __( 'To renew your subscription for another %s following %s click on the button to the right.', 'membership' ),
 														sprintf( '<strong>%s %s</strong>', $nextlevel->level_period, $this->_get_period( $nextlevel->level_period_unit, $nextlevel->level_period ) ),
-														date( "jS F Y", mysql2date( "U", $rel->expirydate ) ),
+														$expire_date_string,
 														sprintf( '<strong>%s %s</strong>', $nextlevel->level_price, apply_filters( 'membership_real_currency_display', $M_options['paymentcurrency'] ) )
 													);
 
@@ -386,9 +397,8 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 							?></div>
 						</div>
 					</div> <!-- price box --><?php
-
-					if ( $upgradedat <= strtotime( '-' . $period . ' days' ) ) {
-
+					if ( $upgradedat <= strtotime( '-' . $period . ' days' ) || ( !current_user_has_subscription() && !empty($M_options['freeusersubscription'])) ) {
+						
 						$upgradesubs = array();
 						foreach ( array_filter( (array)apply_filters( 'membership_override_upgrade_subscriptions', $membershippublic->get_subscriptions() ) ) as $upgradesub ) {
 							if ( $upgradesub->id == $rel->sub_id || $member->on_sub( $upgradesub->id ) ) {
@@ -440,7 +450,7 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 												}
 											} else {
 												$class = '';
-												if ( $M_options['formtype'] == 'new' ) {
+												if ( isset($M_options['formtype']) && $M_options['formtype'] == 'new' ) {
 													// pop up form
 													$link = add_query_arg( array( 'action' => 'buynow', 'subscription' => $subscription->id, 'from_subscription' => $rel->sub_id ), admin_url( 'admin-ajax.php' ) );
 													$class = 'popover';
@@ -473,6 +483,8 @@ class Membership_Render_Page_Subscription_Renew extends Membership_Render {
 	 * @access protected
 	 */
 	protected function _to_html() {
+		global $M_options;
+		
 		if ( defined( 'MEMBERSHIP_RENEW_FORM' ) && file_exists( MEMBERSHIP_RENEW_FORM ) ) {
 			include MEMBERSHIP_RENEW_FORM;
 			return;

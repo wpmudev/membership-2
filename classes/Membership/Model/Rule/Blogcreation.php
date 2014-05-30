@@ -109,6 +109,7 @@ class Membership_Model_Rule_Blogcreation extends Membership_Model_Rule {
 	function current_blog_count() {
 
 		global $member, $wpdb;
+		$member = Membership_Plugin::current_member();
 
 		if(!empty($member) && method_exists($member, 'has_cap')) {
 			// We have a member and it is a correct object

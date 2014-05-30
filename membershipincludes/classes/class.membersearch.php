@@ -9,11 +9,8 @@ if ( !class_exists( 'M_Member_Search' ) ) {
         var $active = false;
         var $users_per_page = 50;
         var $search_errors = false;
-		var $search_field = 'all';
-		var $meta_key = '';
-		var $search_column = '';
 
-        public function __construct( $search_term = '', $page_num = '', $sub_id = false, $level_id = false, $active = false, $search_column = 'all' ) {
+        public function __construct( $search_term = '', $page_num = '', $sub_id = false, $level_id = false, $active = false ) {
 			$this->users_per_page = apply_filters( 'membership_all_members_users_per_page', $this->users_per_page );
 			$this->search_term = $search_term;
 			$this->raw_page = ( '' == $page_num ) ? false : (int) $page_num;
@@ -31,23 +28,12 @@ if ( !class_exists( 'M_Member_Search' ) ) {
 				$this->active = $active;
 			}
 
-			if ( in_array( $search_column, array( 'first_name', 'last_name' ) ) ) {
-				$this->meta_key = $search_column;
-				$this->search_column = '';
-			} else {
-				$this->search_column = array( $search_column );
-					if ( 'all' == $search_column ) {
-					$this->search_column = array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name' );
-				}
-			}
-			
 			$args = array(
 				'search' => $this->search_term,
 				'number' => $this->users_per_page,
 				'offset' => ( $this->page_num - 1 ) * $this->users_per_page,
 				'fields' => 'all',
-				'search_columns' => $this->search_column,
-				'meta_key' => $this->meta_key,
+				'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name' ),
 			);
 
 			$this->query_vars = wp_parse_args( $args, array(
@@ -214,10 +200,9 @@ if ( !class_exists( 'M_Member_Search' ) ) {
                     $search = trim($search, '*');
 
                 $search_columns = array();
-
                 if ($qv['search_columns'])
                     $search_columns = array_intersect($qv['search_columns'], array('ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name'));
-                if (!$search_columns && empty( $qv['meta_key'] ) ) {
+                if (!$search_columns) {
                     if (false !== strpos($search, '@'))
                         $search_columns = array('user_email');
                     elseif (is_numeric($search))
@@ -227,10 +212,8 @@ if ( !class_exists( 'M_Member_Search' ) ) {
                     else
                         $search_columns = array('user_login', 'user_nicename');
                 }
-				
-				if ( ! empty( $search_columns ) ){
-	                $this->query_where .= $this->get_search_sql($search, $search_columns, $wild);
-				}
+
+                $this->query_where .= $this->get_search_sql($search, $search_columns, $wild);
             }
 
             $blog_id = absint($qv['blog_id']);
@@ -255,18 +238,9 @@ if ( !class_exists( 'M_Member_Search' ) ) {
 
 				$qv['meta_query'][] = $cap_meta_query;
 			}
-			
-			if ( in_array( $qv['meta_key'], array( 'first_name', 'last_name' ) ) ) {
-				$qv['meta_query'][] = array( 'relation' => 'OR', 'key' => $qv['meta_key'], 'value' => $search, 'compare' => 'LIKE' );
-				if ( 'all' != $this->search_field ) {
-					$qv['meta_key'] = $qv['search'] = '';
-				}
-			}
-			
+
 			$meta_query = new WP_Meta_Query();
 			$meta_query->parse_query_vars( $qv );
-
-			
 
 			if ( !empty( $meta_query->queries ) ) {
 				$clauses = $meta_query->get_sql( 'user', $wpdb->users, 'ID', $this );

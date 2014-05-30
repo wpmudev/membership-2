@@ -34,9 +34,31 @@ class MS_Helper_List_Table_Rule_Url_Group extends MS_Helper_List_Table_Rule {
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 				'cb'     => '<input type="checkbox" />',
-				'name' => __( 'Shortcode', MS_TEXT_DOMAIN ),
+				'url' => __( 'Page URL', MS_TEXT_DOMAIN ),
 				'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
+	}
+	
+	public function column_url( $item ) {
+	
+		$actions = array(
+				'edit' => sprintf( '<a href="?page=%s&action=%s&url_group_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __( 'Edit', MS_TEXT_DOMAIN ) ),
+				'delete' => sprintf( '<span class="delete"><a href="%s">%s</a></span>',
+						wp_nonce_url(
+						sprintf( '?page=%s&url_group_id=%s&action=%s',
+							$_REQUEST['page'],
+							$item->id,
+							'delete'
+						),
+						'delete'
+					),
+					__('Delete', MS_TEXT_DOMAIN )
+				),
+				
+		);
+		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+	
+		return sprintf( '%1$s %2$s', $item->url, $this->row_actions( $actions ) );
 	}
 	
 	public function column_default( $item, $column_name ) {

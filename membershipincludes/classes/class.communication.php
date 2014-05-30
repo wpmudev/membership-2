@@ -95,15 +95,26 @@ if ( !class_exists( 'M_Communication' ) ) {
 			echo "</option>";
 			echo '</select>&nbsp;';
 			echo '<select name="periodprepost">';
-			echo "<option value='pre'";
+			echo "<option value='join'";
 			echo ">";
-			echo __( 'before a subscription expires', 'membership' );
+			echo __( 'Immediately on signup.', 'membership' );
 			echo "</option>";
 
 			echo "<option value='post'";
 			echo ">";
 			echo __( 'after a subscription is paid', 'membership' );
 			echo "</option>";
+
+			echo "<option value='exp'";
+			echo ">";
+			echo __( 'Day subscription expires.', 'membership' );
+			echo "</option>";
+			
+			echo "<option value='pre'";
+			echo ">";
+			echo __( 'before a subscription expires', 'membership' );
+			echo "</option>";
+			
 			echo '</select>';
 
 			echo '</td>';
@@ -190,11 +201,11 @@ if ( !class_exists( 'M_Communication' ) ) {
 			echo "</option>";
 			echo '</select>&nbsp;';
 			echo '<select name="periodprepost">';
-			echo "<option value='pre'";
-			if ( $this->comm->periodprepost == 'pre' )
+			echo "<option value='join'";
+			if ( $this->comm->periodprepost == 'join' )
 				echo ' selected="selected" ';
 			echo ">";
-			echo __( 'before a subscription expires', 'membership' );
+			echo __( 'Immediately on signup.', 'membership' );
 			echo "</option>";
 
 			echo "<option value='post'";
@@ -203,6 +214,21 @@ if ( !class_exists( 'M_Communication' ) ) {
 			echo ">";
 			echo __( 'after a subscription is paid', 'membership' );
 			echo "</option>";
+
+			echo "<option value='exp'";
+			if ( $this->comm->periodprepost == 'exp' )
+				echo ' selected="selected" ';
+			echo ">";
+			echo __( 'Day subscription expires.', 'membership' );
+			echo "</option>";
+
+			echo "<option value='pre'";
+			if ( $this->comm->periodprepost == 'pre' )
+				echo ' selected="selected" ';
+			echo ">";
+			echo __( 'before a subscription expires', 'membership' );
+			echo "</option>";
+
 			echo '</select>';
 
 			echo '</td>';
@@ -260,6 +286,11 @@ if ( !class_exists( 'M_Communication' ) ) {
 					$time = strtotime( '+' . $_POST['periodunit'] . ' years' ) - time();
 					break;
 			}
+			
+			$periodstamp = $_POST['periodprepost'] == 'pre' ? -$time : $time;
+			if ( 'join' == $_POST['periodprepost'] || 'exp' == $_POST['periodprepost'] ) {
+				$periodstamp = 0;
+			}
 
 			return $this->db->insert( MEMBERSHIP_TABLE_COMMUNICATIONS, array(
 				"periodunit"    => $_POST['periodunit'],
@@ -267,7 +298,7 @@ if ( !class_exists( 'M_Communication' ) ) {
 				"periodprepost" => $_POST['periodprepost'],
 				"subject"       => $_POST['subject'],
 				"message"       => stripslashes( $_POST['message'] ),
-				"periodstamp"   => $_POST['periodprepost'] == 'pre' ? -$time : $time,
+				"periodstamp"   => $periodstamp,
 				"sub_id"        => $_POST['subscription_id']
 			) );
 		}
@@ -285,13 +316,18 @@ if ( !class_exists( 'M_Communication' ) ) {
 					break;
 			}
 
+			$periodstamp = $_POST['periodprepost'] == 'pre' ? -$time : $time;
+			if ( 'join' == $_POST['periodprepost'] || 'exp' == $_POST['periodprepost'] ) {
+				$periodstamp = 0;
+			}
+
 			$updates = array(
 				"periodunit"    => $_POST['periodunit'],
 				"periodtype"    => $_POST['periodtype'],
 				"periodprepost" => $_POST['periodprepost'],
 				"subject"       => $_POST['subject'],
 				"message"       => stripslashes( $_POST['message'] ),
-				"periodstamp"   => $_POST['periodprepost'] == 'pre' ? -$time : $time,
+				"periodstamp"   => $periodstamp,
 				"sub_id"        => $_POST['subscription_id']
 			);
 
@@ -481,12 +517,12 @@ function M_Communication_get_endstamps( $user_id ) {
 
 function M_Communication_get_pre_messages( ) {
 	global $wpdb;
-	return $wpdb->get_results( "SELECT * FROM " . MEMBERSHIP_TABLE_COMMUNICATIONS . " WHERE periodstamp < 0 AND active = 1 ORDER BY periodstamp ASC" );
+	return $wpdb->get_results( "SELECT * FROM " . MEMBERSHIP_TABLE_COMMUNICATIONS . " WHERE periodstamp <= 0 AND active = 1 AND (periodprepost = 'exp' OR periodprepost = 'pre') ORDER BY periodstamp ASC" );
 }
 
 function M_Communication_get_post_messages() {
 	global $wpdb;
-	return $wpdb->get_results( "SELECT * FROM " . MEMBERSHIP_TABLE_COMMUNICATIONS . " WHERE periodstamp >= 0 AND active = 1 ORDER BY periodstamp ASC" );
+	return $wpdb->get_results( "SELECT * FROM " . MEMBERSHIP_TABLE_COMMUNICATIONS . " WHERE periodstamp >= 0 AND active = 1 AND (periodprepost = 'join' OR periodprepost = 'post') ORDER BY periodstamp ASC" );
 }
 
 add_action( 'membership_communications_process', 'M_Communication_process' );
@@ -510,6 +546,7 @@ function M_Communication_process() {
 		$timelimit = 3; // max seconds for processing
 
 		foreach ( (array)$members as $user_id ) {
+			// Makes sure that messages only takes 3 seconds of processing power. Prevents timeouts.
 			if ( current_time( 'timestamp' ) > $timestart + $timelimit ) {
 				M_update_option( 'membership_communication_last_user_processed', $user_id );
 				break;
@@ -518,7 +555,6 @@ function M_Communication_process() {
 			if ( apply_filters( 'membership_prevent_communication', get_user_meta( $user_id, 'membership_signup_gateway_can_communicate', true ) ) != 'yes' ) {
 				$starts = M_Communication_get_startstamps( $user_id );
 				$comms = M_Communication_get_post_messages();
-
 				if ( !empty( $starts ) && !empty( $comms ) ) {
 					foreach ( $starts as $start ) {
 						$starttime = $start->meta_value;
@@ -540,6 +576,7 @@ function M_Communication_process() {
 							// Get 24 hour previous and after so we have a range in which to fit a communication
 							$onedaybefore = strtotime( '-6 hours', $withperiod );
 							$onedayafter = strtotime( '+6 hours', $withperiod );
+							
 
 							if ( ($now > $onedaybefore) && ($now < $onedayafter) ) {
 								$message = new M_Communication( $comm->id );

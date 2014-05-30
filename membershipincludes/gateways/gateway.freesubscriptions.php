@@ -24,7 +24,7 @@ class freesubscriptions extends Membership_Gateway {
 		add_action( 'M_gateways_settings_' . $this->gateway, array( &$this, 'mysettings' ) );
 
 		// If I want to override the transactions output - then I can use this action
-		add_action( 'M_gateways_transactions_' . $this->gateway, array( &$this, 'mytransactions' ) );
+		//add_action( 'M_gateways_transactions_' . $this->gateway, array( &$this, 'mytransactions' ) );
 
 		if ( $this->is_active() ) {
 			// Subscription form gateway

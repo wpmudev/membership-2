@@ -47,6 +47,9 @@ class Membership_Model_Subscription {
 
 		$this->db = $wpdb;
 		$this->id = $id;
+		
+		// Hook if deleting subscriptions
+		add_action( 'membership_remove_level_members', array( $this, 'remove_level_members' ), 10, 2 );
 	}
 
 	// Fields
@@ -283,6 +286,8 @@ class Membership_Model_Subscription {
 		if ( !apply_filters( 'pre_membership_delete_subscription', true, $this->id ) ) {
 			return false;
 		}
+		
+		do_action( 'membership_remove_level_members', $this->id, $this->get_levels() );
 
 		$this->db->delete( MEMBERSHIP_TABLE_SUBSCRIPTIONS, array( 'id' => $this->id ), array( '%d' ) );
 		$this->db->delete( MEMBERSHIP_TABLE_SUBSCRIPTION_LEVELS, array( 'sub_id' => $this->id ), array( '%d' ) );
@@ -461,6 +466,16 @@ class Membership_Model_Subscription {
 
 		return true; // for now
 
+	}
+
+	
+	// Remove members at all levels when a subscription is deleted
+	// Will not remove members if they have the same level from another subscription
+	function remove_level_members( $id, $levels )
+	{
+		foreach ( $levels as $level ) {		
+			$this->db->delete( MEMBERSHIP_TABLE_RELATIONS, array( 'sub_id' => $this->id, 'level_id' => $level->id ), array( '%d', '%d' ) );
+		}
 	}
 
 

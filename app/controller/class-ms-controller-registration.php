@@ -166,12 +166,6 @@ class MS_Controller_Registration extends MS_Controller {
 				$content .= do_shortcode( '[ms-membership-login]' );
 			}
 		}
-		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
-			$protection_message = MS_Plugin::instance()->settings->protection_message;
-			if( ! empty( $protection_message ) ) {
-				$content = $protection_message;
-			}
-		}
 		return $content;
 	}
 	

@@ -140,7 +140,7 @@ class MS_Model_Plugin extends MS_Model {
 			 * Hide content.
 			 */
 			foreach( $rules as $rule ) {
-				$rule->protect_content( $membership_relationship->start_date );
+				$rule->protect_content( $membership_relationship );
 			}
 			/** 
 			 * Verify membership rules hierachyly.
@@ -178,7 +178,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		
 		if( ! $has_access ) {
-			$url = get_permalink( $settings->pages['no_access'] );
+			$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
 			wp_safe_redirect( $url );
 		}
 
