@@ -113,6 +113,7 @@ class MS_Model_Plugin extends MS_Model {
 		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
 			return true;
 		}
+				
 		$settings = MS_Plugin::instance()->settings;
 		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
@@ -165,6 +166,11 @@ class MS_Model_Plugin extends MS_Model {
 					$has_access = $rules[ $rule_type ]->has_dripped_access( $membership_relationship->start_date ); 
 				}
 			}
+		}
+		
+		/** If front page or home then return. Honours all other rules. */
+		if( is_home() || is_front_page() ) {
+			$has_access = true;
 		}
 		
 		if( ! $has_access ) {
