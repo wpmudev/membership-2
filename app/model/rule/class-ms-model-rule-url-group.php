@@ -27,15 +27,54 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	
 	protected $rule_type = self::RULE_TYPE_URL_GROUP;
 	
+	protected $urls = array();
+	
+	protected $access;
+	
+	protected $url_group;
+	
+	protected $strip_query_string;
+	
+	protected $is_regex;
+	
 	public function protect_content() {
 		
 	}
 	
 	public function get_content() {
-		$content = array(
-				(object) array( 'id' => 1, 'name' => 'todo', 'access' => false, 'delayed_period' => '' ),
-				);
-		return $content;
-		
+		$contents = array();
+		foreach( $this->urls as $id => $url ) {
+			$contents[ $id ]->id = $id;
+			$contents[ $id ]->url = $url['url'];
+			if( in_array( $id, $this->rule_value ) ) {
+				$contents[ $id ]->access = true;
+			}
+			else {
+				$contents[ $id ]->access = false;
+			}
+		} 
+		return $contents;
+	}
+	
+	/**
+	 * Validate specific property before set.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property to associate.
+	 * @param mixed $value The value of a property.
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'rule_value':
+					$this->$property =  array_filter( array_map( 'trim', explode( PHP_EOL, $value ) ) )	;
+					break;
+				default:
+					parent::__set( $property, $value );
+					break;
+			}
+		}
 	}
 }

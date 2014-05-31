@@ -239,7 +239,6 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Rule single action 
 		 */
-		// Changed the nonce for ajax toggles
 		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
@@ -252,7 +251,13 @@ class MS_Controller_Membership extends MS_Controller {
 			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
-
+		/**
+		 * Save url group add/edit
+		 */
+		elseif ( ! empty( $_POST['url_group_submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], MS_View_Membership_Edit::URL_GROUP_NONCE ) ) {
+			$msg = $this->save_url_group( $_POST );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+		}
 		$this->print_admin_message( $msg );
 		
 	}
@@ -342,6 +347,10 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @param int $copy_from_id The Membership ID to copy from.
 	 */	
 	private function copy_dripped_schedule( $copy_from_id ) {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
+		
 		$src_membership = MS_Model_Membership::load( $copy_from_id );
 		
 		$rule_types = array( 'post', 'page', 'category' ); 
@@ -384,6 +393,22 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->model->save();
 	}
 	
+	private function save_url_group( $fields ) {
+		if ( ! current_user_can( $this->capability ) ) {
+			return;
+		}
+		if( is_array( $fields ) ) {
+			$rule_type = 'url_group';
+			$rule = $this->model->rules[ $rule_type ];
+ 
+			foreach( $fields as $field => $value ) {
+				$rule->$field = $value;
+			}
+			$this->model->set_rule( $rule_type, $rule );
+			$this->model->save();
+		}
+		
+	}
 	/**
 	 * Load Membership manager specific styles.
 	 *
@@ -399,14 +424,13 @@ class MS_Controller_Membership extends MS_Controller {
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		
 		if( 'general' == $active_tab ) {
-			wp_enqueue_style( 'ms_membership_view_render_general', $plugin_url. 'app/assets/css/ms-view-membership-render-general.css', null, $version );
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'chosen-jquery' );
 		}
 		elseif( 'dripped' == $active_tab ) {
 			wp_enqueue_style( 'chosen-jquery' );
-			wp_enqueue_style( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/css/ms-view-membership-render-dripped.css', null, $version );
 		}
+		wp_enqueue_style( 'ms_membership_view_edit', $plugin_url. 'app/assets/css/ms-view-membership-edit.css', null, $version );
 	}
 	
 	/**
@@ -436,10 +460,21 @@ class MS_Controller_Membership extends MS_Controller {
 			wp_enqueue_script( 'jquery-chosen' );
 			wp_enqueue_script( 'jquery-validate' );
 		}	
-
-		/* Toggle Button Behaviour */
-		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
-		wp_enqueue_script( 'ms_view_member_ui' );		
+		elseif( 'urlgroup' == $active_tab ) {
+			wp_register_script( 'ms-view-membership-render-url-group', $plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', array( 'jquery' ), $version );
+			wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array( 
+				'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
+				'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
+				'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
+				'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
+			));
+			wp_enqueue_script( 'ms-view-membership-render-url-group' );
+		}
+		else {
+			/* Toggle Button Behaviour */
+			wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+			wp_enqueue_script( 'ms_view_member_ui' );				
+		}
 	}
 	
 }

@@ -46,6 +46,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
 	const INPUT_TYPE_IMAGE = 'image';
 	const INPUT_TYPE_PASSWORD = 'password';
+	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -142,7 +143,16 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_IMAGE:
 				echo "<input type='image' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
-				break;	
+				break;
+			case self::INPUT_TYPE_RADIO_SLIDER:
+				$turned = ( $value ) ? 'on' : ''; 
+				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo "<div class='ms-radio-slider $turned'>";
+		    	echo "<div class='toggle'></div>";
+				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+				echo "</div>";
+				break;
+				
 		}		
 	}
 	

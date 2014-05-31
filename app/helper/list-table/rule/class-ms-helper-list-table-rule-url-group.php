@@ -42,7 +42,7 @@ class MS_Helper_List_Table_Rule_Url_Group extends MS_Helper_List_Table_Rule {
 	public function column_url( $item ) {
 	
 		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&url_group_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __( 'Edit', MS_TEXT_DOMAIN ) ),
+				'edit' => sprintf( '<a href="?page=%s&tab=urlgroup&action=%s&url_id=%s">%s</a>', $_REQUEST['page'], 'url_group_edit', $item->id, __( 'Edit', MS_TEXT_DOMAIN ) ),
 				'delete' => sprintf( '<span class="delete"><a href="%s">%s</a></span>',
 						wp_nonce_url(
 						sprintf( '?page=%s&url_group_id=%s&action=%s',

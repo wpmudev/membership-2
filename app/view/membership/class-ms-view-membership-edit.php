@@ -4,6 +4,7 @@ class MS_View_Membership_Edit extends MS_View {
 
 	const MEMBERSHIP_SAVE_NONCE = 'membership_save_nonce';
 	const DRIPPED_NONCE = 'dripped_nonce';
+	const URL_GROUP_NONCE = 'url_group_save_nonce';
 	
 	const MEMBERSHIP_SECTION = 'membership_section';
 	const DRIPPED_SECTION = 'item';
@@ -462,22 +463,96 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function render_urlgroup() {
-		$model = $this->model->rules['url_group'];
-		$rule_list_table = new MS_Helper_List_Table_Rule_Url_Group( $model );
-		$rule_list_table->prepare_items();
-		
+		$this->prepare_urlgroup();
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h2><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
-				<?php $rule_list_table->views(); ?>
-				<form action="" method="post">
-					<?php $rule_list_table->display(); ?>
-				</form>
+				<div class="metabox-holder">
+					<div class="postbox">
+					<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Edit URL group', MS_TEXT_DOMAIN ) ?></h3>
+						<div class="inside">
+							<form action="" method="post" class="ms-form">
+								<?php wp_nonce_field( self::URL_GROUP_NONCE ); ?>
+								<table class="form-table">
+									<tbody>
+										<?php foreach( $this->fields as $field ): ?>
+											<tr>
+												<td>
+													<?php MS_Helper_Html::html_input( $field ); ?>
+												</td>
+											</tr>
+											<?php endforeach; ?>
+									</tbody>
+								</table>
+								<?php MS_Helper_Html::html_submit( array( 'id' => 'url_group_submit' ) ); ?>
+							</form>
+							<div class="clear"></div>
+						</div>
+					</div>
+				</div>
+				<div class="metabox-holder">
+					<div class="postbox">
+						<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Test URL group', MS_TEXT_DOMAIN ) ?></h3>
+						<div class="inside">
+							<?php 
+								MS_Helper_Html::html_input( array( 
+									'id' => 'url_test',
+									'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
+									'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+									'class' => 'widefat',
+								) ); 
+							?>
+							<div id="url-test-results-wrapper">
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		<?php 	
 		$html = ob_get_clean();
 		echo $html;	
+	}
+	
+	function prepare_urlgroup() {
+		$model = $this->model->rules['url_group'];
+
+		$this->fields = array(
+				'access' => array(
+						'id' => 'access',
+						'title' => __( 'Access', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $model->access,
+				),
+				'rule_value' => array(
+						'id' => 'rule_value',
+						'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+						'value' => implode( PHP_EOL, $model->rule_value ),
+				),
+				'strip_query_string' => array(
+						'id' => 'strip_query_string',
+						'title' => __( 'Strip query strings from URL', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $model->strip_query_string,
+				),
+				'is_regex' => array(
+						'id' => 'is_regex',
+						'title' => __( 'Is regular expression', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $model->is_regex,
+				),
+// 				'action' => array(
+// 						'id' => 'action',
+// 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+// 						'value' => $this->data['action'],
+// 				),
+				'membership_id' => array(
+						'id' => 'membership_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->model->id,
+				),
+		);
 	}
 	
 	public function render_dripped() {
