@@ -63,7 +63,19 @@ class MS_Controller_Registration extends MS_Controller {
 	 */	
 	public function process_actions() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		if( method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+		
+		/** 
+		 * If $action is set, then call relevant method.
+		 * 
+		 * Methods:  
+		 *
+		 * * membership_signup  
+		 * * membership_move  
+		 * * membership_cancel  
+		 * * register_user  
+		 *
+		 */
+		if( ! empty($action) && method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		} 
 	}
@@ -118,7 +130,8 @@ class MS_Controller_Registration extends MS_Controller {
 		if ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_REGISTER ) ) {
 		
 			// check if page contains a shortcode
-			if ( strpos( $content, '[ms-membership-register-user]' ) === false ) {
+			// if ( strpos( $content, '[ms-membership-register-user' ) === false ) {
+			if ( ! MS_Helper_Shortcode::has_shortcode( 'ms-membership-register-user', $content ) ) {
 				// There is no shortcode content in there, so override
 				if( ! empty( $_REQUEST['action'] ) ) {
 					remove_filter( 'the_content', 'wpautop' );
@@ -141,9 +154,12 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) ) {
 			// account page - check if page contains a shortcode
-			if ( strpos( $content, '[ms-membership-account]' ) !== false || 
-					strpos( $content, '[ms-membership-upgrade]' ) !== false || 
-					strpos( $content, '[ms-membership-renew]' ) !== false ) {
+			// if ( strpos( $content, '[ms-membership-account]' ) !== false || 
+			// 		strpos( $content, '[ms-membership-upgrade]' ) !== false || 
+			// 		strpos( $content, '[ms-membership-renew]' ) !== false ) {
+			if ( MS_Helper_Shortcode::has_shortcode( 'ms-membership-account', $content ) ||
+			     MS_Helper_Shortcode::has_shortcode( 'ms-membership-upgrade', $content ) ||
+			     MS_Helper_Shortcode::has_shortcode( 'ms-membership-renew', $content ) ) {	
 				// There is content in there with the shortcode so just return it
 				return $content;
 			}
@@ -153,7 +169,9 @@ class MS_Controller_Registration extends MS_Controller {
 		} 
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ) {
 			// account page - check if page contains a shortcode
-			if ( strpos( $content, '[ms-membership-upgrade]' ) !== false || strpos( $content, '[ms-memberhship-renew]' ) !== false ) {
+			// if ( strpos( $content, '[ms-membership-upgrade]' ) !== false || strpos( $content, '[ms-memberhship-renew]' ) !== false ) {
+			if ( MS_Helper_Shortcode::has_shortcode( 'ms-membership-upgrade', $content ) || 
+				 MS_Helper_Shortcode::has_shortcode( 'ms-membership-renew', $content ) ) {
 				// There is content in there with the shortcode so just return it
 				return $content;
 			}
