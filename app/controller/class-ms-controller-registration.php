@@ -46,6 +46,7 @@ class MS_Controller_Registration extends MS_Controller {
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		$this->add_filter( 'the_content', 'check_for_membership_pages_content', 1 );
 // 		$this->add_action( 'the_posts', 'process_actions', 1 );
+		MS_Helper_Debug::log( __( 'Initialise front-end registration...', MS_TEXT_DOMAIN ) );					
 	}
 
 	/**
@@ -63,7 +64,6 @@ class MS_Controller_Registration extends MS_Controller {
 	 */	
 	public function process_actions() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		
 		/** 
 		 * If $action is set, then call relevant method.
 		 * 
@@ -77,6 +77,7 @@ class MS_Controller_Registration extends MS_Controller {
 		 */
 		if( ! empty($action) && method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
+			// MS_Helper_Debug::log( 'action: ' . $action );								
 		} 
 	}
 

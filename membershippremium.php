@@ -38,9 +38,8 @@ Text Domain: wpmudev_membership
  */
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
-/** 
- * Add WordPress core functionality: WP_List_Table
- */
+// ADDED MS_Helper_Debug::log()
+// RK: Perhaps we can use that one instead?
 if( ! function_exists( '_ms_debug_log' ) ) {
 	function _ms_debug_log( $message ) {
 	
@@ -527,9 +526,8 @@ class MS_Plugin {
 		} else {
 			if ( is_null( self::$instance ) ) {
 				self::$instance = $instance;
-			}
+			}			
 		}
-	
 		return self::$instance;
 	}
 	/**

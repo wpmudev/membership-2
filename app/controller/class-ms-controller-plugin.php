@@ -84,15 +84,18 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
+
+		// MS_Helper_Debug::log( __('Initializing primary controller.', MS_TEXT_DOMAIN ) );			
+				
 		/** Instantiate Plugin model */
 		$this->model = apply_filters( 'membership_model_plugin', new MS_Model_Plugin() );
 		/** Instantiate Plugin view */
 		$this->view = apply_filters( 'membership_view_plugin', new MS_View_Plugin( array( 'test'=>'two' )) );
-
+		
 		/** Rewrite rules */
 		$this->add_action( 'generate_rewrite_rules', 'add_rewrites', 1 );
 		$this->add_filter( 'query_vars', 'add_query_vars' );
-				
+						
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 		
@@ -194,6 +197,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return object WP_Rewrite object.
 	 */
 	public function add_rewrites( $wp_rewrite ) {
+		// MS_Helper_Debug::log( __('Initializing rewrite rules...', MS_TEXT_DOMAIN ) );			
 		
 		$new_rules = array();
 		if( ! empty( MS_Plugin::instance()->settings->download['masked_url'] ) ) {
@@ -219,6 +223,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return mixed[]
 	 */
 	function add_query_vars( $vars ) {
+		// MS_Helper_Debug::log( __('Initializing query variables...', MS_TEXT_DOMAIN ) );			
 		if ( ! in_array( 'feedkey', $vars ) ) {
 			$vars[] = 'feedkey';
 		}
@@ -273,7 +278,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), $this->capability, 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
 		
-		
+		// MS_Helper_Debug::log( __('Added menu pages...', MS_TEXT_DOMAIN ) );			
 	}
 
 	/**
@@ -287,6 +292,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
 		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-admin' );
+		// MS_Helper_Debug::log( __('Register admin CSS...', MS_TEXT_DOMAIN ) );			
 	}
 	
 	/**
@@ -300,7 +306,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
 		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-shortcode' );
-		
+		// MS_Helper_Debug::log( __('Register Membership front-end CSS...', MS_TEXT_DOMAIN ) );					
 	}
 	
 	/**
@@ -313,6 +319,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_plugin_admin_scripts() {
 		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+		// MS_Helper_Debug::log( __('Register admin scripts...', MS_TEXT_DOMAIN ) );					
 	}
 
 	/**
@@ -327,6 +334,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_enqueue_script( 'jquery-validate' );
 		wp_register_script( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), MS_Plugin::instance()->version );
 		wp_enqueue_script( 'membership-shortcode' );
+		// MS_Helper_Debug::log( __('Register Membership front-end scripts...', MS_TEXT_DOMAIN ) );							
 	}
 	
 	
