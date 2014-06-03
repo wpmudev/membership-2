@@ -100,11 +100,28 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function admin_settings_manager() {
 		$this->get_active_tab();
+		$msg = 0;
 		switch( $this->active_tab ) {
 			case 'general':
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
+				/**
+				 * Admin bar enable request.
+				 */
+				if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) && ! empty( $_GET['setting'] ) ) {
+					$this->save_general( $_GET['action'], array( $_GET['setting'] ) );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
+				}
+				/**
+				 * General tab submit request.
+				 */
+				elseif( ! empty( $_POST['submit_general'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+					$this->save_general( $_POST['action'], $_POST );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+				}
+				break;
 			case 'pages':
 				$nonce = MS_View_Settings::PAGE_NONCE;
-				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				if( ! empty ($_POST['submit_pages'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 					$special_pages_types = MS_Model_Settings::get_special_page_types();
 					$pages = $this->model->pages;
@@ -131,7 +148,7 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 				break;
 			case 'payment':
-				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				/**
 				 * Execute table single action.
 				 */
@@ -164,9 +181,7 @@ class MS_Controller_Settings extends MS_Controller {
 					 */
 					elseif( ! empty( $_POST[ $pay_nonce ] ) && wp_verify_nonce( $_POST[ $pay_nonce ], $pay_nonce ) ) {
 						foreach( $_POST as $field => $value ) {
-							if( property_exists( $this->model, $field ) ) {
-								$this->model->$field = $value;
-							}
+							$this->model->$field = $value;
 						}
 						$msg = 0;
 						$this->model->save();
@@ -176,7 +191,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 			case 'messages-protection':
 				$nonce = MS_View_Settings::PROTECTION_NONCE;
-				$this->model = apply_filters( 'membership_model_settings', MS_Plugin::instance()->settings );
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				if( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
 					$this->model->protection_message = isset( $_POST['protection_message'] ) ? $_POST['protection_message']: '';
 					$this->model->save();
@@ -201,11 +216,16 @@ class MS_Controller_Settings extends MS_Controller {
 					wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['type']) ) ) ;
 				}
 				break;
-		}
-		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) && ! empty( $_GET['setting'] ) ) {
-			$this->save_general( $_GET['action'], array( $_GET['setting'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
+			case 'downloads':
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
+				/**
+				 * Download tab submit request.
+				 */
+				if( ! empty( $_POST['submit_downloads'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+					$this->save_general( $_POST['action'], $_POST );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+				}
+				break;	
 		}
 		
 	}
@@ -272,12 +292,15 @@ class MS_Controller_Settings extends MS_Controller {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-				
+
 		if( is_array( $settings ) ) {
-			foreach( $settings as $setting ) {
+			foreach( $settings as $field => $value ) {
 				switch( $action ) {
 					case 'toggle_activation':
-						$this->model->$setting = ! $this->model->$setting; 
+						$this->model->plugin_enabled = ! $this->model->plugin_enabled; 
+						break;
+					case 'save_general':
+						$this->model->$field = $value;
 						break;
 				}
 			}
@@ -365,7 +388,14 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function enqueue_scripts() {
-		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
-		wp_enqueue_script( 'ms_view_member_ui' );				
+		if( 'payment' == $this->active_tab ) {
+			wp_enqueue_script( 'ms_view_member_ui' );
+		}
+		if( 'general' == $this->active_tab ) {
+			wp_register_script( 'ms-view-settings', MS_Plugin::instance()->url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), MS_Plugin::instance()->version );
+			wp_enqueue_script( 'ms-view-settings' );
+			
+		}
+		
 	}
 }

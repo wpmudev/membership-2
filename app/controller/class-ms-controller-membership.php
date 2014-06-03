@@ -472,7 +472,6 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		else {
 			/* Toggle Button Behaviour */
-			wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
 			wp_enqueue_script( 'ms_view_member_ui' );				
 		}
 	}

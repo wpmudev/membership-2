@@ -28,13 +28,15 @@ class MS_Model_Plugin extends MS_Model {
 	public function __construct() {
 		
 		$this->upgrade();
-		
-		$this->init_member();
-		
-		$this->setup_communications();
-		
-		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
-		$this->add_action( 'parse_request', 'setup_protection', 2 );
+		if( MS_Plugin::instance()->settings->plugin_enabled ) {
+			
+			$this->init_member();
+			
+			$this->setup_communications();
+			
+			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
+			$this->add_action( 'parse_request', 'setup_protection', 2 );
+		}
 	}
 	
 	/**

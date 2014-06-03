@@ -92,7 +92,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Rewrite rules */
 		$this->add_action( 'generate_rewrite_rules', 'add_rewrites', 1 );
 		$this->add_filter( 'query_vars', 'add_query_vars' );
-		
+				
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 		
@@ -179,6 +179,8 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		/** Membership registration controller - front end */
 		$this->controllers['registration'] = apply_filters( 'membership_controller_registration', new MS_Controller_Registration() );
+		
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -192,12 +194,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return object WP_Rewrite object.
 	 */
 	public function add_rewrites( $wp_rewrite ) {
-		$new_rules = array();
-// 		if(!empty($M_options['masked_url'])) {
-// 			$new_rules[trailingslashit($M_options['masked_url']) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index(1);
-// 		}
 		
-		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index(1);
+		$new_rules = array();
+		if( ! empty( MS_Plugin::instance()->settings->download['masked_url'] ) ) {
+			$new_rules[trailingslashit( MS_Plugin::instance()->settings->download['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
+		}
+		
+		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index( 1 );
 		
 		$new_rules = apply_filters('ms_rewrite_rules', $new_rules);
 		
@@ -309,7 +312,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */	
 	public function register_plugin_admin_scripts() {
 		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
-		
+		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
 	}
 
 	/**

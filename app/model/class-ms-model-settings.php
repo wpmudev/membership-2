@@ -51,7 +51,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $tax;
 	
 	protected $invoice_sender_name;
-	
+		
 	/**
 	 * Shortcode protection message.
 	 * 
@@ -60,6 +60,11 @@ class MS_Model_Settings extends MS_Model_Option {
 	 */
 	protected $protection_message;
 
+	protected $downloads = array(
+		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
+		'masked_url' => 'downloads',
+	);
+	
 	public function __construct() {
 		$this->add_action( 'wp_loaded', 'initial_setup' );	
 	}
@@ -223,7 +228,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'currency':
-					if( in_array( $value, self::get_currencies() ) ) {
+					if( array_key_exists( $value, self::get_currencies() ) ) {
 						$this->$property = $value;
 					}
 					break;
@@ -232,6 +237,11 @@ class MS_Model_Settings extends MS_Model_Option {
 					break;
 				case 'invoice_sender_name':
 					$this->$property = sanitize_text_field( $value );
+					break;
+				case 'plugin_enabled':
+				case 'initial_setup':
+				case 'show_default_membership':
+					$this->$property = $this->validate_bool( $value );
 					break;
 				default:
 					$this->$property = $value;

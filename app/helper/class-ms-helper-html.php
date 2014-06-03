@@ -92,13 +92,13 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_TEXT:
 			case self::INPUT_TYPE_PASSWORD:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span><br />" : '';
+				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
 				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr />";
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span><br />" : '';
+				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
 				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name'>$value</textarea>";
 				break;
@@ -146,9 +146,10 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_RADIO_SLIDER:
 				$turned = ( $value ) ? 'on' : ''; 
+				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
 				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
-		    	echo "<div class='toggle'></div>";
+		    	echo "<div class='toggle'>$link_url</div>";
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				echo "</div>";
 				break;

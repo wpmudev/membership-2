@@ -167,19 +167,20 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_start( $item ) {
-		$html = array();
-		foreach( $item->membership_relationships as $membership_relationship ) {
-			$period = $membership_relationship->get_current_period()->format( "%a days");
-			$html[] = "$membership_relationship->start_date ($period)";
-		}
-		$html = join('<br /> ', $html);
-		
-		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-			);
-		
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-		
+		if( count( $item->membership_ids ) > 0 ) {
+			$html = array();
+			foreach( $item->membership_relationships as $membership_relationship ) {
+				$period = $membership_relationship->get_current_period()->format( "%a days");
+				$html[] = "$membership_relationship->start_date ($period)";
+			}
+			$html = join('<br /> ', $html);
+			
+			$actions = array(
+					'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+				);
+			
+			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		}		
 	}
 
 	function column_trial( $item ) {
@@ -203,36 +204,40 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_expire( $item ) {
-		$html = array();
-		foreach( $item->membership_relationships as $membership_relationship ) {
-			if( $membership_relationship->expire_date )  {
-				$period = $membership_relationship->get_remaining_period()->format( "%r%a days");
-				$html[] = "$membership_relationship->expire_date ($period)";
+		if( count( $item->membership_ids ) > 0 ) {
+			$html = array();
+			foreach( $item->membership_relationships as $membership_relationship ) {
+				if( $membership_relationship->expire_date )  {
+					$period = $membership_relationship->get_remaining_period()->format( "%r%a days");
+					$html[] = "$membership_relationship->expire_date ($period)";
+				}
+				else {
+					$html[] = __('Permanent', MS_TEXT_DOMAIN );
+				}
 			}
-			else {
-				$html[] = __('Permanent', MS_TEXT_DOMAIN );
-			}
+			$html = join('<br /> ', $html);
+			
+			$actions = array(
+					'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+			);
+			
+			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 		}
-		$html = join('<br /> ', $html);
-		
-		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-		);
-		
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 
 	function column_gateway( $item ) {
-		$html = array();
-		foreach( $item->membership_relationships as $membership_relationship ) {
-			$html[] = $membership_relationship->gateway;
+		if( count( $item->membership_ids ) > 0 ) {
+			$html = array();
+			foreach( $item->membership_relationships as $membership_relationship ) {
+				$html[] = $membership_relationship->gateway;
+			}
+			$html = join('<br /> ', $html);
+			$actions = array(
+					'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move_gateway', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
+				);
+			
+			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 		}
-		$html = join('<br /> ', $html);
-		$actions = array(
-				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move_gateway', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
-			);
-		
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 	
 	public function get_bulk_actions() {

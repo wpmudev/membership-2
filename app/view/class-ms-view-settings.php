@@ -38,6 +38,7 @@ class MS_View_Settings extends MS_View {
 	const PAGE_NONCE = 'page_save_nonce';
 	const PAY_NONCE = 'payment_save_nonce';
 	const PROTECTION_NONCE = 'protection_save_nonce';
+	const GENERAL_NONCE = 'general_save';
 	
 	const COMM_SECTION = 'comm_section';
 	const PAGE_SECTION = 'page_section';
@@ -92,10 +93,6 @@ class MS_View_Settings extends MS_View {
 					'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
 					'url' => 'admin.php?page=membership-settings&tab=downloads',
 			),
-			'repair' => array(
-					'title' =>	__( 'Verify and Repair', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=repair',
-			),												
 		);
 		
 		/** Render tabbed interface. */
@@ -117,14 +114,42 @@ class MS_View_Settings extends MS_View {
 	}
 
 	public function render_general() {
+		$this->prepare_general();
 		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?>	
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
+		<div class='ms-settings'>
+			<h2><?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?></h2>	
+			<div class="metabox-holder">
+				<form action="" method="post">
+					<div class="postbox">
+						<h3 class="hndle"><?php _e( 'Enable plugin', MS_TEXT_DOMAIN ); ?></h3>
+						<div class="inside">
+							<?php wp_nonce_field( $this->fields['action']['value'] );?>
+							<?php foreach( $this->fields as $field ): ?>
+								<?php MS_Helper_Html::html_input( $field ); ?>
+							<?php endforeach; ?>
+						</div>
+					</div>
+					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_general' ) );?>
+				</form>
+			</div>
+		</div>
 		<?php
+	}
+	
+	public function prepare_general() {
+		$this->fields = array(
+				'plugin_enabled' => array(
+						'id' => 'plugin_enabled',
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
+						'value' => $this->model->plugin_enabled,
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'save_general',
+				),
+		);
 	}
 	
 	public function render_pages() {
@@ -304,7 +329,7 @@ class MS_View_Settings extends MS_View {
 		?>
 		<div class='ms-settings'>
 	   		<h2><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h2>
-	   		<p class="description"><?php _e( 'Shortcode message displayed when not having access to a protected page.', MS_TEXT_DOMAIN );?></p>
+	   		<p class="description"><?php _e( 'Message displayed when not having access to a protected shortcode.', MS_TEXT_DOMAIN );?></p>
        		<form action="" method="post">
 				<?php wp_nonce_field( self::PROTECTION_NONCE, self::PROTECTION_NONCE ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['protection_message'] ) ;?>
@@ -477,27 +502,79 @@ class MS_View_Settings extends MS_View {
 				),
 		);
 	}
-	public function render_downloads() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
 	
-		   </form>
-	   </div>
+	public function render_downloads() {
+		$this->prepare_downloads();
+		?>
+		<div class='ms-settings'>
+			<h2><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h2>	
+			<div class="metabox-holder">
+				<form action="" method="post">
+					<div class="postbox">
+						<h3 class="hndle"><?php _e( 'Media / Download protection', MS_TEXT_DOMAIN ); ?></h3>
+						<div class="inside">
+							<?php wp_nonce_field( $this->fields['action']['value'] );?>
+							<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
+							<table class="form-table">
+								<tbody>
+									<tr>
+										<td>
+											<?php MS_Helper_Html::html_input( $this->fields['protection_type'] ); ?>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="ms-field-label"><?php _e( 'Your upload location', MS_TEXT_DOMAIN ); ?></span>
+											<div>
+												<?php 
+													$upload_dir = wp_upload_dir(); 
+													echo trailingslashit( $upload_dir['baseurl'] );
+												?>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<?php 
+												MS_Helper_Html::html_input( $this->fields['masked_url'] ); 
+											?>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_downloads' ) );?>
+				</form>
+			</div>
+		</div>
 		<?php
 	}
+	public function prepare_downloads() {
+		$this->fields = array(
+				'protection_type' => array(
+						'id' => 'protection_type',
+						'name' => 'downloads[protection_type]',
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+						'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
+						'value' => $this->model->downloads['protection_type'],
+						'field_options' => MS_Model_Rule_Media::get_protection_types(),
+				),
+				'masked_url' => array(
+						'id' => 'masked_url',
+						'name' => 'downloads[masked_url]',
+						'desc' => esc_html( trailingslashit( get_option( 'home' ) ) ),
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'title' => __( 'Masked download url', MS_TEXT_DOMAIN ),
+						'value' => $this->model->downloads['masked_url'],
+						'class' => '',
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'save_general',
+				),
+		);
+	}
 	
-	public function render_repair() {
-		?>
-	   <div class='ms-settings'>
-		   <?php  _e( 'Verify and Repair', MS_TEXT_DOMAIN ) ; ?>
-	       <form id="setting_form" method="post">
-	
-		   </form>
-	   </div>
-		<?php
-	}	
-	
-		
 }

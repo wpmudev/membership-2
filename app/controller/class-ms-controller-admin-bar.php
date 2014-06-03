@@ -188,7 +188,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @param object $wp_admin_bar WP_Admin_Bar object.
 	 */
 	public function add_activate_plugin_menu( WP_Admin_Bar $wp_admin_bar ) {
-		$linkurl = 'admin.php?page=membership-settings&setting=plugin_enabled&action=toggle_activation';
+		$linkurl = 'admin.php?page=membership-settings&tab=general&setting=plugin_enabled&action=toggle_activation';
 		$linkurl = wp_nonce_url( $linkurl, 'toggle_activation' );
 	
 		$wp_admin_bar->add_menu( array(
