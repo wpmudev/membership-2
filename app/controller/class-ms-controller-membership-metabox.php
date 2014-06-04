@@ -95,10 +95,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */		
 	public function __construct() {		
 		$this->metabox_title = __( 'Membership Access', MS_TEXT_DOMAIN );
-		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', array( 'page', 'post' ) );
+		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', array( 'page', 'post', 'attachment' ) );
 		
 		$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
 		$this->add_action( 'save_post', 'save_metabox_data', 10, 2 );
+		$this->add_action( 'attachment_fields_to_save', 'save_attachment_data' );
 		$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
 	}
 	
@@ -132,13 +133,15 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		else {
 			$memberships = MS_Model_Membership::get_memberships();
 			foreach( $memberships as $membership ) {
-				if( 'post' == $post->post_type ) {
+				$rule_type = $post->post_type;
+				if( 'post' == $rule_type ) {
 					$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
 					$data[ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $post->ID );
 				}
 				else {
-					$data[ $membership->id ]['has_access'] = $membership->rules['page']->has_access( $post->ID );
-					$data[ $membership->id ]['dripped'] = $membership->rules['page']->has_dripped_rules( $post->ID );				
+					$rule = $membership->get_rule( $rule_type );
+					$data[ $membership->id ]['has_access'] = $rule->has_access( $post->ID );
+					$data[ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );				
 				}
 				$data[ $membership->id ]['name'] = $membership->name;
 			}
@@ -164,29 +167,62 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		if ( is_int( wp_is_post_revision( $post ) ) ) return;
 		if ( is_int( wp_is_post_autosave( $post ) ) ) return;
 		if ( ! current_user_can( 'edit_post', $post_id )) return;
-		if ( ! in_array($post->post_type, $this->post_types) ) return;
 		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
 		if ( empty( $_POST[ $nonce ]) || ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) return;
 		
 		$rule_type = $post->post_type;
 		if( ! empty( $_POST['ms_access'] ) && in_array( $post->post_type, $this->post_types ) ) {
-			foreach( $_POST['ms_access'] as $membership_id => $has_access ) {
-				$membership = MS_Model_Membership::load( $membership_id );
-				$rule = $membership->get_rule( $rule_type );
-				if( $has_access ) {
-					$rule->add_rule_value( $post_id );
-				}
-				else {
-					$rule->remove_rule_value( $post_id );
-				}
-				
-				$membership->set_rule( $rule_type, $rule );
-				$membership->save();
-			}
-			
+			$this->save_membership_access( $post_id, $post->post_type, $_POST['ms_access'] );
 		}
 	}
-
+	
+	/**
+	 * Save the metabox data for given attachment.
+	 *
+	 *
+	 * @since 4.0.0
+	 * @filter attachment_fields_to_save
+	 * @param array $post_data The $_POST data.
+	 * @return array $post_data
+	 */
+	public function save_attachment_data( $post_data ) {
+		if ( ! current_user_can( 'edit_post', $post_data['post_ID'] ) ) return;
+		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
+		if ( empty( $post_data[ $nonce ]) || ! wp_verify_nonce( $post_data[ $nonce ], $nonce ) ) return;
+		
+		if( ! empty( $post_data['post_type'] ) && ! empty( $post_data['post_ID'] ) && ! empty( $post_data['ms_access'] ) ) {
+			$this->save_membership_access( $post_data['post_ID'], $post_data['post_type'], $post_data['ms_access'] );
+		}
+		
+		return $post_data;
+	}
+	
+	/**
+	 * Save membership access information.
+	 * 
+	 * @param int $post_id The post id or attachment id to save access to.
+	 * @param string $post_type The post type dictates with rule_type is used.
+	 * @param array $membership_access The access information to save, membership_id => access. 
+	 */
+	public function save_membership_access( $post_id, $post_type, $membership_access ) {
+		$rule_type = $post_type;
+		if( ! empty( $membership_access ) && in_array( $post_type, $this->post_types ) ) {
+			foreach( $membership_access as $membership_id => $has_access ) {
+				$membership = MS_Model_Membership::load( $membership_id );
+				if( $rule = $membership->get_rule( $rule_type ) ) {
+					if( $has_access ) {
+						$rule->add_rule_value( $post_id );
+					}
+					else {
+						$rule->remove_rule_value( $post_id );
+					}
+					$membership->set_rule( $rule_type, $rule );
+					$membership->save();
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Determine whether Membership can be changed or is read-only.
 	 *

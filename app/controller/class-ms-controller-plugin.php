@@ -200,8 +200,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		// MS_Helper_Debug::log( __('Initializing rewrite rules...', MS_TEXT_DOMAIN ) );			
 		
 		$new_rules = array();
-		if( ! empty( MS_Plugin::instance()->settings->download['masked_url'] ) ) {
-			$new_rules[trailingslashit( MS_Plugin::instance()->settings->download['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
+		if( ! empty( MS_Plugin::instance()->settings->downloads['masked_url'] ) ) {
+			$new_rules[trailingslashit( MS_Plugin::instance()->settings->downloads['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
 		}
 		
 		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index( 1 );
@@ -209,6 +209,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$new_rules = apply_filters('ms_rewrite_rules', $new_rules);
 		
 		$wp_rewrite->rules = array_merge($new_rules, $wp_rewrite->rules);
+
 		return $wp_rewrite;
 	}
 
@@ -278,7 +279,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), $this->capability, 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
 		
-		// MS_Helper_Debug::log( __('Added menu pages...', MS_TEXT_DOMAIN ) );			
+		// MS_Helper_Debug::log( __('Added menu pages...', MS_TEXT_DOMAIN ) );
 	}
 
 	/**

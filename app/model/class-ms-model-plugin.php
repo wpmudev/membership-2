@@ -34,6 +34,8 @@ class MS_Model_Plugin extends MS_Model {
 			
 			$this->setup_communications();
 			
+			$this->setup_download_protection();
+				
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
 		}
@@ -213,7 +215,42 @@ class MS_Model_Plugin extends MS_Model {
 	public function setup_protection( WP $wp ){
 		
 	}
+	
+	/**
+	 * Setup download / media protection.
+	 * 
+	 * @since 4.0.0
+	 * @action parse_request
+	 *
+	 * @access public
+	 */
+	public function setup_download_protection() {
+		/** Admin user has access to everything */
+		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
+			return;
+		}
 		
+		/**
+		 * Hook media protection rules for all memberships joined.
+		 */
+		foreach( $this->member->membership_relationships as $membership_relationship ) {
+			/**
+			 * Verify status of the membership.
+			 * Only active or trial status memberships.
+			 */
+			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
+				continue;
+			}
+			$membership = $membership_relationship->get_membership();
+		
+			$rules = $this->get_rules_hierarchy( $membership );
+			$download_rules = $membership->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
+			
+			$download_rules->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
+		}
+		
+	}
+	
 	public function communications_time_period( $periods ) {
 		if ( !is_array( $periods ) ) {
 			$periods = array();

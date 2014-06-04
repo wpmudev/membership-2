@@ -85,7 +85,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			return $this->rules[ $rule_type ];
-		};
+		}
+		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
+			return $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
+		}
 	}
 		
 	public function set_rule( $rule_type, $rule ) {
