@@ -145,4 +145,73 @@
 	right: 10px;
 }
 
+/* Calendar Styling */
+#wpadminbar .quicklinks > ul > li.membership-simulate-period #simulate_date {
+	background: #365d79 url('../images/calendar.png') 6.1em 3px no-repeat;	
+	padding-right:20px;
+}
 
+div.ui-datepicker { margin-top:10px;}
+
+/* Get rid of bevel corners */
+div.ui-datepicker-header,
+.ui-datepicker.ui-corner-all {
+	border-radius: 0;
+}
+
+/* New icons */
+.ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span, 
+.ui-state-hover .ui-icon,
+.ui-state-focus .ui-icon,
+.ui-widget-header .ui-icon,
+.ui-icon {
+	background-image: url("../images/ui-icons-white.png");
+}
+
+div.ui-datepicker-header,
+div.ui-datepicker {
+	padding: 0;
+	border: none;
+}
+
+div.ui-datepicker-header {
+	background: #4f83aa;
+	font-size: 0.9em;
+	color: #ffffff;
+	font-weight: normal;
+}
+
+table.ui-datepicker-calendar {
+	padding:3px;
+	background: #375d7a;
+}
+table.ui-datepicker-calendar thead th {
+	font-size: 0.9em;
+	color: #ffffff;
+	font-weight: normal;
+	padding: 3px 5px;
+}
+
+table.ui-datepicker-calendar tbody td a,
+.ui-datepicker td span, .ui-datepicker td a {
+    text-align: center;
+    text-decoration: none;
+	padding: 8px;
+}
+
+table.ui-datepicker-calendar tbody .ui-state-default, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-default, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+	background: #223d52;	
+	border: none;
+	color: #ffffff;
+}
+
+table.ui-datepicker-calendar tbody .ui-state-active, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-active, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+table.ui-datepicker-calendar tbody .ui-state-hover, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+	background: #4f83aa;
+}
