@@ -98,7 +98,7 @@ class MS_View_Admin_Bar extends MS_View {
 				'simulate_submit' => array(
 						'id' => 'simulate_submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'OK', MS_TEXT_DOMAIN ),
+						'value' => __( 'Go', MS_TEXT_DOMAIN ),
 						'class' => 'ms-admin-bar-submit',
 				),
 		);
