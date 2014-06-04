@@ -9,16 +9,16 @@ jQuery(document).ready(function($){
 	$( '#wpadminbar #view-site-as' ).parents( '#wpadminbar' ).addClass('simulation-mode');
 
 	$( '#wpadminbar #view-as-selector' ).change( function( element ) { 
-		
+
 		// Get selected Membership ID
-		var membership_id = element.srcElement.value;
+		var membership_id = element.currentTarget.value;
 		// Get selected Membership nonce
 		var nonce = $( '#wpadminbar #view-as-selector' ).find( 'option[value="' + membership_id + '"]' ).attr( 'nonce' );
-		
-		// Update hidden fields
+
+		// // Update hidden fields
 		$( '#wpadminbar #ab-membership-id' ).val( membership_id );
 		$( '#wpadminbar #view-site-as #_wpnonce' ).val( nonce );
-		
+
 		// Submit form
 		$( '#wpadminbar #view-site-as' ).submit();
 		
