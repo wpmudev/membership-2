@@ -77,7 +77,7 @@ class MS_Controller_Addon extends MS_Controller {
 	public function __construct() {
 		/** Load the add-on manager model. */
 		$this->add_action( 'load-membership_page_membership-addons', 'membership_addon_manager' );
-		$this->model = apply_filters( 'membership_addon_model', MS_Model_Addon::load() );
+		$this->model = apply_filters( 'membership_addon_model', MS_Plugin::instance()->addon );
 
 		/** Enqueue scripts and styles. */
 		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );
