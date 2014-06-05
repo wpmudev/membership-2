@@ -520,7 +520,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	public function customize_toolbar() {
 		// $this->original_nodes = $this->get_original_node();
 		$simulate = MS_Model_Simulate::load();
-	
+		$method = '';
 		if( MS_Model_Member::is_admin_user() ) {
 			$method = MS_Plugin::is_enabled()
 				? 'add_view_site_as_menu'
