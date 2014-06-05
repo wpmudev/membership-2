@@ -46,6 +46,14 @@ class MS_Helper extends MS_Hooker {
 	 * @since 4.0.0
 	 */	
 	public function __construct() {
+		
+		/**
+		 * Actions to execute when constructing the parent helper.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Helper object.
+		 */
+		do_action( 'membership_parent_helper_construct', $this );		
 	}
 	
 

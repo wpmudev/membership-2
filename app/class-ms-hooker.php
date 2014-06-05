@@ -1,6 +1,5 @@
 <?php
 /**
-/**
  * This file defines the MS_Hooker object.
  *
  * @copyright Incsub (http://incsub.com/)
@@ -28,6 +27,8 @@
  *
  * This file is the base object of all other objects in the Membership plugin. 
  * All Membership objects inherit from this class.
+ *
+ * The Membership base class all other classes build on. No hooks defined here.
  *
  * @since 3.5
  * @package Membership

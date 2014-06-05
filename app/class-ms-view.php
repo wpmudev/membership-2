@@ -84,6 +84,14 @@ class MS_View extends MS_Hooker {
 	public function __construct( $data = array() ) {
 		$this->data = $data;
 		$this->cache_ttl = 10 * MINUTE_IN_SECONDS;
+		
+		/**
+		 * Actions to execute when constructing the parent View.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_View object.
+		 */
+		do_action( 'membership_parent_view_construct', $this );
 	}
 
 	/**

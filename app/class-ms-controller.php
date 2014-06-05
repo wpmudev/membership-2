@@ -66,6 +66,14 @@ class MS_Controller extends MS_Hooker {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
+		
+		/**
+		 * Actions to execute when constructing the parent controller.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Controller object.
+		 */
+		do_action( 'membership_parent_controller_construct', $this );
 	}
 	
 	
