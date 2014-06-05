@@ -89,6 +89,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
 			return $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		}
+		else {
+			$this->rules[ $rule_type ] = MS_Model_Rule::rule_factory( $rule_type );
+			return $this->rules[ $rule_type ];
+		}
 	}
 		
 	public function set_rule( $rule_type, $rule ) {
@@ -333,8 +337,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					$this->$property = sanitize_text_field( $value );
 					break;
 				case 'membership_type':
-					if( array_key_exists( $value, self::get_membership_types() ) && 0 == $this->get_members_count() ) {
-						$this->$property = $value;
+					if( array_key_exists( $value, self::get_membership_types() ) ) {
+						if( 0 == $this->get_members_count() ) {
+							$this->$property = $value;
+						}
+						elseif( $this->$property != $value ) {
+							$error = "Membership type cannot be changed after members have signed up.";
+							MS_Helper_Debug::log( $error );
+							throw new Exception( $error );
+						}
+					}
+					else {
+						throw new Exception( "Invalid membeship type." );
 					}
 					break;
 				case 'visitor_membership':

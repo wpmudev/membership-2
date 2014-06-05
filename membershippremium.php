@@ -101,6 +101,8 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
 	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
+	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php";
+	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php";
 	$overrides['MS_Helper_List_Table_Rule_Url_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php";
 	$overrides['MS_Model_Communication_After_Finishes'] =  "app/model/communication/class-ms-model-communication-after-finishes.php";
 	$overrides['MS_Model_Communication_After_Payment_Made'] =  "app/model/communication/class-ms-model-communication-after-payment-made.php";
@@ -113,7 +115,8 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Gateway_Paypal_Single'] =  "app/model/gateway/class-ms-model-gateway-paypal-single.php";
 	$overrides['MS_Model_Gateway_Paypal_Standard'] =  "app/model/gateway/class-ms-model-gateway-paypal-standard.php";
-	$overrides['MS_Model_Rule_Post_Category'] = "app/model/rule/class-ms-model-rule-post-category.php";
+	$overrides['MS_Model_Rule_Custom_Post_Type'] = "app/model/rule/class-ms-model-rule-custom-post-type.php";
+	$overrides['MS_Model_Rule_Custom_Post_Type_Group'] = "app/model/rule/class-ms-model-rule-custom-post-type-group.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] =  "app/view/class-ms-view-admin-bar.php";

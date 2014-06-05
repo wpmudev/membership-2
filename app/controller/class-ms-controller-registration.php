@@ -46,7 +46,7 @@ class MS_Controller_Registration extends MS_Controller {
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		$this->add_filter( 'the_content', 'check_for_membership_pages_content', 1 );
 // 		$this->add_action( 'the_posts', 'process_actions', 1 );
-		MS_Helper_Debug::log( __( 'Initialise front-end registration...', MS_TEXT_DOMAIN ) );					
+// 		MS_Helper_Debug::log( __( 'Initialise front-end registration...', MS_TEXT_DOMAIN ) );					
 	}
 
 	/**

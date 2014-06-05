@@ -2,10 +2,6 @@
 
 class MS_View_Membership_Edit extends MS_View {
 
-	const MEMBERSHIP_SAVE_NONCE = 'membership_save_nonce';
-	const DRIPPED_NONCE = 'dripped_nonce';
-	const URL_GROUP_NONCE = 'url_group_save_nonce';
-	
 	const MEMBERSHIP_SECTION = 'membership_section';
 	const DRIPPED_SECTION = 'item';
 	
@@ -13,70 +9,14 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	protected $model;
 	
-	protected $section;
-	
 	protected $title;
 	
-	protected $post_by_post_option;
+	protected $data;
 	
 	public function to_html() {
-		$tabs = array(
-				'general' => array(
-						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $this->model->id,
-				),
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=page&membership_id=' . $this->model->id,
-				),
-				'category' => array(
-						'title' => __( 'Categories', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=category&membership_id=' . $this->model->id,
-				),
-				'post' => array(
-						'title' => __( 'Post by post', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=post&membership_id=' . $this->model->id,
-				),
-				'comment' => array(
-						'title' => __( 'Comments', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=comment&membership_id=' . $this->model->id,
-				),
-				'media' => array(
-						'title' => __( 'Media', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=media&membership_id=' . $this->model->id,
-				),
-				'menu' => array(
-						'title' => __( 'Menus', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=menu&membership_id=' . $this->model->id,
-				),
-				'shortcode' => array(
-						'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=shortcode&membership_id=' . $this->model->id,
-				),
-				'urlgroup' => array(
-						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=urlgroup&membership_id=' . $this->model->id,
-				),
-				'dripped' => array(
-						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=dripped&membership_id=' . $this->model->id,
-				),
-			);
-		/**
-		 * Just general tab in the first access.
-		 */
-		if( ! $this->model->id ){
-			$tabs = array( 'general' => $tabs['general'] );
-		}
-		/**
-		 * Enable / Disable post by post tab
-		 */
-		if( $this->post_by_post_option ) {
-			unset( $tabs['category'] );
-		}
-		else {
-			unset( $tabs['post'] );
-		}
+		$membership_id = $this->data['membership']->id;
+		
+		$tabs = $this->data['tabs'];
 		ob_start();
 		
 		$this->title = __( 'Create New Membership', MS_TEXT_DOMAIN );
@@ -88,16 +28,16 @@ class MS_View_Membership_Edit extends MS_View {
 		}
 		/** Render tabbed interface. */
 		?>
-		<div class='ms-wrap'>
-		<h1 class='ms-settings-title'><?php echo $this->title; ?></h1>		
-
-		<?php
-		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+		<div class='ms-wrap wrap'>
+			<h2 class='ms-settings-title'><?php echo $this->title; ?></h2>		
 	
-		/** Call the appropriate form to render. */		
-		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
-
-		?>
+			<?php
+				$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+			
+				/** Call the appropriate form to render. */		
+				call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
+	
+			?>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -109,9 +49,10 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
-			<h2><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h2>
+			<h3><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h3>
 			<form class="ms-form" action="" method="post">
-				<?php wp_nonce_field( self::MEMBERSHIP_SAVE_NONCE, self::MEMBERSHIP_SAVE_NONCE ); ?>
+				<?php wp_nonce_field( $this->data['action'] ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
 				<table class="form-table">
 					<tbody>
 						<tr>
@@ -323,6 +264,11 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->model->id,
 				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->data['action'],
+				),
 	
 		);
 	}
@@ -335,7 +281,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -354,7 +300,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Category access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Category access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -376,7 +322,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Post by post access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Post by post access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -395,7 +341,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Comments access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Comments access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -414,7 +360,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Menu access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Menu access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -433,7 +379,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Media access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Media access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -443,6 +389,7 @@ class MS_View_Membership_Edit extends MS_View {
 		$html = ob_get_clean();
 		echo $html;	
 	}
+	
 	public function render_shortcode() {
 		$model = $this->model->rules['shortcode'];
 		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $model );
@@ -451,7 +398,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
-			<h2><?php echo __( 'Shortcode access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+			<h3><?php echo __( 'Shortcode access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
@@ -462,18 +409,55 @@ class MS_View_Membership_Edit extends MS_View {
 		echo $html;	
 	}
 	
+	public function render_cpt() {
+		$model = $this->model->get_rule( 'cpt' );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $model );
+		$rule_list_table->prepare_items();
+	
+		ob_start();
+		?>
+		<div class='ms-settings'>
+			<h3><?php echo __( 'Custom Post Type access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+			</form>
+		</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
+	
+	public function render_cpt_group() {
+		$model = $this->model->get_rule( 'cpt_group' );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group( $model );
+		$rule_list_table->prepare_items();
+	
+		ob_start();
+		?>
+		<div class='ms-settings'>
+			<h3><?php echo __( 'Custom Post Type Group access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+			</form>
+		</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+	}
 	public function render_urlgroup() {
 		$this->prepare_urlgroup();
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<div class="metabox-holder">
 					<div class="postbox">
 					<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Edit URL group', MS_TEXT_DOMAIN ) ?></h3>
 						<div class="inside">
 							<form action="" method="post" class="ms-form">
-								<?php wp_nonce_field( self::URL_GROUP_NONCE ); ?>
+								<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 								<table class="form-table">
 									<tbody>
 										<?php foreach( $this->fields as $field ): ?>
@@ -542,11 +526,11 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => $model->is_regex,
 				),
-// 				'action' => array(
-// 						'id' => 'action',
-// 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-// 						'value' => $this->data['action'],
-// 				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'save_url_group',
+				),
 				'membership_id' => array(
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -558,7 +542,6 @@ class MS_View_Membership_Edit extends MS_View {
 	public function render_dripped() {
 		$model = array(
 			'post' => $this->model->rules['post'],
-			'category'	=> $this->model->rules['category'],
 			'page'	=> $this->model->rules['page'],
 		);
 		$this->prepare_dripped( $model );
@@ -569,11 +552,12 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Dripped content for ', MS_TEXT_DOMAIN ) . $this->title; ?></h2>
+				<h3><?php echo __( 'Dripped content for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
-					<?php wp_nonce_field( self::DRIPPED_NONCE, self::DRIPPED_NONCE ); ?>
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['membership_copy'] );?>
+					<?php MS_Helper_Html::html_input( $this->fields['action'] );?>	
 					<?php MS_Helper_Html::html_submit( $this->fields['copy_dripped'] );?>
 				</form>
 				<form id="add_form">
@@ -612,7 +596,6 @@ class MS_View_Membership_Edit extends MS_View {
 				</form>
 				<form action="" method="post">
 					<?php MS_Helper_Html::html_input( $this->fields['membership_id'] );?>
-					<?php //MS_Helper_Html::html_input( $this->fields['action'] );?>	
 					<?php $rule_list_table->display(); ?>
 					<?php MS_Helper_Html::html_submit( $this->fields['dripped_submit'] );?>
 				</form>
@@ -708,7 +691,7 @@ class MS_View_Membership_Edit extends MS_View {
 				'action' => array(
 						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'dripped',
+						'value' => 'save_dripped',
 				),
 				'dripped_submit' => array(
 						'id' => 'dripped_submit',

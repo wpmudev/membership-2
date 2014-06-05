@@ -196,7 +196,7 @@ class MS_Model_Plugin extends MS_Model {
 	private function get_rules_hierarchy( $membership ) {
 		$rule_types = MS_Model_Rule::get_rule_types();
 		foreach( $rule_types as $rule_type ) {
-			$rules[ $rule_type ] = $membership->rules[ $rule_type ];
+			$rules[ $rule_type ] = $membership->get_rule( $rule_type );
 		}
 		return apply_filters( 'ms_model_plugin_get_rules_hierarchy', $rules );
 	}

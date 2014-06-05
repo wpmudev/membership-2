@@ -35,6 +35,10 @@ class MS_Model_Rule extends MS_Model {
 	
 	const RULE_TYPE_POST = 'post';
 	
+	const RULE_TYPE_CUSTOM_POST_TYPE = 'cpt';
+	
+	const RULE_TYPE_CUSTOM_POST_TYPE_GROUP = 'cpt_group';
+	
 	const RULE_TYPE_SHORTCODE = 'shortcode';
 	
 	const RULE_TYPE_URL_GROUP = 'url_group';
@@ -131,7 +135,9 @@ class MS_Model_Rule extends MS_Model {
 	public static function get_rule_types() {
 		return apply_filters( 'ms_model_rule_get_rule_types', array(
 				self::RULE_TYPE_POST,
-				self::RULE_TYPE_CATEGORY, 
+				self::RULE_TYPE_CATEGORY,
+				self::RULE_TYPE_CUSTOM_POST_TYPE,
+				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
 				self::RULE_TYPE_PAGE,
 				self::RULE_TYPE_MENU,
 				self::RULE_TYPE_SHORTCODE,
@@ -152,6 +158,8 @@ class MS_Model_Rule extends MS_Model {
 		 return apply_filters( 'ms_model_rule_get_rule_type_classes', array(
 				self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
 				self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
+		 		self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_Custom_Post_Type',
+		 		self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Model_Rule_Custom_Post_Type_Group',
 				self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
 				self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
 				self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
@@ -172,6 +180,8 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type Group', MS_TEXT_DOMAIN ),
 			)
 		);
 	}
@@ -179,7 +189,6 @@ class MS_Model_Rule extends MS_Model {
 	public static function rule_factory( $rule_type ) {
 		if( self::is_valid_rule_type( $rule_type ) ) {
 			$rule_types = self::get_rule_type_classes();
-			
 			return apply_filters( 'ms_model_rule_rule_factory', new $rule_types[ $rule_type ]() );
 		}
 		else {

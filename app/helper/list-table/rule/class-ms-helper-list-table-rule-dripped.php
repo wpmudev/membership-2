@@ -63,9 +63,8 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 		
 		$posts = apply_filters( "membership_helper_list_table_rule_post_items", $this->model['post']->get_content( $args ) );
 		$pages = apply_filters( "membership_helper_list_table_rule_page_items", $this->model['page']->get_content( $args ) );
-		$categories = apply_filters( "membership_helper_list_table_rule_category_items", $this->model['category']->get_content( $args ) );
 		
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", array_merge( $posts, $pages, $categories ) );
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", array_merge( $posts, $pages ) );
 	
 // 		$this->set_pagination_args( array(
 // 				'total_items' => $total_items,

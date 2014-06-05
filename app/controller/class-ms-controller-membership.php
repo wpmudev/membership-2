@@ -61,6 +61,16 @@ class MS_Controller_Membership extends MS_Controller {
 	private $views;
 	
 	/**
+	 * The current active tab in the vertical navigation.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $active_tab
+	 */
+	private $active_tab;
+	
+	
+	/**
 	 * Prepare the Membership manager.
 	 *
 	 * @since 4.0.0
@@ -77,48 +87,16 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );		
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
-		
 	}
 	
 	/**
 	 * Show admin notices.
 	 * 
-	 * @todo Improve messaging, hooking into admin_notices or create a html_helper method
-	 *
 	 * @since 4.0.0
 	 *
-	 * @param int $msg
 	 */
-	public function print_admin_message( $msg = 0 ) {
-		
-		if( empty( $msg ) ) {
-			$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
-		} 
-		
-		// TODO: We could always create an /app/ level class that only specifies contants (almost like enums)
-		//       E.g. MS_Constant::MEMBERSHIP_MSG_ADDED, MS_Constant::MEMBERSHIP_MSG_DELETED
-		//       Then below,  
-		//       MS_Contant::MEMBERSHIP_MSG_ADDED => __( 'Membership added.', MS_TEXT_DOMAIN ),
-		//       MS_Constant::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
-		//      
-		//       Then we can reuse these constants elsewhere.
-		$messages = array(
-				1 => __( 'Membership added.', MS_TEXT_DOMAIN ),
-				2 => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
-				3 => __( 'Membership updated.', MS_TEXT_DOMAIN ),
-				4 => __( 'Membership not added.', MS_TEXT_DOMAIN ),
-				5 => __( 'Membership not updated.', MS_TEXT_DOMAIN ),
-				6 => __( 'Membership not deleted.', MS_TEXT_DOMAIN ),
-				7 => __( 'Membership activation toggled.', MS_TEXT_DOMAIN ),
-				8 => __( 'Membership activation not toggled.', MS_TEXT_DOMAIN ),
-				9 => __( 'Membership status toggled.', MS_TEXT_DOMAIN ),
-				10 => __( 'Membership status not toggled.', MS_TEXT_DOMAIN ),
-				11 => __( 'Memberships updated.', MS_TEXT_DOMAIN ),
-		);
-		
-		if ( array_key_exists( $msg, $messages ) ) {
-			echo '<div id="message" class="updated fade"><p>' . $messages[ $msg ] . '</p></div>';
-		}
+	public function print_admin_message() {
+		add_action( 'admin_notices', array( 'MS_Helper_Membership', 'print_admin_message' ) );
 	}
 	
 	/**
@@ -129,8 +107,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function admin_membership_list_manager() {
+		$this->print_admin_message();
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
 			$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'membership_id', 'action', '_wpnonce' ) ) ) ) ;
 		}
@@ -139,8 +118,6 @@ class MS_Controller_Membership extends MS_Controller {
 			$msg = $this->membership_list_do_action( $action, $_POST['membership_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) );
 		}
-		
-		$this->print_admin_message( $msg );
 	}
 	/**
 	 * Execute action in Membership model.
@@ -153,7 +130,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */	
 	private function membership_list_do_action( $action, $membership_ids ) {
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		}
 		
 		$msg = 0;
@@ -163,20 +140,20 @@ class MS_Controller_Membership extends MS_Controller {
 				case 'toggle_activation':
 					$membership->active = ! $membership->active;
 					$membership->save();
-					$msg = 7;
+					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ACTIVATION_TOGGLED;
 					break;
 				case 'toggle_public':
 					$membership->public = ! $membership->public;
 					$membership->save();
-					$msg = 9;
+					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_STATUS_TOGGLED;
 					break;
 				case 'delete':
 					try{
 						$membership->delete();
-						$msg = 2;
+						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DELETED;
 					}
 					catch( Exception $e ) {
-						$msg = 6;
+						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_DELETED;
 					}
 					break;
 			}
@@ -205,41 +182,43 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_edit_manager() {
+		$this->print_admin_message();
+
+		$this->active_tab = $this->get_active_tab();
 		$msg = 0;
 		/**
 		 * Save membership general tab
 		 */
-		$nonce = MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE;
-		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['action'] ) && 
+			! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
 			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
 			if( ! empty( $_POST[ $section ] ) ) {
 				$msg = $this->save_membership( $_POST[ $section ] );
 			}
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
 		 * Copy membership dripped schedule
 		 */
-		elseif( ! empty( $_POST['copy_dripped'] ) ) {
-			$nonce = MS_View_Membership_Edit::DRIPPED_NONCE;
-			if ( ! empty( $_POST['membership_copy'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-				$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
-				wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
-			}
+		elseif( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && ! empty( $_POST['_wpnonce'] ) && 
+					! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
 		 * Save membership dripped schedule
 		 */
-		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['membership_id'] ) 
-				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
+		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['membership_id'] ) &&
+				! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null; 
-			$this->save_dripped_schedule( $items );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			$msg = $this->save_dripped_schedule( $items );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
 		 * Rule single action 
 		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE ) ) {
+		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && 
+				! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
 		}
@@ -249,16 +228,16 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
 		/**
 		 * Save url group add/edit
 		 */
-		elseif ( ! empty( $_POST['url_group_submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], MS_View_Membership_Edit::URL_GROUP_NONCE ) ) {
+		elseif ( ! empty( $_POST['url_group_submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && 
+				! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
 			$msg = $this->save_url_group( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
 		}
-		$this->print_admin_message( $msg );
 		
 	}
 
@@ -269,14 +248,129 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function membership_edit() {
 		$msg = 0;
-		$this->views['membership_edit'] = apply_filters( 'membership_membership_edit_view', new MS_View_Membership_Edit() );
+		$this->views['membership_edit'] = apply_filters( 'ms_view_membership_edit', new MS_View_Membership_Edit() );
+		
+		$data['membership'] = $this->model;
+		$data['tabs'] = $this->get_tabs();
+		$data['action'] = 'save_membership';
+		
+		$this->views['membership_edit']->data = $data;
 		
 		$this->views['membership_edit']->model = $this->model;
 		
-		$this->views['membership_edit']->post_by_post_option = apply_filters( 'membership_addon_post_by_post', MS_Plugin::instance()->addon->post_by_post );
-		
-		$this->print_admin_message( $msg );
 		$this->views['membership_edit']->render();
+	}
+	
+	/**
+	 * Get available tabs for editing the membership.
+	 *  
+	 * @return array The tabs configuration.
+	 */
+	public function get_tabs() {
+		$membership_id = $this->model->id;
+		
+		$tabs = array(
+				'general' => array(
+						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=general&membership_id=' . $membership_id,
+				),
+				'page' => array(
+						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=page&membership_id=' . $membership_id,
+				),
+				'category' => array(
+						'title' => __( 'Categories', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=category&membership_id=' . $membership_id,
+				),
+				'post' => array(
+						'title' => __( 'Post by post', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=post&membership_id=' . $membership_id,
+				),
+				'comment' => array(
+						'title' => __( 'Comments', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=comment&membership_id=' . $membership_id,
+				),
+				'media' => array(
+						'title' => __( 'Media', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=media&membership_id=' . $membership_id,
+				),
+				'menu' => array(
+						'title' => __( 'Menus', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=menu&membership_id=' . $membership_id,
+				),
+				'shortcode' => array(
+						'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=shortcode&membership_id=' . $membership_id,
+				),
+				'cpt' => array(
+						'title' => __( 'Post Types', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=cpt&membership_id=' . $membership_id,
+				),
+				'cpt_group' => array(
+						'title' => __( 'Post Type Groups', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=cpt_group&membership_id=' . $membership_id,
+				),
+				'urlgroup' => array(
+						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=urlgroup&membership_id=' . $membership_id,
+				),
+				'dripped' => array(
+						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=dripped&membership_id=' . $membership_id,
+				),
+		);
+		/**
+		 * Just general tab in the first access.
+		 */
+		if( ! $membership_id ){
+			$tabs = array( 'general' => $tabs['general'] );
+		}
+		/**
+		 * Enable / Disable post by post tab
+		 */
+		if( apply_filters( 'ms_addon_post_by_post', MS_Plugin::instance()->addon->post_by_post ) ) {
+			unset( $tabs['category'] );
+		}
+		else {
+			unset( $tabs['post'] );
+		}
+		/**
+		 * Enable / Disable cpt post by post tab
+		 */
+		if( apply_filters( 'ms_addon_cpt_post_by_post', MS_Plugin::instance()->addon->cpt_post_by_post ) ) {
+			unset( $tabs['cpt_group'] );
+		}
+		else {
+			unset( $tabs['cpt'] );
+		}
+		/**
+		 * Disable urlgroup tab
+		 */
+		if( ! apply_filters( 'ms_addon_url_groups', MS_Plugin::instance()->addon->url_groups ) ) {
+			unset( $tabs['urlgroup'] );
+		}
+
+		return apply_filters( 'ms_controller_membership_get_tabs', $tabs );
+	}
+	
+	/**
+	 * Get the current active settings page/tab.
+	 *
+	 * @since 4.0.0
+	 */
+	public function get_active_tab() {
+		$tabs = $this->get_tabs();
+		
+		reset( $tabs );
+		$first_key = key( $tabs );
+	
+		/** Setup navigation tabs. */
+		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		if ( ! array_key_exists( $active_tab, $tabs ) ) {
+			$active_tab = $first_key;
+			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
+		}
+		return $this->active_tab = apply_filters( 'ms_helper_membership_get_active_tab', $active_tab );
 	}
 	
 	/**
@@ -289,18 +383,26 @@ class MS_Controller_Membership extends MS_Controller {
 	private function save_membership( $fields ) {
 		
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		}
 
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if( is_array( $fields ) ) {
 			foreach( $fields as $field => $value ) {
-				if( property_exists( $this->model, $field ) ) {
-					$this->model->$field = $value;  
+				try {
+					$this->model->$field = $value;
+				} 
+				catch (Exception $e) {
+					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_PARTIALLY_UPDATED;					  
 				}
 			}
 			$this->model->trial_period_enabled = ! empty( $fields['trial_period_enabled'] );
 			$this->model->save();
+			if( empty( $msg ) ) {
+				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+			}
 		}
+		return $msg;
 	}
 		
 	/**
@@ -314,28 +416,27 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	private function rule_list_do_action( $action, $items ) {
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		}
 		$msg = 0;
-		$rule_type = ! empty( $_GET['tab'] ) ? $_GET['tab'] : '';
-		if( array_key_exists( $rule_type, $this->model->rules ) ) {
-			$rule = $this->model->rules[ $rule_type ];
-			$rule_value = $rule->rule_value;
+		$rule_type = $this->active_tab;
+		$rule = $this->model->get_rule( $rule_type );
+		$rule_value = $rule->rule_value;
 
-			foreach( $items as $item ) {
-				switch( $action ) {
-					case 'give_access':
-						$rule_value[ $item ] = $item;
-						break;
-					case 'no_access':
-						unset( $rule_value[ $item ] );
-						break;
-				}
+		foreach( $items as $item ) {
+			switch( $action ) {
+				case 'give_access':
+					$rule_value[ $item ] = $item;
+					break;
+				case 'no_access':
+					unset( $rule_value[ $item ] );
+					break;
 			}
-			$rule->rule_value = $rule_value;
-			$this->model->set_rule( $rule_type, $rule );
-			$this->model->save();
 		}
+		$rule->rule_value = $rule_value;
+		$this->model->set_rule( $rule_type, $rule );
+		$this->model->save();
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		return $msg;
 	}
 	
@@ -347,17 +448,22 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @param int $copy_from_id The Membership ID to copy from.
 	 */	
 	private function copy_dripped_schedule( $copy_from_id ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
-		
+
 		$src_membership = MS_Model_Membership::load( $copy_from_id );
-		
-		$rule_types = array( 'post', 'page', 'category' ); 
-		foreach( $rule_types as $rule_type) {
-			$this->model->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
-		}
-		$this->model->save();
+		if( $src_membership->id > 0 ) {
+				
+			$rule_types = array( 'post', 'page' ); 
+			foreach( $rule_types as $rule_type) {
+				$this->model->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
+			}
+			$this->model->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_COPIED;
+		}		
+		return $msg;
 	}
 	
 	/**
@@ -368,10 +474,14 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @param mixed[] $items The item ids which action will be taken.
 	 */	
 	private function save_dripped_schedule( $items ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+		
 		$dripped = array(
 			'post' => array(),
 			'page' => array(),
-			'category' => array(),
 		);
 		
 		if( is_array( $items ) ) {
@@ -391,24 +501,38 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		
 		$this->model->save();
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		return $msg;
 	}
 	
+	/**
+	 * Save Url Groups tab.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $copy_from_id The Membership ID to copy from.
+	 */
 	private function save_url_group( $fields ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
+		
 		if( is_array( $fields ) ) {
 			$rule_type = 'url_group';
-			$rule = $this->model->rules[ $rule_type ];
+			$rule = $this->model->get_rule( $rule_type );
  
 			foreach( $fields as $field => $value ) {
 				$rule->$field = $value;
 			}
 			$this->model->set_rule( $rule_type, $rule );
 			$this->model->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
+		return $msg;
 		
 	}
+	
 	/**
 	 * Load Membership manager specific styles.
 	 *
@@ -421,13 +545,11 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
 		
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
-		
-		if( 'general' == $active_tab ) {
+		if( 'general' == $this->active_tab ) {
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'chosen-jquery' );
 		}
-		elseif( 'dripped' == $active_tab ) {
+		elseif( 'dripped' == $this->active_tab ) {
 			wp_enqueue_style( 'chosen-jquery' );
 		}
 		wp_enqueue_style( 'ms_membership_view_edit', $plugin_url. 'app/assets/css/ms-view-membership-edit.css', null, $version );
@@ -446,21 +568,19 @@ class MS_Controller_Membership extends MS_Controller {
 		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
 		wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
-		
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
-		
-		if( 'general' == $active_tab ) {
+				
+		if( 'general' == $this->active_tab ) {
 			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', array( 'jquery' ), $version );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
 		}
-		elseif( 'dripped' == $active_tab ) {
+		elseif( 'dripped' == $this->active_tab ) {
 			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', array( 'jquery' ), $version );
 			wp_enqueue_script( 'jquery-tmpl' );
 			wp_enqueue_script( 'jquery-chosen' );
 			wp_enqueue_script( 'jquery-validate' );
 		}	
-		elseif( 'urlgroup' == $active_tab ) {
+		elseif( 'urlgroup' == $this->active_tab ) {
 			wp_register_script( 'ms-view-membership-render-url-group', $plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', array( 'jquery' ), $version );
 			wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array( 
 				'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),

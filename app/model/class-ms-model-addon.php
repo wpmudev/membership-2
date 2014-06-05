@@ -33,9 +33,12 @@ class MS_Model_Addon extends MS_Model_Option {
 	
 	protected $post_by_post = false;
 	
+	protected $url_groups = false;
+	
+	protected $cpt_post_by_post = false;
 	
 	public function get_addon_list() {
-		return array( 
+		return apply_filters( 'ms_model_addon_get_addon_list', array( 
 				'multiple_membership' => (object) array(
 					'id' => 'multiple_membership',
 					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ), 	
@@ -48,6 +51,19 @@ class MS_Model_Addon extends MS_Model_Option {
 					'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
 					'active' => $this->post_by_post,
 				),
+				'url_groups' => (object) array(
+					'id' => 'url_groups',
+					'name' => __( 'Url Groups', MS_TEXT_DOMAIN ),
+					'description' => __( 'Enable Url Groups protection.', MS_TEXT_DOMAIN ),
+					'active' => $this->url_groups,
+				),
+				'cpt_post_by_post' => (object) array(
+					'id' => 'cpt_post_by_post',
+					'name' => __( 'Custom Post Type - Post by post', MS_TEXT_DOMAIN ),
+					'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
+					'active' => $this->cpt_post_by_post,
+				),
+			)
 		);
 	}
 }

@@ -115,7 +115,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 						$_REQUEST['membership_id'],
 						$item->id,
 						$action  
-				), MS_View_Membership_Edit::MEMBERSHIP_SAVE_NONCE );
+				), 
+				$action
+		);
 		?>
 			<div class="ms-radio-slider <?php echo 1 == $item->access ? 'on' : ''; ?>">
 			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
