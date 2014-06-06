@@ -307,7 +307,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load(), $this );
+		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load(), $this );		
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );

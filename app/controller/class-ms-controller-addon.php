@@ -75,9 +75,27 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
+		/**
+		 * Actions to execute when the Addon controller construction starts.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Controller_Addon object.
+		 */
+		do_action( 'membership_addon_controller_construct_pre_processing', $this );
+		
 		/** Load the add-on manager model. */
 		$this->add_action( 'load-membership_page_membership-addons', 'membership_addon_manager' );
-		$this->model = apply_filters( 'membership_addon_model', MS_Plugin::instance()->addon );
+		
+		/**
+		 * Reference the Addon model.
+		 *
+		 * **Note:**  
+		 * Already filtered in main plugin instance using 'membership_model_addon'.
+		 *
+		 * @uses Filter: 'membership_model_addon'
+		 * @since 4.0.0
+		 */		
+		$this->model = MS_Plugin::instance()->addon;
 
 		/** Enqueue scripts and styles. */
 		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );
@@ -92,15 +110,73 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_addon_manager() {
+		
+		// Get the server request method to use.
+		$request_method = 'POST' === $_SERVER['REQUEST_METHOD'] ? 'POST' : 'GET';
+		// Get the relevant $_REQUEST variable.
+		$request_fields = 'POST' == $request_method ? $_POST : $_GET; 
+
+		/**
+		 * Hook into the Addon reguest handler before processing.
+		 *
+		 * **Note:**  
+		 * This action uses the "raw" request objects which could lead to SQL injections / XSS.
+		 * By hooking this action you need to take **responsibility** for filtering user input.
+		 *
+		 * @since 4.0.0  
+		 * @param mixed[] $request_fields The relevant $_REQUEST variable.
+		 * @param string $request_method Reuest method to handle - 'POST' or 'GET'.
+		 * @param object $this The MS_Controller_Addon object.
+		 */
+		do_action( 'membership_addon_manager_request_handler', $request_fields, $request_method, $this );		
+		
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['addon'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
-			$msg = $this->save_addon( $_GET['action'], array( $_GET['addon'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'addon', 'action', '_wpnonce' ) ) ) ) ;
-		}
-		elseif( ! empty( $_POST['addon'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-addons' ) ) {
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->save_addon( $action, $_POST['addon'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+		switch ( $request_method ) {
+			case 'GET':
+
+					/**
+					 * Hook into the Addon GET handler.
+					 *
+					 * **Note:**  
+					 * This action uses the "raw" GET input which could lead to SQL injections / XSS.
+					 * By hooking this action you need to take **responsibility** for filtering user input.
+					 *
+					 * @since 4.0.0  
+					 * @param mixed[] $request_fields The relevant $_GET variable.
+					 * @param object $this The MS_Controller_Addon object.
+					 */
+					do_action( 'membership_addon_manager_get_handler', $request_fields, $this );
+					
+					if( ! empty( $request_fields['action'] ) && ! empty( $request_fields['addon'] ) && ! empty( $request_fields['_wpnonce'] ) && wp_verify_nonce( $request_fields['_wpnonce'] ) ) {
+						$msg = $this->save_addon( $request_fields['action'], array( $request_fields['addon'] ) );
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'addon', 'action', '_wpnonce' ) ) ) ) ;
+					}
+				break;
+			
+			case 'POST':
+			
+					/**
+					 * Hook into the Addon POST handler.
+					 *
+					 * **Note:**  
+					 * This action uses the "raw" POST input which could lead to SQL injections / XSS.
+					 * By hooking this action you need to take **responsibility** for filtering user input.
+					 *
+					 * @since 4.0.0  
+					 * @param mixed[] $request_fields The relevant $_POST variable.
+					 * @param object $this The MS_Controller_Addon object.
+					 */
+					do_action( 'membership_addon_manager_post_handler', $request_fields, $this );			
+					
+					if( ! empty( $request_fields['addon'] ) && ! empty( $request_fields['_wpnonce'] ) && wp_verify_nonce( $request_fields['_wpnonce'], 'bulk-addons' ) ) {
+						$action = $request_fields['action'] != -1 ? $request_fields['action'] : $request_fields['action2'];
+						$msg = $this->save_addon( $action, $request_fields['addon'] );
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+					}
+				break;			
+			default:
+					die( __( 'Something very odd happened.', MS_TEXT_DOMAIN ) );
+				break;
 		}
 	}
 
@@ -111,7 +187,14 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function admin_addon() {
-		$this->views['addon'] = apply_filters( 'membership_addon_view', new MS_View_Addon() );
+
+		/**
+		 * Create / Filter the Addon admin view.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Controller_Addon object.
+		 */
+		$this->views['addon'] = apply_filters( 'membership_addon_view', new MS_View_Addon(), $this );
 		$this->views['addon']->model = $this->model;
 		$this->views['addon']->render();
 	}
