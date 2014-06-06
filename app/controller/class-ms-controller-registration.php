@@ -40,13 +40,43 @@ class MS_Controller_Registration extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
+
+		/**
+		 * Actions to execute when the Registration controller construction starts.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Controller_Addon object.
+		 */
+		do_action( 'membership_registration_controller_construct_pre_processing', $this );
+		
 		$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
 		$this->add_filter( 'register_url', 'signup_location', 999 );
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		$this->add_filter( 'the_content', 'check_for_membership_pages_content', 1 );
-// 		$this->add_action( 'the_posts', 'process_actions', 1 );
-// 		MS_Helper_Debug::log( __( 'Initialise front-end registration...', MS_TEXT_DOMAIN ) );					
+		
+		// Make sure that the registration shortcode form includes the nonce
+		$this->add_filter( 'ms_controller_shortcode_membership_register_user_atts', 'add_registration_nonce' );
+
+		// $this->add_action( 'the_posts', 'process_actions', 1 );
+
+	}
+	
+	
+	/**
+	 * Make sure that the nonce is added to the registration form shortcode.
+	 *
+	 * **Hooks Actions: **  
+	 *  
+	 * * ms_controller_shortcode_membership_register_user_atts
+	 *
+	 * @todo Decide if we will use the nonce from the signup form. If not, then remove the hook (above too).
+	 * @since 4.0.0
+	 * @param mixed[] $args Argument array for the shortcode.
+	 */	
+	function add_registration_nonce( $args ) {
+		$args['_wpnonce'] = ! empty( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
+	    return $args;
 	}
 
 	/**
@@ -76,8 +106,8 @@ class MS_Controller_Registration extends MS_Controller {
 		 *
 		 */
 		if( ! empty($action) && method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+			MS_Helper_Debug::log( 'action: ' . $action );		
 			$this->$action();
-			// MS_Helper_Debug::log( 'action: ' . $action );								
 		} 
 	}
 
@@ -98,7 +128,9 @@ class MS_Controller_Registration extends MS_Controller {
 		if( ! empty( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] ) ) {
 			$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] );
 		}
-
+		
+		MS_Helper_Debug::log( __( "signup_location: {$url}", MS_TEXT_DOMAIN ) );
+		
 		return apply_filters( 'ms_controller_registration_signup_location', $url );
 	}
 
@@ -121,20 +153,26 @@ class MS_Controller_Registration extends MS_Controller {
 	 */
 	public function check_for_membership_pages_content( $content ) {
 		global $post;
-		
+	
 		$settings = MS_Plugin::instance()->settings;
 		
 		if ( empty( $post ) || $post->post_type != 'page' ) {
 			return $content;
 		}
 		
-		if ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_REGISTER ) ) {
+		MS_Helper_Debug::log( 'Check for membership pages content.' );								
 		
-			// check if page contains a shortcode
-			// if ( strpos( $content, '[ms-membership-register-user' ) === false ) {
+		// If we are on the registration page....
+		if ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_REGISTER ) ) {
+			MS_Helper_Debug::log( 'We are on the registration page.' );
+
+			// check if page contains 'ms-membership-register-user' shortcode
 			if ( ! MS_Helper_Shortcode::has_shortcode( 'ms-membership-register-user', $content ) ) {
+				MS_Helper_Debug::log( 'NOT using "ms-membership-register-user" shortcode.' );
+				
 				// There is no shortcode content in there, so override
 				if( ! empty( $_REQUEST['action'] ) ) {
+					MS_Helper_Debug::log( 'There is "action".' );
 					remove_filter( 'the_content', 'wpautop' );
 					$membership_id = 0;
 					if( ! empty( $_REQUEST['membership'] ) ) {
@@ -144,15 +182,19 @@ class MS_Controller_Registration extends MS_Controller {
 					$email = ! empty( $_POST['user_email'] ) ? $_POST['user_email'] : '';
 					$first_name = ! empty( $_POST['first_name'] ) ? $_POST['first_name'] : '';
 					$last_name = ! empty( $_POST['last_name'] ) ? $_POST['last_name'] : '';
+					$_wpnonce = ! empty( $_POST['_wpnonce'] ) ? $_POST['_wpnonce'] : '';
 					
-					$content .= do_shortcode( "[ms-membership-register-user membership_id='$membership_id' email='$email' username='$username' first_name='$first_name' last_name='$last_name' errors='$this->register_errors']" );
+					MS_Helper_Debug::log( 'Just loaded up user registration fields and adding a shortcode.' );
+					$content .= do_shortcode( "[ms-membership-register-user membership_id='$membership_id' email='$email' username='$username' first_name='$first_name' last_name='$last_name' _wpnonce='$_wpnonce' errors='$this->register_errors']" );
 				}
 				else {
+					MS_Helper_Debug::log( 'There was NO "action", now call the signup shortcode.' );
 					remove_filter( 'the_content', 'wpautop' );
 					$content .= do_shortcode( '[ms-membership-signup]' );
 				}
 			}
 		}
+		// If we are on the accounts page....
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) ) {
 			// account page - check if page contains a shortcode
 			// if ( strpos( $content, '[ms-membership-account]' ) !== false || 
@@ -168,6 +210,7 @@ class MS_Controller_Registration extends MS_Controller {
 			remove_filter( 'the_content', 'wpautop' );
 			$content .= do_shortcode( '[ms-membership-account]' );
 		} 
+		// If we are on the memberships page....
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ) {
 			// account page - check if page contains a shortcode
 			// if ( strpos( $content, '[ms-membership-upgrade]' ) !== false || strpos( $content, '[ms-memberhship-renew]' ) !== false ) {
@@ -197,10 +240,17 @@ class MS_Controller_Registration extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_signup() {
+		MS_Helper_Debug::log( 'About to signup...' );
+		
 		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
+			MS_Helper_Debug::log( '**: User logged in...' );
 			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
-			if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
+			
+			// What is this $_POST['membership_signup']?
+			// if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
+			if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
 				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+				MS_Helper_Debug::log( '**: Gateway stuff... something is odd here...' );
 				$gateway_id = $_POST['gateway'];
 				$membership_id = $_POST['membership_id'];
 				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
@@ -217,6 +267,7 @@ class MS_Controller_Registration extends MS_Controller {
 				}
 			}
 			else {
+				MS_Helper_Debug::log( '**: Other stuff...' );
 				$membership_id = $_GET['membership'];
 				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 					return;
@@ -228,17 +279,20 @@ class MS_Controller_Registration extends MS_Controller {
 				 * Free gateway.
 				 */
 				if( $membership->price == 0 && ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) 
-						&& ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+										&& ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
+					MS_Helper_Debug::log( '**: Free stuff...' );		
+					MS_Helper_Debug::log( $_GET );
 					$gateway_id = 'free_gateway';
 					$gateway = MS_Model_Gateway::factory( $gateway_id );
 					$gateway->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID );
-					$url = get_permalink( MS_Plugin::instance()->settings->pages['registration_completed'] );
+					$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_WELCOME ] );
 					wp_safe_redirect( $url );
 				}
 				/**
 				 * Show payment table.
 				 */
 				else {
+					MS_Helper_Debug::log( '**: Add payment table...' );
 					$this->add_action( 'the_content', 'payment_table', 1 );
 				}
 			}	
@@ -248,12 +302,16 @@ class MS_Controller_Registration extends MS_Controller {
 	/**
 	 * Handles register_user POST action.
 	 *
+	 * @todo Fix using the nonce from the signup form, rather than creating a new nonce (if possible).
 	 * @since 4.0.0
 	 */
 	public function register_user() {
 		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
 			return;
 		}
+		
+		MS_Helper_Debug::log ( 'About to register NEW user.' );
+		MS_Helper_Debug::log ( $_POST );
 
 		try {
 			$user = new MS_Model_Member();
@@ -270,9 +328,12 @@ class MS_Controller_Registration extends MS_Controller {
 				wp_new_user_notification( $user->id, $user->password );
 			}
 			do_action( 'ms_controller_registration_register_user_complete', $this->register_errors, $user->id );
+			
 			wp_redirect( add_query_arg( array(
 				'action'       => 'membership_signup',
 				'membership' => $_POST['membership'],
+				'_wpnonce' => wp_create_nonce( 'membership_signup' ),
+				// '_wpnonce' => $_POST['_wpnonce'],
 			) ) );
 		}
 		catch( Exception $e ) {

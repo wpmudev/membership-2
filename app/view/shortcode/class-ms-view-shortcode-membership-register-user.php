@@ -87,6 +87,12 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => __( 'Register My Account', MS_TEXT_DOMAIN ),
 				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $data['_wpnonce'],
+				),
+				
 		);
 	}
 	/**

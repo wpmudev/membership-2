@@ -5,7 +5,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	protected $data;
 	
 	public function to_html() {
-		
+		MS_Helper_Debug::log( __( 'About to display the signup page...', MS_TEXT_DOMAIN ) );
 		ob_start();
 		?>
 			<div class="ms-membership-form-wrapper">
@@ -26,6 +26,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<?php
 					if( $this->data['member']->is_member() && ! empty( $this->data['memberships'] ) ) {
 						?>
+						    <?php  //***********  WE NEED TO CHANGE THIS PROCESS HERE ***************// ?>
 		 					<legend class="ms-upgrade-from"> 
 		 						<?php echo __( 'Upgrade to', MS_TEXT_DOMAIN ); ?>
 		 					</legend>

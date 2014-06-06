@@ -86,6 +86,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */	
 	public function membership_signup( $atts ) {
+		MS_Helper_Debug::log( __( 'About to run the signup shortcode...', MS_TEXT_DOMAIN ) );
 		$data = apply_filters( 
 				'ms_controller_shortcode_membership_signup_atts', 
 				shortcode_atts( 
@@ -98,18 +99,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			) 
 		);
+
+		// Get a list of all the memberships that the current user is part of
 		$args = null;
 		$data['member'] = MS_Model_Member::get_current_member();
 		$not_in = $data['member']->membership_ids;
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 
+		// Now get all the memberships excluding the ones the member is already a part of
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
 
+		// Create the signup form view
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
 		return $view->to_html();
 	}
+	
 
 	/**
 	 * Membership title shortcode callback function.  
