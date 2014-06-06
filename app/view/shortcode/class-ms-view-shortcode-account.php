@@ -21,10 +21,12 @@ class MS_View_Shortcode_Account extends MS_View {
 							<th><?php _e( 'Membership name', MS_TEXT_DOMAIN );?></th>
 							<th><?php _e( 'Membership status', MS_TEXT_DOMAIN );?></th>
 						</tr>
-						<tr>
-							<td><?php echo $this->data['membership']->name; ?></td>
-							<td><?php echo $this->data['member']->membership_relationships[ $this->data['membership']->id ]->get_status(); ?></td>
-						</tr>
+						<?php foreach( $this->data['membership'] as $membership ) :?>
+							<tr>
+								<td><?php echo $membership->name; ?></td>
+								<td><?php echo $this->data['member']->membership_relationships[ $membership->id ]->get_status(); ?></td>
+							</tr>
+						<?php endforeach;?>
 					</table>
 				<?php else: ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN );?>
@@ -43,6 +45,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							<th><?php _e( 'Invoice #', MS_TEXT_DOMAIN );?></th>
 							<th><?php _e( 'Status', MS_TEXT_DOMAIN );?></th>
 							<th><?php echo __( 'Total', MS_TEXT_DOMAIN ) . ' ('. MS_Plugin::instance()->settings->currency . ')';?></th>
+							<th><?php _e( 'Membership', MS_TEXT_DOMAIN );?></th>
 							<th><?php _e( 'Due date', MS_TEXT_DOMAIN );?></th>
 						</tr>
 					</thead>
@@ -52,6 +55,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							<td><?php echo sprintf( '<a href="%s">%s</a>', get_permalink(  $transaction->id ),  $transaction->id );?></td>
 							<td><?php echo $transaction->status;?></td>
 							<td><?php echo $transaction->total;?></td>
+							<td><?php echo MS_Model_Membership::load( $transaction->membership_id )->name;?></td>
 							<td><?php echo $transaction->due_date;?></td>
 						</tr>
 					<?php endforeach;?>

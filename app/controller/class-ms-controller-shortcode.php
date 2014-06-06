@@ -204,8 +204,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$data['member'] = MS_Model_Member::get_current_member();
 		$membership_ids = $data['member']->membership_ids;
-		if( ! empty( $membership_ids ) ) {
-			$data['membership'] = MS_Model_Membership::load( reset( $membership_ids ) );
+		if( is_array( $membership_ids ) ) {
+			foreach( $membership_ids as $membership_id ) {
+				$data['membership'][] = MS_Model_Membership::load( $membership_id );
+			}
 		}
 		$data['transaction'] = MS_Model_Transaction::get_transactions( array( 
 				'author' => $data['member']->id,
