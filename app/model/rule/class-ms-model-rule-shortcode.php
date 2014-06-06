@@ -40,7 +40,12 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		
 		$this->membership_id = $membership_relationship->membership_id;
 		
+		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
+		
 		foreach( $shortcode_tags as $shortcode => $callback_funciton ) {
+			if( in_array( $shortcode, $exclude ) ) {
+				continue;
+			}
 			if( ! in_array( $shortcode, $this->rule_value ) ) {
 				$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
 			}
@@ -93,8 +98,13 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	public function get_content( $args = null ) {
 		global $shortcode_tags;
 		
+		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
+		
 		$contents = array();
 		foreach( $shortcode_tags as $key => $function ) {
+			if( in_array( $key, $exclude ) ) {
+				continue;
+			}
 			$id = esc_html( trim( $key ) );
 			$contents[ $id ]->id = $id;
 			$contents[ $id ]->name = "[$key]";

@@ -31,6 +31,26 @@
  */
 class MS_Helper_Shortcode extends MS_Helper {
 	
+	const SCODE_REGISTER_USER = 'ms-membership-register-user';
+	
+	const SCODE_SIGNUP = 'ms-membership-signup';
+	
+	const SCODE_UPGRADE = 'ms-membership-upgrade';
+	
+	const SCODE_RENEW = 'ms-membership-renew';
+	
+	const SCODE_MS_TITLE ='ms-membership-title';
+	
+	const SCODE_MS_DETAILS = 'ms-membership-details';
+	
+	const SCODE_MS_PRICE =  'ms-membership-price';
+	
+	const SCODE_MS_BUTTON = 'ms-membership-button';
+	
+	const SCODE_LOGIN = 'ms-membership-login';
+	
+	const SCODE_MS_ACCOUNT = 'ms-membership-account';
+	
 	/**
 	 * This function searches content for the presence of a given short code.
 	 *
@@ -46,4 +66,24 @@ class MS_Helper_Shortcode extends MS_Helper {
 		return preg_match( $pattern, $content );
 	}
 	
+	/**
+	 * Get all membership plugin shortcodes
+	 *
+	 * @since 4.0.0
+	 * @return string[] 
+	 */
+	public static function get_membership_shortcodes() {
+		return apply_filters( 'ms_helper_shortcode_get_membership_shortcodes', array(
+				self::SCODE_REGISTER_USER,
+				self::SCODE_SIGNUP,
+				self::SCODE_UPGRADE,
+				self::SCODE_RENEW,
+				self::SCODE_MS_TITLE,
+				self::SCODE_MS_DETAILS,
+				self::SCODE_MS_PRICE,
+				self::SCODE_MS_BUTTON,
+				self::SCODE_LOGIN,
+				self::SCODE_MS_ACCOUNT,
+		) );
+	}
 }

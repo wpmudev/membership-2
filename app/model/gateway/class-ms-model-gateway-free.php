@@ -32,4 +32,6 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $is_single = true;
 	
+	protected $active = true;
+	
 }

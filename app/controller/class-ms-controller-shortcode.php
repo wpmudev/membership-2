@@ -37,18 +37,18 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
-		add_shortcode( 'ms-membership-register-user', array( $this, 'membership_register_user' ) );
-		add_shortcode( 'ms-membership-signup', array( $this, 'membership_signup' ) );
-		add_shortcode( 'ms-membership-upgrade', array( $this, 'membership_upgrade' ) );
-		add_shortcode( 'ms-membership-renew', array( $this, 'membership_renew' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, array( $this, 'membership_register_user' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP, array( $this, 'membership_signup' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_UPGRADE, array( $this, 'membership_upgrade' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_RENEW, array( $this, 'membership_renew' ) );
 		
-		add_shortcode( 'ms-membership-title', array( $this, 'membership_title' ) );
-		add_shortcode( 'ms-membership-details', array( $this, 'membership_details' ) );
-		add_shortcode( 'ms-membership-price', array( $this, 'membership_price' ) );
-		add_shortcode( 'ms-membership-button', array( $this, 'membership_button' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_TITLE, array( $this, 'membership_title' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_DETAILS, array( $this, 'membership_details' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_PRICE, array( $this, 'membership_price' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_BUTTON, array( $this, 'membership_button' ) );
 		
-		add_shortcode( 'ms-membership-login', array( $this, 'membership_login' ) );
-		add_shortcode( 'ms-membership-account', array( $this, 'membership_account' ) );	
+		add_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, array( $this, 'membership_login' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );	
 
 	}
 
