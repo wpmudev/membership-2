@@ -183,6 +183,17 @@ class MS_Model_Plugin extends MS_Model {
 		
 		if( ! $has_access ) {
 			$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
+			
+			$page_url = @$_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+			if ( $_SERVER['SERVER_PORT'] != '80' ) {
+				$page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+			}
+			else {
+				$page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+			}
+			
+			$url .= add_query_arg( array( 'redirect_to' =>  $page_url ), $url );
+
 			wp_safe_redirect( $url );
 		}
 

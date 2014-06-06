@@ -44,32 +44,36 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 * @return boolean
 	 */
 	 public function has_access() {
-		
-		$url = is_ssl() ? "https://" : "http://";
-		$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		if ( $this->strip_query_string ) {
-			$url = current( explode(  '?', $url ) );
-		}
-		
-		$exclude = apply_filters( 'ms_model_rule_url_group_excluded_urls', array() );
-		
-		/**
-		 * Check for exclude list.
-		 */
-		if( $this->check_url_expression_match( $url, $exclude ) ) {
-			return true;
-		}
-		
-		/**
-		 * Check for url group.
-		 */
-		if( $this->check_url_expression_match( $url, $this->rule_value ) ) {
-			return $this->access;
-		}
-		else {
-			return false;
-		}
+	 	if( MS_Plugin::instance()->addon->url_groups ) {
+	 		
+			$url = is_ssl() ? "https://" : "http://";
+			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	
+			if ( $this->strip_query_string ) {
+				$url = current( explode(  '?', $url ) );
+			}
+			
+			$exclude = apply_filters( 'ms_model_rule_url_group_excluded_urls', array() );
+			
+			/**
+			 * Check for exclude list.
+			 */
+			if( $this->check_url_expression_match( $url, $exclude ) ) {
+				return true;
+			}
+			
+			/**
+			 * Check for url group.
+			 */
+			if( $this->check_url_expression_match( $url, $this->rule_value ) ) {
+				return $this->access;
+			}
+			else {
+				return false;
+			}
+	 	}
+	 	return false;
 	}
 	
 	/**

@@ -188,6 +188,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 */
 	function column_membership( $item ) {
 		
+		if( MS_Model_Member::is_admin_user( $item->id ) ) {
+			return __( 'Admin User', MS_TEXT_DOMAIN );
+		}
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 

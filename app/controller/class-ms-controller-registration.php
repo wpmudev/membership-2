@@ -232,6 +232,17 @@ class MS_Controller_Registration extends MS_Controller {
 				$content .= do_shortcode( '[ms-membership-login]' );
 			}
 		}
+		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
+			if ( MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+				return $content;
+			}
+			else {
+				// There is no shortcode in there, so override
+				remove_filter( 'the_content', 'wpautop' );
+				$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
+			}
+		}
+		
 		return $content;
 	}
 	

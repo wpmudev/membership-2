@@ -374,12 +374,16 @@ class MS_Model_Member extends MS_Model {
 		return is_user_logged_in();
 	}
 	
-	public static function is_admin_user( $wp_user = null ) {
+	public static function is_admin_user( $user_id = null ) {
 		$is_admin = false;
 
-		if( empty( $wp_user ) ) {
+		if( empty( $user_id ) ) {
 			$wp_user = wp_get_current_user();
 		}
+		else {
+			$wp_user = new WP_User( $user_id );
+		}
+		
 		if ( ! empty( $wp_user ) && ( $wp_user->has_cap( 'ms_membershipadmin' ) || $wp_user->has_cap( 'manage_options' ) || is_super_admin( $wp_user->ID ) ) ) {
 			$is_admin = true;
 		}
