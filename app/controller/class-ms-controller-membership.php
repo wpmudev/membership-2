@@ -195,7 +195,7 @@ class MS_Controller_Membership extends MS_Controller {
 			if( ! empty( $_POST[ $section ] ) ) {
 				$msg = $this->save_membership( $_POST[ $section ] );
 			}
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
 		}
 		/**
 		 * Copy membership dripped schedule
@@ -203,7 +203,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && ! empty( $_POST['_wpnonce'] ) && 
 					! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
 			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
 		}
 		/**
 		 * Save membership dripped schedule
@@ -212,7 +212,7 @@ class MS_Controller_Membership extends MS_Controller {
 				! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null; 
 			$msg = $this->save_dripped_schedule( $items );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
 		}
 		/**
 		 * Rule single action 
@@ -220,7 +220,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && 
 				! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) );
 		}
 		/**
 		 * Rule bulk actions
@@ -228,7 +228,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg,'membership_id' => $this->model->id ) ) );
 		}
 		/**
 		 * Save url group add/edit
@@ -236,7 +236,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif ( ! empty( $_POST['url_group_submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && 
 				! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
 			$msg = $this->save_url_group( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), add_query_arg( array( 'membership_id' => $this->model->id ) ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
 		}
 		
 	}
@@ -247,7 +247,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_edit() {
-		$msg = 0;
 		$this->views['membership_edit'] = apply_filters( 'ms_view_membership_edit', new MS_View_Membership_Edit() );
 		
 		$data['membership'] = $this->model;
@@ -381,12 +380,12 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @param mixed[] $fields
 	 */
 	private function save_membership( $fields ) {
-		
-		if ( ! current_user_can( $this->capability ) ) {
-			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		}
-
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+		
+		$msg = 0;
 		if( is_array( $fields ) ) {
 			foreach( $fields as $field => $value ) {
 				try {
@@ -415,10 +414,11 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return int Resulting message id.
 	 */
 	private function rule_list_do_action( $action, $items ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+			return $msg;
 		}
-		$msg = 0;
+
 		$rule_type = $this->active_tab;
 		$rule = $this->model->get_rule( $rule_type );
 		$rule_value = $rule->rule_value;

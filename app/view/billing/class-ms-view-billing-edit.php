@@ -15,9 +15,9 @@ class MS_View_Billing_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2>Billing edit</h2>
-				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( self::BILLING_NONCE, self::BILLING_NONCE ); ?>
+				<h2><?php echo empty( $this->data['transaction']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Billing', MS_TEXT_DOMAIN ); ?></h2>
+				<form action="<?php echo remove_query_arg( array( 'action', 'transaction_id' ) ); ?>" method="post" class="ms-form">
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<table class="form-table">
 						<tbody>
 							<?php foreach( $this->fields as $field ): ?>
@@ -56,12 +56,28 @@ class MS_View_Billing_Edit extends MS_View {
 					'field_options' => MS_Model_Transaction::get_status(),
 					'value' => $transaction->status,
 			),
-			'name' => array(
-					'id' => 'name',
+			'user_id' => array(
+					'id' => 'user_id',
 					'section' => self::BILLING_SECTION,
-					'title' => __( 'Name', MS_TEXT_DOMAIN ),
+					'title' => __( 'Username', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' => $transaction->user_id,
+					'field_options' => $this->data['users'],
+			),
+			'membership_id' => array(
+				'id' => 'membership_id',
+				'section' => self::BILLING_SECTION,
+				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $transaction->membership_id,
+				'field_options' => $this->data['memberships'],
+			),
+			'description' => array(
+					'id' => 'description',
+					'section' => self::BILLING_SECTION,
+					'title' => __( 'Description', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $transaction->name,
+					'value' => $transaction->description,
 			),
 			'amount' => array(
 					'id' => 'amount',
@@ -92,6 +108,14 @@ class MS_View_Billing_Edit extends MS_View {
 					'value' => $transaction->due_date,
 					'class' => 'ms-date',
 			),
+			'gateway_id' => array(
+					'id' => 'gateway_id',
+					'section' => self::BILLING_SECTION,
+					'title' => __( 'Gateway', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' => $transaction->gateway_id,
+					'field_options' => $this->data['gateways'],
+			),
 			'transaction_id' => array(
 					'id' => 'transaction_id',
 					'section' => self::BILLING_SECTION,
@@ -104,5 +128,9 @@ class MS_View_Billing_Edit extends MS_View {
 					'value' => $this->data['action'],
 			),
 		);
+		if( $transaction->id > 0 ) {
+			unset( $this->fields['user_id'] );
+			unset( $this->fields['membership_id'] );
+		}
 	}
 }

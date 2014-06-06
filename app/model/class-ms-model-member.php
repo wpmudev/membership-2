@@ -57,18 +57,13 @@ class MS_Model_Member extends MS_Model {
 		return self::load( get_current_user_id() );
 	}
 	
-	public static function load( $user_id = 0 )
-	{
+	public static function load( $user_id = 0, $name = null ) {
 		$member = new MS_Model_Member();
 		
-		$member->id = $user_id;
-		
-		if( ! empty( $user_id ) )
-		{
-			$wp_user = new WP_User( $user_id );
-
+		$wp_user = new WP_User( $user_id, $name );
+		if( ! empty( $wp_user->ID ) ) {
 			$member_details = get_user_meta( $user_id );
-			$member->id = $user_id;
+			$member->id = $wp_user->ID;
 			$member->username = $wp_user->user_login;
 			$member->email = $wp_user->user_email;
 			$member->name = $wp_user->user_nicename;
@@ -217,8 +212,6 @@ class MS_Model_Member extends MS_Model {
 	
 	public static function get_members_count( $args = null ) {
 		$defaults = array(
-				'number' => 10,
-				'offset' => 0,
 				'fields' => 'ID'
 		);
 		$args = wp_parse_args( $args, $defaults );
@@ -246,6 +239,25 @@ class MS_Model_Member extends MS_Model {
 		
 		return $members;
 		
+	}
+	
+	public static function get_members_usernames( $args = null ) {
+		$defaults = array(
+				'fields' => array( 'ID', 'user_login' ),
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		// Query the user IDs for this page
+		$wp_user_search = new WP_User_Query( $args );
+		
+		$users = $wp_user_search->get_results();
+
+		$members = array();
+		foreach( $users as $user ) {
+			$members[ $user->ID ] = $user->user_login;
+		}
+		
+		return $members;
 	}
 	/**
 	 * Add a new membership.

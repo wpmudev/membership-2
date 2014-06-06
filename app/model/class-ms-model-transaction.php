@@ -56,6 +56,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $membership_id;
 	
+	protected $user_id;
+	
 	protected $amount;
 	
 	protected $currency;
@@ -102,7 +104,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
+		
 		return $query->found_posts;
 		
 	}
@@ -116,7 +119,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
+		
 		$items = $query->get_posts();
 		
 		$transactions = array();
@@ -166,16 +170,17 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
 		}
-		$transaction = new self();
+		$tax = MS_Plugin::instance()->settings->tax;
+		
+		$transaction = apply_filters( 'ms_model_transaction', new self() );
 		$transaction->gateway_id = $gateway_id;
 		$transaction->membership_id = $membership->id;
 		$transaction->amount = $membership->price;
 		$transaction->status = $status;
 		$transaction->user_id = $member->id;
-		$transaction->name = $gateway_id . ' transaction';
-		$transaction->description = $gateway_id;
+		$transaction->name = apply_filters( 'ms_model_transaction_name', sprintf( '%s %s - %s' , __( "Invoice for" ), $membership->name, $member->username ) );
+		$transaction->description = apply_filters( 'ms_model_transaction_description', sprintf( '%s %s - %s' , __( "Invoice for" ), $membership->name, $member->username ) );
 		$transaction->timestamp = time();
-		$tax = MS_Plugin::instance()->settings->tax;
 		$transaction->tax_name = $tax['tax_name'];
 		$transaction->tax_rate = $tax['tax_rate'];
 		$transaction->save();
@@ -227,7 +232,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'total':
-					return $this->amount + $this->tax_rate/100 * $this->amount; 
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount;
+					return $this->total; 
 					break;
 				case 'invoice':
 					return $this->id;
@@ -271,6 +277,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'amount':
 				case 'tax_rate':
 					$this->$property = floatval( $value );
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount;
 					break;
 				default:
 					$this->$property = $value;

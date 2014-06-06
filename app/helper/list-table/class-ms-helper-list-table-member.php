@@ -58,14 +58,14 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	
 	public function get_sortable_columns() {
 		return array(
-			'username' => array( 'username', false ),
+			'username' => array( 'login', false ),
 			'email' => array( 'email', false ),
 			'active' => array( 'active', false ),			
-			'membership' => array( 'membership', false ),
-			'start' => array( 'start', false ),
-			'trial' => array( 'trial', false ),
-			'expire' => array( 'expire', false ),
-			'gateway' => array( 'gateway', false ),
+			'membership' => array( 'membership_ids', false ),
+// 			'start' => array( 'start', false ),
+// 			'trial' => array( 'trial', false ),
+// 			'expire' => array( 'expire', false ),
+// 			'gateway' => array( 'gateway', false ),
 		);
 	}
 	
@@ -73,7 +73,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 
-		$total_items =  MS_Model_Member::get_members_count();
 		$per_page = $this->get_items_per_page( 'members_per_page', 10 );
 		$current_page = $this->get_pagenum();
 		
@@ -81,6 +80,56 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'number' => $per_page,
 				'offset' => ( $current_page - 1 ) * $per_page,
 		);
+		
+		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order'] = $_REQUEST['order'];
+		}
+		/**
+		 * Prepare order by statement.
+		 */
+		if( ! empty( $args['orderby'] ) ) {
+			if( ! in_array( $args['orderby'], array( 'login', 'email' ) ) && property_exists( 'MS_Model_Member', $args['orderby'] ) ) {
+				
+				switch( $args['orderby'] ) {
+					case '':
+						$args['orderby'] = 'meta_value_num';
+					default:
+						$args['meta_key'] = 'ms_'. $args['orderby'];
+						$args['orderby'] = 'meta_value';
+						break;
+				}
+			}
+		}
+		/**
+		 * Search string.
+		 */
+		if( ! empty( $_REQUEST['s'] ) ) {
+			$args['search'] = $_REQUEST['s'];
+		}
+		/**
+		 * Views filters.
+		 */
+		if( ! empty( $_REQUEST['status'] ) ) {
+			switch( $_REQUEST['status'] ) {
+				case 'active':
+					$args['meta_query'] = array( array( 
+							'key' => 'ms_active',
+							'value' => true,
+					) );
+					break;
+				case 'members':
+					$args['meta_query'] = array( array(
+						'key' => 'ms_membership_ids',
+						'value' => 'i:',
+						'compare' => 'LIKE',
+					) );
+					break;
+			}
+			
+		}
+
+		$total_items =  MS_Model_Member::get_members_count( $args );
 		
 		$this->items = MS_Model_Member::get_members( $args );
 				
@@ -343,11 +392,11 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		<?php
 	}
 
-
-
-
-
-
-
-	
+	public function get_views(){
+		return apply_filters( "ms_helper_list_table_member_views", array(
+				'all' => sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) ),
+				'active' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => 'active' ) ), __( 'Active', MS_TEXT_DOMAIN ) ),
+				'members' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => 'members' ) ), __( 'Members', MS_TEXT_DOMAIN ) ),
+		) );
+	}
 }

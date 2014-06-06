@@ -126,6 +126,10 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	public function get_content( $args = null ) {
 		$cpts = MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types();
 
+		if( empty( $cpts ) ) {
+			return array();
+		}
+		
 		$defaults = array(
 				'posts_per_page' => -1,
 				'offset'      => 0,
@@ -135,7 +139,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 				'post_status' => 'publish',
 		);
 		$args = wp_parse_args( $args, $defaults );
-		
+
 		$contents = get_posts( $args );
 		
 		foreach( $contents as $content ) {

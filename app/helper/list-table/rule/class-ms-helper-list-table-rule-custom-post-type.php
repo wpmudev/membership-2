@@ -74,6 +74,22 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 		);
 	}
 	
+	public function column_post_title( $item ) {
+		$actions = array(
+				sprintf( '<a href="%s">%s</a>',
+						get_edit_post_link( $item->id, true ),
+						__('Edit', MS_TEXT_DOMAIN )
+				),
+				sprintf( '<a href="%s">%s</a>',
+						get_permalink( $item->id ),
+						__('View', MS_TEXT_DOMAIN )
+				),
+		);
+		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+		
+		return sprintf( '%1$s %2$s', $item->post_title, $this->row_actions( $actions ) );
+	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {

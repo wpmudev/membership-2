@@ -65,31 +65,90 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 	
 	public function get_sortable_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array() );
+		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
+				'invoice' => array( 'ID', false ),
+				'user' => array( 'author', false ),
+				'membership' => array( 'ms_membership_ids', false ),
+				'status' => array( 'status', false ),
+				'amount' => array( 'amount', false ),
+				'total' => array( 'total', false ),
+				'due_date' => array( 'due_date', false ),
+				'gateway' => array( 'gateway_id', false ),
+		) );
 	}
 	
 	public function prepare_items() {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+
+		$args = $this->get_query_args();
 		
-		$total_items =  MS_Model_Transaction::get_transaction_count();
-		$per_page = $this->get_items_per_page( 'transaction_per_page', 10 );
-		$current_page = $this->get_pagenum();
-		
-		$args = array(
-				'posts_per_page' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
-			);
+		$total_items =  MS_Model_Transaction::get_transaction_count( $args );
 		
 		$this->items = apply_filters( 'membership_helper_list_table_transaction_items', MS_Model_Transaction::get_transactions( $args ) );
 		
+		$per_page = $this->get_items_per_page( 'transaction_per_page', 10 );
 		$this->set_pagination_args( array(
 					'total_items' => $total_items,
 					'per_page' => $per_page,
 				)
 			);
 	}
-
+	
+	private function get_query_args() {
+		$per_page = $this->get_items_per_page( 'transaction_per_page', 10 );
+		$current_page = $this->get_pagenum();
+		
+		$args = array(
+				'posts_per_page' => $per_page,
+				'offset' => ( $current_page - 1 ) * $per_page,
+		);
+		
+		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order'] = $_REQUEST['order'];
+		}
+		/**
+		 * Prepare order by statement.
+		 */
+		if( ! empty( $args['orderby'] ) ) {
+			if( ! in_array( $args['orderby'], array( 'ID', 'author' ) ) && property_exists( 'MS_Model_Transaction', $args['orderby'] ) ) {
+				$args['meta_key'] = $args['orderby'];
+				if( in_array( $args['orderby'], array( 'amount', 'total', 'tax_rate' ) ) ) {
+					$args['orderby'] = 'meta_value_num';
+				}
+				else {
+					$args['orderby'] = 'meta_value';
+				}
+			}
+		}
+		/**
+		 * Search string.
+		 */
+		if( ! empty( $_REQUEST['s'] ) ) {
+			$args['author_name'] = $_REQUEST['s'];
+		}
+		$args['meta_query'] = array();
+		/**
+		 * Gateway filter.
+		*/
+		if( ! empty( $_REQUEST['gateway_id'] ) ) {
+			$args['meta_query']['gateway_id'] = array(
+					'key' => 'gateway_id',
+					'value' => $_REQUEST['gateway_id'],
+			);
+		}
+		/**
+		 * Payment status filter.
+		 */
+		if( ! empty( $_REQUEST['status'] ) ) {
+			$args['meta_query']['status'] = array(
+					'key' => 'status',
+					'value' => $_REQUEST['status'],
+			);
+		}
+		return $args;
+	}
 	function column_invoice( $item ) {
 	
 		$actions = array(
@@ -142,6 +201,18 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		return apply_filters( 'membership_helper_list_table_transaction_bulk_actions', array(
 			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 		) );
+	}
+	
+	public function get_views(){
+		$all_status = MS_Model_Transaction::get_status();
+		$views = array();
+		$views['all'] = sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) );
+		foreach( $all_status as $status => $desc ) {
+			$args = $this->get_query_args();
+			$args['meta_query']['status']['value'] = $status;
+			$views[ $status ] =	sprintf( '<a href="%s">%s<span class="count"> (%s)</span></a>', add_query_arg( array ( 'status' => $status ) ), $desc, $total_items =  MS_Model_Transaction::get_transaction_count( $args ) );
+		}
+		return apply_filters( "ms_helper_list_table_billing_views", $views );
 	}
 	
 }

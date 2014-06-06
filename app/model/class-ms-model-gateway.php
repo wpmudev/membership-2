@@ -61,6 +61,15 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
 	}
 	
+	public static function get_gateway_names() {
+		$gateways = self::get_gateways();
+		$names = array();
+		foreach( $gateways as $gateway ) {
+			$names[ $gateway->id ] = $gateway->name;
+		}
+		return apply_filters( 'ms_model_gateway_get_gateway_names' , $names );
+	}
+	
 	public static function is_valid_gateway( $gateway_id ) {
 		return apply_filters( 'ms_model_gateway_is_valid_gateway', array_key_exists( $gateway_id, self::get_gateways() ) );
 	}

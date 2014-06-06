@@ -80,6 +80,16 @@ class MS_Controller_Billing extends MS_Controller {
 	}
 	
 	/**
+	 * Show admin notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 */
+	public function print_admin_message() {
+		add_action( 'admin_notices', array( 'MS_Helper_Billing', 'print_admin_message' ) );
+	}
+	
+	/**
 	 * Manages billing actions.
 	 *
 	 * Verifies GET and POST requests to manage billing.
@@ -87,17 +97,18 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since 4.0.0	
 	 */
 	public function admin_billing_manager() {
+		$this->print_admin_message();
 		$msg = 0;
+
 		/**
-		 * Save billing edit
+		 * Save billing add/edit
 		 */
-		$nonce = MS_View_Billing_Edit::BILLING_NONCE;
-		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['_wpnonce'] )  && ! empty(  $_POST['action'] ) && check_admin_referer( $_POST['action'] ) ) {
 			$section = MS_View_Billing_Edit::BILLING_SECTION;
 			if( ! empty( $_POST[ $section ] ) ) {
 				$msg = $this->save_transaction( $_POST[ $section ] );
 			}
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'transaction_id') ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'transaction_id') ) ) ) ;
 		}
 		/**
 		 * Execute table single action.
@@ -123,17 +134,20 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since 4.0.0	
 	 */
 	public function admin_billing() {
+		$this->print_admin_message();
 		/**
 		 * Action view page request
 		 */
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['transaction_id'] ) ) {
-			if( 'edit' == $_GET['action'] ) {
-				$this->views['edit'] = apply_filters( 'ms_view_billing_edit', new MS_View_Billing_Edit() );
-				$data['transaction'] = MS_Model_Transaction::load( $_GET['transaction_id'] );
-				$data['action'] = $_GET['action'];
-				$this->views['edit']->data = $data;
-				$this->views['edit']->render();
-			}
+		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['transaction_id'] ) ) {
+			$transaction_id = ! empty( $_GET['transaction_id'] ) ? $_GET['transaction_id'] : 0;
+			$data['transaction'] =  apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $_GET['transaction_id'] ) );
+			$data['action'] = $_GET['action'];
+			$data['users'] = MS_Model_Member::get_members_usernames();
+			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
+			$data['memberships'] = MS_Model_Membership::get_membership_names();
+			$this->views['edit'] = apply_filters( 'ms_view_billing_edit', new MS_View_Billing_Edit() );
+			$this->views['edit']->data = $data;
+			$this->views['edit']->render();
 		}
 		else {
 			$this->views['billing'] = apply_filters( 'ms_view_billing_list', new MS_View_Billing_List() );
@@ -151,20 +165,23 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @param int[] $transaction_ids The list of transactions ids to process.
 	 */	
 	public function billing_do_action( $action, $transaction_ids ) {
+		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
+
 		if( is_array( $transaction_ids ) ) {
 			foreach( $transaction_ids as $transaction_id ) {
 				switch( $action ) {
 					case 'delete':
-						$transaction = MS_Model_Coupon::load( $transaction_id );
+						$transaction = MS_Model_Transaction::load( $transaction_id );
 						$transaction->delete();
+						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 						break;
 				}
 			}
 		}
-		
+		return $msg;
 	}
 
 	/**
@@ -174,22 +191,40 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @param mixed $fields Transaction fields
 	 */	
 	public function save_transaction( $fields ) {
+		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
+		
 		if( is_array( $fields ) ) {
 			$this->model = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
+			if( $this->model->id == 0 ) {
+				if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
+					$membership = MS_Model_Membership::load( $fields['membership_id'] );
+					$member = MS_Model_Member::load( $fields['user_id'] );
+					$gateway_id = $fields['gateway_id'];
+					$this->model = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
+					$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
+				}
+				else {
+					$msg = MS_Helper_Billing::BILLING_MSG_NOT_ADDED;
+					return $msg;
+				}
+			}
+			else {
+				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
+			}
+
 			if( ! empty( $fields['execute'] ) ) {
 				$this->model->process_transaction( $fields['status'] );
 			}
+			
 			foreach( $fields as $field => $value ) {
-				if( property_exists( $this->model, $field ) ) {
-					$this->model->$field = $value;
-				}
+				$this->model->$field = $value;
 			}
 			$this->model->save();
 		}
-		
+		return $msg;	
 	}
 
 	/**

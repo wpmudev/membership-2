@@ -54,8 +54,20 @@ class MS_View_Billing_List extends MS_View {
 		?>
 		
 		<div class="wrap">
-			<h2><?php  _e( 'Billing', MS_TEXT_DOMAIN ) ; ?></h2>
+			<h2><?php  
+					_e( 'Billing', MS_TEXT_DOMAIN ); 
+					if( ! empty( $_GET['gateway_id'] ) ) {
+						$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
+						if( $gateway->name ) {
+							echo ' - '. $gateway->name;
+						}
+					} 
+				?>
+				<a class="add-new-h2" href="admin.php?page=membership-billing&action=edit&transaction_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
+			</h2>
+			<?php $billing_list->views(); ?>
 			<form action="" method="post">
+				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search'); ?>
 				<?php $billing_list->display(); ?>
 			</form>
 		</div>
