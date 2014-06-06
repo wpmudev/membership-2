@@ -49,6 +49,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		
 		add_shortcode( 'ms-membership-login', array( $this, 'membership_login' ) );
 		add_shortcode( 'ms-membership-account', array( $this, 'membership_account' ) );	
+
 	}
 
 	/**
@@ -59,6 +60,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
+		MS_Helper_Debug::log( "Register user shortcode..." );
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_register_user_atts',
 				shortcode_atts(
@@ -191,6 +193,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function membership_account( $atts ) {
+		MS_Helper_Debug::log( "Inside the Account shortcode..." );
 		$data = apply_filters( 'ms_controller_shortcode_membership_account_atts',
 				shortcode_atts(
 						array(

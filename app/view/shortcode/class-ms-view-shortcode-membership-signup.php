@@ -28,7 +28,13 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 						?>
 						    <?php  //***********  WE NEED TO CHANGE THIS PROCESS HERE ***************// ?>
 		 					<legend class="ms-upgrade-from"> 
-		 						<?php echo __( 'Upgrade to', MS_TEXT_DOMAIN ); ?>
+		 						<?php 
+									if ( MS_Plugin::instance()->addon->multiple_membership ) {
+										echo __( 'Add membership', MS_TEXT_DOMAIN ); 										
+									} else {
+										echo __( 'Change membership', MS_TEXT_DOMAIN ); 										
+									}
+								?>
 		 					</legend>
 		 				<?php 
 	 				}
