@@ -267,8 +267,9 @@ class MS_Model_Member extends MS_Model {
 	 * Only add a membership ff a user is not already a member.
 	 * @param int $membership_id The membership id to add to.
 	 * @param string $gateway The gateway used to add the membership.
+	 * @param int $transaction_id The transaction id related to this purchase.
 	 */
-	public function add_membership( $membership_id, $gateway = 'admin' )
+	public function add_membership( $membership_id, $gateway = 'admin', $transaction_id = 0 )
 	{
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
@@ -278,9 +279,13 @@ class MS_Model_Member extends MS_Model {
 			$this->move_membership( $move_from_id, $membership_id );
 		}
 		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) && MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			$membership_relationship = new MS_Model_Membership_Relationship( $membership_id, $gateway );
+			$membership_relationship = new MS_Model_Membership_Relationship( $membership_id, $gateway, $transaction_id );
 			$this->membership_relationships[ $membership_id ] = $membership_relationship;
 			$this->membership_ids[ $membership_id ] = $membership_id;
+			/** Registration complete automated message */
+			if( 'admin' != $gateway ) {
+				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction_id );
+			}
 		}
 	}
 
@@ -310,6 +315,21 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Cancel a membership.
+	 * 
+	 * The membership remains valid until expiration date.
+	 *
+	 * @param int $membership_id The membership id to drop.
+	 */
+	public function cancel_membership( $membership_id ) {
+		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			$membership_relationship = $this->membership_relationships[ $membership_id ];
+			$membership_relationship->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED;
+			$this->membership_relationships[ $membership_id ] = $membership_relationship;
+		}
+	}
+	
+	/**
 	 * Move a membership.
 	 * 
 	 * Retain start date of the membership.
@@ -333,12 +353,21 @@ class MS_Model_Member extends MS_Model {
 		}
 	}
 	
+	/**
+	 * Check membership relationship status.
+	 * 
+	 * Canceled status is allowed until it expires.
+	 * 
+	 * @param int $membership_id
+	 * @return bool
+	 */
 	public function is_member( $membership_id = 0 ) {
 		$is_member = false;
 		/** Allowed membership status to have access */
 		$allowed_status = apply_filters( 'membership_model_member_allowed_status', array( 
 				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE,  
-				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL 
+				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL,
+				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED, 
 			)
 		);
 		$simulate = MS_Model_Simulate::load();
@@ -361,7 +390,7 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 		
-		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id );
+		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id, $membership_id );
 	}
 
 	public function delete_all_membership_usermeta() {

@@ -30,13 +30,19 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
 	
+	const MEMBERSHIP_STATUS_CANCELED = 'canceled';
+	
 	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';
 	
 	const MEMBERSHIP_ACTION_MOVE = 'membership_move';
 	
 	const MEMBERSHIP_ACTION_CANCEL = 'membership_cancel';
+	
+	const MEMBERSHIP_ACTION_RENEW = 'membership_renew';
 
 	protected $membership_id;
+	
+	protected $transaction_id;
 	
 	protected $start_date;
 	
@@ -48,15 +54,16 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	protected $gateway;
 	
-// 	private $status;
+	private $status;
 	
-	public function __construct( $membership_id, $gateway ) {
+	public function __construct( $membership_id, $gateway, $transaction_id = 0 ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
 		}
 		$this->membership_id = $membership_id;
 		$this->gateway = $gateway;
+		$this->transaction_id = $transaction_id;
 		$this->set_start_date();
 	}
 
@@ -208,15 +215,44 @@ class MS_Model_Membership_Relationship extends MS_Model {
 		else {
 			$status = self::MEMBERSHIP_STATUS_EXPIRED;
 		}
+		/**
+		 * If user canceled the membership before expire date, still have access until expires.
+		 */
+		if( self::MEMBERSHIP_STATUS_CANCELED == $this->status && self::MEMBERSHIP_STATUS_EXPIRED != $status ) {
+			$status = $this->status;
+		}
+		
 		return apply_filters( 'membership_model_membership_relationship_status', $status, $this );
 	}
+	
+	/**
+	 * Returns property.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+		switch( $property ) {
+			case 'status':
+				return $this->$property = $this->get_status();
+				break;
+			default:
+				return $this->$property;
+				break;
+		}
+	
+	}
+	
 	/**
 	 * Set specific property.
 	 *
 	 * @since 4.0
 	 *
 	 * @access public
-	 * @param string $name The name of a property to associate.
+	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {

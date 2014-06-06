@@ -377,7 +377,7 @@ class MS_Controller_Registration extends MS_Controller {
 		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$membership_id = $_GET['membership'];
 			$member = MS_Model_Member::get_current_member();
-			$member->drop_membership( $membership_id );
+			$member->cancel_membership( $membership_id );
 			$member->save();
 			wp_safe_redirect( remove_query_arg( array( 'action', '_wpnonce', 'membership' ) ) ) ;
 		}

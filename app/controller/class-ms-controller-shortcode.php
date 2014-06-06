@@ -97,6 +97,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 						MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_SIGNUP . '_text' =>  __( 'Signup', MS_TEXT_DOMAIN ),
 						MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Signup', MS_TEXT_DOMAIN ),
 						MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', MS_TEXT_DOMAIN ),
+						MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW . '_text' => __( 'Renew', MS_TEXT_DOMAIN ),
 					), 
 				$atts
 			) 

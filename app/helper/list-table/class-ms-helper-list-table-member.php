@@ -156,7 +156,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	
 	function column_username( $item ) {
 		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+// 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+				'edit' => sprintf( '<a href="user-edit.php?user_id=%s">%s</a>', $item->id,  __('Edit', MS_TEXT_DOMAIN ) ),
 			);
 		
 		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );

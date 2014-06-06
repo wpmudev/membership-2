@@ -359,13 +359,13 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! empty( $fields ) ) {
 			$period = array();
 			$this->model->enabled = ! empty( $fields['enabled'] );
-			$this->model->cc_email = ! empty( $fields['enabled'] ) ? $fields['enabled'] : '';
 			$this->model->subject = ! empty( $fields['subject'] ) ? $fields['subject'] : '';
 			$this->model->message = ! empty( $fields['message'] ) ? $fields['message'] : '';
 			$period['period_unit'] = ! empty( $fields['period_unit'] ) ? $fields['period_unit'] : '';
 			$period['period_type'] = ! empty( $fields['period_type'] ) ? $fields['period_type'] : '';
 			$this->model->period = $period;
 			$this->model->cc_enabled = ! empty( $fields['cc_enabled'] );
+			$this->model->cc_email = ! empty( $fields['cc_email'] ) ? $fields['cc_email'] : '';
 			$this->model->save();
 		}
 	}

@@ -204,7 +204,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 			$member = MS_Model_Member::load( $this->user_id );
 			switch( $status ) {
 				case self::STATUS_PAID:
-					$member->add_membership( $this->membership_id, $this->gateway_id );
+					$member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
 					break;
 				case self::STATUS_REVERSED:
 				case self::STATUS_REFUNDED:

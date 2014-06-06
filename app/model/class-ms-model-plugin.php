@@ -30,6 +30,8 @@ class MS_Model_Plugin extends MS_Model {
 		$this->upgrade();
 		if( MS_Plugin::instance()->settings->plugin_enabled ) {
 			
+			$this->add_filter( 'cron_schedules', 'cron_time_period' );
+				
 			$this->init_member();
 			
 			$this->setup_communications();
@@ -131,7 +133,7 @@ class MS_Model_Plugin extends MS_Model {
 		foreach( $this->member->membership_relationships as $membership_relationship ) {
 			/**
 			 * Verify status of the membership.
-			 * Only active or trial status memberships.
+			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
 			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
 				continue;
@@ -262,11 +264,13 @@ class MS_Model_Plugin extends MS_Model {
 		
 	}
 	
-	public function communications_time_period( $periods ) {
+	public function cron_time_period( $periods ) {
 		if ( !is_array( $periods ) ) {
 			$periods = array();
 		}
 	
+		$periods['30mins'] = array( 'interval' => 30 * MINUTE_IN_SECONDS, 'display' => __( 'Every 30 Mins', MS_TEXT_DOMAIN ) );
+		$periods['15mins'] = array( 'interval' => 15 * MINUTE_IN_SECONDS, 'display' => __( 'Every 15 Mins', MS_TEXT_DOMAIN ) );
 		$periods['10mins'] = array( 'interval' => 10 * MINUTE_IN_SECONDS, 'display' => __( 'Every 10 Mins', MS_TEXT_DOMAIN ) );
 		$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN ) );
 	
@@ -274,8 +278,6 @@ class MS_Model_Plugin extends MS_Model {
 	}
 	
 	public function setup_communications() {
-		
-		$this->add_filter( 'cron_schedules', 'communications_time_period' );
 		
 		MS_Model_Communication::load_communications();
 		

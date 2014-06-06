@@ -12,10 +12,20 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
 				<p class="ms-alert-box <?php echo $this->data['member']->is_member() ? 'ms-alert-success' : ''; ?>">
 					<?php
-						if( $this->data['member']->is_member() ) {
+						if( count( $this->data['member']->membership_ids ) > 0) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
 	 						foreach( $this->data['member']->membership_ids as $membership_id ){
-	 							$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL );
+	 							if( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED == $this->data['member']->membership_relationships[ $membership_id ]->status ) {
+	 								$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $this->data['member']->membership_relationships[ $membership_id ]->expire_date;
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 							}
+	 							elseif( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_EXPIRED == $this->data['member']->membership_relationships[ $membership_id ]->status ) {
+	 								$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $this->data['member']->membership_relationships[ $membership_id ]->expire_date;
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 							}
+	 							else {
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL );
+	 							}
 	 						}
 	 					}
 	 					else {
@@ -64,15 +74,20 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		return $html;
 	}
 	
-	private function membership_box_html( $membership, $action, $move_from_id = 0 ) {
+	private function membership_box_html( $membership, $action, $move_from_id = 0, $msg = null ) {
 		?>
 		<div id="ms-membership-wrapper-<?php echo $membership->id ?>" class="ms-membership-details-wrapper">
 			<div class="ms-top-bar">
 				<span class="ms-title"><?php echo $membership->name; ?></span>
 			</div>
-			<div class="ms-price-details"><?php echo $membership->description; ?></div>
+			<div class="ms-price-details">
+				<?php echo $membership->description; ?>
+			</div>
 			<div class="ms-bottom-bar">
 				<span class="ms-link">
+				<?php if( $msg ) : ?>
+					<span class="ms-bottom-msg"><?php echo $msg; ?></span>
+				<?php endif;?>
 				<?php
 					$query_args = array( 'action' => $action, 'membership' => $membership->id ) ;
 					if( ! empty( $move_from_id ) ) {

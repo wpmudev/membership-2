@@ -221,16 +221,24 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 	}
 	
-	function send_message( $user_id, $membership_id = null ) {
-	
+	function send_message( $user_id, $membership_id = null, $transaction_id = null ) {
 		$wp_user = new WP_User( $user_id );
-		if ( ! is_email( $wp_user->email ) ) {
+		if ( ! is_email( $wp_user->user_email ) || ! $this->enabled ) {
 			return;
 		}
-		
+
+		$currency = MS_Plugin::instance()->settings->currency . ' ';
+		$membership = null;
+		$transaction = null;
+		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+			$membership = MS_Model_Membership::load( $membership_id );
+		}
+		if( ! empty( $transaction_id ) ) {
+			$transaction = MS_Model_Transaction::load( $transaction_id );
+		}
+
 		$comm_vars = apply_filters( 'membership_comm_vars_list', $this->comm_vars );
-		$keys = array_keys( $comm_vars );
-		foreach ( $keys as $key => $description ) {
+		foreach ( $comm_vars as $key => $description ) {
 			switch ( $key ) {
 				case '%blogname%':
 					$comm_vars[ $key ] = get_option( 'blogname' );
@@ -260,27 +268,51 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					$comm_vars[ $key ] = get_site_option( 'siteurl' );
 					break;
 				case '%membershipname%':
-					if ( $membership_id ) {
-						$membership = MS_Model_Membership::load( $membership_id );
+					if( ! empty( $membership->name ) ) {
 						$comm_vars[ $key ] = $membership->name;
 					}
 					else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
+				case '%taxname%':
+					if( isset( $transaction ) ) {
+						$comm_vars[ $key ] = $currency . $transaction->tax_name;
+					}
+					else {
+						$comm_vars[ $key ] = 0;
+					}
+					break;
+				case '%taxamount%':
+					if( isset( $transaction ) ) {
+						$comm_vars[ $key ] = $currency . $transaction->tax_rate * $transaction->amount;
+					}
+					else {
+						$comm_vars[ $key ] = 0;
+					}
+					break;
+				case '%total%':
+					if( isset( $transaction ) ) {
+						$comm_vars[ $key ] = $currency . $transaction->total;
+					}
+					else {
+						$comm_vars[ $key ] = 0;
+					}
+					break;
+						
 				default:
 					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $user_id );
 					break;
 			}
 		}
-	
+
 		// Globally replace the values in the ping and then make it into an array to send
 		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
 	
 		$html_message = wpautop( $message );
 		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
 	
-		$this->add_filter( 'wp_mail_content_type', 'html_content_type' );
+		$this->add_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		
 		global $wp_better_emails;
 		$lambda_function = false;
@@ -296,10 +328,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		elseif ( ! defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
 			$html_message = "<html><head></head><body>{$html_message}</body></html>";
 		}
-	
-		@wp_mail( $user->user_email, stripslashes( $this->subject ), $html_message );
-	
-		remove_filter( 'wp_mail_content_type', 'M_Communications_set_html_content_type' );
+		
+		$recipients = array( $wp_user->user_email );
+		if( $this->cc_enabled ) {
+			$recipients[] = $this->cc_email;
+		}
+
+		@wp_mail( $recipients, stripslashes( $this->subject ), $html_message );
+		$this->remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		if ( $lambda_function ) {
 			remove_filter( 'wpbe_plaintext_body', $lambda_function );
 			remove_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
