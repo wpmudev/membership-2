@@ -51,13 +51,37 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		return $this->date;
 	}
 	
+	public function start_simulation() {
+		if( $this->is_simulating_period() ) {
+			$this->simulate_period();
+		}
+		elseif( $this->is_simulating_date() ) {
+			$this->simulate_date();
+		}
+	}
+	
+	public function simulate_period() {
+		$this->add_filter( 'membership_helper_period_current_date', 'simulate_period_filter' );
+	}
+	
+	public function simulate_period_filter( $current_date ) {
+		if( ! empty( $this->period ) ) {
+			$membership = MS_Model_Membership::load( $this->membership_id );
+			if( in_array( $this->period['period_type'], MS_Helper_Period::get_periods() ) ) {
+				$current_date = MS_Helper_Period::add_interval( $this->period['period_unit'], $this->period['period_type'] );
+			}
+		}
+
+		return $current_date;
+	}
+	
 	public function simulate_date() {
 		$this->add_filter( 'membership_helper_period_current_date', 'simulate_date_filter' );
 	}
 	
 	public function simulate_date_filter( $current_date ) {
 		if( ! empty( $this->date ) ) {
-			return $this->date;
+			$current_date = $this->date;
 		}
 		return $current_date;
 	}

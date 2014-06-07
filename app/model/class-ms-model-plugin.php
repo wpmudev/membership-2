@@ -61,14 +61,7 @@ class MS_Model_Plugin extends MS_Model {
 		if( $this->member->is_admin_user() ) {
 			if( $simulate->is_simulating() ) {
 				$this->member->add_membership( $simulate->membership_id );
-				if( $simulate->is_simulating_period() ) {
-					$membership_relationships = $this->member->membership_relationships;
-					$membership_relationships[ $simulate->membership_id ]->set_elapsed_period( $simulate->period['period_unit'], $simulate->period['period_type'] );
-					$this->member->membership_relationships = $membership_relationships;
-				}
-				elseif( $simulate->is_simulating_date() ) {
-					$simulate->simulate_date();
-				}
+				$simulate->start_simulation();
 			}
 		}
 		else {
@@ -279,14 +272,15 @@ class MS_Model_Plugin extends MS_Model {
 	
 	public function setup_communications() {
 		
-		MS_Model_Communication::load_communications();
-		
-		// Action to be called by the cron job
-		$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
-		if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
-			wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
+		if( ! ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
+			MS_Model_Communication::load_communications();
+			
+			// Action to be called by the cron job
+			$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
+			if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
+				wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
+			}
 		}
-		
 	}
 	
 }

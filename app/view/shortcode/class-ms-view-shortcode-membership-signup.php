@@ -12,15 +12,15 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
 				<p class="ms-alert-box <?php echo $this->data['member']->is_member() ? 'ms-alert-success' : ''; ?>">
 					<?php
-						if( count( $this->data['member']->membership_ids ) > 0) {
+						if( count( $this->data['member']->membership_relationships ) > 0) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
-	 						foreach( $this->data['member']->membership_ids as $membership_id ){
-	 							if( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED == $this->data['member']->membership_relationships[ $membership_id ]->status ) {
-	 								$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $this->data['member']->membership_relationships[ $membership_id ]->expire_date;
+	 						foreach( $this->data['member']->membership_relationships as $membership_id => $membership_relationship ){
+	 							if( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED == $membership_relationship->status ) {
+	 								$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
 	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 							}
-	 							elseif( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_EXPIRED == $this->data['member']->membership_relationships[ $membership_id ]->status ) {
-	 								$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $this->data['member']->membership_relationships[ $membership_id ]->expire_date;
+	 							elseif( MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_EXPIRED == $membership_relationship->status ) {
+	 								$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
 	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 							}
 	 							else {

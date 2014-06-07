@@ -83,7 +83,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 4.0.0
  */
-define( 'MS_PLUGIN_VERSION', '4.0.0.0' );
+define( 'MS_PLUGIN_VERSION', '4.0.0.0.1' );
 
 /**
  * Hooks 'membership_class_path_overrides'. 
@@ -384,7 +384,7 @@ class MS_Plugin {
 					'has_archive' => false,
 					'publicly_queryable' => false,
 					'supports' => false,
-					'capability_type' => apply_filters( 'mp_memberships_capability', 'page' ),
+					'capability_type' => apply_filters( 'ms_memberships_capability', 'page' ),
 					'hierarchical' => false
 				),
 				$this 
@@ -413,7 +413,7 @@ class MS_Plugin {
 					'has_archive' => false,
 					'publicly_queryable' => false,
 					'supports' => false,
-					'capability_type' => apply_filters( 'mp_transactions_capability', 'page' ),
+					'capability_type' => apply_filters( 'ms_transactions_capability', 'page' ),
 					'hierarchical' => false
 				),
 				$this 
@@ -442,7 +442,7 @@ class MS_Plugin {
 					'has_archive' => false,
 					'publicly_queryable' => false,
 					'supports' => false,
-					'capability_type' => apply_filters( 'mp_communications_capability', 'page' ),
+					'capability_type' => apply_filters( 'ms_communications_capability', 'page' ),
 					'hierarchical' => false
 				),
 				$this 
@@ -471,10 +471,39 @@ class MS_Plugin {
 				'has_archive' => false,
 				'publicly_queryable' => false,
 				'supports' => false,
-				'capability_type' => apply_filters( 'mp_coupons_capability', 'page' ),
+				'capability_type' => apply_filters( 'ms_coupons_capability', 'page' ),
 				'hierarchical' => false
 				),
 				$this
+			)
+		);
+		
+		/**
+		 * Register and Filter the Membership Relationship post type.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Plugin object.
+		 */
+		register_post_type( 'ms_relationship',
+			apply_filters( 'ms_register_post_type_ms_membership_relationship',
+				array(
+				'labels' => array(
+					'name' => __( 'membership relationship', MS_TEXT_DOMAIN ),
+					'singular_name' => __( 'membership relationship', MS_TEXT_DOMAIN ),
+					'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+					'view_item' => __( 'View membership relationship', MS_TEXT_DOMAIN ),
+					'search_items' => __( 'Search membership relationships', MS_TEXT_DOMAIN ),
+					'not_found' => __( 'No membership relationships Found', MS_TEXT_DOMAIN )
+				),
+				'description' => __( 'membership relationships.', MS_TEXT_DOMAIN ),
+				'public' => false,
+				'has_archive' => false,
+				'publicly_queryable' => false,
+				'supports' => false,
+				'capability_type' => apply_filters( 'ms_relationships_capability', 'page' ),
+				'hierarchical' => false
+				),
+			$this
 			)
 		);
 	}

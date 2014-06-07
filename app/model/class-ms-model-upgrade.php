@@ -35,13 +35,13 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
 			switch( $settings->version ) {
 				default:
-// 					self::cleanup_db();
+					self::cleanup_db();
 					flush_rewrite_rules();
 					break;
 			}
+			$settings->version = MS_Plugin::instance()->version;
+			$settings->save();
 		}
-		$settings->version = MS_Plugin::instance()->version;
-		$settings->save();
 	}
 	
 	private static function cleanup_db() {
@@ -57,6 +57,14 @@ class MS_Model_Upgrade extends MS_Model {
 		$comms = MS_Model_Communication::load_communications();
 		foreach( $comms as $comm ) {
 			$comm->delete();
+		}
+		$membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships();
+		foreach( $membership_relationships as $membership_relationship ) {
+			$membership_relationship->delete();
+		}
+		$transactions = MS_Model_Transaction::get_transactions();
+		foreach( $transactions as $transaction ) {
+			$transaction->delete();
 		}
 		
 		$simulate = MS_Model_Simulate::load();

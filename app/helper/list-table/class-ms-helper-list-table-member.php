@@ -282,7 +282,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if( count( $item->membership_ids ) > 0 ) {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
-				$html[] = $membership_relationship->gateway;
+				$html[] = $membership_relationship->gateway_id;
 			}
 			$html = join('<br /> ', $html);
 			$actions = array(

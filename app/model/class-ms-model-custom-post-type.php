@@ -96,6 +96,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->description = $post->post_content;
+				$model->user_id = $post->post_author;
 				$model_details = get_post_meta( $model_id );
 				$fields = get_object_vars( $model );
 				foreach ( $fields as $field => $val) {

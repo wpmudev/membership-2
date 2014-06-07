@@ -71,12 +71,15 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1> Welcome, %username%,</h1>
+			<h2> Welcome, %username%,</h2>
 			<p>
 				You are now member of %membershipname%.
 			</p>
 			<p>
-				Invoice details:
+				Invoice details: <br/><br/>
+				Tax name: %taxname% <br/><br/>
+				Tax amount: %taxamount% <br/><br/>
+				Total: %total% <br/><br/>
 			</p>
 		<?php 
 		$html = ob_get_clean();

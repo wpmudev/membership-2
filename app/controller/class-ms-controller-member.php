@@ -221,26 +221,26 @@ class MS_Controller_Member extends MS_Controller {
 		switch( $action ) {
 			case 'add':
 				$memberships = MS_Model_Membership::get_membership_names();
-				$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
+				$memberships = array_diff_key( $memberships, $this->model->membership_ids );
 				$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 				break;
 			case 'drop':
-				$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) );
+				$args = array( 'post__in' => array_keys( $this->model->membership_ids ) );
 				$memberships = MS_Model_Membership::get_membership_names( $args );
 				$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 				break;
 			case 'move':
-				$args = array( 'post__in' => array_keys( $this->model->membership_relationships ) );
+				$args = array( 'post__in' => array_keys( $this->model->membership_ids ) );
 				$memberships_move = MS_Model_Membership::get_membership_names( $args );
 				$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
 					
 				$memberships = MS_Model_Membership::get_membership_names();
-				$memberships = array_diff_key( $memberships, $this->model->membership_relationships );
+				$memberships = array_diff_key( $memberships, $this->model->membership_ids );
 				$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
 				break;
 			case 'edit_date':
 				$view = apply_filters( 'membership_view_member_date', new MS_View_Member_Date() );
-				$view->membership_relationships = $this->model->membership_relationships;
+				$view->membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $this->model->id ) );
 				$view->membership_ids = $this->model->membership_ids;
 				break;
 		}
@@ -293,17 +293,18 @@ class MS_Controller_Member extends MS_Controller {
 					if( is_array( $membership_id ) ) {
 						$membership_relationships = $member->membership_relationships;
 						foreach ( $membership_id as $id ) {
+							$membership_relationship = $membership_relationships[ $id ];
 							if( ! empty( $_POST[ $section ][ "start_date_$id" ] ) ){
-								$membership_relationships[ $id ]->start_date = $_POST[ $section ][ "start_date_$id" ];
+								$membership_relationship->start_date = $_POST[ $section ][ "start_date_$id" ];
 							}
 // 							if( ! empty( $_POST[ $section ][ "trial_expire_date_$id" ] ) ){
 // 								$membership_relationships[ $id ]->trial_expire_date = $_POST[ $section ][ "trial_expire_date_$id" ];
 // 							}
 							if( ! empty( $_POST[ $section ][ "expire_date_$id" ] ) ){
-								$membership_relationships[ $id ]->expire_date = $_POST[ $section ][ "expire_date_$id" ];
+								$membership_relationship->expire_date = $_POST[ $section ][ "expire_date_$id" ];
 							}
+							$membership_relationship->save();
 						}
-						$member->membership_relationships = $membership_relationships;
 					}
 					break;
 			}

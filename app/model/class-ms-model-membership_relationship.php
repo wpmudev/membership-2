@@ -20,7 +20,11 @@
  *
 */
 
-class MS_Model_Membership_Relationship extends MS_Model {
+class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
+	
+	public static $POST_TYPE = 'ms_relationship';
+	
+	protected static $CLASS_NAME = __CLASS__;
 	
 	const MEMBERSHIP_STATUS_ACTIVE = 'active';
 	
@@ -44,6 +48,10 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	protected $transaction_id;
 	
+	protected $user_id;
+	
+	protected $gateway_id;
+	
 	protected $start_date;
 	
 	protected $expire_date;
@@ -52,21 +60,96 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	
 	protected $trial_expire_date;
 	
-	protected $gateway;
+	protected $status;
 	
-	private $status;
-	
-	public function __construct( $membership_id, $gateway, $transaction_id = 0 ) {
+	public function __construct( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction_id = 0 ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
 		}
 		$this->membership_id = $membership_id;
-		$this->gateway = $gateway;
+		$this->user_id = $user_id;
+		$this->gateway_id = $gateway_id;
 		$this->transaction_id = $transaction_id;
 		$this->set_start_date();
+		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
+		$this->description = $this->name;
+		$this->get_status();
 	}
 
+	public function save() {
+		if( ! empty( $this->user_id ) && ! MS_Model_Member::is_admin_user( $this->user_id ) ) {
+			$membership = MS_Model_Membership::load( $this->membership_id );
+			if( ! $membership->visitor_membership && ! $membership->default_membership ) {
+				parent::save();
+			}
+		}
+	}
+	/**
+	 * Retrieve membership relationships.
+	 * 
+	 * @return MS_Model_Membership_Relationship[] 
+	 */
+	public static function get_membership_relationships( $args = null ) {
+		
+		$args = self::get_query_args( $args );
+		
+		$query = new WP_Query( $args );
+		$posts = $query->get_posts();
+		
+		$membership_relationships = array();
+		if( ! empty( $posts ) ) {
+			foreach( $posts as $post_id ) {
+				$membership_relationship = self::load( $post_id );
+				$membership_relationships[ $membership_relationship->membership_id ] = $membership_relationship;
+			}
+		}
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $membership_relationships, $args );
+	}
+	
+	public static function get_membership_relationship_count( $args = null ) {
+		
+		$args = self::get_query_args( $args );
+		
+		$query = new WP_Query( $args );
+
+		return $query->found_posts;
+	}
+	
+	public static function get_query_args( $args = null ) {
+		$defaults = array(
+				'post_type' => self::$POST_TYPE,
+				'post_status' => 'any',
+				'fields' => 'ids',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		if( ! empty( $args['user_id'] ) ) {
+			$args['author'] = $args['user_id'];
+			unset( $args['user_id'] );
+		}
+		if( ! empty( $args['membership_id'] ) ) {
+			$args['meta_query']['membership_id'] = array(
+					'key' => 'membership_id',
+					'value' => $args['membership_id'],
+			);
+			unset( $args['membership_id'] );
+		}
+		if( ! empty( $args['gateway_id'] ) ) {
+			$args['meta_query']['gateway_id'] = array(
+					'key' => 'gateway_id',
+					'value' => $args['gateway_id'],
+			);
+			unset( $args['gateway_id'] );
+		}
+		$args['meta_query']['status'] = array(
+				'key' => 'status',
+				'value' => self::MEMBERSHIP_STATUS_DEACTIVATED,
+				'compare' => 'NOT LIKE',
+		);
+
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships_args', $args );
+	}
 	/**
 	 * Set Membership Relationship start date.
 	 *
@@ -201,25 +284,31 @@ class MS_Model_Membership_Relationship extends MS_Model {
 	 *  Verifies start and end date of a membership.
 	 */
 	public function get_status() {
-		$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
-		$membership = $this->get_membership();
-		if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-			$status = self::MEMBERSHIP_STATUS_TRIAL;
-		}
-		elseif( empty( $this->expire_date ) ) {
-			$status = self::MEMBERSHIP_STATUS_ACTIVE;
-		}
-		elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-			$status = self::MEMBERSHIP_STATUS_ACTIVE;
+
+		if( self::MEMBERSHIP_STATUS_DEACTIVATED == $this->status ) {
+			$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
 		}
 		else {
-			$status = self::MEMBERSHIP_STATUS_EXPIRED;
-		}
-		/**
-		 * If user canceled the membership before expire date, still have access until expires.
-		 */
-		if( self::MEMBERSHIP_STATUS_CANCELED == $this->status && self::MEMBERSHIP_STATUS_EXPIRED != $status ) {
-			$status = $this->status;
+			$membership = $this->get_membership();
+			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::MEMBERSHIP_STATUS_TRIAL;
+			}
+			elseif( empty( $this->expire_date ) ) {
+				$status = self::MEMBERSHIP_STATUS_ACTIVE;
+			}
+			elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::MEMBERSHIP_STATUS_ACTIVE;
+			}
+			else {
+				$status = self::MEMBERSHIP_STATUS_EXPIRED;
+			}
+			/**
+			 * If user canceled the membership before expire date, still have access until expires.
+			 */
+			if( self::MEMBERSHIP_STATUS_CANCELED == $this->status && self::MEMBERSHIP_STATUS_EXPIRED != $status ) {
+				$status = self::MEMBERSHIP_STATUS_CANCELED; 
+			}
+			$this->status = $status;
 		}
 		
 		return apply_filters( 'membership_model_membership_relationship_status', $status, $this );
