@@ -69,15 +69,13 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED );
 			ob_start();
 			?>
-				<p>
-					<?php
-						 if( empty( $this->payment_info ) ) {
-							$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
-						 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
-						 }
-						echo $this->payment_info; 
-					?>
-				</p>
+				<?php
+					 if( empty( $this->payment_info ) ) {
+						$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
+					 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
+					 }
+					echo wpautop( $this->payment_info ); 
+				?>
 			<?php 
 			$html = ob_get_clean();
 			return $html;

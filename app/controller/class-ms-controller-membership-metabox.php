@@ -77,7 +77,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @access private
 	 * @var $priority
 	 */	
-	private $priority = 'default';
+	private $priority = 'high';
 	
 	/**
 	 * Capability required to use access metabox.

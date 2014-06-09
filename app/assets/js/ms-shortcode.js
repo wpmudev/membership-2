@@ -14,7 +14,7 @@ jQuery( document ).ready(function( $ ) {
 				},
 				'password2': {
 					'required': true,
-					'equalTo': 'password',
+					'equalTo': '#password',
 				},
 			}
 		});
