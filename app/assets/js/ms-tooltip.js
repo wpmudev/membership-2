@@ -1,7 +1,7 @@
 jQuery( document ).ready(function( $ ) {
 
 	$( document ).click( function() {
-		$( '.ms-tooltip [display!="none"]' ).parent().fadeOut(100);
+		$( '.ms-tooltip [display!="none"]' ).parents('.ms-tooltip-wrapper').find('.ms-tooltip').fadeOut(100);
 	});
 	$( '.ms-tooltip' ).click( function(e) {
 		e.stopPropagation();
@@ -22,7 +22,7 @@ jQuery( document ).ready(function( $ ) {
 	} );
 	
 	$('.ms-tooltip-button').click( function() {
-		$( this ).parent().fadeOut(100);
+		$( this ).parents('.ms-tooltip-wrapper').find('.ms-tooltip').fadeOut(100);
 	} );
 
 });
