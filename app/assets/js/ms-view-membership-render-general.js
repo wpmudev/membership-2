@@ -13,18 +13,18 @@ jQuery( document ).ready(function( $ ) {
 		$( '.ms-membership-type' ).hide();
 		membership_type = $( this ).val();
 
-		if ( 'permanent' == membership_type || 'recurring' == membership_type ) {
-			$( '.ms-membership-type' ).parents('tr').hide();
+		if ( 'permanent' == membership_type ) {
+			$( '.ms-membership-type' ).parents('#ms-membership-type-wrapper').hide();
 		} else {
-			$( '.ms-membership-type' ).parents('tr').show();
+			$( '.ms-membership-type' ).parents('#ms-membership-type-wrapper').show();
 		}
 		
 		$( '#ms-membership-type-' + membership_type + '-wrapper').show();
 		if( 'finite' == membership_type || 'date-range' == membership_type ) {
-			$( '#ms-membership-on-end-membership-wrapper' ).parents('tr').show();
+			$( '#ms-membership-on-end-membership-wrapper' ).show();
 		}
 		else {
-			$( '#ms-membership-on-end-membership-wrapper' ).parents('tr').hide();
+			$( '#ms-membership-on-end-membership-wrapper' ).hide();
 		}
 	});
 	$( '#period_date_start' ).datepicker({

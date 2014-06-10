@@ -83,9 +83,50 @@
     margin-left: 15px;
     margin-top: 5px;
 }
+
+/** Settings Box **/
+.ms-settings-box-wrapper {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #E5E5E5;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.04);   
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    min-width: 255px;
+    position: relative;	
+	margin-bottom: 15px;
+}
+
+.ms-wrap .form-table td{
+	padding: 0;
+}
+
+.ms-settings-box {
+	padding: 10px;
+}
+
+.ms-wrap .ms-settings .ms-settings-box h3 {
+	border-bottom: 1px solid #EEEEEE;
+	margin: 0;
+}
+
 .ms-field-label {
 	display: block;
+	font-style: oblique;
 }
+
+.ms-field-input-label {
+	margin-top: 10px;
+	font-style: normal;
+}
+
+.ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
+	border: none;
+	padding: 0;
+	font-size: 1.2em;
+	cursor: default;
+	margin-top: 15px;
+}
+
 .ms-field-description {
 	
 }
