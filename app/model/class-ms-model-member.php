@@ -26,8 +26,6 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $membership_relationships = array();
 	
-	protected $transactions = array();
-	
 	protected $is_admin = false;
 	
 	/** Staus to activate or deactivate a user independently of the membership status. */
@@ -289,7 +287,9 @@ class MS_Model_Member extends MS_Model {
 			$this->membership_ids[ $membership_id ] = $membership_id;
 			/** Registration complete automated message */
 			if( 'admin' != $gateway_id ) {
+				MS_Model_News::save_news( $membership_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
 				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction_id );
+				do_action( 'ms_model_membership_add_membership_object', $this ); 
 			}
 		}
 	}
@@ -305,6 +305,7 @@ class MS_Model_Member extends MS_Model {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
 			$this->membership_relationships[ $membership_id ]->save();
+			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DEACTIVATE );
 		}
 	}
 	
@@ -316,6 +317,9 @@ class MS_Model_Member extends MS_Model {
 	public function drop_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->deactivate_membership( $membership_id );
+			
+			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DROP );
+			
 			unset( $this->membership_relationships[ $membership_id ] );
 			unset( $this->membership_ids[ $membership_id ] );
 		}
@@ -332,6 +336,7 @@ class MS_Model_Member extends MS_Model {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED;
 			$this->membership_relationships[ $membership_id ]->save();
+			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_CANCEL );
 		}
 	}
 	
@@ -345,19 +350,13 @@ class MS_Model_Member extends MS_Model {
 	public function move_membership( $move_from_id, $move_to_id ) {
 		if( array_key_exists( $move_from_id,  $this->membership_relationships ) ) {
 			$move_from = $this->membership_relationships[ $move_from_id ];
-			$move_from->move( $move_from_id, $move_to_id );
 
-			$this->membership_relationships[ $move_to_id ] = $move_from;
-			$this->membership_ids[ $move_to_id ] = $move_to_id;
+			$this->membership_relationships[ $move_to_id ] = new MS_Model_Membership_Relationship( $move_to_id, $this->id, $move_from->gateway_id );
 
+			MS_Model_News::save_news( $this->membership_relationships[ $move_to_id ],  MS_Model_News::TYPE_MS_MOVE );
+			
 			unset( $this->membership_relationships[ $move_from_id ] );
 			unset( $this->membership_ids[ $move_from_id ] );
-		}
-	}
-	
-	public function add_transaction( $transaction_id ) {
-		if( ! array_key_exists( $transaction_id, $this->transactions ) ) {
-			$this->transactions[ $transaction_id ] = $transaction_id;
 		}
 	}
 	

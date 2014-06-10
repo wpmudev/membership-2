@@ -31,15 +31,24 @@ class MS_View_Registration_Payment extends MS_View {
 					</td>
 					<td class='ms-buy-now-column'>
 						<?php
-							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'] );
+							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'] );
 						?>
 					</td>
 				</tr>
 				<tr class='ms-prices-column'>
 					<td colspan='3'>
-						<?php
-							echo '<strong>' . __( 'You will pay : ', MS_TEXT_DOMAIN ) . '</strong> ' . $membership->description;
-						?>
+						<?php if( $membership->description ): ?>
+							<div>
+								<span class="ms-strong"><?php __( 'You will pay: ', MS_TEXT_DOMAIN ); ?><span> 
+								<?php echo $membership->description; ?>
+							</div>
+						<?php endif;?>
+						<?php if( ! empty( $this->data['pro_rate'] ) ): ?>
+							<div>
+								<span class="ms-strong"><?php _e( 'Pro rate discount: ', MS_TEXT_DOMAIN ); ?><span> 
+								<?php echo $this->data['pro_rate']; ?>
+							</div>
+						<?php endif;?>
 					</td>
 				</tr>
 			</table>

@@ -111,6 +111,8 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$args = array(
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 1,
+				'post_status' => 'any',
+				'fields' => 'ids',
 				'meta_query' => array(
 					array(
 							'key'     => 'code',
@@ -118,13 +120,14 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 					),
 				)
 		);
+
 		$query = new WP_Query( $args );
 		
 		$item = $query->get_posts();
 
 		$coupon_id = 0;
 		if( ! empty( $item[0] ) ) {
-			$coupon_id = $item[0]->ID;
+			$coupon_id = $item[0];
 		}
 		
 		return self::load( $coupon_id );

@@ -142,12 +142,23 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			);
 			unset( $args['gateway_id'] );
 		}
-		$args['meta_query']['status'] = array(
-				'key' => 'status',
-				'value' => self::MEMBERSHIP_STATUS_DEACTIVATED,
-				'compare' => 'NOT LIKE',
-		);
-
+		if( ! empty( $args['status'] ) ) {
+			if( 'all' != $args['status'] ) {
+				$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => $args['status'],
+						'compare' => 'LIKE',
+				);
+			}
+			unset( $args['status'] );
+		}
+		else {
+			$args['meta_query']['status'] = array(
+					'key' => 'status',
+					'value' => self::MEMBERSHIP_STATUS_DEACTIVATED,
+					'compare' => 'NOT LIKE',
+			);
+		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships_args', $args );
 	}
 	/**
@@ -266,6 +277,31 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->expire_date );
 	}
 
+	public function calculate_pro_rate() {
+		$value = 0;
+		$trial_value = 0;
+		$membership = $this->get_membership();
+		if( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
+			switch( $this->get_status() ) {
+				case self::MEMBERSHIP_STATUS_TRIAL:
+					$remaining = $this->get_remaining_trial_period();
+					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $this->start_date );
+					$trial_value = $remaining->days / $total->days;
+					$trial_value *= $membership->trial_price;
+				case self::MEMBERSHIP_STATUS_ACTIVE:
+				case self::MEMBERSHIP_STATUS_CANCELED:
+					$remaining = $this->get_remaining_period();
+					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $membership->get_expire_date() );
+					$value = $remaining->days / $total->days;
+					$value *= $membership->price;
+					break;
+				default:
+					$value = 0;
+					break;
+			}
+		}
+		return apply_filters( 'ms_model_membership_relationship_calculate_pro_rate_value', $value + $trial_value, $this );
+	}
 	/**
 	 * Set elapsed period of time of membership.
 	 * 

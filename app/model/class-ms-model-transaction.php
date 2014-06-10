@@ -58,6 +58,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $user_id;
 	
+	protected $coupon_id;
+	
 	protected $amount;
 	
 	protected $currency;
@@ -134,9 +136,10 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * Load transaction using external ID.
 	 *  
 	 * @param string $external_id
+	 * @param string $gateway_id
 	 * @return MS_Model_Transaction, null if not found.
 	 */
-	public static function load_by_external_id( $external_id ) {
+	public static function load_by_external_id( $external_id, $gateway_id ) {
 		$args = array(
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 1,
@@ -144,6 +147,10 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 						array(
 							'key'     => 'external_id',
 							'value'   => $external_id,
+						),
+						array(
+							'key'     => 'gateway_id',
+							'value'   => $gateway_id,
 						),
 				)
 		);
@@ -184,10 +191,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$transaction->tax_name = $tax['tax_name'];
 		$transaction->tax_rate = $tax['tax_rate'];
 		$transaction->save();
-	
-		$member->add_transaction( $transaction->id );
-		$member->save();
-		
+			
 		return $transaction;
 	}
 	
@@ -232,7 +236,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'total':
-					$this->total = $this->amount + $this->tax_rate/100 * $this->amount;
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount;
 					return $this->total; 
 					break;
 				case 'invoice':
@@ -276,8 +280,9 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 					break;
 				case 'amount':
 				case 'tax_rate':
+				case 'discount':
 					$this->$property = floatval( $value );
-					$this->total = $this->amount + $this->tax_rate/100 * $this->amount;
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount;
 					break;
 				default:
 					$this->$property = $value;

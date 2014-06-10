@@ -64,6 +64,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	public function handle_return() {
 		if( ! empty( $_POST['membership_id'] ) ) {
+			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
 			$membership = MS_Model_Membership::load( $_POST['membership_id'] );
 			$member = MS_Model_Member::get_current_member();
 			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED );

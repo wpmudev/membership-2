@@ -167,7 +167,7 @@ class MS_Controller_Registration extends MS_Controller {
 			// MS_Helper_Debug::log( 'We are on the registration page.' );
 
 			// check if page contains 'ms-membership-register-user' shortcode
-			if ( ! MS_Helper_Shortcode::has_shortcode( 'ms-membership-register-user', $content ) ) {
+			if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, $content ) ) {
 				// MS_Helper_Debug::log( 'NOT using "ms-membership-register-user" shortcode.' );
 				
 				// There is no shortcode content in there, so override
@@ -185,12 +185,12 @@ class MS_Controller_Registration extends MS_Controller {
 					$_wpnonce = ! empty( $_POST['_wpnonce'] ) ? $_POST['_wpnonce'] : '';
 					
 					// MS_Helper_Debug::log( 'Just loaded up user registration fields and adding a shortcode.' );
-					$content .= do_shortcode( "[ms-membership-register-user membership_id='$membership_id' email='$email' username='$username' first_name='$first_name' last_name='$last_name' _wpnonce='$_wpnonce' errors='$this->register_errors']" );
+					$content .= do_shortcode( "[" .MS_Helper_Shortcode::SCODE_REGISTER_USER . " membership_id='$membership_id' email='$email' username='$username' first_name='$first_name' last_name='$last_name' _wpnonce='$_wpnonce' errors='$this->register_errors']" );
 				}
 				else {
 					// MS_Helper_Debug::log( 'There was NO "action", now call the signup shortcode.' );
 					remove_filter( 'the_content', 'wpautop' );
-					$content .= do_shortcode( '[ms-membership-signup]' );
+					$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
 				}
 			}
 		}
@@ -198,12 +198,9 @@ class MS_Controller_Registration extends MS_Controller {
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) ) {
 			MS_Helper_Debug::log( "We are on the accounts page." );
 			// account page - check if page contains a shortcode
-			// if ( strpos( $content, '[ms-membership-account]' ) !== false || 
-			// 		strpos( $content, '[ms-membership-upgrade]' ) !== false || 
-			// 		strpos( $content, '[ms-membership-renew]' ) !== false ) {
-			if ( MS_Helper_Shortcode::has_shortcode( 'ms-membership-account', $content ) ||
-			     MS_Helper_Shortcode::has_shortcode( 'ms-membership-upgrade', $content ) ||
-			     MS_Helper_Shortcode::has_shortcode( 'ms-membership-renew', $content ) ) {	
+			if ( MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, $content ) ||
+			     MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_UPGRADE, $content ) ||
+			     MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_RENEW, $content ) ) {	
 			
 				MS_Helper_Debug::log( "There be shortcodes!" );
 				// There is content in there with the shortcode so just return it
@@ -211,7 +208,7 @@ class MS_Controller_Registration extends MS_Controller {
 			}
 			// There is no shortcode in there, so override
 			remove_filter( 'the_content', 'wpautop' );
-			$content .= do_shortcode( '[ms-membership-account]' );
+			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
 			MS_Helper_Debug::log( "We are STILL on the accounts page." );			
 		} 
 		// If we are on the memberships page....
@@ -226,10 +223,10 @@ class MS_Controller_Registration extends MS_Controller {
 			// There is no shortcode in there, so override
 			remove_filter( 'the_content', 'wpautop' );
 			if( MS_Model_Member::is_logged_user() ) {
-				$content .= do_shortcode( '[ms-membership-signup]' );
+				$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
 			}
 			else {
-				$content .= do_shortcode( '[ms-membership-login]' );
+				$content .= do_shortcode( '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']' );
 			}
 		}
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
@@ -397,6 +394,10 @@ class MS_Controller_Registration extends MS_Controller {
 		$data['gateways'] = MS_Model_Gateway::get_gateways();
 		$data['member'] = $member;
 		$data['currency'] = MS_Plugin::instance()->settings->currency;
+		if( ! empty ( $_GET['move_from'] ) ) {
+			$data['move_from_id'] = $_GET['move_from'];
+// 			$data['pro_rate'] = $member->membership_relationships[ $_GET['move_from'] ]->calculate_pro_rate(); 
+		}
 
 		$coupon_code = ! empty( $_POST['coupon_code'] ) ? $_POST['coupon_code'] : '';
 		$coupon = MS_Model_Coupon::load_by_coupon_code( $coupon_code );

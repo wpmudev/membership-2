@@ -34,15 +34,6 @@
 class MS_Controller_Dashboard extends MS_Controller {
 
 	/**
-	 * The custom post type used with Membership Dashboard.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $post_type
-	 */
-	private $post_type;
-
-	/**
 	 * Capability required to access Membership Dashboard features.
 	 *
 	 * @since 4.0.0
@@ -50,15 +41,6 @@ class MS_Controller_Dashboard extends MS_Controller {
 	 * @var $capability
 	 */	
 	private $capability = 'manage_options';
-
-	/**
-	 * The model to use for loading/saving Membership Dashboard data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */	
-	private $model;
 
 	/**
 	 * Views to use for rendering Membership Dashboard.
@@ -75,16 +57,30 @@ class MS_Controller_Dashboard extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
-		/** Menu: Dashboard */
-		$this->views['dashboard'] = apply_filters( 'membership_dashboard_view', new MS_View_Dashboard() );			
+		
 	}
 
 	/**
 	 * Render Membership Dashboard admin page.
+	 * 
+	 * Menu Dashboard
 	 *
 	 * @since 4.0.0
 	 */	
 	public function admin_dashboard() {
+		$data = array();
+		$data['news'] = MS_Model_News::get_news();
+		$data['plugin_enabled'] = MS_Plugin::instance()->settings->plugin_enabled;
+		$data['members_count'] = MS_Model_Member::get_members_count();
+		$memberships = MS_Model_Membership::get_membership_names();
+		foreach( $memberships as $id => $name ) {
+			$data['memberships'][ $id ] = array( 
+					'name' => $name, 
+					'count' => MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $id ) ) 
+			);
+		}
+		$this->views['dashboard'] = apply_filters( 'ms_view_dashboard', new MS_View_Dashboard() );
+		$this->views['dashboard']->data = $data; 
 		$this->views['dashboard']->render();
 	}
 	

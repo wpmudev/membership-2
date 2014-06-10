@@ -213,13 +213,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['transaction'] = MS_Model_Transaction::get_transactions( array( 
 				'author' => $data['member']->id,
 				'posts_per_page' => 50,
-				'meta_query' => array(
-						array(
+				'meta_query' => array( array(
 								'key' => 'amount',
 								'value' => '0',
 								'compare' => '!='
-						)
-			) ) );
+		) ) ) );
+		$data['news'] = MS_Model_News::get_news( array(
+				'author' => $data['member']->id,
+				'posts_per_page' => 50,
+		) );
 		$view = apply_filters( 'ms_view_shortcode_account', new MS_View_Shortcode_Account() );
 		$view->data = $data;
 		return $view->to_html();

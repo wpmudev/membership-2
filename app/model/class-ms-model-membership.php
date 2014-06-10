@@ -277,20 +277,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $default_membership;
 	}
 	
-	public function get_members_count() {
-		$args = array(
-			'meta_query' => array(
-				array(
-					'key'     => 'ms_membership_ids',
-					'value'   => "i:{$this->id};",
-					'compare' => 'LIKE'
-				),
-			)
-		 );
-		$query = new WP_User_Query( $args );
-		return $query->get_total();
-		
-	}
 	/**
 	 * Delete membership.
 	 * 
@@ -338,7 +324,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					break;
 				case 'membership_type':
 					if( array_key_exists( $value, self::get_membership_types() ) ) {
-						if( 0 == $this->get_members_count() ) {
+						if( 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
 							$this->$property = $value;
 						}
 						elseif( $this->$property != $value ) {

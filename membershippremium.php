@@ -400,15 +400,7 @@ class MS_Plugin {
 		register_post_type( 'ms_transaction',
 			apply_filters( 'ms_register_post_type_ms_transaction',
 				array(
-					'labels' => array(
-						'name' => __( 'transactions', MS_TEXT_DOMAIN ),
-						'singular_name' => __( 'transaction', MS_TEXT_DOMAIN ),
-						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
-						'view_item' => __( 'View transaction', MS_TEXT_DOMAIN ),
-						'search_items' => __( 'Search transactions', MS_TEXT_DOMAIN ),
-						'not_found' => __( 'No transactions Found', MS_TEXT_DOMAIN )
-					),
-					'description' => __( 'transactions user can join to.', MS_TEXT_DOMAIN ),					
+					'description' => __( 'user transactions', MS_TEXT_DOMAIN ),					
 					'public' => false,
 					'has_archive' => false,
 					'publicly_queryable' => false,
@@ -429,15 +421,7 @@ class MS_Plugin {
 		register_post_type( 'ms_communication',
 			apply_filters( 'ms_register_post_type_ms_communication',
 				array(
-					'labels' => array(
-						'name' => __( 'communications', MS_TEXT_DOMAIN ),
-						'singular_name' => __( 'communication', MS_TEXT_DOMAIN ),
-						'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
-						'view_item' => __( 'View communication', MS_TEXT_DOMAIN ),
-						'search_items' => __( 'Search communications', MS_TEXT_DOMAIN ),
-						'not_found' => __( 'No communications Found', MS_TEXT_DOMAIN )
-					),
-					'description' => __( 'communications user can join to.', MS_TEXT_DOMAIN ),
+					'description' => __( 'user communications.', MS_TEXT_DOMAIN ),
 					'public' => false,
 					'has_archive' => false,
 					'publicly_queryable' => false,
@@ -455,8 +439,8 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		register_post_type( 'ms_coupon',
-			apply_filters( 'ms_register_post_type_ms_coupon',
+		register_post_type( 'ms_new',
+			apply_filters( 'ms_register_post_type_ms_new',
 				array(
 					'labels' => array(
 						'name' => __( 'coupons', MS_TEXT_DOMAIN ),
@@ -471,7 +455,7 @@ class MS_Plugin {
 				'has_archive' => false,
 				'publicly_queryable' => false,
 				'supports' => false,
-				'capability_type' => apply_filters( 'ms_coupons_capability', 'page' ),
+				'capability_type' => apply_filters( 'ms_news_capability', 'page' ),
 				'hierarchical' => false
 				),
 				$this
@@ -487,23 +471,36 @@ class MS_Plugin {
 		register_post_type( 'ms_relationship',
 			apply_filters( 'ms_register_post_type_ms_membership_relationship',
 				array(
-				'labels' => array(
-					'name' => __( 'membership relationship', MS_TEXT_DOMAIN ),
-					'singular_name' => __( 'membership relationship', MS_TEXT_DOMAIN ),
-					'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
-					'view_item' => __( 'View membership relationship', MS_TEXT_DOMAIN ),
-					'search_items' => __( 'Search membership relationships', MS_TEXT_DOMAIN ),
-					'not_found' => __( 'No membership relationships Found', MS_TEXT_DOMAIN )
+					'description' => __( 'membership relationships.', MS_TEXT_DOMAIN ),
+					'public' => false,
+					'has_archive' => false,
+					'publicly_queryable' => false,
+					'supports' => false,
+					'capability_type' => apply_filters( 'ms_relationships_capability', 'page' ),
+					'hierarchical' => false
 				),
-				'description' => __( 'membership relationships.', MS_TEXT_DOMAIN ),
-				'public' => false,
-				'has_archive' => false,
-				'publicly_queryable' => false,
-				'supports' => false,
-				'capability_type' => apply_filters( 'ms_relationships_capability', 'page' ),
-				'hierarchical' => false
+				$this
+			)
+		);
+		
+		/**
+		 * Register and Filter the News post type.
+		 *
+		 * @since 4.0.0
+		 * @param object $this The MS_Plugin object.
+		 */
+		register_post_type( 'ms_news',
+			apply_filters( 'ms_register_post_type_ms_news',
+				array(
+					'description' => __( 'membership news.', MS_TEXT_DOMAIN ),
+					'public' => false,
+					'has_archive' => false,
+					'publicly_queryable' => false,
+					'supports' => false,
+					'capability_type' => apply_filters( 'ms_news_capability', 'page' ),
+					'hierarchical' => false
 				),
-			$this
+				$this
 			)
 		);
 	}

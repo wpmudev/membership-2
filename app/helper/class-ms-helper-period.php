@@ -38,6 +38,8 @@ class MS_Helper_Period extends MS_Helper {
 	
 	const PERIOD_FORMAT = 'Y-m-d';
 	
+	const DATE_TIME_FORMAT = 'Y-m-d H:i';
+	
 	/**
 	 * Add a period interval to a date.
 	 *
@@ -107,13 +109,5 @@ class MS_Helper_Period extends MS_Helper {
 				self::PERIOD_TYPE_MONTHS => __( self::PERIOD_TYPE_MONTHS, MS_TEXT_DOMAIN ),
 				self::PERIOD_TYPE_YEARS => __( self::PERIOD_TYPE_YEARS, MS_TEXT_DOMAIN ),
 		);
-	}
-	
-	public static function get_period_units() {
-		$period_units = array();
-		for( $i = 1; $i <= 365; $i++ ){
-			$period_units[ $i ] = $i;
-		}
-		return $period_units;
 	}
 }

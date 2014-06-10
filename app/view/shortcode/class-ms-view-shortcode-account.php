@@ -38,6 +38,23 @@ class MS_View_Shortcode_Account extends MS_View {
 						<lavel><?php echo $this->data['member']->$field;?></lavel>
 					</p>
 				<?php endforeach;?>
+				<h2>Activity</h2>
+				<table>
+					<thead>
+						<tr>
+							<th><?php _e( 'Date', MS_TEXT_DOMAIN );?></th>
+							<th><?php _e( 'Actvity', MS_TEXT_DOMAIN );?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach( $this->data['news'] as $news ): ?>
+						<tr>
+							<td><?php echo $news->post_modified;?></td>
+							<td><?php echo $news->description;?></td>
+						</tr>
+					<?php endforeach;?>
+					</tbody>
+				</table>
 				<h2>Invoice</h2>
 				<table>
 					<thead>

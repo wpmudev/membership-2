@@ -36,30 +36,6 @@
 class MS_Controller_Admin_Bar extends MS_Controller {
 	
 	/**
-	 * Cookie name used for simularion.
-	 *
-	 * @since 4.0.0
-	 * @var string MS_SIMULATE_COOKIE
-	 */
-	const MS_SIMULATE_COOKIE = 'ms_simulate';
-
-	/**
-	 * Cookie name to simulate membership period.
-	 *
-	 * @since 4.0.0
-	 * @var string MS_PERIOD_COOKIE
-	 */	
-	const MS_PERIOD_COOKIE = 'ms_simulate_period';
-
-	/**
-	 * Cookie name to simulate date.
-	 *
-	 * @since 4.0.0
-	 * @var string MS_PERIOD_COOKIE
-	 */	
-	const MS_DATE_COOKIE = 'ms_simulate_date';
-	
-	/**
 	 * Capability required to use simulation feature.
 	 *
 	 * @since 4.0.0
@@ -69,15 +45,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private $capability = 'manage_options';
 	
 	/**
-	 * The model to use for simulating membership data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */	
-	private $model;
-
-	/**
 	 * Views to use for rendering admin bar features.
 	 *
 	 * @since 4.0.0
@@ -86,37 +53,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */	
 	private $views;	
 	
-	/**
-	 * Number of unit to simulate.
-	 *
-	 * E.g. 10 days, 5 weeks, x years.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $simulate_period_unit
-	 */	
-	private $simulate_period_unit = 0;
-
-	/**
-	 * Time period to simulate.
-	 *
-	 * Period can be 'days', 'weeks', 'months', 'years'.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $simulate_period_type
-	 */	
-	private $simulate_period_type = MS_Helper_Period::PERIOD_TYPE_DAYS;
-
-	/**
-	 * The date to simulate.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $simulate_date
-	 */	
-	private $simulate_date;
-		
 	/**
 	 * Admin bar nodes.
 	 *
@@ -155,18 +91,10 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
-		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
-		if ( defined('DOING_AJAX') && DOING_AJAX ) {
-// 			$this->add_action( 'wp_ajax_ms_simulate', 'simulate_membership' );
-// 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
-		}
-		else {
-			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar', 999 );
-			$this->add_action( 'add_admin_bar_menus', 'add_admin_bar_menus' );
-			// $this->add_action( 'wp_before_admin_bar_render', 'add_admin_bar_menus' );
-			$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts');
-			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
-		}
+		$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar', 999 );
+		$this->add_action( 'add_admin_bar_menus', 'add_admin_bar_menus' );
+		$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts');
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
 		
 		//TODO if global tables
 		$this->admin_url_function = 0
@@ -545,41 +473,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 	}
 	
-
-	/** REMOVE THIS */
-	/**
-	 * Adds "Enable Protection" menu to admin bar.
-	 *
-	 * **Hooks Actions: **  
-	 *  
-	 * * add_admin_bar_menus
-	 *
-	 * @since 4.0.0
-	 * @access public
-	 * @param object $wp_admin_bar WP_Admin_Bar object.
-	 */
-	// public function add_activate_plugin_menu( WP_Admin_Bar $wp_admin_bar ) {
-/*		$linkurl = 'admin.php?page=membership-settings&tab=general&setting=plugin_enabled&action=toggle_activation';
-		$linkurl = wp_nonce_url( $linkurl, 'toggle_activation' );
-		
-		$wp_admin_bar->add_menu( array(
-				'id'     => 'membership',
-				'parent' => 'top-secondary',
-				'title'  => __( 'Membership', MS_TEXT_DOMAIN ) . ' : <span class="ms-admin-bar-disabled">' . __( 'Disabled', MS_TEXT_DOMAIN ) . "</span>",
-				'href'   => $linkurl,
-				'meta'   => array(
-						'title' => __( 'Click to Enable the Membership protection', MS_TEXT_DOMAIN ),
-				),
-		) );
-	
-		$wp_admin_bar->add_menu( array(
-				'parent' => 'membership',
-				'id'     => 'membershipenable',
-				'title'  => __( 'Enable Membership', MS_TEXT_DOMAIN ),
-				'href'   => $linkurl,
-		) );*/
-	// }
-	
 	/**
 	 * Adds "View Site As" menu to admin bar.
 	 *
@@ -664,8 +557,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$link_url = wp_nonce_url( 
 						$admin_url_func( 
 								"?action=ms_simulate&membership_id={$membership->id}", 
-								/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
-// 								"admin-ajax.php?action=ms_simulate&membership_id={$membership->id}", 
 								( is_ssl() ? 'https' : 'http' ) 
 						),
 				 		"ms_simulate-{$membership->id}"
@@ -680,34 +571,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				);
 			}
 		}
-	}
-	
-	/**
-	 * Switches membership protection to view site as.
-     *
-	 * Ajax callback.
-	 *
-	 * **Hooks Actions: **  
-	 *  
-	 * * wp_ajax_ms_simulate
-	 *
-	 * @since 4.0.0
-	 * @deprecated
-	 * @access public
-	 */
-	public function simulate_membership() {
-		if ( isset( $_GET['membership_id'] ) ) {
-			$membership_id = (int) $_GET['membership_id'];
-				
-			check_ajax_referer( 'ms_simulate-' . $membership_id );
-			@setcookie( self::MS_SIMULATE_COOKIE , $membership_id, 0, COOKIEPATH, COOKIE_DOMAIN );
-			if( empty( $membership_id ) ) {
-				@setcookie( self::MS_PERIOD_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
-				@setcookie( self::MS_DATE_COOKIE , '', 0, COOKIEPATH, COOKIE_DOMAIN );
-			}
-		}
-	
-		exit;
 	}
 	
 	/**
