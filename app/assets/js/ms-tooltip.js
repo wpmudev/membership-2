@@ -9,7 +9,6 @@ jQuery( document ).ready(function( $ ) {
 	$('.ms-tooltip-info').click( function( event ) {				
 		if ( $( this ).hasClass( 'open' ) ) {
 			$( this ).removeClass( 'open' );
-			// $( this ).fadeOut(100);
 		} else {
 			$( this ).addClass( 'open' );
 			event.stopPropagation();

@@ -53,4 +53,5 @@
 	display:inline;
 	position: relative;
 	top: -2px;
+	z-index: 100;
 }
