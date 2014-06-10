@@ -38,7 +38,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				'ajax'      => false
 		) );
 	}
-	
+		
 	public function get_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb'     => '<input type="checkbox" />',

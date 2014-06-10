@@ -72,6 +72,7 @@ class MS_Helper_Html extends MS_Helper {
 			'equalTo'	=> '' ,
 			'field_options' => array(),
 			'multiple'	=> '',
+			'tooltip'   => '',
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 	
@@ -83,27 +84,33 @@ class MS_Helper_Html extends MS_Helper {
 				$name = $id;
 			}
 		}
+		
+		$tooltip_output = MS_Helper_Html::tooltip( $tooltip, true );
+		
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT:
 			case self::INPUT_TYPE_PASSWORD:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
 				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr />";
+				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
 				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name'>$value</textarea>";
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_SELECT:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple >";
 				foreach ($field_options as $key => $option ) {
 					$selected = selected( $key, $value, false );
@@ -111,14 +118,16 @@ class MS_Helper_Html extends MS_Helper {
 					echo "<option $selected value='$key'>$option</option>";
 				}
 				echo "</select>";
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_RADIO:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				foreach ($field_options as $key => $option ) {
 					$checked = checked( $key, $value, false );
 					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked /> ";
 					echo "<label for='{$id}_{$key}'>$option</label>";
 				}
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );
@@ -127,31 +136,36 @@ class MS_Helper_Html extends MS_Helper {
 				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked />";
 				echo "</span>";
 				echo "<span class='vds_label_check'>";
-				echo "<label for='$id'>$title</label>";
+				echo "<label for='$id'>$title $tooltip</label>";
 				echo "</span>";
 				echo "</div>";
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_WP_EDITOR:
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				wp_editor( $value, $id, $field_options );
 				break;
 			case self::INPUT_TYPE_BUTTON:
 				echo "<input class='ms-field-input button $class' type='button' id='$id' name='$name' value='$value' />";
+				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_SUBMIT:
 				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='$name' value='$value' />";
+				echo ( empty( $title ) ) ? $tooltip_output : '';			
 				break;
 			case self::INPUT_TYPE_IMAGE:
 				echo "<input type='image' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_RADIO_SLIDER:
 				$turned = ( $value ) ? 'on' : ''; 
 				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
-				echo ($title != '') ? "<span class='ms-field-label'>$title</span>" : '';
+				echo ($title != '') ? "<span class='ms-field-label'>$title {$tooltip_output}</span>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
 		    	echo "<div class='toggle'>$link_url</div>";
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				echo "</div>";
+				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 				
 		}		
@@ -197,6 +211,7 @@ class MS_Helper_Html extends MS_Helper {
 		$url = esc_url( $url );
 		echo "<a id='$id' title='$title' class='$class' href='$url'>$value</a>";
 	}
+	
 	/**
 	 * Method for outputting vertical tabs. 
 	 *
@@ -204,7 +219,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return void But does output HTML.
+	 * @return string Active tab.
 	 */	
 	public static function html_admin_vertical_tabs( $tabs ) {
 		
@@ -232,4 +247,36 @@ class MS_Helper_Html extends MS_Helper {
 		/** Return current active tab. */
 		return $active_tab;
 	}
+	
+	/**
+	 * Method for outputting tooltips. 
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void But does output HTML.
+	 */	
+	public static function tooltip( $tip = '', $echo = false ) {
+		if ( empty( $tip ) ) {
+			return;
+		}
+		
+		if ( $echo ) {
+			ob_start();
+		}
+		?>
+		<div class="ms-tooltip-wrapper">
+		<div class="ms-tooltip-info">?</div>
+		<div class="ms-tooltip">
+			<div class="ms-tooltip-button">&times;</div>
+			<div class="ms-tooltip-content">
+			<?php echo $tip; ?>
+			</div>
+		</div>
+		</div>
+		<?php
+		if ( $echo ) {
+			return ob_get_clean();
+		}
+	}
+	
 }

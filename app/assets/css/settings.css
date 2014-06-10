@@ -59,6 +59,16 @@
     overflow: hidden;
     padding: 10px 20px 20px;
 	min-height: 350px;
+	position:relative;
+}
+
+.ms-wrap .ms-settings h3 {
+	margin: 0.5em 1em 0 0;
+	font-size: 1.5em;
+}
+
+.ms-wrap .ms-settings .settings-description {
+    margin: 1em 0;
 }
 
 .ms-wrap .ms-label {
@@ -223,3 +233,68 @@ div.dripped .tooltip {
 #ms-settings-page-links-wrapper {
 	margin: .5em;
 }
+
+/* Shadow Tables */
+.shadow-table
+{
+    position: relative;
+    width: 100%;
+    background: #ddd;
+    padding: 0em 0em;
+    color: rgba(0,0,0, .8);
+    text-shadow: 0 1px 0 #fff;
+    line-height: 1.5;
+    margin: 0px auto;
+}
+
+.shadow-table:before, .shadow-table:after 
+{
+    z-index: -1; 
+    position: absolute; 
+    content: "";
+    bottom: 15px;
+    left: 10px;
+    width: 50%; 
+    top: 80%;
+    max-width:300px;
+    background: rgba(0, 0, 0, 0.7); 
+    -webkit-box-shadow: 0 15px 10px rgba(0,0,0, 0.3);   
+    -moz-box-shadow: 0 15px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 10px rgba(0, 0, 0, 0.3);
+    -webkit-transform: rotate(-3deg);    
+    -moz-transform: rotate(-3deg);   
+    -o-transform: rotate(-3deg);
+    -ms-transform: rotate(-3deg);
+    transform: rotate(-3deg);
+}
+
+.shadow-table:after 
+{
+    -webkit-transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -o-transform: rotate(3deg);
+    -ms-transform: rotate(3deg);
+    transform: rotate(3deg);
+    right: 10px;
+    left: auto;
+}
+
+table.widefat {
+	border: 1px solid #E5E5E5;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.widefat td{
+    font-size: 12px;
+    padding: 15px 6px 2px;
+    vertical-align: top;
+}
+
+.widefat tbody th.check-column{
+    padding: 15px 0 14px;
+}
+
+/* SETTING: GENERAL */
+textarea.ms-field-input { min-width: 80%; }
+
+

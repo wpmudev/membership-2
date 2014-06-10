@@ -1,4 +1,5 @@
 jQuery( document ).ready(function( $ ) {
+			
 	function ms_show_trial_period() {
 		if( $( '#trial_period_enabled' ).is( ':checked' ) ) {
 			$( '#ms-trial-period-wrapper' ).show();
@@ -11,12 +12,19 @@ jQuery( document ).ready(function( $ ) {
 	$( '#membership_type').change( function() {
 		$( '.ms-membership-type' ).hide();
 		membership_type = $( this ).val();
+
+		if ( 'permanent' == membership_type || 'recurring' == membership_type ) {
+			$( '.ms-membership-type' ).parents('tr').hide();
+		} else {
+			$( '.ms-membership-type' ).parents('tr').show();
+		}
+		
 		$( '#ms-membership-type-' + membership_type + '-wrapper').show();
 		if( 'finite' == membership_type || 'date-range' == membership_type ) {
-			$( '#ms-membership-on-end-membership-wrapper' ).show();
+			$( '#ms-membership-on-end-membership-wrapper' ).parents('tr').show();
 		}
 		else {
-			$( '#ms-membership-on-end-membership-wrapper' ).hide();
+			$( '#ms-membership-on-end-membership-wrapper' ).parents('tr').hide();
 		}
 	});
 	$( '#period_date_start' ).datepicker({

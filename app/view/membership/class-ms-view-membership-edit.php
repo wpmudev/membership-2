@@ -50,6 +50,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<h3><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h3>
+			<div class="settings-description"><?php _e( 'Specify the settings you would like for this membership. Ideally you would not change these often.', MS_TEXT_DOMAIN ); ?></div>
+			<hr />	
 			<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
@@ -137,7 +139,8 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Name', MS_TEXT_DOMAIN ),
 						'value' => $this->model->name,
-						'class' => '',
+						'class' => 'ms-field-input-name',
+						'tooltip' => __( 'Name your membership.<br />e.g. <strong>"Basic"</strong>, <strong>"Premium"</strong>', MS_TEXT_DOMAIN ),
 				),
 				'description' => array(
 						'id' => 'description',
@@ -145,7 +148,8 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 						'title' => __( 'Description', MS_TEXT_DOMAIN ),
 						'value' => $this->model->description,
-						'class' => '',
+						'class' => 'ms-field-input-description',
+						'tooltip' => __( 'This description will appear on Membership listing pages.', MS_TEXT_DOMAIN ),
 				),
 				'price' => array(
 						'id' => 'price',
@@ -153,7 +157,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Price', MS_TEXT_DOMAIN ),
 						'value' => $this->model->price,
-						'class' => '',
+						'class' => 'ms-field-input-price',
 				),
 				'membership_type' => array(
 						'id' => 'membership_type',
@@ -162,7 +166,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Membership type', MS_TEXT_DOMAIN ),
 						'value' => $this->model->membership_type,
 						'field_options' => MS_Model_Membership::get_membership_types(),
-						'class' => '',
+						'class' => 'ms-field-input-membership-type',
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
@@ -171,7 +175,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->period['period_unit'],
-						'class' => '',
+						'class' => 'ms-field-input-period-unit',
 				),
 				'period_type' => array(
 						'id' => 'period_type',
@@ -180,7 +184,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'ms-field-input-period-type',
 				),
 				'pay_cycle_period_unit' => array(
 						'id' => 'pay_cycle_period_unit',
@@ -189,7 +193,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
 						'value' => $this->model->pay_cycle_period['period_unit'],
-						'class' => '',
+						'class' => 'ms-field-input-pay-cycle-period-unit',
 				),
 				'pay_cycle_period_type' => array(
 						'id' => 'pay_cycle_period_type',
@@ -198,7 +202,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->pay_cycle_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'ms-field-input-pay-cycle-period-type',
 				),
 				'period_date_start' => array(
 						'id' => 'period_date_start',
@@ -206,14 +210,14 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
 						'value' => $this->model->period_date_start,
-						'class' => '',
+						'class' => 'ms-field-input-period-date-start',
 				),
 				'period_date_end' => array(
 						'id' => 'period_date_end',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $this->model->period_date_end,
-						'class' => '',
+						'class' => 'ms-field-input-period-date-end',
 				),
 				'on_end_membership_id' => array(
 						'id' => 'on_end_membership_id',
@@ -222,7 +226,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'After membership ends, change to', MS_TEXT_DOMAIN ),
 						'value' => $this->model->on_end_membership_id,
 						'field_options' => MS_Model_Membership::get_membership_names(),
-						'class' => '',
+						'class' => 'ms-field-input-on-end-membership',
 				),
 				'trial_period_enabled' => array(
 						'id' => 'trial_period_enabled',
@@ -230,7 +234,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period_enabled,
-						'class' => '',
+						'class' => 'ms-field-input-trial-period-enabled',
 				),
 				'trial_price' => array(
 						'id' => 'trial_price',
@@ -238,7 +242,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Trial price', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_price,
-						'class' => '',
+						'class' => 'ms-field-input-trial-price',
 				),
 				'trial_period_unit' => array(
 						'id' => 'trial_period_unit',
@@ -247,7 +251,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Trial period', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period['period_unit'],
-						'class' => '',
+						'class' => 'ms-field-input-trial-period-unit',
 				),
 				'trial_period_type' => array(
 						'id' => 'trial_period_type',
@@ -256,7 +260,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $this->model->trial_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'ms-field-input-trial-period-type',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',
@@ -282,6 +286,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the pages below that you would like to give access to as part of this membership. All pages will have access turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -301,6 +307,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Category access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the post categories below that you would like to give access to as part of this membership. All categories will have access turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />			
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -323,6 +331,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Post by post access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the posts below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />				
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -342,6 +352,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Comments access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />							
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -361,6 +373,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Menu access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the menu items below that you would like to give access to as part of this membership. Menu access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />											
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -380,6 +394,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Media access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the media below that you would like to give access to as part of this membership. Media access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />											
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -399,6 +415,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Shortcode access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+			<div class="settings-description"><?php _e( 'Select the shortcodes below that you would like to give access to as part of this membership. Shortcode access is turned off by default (except for WordPress default shortcodes and Membership special shortcodes).', MS_TEXT_DOMAIN ); ?></div>
+			<hr />														
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
@@ -418,6 +436,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Custom Post Type access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+			<div class="settings-description"><?php _e( 'Select the custom posts below that you would like to give access to as part of this membership. Note: To give access to an entire post type, turn off the \'Custom Post Type - Post by post\' addon.', MS_TEXT_DOMAIN ); ?></div>
+			<hr />			
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
@@ -437,6 +457,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Custom Post Type Group access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+			<div class="settings-description"><?php _e( 'Select the custom post types below that you would like to give access to as part of this membership. Post type access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+			<hr />														
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
@@ -553,6 +575,8 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Dripped content for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select post/pages below that you would like to drip feed as part of this membership. Please note: Setting content as dripped will override all other access rules (this membership only).', MS_TEXT_DOMAIN ); ?></div>
+				<hr />														
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>

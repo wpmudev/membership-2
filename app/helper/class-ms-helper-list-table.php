@@ -810,7 +810,7 @@ class MS_Helper_List_Table {
 	 * @return array
 	 */
 	function get_table_classes() {
-		return array( 'widefat', 'fixed', $this->_args['plural'] );
+		return array( 'widefat', 'fixed', $this->_args['plural'], 'shadow-table' );
 	}
 
 	/**
