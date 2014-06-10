@@ -177,10 +177,14 @@ class MS_View_Membership_Edit extends MS_View {
 						'id' => 'membership_type',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Membership type', MS_TEXT_DOMAIN ),
+						'title' => __( 'Type of membership', MS_TEXT_DOMAIN ),
 						'value' => $this->model->membership_type,
 						'field_options' => MS_Model_Membership::get_membership_types(),
 						'class' => 'ms-field-input-membership-type',
+						'tooltip' => '<strong>Single payment for permanent access:</strong><br />Members pay once and can access assigned content indefinitely or until manually removed.<br /><br />' . 
+						             '<strong>Single payment for finite access:</strong><br />Members pay once and can access assigned content until membership expires.<br /><br /> ' . 
+						             '<strong>Single payment for date range access:</strong><br />Members pay once to access content within a set date range.<br /><br />' .
+						             '<strong>Recurring payment:</strong><br />Members pay an ongoing subscription to access content.' ,
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
