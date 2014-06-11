@@ -124,14 +124,17 @@ class MS_Model_Gateway extends MS_Model_Option {
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
 		}
-		
 		$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $this->id, $status );
-		if( $this->pro_rate && ! empty( $member->membership_relationship[ $move_from_id ] ) ) {
-			$pro_rate = $member->membership_relationship[ $move_from_id ]->calulate_pro_rate();
-			$transaction->discount = $pro_rate;
-			$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pro_rate );
+		if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $member->membership_relationships[ $move_from_id ] ) ) {
+			$ms_relationship = $member->membership_relationships[ $move_from_id ];
+			$ms_relationship->move_to_id = $membership->id;
+			$ms_relationship->save();
+			if( $this->pro_rate ) {
+				$pro_rate = $ms_relationship->calulate_pro_rate();
+				$transaction->discount = $pro_rate;
+				$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pro_rate );
+			}
 		}
-
 		if( ! empty( $coupon_id ) ) {
 			$coupon = MS_Model_Coupon::load( $coupon_id );
 			$discount = $coupon->get_coupon_application( $member->id, $membership->id );

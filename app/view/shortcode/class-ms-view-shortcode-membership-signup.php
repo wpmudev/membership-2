@@ -53,7 +53,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					<div class="ms-form-price-boxes">
 						<?php do_action( 'ms_membership_form_before_memberships' ); ?>
 						<?php
-							$membership_ids = $this->data['member']->membership_ids;
+							$membership_ids = array_keys( $this->data['member']->membership_relationships );
 							$move_from_id = reset( $membership_ids );
 							$action = MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_SIGNUP;
 							if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id ) {

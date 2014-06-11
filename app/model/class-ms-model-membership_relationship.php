@@ -62,6 +62,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	protected $status;
 	
+	/**
+	 * Move to membership id.
+	 * @var int $move_to_id
+	 */
+	protected $move_to_id;
+	
 	public function __construct( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction_id = 0 ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
@@ -76,7 +82,13 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->description = $this->name;
 		$this->get_status();
 	}
-
+	
+	/**
+	 * Save model.
+	 * 
+	 * Only saves if is not admin user and not visitor.
+	 * Don't save visitor and default memberships (auto assigned). 
+	 */
 	public function save() {
 		if( ! empty( $this->user_id ) && ! MS_Model_Member::is_admin_user( $this->user_id ) ) {
 			$membership = MS_Model_Membership::load( $this->membership_id );
@@ -85,6 +97,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 		}
 	}
+	
 	/**
 	 * Retrieve membership relationships.
 	 * 
@@ -107,6 +120,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $membership_relationships, $args );
 	}
 	
+	/**
+	 * Retrive membership relationship count.
+	 * 
+	 * @param array $args
+	 * @return number The found count.
+	 */
 	public static function get_membership_relationship_count( $args = null ) {
 		
 		$args = self::get_query_args( $args );
@@ -116,6 +135,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return $query->found_posts;
 	}
 	
+	/**
+	 * Create default args to search posts.
+	 * 
+	 * Merge received args to default ones.
+	 * 
+	 * @param array $args 
+	 * @return array The args.
+	 */
 	public static function get_query_args( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -161,6 +188,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships_args', $args );
 	}
+	
 	/**
 	 * Set Membership Relationship start date.
 	 *
@@ -203,6 +231,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		$this->update_date = MS_Helper_Period::current_date();
 	}
+	
 	/**
 	 * Set trial expire date.
 	 * 
@@ -220,6 +249,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		
 	}
+	
 	/**
 	 * Set trial expire date.
 	 * 
@@ -241,16 +271,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 	}
 	
+	/**
+	 * Get Membership model.
+	 * 
+	 * @return MS_Model_Membership
+	 */
 	public function get_membership() {
 		return MS_Model_Membership::load( $this->membership_id );
 	}
 	
-	public function move( $move_from_id, $move_to_id ) {
-		$membership = MS_Model_Membership::load( $move_to_id );
-		
-		$this->membership_id = $move_to_id;
-		$this->set_start_date( $this->start_date );
-	}
 	/**
 	 * Get how many days in this membership.
 	 * 
@@ -259,6 +288,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function get_current_period() {
 		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->start_date );
 	}
+	
 	/**
 	 * Get how many days until this membership trial expires.
 	 * @return string
@@ -266,6 +296,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function get_remaining_trial_period() {
 		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->trial_expire_date );
 	}
+	
 	/**
 	 * Get how many days until this membership expires.
 	 * @return string
@@ -273,7 +304,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function get_remaining_period() {
 		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->expire_date );
 	}
-
+	
+	/**
+	 * Calculate pro rate value.
+	 * 
+	 * Pro rate using remaining membership days.
+	 * 
+	 * @return float The pro rate value.
+	 */
 	public function calculate_pro_rate() {
 		$value = 0;
 		$trial_value = 0;
@@ -299,6 +337,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		return apply_filters( 'ms_model_membership_relationship_calculate_pro_rate_value', $value + $trial_value, $this );
 	}
+	
 	/**
 	 * Set elapsed period of time of membership.
 	 * 
@@ -326,6 +365,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
 				$status = self::MEMBERSHIP_STATUS_TRIAL;
 			}
+			/** For MEMBERSHIP_TYPE_PERMANENT */
 			elseif( empty( $this->expire_date ) ) {
 				$status = self::MEMBERSHIP_STATUS_ACTIVE;
 			}
@@ -338,10 +378,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			/**
 			 * If user canceled the membership before expire date, still have access until expires.
 			 */
-			if( self::MEMBERSHIP_STATUS_CANCELED == $this->status && self::MEMBERSHIP_STATUS_EXPIRED != $status ) {
-				$status = self::MEMBERSHIP_STATUS_CANCELED; 
+			if( self::MEMBERSHIP_STATUS_CANCELED == $this->status ) {
+				/** For expired memberships or MEMBERSHIP_TYPE_PERMANENT */
+				if( self::MEMBERSHIP_STATUS_EXPIRED == $status || empty( $this->expire_date ) ) {
+					$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
+				}
+				else {
+					$status = self::MEMBERSHIP_STATUS_CANCELED;
+				} 
 			}
-			$this->status = $status;
+			if( $status != $this->status ) {
+				$this->status = $status;
+				$this->save();
+			}
 		}
 		
 		return apply_filters( 'membership_model_membership_relationship_status', $status, $this );
@@ -359,7 +408,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function __get( $property ) {
 		switch( $property ) {
 			case 'status':
-				return $this->$property = $this->get_status();
+				return $this->get_status();
 				break;
 			default:
 				return $this->$property;
@@ -388,6 +437,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					break;
 				case 'expire_date':
 					$this->set_expire_date( $value );
+					break;
+				case 'status':
+					$this->$property = $value;
+					$this->get_status();
 					break;
 				default:
 					$this->$property = $value;

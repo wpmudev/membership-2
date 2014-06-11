@@ -128,7 +128,7 @@ class MS_Model_News extends MS_Model_Custom_Post_Type {
 					);
 					break;
 				case self::TYPE_MS_DEACTIVATE:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has deactivated to membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
+					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has deactivated membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
 							$member->username,
 							$membership->name
 					);

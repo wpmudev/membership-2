@@ -207,7 +207,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		
 		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Plugin::instance()->addon->multiple_membership );
 
-		if( count( $item->membership_ids ) > 0 ) {
+		if( count( $item->membership_relationships ) > 0 ) {
 			if( ! $multiple_membership ) {
 				unset( $actions['add'] );
 			}
@@ -220,7 +220,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_start( $item ) {
-		if( count( $item->membership_ids ) > 0 ) {
+		if( count( $item->membership_relationships ) > 0 ) {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
 				$period = $membership_relationship->get_current_period()->format( "%a days");
@@ -257,7 +257,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_expire( $item ) {
-		if( count( $item->membership_ids ) > 0 ) {
+		if( count( $item->membership_relationships ) > 0 ) {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
 				if( $membership_relationship->expire_date )  {
@@ -279,7 +279,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 
 	function column_gateway( $item ) {
-		if( count( $item->membership_ids ) > 0 ) {
+		if( count( $item->membership_relationships ) > 0 ) {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
 				$html[] = $membership_relationship->gateway_id;

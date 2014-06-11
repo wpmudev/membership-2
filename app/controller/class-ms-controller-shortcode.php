@@ -106,7 +106,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		// Get a list of all the memberships that the current user is part of
 		$args = null;
 		$data['member'] = MS_Model_Member::get_current_member();
-		$not_in = $data['member']->membership_ids;
+		$not_in = array_keys( $data['member']->membership_relationships );
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 
@@ -204,10 +204,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 				)
 		);
 		$data['member'] = MS_Model_Member::get_current_member();
-		$membership_ids = $data['member']->membership_ids;
-		if( is_array( $membership_ids ) ) {
-			foreach( $membership_ids as $membership_id ) {
-				$data['membership'][] = MS_Model_Membership::load( $membership_id );
+		if( is_array( $data['member']->membership_relationships ) ) {
+			foreach( $data['member']->membership_relationships as $ms_relationship ) {
+				$data['membership'][] = $ms_relationship->get_membership();
 			}
 		}
 		$data['transaction'] = MS_Model_Transaction::get_transactions( array( 

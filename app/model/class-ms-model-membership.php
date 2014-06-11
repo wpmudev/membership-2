@@ -214,7 +214,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						)
 				)
 		);
-		$query = new WP_Query( $args );
+		$query = new WP_Query($args);
 		$item = $query->get_posts();
 
 		$visitor_membership = null;

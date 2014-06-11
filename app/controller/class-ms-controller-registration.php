@@ -296,7 +296,7 @@ class MS_Controller_Registration extends MS_Controller {
 					// MS_Helper_Debug::log( $_GET );
 					$gateway_id = 'free_gateway';
 					$gateway = MS_Model_Gateway::factory( $gateway_id );
-					$gateway->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID );
+					$gateway->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID, $move_from_id );
 					$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_WELCOME ] );
 					wp_safe_redirect( $url );
 				}
@@ -394,6 +394,7 @@ class MS_Controller_Registration extends MS_Controller {
 		$data['gateways'] = MS_Model_Gateway::get_gateways();
 		$data['member'] = $member;
 		$data['currency'] = MS_Plugin::instance()->settings->currency;
+		$data['move_from_id'] = 0;
 		if( ! empty ( $_GET['move_from'] ) ) {
 			$data['move_from_id'] = $_GET['move_from'];
 // 			$data['pro_rate'] = $member->membership_relationships[ $_GET['move_from'] ]->calculate_pro_rate(); 
