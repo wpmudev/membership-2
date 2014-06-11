@@ -1,0 +1,24 @@
+.ms-select{
+	width: 20em;
+}
+#url-test-results-wrapper { 
+	margin: 10px 0; 
+	border: 1px dotted #ddd; 
+}
+#url-test-results-wrapper div { 
+	border: 1px dotted #ddd; 
+	padding: 10px; 
+}
+#url-test-results-wrapper div:last-child {
+	border-bottom: 0; 
+}
+#url-test-results-wrapper span {
+	float: right;
+}
+.ms-rule-valid {
+	color: green; 
+	font-weight: bold;
+}
+.ms-rule-invalid {
+	color: red; 
+}

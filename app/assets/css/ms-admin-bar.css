@@ -1,0 +1,217 @@
+/** Admin bar */
+.ms-admin-bar-disabled {
+	color: red;
+	text-shadow: none;
+}
+#simulate_period_unit {
+	width: 2em;
+}
+#simulate_date {
+	width: 6em;
+}
+#simulate_submit {
+/*    padding: 5px 10px;*/
+/*	min-width:2em;
+	position: relative;
+	top: -2px;
+	line-height:20px;
+	padding:15px;
+*//*	line-height: 22px;*/
+/*    position: relative;
+    text-decoration: none;
+    vertical-align: middle;
+*/}
+
+#wpadminbar .membership-view-site-as,
+#wpadminbar .membership-simulate-period,
+#wpadminbar .membership-view-site-as form,
+#wpadminbar .membership-simulate-period form,
+#wpadminbar .membership-view-site-as div,
+#wpadminbar .membership-simulate-period div,
+#wpadminbar .membership-simulate-period div.ab-item,
+#wpadminbar .membership-view-site-as div.ab-item,
+#wpadminbar .membership-simulate-period select,
+#wpadminbar .membership-view-site-as select {
+	display:inline;
+}
+
+#wpadminbar .quicklinks > ul > li.membership-simulate-period input,
+#wpadminbar .quicklinks > ul > li.membership-view-site-as input {
+	margin: 3px 4px 3px 0;
+	padding: 2px;
+	line-height: 20px;
+	background: #365d79;
+	color: #c9e4f6;
+	text-align: center;
+	border:none;
+	min-width: 2em;	
+}
+
+#wpadminbar .quicklinks > ul > li.membership-simulate-period .ms-submit {
+/*	position: relative;
+	top: -1px;
+*/	vertical-align: center;
+	min-width: 2.5em;	
+	background: #0a6c9c;
+	color: #ffffff;
+}
+
+#wpadminbar .quicklinks > ul > li.membership-simulate-period .ms-submit:hover {
+	background: #0094dc;	
+}
+
+#wpadminbar .membership-simulate-period input[type="text"], 
+#wpadminbar .membership-simulate-period input[type="password"], 
+#wpadminbar .membership-simulate-period input[type="number"], 
+#wpadminbar .membership-simulate-period input[type="search"], 
+#wpadminbar .membership-simulate-period input[type="email"], 
+#wpadminbar .membership-simulate-period input[type="url"].
+#wpadminbar .membership-view-site-as input[type="text"], 
+#wpadminbar .membership-view-site-as input[type="password"], 
+#wpadminbar .membership-view-site-as input[type="number"], 
+#wpadminbar .membership-view-site-as input[type="search"], 
+#wpadminbar .membership-view-site-as input[type="email"], 
+#wpadminbar .membership-view-site-as input[type="url"] {
+
+}
+
+
+/* Firefox annoyance! */
+#wpadminbar .membership-simulate-period input[type="submit"]::-moz-focus-inner, 
+#wpadminbar .membership-simulate-period input[type="button"]::-moz-focus-inner,
+#wpadminbar .membership-simulate-period button::-moz-focus-inner { 
+	border : 0px; 
+}
+/* IE annoyance */
+#wpadminbar .membership-simulate-period input[type="submit"]:focus, 
+#wpadminbar .membership-simulate-period input[type="button"]:focus { 
+	outline : none; 
+}
+
+
+#wpadminbar .membership-simulate-period .ms-select  {
+	margin-right: 4px;	
+}
+
+#wpadminbar .membership-simulate-period .ms-select,
+#wpadminbar .membership-view-site-as .ab-select {
+	position:relative;
+	top: -1px;
+
+}
+#wpadminbar .membership-view-site-as .ab-select {
+	margin-right: 20px;
+}	
+
+#wpadminbar.simulation-mode {
+	background: #223d52;
+}
+
+
+#wpadminbar .ab-top-menu > li > .ab-item:focus,
+#wpadminbar.nojq .quicklinks .ab-top-menu > li > .ab-item:focus,
+#wpadminbar .ab-top-menu > li:hover > .ab-item,
+#wpadminbar .ab-top-menu > li.hover > .ab-item {
+	background: inherit;
+	color: inherit;
+}
+
+#wpadminbar .quicklinks > ul > li.ms-exit-memberships,
+#wpadminbar .quicklinks > ul > li.ms-test-memberships {
+	padding: 5px 0 3px 0;
+	margin-left:10px;
+}
+
+#wpadminbar .quicklinks .menupop.hover > ul > li.ms-exit-memberships:hover,
+#wpadminbar .quicklinks .menupop.hover > ul > li.ms-test-memberships:hover {
+	background: none;
+	color: inherit;
+}
+
+
+#wpadminbar .quicklinks > ul > li.ms-exit-memberships > a,
+#wpadminbar .quicklinks > ul > li.ms-test-memberships > a { 
+	background: #0a6c9c;
+	height:auto;
+	line-height: 22px;
+	color: #ffffff;	
+}
+#wpadminbar .quicklinks > ul > li.ms-exit-memberships > a:hover,
+#wpadminbar .quicklinks > ul > li.ms-test-memberships > a:hover { 
+	background: #0094dc;
+}
+#wpadminbar .quicklinks > ul > li.ms-exit-memberships {
+	position: absolute;
+	right: 10px;
+}
+
+/* Calendar Styling */
+#wpadminbar .quicklinks > ul > li.membership-simulate-period #simulate_date {
+	background: #365d79 url('../images/calendar.png') 6.1em 3px no-repeat;	
+	padding-right:20px;
+}
+
+div.ui-datepicker { margin-top:10px;}
+
+/* Get rid of bevel corners */
+div.ui-datepicker-header,
+.ui-datepicker.ui-corner-all {
+	border-radius: 0;
+}
+
+/* New icons */
+.ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span, 
+.ui-state-hover .ui-icon,
+.ui-state-focus .ui-icon,
+.ui-widget-header .ui-icon,
+.ui-icon {
+	background-image: url("../images/ui-icons-white.png");
+}
+
+div.ui-datepicker-header,
+div.ui-datepicker {
+	padding: 0;
+	border: none;
+}
+
+div.ui-datepicker-header {
+	background: #4f83aa;
+	font-size: 0.9em;
+	color: #ffffff;
+	font-weight: normal;
+}
+
+table.ui-datepicker-calendar {
+	padding:3px;
+	background: #375d7a;
+}
+table.ui-datepicker-calendar thead th {
+	font-size: 0.9em;
+	color: #ffffff;
+	font-weight: normal;
+	padding: 3px 5px;
+}
+
+table.ui-datepicker-calendar tbody td a,
+.ui-datepicker td span, .ui-datepicker td a {
+    text-align: center;
+    text-decoration: none;
+	padding: 8px;
+}
+
+table.ui-datepicker-calendar tbody .ui-state-default, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-default, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+	background: #223d52;	
+	border: none;
+	color: #ffffff;
+}
+
+table.ui-datepicker-calendar tbody .ui-state-active, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-active, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+table.ui-datepicker-calendar tbody .ui-state-hover, 
+table.ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover, 
+table.ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+	background: #4f83aa;
+}

@@ -1,0 +1,16 @@
+#rule_type {
+	width: 20%;
+	vertical-align: top;
+	margin: 0 3em 0 0;
+	float: left;
+}
+
+.ms-select-rule-type {
+	width: 70%;
+	height: 15em!important;
+	float: right;
+	display: none;
+}
+#ms-inherit-rules-wrapper {
+	display: none;
+}
