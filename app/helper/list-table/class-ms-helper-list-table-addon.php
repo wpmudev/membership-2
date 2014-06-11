@@ -77,7 +77,7 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 	}
 	
 	public function column_active( $item ) {
-		$action = $item->active ? 'disable' : 'enable';
+		$action = 'toggle_activation';
 		
 		ob_start();
 		/* Render toggles */
@@ -87,7 +87,9 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 						$_REQUEST['page'],
 						$item->id,
 						$action
-				) );
+				),
+				$action
+		);
 		?>
 			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
 			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>

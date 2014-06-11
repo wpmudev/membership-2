@@ -436,6 +436,13 @@ class MS_Controller_Membership extends MS_Controller {
 					break;
 				case 'no_access':
 					unset( $rule_value[ $item ] );
+				case 'toggle_activation':
+					if( isset( $rule_value[ $item ] ) ) {
+						unset( $rule_value[ $item ] );
+					}
+					else {
+						$rule_value[ $item ] = $item;
+					}
 					break;
 			}
 		}

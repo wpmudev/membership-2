@@ -147,7 +147,7 @@ class MS_Controller_Addon extends MS_Controller {
 					 */
 					do_action( 'membership_addon_manager_get_handler', $request_fields, $this );
 					
-					if( ! empty( $request_fields['action'] ) && ! empty( $request_fields['addon'] ) && ! empty( $request_fields['_wpnonce'] ) && wp_verify_nonce( $request_fields['_wpnonce'] ) ) {
+					if( ! empty( $request_fields['action'] ) && ! empty( $request_fields['addon'] ) && ! empty( $request_fields['_wpnonce'] ) && wp_verify_nonce( $request_fields['_wpnonce'], $request_fields['action'] ) ) {
 						$msg = $this->save_addon( $request_fields['action'], array( $request_fields['addon'] ) );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'addon', 'action', '_wpnonce' ) ) ) ) ;
 					}
@@ -214,11 +214,16 @@ class MS_Controller_Addon extends MS_Controller {
 		}
 
 		foreach( $addons as $addon ) {
-			if( 'enable' == $action ) {
-				$this->model->$addon = true;
-			}
-			elseif ( 'disable' == $action ) {
-				$this->model->$addon = false;
+			switch( $action ) {
+				case 'enable':
+					$this->model->$addon = true;
+					break;
+				case 'disable':
+					$this->model->$addon = false;
+					break;
+				case 'toggle_activation':
+					$this->model->$addon = ! $this->model->$addon;
+					break;
 			}
 		}
 		$this->model->save();

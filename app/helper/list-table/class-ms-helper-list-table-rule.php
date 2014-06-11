@@ -103,7 +103,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_access( $item ) {
-		$action = $item->access ? 'no_access' : 'give_access';
+		$action = 'toggle_activation';
 
 		ob_start();
 		/* Render toggles */
