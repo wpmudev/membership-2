@@ -11,6 +11,7 @@
     -moz-box-shadow: -3px 0px 10px 1px rgba(0, 0, 0, 0.3);	
 	box-shadow: rgba(0, 0, 0, 0.12) -3px 0px 10px 1px;
 	border: 1px solid #ffffff;
+
 }
 
 .ms-tooltip-button { 
@@ -18,7 +19,7 @@
 	top: 10px; 
 	right: 10px; 
 	font: 16px/12px bold "Helvetica"; 
-	cursor: hand; 
+	cursor: pointer; 
 }
 
 .ms-tooltip-content { 
@@ -35,6 +36,7 @@
 	font: 7px/7px "Helvetica"; 
 	box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 2px 1px;
 	border: 1px solid #0A6C9C;
+	cursor: pointer;
 }
 
 /** Add left arrow. */
