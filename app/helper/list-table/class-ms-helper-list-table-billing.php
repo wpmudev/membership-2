@@ -48,11 +48,12 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
 			'status' => __( 'Status', MS_TEXT_DOMAIN ),
 			'amount' => __( 'Amount', MS_TEXT_DOMAIN ) . " ($currency)",
-			'tax_name' => __( 'Tax name', MS_TEXT_DOMAIN ),
-			'tax_rate' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
+			'discount' => __( 'Discount', MS_TEXT_DOMAIN ) . " ($currency)",
+// 			'tax_name' => __( 'Tax name', MS_TEXT_DOMAIN ),
+// 			'tax_rate' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
 			'total' => __( 'Total', MS_TEXT_DOMAIN ) . " ($currency)",
 			'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
-			'gateway' => __( 'Gateway', MS_TEXT_DOMAIN ),
+			'gateway_id' => __( 'Gateway', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -73,7 +74,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				'amount' => array( 'amount', false ),
 				'total' => array( 'total', false ),
 				'due_date' => array( 'due_date', false ),
-				'gateway' => array( 'gateway_id', false ),
+				'gateway_id' => array( 'gateway_id', false ),
 		) );
 	}
 	
@@ -169,29 +170,13 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				$membership = MS_Model_Membership::load( $item->membership_id );
 				$html = $membership->name;
 				break;
-			case 'status':
-				$html = $item->status;
-				break;
-			case 'amount':
-				$html = $item->amount;
-				break;
-			case 'tax_name':
-				$html = $item->tax_name;
-				break;
-			case 'tax_rate':
-				$html = $item->tax_rate;
-				break;
-			case 'total':
-				$html = $item->total;
-				break;
-			case 'due_date':
-				$html = $item->due_date;
-				break;
-			case 'gateway':
-				$html = $item->gateway_id;
-				break;
 			default:
-				$html = print_r( $item, true ) ;
+				if( property_exists( $item, $column_name ) ) {
+					$html = $item->$column_name;
+				}
+				else {
+					$html = print_r( $item, true );
+				}
 				break;
 		}
 		return $html;

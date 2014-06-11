@@ -178,7 +178,6 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * @return float The price after applying the coupon.
 	 */
 	public function apply_coupon( $membership ) {
-		
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
 		$original_price = $price;
 		$discount = 0;
@@ -193,8 +192,8 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			if( $price < 0 ) {
 				$price = 0;
 			}
-			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. The new value after applying coupon: %s %s', MS_TEXT_DOMAIN ), $this->code, MS_Plugin::instance()->settings->currency, $price );
 			$discount = $original_price - $price;
+			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. Discount applied: %s %s', MS_TEXT_DOMAIN ), $this->code, MS_Plugin::instance()->settings->currency, $discount );
 			$this->save_coupon_application( $membership->id, $discount );
 		}
 		
@@ -263,16 +262,13 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @param int $membership_id
 	 */
-	public function remove_coupon_application( $membership_id ) {
+	public function remove_coupon_application( $user_id, $membership_id ) {
 	
 		global $blog_id;
 	
-		/** Grab the user account as we should be logged in by now */
-		$user = MS_Model_Member::get_current_member();
-	
 		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
 		
-		$transient_name = "ms_coupon_{$blog_id}_{$user->id}_{$membership_id}";
+		$transient_name = "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}";
 		
 		if ( $global && function_exists( 'get_site_transient' ) ) {
 			delete_site_transient( $transient_name );

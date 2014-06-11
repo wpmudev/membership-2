@@ -129,16 +129,21 @@ class MS_Model_Gateway extends MS_Model_Option {
 		if( $this->pro_rate && ! empty( $member->membership_relationship[ $move_from_id ] ) ) {
 			$pro_rate = $member->membership_relationship[ $move_from_id ]->calulate_pro_rate();
 			$transaction->discount = $pro_rate;
-			$notes .= __( 'Pro rate discount: ', MS_TEXT_DOMAIN ) . $pro_rate;
+			$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pro_rate );
 		}
+
 		if( ! empty( $coupon_id ) ) {
 			$coupon = MS_Model_Coupon::load( $coupon_id );
-			$discount = $coupon->get_coupon_application();
+			$discount = $coupon->get_coupon_application( $member->id, $membership->id );
+			$coupon->remove_coupon_application( $member->id, $membership->id );
+			$coupon->used++;
+			$coupon->save();
 			$transaction->discount += $discount; 
-			$notes .= sprintf( __( 'Coupon %s discount: %s', MS_TEXT_DOMAIN ), $pro_rate, $discount );
+			$notes .= sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $transaction->currency, $discount );
 		}
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;
+		$transaction->due_date = MS_Helper_Period::current_date();
 		$transaction->process_transaction( $status, true );
 		$transaction->save();
 	}

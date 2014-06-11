@@ -403,7 +403,7 @@ class MS_Controller_Registration extends MS_Controller {
 		$coupon = MS_Model_Coupon::load_by_coupon_code( $coupon_code );
 		if( ! empty( $_POST['apply_coupon_code'] ) ) {
 			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
-// 			$data['discount'] =  $coupon->apply_coupon( $membership );
+			$data['discount'] =  $coupon->apply_coupon( $membership );
 		}
 		elseif( ! empty( $_POST['remove_coupon_code'] ) ) {
 			$coupon->remove_coupon_application( $membership_id );

@@ -31,7 +31,7 @@ class MS_View_Registration_Payment extends MS_View {
 					</td>
 					<td class='ms-buy-now-column'>
 						<?php
-							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'] );
+							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
 						?>
 					</td>
 				</tr>

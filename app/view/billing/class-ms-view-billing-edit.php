@@ -40,6 +40,7 @@ class MS_View_Billing_Edit extends MS_View {
 	
 	function prepare_fields() {
 		$transaction = $this->data['transaction'];
+		$currency = MS_Plugin::instance()->settings->currency;
 		$this->fields = array(
 			'execute' => array(
 					'id' => 'execute',
@@ -82,24 +83,31 @@ class MS_View_Billing_Edit extends MS_View {
 			'amount' => array(
 					'id' => 'amount',
 					'section' => self::BILLING_SECTION,
-					'title' => __( 'Amount', MS_TEXT_DOMAIN ),
+					'title' => sprintf( __( 'Amount (%s)', MS_TEXT_DOMAIN ), $currency ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $transaction->amount,
 			),
-			'tax_name' => array(
-					'id' => 'tax_name',
+			'discount' => array(
+					'id' => 'discount',
 					'section' => self::BILLING_SECTION,
-					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
+					'title' => sprintf( __( 'Discount (%s)', MS_TEXT_DOMAIN ), $currency ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $transaction->tax_name,
-			),
-			'tax_rate' => array(
-					'id' => 'tax_rate',
-					'section' => self::BILLING_SECTION,
-					'title' => __( 'Tax rate', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $transaction->tax_rate,
-			),
+					'value' => $transaction->discount,
+			),				
+// 			'tax_name' => array(
+// 					'id' => 'tax_name',
+// 					'section' => self::BILLING_SECTION,
+// 					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
+// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 					'value' => $transaction->tax_name,
+// 			),
+// 			'tax_rate' => array(
+// 					'id' => 'tax_rate',
+// 					'section' => self::BILLING_SECTION,
+// 					'title' => __( 'Tax rate', MS_TEXT_DOMAIN ),
+// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 					'value' => $transaction->tax_rate,
+// 			),
 			'due_date' => array(
 					'id' => 'due_date',
 					'section' => self::BILLING_SECTION,
@@ -107,6 +115,13 @@ class MS_View_Billing_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $transaction->due_date,
 					'class' => 'ms-date',
+			),
+			'notes' => array(
+					'id' => 'notes',
+					'section' => self::BILLING_SECTION,
+					'title' => __( 'Notes', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+					'value' => $transaction->notes,
 			),
 			'gateway_id' => array(
 					'id' => 'gateway_id',

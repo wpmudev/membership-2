@@ -60,18 +60,18 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $coupon_id;
 	
+	protected $currency;
+	
 	protected $amount;
 	
-	protected $currency;
+	protected $discount;
 	
 	protected $status;
 	
 	protected $due_date;
 	
 	protected $notes;
-	
-	protected $expire_date;
-	
+		
 	protected $invoice;
 	
 	protected $taxable;
@@ -182,6 +182,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$transaction = apply_filters( 'ms_model_transaction', new self() );
 		$transaction->gateway_id = $gateway_id;
 		$transaction->membership_id = $membership->id;
+		$transaction->currency = MS_Plugin::instance()->settings->currency;
 		$transaction->amount = $membership->price;
 		$transaction->status = $status;
 		$transaction->user_id = $member->id;
@@ -264,6 +265,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'currency':
 				case 'notes':
 				case 'tax_name':
+				case 'notes':
 					$this->$property = sanitize_text_field( $value );
 					break;
 				case 'status':
@@ -272,7 +274,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 					}
 					break;
 				case 'due_date':
-				case 'expire_date':
 					$this->$property = $this->validate_date( $value );
 					break;
 				case 'taxable':

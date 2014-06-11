@@ -262,12 +262,13 @@ class MS_View_Settings extends MS_View {
 						</div>
 					</div>
 					<div class="postbox metabox-holder">
-						<h3><label for="title"><?php _e( 'Invoice sender name', MS_TEXT_DOMAIN ) ;?></label></h3>
+						<h3><label for="title"><?php _e( 'Invoice', MS_TEXT_DOMAIN ) ;?></label></h3>
 						<div class="inside">
 							<p class="description"><?php _e( 'This is the name used in the invoice.', MS_TEXT_DOMAIN );?> </p>
 							<?php MS_Helper_Html::html_input( $this->fields['invoice_sender_name'] ) ;?>
 						</div>
 					</div>
+					<!-- 
 					<div class="postbox metabox-holder">
 						<h3><label for="title"><?php _e( 'Tax', MS_TEXT_DOMAIN ) ;?></label></h3>
 						<div class="inside">
@@ -276,6 +277,7 @@ class MS_View_Settings extends MS_View {
 							<?php MS_Helper_Html::html_input( $this->fields['tax_rate'] ) ;?>
 						</div>
 					</div>
+					 -->
 					<p>
 						<?php MS_Helper_Html::html_submit() ;?>
 					</p>

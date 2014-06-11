@@ -51,6 +51,17 @@ class MS_Model_Plugin extends MS_Model {
 		MS_Model_Upgrade::upgrade();
 	}
 	
+	/**
+	 * Initialise current member.
+	 *
+	 * Get current member and membership relationships.
+	 * If user is not logged in (visitor), assign a visitor membership.
+	 * If user is logged in but has not any memberships, assign a default membership.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
 	public function init_member() {
 		$this->member = MS_Model_Member::get_current_member();
 		$this->check_member_status();
@@ -257,6 +268,13 @@ class MS_Model_Plugin extends MS_Model {
 		
 	}
 	
+	/**
+	 * Config cron time period.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
 	public function cron_time_period( $periods ) {
 		if ( !is_array( $periods ) ) {
 			$periods = array();
@@ -269,7 +287,16 @@ class MS_Model_Plugin extends MS_Model {
 	
 		return $periods;
 	}
-	
+
+	/**
+	 * Setup automatic communications.
+	 *
+	 * Setup cron to call action ms_communications_process. 
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
 	public function setup_communications() {
 		
 		if( ! ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
@@ -277,7 +304,7 @@ class MS_Model_Plugin extends MS_Model {
 			
 			// Action to be called by the cron job
 			$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
-			if ( !wp_next_scheduled( 'ms_communications_process' ) ) {
+			if ( ! wp_next_scheduled( 'ms_communications_process' ) ) {
 				wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
 			}
 		}
