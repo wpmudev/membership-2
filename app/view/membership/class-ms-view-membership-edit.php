@@ -23,13 +23,13 @@ class MS_View_Membership_Edit extends MS_View {
 		if( $this->model->name ) {
 			$this->title = $this->model->name;
 			if( false === stripos( $this->title, 'membership' ) ) {
-				$this->title .= ' Membership';
+				$this->title = sprintf( __( '%s Membership', MS_TEXT_DOMAIN ), $this->title );
 			}
 		}
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap wrap'>
-			<h2 class='ms-settings-title'><?php echo $this->title; ?></h2>		
+			<h2 class='ms-settings-title'><i class="fa fa-pencil-square"></i> <?php echo $this->title; ?></h2>		
 	
 			<?php
 				$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
@@ -51,7 +51,7 @@ class MS_View_Membership_Edit extends MS_View {
 		<div class='ms-settings'>
 			<h3><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h3>
 			<div class="settings-description"><?php _e( 'Specify the settings you would like for this membership. Ideally you would not change these often.', MS_TEXT_DOMAIN ); ?></div>
-			<hr />	
+
 			<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>

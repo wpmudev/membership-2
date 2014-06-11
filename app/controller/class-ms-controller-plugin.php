@@ -295,6 +295,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_enqueue_style( 'membership-admin' );
 		wp_register_style( 'membership-tooltip', MS_Plugin::instance()->url. 'app/assets/css/ms-tooltip.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-tooltip' );
+		wp_register_style( 'font-awesome', MS_Plugin::instance()->url. 'app/assets/css/font-awesome.min.css', MS_Plugin::instance()->version );
+		wp_enqueue_style( 'font-awesome' );
 		// MS_Helper_Debug::log( __('Register admin CSS...', MS_TEXT_DOMAIN ) );			
 	}
 	
@@ -308,7 +310,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function enqueue_plugin_styles() {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
 		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css', MS_Plugin::instance()->version );
-		wp_enqueue_style( 'membership-shortcode' );
+		wp_enqueue_style( 'membership-shortcode' );		
 		// MS_Helper_Debug::log( __('Register Membership front-end CSS...', MS_TEXT_DOMAIN ) );					
 	}
 	

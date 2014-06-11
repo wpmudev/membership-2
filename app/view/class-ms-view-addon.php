@@ -55,7 +55,7 @@ class MS_View_Addon extends MS_View {
 		
 		?>
 		<div class='ms-wrap'>
-			<h2 class='ms-settings-title'><?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>		
+			<h2 class='ms-settings-title'><i class="fa fa-puzzle-piece"></i> <?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>		
 			<form action="" method="post">
 				<?php $list_table->display(); ?>
 			</form>

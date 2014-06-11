@@ -14,7 +14,7 @@ class MS_View_Coupon_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2><?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
+				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->data['action'] ); ?>
 					<table class="form-table">

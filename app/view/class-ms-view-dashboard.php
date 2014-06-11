@@ -53,7 +53,7 @@ class MS_View_Dashboard extends MS_View {
 		?>
 		<div class='ms-wrap'>
 			<div class="icon32" id="icon-index"><br></div>
-			<h2 class='ms-settings-title'><?php _e( 'Membership Dashboard', MS_TEXT_DOMAIN );?></h2>		
+			<h2 class='ms-settings-title'><i class="fa fa-bar-chart-o"></i> <?php _e( 'Membership Dashboard', MS_TEXT_DOMAIN );?></h2>		
 			<div id="dashboard-widgets-wrap">
 				<div class="metabox-holder" id="dashboard-widgets">
 					<div style="width: 49%;" class="postbox-container">

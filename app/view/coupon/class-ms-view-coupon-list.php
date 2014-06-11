@@ -53,8 +53,8 @@ class MS_View_Coupon_List extends MS_View {
 		ob_start();
 		?>
 		
-		<div class="wrap">
-			<h2><?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?>
+		<div class="wrap ms-wrap">
+			<h2 class="ms-settings-title"><i class="fa fa-ticket"></i> <?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?>
 				<a class="add-new-h2" href="admin.php?page=membership-coupons&action=edit&coupon_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
 			</h2>
 			<form action="" method="post">

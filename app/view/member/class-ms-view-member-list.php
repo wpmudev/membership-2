@@ -31,8 +31,8 @@ class MS_View_Member_List extends MS_View {
 		ob_start();
 		?>
 		
-		<div class="wrap">
-			<h2><?php  _e( 'Members', MS_TEXT_DOMAIN ) ; ?>
+		<div class="wrap ms-wrap">
+			<h2 class="ms-settings-title"><i class="fa fa-users"></i> <?php  _e( 'Members', MS_TEXT_DOMAIN ) ; ?>
 <!--				<a class="add-new-h2" href="/wp-admin/admin.php?page=membership-edit"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a> -->
 			</h2>
 			<?php $member_list->views(); ?>

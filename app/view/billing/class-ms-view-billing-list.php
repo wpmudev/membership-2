@@ -53,8 +53,8 @@ class MS_View_Billing_List extends MS_View {
 		ob_start();
 		?>
 		
-		<div class="wrap">
-			<h2><?php  
+		<div class="wrap ms-wrap">
+			<h2 class="ms-settings-title"><i class="fa fa-credit-card"></i> <?php  
 					_e( 'Billing', MS_TEXT_DOMAIN ); 
 					if( ! empty( $_GET['gateway_id'] ) ) {
 						$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );

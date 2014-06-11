@@ -21,7 +21,7 @@ class MS_View_Member_Date extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2>Add Membership</h2>
+				<h2 class='ms-settings-title'><i class="fa fa-pencil-square"></i> Add Membership</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
 					<?php wp_nonce_field( self::MEMBERSHIP_NONCE, self::MEMBERSHIP_NONCE ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>

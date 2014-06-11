@@ -29,14 +29,20 @@
 .ms-tooltip-info { 
 	border-radius:20px; 
 	display: inline; 
-	padding: 1px 3px 0 3px; 
-	color: #ffffff; 
+/*	padding: 2px 4px 1px 4px; */
+/*	color: #ffffff; */
 	min-width:20px; 
-	background: #0094dc; 
-	font: 7px/7px "Helvetica"; 
-	box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 2px 1px;
-	border: 1px solid #0A6C9C;
+/*	background: #0094dc; */
+	color: #0094dc;
+/*	font: 7px/7px "Helvetica"; */
+/*	font: 8px/8px;*/
+/*	box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 2px 1px;*/
+/*	border: 1px solid #0A6C9C;*/
+/*	text-shadow: 1px 1px 2px rgba(10, 108, 156, 0.2);*/
+	font-size: 15px;
 	cursor: pointer;
+	font-weight:normal;
+/*	font-weight: 100;*/
 }
 
 /** Add left arrow. */
@@ -54,6 +60,6 @@
 .ms-tooltip-wrapper {
 	display:inline;
 	position: relative;
-	top: -2px;
+/*	top: -4px;*/
 	z-index: 100;
 }

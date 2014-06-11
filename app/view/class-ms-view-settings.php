@@ -98,7 +98,7 @@ class MS_View_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
+		<h2 class='ms-settings-title'><i class="fa fa-cog"></i> <?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
 
 		<?php
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );

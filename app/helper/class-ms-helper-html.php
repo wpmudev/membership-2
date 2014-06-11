@@ -325,7 +325,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 		?>
 		<div class="ms-tooltip-wrapper">
-		<div class="ms-tooltip-info">?</div>
+		<div class="ms-tooltip-info"><i class="fa fa-info-circle"></i></div>
 		<div class="ms-tooltip">
 			<div class="ms-tooltip-button">&times;</div>
 			<div class="ms-tooltip-content">

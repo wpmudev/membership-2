@@ -5,7 +5,7 @@ jQuery( document ).ready(function( $ ) {
 		$( '.ms-tooltip[timestamp]').each( function( index, element ) {
 			var stamp = $( element ).attr('timestamp');
 			var parent = $( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
-			$( element ).hide(100);
+			$( element ).hide();
 			
 			// Move tooltip back into the DOM hierarchy
 		    $( element ).appendTo( $( parent ) );
@@ -26,7 +26,7 @@ jQuery( document ).ready(function( $ ) {
 			var stamp = $( parent ).attr( 'timestamp' );
 			var sibling = $( '.ms-tooltip[timestamp="' + stamp + '"]' ).first();
 
-			$( sibling ).fadeOut(100);
+			$( sibling ).hide();
 
 			// Move tooltip back into the DOM hierarchy
 			$( sibling ).appendTo( $( parent ) );	
@@ -44,7 +44,7 @@ jQuery( document ).ready(function( $ ) {
 			var newpos = $( this ).offset();
 			tooltip.appendTo( '#wpcontent' );
 			tooltip.css( "left", newpos.left + 25 );
-			tooltip.css( "top", newpos.top - 45 );
+			tooltip.css( "top", newpos.top - 40 );
 
 			tooltip.fadeIn(300);
 		}
@@ -56,7 +56,7 @@ jQuery( document ).ready(function( $ ) {
 		var stamp = $( parent ).attr( 'timestamp' );
 		var super_parent = $( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
 		
-		$( parent ).fadeOut(100);
+		$( parent ).hide();
 		
 		// Move tooltip back into the DOM hierarchy
 		$( parent ).appendTo( $( super_parent ) );
