@@ -44,7 +44,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $pages;
 	
-	protected $show_default_membership;
+	protected $default_membership_enabled;
 	
 	protected $currency = 'USD';
 	

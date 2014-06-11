@@ -161,7 +161,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				$html = ( $item->public ) ? __( 'Public', MS_TEXT_DOMAIN ) : __( 'Private', MS_TEXT_DOMAIN );
 				break;
 			case 'members':
-				$html = MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $item->id ) );
+				$html = $item->get_members_count();
 				break;
 			case 'shortcode':
 				$html = '['. MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE ." id='$item->id']";

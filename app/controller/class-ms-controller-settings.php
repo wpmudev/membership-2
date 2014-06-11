@@ -297,7 +297,7 @@ class MS_Controller_Settings extends MS_Controller {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
 					case 'toggle_activation':
-						$this->model->plugin_enabled = ! $this->model->plugin_enabled; 
+						$this->model->$field = ! $this->model->$field; 
 						break;
 					case 'save_general':
 						$this->model->$field = $value;
@@ -305,6 +305,12 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 			}
 			$this->model->save();
+			/**
+			 * Initialise default membership if it is enabled.
+			 */
+			if( $this->model->default_membership_enabled ) {
+				MS_Model_Membership::get_default_membership();
+			}
 		}
 	}
 

@@ -135,11 +135,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function get_membership_count( $args = null ) {
-		$defaults = array(
-				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query($args);
 		return $query->found_posts;
@@ -147,13 +143,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 	
 	public static function get_memberships( $args = null ) {
-		$defaults = array(
-				'post_type' => self::$POST_TYPE,
-				'posts_per_page' => 10,
-				'order' => 'DESC',
-				'post_status' => 'any',
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
@@ -165,13 +155,27 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $memberships;
 	}
 	
-	public static function get_membership_names( $args = null ) {
+	public static function get_query_args( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
 				'order' => 'DESC',
+				'post_status' => 'any',
 		);
 		$args = wp_parse_args( $args, $defaults );
+		if( ! MS_Plugin::instance()->settings->default_membership_enabled ) {
+			$args['meta_query']['default_membership']  = array(
+					'key' => 'default_membership',
+					'value' => '1',
+					'compare' => '!='
+			);
+		}
+
+		return $args;
+		
+	}
+	
+	public static function get_membership_names( $args = null ) {
+		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
@@ -210,7 +214,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						)
 				)
 		);
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
 		$item = $query->get_posts();
 
 		$visitor_membership = null;
@@ -225,7 +229,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
-			$visitor_membership->defaut_membership = false;
+			$visitor_membership->default_membership = false;
 			$visitor_membership->active = true;
 			$visitor_membership->public = true;
 			$visitor_membership->save();
@@ -237,7 +241,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_default_membership() {
 		$settings = MS_Plugin::instance()->settings;
 		
-		if( $settings->show_default_membership ) {
+		if( $settings->default_membership_enabled ) {
 			$args = array(
 					'post_type' => self::$POST_TYPE,
 					'post_status' => 'any',
@@ -249,9 +253,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 							)
 					)
 			);
-			$query = new WP_Query($args);
+			$query = new WP_Query( $args );
 			$item = $query->get_posts();
-	
+
 			$default_membership = null;
 			if( ! empty( $item[0] ) ) {
 				$default_membership = self::load( $item[0]->ID );
@@ -264,7 +268,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$default_membership->title = $description;
 				$default_membership->description = $description;
 				$default_membership->visitor_membership = false;
-				$default_membership->defaut_membership = true;
+				$default_membership->default_membership = true;
 				$default_membership->active = true;
 				$default_membership->public = true;
 				$default_membership->save();
@@ -277,6 +281,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $default_membership;
 	}
 	
+	public function get_members_count() {
+		return MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) );
+	}
 	/**
 	 * Delete membership.
 	 * 

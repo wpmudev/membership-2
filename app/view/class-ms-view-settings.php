@@ -120,13 +120,18 @@ class MS_View_Settings extends MS_View {
 			<h2><?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?></h2>	
 			<div class="metabox-holder">
 				<form action="" method="post">
+					<?php wp_nonce_field( $this->fields['action']['value'] );?>
+					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<div class="postbox">
 						<h3 class="hndle"><?php _e( 'Enable plugin', MS_TEXT_DOMAIN ); ?></h3>
 						<div class="inside">
-							<?php wp_nonce_field( $this->fields['action']['value'] );?>
-							<?php foreach( $this->fields as $field ): ?>
-								<?php MS_Helper_Html::html_input( $field ); ?>
-							<?php endforeach; ?>
+							<?php MS_Helper_Html::html_input( $this->fields['plugin_enabled'] ); ?>
+						</div>
+					</div>
+					<div class="postbox">
+						<h3 class="hndle"><?php _e( 'Enable Default Membership', MS_TEXT_DOMAIN ); ?></h3>
+						<div class="inside">
+							<?php MS_Helper_Html::html_input( $this->fields['default_membership_enabled'] ); ?>
 						</div>
 					</div>
 					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_general' ) );?>
@@ -143,6 +148,12 @@ class MS_View_Settings extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
 						'value' => $this->model->plugin_enabled,
+				),
+				'default_membership_enabled' => array(
+						'id' => 'default_membership_enabled',
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'title' => __( 'This setting enable/disable default membership to logged in users without any membership.', MS_TEXT_DOMAIN ),
+						'value' => $this->model->default_membership_enabled,
 				),
 				'action' => array(
 						'id' => 'action',
