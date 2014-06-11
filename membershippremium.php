@@ -439,8 +439,8 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		register_post_type( 'ms_new',
-			apply_filters( 'ms_register_post_type_ms_new',
+		register_post_type( 'ms_coupon',
+			apply_filters( 'ms_register_post_type_ms_coupon',
 				array(
 					'labels' => array(
 						'name' => __( 'coupons', MS_TEXT_DOMAIN ),

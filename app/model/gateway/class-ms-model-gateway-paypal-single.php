@@ -38,7 +38,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $paypal_status;
 	
-	public function purchase_button( $membership, $member, $move_from_id = 0 ) {
+	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
 				'business' => array(
 						'id' => 'business',
@@ -93,7 +93,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				'custom' => array(
 						'id' => 'custom',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id ),
+						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
 				),
 				'submit' => array(
 						'id' => 'submit',
@@ -152,7 +152,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 		
 			$new_status = false;
-			list( $timestamp, $user_id, $membership_id, $move_from_id, $key ) = explode( ':', $_POST['custom'] );
+			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key ) = explode( ':', $_POST['custom'] );
 			
 			$membership = MS_Model_Membership::load( $membership_id );
 			$member = MS_Model_Member::load( $user_id );
@@ -229,7 +229,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					$transaction->process_transaction( $status );
 				}
 				else {
-					$transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $external_id, $notes );
+					$transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $external_id, $notes );
 				}
 				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
 			}				

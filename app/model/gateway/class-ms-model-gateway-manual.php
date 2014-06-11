@@ -34,7 +34,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $payment_info;
 	
-	public function purchase_button( $membership, $member ) {
+	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',
@@ -45,6 +45,16 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $membership->id,
+				),
+				'move_from_id' => array(
+						'id' => 'move_from_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $move_from_id,
+				),
+				'coupon_id' => array(
+						'id' => 'coupon_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $coupon_id,
 				),
 				'membership_signup' => array(
 						'id' => 'membership_signup',
@@ -57,6 +67,8 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
 				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['move_from_id'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['coupon_id'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['membership_signup'] ); ?>
 			</form>
 		<?php 
@@ -64,10 +76,11 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	public function handle_return() {
 		if( ! empty( $_POST['membership_id'] ) ) {
-			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
+			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+			$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
 			$membership = MS_Model_Membership::load( $_POST['membership_id'] );
 			$member = MS_Model_Member::get_current_member();
-			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED );
+			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED, $move_from_id, $coupon_id );
 			ob_start();
 			?>
 				<?php

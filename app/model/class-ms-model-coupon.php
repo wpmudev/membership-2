@@ -180,7 +180,8 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	public function apply_coupon( $membership ) {
 		
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
-		
+		$original_price = $price;
+		$discount = 0;
 		if( $this->is_valid_coupon( $membership->id ) ) {
 			if( self::TYPE_PERCENT == $this->discount_type && $this->discount < 100 ) {
 				$price = $price - $price * $this->discount / 100;
@@ -193,11 +194,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 				$price = 0;
 			}
 			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. The new value after applying coupon: %s %s', MS_TEXT_DOMAIN ), $this->code, MS_Plugin::instance()->settings->currency, $price );
-			
-			$this->save_coupon_application( $membership->id, $price );
+			$discount = $original_price - $price;
+			$this->save_coupon_application( $membership->id, $discount );
 		}
 		
-		return apply_filters( 'ms_model_coupon_apply_price', $price, $membership, $this );
+		return apply_filters( 'ms_model_coupon_apply_discount', $discount, $membership, $this );
 	
 	}
 	
@@ -207,16 +208,17 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * Saving the application to keep track of the application in gateway return.
 	 *   
 	 * @param int $membership_id The membership id to apply the coupon.
-	 * @param float $price The price after applying the coupon.
+	 * @param float $discount The discount value.
 	 */
-	public function save_coupon_application( $membership_id, $price ) {
+	public function save_coupon_application( $membership_id, $discount ) {
 		global $blog_id;
 	
 		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
 		
 		/**
 		 * Create transient for 1 hour.  This means the user has 1 hour to redeem the coupon after its been applied before it goes back into the pool.
-		 * If you want to use a different time limit use the filter below 
+		 * If you want to use a different time limit use the filter below
+		 * TODO modify this time.
 		 */ 
 		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', HOUR_IN_SECONDS );
 	
@@ -228,7 +230,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 				'coupon_id' => $this->id,
 				'user_id' => $user->id,
 				'membership_id'	=> $membership_id,
-				'price' => $price,
+				'discount' => $discount,
 		);
 	
 		if ( $global && function_exists( 'get_site_transient' ) ) {
@@ -239,6 +241,23 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
+	public function get_coupon_application( $user_id, $membership_id ) {
+		global $blog_id;
+		
+		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
+		
+		$transient_name = "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}";
+		
+		if ( $global && function_exists( 'get_site_transient' ) ) {
+			$transient_value = get_site_transient( $transient_name );
+		}
+		else {
+			$transient_value = get_transient( $transient_name );
+		}
+		
+		return $transient_value['discount'];
+		
+	}
 	/**
 	 * Remove the application for this coupon.
 	 * 
@@ -326,7 +345,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 					}
 					break;
 				case 'membership_id':
-					if( MS_Model_Membership::is_valid_membership( $value ) ) {
+					if( 0 == $value || MS_Model_Membership::is_valid_membership( $value ) ) {
 						$this->$property = $value;
 					}
 					break;

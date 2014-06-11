@@ -94,7 +94,6 @@ class MS_Controller_Coupon extends MS_Controller {
 		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['coupon_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
 			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['coupon_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) ) ) );
-			die();
 		}
 		/**
 		 * Execute bulk actions.
@@ -170,7 +169,6 @@ class MS_Controller_Coupon extends MS_Controller {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-		
 		if( is_array( $fields ) ) {
 			$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
 			$this->model = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load( $coupon_id ), $coupon_id );

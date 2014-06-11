@@ -240,9 +240,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		
 	}
-	public function get_start_date() {
-		return $this->start_date;
-	}
 	
 	public function get_membership() {
 		return MS_Model_Membership::load( $this->membership_id );

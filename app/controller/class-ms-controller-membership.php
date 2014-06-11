@@ -325,7 +325,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$tabs = array( 'general' => $tabs['general'] );
 		}
 		/**
-		 * Enable / Disable post by post tab
+		 * Enable / Disable post by post tab.
 		 */
 		if( apply_filters( 'ms_addon_post_by_post', MS_Plugin::instance()->addon->post_by_post ) ) {
 			unset( $tabs['category'] );
@@ -334,7 +334,7 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['post'] );
 		}
 		/**
-		 * Enable / Disable cpt post by post tab
+		 * Enable / Disable cpt post by post tab.
 		 */
 		if( apply_filters( 'ms_addon_cpt_post_by_post', MS_Plugin::instance()->addon->cpt_post_by_post ) ) {
 			unset( $tabs['cpt_group'] );
@@ -343,7 +343,13 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['cpt'] );
 		}
 		/**
-		 * Disable urlgroup tab
+		 * Disable media tab if media/download protection is disabled. 
+		 */
+		if( MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED == apply_filters( 'ms_settings_media_download', MS_Plugin::instance()->settings->downloads['protection_type'] ) ) {
+			unset( $tabs['media'] );
+		}
+		/**
+		 * Disable urlgroup tab.
 		 */
 		if( ! apply_filters( 'ms_addon_url_groups', MS_Plugin::instance()->addon->url_groups ) ) {
 			unset( $tabs['urlgroup'] );

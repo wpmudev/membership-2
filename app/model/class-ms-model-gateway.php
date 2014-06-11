@@ -34,7 +34,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected $is_single = true;
 	
-	protected $pro_rate = true;
+	protected $pro_rate = false;
 	
 	protected $pay_button_url;
 	
@@ -46,7 +46,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	public function after_load() {
 		if( $this->active ) {
-			$this->add_action( 'ms_view_registration_payment_form', 'purchase_button', 10, 3 );
+			$this->add_action( 'ms_view_registration_payment_form', 'purchase_button', 10, 4 );
 			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
 		}
 	}
@@ -105,20 +105,21 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '?paymentgateway=' . $this->id ), $this->id );
 	}
 	
-	public function build_custom( $user_id, $membership_id, $amount, $move_from_id = 0 ) {
+	public function build_custom( $user_id, $membership_id, $amount, $move_from_id = 0, $coupon_id = 0 ) {
 	
 		$custom = array(
 				time(),
 				$user_id,
 				$membership_id,
 				$move_from_id,
+				$coupon_id,
 				md5( 'MEMBERSHIP' . $amount ),
 		);
 	
 		return apply_filters( 'ms_model_gateway_build_custom', implode( ':', $custom ), $custom );
 	}
 	
-	public function add_transaction( $membership, $member, $status, $move_from_id = 0, $external_id = null, $notes = null ) {
+	public function add_transaction( $membership, $member, $status, $move_from_id = 0, $coupon_id = 0, $external_id = null, $notes = null ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
@@ -129,6 +130,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$pro_rate = $member->membership_relationship[ $move_from_id ]->calulate_pro_rate();
 			$transaction->discount = $pro_rate;
 			$notes .= __( 'Pro rate discount: ', MS_TEXT_DOMAIN ) . $pro_rate;
+		}
+		if( ! empty( $coupon_id ) ) {
+			$coupon = MS_Model_Coupon::load( $coupon_id );
+			$discount = $coupon->get_coupon_application();
+			$transaction->discount += $discount; 
+			$notes .= sprintf( __( 'Coupon %s discount: %s', MS_TEXT_DOMAIN ), $pro_rate, $discount );
 		}
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;
