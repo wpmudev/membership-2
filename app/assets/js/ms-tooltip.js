@@ -17,6 +17,21 @@ jQuery( document ).ready(function( $ ) {
 	});
 	
 	$('.ms-tooltip-info').click( function( event ) {				
+		
+		if( $( this ).hasClass( 'open' ) ) {
+			
+			$( this ).removeClass( 'open' );
+			
+			var parent = $( this ).parents('.ms-tooltip-wrapper');
+			var stamp = $( parent ).attr( 'timestamp' );
+			var sibling = $( '.ms-tooltip[timestamp="' + stamp + '"]' ).first();
+
+			$( sibling ).fadeOut(100);
+
+			// Move tooltip back into the DOM hierarchy
+			$( sibling ).appendTo( $( parent ) );	
+					
+		} else {
 			$( this ).addClass( 'open' );
 			$( this ).parents('.ms-tooltip-wrapper').attr( 'timestamp', event.timeStamp );
 			event.stopPropagation();
@@ -32,6 +47,7 @@ jQuery( document ).ready(function( $ ) {
 			tooltip.css( "top", newpos.top - 45 );
 
 			tooltip.fadeIn(300);
+		}
 	} );
 	
 	$('.ms-tooltip-button').click( function() {
