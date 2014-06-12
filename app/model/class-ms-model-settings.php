@@ -61,7 +61,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $protection_message;
 
 	protected $downloads = array(
-		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
+		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED,
 		'masked_url' => 'downloads',
 	);
 	
