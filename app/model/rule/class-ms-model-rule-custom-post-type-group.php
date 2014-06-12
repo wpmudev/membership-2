@@ -127,6 +127,8 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				'ms_transaction',
 				'ms_communication',
 				'ms_coupon',
+				'ms_relationship',
+				'ms_news', 
 		) );
 	}
 	/**
