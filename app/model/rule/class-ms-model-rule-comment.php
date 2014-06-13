@@ -39,7 +39,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		}
 	}
 	
-	public function get_content() {
+	public function get_content( $args = null ) {
 		$content = new StdClass();
 		$content->id = 1;
 		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );

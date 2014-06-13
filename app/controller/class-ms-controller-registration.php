@@ -105,7 +105,7 @@ class MS_Controller_Registration extends MS_Controller {
 		 * * register_user  
 		 *
 		 */
-		if( ! empty($action) && method_exists( &$this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			// MS_Helper_Debug::log( 'action: ' . $action );		
 			$this->$action();
 		} 

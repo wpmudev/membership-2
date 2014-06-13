@@ -106,6 +106,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 				continue;
 			}
 			$id = esc_html( trim( $key ) );
+			$contents[ $id ] = new StdClass();
 			$contents[ $id ]->id = $id;
 			$contents[ $id ]->name = "[$key]";
 			
