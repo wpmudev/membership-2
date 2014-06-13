@@ -81,6 +81,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 */
 	public function protect_content() {
 		$this->add_filter( 'the_content', 'protect_download_content' );
+		$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
 	}
 	
 	/**

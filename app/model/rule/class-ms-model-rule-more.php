@@ -41,11 +41,12 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	}
 	
 	function show_moretag_protection( $more_tag_link, $more_tag ) {
-		
+
 		return stripslashes( $this->protected_message );
 	}
 	
 	function replace_moretag_content( $the_content ) {
+
 		$more_starts_at = strpos( $the_content, '<span id="more-' );
 		if ( false !== $more_starts_at ) {
 			$the_content = substr( $the_content, 0, $more_starts_at );

@@ -128,6 +128,14 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				$has_access = true;
 			}
 		}
+		/**
+		 * Feed page request
+		 */
+		global $wp_query;
+		if ( ! empty( $wp_query->query_vars['feed'] ) ) {
+			$has_access = true;
+		}
+		
 		return $has_access;		
 	}
 	
