@@ -296,7 +296,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function render_page() {
-		$model = $this->model->rules['page'];
+		$model = $this->model->get_rule( 'page' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
 		$rule_list_table->prepare_items();
 		
@@ -317,7 +317,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 		
 	public function render_category() {
-		$model = $this->model->rules['category'];
+		$model = $this->model->get_rule( 'category' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Category( $model );
 		$rule_list_table->prepare_items();
 		
@@ -339,7 +339,7 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	public function render_post() {
 		$model = array( 
-			'post' => $this->model->rules['post'], 
+			'post' => $this->model->get_rule( 'post' ), 
 			'category'	=> $this->model->rules['category'],
 		);
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
@@ -361,8 +361,29 @@ class MS_View_Membership_Edit extends MS_View {
 		echo $html;	
 	}
 
+	public function render_more_tag() {
+		$model = $this->model->get_rule( 'more_tag' );
+		$rule_list_table = new MS_Helper_List_Table_Rule_More( $model );
+		$rule_list_table->prepare_items();
+	
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h3><?php echo __( 'More tag content access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<div class="settings-description"><?php _e( 'Select the more tag settings below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?></div>
+				<hr />							
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
+		}
+		
 	public function render_comment() {
-		$model = $this->model->rules['comment'];
+		$model = $this->model->get_rule( 'comment' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Comment( $model );
 		$rule_list_table->prepare_items();
 		
@@ -383,7 +404,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 		
 	public function render_menu() {
-		$model = $this->model->rules['menu'];
+		$model = $this->model->get_rule( 'menu' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $model );
 		$rule_list_table->prepare_items();
 		
@@ -404,7 +425,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function render_media() {
-		$model = $this->model->rules['media'];
+		$model = $this->model->get_rule( 'media' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Media( $model );
 		$rule_list_table->prepare_items();
 		
@@ -425,7 +446,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	public function render_shortcode() {
-		$model = $this->model->rules['shortcode'];
+		$model = $this->model->get_rule( 'shortcode' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $model );
 		$rule_list_table->prepare_items();
 		
@@ -539,7 +560,7 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 	
 	function prepare_urlgroup() {
-		$model = $this->model->rules['url_group'];
+		$model = $this->model->get_rule( 'url_group' );
 
 		$this->fields = array(
 				'access' => array(

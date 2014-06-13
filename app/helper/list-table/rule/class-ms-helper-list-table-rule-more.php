@@ -27,14 +27,14 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Comment extends MS_Helper_List_Table_Rule {
+class MS_Helper_List_Table_Rule_More extends MS_Helper_List_Table_Rule {
 
-	protected $id = 'rule_comment';
+	protected $id = 'rule_more_tag';
 		
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 // 			'cb'     => '<input type="checkbox" />',
-			'name' => __( 'Comments', MS_TEXT_DOMAIN ),
+			'name' => __( 'More tag', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
 	}
@@ -64,5 +64,4 @@ class MS_Helper_List_Table_Rule_Comment extends MS_Helper_List_Table_Rule {
 		return apply_filters( "membership_helper_list_table_{$this->id}_bulk_actions", array(
 		) );
 	}
-	
 }

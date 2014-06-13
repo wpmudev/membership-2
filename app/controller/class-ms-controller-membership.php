@@ -285,6 +285,10 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'Post by post', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=post&membership_id=' . $membership_id,
 				),
+				'more_tag' => array(
+						'title' => __( 'More tag', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-edit&tab=more_tag&membership_id=' . $membership_id,
+				),
 				'comment' => array(
 						'title' => __( 'Comments', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=comment&membership_id=' . $membership_id,

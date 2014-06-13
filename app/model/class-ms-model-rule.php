@@ -35,6 +35,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	const RULE_TYPE_POST = 'post';
 	
+	const RULE_TYPE_MORE_TAG = 'more_tag';
+	
 	const RULE_TYPE_CUSTOM_POST_TYPE = 'cpt';
 	
 	const RULE_TYPE_CUSTOM_POST_TYPE_GROUP = 'cpt_group';
@@ -139,6 +141,7 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_CUSTOM_POST_TYPE,
 				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
 				self::RULE_TYPE_PAGE,
+				self::RULE_TYPE_MORE_TAG,
 				self::RULE_TYPE_MENU,
 				self::RULE_TYPE_SHORTCODE,
 				self::RULE_TYPE_COMMENT,
@@ -161,6 +164,7 @@ class MS_Model_Rule extends MS_Model {
 		 		self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_Custom_Post_Type',
 		 		self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Model_Rule_Custom_Post_Type_Group',
 				self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
+		 		self::RULE_TYPE_MORE_TAG => 'MS_Model_Rule_More',
 				self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
 				self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
 				self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
@@ -177,6 +181,7 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_MORE_TAG => __( 'More Tag', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
