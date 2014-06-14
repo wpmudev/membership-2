@@ -82,14 +82,69 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'admin_print_styles-membership_page_membership-settings', 'enqueue_styles' );
 	}
 	
+	/**
+	 * Show admin notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 */
+	public function print_admin_message() {
+		add_action( 'admin_notices', array( 'MS_Helper_Settings', 'print_admin_message' ) );
+	}
 	
+	/**
+	 * Get available tabs for editing the membership.
+	 *
+	 * @return array The tabs configuration.
+	 */
+	public function get_tabs() {
+		$tabs = array(
+				'general' => array(
+						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=general',
+				),
+				'pages' => array(
+						'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=pages',
+				),
+				'payment' => array(
+						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=payment',
+				),
+				'messages-protection' => array(
+						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=messages-protection',
+				),
+				'messages-automated' => array(
+						'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=messages-automated',
+				),
+				'downloads' => array(
+						'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=downloads',
+				),
+		);
+	
+		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
+	}
 	/**
 	 * Get the current active settings page/tab.
 	 *
 	 * @since 4.0.0
-	 */	
+	 */
 	public function get_active_tab() {
-		$this->active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'general';
+		$tabs = $this->get_tabs();
+		
+		reset( $tabs );
+		$first_key = key( $tabs );
+	
+		/** Setup navigation tabs. */
+		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		if ( ! array_key_exists( $active_tab, $tabs ) ) {
+			$active_tab = $first_key;
+			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
+		}
+		return $this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 	}
 	
 	/**
@@ -99,7 +154,9 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0	
 	 */
 	public function admin_settings_manager() {
+		$this->print_admin_message();
 		$this->get_active_tab();
+		
 		$msg = 0;
 		switch( $this->active_tab ) {
 			case 'general':
@@ -108,43 +165,27 @@ class MS_Controller_Settings extends MS_Controller {
 				 * Admin bar enable request.
 				 */
 				if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) && ! empty( $_GET['setting'] ) ) {
-					$this->save_general( $_GET['action'], array( $_GET['setting'] ) );
+					$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] ) );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
 				}
 				/**
 				 * General tab submit request.
 				 */
 				elseif( ! empty( $_POST['submit_general'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-					$this->save_general( $_POST['action'], $_POST );
+					$msg =  $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
 				break;
 			case 'pages':
-				$nonce = MS_View_Settings::PAGE_NONCE;
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if( ! empty ($_POST['submit_pages'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-					$special_pages_types = MS_Model_Settings::get_special_page_types();
-					$pages = $this->model->pages;
-					foreach( $special_pages_types as $type ) {
-						if( ! empty( $_POST[ $type ] ) ) {
-							$pages[ $type ] = $_POST[ $type ];
-						}
+				if ( ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+					if( ! empty( $_POST['submit_pages'] ) ) {		
+						$msg = $this->special_pages_do_action( 'submit_pages', $_POST );
 					}
-					$this->model->pages = $pages;
-					$this->model->save();
-					$msg = 0; //TODO
+					else {
+						$msg = $this->special_pages_do_action( 'create_special_page', $_POST );
+					}
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
-				}
-				elseif( ! empty( $_POST['action'] ) && 'create_special_page' == $_POST['action'] && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-					$special_pages_types = MS_Model_Settings::get_special_page_types();
-					foreach( $special_pages_types as $type ) {
-						$submit = "create_page_{$type}";
-						if( ! empty( $_POST[ $submit ] ) ) {
-							$this->model->create_special_page( $type );
-							$msg = 0;
-							wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
-						}
-					}
 				}
 				break;
 			case 'payment':
@@ -168,7 +209,6 @@ class MS_Controller_Settings extends MS_Controller {
 				 * Execute view page action submit.
 				 */
 				elseif( ! empty( $_POST['submit'] ) ) {
-					$pay_nonce = MS_View_Settings::PAY_NONCE;
 					$nonce = MS_View_Settings_Gateway::GATEWAY_NONCE;
 					if ( ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['action'] )  &&
 						! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
@@ -176,26 +216,22 @@ class MS_Controller_Settings extends MS_Controller {
 						$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 					}
-					/**
-					 * Save payment settings tab
-					 */
-					elseif( ! empty( $_POST[ $pay_nonce ] ) && wp_verify_nonce( $_POST[ $pay_nonce ], $pay_nonce ) ) {
-						foreach( $_POST as $field => $value ) {
-							$this->model->$field = $value;
-						}
-						$msg = 0;
-						$this->model->save();
-						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-					}
+				}
+				/**
+				 * Save payment settings tab
+				 */
+				elseif ( ! empty( $_POST['submit_payment'] ) && ! empty( $_POST['action'] ) &&
+					! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+					$msg = $this->save_general( 'submit_payment', $_POST );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 				}
 				break;
 			case 'messages-protection':
-				$nonce = MS_View_Settings::PROTECTION_NONCE;
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if( ! empty( $_POST['submit'] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
-					$this->model->protection_message = isset( $_POST['protection_message'] ) ? $_POST['protection_message']: '';
-					$this->model->save();
-					$msg = 0;
+				if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['action'] ) && 
+						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+					
+					$msg = $this->save_protection_messages( $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 				}
 				break;
@@ -209,11 +245,11 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 				$this->model = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
 				
-				$nonce = MS_View_Settings::COMM_NONCE;
-				if( ! empty( $_POST['save_email'] ) && MS_Model_Communication::is_valid_communication_type( $_POST['type'] )
-						&& ! empty( $_POST[ $nonce ] )  && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+				if ( ! empty( $_POST['save_email'] ) && ! empty( $_POST['action'] ) &&
+						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+// 					$msg = $this->save_communication( $_POST ); //TODO bug when showing msg
 					$this->save_communication( $_POST );
-					wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['type']) ) ) ;
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 				}
 				break;
 			case 'downloads':
@@ -221,8 +257,9 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Download tab submit request.
 				 */
-				if( ! empty( $_POST['submit_downloads'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-					$this->save_general( $_POST['action'], $_POST );
+				if( ! empty( $_POST['submit_downloads'] ) && ! empty( $_POST['action'] ) 
+					&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+					$msg = $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
 				break;	
@@ -242,7 +279,9 @@ class MS_Controller_Settings extends MS_Controller {
 			$this->prepare_action_view();
 		}
 		else {
-			$view = apply_filters( 'ms_view_settings', new MS_View_Settings() );
+			$view = apply_filters( 'ms_view_settings', new MS_View_Settings_Edit() );
+			$data['tabs'] = $this->get_tabs();
+			$view->data = $data;
 			$view->model = $this->model;
 			$view->render();
 		}
@@ -289,8 +328,9 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @param string $settings Array of settings to which action will be taken.
 	 */
 	public function save_general( $action, $settings ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
 
 		if( is_array( $settings ) ) {
@@ -300,6 +340,8 @@ class MS_Controller_Settings extends MS_Controller {
 						$this->model->$field = ! $this->model->$field; 
 						break;
 					case 'save_general':
+					case 'submit_payment':
+					case 'save_downloads':
 						$this->model->$field = $value;
 						break;
 				}
@@ -311,9 +353,55 @@ class MS_Controller_Settings extends MS_Controller {
 			if( $this->model->default_membership_enabled ) {
 				MS_Model_Membership::get_default_membership();
 			}
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
+		return $msg;
 	}
 
+	/**
+	 * Handle Special pages tab actions.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $action The action to execute.
+	 * @param mixed[] $fields The data to process.
+	 */
+	public function special_pages_do_action( $action, $fields = null ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+		
+		switch( $action ) {
+			case 'submit_pages':
+				$special_pages_types = MS_Model_Settings::get_special_page_types();
+				$pages = $this->model->pages;
+				foreach( $special_pages_types as $type ) {
+					if( ! empty( $fields[ $type ] ) ) {
+						$pages[ $type ] = $fields[ $type ];
+					}
+				}
+				$this->model->pages = $pages;
+				$this->model->save();
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+				break;
+			/**Create special pages */	
+			default:
+				$special_pages_types = MS_Model_Settings::get_special_page_types();
+				foreach( $special_pages_types as $type ) {
+					$submit = "create_page_{$type}";
+					if( ! empty( $fields[ $submit ] ) ) {
+						$this->model->create_special_page( $type );
+						$this->model->save();
+						$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+					}
+				}
+			break;
+		}
+	
+		return $msg;
+	}
+	
 	/**
 	 * Handle Payment Gateway list actions.
 	 * 
@@ -324,18 +412,18 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @param mixed[] $fields The data to process.
 	 */	
 	public function gateway_list_do_action( $action, $gateways, $fields = null ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
 
-		$msg = 0;
 		foreach( $gateways as $gateway_id ) {
 			$gateway = MS_Model_Gateway::factory( $gateway_id );
 			switch( $action ) {
 				case 'toggle_activation':
 					$gateway->active = ! $gateway->active;
 					$gateway->save();
-					$msg = 7;
+					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					break;
 				case 'edit':
 					foreach( $fields as $field => $value ) {
@@ -344,6 +432,7 @@ class MS_Controller_Settings extends MS_Controller {
 						}
 					}
 					$gateway->save();
+					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					break;
 			}
 		}
@@ -352,16 +441,44 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 	
 	/**
-	 * Handle saving of Communication settings.
+	 * Handle saving of Protection messages settings.
 	 * 
 	 * @since 4.0.0
 	 *
 	 * @param mixed[] $fields The data to process.
 	 */	
-	public function save_communication( $fields ) {
+	public function save_protection_messages( $fields ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		
 		if ( ! current_user_can( $this->capability ) ) {
-			return;
+			return $msg;
 		}
+		
+		if( ! empty( $fields ) ) {
+			$protection_message['content'] = isset( $fields['content'] ) ? $fields['content']: '';
+			$protection_message['shortcode'] = isset( $fields['shortcode'] ) ? $fields['shortcode']: '';
+			$protection_message['more_tag'] = isset( $fields['more_tag'] ) ? $fields['more_tag']: '';
+			$this->model->protection_message = $protection_message;
+			$this->model->save();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		}
+		
+		return $msg;
+	}
+	
+	/**
+	 * Handle saving of Communication settings.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $fields The data to process.
+	 */
+	public function save_communication( $fields ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+		
 		if( ! empty( $fields ) ) {
 			$period = array();
 			$this->model->enabled = ! empty( $fields['enabled'] );
@@ -373,9 +490,10 @@ class MS_Controller_Settings extends MS_Controller {
 			$this->model->cc_enabled = ! empty( $fields['cc_enabled'] );
 			$this->model->cc_email = ! empty( $fields['cc_email'] ) ? $fields['cc_email'] : '';
 			$this->model->save();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
+		return $msg;
 	}
-	
 	/**
 	 * Load Membership admin styles.
 	 *

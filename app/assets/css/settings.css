@@ -140,6 +140,10 @@ h2.ms-settings-title,
 .ms-field-input {
 	
 }
+.ms-field-wp-editor {
+	height: 5em;
+	width: 100%;
+}
 .ms-period-wrapper {
 	margin: 1em 0;
 }

@@ -59,7 +59,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 *  
 	 */
 	public function do_protected_shortcode() {
-		return stripslashes( MS_Plugin::instance()->settings->protection_message );
+		return stripslashes( MS_Plugin::instance()->settings->protection_message['shortcode'] );
 	}
 	
 	/**

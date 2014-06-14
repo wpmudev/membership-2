@@ -163,6 +163,7 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_WP_EDITOR:
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				wp_editor( $value, $id, $field_options );
 				break;
 			case self::INPUT_TYPE_BUTTON:

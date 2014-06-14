@@ -55,10 +55,9 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Shortcode protection message.
 	 * 
-	 * @todo change it to array if more protection messages comes (like more tag).
 	 * @var $protection_message
 	 */
-	protected $protection_message;
+	protected $protection_message = array( 'content', 'shortcode', 'more_tag' );
 
 	protected $downloads = array(
 		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED,

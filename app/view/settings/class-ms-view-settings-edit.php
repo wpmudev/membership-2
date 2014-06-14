@@ -31,15 +31,8 @@
  *
  * @return object
  */
-class MS_View_Settings extends MS_View {
+class MS_View_Settings_Edit extends MS_View {
 
-	const COMM_NONCE = 'comm_save_nonce';
-	const GATEWAY_NONCE = 'gateway_save_nonce';
-	const PAGE_NONCE = 'page_save_nonce';
-	const PAY_NONCE = 'payment_save_nonce';
-	const PROTECTION_NONCE = 'protection_save_nonce';
-	const GENERAL_NONCE = 'general_save';
-	
 	const COMM_SECTION = 'comm_section';
 	const PAGE_SECTION = 'page_section';
 	
@@ -68,36 +61,11 @@ class MS_View_Settings extends MS_View {
 		ob_start();
 
 		/** Setup navigation tabs. */
-		$tabs = array(
-			'general' => array(
-					'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=general',
-			),
-			'pages' => array(
-					'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=pages',
-			),
-			'payment' => array(
-					'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=payment',
-			),
-			'messages-protection' => array(
-					'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=messages-protection',
-			),
-			'messages-automated' => array(
-					'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=messages-automated',
-			),			
-			'downloads' => array(
-					'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
-					'url' => 'admin.php?page=membership-settings&tab=downloads',
-			),
-		);
+		$tabs = $this->data['tabs'];
 		
 		/** Render tabbed interface. */
 		?>
-		<div class='ms-wrap'>
+		<div class='ms-wrap wrap'>
 		<h2 class='ms-settings-title'><i class="fa fa-cog"></i> <?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
 
 		<?php
@@ -117,7 +85,7 @@ class MS_View_Settings extends MS_View {
 		$this->prepare_general();
 		?>
 		<div class='ms-settings'>
-			<h2><?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?></h2>	
+			<h3><?php  _e( 'General Settings', MS_TEXT_DOMAIN ) ; ?></h3>	
 			<div class="metabox-holder">
 				<form action="" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] );?>
@@ -165,17 +133,18 @@ class MS_View_Settings extends MS_View {
 	
 	public function render_pages() {
 		$this->prepare_pages();
+		$action = array(
+			'id' => 'action',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => 'create_special_page',
+		);
 		?>
 			<div class='ms-settings'>
-			   	<h2><?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?></h2>
+			   	<h3><?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?></h3>
 				<form action="" method="post">
 					<?php
-						wp_nonce_field( self::PAGE_NONCE, self::PAGE_NONCE );
-						MS_Helper_Html::html_input( array(
-							'id' => 'action',
-							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-							'value' => 'create_special_page',
-						) );
+						wp_nonce_field( $action['value'] );
+						MS_Helper_Html::html_input( $action );
 					?>
 					<?php foreach( $this->fields as $field ): ?>
 						<div class="postbox metabox-holder">
@@ -262,9 +231,10 @@ class MS_View_Settings extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h2><?php echo __( 'Payment Settings', MS_TEXT_DOMAIN ); ?></h2>
+				<h3><?php echo __( 'Payment Settings', MS_TEXT_DOMAIN ); ?></h3>
 				<form action="" method="post">
-					<?php wp_nonce_field( self::PAY_NONCE, self::PAY_NONCE ); ?>
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
+					<?php MS_Helper_Html::html_input( $this->fields['action'] ) ;?>
 					<div class="postbox metabox-holder">
 						<h3><label for="title"><?php _e( 'Payment currency', MS_TEXT_DOMAIN ) ;?></label></h3>
 						<div class="inside">
@@ -290,7 +260,7 @@ class MS_View_Settings extends MS_View {
 					</div>
 					 -->
 					<p>
-						<?php MS_Helper_Html::html_submit() ;?>
+						<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_payment' ) );?>
 					</p>
 				</form>
 				<form action="" method="post">
@@ -335,18 +305,33 @@ class MS_View_Settings extends MS_View {
 					'value' => $this->model->tax['tax_rate'],
 					'class' => '',
 			),
+			'action' => array(
+					'id' => 'action',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 'save_payments',
+			),
 		);
 	}
 	public function render_messages_protection() {
 		$this->prepare_messages_protection();
 		?>
 		<div class='ms-settings'>
-	   		<h2><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h2>
-	   		<p class="description"><?php _e( 'Message displayed when not having access to a protected shortcode.', MS_TEXT_DOMAIN );?></p>
-       		<form action="" method="post">
-				<?php wp_nonce_field( self::PROTECTION_NONCE, self::PROTECTION_NONCE ); ?>
-				<?php MS_Helper_Html::html_input( $this->fields['protection_message'] ) ;?>
-				<?php MS_Helper_Html::html_submit() ;?>
+	   		<h3><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h3>
+	   		<p class="description"><?php _e( 'Custom message displayed when not having access to a protected content.', MS_TEXT_DOMAIN );?></p>
+	   		<form class="ms-form" action="" method="post">
+				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
+				<table class="form-table">
+					<tbody>
+						<?php foreach( $this->fields as $field ): ?>
+							<tr>
+								<td>
+									<?php MS_Helper_Html::html_input( $field ); ?>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>	   		
 	   		</form>
    		</div>
 		<?php
@@ -354,11 +339,36 @@ class MS_View_Settings extends MS_View {
 
 	public function prepare_messages_protection() {
 		$this->fields = array(
-			'protection_message' => array(
-					'id' => 'protection_message',
+			'content' => array(
+					'id' => 'content',
+					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => $this->model->protection_message,
-					'class' => '',
+					'value' => $this->model->protection_message['content'],
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+			),
+			'shortcode' => array(
+					'id' => 'shortcode',
+					'title' => __( 'Message displayed when not having access to a protected shortcode.', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'value' => $this->model->protection_message['shortcode'],
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+			),
+			'more_tag' => array(
+					'id' => 'more_tag',
+					'title' => __( 'Message displayed when not having access to a protected content after more tag.', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'value' => $this->model->protection_message['more_tag'],
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+			),
+			'submit' => array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Submit', MS_TEXT_DOMAIN ),
+			),
+			'action' => array(
+					'id' => 'action',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 'save_messages_protection',
 			),
 		);
 	}
@@ -367,14 +377,15 @@ class MS_View_Settings extends MS_View {
 		$this->prepare_messages_automated();
 		?>
 		<div class='ms-settings'>
-			<h2><?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?></h2>
+			<h3><?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?></h3>
 			<form action="" method="post">
 				<?php MS_Helper_Html::html_input( $this->fields['comm_type'] );?>
 				<?php MS_Helper_Html::html_submit( $this->fields['load_comm'] );?>
 				<p><?php echo $this->model->get_description(); ?></p>
 			</form>
 			<form action="" method="post">
-				<?php wp_nonce_field( self::COMM_NONCE, self::COMM_NONCE ); ?>
+				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
 				<?php MS_Helper_Html::html_input( $this->fields['type'] );?>
 				<table class="form-table">
 					<tbody>
@@ -513,6 +524,11 @@ class MS_View_Settings extends MS_View {
 						'value' => __( 'Save Automated Email', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'save_comm',
+				),
 		);
 	}
 	
@@ -520,7 +536,7 @@ class MS_View_Settings extends MS_View {
 		$this->prepare_downloads();
 		?>
 		<div class='ms-settings'>
-			<h2><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h2>	
+			<h3><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h3>	
 			<div class="metabox-holder">
 				<form action="" method="post">
 					<div class="postbox">
@@ -585,7 +601,7 @@ class MS_View_Settings extends MS_View {
 				'action' => array(
 						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'save_general',
+						'value' => 'save_downloads',
 				),
 		);
 	}

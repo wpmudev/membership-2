@@ -27,12 +27,13 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	
 	protected $rule_type = self::RULE_TYPE_MORE_TAG;
 	
-	protected $protected_message = 'Nao pode acessar more tag';
+	protected $protection_message;
 	
 	/**
 	 * Set initial protection.
 	 */
 	public function protect_content() {
+		$this->protection_message = MS_Plugin::instance()->settings->protection_message['more_tag'];
 		if( empty ( $this->rule_value ) ) {
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
@@ -42,7 +43,7 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	
 	function show_moretag_protection( $more_tag_link, $more_tag ) {
 
-		return stripslashes( $this->protected_message );
+		return stripslashes( $this->protection_message );
 	}
 	
 	function replace_moretag_content( $the_content ) {
@@ -50,7 +51,7 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 		$more_starts_at = strpos( $the_content, '<span id="more-' );
 		if ( false !== $more_starts_at ) {
 			$the_content = substr( $the_content, 0, $more_starts_at );
-			$the_content .= stripslashes( $this->protected_message );
+			$the_content .= stripslashes( $this->protection_message );
 		}
 	
 		return $the_content;

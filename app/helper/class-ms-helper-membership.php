@@ -53,7 +53,7 @@ class MS_Helper_Membership extends MS_Helper {
 				self::MEMBERSHIP_MSG_NOT_UPDATED => __( 'Membership not updated.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_ACTIVATION_NOT_TOGGLED => __( 'Membership activation not toggled.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_STATUS_NOT_TOGGLED => __( 'Membership status not toggled.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED => __( 'Memberships bulk updated.', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED => __( 'Memberships bulk not updated.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED => __( 'Memberships dripped schedule not copied.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_PARTIALLY_UPDATED => __( 'Memberships partially updated. Some fields could not be changed after members have signed up.', MS_TEXT_DOMAIN ),
 			)

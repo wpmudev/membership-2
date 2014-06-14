@@ -379,7 +379,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$active_tab = $first_key;
 			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
 		}
-		return $this->active_tab = apply_filters( 'ms_helper_membership_get_active_tab', $active_tab );
+		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );
 	}
 	
 	/**

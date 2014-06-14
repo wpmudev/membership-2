@@ -230,16 +230,18 @@ class MS_Controller_Registration extends MS_Controller {
 			}
 		}
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
-			if ( MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-				return $content;
-			}
-			else {
+			if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
 				// There is no shortcode in there, so override
 				remove_filter( 'the_content', 'wpautop' );
 				$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
 			}
+			//Add custom protection message
+			$protection_message = MS_Plugin::instance()->settings->protection_message['content'];
+			if( ! empty( $protection_message ) ) {
+				$content .= $protection_message;
+			}
+				
 		}
-		
 		return $content;
 	}
 	
