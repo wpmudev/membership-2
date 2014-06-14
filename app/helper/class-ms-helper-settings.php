@@ -65,7 +65,7 @@ class MS_Helper_Settings extends MS_Helper {
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 		
 		if ( $msg = self::get_admin_message( $msg ) ) {
-			echo "<div id='message' class='$class'><p>$msg</p></div>";
+			echo "<div id='admin_message' class='$class'><p>$msg</p></div>";
 		}
 		
 	}

@@ -165,7 +165,7 @@ class MS_Controller_Settings extends MS_Controller {
 				 * Admin bar enable request.
 				 */
 				if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) && ! empty( $_GET['setting'] ) ) {
-					$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] ) );
+					$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
 				}
 				/**
@@ -247,8 +247,7 @@ class MS_Controller_Settings extends MS_Controller {
 				
 				if ( ! empty( $_POST['save_email'] ) && ! empty( $_POST['action'] ) &&
 						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
-// 					$msg = $this->save_communication( $_POST ); //TODO bug when showing msg
-					$this->save_communication( $_POST );
+					$msg = $this->save_communication( $_POST ); //TODO bug when showing msg
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 				}
 				break;
@@ -337,7 +336,7 @@ class MS_Controller_Settings extends MS_Controller {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
 					case 'toggle_activation':
-						$this->model->$field = ! $this->model->$field; 
+						$this->model->$field = ! $this->model->$field;
 						break;
 					case 'save_general':
 					case 'submit_payment':
@@ -347,6 +346,7 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 			}
 			$this->model->save();
+			
 			/**
 			 * Initialise default membership if it is enabled.
 			 */

@@ -326,6 +326,7 @@ class MS_View_Settings_Edit extends MS_View {
 						<?php foreach( $this->fields as $field ): ?>
 							<tr>
 								<td>
+									<hr />
 									<?php MS_Helper_Html::html_input( $field ); ?>
 								</td>
 							</tr>
