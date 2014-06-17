@@ -168,34 +168,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		);
 		
 	}
-	/**
-	 * Custom query for extra user meta fields.
-	 * 
-	 * @todo Does not work on multi site.
-	 * @param WP_User_Query $wp_user_query
-	 */
-	public function custom_query( &$wp_user_query ) {
-		global $wpdb;
-		
-		$query = array();
-		$user_fields = array( 'user_login', 'user_nicename' );
-		$meta_fields = array( 'first_name', 'last_name', 'nickname' );
-		$like = "'%". like_escape( $_REQUEST['s'] ) . "%'";
-		
-		foreach( $user_fields as $field ) {
-			$query[] = "{$wpdb->users}.$field LIKE $like";
-		}
-		foreach( $meta_fields as $field ) {
-			$query[] = "( {$wpdb->usermeta}.meta_key = '$field' AND {$wpdb->usermeta}.meta_value LIKE $like )";
-		}
-		$query = implode( ' OR ', $query );
-		
-		
-		$wp_user_query->query_where .= " AND ($query) ";
-// 		$wp_user_query->query_where .= " AND (vds_usermeta.meta_key = 'first_name' AND vds_usermeta.meta_value LIKE '%jun%') ";
-		
-		remove_action( 'pre_user_query', array( $this, 'custom_query' ) );
-	}
 	
 	public function column_default( $item, $column_name ) {
 		$html = '';

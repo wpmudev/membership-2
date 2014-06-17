@@ -114,7 +114,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if( ! empty( $posts ) ) {
 			foreach( $posts as $post_id ) {
 				$membership_relationship = self::load( $post_id );
-				$membership_relationships[ $post_id] = $membership_relationship;
+				if( ! empty( $args['meta_query']['membership_id'] ) ) {
+					$membership_relationships[ $post_id ] = $membership_relationship;
+				}
+				else {
+					$membership_relationships[ $membership_relationship->membership_id ] = $membership_relationship;
+				}
 			}
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $membership_relationships, $args );
