@@ -405,8 +405,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => ! empty( $_REQUEST['search_options'] ) ? $_REQUEST['search_options'] : 0,
 				'field_options' => array(
-						'username' => __( 'Username', MS_TEXT_DOMAIN ),
-						'email' => __( 'Email', MS_TEXT_DOMAIN ),
+						'username'	 => __('Username / E-mail', MS_TEXT_DOMAIN ),
+// 						'email' => __( 'Email', MS_TEXT_DOMAIN ),
 						'nickname' => __( 'Nickname', MS_TEXT_DOMAIN ),
 						'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
 						'last_name' => __( 'Last Name', MS_TEXT_DOMAIN ),
