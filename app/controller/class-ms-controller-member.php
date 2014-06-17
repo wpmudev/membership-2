@@ -327,10 +327,17 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_register_script( 'ms_view_member_date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );
-		wp_enqueue_script( 'ms_view_member_date' );
-		wp_enqueue_script( 'ms_view_member_ui' );		
+		/** Start and expire date edit */
+		if( ! empty( $_GET['action'] ) && 'edit_date' == $_GET['action'] ) {
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'ms-view-member-date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );
+		}
+		/** Members list */
+		else {
+			wp_enqueue_script( 'ms_view_member_ui' );
+			wp_enqueue_script( 'ms-view-members-list', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-list.js', null, MS_Plugin::instance()->version );
+		}
+				
 	}
 	
 }

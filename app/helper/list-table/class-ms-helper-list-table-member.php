@@ -61,7 +61,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'username' => array( 'login', false ),
 			'email' => array( 'email', false ),
 			'active' => array( 'active', false ),			
-			'membership' => array( 'membership_ids', false ),
+// 			'membership' => array( 'membership_ids', false ),
 // 			'start' => array( 'start', false ),
 // 			'trial' => array( 'trial', false ),
 // 			'expire' => array( 'expire', false ),
@@ -104,8 +104,31 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		/**
 		 * Search string.
 		 */
-		if( ! empty( $_REQUEST['s'] ) ) {
-			$args['search'] = $_REQUEST['s'];
+		if( ! empty( $_REQUEST['search_options'] ) ) {
+			$search_options = $_REQUEST['search_options'];
+			$search_value = $_REQUEST['s'];
+			$membership = $_REQUEST['membership_filter'];
+			switch( $search_options ) {
+				case 'email':
+				case 'username':
+					$args['search'] =  '*' . $search_value . '*';
+					break;
+				case 'membership':
+					$members = array();
+					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership ) );
+					foreach( $ms_relationships as $ms_relationship ) {
+						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
+					}
+					$args['include'] = $members;
+					break;
+				default:
+					$args['meta_query'][ $search_options ] = array(
+							'key' => $search_options,
+							'value' => $search_value,
+							'compare' => 'LIKE',
+					);
+					break;
+			}
 		}
 		/**
 		 * Views filters.
@@ -113,22 +136,27 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if( ! empty( $_REQUEST['status'] ) ) {
 			switch( $_REQUEST['status'] ) {
 				case 'active':
-					$args['meta_query'] = array( array( 
+					$args['meta_query']['ms_active'] = array( 
 							'key' => 'ms_active',
 							'value' => true,
-					) );
+					);
 					break;
 				case 'members':
-					$args['meta_query'] = array( array(
-						'key' => 'ms_membership_ids',
-						'value' => 'i:',
-						'compare' => 'LIKE',
-					) );
+					$members = array();
+					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships();
+					foreach( $ms_relationships as $ms_relationship ) {
+						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
+					}
+					if( ! empty( $args['include'] ) ) {
+						$args['include'] = array_intersect( $members, $args['include'] );
+					}
+					else {
+						$args['include'] = $members;
+					}
 					break;
 			}
 			
 		}
-
 		$total_items =  MS_Model_Member::get_members_count( $args );
 		
 		$this->items = MS_Model_Member::get_members( $args );
@@ -140,6 +168,35 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		);
 		
 	}
+	/**
+	 * Custom query for extra user meta fields.
+	 * 
+	 * @todo Does not work on multi site.
+	 * @param WP_User_Query $wp_user_query
+	 */
+	public function custom_query( &$wp_user_query ) {
+		global $wpdb;
+		
+		$query = array();
+		$user_fields = array( 'user_login', 'user_nicename' );
+		$meta_fields = array( 'first_name', 'last_name', 'nickname' );
+		$like = "'%". like_escape( $_REQUEST['s'] ) . "%'";
+		
+		foreach( $user_fields as $field ) {
+			$query[] = "{$wpdb->users}.$field LIKE $like";
+		}
+		foreach( $meta_fields as $field ) {
+			$query[] = "( {$wpdb->usermeta}.meta_key = '$field' AND {$wpdb->usermeta}.meta_value LIKE $like )";
+		}
+		$query = implode( ' OR ', $query );
+		
+		
+		$wp_user_query->query_where .= " AND ($query) ";
+// 		$wp_user_query->query_where .= " AND (vds_usermeta.meta_key = 'first_name' AND vds_usermeta.meta_value LIKE '%jun%') ";
+		
+		remove_action( 'pre_user_query', array( $this, 'custom_query' ) );
+	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
@@ -365,11 +422,32 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
             '<input type="checkbox" name="member_id[]" value="%s" />', $item->id
         );    
     }
+    
 
 	function search_box( $text, $input_id ) {
 		if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
 			return;
-
+		
+		$search_options = array(
+				'id' => 'search_options',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => ! empty( $_REQUEST['search_options'] ) ? $_REQUEST['search_options'] : 0,
+				'field_options' => array(
+						'username' => __( 'Username', MS_TEXT_DOMAIN ),
+						'email' => __( 'Email', MS_TEXT_DOMAIN ),
+						'nickname' => __( 'Nickname', MS_TEXT_DOMAIN ),
+						'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
+						'last_name' => __( 'Last Name', MS_TEXT_DOMAIN ),
+						'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
+					),
+		);
+		$membership_names = array(
+			'id' => 'membership_filter',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => ! empty( $_REQUEST['membership_filter'] ) ? $_REQUEST['membership_filter'] : 0,
+			'field_options' => MS_Model_Membership::get_membership_names(),
+		);
+		
 		$input_id = $input_id . '-search-input';
 
 		if ( ! empty( $_REQUEST['orderby'] ) )
@@ -381,16 +459,13 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if ( ! empty( $_REQUEST['detached'] ) )
 			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
 		?>
-		<div id="member-search-box">
+		<div id="member-search-box" class="search-box">
 			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
 			<div class="input-container">
-		<!--		<select id="member-search-options" name="" style="width: 115px;">
-					<option value="Value for Item 1" title="Title for Item 1">Full Name</option>
-					<option value="Value for Item 2" title="Title for Item 2">Membership</option>
-					<option value="Value for Item 3" title="Title for Item 3">E-mail Address</option>
-				</select>  -->
-				<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />		
-				<?php submit_button( $text , 'button', false, false, array('id' => 'search-submit') ); ?>
+				<?php MS_Helper_Html::html_input( $search_options ); ?>
+				<?php MS_Helper_Html::html_input( $membership_names ); ?>
+				<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />
+				<?php submit_button( $text , 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 			</div>
 		</div>
 		<?php

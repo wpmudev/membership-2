@@ -350,3 +350,9 @@ table.widefat {
 textarea.ms-field-input { min-width: 80%; }
 
 
+/* MEMBERS LIST */
+#search_options {
+	float: left;
+    height: 28px;
+    margin: 0 4px 0 0;
+}

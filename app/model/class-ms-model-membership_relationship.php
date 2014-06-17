@@ -109,12 +109,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		$query = new WP_Query( $args );
 		$posts = $query->get_posts();
-		
+
 		$membership_relationships = array();
 		if( ! empty( $posts ) ) {
 			foreach( $posts as $post_id ) {
 				$membership_relationship = self::load( $post_id );
-				$membership_relationships[ $membership_relationship->membership_id ] = $membership_relationship;
+				$membership_relationships[ $post_id] = $membership_relationship;
 			}
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $membership_relationships, $args );
