@@ -38,55 +38,357 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $paypal_status;
 	
-	public function purchase_button( $membership, $member ) {
+	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
+				'business' => array(
+						'id' => 'business',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
+						'value' => $this->merchant_id,
 				),
-				'membership_id' => array(
-						'id' => 'membership_id',
+				'cmd' => array(
+						'id' => 'cmd',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => '_xclick-subscriptions',
+				),
+				'item_number' => array(
+						'id' => 'item_number',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $membership->id,
 				),
-				'membership_signup' => array(
-						'id' => 'membership_signup',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Signup', MS_TEXT_DOMAIN ),
+				'item_name' => array(
+						'id' => 'item_name',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $membership->name,
 				),
+				'currency_code' => array(
+						'id' => 'currency_code',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => MS_Plugin::instance()->settings->currency,
+				),
+				'return' => array(
+						'id' => 'return',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) ),
+				),
+				'cancel_return' => array(
+						'id' => 'cancel_return',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ),
+				),
+				'notify_url' => array(
+						'id' => 'notify_url',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->get_return_url(),
+				),
+				'country' => array(
+						'id' => 'country',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->paypal_site,
+				),
+				'custom' => array(
+						'id' => 'custom',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
+				),
+				'submit' => array(
+						'id' => 'submit',
+						'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+						'value' => $this->pay_button_url ? $this->pay_button_url : 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif',
+						'alt' => __( 'PayPal - The safer, easier way to pay online', MS_TEXT_DOMAIN ),
+				),				
 		);
+		/** Trial period */
+		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
+			$fields['a1'] = array(
+					'id' => 'a1',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $membership->trial_price,
+			);
+			$fields['p1'] = array(
+					'id' => 'p1',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => ! empty( $membership->trial_period['period_unit'] ) ? $membership->trial_period['period_unit']: 1,
+			);
+			$fields['t1'] = array(
+					'id' => 't1',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => ! empty( $membership->trial_period['period_type'] ) ? strtoupper( $membership->trial_period['period_type'][0] ) : 'D',
+			);
+		}
+		
+		/** Membership price */
+		$fields['a3'] = array(
+				'id' => 'a3',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $membership->price,
+		);
+		
+		$recurring = 0;
+		switch( $membership->membership_type ) {
+			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+				$fields['p3'] = array(
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => ! empty( $membership->pay_cycle_period['period_unit'] ) ? $membership->pay_cycle_period['period_unit']: 0,
+				);
+				$fields['t3'] = array(
+						'id' => 't3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => ! empty( $membership->pay_cycle_period['period_type'] ) ? strtoupper( $membership->pay_cycle_period['period_type'][0] ) : 'D',
+				);
+				$recurring = 1;
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+				$fields['p3'] = array(
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => ! empty( $membership->period['period_unit'] ) ? $membership->period['period_unit']: 1,
+				);
+				$fields['t3'] = array(
+						'id' => 't3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
+				);
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+				$fields['p3'] = array(
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start )->days,
+				);
+				$fields['t3'] = array(
+						'id' => 't3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
+				);
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+				$fields['p3'] = array(
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 5,
+				);
+				$fields['t3'] = array(
+						'id' => 't3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'Y',
+				);
+				break;
+		}
+		
+		/** Coupon valid for the first period */
+		if( $coupon_id ) {
+			$coupon = MS_Model_Coupon::load( $coupon_id );
+			$discount = $coupon->get_coupon_application( $member->id, $membership->id );
+
+			/** Trial period set */
+			if( isset ( $fields['a1']['value'] ) ) {
+				/** Not a free trial, apply discount in the trial period */
+				if( $fields['a1']['value'] > 0 ) {
+					$fields['a1']['value'] -= $discount;
+					$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
+				}
+			}
+			/** No Trial period set */
+			else {
+				/** recurrent payment, apply discount in the first payment */
+				if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type ) {
+					$fields['a1'] = $fields['a3'];
+					$fields['p1'] = $fields['p3'];
+					$fields['t1'] = $fields['t3'];
+					$fields['a1']['value'] -= $discount;
+					$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
+				}
+				/** Only one payment */
+				else {
+					$fields['a3']['value'] -= $discount;
+					$fields['a3']['value'] = max( $fields['a3']['value'], 0 );
+				}
+			}
+		}
+		
+		/**
+		 * Recurring field.
+		 * 0 – subscription payments do not recur
+		 * 1 – subscription payments recur
+		 */
+		$fields['src'] = array(
+				'id' => 'src',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $recurring,
+		);
+		/** Modify current subscription field.
+		 * 0 – allows subscribers only to sign up for new subscriptions
+		 * 1 – allows subscribers to sign up for new subscriptions and modify their current subscriptions
+		 * 2 – allows subscribers to modify only their current subscriptions
+		 */
+		 $fields['modify'] = array(
+		 		'id' => 'modify',
+		 		'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+		 		'value' => 2,
+		 );
+		if( 'live' == $this->paypal_status ) {
+			$action = 'https://www.paypal.com/cgi-bin/webscr';
+		}
+		else {
+			$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+		}
+		
 		?>
-			<form action="" method="post">
-				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
-				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_signup'] ); ?>
+			<form action="<?php echo $action;?>" method="post">
+				<?php 
+					foreach( $fields as $field ) {
+						MS_Helper_Html::html_input( $field ); 
+					}
+				?>
+				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" >
 			</form>
-		<?php 
+		<?php
 	}
 	
 	public function handle_return() {
-		$this->payment_info = array(
-			'bank' => 'banco',
-			'bank_agency' => 1234,
-			'bank_account' => 1234,
-		);
-		if( ! empty( $_POST['membership_id'] ) ) {
-			$membership = MS_Model_Membership::load( $_POST['membership_id'] );
-			$member = MS_Model_Member::get_current_member();
-			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED );
-			ob_start();
-
-			foreach( $this->payment_info as $key => $value ) {
-				?>
-					<p>
-						<span class"ms-title"><?php echo $key;?></span>: <span class="ms-field"><?php echo $value;?></span>
-					</p>
-				<?php 
+		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
+			if( 'live' == $this->paypal_status ) {
+				$domain = 'https://www.paypal.com';
 			}
-			$html = ob_get_clean();
-			return $html;
+			else {
+				$domain = 'https://www.sandbox.paypal.com';
+			}
+						
+			//Paypal post authenticity verification
+			$ipn_data = (array) stripslashes_deep( $_POST );
+			$ipn_data['cmd'] = '_notify-validate';
+			$response = wp_remote_post( "$domain/cgi-bin/webscr", array(
+					'timeout' => 60,
+					'sslverify' => false,
+					'httpversion' => '1.1',
+					'body' => $ipn_data,
+			) );
+		
+			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
+				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
+			} 
+			else {
+				$error = 'Response Error: Unexpected transaction response';
+				MS_Helper_Debug::log( $error );
+				MS_Helper_Debug::log( $response );
+				echo $error;
+				exit;
+			}
+		
+			$new_status = false;
+			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key ) = explode( ':', $_POST['custom'] );
+			
+			$membership = MS_Model_Membership::load( $membership_id );
+			$member = MS_Model_Member::load( $user_id );
+			$external_id = $_POST['txn_id'];
+			$amount = $_POST['mc_gross'];
+			$currency = $_POST['mc_currency'];
+			$status = null;
+			$notes = null;
+			
+			// process PayPal response
+			switch ( $_POST['payment_status'] ) {
+				/** Successful payment */
+				case 'Completed':
+				case 'Processed':
+					$newkey = md5( 'MEMBERSHIP' . $amount );
+					if( $key == $newkey ) {
+						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
+						
+						$status = MS_Model_Transaction::STATUS_PAID;
+					}
+					else {
+						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
+					}
+					break;
+				case 'Reversed':
+					$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_REVERSED;
+					break;
+				case 'Refunded':
+					$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_REFUNDED;
+					break;
+				case 'Denied':
+					$notes = __('Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_DENIED;
+					break;
+				case 'Pending':
+					$pending_str = array(
+						'address' => __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN ),
+						'authorization' => __( 'Funds not captured yet', MS_TEXT_DOMAIN ),
+						'echeck' => __( 'eCheck that has not cleared yet', MS_TEXT_DOMAIN ),
+						'intl' => __( 'Payment waiting for aproval by service provider', MS_TEXT_DOMAIN ),
+						'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN ),
+						'unilateral' => __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN ),
+						'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN ),
+						'verify' => __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN ),
+						'*' => ''
+					);
+					$reason = $_POST['pending_reason'];
+					$notes = 'Last transaction is pending. Reason: ' . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+					$status = MS_Model_Transaction::STATUS_PENDING;
+					break;
+		
+				default:
+				case 'Partially-Refunded':
+				case 'In-Progress':
+					break;
+			}
+			
+			//check for subscription details
+			switch ( $_POST['txn_type'] ) {
+				case 'subscr_signup':
+				case 'subscr_modify':
+					$newkey = md5( 'MEMBERSHIP' . $amount );
+					if( $key == $newkey ) {
+						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
+					
+						$status = MS_Model_Transaction::STATUS_PAID;
+					}
+					else {
+						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
+					}
+					break;
+				case 'recurring_payment_profile_canceled':
+				case 'subscr_cancel':
+					$notes = __( 'Paypal subscipton profile has been canceled.', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_CANCELED;
+					break;
+				case 'recurring_payment_suspended':
+					$notes = __( 'Paypal subscipton profile has been suspended.', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_PENDING;
+					break;
+				case 'recurring_payment_suspended_due_to_max_failed_payment':
+					$notes = __( 'Paypal subscipton profile has failed.', MS_TEXT_DOMAIN );
+					$status = MS_Model_Transaction::STATUS_PENDING;
+					break;
+				case 'new_case':
+					$status = MS_Model_Transaction::STATUS_DISPUTE;
+					break;
+			}
+			
+			MS_Helper_Debug::log( $notes . print_r($_POST, true) );
+			if( ! empty( $status ) ) {
+				if( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
+					if( ! empty( $notes ) ) {
+						$transaction->notes = $notes;
+					}
+					$transaction->process_transaction( $status );
+				}
+				else {
+					$transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $external_id, $notes );
+				}
+				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
+			}				
+		} 
+		else {
+			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
+			header('Status: 404 Not Found');
+			$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
+			MS_Helper_Debug::log( $notes );
+			exit;
 		}
 	}
 	

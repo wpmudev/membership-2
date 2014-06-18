@@ -225,7 +225,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
 			$visitor_membership = new self();
 			$visitor_membership->name = __( 'Visitor', MS_TEXT_DOMAIN );
-			$visitor_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
+			$visitor_membership->membership_type = self::MEMBERSHIP_TYPE_PERMANENT;
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
@@ -264,7 +264,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$description = __( 'Default membership for non members', MS_TEXT_DOMAIN );
 				$default_membership = new self();
 				$default_membership->name = __( 'Default', MS_TEXT_DOMAIN );
-				$default_membership->type = self::MEMBERSHIP_TYPE_PERMANENT;
+				$default_membership->membership_type = self::MEMBERSHIP_TYPE_PERMANENT;
 				$default_membership->title = $description;
 				$default_membership->description = $description;
 				$default_membership->visitor_membership = false;
@@ -331,7 +331,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					break;
 				case 'membership_type':
 					if( array_key_exists( $value, self::get_membership_types() ) ) {
-						if( 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
+						if( empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
 							$this->$property = $value;
 						}
 						elseif( $this->$property != $value ) {

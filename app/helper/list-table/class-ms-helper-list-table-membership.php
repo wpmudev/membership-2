@@ -43,6 +43,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
+			'membership_type' => __( 'Type', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			'public' => __( 'Public', MS_TEXT_DOMAIN ),
 			'members' => __( 'Members', MS_TEXT_DOMAIN ),
@@ -167,7 +168,12 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				$html = '['. MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE ." id='$item->id']";
 				break;
 			default:
-				$html = print_r( $item, true ) ;
+				if( property_exists( $item, $column_name ) ) {
+					$html = $item->$column_name;
+				}
+				else {
+					$html = print_r( $item, true );
+				}
 				break;
 		}
 		return $html;
