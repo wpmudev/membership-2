@@ -201,7 +201,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 						$_REQUEST['page'],
 						$item->id,
 						'toggle_activation'
-				) );
+				),
+				'toggle_activation'
+		);
 		?>
 			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
 			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>

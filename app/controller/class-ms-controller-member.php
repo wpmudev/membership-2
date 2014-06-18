@@ -151,7 +151,7 @@ class MS_Controller_Member extends MS_Controller {
 		 * Execute table single action.
 		 */
 		$msg = 0;
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
 			$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
 			die();
