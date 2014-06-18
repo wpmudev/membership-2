@@ -2,16 +2,7 @@
 
 class MS_View_Member_Membership extends MS_View {
 	
-	const MEMBERSHIP_SECTION = 'membership_section';
-	const MEMBERSHIP_NONCE = 'membership_nonce';
-	
-	protected $member_id;
-	
-	protected $action;
-	
-	protected $memberships;
-	
-	protected $memberships_move;
+	protected $data;
 	
 	protected $fields;
 	
@@ -21,9 +12,12 @@ class MS_View_Member_Membership extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> Add Membership</h2>
+				<h2 class="ms-settings-title">
+					<i class="fa fa-pencil-square"></i> 
+					<?php echo $this->data['title'] . __( ' Membership', MS_TEXT_DOMAIN ); ?>
+				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
-					<?php wp_nonce_field( self::MEMBERSHIP_NONCE, self::MEMBERSHIP_NONCE ); ?>
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<table class="form-table">
@@ -31,7 +25,7 @@ class MS_View_Member_Membership extends MS_View {
 							<tr>
 								<td>
 									<?php
-										if( ! empty( $this->memberships_move ) ) {
+										if( ! empty( $this->data['memberships_move'] ) ) {
 											MS_Helper_Html::html_input( $this->fields['membership_move'] );
 										} 
 										MS_Helper_Html::html_input( $this->fields['membership_list'] ); 
@@ -56,34 +50,23 @@ class MS_View_Member_Membership extends MS_View {
 	
 	function prepare_fields() {
 		$submit_label = array(
-				'add' => __('Add', MS_TEXT_DOMAIN ),
-				'drop' => __('Drop', MS_TEXT_DOMAIN ),
-				'move' => __('Move', MS_TEXT_DOMAIN ),
-			); 
+				'add' => __( 'Add', MS_TEXT_DOMAIN ),
+				'drop' => __( 'Drop', MS_TEXT_DOMAIN ),
+				'move' => __( 'Move', MS_TEXT_DOMAIN ),
+			);
+		$this->data['title'] = $submit_label[ $this->data['action'] ]; 
 		$this->fields = array(
 			'membership_list' => array(
 				'id' => 'membership_id',
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-// 				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
 				'value' => 0,
-				'field_options' => $this->memberships,
+				'field_options' => $this->data['memberships'],
 				'class' => '',
-			),
-			'membership_move' => array(
-					'id' => 'membership_move_from_id',
-					'section' => self::MEMBERSHIP_SECTION,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'value' => ( is_array( $this->memberships_move ) && count( $this->memberships_move ) == 2 ? end( $this->memberships_move ) : 0 ),
-					'title' => __( 'Membership to move', MS_TEXT_DOMAIN ),
-					'field_options' => $this->memberships_move,
-					'class' => '',
 			),
 			'member_id' => array(
 				'id' => 'member_id',
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->member_id,
+				'value' => implode( ',', $this->data['member_id'] ),
 			),
 			'cancel' => array(
 				'id' => 'cancel',
@@ -94,15 +77,25 @@ class MS_View_Member_Membership extends MS_View {
 			),
 			'submit' => array(
 				'id' => 'submit',
-				'value' => $submit_label[ $this->action ],
+				'value' => $submit_label[ $this->data['action'] ],
 				'type' => 'submit',
 			),
 			'action' => array(
 				'id' => 'action',
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->action,
+				'value' => $this->data['action'],
 			),
-		);		
+		);
+		if( ! empty( $this->data['memberships_move'] ) && is_array( $this->data['memberships_move'] ) ) {
+			$this->fields['membership_move'] = array(
+					'id' => 'membership_move_from_id',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' =>  count( $this->data['memberships_move'] ) == 2 ? end( $this->data['memberships_move'] ) : 0,
+					'title' => __( 'Membership to move', MS_TEXT_DOMAIN ),
+					'field_options' => $this->data['memberships_move'],
+					'class' => '',
+			);
+		}
+
 	}
 }

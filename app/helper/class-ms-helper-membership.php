@@ -70,7 +70,7 @@ class MS_Helper_Membership extends MS_Helper {
 
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 		
-		if ( $msg = MS_Helper_Membership::get_admin_message( $msg ) ) {
+		if ( $msg = self::get_admin_message( $msg ) ) {
 			echo "<div id='message' class='$class'><p>$msg</p></div>";
 		}
 		

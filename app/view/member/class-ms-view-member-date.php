@@ -1,19 +1,10 @@
 <?php
 
 class MS_View_Member_Date extends MS_View {
-	
-	const MEMBERSHIP_SECTION = 'membership_section';
-	const MEMBERSHIP_NONCE = 'membership_nonce';
-	
-	protected $member_id;
-		
-	protected $membership_ids;
-	
-	protected $membership_relationships;
-		
+				
 	protected $fields;
 	
-	protected $action;
+	protected $data;
 	
 	public function to_html() {
 		$this->prepare_fields();
@@ -23,7 +14,7 @@ class MS_View_Member_Date extends MS_View {
 			<div class='ms-wrap'>
 				<h2 class='ms-settings-title'><i class="fa fa-pencil-square"></i> Add Membership</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
-					<?php wp_nonce_field( self::MEMBERSHIP_NONCE, self::MEMBERSHIP_NONCE ); ?>
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>
 					<?php 
 						foreach ( $this->fields['membership_id'] as $field ){
@@ -66,9 +57,8 @@ class MS_View_Member_Date extends MS_View {
 		$this->fields = array(
 			'member_id' => array(
 					'id' => 'member_id',
-					'section' => self::MEMBERSHIP_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $this->member_id,
+					'value' => $this->data['member_id'],
 			),
 			'cancel' => array(
 				'id' => 'cancel',
@@ -84,44 +74,39 @@ class MS_View_Member_Date extends MS_View {
 			),
 			'action' => array(
 				'id' => 'action',
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->action,
+				'value' => $this->data['action'],
 			),
 		);
 		
-		foreach( $this->membership_relationships as $membership_relationship ) {
+		foreach( $this->data['membership_relationships'] as $membership_relationship ) {
 			$membership_id = $membership_relationship->membership_id;
 			$this->fields['membership_id'][] = array(
 					'id' => "membership_id_$membership_id",
-					'name' => self::MEMBERSHIP_SECTION . "[membership_id][]",
+					'name' => "membership_id[]",
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $membership_id,
 			);
-			$this->fields['memberships'][$membership_id] = array(
+			$this->fields['memberships'][ $membership_id ] = array(
 				'id' => "membership_id_$membership_id",
-				'section' => self::MEMBERSHIP_SECTION,
 				'title' => __( 'Membership', MS_TEXT_DOMAIN ) . ': '. $membership_relationship->get_membership()->name,
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => '',
 			);
-			$this->fields['dates'][$membership_id]['start_date'] = array(
+			$this->fields['dates'] [$membership_id] ['start_date'] = array(
 				'id' => "start_date_$membership_id",
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $membership_relationship->start_date,
 				'class' => 'ms-date',
 			);
-			$this->fields['dates'][$membership_id]['trial_expire_date'] = array(
+			$this->fields['dates'][ $membership_id ]['trial_expire_date'] = array(
 					'id' => "trial_expire_date_$membership_id",
-					'section' => self::MEMBERSHIP_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $membership_relationship->trial_expire_date,
 					'class' => 'ms-date',
 			);
-			$this->fields['dates'][$membership_id]['expire_date'] = array(
+			$this->fields['dates'][ $membership_id ]['expire_date'] = array(
 				'id' => "expire_date_$membership_id",
-				'section' => self::MEMBERSHIP_SECTION,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $membership_relationship->expire_date,
 				'class' => 'ms-date',

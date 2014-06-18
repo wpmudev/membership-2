@@ -73,7 +73,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 
-		$per_page = $this->get_items_per_page( 'members_per_page', 10 );
+		$per_page = apply_filters( 'ms_helper_list_table_member_items_per_page', 10 );
 		$current_page = $this->get_pagenum();
 		
 		$args = array(
