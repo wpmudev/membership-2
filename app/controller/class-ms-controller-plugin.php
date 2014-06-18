@@ -52,15 +52,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	private $model;
 	
 	/**
-	 * Instance of MS_View_Plugin.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $view
-	 */
-	private $view;	
-
-	/**
 	 * Pointer array for other controllers.
 	 *
 	 * @since 4.0.0
@@ -85,12 +76,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function __construct() {
 
-		// MS_Helper_Debug::log( __('Initializing primary controller.', MS_TEXT_DOMAIN ) );			
-				
-		/** Instantiate Plugin model */
-		$this->model = apply_filters( 'membership_model_plugin', new MS_Model_Plugin() );
-		/** Instantiate Plugin view */
-		$this->view = apply_filters( 'membership_view_plugin', new MS_View_Plugin( array( 'test'=>'two' )) );
+		/** Instantiate Plugin model - protection implementation */
+		$this->model = apply_filters( 'ms_model_plugin', new MS_Model_Plugin() );
 		
 		/** Rewrite rules */
 		$this->add_action( 'generate_rewrite_rules', 'add_rewrites', 1 );
@@ -111,99 +98,60 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Register scripts used in the front end (JS) */
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts');
 		
-		//FJ: it is breaking add_menu_pages, commented for now.
-		/** ONLY load controllers when we are going to need them. */
-// 		if( ! empty( $_GET['page'] ) ) {
-// 			switch( $_GET['page'] ) {
-				
-// 				/** Membership controller */
-// 				case 'all-memberships':
-// 				case 'membership-edit':
-// 					$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );		
-// 					break;
-			
-// 				/** Dashboard controller */
-// 				case 'membership-dashboard':
-// 					$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );		
-// 					break;
-	
-// 				/** Member controller */
-// 				case 'membership-members':
-// 					$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );				
-// 					break;
-			
-// 				/** Billing controller */
-// 				case 'membership-billing':
-// 					$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );				
-// 					break;
-	
-// 				/** Coupon controller */
-// 				case 'membership-coupons':
-// 					$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );				
-// 					break;
-	
-// 				/** Add-on controller */
-// 				case 'membership-addons':
-// 					$this->controllers['addon'] = apply_filters( 'membership_addon_controller', new MS_Controller_Addon() );				
-// 					break;
-			
-// 			} /** End switch( $_GET['page'] ) */
-// 		}
-		
 		/** Membership controller */
-		$this->controllers['membership'] = apply_filters( 'membership_membership_controller', new MS_Controller_Membership() );
+		$this->controllers['membership'] = apply_filters( 'ms_controller_membership', new MS_Controller_Membership() );
 		
 		/** Dashboard controller */
-		$this->controllers['dashboard'] = apply_filters( 'membership_dashboard_controller', new MS_Controller_Dashboard() );
+		$this->controllers['dashboard'] = apply_filters( 'ms_controller_dashboard', new MS_Controller_Dashboard() );
 		
 		/** Member controller */
-		$this->controllers['member'] = apply_filters( 'membership_member_controller', new MS_Controller_Member() );
+		$this->controllers['member'] = apply_filters( 'ms_controller_member', new MS_Controller_Member() );
 		
 		/** Billing controller */
-		$this->controllers['billing'] = apply_filters( 'membership_billing_controller', new MS_Controller_Billing() );
+		$this->controllers['billing'] = apply_filters( 'ms_controller_billing', new MS_Controller_Billing() );
 		
 		/** Coupon controller */
-		$this->controllers['coupon'] = apply_filters( 'membership_coupon_controller', new MS_Controller_Coupon() );
+		$this->controllers['coupon'] = apply_filters( 'ms_controller_coupon', new MS_Controller_Coupon() );
 		
 		/** Add-on controller */
-		$this->controllers['addon'] = apply_filters( 'membership_addon_controller', new MS_Controller_Addon() );
+		$this->controllers['addon'] = apply_filters( 'ms_controller_addon', new MS_Controller_Addon() );
 		
 		/** Settings controller */
-		$this->controllers['settings'] = apply_filters( 'membership_settings_controller', new MS_Controller_Settings() );
+		$this->controllers['settings'] = apply_filters( 'ms_controller_settings', new MS_Controller_Settings() );
 		
 		/** Admin bar controller */
-		$this->controllers['admin_bar'] = apply_filters( 'membership_controller_admin_bar', new MS_Controller_Admin_Bar() );
+		$this->controllers['admin_bar'] = apply_filters( 'ms_controller_admin_bar', new MS_Controller_Admin_Bar() );
 		
 		/** Membership metabox controller */
-		$this->controllers['membership_metabox'] = apply_filters( 'membership_controller_membership_metabox', new MS_Controller_Membership_Metabox() );
+		$this->controllers['membership_metabox'] = apply_filters( 'ms_controller_membership_metabox', new MS_Controller_Membership_Metabox() );
 		
 		/** Membership shortcode controller - front end */
-		$this->controllers['membership_shortcode'] = apply_filters( 'membership_controller_shortcode', new MS_Controller_Shortcode() );
+		$this->controllers['membership_shortcode'] = apply_filters( 'ms_controller_shortcode', new MS_Controller_Shortcode() );
 
 		/** Membership registration controller - front end */
-		$this->controllers['registration'] = apply_filters( 'membership_controller_registration', new MS_Controller_Registration() );
+		$this->controllers['registration'] = apply_filters( 'ms_controller_registration', new MS_Controller_Registration() );
 		
-		flush_rewrite_rules();
+		flush_rewrite_rules(); //TODO No need to execute every time.
 	}
 
 	/**
 	 * Rewrite rules for gateway payment return url.
 	 * 
-	 * @todo Not working... Copied from 3.5
-	 * 
-	 * @since 3.5
+	 * @since 4.0.0
 	 *
 	 * @param object $wp_rewrite WP_Rewrite object.
 	 * @return object WP_Rewrite object.
 	 */
 	public function add_rewrites( $wp_rewrite ) {
-		// MS_Helper_Debug::log( __('Initializing rewrite rules...', MS_TEXT_DOMAIN ) );			
 		
 		$new_rules = array();
+		
+		/** Media / download rewrite rules */
 		if( ! empty( MS_Plugin::instance()->settings->downloads['masked_url'] ) ) {
 			$new_rules[trailingslashit( MS_Plugin::instance()->settings->downloads['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
 		}
 		
+		/** Gateway rewrite rules */
 		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index( 1 );
 		
 		$new_rules = apply_filters('ms_rewrite_rules', $new_rules);
@@ -216,24 +164,24 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Add custom query vars.
 	 * 
-	 * @todo configure properly. Copied from 3.5
 	 *
-	 * @since 3.5
+	 * @since 4.0.0
 	 *
 	 * @param mixed[] $vars
 	 * @return mixed[]
 	 */
 	function add_query_vars( $vars ) {
-		// MS_Helper_Debug::log( __('Initializing query variables...', MS_TEXT_DOMAIN ) );			
-		if ( ! in_array( 'feedkey', $vars ) ) {
-			$vars[] = 'feedkey';
-		}
+		
+		/** Media / download */
 		if ( ! in_array( 'protectedfile', $vars ) ) {
 			$vars[] = 'protectedfile';
 		}
+		
+		/** Gateway */
 		if ( ! in_array( 'paymentgateway', $vars ) ) {
 			$vars[] = 'paymentgateway';
 		}
+		
 		return $vars;
 	}
 	
@@ -279,7 +227,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Global Membership Plugin settings. */
 		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), $this->capability, 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
 		
-		// MS_Helper_Debug::log( __('Added menu pages...', MS_TEXT_DOMAIN ) );
 	}
 
 	/**
@@ -291,13 +238,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */	
 	public function register_plugin_admin_styles() {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+
 		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-admin' );
+		
 		wp_register_style( 'membership-tooltip', MS_Plugin::instance()->url. 'app/assets/css/ms-tooltip.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-tooltip' );
+		
 		wp_register_style( 'font-awesome', MS_Plugin::instance()->url. 'app/assets/css/font-awesome.min.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'font-awesome' );
-		// MS_Helper_Debug::log( __('Register admin CSS...', MS_TEXT_DOMAIN ) );			
 	}
 	
 	/**
@@ -309,9 +258,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */	
 	public function enqueue_plugin_styles() {
 		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+
 		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css', MS_Plugin::instance()->version );
 		wp_enqueue_style( 'membership-shortcode' );		
-		// MS_Helper_Debug::log( __('Register Membership front-end CSS...', MS_TEXT_DOMAIN ) );					
 	}
 	
 	/**
@@ -324,10 +273,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_plugin_admin_scripts() {
 		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
-		// MS_Helper_Debug::log( __('Register admin scripts...', MS_TEXT_DOMAIN ) );					
+
 		wp_register_script( 'ms-tooltips', MS_Plugin::instance()->url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		wp_enqueue_script( 'ms-tooltips' );
-		
 	}
 
 	/**
@@ -340,10 +288,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function enqueue_plugin_scripts() {
 		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		wp_enqueue_script( 'jquery-validate' );
+		
 		wp_register_script( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), MS_Plugin::instance()->version );
 		wp_enqueue_script( 'membership-shortcode' );
-		// MS_Helper_Debug::log( __('Register Membership front-end scripts...', MS_TEXT_DOMAIN ) );							
 	}
-	
-	
 }
