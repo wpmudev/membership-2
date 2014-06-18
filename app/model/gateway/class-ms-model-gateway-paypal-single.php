@@ -141,12 +141,12 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			) );
 		
 			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
-				_ms_debug_log( 'PayPal Transaction Verified' );
+				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
 			} 
 			else {
 				$error = 'Response Error: Unexpected transaction response';
-				_ms_debug_log( $error );
-				_ms_debug_log( $response );
+				MS_Helper_Debug::log( $error );
+				MS_Helper_Debug::log( $response );
 				echo $error;
 				exit;
 			}
@@ -169,7 +169,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				case 'Processed':
 					$newkey = md5( 'MEMBERSHIP' . $amount );
 					if( $key == $newkey ) {
-						_ms_debug_log( 'Processed transaction received - ' . print_r( $_POST, true ) );
+						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
 						
 						$status = MS_Model_Transaction::STATUS_PAID;
 					}
@@ -180,7 +180,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 // 								$member->deactivate();
 // 							}
 // 						}
-						_ms_debug_log( 'Paypal return check failed' . print_r( $_POST, true ) );
+						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
 					}
 					break;
 				case 'Reversed':
@@ -220,7 +220,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			if( 'new_case' == $_POST['txn_type'] && 'dispute' == $_POST['case_type'] ) {
 				$status = MS_Model_Transaction::STATUS_DISPUTE;
 			}
-			_ms_debug_log( $notes . print_r($_POST, true) );
+			MS_Helper_Debug::log( $notes . print_r($_POST, true) );
 			if( ! empty( $status ) ) {
 				if( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
 					if( ! empty( $notes ) ) {
@@ -238,7 +238,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 			header('Status: 404 Not Found');
 			$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
-			_ms_debug_log( $notes );
+			MS_Helper_Debug::log( $notes );
 			exit;
 		}
 	}
