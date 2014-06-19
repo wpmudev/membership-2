@@ -40,6 +40,11 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
+				'charset' => array(
+						'id' => 'charset',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'utf-8',
+				),
 				'business' => array(
 						'id' => 'business',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -50,15 +55,15 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => '_xclick-subscriptions',
 				),
-				'item_number' => array(
-						'id' => 'item_number',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->id,
-				),
 				'item_name' => array(
 						'id' => 'item_name',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $membership->name,
+				),
+				'item_number' => array(
+						'id' => 'item_number',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $membership->id,
 				),
 				'currency_code' => array(
 						'id' => 'currency_code',
@@ -84,6 +89,16 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						'id' => 'country',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->paypal_site,
+				),
+				'no_note' => array(
+						'id' => 'no_note',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 1,
+				),
+				'no_shipping' => array(
+						'id' => 'no_shipping',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 1,
 				),
 				'custom' => array(
 						'id' => 'custom',
@@ -217,7 +232,10 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $recurring,
 		);
-		/** Modify current subscription field.
+		
+		/** 
+		 * Modify current subscription field.
+		 * value != 0 does not allow trial period.
 		 * 0 – allows subscribers only to sign up for new subscriptions
 		 * 1 – allows subscribers to sign up for new subscriptions and modify their current subscriptions
 		 * 2 – allows subscribers to modify only their current subscriptions
@@ -225,8 +243,9 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		 $fields['modify'] = array(
 		 		'id' => 'modify',
 		 		'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-		 		'value' => 2,
+		 		'value' => 0,
 		 );
+		 
 		if( 'live' == $this->paypal_status ) {
 			$action = 'https://www.paypal.com/cgi-bin/webscr';
 		}
@@ -241,7 +260,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						MS_Helper_Html::html_input( $field ); 
 					}
 				?>
-				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" >
+				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
 			</form>
 		<?php
 	}
