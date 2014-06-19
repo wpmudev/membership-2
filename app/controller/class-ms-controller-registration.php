@@ -409,7 +409,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$data['discount'] =  $coupon->apply_coupon( $membership );
 		}
 		elseif( ! empty( $_POST['remove_coupon_code'] ) ) {
-			$coupon->remove_coupon_application( $membership_id );
+			$coupon->remove_coupon_application( $member->id, $membership_id );
 			$coupon = $coupon->load( 0 );
 		}
 		$data['coupon'] = $coupon;
