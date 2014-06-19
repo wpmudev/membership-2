@@ -33,7 +33,9 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	 * Set initial protection.
 	 */
 	public function protect_content() {
-		$this->protection_message = MS_Plugin::instance()->settings->protection_message['more_tag'];
+		$this->protection_message = ! empty( MS_Plugin::instance()->settings->protection_message['more_tag'] ) 
+			? MS_Plugin::instance()->settings->protection_message['more_tag'] 
+			: '';
 		if( empty ( $this->rule_value ) ) {
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
