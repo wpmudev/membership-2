@@ -5,7 +5,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	protected $data;
 	
 	public function to_html() {
-		MS_Helper_Debug::log( __( 'About to display the signup page...', MS_TEXT_DOMAIN ) );
+// 		MS_Helper_Debug::log( __( 'About to display the signup page...', MS_TEXT_DOMAIN ) );
 		ob_start();
 		?>
 			<div class="ms-membership-form-wrapper">
