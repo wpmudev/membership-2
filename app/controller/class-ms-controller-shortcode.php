@@ -60,7 +60,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
-		MS_Helper_Debug::log( "Register user shortcode..." );
+// 		MS_Helper_Debug::log( "Register user shortcode..." );
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_register_user_atts',
 				shortcode_atts(
@@ -88,7 +88,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */	
 	public function membership_signup( $atts ) {
-		MS_Helper_Debug::log( __( 'About to run the signup shortcode...', MS_TEXT_DOMAIN ) );
+// 		MS_Helper_Debug::log( __( 'About to run the signup shortcode...', MS_TEXT_DOMAIN ) );
 		$data = apply_filters( 
 				'ms_controller_shortcode_membership_signup_atts', 
 				shortcode_atts( 
@@ -194,7 +194,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function membership_account( $atts ) {
-		MS_Helper_Debug::log( "Inside the Account shortcode..." );
+// 		MS_Helper_Debug::log( "Inside the Account shortcode..." );
 		$data = apply_filters( 'ms_controller_shortcode_membership_account_atts',
 				shortcode_atts(
 						array(

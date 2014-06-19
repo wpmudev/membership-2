@@ -196,20 +196,20 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 		// If we are on the accounts page....
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) ) {
-			MS_Helper_Debug::log( "We are on the accounts page." );
+// 			MS_Helper_Debug::log( "We are on the accounts page." );
 			// account page - check if page contains a shortcode
 			if ( MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, $content ) ||
 			     MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_UPGRADE, $content ) ||
 			     MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_RENEW, $content ) ) {	
 			
-				MS_Helper_Debug::log( "There be shortcodes!" );
+// 				MS_Helper_Debug::log( "There be shortcodes!" );
 				// There is content in there with the shortcode so just return it
 				return $content;
 			}
 			// There is no shortcode in there, so override
 			remove_filter( 'the_content', 'wpautop' );
 			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
-			MS_Helper_Debug::log( "We are STILL on the accounts page." );			
+// 			MS_Helper_Debug::log( "We are STILL on the accounts page." );			
 		} 
 		// If we are on the memberships page....
 		elseif ( $settings->is_special_page( $post->ID, MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ) {
