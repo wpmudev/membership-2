@@ -102,7 +102,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @return string The return url.
 	 */
 	public function get_return_url() {
-		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '?paymentgateway=' . $this->id ), $this->id );
+		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '/ms-payment-return/' . $this->id ), $this->id );
 	}
 	
 	public function build_custom( $user_id, $membership_id, $amount, $move_from_id = 0, $coupon_id = 0 ) {
