@@ -258,16 +258,23 @@ class MS_Controller_Registration extends MS_Controller {
 		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
 			/**
 			 * Allow Free gateway verify if is a free membership ( price = 0 ).
-			 * Other gateways are hooked to ms_model_gateway_handle_payment_return_{$gateway_id} action.
+			 * Other gateways may hook to ms_model_gateway_handle_payment_return_{$gateway_id} action.
 			 */
 			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway::factory( 'free_gateway' ) );
 			$gateway->handle_return();
 			
 			/**
+			 * Extra gateway form.
+			 */
+			if( ! empty( $_POST['extra_form'] ) ) {
+				$this->add_action( 'the_content', 'gateway_form', 1 );
+			}
+			/**
 			 * Show payment table.
 			 */
-			// MS_Helper_Debug::log( '**: Add payment table...' );
-			$this->add_action( 'the_content', 'payment_table', 1 );
+			else {
+				$this->add_action( 'the_content', 'payment_table', 1 );
+			}
 		}
 	}
 	
@@ -340,6 +347,29 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 	}
 
+	/**
+	 * Handles gateway extra form to commit payments.
+	 * 
+	 * @since 4.0.0
+	 */	
+	public function gateway_form() {
+		
+		$data = array();
+		
+		if( ! empty( $_POST['gateway'] ) ) {
+			switch( $_POST['gateway'] ) {
+				case 'authorize':
+					$view = new MS_View_Gateway_Authorize();
+					break;
+			}
+			$view = apply_filters( 'ms_view_gateway_form', $view );
+		}
+		
+		$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
+		echo $view->to_html();
+		
+	}
+	
 	/**
 	 * Render membership payment information.
 	 *
