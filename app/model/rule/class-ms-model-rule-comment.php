@@ -31,11 +31,22 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 * Set initial protection.
 	 */
 	public function protect_content() {
+		$this->add_filter( 'the_content', 'check_special_page' );
+		
 		if( ! empty ( $this->rule_value ) ) {
 			add_filter( 'comments_open', '__return_true', 99 );
 		}
 		else {
 			add_filter( 'comments_open', '__return_false', 99 );
+		}
+	}
+	
+	/**
+	 * Close comments for membership special pages.
+	 */
+	public function check_special_page() {
+		if ( MS_Plugin::instance()->settings->is_special_page() ) {
+			add_filter( 'comments_open', '__return_false', 100 );
 		}
 	}
 	
