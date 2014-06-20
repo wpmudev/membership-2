@@ -42,6 +42,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected $cancel_button_url;
 	
+	protected $mode;
+	
 	protected static $gateways;
 	
 	public function after_load() {
@@ -58,6 +60,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				'manual_gateway' => MS_Model_Gateway_Manual::load(),
 				'paypal_standard_gateway' => MS_Model_Gateway_Paypal_Standard::load(),
 				'paypal_single_gateway' => MS_Model_Gateway_Paypal_Single::load(),
+				'authorize' => MS_Model_Gateway_Authorize::load(),
 			);
 		}
 		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
@@ -150,6 +153,19 @@ class MS_Model_Gateway extends MS_Model_Option {
 // 		$transaction->process_transaction( $status, true );
 		$transaction->save();
 		return $transaction;
+	}
+	
+	/**
+	 * Get gateway mode types.
+	 *
+	 * @since 4.0
+	 *
+	 */
+	public function get_mode_types() {
+		return apply_filters( 'ms_model_gateway_get_mode_types', array(
+				'live' => __( 'Live Site', MS_TEXT_DOMAIN ),
+				'test' => __( 'Test Mode (Sandbox)', MS_TEXT_DOMAIN ),
+		) );
 	}
 	
 	/**
