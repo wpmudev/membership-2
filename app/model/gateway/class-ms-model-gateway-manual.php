@@ -63,7 +63,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				),
 		);
 		?>
-			<form action="" method="post">
+			<form action="<?php echo $this->get_return_url();?>" method="post">
 				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
 				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
@@ -75,27 +75,53 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	}
 	
 	public function handle_return() {
-		if( ! empty( $_POST['membership_id'] ) ) {
-			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-			$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
-			$membership = MS_Model_Membership::load( $_POST['membership_id'] );
-			$member = MS_Model_Member::get_current_member();
-			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED, $move_from_id, $coupon_id );
-			ob_start();
-			?>
-				<?php
-					 if( empty( $this->payment_info ) ) {
-						$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
-					 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
-					 }
-					echo wpautop( $this->payment_info ); 
-				?>
-			<?php 
-			$html = ob_get_clean();
-			return $html;
+		/** Change the query to show memberships special page and replace the content with payment instructions */
+		global $wp_query;
+		$settings = MS_Plugin::instance()->settings;
+		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
+		$wp_query->query_vars['post_type'] = 'page';
+
+		if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) && 
+			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+
+			$membership_id = $_POST['membership_id'];
+			
+
+			if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+				$this->add_action( 'the_content', 'content_error' );
+			}
+			else {
+				$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+				$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
+				$membership = MS_Model_Membership::load( $membership_id );
+				$member = MS_Model_Member::get_current_member();
+	
+				$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED, $move_from_id, $coupon_id );
+				
+				$this->add_action( 'the_content', 'content' );
+			}
 		}
+		else {
+			$this->add_action( 'the_content', 'content_error' );
+		}
+		
 	}
 	
+	public function content() {
+		ob_start();
+		 if( empty( $this->payment_info ) ) {
+			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
+		 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
+		 }
+		echo wpautop( $this->payment_info ); 
+		$html = ob_get_clean();
+		return $html;
+	}
+	
+	public function content_error() {
+		return __( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN );
+	}
+		
 	/**
 	 * Validate specific property before set.
 	 *
