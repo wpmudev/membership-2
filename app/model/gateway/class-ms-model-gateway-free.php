@@ -34,4 +34,25 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $active = true;
 	
+	public function handle_return() {
+		
+		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) &&
+			! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
+			
+			$membership_id = $_GET['membership'];
+			$membership = MS_Model_Membership::load( $membership_id );
+			
+			if( ! MS_Model_Membership::is_valid_membership( $membership_id ) || $membership->price != 0 ) {
+				return;
+			}
+
+			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
+			$member = MS_Model_Member::get_current_member();
+			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID, $move_from_id );
+			
+			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
+			wp_safe_redirect( $url );
+		}
+		
+	}
 }
