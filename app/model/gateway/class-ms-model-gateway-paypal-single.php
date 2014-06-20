@@ -293,11 +293,6 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 						$this->$property = $value;
 					}
 					break;
-				case 'status':
-					if( array_key_exists( $value, self::get_status() ) ) {
-						$this->$property = $value;
-					}
-					break;
 				case 'paypal_email':
 					if( is_email( $value ) ) {
 						$this->$property = $value;
