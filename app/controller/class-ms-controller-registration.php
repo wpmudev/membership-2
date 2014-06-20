@@ -357,6 +357,10 @@ class MS_Controller_Registration extends MS_Controller {
 		$data = array();
 		
 		if( ! empty( $_POST['gateway'] ) ) {
+			$data['gateway'] = $_POST['gateway'];
+			$data['membership_id'] = $_POST['membership_id'];
+			$data['move_from_id'] = $_POST['move_from_id'];
+			$data['coupon_id'] = $_POST['coupon_id'];
 			switch( $_POST['gateway'] ) {
 				case 'authorize':
 					$view = new MS_View_Gateway_Authorize();

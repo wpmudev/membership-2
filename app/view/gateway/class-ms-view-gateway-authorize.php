@@ -39,7 +39,6 @@ class MS_View_Gateway_Authorize extends MS_View {
 	}
 	
 	function prepare_fields() {
-		$transaction = $this->data['transaction'];
 		$currency = MS_Plugin::instance()->settings->currency;
 		$this->fields = array(
 				'gateway' => array(
