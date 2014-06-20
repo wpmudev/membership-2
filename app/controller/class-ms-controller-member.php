@@ -173,6 +173,9 @@ class MS_Controller_Member extends MS_Controller {
 				case 'add':
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
+				case 'cancel':
+					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
+					break;
 				case 'drop':
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 					break;
@@ -196,6 +199,11 @@ class MS_Controller_Member extends MS_Controller {
 					$memberships = array_diff_key( $memberships, $member->membership_relationships );
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
+				case 'cancel':
+					$args = array( 'post__in' => array_keys( $member->membership_relationships ) );
+					$memberships = MS_Model_Membership::get_membership_names( $args );
+					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
+					break;
 				case 'drop':
 					$args = array( 'post__in' => array_keys( $member->membership_relationships ) );
 					$memberships = MS_Model_Membership::get_membership_names( $args );
@@ -218,7 +226,7 @@ class MS_Controller_Member extends MS_Controller {
 			}
 		}
 		
-		if( in_array( $action, array( 'add', 'move', 'drop' ) ) ) {
+		if( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
 			$view = apply_filters( 'ms_view_member_membership', new MS_View_Member_Membership() );
 			$data['memberships'] = $memberships;
 			if( 'move' == $action ){
@@ -253,6 +261,10 @@ class MS_Controller_Member extends MS_Controller {
 				case 'add':
 					$member->add_membership( $membership_id );
 					$msg = MS_Helper_Member::MSG_MEMBER_ADDED;
+					break;
+				case 'cancel':
+					$member->cancel_membership( $membership_id );
+					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					break;
 				case 'drop':
 					$member->drop_membership( $membership_id );

@@ -243,7 +243,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		 $fields['modify'] = array(
 		 		'id' => 'modify',
 		 		'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-		 		'value' => 0,
+		 		'value' => empty( $move_from_id ) ? 0 : 2,
 		 );
 		 
 		if( 'live' == $this->paypal_status ) {
@@ -266,6 +266,10 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	}
 	
 	public function handle_return() {
+		
+		MS_Helper_Debug::log( 'Paypal standard IPN POST:' );
+		MS_Helper_Debug::log( $_POST );
+
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
 			if( 'live' == $this->paypal_status ) {
 				$domain = 'https://www.paypal.com';
@@ -273,7 +277,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			else {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
-						
+			
 			//Paypal post authenticity verification
 			$ipn_data = (array) stripslashes_deep( $_POST );
 			$ipn_data['cmd'] = '_notify-validate';
@@ -295,100 +299,98 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				exit;
 			}
 		
-			$new_status = false;
 			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key ) = explode( ':', $_POST['custom'] );
 			
 			$membership = MS_Model_Membership::load( $membership_id );
 			$member = MS_Model_Member::load( $user_id );
-			$external_id = $_POST['txn_id'];
-			$amount = $_POST['mc_gross'];
 			$currency = $_POST['mc_currency'];
 			$status = null;
 			$notes = null;
+			$external_id = null;
+			$amount = 0;
 			
-			// process PayPal response
-			switch ( $_POST['payment_status'] ) {
-				/** Successful payment */
-				case 'Completed':
-				case 'Processed':
-					$newkey = md5( 'MEMBERSHIP' . $amount );
-					if( $key == $newkey ) {
-						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
-						
+			/** Process PayPal payment status */
+			if( ! empty( $_POST['payment_status'] ) ) {
+				$amount = (float) $_POST['mc_gross'];
+				$external_id = $_POST['txn_id'];
+				switch ( $_POST['payment_status'] ) {
+					/** Successful payment */
+					case 'Completed':
+					case 'Processed':
 						$status = MS_Model_Transaction::STATUS_PAID;
-					}
-					else {
-						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
-					}
-					break;
-				case 'Reversed':
-					$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_REVERSED;
-					break;
-				case 'Refunded':
-					$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_REFUNDED;
-					break;
-				case 'Denied':
-					$notes = __('Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_DENIED;
-					break;
-				case 'Pending':
-					$pending_str = array(
-						'address' => __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN ),
-						'authorization' => __( 'Funds not captured yet', MS_TEXT_DOMAIN ),
-						'echeck' => __( 'eCheck that has not cleared yet', MS_TEXT_DOMAIN ),
-						'intl' => __( 'Payment waiting for aproval by service provider', MS_TEXT_DOMAIN ),
-						'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN ),
-						'unilateral' => __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN ),
-						'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN ),
-						'verify' => __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN ),
-						'*' => ''
-					);
-					$reason = $_POST['pending_reason'];
-					$notes = 'Last transaction is pending. Reason: ' . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
-					$status = MS_Model_Transaction::STATUS_PENDING;
-					break;
-		
-				default:
-				case 'Partially-Refunded':
-				case 'In-Progress':
-					break;
+						break;
+					case 'Reversed':
+						$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
+						$status = MS_Model_Transaction::STATUS_REVERSED;
+						break;
+					case 'Refunded':
+						$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', MS_TEXT_DOMAIN );
+						$status = MS_Model_Transaction::STATUS_REFUNDED;
+						break;
+					case 'Denied':
+						$notes = __('Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
+						$status = MS_Model_Transaction::STATUS_DENIED;
+						break;
+					case 'Pending':
+						$pending_str = array(
+							'address' => __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN ),
+							'authorization' => __( 'Funds not captured yet', MS_TEXT_DOMAIN ),
+							'echeck' => __( 'eCheck that has not cleared yet', MS_TEXT_DOMAIN ),
+							'intl' => __( 'Payment waiting for aproval by service provider', MS_TEXT_DOMAIN ),
+							'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN ),
+							'unilateral' => __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN ),
+							'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN ),
+							'verify' => __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN ),
+							'*' => ''
+						);
+						$reason = $_POST['pending_reason'];
+						$notes = 'Last transaction is pending. Reason: ' . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+						$status = MS_Model_Transaction::STATUS_PENDING;
+						break;
+			
+					default:
+					case 'Partially-Refunded':
+					case 'In-Progress':
+						MS_Helper_Debug::log( "Not handling payment_status: " . $_POST['payment_status'] );
+						break;
+				}
 			}
 			
-			//check for subscription details
-			switch ( $_POST['txn_type'] ) {
-				case 'subscr_signup':
-				case 'subscr_modify':
-					$newkey = md5( 'MEMBERSHIP' . $amount );
-					if( $key == $newkey ) {
-						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
-					
-						$status = MS_Model_Transaction::STATUS_PAID;
-					}
-					else {
-						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
-					}
-					break;
-				case 'recurring_payment_profile_canceled':
-				case 'subscr_cancel':
-					$notes = __( 'Paypal subscipton profile has been canceled.', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_CANCELED;
-					break;
-				case 'recurring_payment_suspended':
-					$notes = __( 'Paypal subscipton profile has been suspended.', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_PENDING;
-					break;
-				case 'recurring_payment_suspended_due_to_max_failed_payment':
-					$notes = __( 'Paypal subscipton profile has failed.', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_PENDING;
-					break;
-				case 'new_case':
-					$status = MS_Model_Transaction::STATUS_DISPUTE;
-					break;
+			/** Check for subscription details */
+			if( ! empty( $_POST['txn_type'] ) ) {
+				switch ( $_POST['txn_type'] ) {
+					case 'subscr_signup':
+						$notes = __( 'Paypal subscipton profile has been created.', MS_TEXT_DOMAIN );
+						break;
+					case 'subscr_modify':
+						$notes = __( 'Paypal subscipton profile has been modified.', MS_TEXT_DOMAIN );
+						break;
+					case 'recurring_payment_profile_canceled':
+					case 'subscr_cancel':
+						$notes = __( 'Paypal subscipton profile has been canceled.', MS_TEXT_DOMAIN );
+						$member->cancel_membership( $membership->id );
+						$member->save();
+						break;
+					case 'recurring_payment_suspended':
+						$notes = __( 'Paypal subscipton profile has been suspended.', MS_TEXT_DOMAIN );
+						$member->cancel_membership( $membership->id );
+						$member->save();
+						break;
+					case 'recurring_payment_suspended_due_to_max_failed_payment':
+						$notes = __( 'Paypal subscipton profile has failed.', MS_TEXT_DOMAIN );
+						$member->cancel_membership( $membership->id );
+						$member->save();
+						break;
+					case 'new_case':
+						$status = MS_Model_Transaction::STATUS_DISPUTE;
+						break;
+					default:
+						MS_Helper_Debug::log( "Not handling txn_type: " . $_POST['txn_type'] );
+						break;
+				}
 			}
+			MS_Helper_Debug::log( "ext_id: $external_id status: $status, notes: $notes" );
 			
-			MS_Helper_Debug::log( $notes . print_r($_POST, true) );
 			if( ! empty( $status ) ) {
 				if( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
 					if( ! empty( $notes ) ) {
@@ -398,6 +400,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				}
 				else {
 					$transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $external_id, $notes );
+					$transaction->amount = $amount;
+					$transaction->process_transaction( $status, true );
 				}
 				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
 			}				

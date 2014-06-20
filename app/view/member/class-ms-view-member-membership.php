@@ -51,6 +51,7 @@ class MS_View_Member_Membership extends MS_View {
 	function prepare_fields() {
 		$submit_label = array(
 				'add' => __( 'Add', MS_TEXT_DOMAIN ),
+				'cancel' => __( 'Cancel', MS_TEXT_DOMAIN ),
 				'drop' => __( 'Drop', MS_TEXT_DOMAIN ),
 				'move' => __( 'Move', MS_TEXT_DOMAIN ),
 			);
@@ -77,7 +78,7 @@ class MS_View_Member_Membership extends MS_View {
 			),
 			'submit' => array(
 				'id' => 'submit',
-				'value' => $submit_label[ $this->data['action'] ],
+				'value' => __( 'OK', MS_TEXT_DOMAIN ),
 				'type' => 'submit',
 			),
 			'action' => array(

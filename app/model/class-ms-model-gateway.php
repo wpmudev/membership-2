@@ -147,8 +147,9 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;
 		$transaction->due_date = MS_Helper_Period::current_date();
-		$transaction->process_transaction( $status, true );
+// 		$transaction->process_transaction( $status, true );
 		$transaction->save();
+		return $transaction;
 	}
 	
 	/**

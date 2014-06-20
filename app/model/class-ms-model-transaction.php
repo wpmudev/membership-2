@@ -30,7 +30,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	const STATUS_PAID = 'paid';
 	
-	const STATUS_CANCELED = 'canceled';
+// 	const STATUS_CANCELED = 'canceled';
 	
 	const STATUS_FAILED = 'failed';
 	
@@ -88,7 +88,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_transaction_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
+// 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
 				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
 				self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
 				self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
@@ -212,8 +212,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 					$member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
 					$member->active = true;
 					break;
-				case self::STATUS_CANCELED:
-					$member->cancel_membership( $this->membership_id );
+// 				case self::STATUS_CANCELED:
+// 					$member->cancel_membership( $this->membership_id );
 					break;
 				case self::STATUS_REVERSED:
 				case self::STATUS_REFUNDED:

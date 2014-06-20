@@ -46,7 +46,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 	protected $membership_id;
 	
-	protected $transaction_id;
+	protected $transaction_ids;
 	
 	protected $user_id;
 	
@@ -76,7 +76,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->membership_id = $membership_id;
 		$this->user_id = $user_id;
 		$this->gateway_id = $gateway_id;
-		$this->transaction_id = $transaction_id;
+		if( $transaction_id ) {
+			$this->transaction_ids[ $transaction_id ] = $transaction_id;
+		}
 		$this->set_start_date();
 		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
 		$this->description = $this->name;

@@ -233,6 +233,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$actions = array(
 				'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
 				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
+				'cancel' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'cancel', $item->id, __('Cancel', MS_TEXT_DOMAIN ) ),
 				'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
 		);
 		
@@ -245,6 +246,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		}
 		else {
 			unset( $actions['move'] );
+			unset( $actions['cancel'] );
 			unset( $actions['drop'] );
 		}
 		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
@@ -326,11 +328,12 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	
 	public function get_bulk_actions() {
 	  $actions = array(
-	    	'toggle_activation' => __('Toggle Activation', MS_TEXT_DOMAIN ),
+	    	'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
 	  		'Memberships' => array(
-  				'add' => __('Add membership', MS_TEXT_DOMAIN ),
-	  			'move' => __('Move membership', MS_TEXT_DOMAIN ),
-  				'drop' => __('Drop membership', MS_TEXT_DOMAIN ),
+  				'add' => __( 'Add membership', MS_TEXT_DOMAIN ),
+	  			'cancel' => __( 'Cancel membership', MS_TEXT_DOMAIN ),
+				'move' => __( 'Move membership', MS_TEXT_DOMAIN ),
+  				'drop' => __( 'Drop membership', MS_TEXT_DOMAIN ),
 	  		),
 	  	);
 	  return $actions;
