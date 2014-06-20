@@ -156,7 +156,7 @@ class MS_Controller_Settings extends MS_Controller {
 	public function admin_settings_manager() {
 		$this->print_admin_message();
 		$this->get_active_tab();
-		
+
 		$msg = 0;
 		switch( $this->active_tab ) {
 			case 'general':
@@ -208,14 +208,11 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Execute view page action submit.
 				 */
-				elseif( ! empty( $_POST['submit'] ) ) {
-					$nonce = MS_View_Settings_Gateway::GATEWAY_NONCE;
-					if ( ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['action'] )  &&
-						! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) {
+				elseif( ! empty( $_POST['submit_gateway'] ) && ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['action'] )  &&
+						! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
 							
 						$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-					}
 				}
 				/**
 				 * Save payment settings tab
@@ -247,7 +244,7 @@ class MS_Controller_Settings extends MS_Controller {
 				
 				if ( ! empty( $_POST['save_email'] ) && ! empty( $_POST['action'] ) &&
 						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
-					$msg = $this->save_communication( $_POST ); //TODO bug when showing msg
+					$msg = $this->save_communication( $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 				}
 				break;
@@ -305,6 +302,9 @@ class MS_Controller_Settings extends MS_Controller {
 					case 'paypal_standard_gateway':
 						$view = apply_filters( 'ms_view_settings_gateway_paypal', new MS_View_Settings_Gateway_Paypal(), $gateway_id );
 						break;
+					case 'authorize':
+						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Authorize(), $gateway_id );
+						break;
 					default:
 						$view = apply_filters( 'ms_view_settings_gateway', new MS_View_Settings_Gateway(), $gateway_id );
 						break;
@@ -312,7 +312,7 @@ class MS_Controller_Settings extends MS_Controller {
 				$data = array();
 				$data['model'] = MS_Model_Gateway::factory( $gateway_id );
 				$data['action'] = $_GET['action'];
-				$view->data = $data;
+				$view->data = apply_filters( 'ms_view_settings_gateway_data', $data );
 				$view->render();
 			}
 		}
