@@ -254,62 +254,20 @@ class MS_Controller_Registration extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_signup() {
-		// MS_Helper_Debug::log( 'About to signup...' );
-		
+
 		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
-			// MS_Helper_Debug::log( '**: User logged in...' );
-			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
+			/**
+			 * Allow Free gateway verify if is a free membership ( price = 0 ).
+			 * Other gateways are hooked to ms_model_gateway_handle_payment_return_{$gateway_id} action.
+			 */
+			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway::factory( 'free_gateway' ) );
+			$gateway->handle_return();
 			
-			// What is this $_POST['membership_signup']?
-			if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
-			// if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] )
-				&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
-				// MS_Helper_Debug::log( '**: Gateway stuff... something is odd here...' );
-				$gateway_id = $_POST['gateway'];
-				$membership_id = $_POST['membership_id'];
-				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-					return;
-				}
-				$membership = MS_Model_Membership::load( $membership_id );
-				/**
-				 * Manual gateway.
-				 * Other gateways may have IPN return through handle_payment_return function.
-				 */
-				if( $membership->price > 0 ) {
-					$gateway = MS_Model_Gateway::factory( $gateway_id );
-					add_action( 'the_content', array( $gateway, 'handle_return'), 1 );
-				}
-			}
-			else {
-				// MS_Helper_Debug::log( '**: Other stuff...' );
-				$membership_id = $_GET['membership'];
-				if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-					return;
-				}
-				
-				$membership = MS_Model_Membership::load( $membership_id );
-				$member = MS_Model_Member::get_current_member();
-				/**
-				 * Free gateway.
-				 */
-				if( $membership->price == 0 && ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) 
-										&& ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
-					// MS_Helper_Debug::log( '**: Free stuff...' );		
-					// MS_Helper_Debug::log( $_GET );
-					$gateway_id = 'free_gateway';
-					$gateway = MS_Model_Gateway::factory( $gateway_id );
-					$gateway->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID, $move_from_id );
-					$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_WELCOME ] );
-					wp_safe_redirect( $url );
-				}
-				/**
-				 * Show payment table.
-				 */
-				else {
-					// MS_Helper_Debug::log( '**: Add payment table...' );
-					$this->add_action( 'the_content', 'payment_table', 1 );
-				}
-			}	
+			/**
+			 * Show payment table.
+			 */
+			// MS_Helper_Debug::log( '**: Add payment table...' );
+			$this->add_action( 'the_content', 'payment_table', 1 );
 		}
 	}
 	
