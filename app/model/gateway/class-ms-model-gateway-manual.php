@@ -122,7 +122,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		ob_start();
 		 if( empty( $this->payment_info ) ) {
 			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
-		 	$this->payment_info = __( "Edit you payment instructions <a href='$link'>here</a>");
+		 	$this->payment_info = __( "You need to edit you manual payment gateway instructions <a href='$link'>here</a>");
 		 }
 		echo wpautop( $this->payment_info ); 
 		$html = ob_get_clean();

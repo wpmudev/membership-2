@@ -120,6 +120,7 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] =  "app/view/class-ms-view-admin-bar.php";
+	$overrides['MS_View_Settings_Gateway_Authorize'] =  "app/view/settings/class-ms-view-settings-gateway-authorize.php";
 	$overrides['MS_View_Settings_Gateway_Manual'] =  "app/view/settings/class-ms-view-settings-gateway-manual.php";
 	$overrides['MS_View_Settings_Gateway_Paypal'] =  "app/view/settings/class-ms-view-settings-gateway-paypal.php";
 	$overrides['MS_View_Shortcode_Membership_Signup'] =  "app/view/shortcode/class-ms-view-shortcode-membership-signup.php";

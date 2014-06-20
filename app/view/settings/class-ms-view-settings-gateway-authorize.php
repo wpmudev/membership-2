@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Settings_Gateway_Manual extends MS_View {
+class MS_View_Settings_Gateway_Authorize extends MS_View {
 
 	protected $fields = array();
 	
@@ -38,18 +38,24 @@ class MS_View_Settings_Gateway_Manual extends MS_View {
 	function prepare_fields() {
 		$model = $this->data['model'];
 		$this->fields = array(
-			'description' => array(
-					'id' => 'description',
-					'title' => __( 'Description', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->description,
+			'mode' => array(
+					'id' => 'mode',
+					'title' => __( 'Mode', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' => $model->mode,
+					'field_options' => $model->get_mode_types(),
 			),
-			'payment_info' => array(
-					'id' => 'payment_info',
-					'title' => __( 'Payment Info', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => $model->payment_info,
-					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+			'api_login_id' => array(
+					'id' => 'api_login_id',
+					'title' => __( 'API Login ID', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->api_login_id,
+			),
+			'api_transaction_key' => array(
+					'id' => 'api_transaction_key',
+					'title' => __( 'API Transaction Key', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->api_transaction_key,
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
@@ -81,4 +87,5 @@ class MS_View_Settings_Gateway_Manual extends MS_View {
 			),
 		);
 	}
+
 }

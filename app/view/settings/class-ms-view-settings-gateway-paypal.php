@@ -2,8 +2,6 @@
 
 class MS_View_Settings_Gateway_Paypal extends MS_View {
 
-	const GATEWAY_NONCE = 'gateway_nonce';
-	
 	protected $fields = array();
 	
 	protected $data;
@@ -16,7 +14,7 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 			<div class='ms-wrap'>
 				<h2><?php echo $this->data['model']->name;?> settings</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( self::GATEWAY_NONCE, self::GATEWAY_NONCE ); ?>
+					<?php wp_nonce_field( $this->data['action'] ); ?>
 					<table class="form-table">
 						<tbody>
 							<?php foreach( $this->fields as $field ): ?>
@@ -28,7 +26,7 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 								<?php endforeach; ?>
 						</tbody>
 					</table>
-					<?php MS_Helper_Html::html_submit(); ?>
+					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -71,12 +69,12 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 					'field_options' => $model->get_paypal_sites(),
 					'value' => $model->paypal_site,
 			),
-			'paypal_status' => array(
-					'id' => 'paypal_status',
+			'mode' => array(
+					'id' => 'mode',
 					'title' => __( 'PayPal Mode', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'value' => $model->paypal_status,
-					'field_options' => $model->get_status_types(),
+					'value' => $model->mode,
+					'field_options' => $model->get_mode_types(),
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
@@ -84,18 +82,18 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),
-			'upgrade_button_url' => array(
-					'id' => 'upgrade_button_url',
-					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->upgrade_button_url,
-			),
-			'cancel_button_url' => array(
-					'id' => 'cancel_button_url',
-					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->cancel_button_url,
-			),
+// 			'upgrade_button_url' => array(
+// 					'id' => 'upgrade_button_url',
+// 					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
+// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 					'value' => $model->upgrade_button_url,
+// 			),
+// 			'cancel_button_url' => array(
+// 					'id' => 'cancel_button_url',
+// 					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
+// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 					'value' => $model->cancel_button_url,
+// 			),
 			'action' => array(
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

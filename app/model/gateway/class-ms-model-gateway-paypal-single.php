@@ -36,7 +36,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $paypal_site;
 	
-	protected $paypal_status;
+	protected $mode;
 	
 	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
@@ -112,7 +112,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			);
 		}
 						
-		if( 'live' == $this->paypal_status ) {
+		if( 'live' == $this->mode ) {
 			$action = 'https://www.paypal.com/cgi-bin/webscr';
 		} 
 		else {
@@ -133,7 +133,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	public function handle_return() {
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
-			if( 'live' == $this->paypal_status ) {
+			if( 'live' == $this->mode ) {
 				$domain = 'https://www.paypal.com';
 			}
 			else {
@@ -251,14 +251,6 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			MS_Helper_Debug::log( $notes );
 			exit;
 		}
-	}
-	
-	public function get_status_types() {
-		return apply_filters( 'ms_model_gateway_paypal_standard_get_status', array(
-				'live' => __( 'Live Site', MS_TEXT_DOMAIN ),
-				'test' => __( 'Test Mode (Sandbox)', MS_TEXT_DOMAIN ),
-			)
-		);
 	}
 	
 	public function get_paypal_sites() {

@@ -36,7 +36,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $paypal_site;
 	
-	protected $paypal_status;
+	protected $mode;
 	
 	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
@@ -256,7 +256,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		 		'value' => empty( $move_from_id ) ? 0 : 2,
 		 );
 		 
-		if( 'live' == $this->paypal_status ) {
+		if( 'live' == $this->mode ) {
 			$action = 'https://www.paypal.com/cgi-bin/webscr';
 		}
 		else {
@@ -281,7 +281,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		MS_Helper_Debug::log( $_POST );
 
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
-			if( 'live' == $this->paypal_status ) {
+			if( 'live' == $this->mode ) {
 				$domain = 'https://www.paypal.com';
 			}
 			else {
