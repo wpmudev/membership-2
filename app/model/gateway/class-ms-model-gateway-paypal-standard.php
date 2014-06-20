@@ -105,13 +105,23 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
 				),
-				'submit' => array(
-						'id' => 'submit',
-						'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-						'value' => $this->pay_button_url ? $this->pay_button_url : 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif',
-						'alt' => __( 'PayPal - The safer, easier way to pay online', MS_TEXT_DOMAIN ),
-				),				
 		);
+		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => $this->pay_button_url,
+			);
+		}
+		else {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+					'value' =>  $this->pay_button_url ? $this->pay_button_url : 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif',
+					'alt' => __( 'PayPal - The safer, easier way to pay online', MS_TEXT_DOMAIN ),
+			);
+		}
+		
 		/** Trial period */
 		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
 			$fields['a1'] = array(

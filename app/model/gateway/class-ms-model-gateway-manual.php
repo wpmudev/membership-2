@@ -56,12 +56,23 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $coupon_id,
 				),
-				'membership_signup' => array(
-						'id' => 'membership_signup',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Signup', MS_TEXT_DOMAIN ),
-				),
 		);
+		if( strpos( $this->payment_url, 'http' ) === 0 ) {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+					'value' =>  $this->pay_button_url,
+			);
+		}
+		else {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
+			);
+		}
+		
+		
 		?>
 			<form action="<?php echo $this->get_return_url();?>" method="post">
 				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
@@ -69,7 +80,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['move_from_id'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['coupon_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_signup'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
 			</form>
 		<?php 
 	}
@@ -81,7 +92,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
 		$wp_query->query_vars['post_type'] = 'page';
 
-		if( ! empty( $_POST['membership_signup'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) && 
+		if( ! empty( $_POST['submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) && 
 			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
 
 			$membership_id = $_POST['membership_id'];
