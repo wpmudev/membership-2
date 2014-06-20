@@ -44,10 +44,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	/**
 	 * Close comments for membership special pages.
 	 */
-	public function check_special_page() {
+	public function check_special_page( $content ) {
 		if ( MS_Plugin::instance()->settings->is_special_page() ) {
 			add_filter( 'comments_open', '__return_false', 100 );
 		}
+		return $content;
 	}
 	
 	public function get_content( $args = null ) {
