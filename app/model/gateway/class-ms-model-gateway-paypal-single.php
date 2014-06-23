@@ -112,7 +112,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			);
 		}
 						
-		if( 'live' == $this->mode ) {
+		if( self::MODE_LIVE == $this->mode ) {
 			$action = 'https://www.paypal.com/cgi-bin/webscr';
 		} 
 		else {
@@ -133,7 +133,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	public function handle_return() {
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
-			if( 'live' == $this->mode ) {
+			if( self::MODE_LIVE == $this->mode ) {
 				$domain = 'https://www.paypal.com';
 			}
 			else {

@@ -22,6 +22,9 @@
 
 class MS_Model_Gateway extends MS_Model_Option {
 	
+	const MODE_SANDBOX = 'sandbox';
+	const MODE_LIVE    = 'live';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $id = 'gateway';
@@ -163,8 +166,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function get_mode_types() {
 		return apply_filters( 'ms_model_gateway_get_mode_types', array(
-				'live' => __( 'Live Site', MS_TEXT_DOMAIN ),
-				'test' => __( 'Test Mode (Sandbox)', MS_TEXT_DOMAIN ),
+				MODE_LIVE => __( 'Live Site', MS_TEXT_DOMAIN ),
+				MODE_SANDBOX => __( 'Sandbox Mode (test)', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
