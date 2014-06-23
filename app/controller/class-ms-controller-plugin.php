@@ -289,8 +289,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_enqueue_script( 'ms-tooltips' );
 		
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
-		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
-		
 	}
 
 	/**
@@ -311,6 +309,5 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_enqueue_script( 'membership-shortcode' );
 		
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
-		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 	}
 }

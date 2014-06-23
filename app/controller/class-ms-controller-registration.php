@@ -445,8 +445,11 @@ class MS_Controller_Registration extends MS_Controller {
 		 * Extra gateway form.
 		 */
 		if( ! empty( $_POST['extra_form'] ) ) {
-			wp_enqueue_script('jquery-chosen');
 			wp_enqueue_style('jquery-chosen');
+			
+			wp_enqueue_script('jquery-chosen');
+			wp_enqueue_script('jquery-validate');
+			wp_enqueue_script( 'ms-view-gateway-authorize',  MS_Plugin::instance()->url. 'app/assets/js/ms-view-gateway-authorize.js', array( 'jquery' ), MS_Plugin::instance()->version );
 		}
 	}
 }
