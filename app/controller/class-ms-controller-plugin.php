@@ -196,7 +196,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages = array();
 
 		/** Create primary menu item: Membership */
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', null, MS_Plugin::instance()->url . 'app/assets/images/members.png' );
+		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', null, $plugin_url . 'app/assets/images/members.png' );
 
 		/** Create Membership Dashboard */
 		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
@@ -235,16 +235,21 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */	
 	public function register_plugin_admin_styles() {
-		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
+		
+		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
 
-		wp_register_style( 'membership-admin', MS_Plugin::instance()->url. 'app/assets/css/settings.css', MS_Plugin::instance()->version );
+		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/settings.css', $version );
 		wp_enqueue_style( 'membership-admin' );
 		
-		wp_register_style( 'membership-tooltip', MS_Plugin::instance()->url. 'app/assets/css/ms-tooltip.css', MS_Plugin::instance()->version );
+		wp_register_style( 'membership-tooltip', $plugin_url. 'app/assets/css/ms-tooltip.css', $version );
 		wp_enqueue_style( 'membership-tooltip' );
 		
-		wp_register_style( 'font-awesome', MS_Plugin::instance()->url. 'app/assets/css/font-awesome.min.css', MS_Plugin::instance()->version );
+		wp_register_style( 'font-awesome', $plugin_url. 'app/assets/css/font-awesome.min.css', $version );
 		wp_enqueue_style( 'font-awesome' );
+		
+		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/chosen.css', null, $version );
 	}
 	
 	/**
@@ -255,10 +260,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */	
 	public function enqueue_plugin_styles() {
-		wp_register_style( 'jquery-ui', MS_Plugin::instance()->url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', MS_Plugin::instance()->version );
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
+		
+		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
 
-		wp_register_style( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/css/ms-shortcode.css', MS_Plugin::instance()->version );
-		wp_enqueue_style( 'membership-shortcode' );		
+		wp_register_style( 'membership-shortcode', $plugin_url. 'app/assets/css/ms-shortcode.css', $version );
+		wp_enqueue_style( 'membership-shortcode' );
+		
+		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/chosen.css', null, $version );
 	}
 	
 	/**
@@ -269,11 +279,18 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */	
 	public function register_plugin_admin_scripts() {
-		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
-		wp_register_script( 'ms_view_member_ui', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-ui.js', null, MS_Plugin::instance()->version );
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
+		
+		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
+		wp_register_script( 'ms_view_member_ui', $plugin_url. 'app/assets/js/ms-view-member-ui.js', null, $version );
 
-		wp_register_script( 'ms-tooltips', MS_Plugin::instance()->url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), MS_Plugin::instance()->version );
+		wp_register_script( 'ms-tooltips', $plugin_url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-tooltips' );
+		
+		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
+		
 	}
 
 	/**
@@ -284,10 +301,16 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_scripts() {
-		wp_register_script( 'jquery-validate',  MS_Plugin::instance()->url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), MS_Plugin::instance()->version );
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
+		
+		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'jquery-validate' );
 		
-		wp_register_script( 'membership-shortcode', MS_Plugin::instance()->url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), MS_Plugin::instance()->version );
+		wp_register_script( 'membership-shortcode', $plugin_url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), $version );
 		wp_enqueue_script( 'membership-shortcode' );
+		
+		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 	}
 }

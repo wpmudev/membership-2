@@ -85,7 +85,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
 		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );		
+		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
 	}
 	
@@ -560,14 +560,12 @@ class MS_Controller_Membership extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 		
-		wp_register_style( 'chosen-jquery', $plugin_url. 'app/assets/css/chosen.css', null, $version );
-		
 		if( 'general' == $this->active_tab ) {
 			wp_enqueue_style( 'jquery-ui' );
-			wp_enqueue_style( 'chosen-jquery' );
+			wp_enqueue_style( 'jquery-chosen' );
 		}
 		elseif( 'dripped' == $this->active_tab ) {
-			wp_enqueue_style( 'chosen-jquery' );
+			wp_enqueue_style( 'jquery-chosen' );
 		}
 		wp_enqueue_style( 'ms_membership_view_edit', $plugin_url. 'app/assets/css/ms-view-membership-edit.css', null, $version );
 	}
@@ -582,8 +580,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 		
-		wp_register_script( 'jquery-validate', $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
-		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
 		wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
 				
 		if( 'general' == $this->active_tab ) {

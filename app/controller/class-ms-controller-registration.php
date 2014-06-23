@@ -59,7 +59,9 @@ class MS_Controller_Registration extends MS_Controller {
 		$this->add_filter( 'ms_controller_shortcode_membership_register_user_atts', 'add_registration_nonce' );
 
 		// $this->add_action( 'the_posts', 'process_actions', 1 );
-
+		/** Enqueue styles and scripts used  */
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
+		
 	}
 	
 	
@@ -364,6 +366,8 @@ class MS_Controller_Registration extends MS_Controller {
 			switch( $_POST['gateway'] ) {
 				case 'authorize':
 					$view = new MS_View_Gateway_Authorize();
+					$gateway = MS_Model_Gateway::factory( 'authorize' );
+					$data['countries'] = $gateway->get_country_codes();
 					break;
 			}
 			$view = apply_filters( 'ms_view_gateway_form', $view );
@@ -426,6 +430,23 @@ class MS_Controller_Registration extends MS_Controller {
 		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			MS_Model_Gateway::get_gateways();
 			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
+		}
+	}
+	
+	/**
+	 * Adds CSS and javascript
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		/**
+		 * Extra gateway form.
+		 */
+		if( ! empty( $_POST['extra_form'] ) ) {
+			wp_enqueue_script('jquery-chosen');
+			wp_enqueue_style('jquery-chosen');
 		}
 	}
 }
