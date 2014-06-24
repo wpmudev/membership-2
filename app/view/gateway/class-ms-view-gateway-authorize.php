@@ -88,6 +88,11 @@ class MS_View_Gateway_Authorize extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['coupon_id'],
 				),
+				'step' => array(
+						'id' => 'step',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'process_purchase',
+				),
 		);
 		
 		$months = array( '' => __( 'Month', MS_TEXT_DOMAIN ) );
