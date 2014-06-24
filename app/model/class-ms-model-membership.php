@@ -106,7 +106,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$start_date = MS_Helper_Period::current_date();
 		}
 		if( $this->trial_period_enabled && $this->trial_period['period_unit'] && $this->trial_period['period_type'] ) {
-			$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $start_date );
+			if( self::MEMBERSHIP_TYPE_DATE_RANGE == $this->membership_type ) {
+				$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $this->period_date_start );
+			}
+			else {
+				$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $start_date );
+			}
 		}
 		else {
 			$expiry_date = MS_Helper_Period::current_date();
