@@ -123,7 +123,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		}
 		
 		/** Trial period */
-		if( $membership->trial_period_enabled && ! empty( $membership->trial_price ) && ! empty( $membership->trial_period['period_unit'] ) ) {
+		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
 			$fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

@@ -265,7 +265,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway::factory( 'free_gateway' ) );
 			$gateway->handle_return();
 			
-			switch( $this->get_step() ) {
+			switch( $this->get_signup_step() ) {
 				/**
 				 * Show payment table.
 				 */
@@ -283,8 +283,7 @@ class MS_Controller_Registration extends MS_Controller {
 				 */
 				case 'process_purchase':
 					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
-						$user_id = is_user_logged_in() ? get_current_user_id() : $_POST['user_id'];
-						$member = MS_Model_Membership::load( $user_id );
+						$member = MS_Model_Member::get_current_member();
 						$membership = MS_Model_Membership::load( $_POST['membership_id'] );
 						$move_from_id = $_POST['move_from_id'];
 						$coupon_id = $_POST['coupon_id'];
