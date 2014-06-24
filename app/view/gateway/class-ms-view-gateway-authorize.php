@@ -22,6 +22,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 					<?php foreach( $this->fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_input( $field ); ?>
 					<?php endforeach;?>
+					<?php $this->render_cim_profiles() ?>
 					<?php _e( 'Credit Card Information', MS_TEXT_DOMAIN ); ?>
 					<table class="form-table">
 						<tbody>
@@ -98,24 +99,24 @@ class MS_View_Gateway_Authorize extends MS_View {
 			$years[ $i ] = $i;
 		}
 		$this->fields['card'] = array(
-				'number' => array(
-						'id' => 'number',
+				'card_num' => array(
+						'id' => 'card_num',
 						'title' => __( 'Card Number', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
-				'security_code' => array(
-						'id' => 'security_code',
+				'card_code' => array(
+						'id' => 'card_code',
 						'title' => __( 'Security Code', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
-				'month' => array(
-						'id' => 'month',
+				'exp_month' => array(
+						'id' => 'exp_month',
 						'title' => __( 'Expiration Date', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'field_options' => $months,
 				),
-				'year' => array(
-						'id' => 'year',
+				'exp_year' => array(
+						'id' => 'exp_year',
 						'title' => __( '', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'field_options' => $years,
@@ -152,8 +153,8 @@ class MS_View_Gateway_Authorize extends MS_View {
 					'title' => __( 'State', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
-			'zipcode' => array(
-					'id' => 'zipcode',
+			'zip' => array(
+					'id' => 'zip',
 					'title' => __( 'Zip code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
@@ -224,6 +225,6 @@ class MS_View_Gateway_Authorize extends MS_View {
 					</li>
 				</ul>
 			</div>
-			<?php
-		}
+		<?php
+	}
 }
