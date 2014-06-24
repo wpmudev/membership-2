@@ -174,7 +174,7 @@ class MS_Controller_Member extends MS_Controller {
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
 				case 'cancel':
-					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
+					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
 					break;
 				case 'drop':
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );

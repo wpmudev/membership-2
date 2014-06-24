@@ -298,7 +298,7 @@ class MS_Model_Member extends MS_Model {
 			if( 'admin' != $gateway_id ) {
 				MS_Model_News::save_news( $membership_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
 				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction_id );
-				do_action( 'ms_model_membership_add_membership_object', $this ); 
+				do_action( 'ms_model_membership_add_membership', $membership_relationship, $this ); 
 			}
 		}
 	}
@@ -315,6 +315,11 @@ class MS_Model_Member extends MS_Model {
 			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
 			$this->membership_relationships[ $membership_id ]->save();
 			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DEACTIVATE );
+			
+			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
+			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
+
+			do_action( 'ms_model_membership_deactivate_membership', $this->membership_relationships[ $membership_id ], $this );
 		}
 	}
 	
@@ -329,8 +334,14 @@ class MS_Model_Member extends MS_Model {
 			
 			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DROP );
 			
+			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
+			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
+			
+			do_action( 'ms_model_membership_drop_membership', $this->membership_relationships[ $membership_id ], $this );
+				
 			unset( $this->membership_relationships[ $membership_id ] );
 // 			unset( $this->membership_ids[ $membership_id ] );
+			
 		}
 	}
 
@@ -345,7 +356,12 @@ class MS_Model_Member extends MS_Model {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED;
 			$this->membership_relationships[ $membership_id ]->save();
-			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_CANCEL );
+			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ], MS_Model_News::TYPE_MS_CANCEL );
+
+			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
+			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
+			
+			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
 		}
 	}
 	
