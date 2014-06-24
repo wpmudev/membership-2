@@ -58,6 +58,8 @@ class MS_Controller_Registration extends MS_Controller {
 		// Make sure that the registration shortcode form includes the nonce
 		$this->add_filter( 'ms_controller_shortcode_membership_register_user_atts', 'add_registration_nonce' );
 
+		$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
+		
 		// $this->add_action( 'the_posts', 'process_actions', 1 );
 		/** Enqueue styles and scripts used  */
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
@@ -462,6 +464,22 @@ class MS_Controller_Registration extends MS_Controller {
 		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			MS_Model_Gateway::get_gateways();
 			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
+		}
+	}
+	
+	/**
+	 * Propagates SSL cookies when user logs in.
+	 *
+	 * @since 4.0.0
+	 * @action wp_login 10 2
+	 *
+	 * @access public
+	 * @param type $login
+	 * @param WP_User $user
+	 */
+	public function propagate_ssl_cookie( $login, WP_User $user ) {
+		if ( ! is_ssl() ) {
+			wp_set_auth_cookie( $user->ID, true, true );
 		}
 	}
 	
