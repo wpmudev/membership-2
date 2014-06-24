@@ -28,18 +28,18 @@ class MS_View_Gateway_Authorize extends MS_View {
 						<tbody>
 							<tr>
 								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['number'] ); ?>
+									<?php MS_Helper_Html::html_input( $this->fields['card']['card_num'] ); ?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['security_code'] ); ?>
+									<?php MS_Helper_Html::html_input( $this->fields['card']['card_code'] ); ?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['month'] ); ?>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['year'] ); ?>
+									<?php MS_Helper_Html::html_input( $this->fields['card']['exp_month'] ); ?>
+									<?php MS_Helper_Html::html_input( $this->fields['card']['exp_year'] ); ?>
 								</td>
 							</tr>
 						</tbody>
