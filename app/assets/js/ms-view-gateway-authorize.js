@@ -4,10 +4,10 @@ jQuery( document ).ready(function( $ ) {
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
-				'number': 'required',
-				'security_code': 'required',
-				'month': 'required',
-				'year': 'required',
+				'card_num': 'required',
+				'card_code': 'required',
+				'exp_month': 'required',
+				'exp_year': 'required',
 				'first_name': 'required',
 				'last_name': 'required',
 			}

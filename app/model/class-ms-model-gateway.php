@@ -93,18 +93,42 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_factory', $gateway, $gateway_id );
 	}
 	
+	/**
+	 * Render purchase button.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 */
 	public function purchase_button( $membership, $member ) {
 		
 	}
 	
+	/**
+	 * Processes gateway IPN return.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 */
 	public function handle_return() {
 		
 	}
 	
 	/**
+	 * Processes purchase action.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 */
+	public function process_purchase( $member, $membership, $move_from_id, $coupon_id ) {
+	
+	}
+	
+	/**
 	 * Url that fires handle_return of this gateway.
 	 * 
-	 * @todo Use pretty permalinks structure like /ms-payment-return/{$this->id}
 	 * @return string The return url.
 	 */
 	public function get_return_url() {
@@ -405,5 +429,41 @@ class MS_Model_Gateway extends MS_Model_Option {
 				'ZM' => __('ZAMBIA', MS_TEXT_DOMAIN ),
 		)
 		);
+	}
+	
+	/**
+	 * Returns user IP address.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @static
+	 * @access protected
+	 * @return string Remote IP address on success, otherwise FALSE.
+	 */
+	protected static function get_remote_ip() {
+		$flag = ! WP_DEBUG ? FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE : null;
+		$keys = array(
+				'HTTP_CLIENT_IP',
+				'HTTP_X_FORWARDED_FOR',
+				'HTTP_X_FORWARDED',
+				'HTTP_X_CLUSTER_CLIENT_IP',
+				'HTTP_FORWARDED_FOR',
+				'HTTP_FORWARDED',
+				'REMOTE_ADDR',
+		);
+	
+		$remote_ip = false;
+		foreach ( $keys as $key ) {
+			if ( array_key_exists( $key, $_SERVER ) === true ) {
+				foreach ( array_filter( array_map( 'trim', explode( ',', $_SERVER[$key] ) ) ) as $ip ) {
+					if ( filter_var( $ip, FILTER_VALIDATE_IP, $flag ) !== false ) {
+						$remote_ip = $ip;
+						break;
+					}
+				}
+			}
+		}
+	
+		return $remote_ip;
 	}
 }

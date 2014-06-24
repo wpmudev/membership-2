@@ -265,21 +265,54 @@ class MS_Controller_Registration extends MS_Controller {
 			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway::factory( 'free_gateway' ) );
 			$gateway->handle_return();
 			
-			/**
-			 * Extra gateway form.
-			 */
-			if( ! empty( $_POST['extra_form'] ) ) {
-				$this->add_action( 'the_content', 'gateway_form', 1 );
-			}
-			/**
-			 * Show payment table.
-			 */
-			else {
-				$this->add_action( 'the_content', 'payment_table', 1 );
+			switch( $this->get_step() ) {
+				/**
+				 * Show payment table.
+				 */
+				case 'payment_table':
+					$this->add_action( 'the_content', 'payment_table', 1 );
+					break;
+				/**
+				 * Show gateway extra form.
+				 */
+				case 'extra_form':
+					$this->add_action( 'the_content', 'gateway_form', 1 );
+					break;
+				/**
+				 * Process payment.
+				 */
+				case 'process_purchase':
+					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
+						$user_id = is_user_logged_in() ? get_current_user_id() : $_POST['user_id'];
+						$member = MS_Model_Membership::load( $user_id );
+						$membership = MS_Model_Membership::load( $_POST['membership_id'] );
+						$move_from_id = $_POST['move_from_id'];
+						$coupon_id = $_POST['coupon_id'];
+						
+						$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $_POST['gateway'] ) );
+						$gateway->process_purchase( $member, $membership, $move_from_id, $coupon_id );
+// 						$gateway->add_action( 'the_content', 'process_purchase', 1 );
+					}
+					break;
 			}
 		}
 	}
 	
+	/**
+	 * Get signup process step (multi step form).
+	 *
+	 * @since 4.0.0
+	 */
+	private function get_signup_step() {
+		$steps = array( 'payment_table', 'extra_form', 'process_purchase' );
+		if( ! empty( $_POST['step'] ) && in_array( $_POST['step'], $steps ) ) {
+			$step = $_POST['step'];
+		}
+		else {
+			$step = 'payment_table';
+		}
+		return $step;
+	}
 	/**
 	 * Handles register_user POST action.
 	 *
@@ -358,7 +391,7 @@ class MS_Controller_Registration extends MS_Controller {
 		
 		$data = array();
 		
-		if( ! empty( $_POST['gateway'] ) ) {
+		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
 			$data['gateway'] = $_POST['gateway'];
 			$data['membership_id'] = $_POST['membership_id'];
 			$data['move_from_id'] = $_POST['move_from_id'];
