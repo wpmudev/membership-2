@@ -286,7 +286,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		try{
 			switch( $membership->membership_type ) {
 				case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-					$transactions[] = $this->process_serial_purchase( $membership, $coupon_id );
+					$transactions = $this->process_serial_purchase( $membership, $coupon_id );
 					break;
 				case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
 				case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
@@ -296,7 +296,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 					 * to use standard ARB aproach and full cards details
 					 */ 
 					if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
-						$transactions[] = $this->process_serial_purchase( $membership, $coupon_id );
+						$transactions = $this->process_serial_purchase( $membership, $coupon_id );
 					}
 					/**
 					 * No serial purchase. Fetch CIM user and payment profiles info.
@@ -314,7 +314,23 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 					}
 					break;
 			}
+			
 			$this->commit_transactions( $transactions );
+			MS_Helper_Debug::log("commit_transaction");
+			MS_Helper_Debug::log($transactions);
+			
+			foreach( $transactions as $transaction ) {
+				if ( in_array( $transaction['status'], array( self::TRANSACTION_TYPE_CAPTURED, self::TRANSACTION_TYPE_RECURRING ) ) ) {
+					
+					$notes = $this->mode == self::MODE_SANDBOX ? 'Sandbox' : '';
+					$status = MS_Model_Transaction::STATUS_PAID;
+						
+					$ms_transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $transaction['transaction'], $notes );
+					$ms_transaction->amount = $transaction['amount'];
+					$ms_transaction->process_transaction( $status, true );
+				}
+			}
+			
 			if( ! $this->cim_profile_id ) {
 				$this->create_cim_profile( $member );
 			}
@@ -403,7 +419,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		}
 	
 		$transactions = array();
-		
+	
 		// initialize AIM transaction to check CC
 		$transaction = $this->process_non_serial_purchase( $membership->price );
 		if ( is_null( $transaction ) ) {
@@ -412,24 +428,24 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		else {
 			$transactions[] = $transaction;
 		}
-
+	
 		$amount = number_format( $membership->price, 2, '.', '' );
-		
+	
 		$subscription = $this->get_arb_subscription( $membership );
 		$subscription->name = $membership->name;
 		$subscription->amount = $amount;
 		$subscription->startDate = MS_Helper_Period::current_date();
-		
+	
 		if( $membership->trial_period_enabled && $membership->trial_period['period_unit'] > 0 ) {
 			switch( $membership->membership_type ) {
 				case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-					if( $membership->trial_period['period_unit'] != $membership->pay_cycle_period['period_unit'] ||  
+					if( $membership->trial_period['period_unit'] != $membership->pay_cycle_period['period_unit'] ||
 						$membership->trial_period['period_type'] != $membership->pay_cycle_period['period_type'] ) {
 							
-							$transactions[] = $this->process_non_serial_purchase( $membership->trial_price );
-							$subscription->startDate = $membership->get_trial_expire_date();
-							/** serial ocurrency with on going subscription (no end date) = 9999 */
-							$subscription->totalOccurrences = 9999;
+						$transactions[] = $this->process_non_serial_purchase( $membership->trial_price );
+						$subscription->startDate = $membership->get_trial_expire_date();
+						/** serial ocurrency with on going subscription (no end date) = 9999 */
+						$subscription->totalOccurrences = 9999;
 					}
 					else {
 						$subscription->trialAmount = number_format( $membership->trial_price, 2, '.', '' );
@@ -474,12 +490,13 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$arb = $this->get_arb();
 		$response = $arb->createSubscription( $subscription );
 		if ( $response->isOk() ) {
-			return array(
+			$transactions[] = array(
 					'method'      => 'arb',
 					'transaction' => $response->getSubscriptionId(),
 					'date'        => MS_Helper_Period::current_date(),
 					'amount'      => $amount,
 			);
+			return $transactions;
 		}
 		else {
 			throw new Exception( $response->getMessageText() );
@@ -493,19 +510,13 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 *
 	 * @access protected
 	 */
-	protected function commit_transactions( $transactions ) {
-	
-		MS_Helper_Debug::log($transactions);
-		$move_from_id = 0;
-		$coupon_id = 0;
-		$notes = $this->mode == self::MODE_SANDBOX ? 'Sandbox' : '';
+	protected function commit_transactions( &$transactions ) {
 	
 		// process each transaction information and save it to CIM
 		foreach ( $transactions as $index => $info ) {
 			if ( is_null( $info ) ) {
 				continue;
 			}
-	
 			$status = 0;
 			if ( $info['method'] == 'aim' ) {
 				$status = self::TRANSACTION_TYPE_AUTHORIZED;
@@ -531,13 +542,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			elseif ( $info['method'] == 'arb' ) {
 				$status = self::TRANSACTION_TYPE_RECURRING;
 			}
-	
-// 			if ( $status ) {
-// 				$ms_transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $transaction->transId, $notes );
-// 				$ms_transaction->amount = $amount;
-// 				$ms_transaction->process_transaction( $status, true );
-				
-// 			}
+			$transactions[ $index ]['status'] = $status;
 		}
 	}
 	
@@ -688,5 +693,34 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$subscription->billToCountry = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
 	
 		return $subscription;
+	}
+	
+	/**
+	 * Cancels active recuring subscriptions
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function cancel_membership( $ms_relationship ) {
+		MS_Helper_Debug::log( 'cancel_membership');
+		MS_Helper_Debug::log($ms_relationship);
+		
+		$membership = $ms_relationship->get_membership();
+		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || 
+			$membership->trial_period_enabled && $membership->trial_period['period_unit'] > 0 ) {
+
+// 			$args['author'] = $ms_relationship->user_id;
+// 			$args['meta_query']['membership_id'] = array(
+// 					'key' => 'membership_id',
+// 					'value' => $ms_relationship->membership_id,
+// 			);
+// 			$transactions = MS_Model_Transaction::get_transactions( $args );
+			foreach( $ms_relationship->transaction_ids as $transaction_id ) {
+				$transaction = MS_Model_Transaction::load( $transaction_id );
+				MS_Helper_Debug::log("external transId: $transaction->external_id ");
+				$this->get_arb()->cancelSubscription( $transaction->external_id );
+			}
+		}
 	}
 }
