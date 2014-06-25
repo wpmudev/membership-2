@@ -77,7 +77,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->user_id = $user_id;
 		$this->gateway_id = $gateway_id;
 		if( $transaction_id ) {
-			$this->transaction_ids[ $transaction_id ] = $transaction_id;
+			$this->transaction_ids[] = $transaction_id;
 		}
 		$this->set_start_date();
 		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
@@ -128,7 +128,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Retrive membership relationship count.
+	 * Retrieve membership relationshi count.
 	 * 
 	 * @param array $args
 	 * @return number The found count.
@@ -140,6 +140,26 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$query = new WP_Query( $args );
 
 		return $query->found_posts;
+	}
+	
+	/**
+	 * Retrieve membership relationship.
+	 * 
+	 * @param int $user_id The user id 
+	 * @return int $membership_id The membership id.
+	 */
+	public static function get_membership_relationship( $user_id, $membership_id ) {
+		
+		$args = self::get_query_args( array( 'user_id' => $user_id, 'membership_id' => $membership_id ) );
+		$query = new WP_Query( $args );
+		$post = $query->get_posts();
+		
+		$ms_relationship = null;
+		if( ! empty( $post[0] ) ) {
+			$ms_relationship = self::load( $post[0] );
+		}
+		
+		return $ms_relationship;
 	}
 	
 	/**
@@ -356,7 +376,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->start_date = MS_Helper_Period::subtract_interval( $period_unit, $period_type );
 		}
 	}
-		
+
+	/**
+	 * Add transaction.
+	 * 
+	 * The transaction of this membership relationship.
+	 * 
+	 * @param int $transaction_id The Transaction Id to add.
+	 */
+	public function add_transaction( $transaction_id ) {
+		if( ! in_array( $transaction_id, $this->transaction_ids ) ) {
+			$this->transaction_ids[] = $transaction_id;
+		}
+	}
 	/**
 	 * Get membership status.
 	 * 
