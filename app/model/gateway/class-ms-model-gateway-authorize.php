@@ -33,7 +33,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $id = 'authorize';
+	protected $id = self::GATEWAY_AUTHORIZE;
 	
 	protected $name = 'Authorize.net Gateway';
 	

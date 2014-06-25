@@ -295,14 +295,14 @@ class MS_Controller_Settings extends MS_Controller {
 			$gateway_id = $_GET['gateway_id'];
 			if( MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
 				switch( $gateway_id ) {
-					case 'manual_gateway':
+					case MS_Model_Gateway::GATEWAY_MANUAL:
 						$view = apply_filters( 'ms_view_settings_gateway_manual', new MS_View_Settings_Gateway_Manual(), $gateway_id );
 						break;
-					case 'paypal_single_gateway':
-					case 'paypal_standard_gateway':
+					case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
+					case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
 						$view = apply_filters( 'ms_view_settings_gateway_paypal', new MS_View_Settings_Gateway_Paypal(), $gateway_id );
 						break;
-					case 'authorize':
+					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Authorize(), $gateway_id );
 						break;
 					default:

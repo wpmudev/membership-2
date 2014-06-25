@@ -37,7 +37,7 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 	
 	function prepare_fields() {
 		$model = $this->data['model'];
-		if( $model->id == 'paypal_single_gateway' ) {
+		if( $model->id == MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE ) {
 			$merchant_id_field = array(
 					'id' => 'paypal_email',
 					'title' => __( 'Paypal Email', MS_TEXT_DOMAIN ),

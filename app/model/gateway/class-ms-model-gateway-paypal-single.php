@@ -24,7 +24,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $id = 'paypal_single_gateway';
+	protected $id = self::GATEWAY_PAYPAL_SINGLE;
 	
 	protected $name = 'PayPal Single Gateway';
 	

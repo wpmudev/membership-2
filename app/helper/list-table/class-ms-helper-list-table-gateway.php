@@ -65,7 +65,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		
 		$this->items = apply_filters( 'gateway_helper_list_table_gateway_items', MS_Model_Gateway::get_gateways() );
 		
-		unset( $this->items['free_gateway'] );
+		unset( $this->items[ MS_Model_Gateway::GATEWAY_FREE ] );
 	}
 
 	public function column_name( $item ) {

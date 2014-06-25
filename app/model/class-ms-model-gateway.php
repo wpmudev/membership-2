@@ -25,6 +25,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 	const MODE_SANDBOX = 'sandbox';
 	const MODE_LIVE    = 'live';
 	
+	const GATEWAY_FREE = 'free';
+	const GATEWAY_MANUAL = 'manual';
+	const GATEWAY_PAYPAL_SINGLE = 'paypal_single';
+	const GATEWAY_PAYPAL_STANDARD = 'paypal_standard';
+	const GATEWAY_AUTHORIZE = 'authorize';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $id = 'gateway';
@@ -59,11 +65,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function get_gateways() {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
-				'free_gateway' => MS_Model_Gateway_Free::load(),
-				'manual_gateway' => MS_Model_Gateway_Manual::load(),
-				'paypal_standard_gateway' => MS_Model_Gateway_Paypal_Standard::load(),
-				'paypal_single_gateway' => MS_Model_Gateway_Paypal_Single::load(),
-				'authorize' => MS_Model_Gateway_Authorize::load(),
+				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
+				self::GATEWAY_MANUAL => MS_Model_Gateway_Manual::load(),
+				self::GATEWAY_PAYPAL_STANDARD => MS_Model_Gateway_Paypal_Standard::load(),
+				self::GATEWAY_PAYPAL_SINGLE => MS_Model_Gateway_Paypal_Single::load(),
+				self::GATEWAY_AUTHORIZE => MS_Model_Gateway_Authorize::load(),
 			);
 		}
 		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );

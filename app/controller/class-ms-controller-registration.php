@@ -264,7 +264,7 @@ class MS_Controller_Registration extends MS_Controller {
 			 * Allow Free gateway verify if is a free membership ( price = 0 ).
 			 * Other gateways may hook to ms_model_gateway_handle_payment_return_{$gateway_id} action.
 			 */
-			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway::factory( 'free_gateway' ) );
+			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway_Free::load() );
 			$gateway->handle_return();
 			
 			switch( $this->get_signup_step() ) {
@@ -398,11 +398,13 @@ class MS_Controller_Registration extends MS_Controller {
 			$data['move_from_id'] = $_POST['move_from_id'];
 			$data['coupon_id'] = $_POST['coupon_id'];
 			switch( $_POST['gateway'] ) {
-				case 'authorize':
-					$view = new MS_View_Gateway_Authorize();
-					$gateway = MS_Model_Gateway::factory( 'authorize' );
+				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					$view = apply_filters( 'ms_view_gateway_authorize', new MS_View_Gateway_Authorize() );
+					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Model_Gateway_Authorize::load() );
 					$data['countries'] = $gateway->get_country_codes();
 					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $data['membership_id'] );
+					break;
+				default:
 					break;
 			}
 			$view = apply_filters( 'ms_view_gateway_form', $view );

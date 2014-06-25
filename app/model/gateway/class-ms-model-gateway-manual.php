@@ -24,7 +24,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $id = 'manual_gateway';
+	protected $id = self::GATEWAY_MANUAL;
 	
 	protected $name = 'Manual Gateway';
 	
