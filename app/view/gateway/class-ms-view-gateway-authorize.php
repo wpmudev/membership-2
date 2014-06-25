@@ -23,39 +23,41 @@ class MS_View_Gateway_Authorize extends MS_View {
 						<?php MS_Helper_Html::html_input( $field ); ?>
 					<?php endforeach;?>
 					<?php $this->render_cim_profiles() ?>
-					<?php _e( 'Credit Card Information', MS_TEXT_DOMAIN ); ?>
-					<table class="form-table">
-						<tbody>
-							<tr>
-								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['card_num'] ); ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['card_code'] ); ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['exp_month'] ); ?>
-									<?php MS_Helper_Html::html_input( $this->fields['card']['exp_year'] ); ?>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<?php _e( 'Billing Information', MS_TEXT_DOMAIN ); ?>
-					<table class="form-table">
-						<tbody>
-							<?php foreach( $this->fields['billing'] as $field ): ?>
+					<div id="ms-authorize-card-wrapper">
+						<?php _e( 'Credit Card Information', MS_TEXT_DOMAIN ); ?>
+						<table class="form-table">
+							<tbody>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_input( $field ); ?>
+										<?php MS_Helper_Html::html_input( $this->fields['card']['card_num'] ); ?>
 									</td>
 								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>					
+								<tr>
+									<td>
+										<?php MS_Helper_Html::html_input( $this->fields['card']['card_code'] ); ?>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<?php MS_Helper_Html::html_input( $this->fields['card']['exp_month'] ); ?>
+										<?php MS_Helper_Html::html_input( $this->fields['card']['exp_year'] ); ?>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<?php _e( 'Billing Information', MS_TEXT_DOMAIN ); ?>
+						<table class="form-table">
+							<tbody>
+								<?php foreach( $this->fields['billing'] as $field ): ?>
+									<tr>
+										<td>
+											<?php MS_Helper_Html::html_input( $field ); ?>
+										</td>
+									</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+					</div>
 					<?php MS_Helper_Html::html_submit(); ?>
 				</form>
 				<div class="clear"></div>
@@ -199,36 +201,34 @@ class MS_View_Gateway_Authorize extends MS_View {
 			$cim_profiles = array( $cim_profiles );
 		}
 	
+		$first_key = null; 
+		foreach ( $cim_profiles as $index => $profile ) {
+			if ( is_array( $profile ) && ! empty( $profile['customerPaymentProfileId'] ) ) {
+				$options[ $profile['customerPaymentProfileId'] ] =	esc_html( sprintf(
+						"%s %s's - XXXXXXX%s - %s, %s, %s",
+						$profile['billTo']['firstName'],
+						$profile['billTo']['lastName'],
+						$profile['payment']['creditCard']['cardNumber'],
+						! empty( $profile['billTo']['address'] ) ? $profile['billTo']['address'] : '',
+						! empty( $profile['billTo']['city'] ) ? $profile['billTo']['city'] : '',
+						! empty( $profile['billTo']['country'] ) ? $profile['billTo']['country'] : ''
+				) );
+				if( ! $first_key ) {
+					$first_key = $profile['customerPaymentProfileId'];
+				}
+			}
+		}
+		$options[ 0 ] = __( 'Enter a new credit card', MS_TEXT_DOMAIN );
+		$cim = array(
+			'id' => 'profile',
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+			'field_options' => $options,
+			'value' => $first_key,
+		); 
 		?>
-			<div id="auth-cim-profiles" class="authorize-form-block">
-				<div class="authorize-form-block-title"><?php esc_html_e( 'Payment Profile', 'membership' ) ?></div>
-	
-				<ul>
-					<?php foreach ( $cim_profiles as $index => $profile ) : ?>
-						<?php if ( is_array( $profile ) && !empty( $profile['customerPaymentProfileId'] ) ) : ?>
-						<li>
-							<label>
-								<input type="radio" name="profile" value="<?php echo esc_attr( $profile['customerPaymentProfileId'] ) ?>"<?php checked( $index, 0 ) ?>>
-								<?php echo esc_html( sprintf(
-									"%s %s's - XXXXXXX%s - %s, %s, %s",
-									$profile['billTo']['firstName'],
-									$profile['billTo']['lastName'],
-									$profile['payment']['creditCard']['cardNumber'],
-									$profile['billTo']['address'],
-									$profile['billTo']['city'],
-									$profile['billTo']['country']
-								) ) ?>
-							</label>
-						</li>
-						<?php endif; ?>
-					<?php endforeach; ?>
-					<li id="auth-new-cc">
-						<label>
-							<input type="radio" name="profile" value="">
-							<?php esc_html_e( 'Enter a new credit card', 'membership' ) ?>
-						</label>
-					</li>
-				</ul>
+			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
+				<div class="authorize-form-block-title"><?php _e( 'Payment Profile', MS_TEXT_DOMAIN ); ?></div>
+				<?php MS_Helper_Html::html_input( $cim );?>
 			</div>
 		<?php
 	}

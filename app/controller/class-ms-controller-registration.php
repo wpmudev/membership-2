@@ -402,6 +402,7 @@ class MS_Controller_Registration extends MS_Controller {
 					$view = new MS_View_Gateway_Authorize();
 					$gateway = MS_Model_Gateway::factory( 'authorize' );
 					$data['countries'] = $gateway->get_country_codes();
+					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $data['membership_id'] );
 					break;
 			}
 			$view = apply_filters( 'ms_view_gateway_form', $view );
@@ -494,7 +495,7 @@ class MS_Controller_Registration extends MS_Controller {
 		/**
 		 * Extra gateway form.
 		 */
-		if( ! empty( $_POST['extra_form'] ) ) {
+		if( 'extra_form' == $this->get_signup_step() ) {
 			wp_enqueue_style('jquery-chosen');
 			
 			wp_enqueue_script('jquery-chosen');

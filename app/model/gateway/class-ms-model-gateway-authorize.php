@@ -29,6 +29,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	const TRANSACTION_TYPE_CANCELED_RECURING = 5;
 	const TRANSACTION_TYPE_CIM_AUTHORIZED    = 6;
 	
+	const AUTHORIZE_CIM_ID_USER_META = 'ms_authorize_cim_id';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $id = 'authorize';
@@ -151,10 +153,19 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		return $cim;
 	}
 	
-	public function get_cim_profile_id( $user_id ) {
-		$this->cim_profile_id = apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', get_user_meta( $user_id, 'authorize_cim_id', true ), $user_id );
+	/**
+	 * Get customer information manager profile id.
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param int $user_id The user Id.
+	 */
+	protected function get_cim_profile_id( $user_id ) {
+		$this->cim_profile_id = apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', get_user_meta( $user_id, self::AUTHORIZE_CIM_ID_USER_META, true ), $user_id );
 		return $this->cim_profile_id;
 	}
+	
 	/**
 	 * Get customer information manager profile.
 	 * 
@@ -164,16 +175,16 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @param int $user_id The user Id.
 	 * @param int $membership_id The membership Id.
 	 */
-	public function get_cim_profile( $user_id ) {
+	public function get_cim_profile( $user_id, $membership_id ) {
 
 		$cim_profiles = array();
-		$cim_profile_id = $this->get_cim_profile_id( $user_id );
+		$this->get_cim_profile_id( $user_id );
 		$membership = MS_Model_Membership::load( $membership_id );
 		
-		if( $cim_profile_id && $membership->id > 0 && ! $membership->trial_period_enabled && 
+		if( $this->cim_profile_id && $membership->id > 0 && ! $membership->trial_period_enabled && 
 			MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING != $membership->membership_type ) {
 			
-			$response = $this->get_cim()->getCustomerProfile( $cim_profile_id );
+			$response = $this->get_cim()->getCustomerProfile( $this->cim_profile_id );
 			if ( $response->isOk() ) {
 				$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
 				if( is_array( $cim_profiles ) && !empty( $cim_profiles['paymentProfiles'] ) && is_array( $cim_profiles['paymentProfiles'] ) ) {
@@ -203,11 +214,12 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 		if ( $response->isError() ) {
+			MS_Helper_Debug::log( 'CIM profile not created: ' . $response->getMessageText() );
 			return false;
 		}
 	
 		$profile_id = $response->getCustomerProfileId();
-		update_user_meta( $member->id, 'ms_authorize_cim_id', $profile_id );
+		update_user_meta( $member->id, self::AUTHORIZE_CIM_ID_USER_META, $profile_id );
 	
 		return $profile_id;
 	}
@@ -224,6 +236,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$payment = $this->create_cim_payment_profile();
 		$response = $this->get_cim()->createCustomerPaymentProfile( $this->cim_profile_id, $payment );
 		if ( $response->isError() ) {
+			MS_Helper_Debug::log( 'CIM profile not updated: ' . $response->getMessageText() );
 			return false;
 		}
 	
@@ -316,8 +329,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 			
 			$this->commit_transactions( $transactions );
-			MS_Helper_Debug::log("commit_transaction");
-			MS_Helper_Debug::log($transactions);
 			
 			foreach( $transactions as $transaction ) {
 				if ( in_array( $transaction['status'], array( self::TRANSACTION_TYPE_CAPTURED, self::TRANSACTION_TYPE_RECURRING ) ) ) {
