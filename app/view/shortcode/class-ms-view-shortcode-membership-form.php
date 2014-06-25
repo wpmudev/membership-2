@@ -19,7 +19,7 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 						if( $this->data['member']->is_member() ) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
 	 						foreach( $this->data['member']->membership_relationships as $membership_relationship ){
-	 							$this->membership_box_html( $membership_relationship->get_membership(), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL );
+	 							$this->membership_box_html( $membership_relationship->get_membership(), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
 	 						}
 	 					}
 	 					else {
@@ -42,9 +42,9 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 						<?php
 							$membership_ids = array_keys( $this->data['member']->membership_relationships );
 							$move_from_id = reset( $membership_ids );
-							$action = MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_SIGNUP;
+							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 							if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id ) {
-								$action = MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_MOVE;
+								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
 							}
 	
 							foreach( $this->data['memberships'] as $membership ) {

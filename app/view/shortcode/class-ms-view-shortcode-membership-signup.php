@@ -5,26 +5,25 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	protected $data;
 	
 	public function to_html() {
-// 		MS_Helper_Debug::log( __( 'About to display the signup page...', MS_TEXT_DOMAIN ) );
 		ob_start();
 		?>
 			<div class="ms-membership-form-wrapper">
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
 				<p class="ms-alert-box <?php echo $this->data['member']->is_member() ? 'ms-alert-success' : ''; ?>">
 					<?php
-						if( count( $this->data['member']->membership_relationships ) > 0) {
+						if( count( $this->data['member']->membership_relationships ) > 0 ) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
 	 						foreach( $this->data['member']->membership_relationships as $membership_id => $membership_relationship ){
 	 							if( MS_Model_Membership_Relationship::STATUS_CANCELED == $membership_relationship->status ) {
 	 								$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 							}
 	 							elseif( MS_Model_Membership_Relationship::STATUS_EXPIRED == $membership_relationship->status ) {
 	 								$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 							}
 	 							else {
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_CANCEL );
+	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
 	 							}
 	 						}
 	 					}
@@ -55,9 +54,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 						<?php
 							$membership_ids = array_keys( $this->data['member']->membership_relationships );
 							$move_from_id = reset( $membership_ids );
-							$action = MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_SIGNUP;
+							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 							if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id ) {
-								$action = MS_Model_Membership_Relationship::MEMBERSHIP_ACTION_MOVE;
+								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
 							}
 
 							foreach( $this->data['memberships'] as $membership ) {

@@ -38,14 +38,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	const STATUS_CANCELED = 'canceled';
 	
-	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';
-	
-	const MEMBERSHIP_ACTION_MOVE = 'membership_move';
-	
-	const MEMBERSHIP_ACTION_CANCEL = 'membership_cancel';
-	
-	const MEMBERSHIP_ACTION_RENEW = 'membership_renew';
-
 	protected $membership_id;
 	
 	protected $transaction_ids;
@@ -80,11 +72,20 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->gateway_id = $gateway_id;
 		if( $transaction_id ) {
 			$this->transaction_ids[] = $transaction_id;
+			$transaction = MS_Model_Transaction::load( $transaction_id );
+			if( MS_Model_Transaction::STATUS_PAID == $transaction->status ) {
+				$this->set_status( self::STATUS_ACTIVE );
+			}
+			else {
+				$this->set_status( self::STATUS_PENDING );
+			}
+		}
+		else {
+			$this->set_status( self::STATUS_ACTIVE );
 		}
 		$this->set_start_date();
 		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
 		$this->description = $this->name;
-		$this->set_status( self::STATUS_PENDING );
 	}
 	
 	/**
