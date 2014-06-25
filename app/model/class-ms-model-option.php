@@ -67,4 +67,8 @@ class MS_Model_Option extends MS_Model {
 		
 		return $model;	
 	}
+	
+	public function delete() {
+		delete_option( static::$CLASS_NAME );
+	}
 }
