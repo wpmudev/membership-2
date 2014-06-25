@@ -239,7 +239,16 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					$transaction->process_transaction( $status );
 				}
 				else {
-					$transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $external_id, $notes );
+					$transaction = $this->add_transaction( array(
+							'membership' => $membership,
+							'member' => $member,
+							'status' => $status,
+							'move_from_id' => $move_from_id,
+							'coupon_id' => $coupon_id,
+							'external_id' => $external_id,
+							'notes' => $notes,
+							'amount' => $amount,
+					) );
 				}
 				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
 			}				

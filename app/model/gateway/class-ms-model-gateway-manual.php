@@ -108,6 +108,13 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				$member = MS_Model_Member::get_current_member();
 	
 				$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_BILLED, $move_from_id, $coupon_id );
+				$transaction = $this->add_transaction( array(
+						'membership' => $membership,
+						'member' => $member,
+						'status' => MS_Model_Transaction::STATUS_BILLED,
+						'move_from_id' => $move_from_id,
+						'coupon_id' => $coupon_id,
+				) );
 				
 				$this->add_action( 'the_content', 'content' );
 			}

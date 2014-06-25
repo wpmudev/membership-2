@@ -336,9 +336,16 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 					$notes = $this->mode == self::MODE_SANDBOX ? 'Sandbox' : '';
 					$status = MS_Model_Transaction::STATUS_PAID;
 						
-					$ms_transaction = $this->add_transaction( $membership, $member, $status, $move_from_id, $coupon_id, $transaction['transaction'], $notes );
-					$ms_transaction->amount = $transaction['amount'];
-					$ms_transaction->process_transaction( $status, true );
+					$ms_transaction = $this->add_transaction( array( 
+							'membership' => $membership,
+							'member' => $member,
+							'status' => $status,
+							'move_from_id' => $move_from_id,
+							'coupon_id' => $coupon_id,
+							'external_id' => $transaction['transaction'],
+							'notes' => $notes,
+							'amount' => $transaction['amount'],
+					) );
 				}
 			}
 			

@@ -155,7 +155,19 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_build_custom', implode( ':', $custom ), $custom );
 	}
 	
-	public function add_transaction( $membership, $member, $status, $move_from_id = 0, $coupon_id = 0, $external_id = null, $notes = null ) {
+	public function add_transaction( $args ) {
+		
+		$defaults = array(
+				'membership' => null,
+				'member' => null,
+				'status' => MS_Model_Transaction::STATUS_BILLED,
+				'move_from_id' => 0,
+				'coupon_id' => 0,
+				'external_id' => null,
+				'notes' => null,
+				'amount' => -1,
+		);
+		extract( wp_parse_args( $args, $defaults ) );
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
@@ -183,7 +195,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;
 		$transaction->due_date = MS_Helper_Period::current_date();
-// 		$transaction->process_transaction( $status, true );
+		if( $amount >= 0 ) {
+			$transaction->amount = $amount;
+		}
+		$transaction->process_transaction( $status, true );
+
 		$transaction->save();
 		return $transaction;
 	}

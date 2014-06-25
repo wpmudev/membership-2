@@ -48,7 +48,13 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 
 			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
 			$member = MS_Model_Member::get_current_member();
-			$this->add_transaction( $membership, $member, MS_Model_Transaction::STATUS_PAID, $move_from_id );
+
+			$transaction = $this->add_transaction( array(
+					'membership' => $membership,
+					'member' => $member,
+					'status' => MS_Model_Transaction::STATUS_PAID,
+					'move_from_id' => $move_from_id,
+			) );
 			
 			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
 			wp_safe_redirect( $url );
