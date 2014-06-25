@@ -34,7 +34,13 @@ class MS_Model_Upgrade extends MS_Model {
 		/** Compare current src version to DB version */
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
 			switch( $settings->version ) {
-				default:
+				case '4.0.0.0.1':
+					$gateways = MS_Model_Gateway::get_gateways();
+					foreach( $gateways as $gateway ) {
+						$gateway->delete();
+					}
+					break;
+				case '4.0.0.0.0':
 					self::cleanup_db();
 					flush_rewrite_rules();
 					break;
@@ -65,6 +71,10 @@ class MS_Model_Upgrade extends MS_Model {
 		$transactions = MS_Model_Transaction::get_transactions();
 		foreach( $transactions as $transaction ) {
 			$transaction->delete();
+		}
+		$gateways = MS_Model_Gateway::get_gateways();
+		foreach( $gateways as $gateway ) {
+			$gateway->delete();
 		}
 		
 		$simulate = MS_Model_Simulate::load();
