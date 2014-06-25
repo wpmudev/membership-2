@@ -204,6 +204,12 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * @param bool $force Process status change even if status already has the new value. 
 	 */
 	public function process_transaction( $status, $force = false ) {
+		
+		if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->user_id, $this->membership_id ) ) {
+			$ms_relationship->add_transaction( $this->id );
+			$ms_relationship->save();
+		}
+		
 		if(  array_key_exists( $status, self::get_status() ) && ( $this->status != $status || $force ) ) {
 			$this->status = $status;
 			$member = MS_Model_Member::load( $this->user_id );
