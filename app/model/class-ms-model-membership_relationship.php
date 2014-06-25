@@ -26,15 +26,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	const MEMBERSHIP_STATUS_ACTIVE = 'active';
+	const STATUS_PENDING = 'pending';
 	
-	const MEMBERSHIP_STATUS_TRIAL = 'trial';
+	const STATUS_ACTIVE = 'active';
+	
+	const STATUS_TRIAL = 'trial';
 
-	const MEMBERSHIP_STATUS_EXPIRED = 'expired';
+	const STATUS_EXPIRED = 'expired';
 	
-	const MEMBERSHIP_STATUS_DEACTIVATED = 'deactivated';
+	const STATUS_DEACTIVATED = 'deactivated';
 	
-	const MEMBERSHIP_STATUS_CANCELED = 'canceled';
+	const STATUS_CANCELED = 'canceled';
 	
 	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';
 	
@@ -82,7 +84,24 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->set_start_date();
 		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
 		$this->description = $this->name;
-		$this->get_status();
+		$this->set_status( self::STATUS_PENDING );
+	}
+	
+	/**
+	 * Return existing status types.
+	 * 
+	 * @since 4.0
+	 * @return array of status 
+	 */
+	public static function get_status_types() {
+		return apply_filters( 'ms_model_membership_relationship_get_status_types', array(
+				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+				self::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
+				self::STATUS_TRIAL=> __( 'Trial', MS_TEXT_DOMAIN ),
+				self::STATUS_EXPIRED => __( 'Expired', MS_TEXT_DOMAIN ),
+				self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
+				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
+		));
 	}
 	
 	/**
@@ -209,7 +228,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$args['meta_query']['status'] = array(
 					'key' => 'status',
-					'value' => self::MEMBERSHIP_STATUS_DEACTIVATED,
+					'value' => self::STATUS_DEACTIVATED,
 					'compare' => 'NOT LIKE',
 			);
 		}
@@ -345,13 +364,13 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$membership = $this->get_membership();
 		if( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
 			switch( $this->get_status() ) {
-				case self::MEMBERSHIP_STATUS_TRIAL:
+				case self::STATUS_TRIAL:
 					$remaining = $this->get_remaining_trial_period();
 					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $this->start_date );
 					$trial_value = $remaining->days / $total->days;
 					$trial_value *= $membership->trial_price;
-				case self::MEMBERSHIP_STATUS_ACTIVE:
-				case self::MEMBERSHIP_STATUS_CANCELED:
+				case self::STATUS_ACTIVE:
+				case self::STATUS_CANCELED:
 					$remaining = $this->get_remaining_period();
 					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $membership->get_expire_date() );
 					$value = $remaining->days / $total->days;
@@ -389,42 +408,82 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->transaction_ids[] = $transaction_id;
 		}
 	}
+	
 	/**
-	 * Get membership status.
+	 * Set membership relationship status.
 	 * 
-	 *  Verifies start and end date of a membership.
+	 * Check for status that need membership verification for trial, active and expired.
+	 * 
+	 * @since 4.0
+	 * @param string $status
 	 */
-	public function get_status() {
-
-		if( self::MEMBERSHIP_STATUS_DEACTIVATED == $this->status ) {
-			$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
-		}
-		else {
+	public function set_status( $status ) {
+		$allowed_status = array( 
+				self::STATUS_DEACTIVATED, 
+				self::STATUS_PENDING,
+				self::STATUS_CANCELED,
+		);
+		
+		if( ! in_array( $status, $allowed_status ) ){
 			$membership = $this->get_membership();
 			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-				$status = self::MEMBERSHIP_STATUS_TRIAL;
+				$status = self::STATUS_TRIAL;
 			}
-			/** For MEMBERSHIP_TYPE_PERMANENT */
-			elseif( empty( $this->expire_date ) ) {
-				$status = self::MEMBERSHIP_STATUS_ACTIVE;
+			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
+				$status = self::STATUS_ACTIVE;
 			}
 			elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
-				$status = self::MEMBERSHIP_STATUS_ACTIVE;
+				$status = self::STATUS_ACTIVE;
 			}
 			else {
-				$status = self::MEMBERSHIP_STATUS_EXPIRED;
+				$status = self::STATUS_EXPIRED;
+			}
+		}
+		
+		if( array_key_exists( $status, self::get_status_types() ) ) {
+			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );
+		}
+	}
+	
+	/**
+	 * Get membership relationship status.
+	 * 
+	 * Verifies start and end date of a membership and updates status if expired
+	 * 
+	 * @since 4.0
+ 	 */
+	public function get_status() {
+
+		$allowed_status = array(
+				self::STATUS_DEACTIVATED,
+				self::STATUS_PENDING,
+		);
+		
+		if( ! in_array( $this->status, $allowed_status ) ){
+			$membership = $this->get_membership();
+			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::STATUS_TRIAL;
+			}
+			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
+				$status = self::STATUS_ACTIVE;
+			}
+			elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::STATUS_ACTIVE;
+			}
+			else {
+				$status = self::STATUS_EXPIRED;
 			}
 			/**
 			 * If user canceled the membership before expire date, still have access until expires.
 			 */
-			if( self::MEMBERSHIP_STATUS_CANCELED == $this->status ) {
+			if( self::STATUS_CANCELED == $this->status ) {
 				/** For expired memberships or MEMBERSHIP_TYPE_PERMANENT */
-				if( self::MEMBERSHIP_STATUS_EXPIRED == $status || empty( $this->expire_date ) ) {
-					$status = self::MEMBERSHIP_STATUS_DEACTIVATED;
+				if( self::STATUS_EXPIRED == $status || MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
+					$status = self::STATUS_DEACTIVATED;
 				}
 				else {
-					$status = self::MEMBERSHIP_STATUS_CANCELED;
-				} 
+					$status = self::STATUS_CANCELED;
+				}
 			}
 			if( $status != $this->status ) {
 				$this->status = $status;
@@ -432,7 +491,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 		}
 		
-		return apply_filters( 'membership_model_membership_relationship_status', $status, $this );
+		return apply_filters( 'membership_model_membership_relationship_status', $this->status, $this );
 	}
 	
 	/**
@@ -478,8 +537,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$this->set_expire_date( $value );
 					break;
 				case 'status':
-					$this->$property = $value;
-					$this->get_status();
+					$this->set_status( $value );
 					break;
 				default:
 					$this->$property = $value;

@@ -289,17 +289,21 @@ class MS_Model_Member extends MS_Model {
 				}
 			}
 		}
-		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) && MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			$membership_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction_id );
-			$membership_relationship->save();
-			$this->membership_relationships[ $membership_id ] = $membership_relationship;
+		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction_id );
+			$ms_relationship->save();
+			$this->membership_relationships[ $membership_id ] = $ms_relationship;
 // 			$this->membership_ids[ $membership_id ] = $membership_id;
 			/** Registration complete automated message */
 			if( 'admin' != $gateway_id ) {
-				MS_Model_News::save_news( $membership_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
+				MS_Model_News::save_news( $ms_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
 				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction_id );
-				do_action( 'ms_model_membership_add_membership', $membership_relationship, $this ); 
+				do_action( 'ms_model_membership_add_membership', $ms_relationship, $this ); 
 			}
+		}
+		
+		if( ! empty( $this->membership_relationships[ $membership_id ] ) ) {
+			return $this->membership_relationships[ $membership_id ];
 		}
 	}
 
@@ -312,7 +316,7 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function deactivate_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_DEACTIVATED;
+			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 			$this->membership_relationships[ $membership_id ]->save();
 			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DEACTIVATE );
 			
@@ -354,7 +358,7 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function cancel_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED;
+			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::STATUS_CANCELED;
 			$this->membership_relationships[ $membership_id ]->save();
 			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ], MS_Model_News::TYPE_MS_CANCEL );
 
@@ -395,9 +399,9 @@ class MS_Model_Member extends MS_Model {
 		$is_member = false;
 		/** Allowed membership status to have access */
 		$allowed_status = apply_filters( 'membership_model_member_allowed_status', array( 
-				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_ACTIVE,  
-				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_TRIAL,
-				MS_Model_Membership_Relationship::MEMBERSHIP_STATUS_CANCELED, 
+				MS_Model_Membership_Relationship::STATUS_ACTIVE,  
+				MS_Model_Membership_Relationship::STATUS_TRIAL,
+				MS_Model_Membership_Relationship::STATUS_CANCELED, 
 			)
 		);
 		$simulate = MS_Model_Simulate::load();

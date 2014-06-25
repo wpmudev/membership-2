@@ -24,7 +24,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						<?php foreach( $this->data['membership'] as $membership ) :?>
 							<tr>
 								<td><?php echo $membership->name; ?></td>
-								<td><?php echo $this->data['member']->membership_relationships[ $membership->id ]->get_status(); ?></td>
+								<td><?php echo $this->data['member']->membership_relationships[ $membership->id ]->status; ?></td>
 							</tr>
 						<?php endforeach;?>
 					</table>

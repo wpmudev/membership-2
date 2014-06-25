@@ -30,8 +30,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	const STATUS_PAID = 'paid';
 	
-// 	const STATUS_CANCELED = 'canceled';
-	
 	const STATUS_FAILED = 'failed';
 	
 	const STATUS_REVERSED = 'reversed';
@@ -57,6 +55,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	protected $membership_id;
 	
 	protected $user_id;
+	
+	protected $ms_relationship_id;
 	
 	protected $coupon_id;
 	
@@ -88,7 +88,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_transaction_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-// 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
 				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
 				self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
 				self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
@@ -201,25 +200,25 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @todo better handle status change other than paid.   
 	 * @param string $status The status to change
-	 * @param bool $force Process status change even if status already has the new value. 
+	 * @param bool $force Execute status change actions even if status already has the new value. 
 	 */
 	public function process_transaction( $status, $force = false ) {
-		
-		if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->user_id, $this->membership_id ) ) {
-			$ms_relationship->add_transaction( $this->id );
-			$ms_relationship->save();
-		}
 		
 		if(  array_key_exists( $status, self::get_status() ) && ( $this->status != $status || $force ) ) {
 			$this->status = $status;
 			$member = MS_Model_Member::load( $this->user_id );
 			switch( $status ) {
-				case self::STATUS_PAID:
-					$member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
-					$member->active = true;
+				case self::STATUS_BILLED:
+					$ms_relationship = $member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
+					$ms_relationship->add_transaction( $this->id );
+					$ms_relationship->save();
 					break;
-// 				case self::STATUS_CANCELED:
-// 					$member->cancel_membership( $this->membership_id );
+				case self::STATUS_PAID:
+					$ms_relationship = $member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
+					$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
+					$ms_relationship->add_transaction( $this->id );
+					$ms_relationship->save();
+					$member->active = true;
 					break;
 				case self::STATUS_REVERSED:
 				case self::STATUS_REFUNDED:

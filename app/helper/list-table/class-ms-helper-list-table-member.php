@@ -226,7 +226,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 
-			$html[] = "{$membership->name} ({$membership_relationship->get_status()})";
+			$html[] = "{$membership->name} ({$membership_relationship->status})";
 		}
 		$html = join('<br /> ', $html);
 		
