@@ -133,6 +133,17 @@ class MS_Model_Gateway extends MS_Model_Option {
 	}
 	
 	/**
+	 * Propagate membership cancelation to the gateway.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function cancel_membership( $ms_relationship ) {
+		
+	}
+	
+	/**
 	 * Url that fires handle_return of this gateway.
 	 * 
 	 * @return string The return url.
@@ -166,6 +177,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				'external_id' => null,
 				'notes' => null,
 				'amount' => -1,
+				'due_date' => MS_Helper_Period::current_date(),
 		);
 		extract( wp_parse_args( $args, $defaults ) );
 		
@@ -194,7 +206,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		}
 		$transaction->external_id = $external_id;
 		$transaction->notes = $notes;
-		$transaction->due_date = MS_Helper_Period::current_date();
+		$transaction->due_date = $due_date;
 		if( $amount >= 0 ) {
 			$transaction->amount = $amount;
 		}

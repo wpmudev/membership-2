@@ -106,7 +106,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		// Get a list of all the memberships that the current user is part of
 		$args = null;
 		$data['member'] = MS_Model_Member::get_current_member();
-		$not_in = array_keys( $data['member']->membership_relationships );
+		/** Get all including pending relationships */
+		$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
+		$not_in = array_keys( $data['ms_relationships'] );
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 

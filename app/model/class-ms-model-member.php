@@ -273,9 +273,9 @@ class MS_Model_Member extends MS_Model {
 	 * Only add a membership ff a user is not already a member.
 	 * @param int $membership_id The membership id to add to.
 	 * @param string $gateway The gateway used to add the membership.
-	 * @param int $transaction_id The transaction id related to this purchase.
+	 * @param MS_Model_Transaction $transaction The transaction related to this purchase.
 	 */
-	public function add_membership( $membership_id, $gateway_id = 'admin', $transaction_id = 0 )
+	public function add_membership( $membership_id, $gateway_id = 'admin', $transaction = null )
 	{
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
@@ -290,15 +290,22 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction_id );
-			$ms_relationship->save();
-			$this->membership_relationships[ $membership_id ] = $ms_relationship;
-// 			$this->membership_ids[ $membership_id ] = $membership_id;
+			/** Search for pending ms_relationship */
+			if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->id, $membership_id ) ) {
+				$ms_relationship->add_transaction( $transaction );
+				$ms_relationship->save();
+			}
+			else {
+				$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction );
+				$ms_relationship->save();
+				$this->membership_relationships[ $membership_id ] = $ms_relationship;
+			}
+			
 			/** Registration complete automated message */
-			if( 'admin' != $gateway_id ) {
+			if( 'admin' != $gateway_id && MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				MS_Model_News::save_news( $ms_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
-				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction_id );
-				do_action( 'ms_model_membership_add_membership', $ms_relationship, $this ); 
+				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction->id );
+				do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
 			}
 		}
 		

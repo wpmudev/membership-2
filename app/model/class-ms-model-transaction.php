@@ -209,24 +209,17 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 			$member = MS_Model_Member::load( $this->user_id );
 			switch( $status ) {
 				case self::STATUS_BILLED:
-					$ms_relationship = $member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
-					$ms_relationship->add_transaction( $this->id );
-					$ms_relationship->save();
+					$member->add_membership( $this->membership_id, $this->gateway_id, $this );
 					break;
 				case self::STATUS_PAID:
-					$ms_relationship = $member->add_membership( $this->membership_id, $this->gateway_id, $this->id );
-					$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
-					$ms_relationship->add_transaction( $this->id );
-					$ms_relationship->save();
+					$member->add_membership( $this->membership_id, $this->gateway_id, $this );
 					$member->active = true;
 					break;
 				case self::STATUS_REVERSED:
 				case self::STATUS_REFUNDED:
 				case self::STATUS_DENIED:
 				case self::STATUS_DISPUTE:
-					if( defined( 'MS_MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION' ) && MS_MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
-						$member->active = false;
-					}
+					$member->active = false;
 					break;
 			}
 			$member->save();

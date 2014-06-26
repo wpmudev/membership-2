@@ -38,24 +38,6 @@ Text Domain: wpmudev_membership
  */
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
-// ADDED MS_Helper_Debug::log()
-// RK: Perhaps we can use that one instead?
-if( ! function_exists( '_ms_debug_log' ) ) {
-	function _ms_debug_log( $message ) {
-	
-		if( defined( 'MS_MEMBERSHIP_DEBUG' ) && MS_MEMBERSHIP_DEBUG == true ) {
-	
-			if( is_array( $message ) || is_object( $message ) ) {
-				$message = print_r( $message, true );
-			}
-			if( defined( 'MS_MEMBERSHIP_DEBUG_LEVEL' ) && MS_MEMBERSHIP_DEBUG_LEVEL == 'adv' ) {
-				$message .= ' - ' . print_r( debug_backtrace(), true );
-			}
-			error_log( $message );
-		}
-	}
-}
-
 /**
  * Membership text domain.
  *

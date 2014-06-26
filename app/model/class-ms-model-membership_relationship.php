@@ -40,7 +40,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	protected $membership_id;
 	
-	protected $transaction_ids;
+	protected $transaction_ids = array();
 	
 	protected $user_id;
 	
@@ -62,7 +62,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	protected $move_to_id;
 	
-	public function __construct( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction_id = 0 ) {
+	public function __construct( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction = null ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
@@ -70,21 +70,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->membership_id = $membership_id;
 		$this->user_id = $user_id;
 		$this->gateway_id = $gateway_id;
-		if( $transaction_id ) {
-			$this->transaction_ids[] = $transaction_id;
-			$transaction = MS_Model_Transaction::load( $transaction_id );
-			if( MS_Model_Transaction::STATUS_PAID == $transaction->status ) {
-				$this->set_status( self::STATUS_ACTIVE );
-			}
-			else {
-				$this->set_status( self::STATUS_PENDING );
-			}
+		if( $transaction ) {
+			$this->set_status( self::STATUS_PENDING );
+			$this->add_transaction( $transaction );
 		}
 		else {
 			$this->set_status( self::STATUS_ACTIVE );
 		}
 		$this->set_start_date();
-		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id, transaction_id: $transaction_id";
+		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id";
 		$this->description = $this->name;
 	}
 	
@@ -148,7 +142,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Retrieve membership relationshi count.
+	 * Retrieve membership relationship count.
 	 * 
 	 * @param array $args
 	 * @return number The found count.
@@ -170,7 +164,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_membership_relationship( $user_id, $membership_id ) {
 		
-		$args = self::get_query_args( array( 'user_id' => $user_id, 'membership_id' => $membership_id ) );
+		$args = self::get_query_args( array( 
+				'user_id' => $user_id, 
+				'membership_id' => $membership_id, 
+				'status' => 'valid', 
+		) );
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
 		
@@ -217,7 +215,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			unset( $args['gateway_id'] );
 		}
 		if( ! empty( $args['status'] ) ) {
-			if( 'all' != $args['status'] ) {
+			if( 'valid' == $args['status'] ) {
+				$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => self::STATUS_DEACTIVATED,
+						'compare' => 'NOT LIKE',
+				);
+			}
+			elseif( 'all' != $args['status'] ) {
 				$args['meta_query']['status'] = array(
 						'key' => 'status',
 						'value' => $args['status'],
@@ -229,8 +234,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$args['meta_query']['status'] = array(
 					'key' => 'status',
-					'value' => self::STATUS_DEACTIVATED,
-					'compare' => 'NOT LIKE',
+					'value' => array( self::STATUS_DEACTIVATED, self::STATUS_PENDING ),
+					'compare' => 'NOT IN',
 			);
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships_args', $args );
@@ -400,14 +405,32 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Add transaction.
 	 * 
-	 * The transaction of this membership relationship.
+	 * Add transaction related to this membership relationship.
+	 * Change status accordinly to transaction status.
 	 * 
 	 * @param int $transaction_id The Transaction Id to add.
 	 */
-	public function add_transaction( $transaction_id ) {
-		if( ! in_array( $transaction_id, $this->transaction_ids ) ) {
-			$this->transaction_ids[] = $transaction_id;
+	public function add_transaction( $transaction ) {
+		if( ! in_array( $transaction->id, $this->transaction_ids ) ) {
+			$this->transaction_ids[] = $transaction->id;
 		}
+		if( MS_Model_Transaction::STATUS_PAID == $transaction->status ) {
+			$this->set_status( self::STATUS_ACTIVE );
+		}
+		else {
+			switch( $this->get_status() ) {
+				case self::STATUS_CANCELED:
+				case self::STATUS_DEACTIVATED:
+				case self::STATUS_TRIAL:
+				case self::STATUS_ACTIVE:
+					break;
+				default:
+				case self::STATUS_PENDING:
+					$this->set_status( self::STATUS_PENDING );
+					break;
+			}
+		}
+		
 	}
 	
 	/**
@@ -440,7 +463,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$status = self::STATUS_EXPIRED;
 			}
 		}
-		
+
 		if( array_key_exists( $status, self::get_status_types() ) ) {
 			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );
 		}

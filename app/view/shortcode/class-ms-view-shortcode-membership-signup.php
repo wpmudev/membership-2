@@ -9,21 +9,27 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		?>
 			<div class="ms-membership-form-wrapper">
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
-				<p class="ms-alert-box <?php echo $this->data['member']->is_member() ? 'ms-alert-success' : ''; ?>">
+				<p class="ms-alert-box <?php echo count( $this->data['ms_relationships'] > 0 ) ? 'ms-alert-success' : ''; ?>">
 					<?php
-						if( count( $this->data['member']->membership_relationships ) > 0 ) {
+						if( count( $this->data['ms_relationships'] ) > 0 ) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
-	 						foreach( $this->data['member']->membership_relationships as $membership_id => $membership_relationship ){
-	 							if( MS_Model_Membership_Relationship::STATUS_CANCELED == $membership_relationship->status ) {
-	 								$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
-	 							}
-	 							elseif( MS_Model_Membership_Relationship::STATUS_EXPIRED == $membership_relationship->status ) {
-	 								$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
-	 							}
-	 							else {
-	 								$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
+	 						foreach( $this->data['ms_relationships'] as $membership_id => $membership_relationship ){
+	 							switch( $membership_relationship->status ) {
+	 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
+	 									$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 									break;
+	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+	 									$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 									break;
+	 								case MS_Model_Membership_Relationship::STATUS_PENDING:
+	 									$msg = __( 'Pending payment', MS_TEXT_DOMAIN );
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, null, $msg );
+	 									break;
+	 								default:
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
+	 									break; 
 	 							}
 	 						}
 	 					}
