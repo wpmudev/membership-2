@@ -71,7 +71,8 @@ jQuery( document ).ready(function( $ ) {
 				'membership_section[trial_period][period_unit]': {
 					'required': true,
 					'min': 1,
-				}
+				},
+				'membership_section[gateway_id]': 'required',
 			}
 		});
 });

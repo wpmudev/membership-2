@@ -162,7 +162,7 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	public function prepare_general() {
 		$gateways = MS_Model_Gateway::get_gateway_names( true );
-		$gateways[0] =__( 'Select a payment gateway', MS_TEXT_DOMAIN );
+		$gateways[''] = __( 'Select a payment gateway', MS_TEXT_DOMAIN );
 		$this->fields = array(
 				'name' => array(
 						'id' => 'name',
