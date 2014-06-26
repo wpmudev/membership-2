@@ -65,7 +65,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function get_gateways() {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
-				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
+// 				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
 				self::GATEWAY_MANUAL => MS_Model_Gateway_Manual::load(),
 				self::GATEWAY_PAYPAL_STANDARD => MS_Model_Gateway_Paypal_Standard::load(),
 				self::GATEWAY_PAYPAL_SINGLE => MS_Model_Gateway_Paypal_Single::load(),
@@ -75,10 +75,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
 	}
 	
-	public static function get_gateway_names() {
+	public static function get_gateway_names( $only_active = false ) {
 		$gateways = self::get_gateways();
 		$names = array();
 		foreach( $gateways as $gateway ) {
+			if( $only_active && ! $gateway->active ) {
+				continue;
+			}
 			$names[ $gateway->id ] = $gateway->name;
 		}
 		return apply_filters( 'ms_model_gateway_get_gateway_names' , $names );
@@ -106,10 +109,33 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * @access public
 	 */
-	public function purchase_button( $membership, $member ) {
+	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		
 	}
 	
+	public function get_pricing_data( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+		$data = array();
+		$data['currency'] = MS_Plugin::instance()->settings->currency;
+		$data['move_from_id'] = $move_from_id;
+		$data['discount'] = 0;
+		$data['pro_rate'] = 0;
+		
+		if( ! empty ( $move_from_id ) && $this->pro_rate ) {
+			$data['pro_rate'] = $member->membership_relationships[ $move_from_id ]->calculate_pro_rate();
+		}
+		
+		if( ! empty( $coupon_id ) ) {
+			$coupon = MS_Model_Coupon::load( $coupon_id );
+			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
+			$data['discount'] =  $coupon->get_discount_value( $membership );
+		}
+		$data['coupon'] = $coupon;
+		
+		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
+		$data['total'] = $price - $data['discount'] - $data['pro_rate'];
+		
+		return $data;
+	}
 	/**
 	 * Processes gateway IPN return.
 	 *
