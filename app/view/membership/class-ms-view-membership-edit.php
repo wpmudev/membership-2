@@ -29,7 +29,13 @@ class MS_View_Membership_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap wrap'>
-			<h2 class='ms-settings-title'><i class="fa fa-pencil-square"></i> <?php echo $this->title; ?></h2>		
+			<h2 class='ms-settings-title'>
+				<i class="fa fa-pencil-square"></i> 
+				<?php echo $this->title; ?>
+				<?php if( $this->model->name ): ?>
+					<a class="add-new-h2" href="admin.php?page=membership-edit"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
+				<?php endif; ?>
+			</h2>		
 	
 			<?php
 				$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
