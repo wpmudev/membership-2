@@ -175,7 +175,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo ( empty( $title ) ) ? $tooltip_output : '';			
 				break;
 			case self::INPUT_TYPE_IMAGE:
-				echo "<input type='image' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
+				echo "<input type='image' id='$id' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_RADIO_SLIDER:
