@@ -424,41 +424,30 @@ class MS_Controller_Registration extends MS_Controller {
 		$membership_id = $_GET['membership'];
 		$membership = MS_Model_Membership::load( $membership_id );
 		$member = MS_Model_Member::get_current_member();
-		
-		$data['membership'] = $membership;
-		$data['gateways'] = MS_Model_Gateway::get_gateways();
-		$data['member'] = $member;
-		$data['currency'] = MS_Plugin::instance()->settings->currency;
-		$data['move_from_id'] = 0;
-		$data['discount'] = 0;
-		$data['pro_rate'] = 0;
-		
-		if( ! empty ( $_GET['move_from'] ) ) {
-			$data['move_from_id'] = $_GET['move_from'];
-			$data['pro_rate'] = $member->membership_relationships[ $_GET['move_from'] ]->calculate_pro_rate(); 
-		}
+		$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
 		
 		if( ! empty( $_POST['coupon_code'] ) ) {
 			$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
-			if( ! empty( $_POST['apply_coupon_code'] ) ) {
-				$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
-				$data['discount'] =  $coupon->get_discount_value( $membership );
-			}
-			elseif( ! empty( $_POST['remove_coupon_code'] ) ) {
+			if( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
 				$coupon = new MS_Model_Coupon();
 			}
 		}
 		else {
 			$coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership_id );
-			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
-			$data['discount'] =  $coupon->get_discount_value( $membership );
 		}
-		$data['coupon'] = $coupon;
 		
-		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
-		$data['total'] = $price - $data['discount'] - $data['pro_rate'];
-		  
+		if( $membership->gateway_id ) {
+			$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
+		}
+		else {
+			$gateways = MS_Model_Gateway::get_gateways( true );
+			$gateway = array_pop( $gateways );
+		}
+		$data = $gateway->get_pricing_data( $membership, $member, $move_from_id, $coupon->id );
+		$data['membership'] = $membership;
+		$data['member'] = $member;
+				  
 		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 		$view->data = $data;
 		echo $view->to_html();

@@ -37,7 +37,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	const MEMBERSHIP_TYPE_RECURRING = 'recurring';
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
+
+	protected $gateway_id;
+	
 	protected $membership_type;
 	
 	protected $visitor_membership = false;

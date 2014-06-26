@@ -62,7 +62,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		}
 	}
 	
-	public static function get_gateways() {
+	public static function get_gateways( $only_active = false ) {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
 // 				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
@@ -72,16 +72,23 @@ class MS_Model_Gateway extends MS_Model_Option {
 				self::GATEWAY_AUTHORIZE => MS_Model_Gateway_Authorize::load(),
 			);
 		}
-		return apply_filters( 'ms_model_gateway_get_gateways' , self::$gateways );
+		if( $only_active ) {
+			$gateways = self::$gateways;
+			foreach( $gateways as $id => $gateway ) {
+				if( ! $gateway->active ) {
+					unset( $gateways[ $id ] );
+				}
+			}
+			return apply_filters( 'ms_model_gateway_get_gateways_active', $gateways );
+		}
+		
+		return apply_filters( 'ms_model_gateway_get_gateways', self::$gateways );
 	}
 	
 	public static function get_gateway_names( $only_active = false ) {
-		$gateways = self::get_gateways();
+		$gateways = self::get_gateways( $only_active );
 		$names = array();
 		foreach( $gateways as $gateway ) {
-			if( $only_active && ! $gateway->active ) {
-				continue;
-			}
 			$names[ $gateway->id ] = $gateway->name;
 		}
 		return apply_filters( 'ms_model_gateway_get_gateway_names' , $names );
@@ -128,6 +135,9 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$coupon = MS_Model_Coupon::load( $coupon_id );
 			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
 			$data['discount'] =  $coupon->get_discount_value( $membership );
+		}
+		else {
+			$coupon = new MS_Model_Coupon();
 		}
 		$data['coupon'] = $coupon;
 		
