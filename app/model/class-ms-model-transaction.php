@@ -84,6 +84,13 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $timestamp;
 
+	/**
+	 * Get transaction status.
+	 *
+	 * Used to verify allowed status.
+	 * 
+	 * @since 4.0
+	 */
 	public static function get_status() {
 		return apply_filters( 'ms_model_transaction_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
@@ -98,6 +105,12 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		);
 	}
 	
+	/**
+	 * Get transaction count.
+	 *
+	 * @since 4.0
+	 * @param mixed $args The arguments to select data.
+	 */
 	public function get_transaction_count( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -111,6 +124,12 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		
 	}
 	
+	/**
+	 * Get transactions.
+	 *
+	 * @since 4.0
+	 * @param mixed $args The arguments to select data.
+	 */
 	public static function get_transactions( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -130,9 +149,53 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		}
 		return $transactions;
 	}
+
+	/**
+	 * Get specific transaction.
+	 *
+	 * Get transaction of a user and membership.
+	 * 
+	 * @since 4.0
+	 * 
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 * @param string $status The status of the transaction.
+	 * @return MS_Model_Transaction The found transaction or null if not found.
+	 */
+	public static function get_transaction( $user_id, $membership_id, $status = null ) {
+		$args = array(
+				'post_type' => self::$POST_TYPE,
+				'post_status' => 'any',
+				'fields' => 'ids',
+				'order' => 'DESC',
+		);
+	
+		$args['author'] = $user_id;
+		$args['meta_query']['membership_id'] = array(
+				'key'     => 'membership_id',
+				'value'   => $membership_id,
+		);
+		if( ! empty( $status ) ) {
+			$args['meta_query']['status'] = array(
+					'key'     => 'status',
+					'value'   => $status,
+			);
+		}
+		$query = new WP_Query( $args );
+	
+		$item = $query->get_posts();
+	
+		$transaction = null;
+		if( ! empty( $item[0] ) ) {
+			$transaction = self::load( $item[0] );
+		}
+		return $transaction;
+	}
 	
 	/**
 	 * Load transaction using external ID.
+	 * 
+	 *  @since 4.0
 	 *  
 	 * @param string $external_id
 	 * @param string $gateway_id
@@ -164,8 +227,11 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		
 		return $transaction;
 	}
+	
 	/**
 	 * Create new transaction
+	 * 
+	 * @since 4.0
 	 * 
 	 * @param MS_Model_Membership $membership
 	 * @param MS_Model_Member $member
@@ -197,6 +263,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * Process transaction status change.
+	 * 
+	 * @since 4.0
 	 * 
 	 * @todo better handle status change other than paid.   
 	 * @param string $status The status to change
@@ -251,6 +319,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 			}
 		}
 	}
+	
 	/**
 	 * Set specific property.
 	 *
