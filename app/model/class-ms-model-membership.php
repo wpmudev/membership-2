@@ -306,8 +306,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 	}
 
+	/**
+	 * Return membership has dripped content.
+	 *
+	 * Verify post and page rules if there is a dripped content.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @return boolean
+	 */
 	public function has_dripped_content() {
-		$dripped = array( 'post', 'page', 'category' );
+		$dripped = array( 'post', 'page' );
 		foreach( $dripped as $type ) {
 			//using count() as !empty() never returned true
 			if ( 0 < count( $this->rules[ $type ]->dripped ) ) {
@@ -315,6 +325,48 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 		return false;	
+	}
+
+	/**
+	 * Get payment information description.
+	 *
+	 * A more .
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @return boolean
+	 */
+	public function get_payment_description() {
+		
+		$currency = MS_Plugin::instance()->settings->currency;
+		$desc = sprintf( __( 'You will pay %s %s ', MS_TEXT_DOMAIN ), $currency, number_format( $this->price, 2 ) );
+		
+		switch( $this->membership_type ){
+			case self::MEMBERSHIP_TYPE_PERMANENT:
+				$desc .= __( 'for permanent access.', MS_TEXT_DOMAIN );
+				break;
+			case self::MEMBERSHIP_TYPE_FINITE:
+				$desc .= sprintf( __( 'for access until %s.', MS_TEXT_DOMAIN ), $this->get_expire_date() );
+				break;
+			case self::MEMBERSHIP_TYPE_DATE_RANGE:
+				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $this->period_date_start, $this->period_date_end );
+				break;
+			case self::MEMBERSHIP_TYPE_RECURRING:
+				$desc .= sprintf( __( 'each %s %s.', MS_TEXT_DOMAIN ), $this->pay_cycle_period['period_unit'], $this->pay_cycle_period['period_type'] );
+				break;
+		}
+		
+		if( $this->trial_period_enabled ) {
+			$desc .= sprintf( __( ' <br />In the trial period of %s %s, you will pay %s %s', MS_TEXT_DOMAIN ), 
+					$this->trial_period['period_unit'], 
+					$this->trial_period['period_type'], 
+					$currency, 
+					number_format( $this->trial_price, 2 ) 
+			);
+		}
+		
+		return $desc;
 	}
 	
 	/**
