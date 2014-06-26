@@ -53,7 +53,7 @@ class MS_View_Registration_Payment extends MS_View {
 						<td class='ms-title-column'>
 							<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
 						</td>
-						<td class='ms-details-column'>
+						<td class='ms-price-column'>
 							<?php 
 								if ( $membership->trial_price > 0 ) {
 									echo $this->data['currency'] . ' '. number_format( $membership->trial_price, 2 );
@@ -70,8 +70,8 @@ class MS_View_Registration_Payment extends MS_View {
 						<td class='ms-title-column'>
 							<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
 						</td>
-						<td class='ms-details-column'>
-							<?php echo $this->data['currency'] . ' '. number_format( $this->data['discount'], 2 ); ?>
+						<td class='ms-price-column'>
+							<?php echo sprintf( '%s -%s', $this->data['currency'], number_format( $this->data['discount'], 2 ) ); ?>
 						</td>
 					</tr>
 				<?php endif;?>
@@ -80,8 +80,8 @@ class MS_View_Registration_Payment extends MS_View {
 						<td class='ms-title-column'>
 							<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
 						</td>
-						<td class='ms-details-column'>
-							<?php echo $this->data['currency'] . ' '. number_format( $this->data['pro_rate'], 2 ); ?>
+						<td class='ms-price-column'>
+							<?php echo sprintf( '%s -%s', $this->data['currency'], number_format( $this->data['pro_rate'], 2 ) ); ?>
 						</td>
 					</tr>
 				<?php endif;?>
@@ -89,7 +89,7 @@ class MS_View_Registration_Payment extends MS_View {
 					<td class='ms-title-column'>
 						<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
 					</td>
-					<td class='ms-details-column ms-total'>
+					<td class='ms-price-column ms-total'>
 						<?php echo $this->data['currency'] . ' '. number_format( $this->data['total'], 2 ); ?>
 					</td>
 				</tr>
@@ -101,7 +101,8 @@ class MS_View_Registration_Payment extends MS_View {
 				<tr>
 					<td class='ms-buy-now-column' colspan='2' >
 						<?php
-							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
+							$this->data['gateway']->purchase_button( $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
+// 							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
 						?>
 					</td>
 				</tr>

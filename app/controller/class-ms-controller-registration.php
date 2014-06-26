@@ -63,9 +63,9 @@ class MS_Controller_Registration extends MS_Controller {
 		// $this->add_action( 'the_posts', 'process_actions', 1 );
 		/** Enqueue styles and scripts used  */
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
-		
+
+		$this->add_ajax_action( 'ms_pre_create_transaction', 'pre_create_transaction' );
 	}
-	
 	
 	/**
 	 * Make sure that the nonce is added to the registration form shortcode.
@@ -447,12 +447,34 @@ class MS_Controller_Registration extends MS_Controller {
 		$data = $gateway->get_pricing_data( $membership, $member, $move_from_id, $coupon->id );
 		$data['membership'] = $membership;
 		$data['member'] = $member;
+		$data['gateway'] = $gateway;
 				  
 		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 		$view->data = $data;
 		echo $view->to_html();
 	}
 
+	/**
+	 * Pre create transaction.
+	 *
+	 * Used to create a transaction before sending to the gateway.
+	 * In this way, the membership_relationship is in "pending" status giving feedback to the user while IPN does not come.
+	 * 
+	 * **Hooks Actions: **
+	 *
+	 * * ms_pre_create_transaction
+	 *
+	 * @since 4.0.0
+	 */
+	public function pre_create_transaction() {
+		if( ! empty( $_POST['gateway'] ) ) {
+			$gateway = MS_Model_Gateway::factory( $_POST['gateway'] );
+			$transaction_id = $gateway->pre_create_transaction();
+			echo $transaction_id;
+		}
+		die();
+	}
+	
 	/**
 	 * Handle payment gateway returns
 	 *
@@ -505,6 +527,19 @@ class MS_Controller_Registration extends MS_Controller {
 			wp_enqueue_script('jquery-chosen');
 			wp_enqueue_script('jquery-validate');
 			wp_enqueue_script( 'ms-view-gateway-authorize',  MS_Plugin::instance()->url. 'app/assets/js/ms-view-gateway-authorize.js', array( 'jquery' ), MS_Plugin::instance()->version );
+		}
+		/**
+		 * Paypal standard gateway 
+		 */
+		if( ! empty( $_GET['membership'] ) && 'payment_table' == $this->get_signup_step() ) {
+			$membership = MS_Model_Membership::load( $_GET['membership'] );
+			if( MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD == $membership->gateway_id ) {
+				wp_enqueue_script( 'ms-gateway-paypal',  MS_Plugin::instance()->url. 'app/assets/js/ms-view-gateway-paypal.js', array( 'jquery' ), MS_Plugin::instance()->version );
+				wp_localize_script( 'ms-gateway-paypal', 'ms_paypal', array(
+						'return_url' => add_query_arg( array( 'action' => 'ms_pre_create_transaction' ), admin_url( 'admin-ajax.php' ) ),
+						'error_msg' => __( 'There was an unknown error encountered with your payment. Please contact the site administrator.', MS_TEXT_DOMAIN ),
+				) );
+			}
 		}
 	}
 }
