@@ -30,6 +30,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 	const TYPE_PERCENT = 'percent';
 	
+	/**
+	 *  Time in seconds to redeem the coupon after its been applied, before it goes back into the pool.
+	 */
+	const COUPON_REDEMPTION_TIME = 3600;
+	
 	protected $code;
 
 	protected $discount;
@@ -173,14 +178,21 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	/**
 	 * Apply coupon to get discount.
 	 * 
+	 * If trial period is enabled, the discount will be applied in the trial price (even if it is free).
+	 * If the membership price is free, the discount will be zero.
+	 * If discount is bigger than the price, the discount will be equal to the price.
+	 * 
+	 * @since 4.0
 	 * 
 	 * @param MS_Model_Membership $membership The membership to apply coupon.
-	 * @return float The price after applying the coupon.
+	 * @return float The discount value.
 	 */
-	public function apply_coupon( $membership ) {
+	public function get_discount_value( $membership ) {
+		
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
 		$original_price = $price;
 		$discount = 0;
+		
 		if( $this->is_valid_coupon( $membership->id ) ) {
 			if( self::TYPE_PERCENT == $this->discount_type && $this->discount < 100 ) {
 				$price = $price - $price * $this->discount / 100;
@@ -205,7 +217,9 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * Save coupon application.
 	 * 
 	 * Saving the application to keep track of the application in gateway return.
-	 *   
+	 * Using COUPON_REDEMPTION_TIME to expire coupon application.
+	 * 
+	 * @since 4.0
 	 * @param int $membership_id The membership id to apply the coupon.
 	 * @param float $discount The discount value.
 	 */
@@ -214,12 +228,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
 		
-		/**
-		 * Create transient for 1 hour.  This means the user has 1 hour to redeem the coupon after its been applied before it goes back into the pool.
-		 * If you want to use a different time limit use the filter below
-		 * TODO modify this time.
-		 */ 
-		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', HOUR_IN_SECONDS );
+		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', self::COUPON_REDEMPTION_TIME );
 	
 		/** Grab the user account as we should be logged in by now */
 		$user = MS_Model_Member::get_current_member();
@@ -230,6 +239,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 				'user_id' => $user->id,
 				'membership_id'	=> $membership_id,
 				'discount' => $discount,
+				'coupon_message' => $this->coupon_message,
 		);
 	
 		if ( $global && function_exists( 'get_site_transient' ) ) {
@@ -240,7 +250,16 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public function get_coupon_application( $user_id, $membership_id ) {
+	/**
+	 * Get coupon application for user.
+	 * 
+	 * 
+	 * @since 4.0
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 * @return MS_Model_Coupon The coupon model object.
+	 */
+	public static function get_coupon_application( $user_id, $membership_id ) {
 		global $blog_id;
 		
 		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
@@ -253,16 +272,26 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		else {
 			$transient_value = get_transient( $transient_name );
 		}
+
+		if( ! empty( $transient_value['coupon_id'] ) ) {
+			$coupon = self::load( $transient_value['coupon_id'] );
+			$coupon->coupon_message = $transient_value['coupon_message'];
+		}
+		else {
+			$coupon = new self();
+		}
 		
-		return $transient_value['discount'];
-		
+		return $coupon;
 	}
+	
 	/**
 	 * Remove the application for this coupon.
 	 * 
-	 * @param int $membership_id
+	 * @since 4.0
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
 	 */
-	public function remove_coupon_application( $user_id, $membership_id ) {
+	public static function remove_coupon_application( $user_id, $membership_id ) {
 	
 		global $blog_id;
 	
