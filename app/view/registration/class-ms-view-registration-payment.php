@@ -16,39 +16,93 @@ class MS_View_Registration_Payment extends MS_View {
 			</p>
 			<table class='ms-purchase-table'>
 				<tr>
+					<td class='ms-title-column'>
+						<?php _e( 'Name', MS_TEXT_DOMAIN ); ?>
+					</td>
 					<td class='ms-details-column'>
 						<?php echo $membership->name; ?>
 					</td>
-					<td class='ms-price-column'>
+				</tr>
+				<?php if( $membership->description ): ?>
+					<tr>
+					<td class='ms-title-column'>
+						<?php _e( 'Description', MS_TEXT_DOMAIN ); ?>
+					</td>
+					<td class='ms-desc-column' colspan='2'>
+							<span class="ms-membership-description"><?php echo $membership->description; ?></span>
+						</td>
+					</tr>
+				<?php endif;?>
+				<tr>
+					<td class='ms-title-column'>
+						<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
+					</td>
+					<td class='ms-details-column'>
 						<?php
 							if ( $membership->price > 0 ) {
-								echo $this->data['currency'] . ' '. $membership->price;
+								echo $this->data['currency'] . ' '. number_format( $membership->price, 2 );
 							} 
 							else {
 								echo __( 'Free', MS_TEXT_DOMAIN );
 							}
 						?>
 					</td>
-					<td class='ms-buy-now-column'>
+				</tr>
+				<?php if( $membership->trial_period_enabled ): ?>
+					<tr>
+						<td class='ms-title-column'>
+							<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class='ms-details-column'>
+							<?php 
+								if ( $membership->trial_price > 0 ) {
+									echo $this->data['currency'] . ' '. number_format( $membership->trial_price, 2 );
+								} 
+								else {
+									echo __( 'Free', MS_TEXT_DOMAIN );
+								}
+							?>
+						</td>
+					</tr>
+				<?php endif;?>
+				<?php if( ! empty( $this->data['discount'] ) ): ?>
+					<tr>
+						<td class='ms-title-column'>
+							<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class='ms-details-column'>
+							<?php echo $this->data['currency'] . ' '. number_format( $this->data['discount'], 2 ); ?>
+						</td>
+					</tr>
+				<?php endif;?>
+				<?php if( ! empty( $this->data['pro_rate'] ) ): ?>
+					<tr>
+						<td class='ms-title-column'>
+							<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class='ms-details-column'>
+							<?php echo $this->data['currency'] . ' '. number_format( $this->data['pro_rate'], 2 ); ?>
+						</td>
+					</tr>
+				<?php endif;?>
+				<tr>
+					<td class='ms-title-column'>
+						<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
+					</td>
+					<td class='ms-details-column ms-total'>
+						<?php echo $this->data['currency'] . ' '. number_format( $this->data['total'], 2 ); ?>
+					</td>
+				</tr>
+				<tr>
+					<td class='ms-desc-column' colspan='2'>
+						<span class="ms-membership-description"><?php echo $membership->get_payment_description(); ?></span>
+					</td>
+				</tr>
+				<tr>
+					<td class='ms-buy-now-column' colspan='2' >
 						<?php
 							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
 						?>
-					</td>
-				</tr>
-				<tr class='ms-prices-column'>
-					<td colspan='3'>
-						<?php if( $membership->description ): ?>
-							<div>
-								<span class="ms-strong"><?php __( 'You will pay: ', MS_TEXT_DOMAIN ); ?><span> 
-								<?php echo $membership->description; ?>
-							</div>
-						<?php endif;?>
-						<?php if( ! empty( $this->data['pro_rate'] ) ): ?>
-							<div>
-								<span class="ms-strong"><?php _e( 'Pro rate discount: ', MS_TEXT_DOMAIN ); ?><span> 
-								<?php echo $this->data['pro_rate']; ?>
-							</div>
-						<?php endif;?>
 					</td>
 				</tr>
 			</table>
