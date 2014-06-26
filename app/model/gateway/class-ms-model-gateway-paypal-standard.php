@@ -203,8 +203,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		
 		/** Coupon valid for the first period */
 		if( $coupon_id ) {
-			$coupon = MS_Model_Coupon::load( $coupon_id );
-			$discount = $coupon->get_coupon_application( $member->id, $membership->id );
+			$coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id );
+			$discount = $coupon->get_discount_value( $membership );
 
 			/** Trial period set */
 			if( isset ( $fields['a1']['value'] ) ) {
@@ -264,7 +264,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		}
 		
 		?>
-			<form action="<?php echo $action;?>" method="post">
+			<form action="<?php echo $action;?>" method="post" id="ms-paypal-form">
 				<?php 
 					foreach( $fields as $field ) {
 						MS_Helper_Html::html_input( $field ); 
@@ -273,6 +273,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
 			</form>
 		<?php
+		$this->pre_create_transaction_form( $membership, $member, $move_from_id, $coupon_id );
 	}
 	
 	public function handle_return() {
@@ -309,7 +310,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				exit;
 			}
 		
-			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key ) = explode( ':', $_POST['custom'] );
+			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key, $transaction_id ) = explode( ':', $_POST['custom'] );
 			
 			$membership = MS_Model_Membership::load( $membership_id );
 			$member = MS_Model_Member::load( $user_id );
@@ -399,10 +400,16 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						break;
 				}
 			}
-			MS_Helper_Debug::log( "ext_id: $external_id status: $status, notes: $notes" );
+			MS_Helper_Debug::log( "transaction_id: $transaction_id, ext_id: $external_id status: $status, notes: $notes" );
 			
 			if( ! empty( $status ) ) {
-				if( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
+				if( $transaction_id ) {
+					if( ! empty( $notes ) ) {
+						$transaction->notes = $notes;
+					}
+					$transaction->process_transaction( $status );
+				}
+				elseif( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
 					if( ! empty( $notes ) ) {
 						$transaction->notes = $notes;
 					}

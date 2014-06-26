@@ -72,7 +72,6 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			);
 		}
 		
-		
 		?>
 			<form action="<?php echo $this->get_return_url();?>" method="post">
 				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
@@ -92,36 +91,12 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
 		$wp_query->query_vars['post_type'] = 'page';
 
-		if( ! empty( $_POST['submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) && 
-			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
-
-			$membership_id = $_POST['membership_id'];
-			
-
-			if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-				$this->add_action( 'the_content', 'content_error' );
-			}
-			else {
-				$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-				$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
-				$membership = MS_Model_Membership::load( $membership_id );
-				$member = MS_Model_Member::get_current_member();
-	
-				$transaction = $this->add_transaction( array(
-						'membership' => $membership,
-						'member' => $member,
-						'status' => MS_Model_Transaction::STATUS_BILLED,
-						'move_from_id' => $move_from_id,
-						'coupon_id' => $coupon_id,
-				) );
-				
-				$this->add_action( 'the_content', 'content' );
-			}
+		if( $transaction_id = $this->pre_create_transaction() ) {
+			$this->add_action( 'the_content', 'content' );
 		}
 		else {
 			$this->add_action( 'the_content', 'content_error' );
 		}
-		
 	}
 	
 	public function content() {
