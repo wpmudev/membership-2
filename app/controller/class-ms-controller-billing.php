@@ -215,16 +215,16 @@ class MS_Controller_Billing extends MS_Controller {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
 			}
 
+			foreach( $fields as $field => $value ) {
+				$transaction->$field = $value;
+			}
+			$transaction->save();
+			
 			if( ! empty( $fields['execute'] ) ) {
 				$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
 				$ms_relationship->process_transaction( $transaction );
 				$ms_relationship->save();
 			}
-			
-			foreach( $fields as $field => $value ) {
-				$transaction->$field = $value;
-			}
-			$transaction->save();
 		}
 		return $msg;	
 	}
