@@ -433,11 +433,8 @@ class MS_Controller_Registration extends MS_Controller {
 				$coupon = new MS_Model_Coupon();
 			}
 			elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
-					$coupon->save_coupon_application( $membership );
+				$coupon->save_coupon_application( $membership );
 			}
-		}
-		else {
-			$coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership_id );
 		}
 		
 		if( $membership->gateway_id ) {
@@ -447,7 +444,9 @@ class MS_Controller_Registration extends MS_Controller {
 			$gateways = MS_Model_Gateway::get_gateways( true );
 			$gateway = array_pop( $gateways );
 		}
-		$data = $gateway->get_pricing_data( $membership, $member, $move_from_id );
+		$ms_relationship = $member->add_membership( $membership->id, $gateway->id, $move_from_id );
+		
+		$data = $ms_relationship->get_pricing_info();
 		$data['membership'] = $membership;
 		$data['member'] = $member;
 		$data['gateway'] = $gateway;

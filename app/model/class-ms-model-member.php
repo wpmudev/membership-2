@@ -265,53 +265,66 @@ class MS_Model_Member extends MS_Model {
 		
 		return $members;
 	}
+	
 	/**
 	 * Add a new membership.
 	 * 
 	 * If multiple membership is disabled, may move existing membership.
 	 * 
-	 * Only add a membership ff a user is not already a member.
+	 * Only add a membership if a user is not already a member.
+	 * 
+	 * @since 4.0.0
+	 * 
 	 * @param int $membership_id The membership id to add to.
-	 * @param string $gateway The gateway used to add the membership.
-	 * @param MS_Model_Transaction $transaction The transaction related to this purchase.
+	 * @param optional string $gateway The gateway used to add the membership.
+	 * @param optional int $move_from_id The membership id to move from if any.  
 	 */
-	public function add_membership( $membership_id, $gateway_id = 'admin', $transaction = null )
+	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 )
 	{
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
 		}
+		$ms_relationship = null;
 		
-		if( ! MS_Plugin::instance()->addon->multiple_membership && count( $this->membership_relationships ) > 0 ) {
-			foreach( $this->membership_relationships as $ms_relationship ) {
-				if( $membership_id == $ms_relationship->move_to_id ) {
-					$move_from_id = $ms_relationship->membership_id;
-					$this->move_membership( $move_from_id, $membership_id );
-				}
-			}
-		}
-		elseif( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			/** Search for pending ms_relationship */
-			if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->id, $membership_id ) ) {
-				$ms_relationship->add_transaction( $transaction );
-				$ms_relationship->save();
-			}
-			else {
-				$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction );
-				$ms_relationship->save();
+// 		if( ! MS_Plugin::instance()->addon->multiple_membership && count( $this->membership_relationships ) > 0 ) {
+// 			foreach( $this->membership_relationships as $ms_relationship ) {
+// 				if( $membership_id == $ms_relationship->move_to_id ) {
+// 					$move_from_id = $ms_relationship->membership_id;
+// 					$this->move_membership( $move_from_id, $membership_id );
+// 				}
+// 			}
+// 		}
+// 		else
+		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $this->id, $gateway_id, $move_from_id );
+			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) { 
 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
 			}
+			
+// 			/** Search for pending ms_relationship */
+// 			if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->id, $membership_id ) ) {
+// 				$ms_relationship->add_transaction( $transaction );
+// 				$ms_relationship->save();
+// 			}
+// 			else {
+// 				$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction );
+// 				$ms_relationship->save();
+// 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
+// 			}
 			
 			/** Registration complete automated message */
 			if( 'admin' != $gateway_id && MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				MS_Model_News::save_news( $ms_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
-				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction->id );
+				//TODO
+// 				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction->id );
 				do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
 			}
 		}
-		
-		if( ! empty( $this->membership_relationships[ $membership_id ] ) ) {
-			return $this->membership_relationships[ $membership_id ];
+		else {
+			$ms_relationship = $this->membership_relationships[ $membership_id ];
 		}
+		
+		return $ms_relationship;
 	}
 
 	/**

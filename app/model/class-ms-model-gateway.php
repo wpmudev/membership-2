@@ -125,45 +125,45 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * Calculates final price of the membership using coupons, pro-rate and trial information.
 	 * 
+	 * @deprecated
 	 * @since 4.0
 	 *
 	 * @access public
 	 */
-	public function get_pricing_data( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
-		$data = array();
-		$data['currency'] = MS_Plugin::instance()->settings->currency;
-		$data['move_from_id'] = $move_from_id;
-		$data['discount'] = 0;
-		$data['pro_rate'] = 0;
-		$data['trial_price'] = $membership->trial_price;
-		$data['price'] = $membership->price;
+	public function get_pricing_data( $membership, $member, $move_from_id = 0 ) {
+		$pricing = array();
+		$pricing['currency'] = MS_Plugin::instance()->settings->currency;
+		$pricing['move_from_id'] = $move_from_id;
+		$pricing['discount'] = 0;
+		$pricing['pro_rate'] = 0;
+		$pricing['trial_price'] = $membership->trial_price;
+		$pricing['price'] = $membership->price;
 		
 		if( ! empty ( $move_from_id ) && $this->pro_rate ) {
-			$data['pro_rate'] = $member->membership_relationships[ $move_from_id ]->calculate_pro_rate();
+			$pricing['pro_rate'] = $member->membership_relationships[ $move_from_id ]->calculate_pro_rate();
 		}
 		
-		if( ! empty( $coupon_id ) ) {
-			$coupon = MS_Model_Coupon::load( $coupon_id );
-			$data['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
-			$data['discount'] =  $coupon->get_discount_value( $membership );
+		if( $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
+			$pricing['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
+			$pricing['discount'] =  $coupon->get_discount_value( $membership );
 		}
 		else {
 			$coupon = new MS_Model_Coupon();
 		}
-		$data['coupon'] = $coupon;
+		$pricing['coupon'] = $coupon;
 		
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
 		if( $membership->trial_period_enabled ) {
-			$data['trial_price'] = $membership->trial_price - $data['discount'] - $data['pro_rate'];
-			$data['trial_price'] = max( $data['trial_price'], 0 );
+			$pricing['trial_price'] = $membership->trial_price - $pricing['discount'] - $pricing['pro_rate'];
+			$pricing['trial_price'] = max( $pricing['trial_price'], 0 );
 		}
 		else {
-			$data['price'] = $membership->price - $data['discount'] - $data['pro_rate'];
-			$data['price'] = max( $data['price'], 0 );
+			$pricing['price'] = $membership->price - $pricing['discount'] - $pricing['pro_rate'];
+			$pricing['price'] = max( $pricing['price'], 0 );
 		}
-		$data['total'] = $price - $data['discount'] - $data['pro_rate'];
+		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
 		
-		return $data;
+		return $pricing;
 	}
 	
 	/**
@@ -281,7 +281,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				$membership = MS_Model_Membership::load( $membership_id );
 				$member = MS_Model_Member::get_current_member();
 
-				$ms_relationship = $member->add_membership( $membership->id, $this->id );
+				$ms_relationship = $member->add_membership( $membership->id, $this->id, $move_from_id );
 				
 				$transaction = $ms_relationship->create_invoice();
 				
@@ -330,6 +330,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * 
 	 * Create transaction using membership details.
 	 *
+	 * @deprecated
 	 * @since 4.0.0
 	 *
 	 * @access public

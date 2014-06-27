@@ -264,6 +264,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	/**
 	 * Process transaction status change.
 	 * 
+	 * @deprecated
 	 * @since 4.0
 	 * 
 	 * @todo better handle status change other than paid.   

@@ -40,6 +40,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	protected $membership_id;
 	
+	/**
+	 * @deprecated
+	 * @var unknown
+	 */
 	protected $transaction_ids = array();
 	
 	protected $user_id;
@@ -62,7 +66,20 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	protected $move_to_id;
 	
-	public function __construct( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction = null ) {
+	protected $move_from_id;
+	
+	public function __construct() {
+		
+	}
+	
+	/**
+	 * @deprecated
+	 * @param number $membership_id
+	 * @param number $user_id
+	 * @param number $gateway_id
+	 * @param string $transaction
+	 */
+	public function __construct1( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction = null ) {
 		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
@@ -97,6 +114,31 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
 		));
+	}
+	
+	public static function create_ms_relationship( $membership_id = 0, $user_id = 0, $gateway_id = 'admin', $move_from_id = 0 ) {
+		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+			return null;
+		}
+		
+		$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
+		
+		if( empty( $ms_relationship ) ) {
+			$ms_relationship = new self();
+			$ms_relationship->membership_id = $membership_id;
+			$ms_relationship->user_id = $user_id;
+		}
+		
+		/** Initial status */
+		$ms_relationship->gateway_id = $gateway_id;
+		$ms_relationship->move_from_id = $move_from_id;
+		$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id";
+		$ms_relationship->description = $ms_relationship->name;
+		$ms_relationship->set_start_date();
+		$ms_relationship->set_status( self::STATUS_PENDING );
+		$ms_relationship->create_invoice();
+
+		return $ms_relationship;
 	}
 	
 	/**
@@ -167,7 +209,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$args = self::get_query_args( array( 
 				'user_id' => $user_id, 
 				'membership_id' => $membership_id, 
-				'status' => 'valid', 
+				'status' => 'all', 
 		) );
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
@@ -403,8 +445,178 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Get gateway model.
+	 *
+	 * @return MS_Model_Gateway
+	 */
+	public function get_gateway() {
+		
+		$gateway = null;
+		if( 'admin' != $this->gateway_id ) {
+			$gateway = MS_Model_Gateway::load( $this->gateway_id );
+		}
+		
+		return $gateway;
+	}
+	
+	public function create_invoice() {
+		
+		if( $gateway = $this->get_gateway() ) {
+			$membership = $this->get_membership();
+			$member = MS_Model_Member::load( $this->user_id );
+			$transaction_status = MS_Model_Transaction::STATUS_BILLED;
+			$notes = null;
+			
+			switch( $this->status ) {
+				default:
+				case self::STATUS_PENDING:
+				case self::STATUS_DEACTIVATED:
+				case self::STATUS_EXPIRED:
+					$due_date = MS_Helper_Period::current_date();
+					break;
+				case self::STATUS_TRIAL:
+					$due_data = $this->trial_expire_date;
+					break;
+				case self::STATUS_ACTIVE:
+				case self::STATUS_CANCELED:
+					$due_data = $this->expire_date;
+					break;
+			}
+			
+			$pricing = $this->get_pricing_info();
+			
+			/** Search for existing invoice */
+			$transaction = MS_Model_Transaction::get_transaction( $this->user_id, $this->membership_id, $transaction_status );
+			if( ! $transaction ) {
+				$transaction = MS_Model_Transaction::create_transaction(
+						$membership,
+						$member,
+						$this->gateway_id,
+						$transaction_status
+				);
+			}
+			if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $this->move_from_id ) ) {
+				if( $pricing['pro_rate'] ) {
+					$transaction->discount = $pricing['pro_rate'];
+					$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pricing['pro_rate'] );
+				}
+			}
+			if( ! empty( $pricing['coupon_valid'] ) ) {
+				$coupon = $pricing['coupon'];
+				$transaction->coupon_id = $coupon->id;
+				$transaction->discount += $pricing['discount'];
+				$notes .= sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $transaction->currency, $pricing['discount'] );
+			}
+			$transaction->notes = $notes;
+			$transaction->due_date = $due_date;
+			
+			if( self::STATUS_PENDING == $this->status && $membership->trial_period_enabled ) {
+				$transaction->amount = $pricing['trial_price'];
+			}
+			else {
+				$transaction->amount = $pricing['price'];
+			}
+			$transaction->save();
+			
+			$this->process_transaction( $transaction );
+		}
+		
+	}
+	
+	/**
+	 * Get pricing information.
+	 *
+	 * Calculates final price of the membership using coupons, pro-rate and trial information.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 */
+	public function get_pricing_info() {
+		$membership = $this->get_membership();
+		$member = MS_Model_Member::load( $this->user_id );
+		$gateway = $this->get_gateway();
+		
+		$pricing = array();
+		$pricing['currency'] = MS_Plugin::instance()->settings->currency;
+		$pricing['move_from_id'] = $this->move_from_id;
+		$pricing['discount'] = 0;
+		$pricing['pro_rate'] = 0;
+		$pricing['trial_price'] = $membership->trial_price;
+		$pricing['price'] = $membership->price;
+	
+		if( ! empty ( $this->move_from_id ) && ! empty( $gateway ) && $gateway->pro_rate ) {
+			$pricing['pro_rate'] = $member->membership_relationships[ $this->move_from_id ]->calculate_pro_rate();
+		}
+	
+		if( $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
+			MS_Helper_Debug::log("get_pricing_info");
+			$pricing['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
+			$pricing['discount'] =  $coupon->get_discount_value( $membership );
+		}
+		else {
+			MS_Helper_Debug::log("get_pricing_info noooooooo");
+			$coupon = new MS_Model_Coupon();
+		}
+		$pricing['coupon'] = $coupon;
+	
+		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
+		if( $membership->trial_period_enabled ) {
+			$pricing['trial_price'] = $membership->trial_price - $pricing['discount'] - $pricing['pro_rate'];
+			$pricing['trial_price'] = max( $pricing['trial_price'], 0 );
+		}
+		else {
+			$pricing['price'] = $membership->price - $pricing['discount'] - $pricing['pro_rate'];
+			$pricing['price'] = max( $pricing['price'], 0 );
+		}
+		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
+	
+		return $pricing;
+	}
+	
+	 /**
+	 * Process transaction.
+	 * 
+	 * Process transaction status change related to this membership relationship.
+	 * Change status accordinly to transaction status.
+	 * 
+	 * @param MS_Model_Transaction $transaction The Transaction.
+	 */
+	public function process_transaction( $transaction ) {
+		
+		$member = MS_Model_Member::load( $this->user_id );
+		switch( $transaction->status ) {
+			case MS_Model_Transaction::STATUS_BILLED:
+				break;
+			case MS_Model_Transaction::STATUS_PAID:
+				if( $this->coupon_id ) {
+					$coupon = MS_Model_Coupon::load( $this->coupon_id );
+					$coupon->remove_coupon_application( $member->id, $membership->id );
+					$coupon->used++;
+					$coupon->save();
+				}
+				$this->set_status( self::STATUS_ACTIVE );
+				$member->active = true;
+				break;
+			case MS_Model_Transaction::STATUS_REVERSED:
+			case MS_Model_Transaction::STATUS_REFUNDED:
+			case MS_Model_Transaction::STATUS_DENIED:
+			case MS_Model_Transaction::STATUS_DISPUTE:
+				$this->set_status( self::STATUS_DEACTIVATED );
+				$member->active = false;
+				break;
+			default:
+				do_action( 'ms_model_membership_relationship_process_transaction', $this, $transaction );
+				break;
+		}
+		$member->save();
+		$this->save();
+	}
+	
+	/**
 	 * Add transaction.
 	 * 
+	 * @deprecated
 	 * Add transaction related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 * 
