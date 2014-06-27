@@ -136,7 +136,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$ms_relationship->description = $ms_relationship->name;
 		$ms_relationship->set_start_date();
 		$ms_relationship->set_status( self::STATUS_PENDING );
-		$ms_relationship->create_invoice();
+		if( 'admin' == $gateway_id ) {
+			$ms_relationship->set_status( self::STATUS_ACTIVE );
+		}
+		else {
+			$ms_relationship->create_invoice();
+		}
 
 		return $ms_relationship;
 	}
