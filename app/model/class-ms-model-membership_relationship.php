@@ -500,6 +500,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 						$transaction_status
 				);
 			}
+			$transaction->discount = 0;
 			if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $this->move_from_id ) ) {
 				if( $pricing['pro_rate'] ) {
 					$transaction->discount = $pricing['pro_rate'];
@@ -514,12 +515,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 			$transaction->notes = $notes;
 			$transaction->due_date = $due_date;
+			$transaction->amount = $pricing['amount'];
 			
-			if( self::STATUS_PENDING == $this->status && $membership->trial_period_enabled ) {
-				$transaction->amount = $pricing['trial_price'];
-			}
-			else {
-				$transaction->amount = $pricing['price'];
+			if( 0 == $pricing['total'] ) {
+				$transaction->status = MS_Model_Transaction::STATUS_PAID;
 			}
 			$transaction->save();
 			
@@ -555,24 +554,21 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 	
 		if( $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
-			MS_Helper_Debug::log("get_pricing_info");
 			$pricing['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
 			$pricing['discount'] =  $coupon->get_discount_value( $membership );
 		}
 		else {
-			MS_Helper_Debug::log("get_pricing_info noooooooo");
 			$coupon = new MS_Model_Coupon();
 		}
 		$pricing['coupon'] = $coupon;
 	
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
-		if( $membership->trial_period_enabled ) {
-			$pricing['trial_price'] = $membership->trial_price - $pricing['discount'] - $pricing['pro_rate'];
-			$pricing['trial_price'] = max( $pricing['trial_price'], 0 );
+
+		if( self::STATUS_PENDING == $this->status && $membership->trial_period_enabled ) {
+			$pricing['amount'] = $membership->trial_price;
 		}
 		else {
-			$pricing['price'] = $membership->price - $pricing['discount'] - $pricing['pro_rate'];
-			$pricing['price'] = max( $pricing['price'], 0 );
+			$pricing['amount'] = $membership->price;
 		}
 		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
 	
@@ -594,9 +590,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case MS_Model_Transaction::STATUS_BILLED:
 				break;
 			case MS_Model_Transaction::STATUS_PAID:
-				if( $this->coupon_id ) {
-					$coupon = MS_Model_Coupon::load( $this->coupon_id );
-					$coupon->remove_coupon_application( $member->id, $membership->id );
+				if( $transaction->coupon_id ) {
+					$coupon = MS_Model_Coupon::load( $transaction->coupon_id );
+					$coupon->remove_coupon_application( $member->id, $transaction->membership_id );
 					$coupon->used++;
 					$coupon->save();
 				}
@@ -750,7 +746,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				return $this->get_status();
 				break;
 			default:
-				return $this->$property;
+// 				if ( property_exists( $this, $property ) ) {
+					return $this->$property;
+// 				}
 				break;
 		}
 	
