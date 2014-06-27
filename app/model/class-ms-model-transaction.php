@@ -262,40 +262,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Process transaction status change.
-	 * 
-	 * @deprecated
-	 * @since 4.0
-	 * 
-	 * @todo better handle status change other than paid.   
-	 * @param string $status The status to change
-	 * @param bool $force Execute status change actions even if status already has the new value. 
-	 */
-	public function process_transaction( $status, $force = false ) {
-		
-		if(  array_key_exists( $status, self::get_status() ) && ( $this->status != $status || $force ) ) {
-			$this->status = $status;
-			$member = MS_Model_Member::load( $this->user_id );
-			switch( $status ) {
-				case self::STATUS_BILLED:
-					$member->add_membership( $this->membership_id, $this->gateway_id, $this );
-					break;
-				case self::STATUS_PAID:
-					$member->add_membership( $this->membership_id, $this->gateway_id, $this );
-					$member->active = true;
-					break;
-				case self::STATUS_REVERSED:
-				case self::STATUS_REFUNDED:
-				case self::STATUS_DENIED:
-				case self::STATUS_DISPUTE:
-					$member->active = false;
-					break;
-			}
-			$member->save();
-		}
-	}
-	
-	/**
 	 * Returns property associated with the render.
 	 *
 	 * @since 4.0

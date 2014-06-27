@@ -91,7 +91,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
 		$wp_query->query_vars['post_type'] = 'page';
 
-		if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
+		if( ! empty( $_POST['submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
 			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
 		
 			$membership_id = $_POST['membership_id'];

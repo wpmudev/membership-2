@@ -286,39 +286,19 @@ class MS_Model_Member extends MS_Model {
 		}
 		$ms_relationship = null;
 		
-// 		if( ! MS_Plugin::instance()->addon->multiple_membership && count( $this->membership_relationships ) > 0 ) {
-// 			foreach( $this->membership_relationships as $ms_relationship ) {
-// 				if( $membership_id == $ms_relationship->move_to_id ) {
-// 					$move_from_id = $ms_relationship->membership_id;
-// 					$this->move_membership( $move_from_id, $membership_id );
-// 				}
-// 			}
-// 		}
-// 		else
 		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $this->id, $gateway_id, $move_from_id );
-			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) { 
+			if( 'admin' == $gateway_id ) {
+				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
+			}
+			else {
+				$ms_relationship->create_invoice();
+			}
+			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
 			}
-			
-// 			/** Search for pending ms_relationship */
-// 			if( $ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $this->id, $membership_id ) ) {
-// 				$ms_relationship->add_transaction( $transaction );
-// 				$ms_relationship->save();
-// 			}
-// 			else {
-// 				$ms_relationship = new MS_Model_Membership_Relationship( $membership_id, $this->id, $gateway_id, $transaction );
-// 				$ms_relationship->save();
-// 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
-// 			}
-			
-			/** Registration complete automated message */
-			if( 'admin' != $gateway_id && MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
-				MS_Model_News::save_news( $ms_relationship,  MS_Model_News::TYPE_MS_SIGNUP );
-				//TODO
-// 				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->id, $membership_id, $transaction->id );
-				do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
-			}
+				
+			do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
 		}
 		else {
 			$ms_relationship = $this->membership_relationships[ $membership_id ];

@@ -448,7 +448,8 @@ class MS_Controller_Registration extends MS_Controller {
 				$gateways = MS_Model_Gateway::get_gateways( true );
 				$gateway = array_pop( $gateways );
 			}
-			$ms_relationship = $member->add_membership( $membership->id, $gateway->id, $move_from_id );
+
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
 			
 			$data = $ms_relationship->get_pricing_info();
 			$data['membership'] = $membership;
@@ -457,6 +458,7 @@ class MS_Controller_Registration extends MS_Controller {
 					  
 			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 			$view->data = $data;
+
 			echo $view->to_html();
 		}
 	}
