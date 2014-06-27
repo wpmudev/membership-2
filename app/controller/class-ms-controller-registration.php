@@ -379,7 +379,10 @@ class MS_Controller_Registration extends MS_Controller {
 			$member = MS_Model_Member::get_current_member();
 			$member->cancel_membership( $membership_id );
 			$member->save();
-			wp_safe_redirect( remove_query_arg( array( 'action', '_wpnonce', 'membership' ) ) ) ;
+			
+			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) );
+			wp_safe_redirect( $url );
+			exit;
 		}
 	}
 
@@ -421,39 +424,41 @@ class MS_Controller_Registration extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function payment_table() {
-		$membership_id = $_GET['membership'];
-		$membership = MS_Model_Membership::load( $membership_id );
-		$member = MS_Model_Member::get_current_member();
-		$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
-		
-		if( ! empty( $_POST['coupon_code'] ) ) {
-			$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
-			if( ! empty( $_POST['remove_coupon_code'] ) ) {
-				$coupon->remove_coupon_application( $member->id, $membership_id );
-				$coupon = new MS_Model_Coupon();
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
+			$membership_id = $_GET['membership'];
+			$membership = MS_Model_Membership::load( $membership_id );
+			$member = MS_Model_Member::get_current_member();
+			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
+			
+			if( ! empty( $_POST['coupon_code'] ) ) {
+				$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
+				if( ! empty( $_POST['remove_coupon_code'] ) ) {
+					$coupon->remove_coupon_application( $member->id, $membership_id );
+					$coupon = new MS_Model_Coupon();
+				}
+				elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
+					$coupon->save_coupon_application( $membership );
+				}
 			}
-			elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
-				$coupon->save_coupon_application( $membership );
+			
+			if( $membership->gateway_id ) {
+				$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
 			}
+			else {
+				$gateways = MS_Model_Gateway::get_gateways( true );
+				$gateway = array_pop( $gateways );
+			}
+			$ms_relationship = $member->add_membership( $membership->id, $gateway->id, $move_from_id );
+			
+			$data = $ms_relationship->get_pricing_info();
+			$data['membership'] = $membership;
+			$data['member'] = $member;
+			$data['gateway'] = $gateway;
+					  
+			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
+			$view->data = $data;
+			echo $view->to_html();
 		}
-		
-		if( $membership->gateway_id ) {
-			$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
-		}
-		else {
-			$gateways = MS_Model_Gateway::get_gateways( true );
-			$gateway = array_pop( $gateways );
-		}
-		$ms_relationship = $member->add_membership( $membership->id, $gateway->id, $move_from_id );
-		
-		$data = $ms_relationship->get_pricing_info();
-		$data['membership'] = $membership;
-		$data['member'] = $member;
-		$data['gateway'] = $gateway;
-				  
-		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
-		$view->data = $data;
-		echo $view->to_html();
 	}
 
 	/**
