@@ -91,8 +91,22 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
 		$wp_query->query_vars['post_type'] = 'page';
 
-		if( $transaction_id = $this->pre_create_transaction() ) {
-			$this->add_action( 'the_content', 'content' );
+		if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
+			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+		
+			$membership_id = $_POST['membership_id'];
+			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+			$member = MS_Model_Member::get_current_member();
+			$ms_relationship = $member->add_membership( $membership_id, $this->id, $move_from_id );
+			
+			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
+				wp_safe_redirect( $url );
+				exit;
+			}
+			else{
+				$this->add_action( 'the_content', 'content' );
+			}
 		}
 		else {
 			$this->add_action( 'the_content', 'content_error' );
