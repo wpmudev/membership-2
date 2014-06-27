@@ -34,11 +34,7 @@ class MS_Model_Upgrade extends MS_Model {
 		/** Compare current src version to DB version */
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
 			switch( $settings->version ) {
-				case '4.0.0.0.1':
-					$gateways = MS_Model_Gateway::get_gateways();
-					foreach( $gateways as $gateway ) {
-						$gateway->delete();
-					}
+				case '4.0.0.0.2':
 					break;
 				case '4.0.0.0.0':
 					self::cleanup_db();
@@ -64,7 +60,7 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $comms as $comm ) {
 			$comm->delete();
 		}
-		$membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships();
+		$membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'status' => 'all' ) );
 		foreach( $membership_relationships as $membership_relationship ) {
 			$membership_relationship->delete();
 		}
@@ -75,6 +71,14 @@ class MS_Model_Upgrade extends MS_Model {
 		$gateways = MS_Model_Gateway::get_gateways();
 		foreach( $gateways as $gateway ) {
 			$gateway->delete();
+		}
+		$transactions = MS_Model_Transaction::get_transactions();
+		foreach( $transactions as $transaction ) {
+			$transaction->delete();
+		}
+		$coupons = MS_Model_Transaction::get_transactions();
+		foreach( $coupons as $coupon ) {
+			$coupon->delete();
 		}
 		
 		$simulate = MS_Model_Simulate::load();
