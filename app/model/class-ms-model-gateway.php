@@ -264,8 +264,37 @@ class MS_Model_Gateway extends MS_Model_Option {
 	}
 	
 	/**
+	 * Create an invoice before sending payment to gateway.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function generate_invoice() {
+		if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
+		! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+	
+			$membership_id = $_POST['membership_id'];
+			if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
+				$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+				$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
+				$membership = MS_Model_Membership::load( $membership_id );
+				$member = MS_Model_Member::get_current_member();
+
+				$ms_relationship = $member->add_membership( $membership->id, $this->id );
+				
+				$transaction = $ms_relationship->create_invoice();
+				
+				return $transaction->id;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Create transaction before sending to gateway.
 	 *
+	 * @deprecated
+	 * 
 	 * @since 4.0.0
 	 *
 	 * @access public
