@@ -68,37 +68,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	protected $move_from_id;
 	
-	public function __construct() {
-		
-	}
-	
-	/**
-	 * @deprecated
-	 * @param number $membership_id
-	 * @param number $user_id
-	 * @param number $gateway_id
-	 * @param string $transaction
-	 */
-	public function __construct1( $membership_id = 0, $user_id = 0, $gateway_id = 0, $transaction = null ) {
-		
-		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			return;
-		}
-		$this->membership_id = $membership_id;
-		$this->user_id = $user_id;
-		$this->gateway_id = $gateway_id;
-		if( $transaction ) {
-			$this->set_status( self::STATUS_PENDING );
-			$this->add_transaction( $transaction );
-		}
-		else {
-			$this->set_status( self::STATUS_ACTIVE );
-		}
-		$this->set_start_date();
-		$this->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id";
-		$this->description = $this->name;
-	}
-	
 	/**
 	 * Return existing status types.
 	 * 
@@ -136,12 +105,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$ms_relationship->description = $ms_relationship->name;
 		$ms_relationship->set_start_date();
 		$ms_relationship->set_status( self::STATUS_PENDING );
-		if( 'admin' == $gateway_id ) {
-			$ms_relationship->set_status( self::STATUS_ACTIVE );
-		}
-		else {
-			$ms_relationship->create_invoice();
-		}
+		$ms_relationship->save();
 
 		return $ms_relationship;
 	}
@@ -674,6 +638,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 			else {
 				$status = self::STATUS_EXPIRED;
+			}
+		}
+		if( $this->status != $status ) {
+			/** signup */
+			if( 'admin' != $this->gateway_id && self::STATUS_PENDING == $this->status && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
+				MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_SIGNUP );
+				$transaction = MS_Model_Transaction::get_transaction( $this->user_id, $this->membership_id, MS_Model_Transaction::STATUS_PAID );
+				/** Registration completed automated message */
+				do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $this->user_id, $this->membership_id, $transaction->id );
 			}
 		}
 
