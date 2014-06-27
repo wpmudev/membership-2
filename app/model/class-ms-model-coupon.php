@@ -206,7 +206,6 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			}
 			$discount = $original_price - $price;
 			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. Discount applied: %s %s', MS_TEXT_DOMAIN ), $this->code, MS_Plugin::instance()->settings->currency, $discount );
-			$this->save_coupon_application( $membership->id, $discount );
 		}
 		
 		return apply_filters( 'ms_model_coupon_apply_discount', $discount, $membership, $this );
@@ -223,9 +222,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * @param int $membership_id The membership id to apply the coupon.
 	 * @param float $discount The discount value.
 	 */
-	public function save_coupon_application( $membership_id, $discount ) {
+	public function save_coupon_application( $membership ) {
 		global $blog_id;
 	
+		$discount = $this->get_discount_value( $membership );
+		
 		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
 		
 		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', self::COUPON_REDEMPTION_TIME );
