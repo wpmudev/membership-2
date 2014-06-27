@@ -276,7 +276,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 		
 		$coupon = null;
-		if( ! empty( $transient_value['coupon_id'] ) ) {
+		if( ! empty ( $transient_value ) ) {
 			$coupon = self::load( $transient_value['coupon_id'] );
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
