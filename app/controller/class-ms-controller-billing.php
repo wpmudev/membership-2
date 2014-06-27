@@ -197,13 +197,13 @@ class MS_Controller_Billing extends MS_Controller {
 		}
 		
 		if( is_array( $fields ) ) {
-			$this->model = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
-			if( $this->model->id == 0 ) {
+			$transaction = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
+			if( $transaction->id == 0 ) {
 				if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
 					$membership = MS_Model_Membership::load( $fields['membership_id'] );
 					$member = MS_Model_Member::load( $fields['user_id'] );
 					$gateway_id = $fields['gateway_id'];
-					$this->model = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
+					$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
 					$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 				}
 				else {
@@ -216,13 +216,15 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 
 			if( ! empty( $fields['execute'] ) ) {
-				$this->model->process_transaction( $fields['status'] );
+				$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
+				$ms_relationship->process_transaction( $transaction );
+				$ms_relationship->save();
 			}
 			
 			foreach( $fields as $field => $value ) {
-				$this->model->$field = $value;
+				$transaction->$field = $value;
 			}
-			$this->model->save();
+			$transaction->save();
 		}
 		return $msg;	
 	}
