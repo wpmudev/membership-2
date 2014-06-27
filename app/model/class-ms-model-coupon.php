@@ -150,11 +150,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * @return boolean Returns the verification.
 	 */
 	public function is_valid_coupon( $membership_id = 0 ) {
+
 		if ( empty( $this->code ) ) {
 			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
 			return false;
 		}
-		if( $this->used > $this->max_uses ) {
+		if( $this->max_uses && $this->used > $this->max_uses ) {
 			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
 			return false;
 		}
@@ -234,15 +235,15 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		/** Grab the user account as we should be logged in by now */
 		$user = MS_Model_Member::get_current_member();
 	
-		$transient_name = "ms_coupon_{$blog_id}_{$user->id}_{$membership_id}";
+		$transient_name = "ms_coupon_{$blog_id}_{$user->id}_{$membership->id}";
 		$transient_value = array(
 				'coupon_id' => $this->id,
 				'user_id' => $user->id,
-				'membership_id'	=> $membership_id,
+				'membership_id'	=> $membership->id,
 				'discount' => $discount,
 				'coupon_message' => $this->coupon_message,
 		);
-	
+
 		if ( $global && function_exists( 'get_site_transient' ) ) {
 			set_site_transient( $transient_name, $transient_value, $time );
 		} 
@@ -273,13 +274,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		else {
 			$transient_value = get_transient( $transient_name );
 		}
-
+		
+		$coupon = null;
 		if( ! empty( $transient_value['coupon_id'] ) ) {
 			$coupon = self::load( $transient_value['coupon_id'] );
 			$coupon->coupon_message = $transient_value['coupon_message'];
-		}
-		else {
-			$coupon = new self();
 		}
 		
 		return $coupon;
