@@ -34,27 +34,13 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $payment_info;
 	
-	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	public function purchase_button( $ms_relationship ) {
+		
 		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
+				'ms_relationship_id' => array(
+						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'membership_id' => array(
-						'id' => 'membership_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->id,
-				),
-				'move_from_id' => array(
-						'id' => 'move_from_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $move_from_id,
-				),
-				'coupon_id' => array(
-						'id' => 'coupon_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $coupon_id,
+						'value' => $ms_relationship->id,
 				),
 		);
 		if( strpos( $this->payment_url, 'http' ) === 0 ) {
@@ -65,8 +51,8 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			);
 		}
 		else {
-			$fields['submit'] = array(
-					'id' => 'submit',
+			$fields['submit_manual'] = array(
+					'id' => 'submit_manual',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
 			);
@@ -74,12 +60,9 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		
 		?>
 			<form action="<?php echo $this->get_return_url();?>" method="post">
-				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
-				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['move_from_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['coupon_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
+				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
+				<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['submit_manual'] ); ?>
 			</form>
 		<?php 
 	}
@@ -91,13 +74,11 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
 		$wp_query->query_vars['post_type'] = 'page';
 
-		if( ! empty( $_POST['submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
-			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
+		if( ! empty( $_POST['submit_manual'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
+			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
 		
-			$membership_id = $_POST['membership_id'];
-			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-			$member = MS_Model_Member::get_current_member();
-			$ms_relationship = $member->add_membership( $membership_id, $this->id, $move_from_id );
+			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
+			$ms_relationship->create_invoice();
 			
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
