@@ -428,6 +428,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return $gateway;
 	}
 	
+	public function get_last_invoice( $status = MS_Model_Transaction::STATUS_BILLED ) {
+		return apply_filters( 'ms_model_membership_relationship_get_last_invoice', MS_Model_Transaction::get_transaction( $this->user_id, $this->membership_id, $status ) );
+	}
+	
 	public function create_invoice() {
 		
 		if( $gateway = $this->get_gateway() ) {
@@ -455,7 +459,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$pricing = $this->get_pricing_info();
 			
 			/** Search for existing invoice */
-			$transaction = MS_Model_Transaction::get_transaction( $this->user_id, $this->membership_id, $transaction_status );
+			$transaction = $this->get_last_invoice( $transaction_status );
 			if( ! $transaction ) {
 				$transaction = MS_Model_Transaction::create_transaction(
 						$membership,
@@ -576,38 +580,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		$member->save();
 		$this->save();
-	}
-	
-	/**
-	 * Add transaction.
-	 * 
-	 * @deprecated
-	 * Add transaction related to this membership relationship.
-	 * Change status accordinly to transaction status.
-	 * 
-	 * @param int $transaction_id The Transaction Id to add.
-	 */
-	public function add_transaction( $transaction ) {
-		if( ! in_array( $transaction->id, $this->transaction_ids ) ) {
-			$this->transaction_ids[] = $transaction->id;
-		}
-		if( MS_Model_Transaction::STATUS_PAID == $transaction->status ) {
-			$this->set_status( self::STATUS_ACTIVE );
-		}
-		else {
-			switch( $this->get_status() ) {
-				case self::STATUS_CANCELED:
-				case self::STATUS_DEACTIVATED:
-				case self::STATUS_TRIAL:
-				case self::STATUS_ACTIVE:
-					break;
-				default:
-				case self::STATUS_PENDING:
-					$this->set_status( self::STATUS_PENDING );
-					break;
-			}
-		}
-		
 	}
 	
 	/**

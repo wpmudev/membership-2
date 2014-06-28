@@ -38,7 +38,9 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $mode;
 	
-	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	public function purchase_button( $ms_relationship ) {
+		$invoice = $ms_relationship->get_last_invoice();
+		$membership = $ms_relationship->get_membership();
 		$fields = array(
 				'charset' => array(
 						'id' => 'charset',
@@ -103,7 +105,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				'custom' => array(
 						'id' => 'custom',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
+						'value' => $this->build_custom( $ms_relationship->user_id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
 				),
 		);
 		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
@@ -200,35 +202,28 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				);
 				break;
 		}
-		
-		/** Coupon valid for the first period */
-		if( $coupon_id ) {
-			$coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id );
-			$discount = $coupon->get_discount_value( $membership );
-
-			/** Trial period set */
-			if( isset ( $fields['a1']['value'] ) ) {
-				/** Not a free trial, apply discount in the trial period */
-				if( $fields['a1']['value'] > 0 ) {
-					$fields['a1']['value'] -= $discount;
-					$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
-				}
+		/** Trial period set */
+		if( isset ( $fields['a1']['value'] ) ) {
+			/** Not a free trial, apply discount in the trial period */
+			if( $fields['a1']['value'] > 0 ) {
+				$fields['a1']['value'] -= $discount;
+				$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
 			}
-			/** No Trial period set */
+		}
+		/** No Trial period set */
+		else {
+			/** recurrent payment, apply discount in the first payment */
+			if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type ) {
+				$fields['a1'] = $fields['a3'];
+				$fields['p1'] = $fields['p3'];
+				$fields['t1'] = $fields['t3'];
+				$fields['a1']['value'] -= $discount;
+				$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
+			}
+			/** Only one payment */
 			else {
-				/** recurrent payment, apply discount in the first payment */
-				if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type ) {
-					$fields['a1'] = $fields['a3'];
-					$fields['p1'] = $fields['p3'];
-					$fields['t1'] = $fields['t3'];
-					$fields['a1']['value'] -= $discount;
-					$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
-				}
-				/** Only one payment */
-				else {
-					$fields['a3']['value'] -= $discount;
-					$fields['a3']['value'] = max( $fields['a3']['value'], 0 );
-				}
+				$fields['a3']['value'] -= $discount;
+				$fields['a3']['value'] = max( $fields['a3']['value'], 0 );
 			}
 		}
 		
