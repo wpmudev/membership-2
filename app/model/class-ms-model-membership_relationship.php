@@ -590,9 +590,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		if( self::STATUS_PENDING == $this->status && $membership->trial_period_enabled ) {
 			$pricing['amount'] = $membership->trial_price;
+			$pricing['trial_period'] = true;
 		}
 		else {
 			$pricing['amount'] = $membership->price;
+			$pricing['trial_period'] = false;
 		}
 		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
 	

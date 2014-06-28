@@ -39,8 +39,9 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	protected $mode;
 	
 	public function purchase_button( $ms_relationship ) {
-		$invoice = $ms_relationship->get_last_invoice();
+		
 		$membership = $ms_relationship->get_membership();
+		
 		$fields = array(
 				'charset' => array(
 						'id' => 'charset',
@@ -105,7 +106,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				'custom' => array(
 						'id' => 'custom',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->build_custom( $ms_relationship->user_id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
+						'value' => $ms_relationship->id,
 				),
 		);
 		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
@@ -124,12 +125,14 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			);
 		}
 		
+		$invoice = $ms_relationship->get_last_invoice();
+		
 		/** Trial period */
 		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
 			$fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $membership->trial_price,
+					'value' => ( $invoice['trial_period'] ) ? $invoice['amount'] : $membership->trial_price,
 			);
 			$fields['p1'] = array(
 					'id' => 'p1',
@@ -147,7 +150,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		$fields['a3'] = array(
 				'id' => 'a3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $membership->price,
+				'value' => ( ! $invoice['trial_period'] ) ? $invoice['amount'] : $membership->price,
 		);
 		
 		$recurring = 0;
@@ -202,30 +205,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				);
 				break;
 		}
-		/** Trial period set */
-		if( isset ( $fields['a1']['value'] ) ) {
-			/** Not a free trial, apply discount in the trial period */
-			if( $fields['a1']['value'] > 0 ) {
-				$fields['a1']['value'] -= $discount;
-				$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
-			}
-		}
-		/** No Trial period set */
-		else {
-			/** recurrent payment, apply discount in the first payment */
-			if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type ) {
-				$fields['a1'] = $fields['a3'];
-				$fields['p1'] = $fields['p3'];
-				$fields['t1'] = $fields['t3'];
-				$fields['a1']['value'] -= $discount;
-				$fields['a1']['value'] = max( $fields['a1']['value'], 0 );
-			}
-			/** Only one payment */
-			else {
-				$fields['a3']['value'] -= $discount;
-				$fields['a3']['value'] = max( $fields['a3']['value'], 0 );
-			}
-		}
 		
 		/**
 		 * Recurring field.
@@ -268,7 +247,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
 			</form>
 		<?php
-		$this->pre_create_transaction_form( $membership, $member, $move_from_id, $coupon_id );
 	}
 	
 	public function handle_return() {
@@ -305,10 +283,18 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				exit;
 			}
 		
-			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key, $transaction_id ) = explode( ':', $_POST['custom'] );
+			if( empty( $_POST['custom'] ) ) {
+				$error = 'Response Error: No relationship identification found.';
+				MS_Helper_Debug::log( $error );
+				MS_Helper_Debug::log( $response );
+				exit;
+			}
 			
-			$membership = MS_Model_Membership::load( $membership_id );
-			$member = MS_Model_Member::load( $user_id );
+			$ms_relationship_id = $_POST['custom'];
+			$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
+			$membership = $ms_relationship->get_membership();
+			$member = MS_Model_Member::load( $ms_relationship->user_id );
+			
 			$currency = $_POST['mc_currency'];
 			$status = null;
 			$notes = null;
@@ -398,31 +384,23 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			MS_Helper_Debug::log( "transaction_id: $transaction_id, ext_id: $external_id status: $status, notes: $notes" );
 			
 			if( ! empty( $status ) ) {
-				if( $transaction_id ) {
-					if( ! empty( $notes ) ) {
-						$transaction->notes = $notes;
-					}
-					$transaction->process_transaction( $status );
+
+				$transaction = $ms_relationship->get_last_invoice();
+				if( empty( $transaction->id ) ) {
+					$transaction = $ms_relationship->create_invoice();
 				}
-				elseif( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
-					if( ! empty( $notes ) ) {
-						$transaction->notes = $notes;
-					}
-					$transaction->process_transaction( $status );
+				
+				$transaction->status = $status;
+				if( ! empty( $notes ) ) {
+					$transaction->notes = $notes;
 				}
-				else {
-					$transaction = $this->add_transaction( array(
-							'membership' => $membership,
-							'member' => $member,
-							'status' => $status,
-							'move_from_id' => $move_from_id,
-							'coupon_id' => $coupon_id,
-							'external_id' => $external_id,
-							'notes' => $notes,
-							'amount' => $amount,
-					) );
-				}
-				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
+				$transaction->external_id = $external_id;
+				
+				$transaction->save();
+					
+				$ms_relationship->process_transaction( $transaction );
+				
+				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $ms_relationship, $amount, $external_id );
 			}				
 		} 
 		else {
