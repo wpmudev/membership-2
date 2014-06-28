@@ -455,6 +455,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$data['membership'] = $membership;
 			$data['member'] = $member;
 			$data['gateway'] = $gateway;
+			$data['ms_relationship'] = $ms_relationship;
 					  
 			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 			$view->data = $data;
