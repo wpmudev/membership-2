@@ -85,6 +85,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		));
 	}
 	
+	/**
+	 * Create a new membership relationship.
+	 *
+	 * Search for existing relationship (unique object), creating if not exists.
+	 * Set initial status. 
+	 * 
+	 * @since 4.0
+	 * @return MS_Model_Membership_Relationship The created relationship. 
+	 */
 	public static function create_ms_relationship( $membership_id = 0, $user_id = 0, $gateway_id = 'admin', $move_from_id = 0 ) {
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return null;
@@ -107,11 +116,13 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$ms_relationship->set_status( self::STATUS_PENDING );
 		$ms_relationship->save();
 
-		return $ms_relationship;
+		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
 	}
 	
 	/**
 	 * Save model.
+	 * 
+	 * @since 4.0
 	 * 
 	 * Only saves if is not admin user and not visitor.
 	 * Don't save visitor and default memberships (auto assigned). 
@@ -127,6 +138,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * Retrieve membership relationships.
+	 * 
+	 * @since 4.0
 	 * 
 	 * @return MS_Model_Membership_Relationship[] 
 	 */
@@ -155,31 +168,35 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Retrieve membership relationship count.
 	 * 
+	 * @since 4.0
+	 * 
 	 * @param array $args
 	 * @return number The found count.
 	 */
 	public static function get_membership_relationship_count( $args = null ) {
 		
-		$args = self::get_query_args( $args );
+		$args = apply_filters( 'ms_model_membership_relationship_get_membership_relationship_count_args', self::get_query_args( $args ) );
 		
 		$query = new WP_Query( $args );
 
-		return $query->found_posts;
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship_count', $query->found_posts );
 	}
 	
 	/**
 	 * Retrieve membership relationship.
+	 * 
+	 * @since 4.0
 	 * 
 	 * @param int $user_id The user id 
 	 * @return int $membership_id The membership id.
 	 */
 	public static function get_membership_relationship( $user_id, $membership_id ) {
 		
-		$args = self::get_query_args( array( 
+		$args = apply_filters( 'ms_model_membership_relationship_get_membership_relationship_args', self::get_query_args( array( 
 				'user_id' => $user_id, 
 				'membership_id' => $membership_id, 
 				'status' => 'all', 
-		) );
+		) ) );
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
 		
@@ -188,13 +205,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$ms_relationship = self::load( $post[0] );
 		}
 		
-		return $ms_relationship;
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship', $ms_relationship );
 	}
 	
 	/**
 	 * Create default args to search posts.
 	 * 
 	 * Merge received args to default ones.
+	 * 
+	 * @since 4.0
 	 * 
 	 * @param array $args 
 	 * @return array The args.
@@ -249,12 +268,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					'compare' => 'NOT IN',
 			);
 		}
-		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships_args', $args );
+		return apply_filters( 'ms_model_membership_relationship_get_query_args', $args );
 	}
 	
 	/**
 	 * Set Membership Relationship start date.
 	 *
+	 * @since 4.0
+	 * 
 	 * Also updates trial and expire date.
 	 * @param string optional $start_date
 	 */
@@ -299,6 +320,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Set trial expire date.
 	 * 
 	 * Validate to a date greater than start date.
+	 * 
+	 * @since 4.0
 	 * @param string $trial_expire_date
 	 */
 	public function set_trial_expire_date( $trial_expire_date ) {
@@ -317,6 +340,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Set trial expire date.
 	 * 
 	 * Validate to a date greater than start date.
+
+	 * @since 4.0
 	 * @param string $trial_expire_date
 	 */
 	public function set_expire_date( $expire_date ) {
@@ -337,6 +362,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Get Membership model.
 	 * 
+	 * @since 4.0
 	 * @return MS_Model_Membership
 	 */
 	public function get_membership() {
@@ -346,6 +372,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Get how many days in this membership.
 	 * 
+	 * @since 4.0
 	 * @return string
 	 */
 	public function get_current_period() {
@@ -354,6 +381,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * Get how many days until this membership trial expires.
+	 * 
+	 * @since 4.0
 	 * @return string
 	 */
 	public function get_remaining_trial_period() {
@@ -362,6 +391,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * Get how many days until this membership expires.
+	 * 
+	 * @since 4.0
 	 * @return string
 	 */
 	public function get_remaining_period() {
@@ -373,6 +404,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Pro rate using remaining membership days.
 	 * 
+	 * @since 4.0
 	 * @return float The pro rate value.
 	 */
 	public function calculate_pro_rate() {
@@ -404,6 +436,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Set elapsed period of time of membership.
 	 * 
+	 * @since 4.0
 	 * @param int $period_unit The elapsed period unit.
 	 * @param string $period_type The elapsed period type.
 	 */
@@ -415,6 +448,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 	/**
 	 * Get gateway model.
+	 *
+	 * @since 4.0
 	 *
 	 * @return MS_Model_Gateway
 	 */
@@ -428,10 +463,29 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return $gateway;
 	}
 	
+	/**
+	 * Get last invoice for this member membership.
+	 * 
+	 * @since 4.0
+	 * @param string $status The invoice status to search. 
+	 * @return MS_Model_Transaction The invoice if found, and null otherwise.
+	 */
 	public function get_last_invoice( $status = MS_Model_Transaction::STATUS_BILLED ) {
-		return apply_filters( 'ms_model_membership_relationship_get_last_invoice', MS_Model_Transaction::get_transaction( $this->user_id, $this->membership_id, $status ) );
+		return apply_filters( 'ms_model_membership_relationship_get_last_invoice', MS_Model_Transaction::get_transaction( 
+				$this->user_id, 
+				$this->membership_id, 
+				$status 
+		) );
 	}
 	
+	/**
+	 * Create invoice.
+	 * 
+	 * Create a new invoice using the membership information.
+	 * Reutilize an existing not paid invoice, updating info.
+	 *  
+	 * @since 4.0
+	 */
 	public function create_invoice() {
 		
 		if( $gateway = $this->get_gateway() ) {
@@ -458,7 +512,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			
 			$pricing = $this->get_pricing_info();
 			
-			/** Search for existing invoice */
+			/** Search for existing not paid invoice */
 			$transaction = $this->get_last_invoice( $transaction_status );
 			if( ! $transaction ) {
 				$transaction = MS_Model_Transaction::create_transaction(
@@ -468,6 +522,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 						$transaction_status
 				);
 			}
+			
+			/** Update invoice info.*/
 			$transaction->discount = 0;
 			if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $this->move_from_id ) ) {
 				if( $pricing['pro_rate'] ) {
@@ -691,9 +747,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				return $this->get_status();
 				break;
 			default:
-// 				if ( property_exists( $this, $property ) ) {
-					return $this->$property;
-// 				}
+				if ( ! property_exists( $this, $property ) ) {
+					MS_Helper_Debug::log( "Property doesn't exist: $property.");
+				}
+				return $this->$property;
 				break;
 		}
 	
