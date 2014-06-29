@@ -224,10 +224,6 @@ class MS_View_Settings_Edit extends MS_View {
 	public function render_payment() {
 
 		$this->prepare_payment();
-		
-		$list_table = new MS_Helper_List_Table_Gateway();
-		$list_table->prepare_items();
-
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -262,9 +258,6 @@ class MS_View_Settings_Edit extends MS_View {
 					<p>
 						<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_payment' ) );?>
 					</p>
-				</form>
-				<form action="" method="post">
-					<?php $list_table->display(); ?>
 				</form>
 			</div>
 		<?php
@@ -312,6 +305,24 @@ class MS_View_Settings_Edit extends MS_View {
 			),
 		);
 	}
+	public function render_gateway() {
+	
+		$list_table = new MS_Helper_List_Table_Gateway();
+		$list_table->prepare_items();
+	
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h3><?php echo __( 'Gateway Settings', MS_TEXT_DOMAIN ); ?></h3>
+				<form action="" method="post">
+					<?php $list_table->display(); ?>
+				</form>
+			</div>
+		<?php
+		$html = ob_get_clean();
+		echo $html;
+	}
+
 	public function render_messages_protection() {
 		$this->prepare_messages_protection();
 		?>

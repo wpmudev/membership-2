@@ -111,6 +111,10 @@ class MS_Controller_Settings extends MS_Controller {
 						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-settings&tab=payment',
 				),
+				'gateway' => array(
+						'title' =>	__( 'Gateway', MS_TEXT_DOMAIN ),
+						'url' => 'admin.php?page=membership-settings&tab=gateway',
+				),
 				'messages-protection' => array(
 						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-settings&tab=messages-protection',
@@ -188,7 +192,7 @@ class MS_Controller_Settings extends MS_Controller {
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
 				}
 				break;
-			case 'payment':
+			case 'gateway':
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				/**
 				 * Execute table single action.
@@ -214,10 +218,13 @@ class MS_Controller_Settings extends MS_Controller {
 						$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 				}
+			break;
+			case 'payment':
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				/**
 				 * Save payment settings tab
 				 */
-				elseif ( ! empty( $_POST['submit_payment'] ) && ! empty( $_POST['action'] ) &&
+				if ( ! empty( $_POST['submit_payment'] ) && ! empty( $_POST['action'] ) &&
 					! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
 					$msg = $this->save_general( 'submit_payment', $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -272,7 +279,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function admin_settings() {
 		if ( ! empty( $_GET['action'] ) ) {
-			$this->prepare_action_view();
+			$this->prepare_gateway_view();
 		}
 		else {
 			$view = apply_filters( 'ms_view_settings', new MS_View_Settings_Edit() );
@@ -286,12 +293,10 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Prepare and show action view.
 	 *
-	 * @todo Some more commenting as to the purpose of this function. It seems gateway specific?
-	 *
 	 * @since 4.0.0
 	 */
-	public function prepare_action_view() {
-		if ( 'payment' == $this->active_tab && 'edit' == $_GET['action'] && ! empty( $_GET['gateway_id'] ) ) {
+	public function prepare_gateway_view() {
+		if ( 'gateway' == $this->active_tab && 'edit' == $_GET['action'] && ! empty( $_GET['gateway_id'] ) ) {
 			$gateway_id = $_GET['gateway_id'];
 			if( MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
 				switch( $gateway_id ) {
@@ -512,7 +517,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function enqueue_scripts() {
-		if( 'payment' == $this->active_tab ) {
+		if( 'gateway' == $this->active_tab ) {
 			wp_enqueue_script( 'ms_view_member_ui' );
 		}
 		if( 'general' == $this->active_tab ) {
