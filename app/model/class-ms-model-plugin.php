@@ -34,10 +34,14 @@ class MS_Model_Plugin extends MS_Model {
 				
 			$this->init_member();
 			
-			$this->setup_communications();
+			$this->setup_cron_services();
 			
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
+			
+			/** cron service action */
+			$this->add_action( 'ms_check_membership_status', 'check_membership_status' );
+			
 		}
 	}
 	
@@ -195,6 +199,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 	}
+	
 	/**
 	 * Get protection rules sorted.
 	 * First one has priority over the last one.
@@ -266,6 +271,7 @@ class MS_Model_Plugin extends MS_Model {
 			$periods = array();
 		}
 	
+		$periods['60mins'] = array( 'interval' => 60 * MINUTE_IN_SECONDS, 'display' => __( 'Every 60 Mins', MS_TEXT_DOMAIN ) );
 		$periods['30mins'] = array( 'interval' => 30 * MINUTE_IN_SECONDS, 'display' => __( 'Every 30 Mins', MS_TEXT_DOMAIN ) );
 		$periods['15mins'] = array( 'interval' => 15 * MINUTE_IN_SECONDS, 'display' => __( 'Every 15 Mins', MS_TEXT_DOMAIN ) );
 		$periods['10mins'] = array( 'interval' => 10 * MINUTE_IN_SECONDS, 'display' => __( 'Every 10 Mins', MS_TEXT_DOMAIN ) );
@@ -275,25 +281,123 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
-	 * Setup automatic communications.
+	 * Setup cron plugin services. 
 	 *
-	 * Setup cron to call action ms_communications_process. 
+	 * Setup cron to call actions. 
 	 *
+	 * @todo checkperiod review.
+	 * 
 	 * @since 4.0.0
 	 *
 	 * @access public
 	 */
-	public function setup_communications() {
+	public function setup_cron_services() {
 		
 		if( ! ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
 			MS_Model_Communication::load_communications();
 			
-			// Action to be called by the cron job
+			/**
+			 * Check for membership status.
+			 */
 			$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
+			if ( ! wp_next_scheduled( 'ms_check_membership_status' ) ) {
+				/** Action to be called by the cron job */
+				wp_schedule_event( time(), $checkperiod, 'ms_check_membership_status' );
+			}
+			/**
+			 * Setup automatic communications.
+			 */
+			$checkperiod = '60mins';
 			if ( ! wp_next_scheduled( 'ms_communications_process' ) ) {
+				/** Action to be called by the cron job */
 				wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
 			}
 		}
 	}
 	
+	/**
+	 * Check membership status.
+	 *
+	 * Execute actions when time/period condition are met.
+	 * E.g. change membership status, add communication to queue.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function check_membership_status() {
+		
+		if( ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
+			return;
+		}
+		
+		$args = apply_filters( 'ms_model_plugin_check_membership_status_get_membership_relationship_args', array( 'status' => 'valid' ) );
+		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( $args );
+		$comms = MS_Model_Communication::load_communications();
+		$invoice_before_days = 5;//@todo create a setting to configure this period. 
+		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
+		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
+		
+		foreach( $ms_relationships as $ms_relationship ) {
+			$expire = $ms_relationship->get_remaining_period();
+			switch( $ms_relationship->status ) {
+				/** Deactivate unused, pending ms_relationships. */
+				case MS_Model_Membership_Relationship::STATUS_PENDING:
+					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
+					$expire_dt = MS_Helper_Period::add_interval( $deactivate_pending_after_days, MS_Helper_Period::PERIOD_TYPE_DAYS );
+					if( strtotime( $expire_dt ) > strtotime( MS_Helper_Period::current_date() ) ) {
+						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+					}
+				break;
+				/** Send trial end communication. */
+				case MS_Model_Membership_Relationship::STATUS_TRIAL:
+					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
+					$trial_expire = $ms_relationship->get_remaining_trial_period();
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
+					if( $comm->enabled ) {
+						$days = MS_Helper_Period::get_period_in_days( $comm->period );
+						if( ! $trial_expire->invert && $days == $trial_expire->days ) {
+							$comm->add_to_queue( $ms_relationship->id );
+						}
+					}
+					break;
+				/** 
+				 * Send period end communication. 
+				 * Deactivate expired memberships after $deactivate_expired_after_days.
+				 */
+				case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+				case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+				case MS_Model_Membership_Relationship::STATUS_CANCELED:
+					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
+					if( ! $expire->invert && $expire->days < $invoice_before_days ) {
+						$ms_relationship->create_invoice();
+					}
+					$comms_active = array(
+							$comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ],
+							$comms[ MS_Model_Communication::COMM_TYPE_FINISHED ],
+							$comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ],
+					);
+					foreach( $comms_active as $comm ) {
+						if( $comm->enabled ) {
+							$days = MS_Helper_Period::get_period_in_days( $comm->period );
+							if( ! $expire->invert && $days == $expire->days ) {
+								$comm->add_to_queue( $ms_relationship->id );
+							}
+						}
+					}
+					if( $expire->invert && $expire->days < $deactivate_expired_after_days ) {
+						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );	
+					}
+					break;
+				/** Deactivated status won't appear here, but it can be changed in get_membership_relationships $args.*/	
+				case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
+				default:
+					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
+					break;
+			}
+		}
+		foreach( $comms as $comm ) {
+			$comm->save();
+		}
+	}
 }
