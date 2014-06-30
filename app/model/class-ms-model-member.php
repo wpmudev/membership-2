@@ -22,12 +22,6 @@
 
 class MS_Model_Member extends MS_Model {
 
-	/**
-	 * @deprecated
-	 * @var unknown
-	 */
-	protected $membership_ids = array();
-	
 	protected $membership_relationships = array();
 	
 	protected $is_admin = false;

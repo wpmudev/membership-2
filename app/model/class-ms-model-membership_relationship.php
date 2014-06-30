@@ -466,15 +466,33 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Get last invoice for this member membership.
 	 * 
+	 * Create one invoice if not found.
+	 * 
 	 * @since 4.0
 	 * @param string $status The invoice status to search. 
 	 * @return MS_Model_Transaction The invoice if found, and null otherwise.
 	 */
 	public function get_last_invoice( $status = MS_Model_Transaction::STATUS_BILLED ) {
-		return apply_filters( 'ms_model_membership_relationship_get_last_invoice', MS_Model_Transaction::get_transaction( 
-				$this->user_id, 
-				$this->membership_id, 
-				$status 
+		$invoice = $this->get_invoice( $status );
+		if( empty( $invoice ) ) {
+			$invoice = $this->create_invoice();
+		}
+		
+		return $invoice;
+	}
+
+	/**
+	 * Get invoice for this member membership.
+	 *
+	 * @since 4.0
+	 * @param string $status The invoice status to search.
+	 * @return MS_Model_Transaction The invoice if found, and null otherwise.
+	 */
+	public function get_invoice( $status = MS_Model_Transaction::STATUS_BILLED ) {
+		return apply_filters( 'ms_model_membership_relationship_get_last_invoice', MS_Model_Transaction::get_transaction(
+				$this->user_id,
+				$this->membership_id,
+				$status
 		) );
 	}
 	
@@ -488,6 +506,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function create_invoice() {
 		
+		$transaction = null;
 		if( $gateway = $this->get_gateway() ) {
 			$membership = $this->get_membership();
 			$member = MS_Model_Member::load( $this->user_id );
@@ -513,7 +532,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$pricing = $this->get_pricing_info();
 			
 			/** Search for existing not paid invoice */
-			$transaction = $this->get_last_invoice( $transaction_status );
+			$transaction = $this->get_invoice( $transaction_status );
 			if( ! $transaction ) {
 				$transaction = MS_Model_Transaction::create_transaction(
 						$membership,
@@ -544,10 +563,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			if( 0 == $pricing['total'] ) {
 				$transaction->status = MS_Model_Transaction::STATUS_PAID;
 			}
+			if( $pricing['trial_period'] ) {
+				$transaction->trial_period = true;
+			}
 			$transaction->save();
 			
 			$this->process_transaction( $transaction );
 		}
+		return $transaction;
 		
 	}
 	

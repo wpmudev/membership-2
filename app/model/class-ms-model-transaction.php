@@ -82,6 +82,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $total;
 	
+	protected $trial_period;
+	
 	protected $timestamp;
 
 	/**

@@ -166,7 +166,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Create an invoice before sending payment to gateway.
 	 *
 	 * @since 4.0.0
-	 *
+	 * @deprecated
 	 * @access public
 	 */
 	public function generate_invoice() {
