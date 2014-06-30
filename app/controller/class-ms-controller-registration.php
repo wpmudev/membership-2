@@ -266,7 +266,7 @@ class MS_Controller_Registration extends MS_Controller {
 			 * Other gateways may hook to ms_model_gateway_handle_payment_return_{$gateway_id} action.
 			 */
 			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway_Free::load() );
-			$gateway->handle_return();
+			$gateway->process_free_memberships();
 			
 			switch( $this->get_signup_step() ) {
 				/**

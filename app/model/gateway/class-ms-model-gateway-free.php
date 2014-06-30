@@ -34,7 +34,14 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $active = true;
 	
-	public function handle_return() {
+	/**
+	 * Process free memberships.
+	 * 
+	 * Verify membership price and add it to the user if is free.
+	 * 
+	 * @since 4.0.0
+	 */
+	public function process_free_memberships() {
 		
 		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) &&
 			! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
