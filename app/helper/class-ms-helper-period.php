@@ -43,6 +43,8 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Add a period interval to a date.
 	 *
+	 * @since 4.0
+	 * 
 	 * @param int $period_unit The period unit to add.
 	 * @param string $period_type The period type to add.
 	 * @param string $start_date The start date to add to.
@@ -58,11 +60,14 @@ class MS_Helper_Period extends MS_Helper {
 		if ( $end_dt === false) {
 			throw new Exception( 'error add_interval' );
 		} 
-		return date( self::PERIOD_FORMAT, $end_dt ); 
+		return apply_filters( 'membership_helper_period_add_interval', date( self::PERIOD_FORMAT, $end_dt ) ); 
 	}
+	
 	/**
 	 * Subtract a period interval to a date.
 	 *
+	 * @since 4.0
+	 * 
 	 * @param int $period_unit The period unit to subtract.
 	 * @param string $period_type The period type to subtract.
 	 * @param string $start_date The start date to subtract to.
@@ -78,13 +83,15 @@ class MS_Helper_Period extends MS_Helper {
 		if ( $end_dt === false) {
 			throw new Exception( 'error subtract_interval' );
 		}
-		return date( self::PERIOD_FORMAT, $end_dt );
+		return apply_filters( 'membership_helper_period_subtract_interval', date( self::PERIOD_FORMAT, $end_dt ) );
 	}
 	
 	/**
 	 * Subtract dates.
 	 * 
 	 * Return (end_date - start_date) in period_type format
+	 *  
+	 * @since 4.0
 	 *  
 	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
 	 * @param Date $start_date The start date to subtractin the format yyyy-mm-dd
@@ -95,19 +102,65 @@ class MS_Helper_Period extends MS_Helper {
 		$start_date = new DateTime( $start_date );
 		$interval = $end_date->diff( $start_date );
 		
-		return $interval;
+		return apply_filters( 'ms_helper_period_get_periods', $interval );
 	}
 	
+	/**
+	 * Return current date.
+	 * 
+	 * @since 4.0
+	 *  
+	 * @return string The current date.
+	 */
 	public static function current_date() {
-		return apply_filters( 'membership_helper_period_current_date', date( self::PERIOD_FORMAT ) );
+		return apply_filters( 'membership_helper_period_subtract_dates', date( self::PERIOD_FORMAT ) );
 	}
 	
+	/**
+	 * Return the existing period types.
+	 *
+	 * @todo change method name to get_period_types
+	 * 
+	 * @since 4.0
+	 *
+	 * @return array The period types and descriptions.
+	 */
 	public static function get_periods() {
-		return array (
+		return apply_filters( 'ms_helper_period_get_periods', array (
 				self::PERIOD_TYPE_DAYS => __( self::PERIOD_TYPE_DAYS, MS_TEXT_DOMAIN ),
 				self::PERIOD_TYPE_WEEKS =>__( self::PERIOD_TYPE_WEEKS, MS_TEXT_DOMAIN ),
 				self::PERIOD_TYPE_MONTHS => __( self::PERIOD_TYPE_MONTHS, MS_TEXT_DOMAIN ),
 				self::PERIOD_TYPE_YEARS => __( self::PERIOD_TYPE_YEARS, MS_TEXT_DOMAIN ),
-		);
+		) );
+	}
+	
+	/**
+	 * Get period in days.
+	 * 
+	 * Convert period in week, month, years to days.
+	 * 
+	 * @since 4.0
+	 *  
+	 * @param $period The period to convert.
+	 *  
+	 * @return int The calculated days.
+	 */
+	public static function get_period_in_days( $period ) {
+		$days = 0;
+		switch( $period['period_type'] ) {
+			case self::PERIOD_TYPE_DAYS:
+				$days = $period['period_unit'];
+				break;
+			case self::PERIOD_TYPE_WEEKS:
+				$days = $period['period_unit'] * 7;
+				break;
+			case self::PERIOD_TYPE_MONTHS:
+				$days = $period['period_unit'] * 30;
+				break;
+			case self::PERIOD_TYPE_YEARS:
+				$days = $period['period_unit'] * 365;
+				break;
+		}
+		return apply_filters( 'ms_helper_period_get_period_in_days', $days, $period );
 	}
 }
