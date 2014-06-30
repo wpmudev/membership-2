@@ -116,54 +116,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * @access public
 	 */
-	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	public function purchase_button( $ms_relationship ) {
 		
-	}
-	
-	/**
-	 * Get pricing information.
-	 *
-	 * Calculates final price of the membership using coupons, pro-rate and trial information.
-	 * 
-	 * @deprecated
-	 * @since 4.0
-	 *
-	 * @access public
-	 */
-	public function get_pricing_data( $membership, $member, $move_from_id = 0 ) {
-		$pricing = array();
-		$pricing['currency'] = MS_Plugin::instance()->settings->currency;
-		$pricing['move_from_id'] = $move_from_id;
-		$pricing['discount'] = 0;
-		$pricing['pro_rate'] = 0;
-		$pricing['trial_price'] = $membership->trial_price;
-		$pricing['price'] = $membership->price;
-		
-		if( ! empty ( $move_from_id ) && $this->pro_rate ) {
-			$pricing['pro_rate'] = $member->membership_relationships[ $move_from_id ]->calculate_pro_rate();
-		}
-		
-		if( $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
-			$pricing['coupon_valid'] = $coupon->is_valid_coupon( $membership->id );
-			$pricing['discount'] =  $coupon->get_discount_value( $membership );
-		}
-		else {
-			$coupon = new MS_Model_Coupon();
-		}
-		$pricing['coupon'] = $coupon;
-		
-		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
-		if( $membership->trial_period_enabled ) {
-			$pricing['trial_price'] = $membership->trial_price - $pricing['discount'] - $pricing['pro_rate'];
-			$pricing['trial_price'] = max( $pricing['trial_price'], 0 );
-		}
-		else {
-			$pricing['price'] = $membership->price - $pricing['discount'] - $pricing['pro_rate'];
-			$pricing['price'] = max( $pricing['price'], 0 );
-		}
-		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
-		
-		return $pricing;
 	}
 	
 	/**
@@ -208,61 +162,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '/ms-payment-return/' . $this->id ), $this->id );
 	}
 	
-	public function build_custom( $user_id, $membership_id, $amount, $move_from_id = 0, $coupon_id = 0 ) {
-	
-		$custom = array(
-				time(),
-				$user_id,
-				$membership_id,
-				$move_from_id,
-				$coupon_id,
-				md5( 'MEMBERSHIP' . $amount ),
-		);
-	
-		return apply_filters( 'ms_model_gateway_build_custom', implode( ':', $custom ), $custom );
-	}
-	
-	/**
-	 * Form used to pre create transaction.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
-	 */
-	public function pre_create_transaction_form( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
-		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'membership_id' => array(
-						'id' => 'membership_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->id,
-				),
-				'move_from_id' => array(
-						'id' => 'move_from_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $move_from_id,
-				),
-				'coupon_id' => array(
-						'id' => 'coupon_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $coupon_id,
-				),
-		);
-		?>
-			<form action="<?php echo $this->get_return_url();?>" method="post" id="pre-create-transaction-form">
-				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
-				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['move_from_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['coupon_id'] ); ?>
-			</form>
-		<?php 
-	}
-	
 	/**
 	 * Create an invoice before sending payment to gateway.
 	 *
@@ -289,103 +188,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 			}
 		}
 		return false;
-	}
-	/**
-	 * Create transaction before sending to gateway.
-	 *
-	 * @deprecated
-	 * 
-	 * @since 4.0.0
-	 *
-	 * @access public
-	 */
-	public function pre_create_transaction() {
-		if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
-			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
-		
-			$membership_id = $_POST['membership_id'];
-			if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-				$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-				$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
-				$membership = MS_Model_Membership::load( $membership_id );
-				$member = MS_Model_Member::get_current_member();
-		
-				if( ! $transaction = MS_Model_Transaction::get_transaction( $member->id, $membership_id, MS_Model_Transaction::STATUS_BILLED ) ) {
-					$transaction = $this->add_transaction( array(
-							'membership' => $membership,
-							'member' => $member,
-							'status' => MS_Model_Transaction::STATUS_BILLED,
-							'move_from_id' => $move_from_id,
-							'coupon_id' => $coupon_id,
-					) );
-				}
-				return $transaction->id;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Add transaction.
-	 * 
-	 * Create transaction using membership details.
-	 *
-	 * @deprecated
-	 * @since 4.0.0
-	 *
-	 * @access public
-	 */
-	public function add_transaction( $args ) {
-		
-		$defaults = array(
-				'membership' => null,
-				'member' => null,
-				'status' => MS_Model_Transaction::STATUS_BILLED,
-				'move_from_id' => 0,
-				'coupon_id' => 0,
-				'external_id' => null,
-				'notes' => null,
-				'amount' => -1,
-				'due_date' => MS_Helper_Period::current_date(),
-		);
-		extract( wp_parse_args( $args, $defaults ) );
-		
-		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
-			return;
-		}
-		$pricing = $this->get_pricing_data( $membership, $member, $move_from_id, $coupon_id );
-		
-		$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $this->id, $status );
-		if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $member->membership_relationships[ $move_from_id ] ) ) {
-			$ms_relationship = $member->membership_relationships[ $move_from_id ];
-			$ms_relationship->move_to_id = $membership->id;
-			$ms_relationship->save();
-			if( $this->pro_rate ) {
-				$transaction->discount = $pricing['pro_rate'];
-				$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pricing['pro_rate'] );
-			}
-		}
-		if( ! empty( $coupon_id ) ) {
-			$coupon = $pricing['coupon'];
-			$coupon->remove_coupon_application( $member->id, $membership->id );
-			$coupon->used++;
-			$coupon->save();
-			$transaction->discount += $pricing['discount']; 
-			$notes .= sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $transaction->currency, $pricing['discount'] );
-		}
-		$transaction->external_id = $external_id;
-		$transaction->notes = $notes;
-		$transaction->due_date = $due_date;
-		if( $amount >= 0 ) {
-			$transaction->amount = $amount;
-		}
-		else {
-			$transaction->amount = $pricing['total'];
-		}
-		$transaction->process_transaction( $status, true );
-
-		$transaction->save();
-		return $transaction;
 	}
 	
 	/**

@@ -260,6 +260,7 @@ class MS_Controller_Registration extends MS_Controller {
 	public function membership_signup() {
 
 		if( MS_Model_Member::is_logged_user() && ! empty( $_GET['membership'] ) && MS_Model_Membership::is_valid_membership( $_GET['membership'] ) ) {
+			
 			/**
 			 * Allow Free gateway verify if is a free membership ( price = 0 ).
 			 * Other gateways may hook to ms_model_gateway_handle_payment_return_{$gateway_id} action.
@@ -284,15 +285,12 @@ class MS_Controller_Registration extends MS_Controller {
 				 * Process payment.
 				 */
 				case 'process_purchase':
-					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
-						$member = MS_Model_Member::get_current_member();
-						$membership = MS_Model_Membership::load( $_POST['membership_id'] );
-						$move_from_id = $_POST['move_from_id'];
-						$coupon_id = $_POST['coupon_id'];
+					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) ) {
+						$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 						
-						$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $_POST['gateway'] ) );
-						$gateway->process_purchase( $member, $membership, $move_from_id, $coupon_id );
-// 						$gateway->add_action( 'the_content', 'process_purchase', 1 );
+						$gateway_id = $_POST['gateway_id'];
+						$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
+						$gateway->process_purchase( $ms_relationship );
 					}
 					break;
 			}
@@ -314,6 +312,7 @@ class MS_Controller_Registration extends MS_Controller {
 		}
 		return $step;
 	}
+	
 	/**
 	 * Handles register_user POST action.
 	 *
@@ -324,9 +323,6 @@ class MS_Controller_Registration extends MS_Controller {
 		if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
 			return;
 		}
-		
-		// MS_Helper_Debug::log ( 'About to register NEW user.' );
-		// MS_Helper_Debug::log ( $_POST );
 
 		try {
 			$user = new MS_Model_Member();
@@ -387,6 +383,52 @@ class MS_Controller_Registration extends MS_Controller {
 	}
 
 	/**
+	 * Render membership payment information.
+	 *
+	 * @since 4.0.0
+	 */
+	public function payment_table() {
+		if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
+			$membership_id = $_GET['membership'];
+			$membership = MS_Model_Membership::load( $membership_id );
+			$member = MS_Model_Member::get_current_member();
+			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
+				
+			if( ! empty( $_POST['coupon_code'] ) ) {
+				$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
+				if( ! empty( $_POST['remove_coupon_code'] ) ) {
+					$coupon->remove_coupon_application( $member->id, $membership_id );
+					$coupon = new MS_Model_Coupon();
+				}
+				elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
+					$coupon->save_coupon_application( $membership );
+				}
+			}
+				
+			if( $membership->gateway_id ) {
+				$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
+			}
+			else {
+				$gateways = MS_Model_Gateway::get_gateways( true );
+				$gateway = array_pop( $gateways );
+			}
+	
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
+				
+			$data = $ms_relationship->get_pricing_info();
+			$data['membership'] = $membership;
+			$data['member'] = $member;
+			$data['gateway'] = $gateway;
+			$data['ms_relationship'] = $ms_relationship;
+				
+			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
+			$view->data = $data;
+	
+			echo $view->to_html();
+		}
+	}
+	
+	/**
 	 * Handles gateway extra form to commit payments.
 	 * 
 	 * @since 4.0.0
@@ -418,52 +460,6 @@ class MS_Controller_Registration extends MS_Controller {
 		
 	}
 	
-	/**
-	 * Render membership payment information.
-	 *
-	 * @since 4.0.0
-	 */	
-	public function payment_table() {
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
-			$membership_id = $_GET['membership'];
-			$membership = MS_Model_Membership::load( $membership_id );
-			$member = MS_Model_Member::get_current_member();
-			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
-			
-			if( ! empty( $_POST['coupon_code'] ) ) {
-				$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
-				if( ! empty( $_POST['remove_coupon_code'] ) ) {
-					$coupon->remove_coupon_application( $member->id, $membership_id );
-					$coupon = new MS_Model_Coupon();
-				}
-				elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
-					$coupon->save_coupon_application( $membership );
-				}
-			}
-			
-			if( $membership->gateway_id ) {
-				$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
-			}
-			else {
-				$gateways = MS_Model_Gateway::get_gateways( true );
-				$gateway = array_pop( $gateways );
-			}
-
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
-			
-			$data = $ms_relationship->get_pricing_info();
-			$data['membership'] = $membership;
-			$data['member'] = $member;
-			$data['gateway'] = $gateway;
-			$data['ms_relationship'] = $ms_relationship;
-					  
-			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
-			$view->data = $data;
-
-			echo $view->to_html();
-		}
-	}
-
 	/**
 	 * Pre create transaction.
 	 *

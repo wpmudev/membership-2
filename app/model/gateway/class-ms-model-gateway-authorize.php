@@ -59,27 +59,17 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $payment_result;
 	
-	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	public function purchase_button( $ms_relationship ) {
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->id,
 				),
-				'membership_id' => array(
-						'id' => 'membership_id',
+				'ms_relationship_id' => array(
+						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->id,
-				),
-				'move_from_id' => array(
-						'id' => 'move_from_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $move_from_id,
-				),
-				'coupon_id' => array(
-						'id' => 'coupon_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $coupon_id,
+						'value' => $ms_relationship->id,
 				),
 				'step' => array(
 						'id' => 'step',
@@ -106,9 +96,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			<form action="<?php echo $actionurl; ?>" method="post">
 				<?php wp_nonce_field( "{$this->id}_{$membership->id}" ); ?>
 				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['membership_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['move_from_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['coupon_id'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['step'] ); ?>
 				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
 			</form>
