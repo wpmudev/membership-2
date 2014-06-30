@@ -72,6 +72,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	protected $comm_vars;
 	
+	protected $queue = array();
+	
 	public function __construct() {
 		
 		$this->comm_vars = array(
@@ -219,6 +221,12 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	public function communication_process() {
 
+	}
+	
+	public function add_to_queue( $ms_relationship_id ) {
+		if( ! in_array( $ms_relationship_id, $this->queue ) ) {
+			$this->queue[] = $ms_relationship_id;
+		}	
 	}
 	
 	function send_message( $user_id, $membership_id = null, $transaction_id = null ) {
