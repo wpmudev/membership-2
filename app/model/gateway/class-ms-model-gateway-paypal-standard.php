@@ -125,14 +125,14 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			);
 		}
 		
-		$invoice = $ms_relationship->get_last_invoice();
-		
+		$invoice = $ms_relationship->create_invoice();
+
 		/** Trial period */
 		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
 			$fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => ( $invoice['trial_period'] ) ? $invoice['amount'] : $membership->trial_price,
+					'value' => ( $invoice->trial_period ) ? $invoice->total : $membership->trial_price,
 			);
 			$fields['p1'] = array(
 					'id' => 'p1',
@@ -150,7 +150,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		$fields['a3'] = array(
 				'id' => 'a3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => ( ! $invoice['trial_period'] ) ? $invoice['amount'] : $membership->price,
+				'value' => ( ! $invoice->trial_period ) ? $invoice->total : $membership->price,
 		);
 		
 		$recurring = 0;
@@ -386,9 +386,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			if( ! empty( $status ) ) {
 
 				$transaction = $ms_relationship->get_last_invoice();
-				if( empty( $transaction->id ) ) {
-					$transaction = $ms_relationship->create_invoice();
-				}
 				
 				$transaction->status = $status;
 				if( ! empty( $notes ) ) {
