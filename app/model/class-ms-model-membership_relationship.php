@@ -521,11 +521,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$due_date = MS_Helper_Period::current_date();
 					break;
 				case self::STATUS_TRIAL:
-					$due_data = $this->trial_expire_date;
+					$due_date = $this->trial_expire_date;
 					break;
 				case self::STATUS_ACTIVE:
 				case self::STATUS_CANCELED:
-					$due_data = $this->expire_date;
+					$due_date = $this->expire_date;
 					break;
 			}
 			
