@@ -287,7 +287,7 @@ class MS_Controller_Registration extends MS_Controller {
 					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) ) {
 						$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 						
-						$gateway_id = $_POST['gateway_id'];
+						$gateway_id = $_POST['gateway'];
 						$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
 						$gateway->process_purchase( $ms_relationship );
 					}
@@ -424,7 +424,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
 
 			$data['coupon'] = $coupon;
-			$invoice = $ms_relationship->create_invoice( false, false );
+			$invoice = $ms_relationship->create_invoice( 1 );
 			$data['invoice'] = $invoice;
 			if( $invoice->coupon_id ) {
 				$data['coupon'] = MS_Model_Coupon::load( $invoice->coupon_id );
@@ -451,17 +451,16 @@ class MS_Controller_Registration extends MS_Controller {
 		
 		$data = array();
 		
-		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
+		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) ) {
 			$data['gateway'] = $_POST['gateway'];
-			$data['membership_id'] = $_POST['membership_id'];
-			$data['move_from_id'] = $_POST['move_from_id'];
-			$data['coupon_id'] = $_POST['coupon_id'];
+			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
+			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 			switch( $_POST['gateway'] ) {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					$view = apply_filters( 'ms_view_gateway_authorize', new MS_View_Gateway_Authorize() );
 					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Model_Gateway_Authorize::load() );
 					$data['countries'] = $gateway->get_country_codes();
-					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $data['membership_id'] );
+					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $ms_relationship->membership_id );
 					break;
 				default:
 					break;
