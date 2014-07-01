@@ -84,6 +84,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $trial_period;
 	
+	protected $pro_rate;
+	
 	protected $timestamp;
 
 	/**
@@ -254,7 +256,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$transaction->status = $status;
 		$transaction->user_id = $member->id;
 		$transaction->name = apply_filters( 'ms_model_transaction_name', sprintf( '%s %s - %s' , __( "Invoice for" ), $membership->name, $member->username ) );
-		$transaction->description = apply_filters( 'ms_model_transaction_description', sprintf( '%s %s - %s' , __( "Invoice for" ), $membership->name, $member->username ) );
+		$transaction->description = apply_filters( 'ms_model_transaction_description', $membership->get_payment_description() );
 		$transaction->timestamp = time();
 		$transaction->tax_name = $tax['tax_name'];
 		$transaction->tax_rate = $tax['tax_rate'];
@@ -276,7 +278,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'total':
-					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount;
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount - $this->pro_rate;
 					return $this->total; 
 					break;
 				case 'invoice':
@@ -322,6 +324,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'amount':
 				case 'tax_rate':
 				case 'discount':
+				case 'pro_rate':
 					$this->$property = floatval( $value );
 					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount;
 					break;
