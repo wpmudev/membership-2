@@ -155,7 +155,7 @@ class MS_Model_Plugin extends MS_Model {
 			 */
 			foreach( $rules as $rule ) {
 				$has_access = ( $has_access || $rule->has_access() );
-				
+
 				if( $has_access ) {
 					break;
 				}
@@ -182,7 +182,7 @@ class MS_Model_Plugin extends MS_Model {
 		if( is_home() || is_front_page() ) {
 			$has_access = true;
 		}
-		
+				
 		if( ! $has_access ) {
 			$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
 			
@@ -194,9 +194,15 @@ class MS_Model_Plugin extends MS_Model {
 				$page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 			}
 			
+			/** Don't redirect the protection page. */
+			$on_protection_page = $url == get_permalink();
+			$on_protection_page = $on_protection_page ? $on_protection_page : $url == $page_url;
+			
 			$url .= add_query_arg( array( 'redirect_to' =>  $page_url ), $url );
 
-			wp_safe_redirect( $url );
+			if ( ! $on_protection_page ) {
+				wp_safe_redirect( $url );				
+			}
 		}
 
 	}
