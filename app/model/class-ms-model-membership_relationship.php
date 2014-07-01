@@ -500,17 +500,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Create invoice.
 	 * 
 	 * Create a new invoice using the membership information.
-	 * Reutilize an existing not paid invoice, updating info.
 	 *  
 	 * @since 4.0
+	 * @param optional int $is_trial_period For trial period.  
 	 */
-	public function create_invoice() {
+	public function create_invoice( $is_trial_period = false ) {
 		
-		$transaction = null;
+		$invoice = null;
 		if( $gateway = $this->get_gateway() ) {
 			$membership = $this->get_membership();
 			$member = MS_Model_Member::load( $this->user_id );
-			$transaction_status = MS_Model_Transaction::STATUS_BILLED;
+			$invoice_status = MS_Model_Transaction::STATUS_BILLED;
 			$notes = null;
 			
 			switch( $this->status ) {
@@ -529,48 +529,56 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					break;
 			}
 			
-			$pricing = $this->get_pricing_info();
-			
-			/** Search for existing not paid invoice */
-			$transaction = $this->get_invoice( $transaction_status );
-			if( ! $transaction ) {
-				$transaction = MS_Model_Transaction::create_transaction(
-						$membership,
-						$member,
-						$this->gateway_id,
-						$transaction_status
-				);
-			}
+			$invoice = MS_Model_Transaction::create_transaction(
+					$membership,
+					$member,
+					$this->gateway_id,
+					$invoice_status
+			);
 			
 			/** Update invoice info.*/
-			$transaction->discount = 0;
-			if(  ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $this->move_from_id ) ) {
-				if( $pricing['pro_rate'] ) {
-					$transaction->discount = $pricing['pro_rate'];
-					$notes .= sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $transaction->currency, $pricing['pro_rate'] );
-				}
+			$invoice->discount = 0;
+			if( ! empty ( $this->move_from_id ) && ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $gateway ) && $gateway->pro_rate ) {
+					$move_from = MS_Model_Membership_Relationship::load( $this->move_from_id );
+					
+					/** Status which pro rate is applicable */
+					$ms_in_status = apply_filters( 'ms_model_membership_relationship_create_invoice_ms_in_status', array( 
+							MS_Model_Membership_Relationship::STATUS_TRIAL,
+							MS_Model_Membership_Relationship::STATUS_ACTIVE,
+							MS_Model_Membership_Relationship::STATUS_CANCELED,
+					) );
+					if( $move_from->id > 0 && in_array( $move_from->status, $ms_in_status ) ) {
+						$pro_rate = $move_from->calculate_pro_rate();
+						$invoice->pro_rate = $pro_rate;
+						$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
+					}
 			}
-			if( ! empty( $pricing['coupon_valid'] ) ) {
-				$coupon = $pricing['coupon'];
-				$transaction->coupon_id = $coupon->id;
-				$transaction->discount += $pricing['discount'];
-				$notes .= sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $transaction->currency, $pricing['discount'] );
+			if( $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
+				$invoice->coupon_id = $coupon->id;
+				$discount = $coupon->get_discount_value( $membership );
+				$invoice->discount = $discount; 
+				$notes[] = sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $invoice->currency, $discount );
 			}
-			$transaction->notes = $notes;
-			$transaction->due_date = $due_date;
-			$transaction->amount = $pricing['amount'];
+			$invoice->notes = $notes;
+			$invoice->due_date = $due_date;
 			
-			if( 0 == $pricing['total'] ) {
-				$transaction->status = MS_Model_Transaction::STATUS_PAID;
+			if( $is_trial_period ) {
+				$invoice->trial_period = true;
+				$invoice->amount = $membership->trial_price;
 			}
-			if( $pricing['trial_period'] ) {
-				$transaction->trial_period = true;
+			else {
+				$invoice->trial_period = false;
+				$invoice->amount = $membership->price;
 			}
-			$transaction->save();
+			if( 0 == $invoice->total ) {
+				$invoice->status = MS_Model_Transaction::STATUS_PAID;
+			}
+			$invoice->save();
 			
-			$this->process_transaction( $transaction );
+			$this->process_transaction( $invoice );
 		}
-		return $transaction;
+		
+		return apply_filters( 'ms_model_membership_relationship_create_invoice_object', $invoice );
 		
 	}
 	
@@ -581,6 +589,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 4.0
 	 *
+	 * @deprecated
 	 * @access public
 	 */
 	public function get_pricing_info() {
@@ -611,14 +620,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
 
-		if( self::STATUS_PENDING == $this->status && $membership->trial_period_enabled ) {
-			$pricing['amount'] = $membership->trial_price;
-			$pricing['trial_period'] = true;
-		}
-		else {
-			$pricing['amount'] = $membership->price;
-			$pricing['trial_period'] = false;
-		}
 		$pricing['total'] = $price - $pricing['discount'] - $pricing['pro_rate'];
 	
 		return $pricing;
