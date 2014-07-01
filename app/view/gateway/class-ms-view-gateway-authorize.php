@@ -75,20 +75,10 @@ class MS_View_Gateway_Authorize extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['gateway'],
 				),
-				'membership_id' => array(
-						'id' => 'membership_id',
+				'ms_relationship_id' => array(
+						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->data['membership_id'],
-				),
-				'move_from_id' => array(
-						'id' => 'move_from_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->data['move_from_id'],
-				),
-				'coupon_id' => array(
-						'id' => 'coupon_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->data['coupon_id'],
+						'value' => $this->data['ms_relationship_id'],
 				),
 				'step' => array(
 						'id' => 'step',
