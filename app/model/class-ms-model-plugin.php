@@ -66,7 +66,7 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function init_member() {
 
-		$this->member = ! empty( MS_Model_Member::get_current_member() ) ? MS_Model_Member::get_current_member() : new MS_Model_Member();
+		$this->member = MS_Model_Member::get_current_member();
 		$this->check_member_status();
 		
 		$simulate = MS_Model_Simulate::load();

@@ -56,7 +56,7 @@ class MS_Model_Member extends MS_Model {
 	// Note: Cannot override parent method with additional parameters.
 	// To handle this load, will call load_members, where 2nd parameter is required call load_members directly
 	public static function load( $model_id = 0 ) {
-		MS_Model_Member::load_member( $model_id, null );
+		return MS_Model_Member::load_member( $model_id, null );
 	}		
 			
 	public static function load_member( $user_id = 0, $name = null ) {
