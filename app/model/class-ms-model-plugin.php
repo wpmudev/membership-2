@@ -319,7 +319,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * Check membership status.
 	 *
 	 * Execute actions when time/period condition are met.
-	 * E.g. change membership status, add communication to queue.
+	 * E.g. change membership status, add communication to queue, create invoices.
 	 *
 	 * @since 4.0.0
 	 *
@@ -364,6 +364,7 @@ class MS_Model_Plugin extends MS_Model {
 				/** 
 				 * Send period end communication. 
 				 * Deactivate expired memberships after $deactivate_expired_after_days.
+				 * Create invoice.
 				 */
 				case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 				case MS_Model_Membership_Relationship::STATUS_EXPIRED:

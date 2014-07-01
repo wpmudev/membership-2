@@ -502,9 +502,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Create a new invoice using the membership information.
 	 *  
 	 * @since 4.0
-	 * @param optional int $is_trial_period For trial period.  
+	 * @param optional int $is_trial_period For trial period.
+	 * @param optional int $update_existing Update an existing invoice instead of creating a new one.
 	 */
-	public function create_invoice( $is_trial_period = false ) {
+	public function create_invoice( $is_trial_period = false, $update_existing = true ) {
 		
 		$invoice = null;
 		if( $gateway = $this->get_gateway() ) {
@@ -529,13 +530,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					break;
 			}
 			
-			$invoice = MS_Model_Transaction::create_transaction(
-					$membership,
-					$member,
-					$this->gateway_id,
-					$invoice_status
-			);
-			
+			$invoice = $this->get_invoice();
+			if( ! $update_existing || empty( $invoice ) ) {
+				$invoice = MS_Model_Transaction::create_transaction(
+						$membership,
+						$member,
+						$this->gateway_id,
+						$invoice_status
+				);
+			}			
 			/** Update invoice info.*/
 			$invoice->discount = 0;
 			if( ! empty ( $this->move_from_id ) && ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $gateway ) && $gateway->pro_rate ) {
@@ -574,8 +577,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$invoice->status = MS_Model_Transaction::STATUS_PAID;
 			}
 			$invoice->save();
-			
-			$this->process_transaction( $invoice );
 		}
 		
 		return apply_filters( 'ms_model_membership_relationship_create_invoice_object', $invoice );

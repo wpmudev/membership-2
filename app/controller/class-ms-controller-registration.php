@@ -392,7 +392,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$membership = MS_Model_Membership::load( $membership_id );
 			$member = MS_Model_Member::get_current_member();
 			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
-				
+
 			if( ! empty( $_POST['coupon_code'] ) ) {
 				$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
 				if( ! empty( $_POST['remove_coupon_code'] ) ) {
@@ -400,8 +400,17 @@ class MS_Controller_Registration extends MS_Controller {
 					$coupon = new MS_Model_Coupon();
 				}
 				elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
-					$coupon->save_coupon_application( $membership );
+					if( $coupon->is_valid_coupon() ) {
+						$coupon->save_coupon_application( $membership );
+						$data['coupon_valid'] = true;
+					}
+					else {
+						$data['coupon_valid'] = false;
+					}
 				}
+			}
+			else {
+				$coupon = new MS_Model_Coupon();
 			}
 				
 			if( $membership->gateway_id ) {
@@ -413,8 +422,14 @@ class MS_Controller_Registration extends MS_Controller {
 			}
 	
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
+
+			$data['coupon'] = $coupon;
+			$invoice = $ms_relationship->create_invoice( false, false );
+			$data['invoice'] = $invoice;
+			if( $invoice->coupon_id ) {
+				$data['coupon'] = MS_Model_Coupon::load( $invoice->coupon_id );
+			}
 				
-			$data = $ms_relationship->get_pricing_info();
 			$data['membership'] = $membership;
 			$data['member'] = $member;
 			$data['gateway'] = $gateway;

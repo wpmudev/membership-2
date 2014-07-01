@@ -6,7 +6,7 @@ class MS_View_Registration_Payment extends MS_View {
 	
 	public function to_html() {
 		$membership = $this->data['membership'];
-		
+		$invoice = $this->data['invoice'];
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
@@ -40,7 +40,7 @@ class MS_View_Registration_Payment extends MS_View {
 					<td class='ms-details-column'>
 						<?php
 							if ( $membership->price > 0 ) {
-								echo $this->data['currency'] . ' '. number_format( $membership->price, 2 );
+								echo $invoice->currency . ' '. number_format( $membership->price, 2 );
 							} 
 							else {
 								echo __( 'Free', MS_TEXT_DOMAIN );
@@ -56,7 +56,7 @@ class MS_View_Registration_Payment extends MS_View {
 						<td class='ms-price-column'>
 							<?php 
 								if ( $membership->trial_price > 0 ) {
-									echo $this->data['currency'] . ' '. number_format( $membership->trial_price, 2 );
+									echo $invoice->currency . ' '. number_format( $membership->trial_price, 2 );
 								} 
 								else {
 									echo __( 'Free', MS_TEXT_DOMAIN );
@@ -65,23 +65,23 @@ class MS_View_Registration_Payment extends MS_View {
 						</td>
 					</tr>
 				<?php endif;?>
-				<?php if( ! empty( $this->data['discount'] ) ): ?>
+				<?php if( $invoice->discount ): ?>
 					<tr>
 						<td class='ms-title-column'>
 							<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
 						</td>
 						<td class='ms-price-column'>
-							<?php echo sprintf( '%s -%s', $this->data['currency'], number_format( $this->data['discount'], 2 ) ); ?>
+							<?php echo sprintf( '%s -%s', $invoice->currency, number_format( $invoice->discount, 2 ) ); ?>
 						</td>
 					</tr>
 				<?php endif;?>
-				<?php if( ! empty( $this->data['pro_rate'] ) ): ?>
+				<?php if( ! empty( $invoice->pro_rate ) ): ?>
 					<tr>
 						<td class='ms-title-column'>
 							<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
 						</td>
 						<td class='ms-price-column'>
-							<?php echo sprintf( '%s -%s', $this->data['currency'], number_format( $this->data['pro_rate'], 2 ) ); ?>
+							<?php echo sprintf( '%s -%s', $invoice->currency, number_format( $invoice->pro_rate, 2 ) ); ?>
 						</td>
 					</tr>
 				<?php endif;?>
@@ -90,7 +90,7 @@ class MS_View_Registration_Payment extends MS_View {
 						<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
 					</td>
 					<td class='ms-price-column ms-total'>
-						<?php echo $this->data['currency'] . ' '. number_format( $this->data['total'], 2 ); ?>
+						<?php echo $invoice->currency . ' '. number_format( $invoice->total, 2 ); ?>
 					</td>
 				</tr>
 				<tr>
@@ -102,7 +102,6 @@ class MS_View_Registration_Payment extends MS_View {
 					<td class='ms-buy-now-column' colspan='2' >
 						<?php
 							$this->data['gateway']->purchase_button($this->data['ms_relationship'] );
-// 							do_action( 'ms_view_registration_payment_form', $membership, $this->data['member'], $this->data['move_from_id'], $this->data['coupon']->id );
 						?>
 					</td>
 				</tr>
@@ -154,7 +153,7 @@ class MS_View_Registration_Payment extends MS_View {
 			<div class="membership_coupon_form couponbar">
 				<form method="post">
 					<?php if( $coupon_message ):?>
-						<p class="ms-alert-box <?php echo ( ! empty ( $this->data['coupon_valid'] ) ? 'ms-alert-success' : 'ms-alert-error' )?>">
+						<p class="ms-alert-box <?php echo ( ! empty ( $this->data['coupon_valid'] ) ? 'ms-alert-success' : 'ms-alert-error' ); ?>">
 							<?php echo $coupon_message; ?>
 						</p>
 					<?php endif;?>
