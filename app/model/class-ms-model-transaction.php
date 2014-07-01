@@ -50,6 +50,8 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 */
 	protected $external_id;
 	
+	protected $external_info;
+	
 	protected $gateway_id;
 	
 	protected $membership_id;
@@ -72,7 +74,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $notes;
 		
-	protected $invoice;
+	protected $invoice_number;
 	
 	protected $taxable;
 	
@@ -166,7 +168,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * @param string $status The status of the transaction.
 	 * @return MS_Model_Transaction The found transaction or null if not found.
 	 */
-	public static function get_transaction( $user_id, $membership_id, $status = null ) {
+	public static function get_transaction( $user_id, $membership_id, $status = null, $invoice_number = null ) {
 		$args = array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
@@ -183,6 +185,12 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 			$args['meta_query']['status'] = array(
 					'key'     => 'status',
 					'value'   => $status,
+			);
+		}
+		if( ! empty( $invoice_number ) ) {
+			$args['meta_query']['invoice_number'] = array(
+					'key'     => 'invoice_number',
+					'value'   => $invoice_number,
 			);
 		}
 		$query = new WP_Query( $args );
@@ -265,6 +273,9 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		return $transaction;
 	}
 	
+	public function add_notes( $notes ) {
+		$this->notes[] = $notes;
+	}
 	/**
 	 * Returns property associated with the render.
 	 *
@@ -307,8 +318,14 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'currency':
 				case 'notes':
 				case 'tax_name':
-				case 'notes':
 					$this->$property = sanitize_text_field( $value );
+				case 'notes':
+					if( is_array( $value ) ) {
+						$this->notes = array_map( 'sanitize_text_field', $value );
+					}
+					else {
+						$this->notes = array( sanitize_text_field( $value ) ); 
+					}
 					break;
 				case 'status':
 					if( array_key_exists( $value, self::get_status() ) ) {
