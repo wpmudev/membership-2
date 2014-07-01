@@ -112,9 +112,8 @@ class MS_Model extends MS_Hooker {
 	 * Load the model data.
 	 *
 	 * @since 4.0.0
-	 * @param int $model_id ID of the model to load.
 	 */		
-	public static function load( $model_id ) {
+	public static function load( $model_id = false ) {
 		throw new Exception ("Method to be implemented in child class");
 	}
 

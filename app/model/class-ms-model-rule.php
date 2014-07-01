@@ -75,8 +75,8 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content() {
-		return false;
+	public function protect_content( $membership_relationship = false ) {
+
 	}
 	/**
 	 * Verify access to the current asset.

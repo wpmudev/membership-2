@@ -32,7 +32,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content( $membership_relationship ) {
+	public function protect_content( $membership_relationship = false ) {
 		$this->start_date = $membership_relationship->start_date;
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 		$this->add_filter( 'get_terms', 'protect_categories', 99, 3 );

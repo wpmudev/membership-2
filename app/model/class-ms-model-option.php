@@ -45,7 +45,7 @@ class MS_Model_Option extends MS_Model {
 		$this->after_save();
 	}
 	
-	public static function load() {
+	public static function load( $model_id = false ) {
 // 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
 		$settings = get_option( static::$CLASS_NAME );
 		

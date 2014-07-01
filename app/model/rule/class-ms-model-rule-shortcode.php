@@ -35,7 +35,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * 
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.
 	 */
-	public function protect_content( $membership_relationship ) {
+	public function protect_content( $membership_relationship = false ) {
 		global $shortcode_tags;
 		
 		$this->membership_id = $membership_relationship->membership_id;

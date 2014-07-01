@@ -195,7 +195,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
-	public static function load( $model_id ) {
+	public static function load( $model_id = false ) {
 		$model = parent::load( $model_id );
 		
 		if( empty( $model->rules ) ) {

@@ -37,7 +37,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	
 	/**
 	 * Verify access to the current url.
-
+     *
 	 * @since 4.0
 	 *
 	 * @access public

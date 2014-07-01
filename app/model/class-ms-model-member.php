@@ -50,10 +50,16 @@ class MS_Model_Member extends MS_Model {
 	}
 	
 	public static function get_current_member() {
-		return self::load( get_current_user_id() );
+		return MS_Model_Member::load( get_current_user_id() );
 	}
 	
-	public static function load( $user_id = 0, $name = null ) {
+	// Note: Cannot override parent method with additional parameters.
+	// To handle this load, will call load_members, where 2nd parameter is required call load_members directly
+	public static function load( $model_id = 0 ) {
+		MS_Model_Member::load_member( $model_id, null );
+	}		
+			
+	public static function load_member( $user_id = 0, $name = null ) {
 		$member = new MS_Model_Member();
 		
 		$wp_user = new WP_User( $user_id, $name );
@@ -427,7 +433,7 @@ class MS_Model_Member extends MS_Model {
 		$this->transactions = array();
 	}
 	
-	public function is_logged_user() {
+	public static function is_logged_user() {
 		return is_user_logged_in();
 	}
 	

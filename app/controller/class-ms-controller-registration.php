@@ -238,10 +238,10 @@ class MS_Controller_Registration extends MS_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 				$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
 			}
+			
 			//Add custom protection message
-			$protection_message = MS_Plugin::instance()->settings->protection_message['content'];
-			if( ! empty( $protection_message ) ) {
-				$content .= $protection_message;
+			if( ! empty( MS_Plugin::instance()->settings->protection_message['content'] ) ) {
+				$content .= MS_Plugin::instance()->settings->protection_message['content'];
 			}
 				
 		}

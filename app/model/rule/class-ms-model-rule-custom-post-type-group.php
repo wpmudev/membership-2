@@ -30,7 +30,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content() {
+	public function protect_content( $membership_relationship = false ) {
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 	}
 	

@@ -79,7 +79,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 *
 	 * @access public
 	 */
-	public function protect_content() {
+	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'the_content', 'protect_download_content' );
 		$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
 	}

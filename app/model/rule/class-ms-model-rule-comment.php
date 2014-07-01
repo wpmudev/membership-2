@@ -30,7 +30,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content() {
+	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'the_content', 'check_special_page' );
 		
 		if( ! empty ( $this->rule_value ) ) {

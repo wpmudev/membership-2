@@ -40,7 +40,7 @@ class MS_Model_Transient extends MS_Model {
 			set_transient( static::$CLASS_NAME, $settings );
 	}
 	
-	public static function load() {
+	public static function load( $model_id = false ) {
 // 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
 		$settings = get_transient( static::$CLASS_NAME );
 		

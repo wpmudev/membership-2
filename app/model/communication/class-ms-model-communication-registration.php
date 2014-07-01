@@ -50,8 +50,9 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 				'%taxname%' => 'Tax name',
 				'%taxamount%' => 'Tax amount',
 		);
-	
-		$this->add_action( 'ms_communications_process_'. $this->type, 'communication_process', 10, 3 );
+
+		$this->add_action( 'ms_communications_process_'. $this->type, 'communication_process_registration', 10, 3 );
+
 	}
 	public function get_description() {
 		return __( 'Sent when a member completes the registration for a  membership. For the first one, the terms of the membership are to be presented and the invoice will also be included in this email', MS_TEXT_DOMAIN );
@@ -86,7 +87,12 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );
 	}
 	
-	public function communication_process( $user_id, $membership_id, $transaction_id ) {
+	// Cant override parent method with different parameters... see below comment.
+	public function communication_process() {
+	}
+		
+	// Need to choose whether this is just a standard we adopt or make it different
+	public function communication_process_registration( $user_id, $membership_id, $transaction_id ) {
 		$this->send_message( $user_id, $membership_id, $transaction_id );
 	}
 }

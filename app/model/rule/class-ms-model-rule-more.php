@@ -32,7 +32,7 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content() {
+	public function protect_content( $membership_relationship = false ) {
 		$this->protection_message = ! empty( MS_Plugin::instance()->settings->protection_message['more_tag'] ) 
 			? MS_Plugin::instance()->settings->protection_message['more_tag'] 
 			: '';

@@ -32,7 +32,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 */
-	public function protect_content( $membership_relationship ) {
+	public function protect_content( $membership_relationship = false ) {
 		$this->start_date = $membership_relationship->start_date;
 		$this->add_filter( 'get_pages', 'protect_pages', 99 );
 	}
@@ -61,6 +61,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				
 		}
 		return $pages;
+		MS_Helper_Debug::log($pages);
 	}
 	
 	/**

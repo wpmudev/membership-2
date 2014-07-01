@@ -65,13 +65,14 @@ class MS_Model_Plugin extends MS_Model {
 	 * @access public
 	 */
 	public function init_member() {
-		$this->member = MS_Model_Member::get_current_member();
+
+		$this->member = ! empty( MS_Model_Member::get_current_member() ) ? MS_Model_Member::get_current_member() : new MS_Model_Member();
 		$this->check_member_status();
 		
 		$simulate = MS_Model_Simulate::load();
 
 		/** Admin user simulating membership */
-		if( $this->member->is_admin_user() ) {
+		if( MS_Model_Member::is_admin_user() ) {
 			if( $simulate->is_simulating() ) {
 				$this->member->add_membership( $simulate->membership_id );
 				$simulate->start_simulation();
@@ -79,11 +80,11 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		else {
 			/** Visitor: assign a Visitor Membership */
-			if( ! $this->member->is_logged_user() ){
+			if( ! MS_Model_Member::is_logged_user() ){
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 			/** Logged user with no memberships: assign default Membership */
-			if( $this->member->is_logged_user() && ! $this->member->is_member() ) {
+			if( MS_Model_Member::is_logged_user() && ! $this->member->is_member() ) {
 				$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
 			}
 		}
