@@ -116,7 +116,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * @access public
 	 */
-	public function purchase_button( $ms_relationship ) {
+	public function purchase_button( $ms_relationship = false ) {
 		
 	}
 	

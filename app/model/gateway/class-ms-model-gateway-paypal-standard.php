@@ -38,7 +38,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $mode;
 	
-	public function purchase_button( $ms_relationship ) {
+	public function purchase_button( $ms_relationship = false ) {
 		
 		$membership = $ms_relationship->get_membership();
 		

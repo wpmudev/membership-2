@@ -141,7 +141,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $end_date;		
 	}
 	
-	public function get_membership_count( $args = null ) {
+	public static function get_membership_count( $args = null ) {
 		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query($args);

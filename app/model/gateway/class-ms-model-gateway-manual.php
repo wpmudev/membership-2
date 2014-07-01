@@ -34,7 +34,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $payment_info;
 	
-	public function purchase_button( $ms_relationship ) {
+	public function purchase_button( $ms_relationship = false ) {
 		
 		$fields = array(
 				'ms_relationship_id' => array(

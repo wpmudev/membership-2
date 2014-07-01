@@ -38,7 +38,13 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $mode;
 	
-	public function purchase_button( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	// Need to work out how to do the move_from_id and coupon_id
+	// We may need to create a different signature for the parent method in MS_Model_Gateway
+	public function purchase_button( $ms_relationship = false ) {
+		$this->purchase_button_ext( $ms_relationship, MS_Model_Member::get_current_member(), 0, 0 );
+	}
+	
+	public function purchase_button_ext( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
 		$fields = array(
 				'business' => array(
 						'id' => 'business',

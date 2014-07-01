@@ -59,7 +59,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $payment_result;
 	
-	public function purchase_button( $ms_relationship ) {
+	public function purchase_button( $ms_relationship = false ) {
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',
