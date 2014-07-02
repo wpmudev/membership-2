@@ -106,7 +106,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				'custom' => array(
 						'id' => 'custom',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $ms_relationship->id,
+						'value' => $invoice->id,
 				),
 		);
 		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
@@ -125,7 +125,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			);
 		}
 		
-		$invoice = $ms_relationship->create_invoice();
+		$invoice = $ms_relationship->get_current_invoice();
 
 		/** Trial period */
 		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
@@ -254,7 +254,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		MS_Helper_Debug::log( 'Paypal standard IPN POST:' );
 		MS_Helper_Debug::log( $_POST );
 
-		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
+		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && ! empty( $_POST['custom'] ) ) {
 			if( self::MODE_LIVE == $this->mode ) {
 				$domain = 'https://www.paypal.com';
 			}
@@ -290,8 +290,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				exit;
 			}
 			
-			$ms_relationship_id = $_POST['custom'];
-			$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
+			$transaction = MS_Model_Transaction::load( $_POST['custom'] );
+			$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
 			$membership = $ms_relationship->get_membership();
 			$member = MS_Model_Member::load( $ms_relationship->user_id );
 			
@@ -385,8 +385,9 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			
 			if( ! empty( $status ) ) {
 
-				$transaction = $ms_relationship->get_last_invoice();
-				
+				if( empty( $transaction ) ) {
+ 					$transaction = $ms_relationship->get_current_invoice();
+				}			
 				$transaction->status = $status;
 				if( ! empty( $notes ) ) {
 					$transaction->notes = $notes;
@@ -397,7 +398,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					
 				$ms_relationship->process_transaction( $transaction );
 				
-				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $ms_relationship, $amount, $external_id );
+				do_action( "ms_model_gateway_paypal_standard_payment_processed_{$status}", $transaction, $ms_relationship );
 			}				
 		} 
 		else {

@@ -78,7 +78,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
 		
 			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
-			$ms_relationship->create_invoice();
+			$ms_relationship->get_current_invoice();
 			
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
