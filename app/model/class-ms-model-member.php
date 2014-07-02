@@ -292,7 +292,7 @@ class MS_Model_Member extends MS_Model {
 				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
 			}
 			else {
-				$ms_relationship->create_invoice();
+				$ms_relationship->get_current_invoice();
 			}
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
