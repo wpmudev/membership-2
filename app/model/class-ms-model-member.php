@@ -306,46 +306,18 @@ class MS_Model_Member extends MS_Model {
 		
 		return $ms_relationship;
 	}
-
-	/**
-	 * Deactivate membership.
-	 * 
-	 * Only update the status to deactivated.
-	 * 
-	 * @param int $membership_id The membership id to deactivate.
-	 */
-	public function deactivate_membership( $membership_id ) {
-		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
-			$this->membership_relationships[ $membership_id ]->save();
-			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DEACTIVATE );
-			
-			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
-			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
-
-			do_action( 'ms_model_membership_deactivate_membership', $this->membership_relationships[ $membership_id ], $this );
-		}
-	}
 	
 	/**
 	 * Drop a membership.
+	 * 
+	 * Only update the status to deactivated.
 	 * 
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function drop_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$this->deactivate_membership( $membership_id );
-			
-			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ],  MS_Model_News::TYPE_MS_DROP );
-			
-			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
-			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
-			
-			do_action( 'ms_model_membership_drop_membership', $this->membership_relationships[ $membership_id ], $this );
-				
+			$this->membership_relationships[ $membership_id ]->deactivate_membership();
 			unset( $this->membership_relationships[ $membership_id ] );
-// 			unset( $this->membership_ids[ $membership_id ] );
-			
 		}
 	}
 
@@ -358,13 +330,8 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function cancel_membership( $membership_id ) {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			$this->membership_relationships[ $membership_id ]->status = MS_Model_Membership_Relationship::STATUS_CANCELED;
-			$this->membership_relationships[ $membership_id ]->save();
+			$this->membership_relationships[ $membership_id ]->cancel_membership();
 			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ], MS_Model_News::TYPE_MS_CANCEL );
-
-			$gateway = MS_Model_Gateway::factory( $this->membership_relationships[ $membership_id ]->gateway_id );
-			$gateway->cancel_membership( $this->membership_relationships[ $membership_id ] );
-			
 			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
 		}
 	}
