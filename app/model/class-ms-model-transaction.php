@@ -257,6 +257,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$transaction = apply_filters( 'ms_model_transaction', new self() );
+		$transaction->ms_relationship_id = $ms_relationship->id;
 		$transaction->gateway_id = $ms_relationship->gateway_id;
 		$transaction->membership_id = $membership->id;
 		$transaction->currency = MS_Plugin::instance()->settings->currency;
