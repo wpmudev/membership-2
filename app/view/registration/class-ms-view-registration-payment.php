@@ -48,7 +48,7 @@ class MS_View_Registration_Payment extends MS_View {
 						?>
 					</td>
 				</tr>
-				<?php if( $membership->trial_period_enabled ): ?>
+				<?php if( $membership->trial_period_enabled && $invoice->trial_period ): ?>
 					<tr>
 						<td class='ms-title-column'>
 							<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
@@ -95,7 +95,7 @@ class MS_View_Registration_Payment extends MS_View {
 				</tr>
 				<tr>
 					<td class='ms-desc-column' colspan='2'>
-						<span class="ms-membership-description"><?php echo $membership->get_payment_description(); ?></span>
+						<span class="ms-membership-description"><?php echo $this->data['ms_relationship']->get_payment_description(); ?></span>
 					</td>
 				</tr>
 				<tr>
