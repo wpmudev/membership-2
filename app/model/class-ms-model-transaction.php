@@ -248,13 +248,13 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * @param string $status
 	 */
 	public static function create_transaction( $ms_relationship, $status = self::STATUS_BILLED ) {
-	
+		$membership = $ms_relationship->get_membership();
+		
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
 		}
 		$tax = MS_Plugin::instance()->settings->tax;
 		
-		$membership = $ms_relationship->get_membership();
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$transaction = apply_filters( 'ms_model_transaction', new self() );
 		$transaction->gateway_id = $ms_relationship->gateway_id;
@@ -264,7 +264,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		$transaction->status = $status;
 		$transaction->user_id = $member->id;
 		$transaction->name = apply_filters( 'ms_model_transaction_name', sprintf( '%s %s - %s' , __( "Invoice for" ), $membership->name, $member->username ) );
-		$transaction->description = apply_filters( 'ms_model_transaction_description', $membership->get_payment_description() );
+		$transaction->description = apply_filters( 'ms_model_transaction_description', $ms_relationship->get_payment_description() );
 		$transaction->timestamp = time();
 		$transaction->tax_name = $tax['tax_name'];
 		$transaction->tax_rate = $tax['tax_rate'];
