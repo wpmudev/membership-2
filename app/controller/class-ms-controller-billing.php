@@ -212,7 +212,9 @@ class MS_Controller_Billing extends MS_Controller {
 				if( $transaction->id == 0 ) {
 					if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
 						$gateway_id = $fields['gateway_id'];
-						$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
+						$ms_relationship = $member->membership_relationships[ $fields['membership_id'] ];
+						$ms_relationship->gateway_id = $gateway_id;
+						$transaction = MS_Model_Transaction::create_transaction( $ms_relationship );
 						$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 					}
 					else {

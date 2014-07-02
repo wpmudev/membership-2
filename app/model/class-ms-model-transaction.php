@@ -50,8 +50,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 */
 	protected $external_id;
 	
-	protected $external_info;
-	
 	protected $gateway_id;
 	
 	protected $membership_id;
@@ -249,15 +247,17 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * @param MS_Model_Member $member
 	 * @param string $status
 	 */
-	public static function create_transaction( $membership, $member, $gateway_id, $status = self::STATUS_BILLED ) {
+	public static function create_transaction( $ms_relationship, $status = self::STATUS_BILLED ) {
 	
 		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			return;
 		}
 		$tax = MS_Plugin::instance()->settings->tax;
 		
+		$membership = $ms_relationship->get_membership();
+		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$transaction = apply_filters( 'ms_model_transaction', new self() );
-		$transaction->gateway_id = $gateway_id;
+		$transaction->gateway_id = $ms_relationship->gateway_id;
 		$transaction->membership_id = $membership->id;
 		$transaction->currency = MS_Plugin::instance()->settings->currency;
 		$transaction->amount = $membership->price;
