@@ -283,7 +283,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$membership = $ms_relationship->get_membership();
-		$invoice = $ms_relationship->get_last_invoice();
+		$invoice = $ms_relationship->get_current_invoice();
 		$transactions = array();
 		
 		$this->get_cim_profile_id( $member->id );
@@ -296,7 +296,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			 *  	variable in Authorize.net (trial_period = period).
 			 * * non recurring types: CIM cannot handle 2 payments, use arb to subscribe to a future payment.
 			 */
-			if( 1 == $invoice->invoice_number && $membership->trial_period_enabled ) {
+			if( $invoice->trial_period && $membership->trial_period_enabled ) {
 				switch( $membership->membership_type ) {
 					case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
 						$period = $membership->pay_cycle_period;
@@ -322,12 +322,14 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				}
 				$transactions[] = $this->process_serial_purchase( $invoice, $membership->trial_period, false );
 				$regular_invoice = $ms_relationship->get_next_invoice();
+				MS_Helper_Debug::log("regular invoice");
+				MS_Helper_Debug::log($regular_invoice);
 				$transactions[] = $this->process_serial_purchase( $regular_invoice, $period );
 			}
 			else {
 				switch( $membership->membership_type ) {
 					case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-						$transactions[] = $this->process_serial_purchase( $invoice->total, $membership->pay_cycle_period );
+						$transactions[] = $this->process_serial_purchase( $invoice, $membership->pay_cycle_period );
 						break;
 					case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
 					case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
@@ -395,8 +397,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthOnly', $cim_transaction );
 			if ( $response->isOk() ) {
+				$transaction->external_id = array( 'cim' => $response->getTransactionResponse()->transaction_id );
 				$transaction->external_info = 'cim';
-				$transaction->external_id = $response->getTransactionResponse()->transaction_id;
 			} 
 			else {
 				$errors = $response->getMessageText();
@@ -405,7 +407,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		else {
 			$response = $this->get_aim()->authorizeOnly( $amount );
 			if ( $response->approved ) {
-				$transaction->external_id = $response->transaction_id;
+				$transaction->external_id = array( 'aim' => $response->transaction_id );
 				$transaction->external_info = 'aim';
 			} 
 			elseif ( $response->error ) {
@@ -473,14 +475,15 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$arb = $this->get_arb();
 		$response = $arb->createSubscription( $subscription );
 		
-// 		$transaction->external_info = 'arb';
-		$transaction->save();
-			
 		if( ! $response->isOk() ) {
 			$transaction->add_notes( 'Error: '. $response->getMessageText() );
 			$transaction->save();
-			throw new Exception();
+			throw new Exception( $response->getMessageText() );
 		}
+		$external_id = $transaction->external_id;
+		$external_id['arb'] = $response->getSubscriptionId();
+		$transaction->external_id = $external_id;
+		$transaction->save();
 		
 		return $transaction;			
 	}
@@ -496,41 +499,43 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		// process each transaction information and save it to CIM
 		foreach ( $transactions as $index => $transaction ) {
 			$status = 0;
-			switch( $transaction->external_info ) {
-				/**
-				 * "Capture" previously "Authorized" transaction.
-				 */
-				case 'aim':
-					$status = self::TRANSACTION_TYPE_AUTHORIZED;
-					
-					if ( $index == 0 ) {
-						$this->get_aim( true, false )->priorAuthCapture( $transaction->external_id );
-						$status = self::TRANSACTION_TYPE_CAPTURED;
-					}
-					break;
-				/**
-				 * "Capture" previously "Authorized" transaction.
-				 */
-				case 'cim':
-					if ( $index == 0 ) {
-						$cim_transaction = $this->get_cim_transaction();
-						$cim_transaction->transId = $transaction->external_id;
-						$cim_transaction->amount = $transaction->total;
-						$this->get_cim()->createCustomerProfileTransaction( 'PriorAuthCapture', $cim_transaction );
-						$status = self::TRANSACTION_TYPE_CAPTURED;
-					}
-					break;
-				/**
-				 * No further actions required
-				 */
-				case 'arb':
-				default:
-					do_action( 'ms_model_gateway_authorize_commit_transaction', $transaction );
-					break;
+			foreach( $transaction->external_id as $type => $id ) {
+				switch( $type ) {
+					/**
+					 * "Capture" previously "Authorized" transaction.
+					 */
+					case 'aim':
+						$status = self::TRANSACTION_TYPE_AUTHORIZED;
+						
+						if ( $index == 0 ) {
+							$this->get_aim( true, false )->priorAuthCapture( $transaction->external_id['aim'] );
+							$status = self::TRANSACTION_TYPE_CAPTURED;
+						}
+						break;
+					/**
+					 * "Capture" previously "Authorized" transaction.
+					 */
+					case 'cim':
+						if ( $index == 0 ) {
+							$cim_transaction = $this->get_cim_transaction();
+							$cim_transaction->transId = $transaction->external_id['cim'];
+							$cim_transaction->amount = $transaction->total;
+							$this->get_cim()->createCustomerProfileTransaction( 'PriorAuthCapture', $cim_transaction );
+							$status = self::TRANSACTION_TYPE_CAPTURED;
+						}
+						break;
+					/**
+					 * No further actions required
+					 */
+					case 'arb':
+					default:
+						do_action( 'ms_model_gateway_authorize_commit_transaction', $transaction );
+						break;
+				}
 			}
-			if( MS_Helper_Period::current_date() == $transaction->due_date ) {
+// 			if( MS_Helper_Period::current_date() == $transaction->due_date ) {
 				$transaction->status = MS_Model_Transaction::STATUS_PAID;
-			}
+// 			}
 			if( $this->mode == self::MODE_SANDBOX ) {
 				$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
 			}
@@ -700,24 +705,19 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @access public
 	 */
 	public function cancel_membership( $ms_relationship ) {
-		MS_Helper_Debug::log( 'cancel_membership');
-		MS_Helper_Debug::log($ms_relationship);
 		
 		$membership = $ms_relationship->get_membership();
-		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || 
-			$membership->trial_period_enabled && $membership->trial_period['period_unit'] > 0 ) {
+		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || $membership->trial_period_enabled ) {
 
-// 			$args['author'] = $ms_relationship->user_id;
-// 			$args['meta_query']['membership_id'] = array(
-// 					'key' => 'membership_id',
-// 					'value' => $ms_relationship->membership_id,
-// 			);
-// 			$transactions = MS_Model_Transaction::get_transactions( $args );
-			foreach( $ms_relationship->transaction_ids as $transaction_id ) {
-				$transaction = MS_Model_Transaction::load( $transaction_id );
-				MS_Helper_Debug::log("external transId: $transaction->external_id ");
-				$this->get_arb()->cancelSubscription( $transaction->external_id );
+			$invoices[] = MS_Model_Invoice::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number -1, false );
+			$invoices[] = MS_Model_Invoice::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+			MS_Helper_Debug::log( $invoices );
+			foreach( $invoices as $invoice ) {
+				if( ! empty( $invoice->external_id['arb'] ) ) {
+					$this->get_arb()->cancelSubscription( $invoice->external_id['arb'] );	
+					MS_Helper_Debug::log("canceled arb subscription: $invoice->external_id ");
+				}
 			}
-		}
+		}			
 	}
 }
