@@ -38,13 +38,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $mode;
 	
-	// Need to work out how to do the move_from_id and coupon_id
-	// We may need to create a different signature for the parent method in MS_Model_Gateway
-	public function purchase_button( $ms_relationship = false ) {
-		$this->purchase_button_ext( $ms_relationship, MS_Model_Member::get_current_member(), 0, 0 );
-	}
-	
-	public function purchase_button_ext( $membership, $member, $move_from_id = 0, $coupon_id = 0 ) {
+	public function purchase_button( $ms_relationship ) {
+		$invoice = $ms_relationship->get_current_invoice();
 		$fields = array(
 				'business' => array(
 						'id' => 'business',
@@ -59,22 +54,22 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				'item_number' => array(
 						'id' => 'item_number',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->id,
+						'value' => $ms_relationship->membership_id,
 				),
 				'item_name' => array(
 						'id' => 'item_name',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->name,
+						'value' => $invoice->name,
 				),
 				'amount' => array(
 						'id' => 'amount',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $membership->price,
+						'value' => $invoice->total,
 				),
 				'currency_code' => array(
 						'id' => 'currency_code',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => MS_Plugin::instance()->settings->currency,
+						'value' => $invoice->currency,
 				),
 				'return' => array(
 						'id' => 'return',
@@ -99,7 +94,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				'custom' => array(
 						'id' => 'custom',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->build_custom( $member->id, $membership->id, $membership->price, $move_from_id, $coupon_id ),
+						'value' => $invoice->id,
 				),
 		);
 		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
@@ -138,7 +133,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	}
 	
 	public function handle_return() {
-		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && isset( $_POST['custom'] ) ) {
+		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && ! empty( $_POST['custom'] ) ) {
 			if( self::MODE_LIVE == $this->mode ) {
 				$domain = 'https://www.paypal.com';
 			}
@@ -168,10 +163,11 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 		
 			$new_status = false;
-			list( $timestamp, $user_id, $membership_id, $move_from_id, $coupon_id, $key ) = explode( ':', $_POST['custom'] );
+			$transaction = MS_Model_Transaction::load( $_POST['custom'] );
+			$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
+			$membership = $ms_relationship->get_membership();
+			$member = MS_Model_Member::load( $ms_relationship->user_id );
 			
-			$membership = MS_Model_Membership::load( $membership_id );
-			$member = MS_Model_Member::load( $user_id );
 			$external_id = $_POST['txn_id'];
 			$amount = $_POST['mc_gross'];
 			$currency = $_POST['mc_currency'];
@@ -183,21 +179,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				/** Successful payment */
 				case 'Completed':
 				case 'Processed':
-					$newkey = md5( 'MEMBERSHIP' . $amount );
-					if( $key == $newkey ) {
-						MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
-						
-						$status = MS_Model_Transaction::STATUS_PAID;
-					}
-					else {
-// 						$member = $factory->get_member($user_id);
-// 						if($member) {
-// 							if(defined('MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION') && MEMBERSHIP_DEACTIVATE_USER_ON_CANCELATION == true ) {
-// 								$member->deactivate();
-// 							}
-// 						}
-						MS_Helper_Debug::log( 'Paypal return check failed' . print_r( $_POST, true ) );
-					}
+// 					MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
+					$status = MS_Model_Transaction::STATUS_PAID;
 					break;
 				case 'Reversed':
 					$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
@@ -238,26 +221,22 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 			MS_Helper_Debug::log( $notes . print_r($_POST, true) );
 			if( ! empty( $status ) ) {
-				if( $transaction = MS_Model_Transaction::load_by_external_id( $external_id, $this->id ) ) {
-					if( ! empty( $notes ) ) {
-						$transaction->notes = $notes;
-					}
-					$transaction->process_transaction( $status );
+			
+				if( empty( $transaction ) ) {
+					$transaction = $ms_relationship->get_current_invoice();
 				}
-				else {
-					$transaction = $this->add_transaction( array(
-							'membership' => $membership,
-							'member' => $member,
-							'status' => $status,
-							'move_from_id' => $move_from_id,
-							'coupon_id' => $coupon_id,
-							'external_id' => $external_id,
-							'notes' => $notes,
-							'amount' => $amount,
-					) );
+				$transaction->status = $status;
+				if( ! empty( $notes ) ) {
+					$transaction->notes = $notes;
 				}
-				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $user_id, $membership_id, $amount, $currency, $external_id );
-			}				
+				$transaction->external_id = $external_id;
+			
+				$transaction->save();
+					
+				$ms_relationship->process_transaction( $transaction );
+			
+				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $transaction, $ms_relationship );
+			}
 		} 
 		else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
