@@ -33,7 +33,7 @@ class MS_Controller_Registration extends MS_Controller {
 
 	private $register_errors;
 	
-	private $allowed_actions = array( 'membership_signup', 'membership_move', 'membership_cancel', 'register_user' );
+	private $allowed_actions = array( 'membership_signup', 'membership_move', 'membership_renew', 'membership_cancel', 'register_user' );
 	/**
 	 * Prepare for Member registration.
 	 *
@@ -363,6 +363,10 @@ class MS_Controller_Registration extends MS_Controller {
 		$this->membership_signup();
 	}
 	
+	public function membership_renew() {
+		$this->membership_signup();
+	}
+	
 	/**
 	 * Handles membership_cancel action.
 	 * 
@@ -424,7 +428,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
 
 			$data['coupon'] = $coupon;
-			$invoice = $ms_relationship->create_invoice( 1 );
+			$invoice = $ms_relationship->get_current_invoice();
 			$data['invoice'] = $invoice;
 			if( $invoice->coupon_id ) {
 				$data['coupon'] = MS_Model_Coupon::load( $invoice->coupon_id );
