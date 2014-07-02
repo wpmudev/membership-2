@@ -43,7 +43,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		$currency = MS_Plugin::instance()->settings->currency;
 		return apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb' => '<input type="checkbox" />',
-			'invoice' => __( 'Invoice #', MS_TEXT_DOMAIN ),
+			'invoice_number' => __( 'Invoice #', MS_TEXT_DOMAIN ),
 			'user' => __( 'User', MS_TEXT_DOMAIN ),
 			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
 			'status' => __( 'Status', MS_TEXT_DOMAIN ),
@@ -67,7 +67,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	
 	public function get_sortable_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
-				'invoice' => array( 'ID', false ),
+				'invoice_number' => array( 'ID', false ),
 				'user' => array( 'author', false ),
 				'membership' => array( 'ms_membership_ids', false ),
 				'status' => array( 'status', false ),
