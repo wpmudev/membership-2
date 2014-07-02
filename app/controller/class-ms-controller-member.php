@@ -140,6 +140,12 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function admin_member_list() {
+		
+		// Don't render the view if it was a toggle button AJAX call.
+		if( isset( $_GET['toggle_action'] ) ) {
+			exit;
+		}
+		
 		/**
 		 * Action view edit page request
 		 */

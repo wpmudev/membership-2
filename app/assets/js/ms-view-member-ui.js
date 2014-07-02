@@ -18,7 +18,8 @@ jQuery( document ).ready( function( $ ) {
 	        
 			$.ajax({
 				type: "GET",
-				url: value
+				url: value,
+				data: { toggle_action: true }
 			})
 			.done( function (data) {
 				$( object ).removeClass('processing');

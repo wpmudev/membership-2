@@ -52,18 +52,19 @@ class MS_Helper_Debug extends MS_Helper {
 		$exception = new Exception();
 		$debug = array_shift( $trace );
 		$caller = array_shift( $trace );
-		$callee = array_shift( $exception->getTrace() );
+		$exception = $exception->getTrace();
+		$callee = array_shift( $exception );
 
 		if ( true === WP_DEBUG ) {
 			if ( is_array( $message ) || is_object( $message ) ) {
-				$class = isset( $caller['class'] ) ? '[' . $caller['class'] . ']\n' : '';
+				$class = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . '] ' : '';
 				if ( $echo_file ) {
 					error_log( $class . print_r( $message, true ) . 'In ' . $callee['file'] . ' on line ' . $callee['line'] );	
 				} else {
 					error_log( $class . print_r( $message, true ) );	
 				}
 			} else {
-				$class = isset( $caller['class'] ) ? $caller['class'] . ': ' : '';
+				$class = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . ']: ' : '';
 				if ( $echo_file ) {
 					error_log( $class . $message . ' In ' . $callee['file'] . ' on line ' . $callee['line']);					
 				} else {

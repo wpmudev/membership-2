@@ -30,6 +30,7 @@ class MS_Helper_Billing extends MS_Helper {
 	const BILLING_MSG_NOT_DELETED = -2;
 	const BILLING_MSG_NOT_UPDATED = -3;
 	const BILLING_MSG_BULK_NOT_DELETED = -4;
+	const BILLING_MSG_NOT_A_MEMBER = -5;
 	
 	public static function get_admin_message( $msg = 0 ) {
 	
@@ -42,6 +43,7 @@ class MS_Helper_Billing extends MS_Helper {
 				self::BILLING_MSG_NOT_DELETED => __( 'Billing not deleted.', MS_TEXT_DOMAIN ),
 				self::BILLING_MSG_NOT_UPDATED => __( 'Billing not updated.', MS_TEXT_DOMAIN ),
 				self::BILLING_MSG_BULK_NOT_DELETED => __( 'Billing bulk not deleted.', MS_TEXT_DOMAIN ),
+				self::BILLING_MSG_NOT_A_MEMBER => __( 'Billing not added. User not a member of selected Membership.', MS_TEXT_DOMAIN ),
 			)
 		);
 	
@@ -56,7 +58,7 @@ class MS_Helper_Billing extends MS_Helper {
 
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 		
-		if ( $msg = MS_Helper_Membership::get_admin_message( $msg ) ) {
+		if ( $msg = MS_Helper_Billing::get_admin_message( $msg ) ) {
 			echo "<div id='message' class='$class'><p>$msg</p></div>";
 		}
 		

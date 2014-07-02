@@ -108,6 +108,7 @@ class MS_Controller_Billing extends MS_Controller {
 			if( ! empty( $_POST[ $section ] ) ) {
 				$msg = $this->save_transaction( $_POST[ $section ] );
 			}
+			MS_Helper_Debug::log( 'MESSAGE:' . $msg );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'transaction_id') ) ) ) ;
 		}
 		/**
@@ -197,34 +198,49 @@ class MS_Controller_Billing extends MS_Controller {
 		}
 		
 		if( is_array( $fields ) ) {
-			$transaction = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
-			if( $transaction->id == 0 ) {
-				if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
-					$membership = MS_Model_Membership::load( $fields['membership_id'] );
-					$member = MS_Model_Member::load( $fields['user_id'] );
-					$gateway_id = $fields['gateway_id'];
-					$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
-					$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
+
+			// Avoids fatal error calling methods on non-objects.
+			// Should not need to be trapped at this level, but will do it for now until UI is determined.
+			$member = ! empty ( $fields['user_id'] ) ? MS_Model_Member::load( $fields['user_id'] ) : false;
+			$membership = ! empty( $fields['membership_id'] ) ? MS_Model_Membership::load( $fields['membership_id'] ) : false;
+			
+			$has_relationship = $member ? $membership ? in_array( $fields['membership_id'], $member->membership_relationships ) : false : false;
+			
+			if ( $has_relationship ) {
+				
+				$transaction = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
+				if( $transaction->id == 0 ) {
+					if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
+						$gateway_id = $fields['gateway_id'];
+						$transaction = MS_Model_Transaction::create_transaction( $membership, $member, $gateway_id );
+						$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
+					}
+					else {
+						$msg = MS_Helper_Billing::BILLING_MSG_NOT_ADDED;
+						return $msg;
+					}
 				}
 				else {
-					$msg = MS_Helper_Billing::BILLING_MSG_NOT_ADDED;
-					return $msg;
+					$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
 				}
-			}
-			else {
-				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
-			}
 
-			foreach( $fields as $field => $value ) {
-				$transaction->$field = $value;
-			}
-			$transaction->save();
+				foreach( $fields as $field => $value ) {
+					$transaction->$field = $value;
+				}
+
+				$transaction->save();
 			
-			if( ! empty( $fields['execute'] ) ) {
-				$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
-				$ms_relationship->process_transaction( $transaction );
-				$ms_relationship->save();
+				if( ! empty( $fields['execute'] ) ) {
+				
+						$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
+						$ms_relationship->process_transaction( $transaction );
+						$ms_relationship->save();
+				
+				}
+			} else {
+				$msg = MS_Helper_Billing::BILLING_MSG_NOT_A_MEMBER;
 			}
+			
 		}
 		return $msg;	
 	}
