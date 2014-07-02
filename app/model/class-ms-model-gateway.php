@@ -138,7 +138,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * @access public
 	 */
-	public function process_purchase( $member, $membership, $move_from_id, $coupon_id ) {
+	public function process_purchase( $ms_relationship ) {
 	
 	}
 	

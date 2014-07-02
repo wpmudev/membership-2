@@ -70,7 +70,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public function get_coupon_count( $args = null ) {
+	public static function get_coupon_count( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',

@@ -117,7 +117,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	 * @since 4.0
 	 * @param mixed $args The arguments to select data.
 	 */
-	public function get_transaction_count( $args = null ) {
+	public static function get_transaction_count( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',

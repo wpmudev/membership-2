@@ -361,7 +361,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			 * @param array $actions An array of the available bulk actions.
 			*/
 			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions );
-			$this->_actions = array_intersect_assoc( $this->_actions, $no_new_actions );
+			$this->_actions = MS_Helper_Utility::array_intersect_assoc_deep( $this->_actions, $no_new_actions );
+
 			$two = '';
 		} else {
 			$two = '2';

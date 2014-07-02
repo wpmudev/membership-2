@@ -47,18 +47,28 @@ class MS_Helper_Debug extends MS_Helper {
 	 * @since 4.0.0
 	 * @param  mixed $message Array, object or text to output to log.
 	 */
-	public static function log( $message ) {
-		$trace = debug_backtrace();
-		$debug = array_shift($trace);
-		$caller = array_shift($trace);
-		
+	public static function log( $message, $echo_file = false ) {
+		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+		$exception = new Exception();
+		$debug = array_shift( $trace );
+		$caller = array_shift( $trace );
+		$callee = array_shift( $exception->getTrace() );
+
 		if ( true === WP_DEBUG ) {
 			if ( is_array( $message ) || is_object( $message ) ) {
 				$class = isset( $caller['class'] ) ? '[' . $caller['class'] . ']\n' : '';
-				error_log( $class . print_r( $message, true ) );
+				if ( $echo_file ) {
+					error_log( $class . print_r( $message, true ) . 'In ' . $callee['file'] . ' on line ' . $callee['line'] );	
+				} else {
+					error_log( $class . print_r( $message, true ) );	
+				}
 			} else {
 				$class = isset( $caller['class'] ) ? $caller['class'] . ': ' : '';
-				error_log( $class . $message );
+				if ( $echo_file ) {
+					error_log( $class . $message . ' In ' . $callee['file'] . ' on line ' . $callee['line']);					
+				} else {
+					error_log( $class . $message );					
+				}
 			}
 		}
 	}
