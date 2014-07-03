@@ -322,8 +322,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				}
 				$transactions[] = $this->process_serial_purchase( $invoice, $membership->trial_period, false );
 				$regular_invoice = $ms_relationship->get_next_invoice();
-				MS_Helper_Debug::log("regular invoice");
-				MS_Helper_Debug::log($regular_invoice);
+// 				MS_Helper_Debug::log("regular invoice");
+// 				MS_Helper_Debug::log($regular_invoice);
 				$transactions[] = $this->process_serial_purchase( $regular_invoice, $period );
 			}
 			else {
@@ -709,8 +709,9 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$membership = $ms_relationship->get_membership();
 		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || $membership->trial_period_enabled ) {
 
-			$invoices[] = MS_Model_Invoice::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number -1, false );
-			$invoices[] = MS_Model_Invoice::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+			$invoices[] = $ms_relationship->get_previous_invoice();
+			$invoices[] = $ms_relationship->get_current_invoice();
+				
 			MS_Helper_Debug::log( $invoices );
 			foreach( $invoices as $invoice ) {
 				if( ! empty( $invoice->external_id['arb'] ) ) {
