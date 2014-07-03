@@ -37,13 +37,23 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	public function purchase_button( $ms_relationship = false ) {
 		
 		$fields = array(
+				'gateway' => array(
+						'id' => 'gateway',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->id,
+				),
 				'ms_relationship_id' => array(
 						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $ms_relationship->id,
 				),
+				'step' => array(
+						'id' => 'step',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'process_purchase',
+				),
 		);
-		if( strpos( $this->payment_url, 'http' ) === 0 ) {
+		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
 			$fields['submit'] = array(
 					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
@@ -51,23 +61,23 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			);
 		}
 		else {
-			$fields['submit_manual'] = array(
-					'id' => 'submit_manual',
+			$fields['submit'] = array(
+					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
 			);
 		}
 		
 		?>
-			<form action="<?php echo $this->get_return_url();?>" method="post">
+			<form method="post">
 				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
 				<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['submit_manual'] ); ?>
+				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
 			</form>
 		<?php 
 	}
 	
-	public function handle_return() {
+	public function process_purchase() {
 		/** Change the query to show memberships special page and replace the content with payment instructions */
 		global $wp_query;
 		$settings = MS_Plugin::instance()->settings;
