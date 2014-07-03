@@ -26,7 +26,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public function get_current_invoice( $ms_relationship ) {
+	public static function get_current_invoice( $ms_relationship ) {
 		switch( $ms_relationship->status ) {
 			/**
 			 * Initial payment.
@@ -34,7 +34,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			case MS_Model_Membership_Relationship::STATUS_PENDING:
 			case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
 			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-				$invoice = self::create_invoice( $ms_relationship, $this->current_invoice_number, true );
+				$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, true );
 				break;
 			/**
 			 * Renew payment.
@@ -42,7 +42,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			case MS_Model_Membership_Relationship::STATUS_TRIAL:
 			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 			case MS_Model_Membership_Relationship::STATUS_CANCELED:
-				$invoice = self::create_invoice( $ms_relationship, $this->current_invoice_number );
+				$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number );
 				break;
 			
 		}
@@ -50,7 +50,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 		return apply_filters( 'ms_model_invoice_get_current_invoice', $invoice );
 	}
 	
-	public function get_next_invoice( $ms_relationship ) {
+	public static function get_next_invoice( $ms_relationship ) {
 		$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1 );
 		$invoice->discount = 0;
 		$invoice->pro_rate = 0;
@@ -58,7 +58,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 		return apply_filters( 'ms_model_invoice_get_previous_invoice', $invoice );
 	}
 
-	public function get_previous_invoice( $ms_relationship ) {
+	public static function get_previous_invoice( $ms_relationship ) {
 		$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number - 1, false );
 		return apply_filters( 'ms_model_invoice_get_next_invoice', $invoice );
 	}
@@ -70,7 +70,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	 * @param string $status The invoice status to search.
 	 * @return MS_Model_Transaction The invoice if found, and null otherwise.
 	 */
-	public function get_invoice( $ms_relationship, $invoice_number = false, $status = MS_Model_Transaction::STATUS_BILLED ) {
+	public static function get_invoice( $ms_relationship, $invoice_number = false, $status = MS_Model_Transaction::STATUS_BILLED ) {
 		return apply_filters( 'ms_model_membership_relationship_get_invoice', MS_Model_Transaction::get_transaction(
 				$ms_relationship->user_id,
 				$ms_relationship->membership_id,
