@@ -281,6 +281,9 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 )
 	{
+		
+		do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
+		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
 		}
@@ -298,7 +301,6 @@ class MS_Model_Member extends MS_Model {
 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
 			}
 				
-			do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
 		}
 		else {
 			$ms_relationship = $this->membership_relationships[ $membership_id ];
@@ -315,6 +317,9 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function drop_membership( $membership_id ) {
+		
+		do_action( 'ms_model_membership_drop_membership', $ms_relationship, $this );
+		
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->deactivate_membership();
 			unset( $this->membership_relationships[ $membership_id ] );
@@ -329,10 +334,11 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function cancel_membership( $membership_id ) {
+		
+		do_action( 'ms_model_membership_cancel_membership', $ms_relationship, $this );
+		
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$this->membership_relationships[ $membership_id ]->cancel_membership();
-			MS_Model_News::save_news( $this->membership_relationships[ $membership_id ], MS_Model_News::TYPE_MS_CANCEL );
-			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
 		}
 	}
 	
@@ -345,10 +351,10 @@ class MS_Model_Member extends MS_Model {
 	public function move_membership( $move_from_id, $move_to_id ) {
 		if( array_key_exists( $move_from_id,  $this->membership_relationships ) ) {
 			$move_from = $this->membership_relationships[ $move_from_id ];
-			$this->membership_relationships[ $move_to_id ] = new MS_Model_Membership_Relationship( $move_to_id, $this->id, $move_from->gateway_id );
-			$this->membership_relationships[ $move_to_id ]->save();
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $move_to_id, $this->id, $move_from->gateway_id, $move_from_id );
 			
 			$this->cancel_membership( $move_from_id );
+			$this->membership_relationships[ $move_to_id ] = $ms_relationship;
 				
 			MS_Model_News::save_news( $this->membership_relationships[ $move_to_id ],  MS_Model_News::TYPE_MS_MOVE );
 		}
