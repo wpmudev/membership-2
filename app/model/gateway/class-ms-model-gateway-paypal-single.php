@@ -97,7 +97,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 						'value' => $invoice->id,
 				),
 		);
-		if( ! empty( $this->pay_button_url ) && strpos( $this->payment_url, 'http' ) !== 0 ) {
+		if( ! empty( $this->pay_button_url ) && strpos( $this->pay_button_url, 'http' ) !== 0 ) {
 			$fields['submit'] = array(
 					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,

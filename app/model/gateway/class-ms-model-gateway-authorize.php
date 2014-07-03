@@ -77,7 +77,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 						'value' => 'extra_form',
 				),
 		);
-		if( strpos( $this->payment_url, 'http' ) === 0 ) {
+		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
 			$fields['submit'] = array(
 					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
