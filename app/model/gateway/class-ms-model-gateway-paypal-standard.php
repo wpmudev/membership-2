@@ -126,9 +126,11 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		}
 		
 		$invoice = $ms_relationship->get_current_invoice();
+		$regular_invoice = null;
 
 		/** Trial period */
-		if( $membership->trial_period_enabled && ! empty( $membership->trial_period['period_unit'] ) ) {
+		if( $membership->trial_period_enabled && $invoice->trial_period ) {
+			$regular_invoice = $ms_relationship->get_next_invoice();
 			$fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -150,7 +152,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		$fields['a3'] = array(
 				'id' => 'a3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => ( ! $invoice->trial_period ) ? $invoice->total : $membership->price,
+				'value' => ( ! $invoice->trial_period ) ? $invoice->total : $regular_invoice->total,
 		);
 		
 		$recurring = 0;
@@ -336,14 +338,15 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 							'*' => ''
 						);
 						$reason = $_POST['pending_reason'];
-						$notes = 'Last transaction is pending. Reason: ' . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+						$notes = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
 						$status = MS_Model_Transaction::STATUS_PENDING;
 						break;
 			
 					default:
 					case 'Partially-Refunded':
 					case 'In-Progress':
-						MS_Helper_Debug::log( "Not handling payment_status: " . $_POST['payment_status'] );
+						$notes = __( 'Not handling payment_status: ', MS_TEXT_DOMAIN ) . $_POST['payment_status'];
+						MS_Helper_Debug::log( $notes );
 						break;
 				}
 			}
@@ -377,29 +380,28 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						$status = MS_Model_Transaction::STATUS_DISPUTE;
 						break;
 					default:
-						MS_Helper_Debug::log( "Not handling txn_type: " . $_POST['txn_type'] );
+						$notes = __( 'Not handling txn_type: ', MS_TEXT_DOMAIN ) . $_POST['txn_type'];
+						MS_Helper_Debug::log( $notes );
 						break;
 				}
 			}
-			MS_Helper_Debug::log( "transaction_id: $transaction_id, ext_id: $external_id status: $status, notes: $notes" );
+// 			MS_Helper_Debug::log( "transaction_id: $transaction_id, ext_id: $external_id status: $status, notes: $notes" );
+			
+			if( empty( $transaction ) ) {
+ 				$transaction = $ms_relationship->get_current_invoice();
+			}
+			$transaction->external_id = $external_id;
+			if( ! empty( $notes ) ) {
+				$transaction->add_notes( $notes );
+			}
+			$transaction->save();
 			
 			if( ! empty( $status ) ) {
-
-				if( empty( $transaction ) ) {
- 					$transaction = $ms_relationship->get_current_invoice();
-				}			
 				$transaction->status = $status;
-				if( ! empty( $notes ) ) {
-					$transaction->notes = $notes;
-				}
-				$transaction->external_id = $external_id;
-				
-				$transaction->save();
-					
 				$ms_relationship->process_transaction( $transaction );
-				
-				do_action( "ms_model_gateway_paypal_standard_payment_processed_{$status}", $transaction, $ms_relationship );
-			}				
+				$transaction->save();
+			}
+			do_action( "ms_model_gateway_paypal_standard_payment_processed_{$status}", $transaction, $ms_relationship );
 		} 
 		else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
@@ -407,6 +409,30 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
 			MS_Helper_Debug::log( $notes );
 			exit;
+		}
+	}
+	
+	/**
+	 * Cancels active recuring subscriptions
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function cancel_membership( $ms_relationship ) {
+	
+		$membership = $ms_relationship->get_membership();
+		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || $membership->trial_period_enabled ) {
+	
+			$invoices[] = $ms_relationship->get_previous_invoice();
+			$invoices[] = $ms_relationship->get_current_invoice();
+			MS_Helper_Debug::log( $invoices );
+			foreach( $invoices as $invoice ) {
+				if( ! empty( $invoice->external_id['arb'] ) ) {
+					$this->get_arb()->cancelSubscription( $invoice->external_id['arb'] );
+					MS_Helper_Debug::log("canceled arb subscription: $invoice->external_id ");
+				}
+			}
 		}
 	}
 	
