@@ -20,7 +20,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-	 									$msg = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
+	 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
+	 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+	 									$msg = __( 'Membership expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
 	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_PENDING:

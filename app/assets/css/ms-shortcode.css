@@ -60,10 +60,8 @@
 .ms-bottom-bar {
 	position: relative;
 	bottom: 0;
-	width: 100%;
 	background: #f6f6f6;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding: 10px;
 	color: #434343;
 	font: 15px Verdana, Geneva, sans-serif;
 	overflow: hidden;
