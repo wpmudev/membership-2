@@ -141,7 +141,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
 						
-			//Paypal post authenticity verification
+			/** Paypal post authenticity verification */
 			$ipn_data = (array) stripslashes_deep( $_POST );
 			$ipn_data['cmd'] = '_notify-validate';
 			$response = wp_remote_post( "$domain/cgi-bin/webscr", array(
@@ -174,12 +174,11 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			$status = null;
 			$notes = null;
 			
-			// process PayPal response
+			/** Process PayPal response */
 			switch ( $_POST['payment_status'] ) {
 				/** Successful payment */
 				case 'Completed':
 				case 'Processed':
-// 					MS_Helper_Debug::log( 'Processed transaction received - ' . print_r( $_POST, true ) );
 					$status = MS_Model_Transaction::STATUS_PAID;
 					break;
 				case 'Reversed':
@@ -191,7 +190,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					$status = MS_Model_Transaction::STATUS_REFUNDED;
 					break;
 				case 'Denied':
-					$notes = __('Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
+					$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
 					$status = MS_Model_Transaction::STATUS_DENIED;
 					break;
 				case 'Pending':
@@ -207,7 +206,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 						'*' => ''
 					);
 					$reason = $_POST['pending_reason'];
-					$notes = 'Last transaction is pending. Reason: ' . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+					$notes = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
 					$status = MS_Model_Transaction::STATUS_PENDING;
 					break;
 		
@@ -216,27 +215,26 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				case 'In-Progress':
 					break;
 			}
+			
 			if( 'new_case' == $_POST['txn_type'] && 'dispute' == $_POST['case_type'] ) {
 				$status = MS_Model_Transaction::STATUS_DISPUTE;
 			}
-			MS_Helper_Debug::log( $notes . print_r($_POST, true) );
-			if( ! empty( $status ) ) {
 			
-				if( empty( $transaction ) ) {
-					$transaction = $ms_relationship->get_current_invoice();
-				}
-				$transaction->status = $status;
-				if( ! empty( $notes ) ) {
-					$transaction->notes = $notes;
-				}
-				$transaction->external_id = $external_id;
-			
-				$transaction->save();
-					
-				$ms_relationship->process_transaction( $transaction );
-			
-				do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $transaction, $ms_relationship );
+			if( empty( $transaction ) ) {
+				$transaction = $ms_relationship->get_current_invoice();
 			}
+			$transaction->external_id = $external_id;
+			if( ! empty( $notes ) ) {
+				$transaction->add_notes( $notes );
+			}
+			$transaction->save();
+				
+			if( ! empty( $status ) ) {
+				$transaction->status = $status;
+				$ms_relationship->process_transaction( $transaction );
+				$transaction->save();
+			}
+			do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $transaction, $ms_relationship );
 		} 
 		else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
