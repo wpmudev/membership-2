@@ -677,7 +677,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_CANCELED:
 			case self::STATUS_ACTIVE:
 				$this->trial_period_completed = true;
-				MS_Helper_Debug::log("rewnw: $this->expire_date");
 				$this->set_start_date( $this->expire_date );
 				break;
 			case self::STATUS_TRIAL:

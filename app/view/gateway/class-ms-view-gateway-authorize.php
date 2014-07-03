@@ -19,6 +19,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 			<div class='ms-wrap'>
 				<h2><?php echo __( 'Signup ', MS_TEXT_DOMAIN ); ?> </h2>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
+					<?php wp_nonce_field( "{$this->id}_{$this->data['ms_relationship_id']}" ); ?>
 					<?php foreach( $this->fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_input( $field ); ?>
 					<?php endforeach;?>

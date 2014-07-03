@@ -284,7 +284,9 @@ class MS_Controller_Registration extends MS_Controller {
 				 * Process payment.
 				 */
 				case 'process_purchase':
-					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) ) {
+					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) && 
+						! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'],  $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
+						 
 						$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 						
 						$gateway_id = $_POST['gateway'];
