@@ -131,10 +131,69 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$ms_relationship->set_start_date();
 			$ms_relationship->set_status( self::STATUS_PENDING );
 			$ms_relationship->trial_period_completed = false;
-			$ms_relationship->save();
 		}
 		$ms_relationship->gateway_id = $gateway_id;
+		$ms_relationship->save();
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
+	}
+	
+	/**
+	 * Cancel membership.
+	 *
+	 * @since 4.0.0
+	 */
+	public function cancel_membership() {
+	
+		do_action( 'ms_model_membership_relationship_cancel_membership', $this );
+	
+		try {
+			$gateway = $this->get_gateway();
+			$gateway->cancel_membership( $this );
+				
+			if( self::STATUS_TRIAL == $this->status ) {
+				$this->expire_date = $this->trial_expire_date;
+				$this->trial_expire_date = null;
+			}
+				
+			$this->status = self::STATUS_CANCELED;
+			$this->save();
+				
+			MS_Model_News::save_news( $this, MS_Model_News::TYPE_MS_CANCEL );
+		}
+		catch (Exception $e) {
+				
+			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
+		}
+	
+	}
+	
+	/**
+	 * Deactivate membership.
+	 *
+	 * @since 4.0.0
+	 */
+	public function deactivate_membership() {
+	
+		do_action( 'ms_model_membership_relationship_deactivate_membership', $this );
+	
+		try {
+			$gateway = $this->get_gateway();
+			$gateway->cancel_membership( $this );
+				
+			if( self::STATUS_TRIAL == $this->status ) {
+				$this->expire_date = $this->trial_expire_date;
+				$this->trial_expire_date = null;
+			}
+				
+			$this->status = self::STATUS_DEACTIVATED;
+			$this->save();
+				
+			MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_DEACTIVATE );
+		}
+		catch (Exception $e) {
+				
+			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
+		}
 	}
 	
 	/**
@@ -481,14 +540,35 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return $gateway;
 	}
 	
+	/**
+	 * Get current membership invoice.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return MS_Model_Invoice
+	 */
 	public function get_current_invoice() {
 		return MS_Model_Invoice::get_current_invoice( $this );
 	}
 	
+	/**
+	 * Get next membership invoice.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return MS_Model_Invoice
+	 */
 	public function get_next_invoice() {
 		return MS_Model_Invoice::get_next_invoice( $this );
 	}
 	
+	/**
+	 * Get previous membership invoice.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return MS_Model_Invoice
+	 */
 	public function get_previous_invoice() {
 		return MS_Model_Invoice::get_previous_invoice( $this );
 	}
@@ -578,7 +658,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$this->save();
 	}
 	
+	/**
+	 * Renew the membership period dates.
+	 * 
+	 * @since 4.0.0
+	 */
 	public function renew_period() {
+		
+		do_action( 'ms_model_membership_relationship_renew_period', $this );
+		
 		MS_Helper_Debug::log("status: $this->status");
 		switch( $this->status ) {
 			case self::STATUS_DEACTIVATED:
@@ -601,32 +689,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public function cancel_membership() {
-		MS_Helper_Debug::log("cancel_membership");
-		if( self::STATUS_TRIAL == $this->status ) {
-			$this->expire_date = $this->trial_expire_date;
-			$this->trial_expire_date = null;
-		}
-		
-		$this->status = self::STATUS_CANCELED;
-		$this->save();
-		
-		$gateway = $this->get_gateway();
-		$gateway->cancel_membership( $this );
-		MS_Model_News::save_news( $this, MS_Model_News::TYPE_MS_CANCEL );
-		
-	}
-	
-	public function deactivate_membership() {
-		$this->status = self::STATUS_DEACTIVATED;
-		$this->save();
-		MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_DEACTIVATE );
-			
-		$gateway = $this->get_gateway();
-		$gateway->cancel_membership( $this );
-		
-		do_action( 'ms_model_membership_relationship_deactivate_membership', $this );
-	}
+
 	
 	/**
 	 * Set membership relationship status.
