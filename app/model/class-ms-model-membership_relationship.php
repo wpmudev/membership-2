@@ -104,36 +104,43 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
 		
+		/** Not found, create a new one */
 		if( empty( $ms_relationship ) ) {
 			$ms_relationship = new self();
 			$ms_relationship->membership_id = $membership_id;
 			$ms_relationship->user_id = $user_id;
 		}
-		/**
-		 * Reset invoice counter.
-		 * The invoice history is keep.
-		 */
-		elseif( $ms_relationship->status == self::STATUS_DEACTIVATED ) {
-			$ms_relationship->current_invoice_number = 1;
+		
+		switch( $ms_relationship->status ) {
+			/**
+			 * Reset invoice counter.
+			 * The invoice history is keep.
+			 */
+			case self::STATUS_DEACTIVATED:
+				$ms_relationship->current_invoice_number = 1;
+				$ms_relationship->set_status( self::STATUS_PENDING );
+				
+			/** Initial status */
+			case self::STATUS_PENDING:
+				$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
+				$ms_relationship->description = $ms_relationship->name;
+				$ms_relationship->set_start_date();
+				$ms_relationship->trial_period_completed = false;
+				break;
+			case self::STATUS_TRIAL:
+			case self::STATUS_ACTIVE:
+			case self::STATUS_EXPIRED:
+			case self::STATUS_CANCELED:
+				$ms_relationship->trial_period_completed = false;
+				break;
 		}
 		
-		$renew_states = array(
-				self::STATUS_TRIAL,
-				self::STATUS_ACTIVE,
-				self::STATUS_EXPIRED,
-				self::STATUS_CANCELED,
-		);
-		/** Initial status */
-		if( ! in_array( $ms_relationship->status, $renew_states ) ) {
-			$ms_relationship->move_from_id = $move_from_id;
-			$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id, gateway_id: $gateway_id";
-			$ms_relationship->description = $ms_relationship->name;
-			$ms_relationship->set_start_date();
-			$ms_relationship->set_status( self::STATUS_PENDING );
-			$ms_relationship->trial_period_completed = false;
-		}
+		/** always update */
+		$ms_relationship->move_from_id = $move_from_id;
 		$ms_relationship->gateway_id = $gateway_id;
+		
 		$ms_relationship->save();
+		
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
 	}
 	
