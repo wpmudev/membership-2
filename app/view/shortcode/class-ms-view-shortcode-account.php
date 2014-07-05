@@ -19,12 +19,18 @@ class MS_View_Shortcode_Account extends MS_View {
 					<table>
 						<tr>
 							<th><?php _e( 'Membership name', MS_TEXT_DOMAIN );?></th>
-							<th><?php _e( 'Membership status', MS_TEXT_DOMAIN );?></th>
+							<th><?php _e( 'Status', MS_TEXT_DOMAIN );?></th>
+							<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN );?></th>
+							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN );?></th>
 						</tr>
-						<?php foreach( $this->data['membership'] as $membership ) :?>
+						<?php foreach( $this->data['membership'] as $membership ):
+								$ms_relationship = $this->data['member']->membership_relationships[ $membership->id ]; 
+						?>
 							<tr>
 								<td><?php echo $membership->name; ?></td>
-								<td><?php echo $this->data['member']->membership_relationships[ $membership->id ]->status; ?></td>
+								<td><?php echo $ms_relationship->status; ?></td>
+								<td><?php echo ( $ms_relationship->trial_expire_date ) ? $ms_relationship->trial_expire_date : __( 'No trial', MS_TEXT_DOMAIN ); ?></td>
+								<td><?php echo $ms_relationship->expire_date; ?></td>
 							</tr>
 						<?php endforeach;?>
 					</table>
@@ -38,23 +44,6 @@ class MS_View_Shortcode_Account extends MS_View {
 						<lavel><?php echo $this->data['member']->$field;?></lavel>
 					</p>
 				<?php endforeach;?>
-				<h2>Activity</h2>
-				<table>
-					<thead>
-						<tr>
-							<th><?php _e( 'Date', MS_TEXT_DOMAIN );?></th>
-							<th><?php _e( 'Actvity', MS_TEXT_DOMAIN );?></th>
-						</tr>
-					</thead>
-					<tbody>
-					<?php foreach( $this->data['news'] as $news ): ?>
-						<tr>
-							<td><?php echo $news->post_modified;?></td>
-							<td><?php echo $news->description;?></td>
-						</tr>
-					<?php endforeach;?>
-					</tbody>
-				</table>
 				<h2>Invoice</h2>
 				<table>
 					<thead>
@@ -74,6 +63,23 @@ class MS_View_Shortcode_Account extends MS_View {
 							<td><?php echo $transaction->total;?></td>
 							<td><?php echo MS_Model_Membership::load( $transaction->membership_id )->name;?></td>
 							<td><?php echo $transaction->due_date;?></td>
+						</tr>
+					<?php endforeach;?>
+					</tbody>
+				</table>				
+				<h2>Activity</h2>
+				<table>
+					<thead>
+						<tr>
+							<th><?php _e( 'Date', MS_TEXT_DOMAIN );?></th>
+							<th><?php _e( 'Actvity', MS_TEXT_DOMAIN );?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach( $this->data['news'] as $news ): ?>
+						<tr>
+							<td><?php echo $news->post_modified;?></td>
+							<td><?php echo $news->description;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody>
