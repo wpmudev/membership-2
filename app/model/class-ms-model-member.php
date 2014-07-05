@@ -282,8 +282,6 @@ class MS_Model_Member extends MS_Model {
 	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 )
 	{
 		
-		do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
-		
 		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			return;
 		}
@@ -291,6 +289,9 @@ class MS_Model_Member extends MS_Model {
 		
 		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $this->id, $gateway_id, $move_from_id );
+
+			do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
+				
 			if( 'admin' == $gateway_id ) {
 				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
 			}
@@ -318,9 +319,9 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function drop_membership( $membership_id ) {
 		
-		do_action( 'ms_model_membership_drop_membership', $ms_relationship, $this );
-		
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			do_action( 'ms_model_membership_drop_membership', $this->membership_relationships[ $membership_id ], $this );
+			
 			$this->membership_relationships[ $membership_id ]->deactivate_membership();
 			unset( $this->membership_relationships[ $membership_id ] );
 		}
@@ -335,9 +336,9 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function cancel_membership( $membership_id ) {
 		
-		do_action( 'ms_model_membership_cancel_membership', $ms_relationship, $this );
-		
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
+		
 			$this->membership_relationships[ $membership_id ]->cancel_membership();
 		}
 	}
