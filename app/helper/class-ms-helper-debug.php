@@ -21,6 +21,9 @@
  * MA 02110-1301 USA                                                    
  *
  */
+if( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
+	define ('DEBUG_BACKTRACE_IGNORE_ARGS', 2);
+}
 
 /**
  * This Helper creates utility functions for debugging.
@@ -30,7 +33,6 @@
  * @subpackage Controller
  */
 class MS_Helper_Debug extends MS_Helper {
-	
 	/**
 	 * Logs errors to WordPress debug log.
 	 *
