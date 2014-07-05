@@ -21,6 +21,7 @@
  * MA 02110-1301 USA                                                    
  *
  */
+/** @todo FJ: I guess this issue just occurs in my dev */
 if( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
 	define ('DEBUG_BACKTRACE_IGNORE_ARGS', 2);
 }
