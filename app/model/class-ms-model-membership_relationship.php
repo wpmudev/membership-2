@@ -131,7 +131,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_ACTIVE:
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
-				$ms_relationship->trial_period_completed = false;
+				
 				break;
 		}
 		
