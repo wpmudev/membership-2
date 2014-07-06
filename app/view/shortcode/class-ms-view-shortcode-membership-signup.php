@@ -17,17 +17,17 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 							switch( $membership_relationship->status ) {
 	 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
 	 									$msg = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
 	 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
 	 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 	 									$msg = __( 'Membership expires on: ', MS_TEXT_DOMAIN ) . $membership_relationship->expire_date;
-	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, null, $msg );
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_PENDING:
 	 									$msg = __( 'Pending payment', MS_TEXT_DOMAIN );
-	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, null, $msg );
+	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg );
 	 									break;
 	 								default:
 	 									$this->membership_box_html( MS_Model_Membership::load( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
@@ -43,12 +43,12 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<?php
 					if( $this->data['member']->is_member() && ! empty( $this->data['memberships'] ) ) {
 						?>
-						    <?php  //***********  WE NEED TO CHANGE THIS PROCESS HERE ***************// ?>
 		 					<legend class="ms-upgrade-from"> 
 		 						<?php 
-									if ( MS_Plugin::instance()->addon->multiple_membership ) {
+		 							if( ! empty( $this->data['move_from_id'] ) ) {
 										echo __( 'Add membership', MS_TEXT_DOMAIN ); 										
-									} else {
+									} 
+									else {
 										echo __( 'Change membership', MS_TEXT_DOMAIN ); 										
 									}
 								?>
@@ -60,15 +60,15 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					<div class="ms-form-price-boxes">
 						<?php do_action( 'ms_membership_form_before_memberships' ); ?>
 						<?php
-							$membership_ids = array_keys( $this->data['member']->membership_relationships );
-							$move_from_id = reset( $membership_ids );
-							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
-							if( ! MS_Plugin::instance()->addon->multiple_membership && $move_from_id ) {
+							if( ! empty( $this->data['move_from_id'] ) ) {
 								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
+							}
+							else {
+								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;	
 							}
 
 							foreach( $this->data['memberships'] as $membership ) {
-								$this->membership_box_html( $membership, $action, $move_from_id );
+								$this->membership_box_html( $membership, $action );
 							}
 						?>
 						<?php do_action( 'ms_membership_form_after_memberships' ) ?>
@@ -81,9 +81,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		return $html;
 	}
 	
-	private function membership_box_html( $membership, $action, $move_from_id = 0, $msg = null ) {
+	private function membership_box_html( $membership, $action, $msg = null ) {
 		?>
-		<div id="ms-membership-wrapper-<?php echo $membership->id ?>" class="ms-membership-details-wrapper">
+		<div id="ms-membership-wrapper-<?php echo $membership->id; ?>" class="ms-membership-details-wrapper">
 			<div class="ms-top-bar">
 				<span class="ms-title"><?php echo $membership->name; ?></span>
 			</div>
@@ -92,20 +92,30 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			</div>
 			<div class="ms-bottom-bar">
 				<span class="ms-link">
-				<?php if( $msg ) : ?>
+				<?php if( $msg ): ?>
 					<span class="ms-bottom-msg"><?php echo $msg; ?></span>
 				<?php endif;?>
 				<?php
 					$query_args = array( 'action' => $action, 'membership' => $membership->id ) ;
-					if( ! empty( $move_from_id ) ) {
-						$query_args[ 'move_from' ] = $move_from_id; 
+					if( ! empty( $this->data['move_from_id'] ) ) {
+						$query_args[ 'move_from' ] = $this->data['move_from_id']; 
 					}
 					$link = wp_nonce_url( add_query_arg( $query_args ), $action );
 					$class = apply_filters( 'ms_membership_form_button_class', 'ms-signup-button' );
+					
+					MS_Model_Gateway::factory( $membership->gateway_id );
+					$button_html = apply_filters( 'ms_view_shortcode_membership_signup_button_html_' . $membership->gateway_id, 
+						sprintf( 
+							'<a href="%s" class="%s">%s</a>', 
+							esc_url( $link ),
+							$class,
+							esc_html( $this->data[ "{$action}_text" ] )		
+						),
+						$membership,
+						$this->data['member']
+					);
+					echo $button_html;
 				?>
-				<a href="<?php echo esc_url( $link ) ?>" class="<?php echo $class; ?>">
-					<?php echo esc_html( $this->data[ "{$action}_text" ] ); ?>
-				</a>
 				</span>
 			</div>
 		</div>

@@ -114,7 +114,21 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		// Now get all the memberships excluding the ones the member is already a part of
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
-
+		
+		if( ! MS_Plugin::instance()->addon->multiple_membership ) {
+			/** Membership Relationship status which can move to another one */
+			foreach( $data['member']->membership_relationships as $ms_relationship ) {
+				if( in_array( $ms_relationship->status, array(
+						MS_Model_Membership_Relationship::STATUS_TRIAL,
+						MS_Model_Membership_Relationship::STATUS_ACTIVE,
+						MS_Model_Membership_Relationship::STATUS_EXPIRED,
+				 	) ) ) {
+					
+					$data['move_from_id'] = $ms_relationship->membership_id;
+					break;
+				}
+			}
+		}		
 		// Create the signup form view
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
