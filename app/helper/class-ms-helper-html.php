@@ -75,6 +75,7 @@ class MS_Helper_Html extends MS_Helper {
 			'field_options' => array(),
 			'multiple'	=> '',
 			'tooltip'   => '',
+		 	'alt'		=> '',
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 	
@@ -260,7 +261,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @return void But does output HTML.
 	 */
-	public static function html_link( $args = array() ) {
+	public static function html_link( $args = array(), $return = false ) {
 		$defaults = array(
 			'id' 		=> '',
 			'title'		=> '',
@@ -270,7 +271,13 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		extract( wp_parse_args( $args, $defaults ) );
 		$url = esc_url( $url );
-		echo "<a id='$id' title='$title' class='$class' href='$url'>$value</a>";
+		$html = "<a id='$id' title='$title' class='$class' href='$url'>$value</a>";
+		if( $return ) {
+			return $html;
+		}
+		else {
+			echo $html;
+		}
 	}
 	
 	/**
