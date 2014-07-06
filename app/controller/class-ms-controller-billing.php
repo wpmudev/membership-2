@@ -204,9 +204,9 @@ class MS_Controller_Billing extends MS_Controller {
 			$member = ! empty ( $fields['user_id'] ) ? MS_Model_Member::load( $fields['user_id'] ) : false;
 			$membership = ! empty( $fields['membership_id'] ) ? MS_Model_Membership::load( $fields['membership_id'] ) : false;
 			
-			$has_relationship = $member ? $membership ? in_array( $fields['membership_id'], $member->membership_relationships ) : false : false;
+// 			$has_relationship = $member ? $membership ? in_array( $fields['membership_id'], $member->membership_relationships ) : false : false;
 			
-			if ( $has_relationship ) {
+// 			if ( $has_relationship ) {
 				
 				$transaction = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
 				if( $transaction->id == 0 ) {
@@ -239,9 +239,9 @@ class MS_Controller_Billing extends MS_Controller {
 						$ms_relationship->save();
 				
 				}
-			} else {
-				$msg = MS_Helper_Billing::BILLING_MSG_NOT_A_MEMBER;
-			}
+// 			} else {
+// 				$msg = MS_Helper_Billing::BILLING_MSG_NOT_A_MEMBER;
+// 			}
 			
 		}
 		return $msg;	

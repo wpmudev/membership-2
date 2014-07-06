@@ -80,7 +80,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	protected $tax_name;
 	
-	protected $total;
+	private $total;
 	
 	protected $trial_period;
 	
@@ -344,7 +344,7 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 				case 'discount':
 				case 'pro_rate':
 					$this->$property = floatval( $value );
-					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount;
+					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount - $this->pro_rate;
 					break;
 				default:
 					$this->$property = $value;
