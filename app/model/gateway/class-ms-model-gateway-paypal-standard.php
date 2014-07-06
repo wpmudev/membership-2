@@ -38,9 +38,17 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $mode;
 	
+	public function __construct() {
+		parent::__construct();
+		$this->add_filter( 'ms_view_shortcode_membership_signup_button_html_' . $this->id, 'cancel_button', 10, 2 );
+	}
+	
 	public function purchase_button( $ms_relationship = false ) {
 		
 		$membership = $ms_relationship->get_membership();
+		
+		$invoice = $ms_relationship->get_current_invoice();
+		$regular_invoice = null;
 		
 		$fields = array(
 				'charset' => array(
@@ -125,9 +133,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			);
 		}
 		
-		$invoice = $ms_relationship->get_current_invoice();
-		$regular_invoice = null;
-
 		/** Trial period */
 		if( $membership->trial_period_enabled && $invoice->trial_period ) {
 			$regular_invoice = $ms_relationship->get_next_invoice();
@@ -413,26 +418,40 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	}
 	
 	/**
-	 * Cancels active recuring subscriptions
+	 * Cancel membership button.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @access public
 	 */
-	public function cancel_membership( $ms_relationship ) {
+	public function cancel_button( $html_link, $membership ) {
 	
-		$membership = $ms_relationship->get_membership();
 		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || $membership->trial_period_enabled ) {
-	
-			$invoices[] = $ms_relationship->get_previous_invoice();
-			$invoices[] = $ms_relationship->get_current_invoice();
-			MS_Helper_Debug::log( $invoices );
-			foreach( $invoices as $invoice ) {
-				if( ! empty( $invoice->external_id['arb'] ) ) {
-					$this->get_arb()->cancelSubscription( $invoice->external_id['arb'] );
-					MS_Helper_Debug::log("canceled arb subscription: $invoice->external_id ");
-				}
+			if( ! empty( $this->cancel_button_url ) && strpos( $this->cancel_button_url, 'http' ) !== 0 ) {
+				$cancel_btn = array(
+						'id' => 'submit',
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => $this->pay_button_url,
+				);
 			}
+			else {
+				$cancel_btn = array(
+						'id' => 'submit',
+						'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+						'value' =>  $this->cancel_button_url ? $this->cancel_button_url : 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif',
+				);
+			}
+
+			if( self::MODE_LIVE == $this->mode ) {
+				$action = 'https://www.paypal.com/cgi-bin/webscr';
+			}
+			else {
+				$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+			}
+			MS_Helper_Html::html_link( array(
+				'url' => $action . '?cmd=_subscr-find&alias=' . $this->merchant_id,
+				'value' => MS_Helper_Html::html_input( $cancel_btn, true ),
+			) );
 		}
 	}
 	
