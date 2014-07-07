@@ -154,6 +154,17 @@ class MS_Model_Gateway extends MS_Model_Option {
 	}
 	
 	/**
+	 * Request automatic payment to the gateway.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function request_payment( $ms_relationship ) {
+		
+	}
+	
+	/**
 	 * Url that fires handle_return of this gateway.
 	 * 
 	 * @return string The return url.

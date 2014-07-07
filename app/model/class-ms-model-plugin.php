@@ -278,6 +278,7 @@ class MS_Model_Plugin extends MS_Model {
 			$periods = array();
 		}
 	
+		$periods['6hours'] = array( 'interval' => 6 * HOUR_IN_SECONDS, 'display' => __( 'Every 6 Hours', MS_TEXT_DOMAIN ) );
 		$periods['60mins'] = array( 'interval' => 60 * MINUTE_IN_SECONDS, 'display' => __( 'Every 60 Mins', MS_TEXT_DOMAIN ) );
 		$periods['30mins'] = array( 'interval' => 30 * MINUTE_IN_SECONDS, 'display' => __( 'Every 30 Mins', MS_TEXT_DOMAIN ) );
 		$periods['15mins'] = array( 'interval' => 15 * MINUTE_IN_SECONDS, 'display' => __( 'Every 15 Mins', MS_TEXT_DOMAIN ) );
@@ -306,7 +307,7 @@ class MS_Model_Plugin extends MS_Model {
 			/**
 			 * Check for membership status.
 			 */
-			$checkperiod = MS_Plugin::instance()->cron_interval == 10 ? '10mins' : '5mins';
+			$checkperiod = '6hours';
 			if ( ! wp_next_scheduled( 'ms_check_membership_status' ) ) {
 				/** Action to be called by the cron job */
 				wp_schedule_event( time(), $checkperiod, 'ms_check_membership_status' );
@@ -367,6 +368,11 @@ class MS_Model_Plugin extends MS_Model {
 							$comm->add_to_queue( $ms_relationship->id );
 						}
 					}
+					break;
+				case MS_Model_Membership_Relationship::STATUS_TRIAL_EXPIRED:
+					$ms_relationship->create_invoice();
+					$gateway = $ms_relationship->get_gateway();
+					$gateway->request_payment();
 					break;
 				/** 
 				 * Send period end communication. 
