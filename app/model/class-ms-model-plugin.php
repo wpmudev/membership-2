@@ -352,10 +352,10 @@ class MS_Model_Plugin extends MS_Model {
 				/** Deactivate unused, pending ms_relationships. */
 				case MS_Model_Membership_Relationship::STATUS_PENDING:
 					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
-					$expire_dt = MS_Helper_Period::add_interval( $deactivate_pending_after_days, MS_Helper_Period::PERIOD_TYPE_DAYS );
-					if( strtotime( $expire_dt ) > strtotime( MS_Helper_Period::current_date() ) ) {
-						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
-					}
+// 					$expire_dt = MS_Helper_Period::add_interval( $deactivate_pending_after_days, MS_Helper_Period::PERIOD_TYPE_DAYS );
+// 					if( strtotime( $expire_dt ) > strtotime( MS_Helper_Period::current_date() ) ) {
+// 						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+// 					}
 				break;
 				/** Send trial end communication. */
 				case MS_Model_Membership_Relationship::STATUS_TRIAL:
@@ -371,8 +371,23 @@ class MS_Model_Plugin extends MS_Model {
 					break;
 				case MS_Model_Membership_Relationship::STATUS_TRIAL_EXPIRED:
 					$ms_relationship->create_invoice();
+					
+					/** Request payment to the gateway (for gateways that allows it). */
 					$gateway = $ms_relationship->get_gateway();
 					$gateway->request_payment();
+					$trial_expire = $ms_relationship->get_remaining_trial_period();
+					
+					/** Deactivate expired memberships after a period of time. */
+					if( $trial_expire->invert && $trial_expire->days < $deactivate_expired_after_days ) {
+						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+						
+						/** Move membership to configured membership. */
+						$membership = $ms_relationship->get_membership();
+						if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
+							$member = MS_Model_Member::load( $ms_relationship->user_id );
+							$member->add_membership( $membership->on_end_membership_id );
+						}
+					}
 					break;
 				/** 
 				 * Send period end communication. 
@@ -399,8 +414,21 @@ class MS_Model_Plugin extends MS_Model {
 							}
 						}
 					}
+					/** Request payment to the gateway (for gateways that allows it). */
+					if( $expire->invert ) {
+						$gateway = $ms_relationship->get_gateway();
+						$gateway->request_payment();
+					}
+					/** Deactivate expired memberships after a period of time. */
 					if( $expire->invert && $expire->days < $deactivate_expired_after_days ) {
-						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );	
+						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+						
+						/** Move membership to configured membership. */
+						$membership = $ms_relationship->get_membership();
+						if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
+							$member = MS_Model_Member::load( $ms_relationship->user_id );
+							$member->add_membership( $membership->on_end_membership_id );
+						}	
 					}
 					break;
 				/** Deactivated status won't appear here, but it can be changed in get_membership_relationships $args.*/	
