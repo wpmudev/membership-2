@@ -31,6 +31,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	const STATUS_ACTIVE = 'active';
 	
 	const STATUS_TRIAL = 'trial';
+	
+	const STATUS_TRIAL_EXPIRED = 'trial_expired';
 
 	const STATUS_EXPIRED = 'expired';
 	
@@ -81,7 +83,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_relationship_get_status_types', array(
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
 				self::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
-				self::STATUS_TRIAL=> __( 'Trial', MS_TEXT_DOMAIN ),
+				self::STATUS_TRIAL => __( 'Trial', MS_TEXT_DOMAIN ),
+				self::STATUS_TRIAL_EXPIRED => __( 'Trial Expired', MS_TEXT_DOMAIN ),
 				self::STATUS_EXPIRED => __( 'Expired', MS_TEXT_DOMAIN ),
 				self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
@@ -128,10 +131,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$ms_relationship->trial_period_completed = false;
 				break;
 			case self::STATUS_TRIAL:
+			case self::STATUS_TRIAL_EXPIRED:
 			case self::STATUS_ACTIVE:
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
-				
+				$ms_relationship->trial_period_completed = true;
 				break;
 		}
 		
@@ -687,6 +691,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$this->set_start_date( $this->expire_date );
 				break;
 			case self::STATUS_TRIAL:
+			case self::STATUS_TRIAL_EXPIRED:
 				$this->trial_period_completed = true;
 				break;
 			default:
@@ -706,16 +711,23 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @param string $status
 	 */
 	public function set_status( $status ) {
+		
+		/** These status are not validated, and promptly assigned */
 		$allowed_status = array( 
 				self::STATUS_DEACTIVATED, 
 				self::STATUS_PENDING,
 				self::STATUS_CANCELED,
+				self::STATUS_TRIAL_EXPIRED,
 		);
 		
 		if( ! in_array( $status, $allowed_status ) ){
 			$membership = $this->get_membership();
 			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
 				$status = self::STATUS_TRIAL;
+			}
+			elseif( ! empty( $this->trial_expire_date ) && $this->trial_expire_date == $this->expire_date && 
+					strtotime( $this->trial_expire_date ) <= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::STATUS_TRIAL_EXPIRED;
 			}
 			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
 				$status = self::STATUS_ACTIVE;
@@ -751,15 +763,21 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
  	 */
 	public function get_status() {
 
+		/** No further validations for these status */
 		$allowed_status = array(
 				self::STATUS_DEACTIVATED,
 				self::STATUS_PENDING,
+				self::STATUS_TRIAL_EXPIRED,
 		);
 		
 		if( ! in_array( $this->status, $allowed_status ) ){
 			$membership = $this->get_membership();
 			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
 				$status = self::STATUS_TRIAL;
+			}
+			elseif( ! empty( $this->trial_expire_date ) && $this->trial_expire_date == $this->expire_date &&
+					strtotime( $this->trial_expire_date ) <= strtotime( MS_Helper_Period::current_date() ) ) {
+				$status = self::STATUS_TRIAL_EXPIRED;
 			}
 			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
 				$status = self::STATUS_ACTIVE;
