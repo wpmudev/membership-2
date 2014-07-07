@@ -292,16 +292,12 @@ class MS_Model_Member extends MS_Model {
 
 			do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
 				
-			if( 'admin' == $gateway_id ) {
-				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
-			}
-			else {
+			if( 'admin' != $gateway_id ) {
 				$ms_relationship->get_current_invoice();
 			}
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 				$this->membership_relationships[ $membership_id ] = $ms_relationship;
 			}
-				
 		}
 		else {
 			$ms_relationship = $this->membership_relationships[ $membership_id ];

@@ -105,25 +105,32 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			return null;
 		}
 		
+		/** Try to reuse existing db record to keep history. */
 		$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
 		
-		/** Not found, create a new one */
+		/** Not found, create a new one. */
 		if( empty( $ms_relationship ) ) {
 			$ms_relationship = new self();
 			$ms_relationship->membership_id = $membership_id;
 			$ms_relationship->user_id = $user_id;
 		}
 		
+		/** Always update these fields. */
+		$ms_relationship->move_from_id = $move_from_id;
+		$ms_relationship->gateway_id = $gateway_id;
+		
+		/** Set initial state. */
 		switch( $ms_relationship->status ) {
 			/**
 			 * Reset invoice counter.
-			 * The invoice history is keep.
+			 * The invoice/transaction history is keep (using the membership_relationship_id ).
 			 */
 			case self::STATUS_DEACTIVATED:
 				$ms_relationship->current_invoice_number = 1;
 				$ms_relationship->set_status( self::STATUS_PENDING );
 				
 			/** Initial status */
+			default:
 			case self::STATUS_PENDING:
 				$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
 				$ms_relationship->description = $ms_relationship->name;
@@ -135,16 +142,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_ACTIVE:
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
+				/** Once a member or have tried the membership, not eligible to another trial period, unless the relationship is permanetly deleted. */
 				$ms_relationship->trial_period_completed = true;
 				break;
 		}
 		
-		/** always update */
-		$ms_relationship->move_from_id = $move_from_id;
-		$ms_relationship->gateway_id = $gateway_id;
-		
+		if( 'admin' == $gateway_id ) {
+			$ms_relationship->set_status( self::STATUS_ACTIVE );
+		}
+		else {
+			$ms_relationship->get_status();
+		}
 		$ms_relationship->save();
-		
+
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
 	}
 	
@@ -370,37 +380,21 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function set_start_date( $start_date = null ) {
 		$membership = $this->get_membership();
 		$this->trial_expire_date = null;
-		if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
-			if( ! empty( $start_date ) ) {
-				$this->start_date = $start_date;
-				if( $membership->trial_period_enabled && ! $this->trial_period_completed ) {
-					$this->trial_expire_date = $membership->get_trial_expire_date( $this->start_date );
-				}
-			}
-			else {
+		
+		if( ! empty( $start_date ) ) {
+			$this->start_date = $start_date;
+		}
+		elseif( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
 				$this->start_date = $membership->period_date_start;
-				if( $membership->trial_period_enabled && ! $this->trial_period_completed ) {
-					$this->trial_expire_date = $membership->get_trial_expire_date( $this->start_date );
-				}
-				$this->expire_date = $membership->period_date_end;
-			}
 		}
 		else {
-			if( ! empty( $start_date ) ) {
-				$this->start_date = $start_date;
-				if( $membership->trial_period_enabled && ! $this->trial_period_completed ) {
-					$this->trial_expire_date = $membership->get_trial_expire_date( $this->start_date );
-				}
-				$this->expire_date = $membership->get_expire_date( $this->start_date );
-			}
-			else {
-				$this->start_date = MS_Helper_Period::current_date();
-				if( $membership->trial_period_enabled && ! $this->trial_period_completed ) {
-					$this->trial_expire_date = $membership->get_trial_expire_date();
-				}
-				$this->expire_date = $membership->get_expire_date();
-			}
+			$this->start_date = MS_Helper_Period::current_date();
 		}
+		
+		$this->trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
+		
+		$this->expire_date = $this->calc_expire_date( $this->start_date );
+
 		$this->update_date = MS_Helper_Period::current_date();
 	}
 	
@@ -413,13 +407,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @param string $trial_expire_date
 	 */
 	public function set_trial_expire_date( $trial_expire_date ) {
-		$membership = $this->get_membership();
-		
 		if( strtotime( $trial_expire_date ) >= strtotime( $this->start_date ) ) {
 			$this->trial_expire_date = $trial_expire_date;
 		}
 		else {
-			$this->trial_expire_date = $membership->get_trial_expire_date( $this->start_date );
+			$this->trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
 		}
 		
 	}
@@ -435,16 +427,71 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function set_expire_date( $expire_date ) {
 		$membership = $this->get_membership();
 		
-		if( strtotime( $expire_date ) >= strtotime( $this->start_date ) ) { 
-			if( ! empty( $this->trial_expire_date) && strtotime( $expire_date ) >= strtotime( $this->trial_expire_date ) ) {
-				$this->$expire_date = $membership->get_expire_date( $this->start_date );
-			}
-			$this->expire_date = $expire_date;
+		if( strtotime( $expire_date ) < strtotime( $this->start_date ) || 
+			( ! empty( $this->trial_expire_date) && strtotime( $expire_date ) < strtotime( $this->trial_expire_date ) ) ) {
+
+			$this->expire_date = $this->calc_expire_date( $this->start_date );
 		}
 		else {
-			$this->$expire_date = $membership->get_expire_date( $this->start_date );
+			$this->expire_date = $expire_date;
 		}
 		
+	}
+	
+	/**
+	 * Calculate trial expire date.
+	 * 
+	 * Based in the membership definition.
+	 * 
+	 * @param string $start_date
+	 * @return string date
+	 */
+	public function calc_trial_expire_date( $start_date = null ) {
+		$membership = $this->get_membership();
+		if( empty( $start_date) ) {
+			$start_date = MS_Helper_Period::current_date();
+		}
+		if( ! $this->trial_period_completed && $membership->trial_period_enabled && $membership->trial_period['period_unit'] && $membership->trial_period['period_type'] ) {
+			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
+				$expiry_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $membership->period_date_start );
+			}
+			else {
+				$expiry_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $start_date );
+			}
+		}
+		else {
+			$expiry_date = MS_Helper_Period::current_date();
+		}
+		return $expiry_date;
+	}
+	
+	/**
+	 * Calculate expire date.
+	 * 
+	 * Based in the membership definition
+	 * 
+	 * @param string $start_date
+	 * @return string date
+	 */
+	public function calc_expire_date( $start_date = null ) {
+		$membership = $this->get_membership();
+		$start_date = $this->calc_trial_expire_date( $start_date );
+		$end_date = null;
+		switch( $membership->membership_type ){
+			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+				$end_date = false;
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+				$end_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $start_date );
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+				$end_date = $membership->period_end_date;
+				break;
+			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+				$end_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $start_date );
+				break;
+		}
+		return $end_date;
 	}
 	
 	/**
@@ -543,12 +590,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_gateway() {
 		
-		$gateway = null;
-		if( 'admin' != $this->gateway_id ) {
-			$gateway = MS_Model_Gateway::factory( $this->gateway_id );
-		}
-		
-		return $gateway;
+		return MS_Model_Gateway::factory( $this->gateway_id );
 	}
 	
 	/**

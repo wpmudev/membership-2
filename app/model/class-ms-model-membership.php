@@ -103,44 +103,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public function get_trial_expire_date( $start_date = null ) {
-		if( empty( $start_date) ) {
-			$start_date = MS_Helper_Period::current_date();
-		}
-		if( $this->trial_period_enabled && $this->trial_period['period_unit'] && $this->trial_period['period_type'] ) {
-			if( self::MEMBERSHIP_TYPE_DATE_RANGE == $this->membership_type ) {
-				$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $this->period_date_start );
-			}
-			else {
-				$expiry_date = MS_Helper_Period::add_interval( $this->trial_period['period_unit'], $this->trial_period['period_type'] , $start_date );
-			}
-		}
-		else {
-			$expiry_date = MS_Helper_Period::current_date();
-		}
-		return $expiry_date;
-	}
-	
-	public function get_expire_date( $start_date = null ) {
-		$start_date = $this->get_trial_expire_date( $start_date );
-		$end_date = null;
-		switch( $this->membership_type ){
-			case self::MEMBERSHIP_TYPE_PERMANENT:
-				$end_date = null;
-				break;
-			case self::MEMBERSHIP_TYPE_FINITE:
-				$end_date = MS_Helper_Period::add_interval( $this->period['period_unit'], $this->period['period_type'], $start_date );
-				break;
-			case self::MEMBERSHIP_TYPE_DATE_RANGE:
-				$end_date = $this->period_end_date;
-				break;
-			case self::MEMBERSHIP_TYPE_RECURRING:
-				$end_date = MS_Helper_Period::add_interval( $this->pay_cycle_period['period_unit'], $this->pay_cycle_period['period_type'], $start_date );
-				break;
-		}
-		return $end_date;		
-	}
-	
 	public static function get_membership_count( $args = null ) {
 		$args = self::get_query_args( $args );
 		
