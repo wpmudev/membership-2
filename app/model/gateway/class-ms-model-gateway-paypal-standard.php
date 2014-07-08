@@ -32,6 +32,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $manual_payment = false;
 	
+	protected $pro_rate = false;
+	
 	protected $merchant_id;
 	
 	protected $paypal_site;

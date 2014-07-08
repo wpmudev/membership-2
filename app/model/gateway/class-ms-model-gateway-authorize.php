@@ -41,6 +41,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $manual_payment = false;
 	
+	protected $pro_rate = true;
+	
 	protected $active = false;
 	
 	protected $api_login_id;
