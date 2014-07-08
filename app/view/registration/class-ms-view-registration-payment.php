@@ -75,7 +75,7 @@ class MS_View_Registration_Payment extends MS_View {
 						</td>
 					</tr>
 				<?php endif;?>
-				<?php if( ! empty( $invoice->pro_rate ) ): ?>
+				<?php if( $invoice->pro_rate ): ?>
 					<tr>
 						<td class='ms-title-column'>
 							<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>

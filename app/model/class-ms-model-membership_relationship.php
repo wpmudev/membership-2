@@ -65,12 +65,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	protected $current_invoice_number = 1;
 	
-	/**
-	 * Move to membership id.
-	 * @var int $move_to_id
-	 */
-	protected $move_to_id;
-	
 	protected $move_from_id;
 	
 	/**
@@ -545,40 +539,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Calculate pro rate value.
-	 * 
-	 * Pro rate using remaining membership days.
-	 * 
-	 * @since 4.0
-	 * @return float The pro rate value.
-	 */
-	public function calculate_pro_rate() {
-		$value = 0;
-		$trial_value = 0;
-		$membership = $this->get_membership();
-		if( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
-			switch( $this->get_status() ) {
-				case self::STATUS_TRIAL:
-					$remaining = $this->get_remaining_trial_period();
-					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $this->start_date );
-					$trial_value = $remaining->days / $total->days;
-					$trial_value *= $membership->trial_price;
-				case self::STATUS_ACTIVE:
-				case self::STATUS_CANCELED:
-					$remaining = $this->get_remaining_period();
-					$total = MS_Helper_Period::subtract_dates(  MS_Helper_Period::current_date(), $membership->get_expire_date() );
-					$value = $remaining->days / $total->days;
-					$value *= $membership->price;
-					break;
-				default:
-					$value = 0;
-					break;
-			}
-		}
-		return apply_filters( 'ms_model_membership_relationship_calculate_pro_rate_value', $value + $trial_value, $this );
-	}
-	
-	/**
 	 * Set elapsed period of time of membership.
 	 * 
 	 * @since 4.0
@@ -785,7 +745,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $this->status, $allowed_status ) ){
 			$membership = $this->get_membership();
-			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+			if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) > strtotime( MS_Helper_Period::current_date() ) ) {
 				$status = self::STATUS_TRIAL;
 			}
 			elseif( ! empty( $this->trial_expire_date ) && $this->trial_expire_date == $this->expire_date &&

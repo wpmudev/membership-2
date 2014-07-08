@@ -26,7 +26,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	public static function get_current_invoice( $ms_relationship ) {
+	public static function get_current_invoice( $ms_relationship, $update_existing = true ) {
 		switch( $ms_relationship->status ) {
 			/**
 			 * Initial payment.
@@ -34,7 +34,15 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			case MS_Model_Membership_Relationship::STATUS_PENDING:
 			case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
 			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-				$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, true );
+				if( $update_existing ) {
+					$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, true );
+				}
+				else {
+					$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+					if( empty( $invoice ) ) {
+						$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, true );
+					}
+				}
 				break;
 			/**
 			 * Renew payment.
@@ -42,7 +50,15 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			case MS_Model_Membership_Relationship::STATUS_TRIAL:
 			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 			case MS_Model_Membership_Relationship::STATUS_CANCELED:
-				$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number );
+				if( $update_existing ) {
+					$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+				}
+				else {
+					$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+					if( empty( $invoice ) ) {
+						$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
+					}
+				}
 				break;
 			
 		}
@@ -50,16 +66,24 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 		return apply_filters( 'ms_model_invoice_get_current_invoice', $invoice );
 	}
 	
-	public static function get_next_invoice( $ms_relationship ) {
-		$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1 );
+	public static function get_next_invoice( $ms_relationship, $update_existing = true ) {
+		if( $update_existing ) {
+			$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1, false );
+		}
+		else {
+			$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1, false );
+			if( empty( $invoice ) ) {
+				$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1, false );
+			}
+		}
 		$invoice->discount = 0;
 		$invoice->pro_rate = 0;
 		$invoice->notes = array();
 		return apply_filters( 'ms_model_invoice_get_previous_invoice', $invoice );
 	}
 
-	public static function get_previous_invoice( $ms_relationship ) {
-		$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number - 1, false );
+	public static function get_previous_invoice( $ms_relationship, $status = false ) {
+		$invoice = self::get_invoice( $ms_relationship, $ms_relationship->current_invoice_number - 1, $status );
 		return apply_filters( 'ms_model_invoice_get_next_invoice', $invoice );
 	}
 	
@@ -88,7 +112,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	 * @param optional int $is_trial_period For trial period.
 	 * @param optional int $update_existing Update an existing invoice instead of creating a new one.
 	 */
-	public static function create_invoice( $ms_relationship, $invoice_number = false, $trial_period = false, $reuse_existing = true ) {
+	public static function create_invoice( $ms_relationship, $invoice_number = false, $trial_period = false, $update_existing = true ) {
 	
 		$invoice = null;
 		if( $gateway = $ms_relationship->get_gateway() ) {
@@ -120,17 +144,20 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 					break;
 			}
 	
-			$invoice = self::get_invoice( $ms_relationship, $invoice_number );
-			if( ! $reuse_existing || empty( $invoice ) ) {
+			if( $update_existing) {
+				$invoice = self::get_invoice( $ms_relationship, $invoice_number );
+			}
+			
+			if( empty( $invoice ) ) {
 				$invoice = MS_Model_Transaction::create_transaction( $ms_relationship );
 			}
+			
 			/** Update invoice info.*/
 			$invoice->invoice_number = $invoice_number;
 			$invoice->discount = 0;
-			if( ! empty ( $ms_relationship->move_from_id ) && ! MS_Plugin::instance()->addon->multiple_membership && ! empty( $gateway ) && $gateway->pro_rate ) {
-				$move_from = MS_Model_Membership_Relationship::load( $ms_relationship->move_from_id );
-					
-				if( $move_from->id > 0 && $pro_rate = $move_from->calculate_pro_rate() ) {
+			if( $ms_relationship->move_from_id ) {
+				$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
+				if( $move_from->id > 0 && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
 					$invoice->pro_rate = $pro_rate;
 					$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
 				}
@@ -160,8 +187,51 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			$invoice->ms_relationship_id = $ms_relationship->id;
 			$invoice->save();
 		}
-	
+
 		return apply_filters( 'ms_model_membership_relationship_create_invoice_object', $invoice );
 	
+	}
+	
+	/**
+	 * Calculate pro rate value.
+	 *
+	 * Pro rate using remaining membership days.
+	 *
+	 * @since 4.0
+	 * @return float The pro rate value.
+	 */
+	public static function calculate_pro_rate( $ms_relationship ) {
+		$value = 0;
+		$membership = $ms_relationship->get_membership();
+		
+		if( ! MS_Plugin::instance()->addon->multiple_membership && MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
+			$invoice = self::get_previous_invoice( $ms_relationship, MS_Model_Transaction::STATUS_PAID );
+			if( ! empty( $invoice ) ) {
+				switch( $ms_relationship->get_status() ) {
+					case MS_Model_Membership_Relationship::STATUS_TRIAL:
+						if( $invoice->trial_period ) {
+							$remaining = $ms_relationship->get_remaining_trial_period();
+							$total = MS_Helper_Period::subtract_dates(  $ms_relationship->trial_expire_date, $ms_relationship->start_date );
+							$value = $remaining->days / $total->days;
+							$value *= $invoice->total;
+						}
+						break;
+					case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+					case MS_Model_Membership_Relationship::STATUS_CANCELED:
+						if( ! $invoice->trial_period ) {
+							$remaining = $ms_relationship->get_remaining_period();
+							$total = MS_Helper_Period::subtract_dates( $ms_relationship->expire_date, $ms_relationship->start_date );
+							$value = $remaining->days / $total->days;
+							$value *= $invoice->total;
+						}
+						break;
+					default:
+						$value = 0;
+						break;
+				}
+			}
+		}
+
+		return apply_filters( 'ms_model_invoice_calculate_pro_rate_value', $value, $ms_relationship );
 	}
 }
