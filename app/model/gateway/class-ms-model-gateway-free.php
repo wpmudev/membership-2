@@ -30,7 +30,7 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $description = 'Free Memberships';
 	
-	protected $is_single = true;
+	protected $manual_payment = true;
 	
 	protected $active = true;
 	

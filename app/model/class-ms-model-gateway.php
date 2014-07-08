@@ -41,7 +41,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected $active = false;
 	
-	protected $is_single = true;
+	protected $manual_payment = true;
 	
 	protected $pro_rate = false;
 	
@@ -101,7 +101,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function factory( $gateway_id ) {
 		$gateway = null;
 		
-		if( self::is_valid_gateway( $gateway_id ) ) {
+		if( 'admin' == $gateway_id ) {
+			return new self();
+		}
+		elseif( self::is_valid_gateway( $gateway_id ) ) {
 			$gateways = self::get_gateways();
 			$gateway = $gateways[ $gateway_id ];
 		}
@@ -139,7 +142,32 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @access public
 	 */
 	public function process_purchase( $ms_relationship ) {
-	
+		/** Change the query to show memberships special page and replace the content with payment instructions */
+		global $wp_query;
+		$settings = MS_Plugin::instance()->settings;
+		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
+		$wp_query->query_vars['post_type'] = 'page';
+
+		if( ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
+		
+			$invoice = $ms_relationship->get_current_invoice();
+
+			if( 0 == $invoice->total ) {
+				$ms_relationship->process_transaction( $invoice );
+			}
+
+			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
+				wp_safe_redirect( $url );
+				exit;
+			}
+			else{
+				$this->add_action( 'the_content', 'content' );
+			}
+		}
+		else {
+			$this->add_action( 'the_content', 'content_error' );
+		}
 	}
 	
 	/**
@@ -171,34 +199,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function get_return_url() {
 		return apply_filters( 'ms_model_gateway_get_return_url', site_url( '/ms-payment-return/' . $this->id ), $this->id );
-	}
-	
-	/**
-	 * Create an invoice before sending payment to gateway.
-	 *
-	 * @since 4.0.0
-	 * @deprecated
-	 * @access public
-	 */
-	public function generate_invoice() {
-		if( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['gateway'] ) &&
-		! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['gateway'] .'_' . $_POST['membership_id'] ) ) {
-	
-			$membership_id = $_POST['membership_id'];
-			if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-				$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-				$coupon_id = ! empty ( $_POST['coupon_id'] ) ? $_POST['coupon_id'] : 0;
-				$membership = MS_Model_Membership::load( $membership_id );
-				$member = MS_Model_Member::get_current_member();
-
-				$ms_relationship = $member->add_membership( $membership->id, $this->id, $move_from_id );
-				
-				$transaction = $ms_relationship->create_invoice();
-				
-				return $transaction->id;
-			}
-		}
-		return false;
 	}
 	
 	/**

@@ -34,6 +34,9 @@ class MS_Model_Plugin extends MS_Model {
 				
 			$this->init_member();
 			
+			/** Init gateways to enable hooking actions/filters */ 
+			MS_Model_Gateway::get_gateways();
+			
 			$this->setup_cron_services();
 			
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
@@ -370,13 +373,13 @@ class MS_Model_Plugin extends MS_Model {
 					}
 					break;
 				case MS_Model_Membership_Relationship::STATUS_TRIAL_EXPIRED:
-					$ms_relationship->create_invoice();
+					$invoice = $ms_relationship->get_current_invoice();
 					
 					/** Request payment to the gateway (for gateways that allows it). */
 					$gateway = $ms_relationship->get_gateway();
 					$gateway->request_payment();
-					$trial_expire = $ms_relationship->get_remaining_trial_period();
 					
+					$trial_expire = $ms_relationship->get_remaining_trial_period();
 					/** Deactivate expired memberships after a period of time. */
 					if( $trial_expire->invert && $trial_expire->days < $deactivate_expired_after_days ) {
 						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
@@ -398,9 +401,13 @@ class MS_Model_Plugin extends MS_Model {
 				case MS_Model_Membership_Relationship::STATUS_EXPIRED:
 				case MS_Model_Membership_Relationship::STATUS_CANCELED:
 					do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $ms_relationship );
+					
+					/** Create next invoice before expire date.*/
 					if( ! $expire->invert && $expire->days < $invoice_before_days ) {
-						$ms_relationship->create_invoice();
+						$invoice = $ms_relationship->get_next_invoice();
 					}
+					
+					/** Configure communication messages.*/
 					$comms_active = array(
 							$comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ],
 							$comms[ MS_Model_Communication::COMM_TYPE_FINISHED ],
@@ -414,11 +421,14 @@ class MS_Model_Plugin extends MS_Model {
 							}
 						}
 					}
-					/** Request payment to the gateway (for gateways that allows it). */
+					
+					/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
 					if( $expire->invert ) {
 						$gateway = $ms_relationship->get_gateway();
 						$gateway->request_payment();
+						$expire = $ms_relationship->get_remaining_period();
 					}
+					
 					/** Deactivate expired memberships after a period of time. */
 					if( $expire->invert && $expire->days < $deactivate_expired_after_days ) {
 						$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
@@ -431,6 +441,7 @@ class MS_Model_Plugin extends MS_Model {
 						}	
 					}
 					break;
+					
 				/** Deactivated status won't appear here, but it can be changed in get_membership_relationships $args.*/	
 				case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
 				default:

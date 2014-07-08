@@ -97,6 +97,37 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 						'value' => $invoice->id,
 				),
 		);
+		
+		/** Don't send to paypal if free */
+		if( 0 == $invoice->total ) {
+			$fields = array(
+					'gateway' => array(
+							'id' => 'gateway',
+							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+							'value' => $this->id,
+					),
+					'ms_relationship_id' => array(
+							'id' => 'ms_relationship_id',
+							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+							'value' => $ms_relationship->id,
+					),
+					'step' => array(
+							'id' => 'step',
+							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+							'value' => 'process_purchase',
+					),
+			);
+			$action = null;
+		}
+		else {
+			if( self::MODE_LIVE == $this->mode ) {
+				$action = 'https://www.paypal.com/cgi-bin/webscr';
+			} 
+			else {
+				$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+			}
+		}
+		
 		if( ! empty( $this->pay_button_url ) && strpos( $this->pay_button_url, 'http' ) !== 0 ) {
 			$fields['submit'] = array(
 					'id' => 'submit',
@@ -108,20 +139,14 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			$fields['submit'] = array(
 					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-					'value' =>  $this->pay_button_url ? $this->pay_button_url : 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif',
+					'value' =>  $this->pay_button_url ? $this->pay_button_url : 'https://www.paypalobjects.com/en_US/i/btn/x-click-but06.gif',
 					'alt' => __( 'PayPal - The safer, easier way to pay online', MS_TEXT_DOMAIN ),
 			);
-		}
-						
-		if( self::MODE_LIVE == $this->mode ) {
-			$action = 'https://www.paypal.com/cgi-bin/webscr';
-		} 
-		else {
-			$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 		}
 		
 		?>
 			<form action="<?php echo $action;?>" method="post">
+				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
 				<?php 
 					foreach( $fields as $field ) {
 						MS_Helper_Html::html_input( $field ); 
@@ -133,6 +158,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	}
 	
 	public function handle_return() {
+
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && ! empty( $_POST['custom'] ) ) {
 			if( self::MODE_LIVE == $this->mode ) {
 				$domain = 'https://www.paypal.com';

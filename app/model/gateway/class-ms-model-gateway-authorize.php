@@ -39,7 +39,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $description = 'Authorize.net gateway integration';
 	
-	protected $is_single = false;
+	protected $manual_payment = false;
 	
 	protected $active = false;
 	
@@ -320,7 +320,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 						do_action( 'ms_model_gateway_authorize_process_purchase_membership_type_'. $membership->membership_type );
 						break;
 				}
-				$transactions[] = $this->process_serial_purchase( $invoice, $membership->trial_period, false );
+				$transactions[] = $this->process_non_serial_purchase( $invoice );
 				$regular_invoice = $ms_relationship->get_next_invoice();
 // 				MS_Helper_Debug::log("regular invoice");
 // 				MS_Helper_Debug::log($regular_invoice);

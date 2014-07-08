@@ -30,7 +30,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $description = 'Manual Gateway description';
 	
-	protected $is_single = true;
+	protected $manual_payment = true;
 	
 	protected $payment_info;
 	
@@ -76,34 +76,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			</form>
 		<?php 
 	}
-	
-	public function process_purchase() {
-		/** Change the query to show memberships special page and replace the content with payment instructions */
-		global $wp_query;
-		$settings = MS_Plugin::instance()->settings;
-		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
-		$wp_query->query_vars['post_type'] = 'page';
-
-		if( ! empty( $_POST['submit_manual'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
-			! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
 		
-			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
-			$ms_relationship->get_current_invoice();
-			
-			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
-				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
-				wp_safe_redirect( $url );
-				exit;
-			}
-			else{
-				$this->add_action( 'the_content', 'content' );
-			}
-		}
-		else {
-			$this->add_action( 'the_content', 'content_error' );
-		}
-	}
-	
 	public function content() {
 		ob_start();
 		 if( empty( $this->payment_info ) ) {
