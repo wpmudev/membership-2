@@ -30,6 +30,8 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $description = 'Manual Gateway description';
 	
+	protected $pro_rate = true;
+	
 	protected $manual_payment = true;
 	
 	protected $payment_info;
@@ -71,8 +73,11 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		?>
 			<form method="post">
 				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-				<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
+				<?php 
+					foreach( $fields as $field ) {
+						MS_Helper_Html::html_input( $field ); 
+					}
+				?>
 			</form>
 		<?php 
 	}
