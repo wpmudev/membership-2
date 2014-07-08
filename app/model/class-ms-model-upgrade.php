@@ -52,7 +52,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$user->delete_all_membership_usermeta();
 			$user->save();
 		}
-		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => 999 ) );
+		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => -1 ) );
 		foreach( $memberships as $membership ) {
 			$membership->delete( true );
 		}
@@ -64,7 +64,7 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $membership_relationships as $membership_relationship ) {
 			$membership_relationship->delete();
 		}
-		$transactions = MS_Model_Transaction::get_transactions();
+		$transactions = MS_Model_Transaction::get_transactions( array( 'posts_per_page' => -1 ) );
 		foreach( $transactions as $transaction ) {
 			$transaction->delete();
 		}
@@ -72,13 +72,13 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $gateways as $gateway ) {
 			$gateway->delete();
 		}
-		$transactions = MS_Model_Transaction::get_transactions();
-		foreach( $transactions as $transaction ) {
-			$transaction->delete();
-		}
-		$coupons = MS_Model_Transaction::get_transactions();
+		$coupons = MS_Model_Transaction::get_coupons( array( 'posts_per_page' => -1 ) );
 		foreach( $coupons as $coupon ) {
 			$coupon->delete();
+		}
+		$news = MS_Model_News::get_news( array( 'posts_per_page' => -1 ) );
+		foreach( $news as $new ) {
+			$new->delete();
 		}
 		
 		$simulate = MS_Model_Simulate::load();
