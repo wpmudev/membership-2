@@ -112,7 +112,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	 * @param optional int $is_trial_period For trial period.
 	 * @param optional int $update_existing Update an existing invoice instead of creating a new one.
 	 */
-	public static function create_invoice( $ms_relationship, $invoice_number = false, $trial_period = false, $update_existing = true ) {
+	public static function create_invoice( $ms_relationship, $invoice_number = 1, $trial_period = false, $update_existing = true ) {
 	
 		$invoice = null;
 		if( $gateway = $ms_relationship->get_gateway() ) {

@@ -107,6 +107,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$ms_relationship = new self();
 			$ms_relationship->membership_id = $membership_id;
 			$ms_relationship->user_id = $user_id;
+			$ms_relationship->status = self::STATUS_PENDING;
 		}
 		
 		/** Always update these fields. */
