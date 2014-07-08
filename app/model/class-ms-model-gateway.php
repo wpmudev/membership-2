@@ -153,7 +153,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$invoice = $ms_relationship->get_current_invoice();
 
 			if( 0 == $invoice->total ) {
-				$ms_relationship->process_transaction( $invoice );
+				$this->process_transaction( $invoice );
 			}
 
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
@@ -168,6 +168,14 @@ class MS_Model_Gateway extends MS_Model_Option {
 		else {
 			$this->add_action( 'the_content', 'content_error' );
 		}
+	}
+	
+	public function content() {
+		return '';
+	}
+	
+	public function content_error() {
+		return __( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN );
 	}
 	
 	/**

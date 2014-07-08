@@ -78,18 +78,11 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	}
 		
 	public function content() {
-		ob_start();
-		 if( empty( $this->payment_info ) ) {
+		if( empty( $this->payment_info ) ) {
 			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
-		 	$this->payment_info = __( "You need to edit you manual payment gateway instructions <a href='$link'>here</a>");
-		 }
-		echo wpautop( $this->payment_info ); 
-		$html = ob_get_clean();
-		return $html;
-	}
-	
-	public function content_error() {
-		return __( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN );
+			$this->payment_info = __( "You need to edit you manual payment gateway instructions <a href='$link'>here</a>");
+		}
+		return wpautop( $this->payment_info ); 
 	}
 		
 	/**

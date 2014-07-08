@@ -385,7 +385,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->start_date = $start_date;
 		}
 		elseif( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
-				$this->start_date = $membership->period_date_start;
+			$this->start_date = $membership->period_date_start;
 		}
 		else {
 			$this->start_date = MS_Helper_Period::current_date();
@@ -451,7 +451,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if( empty( $start_date) ) {
 			$start_date = MS_Helper_Period::current_date();
 		}
-		if( ! $this->trial_period_completed && $membership->trial_period_enabled && $membership->trial_period['period_unit'] && $membership->trial_period['period_type'] ) {
+		if( ! $this->trial_period_completed && $membership->trial_period_enabled ) {
 			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
 				$expiry_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $membership->period_date_start );
 			}
@@ -475,22 +475,32 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function calc_expire_date( $start_date = null ) {
 		$membership = $this->get_membership();
+		$gateway = $this->get_gateway();
+
 		$start_date = $this->calc_trial_expire_date( $start_date );
 		$end_date = null;
-		switch( $membership->membership_type ){
-			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
-				$end_date = false;
-				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
-				$end_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $start_date );
-				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
-				$end_date = $membership->period_date_end;
-				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-				$end_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $start_date );
-				break;
+		
+		/** When in trial period and gateway does not send automatic recurring payment, the expire date is equal to trial expire date. */
+		if( ! $this->trial_period_completed && $membership->trial_period_enabled && $gateway->manual_payment ) {
+			$end_date = $start_date;
 		}
+		else {
+			switch( $membership->membership_type ){
+				case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+					$end_date = false;
+					break;
+				case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+					$end_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $start_date );
+					break;
+				case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+					$end_date = $membership->period_date_end;
+					break;
+				case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+					$end_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $start_date );
+					break;
+			}
+		}
+
 		return $end_date;
 	}
 	
@@ -670,48 +680,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return $desc;
 	}
 	
-	 /**
-	 * Process transaction.
-	 * 
-	 * Process transaction status change related to this membership relationship.
-	 * Change status accordinly to transaction status.
-	 * 
-	 * @deprecated
-	 * @param MS_Model_Transaction $transaction The Transaction.
-	 */
-	public function process_transaction( $transaction ) {
-		
-		$member = MS_Model_Member::load( $this->user_id );
-		switch( $transaction->status ) {
-			case MS_Model_Transaction::STATUS_BILLED:
-				break;
-			case MS_Model_Transaction::STATUS_PAID:
-				if( $transaction->coupon_id ) {
-					$coupon = MS_Model_Coupon::load( $transaction->coupon_id );
-					$coupon->remove_coupon_application( $member->id, $transaction->membership_id );
-					$coupon->used++;
-					$coupon->save();
-				}
-				$this->current_invoice_number = max( $this->current_invoice_number, $transaction->invoice_number + 1 );
-				$member->active = true;
-				$this->renew_period();
-				$this->set_status( self::STATUS_ACTIVE );
-				break;
-			case MS_Model_Transaction::STATUS_REVERSED:
-			case MS_Model_Transaction::STATUS_REFUNDED:
-			case MS_Model_Transaction::STATUS_DENIED:
-			case MS_Model_Transaction::STATUS_DISPUTE:
-				$this->set_status( self::STATUS_DEACTIVATED );
-				$member->active = false;
-				break;
-			default:
-				do_action( 'ms_model_membership_relationship_process_transaction', $this, $transaction );
-				break;
-		}
-		$member->save();
-		$this->save();
-	}
-	
 	/**
 	 * Renew the membership period dates.
 	 * 
@@ -724,6 +692,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		switch( $this->status ) {
 			case self::STATUS_DEACTIVATED:
 			case self::STATUS_PENDING:
+				/** Set initial start, trial and expire date. */
 				$this->set_start_date();
 				break;
 			case self::STATUS_EXPIRED:
@@ -735,6 +704,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
 				$this->trial_period_completed = true;
+				/** Confirm expire date. */
+				$this->set_start_date( $this->start_date );
 				break;
 			default:
 				do_action( 'ms_model_membership_relationship_renew_period_for_status_' . $this->status, $this );

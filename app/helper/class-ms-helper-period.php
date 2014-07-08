@@ -113,7 +113,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The current date.
 	 */
 	public static function current_date() {
-		return apply_filters( 'membership_helper_period_subtract_dates', date( self::PERIOD_FORMAT ) );
+		return apply_filters( 'membership_helper_period_current_date', date( self::PERIOD_FORMAT ) );
 	}
 	
 	/**
