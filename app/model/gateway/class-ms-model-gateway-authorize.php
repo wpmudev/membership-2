@@ -540,7 +540,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
 			}
 			$transaction->save();
-			$ms_relationship->process_transaction( $transaction );
+			$this->process_transaction( $transaction );
 		}
 	}
 	

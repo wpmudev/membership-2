@@ -676,6 +676,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 * 
+	 * @deprecated
 	 * @param MS_Model_Transaction $transaction The Transaction.
 	 */
 	public function process_transaction( $transaction ) {

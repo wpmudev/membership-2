@@ -403,7 +403,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			
 			if( ! empty( $status ) ) {
 				$transaction->status = $status;
-				$ms_relationship->process_transaction( $transaction );
+				$this->process_transaction( $transaction );
 				$transaction->save();
 			}
 			do_action( "ms_model_gateway_paypal_standard_payment_processed_{$status}", $transaction, $ms_relationship );

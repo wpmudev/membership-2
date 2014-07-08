@@ -235,7 +235,8 @@ class MS_Controller_Billing extends MS_Controller {
 				if( ! empty( $fields['execute'] ) ) {
 				
 						$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
-						$ms_relationship->process_transaction( $transaction );
+						$gateway = $ms_relationship->get_gateway();
+						$gateway->process_transaction( $transaction );
 						$ms_relationship->save();
 				
 				}
