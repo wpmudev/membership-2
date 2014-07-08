@@ -493,7 +493,6 @@ class MS_Controller_Registration extends MS_Controller {
 	 */	
 	public function handle_payment_return( $wp_query ) {
 		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
-			MS_Model_Gateway::get_gateways();
 			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
 		}
 	}

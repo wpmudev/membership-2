@@ -30,7 +30,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $description = 'PayPal Standard Gateway for recurrent payments';
 	
-	protected $is_single = false;
+	protected $manual_payment = false;
 	
 	protected $merchant_id;
 	
@@ -38,9 +38,9 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
 	protected $mode;
 	
-	public function __construct() {
-		parent::__construct();
-		$this->add_filter( 'ms_view_shortcode_membership_signup_button_html_' . $this->id, 'cancel_button', 10, 2 );
+	public function after_load() {
+		parent::after_load();
+		$this->add_filter( 'ms_view_shortcode_membership_signup_button_html_membership_cancel_' . $this->id, 'cancel_button', 10, 2 );
 	}
 	
 	public function purchase_button( $ms_relationship = false ) {

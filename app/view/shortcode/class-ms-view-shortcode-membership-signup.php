@@ -103,8 +103,10 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					$link = wp_nonce_url( add_query_arg( $query_args ), $action );
 					$class = apply_filters( 'ms_membership_form_button_class', 'ms-signup-button' );
 					
-					MS_Model_Gateway::factory( $membership->gateway_id );
-					$button_html = apply_filters( 'ms_view_shortcode_membership_signup_button_html_' . $membership->gateway_id, 
+					$gateway_id = ! empty( $this->data['member']->membership_relationship[ $membership->id ]->gateway_id ) 
+										? $this->data['member']->membership_relationship[ $membership->id ]->gateway_id
+										: $membership->gateway_id;
+					$button_html = apply_filters( "ms_view_shortcode_membership_signup_button_html_{$action}_{$gateway_id}", 
 						sprintf( 
 							'<a href="%s" class="%s">%s</a>', 
 							esc_url( $link ),
