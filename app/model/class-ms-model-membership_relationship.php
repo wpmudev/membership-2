@@ -485,7 +485,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$end_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $start_date );
 				break;
 			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
-				$end_date = $membership->period_end_date;
+				$end_date = $membership->period_date_end;
 				break;
 			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
 				$end_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $start_date );
@@ -642,7 +642,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 		$membership = $this->get_membership();
 		$desc = sprintf( __( 'You will pay %s %s ', MS_TEXT_DOMAIN ), $currency, number_format( $membership->price, 2 ) );
-		
+
 		switch( $membership->membership_type ){
 			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
 				$desc .= __( 'for permanent access.', MS_TEXT_DOMAIN );
@@ -659,7 +659,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 	
 		if( $membership->trial_period_enabled && ! $this->trial_period_completed ) {
-			$desc .= sprintf( __( ' <br />In the trial period of %s %s, you will pay %s %s', MS_TEXT_DOMAIN ),
+			$desc .= sprintf( __( ' <br />In the trial period of %s %s, you will pay %s %s.', MS_TEXT_DOMAIN ),
 					$membership->trial_period['period_unit'],
 					$membership->trial_period['period_type'],
 					$currency,
@@ -720,7 +720,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		do_action( 'ms_model_membership_relationship_renew_period', $this );
 		
-		MS_Helper_Debug::log("status: $this->status");
 		switch( $this->status ) {
 			case self::STATUS_DEACTIVATED:
 			case self::STATUS_PENDING:
