@@ -259,6 +259,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				break;
 		}
 		$member->save();
+		$ms_relationship->gateway_id = $transaction->gateway_id;
 		$ms_relationship->save();
 	}
 	
