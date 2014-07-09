@@ -131,6 +131,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Membership registration controller - front end */
 		$this->controllers['registration'] = apply_filters( 'ms_controller_registration', new MS_Controller_Registration() );
 		
+		$this->add_filter( 'single_template', 'custom_template' );
 		flush_rewrite_rules(); //TODO No need to execute every time.
 	}
 
@@ -227,6 +228,19 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 	}
 
+	public function custom_template( $template ) {
+		global $post;
+		
+		/* Checks for invoice single template */
+		if( $post->post_type == 'ms_transaction' ) {
+			$invoice_template = apply_filters( 'ms_controller_plugin_invoice_template', MS_Plugin::instance()->dir . 'app/template/invoice.php' );
+			if( file_exists( $invoice_template ) ) {
+				$template = $invoice_template;
+			}
+		}
+
+		return $template;
+	}
 	/**
 	 * Adds CSS for Membership settings pages.
 	 *
