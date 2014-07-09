@@ -401,6 +401,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			if( ! empty( $notes ) ) {
 				$transaction->add_notes( $notes );
 			}
+			$transaction->gateway_id = $this->id;
 			$transaction->save();
 			
 			if( ! empty( $status ) ) {
