@@ -642,13 +642,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Renew the membership period dates.
+	 * Configure the membership period dates.
+	 * 
+	 * Set initial membership period or renew periods.
 	 * 
 	 * @since 4.0.0
 	 */
-	public function renew_period() {
+	public function config_period() {
 		
-		do_action( 'ms_model_membership_relationship_renew_period', $this );
+		do_action( 'ms_model_membership_relationship_config_period', $this );
 		
 		switch( $this->status ) {
 			case self::STATUS_DEACTIVATED:
@@ -660,6 +662,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_CANCELED:
 			case self::STATUS_ACTIVE:
 				$this->trial_period_completed = true;
+				/** Renew period */
 				$this->set_start_date( $this->expire_date );
 				break;
 			case self::STATUS_TRIAL:
@@ -669,7 +672,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$this->set_start_date( $this->start_date );
 				break;
 			default:
-				do_action( 'ms_model_membership_relationship_renew_period_for_status_' . $this->status, $this );
+				do_action( 'ms_model_membership_relationship_config_period_for_status_' . $this->status, $this );
 				break;
 		}
 	}

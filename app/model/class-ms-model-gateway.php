@@ -222,17 +222,36 @@ class MS_Model_Gateway extends MS_Model_Option {
 					$coupon->used++;
 					$coupon->save();
 				}
+				
+				/** Check for moving memberships */
+				if( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status && $ms_relationship->move_from_id && 
+					! MS_Plugin::instance()->addon->multiple_membership) {
+					
+					$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
+					if( ! empty( $move_from->id ) ) {
+						/** if allow pro rate, immediatly deactivate */
+						if( $this->pro_rate ) {
+							$move_from->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
+						}
+						/** if not, cancel it, and allow using it until expires */
+						else {
+							$move_from->status = MS_Model_Membership_Relationship::STATUS_CANCELED;
+						}
+						$move_from->save();
+					}
+				}
+				
 				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $transaction->invoice_number + 1 );
 				$member->active = true;
-				$ms_relationship->renew_period();
-				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
+				$ms_relationship->config_period();
+				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
 				break;
-			/** @todo move these status to paypal gateway*/	
+			/** @todo move these status to paypal gateway. */	
 			case MS_Model_Transaction::STATUS_REVERSED:
 			case MS_Model_Transaction::STATUS_REFUNDED:
 			case MS_Model_Transaction::STATUS_DENIED:
 			case MS_Model_Transaction::STATUS_DISPUTE:
-				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
 				break;
 			default:

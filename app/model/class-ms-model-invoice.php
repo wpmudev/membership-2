@@ -157,7 +157,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			$invoice->discount = 0;
 			if( $ms_relationship->move_from_id ) {
 				$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
-				if( $move_from->id > 0 && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
+				if( ! empty ($move_from->id ) && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
 					$invoice->pro_rate = $pro_rate;
 					$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
 				}

@@ -259,9 +259,10 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				
 			if( ! empty( $status ) ) {
 				$transaction->status = $status;
-				$this->process_transaction( $transaction );
 				$transaction->save();
+				$this->process_transaction( $transaction );
 			}
+
 			do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $transaction, $ms_relationship );
 		} 
 		else {
