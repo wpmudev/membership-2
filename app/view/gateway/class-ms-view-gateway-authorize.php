@@ -18,8 +18,11 @@ class MS_View_Gateway_Authorize extends MS_View {
 		?>
 			<div class='ms-wrap'>
 				<h2><?php echo __( 'Signup ', MS_TEXT_DOMAIN ); ?> </h2>
+				<?php if( $this->data['auth_error'] ): ?>
+					<div class='ms-validation-error'><p><?php echo $this->data['auth_error']; ?></p></div>
+				<?php endif; ?>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
-					<?php wp_nonce_field( "{$this->id}_{$this->data['ms_relationship_id']}" ); ?>
+					<?php wp_nonce_field( "{$this->data['gateway']}_{$this->data['ms_relationship_id']}" ); ?>
 					<?php foreach( $this->fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_input( $field ); ?>
 					<?php endforeach;?>

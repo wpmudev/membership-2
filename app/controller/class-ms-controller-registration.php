@@ -467,6 +467,7 @@ class MS_Controller_Registration extends MS_Controller {
 					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Model_Gateway_Authorize::load() );
 					$data['countries'] = $gateway->get_country_codes();
 					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $ms_relationship->membership_id );
+					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
 					break;
 				default:
 					break;

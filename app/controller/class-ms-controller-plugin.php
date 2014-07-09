@@ -58,7 +58,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @access private
 	 * @var $controllers
 	 */	
-	private $controllers = array();
+	protected $controllers = array();
 	
 	/**
 	 * Pointer array for all Admin pages.
