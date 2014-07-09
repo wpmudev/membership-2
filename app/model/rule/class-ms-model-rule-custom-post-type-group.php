@@ -78,11 +78,16 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				$post = get_queried_object();
 			}
 			$post_type = ! empty( $post->post_type ) ? $post->post_type : '';
-			if( is_a( $post, 'WP_Post' ) && in_array( $post_type, self::get_custom_post_types() ) && in_array( $post_type, $this->rule_value ) )  {
-				$has_access = true;
+			
+			if( is_a( $post, 'WP_Post' ) ) {
+				if( in_array( $post_type, self::get_ms_post_types() ) ) {
+					$has_access = true;
+				}
+				elseif( in_array( $post_type, self::get_custom_post_types() ) && in_array( $post_type, $this->rule_value ) )  {
+					$has_access = true;
+				}
 			}
 		}
-
 		return $has_access;
 	}
 	
@@ -111,26 +116,35 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		}
 		return $contents;
 	}
+	
 	/**
 	 * Get post types that should not be protected.
 	 * Default WP post types, membership post types
 	 * @return array The excluded post types.
 	 */
 	public static function get_excluded_content() {
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_excluded_content', array(
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_excluded_content', array_merge( array(
 				'post',
 				'page',
 				'attachment',
 				'revision',
 				'nav_menu_item',
+			),
+			self::get_ms_post_types() 
+		) );
+	}
+	
+	public static function get_ms_post_types() {
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', array(
 				'ms_membership',
 				'ms_transaction',
 				'ms_communication',
 				'ms_coupon',
 				'ms_relationship',
-				'ms_news', 
+				'ms_news',
 		) );
 	}
+	
 	/**
 	 * Get custom post types.
 	 * 

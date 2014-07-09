@@ -47,9 +47,8 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		$post_type = $wp_query->get( 'post_type' );
 		
 		/**
-		 * Only protect if cpt group.
-		 * Protect in list rather than on a single post.
-		 * Invalidate the query. 
+		 * Only protect if not cpt group.
+		 * Restrict query to show only has_access cpt posts.
 		 */
 		if( MS_Plugin::instance()->addon->cpt_post_by_post ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ! empty( $post_type ) &&
@@ -76,8 +75,13 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();
 			}
-			if( in_array( $post_id, $this->rule_value ) ) {
-				$has_access = true;
+			if( ! empty( $post_id ) ) {
+				if( in_array( get_post_type( $post_id ), MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types() ) ) {
+					$has_access = true;
+				}
+				elseif( in_array( $post_id, $this->rule_value ) ) {
+					$has_access = true;
+				}
 			}
 		}
 
@@ -92,7 +96,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		$post_id = null;
 		$post = get_queried_object();
 		
-		if( is_a( $post, 'WP_Post' ) && ! in_array( $post->post_type,  MS_Model_Rule_Custom_Post_Type_Group::get_excluded_content() ) )  {
+		if( is_a( $post, 'WP_Post' ) )  {
 			$post_id = $post->ID;
 		}
 		return $post_id;

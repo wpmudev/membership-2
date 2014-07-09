@@ -384,9 +384,9 @@ class MS_Plugin {
 			apply_filters( 'ms_register_post_type_ms_transaction',
 				array(
 					'description' => __( 'user transactions', MS_TEXT_DOMAIN ),					
-					'public' => false,
+					'public' => true,
 					'has_archive' => false,
-					'publicly_queryable' => false,
+					'publicly_queryable' => true,
 					'supports' => false,
 					'capability_type' => apply_filters( 'ms_transactions_capability', 'page' ),
 					'hierarchical' => false
