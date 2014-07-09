@@ -49,7 +49,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		
 		add_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, array( $this, 'membership_login' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );	
-
+		
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE, array( $this, 'membership_invoice' ) );
 	}
 
 	/**
@@ -60,7 +61,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
-// 		MS_Helper_Debug::log( "Register user shortcode..." );
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_register_user_atts',
 				shortcode_atts(
@@ -88,7 +88,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */	
 	public function membership_signup( $atts ) {
-// 		MS_Helper_Debug::log( __( 'About to run the signup shortcode...', MS_TEXT_DOMAIN ) );
+
 		$data = apply_filters( 
 				'ms_controller_shortcode_membership_signup_atts', 
 				shortcode_atts( 
@@ -210,7 +210,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function membership_account( $atts ) {
-// 		MS_Helper_Debug::log( "Inside the Account shortcode..." );
 		$data = apply_filters( 'ms_controller_shortcode_membership_account_atts',
 				shortcode_atts(
 						array(
@@ -240,5 +239,32 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view = apply_filters( 'ms_view_shortcode_account', new MS_View_Shortcode_Account() );
 		$view->data = $data;
 		return $view->to_html();
+	}
+	
+	public function membership_invoice( $atts ) {
+		$data = apply_filters( 'ms_controller_shortcode_invoice_atts',
+				shortcode_atts(
+						array(
+								'post_id' => 0,
+								'display_pay_button' => true,
+						),
+						$atts
+				)
+		);
+
+		if( ! empty( $data['post_id'] ) ) {
+			$invoice = MS_Model_Invoice::load( $data['post_id'] );
+			$data['invoice'] = $invoice;
+			$data['member'] = MS_Model_Member::load( $invoice->user_id );
+			$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
+			$data['ms_relationship'] = $ms_relationship;
+			$data['membership'] = $ms_relationship->get_membership();
+			$data['gateway'] = $ms_relationship->get_gateway();
+
+			$view = apply_filters( 'ms_view_shortcode_invoice', new MS_View_Shortcode_Invoice() );
+			$view->data = $data;
+
+			return $view->to_html();
+		}
 	}
 }

@@ -51,6 +51,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 	
 	const SCODE_MS_ACCOUNT = 'ms-membership-account';
 	
+	const SCODE_MS_INVOICE = 'ms-invoice';
+	
 	/**
 	 * This function searches content for the presence of a given short code.
 	 *
@@ -84,6 +86,7 @@ class MS_Helper_Shortcode extends MS_Helper {
 				self::SCODE_MS_BUTTON,
 				self::SCODE_LOGIN,
 				self::SCODE_MS_ACCOUNT,
+				self::SCODE_MS_INVOICE,
 		) );
 	}
 }

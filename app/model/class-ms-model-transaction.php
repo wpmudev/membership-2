@@ -291,7 +291,10 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 			switch( $property ) {
 				case 'total':
 					$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount - $this->pro_rate;
-					return ( $this->total >= 0 ) ? $this->total : 0; 
+					if( $this->total < 0 ) {
+						$this->total = 0;
+					}
+					return $this->total;
 					break;
 				case 'invoice':
 					return $this->id;
