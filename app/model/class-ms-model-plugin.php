@@ -134,7 +134,7 @@ class MS_Model_Plugin extends MS_Model {
 		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
 			return true;
 		}
-				
+
 		$settings = MS_Plugin::instance()->settings;
 		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
@@ -201,8 +201,8 @@ class MS_Model_Plugin extends MS_Model {
 			/** Don't redirect the protection page. */
 			$on_protection_page = $url == get_permalink();
 			$on_protection_page = $on_protection_page ? $on_protection_page : $url == $page_url;
-			
-			$url .= add_query_arg( array( 'redirect_to' =>  $page_url ), $url );
+
+			$url = add_query_arg( array( 'redirect_to' =>  $page_url ), $url );
 
 			if ( ! $on_protection_page ) {
 				wp_safe_redirect( $url );				

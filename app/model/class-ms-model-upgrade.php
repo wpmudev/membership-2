@@ -72,7 +72,7 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $gateways as $gateway ) {
 			$gateway->delete();
 		}
-		$coupons = MS_Model_Transaction::get_coupons( array( 'posts_per_page' => -1 ) );
+		$coupons = MS_Model_Coupon::get_coupons( array( 'posts_per_page' => -1 ) );
 		foreach( $coupons as $coupon ) {
 			$coupon->delete();
 		}
