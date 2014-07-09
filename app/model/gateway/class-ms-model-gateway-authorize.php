@@ -279,10 +279,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			exit;
 		}
 	
-		/** A purchase is serial when has more than one payment (recurrent, or with trial period) */
-		$has_serial = true;
-		
-		
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$membership = $ms_relationship->get_membership();
 		$invoice = $ms_relationship->get_current_invoice();
@@ -324,19 +320,18 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				}
 				$transactions[] = $this->process_non_serial_purchase( $invoice );
 				$regular_invoice = $ms_relationship->get_next_invoice();
-// 				MS_Helper_Debug::log("regular invoice");
-// 				MS_Helper_Debug::log($regular_invoice);
 				$transactions[] = $this->process_serial_purchase( $regular_invoice, $period );
 			}
 			else {
 				switch( $membership->membership_type ) {
 					case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-						$transactions[] = $this->process_serial_purchase( $invoice, $membership->pay_cycle_period );
+						$transactions[] = $this->process_non_serial_purchase( $invoice);
+						$regular_invoice = $ms_relationship->get_next_invoice();
+						$transactions[] = $this->process_serial_purchase( $regular_invoice, $membership->pay_cycle_period );
 						break;
 					case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
 					case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
 					case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
-						$has_serial = false;
 						if( $this->cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
 							$response = $this->get_cim()->getCustomerPaymentProfile( $this->cim_profile_id, $this->cim_payment_profile_id );
 							if ( $response->isError() ) {
@@ -352,12 +347,10 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				}
 			}	
 			
-			$this->commit_transactions( $transactions, $ms_relationship );
-				
 			if( ! $this->cim_profile_id ) {
 				$this->create_cim_profile( $member );
 			}
-			elseif ( ! $has_serial && empty( $this->cim_payment_profile_id ) ) {
+			elseif ( empty( $this->cim_payment_profile_id ) ) {
 				$this->update_cim_profile();
 			}
 			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
@@ -366,8 +359,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		}
 		catch( Exception $e ) {
 			MS_Helper_Debug::log( $e->getMessage() );
-			
-			$this->rollback_transactions( $transactions );
+			$_POST['auth_error'] = $e->getMessage();
+			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'gateway_form', 1 );
 		}
 	}
 		
@@ -397,7 +390,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$cim_transaction = $this->get_cim_transaction();
 			$cim_transaction->amount = $amount;
 	
-			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthOnly', $cim_transaction );
+			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthCapture', $cim_transaction );
 			if ( $response->isOk() ) {
 				$transaction->external_id = array( 'cim' => $response->getTransactionResponse()->transaction_id );
 				$transaction->external_info = 'cim';
@@ -407,7 +400,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 		} 
 		else {
-			$response = $this->get_aim()->authorizeOnly( $amount );
+			$response = $this->get_aim()->authorizeAndCapture( $amount );
 			if ( $response->approved ) {
 				$transaction->external_id = array( 'aim' => $response->transaction_id );
 				$transaction->external_info = 'aim';
@@ -416,14 +409,23 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				$errors = $response->response_reason_text;
 			}
 		}
+		if( $this->mode == self::MODE_SANDBOX ) {
+			$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
+		}
+		
 		$transaction->timestamp = time();
 		$transaction->save();
-		
+
 		if( $errors ) {
 			$transaction->save();
 			throw new Exception( $errors ); 
 		}
 		
+		$transaction->status = MS_Model_Transaction::STATUS_PAID;
+		$transaction->save();
+
+		$this->process_transaction( $transaction );
+
 		return $transaction;
 		
 	}
@@ -448,10 +450,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$invoice->save();
 			return array( $invoice );
 		}
-	
-		/** initialize AIM transaction to check CC */
-		$transaction = $this->process_non_serial_purchase( $invoice );
 		
+		$transaction = $invoice;
 		$subscription = $this->get_arb_subscription();
 		$subscription->amount = number_format( $transaction->total, 2, '.', '' );
 		$subscription->startDate = $transaction->due_date;
@@ -477,93 +477,30 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$arb = $this->get_arb();
 		$response = $arb->createSubscription( $subscription );
 		
+		$external_id = $transaction->external_id;
+		$external_id['arb'] = $response->getSubscriptionId();
+		$transaction->external_id = $external_id;
+		
+		if( $this->mode == self::MODE_SANDBOX ) {
+			$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
+		}
+		$transaction->gateway_id = $this->id;
+		
+		$transaction->save();
+
 		if( ! $response->isOk() ) {
 			$transaction->add_notes( 'Error: '. $response->getMessageText() );
 			$transaction->save();
 			throw new Exception( $response->getMessageText() );
 		}
-		$external_id = $transaction->external_id;
-		$external_id['arb'] = $response->getSubscriptionId();
-		$transaction->external_id = $external_id;
-		$transaction->save();
-		
-		return $transaction;			
-	}
-	
-	/**
-	 * Processes transactions.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 */
-	protected function commit_transactions( $transactions, $ms_relationship ) {
-		// process each transaction information and save it to CIM
-		foreach ( $transactions as $index => $transaction ) {
-			$status = 0;
-			foreach( $transaction->external_id as $type => $id ) {
-				switch( $type ) {
-					/**
-					 * "Capture" previously "Authorized" transaction.
-					 */
-					case 'aim':
-						$status = self::TRANSACTION_TYPE_AUTHORIZED;
-						
-						if ( $index == 0 ) {
-							$this->get_aim( true, false )->priorAuthCapture( $transaction->external_id['aim'] );
-							$status = self::TRANSACTION_TYPE_CAPTURED;
-						}
-						break;
-					/**
-					 * "Capture" previously "Authorized" transaction.
-					 */
-					case 'cim':
-						if ( $index == 0 ) {
-							$cim_transaction = $this->get_cim_transaction();
-							$cim_transaction->transId = $transaction->external_id['cim'];
-							$cim_transaction->amount = $transaction->total;
-							$this->get_cim()->createCustomerProfileTransaction( 'PriorAuthCapture', $cim_transaction );
-							$status = self::TRANSACTION_TYPE_CAPTURED;
-						}
-						break;
-					/**
-					 * No further actions required
-					 */
-					case 'arb':
-					default:
-						do_action( 'ms_model_gateway_authorize_commit_transaction', $transaction );
-						break;
-				}
-			}
-// 			if( MS_Helper_Period::current_date() == $transaction->due_date ) {
-				$transaction->status = MS_Model_Transaction::STATUS_PAID;
-// 			}
-			if( $this->mode == self::MODE_SANDBOX ) {
-				$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
-			}
+
+		if( strtotime( $transaction->due_date ) <= strtotime( MS_Helper_Period::current_date() ) ) {
+			$transaction->status = MS_Model_Transaction::STATUS_PAID;
 			$transaction->save();
 			$this->process_transaction( $transaction );
 		}
-	}
-	
-	/**
-	 * Rollbacks transactions all transactions and subscriptions.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 */
-	protected function rollback_transactions( $transactions ) {
-		MS_Helper_Debug::log( "rollback_transactions" );
-		MS_Helper_Debug::log( $transactions );
-		foreach ( $transactions as $transaction ) {
-			if ( 'aim' == $transaction->external_info ) {
-				$this->get_aim()->void( $transaction->external_id );
-			} 
-			elseif ( 'arb' == $transaction->external_info ) {
-				$this->get_arb()->cancelSubscription( $transaction->external_id );
-			}
-		}
+
+		return $transaction;			
 	}
 	
 	/**

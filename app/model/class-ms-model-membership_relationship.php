@@ -457,6 +457,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$expiry_date = MS_Helper_Period::current_date();
 		}
+		
+		if( strtotime( $start_date ) > strtotime( $expiry_date ) ) {
+			$expiry_date = $start_date;
+		}
+		
 		return $expiry_date;
 	}
 	
