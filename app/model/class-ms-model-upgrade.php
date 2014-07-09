@@ -80,6 +80,9 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $news as $new ) {
 			$new->delete();
 		}
+		$settings = MS_Plugin::instance()->settings;
+		$settings->tax = array( 'tax_name' => false, 'tax_rate' => false );
+		$settings->save();
 		
 		$simulate = MS_Model_Simulate::load();
 		$simulate->reset_simulation();
