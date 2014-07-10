@@ -318,16 +318,16 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 						do_action( 'ms_model_gateway_authorize_process_purchase_membership_type_'. $membership->membership_type );
 						break;
 				}
-				$transactions[] = $this->process_non_serial_purchase( $invoice );
+				$transactions[] = $this->online_purchase( $invoice );
 				$regular_invoice = $ms_relationship->get_next_invoice();
-				$transactions[] = $this->process_serial_purchase( $regular_invoice, $period );
+				$transactions[] = $this->schedule_purchase( $regular_invoice, $period );
 			}
 			else {
 				switch( $membership->membership_type ) {
 					case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
-						$transactions[] = $this->process_non_serial_purchase( $invoice);
+						$transactions[] = $this->online_purchase( $invoice);
 						$regular_invoice = $ms_relationship->get_next_invoice();
-						$transactions[] = $this->process_serial_purchase( $regular_invoice, $membership->pay_cycle_period );
+						$transactions[] = $this->schedule_purchase( $regular_invoice, $membership->pay_cycle_period );
 						break;
 					case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
 					case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
@@ -338,7 +338,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 								$this->cim_payment_profile_id = null;
 							}
 						}
-						$transactions[] = $this->process_non_serial_purchase( $invoice );
+						$transactions[] = $this->online_purchase( $invoice );
 						
 						break;
 					default:
@@ -357,6 +357,9 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			wp_safe_redirect( $url );
 				
 		}
+		/**
+		 * Give feedback to the user trying to pay know about the error.
+		 */
 		catch( Exception $e ) {
 			MS_Helper_Debug::log( $e->getMessage() );
 			$_POST['auth_error'] = $e->getMessage();
@@ -365,16 +368,17 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	}
 		
 	/**
-	 * Processes non recurrent purchase.
+	 * Processes online payments.
+	 * 
+	 * Send to Authorize.net to process the payment immediatly.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @access protected
-	 * @param float $price The current price information.
-	 * @param DateTime $date The date when to process this transaction.
-	 * @return array Returns transaction information on success, otherwise NULL.
+	 * @param MS_Model_Transaction $invoice The invoice to pay.
+	 * @return MS_Model_Transaction transaction information on success, otherwise throws an exception.
 	 */
-	protected function process_non_serial_purchase( $invoice ) {
+	protected function online_purchase( $invoice ) {
 		if ( 0 == $invoice->total ) {
 			$invoice->status = MS_Model_Transaction::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) ); 
@@ -431,19 +435,21 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	}
 	
 	/**
-	 * Processes serial or with trial period purchase.
+	 * Schedule a purchase to a future date.
+	 * 
+	 * Handles recurring payments and pay once schedule.
+	 * It is not online. 
+	 * Authorize.net gateway only process this in the following day. 
 	 *
 	 * @since 4.0.0
 	 *
 	 * @access protected
-	 * @global array $M_options The array of plugin options.
-	 * @param array $price The array with current price information.
-	 * @param DateTime $date The date when to process this transaction.
-	 * @param int $total_occurencies The number of billing occurrences or payments for the subscription.
-	 * 		To submit a subscription with no end date, this field must be submitted with a value of 9999
-	 * @return array Returns transaction information on success, otherwise NULL.
+	 * @param MS_Model_Transaction $invoice The invoice to pay.
+	 * @param array $period The period information to schedule.
+	 * @param optional boolean $recurring The schedule recurring information. 
+	 * @return MS_Model_Transaction transaction information on success, otherwise throws an exception.
 	 */
-	protected function process_serial_purchase( $invoice, $period, $recurring = true ) {
+	protected function schedule_purchase( $invoice, $period, $recurring = true ) {
 		if ( 0 == $invoice->total ) {
 			$invoice->status = MS_Model_Transaction::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
@@ -492,12 +498,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$transaction->add_notes( 'Error: '. $response->getMessageText() );
 			$transaction->save();
 			throw new Exception( $response->getMessageText() );
-		}
-
-		if( strtotime( $transaction->due_date ) <= strtotime( MS_Helper_Period::current_date() ) ) {
-			$transaction->status = MS_Model_Transaction::STATUS_PAID;
-			$transaction->save();
-			$this->process_transaction( $transaction );
 		}
 
 		return $transaction;			
