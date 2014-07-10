@@ -668,7 +668,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_ACTIVE:
 				$this->trial_period_completed = true;
 				/** Renew period */
-				$this->set_start_date( $this->expire_date );
+				$this->expire_date = $this->calc_expire_date( $this->expire_date );
 				break;
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
