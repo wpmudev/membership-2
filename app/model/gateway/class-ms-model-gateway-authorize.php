@@ -660,4 +660,24 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 		}			
 	}
+	
+	public function request_payment( $ms_relationship ) {
+		MS_Helper_Debug::log("request_payment");
+		MS_Helper_Debug::log($ms_relationship);
+		
+		$invoice = $ms_relationship->get_current_invoice();
+		MS_Helper_Debug::log($invoice);
+
+		if( ! empty( $invoice->external_id['arb'] ) ) {
+			$subscription_id = $invoice->external_id['arb'];
+			$arb = $this->get_arb();
+			$response = $arb->getSubscriptionStatus( $subscription_id );
+			MS_Helper_Debug::log($response);
+			if( 'active' == $response->xml->status ) {
+				$invoice->status = MS_Model_Transaction::STATUS_PAID;
+				$invoice->save();
+				$this->process_transaction( $invoice );
+			}
+		}
+	}
 }
