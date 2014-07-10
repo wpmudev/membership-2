@@ -27,6 +27,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 	protected static $CLASS_NAME = __CLASS__;
 	
 	public static function get_current_invoice( $ms_relationship, $update_existing = true ) {
+		$invoice = null;
 		switch( $ms_relationship->status ) {
 			/**
 			 * Initial payment.
