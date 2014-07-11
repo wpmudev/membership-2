@@ -49,6 +49,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			 * Renew payment.
 			 */
 			case MS_Model_Membership_Relationship::STATUS_TRIAL:
+			case MS_Model_Membership_Relationship::STATUS_TRIAL_EXPIRED:
 			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 			case MS_Model_Membership_Relationship::STATUS_CANCELED:
 				if( $update_existing ) {
