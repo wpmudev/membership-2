@@ -45,17 +45,29 @@ class MS_View_Settings_Gateway_Stripe extends MS_View {
 					'value' => $model->mode,
 					'field_options' => $model->get_mode_types(),
 			),
-			'test_api_key' => array(
-					'id' => 'test_api_key',
+			'test_secret_key' => array(
+					'id' => 'test_secret_key',
 					'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->test_api_key,
+					'value' => $model->test_secret_key,
 			),
-			'api_key' => array(
-					'id' => 'api_key',
-					'title' => __( 'API Live secret Key', MS_TEXT_DOMAIN ),
+			'test_publishable_key' => array(
+					'id' => 'test_publishable_key',
+					'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->api_key,
+					'value' => $model->test_publishable_key,
+			),
+			'secret_key' => array(
+					'id' => 'secret_key',
+					'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->secret_key,
+			),
+			'publishable_key' => array(
+					'id' => 'publishable_key',
+					'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->publishable_key,
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
