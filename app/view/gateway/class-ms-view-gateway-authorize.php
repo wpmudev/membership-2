@@ -62,7 +62,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 							</tbody>
 						</table>
 					</div>
-					<?php MS_Helper_Html::html_submit(); ?>
+					<?php MS_Helper_Html::html_submit( array( 'value' => __( 'Pay now', MS_TEXT_DOMAIN ) ) ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -217,7 +217,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 			'id' => 'profile',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 			'field_options' => $options,
-			'value' => $first_key,
+			'value' => ( $this->data['cim_payment_profile_id'] ) ? $this->data['cim_payment_profile_id'] : $first_key,
 		); 
 		?>
 			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">

@@ -463,10 +463,12 @@ class MS_Controller_Registration extends MS_Controller {
 			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 			switch( $_POST['gateway'] ) {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					$user_id = get_current_user_id();
 					$view = apply_filters( 'ms_view_gateway_authorize', new MS_View_Gateway_Authorize() );
 					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Model_Gateway_Authorize::load() );
 					$data['countries'] = $gateway->get_country_codes();
-					$data['cim_profiles'] = $gateway->get_cim_profile( get_current_user_id(), $ms_relationship->membership_id );
+					$data['cim_profiles'] = $gateway->get_cim_profile( $user_id, $ms_relationship->membership_id );
+					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $user_id );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
 					break;
 				default:
