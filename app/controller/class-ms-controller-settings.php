@@ -310,6 +310,9 @@ class MS_Controller_Settings extends MS_Controller {
 					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Authorize(), $gateway_id );
 						break;
+					case MS_Model_Gateway::GATEWAY_STRIPE:
+						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Stripe(), $gateway_id );
+						break;
 					default:
 						$view = apply_filters( 'ms_view_settings_gateway', new MS_View_Settings_Gateway(), $gateway_id );
 						break;

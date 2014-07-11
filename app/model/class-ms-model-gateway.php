@@ -30,6 +30,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	const GATEWAY_PAYPAL_SINGLE = 'paypal_single';
 	const GATEWAY_PAYPAL_STANDARD = 'paypal_standard';
 	const GATEWAY_AUTHORIZE = 'authorize';
+	const GATEWAY_STRIPE = 'stripe';
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
@@ -70,6 +71,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				self::GATEWAY_PAYPAL_STANDARD => MS_Model_Gateway_Paypal_Standard::load(),
 				self::GATEWAY_PAYPAL_SINGLE => MS_Model_Gateway_Paypal_Single::load(),
 				self::GATEWAY_AUTHORIZE => MS_Model_Gateway_Authorize::load(),
+				self::GATEWAY_STRIPE => MS_Model_Gateway_Stripe::load(),
 			);
 		}
 		if( $only_active ) {
