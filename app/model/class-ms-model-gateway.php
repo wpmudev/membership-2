@@ -248,14 +248,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 				$ms_relationship->config_period();
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
 				break;
-			/** @todo move these status to paypal gateway. */	
-			case MS_Model_Transaction::STATUS_REVERSED:
-			case MS_Model_Transaction::STATUS_REFUNDED:
-			case MS_Model_Transaction::STATUS_DENIED:
-			case MS_Model_Transaction::STATUS_DISPUTE:
-				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
-				$member->active = false;
-				break;
 			default:
 				do_action( 'ms_model_gateway_process_transaction', $transaction );
 				break;

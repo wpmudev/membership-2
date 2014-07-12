@@ -30,18 +30,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 	
 	const STATUS_PAID = 'paid';
 	
-	const STATUS_FAILED = 'failed';
-	
-	const STATUS_REVERSED = 'reversed';
-	
-	const STATUS_REFUNDED = 'refunded';
-	
-	const STATUS_PENDING = 'pending';
-	
-	const STATUS_DISPUTE = 'dispute';
-	
-	const STATUS_DENIED = 'denied';
-
 	/**
 	 * External transaction ID.
 	 * 
@@ -99,12 +87,6 @@ class MS_Model_Transaction extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_transaction_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
-				self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
-				self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
-				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
-				self::STATUS_DISPUTE => __( 'Dispute', MS_TEXT_DOMAIN ),
-				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 			) 
 		);
 	}

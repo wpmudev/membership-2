@@ -26,6 +26,18 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $id = self::GATEWAY_PAYPAL_SINGLE;
 	
+	const STATUS_FAILED = 'failed';
+	
+	const STATUS_REVERSED = 'reversed';
+	
+	const STATUS_REFUNDED = 'refunded';
+	
+	const STATUS_PENDING = 'pending';
+	
+	const STATUS_DISPUTE = 'dispute';
+	
+	const STATUS_DENIED = 'denied';
+	
 	protected $name = 'PayPal Single Gateway';
 	
 	protected $description = 'PayPal for single payments (not recurring).';
@@ -39,6 +51,26 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	protected $paypal_site;
 	
 	protected $mode;
+	
+	public function after_load() {
+		parent::after_load();
+		if( $this->active ) {
+			$this->add_filter( 'ms_model_transaction_get_status', 'gateway_custom_status' );
+		}
+	}
+	
+	public function gateway_custom_status( $status ) {
+		$paypal_status = array(
+			self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
+			self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
+			self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
+			self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+			self::STATUS_DISPUTE => __( 'Dispute', MS_TEXT_DOMAIN ),
+			self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
+		);
+		
+		return array_merge( $status, $paypal_status );
+	}
 	
 	public function purchase_button( $ms_relationship ) {
 		$invoice = $ms_relationship->get_current_invoice();
@@ -300,6 +332,35 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			)
 		);
 	}
+	
+	/**
+	 * Process transaction.
+	 *
+	 * Process transaction status change related to this membership relationship.
+	 * Change status accordinly to transaction status.
+	 *
+	 * @param MS_Model_Transaction $transaction The Transaction.
+	 */
+	public function process_transaction( $transaction ) {
+		$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
+		$member = MS_Model_Member::load( $transaction->user_id );
+		switch( $transaction->status ) {
+			case MS_Model_Transaction::STATUS_REVERSED:
+			case MS_Model_Transaction::STATUS_REFUNDED:
+			case MS_Model_Transaction::STATUS_DENIED:
+			case MS_Model_Transaction::STATUS_DISPUTE:
+				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
+				$member->active = false;
+				break;
+			default:
+				parent::process_transaction( $transaction );
+				break;
+		}
+		$member->save();
+		$ms_relationship->gateway_id = $transaction->gateway_id;
+		$ms_relationship->save();
+	}
+	
 	/**
 	 * Validate specific property before set.
 	 *
