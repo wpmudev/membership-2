@@ -358,6 +358,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	public function set_html_content_type() {
 		return 'text/html';
 	}
+	
 	/**
 	 * Validate specific property before set.
 	 *

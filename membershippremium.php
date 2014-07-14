@@ -273,7 +273,10 @@ class MS_Plugin {
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
-		add_action( 'init', array( &$this, 'membership_plugin_constructing' ));
+		add_action( 'init', array( &$this, 'membership_plugin_constructing' ) );
+		
+		add_filter( 'automessage_custom_user_hooks', array( &$this, 'automessage_custom_user_hooks' ) );
+		
 		
 		/**
 		 * Creates and Filters the Settings Model.
@@ -681,6 +684,27 @@ class MS_Plugin {
 			return $this->$property;
 		}
 	}
+	
+	/**
+	 * wpmu.dev Automessage plugin integration.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 * @param array $hooks The existing hooks.
+	 * @return array The modified array of hooks.
+	 */
+	public function automessage_custom_user_hooks( $hooks ) {
+		$comm_types = MS_Model_Communication::get_communication_type_titles();
+		
+		foreach( $comm_types as $type => $desc ) {
+			$action = "ms_communications_process_$type";
+			$hooks[ $action ] = array( 'action_nicename' => $desc ); 
+		}
+
+		return $hooks;
+	}
+	
 }
 
 /**
