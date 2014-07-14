@@ -69,7 +69,23 @@ class MS_Helper_Utility extends MS_Helper {
 			}
 	    }
 		
-	    return $assoc_array;
+	    return apply_filters( 'ms_helper_utility_array_intersect_assoc_deep', $assoc_array );
+	}
+	
+	/**
+	 * Get the current page url.
+	 * 
+	 * @return string The url.
+	 */
+	public static function get_current_page_url() {
+		$current_page_url = @$_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+		if ( $_SERVER['SERVER_PORT'] != '80' ) {
+			$current_page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+		}
+		else {
+			$current_page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+		}
+		return apply_filters( 'ms_helper_utility_get_current_page_url', $current_page_url );
 	}
 	
 }
