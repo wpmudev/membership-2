@@ -34,7 +34,6 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			 */
 			case MS_Model_Membership_Relationship::STATUS_PENDING:
 			case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
-			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
 				if( $update_existing ) {
 					$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, true );
 				}
@@ -52,6 +51,7 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			case MS_Model_Membership_Relationship::STATUS_TRIAL_EXPIRED:
 			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 			case MS_Model_Membership_Relationship::STATUS_CANCELED:
+			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
 				if( $update_existing ) {
 					$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number, false );
 				}
@@ -127,19 +127,13 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 			switch( $ms_relationship->status ) {
 				default:
 				case MS_Model_Membership_Relationship::STATUS_PENDING:
-					/** trial period */
-					if( $membership->trial_period_enabled && $trial_period ) {
-						$due_date = MS_Helper_Period::current_date();
-					}
-					else {
-						$due_date = $ms_relationship->trial_expire_date;
-					}
-					break;
-				case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
 				case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+				case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
 					$due_date = MS_Helper_Period::current_date();
 					break;
 				case MS_Model_Membership_Relationship::STATUS_TRIAL:
+					$due_date = $ms_relationship->trial_expire_date;
+					break;
 				case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 				case MS_Model_Membership_Relationship::STATUS_CANCELED:
 					$due_date = $ms_relationship->expire_date;
@@ -207,8 +201,8 @@ class MS_Model_Invoice extends MS_Model_Transaction {
 		$membership = $ms_relationship->get_membership();
 		
 		if( ! MS_Plugin::instance()->addon->multiple_membership && MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
-			$invoice = self::get_previous_invoice( $ms_relationship, MS_Model_Transaction::STATUS_PAID );
-			if( ! empty( $invoice ) ) {
+			$invoice = self::get_previous_invoice( $ms_relationship );
+			if( ! empty( $invoice ) && MS_Model_Transaction::STATUS_PAID == $invoice->status ) {
 				switch( $ms_relationship->get_status() ) {
 					case MS_Model_Membership_Relationship::STATUS_TRIAL:
 						if( $invoice->trial_period ) {
