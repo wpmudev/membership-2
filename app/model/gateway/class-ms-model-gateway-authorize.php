@@ -357,6 +357,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$invoice->status = MS_Model_Invoice::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) ); 
 			$invoice->save();
+			$this->process_transaction( $invoice );
 			return $invoice;
 		}
 		$amount = number_format( $invoice->total, 2, '.', '' );

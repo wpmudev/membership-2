@@ -131,18 +131,23 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 					$customer->save();
 				}
 				
-				$charge = Stripe_Charge::create( array(
-						'amount' => $invoice->total * 100, // Amount in cents!
-						'currency' => strtolower( $invoice->currency ),
-						'customer' => $customer->id,
-						'description' => $invoice->name,
-				) );
-				MS_Helper_Debug::log( $charge );
-				if( true == $charge->paid ) {
-					$invoice->external_id = $charge->id;
-					$invoice->status = MS_Model_Invoice::STATUS_PAID;
-					$invoice->save();
+				if( 0 == $invoice->total ) {
 					$this->process_transaction( $invoice );
+				}
+				else {
+					$charge = Stripe_Charge::create( array(
+							'amount' => $invoice->total * 100, // Amount in cents!
+							'currency' => strtolower( $invoice->currency ),
+							'customer' => $customer->id,
+							'description' => $invoice->name,
+					) );
+					MS_Helper_Debug::log( $charge );
+					if( true == $charge->paid ) {
+						$invoice->external_id = $charge->id;
+						$invoice->status = MS_Model_Invoice::STATUS_PAID;
+						$invoice->save();
+						$this->process_transaction( $invoice );
+					}
 				}
 			}
 			catch( Exeption $e ) {

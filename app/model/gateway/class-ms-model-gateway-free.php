@@ -57,7 +57,9 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 			$member = MS_Model_Member::get_current_member();
 
 			$ms_relationship = $member->add_membership( $membership_id, $this->id, $move_from_id );
-						
+			$invoice = $ms_relationship->get_previous_invoice();
+			$this->process_transaction( $invoice );
+			
 			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
 			wp_safe_redirect( $url );
 		}
