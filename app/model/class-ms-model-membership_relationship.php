@@ -382,7 +382,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function is_trial_eligible() {
 		$membership = $this->get_membership();
-		return apply_filter( 'ms_model_membership_relationship_is_trial_eligible', ! $this->trial_period_completed && $membership->trial_period_enabled );
+		$trial_eligible_status = apply_filters( 'ms_model_membership_relationship_trial_eligible_status', array(
+				MS_Model_Membership_Relationship::STATUS_PENDING,
+				MS_Model_Membership_Relationship::STATUS_DEACTIVATED,
+		) );
+		
+		$eligible = false;
+		if( in_array( $this->status, $trial_eligible_status ) && ! $this->trial_period_completed && $membership->trial_period_enabled ) {
+			$eligible = true;
+		}
+		
+		return apply_filter( 'ms_model_membership_relationship_is_trial_eligible', $eligible );
 	}
 	
 	/**
