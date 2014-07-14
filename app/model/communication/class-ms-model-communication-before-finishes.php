@@ -48,6 +48,16 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 		);
 	}
 	
+	public function enqueue_messages( $ms_relationship, $expire ) {
+		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_TRIAL == $ms_relationship->status ) {
+			$days = MS_Helper_Period::get_period_in_days( $comm->period );
+			if( ! $expire->invert && $days == $expire->days ) {
+				$this->add_to_queue( $ms_relationship->id );
+				$this->save();
+			}
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent', MS_TEXT_DOMAIN );
 	}

@@ -92,9 +92,16 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				'%taxname%' => 'Tax name',
 				'%taxamount%' => 'Tax amount',
 		);
-		
-		$this->add_action( 'ms_communications_process', 'communication_process' );
+		if( $this->enabled ) {
+			$this->add_action( 'ms_communications_process', 'communication_process' );
+// 			$this->add_action( 'ms_model_plugin_check_membership_status', 'enqueue_messages' );
+		}
 	}
+	
+	public function enqueue_messages() {
+	
+	}
+		
 	
 	protected static $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters' );
 	
@@ -219,7 +226,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			
 	}
 	
-	public function communication_process() {
+	public function communication_process( $ms_relationship ) {
 
 	}
 	
@@ -229,20 +236,18 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		}	
 	}
 	
-	function send_message( $user_id, $membership_id = null, $transaction_id = null ) {
-		$wp_user = new WP_User( $user_id );
+	function send_message( $ms_relationship ) {
+		
+		$wp_user = new WP_User( $ms_relationship->user_id );
 		if ( ! is_email( $wp_user->user_email ) || ! $this->enabled ) {
 			return;
 		}
 
 		$currency = MS_Plugin::instance()->settings->currency . ' ';
-		$membership = null;
-		$transaction = null;
-		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			$membership = MS_Model_Membership::load( $membership_id );
-		}
-		if( ! empty( $transaction_id ) ) {
-			$transaction = MS_Model_Transaction::load( $transaction_id );
+		$membership = $ms_relationship->get_membership();
+		
+		if( ! $invoice = $ms_relationship->get_previous_invoice() ) {
+			$invoice = $ms_relationship->get_current_invoice();
 		}
 
 		$comm_vars = apply_filters( 'membership_comm_vars_list', $this->comm_vars );
@@ -284,24 +289,24 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					}
 					break;
 				case '%taxname%':
-					if( isset( $transaction ) ) {
-						$comm_vars[ $key ] = $currency . $transaction->tax_name;
+					if( isset( $invoice ) ) {
+						$comm_vars[ $key ] = $currency . $invoice->tax_name;
 					}
 					else {
 						$comm_vars[ $key ] = 0;
 					}
 					break;
 				case '%taxamount%':
-					if( isset( $transaction ) ) {
-						$comm_vars[ $key ] = $currency . $transaction->tax_rate * $transaction->amount;
+					if( isset( $invoice ) ) {
+						$comm_vars[ $key ] = $currency . $invoice->tax_rate * $invoice->amount;
 					}
 					else {
 						$comm_vars[ $key ] = 0;
 					}
 					break;
 				case '%total%':
-					if( isset( $transaction ) ) {
-						$comm_vars[ $key ] = $currency . $transaction->total;
+					if( isset( $invoice ) ) {
+						$comm_vars[ $key ] = $currency . $invoice->total;
 					}
 					else {
 						$comm_vars[ $key ] = 0;
@@ -309,7 +314,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					break;
 						
 				default:
-					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $user_id );
+					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $ms_relationship->user_id );
 					break;
 			}
 		}

@@ -87,12 +87,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );
 	}
 	
-	// Cant override parent method with different parameters... see below comment.
-	public function communication_process() {
-	}
-		
-	// Need to choose whether this is just a standard we adopt or make it different
-	public function communication_process_registration( $user_id, $membership_id, $transaction_id ) {
-		$this->send_message( $user_id, $membership_id, $transaction_id );
+	public function communication_process_registration( $ms_relationship ) {
+		$this->send_message( $ms_relationship );
 	}
 }

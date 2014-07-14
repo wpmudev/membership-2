@@ -37,6 +37,9 @@ class MS_Model_Plugin extends MS_Model {
 			/** Init gateways to enable hooking actions/filters */ 
 			MS_Model_Gateway::get_gateways();
 			
+			/** Init communications to enable hooking actions/filters */
+			MS_Model_Communication::load_communications();
+				
 			$this->setup_cron_services();
 			
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
@@ -252,7 +255,6 @@ class MS_Model_Plugin extends MS_Model {
 	public function setup_cron_services() {
 		
 		if( ! ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
-			MS_Model_Communication::load_communications();
 			
 			/**
 			 * Check for membership status.

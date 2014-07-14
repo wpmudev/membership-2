@@ -87,21 +87,23 @@ class MS_Model_News extends MS_Model_Custom_Post_Type {
 		return $news;
 	}
 	
-	public static function save_news( $membership_relationship, $type ) {
+	public static function save_news( $ms_relationship, $type ) {
 		
-		if( self::is_valid_type( $type ) && $membership_relationship->id > 0 ) {
+		if( self::is_valid_type( $type ) && $ms_relationship->id > 0 ) {
 			$news = new self();
-			$news->user_id = $membership_relationship->user_id;
-			$member = MS_Model_Member::load( $membership_relationship->user_id );
-			$news->membership_id = $membership_relationship->membership_id;
-			$news->gateway_id  = $membership_relationship->gateway_id;
-			$membership = $membership_relationship->get_membership();
+			$news->user_id = $ms_relationship->user_id;
+			$member = MS_Model_Member::load( $ms_relationship->user_id );
+			$news->membership_id = $ms_relationship->membership_id;
+			$news->gateway_id  = $ms_relationship->gateway_id;
+			$membership = $ms_relationship->get_membership();
 			switch( $type ) {
 				case self::TYPE_MS_SIGNUP:
 					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has joined membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
 							$member->username,
 							$membership->name
 					);
+					/** Registration completed automated message */
+					do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $ms_relationship );
 					break;
 				case self::TYPE_MS_MOVE:
 					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has moved to membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
