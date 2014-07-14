@@ -748,11 +748,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $this->status, $allowed_status ) ) {
 			$status = $this->calculate_status();
-		}
-		
-		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
-			$this->status = $status;
-			$this->save();
+			if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
+				$this->status = $status;
+				$this->save();
+			}
 		}
 		
 		return apply_filters( 'membership_model_membership_relationship_get_status', $this->status, $this );

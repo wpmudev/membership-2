@@ -88,7 +88,7 @@ class MS_Model_Plugin extends MS_Model {
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 			/** Logged user with no memberships: assign default Membership */
-			if( MS_Model_Member::is_logged_user() && ! $this->member->is_member() ) {
+			elseif( MS_Model_Member::is_logged_user() && ! $this->member->is_member() ) {
 				$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
 			}
 		}
@@ -141,44 +141,21 @@ class MS_Model_Plugin extends MS_Model {
 		/**
 		 * Search permissions through all memberships joined.
 		 */
-		foreach( $this->member->membership_relationships as $membership_relationship ) {
+		foreach( $this->member->membership_relationships as $ms_relationship ) {
 			/**
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
-			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
+			if( ! $this->member->is_member( $ms_relationship->membership_id ) ) {
 				continue;
 			}
-			$membership = $membership_relationship->get_membership();
+			$membership = $ms_relationship->get_membership();
 
-			$rules = $this->get_rules_hierarchy( $membership );
-			/** 
-			 * Verify membership rules hierachyly.
-			 * Verify content accessed directly.
-			 * If 'has access' is found, it does have access.
-			 */
-			foreach( $rules as $rule ) {
-				$has_access = ( $has_access || $rule->has_access() );
-
-				if( $has_access ) {
-					break;
-				}
-			}
-			/**
-			 * Verify membership dripped rules hierachyly.
-			 */
-			$dripped = apply_filters( 'membership_model_plugin_dripped_rules', array( 
-						MS_Model_Rule::RULE_TYPE_PAGE, 
-						MS_Model_Rule::RULE_TYPE_POST
-					) 
-			);
-			/**
-			 * Dripped has the final decision.
-			 */
-			foreach( $dripped as $rule_type ) {
-				if( $rules[ $rule_type ]->has_dripped_rules() ) {
-					$has_access = $rules[ $rule_type ]->has_dripped_access( $membership_relationship->start_date ); 
-				}
+			$has_access = $membership->has_access_to_current_page( $ms_relationship );
+			
+			/** Found a membership that gives access. Stop searching. */
+			if( $has_access ) {
+				break;
 			}
 		}
 		
@@ -188,41 +165,17 @@ class MS_Model_Plugin extends MS_Model {
 		}
 				
 		if( ! $has_access ) {
-			$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
+			$no_access_page_url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
 			
-			$page_url = @$_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
-			if ( $_SERVER['SERVER_PORT'] != '80' ) {
-				$page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
-			}
-			else {
-				$page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-			}
+			$current_page_url = MS_Helper_Utility::get_current_page_url();
 			
 			/** Don't redirect the protection page. */
-			$on_protection_page = $url == get_permalink();
-			$on_protection_page = $on_protection_page ? $on_protection_page : $url == $page_url;
-
-			$url = add_query_arg( array( 'redirect_to' =>  $page_url ), $url );
-
-			if ( ! $on_protection_page ) {
-				wp_safe_redirect( $url );				
+			if( ! $settings->is_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
+				$no_access_page_url = add_query_arg( array( 'redirect_to' =>  $current_page_url ), $no_access_page_url );
+				wp_safe_redirect( $no_access_page_url );
 			}
 		}
 
-	}
-	
-	/**
-	 * Get protection rules sorted.
-	 * First one has priority over the last one.
-	 * These rules are used to determine access.
-	 * @since 4.0.0
-	 */
-	private function get_rules_hierarchy( $membership ) {
-		$rule_types = MS_Model_Rule::get_rule_types();
-		foreach( $rule_types as $rule_type ) {
-			$rules[ $rule_type ] = $membership->get_rule( $rule_type );
-		}
-		return apply_filters( 'ms_model_plugin_get_rules_hierarchy', $rules );
 	}
 	
 	/**
@@ -249,24 +202,17 @@ class MS_Model_Plugin extends MS_Model {
 		/**
 		 * Search permissions through all memberships joined.
 		 */
-		foreach( $this->member->membership_relationships as $membership_relationship ) {
+		foreach( $this->member->membership_relationships as $ms_relationship ) {
 			/**
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
-			if( ! $this->member->is_member( $membership_relationship->membership_id ) ) {
+			if( ! $this->member->is_member( $ms_relationship->membership_id ) ) {
 				continue;
 			}
-			$membership = $membership_relationship->get_membership();
-		
-			$rules = $this->get_rules_hierarchy( $membership );
-			/**
-			 * Set initial protection.
-			 * Hide content.
-			*/
-			foreach( $rules as $rule ) {
-				$rule->protect_content( $membership_relationship );
-			}
+			
+			$membership = $ms_relationship->get_membership();
+			$membership->protect_content( $ms_relationship );
 		}
 	}
 	

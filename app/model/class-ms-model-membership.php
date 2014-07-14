@@ -292,6 +292,83 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
+	 * Get protection rules sorted.
+	 * First one has priority over the last one.
+	 * These rules are used to determine access.
+	 * @since 4.0.0
+	 */
+	private function get_rules_hierarchy() {
+		$rule_types = MS_Model_Rule::get_rule_types();
+		foreach( $rule_types as $rule_type ) {
+			$rules[ $rule_type ] = $this->get_rule( $rule_type );
+		}
+		return apply_filters( 'ms_model_membership_get_rules_hierarchy', $rules );
+	}
+	
+	/**
+	 * Verify access to current page.
+	 * 
+	 * Verify membership rules hierachyly for content accessed directly.
+	 * If 'has access' is found, it does have access.
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @return boolean 
+	 */
+	public function has_access_to_current_page( $ms_relationship ) {
+		
+		$has_access = false;
+		
+		/** If 'has access' is found in the hierarchy, it does have access. */
+		$rules = $this->get_rules_hierarchy();
+		foreach( $rules as $rule ) {
+			$has_access = ( $has_access || $rule->has_access() );
+		
+			if( $has_access ) {
+				break;
+			}
+		}
+		
+		/**
+		 * Search for the following dripped rules.
+		 */
+		$dripped = apply_filters( 'ms_model_membership_has_access_to_current_page_dripped_rules', array(
+				MS_Model_Rule::RULE_TYPE_PAGE,
+				MS_Model_Rule::RULE_TYPE_POST
+		) );
+		
+		/**
+		 * Verify membership dripped rules hierachyly.
+		 * Dripped has the final decision.
+		 */
+		foreach( $dripped as $rule_type ) {
+			if( $rules[ $rule_type ]->has_dripped_rules() ) {
+				$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date );
+			}
+		}
+		
+		return apply_filters( 'ms_model_membership_has_access', $has_access, $this );
+	}
+	
+	/**
+	 * Set initial protection.
+	 * 
+	 * Hide restricted content for this membership.
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @since 4.0.0
+	 */
+	public function protect_content( $ms_relationship ) {
+		$rules = $this->get_rules_hierarchy();
+		/**
+		 * Set initial protection.
+		 * Hide content.
+		*/
+		foreach( $rules as $rule ) {
+			$rule->protect_content( $ms_relationship );
+		}
+	}
+	
+	/**
 	 * Validate specific property before set.
 	 *
 	 * @since 4.0
