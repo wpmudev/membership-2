@@ -208,19 +208,19 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 *
-	 * @param MS_Model_Transaction $transaction The Transaction.
+	 * @param MS_Model_Invoice $invoice The Transaction.
 	 */
-	public function process_transaction( $transaction ) {
+	public function process_transaction( $invoice ) {
 	
-		$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
-		$member = MS_Model_Member::load( $transaction->user_id );
-		switch( $transaction->status ) {
-			case MS_Model_Transaction::STATUS_BILLED:
+		$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
+		$member = MS_Model_Member::load( $invoice->user_id );
+		switch( $invoice->status ) {
+			case MS_Model_Invoice::STATUS_BILLED:
 				break;
-			case MS_Model_Transaction::STATUS_PAID:
-				if( $transaction->coupon_id ) {
-					$coupon = MS_Model_Coupon::load( $transaction->coupon_id );
-					$coupon->remove_coupon_application( $member->id, $transaction->membership_id );
+			case MS_Model_Invoice::STATUS_PAID:
+				if( $invoice->coupon_id ) {
+					$coupon = MS_Model_Coupon::load( $invoice->coupon_id );
+					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
 					$coupon->used++;
 					$coupon->save();
 				}
@@ -243,17 +243,17 @@ class MS_Model_Gateway extends MS_Model_Option {
 					}
 				}
 				
-				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $transaction->invoice_number + 1 );
+				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $invoice->invoice_number + 1 );
 				$member->active = true;
 				$ms_relationship->config_period();
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
 				break;
 			default:
-				do_action( 'ms_model_gateway_process_transaction', $transaction );
+				do_action( 'ms_model_gateway_process_transaction', $invoice );
 				break;
 		}
 		$member->save();
-		$ms_relationship->gateway_id = $transaction->gateway_id;
+		$ms_relationship->gateway_id = $invoice->gateway_id;
 		$ms_relationship->save();
 	}
 	

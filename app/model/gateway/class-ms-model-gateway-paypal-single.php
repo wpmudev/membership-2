@@ -55,7 +55,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	public function after_load() {
 		parent::after_load();
 		if( $this->active ) {
-			$this->add_filter( 'ms_model_transaction_get_status', 'gateway_custom_status' );
+			$this->add_filter( 'ms_model_invoice_get_status', 'gateway_custom_status' );
 		}
 	}
 	
@@ -223,8 +223,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 		
 			$new_status = false;
-			$transaction = MS_Model_Transaction::load( $_POST['custom'] );
-			$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
+			$invoice = MS_Model_Invoice::load( $_POST['custom'] );
+			$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
 			$membership = $ms_relationship->get_membership();
 			$member = MS_Model_Member::load( $ms_relationship->user_id );
 			
@@ -239,19 +239,19 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				/** Successful payment */
 				case 'Completed':
 				case 'Processed':
-					$status = MS_Model_Transaction::STATUS_PAID;
+					$status = MS_Model_Invoice::STATUS_PAID;
 					break;
 				case 'Reversed':
 					$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_REVERSED;
+					$status = self::STATUS_REVERSED;
 					break;
 				case 'Refunded':
 					$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_REFUNDED;
+					$status = self::STATUS_REFUNDED;
 					break;
 				case 'Denied':
 					$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
-					$status = MS_Model_Transaction::STATUS_DENIED;
+					$status = self::STATUS_DENIED;
 					break;
 				case 'Pending':
 					$pending_str = array(
@@ -267,7 +267,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					);
 					$reason = $_POST['pending_reason'];
 					$notes = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) . ( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
-					$status = MS_Model_Transaction::STATUS_PENDING;
+					$status = self::STATUS_PENDING;
 					break;
 		
 				default:
@@ -277,26 +277,26 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 			
 			if( 'new_case' == $_POST['txn_type'] && 'dispute' == $_POST['case_type'] ) {
-				$status = MS_Model_Transaction::STATUS_DISPUTE;
+				$status = self::STATUS_DISPUTE;
 			}
 			
-			if( empty( $transaction ) ) {
-				$transaction = $ms_relationship->get_current_invoice();
+			if( empty( $invoice ) ) {
+				$invoice = $ms_relationship->get_current_invoice();
 			}
-			$transaction->external_id = $external_id;
+			$invoice->external_id = $external_id;
 			if( ! empty( $notes ) ) {
-				$transaction->add_notes( $notes );
+				$invoice->add_notes( $notes );
 			}
-			$transaction->gateway_id = $this->id;
-			$transaction->save();
+			$invoice->gateway_id = $this->id;
+			$invoice->save();
 				
 			if( ! empty( $status ) ) {
-				$transaction->status = $status;
-				$transaction->save();
-				$this->process_transaction( $transaction );
+				$invoice->status = $status;
+				$invoice->save();
+				$this->process_transaction( $invoice );
 			}
 
-			do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $transaction, $ms_relationship );
+			do_action( "ms_model_gateway_paypal_single_payment_processed_{$status}", $invoice, $ms_relationship );
 		} 
 		else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
@@ -339,25 +339,25 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 *
-	 * @param MS_Model_Transaction $transaction The Transaction.
+	 * @param MS_Model_Invoice $invoice The Transaction.
 	 */
-	public function process_transaction( $transaction ) {
-		$ms_relationship = MS_Model_Membership_Relationship::load( $transaction->ms_relationship_id );
-		$member = MS_Model_Member::load( $transaction->user_id );
-		switch( $transaction->status ) {
-			case MS_Model_Transaction::STATUS_REVERSED:
-			case MS_Model_Transaction::STATUS_REFUNDED:
-			case MS_Model_Transaction::STATUS_DENIED:
-			case MS_Model_Transaction::STATUS_DISPUTE:
+	public function process_transaction( $invoice ) {
+		$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
+		$member = MS_Model_Member::load( $invoice->user_id );
+		switch( $invoice->status ) {
+			case self::STATUS_REVERSED:
+			case self::STATUS_REFUNDED:
+			case self::STATUS_DENIED:
+			case self::STATUS_DISPUTE:
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
 				break;
 			default:
-				parent::process_transaction( $transaction );
+				parent::process_transaction( $invoice );
 				break;
 		}
 		$member->save();
-		$ms_relationship->gateway_id = $transaction->gateway_id;
+		$ms_relationship->gateway_id = $invoice->gateway_id;
 		$ms_relationship->save();
 	}
 	

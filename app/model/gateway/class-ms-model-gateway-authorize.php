@@ -52,8 +52,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $cim_payment_profile_id;
 	
-	protected $transactions;
-	
 	protected $payment_result;
 	
 	public function purchase_button( $ms_relationship = false ) {
@@ -351,21 +349,20 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @since 4.0.0
 	 *
 	 * @access protected
-	 * @param MS_Model_Transaction $invoice The invoice to pay.
-	 * @return MS_Model_Transaction transaction information on success, otherwise throws an exception.
+	 * @param MS_Model_Invoice $invoice The invoice to pay.
+	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
 	 */
 	protected function online_purchase( $invoice ) {
 		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Transaction::STATUS_PAID;
+			$invoice->status = MS_Model_Invoice::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) ); 
 			$invoice->save();
 			return $invoice;
 		}
 		$amount = number_format( $invoice->total, 2, '.', '' );
 		
-		$transaction = $invoice;
 		if( $this->mode == self::MODE_SANDBOX ) {
-			$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
+			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
 		}
 		
 		if ( ! empty( $this->cim_profile_id ) && ! empty( $this->cim_payment_profile_id ) ) {
@@ -373,18 +370,18 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$cim_transaction->amount = $amount;
 			$cim_transaction->order->invoiceNumber = $invoice->id;
 			
-			$transaction->timestamp = time();
-			$transaction->save();
+			$invoice->timestamp = time();
+			$invoice->save();
 				
-			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthCapture', $cim_transaction );
+			$response = $this->get_cim()->createCustomerProfileInvoice( 'AuthCapture', $cim_transaction );
 			if ( $response->isOk() ) {
 				$transaction_response = $response->getTransactionResponse();
 				if( $transaction_response->approved ) {
-					$transaction->external_id = $response->getTransactionResponse()->transaction_id;
-					$transaction->status = MS_Model_Transaction::STATUS_PAID;
-					$transaction->save();
+					$invoice->external_id = $response->getTransactionResponse()->transaction_id;
+					$invoice->status = MS_Model_Invoice::STATUS_PAID;
+					$invoice->save();
 					
-					$this->process_transaction( $transaction );
+					$this->process_transaction( $invoice );
 				}
 				else {
 					throw new Exception( sprintf( __( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
@@ -403,7 +400,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			throw new Exception( __( 'Payment failed: CIM Profile not found.', MS_TEXT_DOMAIN ) );
 		}
 		
-		return $transaction;
+		return $invoice;
 	}
 	
 	/**
@@ -417,23 +414,22 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 *
 	 * @deprecated Not using ARB anymore. Cron used in conjunction with CIM.
 	 * @access protected
-	 * @param MS_Model_Transaction $invoice The invoice to pay.
+	 * @param MS_Model_Invoice $invoice The invoice to pay.
 	 * @param array $period The period information to schedule.
 	 * @param optional boolean $recurring The schedule recurring information. 
-	 * @return MS_Model_Transaction transaction information on success, otherwise throws an exception.
+	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
 	 */
 	protected function schedule_purchase( $invoice, $period, $recurring = true ) {
 		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Transaction::STATUS_PAID;
+			$invoice->status = MS_Model_Invoice::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
 			$invoice->save();
 			return array( $invoice );
 		}
 		
-		$transaction = $invoice;
 		$subscription = $this->get_arb_subscription();
-		$subscription->amount = number_format( $transaction->total, 2, '.', '' );
-		$subscription->startDate = $transaction->due_date;
+		$subscription->amount = number_format( $invoice->total, 2, '.', '' );
+		$subscription->startDate = $invoice->due_date;
 		/** serial ocurrency with on going subscription (no end date) = 9999 */
 		if( $recurring ) {
 			$subscription->totalOccurrences = 9999;
@@ -450,30 +446,30 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$subscription->intervalLength = $period['period_unit'];
 			$subscription->intervalUnit = $period['period_type'];
 		}
-		$subscription->name = $transaction->name;
-		$subscription->invoiceNumber = $transaction->invoice_number;
+		$subscription->name = $invoice->name;
+		$subscription->invoiceNumber = $invoice->invoice_number;
 		
 		$arb = $this->get_arb();
 		$response = $arb->createSubscription( $subscription );
 		
-		$external_id = $transaction->external_id;
+		$external_id = $invoice->external_id;
 		$external_id['arb'] = $response->getSubscriptionId();
-		$transaction->external_id = $external_id;
+		$invoice->external_id = $external_id;
 		
 		if( $this->mode == self::MODE_SANDBOX ) {
-			$transaction->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
+			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
 		}
-		$transaction->gateway_id = $this->id;
+		$invoice->gateway_id = $this->id;
 		
-		$transaction->save();
+		$invoice->save();
 
 		if( ! $response->isOk() ) {
-			$transaction->add_notes( 'Error: '. $response->getMessageText() );
-			$transaction->save();
+			$invoice->add_notes( 'Error: '. $response->getMessageText() );
+			$invoice->save();
 			throw new Exception( $response->getMessageText() );
 		}
 
-		return $transaction;			
+		return $invoice;			
 	}
 	
 	/**

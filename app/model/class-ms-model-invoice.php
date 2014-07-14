@@ -22,7 +22,7 @@
 
 class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	
-public static $POST_TYPE = 'ms_invoice';
+	public static $POST_TYPE = 'ms_invoice';
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
@@ -82,7 +82,7 @@ public static $POST_TYPE = 'ms_invoice';
 	 * @since 4.0
 	 */
 	public static function get_status() {
-		return apply_filters( 'ms_model_transaction_get_status', array(
+		return apply_filters( 'ms_model_invoice_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
 			) 
@@ -145,9 +145,9 @@ public static $POST_TYPE = 'ms_invoice';
 	 * @param int $ms_relatiobship_id The membership relationship id.
 	 * @param int $invoice_number The invoice number.
 	 * @param string $status The status of the transaction.
-	 * @return MS_Model_Transaction The found transaction or null if not found.
+	 * @return MS_Model_Invoice The found invoice or null if not found.
 	 */
-	public static function get_invoice( $ms_relatiobship_id, $invoice_number = null, $status = null ) {
+	public static function get_invoice( $ms_relationship_id, $invoice_number = null, $status = null ) {
 		$args = array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
@@ -155,9 +155,9 @@ public static $POST_TYPE = 'ms_invoice';
 				'order' => 'DESC',
 		);
 	
-		$args['meta_query']['ms_relatiobship_id'] = array(
-				'key'     => 'ms_relatiobship_id',
-				'value'   => $ms_relatiobship_id,
+		$args['meta_query']['ms_relationship_id'] = array(
+				'key'     => 'ms_relationship_id',
+				'value'   => $ms_relationship_id,
 		);
 		if( ! empty( $status ) ) {
 			$args['meta_query']['status'] = array(
@@ -172,11 +172,10 @@ public static $POST_TYPE = 'ms_invoice';
 			);
 		}
 		
-		$args = apply_filters( 'ms_model_invoice_get_invoice_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters( 'ms_model_invoice_get_invoice_args', $args );
 		$query = new WP_Query( $args );
-	
 		$item = $query->get_posts();
-	
+		
 		$invoice = null;
 		if( ! empty( $item[0] ) ) {
 			$invoice = self::load( $item[0] );
@@ -185,13 +184,13 @@ public static $POST_TYPE = 'ms_invoice';
 	}
 	
 	/**
-	 * Load transaction using external ID.
+	 * Load invoice using external ID.
 	 * 
 	 * @since 4.0
 	 *  
 	 * @param string $external_id
 	 * @param string $gateway_id
-	 * @return MS_Model_Transaction, null if not found.
+	 * @return MS_Model_Invoice, null if not found.
 	 */
 	public static function load_by_external_id( $external_id, $gateway_id ) {
 		$args = array(
@@ -209,7 +208,7 @@ public static $POST_TYPE = 'ms_invoice';
 				)
 		);
 		
-		$args = apply_filters( 'ms_model_invoice_load_by_external_id_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters( 'ms_model_invoice_load_by_external_id_args', $args );
 		$query = new WP_Query( $args );
 		
 		$item = $query->get_posts();
@@ -323,7 +322,7 @@ public static $POST_TYPE = 'ms_invoice';
 			
 			/** Search for existing invoice */
 			if( $update_existing ) {
-				$invoice = self::get_invoice( $ms_relationship, $invoice_number );
+				$invoice = self::get_invoice( $ms_relationship->id, $invoice_number );
 			}
 			
 			/** No existing invoice, create a new one. */
@@ -417,7 +416,7 @@ public static $POST_TYPE = 'ms_invoice';
 		
 		if( ! MS_Plugin::instance()->addon->multiple_membership && MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->membership_type ) {
 			$invoice = self::get_previous_invoice( $ms_relationship );
-			if( ! empty( $invoice ) && MS_Model_Transaction::STATUS_PAID == $invoice->status ) {
+			if( ! empty( $invoice ) && self::STATUS_PAID == $invoice->status ) {
 				switch( $ms_relationship->get_status() ) {
 					case MS_Model_Membership_Relationship::STATUS_TRIAL:
 						if( $invoice->trial_period ) {

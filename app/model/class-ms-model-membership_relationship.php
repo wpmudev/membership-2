@@ -208,7 +208,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		do_action( 'ms_model_membership_relationship_deactivate_membership', $this );
 	
 		try {
-			$this->cancel_membeshipr();
+			$this->cancel_membership();
 			
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
@@ -392,7 +392,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$eligible = true;
 		}
 		
-		return apply_filter( 'ms_model_membership_relationship_is_trial_eligible', $eligible );
+		return apply_filters( 'ms_model_membership_relationship_is_trial_eligible', $eligible );
 	}
 	
 	/**

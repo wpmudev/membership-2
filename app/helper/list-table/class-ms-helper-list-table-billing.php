@@ -58,7 +58,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 	
 	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="transaction_id[]" value="%1$s" />', $item->id );
+		return sprintf( '<input type="checkbox" name="invoice_id[]" value="%1$s" />', $item->id );
 	}
 	
 	public function get_hidden_columns() {
@@ -84,11 +84,11 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 
 		$args = $this->get_query_args();
 		
-		$total_items =  MS_Model_Transaction::get_transaction_count( $args );
+		$total_items =  MS_Model_Invoice::get_invoice_count( $args );
 		
-		$this->items = apply_filters( 'membership_helper_list_table_transaction_items', MS_Model_Transaction::get_transactions( $args ) );
+		$this->items = apply_filters( 'membership_helper_list_table_invoice_items', MS_Model_Invoice::get_invoices( $args ) );
 		
-		$per_page = $this->get_items_per_page( 'transaction_per_page', 10 );
+		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
 		$this->set_pagination_args( array(
 					'total_items' => $total_items,
 					'per_page' => $per_page,
@@ -97,7 +97,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 	
 	private function get_query_args() {
-		$per_page = $this->get_items_per_page( 'transaction_per_page', 10 );
+		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
 		$current_page = $this->get_pagenum();
 		
 		$args = array(
@@ -113,7 +113,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		 * Prepare order by statement.
 		 */
 		if( ! empty( $args['orderby'] ) ) {
-			if( ! in_array( $args['orderby'], array( 'ID', 'author' ) ) && property_exists( 'MS_Model_Transaction', $args['orderby'] ) ) {
+			if( ! in_array( $args['orderby'], array( 'ID', 'author' ) ) && property_exists( 'MS_Model_Invoice', $args['orderby'] ) ) {
 				$args['meta_key'] = $args['orderby'];
 				if( in_array( $args['orderby'], array( 'amount', 'total', 'tax_rate' ) ) ) {
 					$args['orderby'] = 'meta_value_num';
@@ -153,7 +153,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	function column_invoice( $item ) {
 	
 		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&transaction_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+				'edit' => sprintf( '<a href="?page=%s&action=%s&invoice_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
 		);
 	
 		echo sprintf( '%1$s %2$s', $item->id, $this->row_actions( $actions ) );
@@ -183,19 +183,19 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 	
 	public function get_bulk_actions() {
-		return apply_filters( 'membership_helper_list_table_transaction_bulk_actions', array(
+		return apply_filters( 'membership_helper_list_table_invoice_bulk_actions', array(
 			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
 	public function get_views(){
-		$all_status = MS_Model_Transaction::get_status();
+		$all_status = MS_Model_Invoice::get_status();
 		$views = array();
 		$views['all'] = sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) );
 		foreach( $all_status as $status => $desc ) {
 			$args = $this->get_query_args();
 			$args['meta_query']['status']['value'] = $status;
-			$views[ $status ] =	sprintf( '<a href="%s">%s<span class="count"> (%s)</span></a>', add_query_arg( array ( 'status' => $status ) ), $desc, $total_items =  MS_Model_Transaction::get_transaction_count( $args ) );
+			$views[ $status ] =	sprintf( '<a href="%s">%s<span class="count"> (%s)</span></a>', add_query_arg( array ( 'status' => $status ) ), $desc, $total_items =  MS_Model_Invoice::get_invoice_count( $args ) );
 		}
 		return apply_filters( "ms_helper_list_table_billing_views", $views );
 	}

@@ -140,7 +140,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 				MS_Helper_Debug::log( $charge );
 				if( true == $charge->paid ) {
 					$invoice->external_id = $charge->id;
-					$invoice->status = MS_Model_Transaction::STATUS_PAID;
+					$invoice->status = MS_Model_Invoice::STATUS_PAID;
 					$invoice->save();
 					$this->process_transaction( $invoice );
 				}
@@ -164,7 +164,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$invoice = $ms_relationship->get_current_invoice();
 	
-		if( MS_Model_Transaction::STATUS_PAID != $invoice->status && ! $this->manual_payment ) { 
+		if( MS_Model_Invoice::STATUS_PAID != $invoice->status && ! $this->manual_payment ) { 
 			try {
 				$this->load_stripe_lib();
 				
@@ -179,7 +179,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 					MS_Helper_Debug::log( $charge );
 					if( true == $charge->paid ) {
 						$invoice->external_id = $charge->id;
-						$invoice->status = MS_Model_Transaction::STATUS_PAID;
+						$invoice->status = MS_Model_Invoice::STATUS_PAID;
 						$invoice->save();
 						$this->process_transaction( $invoice );
 					}

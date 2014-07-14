@@ -224,7 +224,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$data['membership'][] = $ms_relationship->get_membership();
 			}
 		}
-		$data['transaction'] = MS_Model_Transaction::get_transactions( array( 
+		$data['invoices'] = MS_Model_Invoice::get_invoices( array( 
 				'author' => $data['member']->id,
 				'posts_per_page' => 50,
 				'meta_query' => array( array(

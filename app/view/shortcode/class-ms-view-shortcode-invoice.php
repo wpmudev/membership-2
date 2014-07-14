@@ -99,7 +99,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 								<?php echo $invoice->currency . ' '. number_format( $invoice->total, 2 ); ?>
 							</td>
 						</tr>
-						<?php if( $gateway->manual_payment && $this->data['display_pay_button'] && $invoice->status != MS_Model_Transaction::STATUS_PAID ): ?>
+						<?php if( $gateway->manual_payment && $this->data['display_pay_button'] && $invoice->status != MS_Model_Invoice::STATUS_PAID ): ?>
 							<tr>
 								<td class='ms-buy-now-column' colspan='2' >
 									<?php

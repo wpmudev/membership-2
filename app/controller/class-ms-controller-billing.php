@@ -23,7 +23,7 @@
  */
 
 /**
- * Controller to manage billing and transactions.
+ * Controller to manage billing and invoices.
  *
  * @since 4.0.0
  * @package Membership
@@ -106,24 +106,24 @@ class MS_Controller_Billing extends MS_Controller {
 		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['_wpnonce'] )  && ! empty(  $_POST['action'] ) && check_admin_referer( $_POST['action'] ) ) {
 			$section = MS_View_Billing_Edit::BILLING_SECTION;
 			if( ! empty( $_POST[ $section ] ) ) {
-				$msg = $this->save_transaction( $_POST[ $section ] );
+				$msg = $this->save_invoice( $_POST[ $section ] );
 			}
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'transaction_id') ) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
 		}
 		/**
 		 * Execute table single action.
 		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['transaction_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
-			$msg = $this->billing_do_action( $_GET['action'], array( $_GET['transaction_id'] ) );
+		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['invoice_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
+			$msg = $this->billing_do_action( $_GET['action'], array( $_GET['invoice_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
 			die();
 		}
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( ! empty( $_POST['transaction_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-billings' ) ) {
+		elseif( ! empty( $_POST['invoice_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-billings' ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->billing_do_action( $action, $_POST['transaction_id'] );
+			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 		}
 	}
@@ -138,9 +138,9 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Action view page request
 		 */
-		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['transaction_id'] ) ) {
-			$transaction_id = ! empty( $_GET['transaction_id'] ) ? $_GET['transaction_id'] : 0;
-			$data['transaction'] =  apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $_GET['transaction_id'] ) );
+		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['invoice_id'] ) ) {
+			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
+			$data['invoice'] =  apply_filters( 'ms_model_invoice', MS_Model_Invoice::load( $_GET['invoice_id'] ) );
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_members_usernames();
 			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
@@ -156,26 +156,26 @@ class MS_Controller_Billing extends MS_Controller {
 	}
 
 	/**
-	 * Perform actions for each transaction.
+	 * Perform actions for each invoice.
 	 *
 	 * @todo Still incomplete.
 	 *
 	 * @since 4.0.0	
-	 * @param string $action The action to perform on selected transactions
-	 * @param int[] $transaction_ids The list of transactions ids to process.
+	 * @param string $action The action to perform on selected invoices
+	 * @param int[] $invoice_ids The list of invoices ids to process.
 	 */	
-	public function billing_do_action( $action, $transaction_ids ) {
+	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
 			return $msg;
 		}
 
-		if( is_array( $transaction_ids ) ) {
-			foreach( $transaction_ids as $transaction_id ) {
+		if( is_array( $invoice_ids ) ) {
+			foreach( $invoice_ids as $invoice_id ) {
 				switch( $action ) {
 					case 'delete':
-						$transaction = MS_Model_Transaction::load( $transaction_id );
-						$transaction->delete();
+						$invoice = MS_Model_Invoice::load( $invoice_id );
+						$invoice->delete();
 						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 						break;
 				}
@@ -185,12 +185,12 @@ class MS_Controller_Billing extends MS_Controller {
 	}
 
 	/**
-	 * Save transactions using the transactions model.
+	 * Save invoices using the invoices model.
 	 *
 	 * @since 4.0.0	
 	 * @param mixed $fields Transaction fields
 	 */	
-	public function save_transaction( $fields ) {
+	public function save_invoice( $fields ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		if ( ! current_user_can( $this->capability ) ) {
 			return $msg;
@@ -207,13 +207,13 @@ class MS_Controller_Billing extends MS_Controller {
 			
 // 			if ( $has_relationship ) {
 				
-				$transaction = apply_filters( 'ms_model_transaction', MS_Model_Transaction::load( $fields['transaction_id'] ) );
-				if( $transaction->id == 0 ) {
+				$invoice = apply_filters( 'ms_model_invoice', MS_Model_Invoice::load( $fields['invoice_id'] ) );
+				if( $invoice->id == 0 ) {
 					if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
 						$gateway_id = $fields['gateway_id'];
 						$ms_relationship = $member->membership_relationships[ $fields['membership_id'] ];
 						$ms_relationship->gateway_id = $gateway_id;
-						$transaction = MS_Model_Transaction::create_transaction( $ms_relationship );
+						$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
 						$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 					}
 					else {
@@ -226,16 +226,16 @@ class MS_Controller_Billing extends MS_Controller {
 				}
 
 				foreach( $fields as $field => $value ) {
-					$transaction->$field = $value;
+					$invoice->$field = $value;
 				}
 
-				$transaction->save();
+				$invoice->save();
 			
 				if( ! empty( $fields['execute'] ) ) {
 				
-					$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $transaction->user_id, $transaction->membership_id );
+					$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $invoice->user_id, $invoice->membership_id );
 					$gateway = $ms_relationship->get_gateway();
-					$gateway->process_transaction( $transaction );
+					$gateway->process_invoice( $invoice );
 				
 				}
 // 			} else {

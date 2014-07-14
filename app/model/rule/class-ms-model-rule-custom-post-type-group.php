@@ -137,7 +137,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	public static function get_ms_post_types() {
 		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', array(
 				'ms_membership',
-				'ms_transaction',
+				'ms_invoice',
 				'ms_communication',
 				'ms_coupon',
 				'ms_relationship',

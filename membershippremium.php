@@ -381,15 +381,15 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		register_post_type( 'ms_transaction',
-			apply_filters( 'ms_register_post_type_ms_transaction',
+		register_post_type( 'ms_invoice',
+			apply_filters( 'ms_register_post_type_ms_invoice',
 				array(
-					'description' => __( 'user transactions', MS_TEXT_DOMAIN ),					
+					'description' => __( 'user invoices', MS_TEXT_DOMAIN ),					
 					'public' => true,
 					'has_archive' => false,
 					'publicly_queryable' => true,
 					'supports' => false,
-					'capability_type' => apply_filters( 'ms_transactions_capability', 'page' ),
+					'capability_type' => apply_filters( 'ms_invoices_capability', 'page' ),
 					'hierarchical' => false
 				),
 				$this 

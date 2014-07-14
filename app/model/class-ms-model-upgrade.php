@@ -64,9 +64,9 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $membership_relationships as $membership_relationship ) {
 			$membership_relationship->delete();
 		}
-		$transactions = MS_Model_Transaction::get_transactions( array( 'posts_per_page' => -1 ) );
-		foreach( $transactions as $transaction ) {
-			$transaction->delete();
+		$invoices = MS_Model_Invoice::get_invoices( array( 'posts_per_page' => -1 ) );
+		foreach( $invoices as $invoice ) {
+			$invoice->delete();
 		}
 		$gateways = MS_Model_Gateway::get_gateways();
 		foreach( $gateways as $gateway ) {

@@ -56,13 +56,13 @@ class MS_View_Shortcode_Account extends MS_View {
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach( $this->data['transaction'] as $transaction ): ?>
+					<?php foreach( $this->data['invoices'] as $invoice ): ?>
 						<tr>
-							<td><?php echo sprintf( '<a href="%s">%s</a>', get_permalink(  $transaction->id ),  $transaction->id );?></td>
-							<td><?php echo $transaction->status;?></td>
-							<td><?php echo $transaction->total;?></td>
-							<td><?php echo MS_Model_Membership::load( $transaction->membership_id )->name;?></td>
-							<td><?php echo $transaction->due_date;?></td>
+							<td><?php echo sprintf( '<a href="%s">%s</a>', get_permalink(  $invoice->id ),  $invoice->id );?></td>
+							<td><?php echo $invoice->status;?></td>
+							<td><?php echo $invoice->total;?></td>
+							<td><?php echo MS_Model_Membership::load( $invoice->membership_id )->name;?></td>
+							<td><?php echo $invoice->due_date;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody>
