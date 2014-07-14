@@ -562,7 +562,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if( empty ( $this->membership->id ) ) {
 			$this->membership = MS_Model_Membership::load( $this->membership_id ); 
 		}
-		return apply_filters( 'ms_model_membership_relationship_get_membership', $membership );
+		return apply_filters( 'ms_model_membership_relationship_get_membership', $this->membership );
 	}
 	
 	/**
@@ -716,18 +716,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 		
 		if( ! in_array( $status, $allowed_status ) ){
-			$status = $this->check_status();
+			$status = $this->calculate_status();
 		}
 
-		if( $this->status != $status ) {
+		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
 			/** signup */
 			if( 'admin' != $this->gateway_id && self::STATUS_PENDING == $this->status && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
 				MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_SIGNUP );
 			}
-		}
-
-		if( array_key_exists( $status, self::get_status_types() ) ) {
+				
 			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );
+			$this->save();
 		}
 	}
 	
@@ -748,18 +747,25 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 		
 		if( ! in_array( $this->status, $allowed_status ) ) {
-			$this->check_status();
+			$status = $this->calculate_status();
 		}
 		
-		return apply_filters( 'membership_model_membership_relationship_status', $this->status, $this );
+		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
+			$this->status = $status;
+			$this->save();
+		}
+		
+		return apply_filters( 'membership_model_membership_relationship_get_status', $this->status, $this );
 	}
 	
 	/**
-	 * Validate the membership status.
+	 * Calculate the membership status.
+	 * 
+	 * Calculate status for the membership verifying the start date, trial exire date and expire date.
 	 * 
 	 * @since 4.0.0
 	 */
-	public function check_status() {
+	public function calculate_status() {
 		$membership = $this->get_membership();
 		$status = null;
 		if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
@@ -791,12 +797,123 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 		}
 		
-		if( $status != $this->status ) {
-			$this->status = $status;
-			$this->save();
-		}
-		
 		return apply_filters( 'membership_model_membership_relationship_validate_status', $status, $this );
+	}
+	
+	/**
+	 * Check membership status.
+	 *
+	 * Execute actions when time/period condition are met.
+	 * E.g. change membership status, add communication to queue, create invoices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function check_membership_status() {
+	
+		$comms = MS_Model_Communication::load_communications();
+		$invoice_before_days = 5;//@todo create a setting to configure this period.
+		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
+		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
+		$deactivate_trial_expired_after_days = 5; //@todo create a setting to configure this period.
+	
+		$expire = $this->get_remaining_period();
+		$trial_expire = $this->get_remaining_trial_period();
+		
+		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $expire );
+		switch( $this->status ) {
+			case self::STATUS_PENDING:
+					break;
+			case self::STATUS_TRIAL:
+				/** Send trial end communication. */
+				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
+				if( $comm->enabled ) {
+					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					if( ! $trial_expire->invert && $days == $trial_expire->days ) {
+						$comm->add_to_queue( $this->id );
+					}
+				}
+				break;
+			case self::STATUS_TRIAL_EXPIRED:
+				$invoice = $this->get_current_invoice();
+					
+				/** Request payment to the gateway (for gateways that allows it). */
+				$gateway = $this->get_gateway();
+				$gateway->request_payment( $this );
+					
+				/** Deactivate expired memberships after a period of time. */
+				if( $trial_expire->invert && $trial_expire->days > $deactivate_trial_expired_after_days ) {
+					$this->set_status( self::STATUS_DEACTIVATED );
+
+					/** Move membership to configured membership. */
+					$membership = $this->get_membership();
+					if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
+						$member = MS_Model_Member::load( $this->user_id );
+						$member->add_membership( $membership->on_end_membership_id );
+					}
+				}
+				break;
+				/**
+				 * Send period end communication.
+				 * Deactivate expired memberships after $deactivate_expired_after_days.
+				 * Create invoice.
+				 */
+			case self::STATUS_ACTIVE:
+			case self::STATUS_EXPIRED:
+			case self::STATUS_CANCELED:
+				do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this );
+					
+				/** Create next invoice before expire date.*/
+				if( ! $expire->invert && $expire->days < $invoice_before_days ) {
+					$invoice = $this->get_next_invoice();
+				}
+					
+				/** Configure communication messages.*/
+				$comms_active = array(
+						$comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ],
+						$comms[ MS_Model_Communication::COMM_TYPE_FINISHED ],
+						$comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ],
+				);
+				foreach( $comms_active as $comm ) {
+					if( $comm->enabled ) {
+						$days = MS_Helper_Period::get_period_in_days( $comm->period );
+						if( ! $expire->invert && $days == $expire->days ) {
+							$comm->add_to_queue( $this->id );
+						}
+					}
+				}
+					
+				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
+				if( $expire->invert ) {
+					$gateway = $this->get_gateway();
+					$gateway->request_payment( $this );
+					/** Refresh status after payment */
+					$expire = $this->get_remaining_period();
+				}
+					
+				/** Deactivate expired memberships after a period of time. */
+				if( $expire->invert && $expire->days > $deactivate_expired_after_days ) {
+					$this->set_status( self::STATUS_DEACTIVATED );
+
+					/** Move membership to configured membership. */
+					$membership = $this->get_membership();
+					if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
+						$member = MS_Model_Member::load( $this->user_id );
+						$member->add_membership( $membership->on_end_membership_id );
+					}
+				}
+				break;
+					
+				/** Deactivated status won't appear here, but it can be changed in get_membership_relationships $args.*/
+			case self::STATUS_DEACTIVATED:
+			default:
+				do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this );
+				break;
+		}
+		foreach( $comms as $comm ) {
+			$comm->save();
+		}
 	}
 	
 	/**
