@@ -26,6 +26,13 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	const TOPIC_MEMBERSHIP = 'membership';
+	
+	const TOPIC_PAYMENT = 'payment';
+	
+	const TOPIC_USER = 'user';
+	
+	
 	const TYPE_MS_SIGNED_UP = 'signed_up';
 	
 	const TYPE_MS_MOVED = 'moved';
@@ -50,7 +57,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	const TYPE_MS_BEFORE_TRIAL_FINISHES = 'before_trial_finishes';
 	
-	const TYPE_INFO_UPDATE = 'info_update';
+	const TYPE_UPDATED_INFO = 'updated_info';
 	
 	const TYPE_CREDIT_CARD_EXPIRE = 'credit_card_expire';
 	
@@ -60,36 +67,57 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	const TYPE_AFTER_PAYMENT_MADE = 'after_payment_made';
 	
-	const TOPIC_MEMBERSHIP = 'membership';
-	
-	const TOPIC_PAYMENT = 'payment';
-	
 	protected $user_id;
 	
 	protected $description;
 	
+	protected $topic;
+	
 	protected $type;
 	
-	protected $membership_id;
-	
-	protected $gateway_id;
+	protected $ms_relationship_id;
 	
 	protected $modified;
 	
 	public static function get_event_types() {
-		return apply_filters( 'ms_model_news_get_news_types', array(
-				self::TYPE_MS_SIGNUP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_MOVE => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+		return apply_filters( 'ms_model_news_get_event_types', array(
+				self::TYPE_MS_REGISTERED => array( 'topic' => self::TOPIC_USER ),
+				self::TYPE_UPDATED_INFO => array( 'topic' => self::TOPIC_USER ),
+				
+				self::TYPE_MS_SIGNED_UP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_MOVED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				self::TYPE_MS_EXPIRED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_DROP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_RENEW => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_DEACTIVATE => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_CANCEL => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_DROPPED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_RENEWED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_DEACTIVATED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_CANCELLED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_PAID => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_BEFORE_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_AFTER_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				
+				self::TYPE_CREDIT_CARD_EXPIRE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_FAILED_PAYMENT => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_AFTER_PAYMENT_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_BEFORE_PAYMENT_DUE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_AFTER_PAYMENT_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
 		) );
 	}
 	
 	public static function is_valid_type( $type ) {
-		return array_key_exists( $type, self::get_news_types() );
+		return array_key_exists( $type, self::get_event_types() );
+	}
+	
+	public static function get_topic( $type ) {
+		
+		$topic = null;
+		$types = self::get_event_types();
+		if( ! empty( $types[ $type ]['topic'] ) ) {
+			$topic = $types[ $type ]['topic'];
+		}
+		
+		return apply_filters( 'ms_model_event_get_topic', $topic, $type );
 	}
 	
 	public static function get_events( $args = null ) {
@@ -99,86 +127,65 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				'post_status' => 'any',
 				'order' => 'DESC',
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = apply_fitlers( 'ms_model_events_get_events_args', wp_parse_args( $args, $defaults ) );
+
+		if( ! empty( $args['topic'] ) ) {
+			$args['meta_query']['topic'] = array(
+					'key'     => 'topic',
+					'value'   => $args['topic'],
+			);
+			unset( $args['topic'] );
+		}
 		
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
 		
-		$news = array();
+		$events = array();
 		foreach ( $items as $item ) {
-			$news[] = self::load( $item->ID );
+			$events[] = self::load( $item->ID );
 		}
-		return $news;
+		return $events;
 	}
 	
 	public static function save_event( $type, $ms_relationship ) {
 		
 		if( self::is_valid_type( $type ) && $ms_relationship->id > 0 ) {
-			$news = new self();
-			$news->user_id = $ms_relationship->user_id;
-			$member = MS_Model_Member::load( $ms_relationship->user_id );
-			$news->membership_id = $ms_relationship->membership_id;
-			$news->gateway_id  = $ms_relationship->gateway_id;
+			
 			$membership = $ms_relationship->get_membership();
-			do_action( "ms_news_$type", $ms_relationship );
-			switch( $type ) {
-				case self::TYPE_MS_SIGNUP:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has joined membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
+			$member = MS_Model_Member::load( $ms_relationship->user_id );
+				
+			$event = new self();
+			$event->user_id = $ms_relationship->user_id;
+			$event->ms_relationship_id = $ms_relationship->id;
+			$event->type = $type;
+			$event->topic = self::get_topic( $type );
+			
+			switch( $event->topic ) {
+				case self::TOPIC_MEMBERSHIP:
+					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has %s membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
+							$type,
 							$member->username,
 							$membership->name
 					);
-					/** Registration completed automated message */
-					do_action( 'ms_communications_process_' . MS_Model_Communication::COMM_TYPE_REGISTRATION , $ms_relationship );
-					break;
-				case self::TYPE_MS_MOVE:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has moved to membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
-				case self::TYPE_MS_EXPIRED:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has left membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
-				case self::TYPE_MS_DROP:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has dropped membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
-				case self::TYPE_MS_RENEW:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has renewed membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
-				case self::TYPE_MS_DEACTIVATE:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has deactivated membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
-				case self::TYPE_MS_CANCEL:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has canceled membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$membership->name
-					);
-					break;
+				case self::TOPIC_USER:
+				case self::TOPIC_PAYMENT:
 				default:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span>, membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
+					$description = sprintf( __( '<span class="ms-news-bold">%s</span> - event: <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
 							$member->username,
-							$membership->name
+							$type
 					);
 					break;
 			}
-			$news->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
-			$news->description = $description; 
-			$news->type = $type;
+			$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
+			$event->description = apply_filters( 'ms_model_event_description', $desc, $type, $ms_relationship );
 			
-			$news = apply_filters( 'ms_model_news_record_user_signup_object', $news );
-			$news->save();
+			$event = apply_filters( 'ms_model_news_record_user_signup_object', $event );
+			$event->save();
+			
+			/** Hook to these actions to handle event notifications. e.g. auto communication. */
+			do_action( "ms_event_$type", $event, $ms_relationship );
 		}
 	}
+	
+		
 }
