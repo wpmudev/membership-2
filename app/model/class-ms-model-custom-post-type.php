@@ -119,4 +119,22 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			wp_delete_post( $this->id );
 		}
 	}
+	
+	/**
+	 * Register and Filter the custom post type.
+	 *
+	 * @since 4.0.0
+	 * @param object $this The MS_Plugin object.
+	 */
+	public static function register_post_type() {
+		register_post_type( static::$POST_TYPE, apply_filters( 'ms_register_post_type_' . static::$POST_TYPE, array(
+				'public' => false,
+				'has_archive' => false,
+				'publicly_queryable' => false,
+				'supports' => false,
+				'capability_type' => apply_filters( static::$POST_TYPE, '_capability', 'page' ),
+				'hierarchical' => false
+		) ) );
+	}
+	
 }

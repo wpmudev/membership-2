@@ -430,4 +430,37 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 	}
 
+	/**
+	 * Register and Filter the custom post type.
+	 *
+	 * @since 4.0.0
+	 * @param object $this The MS_Plugin object.
+	 */
+	public static function register_post_type() {
+		register_post_type( self::$POST_TYPE, apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
+			'labels' => array(
+				'name' => __( 'Memberships', MS_TEXT_DOMAIN ),
+				'singular_name' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'menu_name' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'all_items' => __( 'All Memberships', MS_TEXT_DOMAIN ),
+				'add_new' => __('New Membership', MS_TEXT_DOMAIN ),
+				'add_new_item' => __('New Membership', MS_TEXT_DOMAIN ),
+				'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
+				'view_item' => __( 'View Membership', MS_TEXT_DOMAIN ),
+				'search_items' => __( 'Search Memberships', MS_TEXT_DOMAIN ),
+				'not_found' => __( 'No Memberships Found', MS_TEXT_DOMAIN )
+			),
+			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
+			'show_ui' => false,
+			'show_in_menu' => false,
+			'menu_position' => 70, // below Users
+			'menu_icon' => MS_Plugin::instance()->url . "/assets/images/members.png",
+			'public' => true,
+			'has_archive' => false,
+			'publicly_queryable' => false,
+			'supports' => false,
+			'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'page' ),
+			'hierarchical' => false
+		) ) );
+	}
 }
