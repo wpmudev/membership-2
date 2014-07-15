@@ -223,6 +223,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
 					$coupon->used++;
 					$coupon->save();
+					
+					/** Send invoice paid communication. */
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_INVOICE ];
+					$comm->add_to_queue( $invoice->ms_relationship_id );	
 				}
 				
 				/** Check for moving memberships */
