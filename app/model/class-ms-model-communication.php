@@ -30,6 +30,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected static $communications;
+	
 	const COMM_TYPE_REGISTRATION = 'type_registration';
 	
 	const COMM_TYPE_INVOICE = 'type_invoice';
@@ -73,6 +75,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	protected $comm_vars;
 	
 	protected $queue = array();
+	
+	protected $sent_queue = array();
 	
 	public function __construct() {
 		
@@ -177,6 +181,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			return null;
 		}
 		
+		if( ! empty( self::$communications[ $type ] ) ) {
+			return self::$communications[ $type ];
+		}
+		
 		$args = array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
@@ -203,13 +211,15 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	}
 	
 	public static function load_communications() {
-		$comm_types = self::get_communication_types();
-	
-		foreach( $comm_types as $type ) {
-			$comms[ $type ] = self::get_communication( $type );
+		if( empty( self::$communications ) ) {
+			$comm_types = self::get_communication_types();
+			
+			foreach( $comm_types as $type ) {
+				$comms[ $type ] = self::get_communication( $type );
+			}
 		}
 	
-		return apply_filters( 'ms_model_communication_communication_set_factory', $comms );
+		return apply_filters( 'ms_model_communication_communication_set_factory', self::$communications );
 	}
 	
 	public function before_save() {
@@ -227,7 +237,29 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function communication_process( $ms_relationship ) {
-
+		if( ! $this->enabled ) {
+			return;
+		}
+		$count = 0;
+		$max_emails_qty = apply_filters( 'ms_model_communication_process', 50 );
+		foreach( $this->queue as $index => $ms_relationship_id ) {
+			if( ++$count > $max_emails_qty ) {
+				break;
+			}
+			$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
+			if( $this->send_message( $ms_relationship ) ) {
+				unset( $this->queue[ $index ] );
+				$this->sent_queue[] = $ms_relationship->id; 
+			}
+			else {
+				MS_Helper_Debug::log( sprintf( __( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
+						$this->type,
+						$ms_relationship->id,
+						$ms_relationship->user_id
+				) );
+			}
+		}
+		$this->save();
 	}
 	
 	public function add_to_queue( $ms_relationship_id ) {
@@ -236,7 +268,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		}	
 	}
 	
-	function send_message( $ms_relationship ) {
+	public function send_message( $ms_relationship ) {
 		
 		$wp_user = new WP_User( $ms_relationship->user_id );
 		if ( ! is_email( $wp_user->user_email ) || ! $this->enabled ) {
@@ -325,7 +357,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		$html_message = wpautop( $message );
 		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
 	
-		$this->add_filter( 'wp_mail_content_type', 'set_html_content_type' );
+		$this->add_filter( 'wp_mail_content_type', 'set_mail_content_type' );
 		
 		global $wp_better_emails;
 		$lambda_function = false;
@@ -338,7 +370,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			add_filter( 'wpbe_plaintext_body', $lambda_function );
 			add_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
 		} 
-		elseif ( ! defined( 'MEMBERSHIP_DONT_WRAP_COMMUNICATION' ) ) {
+		elseif ( apply_filters( 'ms_model_communication_wrap_communication', true ) ) {
 			$html_message = "<html><head></head><body>{$html_message}</body></html>";
 		}
 		
@@ -347,16 +379,26 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$recipients[] = $this->cc_email;
 		}
 
-		@wp_mail( $recipients, stripslashes( $this->subject ), $html_message );
-		$this->remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
+		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $html_message );
+		
+		$this->remove_filter( 'wp_mail_content_type', 'set_mail_content_type' );
 		if ( $lambda_function ) {
 			remove_filter( 'wpbe_plaintext_body', $lambda_function );
 			remove_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
 		}
+		
+		return $sent;
 	}
 	
-	public function set_html_content_type() {
-		return 'text/html';
+	/**
+	 * Set wp_mail_content_type to text/html.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return string
+	 */
+	public function set_mail_content_type() {
+		return apply_filters( 'ms_model_communication_set_html_content_type', 'text/html' );
 	}
 	
 	/**
