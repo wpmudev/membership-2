@@ -232,7 +232,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 								'value' => '0',
 								'compare' => '!='
 		) ) ) );
-		$data['news'] = MS_Model_News::get_news( array(
+		$data['news'] = MS_Model_Event::get_events( array(
 				'author' => $data['member']->id,
 				'posts_per_page' => 50,
 		) );

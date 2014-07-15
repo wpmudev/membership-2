@@ -187,7 +187,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->status = self::STATUS_CANCELED;
 			$this->save();
 				
-			MS_Model_News::save_news( $this, MS_Model_News::TYPE_MS_CANCEL );
+			MS_Model_Event::save_event( MS_Model_News::TYPE_MS_CANCEL, $this );
 		}
 		catch (Exception $e) {
 				
@@ -213,7 +213,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
 				
-			MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_DEACTIVATE );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATE, $this );
 		}
 		catch (Exception $e) {
 				
@@ -732,7 +732,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
 			/** signup */
 			if( 'admin' != $this->gateway_id && self::STATUS_PENDING == $this->status && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
-				MS_Model_News::save_news( $this,  MS_Model_News::TYPE_MS_SIGNUP );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNUP, $this );
 			}
 				
 			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );

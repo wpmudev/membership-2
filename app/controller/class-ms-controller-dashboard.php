@@ -69,7 +69,7 @@ class MS_Controller_Dashboard extends MS_Controller {
 	 */	
 	public function admin_dashboard() {
 		$data = array();
-		$data['news'] = MS_Model_News::get_news();
+		$data['news'] = MS_Model_Event::get_events();
 		$data['plugin_enabled'] = MS_Plugin::instance()->settings->plugin_enabled;
 		$data['members_count'] = MS_Model_Member::get_members_count();
 		$memberships = MS_Model_Membership::get_membership_names();

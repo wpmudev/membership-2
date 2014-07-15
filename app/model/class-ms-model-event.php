@@ -20,25 +20,49 @@
  *
 */
 
-class MS_Model_News extends MS_Model_Custom_Post_Type {
+class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_news';
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	const TYPE_MS_SIGNUP = 'ms_signup';
+	const TYPE_MS_SIGNED_UP = 'signed_up';
 	
-	const TYPE_MS_MOVE = 'ms_move';
+	const TYPE_MS_MOVED = 'moved';
 	
-	const TYPE_MS_EXPIRED = 'ms_expired';
+	const TYPE_MS_EXPIRED = 'expired';
 	
-	const TYPE_MS_DROP = 'ms_drop';
+	const TYPE_MS_DROPPED = 'dropped';
 	
-	const TYPE_MS_RENEW = 'ms_renew';
+	const TYPE_MS_RENEWED = 'renewed';
 	
-	const TYPE_MS_DEACTIVATE = 'ms_deactivate';
+	const TYPE_MS_DEACTIVATED = 'deactivated';
 	
-	const TYPE_MS_CANCEL = 'ms_cancel';
+	const TYPE_MS_CANCELED = 'canceled';
+	
+	const TYPE_MS_REGISTERED = 'registered';
+	
+	const TYPE_MS_PAID = 'paid';
+	
+	const TYPE_MS_BEFORE_FINISHES = 'before_finishes';
+		
+	const TYPE_MS_AFTER_FINISHES = 'after_finishes';
+	
+	const TYPE_MS_BEFORE_TRIAL_FINISHES = 'before_trial_finishes';
+	
+	const TYPE_INFO_UPDATE = 'info_update';
+	
+	const TYPE_CREDIT_CARD_EXPIRE = 'credit_card_expire';
+	
+	const TYPE_FAILED_PAYMENT = 'failed_payment';
+	
+	const TYPE_BEFORE_PAYMENT_DUE = 'before_payment_due';
+	
+	const TYPE_AFTER_PAYMENT_MADE = 'after_payment_made';
+	
+	const TOPIC_MEMBERSHIP = 'membership';
+	
+	const TOPIC_PAYMENT = 'payment';
 	
 	protected $user_id;
 	
@@ -52,23 +76,23 @@ class MS_Model_News extends MS_Model_Custom_Post_Type {
 	
 	protected $modified;
 	
-	public static function get_news_types() {
+	public static function get_event_types() {
 		return apply_filters( 'ms_model_news_get_news_types', array(
-				self::TYPE_MS_SIGNUP,
-				self::TYPE_MS_MOVE,
-				self::TYPE_MS_EXPIRED,
-				self::TYPE_MS_DROP,
-				self::TYPE_MS_RENEW,
-				self::TYPE_MS_DEACTIVATE,
-				self::TYPE_MS_CANCEL,
+				self::TYPE_MS_SIGNUP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_MOVE => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_EXPIRED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_DROP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_RENEW => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_DEACTIVATE => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_CANCEL => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 		) );
 	}
 	
 	public static function is_valid_type( $type ) {
-		return in_array( $type, self::get_news_types() );
+		return array_key_exists( $type, self::get_news_types() );
 	}
 	
-	public static function get_news( $args = null ) {
+	public static function get_events( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 10,
@@ -87,7 +111,7 @@ class MS_Model_News extends MS_Model_Custom_Post_Type {
 		return $news;
 	}
 	
-	public static function save_news( $ms_relationship, $type ) {
+	public static function save_event( $type, $ms_relationship ) {
 		
 		if( self::is_valid_type( $type ) && $ms_relationship->id > 0 ) {
 			$news = new self();
@@ -96,6 +120,7 @@ class MS_Model_News extends MS_Model_Custom_Post_Type {
 			$news->membership_id = $ms_relationship->membership_id;
 			$news->gateway_id  = $ms_relationship->gateway_id;
 			$membership = $ms_relationship->get_membership();
+			do_action( "ms_news_$type", $ms_relationship );
 			switch( $type ) {
 				case self::TYPE_MS_SIGNUP:
 					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has joined membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),

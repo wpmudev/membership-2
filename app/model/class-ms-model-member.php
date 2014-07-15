@@ -353,7 +353,7 @@ class MS_Model_Member extends MS_Model {
 			$this->cancel_membership( $move_from_id );
 			$this->membership_relationships[ $move_to_id ] = $ms_relationship;
 				
-			MS_Model_News::save_news( $this->membership_relationships[ $move_to_id ],  MS_Model_News::TYPE_MS_MOVE );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVE, $this->membership_relationships[ $move_to_id ] );
 		}
 	}
 	
