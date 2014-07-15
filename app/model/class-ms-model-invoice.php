@@ -30,6 +30,12 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	
 	const STATUS_PAID = 'paid';
 	
+	const STATUS_FAILED = 'failed';
+	
+	const STATUS_PENDING = 'pending';
+	
+	const STATUS_DENIED = 'denied';
+	
 	/**
 	 * External transaction ID.
 	 * 
@@ -85,6 +91,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_invoice_get_status', array(
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
+				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
+				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 			) 
 		);
 	}
