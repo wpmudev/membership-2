@@ -32,6 +32,15 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_INFO_UPDATE;
 	
+	public function __construct() {
+	
+		parent::__construct();
+	
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_UPDATED_INFO, 'enqueue_messages', 10, 2 );
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent when a member updates any personal information (e.g. credit card, name, address details etc.)', MS_TEXT_DOMAIN );
 	}

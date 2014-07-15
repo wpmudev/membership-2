@@ -32,6 +32,15 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_CREDIT_CARD_EXPIRE;
 	
+	public function __construct() {
+	
+		parent::__construct();
+	
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, 'enqueue_messages', 10, 2 );
+		}
+	}
+	
 	public function get_description() {
 		return __( "A notice to indicate that the member's credit card is about to expire", MS_TEXT_DOMAIN );
 	}

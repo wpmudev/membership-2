@@ -50,8 +50,9 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 				'%taxname%' => 'Tax name',
 				'%taxamount%' => 'Tax amount',
 		);
-
-		$this->add_action( 'ms_communications_process_'. $this->type, 'communication_process_registration', 10, 3 );
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP, 'process_communication_registration', 10, 2 );
+		}
 
 	}
 	public function get_description() {
@@ -87,7 +88,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );
 	}
 	
-	public function communication_process_registration( $ms_relationship ) {
+	public function process_communication_registration( $event, $ms_relationship ) {
 		$this->send_message( $ms_relationship );
 	}
 }

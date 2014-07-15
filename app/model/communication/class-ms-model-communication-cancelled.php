@@ -32,6 +32,15 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_CANCELLED;
 	
+	public function __construct() {
+	
+		parent::__construct();
+		
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_CANCELLED, 'enqueue_messages', 10, 2 );
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent when member cancels a membership', MS_TEXT_DOMAIN );
 	}

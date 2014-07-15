@@ -97,15 +97,9 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				'%taxamount%' => 'Tax amount',
 		);
 		if( $this->enabled ) {
-			$this->add_action( 'ms_communications_process', 'communication_process' );
-// 			$this->add_action( 'ms_model_plugin_check_membership_status', 'enqueue_messages' );
+			$this->add_action( 'ms_model_plugin_process_communications', 'process_communication' );
 		}
 	}
-	
-	public function enqueue_messages() {
-	
-	}
-		
 	
 	protected static $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters' );
 	
@@ -236,7 +230,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			
 	}
 	
-	public function communication_process( $ms_relationship ) {
+	public function process_communication() {
 		if( ! $this->enabled ) {
 			return;
 		}
@@ -259,6 +253,11 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				) );
 			}
 		}
+		$this->save();
+	}
+	
+	public function enqueue_messages( $event, $ms_relationship ) {
+		$this->add_to_queue( $ms_relationship->id );
 		$this->save();
 	}
 	

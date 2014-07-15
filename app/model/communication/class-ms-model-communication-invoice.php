@@ -32,6 +32,15 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_INVOICE;
 	
+	public function __construct() {
+	
+		parent::__construct();
+	
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_PAID, 'enqueue_messages', 10, 2 );
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent each time a payment has been made. Contains any tax information if relevant', MS_TEXT_DOMAIN );
 	}
