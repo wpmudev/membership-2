@@ -218,6 +218,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;
 			case MS_Model_Invoice::STATUS_PAID:
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID );
 				if( $invoice->coupon_id ) {
 					$coupon = MS_Model_Coupon::load( $invoice->coupon_id );
 					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
@@ -251,6 +252,15 @@ class MS_Model_Gateway extends MS_Model_Option {
 				$member->active = true;
 				$ms_relationship->config_period();
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
+				break;
+			case MS_Model_Invoice::STATUS_FAILED:
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED );
+				break;	
+			case MS_Model_Invoice::STATUS_DENIED:
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED );
+				break;	
+			case MS_Model_Invoice::STATUS_PENDING:
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING );
 				break;
 			default:
 				do_action( 'ms_model_gateway_process_transaction', $invoice );

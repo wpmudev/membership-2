@@ -347,7 +347,6 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 		switch( $invoice->status ) {
 			case self::STATUS_REVERSED:
 			case self::STATUS_REFUNDED:
-			case self::STATUS_DENIED:
 			case self::STATUS_DISPUTE:
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
