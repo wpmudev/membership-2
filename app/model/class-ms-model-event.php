@@ -32,12 +32,17 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	const TOPIC_USER = 'user';
 	
+	const TYPE_UPDATED_INFO = 'updated_info';
+	
+	const TOPIC_WARNING = 'warning';
 	
 	const TYPE_MS_SIGNED_UP = 'signed_up';
 	
 	const TYPE_MS_MOVED = 'moved';
 	
 	const TYPE_MS_EXPIRED = 'expired';
+	
+	const TYPE_MS_TRIAL_EXPIRED = 'trial_expired';
 	
 	const TYPE_MS_DROPPED = 'dropped';
 	
@@ -49,23 +54,27 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	const TYPE_MS_REGISTERED = 'registered';
 	
-	const TYPE_MS_PAID = 'paid';
-	
 	const TYPE_MS_BEFORE_FINISHES = 'before_finishes';
 		
 	const TYPE_MS_AFTER_FINISHES = 'after_finishes';
 	
 	const TYPE_MS_BEFORE_TRIAL_FINISHES = 'before_trial_finishes';
 	
-	const TYPE_UPDATED_INFO = 'updated_info';
+	const TYPE_MS_TRIAL_FINISHED = 'trial_finished';
 	
 	const TYPE_CREDIT_CARD_EXPIRE = 'credit_card_expire';
+
+	const TYPE_PAID = 'paid';
 	
-	const TYPE_FAILED_PAYMENT = 'failed_payment';
+	const TYPE_PAYMENT_FAILED = 'payment_failed';
 	
-	const TYPE_BEFORE_PAYMENT_DUE = 'before_payment_due';
+	const TYPE_PAYMENT_PENDING = 'payment_pending';
 	
-	const TYPE_AFTER_PAYMENT_MADE = 'after_payment_made';
+	const TYPE_PAYMENT_DENIED = 'payment_denied';
+	
+	const TYPE_PAYMENT_BEFORE_DUE = 'payment_before_due';
+	
+	const TYPE_PAYMENT_AFTER_MADE = 'payment_after_made';
 	
 	protected $user_id;
 	
@@ -91,17 +100,19 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_MS_RENEWED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				self::TYPE_MS_DEACTIVATED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				self::TYPE_MS_CANCELLED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_PAID => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_BEFORE_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_AFTER_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				
+				self::TYPE_MS_BEFORE_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
+				self::TYPE_MS_AFTER_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
+				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
 				
 				self::TYPE_CREDIT_CARD_EXPIRE => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_FAILED_PAYMENT => array( 'topic' => self::TOPIC_PAYMENT ),
 				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_AFTER_PAYMENT_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_BEFORE_PAYMENT_DUE => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_AFTER_PAYMENT_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAID => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAYMENT_FAILED => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAYMENT_PENDING => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAYMENT_DENIED => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAYMENT_BEFORE_DUE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_PAYMENT_AFTER_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
 		) );
 	}
 	
@@ -127,7 +138,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				'post_status' => 'any',
 				'order' => 'DESC',
 		);
-		$args = apply_fitlers( 'ms_model_events_get_events_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters( 'ms_model_events_get_events_args', wp_parse_args( $args, $defaults ) );
 
 		if( ! empty( $args['topic'] ) ) {
 			$args['meta_query']['topic'] = array(
@@ -183,7 +194,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event->save();
 			
 			/** Hook to these actions to handle event notifications. e.g. auto communication. */
-			do_action( "ms_event_$type", $event, $ms_relationship );
+			do_action( "ms_model_event_$type", $event, $ms_relationship );
 		}
 	}
 	
