@@ -727,16 +727,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $status, $allowed_status ) ){
 			$status = $this->calculate_status();
-		}
-
-		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
-			/** signup */
-			if( 'admin' != $this->gateway_id && self::STATUS_PENDING == $this->status && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNUP, $this );
-			}
-				
-			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );
-			$this->save();
+			$this->handle_status_change( $status );
 		}
 	}
 	
@@ -758,10 +749,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $this->status, $allowed_status ) ) {
 			$status = $this->calculate_status();
-			if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
-				$this->status = $status;
-				$this->save();
-			}
+			$this->handle_status_change( $status );
 		}
 		
 		return apply_filters( 'membership_model_membership_relationship_get_status', $this->status, $this );
@@ -810,6 +798,73 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
+	 * Handle status change.
+	 *
+	 * Save news when status change.
+	 *
+	 * @since 4.0.0
+	 */
+	public function handle_status_change( $status ) {
+		
+		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
+			
+			do_action( 'ms_model_membership_relationship_handle_status_change', $status, $this );
+				
+			/** deactivated manually or automatically after a limited expired period (or trial expired period). */
+			if( self::STATUS_DEACTIVATED == $status ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
+			}
+			else {
+				switch( $this->status ) {
+					case self::STATUS_PENDING:
+						/** signup */
+						if( 'admin' != $this->gateway_id && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNUP, $this );
+						}
+						break;	
+					case self::STATUS_TRIAL:
+						/** trial finished */
+						if( self::STATUS_TRIAL_EXPIRED == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_TRIAL_FINISHED, $this );
+						}
+						elseif( self::STATUS_ACTIVE == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $this );
+						}
+						elseif( self::STATUS_CANCELED == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
+						}
+						break;
+					case self::STATUS_TRIAL_EXPIRED:
+						if( self::STATUS_ACTIVE == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $this );
+						}
+					case self::STATUS_ACTIVE:
+						if( self::STATUS_CANCELED == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
+						}
+						if( self::STATUS_EXPIRED == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_EXPIRED, $this );
+						}
+						break;
+					case self::STATUS_EXPIRED:
+					case self::STATUS_CANCELED:
+						if( self::STATUS_ACTIVE == $status ) {
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $this );
+						}
+						break;
+						break;
+					case self::STATUS_DEACTIVATED:
+						break;
+				}
+			}
+			
+			$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $status );
+			$this->save();
+		}
+		
+	}
+	
+	/**
 	 * Check membership status.
 	 *
 	 * Execute actions when time/period condition are met.
@@ -831,9 +886,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$trial_expire = $this->get_remaining_trial_period();
 		
 		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $expire );
-		switch( $this->status ) {
-			case self::STATUS_PENDING:
-					break;
+		switch( $this->get_status() ) {
 			case self::STATUS_TRIAL:
 				/** Send trial end communication. */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
@@ -841,6 +894,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$days = MS_Helper_Period::get_period_in_days( $comm->period );
 					if( ! $trial_expire->invert && $days == $trial_expire->days ) {
 						$comm->add_to_queue( $this->id );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES );
 					}
 				}
 				break;
@@ -913,11 +967,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					}
 				}
 				break;
-					
-				/** Deactivated status won't appear here, but it can be changed in get_membership_relationships $args.*/
+				
+			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
 			default:
-				do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this );
 				break;
 		}
 		foreach( $comms as $comm ) {
