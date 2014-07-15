@@ -46,7 +46,7 @@ class MS_Model_Plugin extends MS_Model {
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 			
 			/** cron service action */
-			$this->add_action( 'ms_check_membership_status', 'check_membership_status' );
+			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 			
 // 			$this->check_membership_status();
 		}
@@ -260,17 +260,17 @@ class MS_Model_Plugin extends MS_Model {
 			 * Check for membership status.
 			 */
 			$checkperiod = '6hours';
-			if ( ! wp_next_scheduled( 'ms_check_membership_status' ) ) {
+			if ( ! wp_next_scheduled( 'ms_model_plugin_check_membership_status' ) ) {
 				/** Action to be called by the cron job */
-				wp_schedule_event( time(), $checkperiod, 'ms_check_membership_status' );
+				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_check_membership_status' );
 			}
 			/**
 			 * Setup automatic communications.
 			 */
 			$checkperiod = '60mins';
-			if ( ! wp_next_scheduled( 'ms_communications_process' ) ) {
+			if ( ! wp_next_scheduled( 'ms_model_plugin_process_communications' ) ) {
 				/** Action to be called by the cron job */
-				wp_schedule_event( time(), $checkperiod, 'ms_communications_process' );
+				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_process_communications' );
 			}
 		}
 	}
