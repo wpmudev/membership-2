@@ -32,10 +32,10 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_INVOICE;
 	
-	public function __construct() {
+	public function after_load() {
 	
-		parent::__construct();
-	
+		parent::after_load();
+		
 		if( $this->enabled ) {
 			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_PAID, 'enqueue_messages', 10, 2 );
 		}

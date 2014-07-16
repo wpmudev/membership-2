@@ -96,6 +96,16 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				'%taxname%' => 'Tax name',
 				'%taxamount%' => 'Tax amount',
 		);
+	}
+	
+	public function before_save() {
+		$this->title = $this->subject;
+		$this->description = $this->message;
+	}
+	
+	public function after_load() {
+		$this->subject = $this->title;
+		$this->message = $this->description;
 		if( $this->enabled ) {
 			$this->add_action( 'ms_model_plugin_process_communications', 'process_communication' );
 		}
@@ -214,16 +224,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		}
 	
 		return apply_filters( 'ms_model_communication_communication_set_factory', self::$communications );
-	}
-	
-	public function before_save() {
-		$this->title = $this->subject;
-		$this->description = $this->message;
-	}
-	
-	public function after_load() {
-		$this->subject = $this->title;
-		$this->message = $this->description;
 	}
 	
 	public function get_description() {

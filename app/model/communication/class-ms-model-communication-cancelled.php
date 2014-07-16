@@ -32,12 +32,12 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_CANCELLED;
 	
-	public function __construct() {
+	public function after_load() {
 	
-		parent::__construct();
+		parent::after_load();
 		
 		if( $this->enabled ) {
-			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_CANCELLED, 'enqueue_messages', 10, 2 );
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_CANCELED, 'enqueue_messages', 10, 2 );
 		}
 	}
 	

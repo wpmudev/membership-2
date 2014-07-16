@@ -50,11 +50,17 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 				'%taxname%' => 'Tax name',
 				'%taxamount%' => 'Tax amount',
 		);
+	}
+	
+	public function after_load() {
+	
+		parent::after_load();
+		
 		if( $this->enabled ) {
 			$this->add_action( 'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP, 'process_communication_registration', 10, 2 );
 		}
-
 	}
+	
 	public function get_description() {
 		return __( 'Sent when a member completes the registration for a  membership. For the first one, the terms of the membership are to be presented and the invoice will also be included in this email', MS_TEXT_DOMAIN );
 	}
@@ -89,6 +95,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	}
 	
 	public function process_communication_registration( $event, $ms_relationship ) {
+MS_Helper_Debug::log("process_communication_registration");
 		$this->send_message( $ms_relationship );
 	}
 }
