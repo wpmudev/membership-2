@@ -28,7 +28,42 @@ class MS_Model_Upgrade extends MS_Model {
 	protected $id =  'ms_model_update';
 	
 	protected $name = 'Update DB';
-		
+
+	protected $allowed_actions = array( 'cleanup_db', 'cleanup_settings' );
+	
+	public function __construct() {
+		$this->add_action( 'template_redirect', 'process_actions', 1 );	
+	}
+	
+	public static function init() {
+		self::upgrade();
+		new self();
+	}
+	
+	
+	/**
+	 * Handle URI actions for registration.
+	 *
+	 * Matches returned 'action' to method to execute.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * template_redirect
+	 *
+	 * @todo Sanitize and protect from possible random function calls.
+	 *
+	 * @since 4.0.0
+	 */
+	public function process_actions() {
+		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		/**
+		 * If $action is set, then call relevant method.
+		 */
+		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+			$this->$action();
+		}
+	}
+	
 	public static function upgrade() {
 		$settings = MS_Plugin::instance()->settings;
 		/** Compare current src version to DB version */
@@ -68,10 +103,6 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $invoices as $invoice ) {
 			$invoice->delete();
 		}
-		$gateways = MS_Model_Gateway::get_gateways();
-		foreach( $gateways as $gateway ) {
-			$gateway->delete();
-		}
 		$coupons = MS_Model_Coupon::get_coupons( array( 'posts_per_page' => -1 ) );
 		foreach( $coupons as $coupon ) {
 			$coupon->delete();
@@ -80,11 +111,21 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $news as $new ) {
 			$new->delete();
 		}
+		self::cleanup_settings();
+		
+	}
+	
+	private static function cleanup_settings() {
+		$gateways = MS_Model_Gateway::get_gateways();
+		foreach( $gateways as $gateway ) {
+			$gateway->delete();
+		}
 		$settings = MS_Plugin::instance()->settings;
 		$settings->tax = array( 'tax_name' => false, 'tax_rate' => false );
 		$settings->save();
 		
 		$simulate = MS_Model_Simulate::load();
 		$simulate->reset_simulation();
+		
 	}
 }

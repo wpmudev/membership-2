@@ -27,7 +27,11 @@ class MS_Model_Plugin extends MS_Model {
 	
 	public function __construct() {
 		
-		$this->upgrade();
+		/**
+		 * Upgrade membership database if needs to.
+		 */
+		MS_Model_Upgrade::init();
+		
 		if( MS_Plugin::instance()->settings->plugin_enabled ) {
 			
 			$this->add_filter( 'cron_schedules', 'cron_time_period' );
@@ -50,14 +54,6 @@ class MS_Model_Plugin extends MS_Model {
 			
 // 			$this->check_membership_status();
 		}
-	}
-	
-	/**
-	 * Upgrade database if needs to.
-	 */
-	public function upgrade() {
-			
-		MS_Model_Upgrade::upgrade();
 	}
 	
 	/**
