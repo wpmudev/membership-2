@@ -34,7 +34,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	
 	protected $manual_payment = false;
 	
-	protected $active = true;
+	protected $active;
 	
 	protected $pro_rate = true;
 	
