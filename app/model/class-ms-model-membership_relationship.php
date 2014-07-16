@@ -134,7 +134,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			 */
 			case self::STATUS_DEACTIVATED:
 // 				$ms_relationship->current_invoice_number = 1;
-				$ms_relationship->set_status( self::STATUS_PENDING );
+				$ms_relationship->status = self::STATUS_PENDING;
 				
 			/** Initial status */
 			default:
@@ -187,7 +187,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->status = self::STATUS_CANCELED;
 			$this->save();
 				
-			MS_Model_Event::save_event( MS_Model_News::TYPE_MS_CANCEL, $this );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 		}
 		catch (Exception $e) {
 				
@@ -213,7 +213,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
 				
-			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATE, $this );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
 		}
 		catch (Exception $e) {
 				
@@ -819,7 +819,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					case self::STATUS_PENDING:
 						/** signup */
 						if( 'admin' != $this->gateway_id && in_array( $status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
-							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNUP, $this );
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $this );
 						}
 						break;	
 					case self::STATUS_TRIAL:
