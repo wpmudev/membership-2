@@ -337,6 +337,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			MS_Helper_Debug::log( $e->getMessage() );
 			/** Hack to send the error message back to the gateway_form. */
 			$_POST['auth_error'] = $e->getMessage();
+			$_POST['step'] = 'extra_form';
 			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'gateway_form', 1 );
 		}
 	}
@@ -374,7 +375,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 				
-			$response = $this->get_cim()->createCustomerProfileInvoice( 'AuthCapture', $cim_transaction );
+			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthCapture', $cim_transaction );
 			if ( $response->isOk() ) {
 				$transaction_response = $response->getTransactionResponse();
 				if( $transaction_response->approved ) {
