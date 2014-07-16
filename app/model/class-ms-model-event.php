@@ -99,7 +99,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_MS_DROPPED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				self::TYPE_MS_RENEWED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				self::TYPE_MS_DEACTIVATED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_CANCELLED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				self::TYPE_MS_CANCELED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
 				
 				self::TYPE_MS_BEFORE_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
 				self::TYPE_MS_AFTER_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
@@ -158,43 +158,58 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		return $events;
 	}
 	
-	public static function save_event( $type, $ms_relationship ) {
+	public static function save_event( $type, $data ) {
 		
-		if( self::is_valid_type( $type ) && $ms_relationship->id > 0 ) {
+		if( self::is_valid_type( $type ) ) {
 			
-			$membership = $ms_relationship->get_membership();
-			$member = MS_Model_Member::load( $ms_relationship->user_id );
-				
 			$event = new self();
-			$event->user_id = $ms_relationship->user_id;
-			$event->ms_relationship_id = $ms_relationship->id;
 			$event->type = $type;
 			$event->topic = self::get_topic( $type );
 			
 			switch( $event->topic ) {
-				case self::TOPIC_MEMBERSHIP:
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> has %s membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$type,
-							$member->username,
-							$membership->name
-					);
-				case self::TOPIC_USER:
 				case self::TOPIC_PAYMENT:
-				default:
+				case self::TOPIC_MEMBERSHIP:
+					$ms_relationship = $data;
+					if( $ms_relationship->id > 0 ) { 
+						$membership = $ms_relationship->get_membership();
+						$member = MS_Model_Member::load( $ms_relationship->user_id );
+						$event->user_id = $ms_relationship->user_id;
+						$event->ms_relationship_id = $ms_relationship->id;
+						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
+						
+						$description = sprintf( __( '<span class="ms-news-bold">%s</span> has %s membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
+								$type,
+								$member->username,
+								$membership->name
+						);
+					}
+					else {
+						throw new Exception( __( 'Invalid Membership Relationship', MS_TEXT_DOMAIN ) );
+					}
+					break;
+				case self::TOPIC_USER:
+					$member = $data;
+					$event->user_id = $member->id;
+					$event->name = sprintf( 'user: %s, type: %s', $member->name, $type );
+						
 					$description = sprintf( __( '<span class="ms-news-bold">%s</span> - event: <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
 							$member->username,
 							$type
 					);
 					break;
+				default:
+					MS_Helper_Debug::log(" event topic not implemented $event->topic");
+					break;	
 			}
-			$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
-			$event->description = apply_filters( 'ms_model_event_description', $desc, $type, $ms_relationship );
-			
+			$event->description = apply_filters( 'ms_model_event_description', $description, $type, $data );
+				
 			$event = apply_filters( 'ms_model_news_record_user_signup_object', $event );
 			$event->save();
 			
 			/** Hook to these actions to handle event notifications. e.g. auto communication. */
-			do_action( "ms_model_event_$type", $event, $ms_relationship );
+			do_action( "ms_model_event_$type", $event, $data );
+			
+			return $event;
 		}
 	}
 	
