@@ -178,8 +178,8 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 						
 						$description = sprintf( __( '<span class="ms-news-bold">%s</span> has %s membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-								$type,
 								$member->username,
+								$type,
 								$membership->name
 						);
 					}
