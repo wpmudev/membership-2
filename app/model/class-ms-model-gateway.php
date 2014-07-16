@@ -218,16 +218,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;
 			case MS_Model_Invoice::STATUS_PAID:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
 				if( $invoice->coupon_id ) {
 					$coupon = MS_Model_Coupon::load( $invoice->coupon_id );
 					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
 					$coupon->used++;
 					$coupon->save();
-					
-					/** Send invoice paid communication. */
-					$comm = $comms[ MS_Model_Communication::COMM_TYPE_INVOICE ];
-					$comm->add_to_queue( $invoice->ms_relationship_id );	
 				}
 				
 				/** Check for moving memberships */
@@ -254,13 +250,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_ACTIVE;
 				break;
 			case MS_Model_Invoice::STATUS_FAILED:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
 				break;	
 			case MS_Model_Invoice::STATUS_DENIED:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
 				break;	
 			case MS_Model_Invoice::STATUS_PENDING:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $ms_relationship );
 				break;
 			default:
 				do_action( 'ms_model_gateway_process_transaction', $invoice );
