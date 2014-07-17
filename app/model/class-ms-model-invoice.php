@@ -326,7 +326,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			$due_date = null;
 				
 			if( empty( $invoice_number ) ) {
-				$invoice_number = 1;
+				$invoice_number = $ms_relationship->current_invoice_number;
 			}
 			
 			/** Search for existing invoice */
@@ -556,7 +556,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 				'has_archive' => false,
 				'publicly_queryable' => true,
 				'supports' => false,
-				'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'page' ),
+// 				'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'post' ),
 				'hierarchical' => false,
 		) ) );
 	}
