@@ -191,58 +191,45 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @param mixed $fields Transaction fields
 	 */	
 	public function save_invoice( $fields ) {
+		
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
+		
 		if ( ! current_user_can( $this->capability ) ) {
 			return $msg;
 		}
 		
-		if( is_array( $fields ) ) {
+		if( is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) && ! empty( $fields['gateway_id'] ) ) {
 
-			// Avoids fatal error calling methods on non-objects.
-			// Should not need to be trapped at this level, but will do it for now until UI is determined.
-			$member = ! empty ( $fields['user_id'] ) ? MS_Model_Member::load( $fields['user_id'] ) : false;
-			$membership = ! empty( $fields['membership_id'] ) ? MS_Model_Membership::load( $fields['membership_id'] ) : false;
+			$member = MS_Model_Member::load( $fields['user_id'] );
+			$membership_id = $fields['membership_id'];
+			$gateway_id = $fields['gateway_id'];
 			
-// 			$has_relationship = $member ? $membership ? in_array( $fields['membership_id'], $member->membership_relationships ) : false : false;
+			$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $member->id, $membership_id );
+			if( empty( $ms_relationship ) ){
+				$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
+			}
 			
-// 			if ( $has_relationship ) {
-				
-				$invoice = apply_filters( 'ms_model_invoice', MS_Model_Invoice::load( $fields['invoice_id'] ) );
-				if( $invoice->id == 0 ) {
-					if( ! empty( $fields['membership_id'] ) && ! empty( $fields['user_id'] ) && ! empty( $fields['gateway_id'] ) ) {
-						$gateway_id = $fields['gateway_id'];
-						$ms_relationship = $member->membership_relationships[ $fields['membership_id'] ];
-						$ms_relationship->gateway_id = $gateway_id;
-						$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
-						$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
-					}
-					else {
-						$msg = MS_Helper_Billing::BILLING_MSG_NOT_ADDED;
-						return $msg;
-					}
-				}
-				else {
-					$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
-				}
+			$invoice = apply_filters( 'ms_model_invoice', MS_Model_Invoice::load( $fields['invoice_id'] ) );
+			if( ! $invoice->is_valid() ) {
+				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
+				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
+			}
+			else {
+				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
+			}
 
-				foreach( $fields as $field => $value ) {
-					$invoice->$field = $value;
-				}
+			foreach( $fields as $field => $value ) {
+				$invoice->$field = $value;
+			}
 
-				$invoice->save();
-			
-				if( ! empty( $fields['execute'] ) ) {
-				
-					$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $invoice->user_id, $invoice->membership_id );
-					$gateway = $ms_relationship->get_gateway();
-					$gateway->process_transaction( $invoice );
-				
-				}
-// 			} else {
-// 				$msg = MS_Helper_Billing::BILLING_MSG_NOT_A_MEMBER;
-// 			}
-			
+			$invoice->save();
+		
+			if( ! empty( $fields['execute'] ) ) {
+				$gateway = $ms_relationship->get_gateway();
+				$gateway->process_transaction( $invoice );
+			}
 		}
+		
 		return $msg;	
 	}
 
