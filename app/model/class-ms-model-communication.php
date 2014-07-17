@@ -245,13 +245,13 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$time_limit = apply_filters( 'ms_model_communication_process_communication_time_limit', 10 ); 
 			$start_time = time();
 
-			foreach( $this->queue as $index => $ms_relationship_id ) {
+			foreach( $this->queue as $ms_relationship_id => $date ) {
 				if( ( time() > $start_time + $time_limit ) || ( ++$count > $max_emails_qty ) ) {
 					break;
 				}
 				$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
 				if( $this->send_message( $ms_relationship ) ) {
-					$this->sent_queue[] = $ms_relationship_id; 
+					$this->remove_from_queue( $ms_relationship_id ); 
 					unset( $this->queue[ $index ] );
 				}
 				else {
@@ -278,9 +278,20 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( ! $this->enabled ) {
 			return;
 		}
-		if( ! in_array( $ms_relationship_id, $this->queue ) ) {
-			$this->queue[] = $ms_relationship_id;
+		if( ! array_key_exists( $ms_relationship_id, $this->queue ) && ! array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
+			$this->queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
 		}	
+	}
+	
+	public function remove_from_queue( $ms_relationship_id ) {
+		$this->sent_queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
+		unset( $this->queue[ $ms_relationship_id ] );
+		
+		$max_history = apply_filters( 'ms_model_communication_sent_queue_max_history', 200 );
+		/** Delete history */
+		if( count( $this->sent_queue ) > $max_history ) {
+			$this->sent_queue = array_slice( $this->sent_queue, -1, $max_history, true );
+		}
 	}
 	
 	public function send_message( $ms_relationship ) {
