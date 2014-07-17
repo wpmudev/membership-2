@@ -136,12 +136,12 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	
 	public static function get_ms_post_types() {
 		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', array(
-				'ms_membership',
-				'ms_invoice',
-				'ms_communication',
-				'ms_coupon',
-				'ms_relationship',
-				'ms_news',
+				MS_Model_Membership::$POST_TYPE,
+				MS_Model_Invoice::$POST_TYPE,
+				MS_Model_Communication::$POST_TYPE,
+				MS_Model_Coupon::$POST_TYPE,
+				MS_Model_Membership_Relationship::$POST_TYPE,
+				MS_Model_Event::$POST_TYPE,
 		) );
 	}
 	
