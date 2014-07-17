@@ -63,7 +63,7 @@ class MS_View_Billing_List extends MS_View {
 						}
 					} 
 				?>
-				<a class="add-new-h2" href="admin.php?page=membership-billing&action=edit&transaction_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
+				<a class="add-new-h2" href="admin.php?page=membership-billing&action=edit&invoice_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
 			</h2>
 			<?php $billing_list->views(); ?>
 			<form action="" method="post">
