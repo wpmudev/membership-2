@@ -235,7 +235,7 @@ class MS_Controller_Billing extends MS_Controller {
 				
 					$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $invoice->user_id, $invoice->membership_id );
 					$gateway = $ms_relationship->get_gateway();
-					$gateway->process_invoice( $invoice );
+					$gateway->process_transaction( $invoice );
 				
 				}
 // 			} else {
