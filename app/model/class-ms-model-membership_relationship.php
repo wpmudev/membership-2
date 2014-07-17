@@ -894,7 +894,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$days = MS_Helper_Period::get_period_in_days( $comm->period );
 					if( ! $trial_expire->invert && $days == $trial_expire->days ) {
 						$comm->add_to_queue( $this->id );
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES, $this );
 					}
 				}
 				break;
@@ -933,18 +933,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				}
 					
 				/** Configure communication messages.*/
-				$comms_active = array(
-						$comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ],
-						$comms[ MS_Model_Communication::COMM_TYPE_FINISHED ],
-						$comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ],
-				);
-				foreach( $comms_active as $comm ) {
-					if( $comm->enabled ) {
-						$days = MS_Helper_Period::get_period_in_days( $comm->period );
-						if( ! $expire->invert && $days == $expire->days ) {
-							$comm->add_to_queue( $this->id );
-						}
-					}
+				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
+				$days = MS_Helper_Period::get_period_in_days( $comm->period );
+				if( ! $expire->invert && $days == $expire->days ) {
+					$comm->add_to_queue( $this->id );
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $this );
+				}
+				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
+				$days = MS_Helper_Period::get_period_in_days( $comm->period );
+				if( $expire->invert && $days == $expire->days ) {
+					$comm->add_to_queue( $this->id );
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
 				}
 					
 				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
