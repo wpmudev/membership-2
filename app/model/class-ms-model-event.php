@@ -168,6 +168,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			
 			switch( $event->topic ) {
 				case self::TOPIC_PAYMENT:
+				case self::TOPIC_WARNING:
 				case self::TOPIC_MEMBERSHIP:
 					$ms_relationship = $data;
 					if( $ms_relationship->id > 0 ) { 
