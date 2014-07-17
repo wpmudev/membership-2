@@ -137,4 +137,64 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		) ) );
 	}
 	
+	/**
+	 * Check to see if the post is currently being edited.
+	 *
+	 * Based in the wp_check_post_lock.
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @param int $post_id ID of the post to check for editing
+	 * @return bool
+	 */
+	public function check_object_lock() {
+		
+		$locked = false;
+		
+		if( $this->is_valid() && $lock = get_post_meta( $this->id, '_ms_edit_lock', true ) ) {
+			
+			$time = $lock;
+			$time_window = apply_filters( 'ms_model_custom_post_type_check_object_lock_window', 150 );
+			if ( $time && $time > time() - $time_window ) {			
+				$locked = true;
+			}
+		}
+
+		return $locked;
+	}
+	
+	/**
+	 * Mark the post as currently being edited.
+	 *
+	 * Based in the wp_set_post_lock
+	 * 
+	 * @since 4.0.0
+	 *
+	 * @param int $post_id ID of the post to being edited
+	 * @return bool|int
+	 */
+	public function set_object_lock() {
+		
+		$lock = false;
+		
+		if( $this->is_valid() ) {
+			$lock = apply_filters( 'ms_model_custom_post_type_set_object_lock', time() );
+			update_post_meta( $this->id, '_ms_edit_lock', $lock );
+		}
+
+		return $lock;
+	}
+	
+	/**
+	 * Check to see if the current post type exists.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public function is_valid() {
+		if ( $this->id > 0 ) {
+			return true;
+		}
+	}
 }
