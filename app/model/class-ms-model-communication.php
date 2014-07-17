@@ -262,7 +262,9 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					) );
 				}
 			}
+			
 			$this->save();
+			$this->delete_object_lock();
 		}
 	}
 	

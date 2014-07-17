@@ -144,7 +144,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 * 
 	 * @since 4.0.0
 	 *
-	 * @param int $post_id ID of the post to check for editing
 	 * @return bool
 	 */
 	public function check_object_lock() {
@@ -164,13 +163,12 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	}
 	
 	/**
-	 * Mark the post as currently being edited.
+	 * Mark the object as currently being edited.
 	 *
 	 * Based in the wp_set_post_lock
 	 * 
 	 * @since 4.0.0
 	 *
-	 * @param int $post_id ID of the post to being edited
 	 * @return bool|int
 	 */
 	public function set_object_lock() {
@@ -183,6 +181,18 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		}
 
 		return $lock;
+	}
+	
+	/**
+	 * Delete object lock.
+	 *
+	 * @since 4.0.0
+	 *
+	 */
+	public function delete_object_lock() {
+		if( $this->is_valid() ) {
+			update_post_meta( $this->id, '_ms_edit_lock', '' );
+		}
 	}
 	
 	/**
