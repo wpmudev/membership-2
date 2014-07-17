@@ -32,6 +32,15 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_FINISHED;
 	
+	public function after_load() {
+	
+		parent::after_load();
+	
+		if( $this->enabled ) {
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_EXPIRED, 'enqueue_messages', 10, 2 );
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent as soon as the membership finishes', MS_TEXT_DOMAIN );
 	}

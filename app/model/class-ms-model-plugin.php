@@ -233,6 +233,7 @@ class MS_Model_Plugin extends MS_Model {
 		$periods['15mins'] = array( 'interval' => 15 * MINUTE_IN_SECONDS, 'display' => __( 'Every 15 Mins', MS_TEXT_DOMAIN ) );
 		$periods['10mins'] = array( 'interval' => 10 * MINUTE_IN_SECONDS, 'display' => __( 'Every 10 Mins', MS_TEXT_DOMAIN ) );
 		$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN ) );
+		$periods['1min']  = array( 'interval' => MINUTE_IN_SECONDS, 'display' => __( 'Every Minute', MS_TEXT_DOMAIN ) );
 	
 		return $periods;
 	}
@@ -264,6 +265,7 @@ class MS_Model_Plugin extends MS_Model {
 			 * Setup automatic communications.
 			 */
 			$checkperiod = '60mins';
+			$checkperiod = '1min'; //@todo for testing 
 			if ( ! wp_next_scheduled( 'ms_model_plugin_process_communications' ) ) {
 				/** Action to be called by the cron job */
 				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_process_communications' );

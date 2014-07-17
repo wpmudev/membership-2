@@ -219,7 +219,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$comm_types = self::get_communication_types();
 			
 			foreach( $comm_types as $type ) {
-				$comms[ $type ] = self::get_communication( $type );
+				self::$communications[ $type ] = self::get_communication( $type );
 			}
 		}
 	
@@ -234,34 +234,50 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( ! $this->enabled ) {
 			return;
 		}
-		$count = 0;
-		$max_emails_qty = apply_filters( 'ms_model_communication_process', 50 );
-		foreach( $this->queue as $index => $ms_relationship_id ) {
-			if( ++$count > $max_emails_qty ) {
-				break;
+		if( ! $this->check_object_lock() ) {
+			$this->set_object_lock();
+			
+			/** max emails that could be sent in each call. */
+			$max_emails_qty = apply_filters( 'ms_model_communication_process_communication_max_email_qty', 50 );
+			$count = 0;
+				
+			/** max seconds for processing */
+			$time_limit = apply_filters( 'ms_model_communication_process_communication_time_limit', 10 ); 
+			$start_time = time();
+
+			foreach( $this->queue as $index => $ms_relationship_id ) {
+				if( ( time() > $start_time + $time_limit ) || ( ++$count > $max_emails_qty ) ) {
+					break;
+				}
+				$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
+				if( $this->send_message( $ms_relationship ) ) {
+					$this->sent_queue[] = $ms_relationship_id; 
+					unset( $this->queue[ $index ] );
+				}
+				else {
+					MS_Helper_Debug::log( sprintf( __( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
+							$this->type,
+							$ms_relationship->id,
+							$ms_relationship->user_id
+					) );
+				}
 			}
-			$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
-			if( $this->send_message( $ms_relationship ) ) {
-				unset( $this->queue[ $index ] );
-				$this->sent_queue[] = $ms_relationship->id; 
-			}
-			else {
-				MS_Helper_Debug::log( sprintf( __( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
-						$this->type,
-						$ms_relationship->id,
-						$ms_relationship->user_id
-				) );
-			}
+			$this->save();
 		}
-		$this->save();
 	}
 	
 	public function enqueue_messages( $event, $ms_relationship ) {
+		if( ! $this->enabled ) {
+			return;
+		}
 		$this->add_to_queue( $ms_relationship->id );
 		$this->save();
 	}
 	
 	public function add_to_queue( $ms_relationship_id ) {
+		if( ! $this->enabled ) {
+			return;
+		}
 		if( ! in_array( $ms_relationship_id, $this->queue ) ) {
 			$this->queue[] = $ms_relationship_id;
 		}	
