@@ -232,8 +232,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		global $post;
 		
 		/* Checks for invoice single template */
-		if( $post->post_type == 'ms_transaction' ) {
-			$invoice_template = apply_filters( 'ms_controller_plugin_invoice_template', MS_Plugin::instance()->dir . 'app/template/invoice.php' );
+		if( $post->post_type == MS_Model_Invoice::$POST_TYPE ) {
+			$invoice_template = apply_filters( 'ms_controller_plugin_invoice_template', MS_Plugin::instance()->dir . 'app/template/single-invoice.php' );
 			if( file_exists( $invoice_template ) ) {
 				$template = $invoice_template;
 			}
