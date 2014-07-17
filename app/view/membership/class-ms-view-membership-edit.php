@@ -19,11 +19,11 @@ class MS_View_Membership_Edit extends MS_View {
 		$tabs = $this->data['tabs'];
 		ob_start();
 		
-		$this->title = __( 'Create New Membership', MS_TEXT_DOMAIN );
+		$this->title = __( 'Create New Membership Level', MS_TEXT_DOMAIN );
 		if( $this->model->name ) {
 			$this->title = $this->model->name;
 			if( false === stripos( $this->title, 'membership' ) ) {
-				$this->title = sprintf( __( '%s Membership', MS_TEXT_DOMAIN ), $this->title );
+				$this->title = sprintf( __( '%s Membership Level', MS_TEXT_DOMAIN ), $this->title );
 			}
 		}
 		/** Render tabbed interface. */
@@ -55,7 +55,7 @@ class MS_View_Membership_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-settings'>
-			<h3><?php _e( 'General Membership Settings', MS_TEXT_DOMAIN ); ?></h3>
+			<h3><?php _e( 'General Membership Level Settings', MS_TEXT_DOMAIN ); ?></h3>
 			<div class="settings-description"><?php _e( 'Specify the settings you would like for this membership. Ideally you would not change these often.', MS_TEXT_DOMAIN ); ?></div>
 
 			<form class="ms-form" action="" method="post">

@@ -203,7 +203,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
 		
 		/** Lists all memberships. */
-		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Memberships', MS_TEXT_DOMAIN ), $this->capability, 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Memberships levels', MS_TEXT_DOMAIN ), __( 'Membership levels', MS_TEXT_DOMAIN ), $this->capability, 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
 		
 		/** Manage membership */
 		$pages[] = add_submenu_page( 'all-memberships', __( 'Edit Membership', MS_TEXT_DOMAIN ), __( 'New Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
