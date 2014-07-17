@@ -40,6 +40,8 @@ class MS_Helper_Period extends MS_Helper {
 	
 	const DATE_TIME_FORMAT = 'Y-m-d H:i';
 	
+	const DATE_FORMAT_SHORT = 'y-m-d';
+	
 	/**
 	 * Add a period interval to a date.
 	 *
@@ -112,8 +114,8 @@ class MS_Helper_Period extends MS_Helper {
 	 *  
 	 * @return string The current date.
 	 */
-	public static function current_date() {
-		return apply_filters( 'membership_helper_period_current_date', date( self::PERIOD_FORMAT ) );
+	public static function current_date( $format = self::PERIOD_FORMAT ) {
+		return apply_filters( 'membership_helper_period_current_date', date( $format ) );
 	}
 	
 	/**
