@@ -252,7 +252,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				$ms_relationship = MS_Model_Membership_Relationship::load( $ms_relationship_id );
 				if( $this->send_message( $ms_relationship ) ) {
 					$this->remove_from_queue( $ms_relationship_id ); 
-					unset( $this->queue[ $index ] );
 				}
 				else {
 					MS_Helper_Debug::log( sprintf( __( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
