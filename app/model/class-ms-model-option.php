@@ -24,7 +24,9 @@
 class MS_Model_Option extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
+
+	protected static $instance;
+	
 	public function save() {
 		
 		$this->before_save();
@@ -38,7 +40,6 @@ class MS_Model_Option extends MS_Model {
 			}
 			$settings[ $field ] = $this->$field;
 		}
-// 			$method = ( is_multisite() ) ? 'update_site_option' : 'update_option';
 				
 		update_option( static::$CLASS_NAME, $settings );
 		
@@ -46,7 +47,11 @@ class MS_Model_Option extends MS_Model {
 	}
 	
 	public static function load( $model_id = false ) {
-// 		$method = ( is_multisite() ) ? 'get_site_option' : 'get_option';
+
+		if( static::$instance ) {
+			return static::$instance;
+		}
+		
 		$settings = get_option( static::$CLASS_NAME );
 		
 		$model = new static::$CLASS_NAME();
@@ -65,6 +70,7 @@ class MS_Model_Option extends MS_Model {
 		
 		$model->after_load();
 		
+		static::$instance = $model;
 		return $model;	
 	}
 	
