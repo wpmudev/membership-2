@@ -553,6 +553,8 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		register_post_type( self::$POST_TYPE, apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
 				'description' => __( 'user invoices', MS_TEXT_DOMAIN ),
 				'public' => true,
+				'show_ui' => false,
+				'show_in_menu' => false,
 				'has_archive' => false,
 				'publicly_queryable' => true,
 				'supports' => false,
