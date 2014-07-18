@@ -135,7 +135,6 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		$settings = MS_Plugin::instance()->settings;
-		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
 		/**
 		 * Search permissions through all memberships joined.
@@ -196,7 +195,6 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		
 		$settings = MS_Plugin::instance()->settings;
-		$addon = MS_Plugin::instance()->addon;
 		$has_access = false;
 		/**
 		 * Search permissions through all memberships joined.

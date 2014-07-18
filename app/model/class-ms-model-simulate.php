@@ -25,6 +25,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected static $instance;
+	
 	protected $id =  'ms_model_simulate';
 	
 	protected $name = 'Simulate Membership';

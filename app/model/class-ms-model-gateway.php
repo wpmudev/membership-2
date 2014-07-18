@@ -34,6 +34,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected static $instance;
+	
 	protected $id = 'gateway';
 	
 	protected $name = 'Abstract Gateway';

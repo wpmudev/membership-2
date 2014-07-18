@@ -25,6 +25,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected static $instance;
+	
 	const SPECIAL_PAGE_NO_ACCESS = 'no_access';
 	const SPECIAL_PAGE_ACCOUNT = 'account';
 	const SPECIAL_PAGE_MEMBERSHIPS = 'memberships';

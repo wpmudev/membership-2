@@ -24,6 +24,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected static $instance;
+	
 	protected $id = self::GATEWAY_PAYPAL_SINGLE;
 	
 	const STATUS_FAILED = 'failed';
