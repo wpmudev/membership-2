@@ -52,7 +52,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		/**
 		 * Only verify permission if ruled by categories.
 		 */
-		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+		if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			
 			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
 				$categories = array_keys( $this->rule_value );
@@ -103,7 +103,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		/**
 		 * Only verify permissions if ruled by categories.
 		 */
-		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+		if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */
@@ -132,7 +132,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return boolean
 	 */
 	public function has_dripped_rules( $post_id = null ) {
-		if( ! MS_Plugin::instance()->addon->post_by_post ) {
+		if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */

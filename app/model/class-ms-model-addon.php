@@ -55,11 +55,13 @@ class MS_Model_Addon extends MS_Model_Option {
 		) );
 	}
 
-	public function is_active( $addon ) {
+	public static function is_active( $addon ) {
+		
+		$model = self::load();
 		$active = false;
 		
 		if( in_array( $addon, self::get_addon_types() ) ) {
-			$active = ! empty( $this->addons[ $addon ] );
+			$active = ! empty( $model->addons[ $addon ] );
 		}
 		return apply_filters( 'ms_model_addon_is_active', $active, $addon );
 	}

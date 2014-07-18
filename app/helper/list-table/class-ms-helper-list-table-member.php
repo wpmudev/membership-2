@@ -237,7 +237,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
 		);
 		
-		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Plugin::instance()->addon->multiple_membership );
+		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Model_Addon::is_active( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) );
 
 		if( count( $item->membership_relationships ) > 0 ) {
 			if( ! $multiple_membership ) {

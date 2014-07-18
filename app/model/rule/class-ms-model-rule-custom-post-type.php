@@ -50,7 +50,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		 * Only protect if not cpt group.
 		 * Restrict query to show only has_access cpt posts.
 		 */
-		if( MS_Plugin::instance()->addon->cpt_post_by_post ) {
+		if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ! empty( $post_type ) &&
 			 ! in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_excluded_content() ) )  {
 				foreach( $this->rule_value as $value ) {
@@ -70,7 +70,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		/**
 		 * Only verify permission if ruled by cpt post by post.
 		 */
-		if( MS_Plugin::instance()->addon->cpt_post_by_post ) {
+		if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$has_access = false;
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();

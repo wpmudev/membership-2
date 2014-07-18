@@ -331,7 +331,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Enable / Disable post by post tab.
 		 */
-		if( apply_filters( 'ms_addon_post_by_post', MS_Plugin::instance()->addon->post_by_post ) ) {
+		if( apply_filters( 'ms_addon_post_by_post', MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) ) {
 			unset( $tabs['category'] );
 		}
 		else {
@@ -340,7 +340,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Enable / Disable cpt post by post tab.
 		 */
-		if( apply_filters( 'ms_addon_cpt_post_by_post', MS_Plugin::instance()->addon->cpt_post_by_post ) ) {
+		if( apply_filters( 'ms_addon_cpt_post_by_post', MS_Model_Addon::is_active( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) ) {
 			unset( $tabs['cpt_group'] );
 		}
 		else {
@@ -355,7 +355,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/**
 		 * Disable urlgroup tab.
 		 */
-		if( ! apply_filters( 'ms_addon_url_groups', MS_Plugin::instance()->addon->url_groups ) ) {
+		if( ! apply_filters( 'ms_addon_url_groups', MS_Model_Addon::is_active( MS_Model_Addon::ADDON_URL_GROUPS ) ) ) {
 			unset( $tabs['urlgroup'] );
 		}
 

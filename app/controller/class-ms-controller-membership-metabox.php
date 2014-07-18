@@ -248,11 +248,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @return bool 
 	 */		
 	public function is_read_only( $post_type ) {
-		if( 'post' == $post_type && ! MS_Plugin::instance()->addon->post_by_post ) {
+		if( 'post' == $post_type && ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$read_only = true;
 		}
 		elseif( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-			if( MS_Plugin::instance()->addon->cpt_post_by_post ) {
+			if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
 			}
 			else {
