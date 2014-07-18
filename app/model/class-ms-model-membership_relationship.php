@@ -897,6 +897,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES, $this );
 					}
 				}
+				
+				$gateway = $this->get_gateway();
+				/** Check for card expiration */
+				$gateway->check_card_expiration( $ms_relationship );
+				
 				break;
 			case self::STATUS_TRIAL_EXPIRED:
 				$invoice = $this->get_current_invoice();
@@ -904,7 +909,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				/** Request payment to the gateway (for gateways that allows it). */
 				$gateway = $this->get_gateway();
 				$gateway->request_payment( $this );
-					
+
+				/** Check for card expiration */
+				$gateway->check_card_expiration( $ms_relationship );
+				
 				/** Deactivate expired memberships after a period of time. */
 				if( $trial_expire->invert && $trial_expire->days > $deactivate_trial_expired_after_days ) {
 					$this->set_status( self::STATUS_DEACTIVATED );
@@ -945,15 +953,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
 				}
-					
+				
+				$gateway = $this->get_gateway();
+				
+				/** Check for card expiration */
+				$gateway->check_card_expiration( $ms_relationship );
+				
 				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
 				if( $expire->invert ) {
-					$gateway = $this->get_gateway();
 					$gateway->request_payment( $this );
 					/** Refresh status after payment */
 					$expire = $this->get_remaining_period();
 				}
-					
+				
 				/** Deactivate expired memberships after a period of time. */
 				if( $expire->invert && $expire->days > $deactivate_expired_after_days ) {
 					$this->set_status( self::STATUS_DEACTIVATED );
