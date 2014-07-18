@@ -43,6 +43,8 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $password2;
 	
+	protected $payment_profiles;
+	
 	protected static $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
 	
 	public function __construct() {
