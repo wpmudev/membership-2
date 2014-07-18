@@ -216,13 +216,13 @@ class MS_Controller_Addon extends MS_Controller {
 		foreach( $addons as $addon ) {
 			switch( $action ) {
 				case 'enable':
-					$this->model->$addon = true;
+					$this->model->enable( $addon );
 					break;
 				case 'disable':
-					$this->model->$addon = false;
+					$this->model->disable( $addon );
 					break;
 				case 'toggle_activation':
-					$this->model->$addon = ! $this->model->$addon;
+					$this->model->toggle_activation( $addon );
 					break;
 			}
 		}
