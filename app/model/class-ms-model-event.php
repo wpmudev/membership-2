@@ -182,7 +182,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event->type = $type;
 			$event->topic = self::get_topic( $type );
 			
-			if( self::is_duplicate( $event ) ) {
+			if( self::is_duplicate( $event, $data ) ) {
 				return false;
 			}
 			
@@ -241,7 +241,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		$check_events = apply_filters( 'ms_model_event_is_duplicate_check_events', array(
 				self::TYPE_MS_BEFORE_TRIAL_FINISHES,
 				self::TYPE_MS_BEFORE_FINISHES,
-				self::COMM_TYPE_AFTER_FINISHES,
+				self::TYPE_MS_AFTER_FINISHES,
 		) );
 		
 		if( in_array( $event->type, $check_events ) && $event = self::get_last_event_of_type( $event->type ) ) {
