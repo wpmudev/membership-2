@@ -116,6 +116,21 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
+	public static function get_last_event_of_type( $type ) {
+		$args['posts_per_page'] = 1;
+		$args['meta_query']['type'] = array(
+				'key'     => 'type',
+				'value'   => $event->type,
+		);
+		$events = self::get_events( apply_filters( 'ms_model_events_get_events_args', $args ) );
+		if( ! empty( $events[0] ) ) {
+			return $events[0];
+		}
+		else {
+			return null;
+		}
+	}
+	
 	public static function is_valid_type( $type ) {
 		return array_key_exists( $type, self::get_event_types() );
 	}
@@ -135,6 +150,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'posts_per_page' => 10,
+				'fields' => 'ids',
 				'post_status' => 'any',
 				'order' => 'DESC',
 		);
@@ -153,7 +169,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		
 		$events = array();
 		foreach ( $items as $item ) {
-			$events[] = self::load( $item->ID );
+			$events[] = self::load( $item );
 		}
 		return $events;
 	}
@@ -165,6 +181,10 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event = new self();
 			$event->type = $type;
 			$event->topic = self::get_topic( $type );
+			
+			if( self::is_duplicate( $event ) ) {
+				return false;
+			}
 			
 			switch( $event->topic ) {
 				case self::TOPIC_PAYMENT:
@@ -214,5 +234,22 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
+	public static function is_duplicate( $event, $data ) {
 		
+		$is_duplicate = false;
+		
+		$check_events = apply_filters( 'ms_model_event_is_duplicate_check_events', array(
+				self::TYPE_MS_BEFORE_TRIAL_FINISHES,
+				self::TYPE_MS_BEFORE_FINISHES,
+				self::COMM_TYPE_AFTER_FINISHES,
+		) );
+		
+		if( in_array( $event->type, $check_events ) && $event = self::get_last_event_of_type( $event->type ) ) {
+			if( date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $event->modified ) ) == MS_Helper_Period::current_date() ) {
+				$is_duplicate = true;
+			}
+		}
+		
+		return $is_duplicate;
+	}	
 }
