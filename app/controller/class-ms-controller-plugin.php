@@ -119,6 +119,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Settings controller */
 		$this->controllers['settings'] = apply_filters( 'ms_controller_settings', new MS_Controller_Settings() );
 		
+		/** Gateway controller */
+		$this->controllers['gateway'] = apply_filters( 'ms_controller_gateway', new MS_Controller_Gateway() );
+		
 		/** Admin bar controller */
 		$this->controllers['admin_bar'] = apply_filters( 'ms_controller_admin_bar', new MS_Controller_Admin_Bar() );
 		
