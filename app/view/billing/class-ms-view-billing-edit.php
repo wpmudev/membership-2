@@ -121,7 +121,7 @@ class MS_View_Billing_Edit extends MS_View {
 					'section' => self::BILLING_SECTION,
 					'title' => __( 'Notes', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-					'value' => $invoice->notes,
+					'value' => $invoice->get_notes_desc(),
 			),
 			'gateway_id' => array(
 					'id' => 'gateway_id',
@@ -144,8 +144,8 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 		);
 		if( $invoice->id > 0 ) {
-			unset( $this->fields['user_id'] );
-			unset( $this->fields['membership_id'] );
+			$this->fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN ;
+			$this->fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 		}
 	}
 }
