@@ -98,13 +98,7 @@ class MS_View_Registration_Payment extends MS_View {
 						<span class="ms-membership-description"><?php echo $this->data['ms_relationship']->get_payment_description(); ?></span>
 					</td>
 				</tr>
-				<tr>
-					<td class='ms-buy-now-column' colspan='2' >
-						<?php
-							$this->data['gateway']->purchase_button($this->data['ms_relationship'] );
-						?>
-					</td>
-				</tr>
+				<?php do_action( 'ms_view_registration_payment_purchase_button', $this->data['ms_relationship'] ); ?>
 			</table>
 		</div>
 		<?php $this->coupon_html(); ?>
