@@ -242,6 +242,17 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Get notes array as string.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return string The notes as text description. 
+	 */
+	public function get_notes_desc() {
+		$desc = is_array( $this->notes ) ? implode( '\n', $this->notes ) : $this->notes;
+		return apply_filters( 'ms_model_invoice_get_notes_desc', $desc );
+	}
+	/**
 	 * Get current member membership invoice.
 	 * 
 	 * The current invoice is not paid one.
@@ -319,94 +330,92 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		}
 		
 		$invoice = null;
-		if( $gateway = $ms_relationship->get_gateway() ) {
-			$member = MS_Model_Member::load( $ms_relationship->user_id );
-			$invoice_status = self::STATUS_BILLED;
-			$notes = null;
-			$due_date = null;
-				
-			if( empty( $invoice_number ) ) {
-				$invoice_number = $ms_relationship->current_invoice_number;
-			}
+		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		$invoice_status = self::STATUS_BILLED;
+		$notes = null;
+		$due_date = null;
 			
-			/** Search for existing invoice */
-			if( $update_existing ) {
-				$invoice = self::get_invoice( $ms_relationship->id, $invoice_number );
-			}
-			
-			/** No existing invoice, create a new one. */
-			if( empty( $invoice ) ) {
-				$invoice = apply_filters( 'ms_model_invoice', new self() );
-			}
-			$tax = MS_Plugin::instance()->settings->tax;
-				
-			/** Update invoice info.*/
-			$invoice->ms_relationship_id = $ms_relationship->id;
-			$invoice->gateway_id = $ms_relationship->gateway_id;
-			$invoice->status = $invoice_status;
-			$invoice->membership_id = $membership->id;
-			$invoice->currency = MS_Plugin::instance()->settings->currency;
-			$invoice->user_id = $member->id;
-			$invoice->name = apply_filters( 'ms_model_invoice_name', sprintf( __( 'Invoice for %s - %s', MS_TEXT_DOMAIN ), $membership->name, $member->username ) );
-			$invoice->description = apply_filters( 'ms_model_invoice_description', $ms_relationship->get_payment_description() );
-			$invoice->tax_name = $tax['tax_name'];
-			$invoice->tax_rate = $tax['tax_rate'];
-
-			$invoice->invoice_number = $invoice_number;
-			$invoice->discount = 0;
-			
-			/** Calc pro rate discount if moving from another membership. */
-			if( $ms_relationship->move_from_id ) {
-				$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
-				if( ! empty( $move_from->id ) && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
-					$invoice->pro_rate = $pro_rate;
-					$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
-				}
-			}
-			/** Apply coupon discount. */
-			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) && $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
-				$invoice->coupon_id = $coupon->id;
-				$discount = $coupon->get_discount_value( $membership );
-				$invoice->discount = $discount;
-				$notes[] = sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $invoice->currency, $discount );
-			}
-			$invoice->notes = $notes;
-			
-			/** Due date calculation.*/
-			switch( $ms_relationship->status ) {
-				default:
-				case MS_Model_Membership_Relationship::STATUS_PENDING:
-				case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-				case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
-					$due_date = MS_Helper_Period::current_date();
-					break;
-				case MS_Model_Membership_Relationship::STATUS_TRIAL:
-					$due_date = $ms_relationship->trial_expire_date;
-					break;
-				case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-				case MS_Model_Membership_Relationship::STATUS_CANCELED:
-					$due_date = $ms_relationship->expire_date;
-					break;
-			}
-			$invoice->due_date = $due_date;
-				
-			/** Check for trial period in the first period. */
-			if( $ms_relationship->is_trial_eligible() && $invoice_number == $ms_relationship->current_invoice_number ) {
-				$invoice->amount = $membership->trial_price;
-				$invoice->trial_period = true;
-			}
-			else {
-				$invoice->amount = $membership->price;
-				$invoice->trial_period = false;
-			}
-			
-			/** Total is calculated discounting coupon and pro-rating. */
-			if( 0 == $invoice->get_total() ) {
-				$invoice->status = self::STATUS_PAID;
-			}
-				
-			$invoice->save();
+		if( empty( $invoice_number ) ) {
+			$invoice_number = $ms_relationship->current_invoice_number;
 		}
+		
+		/** Search for existing invoice */
+		if( $update_existing ) {
+			$invoice = self::get_invoice( $ms_relationship->id, $invoice_number );
+		}
+		
+		/** No existing invoice, create a new one. */
+		if( empty( $invoice ) ) {
+			$invoice = apply_filters( 'ms_model_invoice', new self() );
+		}
+		$tax = MS_Plugin::instance()->settings->tax;
+			
+		/** Update invoice info.*/
+		$invoice->ms_relationship_id = $ms_relationship->id;
+		$invoice->gateway_id = $ms_relationship->gateway_id;
+		$invoice->status = $invoice_status;
+		$invoice->membership_id = $membership->id;
+		$invoice->currency = MS_Plugin::instance()->settings->currency;
+		$invoice->user_id = $member->id;
+		$invoice->name = apply_filters( 'ms_model_invoice_name', sprintf( __( 'Invoice for %s - %s', MS_TEXT_DOMAIN ), $membership->name, $member->username ) );
+		$invoice->description = apply_filters( 'ms_model_invoice_description', $ms_relationship->get_payment_description() );
+		$invoice->tax_name = $tax['tax_name'];
+		$invoice->tax_rate = $tax['tax_rate'];
+
+		$invoice->invoice_number = $invoice_number;
+		$invoice->discount = 0;
+		
+		/** Calc pro rate discount if moving from another membership. */
+		if(  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE) && $ms_relationship->move_from_id ) {
+			$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
+			if( ! empty( $move_from->id ) && ! empty( $gateway ) && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
+				$invoice->pro_rate = $pro_rate;
+				$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
+			}
+		}
+		/** Apply coupon discount. */
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) && $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
+			$invoice->coupon_id = $coupon->id;
+			$discount = $coupon->get_discount_value( $membership );
+			$invoice->discount = $discount;
+			$notes[] = sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $invoice->currency, $discount );
+		}
+		$invoice->notes = $notes;
+		
+		/** Due date calculation.*/
+		switch( $ms_relationship->status ) {
+			default:
+			case MS_Model_Membership_Relationship::STATUS_PENDING:
+			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+			case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
+				$due_date = MS_Helper_Period::current_date();
+				break;
+			case MS_Model_Membership_Relationship::STATUS_TRIAL:
+				$due_date = $ms_relationship->trial_expire_date;
+				break;
+			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+			case MS_Model_Membership_Relationship::STATUS_CANCELED:
+				$due_date = $ms_relationship->expire_date;
+				break;
+		}
+		$invoice->due_date = $due_date;
+			
+		/** Check for trial period in the first period. */
+		if( $ms_relationship->is_trial_eligible() && $invoice_number == $ms_relationship->current_invoice_number ) {
+			$invoice->amount = $membership->trial_price;
+			$invoice->trial_period = true;
+		}
+		else {
+			$invoice->amount = $membership->price;
+			$invoice->trial_period = false;
+		}
+		
+		/** Total is calculated discounting coupon and pro-rating. */
+		if( 0 == $invoice->get_total() ) {
+			$invoice->status = self::STATUS_PAID;
+		}
+			
+		$invoice->save();
 
 		return apply_filters( 'ms_model_membership_relationship_create_invoice_object', $invoice );
 	}
