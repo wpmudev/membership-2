@@ -45,7 +45,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 */
 	 public function has_access() {
 
-	 	if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+	 	if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 	 		
 			$url = is_ssl() ? "https://" : "http://";
 			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];

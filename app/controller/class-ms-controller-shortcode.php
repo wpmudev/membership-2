@@ -115,7 +115,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		// Now get all the memberships excluding the ones the member is already a part of
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
 		
-		if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			/** Membership Relationship status which can move to another one */
 			foreach( $data['member']->membership_relationships as $ms_relationship ) {
 				if( in_array( $ms_relationship->status, array(

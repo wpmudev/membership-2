@@ -43,7 +43,7 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 							$membership_ids = array_keys( $this->data['member']->membership_relationships );
 							$move_from_id = reset( $membership_ids );
 							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
-							if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && $move_from_id ) {
+							if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && $move_from_id ) {
 								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
 							}
 	

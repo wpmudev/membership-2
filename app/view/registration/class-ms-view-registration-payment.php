@@ -116,7 +116,7 @@ class MS_View_Registration_Payment extends MS_View {
 	
 	private function coupon_html() {
 
-		if( ! MS_Model_Addon::is_active( MS_Model_Addon::ADDON_COUPON ) ) {
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 			return;
 		}
 		$coupon = $this->data['coupon'];

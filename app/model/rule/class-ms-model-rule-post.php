@@ -45,7 +45,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			/**
 			 * Only verify permission if ruled by post by post.
 			 */
-			if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 					
 				foreach( $this->rule_value as $value ) {
 					$wp_query->query_vars['post__in'][] = $value;
@@ -119,7 +119,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		/**
 		 * Only verify permission if ruled by post by post.
 		 */
-		if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$has_access = false;
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();
