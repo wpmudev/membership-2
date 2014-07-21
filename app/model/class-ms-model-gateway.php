@@ -60,6 +60,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	public function after_load() {
 		if( $this->active ) {
+			$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
 			$this->add_action( 'ms_view_registration_payment_form', 'purchase_button', 10, 4 );
 			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
 		}
@@ -155,6 +156,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 		if( ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
 		
 			$invoice = $ms_relationship->get_current_invoice();
+			$invoice->gateway_id = $this->id;
+			$invoice->save();
 
 			if( 0 == $invoice->total ) {
 				$this->process_transaction( $invoice );
@@ -265,8 +268,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 				break;
 		}
 		$member->save();
-		$ms_relationship->gateway_id = $invoice->gateway_id;
+		$ms_relationship->gateway_id = $this->id;
 		$ms_relationship->save();
+		$invoice->gateway_id = $this->id;
+		$invoice->save();
+		MS_Helper_Debug::log( $invoice);
 	}
 	
 	/**
