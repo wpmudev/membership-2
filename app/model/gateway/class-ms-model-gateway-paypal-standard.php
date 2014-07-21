@@ -277,14 +277,18 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		}
 		
 		?>
-			<form action="<?php echo $action;?>" method="post" id="ms-paypal-form">
-				<?php 
-					foreach( $fields as $field ) {
-						MS_Helper_Html::html_input( $field ); 
-					}
-				?>
-				<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
-			</form>
+			<tr>
+				<td class='ms-buy-now-column' colspan='2' >
+					<form action="<?php echo $action;?>" method="post" id="ms-paypal-form">
+						<?php 
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_input( $field ); 
+							}
+						?>
+						<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
+					</form>
+				</td>
+			</tr>
 		<?php
 	}
 	

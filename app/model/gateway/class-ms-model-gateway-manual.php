@@ -73,14 +73,18 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		}
 		
 		?>
-			<form method="post">
-				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-				<?php 
-					foreach( $fields as $field ) {
-						MS_Helper_Html::html_input( $field ); 
-					}
-				?>
-			</form>
+			<tr>
+				<td class='ms-buy-now-column' colspan='2' >
+					<form method="post">
+						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
+						<?php 
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_input( $field ); 
+							}
+						?>
+					</form>
+				</td>
+			</tr>
 		<?php 
 	}
 		

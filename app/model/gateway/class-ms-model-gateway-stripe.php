@@ -79,25 +79,29 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		$publishable_key = $this->get_publishable_key();
 		
 		?>
-			<form action="" method="post">
-				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-				<?php 
-					foreach( $fields as $field ) {
-						MS_Helper_Html::html_input( $field ); 
-					}
-				?>
-				<script
-				    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-				    data-key="<?php echo $publishable_key; ?>"
-				    data-amount="<?php echo $invoice->total * 100; //amount in cents ?>"
-				    data-name="<?php echo bloginfo( 'name' ); ?>"
-				    data-description="<?php echo $invoice->description; ?>"
-				    data-currency="<?php echo $invoice->currency; ?>"
-				    data-panel-label="<?php echo $this->pay_button_url; ?>"
-				    data-email="<?php echo $member->email; ?>"
-				    >
-			  	</script>
-			</form>
+			<tr>
+				<td class='ms-buy-now-column' colspan='2' >
+					<form action="" method="post">
+						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
+						<?php 
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_input( $field ); 
+							}
+						?>
+						<script
+						    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+						    data-key="<?php echo $publishable_key; ?>"
+						    data-amount="<?php echo $invoice->total * 100; //amount in cents ?>"
+						    data-name="<?php echo bloginfo( 'name' ); ?>"
+						    data-description="<?php echo $invoice->description; ?>"
+						    data-currency="<?php echo $invoice->currency; ?>"
+						    data-panel-label="<?php echo $this->pay_button_url; ?>"
+						    data-email="<?php echo $member->email; ?>"
+						    >
+					  	</script>
+					</form>
+				</td>
+			</tr>
 		<?php
 	}
 
@@ -286,7 +290,6 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 
 		$customer = self::get_stripe_customer( $member );
 		$card = $customer->cards->create( array( 'card' => $token ) );
-		MS_Helper_Debug::log($card);
 		$customer->default_card = $card->id;
 		$customer->save();
 		self::save_card_info( $member );

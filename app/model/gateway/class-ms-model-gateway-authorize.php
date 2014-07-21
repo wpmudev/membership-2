@@ -90,13 +90,17 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		}
 		$actionurl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		?>
-			<form action="<?php echo $actionurl; ?>" method="post">
-				<?php wp_nonce_field( "{$this->id}_{$ms_relationship->membership_id}" ); ?>
-				<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['step'] ); ?>
-				<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
-			</form>
+			<tr>
+				<td class='ms-buy-now-column' colspan='2' >
+					<form action="<?php echo $actionurl; ?>" method="post">
+						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->membership_id}" ); ?>
+						<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
+						<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
+						<?php MS_Helper_Html::html_input( $fields['step'] ); ?>
+						<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
+					</form>
+				</td>
+			</tr>
 		<?php 
 	}
 	
