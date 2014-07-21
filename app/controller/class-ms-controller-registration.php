@@ -416,15 +416,7 @@ class MS_Controller_Registration extends MS_Controller {
 				$coupon = new MS_Model_Coupon();
 			}
 				
-			if( $membership->gateway_id ) {
-				$gateway = MS_Model_Gateway::factory( $membership->gateway_id );
-			}
-			else {
-				$gateways = MS_Model_Gateway::get_gateways( true );
-				$gateway = array_pop( $gateways );
-			}
-	
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway->id, $move_from_id );
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, '', $move_from_id );
 
 			$data['coupon'] = $coupon;
 			$invoice = $ms_relationship->get_current_invoice();
@@ -435,7 +427,6 @@ class MS_Controller_Registration extends MS_Controller {
 				
 			$data['membership'] = $membership;
 			$data['member'] = $member;
-			$data['gateway'] = $gateway;
 			$data['ms_relationship'] = $ms_relationship;
 				
 			$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
