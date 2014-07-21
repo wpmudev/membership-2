@@ -208,6 +208,10 @@ class MS_Controller_Billing extends MS_Controller {
 			if( empty( $ms_relationship ) ){
 				$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
 			}
+			else {
+				$ms_relationship->gateway_id = $gateway_id;
+				$ms_relationship->save();
+			}
 			
 			$invoice = apply_filters( 'ms_model_invoice', MS_Model_Invoice::load( $fields['invoice_id'] ) );
 			if( ! $invoice->is_valid() ) {
