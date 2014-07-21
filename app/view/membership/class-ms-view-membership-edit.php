@@ -113,25 +113,27 @@ class MS_View_Membership_Edit extends MS_View {
 									
 								</td>
 							</tr>
-							<tr>
-								<td>
-									<div class="ms-settings-box-wrapper">
-										<div class="ms-settings-box">
-											<h3><?php _e( 'Membership Trial', MS_TEXT_DOMAIN ); ?></h3>
-											<div class="inside">
-												<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'], false, array( 'label_element' => 'h3', 'checkbox_position' => 'right' ) );?>
-												<div id="ms-trial-period-wrapper">
-													<?php MS_Helper_Html::html_input( $this->fields['trial_price'], false, array( 'label_element' => 'h3' ) );?>
-													<div class="ms-period-wrapper">
-														<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'], false, array( 'label_element' => 'h3' ) );?>
-														<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'], false, array( 'label_element' => 'h3' ) );?>
+							<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ): ?>
+								<tr>
+									<td>
+										<div class="ms-settings-box-wrapper">
+											<div class="ms-settings-box">
+												<h3><?php _e( 'Membership Trial', MS_TEXT_DOMAIN ); ?></h3>
+												<div class="inside">
+													<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'], false, array( 'label_element' => 'h3', 'checkbox_position' => 'right' ) );?>
+													<div id="ms-trial-period-wrapper">
+														<?php MS_Helper_Html::html_input( $this->fields['trial_price'], false, array( 'label_element' => 'h3' ) );?>
+														<div class="ms-period-wrapper">
+															<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'], false, array( 'label_element' => 'h3' ) );?>
+															<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'], false, array( 'label_element' => 'h3' ) );?>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</td>
-							</tr>
+									</td>
+								</tr>
+							<?php endif; ?>
 							<tr>
 								<td>
 									<div class="ms-settings-box-wrapper">

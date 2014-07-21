@@ -55,6 +55,11 @@ class MS_Model_Addon extends MS_Model_Option {
 		) );
 	}
 
+	/**
+	 * @deprecated
+	 * @param unknown $addon
+	 * @return mixed
+	 */
 	public static function is_active( $addon ) {
 		
 		$model = self::load();
@@ -64,6 +69,17 @@ class MS_Model_Addon extends MS_Model_Option {
 			$active = ! empty( $model->addons[ $addon ] );
 		}
 		return apply_filters( 'ms_model_addon_is_active', $active, $addon );
+	}
+
+	public static function is_enabled( $addon ) {
+	
+		$model = self::load();
+		$enabled = false;
+	
+		if( in_array( $addon, self::get_addon_types() ) ) {
+			$enabled = ! empty( $model->addons[ $addon ] );
+		}
+		return apply_filters( 'ms_model_addon_is_enabled', $enabled, $addon );
 	}
 	
 	public function enable( $addon ) {

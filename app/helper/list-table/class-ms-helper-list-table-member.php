@@ -49,6 +49,10 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'expire' => __('Membership Expire', MS_TEXT_DOMAIN ),
 			'gateway' => __('Gateway', MS_TEXT_DOMAIN ),
 		);
+		
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			unset( $columns['trial'] );
+		}
 		return $columns;
 	}
 	

@@ -388,7 +388,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		) );
 		
 		$eligible = false;
-		if( in_array( $this->status, $trial_eligible_status ) && ! $this->trial_period_completed && $membership->trial_period_enabled ) {
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) &&
+				in_array( $this->status, $trial_eligible_status ) && 
+				! $this->trial_period_completed && $membership->trial_period_enabled ) {
+			
 			$eligible = true;
 		}
 		
