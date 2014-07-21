@@ -217,9 +217,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Create Billings Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), $this->capability, 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
 
-		/** Create Coupons Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), $this->capability, 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
-		
+		if( MS_Model_Addon::is_active( MS_Model_Addon::ADDON_COUPON ) ) {
+			/** Create Coupons Page */
+			$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), $this->capability, 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
+		}
+				
 		/** Filter to hook in other addon pages. */
 		$pages = apply_filters( 'membership_submenu_pages', $pages );
 
