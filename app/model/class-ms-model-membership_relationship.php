@@ -175,18 +175,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		do_action( 'ms_model_membership_relationship_cancel_membership', $this );
 	
 		try {
-			$gateway = $this->get_gateway();
-			$gateway->cancel_membership( $this );
-
-			/** Canceling in trial period will change the expired date. */
+			/** Canceling in trial period -> change the expired date. */
 			if( self::STATUS_TRIAL == $this->status ) {
 				$this->expire_date = $this->trial_expire_date;
-// 				$this->trial_expire_date = null;
 			}
 				
 			$this->status = self::STATUS_CANCELED;
 			$this->save();
-				
+
+			/** Cancel subscription in the gateway. */
+			if( $gateway = $this->get_gateway() ) {
+				$gateway->cancel_membership( $this );
+			}
+
 			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 		}
 		catch (Exception $e) {
@@ -504,7 +505,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$expire_date = null;
 		
 		/** When in trial period and gateway does not send automatic recurring payment, the expire date is equal to trial expire date. */
-		if( $this->is_trial_eligible() && $gateway->manual_payment ) {
+		if( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
 			$expire_date = $trial_expire_date;
 		}
 		else {
@@ -768,7 +769,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function calculate_status() {
 		$membership = $this->get_membership();
 		$status = null;
-		if( ! empty( $this->trial_expire_date ) && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
+		if( $this->trial_expire_date > $this->start_date && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
 			$status = self::STATUS_TRIAL;
 		}
 		elseif( ! empty( $this->trial_expire_date ) && $this->trial_expire_date == $this->expire_date &&
