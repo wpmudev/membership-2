@@ -139,19 +139,22 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	
 	public function buddypress_manage_render_callback( $callback, $tab, $data ) {
 		if( in_array( $tab, $this->buddypress_rule_types( array() ) ) ) {
+			$view = null;
 			switch( $tab ) {
 				default:
 				case self::RULE_TYPE_BUDDYPRESS_BLOG:
 					$view = new MS_View_Buddypress_Blog();
-					$view->data = $data;
-					$callback = array( $view, 'render_rule_tab' ); 
+					break;
+				case self::RULE_TYPE_BUDDYPRESS_GROUP:
+					$view = new MS_View_Buddypress_Group();
 					break;
 				case self::RULE_TYPE_BUDDYPRESS:
 					$view = new MS_View_Buddypress_General();
-					$view->data = $data;
-					$callback = array( $view, 'render_rule_tab' ); 
 					break;
 			}
+			$view->data = $data;
+			$callback = array( $view, 'render_rule_tab' );
+				
 		}
 		return $callback;
 	}
