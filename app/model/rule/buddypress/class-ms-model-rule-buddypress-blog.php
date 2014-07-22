@@ -53,7 +53,6 @@ class MS_Model_Rule_Buddypress_Blog extends MS_Model_Rule {
 				}
 			}
 		}
-		
 
 		return apply_filters( 'ms_model_rule_buddypress_blog_get_content', $contents );
 	}

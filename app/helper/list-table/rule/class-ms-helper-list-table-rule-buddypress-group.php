@@ -27,14 +27,14 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Buddypress_Blog extends MS_Helper_List_Table_Rule {
+class MS_Helper_List_Table_Rule_Buddypress_Group extends MS_Helper_List_Table_Rule {
 
-	protected $id = 'rule_buddypress_blog';
+	protected $id = 'rule_buddypress_group';
 		
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
-			'name' => __( 'Blog', MS_TEXT_DOMAIN ),
+			'name' => __( 'Buddypress Group', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
 	}

@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Buddypress_Blog extends MS_View {
+class MS_View_Buddypress_Group extends MS_View {
 
 	protected $fields = array();
 	
@@ -10,14 +10,14 @@ class MS_View_Buddypress_Blog extends MS_View {
 	
 	public function render_rule_tab() {
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Integration_Buddypress::RULE_TYPE_BUDDYPRESS_BLOG );
+		$rule = $membership->get_rule( MS_Integration_Buddypress::RULE_TYPE_BUDDYPRESS_GROUP );
 		$list_table = new MS_Helper_List_Table_Rule_Buddypress_Blog( $rule );
 		$list_table->prepare_items();
 		
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h3><?php echo __( 'Buddypress blogs ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<h3><?php echo __( 'Buddypress groups ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<div class="settings-description"><?php _e( 'Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
 				<hr />							
 				<?php $list_table->views(); ?>
