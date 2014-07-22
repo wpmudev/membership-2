@@ -359,7 +359,7 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['urlgroup'] );
 		}
 
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs );
+		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}
 	
 	/**
