@@ -431,26 +431,19 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$rule_type = $this->active_tab;
 		$rule = $this->model->get_rule( $rule_type );
-		$rule_value = $rule->rule_value;
 
 		foreach( $items as $item ) {
 			switch( $action ) {
 				case 'give_access':
-					$rule_value[ $item ] = $item;
+					$rule->give_access( $item );
 					break;
 				case 'no_access':
-					unset( $rule_value[ $item ] );
+					$rule->remove_access( $item );
 				case 'toggle_activation':
-					if( isset( $rule_value[ $item ] ) ) {
-						unset( $rule_value[ $item ] );
-					}
-					else {
-						$rule_value[ $item ] = $item;
-					}
+					$rule->toggle_access( $item );
 					break;
 			}
 		}
-		$rule->rule_value = $rule_value;
 		$this->model->set_rule( $rule_type, $rule );
 		$this->model->save();
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;

@@ -226,6 +226,23 @@ class MS_Model_Rule extends MS_Model {
 		throw new Exception ("Method to be implemented in child class");
 	}
 	
+	public function give_access( $id ) {
+		$this->rule_value[ $id ] = $id;
+	}
+	
+	public function remove_access( $id ) {
+		unset( $this->rule_value[ $id ] );
+	}
+	
+	public function toggle_access( $id ) {
+		if( isset( $this->rule_value[ $id ] ) ) {
+			unset( $this->rule_value[ $id ] );
+		}
+		else {
+			$this->rule_value[ $id ] = $id;
+		}
+	}
+	
 	public function filter_content( $status, $contents ) {
 		foreach( $contents as $key => $content ) {
 			if( !empty( $content->ignore ) ) {
