@@ -25,7 +25,7 @@ class MS_Model_Rule_Buddypress_Blog extends MS_Model_Rule {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $rule_type = self::RULE_TYPE_COMMENT;
+	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_BLOG;
 	
 	/**
 	 * Set initial protection.
