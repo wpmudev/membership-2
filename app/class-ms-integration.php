@@ -67,26 +67,4 @@ class MS_Integration extends MS_Hooker {
 				self::BUDDYPRESS => new MS_Integration_Buddypress(),
 		) );
 	}
-		
-	/**
-	 * Set specific property.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 * @param string $property The name of a property to associate.
-	 * @param mixed $value The value of a property.
-	 */
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
-				case 'addons':
-					break;
-				default:
-					$this->$property = $value;
-					break;
-			}
-		}
-	}
-	
 }
