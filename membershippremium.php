@@ -98,8 +98,8 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Gateway_Paypal_Single'] =  "app/model/gateway/class-ms-model-gateway-paypal-single.php";
 	$overrides['MS_Model_Gateway_Paypal_Standard'] =  "app/model/gateway/class-ms-model-gateway-paypal-standard.php";
-	$overrides['MS_Model_Buddypress_Group_Creation'] = "app/model/rule/class-ms-model-buddypress-group-creation.php";
-	$overrides['MS_Model_Buddypress_Private_Msg'] = "app/model/rule/class-ms-model-buddypress-private-msg.php";
+	$overrides['MS_Model_Buddypress_Group_Creation'] = "app/model/rule/buddypress/class-ms-model-rule-buddypress-group-creation.php";
+	$overrides['MS_Model_Buddypress_Private_Msg'] = "app/model/rule/buddypress/class-ms-model-rule-buddypress-private-msg.php";
 	$overrides['MS_Model_Rule_Custom_Post_Type'] = "app/model/rule/class-ms-model-rule-custom-post-type.php";
 	$overrides['MS_Model_Rule_Custom_Post_Type_Group'] = "app/model/rule/class-ms-model-rule-custom-post-type-group.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
