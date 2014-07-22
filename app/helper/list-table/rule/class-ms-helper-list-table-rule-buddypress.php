@@ -47,7 +47,7 @@ class MS_Helper_List_Table_Rule_Buddypress extends MS_Helper_List_Table_Rule {
 		$html = '';
 		switch( $column_name ) {
 			case 'name':
-				$html = $item->name;
+				$html = sprintf( '<div>%1$s</div><div>%2$s</div>', $item->name, $item->description );
 				break;
 			default:
 				$html = print_r( $item, true ) ;
