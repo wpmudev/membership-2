@@ -34,17 +34,27 @@ class MS_Model_Rule_Buddypress_Blog extends MS_Model_Rule {
 	}
 	
 	public function get_content( $args = null ) {
-		$content = new StdClass();
-		$content->id = 1;
-		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
-
-		if( in_array( $content->id, $this->rule_value ) ) {
-			$content->access = true;
+		$contents = array();
+		if( function_exists( 'bp_blogs_get_blogs' ) ) {
+			$blogs = bp_blogs_get_blogs( array( 'per_page' => 50 ) );
+			if( ! empty( $blogs['blogs'] ) ) {
+				foreach( $blogs['blogs'] as $blog ) {
+					$content = new StdClass();
+					$content->id = $blog->blog_id;
+					$content->name = $blog->name;
+					
+					if( in_array( $content->id, $this->rule_value ) ) {
+						$content->access = true;
+					}
+					else {
+						$content->access = false;
+					}
+					$contents[] = $content;
+				}
+			}
 		}
-		else {
-			$content->access = false;
-		}
+		
 
-		return array( $content );
+		return apply_filters( 'ms_model_rule_buddypress_blog_get_content', $contents );
 	}
 }
