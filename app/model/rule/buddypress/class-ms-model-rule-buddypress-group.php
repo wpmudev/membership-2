@@ -29,10 +29,70 @@ class MS_Model_Rule_Buddypress_Group extends MS_Model_Rule {
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param optional $membership_relationship The membership relationship info. 
 	 */
 	public function protect_content( $membership_relationship = false ) {
+		$this->add_filter( 'groups_get_groups', 'protect_groups' );
+		$this->add_filter( 'bp_activity_get', 'protect_activities' );
 	}
 	
+	/**
+	 * Protect BP groups from showing.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $groups The available groups.
+	 * @return mixed The filtered groups.
+	 */
+	function protect_groups( $groups ) {
+		foreach( $groups['groups'] as $key => $group ) {
+			if ( ! in_array( $group->id, $this->rule_value ) ) {
+				unset( $groups['groups'][ $key ] );
+				$groups['total']--;
+			}
+		}
+	
+		sort( $groups['groups'] );
+	
+		return apply_filters( 'ms_model_rule_buddypress_group_protect_groups', $groups );
+	}
+	
+	/**
+	 * Protect activities.
+	 *
+	 * Filter activities of protected groups.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $activities The BP activities to filter.
+	 * @return mixed The filtered BP activities.
+	 */
+	function protect_activities( $activities ) {
+		if( ! empty( $activities['activities'] ) ) {
+			foreach ( $activities['activities'] as $key => $activity ) {
+				if ( 'groups' == $activity->component && ! in_array( $activity->item_id, $this->rule_value ) ) {
+					unset( $activities['activities'][ $key ] );
+					$activities['total']--;
+				}
+			}
+			/** reset index keys */
+			$activities['activities'] = array_values( $activities['activities'] );
+		}
+		
+		return apply_filters( 'ms_model_rule_buddypress_blog_protect_activity', $activities );
+	}
+	
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param $args Not used, but kept due to method override.
+	 * @return array The content eligible to protect by this rule domain.
+	 */
 	public function get_content( $args = null ) {
 		$contents = array();
 		
