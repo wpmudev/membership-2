@@ -136,18 +136,6 @@ class MS_View_Membership_Edit extends MS_View {
 							<?php endif; ?>
 							<tr>
 								<td>
-									<div class="ms-settings-box-wrapper">
-										<div class="ms-settings-box">
-											<h3><?php _e( 'Payment Gateway', MS_TEXT_DOMAIN ); ?></h3>
-											<div class="inside">
-												<?php MS_Helper_Html::html_input( $this->fields['gateway_id'] );?>
-											</div>
-										</div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
 									<?php MS_Helper_Html::html_submit();?>
 								</td>
 							</tr>
@@ -299,15 +287,6 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->trial_period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-field-input-trial-period-type',
-				),
-				'gateway_id' => array(
-						'id' => 'gateway_id',
-						'title' => __( 'Select the payment gateway', MS_TEXT_DOMAIN ),
-						'section' => self::MEMBERSHIP_SECTION,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->model->gateway_id,
-						'field_options' => $gateways,
-						'class' => 'ms-field-input-pay-cycle-period-type',
 				),
 				'membership_id' => array(
 						'id' => 'membership_id',

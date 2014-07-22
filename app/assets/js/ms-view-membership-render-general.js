@@ -39,7 +39,7 @@ jQuery( document ).ready(function( $ ) {
 	ms_show_trial_period();
 	$( '#membership_type' ).change();
 	
-	$('.ms-form').validate({
+	$( '.ms-form' ).validate({
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
@@ -72,7 +72,6 @@ jQuery( document ).ready(function( $ ) {
 					'required': true,
 					'min': 1,
 				},
-				'membership_section[gateway_id]': 'required',
 			}
 		});
 });
