@@ -83,6 +83,7 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
 	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
+	$overrides['MS_Helper_List_Table_Buddypress_Blog'] =  "app/helper/list-table/rule/class-ms-helper-list-table-buddypress-blog.php";
 	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php";
 	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php";
 	$overrides['MS_Helper_List_Table_Rule_Url_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php";
@@ -97,6 +98,8 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
 	$overrides['MS_Model_Gateway_Paypal_Single'] =  "app/model/gateway/class-ms-model-gateway-paypal-single.php";
 	$overrides['MS_Model_Gateway_Paypal_Standard'] =  "app/model/gateway/class-ms-model-gateway-paypal-standard.php";
+	$overrides['MS_Model_Buddypress_Group_Creation'] = "app/model/rule/class-ms-model-buddypress-group-creation.php";
+	$overrides['MS_Model_Buddypress_Private_Msg'] = "app/model/rule/class-ms-model-buddypress-private-msg.php";
 	$overrides['MS_Model_Rule_Custom_Post_Type'] = "app/model/rule/class-ms-model-rule-custom-post-type.php";
 	$overrides['MS_Model_Rule_Custom_Post_Type_Group'] = "app/model/rule/class-ms-model-rule-custom-post-type-group.php";
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
@@ -276,9 +279,6 @@ class MS_Plugin {
 		 */
 		add_action( 'init', array( &$this, 'membership_plugin_constructing' ) );
 		
-		add_filter( 'automessage_custom_user_hooks', array( &$this, 'automessage_custom_user_hooks' ) );
-		
-		
 		/**
 		 * Creates and Filters the Settings Model.
 		 *
@@ -310,7 +310,11 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'membership_plugin_loaded', $this ); 
-		
+
+		/**
+		 * Load membership integrations.
+		 */
+		MS_Integration::load_integrations();
 	}
 
 	/**
@@ -351,7 +355,6 @@ class MS_Plugin {
 		MS_Model_Membership_Relationship::register_post_type();
 		MS_Model_Event::register_post_type();
 	}
-	
 	
 	/**
 	 * Class autoloading callback function.
@@ -544,27 +547,6 @@ class MS_Plugin {
 			return $this->$property;
 		}
 	}
-	
-	/**
-	 * wpmu.dev Automessage plugin integration.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 * @param array $hooks The existing hooks.
-	 * @return array The modified array of hooks.
-	 */
-	public function automessage_custom_user_hooks( $hooks ) {
-		$comm_types = MS_Model_Communication::get_communication_type_titles();
-		
-		foreach( $comm_types as $type => $desc ) {
-			$action = "ms_communications_process_$type";
-			$hooks[ $action ] = array( 'action_nicename' => $desc ); 
-		}
-
-		return $hooks;
-	}
-	
 }
 
 /**
