@@ -28,7 +28,7 @@ class MS_Model_Rule_Buddypress_Blog extends MS_Model_Rule {
 	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_BLOG;
 	
 	/**
-	 * Verify access to the current page.
+	 * Verify access to the current blog.
 	 *
 	 * @fixme it only works if used in wp network wide.  
 	 * 
@@ -40,9 +40,9 @@ class MS_Model_Rule_Buddypress_Blog extends MS_Model_Rule {
 		$has_access = false;
 		global $blog_id;
 	
-		if( in_array( $blog_id, $this->rule_value ) ) {
-			$has_access = true;
-		}
+// 		if( in_array( $blog_id, $this->rule_value ) ) {
+// 			$has_access = true;
+// 		}
 	
 		return apply_filters( 'ms_model_rule_buddypress_blog_has_access',  $has_access, $blog_id );
 	}
