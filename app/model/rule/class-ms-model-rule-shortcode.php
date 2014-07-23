@@ -40,10 +40,12 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @param MS_Model_Membership_Relationship $membership_relationship The user membership details.
 	 */
 	public function protect_content( $membership_relationship = false ) {
+		$this->membership_id = $membership_relationship->membership_id;
+		
+		add_shortcode( self::PROTECT_CONTENT_SHORTCODE, array( $this, 'protect_content_shorcode') );
+		
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) && ! empty( $membership_relationship->membership_id ) ) {
 			global $shortcode_tags;
-			
-			$this->membership_id = $membership_relationship->membership_id;
 			
 			$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
 			
@@ -55,7 +57,6 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 					$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
 				}
 			}
-			add_shortcode( self::PROTECT_CONTENT_SHORTCODE, array( $this, 'protect_content_shorcode') );
 		}
 	}
 	
@@ -82,21 +83,30 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return string
 	 */
 	public function protect_content_shorcode( $atts, $content = null, $code = '' ) {
-		$atts = apply_filters(
-				'ms_model_shortcode_protect_content_shorcode_atts',
-				shortcode_atts(
-						array(
-								'id' => '',
-						),
-						$atts
-				)
-		);
+		$atts = apply_filters( 'ms_model_shortcode_protect_content_shorcode_atts', shortcode_atts( array(
+							'id' => '',
+							'access' => 1,
+					),
+					$atts
+		) );
+		
 		$membership_ids = explode( ',', $atts['id'] );
 		
-		if( ! empty( $membership_ids ) && ! in_array( $this->membership_id, $membership_ids ) ) {
-			$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
-			$content = __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
-			$content .= implode( ', ', $membership_names ); 
+		/** No access to member of membership_ids */
+		if( $atts['access'] == 'false' || $atts['access'] == '0') {
+			if( ! empty( $membership_ids ) && in_array( $this->membership_id, $membership_ids ) ) {
+				$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
+				$content = __( 'No access to members of: ', MS_TEXT_DOMAIN );
+				$content .= implode( ', ', $membership_names );
+			}
+		}
+		/** Give access to member of membership_ids */
+		else {
+			if( ! empty( $membership_ids ) && ! in_array( $this->membership_id, $membership_ids ) ) {
+				$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
+				$content = __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
+				$content .= implode( ', ', $membership_names );
+			}
 		}
 		
 		return $content;
