@@ -27,6 +27,13 @@ class MS_Model_Rule_Buddypress_Group extends MS_Model_Rule {
 	
 	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP;
 	
+	/**
+	 * Verify access to the current page.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return boolean
+	 */
 	public function has_access() {
 		$has_access = false;
 		$group_id = false;
