@@ -29,10 +29,42 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param optional $membership_relationship The membership relationship info. 
 	 */
 	public function protect_content( $membership_relationship = false ) {
+		$this->add_filter( 'bp_user_can_create_groups', 'protect_create_bp_group' );
 	}
 	
+	/**
+	 * Checks the ability to create groups.
+	 *
+	 * @since 4.0.0
+	 * @filter bp_user_can_create_groups
+	 *
+	 * @param string $can_create The initial access.
+	 * @return string The initial template if current user can create groups, otherwise blocking message.
+	 */
+	public function protect_create_bp_group( $can_create ) {
+		$can_create = false;
+		
+		if( in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION, $this->rule_value ) ) {
+			$can_create = true;
+		}
+		
+		return apply_filters( 'ms_model_rule_buddypress_protect_create_bp_group', $can_create );
+	}
+
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param $args Not used, but kept due to method override.
+	 * @return array The content eligible to protect by this rule domain.
+	 */
 	public function get_content( $args = null ) {
 		$contents = array(
 				(object) array(
