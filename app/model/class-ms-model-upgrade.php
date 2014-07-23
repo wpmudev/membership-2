@@ -107,9 +107,9 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $coupons as $coupon ) {
 			$coupon->delete();
 		}
-		$news = MS_Model_Event::get_news( array( 'posts_per_page' => -1 ) );
-		foreach( $news as $new ) {
-			$new->delete();
+		$events = MS_Model_Event::get_events( array( 'posts_per_page' => -1 ) );
+		foreach( $events as $event ) {
+			$event->delete();
 		}
 		self::cleanup_settings();
 		
