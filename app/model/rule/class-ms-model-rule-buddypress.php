@@ -36,6 +36,48 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 */
 	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'bp_user_can_create_groups', 'protect_create_bp_group' );
+		$this->protect_friendship_request();
+	}
+	
+	/**
+	 * Protect friendship request.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 */
+	protected function protect_friendship_request() {
+		if( in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP, $this->rule_value ) ) {
+			$this->add_filter( 'bp_get_add_friend_button', 'hide_add_friend_button' );
+		}
+	}
+	
+	/**
+	 * Adds filter to prevent friendship button rendering.
+	 *
+	 * @since 4.0.0
+	 * @filter bp_get_add_friend_button
+	 *
+	 * @access public
+	 * @param array $button The button settings.
+	 * @return array The current button settings.
+	 */
+	public function hide_add_friend_button( $button ) {
+		$this->add_filter( 'bp_get_button', 'prevent_button_rendering' );
+		return $button;
+	}
+	
+	/**
+	 * Prevents button rendering.
+	 *
+	 * @since 4.0.0
+	 * @filter bp_get_button
+	 *
+	 * @access public
+	 * @return boolean false to prevent button rendering.
+	 */
+	public function prevent_button_rendering() {
+		remove_filter( 'bp_get_button', array( $this, 'prevent_button_rendering' ) );
+		return false;
 	}
 	
 	/**
