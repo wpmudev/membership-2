@@ -68,12 +68,11 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_rule_types( $rules ) {
 		
 		$rules[] = self::RULE_TYPE_BUDDYPRESS;
-		$rules[] = self::RULE_TYPE_BUDDYPRESS_BLOG;
+		array_unshift( $rules, self::RULE_TYPE_BUDDYPRESS_BLOG );
 // 		$rules[] = self::RULE_TYPE_BUDDYPRESS_FRIENDSHIP;
 		$rules[] = self::RULE_TYPE_BUDDYPRESS_GROUP;
 // 		$rules[] = self::RULE_TYPE_BUDDYPRESS_GROUP_CREATION;
 // 		$rules[] = self::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG;
-		
 		return $rules;
 	}
 	
