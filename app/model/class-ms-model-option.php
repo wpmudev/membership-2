@@ -27,6 +27,32 @@ class MS_Model_Option extends MS_Model {
 
 	protected static $instance;
 	
+	/* @todo migrate load to __construct 
+	public function __construct( $model_id = false ) {
+		
+		$this->before_load();
+		
+		$class = get_class( $this );
+		if( $class::$instance ) {
+			return $class::$instance;
+		}
+		else {
+			$settings = get_option( $class );
+			$fields = get_object_vars( $this );
+			foreach ( $fields as $field => $val ) {
+				if ( in_array( $field, $class::$ignore_fields ) ) {
+					continue;
+				}
+				if( isset( $settings[ $field ] ) ) {
+					$this->$field = $settings[ $field ];
+				}
+			}
+			$class::$instance = $this;
+		}
+			
+		$this->after_load();
+	}
+	*/
 	public function save() {
 		
 		$this->before_save();
@@ -46,6 +72,11 @@ class MS_Model_Option extends MS_Model {
 		$this->after_save();
 	}
 	
+	/**
+	 * @deprecated
+	 * @param string $model_id
+	 * @return unknown
+	 */
 	public static function load( $model_id = false ) {
 
 		if( static::$instance ) {
@@ -60,7 +91,7 @@ class MS_Model_Option extends MS_Model {
 		
 		$fields = get_object_vars( $model );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
+			if ( in_array( $field, static::$ignore_fields ) ) {
 				continue;
 			}
 			if( isset( $settings[ $field ] ) ) {
@@ -77,4 +108,5 @@ class MS_Model_Option extends MS_Model {
 	public function delete() {
 		delete_option( static::$CLASS_NAME );
 	}
+	
 }
