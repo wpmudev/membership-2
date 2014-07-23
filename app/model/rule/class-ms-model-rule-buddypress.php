@@ -28,6 +28,42 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS;
 	
 	/**
+	 * Verify access to the current page.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return boolean
+	 */
+	public function has_access() {
+		$has_access = false;
+		global $bp;
+		
+		if( function_exists( 'bp_current_component' ) ) {
+			$comp = bp_current_component();
+			MS_Helper_Debug::log($bp->current_action);
+			switch( bp_current_component() ) {
+				/** Private messaging direct access. */
+				case 'messages':
+					if( 'compose' == $bp->current_action &&
+						in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
+						
+							$has_access = true;
+					}
+					break;
+				/** Don't modify, handled by MS_Model_Rule_Buddypress_Group */	
+				case 'groups':
+					break;
+				/** Other BP pages have access. */
+				default:
+					$has_access = true;
+					break;
+			}
+		}
+	
+		return apply_filters( 'ms_model_rule_buddypress_has_access',  $has_access );
+	}
+	
+	/**
 	 * Set initial protection.
 	 * 
 	 * @since 4.0.0
@@ -37,6 +73,33 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'bp_user_can_create_groups', 'protect_create_bp_group' );
 		$this->protect_friendship_request();
+		$this->protect_private_messaging();
+	}
+	
+	/**
+	 * Protect private messaging.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 */
+	protected function protect_private_messaging() {
+		if( ! in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
+			$this->add_filter( 'bp_get_send_message_button', 'hide_private_message_button' );
+		}
+	}
+	
+	/**
+	 * Adds filter to prevent friendship button rendering.
+	 *
+	 * @since 4.0.0
+	 * @filter bp_get_send_message_button
+	 *
+	 * @access public
+	 * @param array $button The button settings.
+	 * @return bool false to hide button.
+	 */
+	public function hide_private_message_button( $button ) {
+		return false;
 	}
 	
 	/**
@@ -46,7 +109,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 * 
 	 */
 	protected function protect_friendship_request() {
-		if( in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP, $this->rule_value ) ) {
+		if( ! in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP, $this->rule_value ) ) {
 			$this->add_filter( 'bp_get_add_friend_button', 'hide_add_friend_button' );
 		}
 	}
@@ -76,7 +139,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 * @return boolean false to prevent button rendering.
 	 */
 	public function prevent_button_rendering() {
-		remove_filter( 'bp_get_button', array( $this, 'prevent_button_rendering' ) );
+		$this->remove_filter( 'bp_get_button', 'prevent_button_rendering' );
 		return false;
 	}
 	
