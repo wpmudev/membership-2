@@ -27,6 +27,18 @@ class MS_Model_Rule_Buddypress_Group extends MS_Model_Rule {
 	
 	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP;
 	
+	public function has_access() {
+		$has_access = false;
+		$group_id = false;
+		
+		if( function_exists( 'bp_is_current_component' ) && bp_is_current_component( 'groups' ) ) {
+			$group_id = bp_get_current_group_id();
+			$has_access = in_array( $group_id, $this->rule_value );			
+		}
+		
+		return apply_filters( 'ms_model_rule_buddypress_group_has_access',  $has_access, $group_id );
+	}
+	
 	/**
 	 * Set initial protection.
 	 * 

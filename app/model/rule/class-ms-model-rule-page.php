@@ -96,8 +96,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		if( in_array( $page_id, $this->rule_value ) || in_array( $page_id, $settings->pages ) ) { 
 			$has_access = true;
 		}
-
-		return $has_access;		
+		return apply_filters( 'ms_model_rule_page_has_access',  $has_access, $page_id );		
 	}
 
 	/**
