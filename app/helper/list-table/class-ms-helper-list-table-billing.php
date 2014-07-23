@@ -41,7 +41,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	
 	public function get_columns() {
 		$currency = MS_Plugin::instance()->settings->currency;
-		return apply_filters( 'membership_helper_list_table_membership_columns', array(
+		$columns = apply_filters( 'membership_helper_list_table_membership_columns', array(
 			'cb' => '<input type="checkbox" />',
 			'invoice' => __( 'Invoice #', MS_TEXT_DOMAIN ),
 			'user' => __( 'User', MS_TEXT_DOMAIN ),
@@ -55,6 +55,12 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
 			'gateway_id' => __( 'Gateway', MS_TEXT_DOMAIN ),
 		) );
+		
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
+			unset( $columns['discount'] );
+		}
+		
+		return apply_filters( 'ms_helper_list_table_billing_get_columns', $columns );
 	}
 	
 	function column_cb( $item ) {
