@@ -358,7 +358,13 @@ class MS_Controller_Membership extends MS_Controller {
 		if( ! apply_filters( 'ms_addon_url_groups', MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) ) {
 			unset( $tabs['urlgroup'] );
 		}
-
+		/**
+		 * Disable shortcode tab.
+		 */
+		if( ! apply_filters( 'ms_addon_shortcode', MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) ) {
+			unset( $tabs['shortcode'] );
+		}
+		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}
 	

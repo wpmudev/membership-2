@@ -30,28 +30,35 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	const PROTECT_CONTENT_SHORTCODE = 'ms-protect-content';
 	
 	protected $membership_id;
+	
 	/**
 	 * Set initial protection.
 	 * 
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.
+	 * 
+	 * @since 4.0.0
+	 * @param MS_Model_Membership_Relationship $membership_relationship The user membership details.
 	 */
 	public function protect_content( $membership_relationship = false ) {
-		global $shortcode_tags;
-		
-		$this->membership_id = $membership_relationship->membership_id;
-		
-		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
-		
-		foreach( $shortcode_tags as $shortcode => $callback_funciton ) {
-			if( in_array( $shortcode, $exclude ) ) {
-				continue;
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) && ! empty( $membership_relationship->membership_id ) ) {
+			global $shortcode_tags;
+			
+			$this->membership_id = $membership_relationship->membership_id;
+			
+			$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
+			
+			foreach( $shortcode_tags as $shortcode => $callback_funciton ) {
+				if( in_array( $shortcode, $exclude ) ) {
+					continue;
+				}
+				if( ! in_array( $shortcode, $this->rule_value ) ) {
+					$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
+				}
 			}
-			if( ! in_array( $shortcode, $this->rule_value ) ) {
-				$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
-			}
+			add_shortcode( self::PROTECT_CONTENT_SHORTCODE, array( $this, 'protect_content_shorcode') );
 		}
-		add_shortcode( self::PROTECT_CONTENT_SHORTCODE, array( $this, 'protect_content_shorcode') );
 	}
+	
 	/**
 	 * Do protected shortcode [do_protected_shortcode].
 	 * 
@@ -95,6 +102,14 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		return $content;
 	}
 	
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param $args The content filtering arguments.
+	 * @return array The content eligible to protect by this rule domain.
+	 */
 	public function get_content( $args = null ) {
 		global $shortcode_tags;
 		

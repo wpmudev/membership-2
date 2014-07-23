@@ -36,6 +36,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_MEDIA = 'media';
 	const ADDON_PRIVATE_MEMBERSHIPS = 'private_memberships';
 	const ADDON_PRO_RATE = 'pro_rate';
+	const ADDON_SHORTCODE = 'shortcode';
 	
 	protected $id =  'addon_options';
 	
@@ -53,6 +54,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_TRIAL,
 				self::ADDON_MEDIA,
 				self::ADDON_PRIVATE_MEMBERSHIPS,
+				self::ADDON_SHORTCODE,
 		) );
 	}
 
@@ -130,10 +132,16 @@ class MS_Model_Addon extends MS_Model_Option {
 					'active' => $this->is_enabled( self::ADDON_MEDIA ),
 				),
 				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
-					'id' => self::ADDON_URL_GROUPS,
+					'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
 					'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable private memberships.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
+				),
+				self::ADDON_SHORTCODE => (object) array(
+					'id' => self::ADDON_SHORTCODE,
+					'name' => __( 'Shortcode protection', MS_TEXT_DOMAIN ),
+					'description' => __( 'Enable shortcode protection.', MS_TEXT_DOMAIN ),
+					'active' => $this->is_enabled( self::ADDON_SHORTCODE ),
 				),
 			)
 		);
