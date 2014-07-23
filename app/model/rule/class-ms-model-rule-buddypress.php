@@ -39,8 +39,6 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 		global $bp;
 		
 		if( function_exists( 'bp_current_component' ) ) {
-			$comp = bp_current_component();
-			MS_Helper_Debug::log($bp->current_action);
 			switch( bp_current_component() ) {
 				/** Private messaging direct access. */
 				case 'messages':
