@@ -41,6 +41,8 @@ class MS_Integration extends MS_Hooker {
 	
 	const BUDDYPRESS = 'buddypress';
 	
+	const BBPRESS = 'buddypress';
+	
 	protected $id =  'integrations';
 	
 	protected $name = 'Integration manager';
@@ -65,6 +67,7 @@ class MS_Integration extends MS_Hooker {
 		return apply_filters( 'ms_integration_get_integrations', array(
 				self::AUTOMESSAGE => new MS_Integration_Automessage(),
 				self::BUDDYPRESS => new MS_Integration_Buddypress(),
+				self::BBPRESS => new MS_Integration_Bbpress(),
 		) );
 	}
 }
