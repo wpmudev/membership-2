@@ -112,6 +112,13 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 		
+		/** Only active memberships */
+		$args['meta_query']['active'] = array(
+			'key'     => 'active',
+			'value'   => true,
+		); 
+		
+		/** Only public memberships when add-on is enabled. */
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
 			$args['meta_query']['public'] = array(
 				'key'     => 'public',
@@ -119,10 +126,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 			); 
 		}
 		
-		
-		// Now get all the memberships excluding the ones the member is already a part of
+		/** Retrieve memberships user is not part of, using selected args */
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
 		
+		/** When Multiple memberships is not enabled, a member should move to another membership. */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			/** Membership Relationship status which can move to another one */
 			foreach( $data['member']->membership_relationships as $ms_relationship ) {
@@ -136,8 +143,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 					break;
 				}
 			}
-		}		
-		// Create the signup form view
+		}
+		
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
 		return $view->to_html();

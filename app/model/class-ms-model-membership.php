@@ -317,32 +317,32 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function has_access_to_current_page( $ms_relationship ) {
 		
 		$has_access = false;
-		
-		/** If 'has access' is found in the hierarchy, it does have access. */
-		$rules = $this->get_rules_hierarchy();
-		foreach( $rules as $rule ) {
-			$has_access = ( $has_access || $rule->has_access() );
-		
-			if( $has_access ) {
-				break;
+		if( $this->active ) {
+			/** If 'has access' is found in the hierarchy, it does have access. */
+			$rules = $this->get_rules_hierarchy();
+			foreach( $rules as $rule ) {
+				$has_access = ( $has_access || $rule->has_access() );
+				if( $has_access ) {
+					break;
+				}
 			}
-		}
-		
-		/**
-		 * Search for the following dripped rules.
-		 */
-		$dripped = apply_filters( 'ms_model_membership_has_access_to_current_page_dripped_rules', array(
-				MS_Model_Rule::RULE_TYPE_PAGE,
-				MS_Model_Rule::RULE_TYPE_POST
-		) );
-		
-		/**
-		 * Verify membership dripped rules hierachyly.
-		 * Dripped has the final decision.
-		 */
-		foreach( $dripped as $rule_type ) {
-			if( $rules[ $rule_type ]->has_dripped_rules() ) {
-				$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date );
+			
+			/**
+			 * Search for the following dripped rules.
+			 */
+			$dripped = apply_filters( 'ms_model_membership_has_access_to_current_page_dripped_rules', array(
+					MS_Model_Rule::RULE_TYPE_PAGE,
+					MS_Model_Rule::RULE_TYPE_POST
+			) );
+			
+			/**
+			 * Verify membership dripped rules hierachyly.
+			 * Dripped has the final decision.
+			 */
+			foreach( $dripped as $rule_type ) {
+				if( $rules[ $rule_type ]->has_dripped_rules() ) {
+					$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date );
+				}
 			}
 		}
 		
