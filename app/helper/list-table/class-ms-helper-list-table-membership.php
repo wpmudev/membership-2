@@ -40,15 +40,21 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 		
 	public function get_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_columns', array(
-			'cb'     => '<input type="checkbox" />',
-			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
-			'membership_type' => __( 'Type', MS_TEXT_DOMAIN ),
-			'active' => __( 'Active', MS_TEXT_DOMAIN ),
-			'public' => __( 'Public', MS_TEXT_DOMAIN ),
-			'members' => __( 'Members', MS_TEXT_DOMAIN ),
-			'shortcode' => __( 'Shortcode', MS_TEXT_DOMAIN ),
-		) );
+		$columns = array(
+				'cb'     => '<input type="checkbox" />',
+				'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
+				'membership_type' => __( 'Type', MS_TEXT_DOMAIN ),
+				'active' => __( 'Active', MS_TEXT_DOMAIN ),
+				'public' => __( 'Public', MS_TEXT_DOMAIN ),
+				'members' => __( 'Members', MS_TEXT_DOMAIN ),
+				'shortcode' => __( 'Shortcode', MS_TEXT_DOMAIN ),
+		);
+		
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
+			unset( $columns['public'] );
+		} 
+
+		return apply_filters( 'membership_helper_list_table_membership_columns', $columns );
 	}
 	
 	function column_cb( $item ) {

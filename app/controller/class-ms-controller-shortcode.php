@@ -103,15 +103,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 			) 
 		);
 
-		// Get a list of all the memberships that the current user is part of
-		$args = null;
 		$data['member'] = MS_Model_Member::get_current_member();
-		/** Get all including pending relationships */
+		/** Get member's memberships, including pending relationships. */
 		$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
+		
+		/** Prepare select arguments to get the memberships user is not part of. */
 		$not_in = array_keys( $data['ms_relationships'] );
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
-
+		
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
+			$args['meta_query']['public'] = array(
+				'key'     => 'public',
+				'value'   => true,
+			); 
+		}
+		
+		
 		// Now get all the memberships excluding the ones the member is already a part of
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
 		
