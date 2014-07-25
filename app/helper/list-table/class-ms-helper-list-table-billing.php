@@ -58,6 +58,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 			unset( $columns['discount'] );
+			unset( $columns['amount'] );
 		}
 		
 		return apply_filters( 'ms_helper_list_table_billing_get_columns', $columns );
