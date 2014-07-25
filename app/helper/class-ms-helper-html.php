@@ -105,9 +105,7 @@ class MS_Helper_Html extends MS_Helper {
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT:
 			case self::INPUT_TYPE_PASSWORD:
