@@ -265,8 +265,20 @@ class MS_Controller_Settings extends MS_Controller {
 					$msg = $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
-				break;	
+				break;
+			default:
+				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
+				/**
+				 * Settings tab submit request.
+				 */
+				if( ! empty( $_POST['submit_settings'] ) && ! empty( $_POST['action'] ) 
+					&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+					$msg = $this->save_general( $_POST['action'], $_POST );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+				}
+				break;
 		}
+		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
 		
 	}
 	
@@ -284,6 +296,7 @@ class MS_Controller_Settings extends MS_Controller {
 		else {
 			$view = apply_filters( 'ms_view_settings', new MS_View_Settings_Edit() );
 			$data['tabs'] = $this->get_tabs();
+			$data['settings'] = $this->model;
 			$view->data = $data;
 			$view->model = $this->model;
 			$view->render();
@@ -339,7 +352,6 @@ class MS_Controller_Settings extends MS_Controller {
 		if ( ! current_user_can( $this->capability ) ) {
 			return $msg;
 		}
-
 		if( is_array( $settings ) ) {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
@@ -349,6 +361,7 @@ class MS_Controller_Settings extends MS_Controller {
 					case 'save_general':
 					case 'submit_payment':
 					case 'save_downloads':
+					default:
 						$this->model->$field = $value;
 						break;
 				}
