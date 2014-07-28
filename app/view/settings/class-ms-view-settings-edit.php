@@ -72,8 +72,9 @@ class MS_View_Settings_Edit extends MS_View {
 		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 		
 		/** Call the appropriate form to render. */
-		call_user_func( array( $this, 'render_' . str_replace('-', '_', $active_tab ) ) );
-
+		$render_callback =  apply_filters( 'ms_view_settings_edit_render_callback', array( $this, 'render_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+		call_user_func( $render_callback );
+		
 		?>
 		</div>
 		<?php
