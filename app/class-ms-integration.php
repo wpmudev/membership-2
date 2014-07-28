@@ -43,6 +43,8 @@ class MS_Integration extends MS_Hooker {
 	
 	const BBPRESS = 'buddypress';
 	
+	const MAILCHIMP = 'mailchimp';
+	
 	protected $id =  'integrations';
 	
 	protected $name = 'Integration manager';
@@ -68,6 +70,7 @@ class MS_Integration extends MS_Hooker {
 				self::AUTOMESSAGE => new MS_Integration_Automessage(),
 				self::BUDDYPRESS => new MS_Integration_Buddypress(),
 				self::BBPRESS => new MS_Integration_Bbpress(),
+				self::MAILCHIMP => new MS_Integration_Mailchimp(),
 		) );
 	}
 }
