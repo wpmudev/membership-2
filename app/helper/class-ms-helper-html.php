@@ -91,7 +91,6 @@ class MS_Helper_Html extends MS_Helper {
 		/* Input arguments */
 		$input_defaults = array(
 			'label_element' => 'span',
-			'checkbox_position' => 'left',
 		);
 		extract( wp_parse_args( $input_args, $input_defaults ) );
 		
@@ -145,16 +144,16 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );
 				echo "<div class='ms-field-container'>";
-				if ( 'right' == $checkbox_position ) {
-					echo "<span class='vds_label_check'>";
-					echo "<label for='$id'><{$label_element} class='ms-field-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
+				if ( ! empty( $field_options['checkbox_position'] ) &&  'right' == $field_options['checkbox_position'] ) {
+					echo "<span class='ms-label-checkbox'>";
+					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
 				echo "<span class=''>";
 				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked />";
 				echo "</span>";
-				if ( 'right' != $checkbox_position ) {
-					echo "<span class='vds_label_check'>";
-					echo "<label for='$id'><{$label_element} class='ms-field-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
+				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
+					echo "<span class='ms-label-checkbox'>";
+					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
 				echo "</span>";
 				echo "</div>";
