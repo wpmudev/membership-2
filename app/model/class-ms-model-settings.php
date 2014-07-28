@@ -53,7 +53,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $tax;
 	
 	protected $invoice_sender_name;
-		
+
+	/** For extensions settings.*/
+	protected $custom;
+	
 	/**
 	 * Shortcode protection message.
 	 * 
@@ -184,6 +187,14 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 	
 		return $is_special;
+	}
+	
+	public function get_custom_settings( $group, $name ) {
+		$setting = '';
+		if( ! empty( $this->custom[ $group ][ $name ] ) ) {
+			$setting = $this->custom[ $group ][ $name ];
+		}
+		return apply_filters( 'ms_model_settings_get_custom_settings', $setting, $group, $name );
 	}
 	
 	public static function get_currencies() {
