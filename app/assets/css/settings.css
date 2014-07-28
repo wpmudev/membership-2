@@ -110,6 +110,9 @@ h2.ms-settings-title,
 	margin: 0;
 }
 
+.ms-field-container {
+	margin: 10px 0;
+}
 .ms-field-label {
 	display: block;
 	font-style: oblique;
