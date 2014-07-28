@@ -120,7 +120,7 @@ class MS_View_Membership_Edit extends MS_View {
 											<div class="ms-settings-box">
 												<h3><?php _e( 'Membership Trial', MS_TEXT_DOMAIN ); ?></h3>
 												<div class="inside">
-													<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'], false, array( 'label_element' => 'h3', 'checkbox_position' => 'right' ) );?>
+													<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'], false, array( 'label_element' => 'span' ) );?>
 													<div id="ms-trial-period-wrapper">
 														<?php MS_Helper_Html::html_input( $this->fields['trial_price'], false, array( 'label_element' => 'h3' ) );?>
 														<div class="ms-period-wrapper">
@@ -258,6 +258,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'id' => 'trial_period_enabled',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+						'field_options' => array( 'checkbox_position' => 'right' ),
 						'title' => __( 'Offer Membership Trial', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period_enabled,
 						'class' => 'ms-field-input-trial-period-enabled',
