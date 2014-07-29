@@ -333,7 +333,7 @@ class MS_Controller_Registration extends MS_Controller {
 			$user->email =  $_POST['user_email'];		
 			$user->save();
 			$user->signon_user();
-			if ( ! MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $this ) ) {
+			if ( ! MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
 				wp_new_user_notification( $user->id, $user->password );
 			}
 			do_action( 'ms_controller_registration_register_user_complete', $this->register_errors, $user->id );
