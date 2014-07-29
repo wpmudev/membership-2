@@ -568,6 +568,20 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
+	 * Get Member model.
+	 *
+	 * @since 4.0
+	 * @return MS_Model_Member
+	 */
+	public function get_member() {
+		$member = null;
+		if( ! empty ( $this->user_id ) ) {
+			$member = MS_Model_Member::load( $this->user_id );
+		}
+		return apply_filters( 'ms_model_membership_relationship_get_member', $member );
+	}
+	
+	/**
 	 * Get Membership model.
 	 * 
 	 * @since 4.0
