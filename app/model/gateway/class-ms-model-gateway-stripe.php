@@ -128,7 +128,6 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 							'card' => $token,
 							'email' => $member->email,
 					) );
-					self::add_card( $member, $token );
 					self::save_customer_id( $member, $customer->id );
 				}
 				else {
