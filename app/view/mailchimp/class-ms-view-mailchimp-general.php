@@ -68,7 +68,7 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Registered users mailing list (not members)', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => '',
+						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ),
 						'class' => '',
 				),
 				'mail_list_members' => array(
@@ -77,16 +77,16 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Members mailing list', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => '',
+						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_members' ),
 						'class' => '',
 				),
-				'mail_list_expired' => array(
-						'id' => 'mail_list_expired',
-						'name' => 'custom[mailchimp][mail_list_expired]',
+				'mail_list_deactivated' => array(
+						'id' => 'mail_list_deactivated',
+						'name' => 'custom[mailchimp][mail_list_deactivated]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Deactivated memberships mailing list', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => '',
+						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_deactivated' ),
 						'class' => '',
 				),
 				'action' => array(
