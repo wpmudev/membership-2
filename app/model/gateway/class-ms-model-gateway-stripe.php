@@ -329,7 +329,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access protected
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
-	public static function check_card_expiration( $ms_relationship ) {
+	public function check_card_expiration( $ms_relationship ) {
 
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );

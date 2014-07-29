@@ -207,6 +207,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 		
 	}
 	
+	public function check_card_expiration( $ms_relationship ) {
+		
+	}
+	
 	/**
 	 * Process transaction.
 	 *
