@@ -119,6 +119,17 @@ class MS_Helper_Period extends MS_Helper {
 	}
 	
 	/**
+	 * Return current timestamp.
+	 * 
+	 * @since 4.0
+	 *  
+	 * @return string The current date.
+	 */
+	public static function current_time() {
+		return current_time( 'mysql', true );
+	}
+	
+	/**
 	 * Return the existing period types.
 	 *
 	 * @todo change method name to get_period_types
