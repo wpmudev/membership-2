@@ -173,4 +173,29 @@ class MS_Integration_Mailchimp extends MS_Integration {
 			
 		return self::$mailchimp_api;
 	}
+	
+	/**
+	 * Get the lists of a Mailchimp account.
+	 *
+	 * @return Array Lists info
+	 */
+	public static function get_mail_lists() {
+		
+		$mail_lists = array( 0 => __( 'none', MS_TEXT_DOMAIN ) );
+		
+		if( self::get_api_status() ) {
+			$lists = self::$mailchimp_api->lists->getList();
+			if ( is_wp_error( $lists ) ) {
+				MS_Helper_Debug::log( $lists );
+			}
+			else {
+				MS_Helper_Debug::log( $lists );
+				foreach( $lists['data'] as $list ) {
+					$mail_lists[ $list['id'] ] = $list['name'];
+				}
+			}
+		}
+	
+		return $mail_lists;
+	}
 }
