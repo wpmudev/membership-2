@@ -103,10 +103,12 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_rule_types( $rules ) {
 		
 		$rules[] = self::RULE_TYPE_BUDDYPRESS;
+		
+		/** @todo integrate it better in 4.1
 		$rules[] = self::RULE_TYPE_BUDDYPRESS_GROUP;
 
 		array_unshift( $rules, self::RULE_TYPE_BUDDYPRESS_BLOG );
-		
+		*/
 		return $rules;
 	}
 	
@@ -123,9 +125,12 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_rule_type_classes( $rules ) {
 	
 		$rules[ self::RULE_TYPE_BUDDYPRESS  ] = 'MS_Model_Rule_Buddypress';
+		
+		/** @todo integrate it better in 4.1
 		$rules[ self::RULE_TYPE_BUDDYPRESS_BLOG  ] = 'MS_Model_Rule_Buddypress_Blog';
 		$rules[ self::RULE_TYPE_BUDDYPRESS_GROUP  ] = 'MS_Model_Rule_Buddypress_Group';
-	
+		*/
+		
 		return $rules;
 	}
 	
@@ -142,9 +147,12 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_rule_type_titles( $rules ) {
 	
 		$rules[ self::RULE_TYPE_BUDDYPRESS  ] = __( 'Buddypress' , MS_TEXT_DOMAIN );
+		
+		/** @todo integrate it better in 4.1
 		$rules[ self::RULE_TYPE_BUDDYPRESS_BLOG  ] = __( 'Buddypress blog' , MS_TEXT_DOMAIN );
 		$rules[ self::RULE_TYPE_BUDDYPRESS_GROUP  ] = __( 'Buddypress group' , MS_TEXT_DOMAIN );
-	
+		*/
+		
 		return $rules;
 	}
 	
@@ -166,6 +174,7 @@ class MS_Integration_BuddyPress extends MS_Integration {
 				'title' => __( 'Buddypress', MS_TEXT_DOMAIN ),
 				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
 		);
+		/** @todo integrate it better in 4.1
 		$rule = self::RULE_TYPE_BUDDYPRESS_BLOG;
 		$tabs[ $rule  ] = array(
 				'title' => __( 'Buddypress blog', MS_TEXT_DOMAIN ),
@@ -176,6 +185,7 @@ class MS_Integration_BuddyPress extends MS_Integration {
 				'title' => __( 'Buddypress groups', MS_TEXT_DOMAIN ),
 				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
 		);
+		*/
 		
 		return $tabs;
 	}
