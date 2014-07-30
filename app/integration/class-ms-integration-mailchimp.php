@@ -346,7 +346,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 			if( ! empty( $member->first_name ) ) {
 				$merge_vars['FNAME'] = $member->first_name;
 			}
-			if( ! empty( $member->first_name ) ) {
+			if( ! empty( $member->last_name ) ) {
 				$merge_vars['LNAME'] = $member->last_name;
 			}
 				
