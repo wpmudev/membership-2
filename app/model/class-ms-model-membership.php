@@ -314,7 +314,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 * @return boolean 
 	 */
-	public function has_access_to_current_page( $ms_relationship ) {
+	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
 		
 		$has_access = false;
 		if( $this->active ) {
@@ -340,8 +340,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			 * Dripped has the final decision.
 			 */
 			foreach( $dripped as $rule_type ) {
-				if( $rules[ $rule_type ]->has_dripped_rules() ) {
-					$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date );
+				if( $rules[ $rule_type ]->has_dripped_rules( $post_id ) ) {
+					$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date, $post_id );
 				}
 			}
 		}
