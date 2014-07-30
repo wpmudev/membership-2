@@ -26,6 +26,8 @@ if( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
 	define ('DEBUG_BACKTRACE_IGNORE_ARGS', 2);
 }
 
+set_error_handler( array( 'MS_Helper_Debug', 'process_error_backtrace') );
+
 /**
  * This Helper creates utility functions for debugging.
  *
@@ -74,6 +76,54 @@ class MS_Helper_Debug extends MS_Helper {
 					error_log( $class . $message );					
 				}
 			}
+		}
+	}
+	
+	public static function debug_trace() {
+		$traces = debug_backtrace();
+		$fields = array(
+			'file',
+			'line',
+			'function',
+			'class',
+		);
+		$log = array( "**************************** Trace start ****************************" );
+		foreach( $traces as $i => $trace ) {
+			$line = array();
+			foreach( $fields as $field ) {
+				if( ! empty( $trace[ $field ] ) ) {
+					$line[] = "$field: {$trace[ $field ]}";
+				}
+			}
+			$log[] = "  [$i]". implode( '; ', $line );
+		}
+		error_log( implode( "\n", $log) );
+	}
+	
+	public static function process_error_backtrace( $errno, $errstr, $errfile, $errline, $errcontext ) {
+		if( ! ( error_reporting() & $errno ) ) {
+			return;
+		}
+		switch( $errno ) {
+			case E_WARNING      :
+			case E_USER_WARNING :
+			case E_STRICT       :
+			case E_NOTICE       :
+			case E_USER_NOTICE  :
+				$type = 'warning';
+				$fatal = false;
+				break;
+			default             :
+				$type = 'fatal error';
+				$fatal = true;
+				break;
+		}
+		$message = "[$type]: '$errstr' file: $errfile, line: $errline";
+		error_log( $message );
+		self::debug_trace();
+		
+		if( $fatal ) {
+			exit(1);
 		}
 	}
 	
