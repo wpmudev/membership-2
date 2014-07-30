@@ -136,7 +136,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */
-			if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+			if( ! empty( $post_id ) || is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
 				if( empty( $post_id ) ) {
 					$post_id = get_the_ID();
 				}
