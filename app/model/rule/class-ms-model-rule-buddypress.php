@@ -39,22 +39,25 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 		global $bp;
 		
 		if( function_exists( 'bp_current_component' ) ) {
-			switch( bp_current_component() ) {
-				/** Private messaging direct access. */
-				case 'messages':
-					if( 'compose' == $bp->current_action &&
-						in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
-						
-							$has_access = true;
-					}
-					break;
-				/** Don't modify, handled by MS_Model_Rule_Buddypress_Group */	
-				case 'groups':
-					break;
-				/** Other BP pages have access. */
-				default:
-					$has_access = true;
-					break;
+			$component = bp_current_component();
+			if( ! empty( $component ) ) {
+				switch( $component ) {
+					/** Private messaging direct access. */
+					case 'messages':
+						if( 'compose' == $bp->current_action &&
+							in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
+							
+								$has_access = true;
+						}
+						break;
+					/** Don't modify, handled by MS_Model_Rule_Buddypress_Group */	
+					case 'groups':
+						break;
+					/** Other BP pages have access. */
+					default:
+						$has_access = true;
+						break;
+				}
 			}
 		}
 	
