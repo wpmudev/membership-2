@@ -57,23 +57,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 				self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
 		) );
 	}
-	
-	/**
-	 * Verify access to the attachment.
-	 * @param int $attachment_id The attachment post_id
-	 * @return boolean
-	 */
-	public function has_access( $attachment_id = null ) {
-	
-		$has_access = false;
-
-		if( ! empty( $attachment_id ) && in_array( $attachment_id, $this->rule_value ) ) {
-			$has_access = true;
-		}
-	
-		return $has_access;
-	}
-	
+		
 	/**
 	 * Setup filter hook to protect media file.
 	 *  
