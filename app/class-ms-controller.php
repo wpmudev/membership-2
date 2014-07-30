@@ -76,5 +76,18 @@ class MS_Controller extends MS_Hooker {
 		do_action( 'membership_parent_controller_construct', $this );
 	}
 	
+	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
+		
+		$verified = false;
+		$request_fields = ( 'POST' == $request_method ) ? $_POST : $_GET;
+		
+		if( empty( $action ) ) {
+			$action = ! empty( $request_fields['action'] ) ? $request_fields['action'] : '';
+		}
+		if( ! empty( $request_fields[ $nonce_field ] ) && wp_verify_nonce( $request_fields[ $nonce_field ], $action ) ) {
+			$verified = true;
+		}
+		return $verified;
+	}
 	
 }
