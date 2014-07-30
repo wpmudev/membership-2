@@ -20,6 +20,7 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors() ?>
 			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo add_query_arg( 'action', 'register_user', $permalink ) ?>" method="post">
+				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<legend><?php _e( 'Create an Account', 'membership' ) ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
 					<div class="ms-form-element">
@@ -57,14 +58,14 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $data['last_name'],
 				),
-				'user_login' => array(
-						'id' => 'user_login',
+				'username' => array(
+						'id' => 'username',
 						'title' => __( 'Choose a Username', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $data['username'],
 				),
-				'user_email' => array(
-						'id' => 'user_email',
+				'email' => array(
+						'id' => 'email',
 						'title' => __( 'Email Address', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $data['email'],
@@ -87,10 +88,15 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => __( 'Register My Account', MS_TEXT_DOMAIN ),
 				),
-				'_wpnonce' => array(
-						'id' => '_wpnonce',
+				'action' => array(
+						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $data['_wpnonce'],
+						'value' => $data['action'],
+				),
+				'step' => array(
+						'id' => 'step',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $data['step'],
 				),
 				
 		);

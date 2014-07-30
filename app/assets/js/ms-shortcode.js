@@ -3,8 +3,8 @@ jQuery( document ).ready(function( $ ) {
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
-				'user_login': 'required',
-				'user_email': {
+				'username': 'required',
+				'email': {
 					'required': true,
 					'email': true,
 				},
