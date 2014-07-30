@@ -455,6 +455,11 @@ class MS_Model_Member extends MS_Model {
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
+				case 'email':
+					if( is_email( $value ) ) {
+						$this->$property = $value;
+					}
+					break;
 				case 'username':
 					$this->$property = sanitize_user( $value );
 				case 'name':
