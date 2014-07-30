@@ -168,25 +168,31 @@ class MS_Model_Settings extends MS_Model_Option {
 	}
 		
 	public function is_special_page( $page_id = null, $special_page_type = null ) {
-	
-		$page_id = intval( $page_id );
-		if ( ! $page_id ) {
+		
+		$is_special_page = false;
+		
+		if( empty( $page_id ) ) {
 			if( is_page() ) {
 				$page_id = get_the_ID();
 			}
+		}
+	
+		if( ! empty( $page_id ) ) {
+			if( ! empty( $special_page_type ) ) {
+				if( isset( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ] ) {
+					$is_special_page = $special_page_type;
+				}
+			}
 			else {
-				return false;
+				foreach( $this->pages as $special_page_type => $special_page_id ) {
+					if( $page_id == $special_page_id ) {
+						$is_special_page = $special_page_type;
+					}
+				}
 			}
 		}
-	
-		if( ! empty( $special_page_type ) ) {
-			$is_special= isset( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ];
-		}
-		else {
-			$is_special = in_array( $page_id, $this->pages );
-		}
-	
-		return $is_special;
+			
+		return $is_special_page;
 	}
 	
 	public function get_custom_settings( $group, $name ) {
