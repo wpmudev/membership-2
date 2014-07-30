@@ -55,7 +55,6 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			
 			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
-				$categories = array_keys( $this->rule_value );
 				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $this->rule_value ) ) );
 			}
 		}
@@ -73,7 +72,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	public function protect_categories( $terms, $taxonomies, $args ) {
 		$new_terms = array();
 	
-		if ( ! in_array( 'category', $taxonomies) ) {
+		if ( ! in_array( 'category', $taxonomies ) ) {
 			// bail - not fetching category taxonomy
 			return $terms;
 		}
@@ -85,7 +84,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 				}
 			} else {
 				// this taxonomy isn't category so add it so custom taxonomies don't break
-				$new_terms[$key] = $term;
+				$new_terms[ $key ] = $term;
 			}
 		}
 	
@@ -107,7 +106,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			/**
 			 * Verify post access accordinly to category rules.
 			 */
-			if( ! empty( $post_id ) || is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
+			if( ! empty( $post_id ) || ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) ) {
 				if( empty( $post_id ) ) {
 					$post_id = get_the_ID();
 				}
