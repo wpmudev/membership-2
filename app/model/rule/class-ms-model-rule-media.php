@@ -39,6 +39,8 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	
 	const FILE_PROTECTION_INCREMENT = 2771;
 	
+	protected $ms_relationship;
+	
 	/**
 	 * Get the protection type available.
 	 * 
@@ -80,6 +82,8 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 * @access public
 	 */
 	public function protect_content( $membership_relationship = false ) {
+		$this->ms_relationship = $membership_relationship;
+		
 		$this->add_filter( 'the_content', 'protect_download_content' );
 		$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
 	}
@@ -250,20 +254,24 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 				case self::PROTECTION_TYPE_COMPLETE:
 				case self::PROTECTION_TYPE_HYBRID:
 					/** Work out the post_id again */
-					$post_id = preg_replace( '/^' . self::FILE_PROTECTION_PREFIX . '/', '', $filename );
-					$post_id -= (int) self::FILE_PROTECTION_INCREMENT;
+					$attachment_id = preg_replace( '/^' . self::FILE_PROTECTION_PREFIX . '/', '', $filename );
+					$attachment_id -= (int) self::FILE_PROTECTION_INCREMENT;
 					
-					$image = $this->restore_filename( $post_id, $size_extension );
+					$image = $this->restore_filename( $attachment_id, $size_extension );
 					break;
 				default:
 				case self::PROTECTION_TYPE_BASIC:
-					$post_id = $this->get_attachment_id( $filename );
-					$image = $this->restore_filename( $post_id, $size_extension );
+					$attachment_id = $this->get_attachment_id( $filename );
+					$image = $this->restore_filename( $attachment_id, $size_extension );
 					break;
 			}
-			if ( ! empty( $image ) && ! empty( $post_id ) && is_numeric( $post_id ) ) {
+			if ( ! empty( $image ) && ! empty( $attachment_id ) && is_numeric( $attachment_id ) ) {
+				
+				$post_id = get_post_field( 'post_parent', $attachment_id );
+				
 				/** check for access configuration */
-				if( in_array( $post_id, $this->rule_value ) ) {
+				$membership = $this->ms_relationship->get_membership();
+				if( $membership->has_access_to_current_page( $this->ms_relationship, $post_id ) ) {
 					$upload_dir = wp_upload_dir();
 					$file = trailingslashit( $upload_dir['basedir'] ) . $image;
 					$this->output_file( $file );
