@@ -129,6 +129,9 @@ class MS_Controller_Settings extends MS_Controller {
 				),
 		);
 	
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+			unset( $tabs['downloads'] );
+		}
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
 	}
 	/**
