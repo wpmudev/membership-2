@@ -61,22 +61,25 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
-		$data = apply_filters(
-				'ms_controller_shortcode_membership_register_user_atts',
+		$data = apply_filters( 'ms_controller_shortcode_membership_register_user_atts',
 				shortcode_atts(
 						array(
-								'first_name' => '',
-								'last_name' => '',
-								'username' => '',
-								'email' => '',
-								'membership_id' => 0,
+								'first_name' => substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 ),
+								'last_name' => substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 ),
+								'username' => substr( trim( filter_input( INPUT_POST, 'username' ) ), 0, 50 ),
+								'email' => substr( trim( filter_input( INPUT_POST, 'email' ) ), 0, 50 ),
+								'membership_id' => filter_input( INPUT_POST, 'membership_id' ),
 								'errors' => '',
 						),
 						$atts
 				)
 		);
+		$data['action'] = 'register_user';
+		$data['step'] = 'register_submit';
+		
 		$view = apply_filters( 'ms_view_shortcode_membership_register_user', new MS_View_Shortcode_Membership_Register_User() );
 		$view->data = $data;
+		
 		return $view->to_html();
 	}
 
@@ -106,9 +109,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['member'] = MS_Model_Member::get_current_member();
 		/** Get member's memberships, including pending relationships. */
 		$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
-		
+		$not_in = array();		
 		/** Prepare select arguments to get the memberships user is not part of. */
-		$not_in = array_keys( $data['ms_relationships'] );
+		foreach( $data['ms_relationships'] as $ms_relationship ) {
+			$not_in[] = $ms_relationship->membership_id;
+		}
 		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 		
@@ -125,6 +130,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'value'   => true,
 			); 
 		}
+//		MS_Helper_Debug::log($args);
 		
 		/** Retrieve memberships user is not part of, using selected args */
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
@@ -147,6 +153,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
+// 		MS_Helper_Debug::log($data);
 		return $view->to_html();
 	}
 	
