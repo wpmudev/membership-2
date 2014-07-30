@@ -128,11 +128,7 @@ class MS_Controller_Registration extends MS_Controller {
 	 * @param string $url
 	 */
 	public function signup_location( $url ) {
-		if( ! empty( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] ) ) {
-			$url = get_permalink( MS_Plugin::instance()->settings->pages[ MS_Model_Settings::SPECIAL_PAGE_REGISTER ] );
-		}
-		
-		// MS_Helper_Debug::log( __( "signup_location: {$url}", MS_TEXT_DOMAIN ) );
+		$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_REGISTER ) );
 		
 		return apply_filters( 'ms_controller_registration_signup_location', $url );
 	}
