@@ -293,10 +293,10 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'Comments', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=comment&membership_id=' . $membership_id,
 				),
-				'media' => array(
-						'title' => __( 'Media', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-edit&tab=media&membership_id=' . $membership_id,
-				),
+// 				'media' => array(
+// 						'title' => __( 'Media', MS_TEXT_DOMAIN ),
+// 						'url' => 'admin.php?page=membership-edit&tab=media&membership_id=' . $membership_id,
+// 				),
 				'menu' => array(
 						'title' => __( 'Menus', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-edit&tab=menu&membership_id=' . $membership_id,
