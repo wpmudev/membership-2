@@ -4,14 +4,17 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	
 	protected $data;
 	
+	protected $fields;
+	
 	public function to_html() {
 		ob_start();
 		?>
 			<div class="ms-membership-form-wrapper">
-				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
+				<legend><?php _e( 'Membership Levels', MS_TEXT_DOMAIN ) ?></legend>
 				<p class="ms-alert-box <?php echo count( $this->data['ms_relationships'] > 0 ) ? 'ms-alert-success' : ''; ?>">
 					<?php
 						if( count( $this->data['ms_relationships'] ) > 0 ) {
+// 							MS_Helper_Debug::log($this->data['ms_relationships']);
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
 	 						foreach( $this->data['ms_relationships'] as $membership_id => $membership_relationship ){
 	 							switch( $membership_relationship->status ) {
@@ -46,9 +49,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<?php
 					if( $this->data['member']->is_member() && ! empty( $this->data['memberships'] ) ) {
 						?>
-		 					<legend class="ms-upgrade-from"> 
+		 					<legend class="ms-move-from"> 
 		 						<?php 
-		 							if( ! empty( $this->data['move_from_id'] ) ) {
+		 							if( empty( $this->data['move_from_id'] ) ) {
 										echo __( 'Add membership', MS_TEXT_DOMAIN ); 										
 									} 
 									else {
@@ -59,24 +62,22 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		 				<?php 
 	 				}
 				?>	
-				<form class="ms-membership-form" method="post">
-					<div class="ms-form-price-boxes">
-						<?php do_action( 'ms_membership_form_before_memberships' ); ?>
-						<?php
-							if( ! empty( $this->data['move_from_id'] ) ) {
-								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
-							}
-							else {
-								$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;	
-							}
+				<div class="ms-form-price-boxes">
+					<?php do_action( 'ms_view_shortcode_membership_signup_form_before_memberships' ); ?>
+					<?php
+						if( ! empty( $this->data['move_from_id'] ) ) {
+							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
+						}
+						else {
+							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;	
+						}
 
-							foreach( $this->data['memberships'] as $membership ) {
-								$this->membership_box_html( $membership, $action );
-							}
-						?>
-						<?php do_action( 'ms_membership_form_after_memberships' ) ?>
-					</div>
-				</form>
+						foreach( $this->data['memberships'] as $membership ) {
+							$this->membership_box_html( $membership, $action );
+						}
+					?>
+					<?php do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' ) ?>
+				</div>
 			</div>
 			<div style='clear:both;'></div>
 		<?php
@@ -85,45 +86,71 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	}
 	
 	private function membership_box_html( $membership, $action, $msg = null ) {
+		$this->prepare_fields( $membership->id );
 		?>
-		<div id="ms-membership-wrapper-<?php echo $membership->id; ?>" class="ms-membership-details-wrapper">
-			<div class="ms-top-bar">
-				<span class="ms-title"><?php echo $membership->name; ?></span>
+		<form class="ms-membership-form" method="post">
+			<?php wp_nonce_field( $this->data['action'] ); ?>
+			<?php 
+				foreach( $this->fields as $field ) {
+					MS_Helper_Html::html_input( $field );
+				}
+			?>
+			
+			<div id="ms-membership-wrapper-<?php echo $membership->id; ?>" class="ms-membership-details-wrapper">
+				<div class="ms-top-bar">
+					<span class="ms-title"><?php echo $membership->name; ?></span>
+				</div>
+				<div class="ms-price-description">
+					<?php echo $membership->description; ?>
+				</div>
+				<div class="ms-bottom-bar">
+					<span class="ms-link">
+					<?php if( $msg ): ?>
+						<span class="ms-bottom-msg"><?php echo $msg; ?></span>
+					<?php endif;?>
+					<?php
+						$class = apply_filters( 'ms_view_shortcode_membership_signup_form_button_class', 'ms-signup-button' );
+						
+						$submit = array(
+							'id' => 'submit',
+							'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+							'value' => esc_html( $this->data[ "{$action}_text" ] ),
+							'class' => $class,
+						);
+						MS_Helper_Html::html_input( $submit );
+					?>
+					</span>
+				</div>
 			</div>
-			<div class="ms-price-details">
-				<?php echo $membership->description; ?>
-			</div>
-			<div class="ms-bottom-bar">
-				<span class="ms-link">
-				<?php if( $msg ): ?>
-					<span class="ms-bottom-msg"><?php echo $msg; ?></span>
-				<?php endif;?>
-				<?php
-					$query_args = array( 'action' => $action, 'membership' => $membership->id ) ;
-					if( ! empty( $this->data['move_from_id'] ) ) {
-						$query_args[ 'move_from' ] = $this->data['move_from_id']; 
-					}
-					$link = wp_nonce_url( add_query_arg( $query_args ), $action );
-					$class = apply_filters( 'ms_membership_form_button_class', 'ms-signup-button' );
-					
-					$gateway_id = ! empty( $this->data['member']->membership_relationship[ $membership->id ]->gateway_id ) 
-										? $this->data['member']->membership_relationship[ $membership->id ]->gateway_id
-										: $membership->gateway_id;
-					$button_html = apply_filters( "ms_view_shortcode_membership_signup_button_html_{$action}_{$gateway_id}", 
-						sprintf( 
-							'<a href="%s" class="%s">%s</a>', 
-							esc_url( $link ),
-							$class,
-							esc_html( $this->data[ "{$action}_text" ] )		
-						),
-						$membership,
-						$this->data['member']
-					);
-					echo $button_html;
-				?>
-				</span>
-			</div>
-		</div>
+		</form>
 		<?php 
+	}
+	
+	private function prepare_fields( $membership_id ) {
+		
+		$this->fields = array(
+			'membership_id' => array(
+					'id' => 'membership_id',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $membership_id,
+			),
+			'action' => array(
+					'id' => 'action',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $this->data['action'],
+			),
+			'step' => array(
+					'id' => 'step',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $this->data['step'],
+			),
+		);
+		if( ! empty( $this->data['move_from_id'] ) ) {
+			$this->fields['move_from_id'] = array(
+				'id' => 'move_from_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['move_from_id'],
+			);
+		}
 	}
 }
