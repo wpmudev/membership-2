@@ -52,10 +52,10 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		 					<legend class="ms-move-from"> 
 		 						<?php 
 		 							if( empty( $this->data['move_from_id'] ) ) {
-										echo __( 'Add membership', MS_TEXT_DOMAIN ); 										
+										echo __( 'Add Membership Level', MS_TEXT_DOMAIN ); 										
 									} 
 									else {
-										echo __( 'Change membership', MS_TEXT_DOMAIN ); 										
+										echo __( 'Change Membership Level', MS_TEXT_DOMAIN ); 										
 									}
 								?>
 		 					</legend>
@@ -86,16 +86,15 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	}
 	
 	private function membership_box_html( $membership, $action, $msg = null ) {
-		$this->prepare_fields( $membership->id );
+		$this->prepare_fields( $membership->id, $action );
 		?>
 		<form class="ms-membership-form" method="post">
-			<?php wp_nonce_field( $this->data['action'] ); ?>
+			<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 			<?php 
 				foreach( $this->fields as $field ) {
 					MS_Helper_Html::html_input( $field );
 				}
 			?>
-			
 			<div id="ms-membership-wrapper-<?php echo $membership->id; ?>" class="ms-membership-details-wrapper">
 				<div class="ms-top-bar">
 					<span class="ms-title"><?php echo $membership->name; ?></span>
@@ -126,7 +125,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		<?php 
 	}
 	
-	private function prepare_fields( $membership_id ) {
+	private function prepare_fields( $membership_id, $action ) {
 		
 		$this->fields = array(
 			'membership_id' => array(
@@ -145,12 +144,18 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					'value' => $this->data['step'],
 			),
 		);
+
 		if( ! empty( $this->data['move_from_id'] ) ) {
 			$this->fields['move_from_id'] = array(
 				'id' => 'move_from_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['move_from_id'],
 			);
+		}
+		
+		if( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $action ) {
+			$this->fields['action']['value'] = $action;
+			unset( $this->fields['step'] );
 		}
 	}
 }
