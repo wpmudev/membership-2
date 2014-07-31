@@ -735,7 +735,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @param string $status
 	 */
 	public function set_status( $status ) {
-		
 		/** These status are not validated, and promptly assigned */
 		$allowed_status = array( 
 				self::STATUS_DEACTIVATED, 
@@ -744,9 +743,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				self::STATUS_TRIAL_EXPIRED,
 		);
 		
-		if( ! in_array( $status, $allowed_status ) ){
+		if( ! in_array( $status, $allowed_status ) ) {
 			$status = $this->calculate_status();
 			$this->handle_status_change( $status );
+		}
+		else {
+			$this->status = $status;
 		}
 	}
 	
