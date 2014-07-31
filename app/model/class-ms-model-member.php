@@ -443,6 +443,9 @@ class MS_Model_Member extends MS_Model {
 		return $admins;
 	}
 	
+	public function is_valid() {
+		return ( $this->id > 0 );
+	}
 	/**
 	 * Set specific property.
 	 *
