@@ -106,9 +106,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 			) 
 		);
 
-		$data['member'] = MS_Model_Member::get_current_member();
-		/** Get member's memberships, including pending relationships. */
-		$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
+		$member = MS_Model_Member::get_current_member();
+		$data['member'] = $member;
+		$data['ms_relationships'] = array();
+		if( $member->is_valid() ) {
+			/** Get member's memberships, including pending relationships. */
+			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
+		}
+		
+//		MS_Helper_Debug::log($data['member']);
 		$not_in = array();		
 		/** Prepare select arguments to get the memberships user is not part of. */
 		foreach( $data['ms_relationships'] as $ms_relationship ) {
@@ -130,7 +136,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'value'   => true,
 			); 
 		}
-//		MS_Helper_Debug::log($args);
+		MS_Helper_Debug::log($args);
 		
 		/** Retrieve memberships user is not part of, using selected args */
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
