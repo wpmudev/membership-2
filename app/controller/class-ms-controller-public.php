@@ -160,9 +160,20 @@ class MS_Controller_Public extends MS_Controller {
 					}
 				}
 				break;
-			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
-				break;
 			case MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS:
+				remove_filter( 'the_content', 'wpautop' );
+				if( MS_Model_Member::is_logged_user() ) {
+					if( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP, $content ) ) {
+						$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
+					}
+				}
+				else {
+					if( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+						$content .= do_shortcode( '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']' );
+					}
+				}
+				break;
+			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS:
 				break;
@@ -178,9 +189,7 @@ class MS_Controller_Public extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function register_user() {
-		MS_Helper_Debug::log('register_user');
 		if ( 'register_submit' == $this->get_register_step() && $this->verify_nonce() ) {
-			MS_Helper_Debug::log('register_user1');
 			try {
 				$user = new MS_Model_Member();
 				foreach( $_POST as $field => $value ) {
@@ -192,22 +201,32 @@ class MS_Controller_Public extends MS_Controller {
 					wp_new_user_notification( $user->id, $user->password );
 				}
 				do_action( 'ms_controller_registration_register_user_complete', $user );
-					
+
+				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) );
 				wp_redirect( add_query_arg( array(
-					'action'       => 'membership_signup',
-					'membership' => $_POST['membership'],
-					'_wpnonce' => wp_create_nonce( 'membership_signup' ),
-				) ) );
+							'action'       => 'membership_signup',
+							'membership' => $_POST['membership'],
+							'_wpnonce' => wp_create_nonce( 'membership_signup' ),
+						), 
+						$url
+				 ) );
 			}
 			catch( Exception $e ) {
 				$this->register_errors = $e->getMessage();
-				MS_Helper_Debug::log( $this->register_errors );
+				/** step back */
 				$_POST['step'] = 'register_form';
+				
+				MS_Helper_Debug::log( $this->register_errors );
 				do_action( 'ms_controller_registration_register_user_error', $this->register_errors );
 			}
 		}
 	}
 	
+	/**
+	 * Get register process step (multi step form).
+	 *
+	 * @since 4.0.0
+	 */
 	private function get_register_step() {
 		$steps = array( 'choose_membership', 'register_form', 'register_submit' );
 		if( ! empty( $_POST['step'] ) && in_array( $_POST['step'], $steps ) ) {
