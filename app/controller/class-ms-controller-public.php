@@ -189,7 +189,11 @@ class MS_Controller_Public extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function register_user() {
-		if ( 'register_submit' == $this->get_register_step() && $this->verify_nonce() ) {
+		if ( 'register_submit' == $this->get_register_step() ) {
+			if( ! $this->verify_nonce() ) {
+				MS_Helper_Debug::log( "nonce not verified" );
+				return;
+			}
 			try {
 				$user = new MS_Model_Member();
 				foreach( $_POST as $field => $value ) {
@@ -202,6 +206,8 @@ class MS_Controller_Public extends MS_Controller {
 				}
 				do_action( 'ms_controller_registration_register_user_complete', $user );
 
+				/** Go to membership signup payment form. */
+				$_POST['step'] = 'payment_form';
 				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) );
 				wp_redirect( add_query_arg( array(
 							'action'       => 'membership_signup',
