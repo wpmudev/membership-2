@@ -277,7 +277,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_CANCELED );
 						}
 						$move_from->save();
-						MS_Helper_Debug::log("$move_from->id, $move_from->membership_id, $move_from->user_id, status: $move_from->status");
 					}
 				}
 				

@@ -162,7 +162,7 @@ class MS_Controller_Public extends MS_Controller {
 			 * Process the purchase action.
 			 * Handled by MS_Controller_Gateway.
 			 */	
-			case STEP_PROCESS_PURCHASE:
+			case self::STEP_PROCESS_PURCHASE:
 				do_action( 'ms_controller_public_signup_process_purchase', $this );
 				break;
 			default:
