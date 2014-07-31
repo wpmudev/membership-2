@@ -39,53 +39,11 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	protected $payment_info;
 	
 	public function purchase_button( $ms_relationship = false ) {
-		
-		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'ms_relationship_id' => array(
-						'id' => 'ms_relationship_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $ms_relationship->id,
-				),
-				'step' => array(
-						'id' => 'step',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'process_purchase',
-				),
-		);
-		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-					'value' =>  $this->pay_button_url,
-			);
+		$membership = $ms_relationship->get_membership();
+		if( 0 == $membership->price ) {
+			return;
 		}
-		else {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
-			);
-		}
-		
-		?>
-			<tr>
-				<td class='ms-buy-now-column' colspan='2' >
-					<form method="post">
-						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-						<?php 
-							foreach( $fields as $field ) {
-								MS_Helper_Html::html_input( $field ); 
-							}
-						?>
-					</form>
-				</td>
-			</tr>
-		<?php 
+		parent::purchase_button();
 	}
 		
 	public function content() {
