@@ -75,6 +75,11 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	}
 	
 	public function purchase_button( $ms_relationship ) {
+		$membership = $ms_relationship->get_membership();
+		if( 0 == $membership->price ) {
+			return;
+		}
+		
 		$invoice = $ms_relationship->get_current_invoice();
 		$fields = array(
 				'business' => array(

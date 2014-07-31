@@ -56,6 +56,11 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access public
 	 */
 	public function purchase_button( $ms_relationship ) {
+		$membership = $ms_relationship->get_membership();
+		if( 0 == $membership->price ) {
+			return;
+		}
+		
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',

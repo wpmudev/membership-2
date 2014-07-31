@@ -57,6 +57,11 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	protected $payment_result;
 	
 	public function purchase_button( $ms_relationship = false ) {
+		$membership = $ms_relationship->get_membership();
+		if( 0 == $membership->price ) {
+			return;
+		}
+		
 		$fields = array(
 				'gateway' => array(
 						'id' => 'gateway',
@@ -337,13 +342,13 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				
 		}
 		/**
-		 * Give feedback to the user trying to pay know about the error.
+		 * Give error feedback to the user trying to pay.
 		 */
 		catch( Exception $e ) {
 			MS_Helper_Debug::log( $e->getMessage() );
 			/** Hack to send the error message back to the gateway_form. */
 			$_POST['auth_error'] = $e->getMessage();
-			$_POST['step'] = 'extra_form';
+			$_POST['step'] = 'gateway_form';
 			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'gateway_form', 1 );
 		}
 	}
