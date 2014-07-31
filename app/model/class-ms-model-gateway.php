@@ -69,7 +69,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function get_gateways( $only_active = false ) {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
-// 				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
+				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
 				self::GATEWAY_MANUAL => MS_Model_Gateway_Manual::load(),
 				self::GATEWAY_PAYPAL_STANDARD => MS_Model_Gateway_Paypal_Standard::load(),
 				self::GATEWAY_PAYPAL_SINGLE => MS_Model_Gateway_Paypal_Single::load(),
@@ -126,6 +126,52 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function purchase_button( $ms_relationship = false ) {
 		
+		$fields = array(
+				'gateway' => array(
+						'id' => 'gateway',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->id,
+				),
+				'ms_relationship_id' => array(
+						'id' => 'ms_relationship_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $ms_relationship->id,
+				),
+				'step' => array(
+						'id' => 'step',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'process_purchase',
+				),
+		);
+		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+					'value' =>  $this->pay_button_url,
+			);
+		}
+		else {
+			$fields['submit'] = array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
+			);
+		}
+		
+		?>
+			<tr>
+				<td class='ms-buy-now-column' colspan='2' >
+					<form method="post">
+						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
+						<?php 
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_input( $field ); 
+							}
+						?>
+					</form>
+				</td>
+			</tr>
+		<?php 
 	}
 	
 	/**
@@ -147,34 +193,15 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @access public
 	 */
 	public function process_purchase( $ms_relationship ) {
-		/** Change the query to show memberships special page and replace the content with payment instructions */
-		global $wp_query;
-		$settings = MS_Plugin::instance()->settings;
-		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
-		$wp_query->query_vars['post_type'] = 'page';
-
-		if( ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $this->id .'_' . $_POST['ms_relationship_id'] ) ) {
+		$invoice = $ms_relationship->get_current_invoice();
+		$invoice->gateway_id = $this->id;
+		$invoice->save();
 		
-			$invoice = $ms_relationship->get_current_invoice();
-			$invoice->gateway_id = $this->id;
-			$invoice->save();
-
-			if( 0 == $invoice->total ) {
-				$this->process_transaction( $invoice );
-			}
-
-			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
-				$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
-				wp_safe_redirect( $url );
-				exit;
-			}
-			else{
-				$this->add_action( 'the_content', 'content' );
-			}
+		if( 0 == $invoice->total ) {
+			$ms_relationship = $this->process_transaction( $invoice );
 		}
-		else {
-			$this->add_action( 'the_content', 'content_error' );
-		}
+		
+		return $ms_relationship;
 	}
 	
 	public function content() {
@@ -234,22 +261,23 @@ class MS_Model_Gateway extends MS_Model_Option {
 					$coupon->used++;
 					$coupon->save();
 				}
-				
+
 				/** Check for moving memberships */
 				if( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status && $ms_relationship->move_from_id && 
 					! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
-					
+
 					$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
 					if( ! empty( $move_from->id ) ) {
 						/** if allow pro rate, immediatly deactivate */
-						if( $this->pro_rate ) {
-							$move_from->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
+						if( $this->pro_rate && MS_Model_Addon::is_active( MS_Model_Addon::ADDON_PRO_RATE ) ) {
+							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
 						}
 						/** if not, cancel it, and allow using it until expires */
 						else {
-							$move_from->status = MS_Model_Membership_Relationship::STATUS_CANCELED;
+							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_CANCELED );
 						}
 						$move_from->save();
+						MS_Helper_Debug::log("$move_from->id, $move_from->membership_id, $move_from->user_id, status: $move_from->status");
 					}
 				}
 				
@@ -276,7 +304,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$ms_relationship->save();
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
-		MS_Helper_Debug::log( $invoice);
+
+		return $ms_relationship;
 	}
 	
 	/**
