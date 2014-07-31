@@ -43,7 +43,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		if( 0 == $membership->price ) {
 			return;
 		}
-		parent::purchase_button();
+		parent::purchase_button( $ms_relationship );
 	}
 		
 	public function content() {
