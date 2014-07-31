@@ -151,16 +151,49 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function process_purchase() {
+		$settings = MS_Plugin::instance()->settings;
+		
 		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
-		$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
+				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 	
 			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 	
-			$gateway_id = $_POST['gateway'];
-			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
-			$gateway->process_purchase( $ms_relationship );
+			try {
+				$gateway_id = $_POST['gateway'];
+				$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
+				$ms_relationship = $gateway->process_purchase( $ms_relationship );
+
+				if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+					$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
+					wp_safe_redirect( $url );
+					exit;
+				}
+				else{
+					$this->add_action( 'the_content', 'purchase_succcess_content' );
+				}
+			} 
+			catch ( Exception $e ) {
+				$this->add_action( 'the_content', 'purchase_error_content' );
+			}
 		}
+		else {
+			$this->add_action( 'the_content', 'purchase_error_content' );
+		}
+		
+		global $wp_query;
+		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
+		$wp_query->query_vars['post_type'] = 'page';
+	}
 	
+	public function purchase_succcess_content( $content ) {
+		$content = apply_filters( 'ms_controller_gateway_purchase_succcess_content', $content );
+		return $content;
+	}
+	
+	public function purchase_error_content( $content ) {
+		$content = apply_filters( 'ms_controller_gateway_purchase_error_content', 
+				__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ), $content );
+		return $content;
 	}
 	
 	/**
