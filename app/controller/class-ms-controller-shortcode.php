@@ -75,7 +75,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				)
 		);
 		$data['action'] = 'register_user';
-		$data['step'] = 'register_submit';
+		$data['step'] = MS_Controller_Public::STEP_REGISTER_SUBMIT;
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_register_user', new MS_View_Shortcode_Membership_Register_User() );
 		$view->data = $data;

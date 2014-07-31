@@ -89,7 +89,16 @@ class MS_Controller_Public extends MS_Controller {
 			$this->$action();
 		} 
 	}
-
+	
+	/**
+	 * Get action from request.
+	 * 
+	 * @return string
+	 */
+	private function get_action() {
+		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+		return apply_filters( 'ms_controller_public_get_action', $action );
+	}
 	/**
 	 * Check pages for the presence of Membership special pages.
 	 *
@@ -105,7 +114,12 @@ class MS_Controller_Public extends MS_Controller {
 		
 		switch( $is_special_page ) {
 			case MS_Model_Settings::SPECIAL_PAGE_SIGNUP:
-				$this->signup_process();
+				if( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
+					$this->membership_cancel();
+				}
+				else {
+					$this->signup_process();
+				}
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
 				break;
@@ -288,39 +302,6 @@ class MS_Controller_Public extends MS_Controller {
 	}
 	
 	/**
-	 * Handles membership_move action.
-	 * 
-	 * @todo Handle move scenario in signup_method or implement own function.
-	 * 
-	 * @since 4.0.0
-	 */
-	public function membership_move() {
-		$this->membership_signup();
-	}
-	
-	public function membership_renew() {
-		$this->membership_signup();
-	}
-	
-	/**
-	 * Handles membership_cancel action.
-	 * 
-	 * @since 4.0.0
-	 */	
-	public function membership_cancel() {
-		if( ! empty( $_GET['membership'] )  && ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
-			$membership_id = $_GET['membership'];
-			$member = MS_Model_Member::get_current_member();
-			$member->cancel_membership( $membership_id );
-			$member->save();
-			
-			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) );
-			wp_safe_redirect( $url );
-			exit;
-		}
-	}
-
-	/**
 	 * Render membership payment information.
 	 *
 	 * **Hooks Filters: **  
@@ -374,6 +355,25 @@ class MS_Controller_Public extends MS_Controller {
 		echo $view->to_html();
 
 	}
+	
+	/**
+	 * Handles membership_cancel action.
+	 *
+	 * @since 4.0.0
+	 */
+	public function membership_cancel() {
+		if( ! empty( $_POST['membership_id'] ) && $this->verify_nonce() ) {
+			$membership_id = $_POST['membership_id'];
+			$member = MS_Model_Member::get_current_member();
+			$member->cancel_membership( $membership_id );
+			$member->save();
+				
+			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
+			wp_safe_redirect( $url );
+			exit;
+		}
+	}
+	
 	
 	
 	/**
