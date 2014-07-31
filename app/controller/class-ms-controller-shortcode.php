@@ -158,7 +158,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 		
 		$data['action'] = 'membership_signup';
-		$data['step'] = 'payment_form';
+		$data['step'] = MS_Controller_Public::STEP_PAYMENT_TABLE;
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;

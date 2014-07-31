@@ -71,7 +71,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				'step' => array(
 						'id' => 'step',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'extra_form',
+						'value' => 'gateway_form',
 				),
 		);
 		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
