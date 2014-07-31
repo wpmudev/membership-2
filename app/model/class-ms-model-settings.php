@@ -32,6 +32,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	const SPECIAL_PAGE_MEMBERSHIPS = 'memberships';
 	const SPECIAL_PAGE_REGISTER = 'register';
 	const SPECIAL_PAGE_WELCOME = 'welcome';
+	const SPECIAL_PAGE_SIGNUP = 'signup';
 	
 	protected $id =  'ms_plugin_settings';
 	
@@ -114,6 +115,13 @@ class MS_Model_Settings extends MS_Model_Option {
 		$id = wp_insert_post( $pagedetails );
 		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
 	}
+
+	public function create_page_signup() {
+		$content = '';
+		$pagedetails = array( 'post_title' => __( 'Signup', MS_TEXT_DOMAIN ), 'post_name' => 'signup', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
+		$id = wp_insert_post( $pagedetails );
+		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
+	}
 	
 	public function create_special_page( $type ) {
 		$create_method = "create_page_{$type}";
@@ -144,6 +152,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				self::SPECIAL_PAGE_MEMBERSHIPS,
 				self::SPECIAL_PAGE_REGISTER,
 				self::SPECIAL_PAGE_WELCOME,
+				self::SPECIAL_PAGE_SIGNUP,
 			)
 		);
 		

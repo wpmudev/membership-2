@@ -220,6 +220,14 @@ class MS_View_Settings_Edit extends MS_View {
 					'field_options' => $all_pages,
 					'class' => '',
 			),
+			'signup' => array(
+					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
+					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ),
+					'field_options' => $all_pages,
+					'class' => '',
+			),
 		);
 	}
 	public function render_payment() {
