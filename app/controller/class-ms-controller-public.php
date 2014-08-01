@@ -122,8 +122,10 @@ class MS_Controller_Public extends MS_Controller {
 				}
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
+				$this->add_filter( 'the_content', 'user_account', 1 );
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS:
+				$this->add_filter( 'the_content', 'protected_page', 1 );
 				break;
 			default:
 				break; 
@@ -139,7 +141,6 @@ class MS_Controller_Public extends MS_Controller {
 		$step = $this->get_signup_step();
 		MS_Helper_Debug::log("step:: $step");
 		
-		remove_filter( 'the_content', 'wpautop' );
 		switch( $step ) {
 			/**
 			 * Initial state.
@@ -237,6 +238,8 @@ class MS_Controller_Public extends MS_Controller {
 	 * @return string
 	 */
 	public function choose_membership( $content ) {
+		remove_filter( 'the_content', 'wpautop' );
+		
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP, $content ) ) {
 			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
 		}
@@ -257,6 +260,8 @@ class MS_Controller_Public extends MS_Controller {
 	 * @return string
 	 */
 	public function register_form( $content ) {
+		remove_filter( 'the_content', 'wpautop' );
+		
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, $content ) ) {
 			$content .= do_shortcode( "[" . MS_Helper_Shortcode::SCODE_REGISTER_USER . " errors='{$this->register_errors}']" );
 		}
@@ -374,7 +379,53 @@ class MS_Controller_Public extends MS_Controller {
 		}
 	}
 	
+	/**
+	 * Show user account page.
+	 *
+	 * Search for account shortcode, injecting if not found.
+	 *
+	 * **Hooks Filters: **
+	 * * the_content
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	public function user_account( $content ) {
+		remove_filter( 'the_content', 'wpautop' );
+		
+		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, $content ) ) {
+			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
+		}
 	
+		return $content;
+	}
+	
+	/**
+	 * Show protected page.
+	 *
+	 * Search for login shortcode, injecting if not found.
+	 *
+	 * **Hooks Filters: **
+	 * * the_content
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	public function protected_page( $content ) {
+		if( ! empty( MS_Plugin::instance()->settings->protection_message['content'] ) ) {
+			$content .= MS_Plugin::instance()->settings->protection_message['content'];
+		}
+
+		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+			$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
+		}
+			
+		return $content;
+	}
 	
 	/**
 	 * Get the URL the user used to register for a subscription.
@@ -390,7 +441,7 @@ class MS_Controller_Public extends MS_Controller {
 	 * @param string $url
 	 */
 	public function signup_location( $url ) {
-		$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_REGISTER ) );
+		$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
 	
 		return apply_filters( 'ms_controller_registration_signup_location', $url );
 	}
