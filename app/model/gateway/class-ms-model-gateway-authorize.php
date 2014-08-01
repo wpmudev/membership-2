@@ -251,7 +251,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @access protected
 	 * @return boolean TRUE on success, otherwise FALSE.
 	 */
-	protected function update_cim_profile() {
+	protected function update_cim_profile( $member ) {
 		$response = $this->get_cim()->createCustomerPaymentProfile( $this->cim_profile_id, $this->create_cim_payment_profile() );
 		/** If the error is not due to a duplicate customer payment profile.*/
 		if ( $response->isError() && 'E00039' != $response->xml->messages->message->code ) {
@@ -327,30 +327,15 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 		}
 		
-		try {
-			if( ! $this->cim_profile_id ) {
-				$this->create_cim_profile( $member );
-			}
-			elseif ( empty( $this->cim_payment_profile_id ) ) {
-				$this->update_cim_profile();
-			}
-			
-			$this->online_purchase( $invoice );
-				
-			$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
-			wp_safe_redirect( $url );
-				
+		if( ! $this->cim_profile_id ) {
+			$this->create_cim_profile( $member );
 		}
-		/**
-		 * Give error feedback to the user trying to pay.
-		 */
-		catch( Exception $e ) {
-			MS_Helper_Debug::log( $e->getMessage() );
-			/** Hack to send the error message back to the gateway_form. */
-			$_POST['auth_error'] = $e->getMessage();
-			$_POST['step'] = 'gateway_form';
-			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'gateway_form', 1 );
+		elseif ( empty( $this->cim_payment_profile_id ) ) {
+			$this->update_cim_profile( $member );
 		}
+		
+		$this->online_purchase( $invoice );
+
 	}
 		
 	/**

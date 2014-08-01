@@ -158,9 +158,9 @@ class MS_Controller_Gateway extends MS_Controller {
 	
 			$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
 	
+			$gateway_id = $_POST['gateway'];
+			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
 			try {
-				$gateway_id = $_POST['gateway'];
-				$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
 				$ms_relationship = $gateway->process_purchase( $ms_relationship );
 
 				if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
@@ -173,6 +173,10 @@ class MS_Controller_Gateway extends MS_Controller {
 				}
 			} 
 			catch ( Exception $e ) {
+				if( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
+					$_POST['auth_error'] = $e->getMessage();
+					do_action( 'ms_controller_public_signup_gateway_form', $this );
+				}
 				$this->add_action( 'the_content', 'purchase_error_content' );
 			}
 		}
@@ -181,7 +185,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 		
 		global $wp_query;
-		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS );
+		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 		$wp_query->query_vars['post_type'] = 'page';
 	}
 	
