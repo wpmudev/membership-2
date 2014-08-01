@@ -31,7 +31,7 @@
  */
 class MS_Controller_Gateway extends MS_Controller {
 	
-	private $allowed_actions = array( 'change_card', 'purchase_button' );
+	private $allowed_actions = array( 'update_card', 'purchase_button' );
 	
 	/**
 	 * Prepare the gateway controller.
@@ -43,7 +43,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_controller_public_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_public_signup_process_purchase', 'process_purchase', 1 );
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
-		
+		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 	}
 	
 	/**
@@ -58,15 +58,14 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function process_actions() {
-		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		$action = $this->get_action();
 		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		}
 	}
 	
-	public function change_card() {
-
-		if( ! empty( $_REQUEST['gateway_id'] ) && $gateway = MS_Model_Gateway::factory( $_REQUEST['gateway_id'] ) ) {
+	public function card_info( $data = null ) {
+		if( ! empty( $data['gateway'] ) && $gateway = $data['gateway'] ) {
 			switch( $gateway->id ) {
 				case MS_Model_Gateway::GATEWAY_STRIPE:
 					$view = new MS_View_Gateway_Stripe_Card();
@@ -74,11 +73,6 @@ class MS_Controller_Gateway extends MS_Controller {
 					$data['member'] = $member;
 					$data['publishable_key'] = $gateway->get_publishable_key();
 					$data['stripe'] = $gateway->get_gateway_profile_info( $member );
-					if( ! empty( $_POST['stripeToken'] ) ) {
-						$gateway->add_card( $member, $_POST['stripeToken'] );
-						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
-					}
-						
 					break;
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					break;
@@ -87,7 +81,26 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 			$view = apply_filters( 'ms_view_gateway_change_card', $view );
 			$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
-			add_action( 'the_content', array( &$view, 'to_html' ) );
+			echo $view->to_html();
+		}
+	}
+	
+	public function update_card() {
+		if( ! empty( $_POST['gateway_id'] ) && $this->verify_nonce() ) {
+			$gateway = MS_Model_Gateway::factory( $_POST['gateway_id'] );
+			switch( $gateway->is_valid() ) {
+				case MS_Model_Gateway::GATEWAY_STRIPE:
+					if( ! empty( $_POST['stripeToken'] ) ) {
+						$member = MS_Model_Member::get_current_member();
+						$gateway->add_card( $member, $_POST['stripeToken'] );
+						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
+					}
+					break;
+				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
