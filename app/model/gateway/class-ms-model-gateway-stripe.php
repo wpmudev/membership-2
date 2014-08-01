@@ -118,57 +118,47 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access public
 	 */
 	public function process_purchase( $ms_relationship ) {
-		MS_Helper_Debug::log( $_POST );	
+
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
 		$invoice = $ms_relationship->get_current_invoice();
 		
 		if( ! empty( $_POST['stripeToken'] ) ) {
 			$token = $_POST['stripeToken'];
-			try {
-				$this->load_stripe_lib();
-				
-				$customer = self::get_stripe_customer( $member );
-				if( empty( $customer ) ) {
-					$customer = Stripe_Customer::create( array(
-							'card' => $token,
-							'email' => $member->email,
-					) );
-					self::save_customer_id( $member, $customer->id );
-				}
-				else {
-					self::add_card( $member, $token );
-					$customer->save();
-				}
-				
-				if( 0 == $invoice->total ) {
+			$this->load_stripe_lib();
+			
+			$customer = self::get_stripe_customer( $member );
+			if( empty( $customer ) ) {
+				$customer = Stripe_Customer::create( array(
+						'card' => $token,
+						'email' => $member->email,
+				) );
+				self::save_customer_id( $member, $customer->id );
+			}
+			else {
+				self::add_card( $member, $token );
+				$customer->save();
+			}
+			
+			if( 0 == $invoice->total ) {
+				$this->process_transaction( $invoice );
+			}
+			else {
+				$charge = Stripe_Charge::create( array(
+						'amount' => $invoice->total * 100, // Amount in cents!
+						'currency' => strtolower( $invoice->currency ),
+						'customer' => $customer->id,
+						'description' => $invoice->name,
+				) );
+				if( true == $charge->paid ) {
+					$invoice->external_id = $charge->id;
+					$invoice->status = MS_Model_Invoice::STATUS_PAID;
+					$invoice->save();
 					$this->process_transaction( $invoice );
 				}
-				else {
-					$charge = Stripe_Charge::create( array(
-							'amount' => $invoice->total * 100, // Amount in cents!
-							'currency' => strtolower( $invoice->currency ),
-							'customer' => $customer->id,
-							'description' => $invoice->name,
-					) );
-					if( true == $charge->paid ) {
-						$invoice->external_id = $charge->id;
-						$invoice->status = MS_Model_Invoice::STATUS_PAID;
-						$invoice->save();
-						$this->process_transaction( $invoice );
-					}
-				}
 			}
-			catch( Exeption $e ) {
-			    MS_Helper_Debug::log( $e->getMessage() );
-			    $_POST['stripe_error'] = $e->getMessage();
-			    MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'payment_table', 1 );
-			} 
 		}
 		else {
-			MS_Helper_Debug::log( $e->getMessage() );
-			/** Hack to send the error message back to the gateway_form. */
-			$_POST['stripe_error'] = $e->getMessage();
-			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'payment_table', 1 );
+			throw new Exception( __( 'Stripe gateway token not found.', MS_TEXT_DOMAIN ) );
 		}
 		return $invoice;
 	}
