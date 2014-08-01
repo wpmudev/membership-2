@@ -744,6 +744,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 		
 		if( ! in_array( $status, $allowed_status ) ) {
+			$this->status = $status;
 			$status = $this->calculate_status();
 			$this->handle_status_change( $status );
 		}
