@@ -269,7 +269,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 					$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
 					if( ! empty( $move_from->id ) ) {
 						/** if allow pro rate, immediatly deactivate */
-						if( $this->pro_rate && MS_Model_Addon::is_active( MS_Model_Addon::ADDON_PRO_RATE ) ) {
+						if( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
 							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
 						}
 						/** if not, cancel it, and allow using it until expires */

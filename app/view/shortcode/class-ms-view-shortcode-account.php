@@ -41,7 +41,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<?php foreach( $this->personnal_info as $field => $title ): ?>
 					<p>
 						<label><?php echo $title; ?></label>
-						<lavel><?php echo $this->data['member']->$field;?></lavel>
+						<label><?php echo $this->data['member']->$field;?></label>
 					</p>
 				<?php endforeach;?>
 				<h2>Invoice</h2>
