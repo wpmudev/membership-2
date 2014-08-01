@@ -7,6 +7,7 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 	protected $data;
 	
 	public function to_html() {
+		$this->prepare_fields();
 		ob_start();
 		?>
 			<div class='ms-wrap'>
@@ -24,7 +25,12 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 					</tbody>
 				</table>
 				<form action="" method="post">
-					<?php wp_nonce_field( 'change_card' ); ?>
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
+					<?php
+						foreach( $this->fields as $field) {
+							MS_Helper_Html::html_input( $field );
+						} 
+					?>
 					<script
 					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 					    data-key="<?php echo $this->data['publishable_key']; ?>"
@@ -40,6 +46,22 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 			</div>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		return $html;
+	}
+	
+	private function prepare_fields() {
+	
+		$this->fields = array(
+				'gateway_id' => array(
+						'id' => 'gateway_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->data['gateway']->id,
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'update_card',
+				),
+		);
 	}
 }
