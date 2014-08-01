@@ -39,28 +39,6 @@
 class MS_Controller extends MS_Hooker {
 	
 	/**
-	 * Instance of MS_Model object
-	 *
-	 * **Note:** Could be a keyed array of MS_Model objects
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var _model
-	 */
-	private $_model;
-
-	/**
-	 * Instance of MS_View object
-	 * 
-	 * **Note:** Could be a keyed array of MS_Model objects
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var _view
-	 */
-	private $_view;
-
-	/**
 	 * Parent constuctor of all controllers.
 	 *
 	 * @since 4.0.0
@@ -76,6 +54,24 @@ class MS_Controller extends MS_Hooker {
 		do_action( 'membership_parent_controller_construct', $this );
 	}
 	
+	/**
+	 * Get action from request.
+	 *
+	 * @since 4.0.0
+	 * 
+	 * @return string
+	 */
+	public function get_action() {
+		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+		return apply_filters( 'ms_controller_get_action', $action );
+	}
+	
+	/**
+	 * Verify nonce.
+	 *
+	 * @since 4.0.0
+	 * @return bool True if verified, false otherwise.
+	 */
 	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
 		
 		$verified = false;
