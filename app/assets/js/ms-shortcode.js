@@ -1,5 +1,5 @@
 jQuery( document ).ready(function( $ ) {
-	$('#ms-shortcode-register-user-form').validate({
+	$( '#ms-shortcode-register-user-form' ).validate({
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
@@ -17,5 +17,14 @@ jQuery( document ).ready(function( $ ) {
 					'equalTo': '#password',
 				},
 			}
-		});
+	});
+	
+	$( 'input.membership_cancel' ).click( function() {
+		if( window.confirm( ms_shortcode.cancel_msg ) ) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
 });
