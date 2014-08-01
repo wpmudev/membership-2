@@ -1009,7 +1009,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$gateway = $this->get_gateway();
 				
 				/** Check for card expiration */
-				$gateway->check_card_expiration( $ms_relationship );
+				$gateway->check_card_expiration( $this );
 				
 				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
 				if( $expire->invert ) {
