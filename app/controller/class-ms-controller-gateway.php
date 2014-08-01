@@ -161,15 +161,15 @@ class MS_Controller_Gateway extends MS_Controller {
 			$gateway_id = $_POST['gateway'];
 			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
 			try {
-				$ms_relationship = $gateway->process_purchase( $ms_relationship );
+				$invoice = $gateway->process_purchase( $ms_relationship );
 
-				if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+				if( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
 					$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
 					wp_safe_redirect( $url );
 					exit;
 				}
 				else{
-					$this->add_action( 'the_content', 'purchase_succcess_content' );
+					$this->add_action( 'the_content', 'purchase_info_content' );
 				}
 			} 
 			catch ( Exception $e ) {
@@ -189,8 +189,8 @@ class MS_Controller_Gateway extends MS_Controller {
 		$wp_query->query_vars['post_type'] = 'page';
 	}
 	
-	public function purchase_succcess_content( $content ) {
-		$content = apply_filters( 'ms_controller_gateway_purchase_succcess_content', $content );
+	public function purchase_info_content( $content ) {
+		$content = apply_filters( 'ms_controller_gateway_purchase_info_content', $content );
 		return $content;
 	}
 	
