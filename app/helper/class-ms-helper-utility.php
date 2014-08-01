@@ -77,14 +77,21 @@ class MS_Helper_Utility extends MS_Helper {
 	 * 
 	 * @return string The url.
 	 */
-	public static function get_current_page_url() {
-		$current_page_url = @$_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+	public static function get_current_page_url( $force_ssl = false ) {
+		
+		$current_page_url = 'http://';
+		
+		if( $force_ssl || 'on' == @$_SERVER['HTTPS'] ) {
+			$current_page_url = 'https://';
+		}
+		
 		if ( $_SERVER['SERVER_PORT'] != '80' ) {
 			$current_page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
 		}
 		else {
 			$current_page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		}
+		
 		return apply_filters( 'ms_helper_utility_get_current_page_url', $current_page_url );
 	}
 
