@@ -90,11 +90,14 @@ class MS_Model_Gateway extends MS_Model_Option {
 		return apply_filters( 'ms_model_gateway_get_gateways', self::$gateways );
 	}
 	
-	public static function get_gateway_names( $only_active = false ) {
+	public static function get_gateway_names( $only_active = false, $include_gateway_free = false ) {
 		$gateways = self::get_gateways( $only_active );
 		$names = array();
 		foreach( $gateways as $gateway ) {
 			$names[ $gateway->id ] = $gateway->name;
+		}
+		if( ! $include_gateway_free ) {
+			unset( $names[ self::GATEWAY_FREE ] );
 		}
 		return apply_filters( 'ms_model_gateway_get_gateway_names' , $names );
 	}
@@ -142,6 +145,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => 'process_purchase',
 				),
+// 				'action' => array(
+// 						'id' => 'action',
+// 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+// 						'value' => 'signup_process',
+// 				),
 		);
 		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
 			$fields['submit'] = array(
@@ -157,11 +165,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
 			);
 		}
-		
+		$settings = MS_Model_Settings::load();
+		$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ));
 		?>
 			<tr>
 				<td class='ms-buy-now-column' colspan='2' >
-					<form method="post">
+					<form method="post" action="<?php echo $url; ?>">
 						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
 						<?php 
 							foreach( $fields as $field ) {
@@ -555,41 +564,5 @@ class MS_Model_Gateway extends MS_Model_Option {
 				'ZM' => __('ZAMBIA', MS_TEXT_DOMAIN ),
 		)
 		);
-	}
-	
-	/**
-	 * Returns user IP address.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @static
-	 * @access protected
-	 * @return string Remote IP address on success, otherwise FALSE.
-	 */
-	protected static function get_remote_ip() {
-		$flag = ! WP_DEBUG ? FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE : null;
-		$keys = array(
-				'HTTP_CLIENT_IP',
-				'HTTP_X_FORWARDED_FOR',
-				'HTTP_X_FORWARDED',
-				'HTTP_X_CLUSTER_CLIENT_IP',
-				'HTTP_FORWARDED_FOR',
-				'HTTP_FORWARDED',
-				'REMOTE_ADDR',
-		);
-	
-		$remote_ip = false;
-		foreach ( $keys as $key ) {
-			if ( array_key_exists( $key, $_SERVER ) === true ) {
-				foreach ( array_filter( array_map( 'trim', explode( ',', $_SERVER[$key] ) ) ) as $ip ) {
-					if ( filter_var( $ip, FILTER_VALIDATE_IP, $flag ) !== false ) {
-						$remote_ip = $ip;
-						break;
-					}
-				}
-			}
-		}
-	
-		return $remote_ip;
 	}
 }
