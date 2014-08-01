@@ -837,6 +837,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
 			}
 			else {
+				/** Current status to change from. */
 				switch( $this->status ) {
 					case self::STATUS_PENDING:
 						/** signup */
@@ -860,6 +861,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 						if( self::STATUS_ACTIVE == $status ) {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $this );
 						}
+						break;
 					case self::STATUS_ACTIVE:
 						if( self::STATUS_CANCELED == $status ) {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
@@ -874,7 +876,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $this );
 						}
 						break;
-						break;
 					case self::STATUS_DEACTIVATED:
 						break;
 				}
@@ -884,6 +885,35 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->save();
 		}
 		
+	}
+	
+	public function get_status_description() {
+		$desc = '';
+		switch( $this->status ) {
+			case self::STATUS_PENDING:
+				$desc = __( 'Pending payment.', MS_TEXT_DOMAIN );
+				break;
+			case self::STATUS_TRIAL:
+			case self::STATUS_ACTIVE:
+				if( ! empty( $this->expire_date ) ) {
+					$desc = __( 'Membership level expires on: ', MS_TEXT_DOMAIN ) . $this->expire_date;
+				}
+				else {
+					$desc = __( 'Permanent access.', MS_TEXT_DOMAIN );
+				}
+				break;
+			case self::STATUS_TRIAL_EXPIRED:
+			case self::STATUS_EXPIRED:
+				$desc = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) . $this->expire_date;
+				break;
+			case self::STATUS_CANCELED:
+				$desc = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $this->expire_date;
+				break;
+			case self::STATUS_DEACTIVATED:
+				$desc = __( 'Memberhship deactivated.', MS_TEXT_DOMAIN );
+				break;
+		}
+		return $desc;
 	}
 	
 	/**
