@@ -201,17 +201,9 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$ms_relationship = $this->process_transaction( $invoice );
 		}
 		
-		return $ms_relationship;
+		return $invoice;
 	}
-	
-	public function content() {
-		return '';
-	}
-	
-	public function content_error() {
-		return __( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN );
-	}
-	
+		
 	/**
 	 * Propagate membership cancelation to the gateway.
 	 *

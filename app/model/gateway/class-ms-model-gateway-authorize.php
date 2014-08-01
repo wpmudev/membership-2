@@ -335,7 +335,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		}
 		
 		$this->online_purchase( $invoice );
-
+		
+		return $invoice;
 	}
 		
 	/**

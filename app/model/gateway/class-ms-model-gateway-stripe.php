@@ -169,7 +169,8 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 			/** Hack to send the error message back to the gateway_form. */
 			$_POST['stripe_error'] = $e->getMessage();
 			MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'payment_table', 1 );
-		}				
+		}
+		return $invoice;
 	}
 	
 	/**
