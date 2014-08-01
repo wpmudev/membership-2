@@ -93,11 +93,12 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
 			);
 		}
-		$actionurl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		/** force ssl url */
+		$action_url = MS_Helper_Utility::get_current_page_url( true );
 		?>
 			<tr>
 				<td class='ms-buy-now-column' colspan='2' >
-					<form action="<?php echo $actionurl; ?>" method="post">
+					<form action="<?php echo $action_url; ?>" method="post">
 						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->membership_id}" ); ?>
 						<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
 						<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
@@ -526,7 +527,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 			// customer information
 			$aim->cust_id = $member->id;
-			$aim->customer_ip = self::get_remote_ip();
+			$aim->customer_ip = MS_Helper_Utility::get_remote_ip();
 			$aim->email = $member->email;
 	
 			// billing information
