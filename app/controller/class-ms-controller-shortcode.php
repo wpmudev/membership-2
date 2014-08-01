@@ -96,7 +96,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'ms_controller_shortcode_membership_signup_atts', 
 				shortcode_atts( 
 					array(
-						'title' => '',
 						MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP . '_text' =>  __( 'Signup', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Signup', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', MS_TEXT_DOMAIN ),
@@ -114,7 +113,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
 		}
 		
-//		MS_Helper_Debug::log($data['member']);
 		$not_in = array();		
 		/** Prepare select arguments to get the memberships user is not part of. */
 		foreach( $data['ms_relationships'] as $ms_relationship ) {
@@ -136,7 +134,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'value'   => true,
 			); 
 		}
-		MS_Helper_Debug::log($args);
 		
 		/** Retrieve memberships user is not part of, using selected args */
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
@@ -162,7 +159,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
-// 		MS_Helper_Debug::log($data);
+
 		return $view->to_html();
 	}
 	
@@ -290,7 +287,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
 			$data['ms_relationship'] = $ms_relationship;
 			$data['membership'] = $ms_relationship->get_membership();
-			$data['gateway'] = $ms_relationship->get_gateway();
+			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
 
 			$view = apply_filters( 'ms_view_shortcode_invoice', new MS_View_Shortcode_Invoice() );
 			$view->data = $data;
