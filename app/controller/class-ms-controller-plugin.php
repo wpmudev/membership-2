@@ -325,8 +325,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'jquery-validate' );
 		
-		wp_register_script( 'membership-shortcode', $plugin_url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), $version );
-		wp_enqueue_script( 'membership-shortcode' );
+		wp_register_script( 'ms-shortcode', $plugin_url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), $version );
+		wp_localize_script( 'ms-shortcode', 'ms_shortcode', array( 'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ) ) );
+		wp_enqueue_script( 'ms-shortcode' );
 		
 		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
 	}

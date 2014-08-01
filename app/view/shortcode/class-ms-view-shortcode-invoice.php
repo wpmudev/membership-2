@@ -74,7 +74,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<?php if( $invoice->discount ): ?>
 							<tr>
 								<td class='ms-title-column'>
-									<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
+									<?php _e( 'Discount', MS_TEXT_DOMAIN ); ?>
 								</td>
 								<td class='ms-price-column'>
 									<?php echo sprintf( '%s -%s', $invoice->currency, number_format( $invoice->discount, 2 ) ); ?>
