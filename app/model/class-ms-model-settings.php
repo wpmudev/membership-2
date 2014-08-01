@@ -29,8 +29,6 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	const SPECIAL_PAGE_NO_ACCESS = 'no_access';
 	const SPECIAL_PAGE_ACCOUNT = 'account';
-	const SPECIAL_PAGE_MEMBERSHIPS = 'memberships';
-	const SPECIAL_PAGE_REGISTER = 'register';
 	const SPECIAL_PAGE_WELCOME = 'welcome';
 	const SPECIAL_PAGE_SIGNUP = 'signup';
 	
@@ -95,20 +93,6 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
 	}
 	
-	public function create_page_memberships() {
-		$content = '';
-		$pagedetails = array( 'post_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 'post_name' => 'memberships', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_MEMBERSHIPS ] = $id;
-	}
-	
-	public function create_page_register() {
-		$content = '';
-		$pagedetails = array( 'post_title' => __( 'Register', MS_TEXT_DOMAIN ), 'post_name' => 'register', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_REGISTER ] = $id;
-	}
-	
 	public function create_page_welcome() {
 		$content = '';
 		$pagedetails = array( 'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ), 'post_name' => 'welcome', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
@@ -149,8 +133,6 @@ class MS_Model_Settings extends MS_Model_Option {
 		return apply_filters( 'ms_model_settings_get_special_page_types', array( 
 				self::SPECIAL_PAGE_NO_ACCESS,
 				self::SPECIAL_PAGE_ACCOUNT,
-				self::SPECIAL_PAGE_MEMBERSHIPS,
-				self::SPECIAL_PAGE_REGISTER,
 				self::SPECIAL_PAGE_WELCOME,
 				self::SPECIAL_PAGE_SIGNUP,
 			)
