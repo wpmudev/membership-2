@@ -40,7 +40,7 @@ class MS_Controller_Public extends MS_Controller {
 	
 	private $register_errors;
 	
-	private $allowed_actions = array( 'membership_signup', 'membership_move', 'membership_renew', 'membership_cancel', 'register_user' );
+	private $allowed_actions = array( 'signup_process', 'register_user' );
 	
 	/**
 	 * Prepare for Member registration.
@@ -73,7 +73,7 @@ class MS_Controller_Public extends MS_Controller {
 	 */	
 	public function process_actions() {
 		
-		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		$action = $this->get_action();
 		/** 
 		 * If $action is set, then call relevant method.
 		 * 
