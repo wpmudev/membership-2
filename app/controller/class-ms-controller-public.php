@@ -91,15 +91,6 @@ class MS_Controller_Public extends MS_Controller {
 	}
 	
 	/**
-	 * Get action from request.
-	 * 
-	 * @return string
-	 */
-	private function get_action() {
-		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
-		return apply_filters( 'ms_controller_public_get_action', $action );
-	}
-	/**
 	 * Check pages for the presence of Membership special pages.
 	 *
 	 * **Hooks Filters: **  

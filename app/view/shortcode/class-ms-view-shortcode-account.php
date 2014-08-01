@@ -44,6 +44,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						<label><?php echo $this->data['member']->$field;?></label>
 					</p>
 				<?php endforeach;?>
+				<?php do_action( 'ms_view_shortcode_account_card_info', $this->data );?>
 				<h2>Invoice</h2>
 				<table>
 					<thead>
