@@ -30,6 +30,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected static $instance;
 	
+	protected static $cim;
+	
 	protected $id = self::GATEWAY_AUTHORIZE;
 	
 	protected $name = 'Authorize.net Gateway';
@@ -49,10 +51,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	protected $log_file;
 	
 	protected $mode;
-	
-	protected $cim_profile_id;
-	
-	protected $cim_payment_profile_id;
 	
 	protected $payment_result;
 	
@@ -111,13 +109,182 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	}
 	
 	/**
+	 * Processes purchase action.
+	 *
+	 * @since 4.0
+	 *
+	 * @access public
+	 */
+	public function process_purchase( $ms_relationship ) {
+		if ( ! is_ssl() ) {
+			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
+		}
+	
+		$invoice = $ms_relationship->get_current_invoice();
+		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		
+			$member = MS_Model_Member::load( $ms_relationship->user_id );
+		
+			/** manage authorize customer profile */
+			$cim_profile_id = self::get_cim_profile_id( $member );
+			if( empty( $cim_profile_id ) ) {
+				$this->create_cim_profile( $member );
+			}
+			/** Fetch for user selected cim profile */
+			elseif( $cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
+				$response = $this->get_cim()->getCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id );
+				if ( $response->isError() ) {
+					throw new Exception( __( 'The selected payment profile is invalid, enter a new credit card', MS_TEXT_DOMAIN ) );
+				}
+			}
+			else {
+				$this->update_cim_profile( $member );
+			}
+			$this->save_card_info( $member );
+			
+			$this->online_purchase( $invoice, $member );
+		}
+		
+		return $invoice;
+	}
+	
+	/**
+	 * Request automatic payment to the gateway.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access public
+	 */
+	public function request_payment( $ms_relationship ) {
+	
+		$member = $ms_relationship->get_member();
+		$invoice = $ms_relationship->get_current_invoice();
+	
+		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		
+			try {
+				$this->online_purchase( $invoice, $member );
+			}
+			catch( Exception $e ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
+				MS_Helper_Debug::log( $e->getMessage() );
+			}
+		}
+	}
+	
+	/**
+	 * Processes online payments.
+	 *
+	 * Send to Authorize.net to process the payment immediatly.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param MS_Model_Invoice $invoice The invoice to pay.
+	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
+	 */
+	protected function online_purchase( $invoice, $member ) {
+		if ( 0 == $invoice->total ) {
+			$invoice->status = MS_Model_Invoice::STATUS_PAID;
+			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
+			$invoice->save();
+			$this->process_transaction( $invoice );
+			return $invoice;
+		}
+		$amount = number_format( $invoice->total, 2, '.', '' );
+	
+		if( $this->mode == self::MODE_SANDBOX ) {
+			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
+		}
+	
+		$cim_transaction = $this->get_cim_transaction( $member );
+		$cim_transaction->amount = $amount;
+		$cim_transaction->order->invoiceNumber = $invoice->id;
+			
+		$invoice->timestamp = time();
+		$invoice->save();
+
+		$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthCapture', $cim_transaction );
+		if ( $response->isOk() ) {
+			$transaction_response = $response->getTransactionResponse();
+			if( $transaction_response->approved ) {
+				$invoice->external_id = $response->getTransactionResponse()->transaction_id;
+				$invoice->status = MS_Model_Invoice::STATUS_PAID;
+				$invoice->save();
+					
+				$this->process_transaction( $invoice );
+			}
+			else {
+				throw new Exception( sprintf( __( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
+						$transaction_response->response_code,
+						$transaction_response->response_subcode,
+						$transaction_response->response_reason_code,
+						$transaction_response->response_reason
+				) );
+			}
+		}
+		else {
+			throw new Exception( __( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
+		}
+	
+		return $invoice;
+	}
+	
+	/**
+	 * Save card info.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param MS_Model_Member $member The member.
+	 */
+	protected function save_card_info( $member ) {
+		$cim_profile_id = self::get_cim_profile_id( $member );
+		$cim_payment_profile_id = self::get_cim_payment_profile_id( $member );
+		$profile = $this->get_cim_profile( $member );
+		MS_Helper_Debug::log($profile);
+		if( ! empty( $profile[ $cim_payment_profile_id ] ) ) {
+			$payment_profiles = $member->payment_profiles;
+			$payment_profiles['authorize']['card_exp'] =  date("Y-m-t", strtotime( "{$card->exp_year}-{$card->exp_month}-01") );
+			$payment_profiles['authorize']['card_num'] = $profile[ $cim_payment_profile_id ]['payment']['creditCard']['cardNumber'];
+			$member->payment_profiles = $payment_profiles;
+			$member->save();
+			MS_Helper_Debug::log($payment_profiles);
+		}
+	}
+	
+	/**
+	 * Check for card expiration date.
+	 *
+	 * Save event for card expire soon.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 */
+	public function check_card_expiration( $ms_relationship ) {
+	
+		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		if( ! empty( $member->payment_profiles['authorize']['card_exp'] ) ) {
+			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
+		
+			$days = MS_Helper_Period::get_period_in_days( $comm->period );
+			$interval = MS_Helper_Period::subtract_dates( $member->payment_profiles['authorize']['card_exp'], MS_Helper_Period::current_date() );
+			if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
+			}
+		}
+	}
+	
+	/**
 	 * Loads Authorize.net lib.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @access protected
 	 */
-	protected function load_authorize_lib(){
+	protected static function load_authorize_lib(){
 		require_once MS_Plugin::instance()->dir . '/lib/authorize.net/autoload.php';
 	} 
 	
@@ -131,21 +298,21 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @return AuthorizeNetCIM The instance of AuthorizeNetCIM class.
 	 */
 	protected function get_cim() {
-		static $cim = null;
 	
-		if ( !is_null( $cim ) ) {
-			return $cim;
+		if ( ! empty( self::$cim ) ) {
+			return self::$cim;
 		}
 	
-		$this->load_authorize_lib();
+		self::load_authorize_lib();
 	
 		$cim = new AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
 		$cim->setSandbox( $this->mode != self::MODE_LIVE );
 		if ( $this->log_file ) {
 			$cim->setLogFile( $this->log_file );
 		}
-	
-		return $cim;
+		self::$cim = $cim;
+		
+		return self::$cim;
 	}
 	
 	/**
@@ -156,9 +323,14 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @access protected
 	 * @param int $user_id The user Id.
 	 */
-	protected function get_cim_profile_id( $user_id ) {
-		$this->cim_profile_id = apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', get_user_meta( $user_id, self::AUTHORIZE_CIM_ID_USER_META, true ), $user_id );
-		return $this->cim_profile_id;
+	public static function get_cim_profile_id( $member ) {
+		$cim_profile_id = null;
+		
+		if( ! empty( $member->payment_profiles['authorize']['cim_profile_id'] ) ) {
+			$cim_profile_id = $member->payment_profiles['authorize']['cim_profile_id'];
+		}
+		
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', $cim_profile_id, $member->id );
 	}
 	
 	/**
@@ -168,24 +340,32 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 *
 	 * @param int $user_id The user Id.
 	 */
-	public function get_cim_payment_profile_id( $user_id ) {
-		$this->cim_payment_profile_id = apply_filters( 'ms_model_gateway_authorize_get_cim_payment_profile_id', get_user_meta( $user_id, self::AUTHORIZE_CIM_PAYMENT_PROFILE_ID_USER_META, true ), $user_id );
-		return $this->cim_payment_profile_id;
+	public static function get_cim_payment_profile_id( $member ) {
+		$cim_payment_profile_id = null;
+		
+		if( ! empty( $member->payment_profiles['authorize']['cim_payment_profile_id'] ) ) {
+			$cim_payment_profile_id = $member->payment_profiles['authorize']['cim_payment_profile_id'];
+		}
+		
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_payment_profile_id', $cim_payment_profile_id, $member->id );
 	}
 	
 	/**
-	 * Save customer information manager profile to user meta.
+	 * Save cim profile to user meta.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @access protected
-	 * @param int $user_id The user Id.
+	 * @param MS_Model_Member $member The member.
 	 */
-	protected function save_cim_profile( $user_id ) {
-		update_user_meta( $user_id, self::AUTHORIZE_CIM_ID_USER_META, $this->cim_profile_id );
-		update_user_meta( $user_id, self::AUTHORIZE_CIM_PAYMENT_PROFILE_ID_USER_META, $this->cim_payment_profile_id );
+	protected static function save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id ) {
+		$payment_profiles = $member->payment_profiles;
+		$payment_profiles['authorize']['cim_profile_id'] = $cim_profile_id;
+		$payment_profiles['authorize']['cim_payment_profile_id'] = $cim_payment_profile_id;
+		$member->payment_profiles = $payment_profiles;
+		$member->save();
 	}
-	
+		
 	/**
 	 * Get customer information manager profile.
 	 * 
@@ -193,17 +373,15 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 *
 	 * @access protected
 	 * @param int $user_id The user Id.
-	 * @param int $membership_id The membership Id.
 	 */
-	public function get_cim_profile( $user_id, $membership_id ) {
+	public function get_cim_profile( $member ) {
 
 		$cim_profiles = array();
-		$this->get_cim_profile_id( $user_id );
-		$membership = MS_Model_Membership::load( $membership_id );
+		$cim_profile_id = self::get_cim_profile_id( $member );
 		
-		if( $this->cim_profile_id ) {
+		if( $cim_profile_id ) {
 			
-			$response = $this->get_cim()->getCustomerProfile( $this->cim_profile_id );
+			$response = $this->get_cim()->getCustomerProfile( $cim_profile_id );
 			if ( $response->isOk() ) {
 				$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
 				if( is_array( $cim_profiles ) && !empty( $cim_profiles['paymentProfiles'] ) && is_array( $cim_profiles['paymentProfiles'] ) ) {
@@ -211,6 +389,9 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				}
 			}
 		}
+		
+		MS_Helper_Debug::log($cim_profiles);
+		
 		return $cim_profiles;
 	}
 	
@@ -224,24 +405,20 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 */
 	protected function create_cim_profile( $member ) {
 
-		$this->load_authorize_lib();
-	
+		self::load_authorize_lib();
 		$customer = new AuthorizeNetCustomer();
 		$customer->merchantCustomerId = $member->id;
 		$customer->email = $member->email;
 		$customer->paymentProfiles[] = $this->create_cim_payment_profile();
-	
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 		if ( $response->isError() ) {
 			throw new Exception( __( 'Payment failed due to CIM profile not created: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
 		}
 	
-		$this->cim_profile_id = $response->getCustomerProfileId();
-		$this->cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
+		$cim_profile_id = $response->getCustomerProfileId();
+		$cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
 		
-		$this->save_cim_profile( $member->id );
-		
-		return $this->cim_profile_id;
+		self::save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id );
 	}
 	
 	/**
@@ -253,17 +430,24 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @return boolean TRUE on success, otherwise FALSE.
 	 */
 	protected function update_cim_profile( $member ) {
-		$response = $this->get_cim()->createCustomerPaymentProfile( $this->cim_profile_id, $this->create_cim_payment_profile() );
+		$cim_profile_id = self::get_cim_profile_id( $member );
+		$cim_payment_profile_id = self::get_cim_payment_profile_id( $member );
+		
+		if( empty( $cim_payment_profile_id ) ) {
+			$response = $this->get_cim()->createCustomerPaymentProfile( $cim_profile_id, self::create_cim_payment_profile() );
+			MS_Helper_Debug::log($response);
+		}
+		else {
+			$response = $this->get_cim()->updateCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id, self::create_cim_payment_profile() );
+			MS_Helper_Debug::log($response);
+		}
+		
 		/** If the error is not due to a duplicate customer payment profile.*/
 		if ( $response->isError() && 'E00039' != $response->xml->messages->message->code ) {
 			throw new Exception( __( 'Payment failed due to CIM profile not updated: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
 		}
-	
-		$this->cim_profile_id = $response->getCustomerProfileId();
-		$this->cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
-		
-		$this->save_cim_profile( $member->id );
-		return true;
+			
+		self::save_cim_profile( $member, $response->getCustomerProfileId(), $response->getCustomerPaymentProfileIds() );
 	}
 	
 	/**
@@ -276,7 +460,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 */
 	protected function create_cim_payment_profile() {
 
-		$this->load_authorize_lib();
+		self::load_authorize_lib();
 	
 		$payment = new AuthorizeNetPaymentProfile();
 	
@@ -300,179 +484,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	}
 	
 	/**
-	 * Processes purchase action.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 */
-	public function process_purchase( $ms_relationship ) {
-		if ( ! is_ssl() ) {
-			wp_die( __( 'You must use HTTPS in order to do this', 'membership' ) );
-			exit;
-		}
-	
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
-		$invoice = $ms_relationship->get_current_invoice();
-	
-		$this->get_cim_profile_id( $member->id );
-		$this->cim_payment_profile_id = null;
-		/** Fetch for user selected cim profile */
-		if( $this->cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
-			$response = $this->get_cim()->getCustomerPaymentProfile( $this->cim_profile_id, $this->cim_payment_profile_id );
-			if ( $response->isError() ) {
-				$this->cim_payment_profile_id = null;
-			}
-			else {
-				$this->save_cim_profile( $member->id );
-			}
-		}
-		
-		if( ! $this->cim_profile_id ) {
-			$this->create_cim_profile( $member );
-		}
-		elseif ( empty( $this->cim_payment_profile_id ) ) {
-			$this->update_cim_profile( $member );
-		}
-		
-		$this->online_purchase( $invoice );
-		
-		return $invoice;
-	}
-		
-	/**
-	 * Processes online payments.
-	 * 
-	 * Send to Authorize.net to process the payment immediatly.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @param MS_Model_Invoice $invoice The invoice to pay.
-	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
-	 */
-	protected function online_purchase( $invoice ) {
-		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Invoice::STATUS_PAID;
-			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) ); 
-			$invoice->save();
-			$this->process_transaction( $invoice );
-			return $invoice;
-		}
-		$amount = number_format( $invoice->total, 2, '.', '' );
-		
-		if( $this->mode == self::MODE_SANDBOX ) {
-			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
-		}
-		
-		if ( ! empty( $this->cim_profile_id ) && ! empty( $this->cim_payment_profile_id ) ) {
-			$cim_transaction = $this->get_cim_transaction();
-			$cim_transaction->amount = $amount;
-			$cim_transaction->order->invoiceNumber = $invoice->id;
-			
-			$invoice->timestamp = time();
-			$invoice->save();
-				
-			$response = $this->get_cim()->createCustomerProfileTransaction( 'AuthCapture', $cim_transaction );
-			if ( $response->isOk() ) {
-				$transaction_response = $response->getTransactionResponse();
-				if( $transaction_response->approved ) {
-					$invoice->external_id = $response->getTransactionResponse()->transaction_id;
-					$invoice->status = MS_Model_Invoice::STATUS_PAID;
-					$invoice->save();
-					
-					$this->process_transaction( $invoice );
-				}
-				else {
-					throw new Exception( sprintf( __( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
-							$transaction_response->response_code,
-							$transaction_response->response_subcode,
-							$transaction_response->response_reason_code,
-							$transaction_response->response_reason
-					) );
-				}
-			} 
-			else {
-				throw new Exception( __( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
-			}
-		} 
-		else {
-			throw new Exception( __( 'Payment failed: CIM Profile not found.', MS_TEXT_DOMAIN ) );
-		}
-		
-		return $invoice;
-	}
-	
-	/**
-	 * Schedule a purchase to a future date.
-	 * 
-	 * Handles recurring payments and pay once schedule.
-	 * It is not online. 
-	 * Authorize.net gateway only process this in the following day. 
-	 *
-	 * @since 4.0.0
-	 *
-	 * @deprecated Not using ARB anymore. Cron used in conjunction with CIM.
-	 * @access protected
-	 * @param MS_Model_Invoice $invoice The invoice to pay.
-	 * @param array $period The period information to schedule.
-	 * @param optional boolean $recurring The schedule recurring information. 
-	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
-	 */
-	protected function schedule_purchase( $invoice, $period, $recurring = true ) {
-		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Invoice::STATUS_PAID;
-			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
-			$invoice->save();
-			return array( $invoice );
-		}
-		
-		$subscription = $this->get_arb_subscription();
-		$subscription->amount = number_format( $invoice->total, 2, '.', '' );
-		$subscription->startDate = $invoice->due_date;
-		/** serial ocurrency with on going subscription (no end date) = 9999 */
-		if( $recurring ) {
-			$subscription->totalOccurrences = 9999;
-		}
-		else {
-			$subscription->totalOccurrences = 1;
-		}
-		/** only days or months period types are allowed */
-		if( MS_Helper_Period::PERIOD_TYPE_YEARS == $period['period_type'] ) {
-			$subscription->intervalLength = $period['period_unit'] * 12;
-			$subscription->intervalUnit = MS_Helper_Period::PERIOD_TYPE_MONTHS;
-		}
-		else {
-			$subscription->intervalLength = $period['period_unit'];
-			$subscription->intervalUnit = $period['period_type'];
-		}
-		$subscription->name = $invoice->name;
-		$subscription->invoiceNumber = $invoice->invoice_number;
-		
-		$arb = $this->get_arb();
-		$response = $arb->createSubscription( $subscription );
-		
-		$external_id = $invoice->external_id;
-		$external_id['arb'] = $response->getSubscriptionId();
-		$invoice->external_id = $external_id;
-		
-		if( $this->mode == self::MODE_SANDBOX ) {
-			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
-		}
-		$invoice->gateway_id = $this->id;
-		
-		$invoice->save();
-
-		if( ! $response->isOk() ) {
-			$invoice->add_notes( 'Error: '. $response->getMessageText() );
-			$invoice->save();
-			throw new Exception( $response->getMessageText() );
-		}
-
-		return $invoice;			
-	}
-	
-	/**
 	 * Initializes and returns Authorize.net CIM transaction object.
 	 *
 	 * @since 4.0.0
@@ -480,144 +491,18 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * @access protected
 	 * @return AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
 	 */
-	protected function get_cim_transaction() {
-		$this->load_authorize_lib();
+	protected function get_cim_transaction( $member ) {
+		self::load_authorize_lib();
 	
+		$cim_profile_id = self::get_cim_profile_id( $member );
+		$cim_payment_profile_id = self::get_cim_payment_profile_id( $member );
+		if( empty( $cim_profile_id ) || empty( $cim_payment_profile_id ) ) {
+			throw new Exception( __( 'CIM Payment profile not found', MS_TEXT_DOMAIN ) );
+		}
 		$transaction = new AuthorizeNetTransaction();
-		$transaction->customerProfileId = $this->cim_profile_id;
-		$transaction->customerPaymentProfileId = $this->cim_payment_profile_id;
+		$transaction->customerProfileId = $cim_profile_id;
+		$transaction->customerPaymentProfileId = $cim_payment_profile_id;
 	
 		return $transaction;
-	}
-	
-	/**
-	 * Initializes and returns AuthorizeNetAIM object.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @staticvar AuthorizeNetAIM $aim The instance of AuthorizeNetAIM class.
-	 * @param boolean $refresh Determines whether we need to refresh $aim object or not.
-	 * @param boolean $pre_fill Determines whether we need to pre fill AIM object with posted data or not.
-	 * @return AuthorizeNetAIM The instance of AuthorizeNetAIM class.
-	 */
-	protected function get_aim( $refresh = false, $pre_fill = true ) {
-		static $aim = null;
-	
-		if ( ! $refresh && !is_null( $aim ) ) {
-			return $aim;
-		}
-	
-		$this->load_authorize_lib();
-	
-		// create new AIM
-		$aim = new AuthorizeNetAIM( $this->api_login_id, $this->api_transaction_key );
-		$aim->setSandbox( $this->mode != self::MODE_LIVE );
-		if ( $this->log_file ) {
-			$aim->setLogFile( $this->log_file );
-		}
-	
-		if ( $pre_fill ) {
-			$member = MS_Model_Member::get_current_member();
-			// card information
-			$aim->card_num = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-			$aim->card_code = trim( filter_input( INPUT_POST, 'card_code' ) );
-			$aim->exp_date = sprintf( '%02d/%02d', filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), -2 ) );
-			$aim->duplicate_window = MINUTE_IN_SECONDS;
-	
-			// customer information
-			$aim->cust_id = $member->id;
-			$aim->customer_ip = MS_Helper_Utility::get_remote_ip();
-			$aim->email = $member->email;
-	
-			// billing information
-			$aim->first_name = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
-			$aim->last_name = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
-			$aim->company = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
-			$aim->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
-			$aim->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
-			$aim->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
-			$aim->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
-			$aim->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
-			$aim->phone = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
-		}
-	
-		return $aim;
-	}
-	
-	/**
-	 * Initializes and returns AuthorizeNetARB object.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @return AuthorizeNetARB The instance of AuthorizeNetARB class.
-	 */
-	protected function get_arb() {
-	
-		$this->load_authorize_lib();
-		
-		// create new AIM
-		$arb = new AuthorizeNetARB( $this->api_login_id, $this->api_transaction_key );
-		$arb->setSandbox( $this->mode != self::MODE_LIVE );
-		if ( $this->log_file ) {
-			$arb->setLogFile( $this->log_file );
-		}
-			
-		return $arb;
-	}
-	
-	/**
-	 * Initializes and returns AuthorizeNet_Subscription object.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @return AuthorizeNet_Subscription The instance of AuthorizeNet_Subscription class.
-	 */
-	protected function get_arb_subscription() {
-
-		$this->load_authorize_lib();
-		
-		$member = MS_Model_Member::get_current_member();
-		
-		// create new subscription
-		$subscription = new AuthorizeNet_Subscription();
-		$subscription->customerId = $member->id;
-		$subscription->customerEmail = $member->email;
-		$subscription->customerPhoneNumber = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
-	
-		// card information
-		$subscription->creditCardCardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-		$subscription->creditCardCardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
-		$subscription->creditCardExpirationDate = sprintf( '%04d-%02d', filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ) );
-	
-		// billing information
-		$subscription->billToFirstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
-		$subscription->billToLastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
-		$subscription->billToCompany = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
-		$subscription->billToAddress = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
-		$subscription->billToCity = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
-		$subscription->billToState = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
-		$subscription->billToZip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
-		$subscription->billToCountry = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
-	
-		return $subscription;
-	}
-	
-	public function request_payment( $ms_relationship ) {
-
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
-		$invoice = $ms_relationship->get_current_invoice();
-		
-		$this->get_cim_profile_id( $member->id );
-		$this->get_cim_payment_profile_id( $member->id );
-		
-		try {
-			$this->online_purchase( $invoice );
-		}
-		catch( Exception $e ) {
-			MS_Helper_Debug::log( $e->getMessage() );
-		}
 	}
 }
