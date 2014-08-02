@@ -172,10 +172,10 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 */
 	public function request_payment( $ms_relationship ) {
 	
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		$member = $ms_relationship->get_member();
 		$invoice = $ms_relationship->get_current_invoice();
 	
-		if( MS_Model_Invoice::STATUS_PAID != $invoice->status && ! $this->manual_payment ) { 
+		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) { 
 			try {
 				$this->load_stripe_lib();
 				
@@ -205,6 +205,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 				}
 			}
 			catch( Exception $e ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
 		}
@@ -260,7 +261,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	}
 	
 	/**
-	 * Save Stripe customer id to user meta.
+	 * Save card info to user meta.
 	 *
 	 * @since 4.0.0
 	 *
@@ -276,10 +277,17 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		$payment_profiles['stripe']['card_num'] = $card->last4;
 		$member->payment_profiles = $payment_profiles;
 		$member->save();
-		
-		MS_Helper_Debug::log($payment_profiles);
 	}
 	
+	/**
+	 * Add card info to strip customer profile.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param MS_Model_Member $member The member.
+	 * @param strin $token The stripe card token.
+	 */
 	public function add_card( $member, $token ) {
 		$this->load_stripe_lib();
 
@@ -327,12 +335,14 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	public function check_card_expiration( $ms_relationship ) {
 
 		$member = MS_Model_Member::load( $ms_relationship->user_id );
-		$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
-		
-		$days = MS_Helper_Period::get_period_in_days( $comm->period );
-		$interval = MS_Helper_Period::subtract_dates( $member->payment_profiles['stripe']['card_exp'], MS_Helper_Period::current_date() );
-		if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
-			MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
+		if( ! empty( $member->payment_profiles['stripe']['card_exp'] ) ) {
+			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
+			
+			$days = MS_Helper_Period::get_period_in_days( $comm->period );
+			$interval = MS_Helper_Period::subtract_dates( $member->payment_profiles['stripe']['card_exp'], MS_Helper_Period::current_date() );
+			if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
+			}
 		}
 	}
 	
@@ -349,6 +359,12 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		Stripe::setApiKey( $secret_key );
 	}
 	
+	/**
+	 * Get Stripe publishable key.
+	 *
+	 * @since 4.0.0
+	 *
+	 */
 	public function get_publishable_key() {
 		$publishable_key = null;
 		if( self::MODE_LIVE == $this->mode ) {
@@ -360,6 +376,12 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		return $publishable_key;
 	}
 	
+	/**
+	 * Get Stripe secret key.
+	 *
+	 * @since 4.0.0
+	 *
+	 */
 	protected function get_secret_key() {
 		$secret_key = null;
 		if( self::MODE_LIVE == $this->mode ) {
