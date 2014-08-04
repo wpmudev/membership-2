@@ -239,37 +239,12 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$cim_profile_id = $this->get_cim_profile_id( $member );
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 		$profile = $this->get_cim_profile( $member );
-		MS_Helper_Debug::log($profile);
+
 		if( ! empty( $profile['customerPaymentProfileId'] ) && $cim_payment_profile_id == $profile['customerPaymentProfileId'] ) {
 			$exp_year =  filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT );
 			$exp_month = substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 );
 			$member->set_gateway_profile( $this->id, 'card_exp', date("Y-m-t", strtotime( "{$exp_year}-{$exp_month}-01") ) );
-			$member->set_gateway_profile( $this->id, 'card_num', str_replace( 'XXXX', '****', $profile['payment']['creditCard']['cardNumber'] ) );
-		}
-	}
-
-	/**
-	 * Check for card expiration date.
-	 *
-	 * Save event for card expire soon.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
-	 */
-	public function check_card_expiration( $ms_relationship ) {
-	
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
-		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
-		if( ! empty( $card_exp ) ) {
-			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
-		
-			$days = MS_Helper_Period::get_period_in_days( $comm->period );
-			$interval = MS_Helper_Period::subtract_dates( $card_exp, MS_Helper_Period::current_date() );
-			if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
-			}
+			$member->set_gateway_profile( $this->id, 'card_num', str_replace( 'XXXX', '', $profile['payment']['creditCard']['cardNumber'] ) );
 		}
 	}
 	
