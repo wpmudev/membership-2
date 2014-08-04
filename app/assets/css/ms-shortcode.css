@@ -119,3 +119,8 @@ label.ms-validation-error {
 .ms-login-form input[type="checkbox"] {
 	float: none;
 }
+
+/** account */
+.ms-card-info-wrapper {
+	margin: 20px 0;
+}

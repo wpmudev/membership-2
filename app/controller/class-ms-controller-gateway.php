@@ -118,7 +118,6 @@ class MS_Controller_Gateway extends MS_Controller {
 						do_action( 'ms_controller_public_signup_gateway_form', $this );
 					}
 					elseif( ! empty( $_POST['ms_relationship_id'] ) && $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
-						MS_Helper_Debug::log("uipdate");
 						$gateway->update_cim_profile( $member );
 						$gateway->save_card_info( $member );
 						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
