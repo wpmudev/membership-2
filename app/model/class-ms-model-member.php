@@ -43,7 +43,13 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $password2;
 	
+	/**
+	 * @deprecated
+	 * @var unknown
+	 */
 	protected $payment_profiles;
+	
+	protected $gateway_profiles;
 	
 	protected static $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
 	
@@ -446,6 +452,27 @@ class MS_Model_Member extends MS_Model {
 	public function is_valid() {
 		return ( $this->id > 0 );
 	}
+	
+	public function get_gateway_profile( $gateway, $field = null ) {
+		if( empty( $field ) ) {
+			if( ! isset( $this->gateway_profiles[ $gateway ] ) ) {
+				$this->gateway_profiles[ $gateway ] = array();
+			}
+			return $this->gateway_profiles[ $gateway ];
+				
+		}
+		else {
+			if( ! isset( $this->gateway_profiles[ $gateway ][ $field ] ) ) {
+				$this->gateway_profiles[ $gateway ][ $field ] = '';
+			}
+			return $this->gateway_profiles[ $gateway ][ $field ];
+		}
+	}
+
+	public function set_gateway_profile( $gateway, $field, $value ) {
+		$this->gateway_profiles[ $gateway ][ $field ] = $value;
+	}
+
 	/**
 	 * Set specific property.
 	 *
