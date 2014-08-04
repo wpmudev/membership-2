@@ -126,16 +126,16 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 			$token = $_POST['stripeToken'];
 			$this->load_stripe_lib();
 			
-			$customer = self::get_stripe_customer( $member );
+			$customer = $this->get_stripe_customer( $member );
 			if( empty( $customer ) ) {
 				$customer = Stripe_Customer::create( array(
 						'card' => $token,
 						'email' => $member->email,
 				) );
-				self::save_customer_id( $member, $customer->id );
+				$this->save_customer_id( $member, $customer->id );
 			}
 			else {
-				self::add_card( $member, $token );
+				$this->add_card( $member, $token );
 				$customer->save();
 			}
 			
@@ -179,7 +179,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 			try {
 				$this->load_stripe_lib();
 				
-				$customer = self::get_stripe_customer( $member );
+				$customer = $this->get_stripe_customer( $member );
 				if( ! empty( $customer ) ) {
 					if( 0 == $invoice->total ) {
 						$this->process_transaction( $invoice );
@@ -219,8 +219,8 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access protected
 	 * @param MS_Model_Member $member The member.
 	 */
-	protected static function get_stripe_customer( $member ) {
-		$customer_id = self::get_customer_id( $member );
+	protected function get_stripe_customer( $member ) {
+		$customer_id = $this->get_customer_id( $member );
 		$customer = null;
 		if( ! empty( $customer_id ) ) {
 			$customer = Stripe_Customer::retrieve( $customer_id );
@@ -236,12 +236,8 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access protected
 	 * @param MS_Model_Member $member The member.
 	 */
-	protected static function get_customer_id( $member ) {
-	
-		$customer_id = null;
-		if( ! empty( $member->payment_profiles['stripe']['customer_id'] ) ) {
-			$customer_id = $member->payment_profiles['stripe']['customer_id'];
-		} 
+	protected function get_customer_id( $member ) {
+		$customer_id = $member->get_gateway_profile( $this->id, 'customer_id' );
 		return apply_filters( 'ms_model_gateway_stripe_get_customer_id', $customer_id );
 	}
 	
@@ -253,10 +249,8 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access protected
 	 * @param MS_Model_Member $member The member.
 	 */
-	protected static function save_customer_id( $member, $customer_id ) {
-		$payment_profiles = $member->payment_profiles;
-		$payment_profiles['stripe']['customer_id'] = $customer_id;
-		$member->payment_profiles = $payment_profiles;
+	protected function save_customer_id( $member, $customer_id ) {
+		$member->set_gateway_profile( $this->id, 'customer_id', $customer_id );
 		$member->save();
 	}
 	
@@ -268,14 +262,13 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @access protected
 	 * @param MS_Model_Member $member The member.
 	 */
-	protected static function save_card_info( $member ) {
-		$customer = self::get_stripe_customer( $member );
+	protected function save_card_info( $member ) {
+		$customer = $this->get_stripe_customer( $member );
 		$card = $customer->cards->retrieve( $customer->default_card );
 
-		$payment_profiles = $member->payment_profiles;
-		$payment_profiles['stripe']['card_exp'] =  date("Y-m-t", strtotime( "{$card->exp_year}-{$card->exp_month}-01") );
-		$payment_profiles['stripe']['card_num'] = $card->last4;
-		$member->payment_profiles = $payment_profiles;
+		$member->set_gateway_profile( $this->id, 'card_exp', date("Y-m-t", strtotime( "{$card->exp_year}-{$card->exp_month}-01") ) );
+		$member->set_gateway_profile( $this->id, 'card_num', $card->last4 );
+		
 		$member->save();
 	}
 	
@@ -291,60 +284,13 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	public function add_card( $member, $token ) {
 		$this->load_stripe_lib();
 
-		$customer = self::get_stripe_customer( $member );
+		$customer = $this->get_stripe_customer( $member );
 		$card = $customer->cards->create( array( 'card' => $token ) );
 		$customer->default_card = $card->id;
 		$customer->save();
-		self::save_card_info( $member );
+		$this->save_card_info( $member );
 	}
-	
-	/**
-	 * Get gateway profile for member.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @param MS_Model_Member $member The member.
-	 */
-	public static function get_gateway_profile_info( $member ) {
-		$payment_profiles = $member->payment_profiles;
-		if( empty( $payment_profiles['stripe']['customer_id'] ) ) {
-			$payment_profiles['stripe']['customer_id'] = '';
-		}
-		if( empty( $payment_profiles['stripe']['card_exp'] ) ) {
-			$payment_profiles['stripe']['card_exp'] = '';
-		}
-		if( empty( $payment_profiles['stripe']['card_num'] ) ) {
-			$payment_profiles['stripe']['card_num'] = '';
-		}
-		$member->payment_profiles = $payment_profiles;
-		$member->save();
-		return $member->payment_profiles['stripe'];
-	}
-	
-	/**
-	 * Check for card expiration date.
-	 * 
-	 * Save event for card expire soon.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
-	 */
-	public function check_card_expiration( $ms_relationship ) {
 
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
-		if( ! empty( $member->payment_profiles['stripe']['card_exp'] ) ) {
-			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
-			
-			$days = MS_Helper_Period::get_period_in_days( $comm->period );
-			$interval = MS_Helper_Period::subtract_dates( $member->payment_profiles['stripe']['card_exp'], MS_Helper_Period::current_date() );
-			if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
-			}
-		}
-	}
 	
 	/**
 	 * Load Stripe lib.
