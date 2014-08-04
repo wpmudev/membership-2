@@ -11,7 +11,7 @@ class MS_View_Gateway_Authorize_Card extends MS_View {
 		$this->prepare_fields();
 		ob_start();
 		?>
-			<div class='ms-wrap'>
+			<div class='ms-wrap ms-card-info-wrapper'>
 				<h2><?php echo __( 'Authorize credit card info', MS_TEXT_DOMAIN ); ?> </h2>
 				<table class="form-table">
 					<tbody>

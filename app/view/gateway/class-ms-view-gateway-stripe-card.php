@@ -10,8 +10,8 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 		$this->prepare_fields();
 		ob_start();
 		?>
-			<div class='ms-wrap'>
-				<h2><?php echo __( 'Credit card info', MS_TEXT_DOMAIN ); ?> </h2>
+			<div class='ms-wrap ms-card-info-wrapper'>
+				<h2><?php echo __( 'Stripe credit card info', MS_TEXT_DOMAIN ); ?> </h2>
 				<table class="form-table">
 					<tbody>
 						<tr>
@@ -39,6 +39,7 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 					    data-description="<?php echo __( 'Just change card', MS_TEXT_DOMAIN ); ?>"
 					    data-panel-label="<?php echo __( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
 					    data-email="<?php echo $this->data['member']->email; ?>"
+					    data-label="<?php echo __( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
 					    >
 				  	</script>
 				</form>
@@ -52,8 +53,8 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 	private function prepare_fields() {
 	
 		$this->fields = array(
-				'gateway_id' => array(
-						'id' => 'gateway_id',
+				'gateway' => array(
+						'id' => 'gateway',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['gateway']->id,
 				),
