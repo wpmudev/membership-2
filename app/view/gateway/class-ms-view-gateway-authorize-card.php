@@ -12,7 +12,7 @@ class MS_View_Gateway_Authorize_Card extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-wrap ms-card-info-wrapper'>
-				<h2><?php echo __( 'Authorize credit card info', MS_TEXT_DOMAIN ); ?> </h2>
+				<h2><?php echo __( 'Authorize.net credit card info', MS_TEXT_DOMAIN ); ?> </h2>
 				<table class="form-table">
 					<tbody>
 						<tr>
