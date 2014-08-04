@@ -84,6 +84,11 @@ class MS_View_Gateway_Authorize extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['ms_relationship_id'],
 				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->data['action'],
+				),
 				'step' => array(
 						'id' => 'step',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -199,13 +204,10 @@ class MS_View_Gateway_Authorize extends MS_View {
 		foreach ( $cim_profiles as $index => $profile ) {
 			if ( is_array( $profile ) && ! empty( $profile['customerPaymentProfileId'] ) ) {
 				$options[ $profile['customerPaymentProfileId'] ] =	esc_html( sprintf(
-						"%s %s's - XXXXXXX%s - %s, %s, %s",
+						"%s %s's - XXXXXXX%s ",
 						$profile['billTo']['firstName'],
 						$profile['billTo']['lastName'],
-						$profile['payment']['creditCard']['cardNumber'],
-						! empty( $profile['billTo']['address'] ) ? $profile['billTo']['address'] : '',
-						! empty( $profile['billTo']['city'] ) ? $profile['billTo']['city'] : '',
-						! empty( $profile['billTo']['country'] ) ? $profile['billTo']['country'] : ''
+						$profile['payment']['creditCard']['cardNumber']
 				) );
 				if( ! $first_key ) {
 					$first_key = $profile['customerPaymentProfileId'];
