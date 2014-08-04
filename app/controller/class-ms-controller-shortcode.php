@@ -251,7 +251,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			foreach( $data['member']->membership_relationships as $ms_relationship ) {
 				$data['membership'][] = $ms_relationship->get_membership();
 				$gateway = $ms_relationship->get_gateway();
-				$data['gateway'] = $gateway;
+				$data['gateway'][ $ms_relationship->id ] = $gateway;
 			}
 		}
 		$data['invoices'] = MS_Model_Invoice::get_invoices( array( 
