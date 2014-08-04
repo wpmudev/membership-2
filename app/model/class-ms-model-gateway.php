@@ -235,8 +235,29 @@ class MS_Model_Gateway extends MS_Model_Option {
 		
 	}
 	
+	/**
+	 * Check for card expiration date.
+	 * 
+	 * Save event for card expire soon.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @access protected
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 */
 	public function check_card_expiration( $ms_relationship ) {
+
+		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
+		if( ! empty( $card_exp ) ) {
+			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
 		
+			$days = MS_Helper_Period::get_period_in_days( $comm->period );
+			$interval = MS_Helper_Period::subtract_dates( $card_exp, MS_Helper_Period::current_date() );
+			if( $interval->invert || ( ! $interval->invert && $days == $interval->days ) ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
+			}
+		}
 	}
 	
 	/**
