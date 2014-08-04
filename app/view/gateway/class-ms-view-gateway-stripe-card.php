@@ -15,8 +15,8 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 				<table class="form-table">
 					<tbody>
 						<tr>
-							<td><?php _e( 'Card Number', MS_TEXT_DOMAIN ); ?></td>
-							<td><?php _e( 'Expiration date', MS_TEXT_DOMAIN ); ?></td>
+							<th><?php _e( 'Card Number', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Card Expiration date', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
 						<tr>
 							<td><?php echo '**** **** **** '. $this->data['stripe']['card_num']; ?></td>
@@ -39,7 +39,7 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 					    data-description="<?php echo __( 'Just change card', MS_TEXT_DOMAIN ); ?>"
 					    data-panel-label="<?php echo __( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
 					    data-email="<?php echo $this->data['member']->email; ?>"
-					    data-label="<?php echo __( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
+					    data-label="<?php echo __( 'Change card number', MS_TEXT_DOMAIN ); ?>"
 					    >
 				  	</script>
 				</form>
