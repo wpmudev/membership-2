@@ -20,7 +20,9 @@ class MS_View_Shortcode_Account extends MS_View {
 						<tr>
 							<th><?php _e( 'Membership name', MS_TEXT_DOMAIN );?></th>
 							<th><?php _e( 'Status', MS_TEXT_DOMAIN );?></th>
-							<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN );?></th>
+							<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ):  ?>
+								<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN );?></th>
+							<?php endif; ?>
 							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN );?></th>
 						</tr>
 						<?php foreach( $this->data['membership'] as $membership ):
@@ -29,7 +31,9 @@ class MS_View_Shortcode_Account extends MS_View {
 							<tr>
 								<td><?php echo $membership->name; ?></td>
 								<td><?php echo $ms_relationship->status; ?></td>
-								<td><?php echo ( $ms_relationship->trial_expire_date ) ? $ms_relationship->trial_expire_date : __( 'No trial', MS_TEXT_DOMAIN ); ?></td>
+								<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ):  ?>
+									<td><?php echo ( $ms_relationship->trial_expire_date ) ? $ms_relationship->trial_expire_date : __( 'No trial', MS_TEXT_DOMAIN ); ?></td>
+								<?php endif; ?>
 								<td><?php echo $ms_relationship->expire_date; ?></td>
 							</tr>
 						<?php endforeach;?>
