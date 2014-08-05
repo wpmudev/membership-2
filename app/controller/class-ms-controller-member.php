@@ -329,7 +329,7 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		/** Members list */
 		else {
-			wp_enqueue_script( 'ms_view_member_ui' );
+			wp_enqueue_script( 'ms-radio-slider' );
 			wp_enqueue_script( 'ms-view-members-list', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-list.js', null, MS_Plugin::instance()->version );
 		}
 				

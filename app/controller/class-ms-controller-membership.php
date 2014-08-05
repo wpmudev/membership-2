@@ -604,7 +604,7 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		else {
 			/* Toggle Button Behaviour */
-			wp_enqueue_script( 'ms_view_member_ui' );				
+			wp_enqueue_script( 'ms-radio-slider' );				
 		}
 	}
 	

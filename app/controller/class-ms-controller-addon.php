@@ -243,7 +243,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'ms_view_member_ui' );		
+		wp_enqueue_script( 'ms-radio-slider' );		
 	}
 		
 }

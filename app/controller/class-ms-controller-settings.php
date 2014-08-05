@@ -171,7 +171,7 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Admin bar enable request.
 				 */
-				if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) && ! empty( $_GET['setting'] ) ) {
+				if( ! empty( $_GET['action'] ) && ! empty( $_GET['setting'] ) && $this->verify_nonce( $_GET['action'], 'GET' ) ) {
 					$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
 				}
@@ -435,11 +435,12 @@ class MS_Controller_Settings extends MS_Controller {
 	 */		
 	public function enqueue_scripts() {
 		if( 'gateway' == $this->active_tab ) {
-			wp_enqueue_script( 'ms_view_member_ui' );
+			wp_enqueue_script( 'ms-radio-slider' );
 		}
 		if( 'general' == $this->active_tab ) {
 			wp_register_script( 'ms-view-settings', MS_Plugin::instance()->url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), MS_Plugin::instance()->version );
 			wp_enqueue_script( 'ms-view-settings' );
+			wp_enqueue_script( 'ms-radio-slider' );
 		}		
 	}
 }

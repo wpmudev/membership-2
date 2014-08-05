@@ -305,7 +305,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$version = MS_Plugin::instance()->version;
 		
 		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
-		wp_register_script( 'ms_view_member_ui', $plugin_url. 'app/assets/js/ms-view-member-ui.js', null, $version );
+		wp_register_script( 'ms-radio-slider', $plugin_url. 'app/assets/js/ms-radio-slider.js', null, $version );
 
 		wp_register_script( 'ms-tooltips', $plugin_url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-tooltips' );
