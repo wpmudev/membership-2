@@ -165,10 +165,19 @@ class MS_Controller_Gateway extends MS_Controller {
 					$view = apply_filters( 'ms_view_gateway_authorize', new MS_View_Gateway_Authorize() );
 					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Model_Gateway_Authorize::load() );
 					$data['countries'] = $gateway->get_country_codes();
-					$data['cim_profiles'] = $gateway->get_cim_profile( $member );
+					
+					$data['action'] = $this->get_action();
+					/** Only new card option available on update card action.*/
+					if( 'update_card' == $this->get_action() ) {
+						$data['cim_profiles'] = array();
+					}
+					/** show existing credit card. */
+					else {
+						$data['cim_profiles'] = $gateway->get_cim_profile( $member );
+					}
+						
 					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $member );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
-					$data['action'] = ! empty( $_POST['action'] ) ? $_POST['action']: '';
 					break;
 				default:
 					break;
