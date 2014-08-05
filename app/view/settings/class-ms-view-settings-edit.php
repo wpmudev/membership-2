@@ -33,9 +33,6 @@
  */
 class MS_View_Settings_Edit extends MS_View {
 
-	const COMM_SECTION = 'comm_section';
-	const PAGE_SECTION = 'page_section';
-	
 	protected $model;
 	
 	protected $fields;
@@ -103,7 +100,9 @@ class MS_View_Settings_Edit extends MS_View {
 							<?php MS_Helper_Html::html_input( $this->fields['default_membership_enabled'] ); ?>
 						</div>
 					</div>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_general' ) );?>
+					<?php 
+						//MS_Helper_Html::html_submit( array( 'id' => 'submit_general' ) );
+					?>
 				</form>
 			</div>
 		</div>
@@ -117,12 +116,24 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
 						'value' => $this->model->plugin_enabled,
+						'url' => wp_nonce_url( add_query_arg( array(
+									'action' => 'toggle_activation',
+									'setting' => 'plugin_enabled'
+								) ),
+								'toggle_activation'
+						),
 				),
 				'default_membership_enabled' => array(
 						'id' => 'default_membership_enabled',
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable default membership to logged in users without any membership.', MS_TEXT_DOMAIN ),
 						'value' => $this->model->default_membership_enabled,
+						'url' => wp_nonce_url( add_query_arg( array(
+								'action' => 'toggle_activation',
+								'setting' => 'default_membership_enabled'
+								) ),
+								'toggle_activation'
+						),
 				),
 				'action' => array(
 						'id' => 'action',
