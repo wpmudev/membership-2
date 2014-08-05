@@ -54,60 +54,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $payment_result;
 	
-	public function purchase_button( $ms_relationship = false ) {
-		$membership = $ms_relationship->get_membership();
-		if( 0 == $membership->price ) {
-			return;
-		}
-		
-		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'ms_relationship_id' => array(
-						'id' => 'ms_relationship_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $ms_relationship->id,
-				),
-				'step' => array(
-						'id' => 'step',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'gateway_form',
-				),
-		);
-		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-					'value' =>  $this->pay_button_url,
-			);
-		}
-		else {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
-			);
-		}
-		/** force ssl url */
-		$action_url = MS_Helper_Utility::get_current_page_url( true );
-		?>
-			<tr>
-				<td class='ms-buy-now-column' colspan='2' >
-					<form action="<?php echo $action_url; ?>" method="post">
-						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->membership_id}" ); ?>
-						<?php MS_Helper_Html::html_input( $fields['gateway'] ); ?>
-						<?php MS_Helper_Html::html_input( $fields['ms_relationship_id'] ); ?>
-						<?php MS_Helper_Html::html_input( $fields['step'] ); ?>
-						<?php MS_Helper_Html::html_input( $fields['submit'] ); ?>
-					</form>
-				</td>
-			</tr>
-		<?php 
-	}
-	
 	/**
 	 * Processes purchase action.
 	 *

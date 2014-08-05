@@ -36,11 +36,4 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $active = true;
 	
-	public function purchase_button( $ms_relationship = false ) {
-		$membership = $ms_relationship->get_membership();
-		if( 0 != $membership->price ) {
-			return;
-		}
-		parent::purchase_button( $ms_relationship );
-	}
 }

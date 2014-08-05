@@ -49,68 +49,6 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	protected $mode;
 	
 	/**
-	 * Render purchase button.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 */
-	public function purchase_button( $ms_relationship ) {
-		$membership = $ms_relationship->get_membership();
-		if( 0 == $membership->price ) {
-			return;
-		}
-		
-		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'ms_relationship_id' => array(
-						'id' => 'ms_relationship_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $ms_relationship->id,
-				),
-				'step' => array(
-						'id' => 'step',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'process_purchase',
-				),
-		);
-		$invoice = $ms_relationship->get_current_invoice();
-		$member = MS_Model_Member::get_current_member();
-		
-		$publishable_key = $this->get_publishable_key();
-		
-		?>
-			<tr>
-				<td class='ms-buy-now-column' colspan='2' >
-					<form action="" method="post">
-						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-						<?php 
-							foreach( $fields as $field ) {
-								MS_Helper_Html::html_input( $field ); 
-							}
-						?>
-						<script
-						    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-						    data-key="<?php echo $publishable_key; ?>"
-						    data-amount="<?php echo $invoice->total * 100; //amount in cents ?>"
-						    data-name="<?php echo bloginfo( 'name' ); ?>"
-						    data-description="<?php echo $invoice->description; ?>"
-						    data-currency="<?php echo $invoice->currency; ?>"
-						    data-panel-label="<?php echo $this->pay_button_url; ?>"
-						    data-email="<?php echo $member->email; ?>"
-						    >
-					  	</script>
-					</form>
-				</td>
-			</tr>
-		<?php
-	}
-
-	/**
 	 * Processes purchase action.
 	 *
 	 * @since 4.0

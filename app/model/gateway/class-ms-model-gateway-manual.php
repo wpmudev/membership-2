@@ -45,14 +45,6 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		}
 	}
 	
-	public function purchase_button( $ms_relationship = false ) {
-		$membership = $ms_relationship->get_membership();
-		if( 0 == $membership->price ) {
-			return;
-		}
-		parent::purchase_button( $ms_relationship );
-	}
-		
 	public function purchase_info_content() {
 		if( empty( $this->payment_info ) ) {
 			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
