@@ -69,6 +69,11 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => '_xclick-subscriptions',
 				),
+				'bn' => array(
+						'id' => 'bn',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'incsub_SP',
+				),
 				'item_name' => array(
 						'id' => 'item_name',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
