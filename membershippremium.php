@@ -106,8 +106,6 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] = "app/view/class-ms-view-admin-bar.php";
-	$overrides['MS_View_Gateway_Authorize_Card'] = "app/view/gateway/class-ms-view-gateway-authorize-card.php";
-	$overrides['MS_View_Gateway_Stripe_Card'] = "app/view/gateway/class-ms-view-gateway-stripe-card.php";
 	$overrides['MS_View_Settings_Gateway_Authorize'] =  "app/view/settings/class-ms-view-settings-gateway-authorize.php";
 	$overrides['MS_View_Settings_Gateway_Manual'] =  "app/view/settings/class-ms-view-settings-gateway-manual.php";
 	$overrides['MS_View_Settings_Gateway_Paypal'] =  "app/view/settings/class-ms-view-settings-gateway-paypal.php";
@@ -135,7 +133,6 @@ function membership_class_file_override( $file ) {
 
 	/** Override all list-table paths. */
 	$file = str_replace( 'helper/list/table', 'helper/list-table', $file );
-
 	return $file;
 }
 add_filter( 'membership_class_file_override', 'membership_class_file_override' );

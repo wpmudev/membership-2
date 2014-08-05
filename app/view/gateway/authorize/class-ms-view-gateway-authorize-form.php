@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Gateway_Authorize extends MS_View {
+class MS_View_Gateway_Authorize_Form extends MS_View {
 
 	protected $fields = array();
 	
