@@ -2,17 +2,20 @@ jQuery( document ).ready( function( $ ) {
 
 	$( '.ms-radio-slider' ).click( function() {
 		var object = this;
-		var child = $( object ).find(".toggle a").first();
-        var value = child.attr("href");
+		var child = $( object ).find( ".toggle a" ).first();
+        var value = child.attr( "href" );
 		
-		if ( !$( object ).hasClass('processing') ) {
+		if ( ! $( object ).hasClass( 'processing' ) ) {
 			
-			$( object ).addClass('processing');
+			$( object ).addClass( 'processing' );
 			
-			if ( $( object ).hasClass( 'on' ) ) {
+			if ( $( this ).hasClass( 'on' ) ) {
+				console.log("has on");
+				console.log($( object ));
 	            $( object ).removeClass( 'on' );
 	        } 
 	        else { 
+	        	console.log("has not on");
 	            $( object ).addClass( 'on' );
 	        }			
 	        
@@ -22,7 +25,7 @@ jQuery( document ).ready( function( $ ) {
 				data: { toggle_action: true }
 			})
 			.done( function (data) {
-				$( object ).removeClass('processing');
+				$( object ).removeClass( 'processing' );
 			})
 			.fail( function (data) {
 				console.log(data);
@@ -32,7 +35,7 @@ jQuery( document ).ready( function( $ ) {
 		        else { 
 		            $( object ).addClass( 'on' );
 		        }							
-				$( object ).removeClass('processing');					
+				$( object ).removeClass( 'processing' );					
 			});			
 		}
 		
