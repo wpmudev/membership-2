@@ -180,14 +180,6 @@ class MS_View_Settings_Edit extends MS_View {
 	public function prepare_pages() {
 		$all_pages = $this->model->get_pages();
 		$this->fields = array(
-			'memberships' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select memberships page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ),
-					'field_options' => $all_pages,
-					'class' => '',
-			),
 			'no_access' => array(
 					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -201,14 +193,6 @@ class MS_View_Settings_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ),
-					'field_options' => $all_pages,
-					'class' => '',
-			),
-			'register' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_REGISTER,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select registration page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_REGISTER ),
 					'field_options' => $all_pages,
 					'class' => '',
 			),
