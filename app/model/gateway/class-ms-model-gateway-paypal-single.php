@@ -120,7 +120,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				'cancel_return' => array(
 						'id' => 'cancel_return',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_MEMBERSHIPS ) ),
+						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) ),
 				),
 				'notify_url' => array(
 						'id' => 'notify_url',
@@ -350,6 +350,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 *
+	 * @since 4.0
+	 * 
 	 * @param MS_Model_Invoice $invoice The Transaction.
 	 */
 	public function process_transaction( $invoice ) {
@@ -358,16 +360,18 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 		switch( $invoice->status ) {
 			case self::STATUS_REVERSED:
 			case self::STATUS_REFUNDED:
+			case self::STATUS_DENIED:
 			case self::STATUS_DISPUTE:
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
 				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
 				break;
 			default:
-				parent::process_transaction( $invoice );
+				$ms_relationship = parent::process_transaction( $invoice );
 				break;
 		}
 		$member->save();
-		$ms_relationship->gateway_id = $invoice->gateway_id;
+		$ms_relationship->gateway_id = $this->gateway_id;
 		$ms_relationship->save();
 	}
 	
