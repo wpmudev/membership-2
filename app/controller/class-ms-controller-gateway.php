@@ -40,11 +40,17 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function __construct() {
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
+		
+		$this->add_action( 'ms_controller_settings_admin_settings_manager_gateway', 'gateway_settings_manager' );
+		$this->add_filter( 'ms_controller_settings_gateway_edit_view', 'gateway_settings_edit' );
+		
 		$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_controller_public_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_public_signup_process_purchase', 'process_purchase', 1 );
-		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
+		
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
+		
+		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 	}
 	
 	/**
@@ -63,6 +69,124 @@ class MS_Controller_Gateway extends MS_Controller {
 		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		}
+	}
+	
+	/**
+	 * Show gateway settings page.
+	 *
+	 * Manages settings actions.
+	 *
+	 * Verifies GET and POST requests to manage settings.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * ms_controller_settings_gateway_settings_manager
+	 *
+	 * @since 4.0.0
+	 */
+	public function gateway_settings_manager() {
+		/**
+		 * Execute table single action.
+		*/
+		if( $this->verify_nonce( null, 'GET' ) && ! empty( $_GET['gateway_id'] )) {
+			$msg = $this->gateway_list_do_action( $_GET['action'], array( $_GET['gateway_id'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'gateway_id', 'action', '_wpnonce' ) ) ) ) ;
+		}
+		/**
+		 * Execute bulk actions.
+		 */
+		elseif( ! empty( $_POST['gateway_id'] ) && $this->verify_nonce( 'bulk-gateways' ) ) {
+			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$msg = $this->gateway_list_do_action( $action, $_POST['gateway_id'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) );
+		}
+		/**
+		 * Execute view page action submit.
+		 */
+		elseif( ! empty( $_POST['submit_gateway'] ) && ! empty( $_POST['gateway_id'] ) && $this->verify_nonce() ) {
+				
+			$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+		}
+	}
+	
+	/**
+	 * Show gateway settings page.
+	 *
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * ms_view_registration_payment_purchase_button
+	 *
+	 * @since 4.0.0
+	 */
+	public function gateway_settings_edit( $view ) {
+		if ( ! empty( $_GET['gateway_id'] ) ) {
+			$gateway_id = $_GET['gateway_id'];
+			if( MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
+				switch( $gateway_id ) {
+					case MS_Model_Gateway::GATEWAY_MANUAL:
+						$view = new MS_View_Gateway_Manual_Settings();
+						break;
+					case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
+					case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
+						$view = new MS_View_Gateway_Paypal_Settings();
+						break;
+					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+						$view = new MS_View_Gateway_Authorize_Settings();
+						break;
+					case MS_Model_Gateway::GATEWAY_STRIPE:
+						$view = new MS_View_Gateway_Stripe_Settings();
+						break;
+					default:
+						$view = new MS_View_Gateway_Settings();
+						break;
+				}
+				$data = array();
+				$data['model'] = MS_Model_Gateway::factory( $gateway_id );
+				$data['action'] = $_GET['action'];
+				$view->data = apply_filters( 'ms_view_gateway_settings_edit_data', $data );
+			}
+			return apply_filters( 'ms_view_gateway_settings_edit', $view, $gateway_id ); ;
+		}
+	}
+	
+	/**
+	 * Handle Payment Gateway list actions.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $action The action to execute.
+	 * @param int[] $gateways The gateways IDs to process.
+	 * @param mixed[] $fields The data to process.
+	 */
+	public function gateway_list_do_action( $action, $gateways, $fields = null ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+	
+		foreach( $gateways as $gateway_id ) {
+			$gateway = MS_Model_Gateway::factory( $gateway_id );
+			switch( $action ) {
+				case 'toggle_activation':
+					$gateway->active = ! $gateway->active;
+					$gateway->save();
+					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+					break;
+				case 'edit':
+					foreach( $fields as $field => $value ) {
+						if( property_exists( $gateway, $field ) ) {
+							$gateway->$field = $value;
+						}
+					}
+					$gateway->save();
+					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+					break;
+			}
+		}
+	
+		return $msg;
 	}
 	
 	/**
@@ -199,9 +323,6 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function process_purchase() {
 		$settings = MS_Plugin::instance()->settings;
-MS_Helper_Debug::log($_POST);
-MS_Helper_Debug::log( "nonec:" . $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) );
-MS_Helper_Debug::log( "nonec:" . wp_create_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) );
 		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
 				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 	

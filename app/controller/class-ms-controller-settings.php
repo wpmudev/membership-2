@@ -112,7 +112,7 @@ class MS_Controller_Settings extends MS_Controller {
 						'url' => 'admin.php?page=membership-settings&tab=payment',
 				),
 				'gateway' => array(
-						'title' =>	__( 'Gateway', MS_TEXT_DOMAIN ),
+						'title' =>	__( 'Payment Gateways', MS_TEXT_DOMAIN ),
 						'url' => 'admin.php?page=membership-settings&tab=gateway',
 				),
 				'messages-protection' => array(
@@ -195,33 +195,6 @@ class MS_Controller_Settings extends MS_Controller {
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
 				}
 				break;
-			case 'gateway':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				/**
-				 * Execute table single action.
-				 */
-				if( ! empty( $_GET['action'] ) && ! empty( $_GET['gateway_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {					
-					$msg = $this->gateway_list_do_action( $_GET['action'], array( $_GET['gateway_id'] ) );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'gateway_id', 'action', '_wpnonce' ) ) ) ) ;
-				}
-				/**
-				 * Execute bulk actions.
-				 */
-				elseif( ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-gateways' ) ) {
-					$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-					$msg = $this->gateway_list_do_action( $action, $_POST['gateway_id'] );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) );
-				}
-				/**
-				 * Execute view page action submit.
-				 */
-				elseif( ! empty( $_POST['submit_gateway'] ) && ! empty( $_POST['gateway_id'] ) && ! empty( $_POST['action'] )  &&
-						! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-							
-						$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), $_POST );
-						wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-				}
-			break;
 			case 'payment':
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 				/**
@@ -293,53 +266,16 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function admin_settings() {
-		if ( ! empty( $_GET['action'] ) ) {
-			$this->prepare_gateway_view();
-		}
-		else {
-			$view = apply_filters( 'ms_view_settings', new MS_View_Settings_Edit() );
-			$data['tabs'] = $this->get_tabs();
-			$data['settings'] = $this->model;
-			$view->data = $data;
-			$view->model = $this->model;
-			$view->render();
-		}
-	}
-
-	/**
-	 * Prepare and show action view.
-	 *
-	 * @since 4.0.0
-	 */
-	public function prepare_gateway_view() {
-		if ( 'gateway' == $this->active_tab && 'edit' == $_GET['action'] && ! empty( $_GET['gateway_id'] ) ) {
-			$gateway_id = $_GET['gateway_id'];
-			if( MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
-				switch( $gateway_id ) {
-					case MS_Model_Gateway::GATEWAY_MANUAL:
-						$view = apply_filters( 'ms_view_settings_gateway_manual', new MS_View_Settings_Gateway_Manual(), $gateway_id );
-						break;
-					case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
-					case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
-						$view = apply_filters( 'ms_view_settings_gateway_paypal', new MS_View_Settings_Gateway_Paypal(), $gateway_id );
-						break;
-					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Authorize(), $gateway_id );
-						break;
-					case MS_Model_Gateway::GATEWAY_STRIPE:
-						$view = apply_filters( 'ms_view_settings_gateway_authorize', new MS_View_Settings_Gateway_Stripe(), $gateway_id );
-						break;
-					default:
-						$view = apply_filters( 'ms_view_settings_gateway', new MS_View_Settings_Gateway(), $gateway_id );
-						break;
-				}
-				$data = array();
-				$data['model'] = MS_Model_Gateway::factory( $gateway_id );
-				$data['action'] = $_GET['action'];
-				$view->data = apply_filters( 'ms_view_settings_gateway_data', $data );
-				$view->render();
-			}
-		}
+		$action = ! empty( $_GET['action'] ) ? $_GET['action'] : '';
+		
+		do_action( "ms_controller_settings_{$this->active_tab}_{$action}" );
+		
+		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
+		$data['tabs'] = $this->get_tabs();
+		$data['settings'] = $this->model;
+		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
+		$view->model = $this->model;
+		$view->render();
 	}
 
 	/**
@@ -423,44 +359,6 @@ class MS_Controller_Settings extends MS_Controller {
 			break;
 		}
 	
-		return $msg;
-	}
-	
-	/**
-	 * Handle Payment Gateway list actions.
-	 * 
-	 * @since 4.0.0
-	 *
-	 * @param string $action The action to execute.
-	 * @param int[] $gateways The gateways IDs to process.
-	 * @param mixed[] $fields The data to process.
-	 */	
-	public function gateway_list_do_action( $action, $gateways, $fields = null ) {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
-			return $msg;
-		}
-
-		foreach( $gateways as $gateway_id ) {
-			$gateway = MS_Model_Gateway::factory( $gateway_id );
-			switch( $action ) {
-				case 'toggle_activation':
-					$gateway->active = ! $gateway->active;
-					$gateway->save();
-					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-					break;
-				case 'edit':
-					foreach( $fields as $field => $value ) {
-						if( property_exists( $gateway, $field ) ) {
-							$gateway->$field = $value;
-						}
-					}
-					$gateway->save();
-					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-					break;
-			}
-		}
-		
 		return $msg;
 	}
 	
