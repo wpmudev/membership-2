@@ -64,8 +64,19 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 	}
 	
+	/**
+	 * Show gateway credit card information.
+	 *
+	 * If a card is used, show it in account's page.
+	 * 
+	 * **Hooks Actions: **
+	 *
+	 * * ms_view_shortcode_account_card_info
+	 *
+	 * @since 4.0.0
+	 */
 	public function card_info( $data = null ) {
-		if( is_array( $data['gateway'] ) ) {
+		if( ! empty( $data['gateway'] ) && is_array( $data['gateway'] ) ) {
 			foreach( $data['gateway'] as $ms_relationship_id => $gateway ) {
 				switch( $gateway->id ) {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
@@ -94,14 +105,27 @@ class MS_Controller_Gateway extends MS_Controller {
 					default:
 						break;
 				}
-				$view = apply_filters( 'ms_view_gateway_change_card', $view );
-				$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
-				echo $view->to_html();
+				if( ! empty( $view ) ) {
+					$view = apply_filters( 'ms_view_gateway_change_card', $view );
+					$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
+					echo $view->to_html();
+				}
 			}
 		}
 	}
 	
-	public function update_card() {
+	/**
+	 * Handle update credit card information in gateway.
+	 *
+	 * Used to change credit card info in account's page.
+	 * 
+	 * **Hooks Actions: **
+	 *
+	 * * template_redirect
+	 *
+	 * @since 4.0.0
+	 */
+	 public function update_card() {
 		if( ! empty( $_POST['gateway'] ) ) {
 			$gateway = MS_Model_Gateway::factory( $_POST['gateway'] );
 			$member = MS_Model_Member::get_current_member();
