@@ -6,13 +6,13 @@ class MS_View_Shortcode_Account extends MS_View {
 	
 	protected $fields;
 	
-	protected $personnal_info = array( 'first_name', 'last_name', 'username', 'email' );
+	protected $personnal_info;
 	
 	public function to_html() {
 		$this->prepare_fields();
 		ob_start();
 		?>
-		<div class="ms-membership-form-wrapper">
+		<div class="ms-account-wrapper">
 			<?php if( MS_Model_Member::is_logged_user() ): ?>
 				<h2>Your Membership</h2>
 				<?php if( ! empty( $this->data['membership'] ) ) :?>
@@ -41,13 +41,15 @@ class MS_View_Shortcode_Account extends MS_View {
 				<?php else: ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN );?>
 				<?php endif;?>
-				<h2>Personnal details</h2>
-				<?php foreach( $this->personnal_info as $field => $title ): ?>
-					<p>
-						<label><?php echo $title; ?></label>
-						<label><?php echo $this->data['member']->$field;?></label>
-					</p>
-				<?php endforeach;?>
+				<h2><?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', __( 'Personnal details', MS_TEXT_DOMAIN ), get_edit_user_link(), __( 'Edit', MS_TEXT_DOMAIN ) ); ?></h2>
+				<table>
+					<?php foreach( $this->personnal_info as $field => $title ): ?>
+						<tr>
+							<th class="ms-label-title"><?php echo $title; ?>: </th>
+							<td class="ms-label-field"><?php echo $this->data['member']->$field;?></td>
+						</tr>
+					<?php endforeach;?>
+				</table>
 				<?php do_action( 'ms_view_shortcode_account_card_info', $this->data );?>
 				<h2>Invoice</h2>
 				<table>
@@ -103,13 +105,11 @@ class MS_View_Shortcode_Account extends MS_View {
 	}
 	
 	public function prepare_fields() {
-		$data = $this->data;
-		
 		$this->personnal_info = array( 
-			'first_name' => __( 'First name' ), 
-			'last_name' => __( 'Last name' ),
-			'username' => __( 'Username' ),
-			'email' => __( 'Email' ),
+			'first_name' => __( 'First name', MS_TEXT_DOMAIN ), 
+			'last_name' => __( 'Last name', MS_TEXT_DOMAIN ),
+			'username' => __( 'Username', MS_TEXT_DOMAIN ),
+			'email' => __( 'Email', MS_TEXT_DOMAIN ),
 		);
 	}
 	

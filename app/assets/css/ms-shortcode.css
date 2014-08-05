@@ -123,3 +123,7 @@ label.ms-validation-error {
 .ms-card-info-wrapper {
 	margin: 20px 0;
 }
+.ms-edit-profile {
+	float: right;
+	font-weight: 100;
+}
