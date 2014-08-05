@@ -96,12 +96,14 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					<h4><span class="ms-title"><?php echo $membership->name; ?></span></h4>
 				</div>
 				<div class="ms-price-details">
-					<?php echo $membership->description; ?>
+					<div><?php echo $membership->description; ?></div>
+					
+					<?php if( $msg ): ?>
+						<div class="ms-bottom-msg"><?php echo $msg; ?></div>
+					<?php endif;?>
+					
 				</div>
 				<div class="ms-bottom-bar">
-					<?php if( $msg ): ?>
-						<span class="ms-bottom-msg"><?php echo $msg; ?></span>
-					<?php endif;?>
 					<?php
 						$class = apply_filters( 'ms_view_shortcode_membership_signup_form_button_class', "ms-signup-button $action" );
 						
