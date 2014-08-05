@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Settings_Gateway_Stripe extends MS_View {
+class MS_View_Gateway_Paypal_Settings extends MS_View {
 
 	protected $fields = array();
 	
@@ -24,9 +24,22 @@ class MS_View_Settings_Gateway_Stripe extends MS_View {
 									</td>
 								</tr>
 								<?php endforeach; ?>
+								<tr>
+									<td>
+										<?php 
+											MS_Helper_Html::html_link(  array(
+												'id' => 'cancel',
+												'title' => __('Cancel', MS_TEXT_DOMAIN ),
+												'value' => __('Cancel', MS_TEXT_DOMAIN ),
+												'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
+												'class' => 'button',
+											) ); 
+										?>
+										<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
+									</td>
+								</tr>
 						</tbody>
 					</table>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -37,37 +50,38 @@ class MS_View_Settings_Gateway_Stripe extends MS_View {
 	
 	function prepare_fields() {
 		$model = $this->data['model'];
+		if( $model->id == MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE ) {
+			$merchant_id_field = array(
+					'id' => 'paypal_email',
+					'title' => __( 'Paypal Email', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->paypal_email,
+			);
+		}
+		else {
+			$merchant_id_field = array(
+					'id' => 'merchant_id',
+					'title' => __( 'PayPal Merchant Account ID', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->merchant_id,
+			);
+		}
+		
 		$this->fields = array(
+			'merchant_id' => $merchant_id_field,
+			'paypal_site' => array(
+					'id' => 'paypal_site',
+					'title' => __( 'PayPal Site', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'field_options' => $model->get_paypal_sites(),
+					'value' => $model->paypal_site,
+			),
 			'mode' => array(
 					'id' => 'mode',
-					'title' => __( 'Mode', MS_TEXT_DOMAIN ),
+					'title' => __( 'PayPal Mode', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'value' => $model->mode,
 					'field_options' => $model->get_mode_types(),
-			),
-			'test_secret_key' => array(
-					'id' => 'test_secret_key',
-					'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->test_secret_key,
-			),
-			'test_publishable_key' => array(
-					'id' => 'test_publishable_key',
-					'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->test_publishable_key,
-			),
-			'secret_key' => array(
-					'id' => 'secret_key',
-					'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->secret_key,
-			),
-			'publishable_key' => array(
-					'id' => 'publishable_key',
-					'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->publishable_key,
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',

@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Settings_Gateway_Authorize extends MS_View {
+class MS_View_Gateway_Stripe_Settings extends MS_View {
 
 	protected $fields = array();
 	
@@ -24,9 +24,22 @@ class MS_View_Settings_Gateway_Authorize extends MS_View {
 									</td>
 								</tr>
 								<?php endforeach; ?>
+								<tr>
+									<td>
+										<?php 
+											MS_Helper_Html::html_link(  array(
+												'id' => 'cancel',
+												'title' => __('Cancel', MS_TEXT_DOMAIN ),
+												'value' => __('Cancel', MS_TEXT_DOMAIN ),
+												'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
+												'class' => 'button',
+											) ); 
+										?>
+										<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
+									</td>
+								</tr>
 						</tbody>
 					</table>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -45,21 +58,33 @@ class MS_View_Settings_Gateway_Authorize extends MS_View {
 					'value' => $model->mode,
 					'field_options' => $model->get_mode_types(),
 			),
-			'api_login_id' => array(
-					'id' => 'api_login_id',
-					'title' => __( 'API Login ID', MS_TEXT_DOMAIN ),
+			'test_secret_key' => array(
+					'id' => 'test_secret_key',
+					'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->api_login_id,
+					'value' => $model->test_secret_key,
 			),
-			'api_transaction_key' => array(
-					'id' => 'api_transaction_key',
-					'title' => __( 'API Transaction Key', MS_TEXT_DOMAIN ),
+			'test_publishable_key' => array(
+					'id' => 'test_publishable_key',
+					'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->api_transaction_key,
+					'value' => $model->test_publishable_key,
+			),
+			'secret_key' => array(
+					'id' => 'secret_key',
+					'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->secret_key,
+			),
+			'publishable_key' => array(
+					'id' => 'publishable_key',
+					'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $model->publishable_key,
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
-					'title' => __( 'Payment button', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),

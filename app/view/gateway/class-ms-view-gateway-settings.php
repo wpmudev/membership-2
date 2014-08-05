@@ -1,7 +1,9 @@
 <?php
 
-class MS_View_Settings_Gateway_Manual extends MS_View {
+class MS_View_Gateway_Settings extends MS_View {
 
+	const GATEWAY_NONCE = 'gateway_nonce';
+	
 	protected $fields = array();
 	
 	protected $data;
@@ -14,7 +16,7 @@ class MS_View_Settings_Gateway_Manual extends MS_View {
 			<div class='ms-wrap'>
 				<h2><?php echo $this->data['model']->name;?> settings</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( $this->data['action'] ); ?>
+					<?php wp_nonce_field( self::GATEWAY_NONCE, self::GATEWAY_NONCE ); ?>
 					<table class="form-table">
 						<tbody>
 							<?php foreach( $this->fields as $field ): ?>
@@ -24,9 +26,22 @@ class MS_View_Settings_Gateway_Manual extends MS_View {
 									</td>
 								</tr>
 								<?php endforeach; ?>
+								<tr>
+									<td>
+										<?php 
+											MS_Helper_Html::html_link(  array(
+												'id' => 'cancel',
+												'title' => __('Cancel', MS_TEXT_DOMAIN ),
+												'value' => __('Cancel', MS_TEXT_DOMAIN ),
+												'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
+												'class' => 'button',
+											) ); 
+										?>
+										<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
+									</td>
+								</tr>
 						</tbody>
 					</table>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -38,13 +53,6 @@ class MS_View_Settings_Gateway_Manual extends MS_View {
 	function prepare_fields() {
 		$model = $this->data['model'];
 		$this->fields = array(
-			'payment_info' => array(
-					'id' => 'payment_info',
-					'title' => __( 'Payment Info', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => $model->payment_info,
-					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
 					'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
