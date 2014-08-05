@@ -60,8 +60,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	public function after_load() {
 		if( $this->active ) {
-			$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
-			$this->add_action( 'ms_view_registration_payment_form', 'purchase_button', 10, 4 );
 			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
 		}
 	}
@@ -118,69 +116,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 		}
 		
 		return apply_filters( 'ms_model_gateway_factory', $gateway, $gateway_id );
-	}
-	
-	/**
-	 * Render purchase button.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 */
-	public function purchase_button( $ms_relationship = false ) {
-		
-		$fields = array(
-				'gateway' => array(
-						'id' => 'gateway',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->id,
-				),
-				'ms_relationship_id' => array(
-						'id' => 'ms_relationship_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $ms_relationship->id,
-				),
-				'step' => array(
-						'id' => 'step',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'process_purchase',
-				),
-// 				'action' => array(
-// 						'id' => 'action',
-// 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-// 						'value' => 'signup_process',
-// 				),
-		);
-		if( strpos( $this->pay_button_url, 'http' ) === 0 ) {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-					'value' =>  $this->pay_button_url,
-			);
-		}
-		else {
-			$fields['submit'] = array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' =>  $this->pay_button_url ? $this->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
-			);
-		}
-		$settings = MS_Model_Settings::load();
-		$url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ));
-		?>
-			<tr>
-				<td class='ms-buy-now-column' colspan='2' >
-					<form method="post" action="<?php echo $url; ?>">
-						<?php wp_nonce_field( "{$this->id}_{$ms_relationship->id}" ); ?>
-						<?php 
-							foreach( $fields as $field ) {
-								MS_Helper_Html::html_input( $field ); 
-							}
-						?>
-					</form>
-				</td>
-			</tr>
-		<?php 
 	}
 	
 	/**
@@ -349,6 +284,18 @@ class MS_Model_Gateway extends MS_Model_Option {
 				self::MODE_LIVE => __( 'Live Site', MS_TEXT_DOMAIN ),
 				self::MODE_SANDBOX => __( 'Sandbox Mode (test)', MS_TEXT_DOMAIN ),
 		) );
+	}
+	
+	/**
+	 * Return if is live mode.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return boolean
+	 */
+	public function is_live_mode() {
+		$is_live_mode = ( self::MODE_LIVE == $this->mode );
+		return apply_filters( 'ms_model_gateway_is_live_mode', $is_live_mode );
 	}
 	
 	/**
