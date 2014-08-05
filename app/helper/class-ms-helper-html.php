@@ -136,8 +136,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				foreach ($field_options as $key => $option ) {
 					$checked = checked( $key, $value, false );
+					echo "<div class='ms-radio-wrapper'>";
 					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked /> ";
 					echo "<label for='{$id}_{$key}'>$option</label>";
+					echo "</div>";
 				}
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;

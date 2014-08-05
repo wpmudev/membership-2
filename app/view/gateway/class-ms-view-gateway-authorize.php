@@ -17,7 +17,6 @@ class MS_View_Gateway_Authorize extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2><?php echo __( 'Signup ', MS_TEXT_DOMAIN ); ?> </h2>
 				<?php if( $this->data['auth_error'] ): ?>
 					<div class='ms-validation-error'><p><?php echo $this->data['auth_error']; ?></p></div>
 				<?php endif; ?>
@@ -29,7 +28,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 					<?php $this->render_cim_profiles() ?>
 					<div id="ms-authorize-card-wrapper">
 						<?php _e( 'Credit Card Information', MS_TEXT_DOMAIN ); ?>
-						<table class="form-table">
+						<table class="form-table ms-form-table">
 							<tbody>
 								<tr>
 									<td>
@@ -50,7 +49,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 							</tbody>
 						</table>
 						<?php _e( 'Billing Information', MS_TEXT_DOMAIN ); ?>
-						<table class="form-table">
+						<table class="form-table ms-form-table">
 							<tbody>
 								<?php foreach( $this->fields['billing'] as $field ): ?>
 									<tr>
@@ -62,7 +61,13 @@ class MS_View_Gateway_Authorize extends MS_View {
 							</tbody>
 						</table>
 					</div>
-					<?php MS_Helper_Html::html_submit( array( 'value' => __( 'Pay now', MS_TEXT_DOMAIN ) ) ); ?>
+					<?php 
+						MS_Helper_Html::html_submit( array( 
+							'value' => ( 'update_card' == $this->data['action'] ) 
+								? __( 'Change card', MS_TEXT_DOMAIN ) 
+								: __( 'Pay now', MS_TEXT_DOMAIN ), 
+						) ); 
+					?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -204,7 +209,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 		foreach ( $cim_profiles as $index => $profile ) {
 			if ( is_array( $profile ) && ! empty( $profile['customerPaymentProfileId'] ) ) {
 				$options[ $profile['customerPaymentProfileId'] ] =	esc_html( sprintf(
-						"%s %s's - XXXXXXX%s ",
+						"%s %s's - **** **** **** %s ",
 						$profile['billTo']['firstName'],
 						$profile['billTo']['lastName'],
 						$profile['payment']['creditCard']['cardNumber']
@@ -223,7 +228,7 @@ class MS_View_Gateway_Authorize extends MS_View {
 		); 
 		?>
 			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
-				<div class="authorize-form-block-title"><?php _e( 'Payment Profile', MS_TEXT_DOMAIN ); ?></div>
+				<div class="authorize-form-block-title"><?php _e( 'Credit card:', MS_TEXT_DOMAIN ); ?></div>
 				<?php MS_Helper_Html::html_input( $cim );?>
 			</div>
 		<?php

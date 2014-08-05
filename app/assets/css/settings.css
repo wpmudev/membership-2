@@ -109,7 +109,9 @@ h2.ms-settings-title,
 	border-bottom: 1px solid #EEEEEE;
 	margin: 0;
 }
-
+.ms-form-table, .ms-form-table td {
+	border: 0 !important;
+}
 .ms-field-container {
 	margin: 10px 0;
 }
@@ -138,6 +140,9 @@ h2.ms-settings-title,
 
 .ms-field-description {
 	
+}
+.ms-radio-wrapper {
+	margin: 10px 0;	
 }
 .ms-field-input {
 	
