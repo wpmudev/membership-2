@@ -63,18 +63,6 @@ class MS_View_Settings_Gateway_Authorize extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),
-// 			'upgrade_button_url' => array(
-// 					'id' => 'upgrade_button_url',
-// 					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $model->upgrade_button_url,
-// 			),
-// 			'cancel_button_url' => array(
-// 					'id' => 'cancel_button_url',
-// 					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $model->cancel_button_url,
-// 			),
 			'action' => array(
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

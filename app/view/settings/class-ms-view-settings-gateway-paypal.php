@@ -55,12 +55,6 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 		}
 		
 		$this->fields = array(
-			'description' => array(
-					'id' => 'description',
-					'title' => __( 'Description', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->description,
-			),
 			'merchant_id' => $merchant_id_field,
 			'paypal_site' => array(
 					'id' => 'paypal_site',
@@ -78,22 +72,10 @@ class MS_View_Settings_Gateway_Paypal extends MS_View {
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
-					'title' => __( 'Payment button', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
 			),
-// 			'upgrade_button_url' => array(
-// 					'id' => 'upgrade_button_url',
-// 					'title' => __( 'Upgrade button', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $model->upgrade_button_url,
-// 			),
-// 			'cancel_button_url' => array(
-// 					'id' => 'cancel_button_url',
-// 					'title' => __( 'Cancel button', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $model->cancel_button_url,
-// 			),
 			'action' => array(
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
