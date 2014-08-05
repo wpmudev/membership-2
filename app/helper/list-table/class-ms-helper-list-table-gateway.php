@@ -42,8 +42,8 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function get_columns() {
 		return apply_filters( 'membership_helper_list_table_gateway_columns', array(
 			'cb'     => '<input type="checkbox" />',
-			'name' => __('Gateway Name', MS_TEXT_DOMAIN ),
-			'active' => __('Active', MS_TEXT_DOMAIN ),
+			'name' => __( 'Gateway Name', MS_TEXT_DOMAIN ),
+			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -52,18 +52,18 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	}
 	
 	public function get_hidden_columns() {
-		return apply_filters( 'gateway_helper_list_table_gateway_hidden_columns', array() );
+		return apply_filters( 'ms_helper_list_table_gateway_hidden_columns', array() );
 	}
 	
 	public function get_sortable_columns() {
-		return apply_filters( 'gateway_helper_list_table_gateway_sortable_columns', array() );
+		return apply_filters( 'ms_helper_list_table_gateway_sortable_columns', array() );
 	}
 	
 	public function prepare_items() {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 		
-		$this->items = apply_filters( 'gateway_helper_list_table_gateway_items', MS_Model_Gateway::get_gateways() );
+		$this->items = apply_filters( 'ms_helper_list_table_gateway_items', MS_Model_Gateway::get_gateways() );
 		
 		unset( $this->items[ MS_Model_Gateway::GATEWAY_FREE ] );
 	}
@@ -98,7 +98,9 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 						$_REQUEST['tab'],
 						$item->id,
 						$action  
-				), 'toggle_activation' );
+				), 
+				'toggle_activation' 
+		);
 		?>
 			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
 			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
@@ -112,11 +114,13 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			// case 'active':
-			// 	$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
-			// 	break;
 			default:
-				$html = print_r( $item, true ) ;
+				if( property_exists( $item, $column_name ) ) {
+					$html = $item->$column_name;
+				}
+				else {
+					$html = print_r( $item, true ) ;
+				}
 				break;
 		}
 		return $html;
