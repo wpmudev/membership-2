@@ -284,7 +284,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		$version = MS_Plugin::instance()->version;
 		
 		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
-
+		
+		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/settings.css', $version );
+		
 		wp_register_style( 'membership-shortcode', $plugin_url. 'app/assets/css/ms-shortcode.css', $version );
 		wp_enqueue_style( 'membership-shortcode' );
 		

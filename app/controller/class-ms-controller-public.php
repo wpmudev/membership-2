@@ -58,6 +58,8 @@ class MS_Controller_Public extends MS_Controller {
 		$this->add_filter( 'register_url', 'signup_location', 999 );
 		$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 		
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles');
+		
 	}
 	
 	/**
@@ -348,7 +350,7 @@ class MS_Controller_Public extends MS_Controller {
 		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
 		$view->data = $data;
 
-		echo $view->to_html();
+		return $view->to_html();
 
 	}
 	
@@ -453,4 +455,19 @@ class MS_Controller_Public extends MS_Controller {
 		}
 	}
 	
+	/**
+	 * Adds CSS for Membership special pages used in the front end.
+	 *
+	 * @since 4.0.0
+	 *	
+	 * @return void
+	 */	
+	public function enqueue_styles() {
+		$settings = MS_Model_Settings::load();
+		$is_special_page = $settings->is_special_page();
+		if( $settings->is_special_page() ) {
+			wp_enqueue_style( 'membership-admin' );
+		}
+		
+	}
 }
