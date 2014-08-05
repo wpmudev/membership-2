@@ -81,7 +81,7 @@
 	margin: 1em;
 }
 .ms-form-element span {
-	
+	display: inline;
 }
 .ms-form-element input {
 	margin: 0 0 0 1em;
