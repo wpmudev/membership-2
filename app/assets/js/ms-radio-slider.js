@@ -5,17 +5,14 @@ jQuery( document ).ready( function( $ ) {
 		var child = $( object ).find( ".toggle a" ).first();
         var value = child.attr( "href" );
 		
-		if ( ! $( object ).hasClass( 'processing' ) ) {
+		if( ! $( object ).hasClass( 'processing' ) ) {
 			
 			$( object ).addClass( 'processing' );
 			
-			if ( $( this ).hasClass( 'on' ) ) {
-				console.log("has on");
-				console.log($( object ));
+			if( $( this ).hasClass( 'on' ) ) {
 	            $( object ).removeClass( 'on' );
 	        } 
 	        else { 
-	        	console.log("has not on");
 	            $( object ).addClass( 'on' );
 	        }			
 	        
@@ -29,7 +26,7 @@ jQuery( document ).ready( function( $ ) {
 			})
 			.fail( function (data) {
 				console.log(data);
-		        if ( $( object ).hasClass( 'on' ) ) {
+		        if( $( object ).hasClass( 'on' ) ) {
 		            $( object ).removeClass( 'on' );
 		        } 
 		        else { 
