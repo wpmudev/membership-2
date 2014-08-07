@@ -134,7 +134,7 @@ class MS_Model_Plugin extends MS_Model {
 			return true;
 		}
 
-		$settings = MS_Plugin::instance()->settings;
+		$settings = MS_Factory::get_factory()->load_settings();
 		$has_access = false;
 		/**
 		 * Search permissions through all memberships joined.
