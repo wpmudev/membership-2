@@ -377,7 +377,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					break;
 				case 'membership_type':
 					if( array_key_exists( $value, self::get_membership_types() ) ) {
-						if( empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
+						if( empty( $this->$property ) || empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
 							$this->$property = $value;
 						}
 						elseif( $this->$property != $value ) {
@@ -421,25 +421,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
-	 * Register and Filter the custom post type.
+	 * Get custom register post type args for this model.
 	 *
 	 * @since 4.0.0
-	 * @param object $this The MS_Plugin object.
 	 */
-	public static function register_post_type() {
-		register_post_type( self::$POST_TYPE, apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
-			'labels' => array(
-				'name' => __( 'Memberships', MS_TEXT_DOMAIN ),
-				'singular_name' => __( 'Membership', MS_TEXT_DOMAIN ),
-				'menu_name' => __( 'Membership', MS_TEXT_DOMAIN ),
-				'all_items' => __( 'All Memberships', MS_TEXT_DOMAIN ),
-				'add_new' => __('New Membership', MS_TEXT_DOMAIN ),
-				'add_new_item' => __('New Membership', MS_TEXT_DOMAIN ),
-				'edit' => __( 'Edit', MS_TEXT_DOMAIN ),
-				'view_item' => __( 'View Membership', MS_TEXT_DOMAIN ),
-				'search_items' => __( 'Search Memberships', MS_TEXT_DOMAIN ),
-				'not_found' => __( 'No Memberships Found', MS_TEXT_DOMAIN )
-			),
+	public static function get_register_post_type_args() {
+		$args = apply_filters( 'ms_model_membership_register_post_type_args', array(
 			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
 			'show_ui' => false,
 			'show_in_menu' => false,
@@ -451,6 +438,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'supports' => false,
 			'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'page' ),
 			'hierarchical' => false
-		) ) );
+		) );
+		
+		return $args;
 	}
 }
