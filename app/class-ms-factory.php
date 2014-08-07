@@ -93,14 +93,14 @@ class MS_Factory extends MS_Model {
 	
 		$model = new $class();
 		
-		if( empty( $class::$instance )  ) {
+		if( empty( $model->instance )  ) {
 			$settings = get_option( $class );
 		
 			$model->before_load();
 		
 			$fields = $model->get_object_vars();
 			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, $class::$ignore_fields ) ) {
+				if ( in_array( $field, $model->ignore_fields ) ) {
 					continue;
 				}
 				if( isset( $settings[ $field ] ) ) {
@@ -110,10 +110,10 @@ class MS_Factory extends MS_Model {
 		
 			$model->after_load();
 		
-			$class::$instance = &$model;
+			$model->instance = $model;
 		}
 		else {
-			$model = $class::$instance;
+			$model = $model->instance;
 		}
 		
 		return apply_filters( 'ms_factory_load_from_wp_option', $model, $class );
@@ -130,16 +130,17 @@ class MS_Factory extends MS_Model {
 	 * @return $class Loaded Object
 	 */
 	public static function load_from_wp_transient( $class ) {
-		if( empty( $class::$instance )  ) {
+		$model = new $class();
+		
+		if( empty( $model->instance )  ) {
 			$settings = get_transient( $class );
 		
-			$model = new $class();
 		
 			$model->before_load();
 		
 			$fields = $model->get_object_vars();
 			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, $class::$ignore_fields ) ) {
+				if ( in_array( $field, $model->ignore_fields ) ) {
 					continue;
 				}
 				if( isset( $settings[ $field ] ) ) {
@@ -149,10 +150,10 @@ class MS_Factory extends MS_Model {
 		
 			$model->after_load();
 		
-			$class::$instance = &$model;
+			$model->instance = $model;
 		}
 		else {
-			$model = &$class::$instance;
+			$model = $model->instance;
 		}
 		
 		return apply_filters( 'ms_factory_load_from_wp_transient', $model, $class );
@@ -175,12 +176,12 @@ class MS_Factory extends MS_Model {
 		if ( ! empty( $model_id ) ) {
 				
 			$post = get_post( $model_id );
-			if( ! empty( $post ) && $class::$POST_TYPE == $post->post_type ) {
+			if( ! empty( $post ) && $model->post_type == $post->post_type ) {
 				$post_meta = get_post_meta( $model_id );
 				
 				$fields = $model->get_object_vars();
 				foreach ( $fields as $field => $val) {
-					if ( in_array( $field, $class::$ignore_fields ) ) {
+					if ( in_array( $field, $model->ignore_fields ) ) {
 						continue;
 					}
 					if ( isset( $post_meta[ $field ][ 0 ] ) ) {
@@ -223,11 +224,11 @@ class MS_Factory extends MS_Model {
 			$member->first_name = $wp_user->first_name;
 			$member->last_name = $wp_user->last_name;
 		
-			$member->is_admin = $class::is_admin_user( $wp_user );
+			$member->is_admin = $member->is_admin_user( $wp_user );
 		
 			$fields = $member->get_object_vars();
 			foreach( $fields as $field => $val ) {
-				if( in_array( $field, $class::$ignore_fields ) ) {
+				if( in_array( $field, $member->ignore_fields ) ) {
 					continue;
 				}
 				if( isset( $member_details[ "ms_$field" ][0] ) ) {
