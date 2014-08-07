@@ -24,6 +24,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 
 	public static $POST_TYPE;
 	
+	public $post_type;
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $title;
@@ -33,6 +35,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	protected $user_id;
 	
 	protected $post_modified;
+	
+	public $ignore_fields = array( 'actions', 'filters', 'ignore_fields', 'post_type' );
 	
 	public function save() {
 		
@@ -50,7 +54,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_name' => sanitize_title( $this->name ),
 				'post_status' => 'private',
 				'post_title' => sanitize_text_field( ! empty( $this->title ) ? $this->title : $this->name ),
-				'post_type' => $class::$POST_TYPE,
+				'post_type' => $this->post_type,
 				'post_modified' => $this->post_modified, 
 		);
 		if ( empty( $this->id ) ) {
@@ -65,7 +69,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, $class::$ignore_fields ) ) {
+			if ( in_array( $field, $this->ignore_fields ) ) {
 				continue;
 			}
 			if ( isset( $this->$field ) && ( !isset( $post_meta[ $field ][ 0 ] ) || $post_meta[ $field ][ 0 ] != $this->$field ) ) {

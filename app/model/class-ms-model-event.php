@@ -24,6 +24,8 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_event';
 	
+	public $post_type = 'ms_event';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	const TOPIC_MEMBERSHIP = 'membership';

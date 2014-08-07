@@ -24,6 +24,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_relationship';
 	
+	public $post_type = 'ms_relationship';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	const STATUS_PENDING = 'pending';
@@ -39,6 +41,20 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	const STATUS_DEACTIVATED = 'deactivated';
 	
 	const STATUS_CANCELED = 'canceled';
+	
+	/**
+	 * ID of the model object.
+	 *
+	 * @since 4.0.0
+	 */
+	protected $id;
+	
+	/**
+	 * Model name.
+	 *
+	 * @since 4.0.0
+	 */
+	protected $name;
 	
 	protected $membership_id;
 	
@@ -72,7 +88,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 4.0.0
 	 */
-	public static $ignore_fields = array( 'membership', 'actions', 'filters' );
+	public $ignore_fields = array( 'membership', 'actions', 'filters', 'ignore_fields', 'post_type' );
 	
 	
 	/**

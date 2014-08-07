@@ -45,7 +45,7 @@ class MS_Model_Member extends MS_Model {
 		
 	protected $gateway_profiles;
 	
-	public static $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
+	public $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters', 'ignore_fields' );
 		
 	public static function get_current_member() {
 		return MS_Factory::get_factory()->load_member( get_current_user_id() );
@@ -60,7 +60,7 @@ class MS_Model_Member extends MS_Model {
 		$user_details = get_user_meta( $this->id );
 		$fields = get_object_vars( $this );
 		foreach( $fields as $field => $val ) {
-			if( in_array( $field, self::$ignore_fields ) ) {
+			if( in_array( $field, $this->ignore_fields ) ) {
 				continue;
 			}
 			if( isset( $this->$field ) && ( ! isset( $user_details[ "ms_$field" ][0] ) || $user_details[ "ms_$field" ][0] != $this->$field ) ) {

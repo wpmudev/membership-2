@@ -54,7 +54,7 @@ class MS_Model extends MS_Hooker {
 	 *
 	 * @since 4.0.0
 	 */			
-	public static $ignore_fields = array( 'actions', 'filters' );
+	public $ignore_fields = array( 'actions', 'filters', 'ignore_fields' );
 
 	/**
 	 * MS_Model Contstuctor
@@ -161,7 +161,7 @@ class MS_Model extends MS_Hooker {
 	 * @param string $format Date format.
 	 */		
 	public function validate_date( $date, $format = 'Y-m-d') {
-		$d = DateTime::createFromFormat( $format, $date );
+		$d = new DateTime( $date );
 		if ( $d && $d->format( $format ) == $date ) {
 			return $date;
 		}

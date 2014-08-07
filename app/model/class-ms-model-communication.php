@@ -28,6 +28,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_communication';
 	
+	public $post_type = 'ms_communication';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected static $communications;
@@ -111,7 +113,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public static $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters' );
+	public $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters', 'ignore_fields' );
 	
 	/**
 	 * Communication types.
@@ -209,8 +211,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$model = MS_Factory::load( $comm_classes[ $type ], $item[0]->ID );
 		}
 		else {
-			$model = $comm_classes[ $type ]::create_default_communication();
+			$model = self::create_default_communication( $type, $comm_classes[ $type ] );
 		}		
+		return $model;
+	}
+	
+	public static function create_default_communication( $type, $class ) {
+		$model = new $class();
+		$model->create_default_communication();
 		return $model;
 	}
 	

@@ -28,6 +28,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_membership';
 	
+	public $post_type = 'ms_membership';
+	
 	const MEMBERSHIP_TYPE_PERMANENT = 'permanent';
 	
 	const MEMBERSHIP_TYPE_FINITE = 'finite';
@@ -38,6 +40,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected static $CLASS_NAME = __CLASS__;
 
+	/**
+	 * ID of the model object.
+	 *
+	 * @since 4.0.0
+	 */
+	protected $id;
+	
+	/**
+	 * Model name.
+	 *
+	 * @since 4.0.0
+	 */
+	protected $name;
+	
 	protected $gateway_id;
 	
 	protected $membership_type;
@@ -436,7 +452,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'has_archive' => false,
 			'publicly_queryable' => false,
 			'supports' => false,
-			'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'page' ),
+// 			'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'page' ),
 			'hierarchical' => false
 		) );
 		

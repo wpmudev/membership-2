@@ -24,6 +24,8 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	
 	public static $POST_TYPE = 'ms_invoice';
 	
+	public $post_type = 'ms_invoice';
+	
 	protected static $CLASS_NAME = __CLASS__;
 	
 	const STATUS_BILLED = 'billed';
