@@ -1,0 +1,293 @@
+<?php
+/**
+ * This file defines the MS_Factory object.
+ *
+ * @copyright Incsub (http://incsub.com/)
+ *
+ * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
+ * 
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License, version 2, as  
+ * published by the Free Software Foundation.                           
+ *
+ * This program is distributed in the hope that it will be useful,      
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of       
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
+ * GNU General Public License for more details.                         
+ *
+ * You should have received a copy of the GNU General Public License    
+ * along with this program; if not, write to the Free Software          
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
+ * MA 02110-1301 USA                                                    
+ *
+*/
+
+/**
+ * Factory class for all Models.
+ *
+ * @since 4.0.0
+ *
+ * @package Membership
+ */
+class MS_Factory extends MS_Model {
+
+	const MS_Model_Option = 'MS_Model_Option';
+	
+	const MS_Custom_Post_Type = 'MS_Custom_Post_Type';
+	
+	const MS_Model_Member = 'MS_Model_Member';
+	
+	protected static $instance;
+	
+	/**
+	 * Get factory singleton.
+	 * @return MS_Factory
+	 */
+	public static function get_factory() {
+		if( empty( self::$instance )  ){
+			self::$instance = new self();
+		}
+		return apply_filters( 'ms_factory_get_factory', self::$instance );
+	}
+	
+	/**
+	 * Load an MS Object.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param string $class
+	 * @param int $model_id
+	 */
+	public static function load( $class, $model_id = 0 ) {
+		$model = null;
+		
+		if( class_exists( $class ) && $model = new $class() ) {
+			if( $model instanceof MS_Model_Option ) {
+				$model = self::load_from_wp_option( $class );
+			}
+			elseif( $model instanceof MS_Model_Custom_Post_Type ) {
+				$model = self::load_from_wp_custom_post_type( $class, $model_id );
+			}
+			elseif( $model instanceof MS_Model_Member ) {
+				$model = self::load_from_wp_user( $class, $model_id );
+			}
+			elseif( $model instanceof MS_Model_Transiente ) {
+				$model = self::load_from_wp_transient( $class, $model_id );
+			}
+		}
+
+		return apply_filters( 'ms_factory_load', $model, $class, $model_id );
+	}
+	
+	/**
+	 * Load an option object.
+	 * 
+	 * Option objects are singletons.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param string $class The class name.
+	 * @return MS_Model_Option
+	 */
+	protected static function load_from_wp_option( $class ) {
+	
+		$model = new $class();
+		
+		if( empty( $class::$instance )  ) {
+			$settings = get_option( $class );
+		
+			$model->before_load();
+		
+			$fields = $model->get_object_vars();
+			foreach ( $fields as $field => $val) {
+				if ( in_array( $field, $class::$ignore_fields ) ) {
+					continue;
+				}
+				if( isset( $settings[ $field ] ) ) {
+					$model->$field = $settings[ $field ];
+				}
+			}
+		
+			$model->after_load();
+		
+			$class::$instance = &$model;
+		}
+		else {
+			$model = $class::$instance;
+		}
+		
+		return apply_filters( 'ms_factory_load_from_wp_option', $model, $class );
+	}
+	
+	/**
+	 * Load a transient object.
+	 *
+	 * Transient objects are singletons.
+	 *
+	 * @since 4.0.0
+	 * 
+	 * @param string $class The class name.
+	 * @return $class Loaded Object
+	 */
+	public static function load_from_wp_transient( $class ) {
+		if( empty( $class::$instance )  ) {
+			$settings = get_transient( $class );
+		
+			$model = new $class();
+		
+			$model->before_load();
+		
+			$fields = get_object_vars( $model );
+			foreach ( $fields as $field => $val) {
+				if ( in_array( $field, $class::$ignore_fields ) ) {
+					continue;
+				}
+				if( isset( $settings[ $field ] ) ) {
+					$model->$field = $settings[ $field ];
+				}
+			}
+		
+			$model->after_load();
+		
+			$class::$instance = &$model;
+		}
+		else {
+			$model = &$class::$instance;
+		}
+		
+		return apply_filters( 'ms_factory_load_from_wp_transient', $class::$instance, $class );
+	}
+	
+	/**
+	 * Loads post and postmeta into a object.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $class The class name.
+	 * @param int $model_id
+	 * @return $class Loaded Object
+	 */
+	protected static function load_from_wp_custom_post_type( $class, $model_id = 0 ) {
+		$model = new $class;
+	
+		$model->before_load();
+	
+		if ( ! empty( $model_id ) ) {
+				
+			$post = get_post( $model_id );
+			if( ! empty( $post ) && $class::$POST_TYPE == $post->post_type ) {
+				$model->id = $post->ID;
+				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+				$model->description = $post->post_content;
+				$model->user_id = $post->post_author;
+				$model_details = get_post_meta( $model_id );
+				
+				$fields = get_object_vars( $model );
+				foreach ( $fields as $field => $val) {
+					if ( in_array( $field, $class::$ignore_fields ) ) {
+						continue;
+					}
+					if ( isset( $model_details[ $field ][ 0 ] ) ) {
+						$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
+					}
+				}
+			}
+		}
+	
+		$model->after_load();
+
+		return apply_filters( 'ms_factory_load_from_custom_post_type', $model, $class, $model_id );
+	}
+	
+	/**
+	 * Load user and user meta into a object.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $class The class name.
+	 * @param int $user_id
+	 * @return $class Loaded object
+	 */
+	protected static function load_from_wp_user( $class, $user_id ) {
+		$member = new $class();
+		
+		$wp_user = new WP_User( $user_id, $name );
+		if( ! empty( $wp_user->ID ) ) {
+			$member_details = get_user_meta( $user_id );
+			$member->id = $wp_user->ID;
+			$member->username = $wp_user->user_login;
+			$member->email = $wp_user->user_email;
+			$member->name = $wp_user->user_nicename;
+			$member->first_name = $wp_user->first_name;
+			$member->last_name = $wp_user->last_name;
+		
+			$member->is_admin = self::is_admin_user( $wp_user );
+		
+			$fields = get_object_vars( $member );
+			foreach( $fields as $field => $val )
+			{
+				if( in_array( $field, self::$ignore_fields ) )
+				{
+					continue;
+				}
+				if( isset( $member_details[ "ms_$field" ][0] ) )
+				{
+					$member->$field = maybe_unserialize( $member_details[ "ms_$field" ][0] );
+				}
+			}
+			/**
+			 * Load membership_relationships
+			 */
+			$member->membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+		}
+		
+		return apply_filters( 'ms_factory_load_from_wp_user', $member, $class, $user_id );
+	}
+	
+	/**
+	 * Magic method
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param string $method
+	 * @param array $args
+	 * @return 
+	 */
+	public function __call( $method, $args ) {
+		/** Magic method for all load_x() */
+		if( 0 === strpos( $method, 'load_' ) ) {
+			$parts = str_replace( 'load_', '', $method );
+			$parts = explode( '_', $parts );
+			$name = array();
+			foreach( $parts as $part ) {
+				$name[] = ucwords( $part );
+			}
+			$name = implode( '_', $name );
+			$class ="MS_Model_$name";
+
+			$class = apply_filters( 'ms_factory_load_class', $class );
+			$model = self::load( $class, implode( ',', $args ) );
+			return apply_filters( "ms_factory_$method" , $model );
+		}
+	}
+	
+	/**
+	 * Custom load membership.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param int $model_id
+	 * @return MS_Model_Membership
+	 */
+	public function load_membership( $model_id = 0 ) {
+		$class = apply_filters( 'ms_factory_load_class', 'MS_Model_Membership' );
+		$model = self::load( $class, $model_id );
+	
+		if( empty( $model->rules ) ) {
+			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules );
+		}
+	
+		return $model;
+	}
+}
