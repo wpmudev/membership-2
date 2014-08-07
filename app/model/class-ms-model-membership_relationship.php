@@ -49,12 +49,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	protected $start_date;
 	
 	protected $expire_date;
-	
-	/**
-	 * @deprecated
-	 */
-	protected $update_date;
-	
+		
 	protected $trial_expire_date;
 	
 	protected $trial_period_completed;
@@ -77,7 +72,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 4.0.0
 	 */
-	protected static $ignore_fields = array( 'membership', 'actions', 'filters' );
+	public static $ignore_fields = array( 'membership', 'actions', 'filters' );
 	
 	
 	/**
@@ -828,7 +823,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function handle_status_change( $status ) {
 		
-		if( $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
+		if( $this->is_valid() && $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
 			
 			do_action( 'ms_model_membership_relationship_handle_status_change', $status, $this );
 				
