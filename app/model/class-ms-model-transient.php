@@ -28,35 +28,24 @@ class MS_Model_Transient extends MS_Model {
 	public static $instance;
 	
 	public function save() {
+	
+		$this->before_save();
+	
+		$class = get_class( $this );
 		$settings = array();
-		
+	
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
+			if ( in_array( $field, $model->ignore_fields ) ) {
 				continue;
 			}
 			$settings[ $field ] = $this->$field;
 		}
-		set_transient( static::$CLASS_NAME, $settings );
-	}
 	
-	public static function load( $model_id = false ) {
-		if( static::$instance ) {
-			return static::$instance;
-		}
-		
-		$settings = get_transient( static::$CLASS_NAME );
-		
-		$model = new static::$CLASS_NAME();
-		$fields = get_object_vars( $model );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
-				continue;
-			}
-			if( isset( $settings[ $field ] ) ) {
-				$model->$field = $settings[ $field ];
-			}
-		}
-		return $model;	
-	}
+		set_transient( $class, $settings );
+	
+		$model->instance = &$this;
+	
+		$this->after_save();
+	}	
 }

@@ -36,7 +36,7 @@ class MS_Model_Option extends MS_Model {
 		
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, $class::$ignore_fields ) ) {
+			if ( in_array( $field, $this->ignore_fields ) ) {
 				continue;
 			}
 			$settings[ $field ] = $this->$field;
@@ -44,12 +44,8 @@ class MS_Model_Option extends MS_Model {
 				
 		update_option( $class, $settings );
 		
-		$class::$instance = &$this;
+		$this->instance = $this;
 		
-		MS_Helper_Debug::log($class. ': ' .get_class( $class::$instance) . ': ' . get_called_class() );
-		if( $class === 'MS_Model_Addon')
-		MS_Helper_Debug::log($class::$instance);
-
 		$this->after_save();
 	}
 	
@@ -57,5 +53,4 @@ class MS_Model_Option extends MS_Model {
 		$class = get_class( $this );
 		delete_option( $class );
 	}
-	
 }
