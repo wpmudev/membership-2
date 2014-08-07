@@ -130,4 +130,21 @@ class MS_Helper_Utility extends MS_Helper {
 	
 		return $remote_ip;
 	}
+	
+	public static function register_post_type( $post_type, $args = null ) {
+		
+		$defaults = array(
+			'public' => false,
+			'has_archive' => false,
+			'publicly_queryable' => false,
+			'supports' => false,
+// 			'capability_type' => apply_filters( $post_type, '_capability', 'page' ),
+			'hierarchical' => false
+		);
+		
+		$args = wp_parse_args( $args, $defaults );
+		
+		register_post_type( $post_type, $args );
+	}
+	
 }
