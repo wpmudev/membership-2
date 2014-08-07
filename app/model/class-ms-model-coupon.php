@@ -53,7 +53,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 	protected $coupon_message;
 	
-	protected static $ignore_fields = array( 'coupon_message', 'actions', 'filters' );
+	public static $ignore_fields = array( 'coupon_message', 'actions', 'filters' );
 	
 	public static function get_discount_types() {
 		return apply_filters( 'ms_model_coupon_get_discount_types', array(

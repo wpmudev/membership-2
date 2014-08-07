@@ -54,7 +54,7 @@ class MS_Model extends MS_Hooker {
 	 *
 	 * @since 4.0.0
 	 */			
-	protected static $ignore_fields = array( 'actions', 'filters' );
+	public static $ignore_fields = array( 'actions', 'filters' );
 
 	/**
 	 * MS_Model Contstuctor

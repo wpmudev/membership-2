@@ -42,65 +42,13 @@ class MS_Model_Member extends MS_Model {
 	protected $password;
 	
 	protected $password2;
-	
-	/**
-	 * @deprecated
-	 * @var unknown
-	 */
-	protected $payment_profiles;
-	
+		
 	protected $gateway_profiles;
 	
-	protected static $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
-	
-	public function __construct() {
+	public static $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters' );
 		
-	}
-	
 	public static function get_current_member() {
 		return MS_Factory::get_factory()->load_member( get_current_user_id() );
-	}
-	
-	// Note: Cannot override parent method with additional parameters.
-	// To handle this load, will call load_members, where 2nd parameter is required call load_members directly
-	public static function load( $model_id = 0 ) {
-		return MS_Factory::get_factory()->load_member_member( $model_id, null );
-	}		
-			
-	public static function load_member( $user_id = 0, $name = null ) {
-		$member = new MS_Model_Member();
-		
-		$wp_user = new WP_User( $user_id, $name );
-		if( ! empty( $wp_user->ID ) ) {
-			$member_details = get_user_meta( $user_id );
-			$member->id = $wp_user->ID;
-			$member->username = $wp_user->user_login;
-			$member->email = $wp_user->user_email;
-			$member->name = $wp_user->user_nicename;
-			$member->first_name = $wp_user->first_name;
-			$member->last_name = $wp_user->last_name;
-
-			$member->is_admin = self::is_admin_user( $wp_user );
-
-			$fields = get_object_vars( $member );
-			foreach( $fields as $field => $val )
-			{
-				if( in_array( $field, self::$ignore_fields ) )
-				{
-					continue;
-				}
-				if( isset( $member_details[ "ms_$field" ][0] ) )
-				{
-					$member->$field = maybe_unserialize( $member_details[ "ms_$field" ][0] );
-				}
-			}
-			/**
-			 * Load membership_relationships
-			 */
-			$member->membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
-		}
-
-		return $member;
 	}
 	
 	public function save()
