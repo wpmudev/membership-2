@@ -127,6 +127,17 @@ class MS_Model extends MS_Hooker {
 	}
 
 	/**
+	 * Get object properties.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return array of fields.
+	 */
+	public function get_object_vars() {
+		return get_object_vars( $this );	
+	}
+	
+	/**
 	 * Validate model properties.
 	 *
 	 * @since 4.0.0
