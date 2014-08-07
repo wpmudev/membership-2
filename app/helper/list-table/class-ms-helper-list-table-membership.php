@@ -161,11 +161,8 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'active':
-				$html = ( $item->active ) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Deactivated', MS_TEXT_DOMAIN );
-				break;
-			case 'public':
-				$html = ( $item->public ) ? __( 'Public', MS_TEXT_DOMAIN ) : __( 'Private', MS_TEXT_DOMAIN );
+			case 'membership_type':
+				$html = $item->membership_type;
 				break;
 			case 'members':
 				$html = $item->get_members_count();
