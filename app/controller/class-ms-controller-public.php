@@ -102,7 +102,7 @@ class MS_Controller_Public extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function check_for_membership_pages() {
-		$settings = MS_Model_Settings::load();
+		$settings = MS_Factory::get_factory()->load_settings();
 		$is_special_page = $settings->is_special_page();
 		
 		switch( $is_special_page ) {
@@ -310,12 +310,12 @@ class MS_Controller_Public extends MS_Controller {
 	public function payment_table() {
 
 		$membership_id = $_REQUEST['membership_id'];
-		$membership = MS_Model_Membership::load( $membership_id );
+		$membership = MS_Factory::get_factory()->load_membership( $membership_id );
 		$member = MS_Model_Member::get_current_member();
 		$move_from_id = ! empty ( $_REQUEST['move_from_id'] ) ? $_REQUEST['move_from_id'] : 0;
 
 		if( ! empty( $_POST['coupon_code'] ) ) {
-			$coupon = MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] );
+			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
 			if( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
 				$coupon = new MS_Model_Coupon();
@@ -340,7 +340,7 @@ class MS_Controller_Public extends MS_Controller {
 		$invoice = $ms_relationship->get_current_invoice();
 		$data['invoice'] = $invoice;
 		if( $invoice->coupon_id ) {
-			$data['coupon'] = MS_Model_Coupon::load( $invoice->coupon_id );
+			$data['coupon'] = MS_Factory::get_factory()->load_coupon( $invoice->coupon_id );
 		}
 			
 		$data['membership'] = $membership;
@@ -463,7 +463,7 @@ class MS_Controller_Public extends MS_Controller {
 	 * @return void
 	 */	
 	public function enqueue_styles() {
-		$settings = MS_Model_Settings::load();
+		$settings = MS_Factory::get_factory()->load_settings();
 		$is_special_page = $settings->is_special_page();
 		if( $settings->is_special_page() ) {
 			wp_enqueue_style( 'membership-admin' );

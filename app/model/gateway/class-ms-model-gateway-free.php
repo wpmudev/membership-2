@@ -24,7 +24,7 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected static $instance;
+	public static $instance;
 	
 	protected $id = self::GATEWAY_FREE;
 	

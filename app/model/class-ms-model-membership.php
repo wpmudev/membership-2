@@ -119,7 +119,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		$memberships = array();
 		foreach ( $items as $item ) {
-			$memberships[] = self::load( $item->ID );	
+			$memberships[] = MS_Factory::get_factory()->load_membership( $item->ID );	
 		}
 		return $memberships;
 	}
@@ -157,18 +157,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
-	public static function load( $model_id = false ) {
-		$model = parent::load( $model_id );
-		
-		if( empty( $model->rules ) ) {
-			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules );
-		}
-
-		return $model;
-	}
-	
 	public static function is_valid_membership( $membership_id ) {
-		return ( static::load( $membership_id )->id > 0 );
+		return ( MS_Factory::get_factory()->load_membership( $membership_id )->id > 0 );
 	}
 	
 	public static function get_visitor_membership() {
@@ -188,7 +178,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$visitor_membership = null;
 		if( ! empty( $item[0] ) ) {
-			$visitor_membership = self::load( $item[0]->ID );
+			$visitor_membership = MS_Factory::get_factory()->load_membership( $item[0]->ID );
 		}
 		else {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
@@ -202,7 +192,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->active = true;
 			$visitor_membership->public = true;
 			$visitor_membership->save();
-			$visitor_membership = self::load( $visitor_membership->id );
+			$visitor_membership = MS_Factory::get_factory()->load_membership( $visitor_membership->id );
 		}
 		return $visitor_membership;
 	}
@@ -227,7 +217,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 			$default_membership = null;
 			if( ! empty( $item[0] ) ) {
-				$default_membership = self::load( $item[0]->ID );
+				$default_membership = MS_Factory::get_factory()->load_membership( $item[0]->ID );
 			}
 			else {
 				$description = __( 'Default membership for non members', MS_TEXT_DOMAIN );
@@ -241,7 +231,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$default_membership->active = true;
 				$default_membership->public = true;
 				$default_membership->save();
-				$default_membership = self::load( $default_membership->id );
+				$default_membership = MS_Factory::get_factory()->load_membership( $default_membership->id );
 			}
 		}
 		else {
@@ -420,7 +410,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					$this->$property = $this->validate_date( $value );
 					break;
 				case 'on_end_membership_id':
-					if( 0 < self::load( $value )->id ) {
+					if( 0 < MS_Factory::get_factory()->load_membership( $value )->id ) {
 						$this->$property = $value;
 					}
 				default:

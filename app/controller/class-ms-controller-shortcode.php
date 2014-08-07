@@ -283,10 +283,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		if( ! empty( $data['post_id'] ) ) {
-			$invoice = MS_Model_Invoice::load( $data['post_id'] );
+			$invoice = MS_Factory::get_factory()->load_invoice( $data['post_id'] );
 			$data['invoice'] = $invoice;
-			$data['member'] = MS_Model_Member::load( $invoice->user_id );
-			$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
+			$data['member'] = MS_Factory::get_factory()->load_member( $invoice->user_id );
+			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
 			$data['ms_relationship'] = $ms_relationship;
 			$data['membership'] = $ms_relationship->get_membership();
 			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );

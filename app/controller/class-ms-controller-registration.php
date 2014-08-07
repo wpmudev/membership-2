@@ -260,7 +260,7 @@ class MS_Controller_Registration extends MS_Controller {
 			 * Allow Free gateway verify if is a free membership ( price = 0 ).
 			 * Other gateways may hook to ms_model_gateway_handle_payment_return_{$gateway_id} action.
 			 */
-			$gateway = apply_filters( 'ms_model_gateway_free', MS_Model_Gateway_Free::load() );
+			$gateway = apply_filters( 'ms_model_gateway_free', MS_Factory::get_factory()->load_gateway_free() );
 			$gateway->process_free_memberships();
 			
 			switch( $this->get_signup_step() ) {
@@ -283,7 +283,7 @@ class MS_Controller_Registration extends MS_Controller {
 					if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) && 
 						! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'],  $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 						 
-						$ms_relationship = MS_Model_Membership_Relationship::load( $_POST['ms_relationship_id'] );
+						$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
 						
 						$gateway_id = $_POST['gateway'];
 						$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
@@ -388,7 +388,7 @@ class MS_Controller_Registration extends MS_Controller {
 	public function payment_table() {
 		if( ! empty( $_GET['action'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
 			$membership_id = $_GET['membership'];
-			$membership = MS_Model_Membership::load( $membership_id );
+			$membership = MS_Factory::get_factory()->load_membership( $membership_id );
 			$member = MS_Model_Member::get_current_member();
 			$move_from_id = ! empty ( $_GET['move_from'] ) ? $_GET['move_from'] : 0;
 

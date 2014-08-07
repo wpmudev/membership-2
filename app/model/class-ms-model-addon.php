@@ -25,7 +25,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected static $instance;
+	public static $instance;
 	
 	const ADDON_MULTI_MEMBERSHIPS = 'multi_memberships';
 	const ADDON_POST_BY_POST = 'post_by_post';
@@ -60,12 +60,13 @@ class MS_Model_Addon extends MS_Model_Option {
 
 	public static function is_enabled( $addon ) {
 	
-		$model = self::load();
+		$model = MS_Factory::get_factory()->load_addon();
 		$enabled = false;
 	
 		if( in_array( $addon, self::get_addon_types() ) ) {
 			$enabled = ! empty( $model->addons[ $addon ] );
 		}
+// 		MS_Helper_Debug::log($model);
 		return apply_filters( 'ms_model_addon_is_enabled', $enabled, $addon );
 	}
 	
@@ -159,8 +160,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
-				case 'addons':
-					break;
 				default:
 					$this->$property = $value;
 					break;

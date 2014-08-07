@@ -79,7 +79,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
 		
-		$this->model = apply_filters( 'membership_membership_model', MS_Model_Membership::load( $membership_id ) );
+		$this->model = apply_filters( 'membership_membership_model', MS_Factory::get_factory()->load_membership( $membership_id ) );
 		
 		$this->add_action( 'load-membership_page_all-memberships', 'admin_membership_list_manager' );
 		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
@@ -135,7 +135,7 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$msg = 0;
 		foreach( $membership_ids as $membership_id ) {
-			$membership = MS_Model_Membership::load( $membership_id );
+			$membership = MS_Factory::get_factory()->load_membership( $membership_id );
 			switch( $action ) {
 				case 'toggle_activation':
 					$membership->active = ! $membership->active;
@@ -469,7 +469,7 @@ class MS_Controller_Membership extends MS_Controller {
 			return $msg;
 		}
 
-		$src_membership = MS_Model_Membership::load( $copy_from_id );
+		$src_membership = MS_Factory::get_factory()->load_membership( $copy_from_id );
 		if( $src_membership->id > 0 ) {
 				
 			$rule_types = array( 'post', 'page' ); 

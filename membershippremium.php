@@ -276,20 +276,18 @@ class MS_Plugin {
 		/**
 		 * Creates and Filters the Settings Model.
 		 *
-		 * @uses MS_Model_Settings::load()
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->settings = apply_filters( 'membership_model_settings', MS_Model_Settings::load(), $this );
+		$this->settings = apply_filters( 'membership_model_settings', MS_Factory::get_factory()->load_settings(), $this );
 
 		/**
 		 * Creates and Filters the Addon Model.
 		 *
-		 * @uses MS_Model_Addon::load()
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->addon = apply_filters( 'membership_model_addon', MS_Model_Addon::load(), $this );		
+		$this->addon = apply_filters( 'membership_model_addon', MS_Factory::get_factory()->load_addon(), $this );		
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );

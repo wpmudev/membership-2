@@ -24,7 +24,9 @@
 class MS_Model_Transient extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
-		
+
+	public static $instance;
+	
 	public function save() {
 		$settings = array();
 		

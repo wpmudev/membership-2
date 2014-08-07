@@ -112,7 +112,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		switch( $column_name ) {
 			case 'membership':
 				if( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
-					$membership = MS_Model_Membership::load( $item->membership_id );
+					$membership = MS_Factory::get_factory()->load_membership( $item->membership_id );
 					$html = $membership->name;
 				}
 				else {

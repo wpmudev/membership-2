@@ -72,7 +72,7 @@ class MS_Model_Plugin extends MS_Model {
 		$this->member = MS_Model_Member::get_current_member();
 		$this->check_member_status();
 		
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 
 		/** Admin user simulating membership */
 		if( MS_Model_Member::is_admin_user() ) {
@@ -130,7 +130,7 @@ class MS_Model_Plugin extends MS_Model {
 	public function protect_current_page() {
 
 		/** Admin user has access to everything */
-		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
+		if( $this->member->is_admin_user() && ! MS_Factory::get_factory()->load_simulate()->is_simulating() ) {
 			return true;
 		}
 
@@ -191,7 +191,7 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function setup_protection( WP $wp ){
 		/** Admin user has access to everything */
-		if( $this->member->is_admin_user() && ! MS_Model_Simulate::load()->is_simulating() ) {
+		if( $this->member->is_admin_user() && ! MS_Factory::get_factory()->load_simulate()->is_simulating() ) {
 			return true;
 		}
 		
@@ -250,7 +250,7 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function setup_cron_services() {
 		
-		if( ! ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
+		if( ! ( $this->member->is_admin_user() && MS_Factory::get_factory()->load_simulate()->is_simulating() ) ) {
 			
 			/**
 			 * Check for membership status.
@@ -284,7 +284,7 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function check_membership_status() {
 		
-		if( ( $this->member->is_admin_user() && MS_Model_Simulate::load()->is_simulating() ) ) {
+		if( ( $this->member->is_admin_user() && MS_Factory::get_factory()->load_simulate()->is_simulating() ) ) {
 			return;
 		}
 		

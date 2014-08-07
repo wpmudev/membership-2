@@ -95,7 +95,7 @@ class MS_Controller_Addon extends MS_Controller {
 		 * @uses Filter: 'membership_model_addon'
 		 * @since 4.0.0
 		 */		
-		$this->model = MS_Model_Addon::load();
+		$this->model = MS_Factory::get_factory()->load_addon();
 
 		/** Enqueue scripts and styles. */
 		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );

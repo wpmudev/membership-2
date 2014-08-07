@@ -34,7 +34,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected static $instance;
+	public static $instance;
 	
 	protected $id = 'gateway';
 	
@@ -67,12 +67,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function get_gateways( $only_active = false ) {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
-				self::GATEWAY_FREE => MS_Model_Gateway_Free::load(),
-				self::GATEWAY_MANUAL => MS_Model_Gateway_Manual::load(),
-				self::GATEWAY_PAYPAL_STANDARD => MS_Model_Gateway_Paypal_Standard::load(),
-				self::GATEWAY_PAYPAL_SINGLE => MS_Model_Gateway_Paypal_Single::load(),
-				self::GATEWAY_AUTHORIZE => MS_Model_Gateway_Authorize::load(),
-				self::GATEWAY_STRIPE => MS_Model_Gateway_Stripe::load(),
+				self::GATEWAY_FREE => MS_Factory::get_factory()->load_gateway_free(),
+				self::GATEWAY_MANUAL => MS_Factory::get_factory()->load_gateway_manual(),
+				self::GATEWAY_PAYPAL_STANDARD => MS_Factory::get_factory()->load_gateway_paypal_standard(),
+				self::GATEWAY_PAYPAL_SINGLE => MS_Factory::get_factory()->load_gateway_paypal_single(),
+				self::GATEWAY_AUTHORIZE => MS_Factory::get_factory()->load_gateway_authorize(),
+				self::GATEWAY_STRIPE => MS_Factory::get_factory()->load_gateway_stripe(),
 			);
 		}
 		if( $only_active ) {
@@ -182,7 +182,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function check_card_expiration( $ms_relationship ) {
 
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
 		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
 		if( ! empty( $card_exp ) ) {
 			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
@@ -205,15 +205,15 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function process_transaction( $invoice ) {
 	
-		$ms_relationship = MS_Model_Membership_Relationship::load( $invoice->ms_relationship_id );
-		$member = MS_Model_Member::load( $invoice->user_id );
+		$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
+		$member = MS_Factory::get_factory()->load_member( $invoice->user_id );
 		switch( $invoice->status ) {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;
 			case MS_Model_Invoice::STATUS_PAID:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
 				if( $invoice->coupon_id ) {
-					$coupon = MS_Model_Coupon::load( $invoice->coupon_id );
+					$coupon = MS_Factory::get_factory()->load_coupon( $invoice->coupon_id );
 					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
 					$coupon->used++;
 					$coupon->save();

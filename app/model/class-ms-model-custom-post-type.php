@@ -42,7 +42,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		$this->before_save();
 				
 		$this->post_modified = date( 'Y-m-d H:i:s' );
-
+		
+		$class = get_class( $this );
 		$post = array(
 				'comment_status' => 'closed',
 				'ping_status' => 'closed',
@@ -52,7 +53,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_name' => sanitize_title( $this->name ),
 				'post_status' => 'private',
 				'post_title' => sanitize_text_field( ! empty( $this->title ) ? $this->title : $this->name ),
-				'post_type' => static::$POST_TYPE,
+				'post_type' => $class::$POST_TYPE,
 				'post_modified' => $this->post_modified, 
 		);
 		if ( empty( $this->id ) ) {
@@ -67,7 +68,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, static::$ignore_fields ) ) {
+			if ( in_array( $field, $class::$ignore_fields ) ) {
 				continue;
 			}
 			if ( isset( $this->$field ) && ( !isset( $post_meta[ $field ][ 0 ] ) || $post_meta[ $field ][ 0 ] != $this->$field ) ) {
@@ -77,43 +78,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		$this->after_save();
 	}
 
-	/**
-	 * Loads post and postmeta into a object.
-	 * 
-	 * @param int $model_id
-	 * @return MS_Model_Custom_Post_Type
-	 */
-	public static function load( $model_id = false ) {
-		$model = new static::$CLASS_NAME();
-		
-		$model->before_load();
-		
-		if ( !empty( $model_id ) ) {
-			
-			$post = get_post( $model_id );
-			if( ! empty( $post ) && static::$POST_TYPE == $post->post_type ) {
-				$model->id = $post->ID;
-				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
-				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
-				$model->description = $post->post_content;
-				$model->user_id = $post->post_author;
-				$model_details = get_post_meta( $model_id );
-				$fields = get_object_vars( $model );
-				foreach ( $fields as $field => $val) {
-					if ( in_array( $field, static::$ignore_fields ) ) {
-						continue;
-					}
-					if ( isset( $model_details[ $field ][ 0 ] ) ) {
-						$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
-					}
-				}
-			}
-		}
-		
-		$model->after_load();
-		return $model;
-	}
-	
 	public function delete() {
 		if( ! empty( $this->id ) ) {
 			wp_delete_post( $this->id );

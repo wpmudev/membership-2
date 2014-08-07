@@ -122,7 +122,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		// 		: 'add_activate_plugin_menu';
 		// 	$this->add_action( 'admin_bar_menu', $method );
 		// }
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 				
 		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
 		if( ! empty( $_GET['action'] ) && 'ms_simulate' == $_GET['action'] && isset( $_GET['membership_id'] ) ) {
@@ -203,7 +203,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		global $wp_admin_bar;
 		$admin_url_func = $this->admin_url_function;
 		
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 				
 		$memberships = MS_Model_Membership::get_memberships();
 		if ( $simulate->is_simulating() ) {	
@@ -213,7 +213,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			);
 			$memberships[] = $reset_simulation;
 			
-			$membership = MS_Model_Membership::load( $simulate->membership_id );
+			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
 			
 			$title = null;
 			$html = null;
@@ -261,7 +261,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		global $wp_admin_bar;
 		$admin_url_func = $this->admin_url_function;
 		
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 		$memberships = MS_Model_Membership::get_memberships();
 
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
@@ -447,7 +447,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	public function customize_toolbar() {
 		// $this->original_nodes = $this->get_original_node();
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 		$method = '';
 		if( MS_Model_Member::is_admin_user() ) {
 			$method = MS_Plugin::is_enabled()
@@ -491,7 +491,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		? 'network_admin_url'
 				: 'admin_url';
 		
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 				
 		$memberships = MS_Model_Membership::get_memberships();
 		if ( $simulate->is_simulating() ) {	
@@ -501,7 +501,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			);
 			$memberships[] = $reset_simulation;
 			
-			$membership = MS_Model_Membership::load( $simulate->membership_id );
+			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
 			
 			$title = null;
 			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
@@ -535,7 +535,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 		
 		if( $simulate->is_simulating() ) {
-			$membership = MS_Model_Membership::load( $simulate->membership_id );
+			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
 			$title .= $membership->name;
 		}
 		else {

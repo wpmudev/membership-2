@@ -25,88 +25,37 @@ class MS_Model_Option extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
 
-	protected static $instance;
+	public static $instance;
 	
-	/* @todo migrate load to __construct 
-	public function __construct( $model_id = false ) {
-		
-		$this->before_load();
-		
-		$class = get_class( $this );
-		if( $class::$instance ) {
-			return $class::$instance;
-		}
-		else {
-			$settings = get_option( $class );
-			$fields = get_object_vars( $this );
-			foreach ( $fields as $field => $val ) {
-				if ( in_array( $field, $class::$ignore_fields ) ) {
-					continue;
-				}
-				if( isset( $settings[ $field ] ) ) {
-					$this->$field = $settings[ $field ];
-				}
-			}
-			$class::$instance = $this;
-		}
-			
-		$this->after_load();
-	}
-	*/
 	public function save() {
 		
 		$this->before_save();
 		
+		$class = get_class( $this );
 		$settings = array();
 		
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, self::$ignore_fields ) ) {
+			if ( in_array( $field, $class::$ignore_fields ) ) {
 				continue;
 			}
 			$settings[ $field ] = $this->$field;
 		}
 				
-		update_option( static::$CLASS_NAME, $settings );
+		update_option( $class, $settings );
 		
+		$class::$instance = &$this;
+		
+		MS_Helper_Debug::log($class. ': ' .get_class( $class::$instance) . ': ' . get_called_class() );
+		if( $class === 'MS_Model_Addon')
+		MS_Helper_Debug::log($class::$instance);
+
 		$this->after_save();
 	}
 	
-	/**
-	 * @deprecated
-	 * @param string $model_id
-	 * @return unknown
-	 */
-	public static function load( $model_id = false ) {
-
-		if( static::$instance ) {
-			return static::$instance;
-		}
-		
-		$settings = get_option( static::$CLASS_NAME );
-		
-		$model = new static::$CLASS_NAME();
-		
-		$model->before_load();
-		
-		$fields = get_object_vars( $model );
-		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, static::$ignore_fields ) ) {
-				continue;
-			}
-			if( isset( $settings[ $field ] ) ) {
-				$model->$field = $settings[ $field ];
-			}
-		}
-		
-		$model->after_load();
-		
-		static::$instance = $model;
-		return $model;	
-	}
-	
 	public function delete() {
-		delete_option( static::$CLASS_NAME );
+		$class = get_class( $this );
+		delete_option( $class );
 	}
 	
 }

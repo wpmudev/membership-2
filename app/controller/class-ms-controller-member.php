@@ -154,7 +154,6 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		else {
 			$view = apply_filters( 'ms_view_member_list', new MS_View_Member_List() );
-			$view->multiple_membership_option = apply_filters( 'ms_model_addon_multiple_membership', MS_Model_Addon::load()->multiple_membership );
 			$view->render();
 		}
 	}
@@ -197,7 +196,7 @@ class MS_Controller_Member extends MS_Controller {
 		/** Single action */
 		else {
 			/** Member Model */
-			$member = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
+			$member = apply_filters( 'membership_member_model', MS_Factory::get_factory()->load_member( $member_id ) );
 			$data['member_id'] = array( $member_id );
 			switch( $action ) {
 				case 'add':
@@ -262,7 +261,7 @@ class MS_Controller_Member extends MS_Controller {
 		
 		foreach( $members as $member_id ){
 			/** Member Model */
-			$member = apply_filters( 'membership_member_model', MS_Model_Member::load( $member_id ) );
+			$member = apply_filters( 'membership_member_model', MS_Factory::get_factory()->load_member( $member_id ) );
 			switch( $action ) {
 				case 'add':
 					$member->add_membership( $membership_id );

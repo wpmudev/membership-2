@@ -58,13 +58,13 @@ class MS_Model_Member extends MS_Model {
 	}
 	
 	public static function get_current_member() {
-		return MS_Model_Member::load( get_current_user_id() );
+		return MS_Factory::get_factory()->load_member( get_current_user_id() );
 	}
 	
 	// Note: Cannot override parent method with additional parameters.
 	// To handle this load, will call load_members, where 2nd parameter is required call load_members directly
 	public static function load( $model_id = 0 ) {
-		return MS_Model_Member::load_member( $model_id, null );
+		return MS_Factory::get_factory()->load_member_member( $model_id, null );
 	}		
 			
 	public static function load_member( $user_id = 0, $name = null ) {
@@ -248,7 +248,7 @@ class MS_Model_Member extends MS_Model {
 
 		$members = array();
 		foreach( $users as $user_id ) {
-			$members[] = self::load( $user_id );
+			$members[] = MS_Factory::get_factory()->load_member( $user_id );
 		}
 		
 		return $members;
@@ -382,7 +382,7 @@ class MS_Model_Member extends MS_Model {
 				MS_Model_Membership_Relationship::STATUS_CANCELED, 
 			)
 		);
-		$simulate = MS_Model_Simulate::load();
+		$simulate = MS_Factory::get_factory()->load_simulate();
 		
 		if ( $this->is_admin && ! $simulate->is_simulating() ) {
 			$is_member = true;

@@ -139,7 +139,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		
 		$invoices = array();
 		foreach ( $items as $item ) {
-			$invoices[] = self::load( $item );	
+			$invoices[] = MS_Factory::get_factory()->load_invoice( $item );	
 		}
 		return apply_filters( 'ms_model_invoice_get_invoices', $invoices );
 	}
@@ -187,7 +187,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		
 		$invoice = null;
 		if( ! empty( $item[0] ) ) {
-			$invoice = self::load( $item[0] );
+			$invoice = MS_Factory::get_factory()->load_invoice( $item[0] );
 		}
 		return apply_filters( 'ms_model_invoice_get_invoice', $invoice );
 	}
@@ -224,7 +224,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$invoice = null;
 
 		if( ! empty( $item[0] ) ) {
-			$invoice = self::load( $item[0]->ID );
+			$invoice = MS_Factory::get_factory()->load_invoice( $item[0]->ID );
 		}
 		
 		return apply_filters( 'ms_model_invoice_load_by_external_id', $invoice );
@@ -330,7 +330,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		}
 		
 		$invoice = null;
-		$member = MS_Model_Member::load( $ms_relationship->user_id );
+		$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
 		$invoice_status = self::STATUS_BILLED;
 		$notes = null;
 		$due_date = null;
