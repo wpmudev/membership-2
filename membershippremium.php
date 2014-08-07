@@ -342,6 +342,7 @@ class MS_Plugin {
 		
 		$cpts = array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
+				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
