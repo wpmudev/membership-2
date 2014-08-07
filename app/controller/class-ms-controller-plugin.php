@@ -32,15 +32,6 @@
  * @subpackage Controller
  */
 class MS_Controller_Plugin extends MS_Controller {
-
-	/**
-	 * Capability to access menu.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */
-	private $capability = 'manage_options';
 	
 	/**
 	 * Instance of MS_Model_Plugin.

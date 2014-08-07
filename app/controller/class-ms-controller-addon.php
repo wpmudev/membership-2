@@ -34,24 +34,6 @@
 class MS_Controller_Addon extends MS_Controller {
 
 	/**
-	 * The custom post type used with Add-ons.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $post_type
-	 */
-	private $post_type;
-
-	/**
-	 * Capability required to manage Add-ons.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
-	/**
 	 * The model to use for loading/saving add-on data.
 	 *
 	 * @since 4.0.0

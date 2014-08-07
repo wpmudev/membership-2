@@ -30,24 +30,6 @@
  * @subpackage Controller
  */
 class MS_Controller_Billing extends MS_Controller {
-
-	/**
-	 * The custom post type used with Billing.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $post_type
-	 */
-	private $post_type;
-
-	/**
-	 * Capability required to manage Billing.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */		
-	private $capability = 'manage_options';
 	
 	/**
 	 * The model to use for loading/saving billing data.

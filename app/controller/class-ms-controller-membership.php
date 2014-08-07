@@ -34,15 +34,6 @@
 class MS_Controller_Membership extends MS_Controller {
 	
 	/**
-	 * Capability required to manage Memberships.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
-	/**
 	 * The model to use for loading/saving Membership data.
 	 *
 	 * @since 4.0.0

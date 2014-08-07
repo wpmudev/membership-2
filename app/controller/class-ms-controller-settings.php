@@ -33,16 +33,6 @@
  */
 class MS_Controller_Settings extends MS_Controller {
 	
-	
-	/**
-	 * Capability required to manage Membership settings.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
 	/**
 	 * The model to use for loading/saving Membership settings data.
 	 *

@@ -80,15 +80,6 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	private $priority = 'high';
 	
 	/**
-	 * Capability required to use access metabox.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */		
-	private $capability = 'manage_options';
-		
-	/**
 	 * Prepare the metabox.
 	 *
 	 * @since 4.0.0
@@ -177,7 +168,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 		if ( is_int( wp_is_post_revision( $post ) ) ) return;
 		if ( is_int( wp_is_post_autosave( $post ) ) ) return;
-		if ( ! current_user_can( 'edit_post', $post_id )) return;
+// 		if ( ! current_user_can( 'edit_post', $post_id )) return;
 		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
 		if ( empty( $_POST[ $nonce ]) || ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) return;
 		

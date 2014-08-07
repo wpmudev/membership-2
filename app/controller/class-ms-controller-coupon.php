@@ -32,15 +32,6 @@
 class MS_Controller_Coupon extends MS_Controller {
 
 	/**
-	 * Capability required to manage Coupons.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
-	/**
 	 * The model to use for loading/saving coupon data.
 	 *
 	 * @since 4.0.0

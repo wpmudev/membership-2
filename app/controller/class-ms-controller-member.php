@@ -35,24 +35,6 @@
 class MS_Controller_Member extends MS_Controller {
 
 	/**
-	 * The custom post type used with Members.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $post_type
-	 */
-	private $post_type;
-	
-	/**
-	 * Capability required to manage Members.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
-	/**
 	 * The model to use for loading/saving Member data.
 	 *
 	 * @since 4.0.0

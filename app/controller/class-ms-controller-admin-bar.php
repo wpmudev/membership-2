@@ -34,16 +34,7 @@
  * @subpackage Controller
  */
 class MS_Controller_Admin_Bar extends MS_Controller {
-	
-	/**
-	 * Capability required to use simulation feature.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-	
+		
 	/**
 	 * Views to use for rendering admin bar features.
 	 *

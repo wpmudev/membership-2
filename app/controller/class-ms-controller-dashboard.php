@@ -34,15 +34,6 @@
 class MS_Controller_Dashboard extends MS_Controller {
 
 	/**
-	 * Capability required to access Membership Dashboard features.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $capability
-	 */	
-	private $capability = 'manage_options';
-
-	/**
 	 * Views to use for rendering Membership Dashboard.
 	 *
 	 * @since 4.0.0
