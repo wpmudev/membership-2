@@ -340,12 +340,17 @@ class MS_Plugin {
 		
 		do_action( 'ms_plugin_register_custom_post_type', $this );
 		
-		MS_Model_Membership::register_post_type();
-		MS_Model_Invoice::register_post_type();
-		MS_Model_Communication::register_post_type();
-		MS_Model_Coupon::register_post_type();
-		MS_Model_Membership_Relationship::register_post_type();
-		MS_Model_Event::register_post_type();
+		$cpts = array(
+				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
+				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
+				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
+				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
+				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
+				
+		);
+		foreach( $cpts as $cpt => $args ) {
+			MS_Helper_Utility::register_post_type( $cpt, $args );
+		}
 	}
 	
 	/**
