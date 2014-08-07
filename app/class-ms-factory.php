@@ -30,12 +30,6 @@
  * @package Membership
  */
 class MS_Factory extends MS_Model {
-
-	const MS_Model_Option = 'MS_Model_Option';
-	
-	const MS_Custom_Post_Type = 'MS_Custom_Post_Type';
-	
-	const MS_Model_Member = 'MS_Model_Member';
 	
 	protected static $instance;
 	
@@ -60,7 +54,7 @@ class MS_Factory extends MS_Model {
 	 */
 	public static function load( $class, $model_id = 0 ) {
 		$model = null;
-		
+
 		if( class_exists( $class ) && $model = new $class() ) {
 			if( $model instanceof MS_Model_Option ) {
 				$model = self::load_from_wp_option( $class );
@@ -69,7 +63,13 @@ class MS_Factory extends MS_Model {
 				$model = self::load_from_wp_custom_post_type( $class, $model_id );
 			}
 			elseif( $model instanceof MS_Model_Member ) {
-				$model = self::load_from_wp_user( $class, $model_id );
+				$args = func_get_args();
+
+				$name = null;
+				if( ! empty( $args[2] ) ) {
+					$name = $args[2];
+				}
+				$model = self::load_from_wp_user( $class, $model_id, $name );
 			}
 			elseif( $model instanceof MS_Model_Transiente ) {
 				$model = self::load_from_wp_transient( $class, $model_id );
@@ -137,7 +137,7 @@ class MS_Factory extends MS_Model {
 		
 			$model->before_load();
 		
-			$fields = get_object_vars( $model );
+			$fields = $model->get_object_vars();
 			foreach ( $fields as $field => $val) {
 				if ( in_array( $field, $class::$ignore_fields ) ) {
 					continue;
@@ -155,7 +155,7 @@ class MS_Factory extends MS_Model {
 			$model = &$class::$instance;
 		}
 		
-		return apply_filters( 'ms_factory_load_from_wp_transient', $class::$instance, $class );
+		return apply_filters( 'ms_factory_load_from_wp_transient', $model, $class );
 	}
 	
 	/**
@@ -168,7 +168,7 @@ class MS_Factory extends MS_Model {
 	 * @return $class Loaded Object
 	 */
 	protected static function load_from_wp_custom_post_type( $class, $model_id = 0 ) {
-		$model = new $class;
+		$model = new $class();
 	
 		$model->before_load();
 	
@@ -176,22 +176,23 @@ class MS_Factory extends MS_Model {
 				
 			$post = get_post( $model_id );
 			if( ! empty( $post ) && $class::$POST_TYPE == $post->post_type ) {
+				$post_meta = get_post_meta( $model_id );
+				
+				$fields = $model->get_object_vars();
+				foreach ( $fields as $field => $val) {
+					if ( in_array( $field, $class::$ignore_fields ) ) {
+						continue;
+					}
+					if ( isset( $post_meta[ $field ][ 0 ] ) ) {
+						$model->$field = maybe_unserialize( $post_meta[ $field ][ 0 ] );
+					}
+				}
+				
 				$model->id = $post->ID;
 				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->description = $post->post_content;
 				$model->user_id = $post->post_author;
-				$model_details = get_post_meta( $model_id );
-				
-				$fields = get_object_vars( $model );
-				foreach ( $fields as $field => $val) {
-					if ( in_array( $field, $class::$ignore_fields ) ) {
-						continue;
-					}
-					if ( isset( $model_details[ $field ][ 0 ] ) ) {
-						$model->$field = maybe_unserialize( $model_details[ $field ][ 0 ] );
-					}
-				}
 			}
 		}
 	
@@ -209,7 +210,7 @@ class MS_Factory extends MS_Model {
 	 * @param int $user_id
 	 * @return $class Loaded object
 	 */
-	protected static function load_from_wp_user( $class, $user_id ) {
+	protected static function load_from_wp_user( $class, $user_id, $name = null ) {
 		$member = new $class();
 		
 		$wp_user = new WP_User( $user_id, $name );
@@ -222,20 +223,18 @@ class MS_Factory extends MS_Model {
 			$member->first_name = $wp_user->first_name;
 			$member->last_name = $wp_user->last_name;
 		
-			$member->is_admin = self::is_admin_user( $wp_user );
+			$member->is_admin = $class::is_admin_user( $wp_user );
 		
-			$fields = get_object_vars( $member );
-			foreach( $fields as $field => $val )
-			{
-				if( in_array( $field, self::$ignore_fields ) )
-				{
+			$fields = $member->get_object_vars();
+			foreach( $fields as $field => $val ) {
+				if( in_array( $field, $class::$ignore_fields ) ) {
 					continue;
 				}
-				if( isset( $member_details[ "ms_$field" ][0] ) )
-				{
+				if( isset( $member_details[ "ms_$field" ][0] ) ) {
 					$member->$field = maybe_unserialize( $member_details[ "ms_$field" ][0] );
 				}
 			}
+			
 			/**
 			 * Load membership_relationships
 			 */
@@ -281,13 +280,13 @@ class MS_Factory extends MS_Model {
 	 * @return MS_Model_Membership
 	 */
 	public function load_membership( $model_id = 0 ) {
-		$class = apply_filters( 'ms_factory_load_class', 'MS_Model_Membership' );
+		$class = apply_filters( 'ms_factory_load_membership_class', 'MS_Model_Membership' );
 		$model = self::load( $class, $model_id );
 	
 		if( empty( $model->rules ) ) {
 			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules );
 		}
-	
-		return $model;
+
+		return apply_filters( "ms_factory_load_membership", $model );
 	}
 }
