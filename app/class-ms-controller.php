@@ -39,6 +39,15 @@
 class MS_Controller extends MS_Hooker {
 	
 	/**
+	 * Capability required to use access metabox.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $capability
+	 */
+	protected $capability = 'manage_options';
+	
+	/**
 	 * Parent constuctor of all controllers.
 	 *
 	 * @since 4.0.0
