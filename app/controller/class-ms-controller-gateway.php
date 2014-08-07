@@ -176,9 +176,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 				case 'edit':
 					foreach( $fields as $field => $value ) {
-						if( property_exists( $gateway, $field ) ) {
-							$gateway->$field = $value;
-						}
+						$gateway->$field = $value;
 					}
 					$gateway->save();
 					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
