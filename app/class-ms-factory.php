@@ -71,7 +71,7 @@ class MS_Factory {
 				}
 				$model = self::load_from_wp_user( $class, $model_id, $name );
 			}
-			elseif( $model instanceof MS_Model_Transiente ) {
+			elseif( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $class, $model_id );
 			}
 		}
