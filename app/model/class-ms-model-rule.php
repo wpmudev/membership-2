@@ -60,30 +60,35 @@ class MS_Model_Rule extends MS_Model {
 	protected $inherit_rules;
 	
 	protected $dripped = array();
-		
-	/**
-	 * Create rule with default rule_value (has access). 
-	 */
-	public function __construct() {
-		$contents = $this->get_content();
-		if( ! empty( $contents ) ) {
-			foreach( $contents as $content ) {
-				$this->rule_value[ $content->id ] = $content->id;
-			}
-		}
-	}
+	
+	protected $rule_value_default = true;
+
 	/**
 	 * Set initial protection.
 	 */
 	public function protect_content( $membership_relationship = false ) {
 
 	}
+	
 	/**
 	 * Verify access to the current asset.
-	 * @return boolean
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
 	 */
-	public function has_access() {
-		return false;
+	public function has_access( $id = null ) {
+		$has_access = false;
+		
+		if( ! isset( $this->rule_value[ $id ] ) ) {
+			$has_access = $this->rule_value_default;
+		}
+		else {
+			$has_access = $this->rule_value[ $id ];
+		}
+		
+		return apply_filters( 'ms_model_rule_has_access', $has_access, $id );
 	}
 	
 	/**
@@ -227,19 +232,19 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	public function give_access( $id ) {
-		$this->rule_value[ $id ] = $id;
+		$this->rule_value[ $id ] = true;
 	}
 	
 	public function remove_access( $id ) {
-		unset( $this->rule_value[ $id ] );
+		$this->rule_value[ $id ] = false;
 	}
 	
 	public function toggle_access( $id ) {
 		if( isset( $this->rule_value[ $id ] ) ) {
-			unset( $this->rule_value[ $id ] );
+			$this->rule_value[ $id ] = ! $this->rule_value[ $id ];
 		}
 		else {
-			$this->rule_value[ $id ] = $id;
+			$this->rule_value[ $id ] = ! $this->rule_value_default;
 		}
 	}
 	
