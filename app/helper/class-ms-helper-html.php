@@ -76,6 +76,7 @@ class MS_Helper_Html extends MS_Helper {
 			'multiple'	=> '',
 			'tooltip'   => '',
 		 	'alt'		=> '',
+			'read_only' => false,
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 	
@@ -188,7 +189,9 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
 		    	echo "<div class='ms-toggle' data-toggle='$data'>$link_url</div>";
-				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+		    	if( ! $read_only ) {
+					echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+		    	}
 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
