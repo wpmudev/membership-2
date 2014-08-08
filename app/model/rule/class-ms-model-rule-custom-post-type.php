@@ -54,8 +54,23 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ! empty( $post_type ) &&
 			 ! in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_excluded_content() ) )  {
-				foreach( $this->rule_value as $value ) {
-					$wp_query->query_vars['post__in'][] = $value;
+
+				/** If default access is true, set which posts should be protected. */
+				if( $this->rule_value_default ) {
+					foreach( $this->rule_value as $id => $value ) {
+						if( ! $value ) {
+							$wp_query->query_vars['post__not_in'][] = $id;
+						}
+					}
+				
+				}
+				/** If default is false, set which posts has access. */
+				else {
+					foreach( $this->rule_value as $id => $value ) {
+						if( $value ) {
+							$wp_query->query_vars['post__in'][] = $id;
+						}
+					}
 				}
 			}
 		}
