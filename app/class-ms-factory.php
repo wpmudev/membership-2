@@ -190,7 +190,7 @@ class MS_Factory {
 				}
 				
 				$model->id = $post->ID;
-				$model->name = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+				$model->name = ! empty( $post->post_name ) ? $post->post_name : $post->post_title;
 				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
 				$model->description = $post->post_content;
 				$model->user_id = $post->post_author;
