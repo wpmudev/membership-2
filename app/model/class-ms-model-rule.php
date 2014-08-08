@@ -81,13 +81,15 @@ class MS_Model_Rule extends MS_Model {
 	public function has_access( $id = null ) {
 		$has_access = false;
 		
-		if( ! isset( $this->rule_value[ $id ] ) ) {
-			$has_access = $this->rule_value_default;
+		if( ! empty( $id ) ) {
+			if( ! isset( $this->rule_value[ $id ] ) ) {
+				$has_access = $this->rule_value_default;
+			}
+			else {
+				$has_access = $this->rule_value[ $id ];
+			}
 		}
-		else {
-			$has_access = $this->rule_value[ $id ];
-		}
-		
+				
 		return apply_filters( 'ms_model_rule_has_access', $has_access, $id );
 	}
 	
@@ -135,25 +137,35 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Rule types.
 	 *
+	 * @todo change array to be rule -> title.
+	 *  
 	 * This array is ordered in the hierarchy way.
 	 * First one has more priority than the last one.
 	 * This hierarchy is used to determine access to protected content.
 	 */
 	public static function get_rule_types() {
-		return apply_filters( 'ms_model_rule_get_rule_types', array(
-				self::RULE_TYPE_POST,
-				self::RULE_TYPE_CATEGORY,
-				self::RULE_TYPE_CUSTOM_POST_TYPE,
-				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-				self::RULE_TYPE_PAGE,
-				self::RULE_TYPE_MORE_TAG,
-				self::RULE_TYPE_MENU,
-				self::RULE_TYPE_SHORTCODE,
-				self::RULE_TYPE_COMMENT,
-				self::RULE_TYPE_MEDIA,
-				self::RULE_TYPE_URL_GROUP,
-			)
+		$rule_types =  array(
+			0 => self::RULE_TYPE_POST,
+			1 => self::RULE_TYPE_CATEGORY,
+			2 => self::RULE_TYPE_CUSTOM_POST_TYPE,
+			3 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+			4 => self::RULE_TYPE_PAGE,
+			5 => self::RULE_TYPE_MORE_TAG,
+			6 => self::RULE_TYPE_MENU,
+			7 => self::RULE_TYPE_SHORTCODE,
+			8 => self::RULE_TYPE_COMMENT,
+			9 => self::RULE_TYPE_MEDIA,
+			10 => self::RULE_TYPE_URL_GROUP,
 		);
+
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+			unset( $rule_types[9] );
+		}
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			unset( $rule_types[10] );
+		}
+		
+		return  apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 	}
 	/**
 	 * Rule types and respective classes.
