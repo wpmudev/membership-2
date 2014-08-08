@@ -44,21 +44,17 @@ class MS_View_Membership_Metabox extends MS_View {
 									<?php echo $data['name']; ?>
 								</td>
 								<td>
-									<div class="ms-radio-slider  <?php echo $data['has_access'] ? 'on' : ''; ?>">
-		    							<div class="toggle"></div>
-		    							<?php
-											if( ! $this->read_only ) {
-												MS_Helper_Html::html_input(
-													array(
-														'id' => "access_{$membership_id}",
-														'name' => "ms_access[{$membership_id}]",
-														'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-														'value' => $data['has_access'],
-													)
-												);
-											}
-										?>
-		  							</div> 
+									<?php
+										$toggle = array(
+												'id' => "access_{$membership_id}",
+												'name' => "ms_access[{$membership_id}]",
+												'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+												'value' => $data['has_access'],
+												'class' => '',
+												'read_only' => $this->read_only,
+										);
+										 MS_Helper_Html::html_input( $toggle );
+									?>
 								</td>
 							</tr>
 						<?php endforeach; ?>				

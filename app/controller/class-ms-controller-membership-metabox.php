@@ -101,7 +101,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @since 4.0.0
 	 */			
 	public function add_meta_boxes() {
-		foreach ($this->post_types as $post_type) {
+		foreach( $this->post_types as $post_type ) {
 			add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
 		}
 	
