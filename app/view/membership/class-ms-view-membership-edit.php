@@ -309,11 +309,29 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $model );
 		$rule_list_table->prepare_items();
 		
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description"><?php _e( 'Select the pages below that you would like to give access to as part of this membership. All pages will have access turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<div class="settings-description">
+				<div class="settings-description">
+					<?php _e( 'Select the pages below that you would like to give access to as part of this membership. ', MS_TEXT_DOMAIN ); ?>
+					<?php MS_Helper_Html::html_input( $toggle ); ?>
+				</div>
+				
 				<hr />
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -330,11 +348,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Category( $model );
 		$rule_list_table->prepare_items();
 		
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Category access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description"><?php _e( 'Select the post categories below that you would like to give access to as part of this membership. All categories will have access turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<div class="settings-description">
+					<?php _e( 'Select the post categories below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+					<?php MS_Helper_Html::html_input( $toggle ); ?>
+				</div>
 				<hr />			
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -354,11 +388,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
 		$rule_list_table->prepare_items();
 		
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model['post']->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model['post']->rule_type,
+				),
+		);
+		
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Post by post access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description"><?php _e( 'Select the posts below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?></div>
+				<div class="settings-description">
+					<?php _e( 'Select the posts below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+					<?php MS_Helper_Html::html_input( $toggle ); ?>
+				</div>
 				<hr />				
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -417,11 +467,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $model );
 		$rule_list_table->prepare_items();
 		
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Menu access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description"><?php _e( 'Select the menu items below that you would like to give access to as part of this membership. Menu access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<div class="settings-description">
+					<?php _e( 'Select the menu items below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+					<?php MS_Helper_Html::html_input( $toggle ); ?>
+				</div>
 				<hr />											
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -459,11 +525,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $model );
 		$rule_list_table->prepare_items();
 		
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+
 		ob_start();
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Shortcode access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-			<div class="settings-description"><?php _e( 'Select the shortcodes below that you would like to give access to as part of this membership. Shortcode access is turned off by default (except for WordPress default shortcodes and Membership special shortcodes).', MS_TEXT_DOMAIN ); ?></div>
+			<div class="settings-description">
+				<?php _e( 'Select the shortcodes below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+				<?php MS_Helper_Html::html_input( $toggle ); ?>
+			</div>
 			<hr />														
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -480,11 +562,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $model );
 		$rule_list_table->prepare_items();
 	
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+
 		ob_start();
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Custom Post Type access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-			<div class="settings-description"><?php _e( 'Select the custom posts below that you would like to give access to as part of this membership. Note: To give access to an entire post type, turn off the \'Custom Post Type - Post by post\' addon.', MS_TEXT_DOMAIN ); ?></div>
+			<div class="settings-description">
+				<?php _e( 'Select the custom posts below that you would like to give access to as part of this membership. Note: To give access to an entire post type, turn off the "Custom Post Type - Post by post" addon.', MS_TEXT_DOMAIN ); ?>
+				<?php MS_Helper_Html::html_input( $toggle ); ?>
+			</div>
 			<hr />			
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -501,11 +599,27 @@ class MS_View_Membership_Edit extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group( $model );
 		$rule_list_table->prepare_items();
 	
+		$toggle = array(
+				'id' => 'ms-toggle-rule',
+				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $model->rule_value_default,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+						'membership_id' => $this->model->id,
+						'rule' => $model->rule_type,
+				),
+		);
+		
 		ob_start();
 		?>
 		<div class='ms-settings'>
 			<h3><?php echo __( 'Custom Post Type Group access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-			<div class="settings-description"><?php _e( 'Select the custom post types below that you would like to give access to as part of this membership. Post type access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+			<div class="settings-description">
+				<?php _e( 'Select the custom post types below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+				<?php MS_Helper_Html::html_input( $toggle ); ?>
+			</div>
 			<hr />														
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">

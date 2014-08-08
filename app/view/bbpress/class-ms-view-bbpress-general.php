@@ -18,7 +18,9 @@ class MS_View_Bbpress_General extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'BBPress ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description"><?php _e( 'Select the comment settings below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?></div>
+				<div class="settings-description">
+					<?php _e( 'Select the forum settings below that you would like to give access to as part of this membership.', MS_TEXT_DOMAIN ); ?>
+				</div>
 				<hr />							
 				<?php $list_table->views(); ?>
 				<form action="" method="post">
