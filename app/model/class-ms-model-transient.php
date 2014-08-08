@@ -36,15 +36,15 @@ class MS_Model_Transient extends MS_Model {
 	
 		$fields = get_object_vars( $this );
 		foreach ( $fields as $field => $val) {
-			if ( in_array( $field, $model->ignore_fields ) ) {
+			if ( in_array( $field, $this->ignore_fields ) ) {
 				continue;
 			}
 			$settings[ $field ] = $this->$field;
 		}
 	
 		set_transient( $class, $settings );
-	
-		$model->instance = &$this;
+		
+		$this->instance = $this;
 	
 		$this->after_save();
 	}	
