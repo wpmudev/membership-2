@@ -49,7 +49,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$rule_value = apply_filters( 'ms_model_rule_page_protect_pages_rule_value', $this->rule_value );
 	
 		foreach ( (array) $pages as $key => $page ) {
-			if ( ! in_array( $page->ID, $rule_value ) ) {
+			if( ! self::has_access( $page-ID ) ) {
 				unset( $pages[ $key ] );
 			}
 			/**
@@ -71,7 +71,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		
 		$post_id = null;
 		$post = get_queried_object();
-		
+
 		if( is_a( $post, 'WP_Post' ) && $post->post_type == 'page' )  {
 			$post_id = $post->ID;
 		}
@@ -92,11 +92,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$page_id = $this->get_current_page_id();
 		}
 
-		$has_access = parent::has_access( $page_id );
-		if( in_array( $page_id, $settings->pages ) ) { 
-			$has_access = true;
+		if( ! empty( $page_id ) ) {
+			$has_access = parent::has_access( $page_id );
+			
+			/** Membership special pages has access */
+			if( $settings->is_special_page( $page_id ) ) {
+				$has_access = true;
+			}
 		}
-		
+				
 		return apply_filters( 'ms_model_rule_page_has_access',  $has_access, $page_id );		
 	}
 
