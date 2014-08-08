@@ -88,11 +88,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
 		
 		//TODO if global tables
-		$this->admin_url_function = 0
-		? 'network_admin_url'
-				: 'admin_url';
-		
-		// $this->original_nodes = $this->get_original_nodes();
+		$this->admin_url_function = 0 ? 'network_admin_url' : 'admin_url';
 	}
 
 	/**
@@ -107,22 +103,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	public function add_admin_bar_menus() {
 		 
-		// if( MS_Model_Member::is_admin_user() ) {
-		// 	$method = MS_Plugin::is_enabled()
-		// 		? 'add_view_site_as_menu'
-		// 		: 'add_activate_plugin_menu';
-		// 	$this->add_action( 'admin_bar_menu', $method );
-		// }
 		$simulate = MS_Factory::get_factory()->load_simulate();
-				
-		/** trying to use normal GET instead of ajax due to some users experimenting issues during ajax requests */
-		if( ! empty( $_GET['action'] ) && 'ms_simulate' == $_GET['action'] && isset( $_GET['membership_id'] ) ) {
-				$membership_id = (int) $_GET['membership_id'];
-				check_admin_referer( 'ms_simulate-' . $membership_id );
-				$simulate->membership_id = $membership_id;
-				$simulate->save();
-				wp_safe_redirect( wp_get_referer() );
+
+		if( isset( $_GET['membership_id'] ) && $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
+			$simulate->membership_id = $_GET['membership_id'];
+			$simulate->save();
+			wp_safe_redirect( wp_get_referer() );
 		}
+
 		if( ! empty( $_POST['simulate_submit'] ) ) {
 			if( isset( $_POST['simulate_period_unit'] ) && in_array( $_POST['simulate_period_type'], MS_Helper_Period::get_periods() ) ) {
 				$simulate->period = array( 'period_unit' => $_POST['simulate_period_unit'], 'period_type' => $_POST['simulate_period_type'] );
@@ -133,37 +121,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$simulate->save();
 			}
 			wp_safe_redirect( wp_get_referer() );
-		}
-	}
-	
-	
-	/**
-	 * Return array of original nodes.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @return mixed[] $nodes
-	 */
-	private function get_original_nodes() {
-		global $wp_admin_bar;
-		$nodes = array();
-		foreach ( $wp_admin_bar->get_nodes() as $node) {
-		// 	$nodes[] = $node;
-		}
-		return $nodes;
-	}
-	
-	/**
-	 * Set the nodes for the admin bar.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @param mixed[] $nodes Node objects for the admin bar.
-	 */
-	public function set_admin_bar_nodes( $nodes ) {
-		global $wp_admin_bar;		
-		foreach ( $nodes as $node ) {
-			$wp_admin_bar->add_node( $node );
 		}
 	}
 	
