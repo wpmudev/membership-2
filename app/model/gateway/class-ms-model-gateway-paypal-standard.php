@@ -135,10 +135,16 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					/** Successful payment */
 					case 'Completed':
 					case 'Processed':
-						$status = MS_Model_Invoice::STATUS_PAID;
+						if( $amount == $invoice->total ) {
+							$status = MS_Model_Invoice::STATUS_PAID;
+						}
+						else {
+							$notes = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
+							$status = self::STATUS_DENIED;
+						}
 						break;
 					case 'Reversed':
-						$notes = __('Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
+						$notes = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
 						$status = self::STATUS_REVERSED;
 						break;
 					case 'Refunded':
@@ -146,7 +152,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						$status = self::STATUS_REFUNDED;
 						break;
 					case 'Denied':
-						$notes = __('Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
+						$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
 						$status = self::STATUS_DENIED;
 						break;
 					case 'Pending':
