@@ -53,7 +53,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		 */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ! empty( $post_type ) &&
-			  		in_array( $post_type, self::get_custom_post_types() ) && ! in_array( $post_type, $this->rule_value ) )  {
+			  		in_array( $post_type, self::get_custom_post_types() ) && ! parent::has_access( $post_type ) )  {
 				$wp_query->query_vars['post__in'] = array( 0 => 0 );
 			}
 		}
