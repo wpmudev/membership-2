@@ -9,31 +9,19 @@ jQuery( document ).ready( function( $ ) {
 			
 			$( object ).addClass( 'processing' );
 			
-			if( $( this ).hasClass( 'on' ) ) {
+			if( $( object ).hasClass( 'on' ) ) {
 	            $( object ).removeClass( 'on' );
 	        } 
 	        else { 
 	            $( object ).addClass( 'on' );
 	        }			
 	        
-			$.ajax({
-				type: "GET",
-				url: value,
-				data: { toggle_action: true }
-			})
-			.done( function (data) {
+			data = $( object ).children( '.ms-toggle' ).data( 'toggle' );
+	        
+			$.post( ajaxurl, data, function( response ) {
 				$( object ).removeClass( 'processing' );
-			})
-			.fail( function (data) {
-				console.log(data);
-		        if( $( object ).hasClass( 'on' ) ) {
-		            $( object ).removeClass( 'on' );
-		        } 
-		        else { 
-		            $( object ).addClass( 'on' );
-		        }							
-				$( object ).removeClass( 'processing' );					
-			});			
+				$( object ).children( 'input' ).val( $( object ).hasClass( 'on' ) );
+			});
 		}
 		
 	});
