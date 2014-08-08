@@ -29,7 +29,7 @@
  *
  * @package Membership
  */
-class MS_Factory extends MS_Model {
+class MS_Factory {
 	
 	protected static $instance;
 	
