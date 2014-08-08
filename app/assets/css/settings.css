@@ -248,7 +248,7 @@ label.ms-validation-error {
   opacity:1;
 }
 
-.ms-radio-slider .toggle {
+.ms-radio-slider .ms-toggle {
   width:12px;
   height:12px;
   margin:3px;
@@ -259,16 +259,13 @@ label.ms-validation-error {
   -webkit-transition:all .2s ease-in-out;
   left:0px;
 }
-.ms-radio-slider .toggle:hover {
+.ms-radio-slider .ms-toggle:hover {
   -webkit-transform:scale(1.1);
 }
 
-.ms-radio-slider.on .toggle {
+.ms-radio-slider.on .ms-toggle {
   left:21px;
 }
-/*.ms-radio-slider.off .toggle {
-  left:0;
-}*/
 
 .ms-radio-slider.on {
   background: rgb(107,187,26);
