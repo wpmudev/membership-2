@@ -2,8 +2,6 @@ jQuery( document ).ready( function( $ ) {
 
 	$( '.ms-radio-slider' ).click( function() {
 		var object = this;
-		var child = $( object ).find( ".toggle a" ).first();
-        var value = child.attr( "href" );
 		
 		if( ! $( object ).hasClass( 'processing' ) ) {
 			
