@@ -115,8 +115,22 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && 
 				! empty( $post_type ) && MS_Integration_Bbpress::CPT_BB_FORUM == $post_type ) {
 				
-				foreach( $this->rule_value as $value ) {
-					$wp_query->query_vars['post__in'][] = $value;
+				/** If default access is true, set which posts should be protected. */
+				if( $this->rule_value_default ) {
+					foreach( $this->rule_value as $id => $value ) {
+						if( ! $value ) {
+							$wp_query->query_vars['post__not_in'][] = $id;
+						}
+					}
+				
+				}
+				/** If default is false, set which posts has access. */
+				else {
+					foreach( $this->rule_value as $id => $value ) {
+						if( $value ) {
+							$wp_query->query_vars['post__in'][] = $id;
+						}
+					}
 				}
 			}
 		}
