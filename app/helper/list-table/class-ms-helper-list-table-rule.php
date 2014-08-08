@@ -103,27 +103,20 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_access( $item ) {
-		$action = 'toggle_activation';
-
-		ob_start();
-		/* Render toggles */
-		$nonce_url = wp_nonce_url(
-				sprintf( '%s?page=%s&tab=%s&membership_id=%s&item=%s&action=%s',
-						admin_url('admin.php'),
-						$_REQUEST['page'],
-						$_REQUEST['tab'],
-						$_REQUEST['membership_id'],
-						$item->id,
-						$action  
-				), 
-				$action
+		
+		$toggle = array(
+				'id' => 'ms-toggle-' . $item->id,
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $item->access,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_RULE,
+						'membership_id' => $_REQUEST['membership_id'],
+						'rule' => $_REQUEST['tab'],
+						'item' => $item->id,
+				),
 		);
-		?>
-			<div class="ms-radio-slider <?php echo 1 == $item->access ? 'on' : ''; ?>">
-			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
-			</div>
-		<?php
-		$html = ob_get_clean();
+		$html = MS_Helper_Html::html_input( $toggle, true );
 		
 		return $html;
 	}

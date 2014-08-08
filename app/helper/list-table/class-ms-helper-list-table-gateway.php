@@ -88,25 +88,18 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	}
 	
 	public function column_active( $item ) {
-		$action = 'toggle_activation';
-		ob_start();
-		/* Render toggles */
-		$nonce_url = wp_nonce_url(
-				sprintf( '%s?page=%s&tab=%s&gateway_id=%s&action=%s',
-						admin_url('admin.php'),
-						$_REQUEST['page'],
-						$_REQUEST['tab'],
-						$item->id,
-						$action  
-				), 
-				'toggle_activation' 
+
+		$toggle = array(
+			'id' => 'ms-toggle-' . $item->id,
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value' => $item->active,
+			'class' => '',
+			'field_options' => array(
+				'action' => MS_Controller_Gateway::AJAX_ACTION_TOGGLE_GATEWAY,
+				'gateway_id' => $item->id,
+			),
 		);
-		?>
-			<div class="ms-radio-slider <?php echo 1 == $item->active ? 'on' : ''; ?>">
-			<div class="toggle"><a href="<?php echo $nonce_url; ?>"></a></div>
-			</div>
-		<?php
-		$html = ob_get_clean(); 
+		$html = MS_Helper_Html::html_input( $toggle, true );
 		
 		return $html;		
 	}

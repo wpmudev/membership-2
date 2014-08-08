@@ -61,7 +61,6 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				
 		}
 		return $pages;
-		MS_Helper_Debug::log($pages);
 	}
 	
 	/**

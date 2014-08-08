@@ -116,11 +116,9 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
 						'value' => $this->model->plugin_enabled,
-						'url' => wp_nonce_url( add_query_arg( array(
-									'action' => 'toggle_activation',
-									'setting' => 'plugin_enabled'
-								) ),
-								'toggle_activation'
+						'field_options' => array(
+								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+								'setting' => 'plugin_enabled',
 						),
 				),
 				'default_membership_enabled' => array(
@@ -128,11 +126,9 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable default membership to logged in users without any membership.', MS_TEXT_DOMAIN ),
 						'value' => $this->model->default_membership_enabled,
-						'url' => wp_nonce_url( add_query_arg( array(
-								'action' => 'toggle_activation',
-								'setting' => 'default_membership_enabled'
-								) ),
-								'toggle_activation'
+						'field_options' => array(
+								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+								'setting' => 'default_membership_enabled',
 						),
 				),
 				'action' => array(
