@@ -181,9 +181,13 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_RADIO_SLIDER:
 				$turned = ( $value ) ? 'on' : ''; 
 				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
+				if( empty( $field_options['_wpnonce'] ) && ! empty( $field_options['action'] ) ) {
+					$field_options['_wpnonce'] = wp_create_nonce( $field_options['action'] );
+				}				
+				$data = esc_attr( json_encode( $field_options ) );
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
-		    	echo "<div class='toggle'>$link_url</div>";
+		    	echo "<div class='ms-toggle' data-toggle='$data'>$link_url</div>";
 				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
