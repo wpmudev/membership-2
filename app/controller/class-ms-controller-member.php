@@ -34,6 +34,7 @@
  */
 class MS_Controller_Member extends MS_Controller {
 
+	const AJAX_ACTION_TOGGLE_MEMBER = 'toggle_member';
 	/**
 	 * The model to use for loading/saving Member data.
 	 *
@@ -52,11 +53,32 @@ class MS_Controller_Member extends MS_Controller {
 		
 		$this->add_action( 'load-membership_page_membership-members', 'admin_member_list_manager' );
 		
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
+		
 		$this->add_action( 'admin_print_scripts-membership_page_membership-members', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-membership_page_membership-members', 'enqueue_styles' );
 		
 	}
 
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_member
+	 *
+	 * @since 4.0.0
+	 */
+	public function ajax_action_toggle_member() {
+		$msg = 0;
+		if( $this->verify_nonce() && ! empty( $_POST['member_id'] ) ) {
+			$msg = $this->member_list_do_action( 'toggle_activation', array( $_POST['member_id'] ) );
+		}
+		
+		echo $msg;
+		exit;
+	}
+	
 	/**
 	 * Show admin notices.
 	 *
@@ -265,6 +287,7 @@ class MS_Controller_Member extends MS_Controller {
 					break;
 				case 'toggle_activation':
 					$member->active = ! $member->active;
+					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					break;
 				case 'edit_date':
 					if( is_array( $membership_id ) ) {

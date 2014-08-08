@@ -33,6 +33,8 @@
  */
 class MS_Controller_Addon extends MS_Controller {
 
+	const AJAX_ACTION_TOGGLE_ADDON = 'toggle_addon';
+	
 	/**
 	 * The model to use for loading/saving add-on data.
 	 *
@@ -79,11 +81,32 @@ class MS_Controller_Addon extends MS_Controller {
 		 */		
 		$this->model = MS_Factory::get_factory()->load_addon();
 
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON, 'ajax_action_toggle_addon' );
+		
 		/** Enqueue scripts and styles. */
 		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-membership_page_membership-addons', 'enqueue_styles' );		
 	}
 
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_gateway
+	 *
+	 * @since 4.0.0
+	 */
+	public function ajax_action_toggle_addon() {
+		$msg = 0;
+		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) ) {
+			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
+		}
+	
+		echo $msg;
+		exit;
+	}
+	
 	/**
 	 * Handles Add-on manager actions.
 	 *

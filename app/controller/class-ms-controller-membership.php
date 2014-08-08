@@ -33,6 +33,10 @@
  */
 class MS_Controller_Membership extends MS_Controller {
 	
+	const AJAX_ACTION_TOGGLE_MEMBERSHIP = 'toggle_membership';
+	
+	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
+	
 	/**
 	 * The model to use for loading/saving Membership data.
 	 *
@@ -75,9 +79,52 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'load-membership_page_all-memberships', 'admin_membership_list_manager' );
 		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
 		
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
+		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
+	}
+	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_membership
+	 *
+	 * @since 4.0.0
+	 */
+	public function ajax_action_toggle_membership() {
+		$msg = 0;
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) ) {
+			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
+		}
+	
+		echo $msg;
+		exit;
+	}
+	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_rule
+	 *
+	 * @since 4.0.0
+	 */
+	public function ajax_action_toggle_rule() {
+		$msg = 0;
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) ) {
+			$this->model = apply_filters( 'membership_membership_model', MS_Factory::get_factory()->load_membership( $_POST['membership_id'] ) );
+			$this->active_tab = $_POST['rule'];
+			$msg = $this->rule_list_do_action( 'toggle_activation', array( $_POST['item'] ) );
+		}
+	
+		echo $msg;
+		exit;
 	}
 	
 	/**
@@ -128,6 +175,7 @@ class MS_Controller_Membership extends MS_Controller {
 		foreach( $membership_ids as $membership_id ) {
 			$membership = MS_Factory::get_factory()->load_membership( $membership_id );
 			switch( $action ) {
+				case 'toggle_active':
 				case 'toggle_activation':
 					$membership->active = ! $membership->active;
 					$membership->save();

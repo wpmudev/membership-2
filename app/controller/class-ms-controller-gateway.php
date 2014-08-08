@@ -31,6 +31,8 @@
  */
 class MS_Controller_Gateway extends MS_Controller {
 	
+	const AJAX_ACTION_TOGGLE_GATEWAY = 'toggle_gateway';
+	
 	private $allowed_actions = array( 'update_card', 'purchase_button', 9 );
 	
 	/**
@@ -51,6 +53,8 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 		
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
+		
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_GATEWAY, 'toggle_ajax_action' );
 	}
 	
 	/**
@@ -69,6 +73,27 @@ class MS_Controller_Gateway extends MS_Controller {
 		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		}
+	}
+	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_gateway
+	 *
+	 * @since 4.0.0
+	 */
+	public function toggle_ajax_action() {
+		$msg = 0;
+		
+		if( $this->verify_nonce() && ! empty( $_POST['gateway_id'] ) ) {
+			$gateway_id = $_POST['gateway_id'];
+			$msg = $this->gateway_list_do_action( 'toggle_activation', array( $_POST['gateway_id'] ) );
+		}
+		
+		echo $msg;
+		exit;
 	}
 	
 	/**
