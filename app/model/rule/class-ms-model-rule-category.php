@@ -55,7 +55,24 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			
 			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
-				$wp_query->set('category__in', array_unique( array_merge( $wp_query->query_vars['category__in'], $this->rule_value ) ) );
+
+				/** If default access is true, set which posts should be protected. */
+				if( $this->rule_value_default ) {
+					foreach( $this->rule_value as $id => $value ) {
+						if( ! $value ) {
+							$wp_query->query_vars['category__not_in'][] = $id;
+						}
+					}
+				}
+				/** If default is false, set which posts has access. */
+				else {
+					foreach( $this->rule_value as $id => $value ) {
+						if( $value ) {
+							$categories[] = $id;
+							$wp_query->query_vars['category__in'][] = $id;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -72,18 +89,20 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	public function protect_categories( $terms, $taxonomies, $args ) {
 		$new_terms = array();
 	
-		if ( ! in_array( 'category', $taxonomies ) ) {
-			// bail - not fetching category taxonomy
+		/** bail - not fetching category taxonomy */
+		if( ! in_array( 'category', $taxonomies ) ) {
+			
 			return $terms;
 		}
 	
-		foreach ( (array) $terms as $key => $term ) {
-			if ( $term->taxonomy == 'category' ) { //still do this check here - could be fetching multiple taxonomies
-				if ( in_array( $term->term_id, $this->rule_value ) ) {
-					$new_terms[$key] = $term;
+		foreach( (array) $terms as $key => $term ) {
+			if( $term->taxonomy == 'category' ) { 
+				if ( parent::has_access( $term->term_id ) ) {
+					$new_terms[ $key ] = $term;
 				}
-			} else {
-				// this taxonomy isn't category so add it so custom taxonomies don't break
+			} 
+			else {
+				/** this taxonomy isn't category so add it so custom taxonomies don't break */
 				$new_terms[ $key ] = $term;
 			}
 		}
@@ -110,15 +129,20 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 				if( empty( $post_id ) ) {
 					$post_id = get_the_ID();
 				}
+				
 				$categories = wp_get_post_categories( $post_id );
-				$intersect = array_intersect( $categories, $this->rule_value );
-				$has_access = ! empty( $intersect );
+				foreach( $categories as $category_id ) {
+					$has_access = $has_access || parent::has_access( $category_id );
+					if( $has_access ) {
+						break;
+					}
+				}
 			}
 			/**
 			 * Category page.
 			 */
 			elseif( is_category() ) {
-				$has_access = in_array( get_queried_object_id(), $this->rule_value );
+				$has_access = parent::has_access( get_queried_object_id() );
 			}
 				
 		}
