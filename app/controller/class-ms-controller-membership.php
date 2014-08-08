@@ -35,8 +35,6 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	const AJAX_ACTION_TOGGLE_MEMBERSHIP = 'toggle_membership';
 	
-	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
-	
 	/**
 	 * The model to use for loading/saving Membership data.
 	 *
@@ -74,13 +72,12 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
 		
-		$this->model = apply_filters( 'membership_membership_model', MS_Factory::get_factory()->load_membership( $membership_id ) );
+		$this->model = apply_filters( 'ms_model_membership', MS_Factory::get_factory()->load_membership( $membership_id ) );
 		
 		$this->add_action( 'load-membership_page_all-memberships', 'admin_membership_list_manager' );
 		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
 		
 		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );
@@ -100,27 +97,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) ) {
 			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
-		}
-	
-		echo $msg;
-		exit;
-	}
-	
-	/**
-	 * Handle Ajax toggle action.
-	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_rule
-	 *
-	 * @since 4.0.0
-	 */
-	public function ajax_action_toggle_rule() {
-		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) ) {
-			$this->model = apply_filters( 'membership_membership_model', MS_Factory::get_factory()->load_membership( $_POST['membership_id'] ) );
-			$this->active_tab = $_POST['rule'];
-			$msg = $this->rule_list_do_action( 'toggle_activation', array( $_POST['item'] ) );
 		}
 	
 		echo $msg;
@@ -216,7 +192,7 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	/**
-	 * Handles Membership form/AJAX submissions.
+	 * Handles Membership form submissions.
 	 * 
 	 * @since 4.0.0
 	 */
@@ -225,58 +201,41 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$this->active_tab = $this->get_active_tab();
 		$msg = 0;
+		
+		do_action( 'ms_controller_membership_edit_manager', $this->active_tab );
+		
 		/**
 		 * Save membership general tab
 		 */
-		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['action'] ) && 
-			! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+// 		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['action'] ) &&
+// 		! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+		
+		if ( ! empty( $_POST['submit'] ) && $this->verify_nonce() ) {
 			$section = MS_View_Membership_Edit::MEMBERSHIP_SECTION;
 			if( ! empty( $_POST[ $section ] ) ) {
 				$msg = $this->save_membership( $_POST[ $section ] );
 			}
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
 		}
-		/**
-		 * Copy membership dripped schedule
-		 */
-		elseif( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && ! empty( $_POST['_wpnonce'] ) && 
-					! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
-		}
-		/**
-		 * Save membership dripped schedule
-		 */
-		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['membership_id'] ) &&
-				! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
-			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null; 
-			$msg = $this->save_dripped_schedule( $items );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
-		}
-		/**
-		 * Rule single action 
-		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && 
-				! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
-			$msg = $this->rule_list_do_action( $_GET['action'], array( $_GET['item'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) );
-		}
-		/**
-		 * Rule bulk actions
-		 */
-		elseif( ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->rule_list_do_action( $action, $_POST['item'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg,'membership_id' => $this->model->id ) ) );
-		}
-		/**
-		 * Save url group add/edit
-		 */
-		elseif ( ! empty( $_POST['url_group_submit'] ) && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['_wpnonce'] ) && 
-				! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-			$msg = $this->save_url_group( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
-		}
+// 		/**
+// 		 * Copy membership dripped schedule
+// 		 */
+// 		elseif( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && ! empty( $_POST['_wpnonce'] ) && 
+// 					! empty( $_POST['action'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+// 			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
+// 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
+// 		}
+// 		/**
+// 		 * Save membership dripped schedule
+// 		 */
+// 		elseif( ! empty( $_POST['dripped_submit'] ) && ! empty( $_POST['membership_id'] ) &&
+// 				! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-rules' ) ) {
+// 			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null; 
+// 			$msg = $this->save_dripped_schedule( $items );
+// 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'membership_id' => $this->model->id ) ) );
+// 		}
+
+		do_action( 'ms_controller_membership_edit_manager_' . $this->active_tab );
 		
 	}
 
@@ -456,137 +415,110 @@ class MS_Controller_Membership extends MS_Controller {
 				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 			}
 		}
+		MS_Helper_Debug::log($this->model->name);
 		return $msg;
 	}
 		
-	/**
-	 * Execute action in Rule model.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $action The action to execute.
-	 * @param int[] $items The item ids which action will be taken.
-	 * @return int Resulting message id.
-	 */
-	private function rule_list_do_action( $action, $items ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
-			return $msg;
-		}
+// 	/**
+// 	 * Execute action in Rule model.
+// 	 *
+// 	 * @since 4.0.0
+// 	 *
+// 	 * @param string $action The action to execute.
+// 	 * @param int[] $items The item ids which action will be taken.
+// 	 * @return int Resulting message id.
+// 	 */
+// 	private function rule_list_do_action( $action, $items ) {
+// 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+// 		if ( ! current_user_can( $this->capability ) ) {
+// 			return $msg;
+// 		}
 
-		$rule_type = $this->active_tab;
-		$rule = $this->model->get_rule( $rule_type );
+// 		$rule_type = $this->active_tab;
+// 		$rule = $this->model->get_rule( $rule_type );
 
-		foreach( $items as $item ) {
-			switch( $action ) {
-				case 'give_access':
-					$rule->give_access( $item );
-					break;
-				case 'no_access':
-					$rule->remove_access( $item );
-				case 'toggle_activation':
-					$rule->toggle_access( $item );
-					break;
-			}
-		}
-		$this->model->set_rule( $rule_type, $rule );
-		$this->model->save();
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-		return $msg;
-	}
+// 		foreach( $items as $item ) {
+// 			switch( $action ) {
+// 				case 'give_access':
+// 					$rule->give_access( $item );
+// 					break;
+// 				case 'no_access':
+// 					$rule->remove_access( $item );
+// 				case 'toggle_activation':
+// 					$rule->toggle_access( $item );
+// 					break;
+// 			}
+// 		}
+// 		$this->model->set_rule( $rule_type, $rule );
+// 		$this->model->save();
+// 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+// 		return $msg;
+// 	}
 	
-	/**
-	 * Coppy 'dripped content' schedule from one Membership to another.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param int $copy_from_id The Membership ID to copy from.
-	 */	
-	private function copy_dripped_schedule( $copy_from_id ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
-		if ( ! current_user_can( $this->capability ) ) {
-			return $msg;
-		}
+// 	/**
+// 	 * Coppy 'dripped content' schedule from one Membership to another.
+// 	 *
+// 	 * @since 4.0.0
+// 	 *
+// 	 * @param int $copy_from_id The Membership ID to copy from.
+// 	 */	
+// 	private function copy_dripped_schedule( $copy_from_id ) {
+// 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
+// 		if ( ! current_user_can( $this->capability ) ) {
+// 			return $msg;
+// 		}
 
-		$src_membership = MS_Factory::get_factory()->load_membership( $copy_from_id );
-		if( $src_membership->id > 0 ) {
+// 		$src_membership = MS_Factory::get_factory()->load_membership( $copy_from_id );
+// 		if( $src_membership->id > 0 ) {
 				
-			$rule_types = array( 'post', 'page' ); 
-			foreach( $rule_types as $rule_type) {
-				$this->model->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
-			}
-			$this->model->save();
-			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_COPIED;
-		}		
-		return $msg;
-	}
+// 			$rule_types = array( 'post', 'page' ); 
+// 			foreach( $rule_types as $rule_type) {
+// 				$this->model->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
+// 			}
+// 			$this->model->save();
+// 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_COPIED;
+// 		}		
+// 		return $msg;
+// 	}
 	
-	/**
-	 * Save new 'dripped content' schedule(s).
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param mixed[] $items The item ids which action will be taken.
-	 */	
-	private function save_dripped_schedule( $items ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
-			return $msg;
-		}
+// 	/**
+// 	 * Save new 'dripped content' schedule(s).
+// 	 *
+// 	 * @since 4.0.0
+// 	 *
+// 	 * @param mixed[] $items The item ids which action will be taken.
+// 	 */	
+// 	private function save_dripped_schedule( $items ) {
+// 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+// 		if ( ! current_user_can( $this->capability ) ) {
+// 			return $msg;
+// 		}
 		
-		$dripped = array(
-			'post' => array(),
-			'page' => array(),
-		);
+// 		$dripped = array(
+// 			'post' => array(),
+// 			'page' => array(),
+// 		);
 		
-		if( is_array( $items ) ) {
-			foreach( $items as $item ) {
-				$dripped[ $item['type'] ][ $item['id'] ] = array(
-						'period_unit' => $item['period_unit'],
-						'period_type' => $item['period_type'],
-				);
-			}
+// 		if( is_array( $items ) ) {
+// 			foreach( $items as $item ) {
+// 				$dripped[ $item['type'] ][ $item['id'] ] = array(
+// 						'period_unit' => $item['period_unit'],
+// 						'period_type' => $item['period_type'],
+// 				);
+// 			}
 				
-		}
+// 		}
 		
-		foreach( $dripped as $rule_type => $drip ) {
-			$rule = $this->model->rules[ $rule_type ];
-			$rule->dripped = $drip;
-			$this->model->set_rule( $rule_type, $rule );
-		}
+// 		foreach( $dripped as $rule_type => $drip ) {
+// 			$rule = $this->model->rules[ $rule_type ];
+// 			$rule->dripped = $drip;
+// 			$this->model->set_rule( $rule_type, $rule );
+// 		}
 		
-		$this->model->save();
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-		return $msg;
-	}
-	
-	/**
-	 * Save Url Groups tab.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param int $copy_from_id The Membership ID to copy from.
-	 */
-	private function save_url_group( $fields ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
-			return $msg;
-		}
-		
-		if( is_array( $fields ) ) {
-			$rule_type = 'url_group';
-			$rule = $this->model->get_rule( $rule_type );
- 
-			foreach( $fields as $field => $value ) {
-				$rule->$field = $value;
-			}
-			$this->model->set_rule( $rule_type, $rule );
-			$this->model->save();
-			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-		}
-		return $msg;
-		
-	}
+// 		$this->model->save();
+// 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+// 		return $msg;
+// 	}
 	
 	/**
 	 * Load Membership manager specific styles.

@@ -31,24 +31,20 @@
  */
 class MS_Controller_Rule extends MS_Controller {
 	
+	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
+	
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
-	
-	/**
-	 * Instance of MS_Model_Plugin.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */
-	private $model;
-	
+		
 	/**
 	 * Prepare the Rule manager.
 	 *
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
+		
+		$this->add_action( 'ms_controller_membership_edit_manager', 'edit_rule_manager' );
 	}
 	
 	/**
@@ -60,16 +56,85 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 */
+	public function ajax_action_toggle_rule() {
+		$msg = 0;
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) ) {
+			$msg = $this->rule_list_do_action( 'toggle_activation',  $_POST['rule'], array( $_POST['item'] ) );
+		}
+	
+		echo $msg;
+		exit;
+	}
+	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_rule_default
+	 *
+	 * @since 4.0.0
+	 */
 	public function ajax_action_toggle_rule_default() {
 		$msg = 0;
 		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) ) {
-			$this->model = apply_filters( 'membership_membership_model', MS_Factory::get_factory()->load_membership( $_POST['membership_id'] ) );
 			$this->active_tab = $_POST['rule'];
 			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
 		}
 	
 		echo $msg;
 		exit;
+	}
+	
+	/**
+	 * Handles Membership Rule form submissions.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * ms_controller_membership_edit_manager
+
+	 * @since 4.0.0
+	 */
+	public function edit_rule_manager( $rule_type ) {
+		
+		/**
+		 * Copy membership dripped schedule
+		 */
+		if( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && $this->verify_nonce() ) {
+			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+		}
+		/**
+		 * Save membership dripped schedule
+		 */
+		elseif( ! empty( $_POST['dripped_submit'] ) && $this->verify_nonce( 'bulk-rules', 'POST' ) ) {
+			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null;
+			$msg = $this->save_dripped_schedule( $items );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+		}
+		/**
+		 * Rule single action
+		 */
+		if( $this->verify_nonce( null, 'GET' ) ) {
+			$msg = $this->rule_list_do_action( $_GET['action'], $rule_type, array( $_GET['item'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) );
+		}
+		/**
+		 * Rule bulk actions
+		 */
+		elseif( $this->verify_nonce( 'bulk-rules', 'POST' ) ) {
+			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$msg = $this->rule_list_do_action( $action, $rule_type, $_POST['item'] );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+		}
+		/**
+		 * Save url group add/edit
+		 */
+		elseif ( ! empty( $_POST['url_group_submit'] ) && $this->verify_nonce() ) {
+			$msg = $this->save_url_group( $_POST );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+		}
+		
 	}
 	
 	/**
@@ -87,7 +152,13 @@ class MS_Controller_Rule extends MS_Controller {
 			return $msg;
 		}
 	
-		$rule = $this->model->get_rule( $rule_type );
+		$membership = $this->get_membership(); 
+		if( empty( $membership ) || ! MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
+			return $msg;
+		}
+		
+		
+		$rule = $membership->get_rule( $rule_type );
 		if( ! empty( $rule ) ) {
 			foreach( $items as $item ) {
 				switch( $action ) {
@@ -104,11 +175,143 @@ class MS_Controller_Rule extends MS_Controller {
 						break;
 				}
 			}
-			$this->model->set_rule( $rule_type, $rule );
-			$this->model->save();
+			$membership->set_rule( $rule_type, $rule );
+			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 		
 		return $msg;
+	}
+	
+	/**
+	 * Save Url Groups tab.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param array $fields The POST fields
+	 */
+	private function save_url_group( $fields ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+		
+		$membership = $this->get_membership();
+		if( empty( $membership ) ) {
+			return $msg;
+		}
+		
+		if( is_array( $fields ) ) {
+			$rule_type = 'url_group';
+			$rule = $membership->get_rule( $rule_type );
+	
+			foreach( $fields as $field => $value ) {
+				$rule->$field = $value;
+			}
+			$membership->set_rule( $rule_type, $rule );
+			$membership->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		}
+		return $msg;
+	
+	}
+	
+	/**
+	 * Save new 'dripped content' schedule(s).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed[] $items The item ids which action will be taken.
+	 */
+	private function save_dripped_schedule( $items ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+	
+		$membership = $this->get_membership();
+		if( empty( $membership ) ) {
+			return $msg;
+		}
+		
+		$dripped = array(
+				'post' => array(),
+				'page' => array(),
+		);
+	
+		if( is_array( $items ) ) {
+			foreach( $items as $item ) {
+				$dripped[ $item['type'] ][ $item['id'] ] = array(
+						'period_unit' => $item['period_unit'],
+						'period_type' => $item['period_type'],
+				);
+			}
+	
+		}
+	
+		foreach( $dripped as $rule_type => $drip ) {
+			$rule = $membership->rules[ $rule_type ];
+			$rule->dripped = $drip;
+			$membership->set_rule( $rule_type, $rule );
+		}
+	
+		$membership->save();
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		return $msg;
+	}
+	
+	/**
+	 * Coppy 'dripped content' schedule from one Membership to another.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $copy_from_id The Membership ID to copy from.
+	 */
+	private function copy_dripped_schedule( $copy_from_id ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
+		if ( ! current_user_can( $this->capability ) ) {
+			return $msg;
+		}
+	
+		$membership = $this->get_membership();
+		if( empty( $membership ) ) {
+			return $msg;
+		}
+		
+		$src_membership = MS_Factory::get_factory()->load_membership( $copy_from_id );
+		if( $src_membership->id > 0 ) {
+	
+			$rule_types = array( 'post', 'page' );
+			foreach( $rule_types as $rule_type) {
+				$membership->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
+			}
+			$membership->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_COPIED;
+		}
+		return $msg;
+	}
+	
+	/**
+	 * Get membership from request.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return MS_Model_Membership or null if not found.
+	 */
+	private function get_membership() {
+		$membership_id = 0;
+		if( ! empty( $_GET['membership_id'] ) ) {
+			$membership_id = $_GET['membership_id'];
+		}
+		elseif( ! empty( $_POST['membership_id'] ) ) {
+			$membership_id = $_POST['membership_id'];
+		}
+		
+		$membership = null;
+		if( ! empty( $membership_id ) ) {
+			$membership = MS_Factory::get_factory()->load_membership( $membership_id );
+		}
+		
+		return apply_filters( 'ms_controller_rule_get_membership', $membership );
 	}
 }
