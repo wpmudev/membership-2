@@ -33,7 +33,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'the_content', 'check_special_page' );
 		
-		if( ! empty ( $this->rule_value ) ) {
+		if( parent::has_access( 1 ) ) {
 			add_filter( 'comments_open', '__return_true', 99 );
 		}
 		else {
@@ -56,13 +56,8 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		$content->id = 1;
 		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
 
-		if( in_array( $content->id, $this->rule_value ) ) {
-			$content->access = true;
-		}
-		else {
-			$content->access = false;
-		}
-
+		$content->access = parent::has_access( $content->id );
+		
 		return array( $content );
 	}
 }

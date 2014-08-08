@@ -83,7 +83,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				if( in_array( $post_type, self::get_ms_post_types() ) ) {
 					$has_access = true;
 				}
-				elseif( in_array( $post_type, self::get_custom_post_types() ) && in_array( $post_type, $this->rule_value ) )  {
+				elseif( in_array( $post_type, self::get_custom_post_types() ) && parent::has_access( $post_type ) )  {
 					$has_access = true;
 				}
 			}
@@ -104,12 +104,8 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			$contents[ $key ] = new StdClass();
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->type = $this->rule_type;
-			if( in_array( $key, $this->rule_value ) ) {
-				$contents[ $key ]->access = true;
-			}
-			else {
-				$contents[ $key ]->access = false;
-			}
+
+			$contents[ $key ]->access = parent::has_access( $key );
 		}
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );

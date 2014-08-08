@@ -37,7 +37,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	function filter_menus( $items, $menu, $args ) {
 		if( ! empty( $items ) ) {
 			foreach($items as $key => $item) {
-				if( ! in_array( $item->ID, $this->rule_value ) || ( $item->menu_item_parent != 0 && ! in_array( $item->menu_item_parent, $this->rule_value ) ) ) {
+				if( ! parent::has_access( $item->ID ) || ( ! empty( $item->menu_item_parent ) && ! parent::has_access( $item->menu_item_parent ) ) ) {
 					unset( $items[ $key ] );
 				}
 		
@@ -65,12 +65,8 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 						$contents[ $item_id ]->id = $item_id;
 						$contents[ $item_id ]->title = esc_html( $item->title );
 						$contents[ $item_id ]->parent_id = $nav->term_id;
-						if( in_array( $contents[ $item_id ]->id, $this->rule_value ) ) {
-							$contents[ $item_id ]->access = true;
-						}
-						else {
-							$contents[ $item_id ]->access = false;
-						}
+						
+						$contents[ $item_id ]->access = parent::has_access( $contents[ $item_id ]->id );
 					}
 				}
 			}

@@ -50,24 +50,18 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 				if( in_array( $post_type, MS_Integration_Bbpress::get_bb_custom_post_types() ) ) {
 					switch( $post_type ) {
 						case MS_Integration_Bbpress::CPT_BB_FORUM:
-							if( in_array( $post_id, $this->rule_value ) ) {
-								$has_access = true;
-							}
+							$has_access = parent::has_access( $post_id );
 							break;
 						case MS_Integration_Bbpress::CPT_BB_TOPIC:
 							if( function_exists( 'bbp_get_topic_forum_id' ) ) {
 								$forum_id = bbp_get_topic_forum_id( $post_id );
-								if( in_array( $forum_id, $this->rule_value ) ) {
-									$has_access = true;
-								}
+								$has_access = parent::has_access( $forum_id );
 							}
 							break;
 						case MS_Integration_Bbpress::CPT_BB_REPLY:
 							if( function_exists( 'bbp_get_reply_forum_id' ) ) {
 								$forum_id = bbp_get_reply_forum_id( $post_id );
-								if( in_array( $forum_id, $this->rule_value ) ) {
-									$has_access = true;
-								}
+								$has_access = parent::has_access( $forum_id );
 							}
 							break;
 					}
@@ -115,6 +109,7 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		/**
 		 * Only protect if add-on is enabled.
 		 * Restrict query to show only has_access cpt posts.
+		 * @todo handle default rule value
 		*/
 		if( MS_Model_Addon::is_enabled( MS_Integration_Bbpress::ADDON_BBPRESS ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && 
@@ -189,9 +184,8 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 			$content->id = $content->ID;
 			$content->type = $this->rule_type;
 			$content->access = false;
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
+
+			$content->access = parent::has_access( $content->id  );
 		}
 
 		if( ! empty( $args['rule_status'] ) ) {

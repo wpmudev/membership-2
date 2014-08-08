@@ -49,6 +49,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		/**
 		 * Only protect if not cpt group.
 		 * Restrict query to show only has_access cpt posts.
+		 * @todo handle default rule value.
 		 */
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && ! empty( $post_type ) &&
@@ -79,8 +80,8 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 				if( in_array( get_post_type( $post_id ), MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types() ) ) {
 					$has_access = true;
 				}
-				elseif( in_array( $post_id, $this->rule_value ) ) {
-					$has_access = true;
+				else {
+					$has_access = parent::has_access( $post_id  );
 				}
 			}
 		}
@@ -149,10 +150,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = $this->rule_type;
-			$content->access = false;
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
+			$content->access = parent::has_access( $content->id  );
 		}
 
 		if( ! empty( $args['rule_status'] ) ) {

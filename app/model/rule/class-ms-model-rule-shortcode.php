@@ -53,7 +53,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 				if( in_array( $shortcode, $exclude ) ) {
 					continue;
 				}
-				if( ! in_array( $shortcode, $this->rule_value ) ) {
+				if( ! parent::has_access( $shortcode ) ) {
 					$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
 				}
 			}
@@ -135,12 +135,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents[ $id ]->id = $id;
 			$contents[ $id ]->name = "[$key]";
 			
-			if( in_array( $id, $this->rule_value ) ) {
-				$contents[ $id ]->access = true;
-			}
-			else {
-				$contents[ $id ]->access = false;
-			}
+			$contents[ $id ]->access = parent::has_access( $id );
 		}
 		
 		if( ! empty( $args['rule_status'] ) ) {

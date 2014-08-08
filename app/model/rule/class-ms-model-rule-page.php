@@ -92,9 +92,11 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$page_id = $this->get_current_page_id();
 		}
 
-		if( in_array( $page_id, $this->rule_value ) || in_array( $page_id, $settings->pages ) ) { 
+		$has_access = parent::has_access( $page_id );
+		if( in_array( $page_id, $settings->pages ) ) { 
 			$has_access = true;
 		}
+		
 		return apply_filters( 'ms_model_rule_page_has_access',  $has_access, $page_id );		
 	}
 
@@ -171,12 +173,9 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
-			else {
-				$content->access = false;
-			}
+
+			$content->access = self::has_access( $content->id );
+			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
 				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
 				$content->dripped = $this->dripped[ $content->id ];

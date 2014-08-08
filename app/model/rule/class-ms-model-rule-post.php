@@ -55,6 +55,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			 * Exclude dripped content.
 			 * Can't include posts, just exclude because of category clause conflict to post_in.
 			 * Using filter 'posts_where' to include dripped content.
+			 * * @todo handle default rule value.
 			 */
 			foreach( $this->dripped as $post_id => $period ) {
 				if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
@@ -124,9 +125,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();
 			}
-			if( in_array( $post_id, $this->rule_value ) ) {
-				$has_access = true;
-			}
+			$has_access = parent::has_access( $post_id );
 		}
 		/**
 		 * Feed page request
@@ -223,13 +222,8 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			else {
 				$content->categories = array();
 			}
-				
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
-			else {
-				$content->access = false;
-			}
+
+			$content->access = self::has_access( $content->id );
 			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
 				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];

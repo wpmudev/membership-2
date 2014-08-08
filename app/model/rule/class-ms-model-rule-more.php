@@ -36,7 +36,7 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 		$this->protection_message = ! empty( MS_Plugin::instance()->settings->protection_message['more_tag'] ) 
 			? MS_Plugin::instance()->settings->protection_message['more_tag'] 
 			: '';
-		if( empty ( $this->rule_value ) ) {
+		if( parent::has_access( 1 ) ) {
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
 			$this->add_filter( 'the_content_feed', 'replace_moretag_content', 1 );
@@ -64,13 +64,8 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 		$content->id = 1;
 		$content->name = __( 'User can read full post content beyond the More tag.', MS_TEXT_DOMAIN );
 
-		if( in_array( $content->id, $this->rule_value ) ) {
-			$content->access = true;
-		}
-		else {
-			$content->access = false;
-		}
-
+		$content->access = parent::has_access( $content->id );
+		
 		return array( $content );
 	}
 }

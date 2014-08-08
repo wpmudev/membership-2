@@ -195,17 +195,13 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 */
 	public function get_content( $args = null ) {
 		$contents = get_categories( 'get=all' );
-// 		$contents = get_terms( array('category', 'product_category', 'product_tag', 'nav_menu', 'post_tag'), 'get=all' );
 
 		foreach( $contents as $key => $content ) {
 			$content->id = $content->term_id;
 			$content->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
-			if( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			}
-			else {
-				$content->access = false;
-			}
+
+			$content->access = parent::has_access( $content->id );
+			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
 				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
 				$content->dripped = $this->dripped[ $content->id ];
