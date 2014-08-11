@@ -32,6 +32,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	const SPECIAL_PAGE_WELCOME = 'welcome';
 	const SPECIAL_PAGE_SIGNUP = 'signup';
 	
+	const PROTECTION_MSG_CONTENT = 'content';
+	const PROTECTION_MSG_SHORTCODE = 'shortcode';
+	const PROTECTION_MSG_MORE_TAG = 'more_tag';
+	
 	protected $id =  'ms_plugin_settings';
 	
 	protected $name = 'Plugin settings';
@@ -43,7 +47,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $initial_setup;
 	
-	protected $pages;
+	protected $pages = array();
 	
 	protected $default_membership_enabled;
 	
@@ -59,9 +63,9 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Shortcode protection message.
 	 * 
-	 * @var $protection_message
+	 * @var $protection_messages
 	 */
-	protected $protection_message = array( 'content', 'shortcode', 'more_tag' );
+	protected $protection_messages = array();
 
 	protected $downloads = array(
 		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED,
@@ -79,54 +83,119 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 	}
 
-	public function create_page_no_access() {
-		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
-		$pagedetails = array( 'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 'post_name' => 'protected', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
-	}
+	public function is_special_page( $page_id = null, $special_page_type = null ) {
 	
-	public function create_page_account() {
-		$content = '';
-		$pagedetails = array( 'post_title' => __( 'Account', MS_TEXT_DOMAIN ), 'post_name' => 'account', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
-	}
+		$is_special_page = false;
 	
-	public function create_page_welcome() {
-		$content = '';
-		$pagedetails = array( 'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ), 'post_name' => 'welcome', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
-	}
-
-	public function create_page_signup() {
-		$content = '';
-		$pagedetails = array( 'post_title' => __( 'Signup', MS_TEXT_DOMAIN ), 'post_name' => 'signup', 'post_status' => 'publish', 'post_type' => 'page', 'ping_status' => 'closed', 'comment_status' => 'closed' , 'post_content' => $content);
-		$id = wp_insert_post( $pagedetails );
-		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
-	}
-	
-	public function create_special_page( $type ) {
-		$create_method = "create_page_{$type}";
-		if( in_array( $type, self::get_special_page_types() ) && method_exists( $this, $create_method ) ) {
-			$this->$create_method();
-			$this->save();
-			return $this->pages[ $type ];
+		if( empty( $page_id ) ) {
+			if( is_page() ) {
+				$page_id = get_the_ID();
+			}
 		}
+	
+		if( ! empty( $page_id ) ) {
+			if( ! empty( $special_page_type ) ) {
+				if( ! empty( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ] ) {
+					$is_special_page = $special_page_type;
+				}
+			}
+			else {
+				foreach( $this->pages as $special_page_type => $special_page_id ) {
+					if( $page_id == $special_page_id ) {
+						$is_special_page = $special_page_type;
+						break;
+					}
+				}
+			}
+		}
+			
+		return $is_special_page;
 	}
 	
 	public function get_special_page( $type ) {
 		$page_id = null;
 		if( in_array( $type, self::get_special_page_types() ) ) {
-			if( empty( $this->pages[ $type ] ) ){
+			if( ! empty( $this->pages[ $type ] ) ){
+				$page_id = $this->pages[ $type ];
+				$page = get_post( $page_id );
+				if( 'trash' == $page->post_status ) {
+					$page_id = 0;
+				}
+			}
+			if( empty( $page_id ) ){
 				$page_id = $this->create_special_page( $type );
 			}
-			else{
-				$page_id = $this->pages[ $type ];
-			}
 		}
-		return $page_id;		
+		return $page_id;
+	}
+	
+	public function create_page_no_access( $virtual = true ) {
+		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
+		$page_details = array( 
+				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
+				'post_name' => 'protected', 
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish', 
+				'post_type' => 'page', 
+				'ping_status' => 'closed', 
+				'comment_status' => 'closed' , 
+				'post_content' => $content
+		);
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
+	}
+	
+	public function create_page_account( $virtual = true ) {
+		$content = '';
+		$page_details = array(
+				'post_title' => __( 'Account', MS_TEXT_DOMAIN ),
+				'post_name' => 'account',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => $content
+		);
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
+	}
+	
+	public function create_page_welcome( $virtual = true ) {
+		$content = '';
+		$page_details = array(
+				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
+				'post_name' => 'welcome',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => $content
+		);
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
+	}
+
+	public function create_page_signup( $virtual = true ) {
+		$content = '';
+		$page_details = array(
+				'post_title' => __( 'Signup', MS_TEXT_DOMAIN ),
+				'post_name' => 'signup',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => $content
+		);
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
+	}
+	
+	public function create_special_page( $type, $virtual = true ) {
+		$create_method = "create_page_{$type}";
+		if( in_array( $type, self::get_special_page_types() ) && method_exists( $this, $create_method ) ) {
+			$this->$create_method( $virtual );
+			$this->save();
+			return $this->pages[ $type ];
+		}
 	}
 	
 	public static function get_special_page_types() {
@@ -139,6 +208,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		);
 		
 	}
+	
 	public function get_pages( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,
@@ -146,44 +216,54 @@ class MS_Model_Settings extends MS_Model_Option {
 				'orderby'     => 'post_date',
 				'order'       => 'DESC',
 				'post_type'   => 'page',
-				'post_status' => array('publish'), 
+				'post_status' => array( 'publish', 'virtual' ), 
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
 		$contents = get_posts( $args );
-		$cont = array();
+		$cont = array( 0 => __( 'Select a page', MS_TEXT_DOMAIN ) );
 		foreach( $contents as $content ) {
 			$cont[ $content->ID ] = $content->post_title;
 		}
+		
 		return $cont;
 	}
 		
-	public function is_special_page( $page_id = null, $special_page_type = null ) {
-		
-		$is_special_page = false;
-		
-		if( empty( $page_id ) ) {
-			if( is_page() ) {
-				$page_id = get_the_ID();
-			}
-		}
+
 	
-		if( ! empty( $page_id ) ) {
-			if( ! empty( $special_page_type ) ) {
-				if( isset( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ] ) {
-					$is_special_page = $special_page_type;
-				}
+	public static function get_protection_msg_types() {
+		$types = array(
+				self::PROTECTION_MSG_CONTENT,
+				self::PROTECTION_MSG_SHORTCODE,
+				self::PROTECTION_MSG_MORE_TAG,
+		);
+		return apply_filters( 'ms_model_settings_get_protection_msg_types', $types );
+	}
+	
+	public static function is_valid_protection_msg_type( $type ) {
+		$types = self::get_protection_msg_types();
+		return apply_filters( 'ms_model_settings_is_valid_protection_msg_type', in_array( $type, $types ) );
+	}
+	
+	public function set_protection_message( $type, $msg ) {
+		if( self::is_valid_protection_msg_type( $type ) ) {
+			$this->protection_messages[ $type ] = $msg; 
+			MS_Helper_Debug::log("$type, $msg");
+		}
+	}
+	
+	public function get_protection_message( $type ) {
+		$msg = '';
+		if( self::is_valid_protection_msg_type( $type ) ) {
+			if( isset( $this->protection_messages[ $type ] ) ) {
+				$msg = $this->protection_messages[ $type ];
 			}
 			else {
-				foreach( $this->pages as $special_page_type => $special_page_id ) {
-					if( $page_id == $special_page_id ) {
-						$is_special_page = $special_page_type;
-					}
-				}
+				$msg = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
 			}
 		}
-			
-		return $is_special_page;
+
+		return apply_filters( 'ms_model_settings_get_protection_message', $msg, $type );
 	}
 	
 	public function get_custom_settings( $group, $name ) {
