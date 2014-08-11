@@ -349,7 +349,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
 				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 	
-			$ms_relationship = MS_MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
 	
 			$gateway_id = $_POST['gateway'];
 			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
