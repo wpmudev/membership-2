@@ -89,10 +89,12 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$post_types = array_merge( array( 'page', 'post', 'attachment' ), MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() );
 		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', $post_types );
 		
-		$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
-		$this->add_action( 'save_post', 'save_metabox_data', 10, 2 );
-		$this->add_action( 'attachment_fields_to_save', 'save_attachment_data' );
-		$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
+		if( MS_Plugin::instance()->settings->plugin_enabled ) {
+			$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
+			$this->add_action( 'save_post', 'save_metabox_data', 10, 2 );
+			$this->add_action( 'attachment_fields_to_save', 'save_attachment_data' );
+			$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
+		}
 	}
 	
 	/**
