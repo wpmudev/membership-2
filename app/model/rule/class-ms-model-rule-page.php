@@ -49,7 +49,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$rule_value = apply_filters( 'ms_model_rule_page_protect_pages_rule_value', $this->rule_value );
 	
 		foreach ( (array) $pages as $key => $page ) {
-			if( ! self::has_access( $page-ID ) ) {
+			if( ! self::has_access( $page->ID ) ) {
 				unset( $pages[ $key ] );
 			}
 			/**
