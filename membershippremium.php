@@ -352,6 +352,17 @@ class MS_Plugin {
 		foreach( $cpts as $cpt => $args ) {
 			MS_Helper_Utility::register_post_type( $cpt, $args );
 		}
+		
+		/** post_status "virtual" for pages not to be displayed in the menus but that users should not be editing. */
+		register_post_status( 'virtual', array(
+			'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
+			'public' => ( ! is_admin() ), //This trick prevents the virtual pages from appearing in the All Pages list but can be display on the front end.
+			'exclude_from_search' => false,
+			'show_in_admin_all_list' => false,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
+		) );
+		
 	}
 	
 	/**
