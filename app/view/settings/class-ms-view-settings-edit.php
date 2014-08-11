@@ -185,13 +185,19 @@ class MS_View_Settings_Edit extends MS_View {
 	}
 	
 	public function prepare_pages() {
+
+		$pages['no_access'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS );
+		$pages['account'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+		$pages['welcome'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME );
+		$pages['signup'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
+		
 		$all_pages = $this->model->get_pages();
 		$this->fields = array(
 			'no_access' => array(
 					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ),
+					'value' => $pages['no_access'],
 					'field_options' => $all_pages,
 					'class' => '',
 			),
@@ -199,7 +205,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ),
+					'value' => $pages['account'],
 					'field_options' => $all_pages,
 					'class' => '',
 			),
@@ -207,7 +213,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ),
+					'value' => $pages['welcome'],
 					'field_options' => $all_pages,
 					'class' => '',
 			),
@@ -215,7 +221,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
-					'value' => $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ),
+					'value' => $pages['signup'],
 					'field_options' => $all_pages,
 					'class' => '',
 			),
@@ -355,21 +361,21 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => 'content',
 					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => ! empty( $this->model->protection_message['content'] ) ? $this->model->protection_message['content'] : '',
+					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
 			'shortcode' => array(
 					'id' => 'shortcode',
 					'title' => __( 'Message displayed when not having access to a protected shortcode.', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => ! empty( $this->model->protection_message['shortcode'] ) ? $this->model->protection_message['shortcode'] : '',
+					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
 			'more_tag' => array(
 					'id' => 'more_tag',
 					'title' => __( 'Message displayed when not having access to a protected content after more tag.', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'value' => ! empty( $this->model->protection_message['more_tag'] ) ? $this->model->protection_message['more_tag'] : '',
+					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
 			'submit' => array(
