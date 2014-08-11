@@ -49,17 +49,18 @@ class MS_Controller_Public extends MS_Controller {
 	 */		
 	public function __construct() {
 
-		do_action( 'ms_controller_public_construct', $this );
+		if( MS_Plugin::instance()->settings->plugin_enabled ) {
+			do_action( 'ms_controller_public_construct', $this );
 		
-		$this->add_action( 'template_redirect', 'process_actions', 1 );
-		$this->add_filter( 'template_redirect', 'check_for_membership_pages', 1 );
-		
-		$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
-		$this->add_filter( 'register_url', 'signup_location', 999 );
-		$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
-		
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles');
-		
+			$this->add_action( 'template_redirect', 'process_actions', 1 );
+			$this->add_filter( 'template_redirect', 'check_for_membership_pages', 1 );
+			
+			$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
+			$this->add_filter( 'register_url', 'signup_location', 999 );
+			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
+			
+			$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles');
+		}		
 	}
 	
 	/**
@@ -409,8 +410,9 @@ class MS_Controller_Public extends MS_Controller {
 	 * @return string
 	 */
 	public function protected_page( $content ) {
-		if( ! empty( MS_Plugin::instance()->settings->protection_message['content'] ) ) {
-			$content .= MS_Plugin::instance()->settings->protection_message['content'];
+		$protection_msg = MS_Plugin::instance()->settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT );
+		if( ! empty( $protection_msg ) ) {
+			$content .= $protection_msg;
 		}
 
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
