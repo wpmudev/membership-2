@@ -194,14 +194,14 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * General tab submit request.
 				 */
-				elseif( ! empty( $_POST['submit_general'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+				elseif( ! empty( $_POST['submit_general'] ) && $this->verify_nonce() ) {
 					$msg =  $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
 				break;
 			case 'pages':
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if ( ! empty( $_POST['action'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+				if ( $this->verify_nonce() ) {
 					if( ! empty( $_POST['submit_pages'] ) ) {		
 						$msg = $this->special_pages_do_action( 'submit_pages', $_POST );
 					}
@@ -216,16 +216,14 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Save payment settings tab
 				 */
-				if ( ! empty( $_POST['submit_payment'] ) && ! empty( $_POST['action'] ) &&
-					! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+				if ( ! empty( $_POST['submit_payment'] ) && $this->verify_nonce() ) {
 					$msg = $this->save_general( 'submit_payment', $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 				}
 				break;
 			case 'messages-protection':
 				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['action'] ) && 
-						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+				if ( ! empty( $_POST['submit'] ) && $this->verify_nonce() ) {
 					
 					$msg = $this->save_protection_messages( $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -241,8 +239,7 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 				$this->model = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
 				
-				if ( ! empty( $_POST['save_email'] ) && ! empty( $_POST['action'] ) &&
-						! empty( $_POST[ '_wpnonce' ] ) && wp_verify_nonce( $_POST[ '_wpnonce' ], $_POST['action'] ) ) {
+				if ( ! empty( $_POST['save_email'] ) && $this->verify_nonce() ) {
 					$msg = $this->save_communication( $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 				}
@@ -252,8 +249,7 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Download tab submit request.
 				 */
-				if( ! empty( $_POST['submit_downloads'] ) && ! empty( $_POST['action'] ) 
-					&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+				if( ! empty( $_POST['submit_downloads'] ) && $this->verify_nonce() ) {
 					$msg = $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
@@ -263,8 +259,7 @@ class MS_Controller_Settings extends MS_Controller {
 				/**
 				 * Settings tab submit request.
 				 */
-				if( ! empty( $_POST['submit_settings'] ) && ! empty( $_POST['action'] ) 
-					&& ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
+				if( ! empty( $_POST['submit_settings'] ) && $this->verify_nonce() ) {
 					$msg = $this->save_general( $_POST['action'], $_POST );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
 				}
@@ -348,6 +343,8 @@ class MS_Controller_Settings extends MS_Controller {
 			return $msg;
 		}
 		
+		do_action( 'ms_controller_settings_special_pages_do_action', $action, $fields );
+		
 		switch( $action ) {
 			case 'submit_pages':
 				$special_pages_types = MS_Model_Settings::get_special_page_types();
@@ -361,18 +358,17 @@ class MS_Controller_Settings extends MS_Controller {
 				$this->model->save();
 				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 				break;
-			/**Create special pages */	
-			default:
+			case 'create_special_page':
 				$special_pages_types = MS_Model_Settings::get_special_page_types();
 				foreach( $special_pages_types as $type ) {
 					$submit = "create_page_{$type}";
 					if( ! empty( $fields[ $submit ] ) ) {
-						$this->model->create_special_page( $type );
+						$this->model->create_special_page( $type, false );
 						$this->model->save();
 						$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					}
 				}
-			break;
+				break;
 		}
 	
 		return $msg;
@@ -391,12 +387,15 @@ class MS_Controller_Settings extends MS_Controller {
 		if ( ! current_user_can( $this->capability ) ) {
 			return $msg;
 		}
-		
+	
 		if( ! empty( $fields ) ) {
-			$protection_message['content'] = isset( $fields['content'] ) ? $fields['content']: '';
-			$protection_message['shortcode'] = isset( $fields['shortcode'] ) ? $fields['shortcode']: '';
-			$protection_message['more_tag'] = isset( $fields['more_tag'] ) ? $fields['more_tag']: '';
-			$this->model->protection_message = $protection_message;
+			$types = MS_Model_Settings::get_protection_msg_types();
+
+			foreach( $types as $type ) {
+				if( isset( $fields[ $type ] ) ) {
+					$this->model->set_protection_message( $type, $fields[ $type ] );
+				}
+			}
 			$this->model->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
@@ -432,6 +431,7 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		return $msg;
 	}
+	
 	/**
 	 * Load Membership admin styles.
 	 *
