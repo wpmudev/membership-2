@@ -404,9 +404,8 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<h3><?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?></h3>
-			<form action="" method="post">
+			<form id="ms-comm-type-form" action="" method="post">
 				<?php MS_Helper_Html::html_input( $this->fields['comm_type'] );?>
-				<?php MS_Helper_Html::html_submit( $this->fields['load_comm'] );?>
 				<p><?php echo $this->model->get_description(); ?></p>
 			</form>
 			<form action="" method="post">
@@ -485,10 +484,6 @@ class MS_View_Settings_Edit extends MS_View {
 						'value' => $this->model->type,
 						'field_options' => MS_Model_Communication::get_communication_type_titles(),
 						'class' => '',
-				),
-				'load_comm' => array(
-						'id' => 'load_comm',
-						'value' => __( 'Load Email', MS_TEXT_DOMAIN ),
 				),
 				'type' => array(
 						'id' => 'type',
