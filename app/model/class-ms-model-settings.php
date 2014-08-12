@@ -31,6 +31,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	const SPECIAL_PAGE_ACCOUNT = 'account';
 	const SPECIAL_PAGE_WELCOME = 'welcome';
 	const SPECIAL_PAGE_SIGNUP = 'signup';
+	const SPECIAL_PAGE_MENU = 'menu';
 	
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';
@@ -118,7 +119,7 @@ class MS_Model_Settings extends MS_Model_Option {
 			if( ! empty( $this->pages[ $type ] ) ){
 				$page_id = $this->pages[ $type ];
 				$page = get_post( $page_id );
-				if( 'trash' == $page->post_status ) {
+				if( empty( $page->ID ) || 'trash' == $page->post_status ) {
 					$page_id = 0;
 				}
 			}
@@ -129,7 +130,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $page_id;
 	}
 	
-	public function create_page_no_access( $virtual = true ) {
+	public function create_page_no_access( $virtual ) {
 		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
 		$page_details = array( 
 				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
@@ -138,13 +139,14 @@ class MS_Model_Settings extends MS_Model_Option {
 				'post_type' => 'page', 
 				'ping_status' => 'closed', 
 				'comment_status' => 'closed' , 
-				'post_content' => $content
+				'post_content' => $content,
 		);
 		$id = wp_insert_post( $page_details );
 		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
 	}
 	
-	public function create_page_account( $virtual = true ) {
+	public function create_page_account( $virtual ) {
+// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
 		$content = '';
 		$page_details = array(
 				'post_title' => __( 'Account', MS_TEXT_DOMAIN ),
@@ -153,13 +155,14 @@ class MS_Model_Settings extends MS_Model_Option {
 				'post_type' => 'page',
 				'ping_status' => 'closed',
 				'comment_status' => 'closed' ,
-				'post_content' => $content
+				'post_content' => $content,
+// 				'post_parent' => $post_parent,
 		);
 		$id = wp_insert_post( $page_details );
 		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
 	}
 	
-	public function create_page_welcome( $virtual = true ) {
+	public function create_page_welcome( $virtual ) {
 		$content = '';
 		$page_details = array(
 				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
@@ -174,7 +177,8 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
 	}
 
-	public function create_page_signup( $virtual = true ) {
+	public function create_page_signup( $virtual ) {
+// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
 		$content = '';
 		$page_details = array(
 				'post_title' => __( 'Signup', MS_TEXT_DOMAIN ),
@@ -183,13 +187,29 @@ class MS_Model_Settings extends MS_Model_Option {
 				'post_type' => 'page',
 				'ping_status' => 'closed',
 				'comment_status' => 'closed' ,
-				'post_content' => $content
+				'post_content' => $content,
+// 				'post_parent' => $post_parent,
 		);
 		$id = wp_insert_post( $page_details );
 		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
 	}
 	
-	public function create_special_page( $type, $virtual = true ) {
+	public function create_page_menu( $virtual ) {
+		$content = '';
+		$page_details = array(
+				'post_title' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'post_name' => 'membership',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => $content
+		);
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_MENU ] = $id;
+	}
+	
+	public function create_special_page( $type, $virtual = false ) {
 		$create_method = "create_page_{$type}";
 		if( in_array( $type, self::get_special_page_types() ) && method_exists( $this, $create_method ) ) {
 			$this->$create_method( $virtual );
@@ -204,6 +224,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				self::SPECIAL_PAGE_ACCOUNT,
 				self::SPECIAL_PAGE_WELCOME,
 				self::SPECIAL_PAGE_SIGNUP,
+				self::SPECIAL_PAGE_MENU,
 			)
 		);
 		
@@ -247,8 +268,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	public function set_protection_message( $type, $msg ) {
 		if( self::is_valid_protection_msg_type( $type ) ) {
-			$this->protection_messages[ $type ] = $msg; 
-			MS_Helper_Debug::log("$type, $msg");
+			$this->protection_messages[ $type ] = wp_kses_post( $msg ); 
 		}
 	}
 	
@@ -320,9 +340,6 @@ class MS_Model_Settings extends MS_Model_Option {
 					if( array_key_exists( $value, self::get_currencies() ) ) {
 						$this->$property = $value;
 					}
-					break;
-				case 'protection_message':
-					$this->$property = wp_kses_post( $value );
 					break;
 				case 'invoice_sender_name':
 					$this->$property = sanitize_text_field( $value );
