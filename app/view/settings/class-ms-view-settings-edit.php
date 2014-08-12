@@ -338,19 +338,30 @@ class MS_View_Settings_Edit extends MS_View {
 	   		<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
-				<table class="form-table">
-					<tbody>
-						<?php foreach( $this->fields as $field ): ?>
-							<tr>
-								<td>
-									<hr />
-									<?php MS_Helper_Html::html_input( $field ); ?>
-								</td>
-							</tr>
-						<?php endforeach;?>
-					</tbody>
-				</table>	   		
-	   		</form>
+				<div class="postbox metabox-holder">
+					<h3><label for="title"><?php _e( 'Content protection message', MS_TEXT_DOMAIN ); ?></label></h3>
+					<div class="inside">
+						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
+						<?php MS_Helper_Html::html_input( $this->fields['shortcode'] ); ?>
+					</div>
+				</div>
+				<div class="postbox metabox-holder">
+					<h3><label for="title"><?php _e( 'Shortcode protection message', MS_TEXT_DOMAIN ); ?></label></h3>
+					<div class="inside">
+						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
+						<?php MS_Helper_Html::html_input( $this->fields['more_tag'] ); ?>
+					</div>
+				</div>
+				<div class="postbox metabox-holder">
+					<h3><label for="title"><?php _e( 'More tag protection message', MS_TEXT_DOMAIN ); ?></label></h3>
+					<div class="inside">
+						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
+						<?php MS_Helper_Html::html_input( $this->fields['content'] ); ?>
+					</div>
+				</div>
+				<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
+				<?php MS_Helper_Html::html_input( $this->fields['submit'] ); ?>
+			</form>
    		</div>
 		<?php
 	}
@@ -359,22 +370,19 @@ class MS_View_Settings_Edit extends MS_View {
 		$this->fields = array(
 			'content' => array(
 					'id' => 'content',
-					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
 			'shortcode' => array(
 					'id' => 'shortcode',
-					'title' => __( 'Message displayed when not having access to a protected shortcode.', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
 			'more_tag' => array(
 					'id' => 'more_tag',
-					'title' => __( 'Message displayed when not having access to a protected content after more tag.', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 			),
