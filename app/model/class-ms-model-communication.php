@@ -84,19 +84,20 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		
 		$this->comm_vars = array(
 				'TODO' => 'config '. $this->type,
-				'%blogname%' => 'Blog/site name',
-				'%blogurl%' => 'Blog/site url',
-				'%username%' => 'Username',
-				'%usernicename%' => 'User nice name',
-				'%userdisplayname%' => 'User display name',
-				'%userfirstname%' => 'User first name',
-				'%userlastname%' => 'User last name',
-				'%networkname%' => 'Network name',
-				'%networkurl%' => 'Network url',
-				'%membershipname%' => 'Membership name',
-				'%total%' => 'Invoice Total',
-				'%taxname%' => 'Tax name',
-				'%taxamount%' => 'Tax amount',
+				'%blogname%' => __( 'Blog/site name', MS_TEXT_DOMAIN ),
+				'%blogurl%' => __( 'Blog/site url', MS_TEXT_DOMAIN ),
+				'%username%' => __( 'Username', MS_TEXT_DOMAIN ),
+				'%usernicename%' => __( 'User nice name', MS_TEXT_DOMAIN ),
+				'%userdisplayname%' => __( 'User display name', MS_TEXT_DOMAIN ),
+				'%userfirstname%' => __( 'User first name', MS_TEXT_DOMAIN ),
+				'%userlastname%' => __( 'User last name', MS_TEXT_DOMAIN ),
+				'%networkname%' => __( 'Network name', MS_TEXT_DOMAIN ),
+				'%networkurl%' => __( 'Network url', MS_TEXT_DOMAIN ),
+				'%membershipname%' => __( 'Membership name', MS_TEXT_DOMAIN ),
+				'%invoice%' => __( 'Invoice details', MS_TEXT_DOMAIN ),
+// 				'%total%' => __( 'Invoice Total', MS_TEXT_DOMAIN ),
+// 				'%taxname%' => __( 'Tax name', MS_TEXT_DOMAIN ),
+// 				'%taxamount%' => __( 'Tax amount', MS_TEXT_DOMAIN ),
 		);
 	}
 	
@@ -379,7 +380,18 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 						$comm_vars[ $key ] = 0;
 					}
 					break;
-						
+				case '%invoice%':
+					if( isset( $invoice ) && $invoice->total > 0 ) {
+						MS_Helper_Debug::log(do_shortcode( sprintf( '[%s post_id="%s"]', MS_Helper_Shortcode::SCODE_MS_INVOICE, $invoice->id ) ));
+						$comm_vars[ $key ] = do_shortcode( sprintf( '[%s post_id="%s" display_pay_button="false"]', 
+								MS_Helper_Shortcode::SCODE_MS_INVOICE, 
+								$invoice->id 
+						) );
+					}
+					else {
+						$comm_vars[ $key ] = '';
+					}
+					break;		
 				default:
 					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $ms_relationship->user_id );
 					break;
