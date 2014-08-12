@@ -439,27 +439,27 @@ class MS_Controller_Gateway extends MS_Controller {
 			foreach( $data['gateway'] as $ms_relationship_id => $gateway ) {
 				switch( $gateway->id ) {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
+						$member = MS_Model_Member::get_current_member();
+						$data['stripe'] = $member->get_gateway_profile( $gateway->id );
 						if( empty( $data['stripe']['card_exp'] ) ) {
 							continue 2;
 						}
 						$view = new MS_View_Gateway_Stripe_Card();
-						$member = MS_Model_Member::get_current_member();
 						$data['member'] = $member;
 						$data['publishable_key'] = $gateway->get_publishable_key();
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
-						$data['stripe'] = $member->get_gateway_profile( $gateway->id );
 						break;
 					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+						$member = MS_Model_Member::get_current_member();
+						$data['authorize'] = $member->get_gateway_profile( $gateway->id );
 						if( empty( $data['authorize']['card_exp'] ) ) {
 							continue 2;
 						}
 						$view = new MS_View_Gateway_Authorize_Card();
-						$member = MS_Model_Member::get_current_member();
 						$data['member'] = $member;
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
-						$data['authorize'] = $member->get_gateway_profile( $gateway->id );
 						break;
 					default:
 						break;
