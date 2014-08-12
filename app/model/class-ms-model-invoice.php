@@ -555,13 +555,12 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Register and Filter the custom post type.
+	 * Returns register custom post type args.
 	 *
 	 * @since 4.0.0
-	 * @param object $this The MS_Plugin object.
 	 */
-	public static function register_post_type() {
-		register_post_type( self::$POST_TYPE, apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
+	public static function get_register_post_type_args() {
+		return apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
 				'description' => __( 'user invoices', MS_TEXT_DOMAIN ),
 				'public' => true,
 				'show_ui' => false,
@@ -571,6 +570,6 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 				'supports' => false,
 // 				'capability_type' => apply_filters( self::$POST_TYPE, '_capability', 'post' ),
 				'hierarchical' => false,
-		) ) );
+		) );
 	}
 }
