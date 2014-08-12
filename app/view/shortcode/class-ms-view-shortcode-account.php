@@ -10,11 +10,12 @@ class MS_View_Shortcode_Account extends MS_View {
 	
 	public function to_html() {
 		$this->prepare_fields();
+		$signup_url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
 		ob_start();
 		?>
 		<div class="ms-account-wrapper">
 			<?php if( MS_Model_Member::is_logged_user() ): ?>
-				<h2>Your Membership</h2>
+				<h2><?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', __( 'Your Membership', MS_TEXT_DOMAIN ), $signup_url, __( 'Change', MS_TEXT_DOMAIN ) ); ?></h2>
 				<?php if( ! empty( $this->data['membership'] ) ) :?>
 					<table>
 						<tr>
