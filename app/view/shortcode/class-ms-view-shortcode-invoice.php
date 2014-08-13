@@ -19,7 +19,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<?php echo MS_Plugin::instance()->settings->invoice_sender_name; ?>
 					</div>
 				</h2>
-				<h2><?php echo __( 'Invoice #', MS_TEXT_DOMAIN ) . $invoice->id; ?></h2>
+				<h2><?php echo sprintf( '<a href="%s">%s%s</a>', get_permalink(  $invoice->id ), __( 'Invoice #', MS_TEXT_DOMAIN ), $invoice->id ); ?></h2>
 				<div class="ms-invoice-details-wrapper">
 					<table class='ms-purchase-table'>
 						<tr>
@@ -36,6 +36,14 @@ class MS_View_Shortcode_Invoice extends MS_View {
 							</td>
 							<td class='ms-details-column'>
 								<?php echo $invoice->due_date; ?>
+							</td>
+						</tr>
+						<tr>
+							<td class='ms-title-column'>
+								<?php _e( 'Status', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class='ms-details-column'>
+								<?php echo $invoice->status; ?>
 							</td>
 						</tr>
 						<tr>
@@ -99,7 +107,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 								<?php echo $invoice->currency . ' '. number_format( $invoice->total, 2 ); ?>
 							</td>
 						</tr>
-						<?php if( $gateway->manual_payment && $this->data['display_pay_button'] && $invoice->status != MS_Model_Invoice::STATUS_PAID ): ?>
+						<?php if( $gateway->manual_payment && '1' == $this->data['pay_button'] && $invoice->status != MS_Model_Invoice::STATUS_PAID ): ?>
 							<tr>
 								<td class='ms-buy-now-column' colspan='2' >
 									<?php do_action( 'ms_view_shortcode_invoice_purchase_button', $ms_relationship ); ?>
