@@ -204,7 +204,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		$customer = $this->get_stripe_customer( $member );
 		$card = $customer->cards->retrieve( $customer->default_card );
 
-		$member->set_gateway_profile( $this->id, 'card_exp', date("Y-m-t", strtotime( "{$card->exp_year}-{$card->exp_month}-01") ) );
+		$member->set_gateway_profile( $this->id, 'card_exp', gmdate( "Y-m-t", strtotime( "{$card->exp_year}-{$card->exp_month}-01") ) );
 		$member->set_gateway_profile( $this->id, 'card_num', $card->last4 );
 		
 		$member->save();

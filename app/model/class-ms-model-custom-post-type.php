@@ -42,7 +42,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		
 		$this->before_save();
 				
-		$this->post_modified = date( 'Y-m-d H:i:s' );
+		$this->post_modified = gmdate( 'Y-m-d H:i:s' );
 		
 		$class = get_class( $this );
 		$post = array(

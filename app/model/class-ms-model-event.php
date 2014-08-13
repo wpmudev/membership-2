@@ -248,7 +248,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		) );
 		
 		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event->type ) ) {
-			if( $last_event->user_id == $event->user_id && date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->modified ) ) == MS_Helper_Period::current_date() ) {
+			if( $last_event->user_id == $event->user_id && gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->modified ) ) == MS_Helper_Period::current_date() ) {
 				$is_duplicate = true;
 				MS_Helper_Debug::log( "duplicate event:" );
 				MS_Helper_Debug::log( $event );

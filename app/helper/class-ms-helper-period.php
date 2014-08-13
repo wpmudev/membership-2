@@ -55,14 +55,14 @@ class MS_Helper_Period extends MS_Helper {
 	 */
 	public static function add_interval( $period_unit, $period_type, $start_date = null ) {
 		if( empty ( $start_date ) ) {
-			$start_date = date( self::PERIOD_FORMAT );
+			$start_date = gmdate( self::PERIOD_FORMAT );
 		}
 		
 		$end_dt = strtotime( '+' . $period_unit . $period_type , strtotime( $start_date ) ); 
 		if ( $end_dt === false) {
 			throw new Exception( 'error add_interval' );
 		} 
-		return apply_filters( 'membership_helper_period_add_interval', date( self::PERIOD_FORMAT, $end_dt ) ); 
+		return apply_filters( 'membership_helper_period_add_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) ); 
 	}
 	
 	/**
@@ -78,14 +78,14 @@ class MS_Helper_Period extends MS_Helper {
 	 */
 	public static function subtract_interval( $period_unit, $period_type, $start_date = null ) {
 		if( empty ( $start_date ) ) {
-			$start_date = date( self::PERIOD_FORMAT );
+			$start_date = gmdate( self::PERIOD_FORMAT );
 		}
 	
 		$end_dt = strtotime( '-' . $period_unit . $period_type , strtotime( $start_date ) );
 		if ( $end_dt === false) {
 			throw new Exception( 'error subtract_interval' );
 		}
-		return apply_filters( 'membership_helper_period_subtract_interval', date( self::PERIOD_FORMAT, $end_dt ) );
+		return apply_filters( 'membership_helper_period_subtract_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) );
 	}
 	
 	/**
@@ -103,7 +103,7 @@ class MS_Helper_Period extends MS_Helper {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
-		$days = round( ($end_date->format('U') - $start_date->format('U') ) / ( 60 * 60 * 24 ) );
+		$days = round( ( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) / ( 60 * 60 * 24 ) );
 		
 		return apply_filters( 'ms_helper_period_get_periods', $days );
 	}
@@ -116,7 +116,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The current date.
 	 */
 	public static function current_date( $format = self::PERIOD_FORMAT ) {
-		return apply_filters( 'membership_helper_period_current_date', date( $format ) );
+		return apply_filters( 'membership_helper_period_current_date', gmdate( $format ) );
 	}
 	
 	/**

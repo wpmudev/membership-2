@@ -189,7 +189,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		if( ! empty( $profile['customerPaymentProfileId'] ) && $cim_payment_profile_id == $profile['customerPaymentProfileId'] ) {
 			$exp_year =  filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT );
 			$exp_month = substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 );
-			$member->set_gateway_profile( $this->id, 'card_exp', date("Y-m-t", strtotime( "{$exp_year}-{$exp_month}-01") ) );
+			$member->set_gateway_profile( $this->id, 'card_exp', gmdate( "Y-m-t", strtotime( "{$exp_year}-{$exp_month}-01") ) );
 			$member->set_gateway_profile( $this->id, 'card_num', str_replace( 'XXXX', '', $profile['payment']['creditCard']['cardNumber'] ) );
 		}
 	}

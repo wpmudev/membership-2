@@ -106,7 +106,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 			$months[ $i ] = $date->format( 'm - M' ); 
 		}
 		$years = array( '' => __( 'Year', MS_TEXT_DOMAIN ) );
-		for( $i = date( 'Y' ), $maxYear = $i + 15; $i <= $maxYear; $i++ ) {
+		for( $i = gmdate( 'Y' ), $maxYear = $i + 15; $i <= $maxYear; $i++ ) {
 			$years[ $i ] = $i;
 		}
 		$this->fields['card'] = array(
