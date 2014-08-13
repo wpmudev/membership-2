@@ -88,8 +88,6 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	protected $ms_relationship_id;
 	
-	protected $modified;
-	
 	public static function get_event_types() {
 		return apply_filters( 'ms_model_news_get_event_types', array(
 				self::TYPE_MS_REGISTERED => array( 'topic' => self::TOPIC_USER ),
@@ -118,13 +116,25 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
-	public static function get_last_event_of_type( $type ) {
+	public static function get_last_event_of_type( $event ) {
 		$args['posts_per_page'] = 1;
 		$args['meta_query']['type'] = array(
 				'key'     => 'type',
 				'value'   => $event->type,
 		);
+		$args['meta_query']['user_id'] = array(
+				'key'     => 'user_id',
+				'value'   => $event->user_id,
+		);
+		if( ! empty( $event->ms_relationship_id ) ) {
+			$args['meta_query']['ms_relationship_id'] = array(
+					'key'     => 'ms_relationship_id',
+					'value'   => $event->ms_relationship_id,
+			);
+		}
+
 		$events = self::get_events( apply_filters( 'ms_model_events_get_events_args', $args ) );
+
 		if( ! empty( $events[0] ) ) {
 			return $events[0];
 		}
@@ -184,10 +194,6 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event->type = $type;
 			$event->topic = self::get_topic( $type );
 			
-			if( self::is_duplicate( $event, $data ) ) {
-				return false;
-			}
-			
 			switch( $event->topic ) {
 				case self::TOPIC_PAYMENT:
 				case self::TOPIC_WARNING:
@@ -211,10 +217,19 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 					}
 					break;
 				case self::TOPIC_USER:
-					$member = $data;
-					$event->user_id = $member->id;
-					$event->name = sprintf( 'user: %s, type: %s', $member->name, $type );
-						
+					if( $data instanceof MS_Model_Member ) {
+						$member = $data;
+						$event->user_id = $member->id;
+						$event->name = sprintf( 'user: %s, type: %s', $member->name, $type );
+					}
+					elseif( $data instanceof MS_Model_Membership_Relationship ) {
+						$ms_relationship = $data;
+						$membership = $ms_relationship->get_membership();
+						$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+						$event->user_id = $ms_relationship->user_id;
+						$event->ms_relationship_id = $ms_relationship->id;
+						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
+					}						
 					$description = sprintf( __( '<span class="ms-news-bold">%s</span> - event: <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
 							$member->username,
 							$type
@@ -227,12 +242,18 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event->description = apply_filters( 'ms_model_event_description', $description, $type, $data );
 				
 			$event = apply_filters( 'ms_model_news_record_user_signup_object', $event );
-			$event->save();
 			
-			/** Hook to these actions to handle event notifications. e.g. auto communication. */
-			do_action( "ms_model_event_$type", $event, $data );
+			if( ! self::is_duplicate( $event, $data ) ) {
+				$event->save();
+				
+				/** Hook to these actions to handle event notifications. e.g. auto communication. */
+				do_action( "ms_model_event_$type", $event, $data );
+				return $event;
+			}
+			else {
+				return null;
+			}
 			
-			return $event;
 		}
 	}
 	
@@ -245,13 +266,12 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_MS_BEFORE_FINISHES,
 				self::TYPE_MS_AFTER_FINISHES,
 				self::TYPE_CREDIT_CARD_EXPIRE,
+				self::TYPE_PAYMENT_AFTER_MADE,
 		) );
 		
-		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event->type ) ) {
-			if( $last_event->user_id == $event->user_id && gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->modified ) ) == MS_Helper_Period::current_date() ) {
+		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event ) ) {
+			if( gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->post_modified ) ) == MS_Helper_Period::current_date() ) {
 				$is_duplicate = true;
-				MS_Helper_Debug::log( "duplicate event:" );
-				MS_Helper_Debug::log( $event );
 			}
 		}
 		
