@@ -60,7 +60,12 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_Credit_Card_Expire</h1>
+			<h2>Hi %username%,</h2>
+			<br />
+			your credit card is about to expire.
+			<br />
+			To continue a member, please change the card number before you next invoice date in your %accountpage%.
+			<br />
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_credit_card_expire_get_default_message', $html );

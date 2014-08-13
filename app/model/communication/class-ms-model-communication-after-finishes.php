@@ -51,7 +51,11 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_After_Finishes</h1>
+			<h2>Hi, %username%,</h2>
+			<br /><br />
+			your membership has finished in %membershipexpiry%.
+			<br /><br />
+			%invoice%
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_after_finished_get_default_message', $html );

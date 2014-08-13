@@ -31,27 +31,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	protected static $CLASS_NAME = __CLASS__;
 	
 	protected $type = self::COMM_TYPE_REGISTRATION;
-	
-	public function __construct() {
-	
-		$this->comm_vars = array(
-				'TODO' => 'config '. $this->type,
-				'%blogname%' => 'Blog/site name',
-				'%blogurl%' => 'Blog/site url',
-				'%username%' => 'Username',
-				'%usernicename%' => 'User nice name',
-				'%userdisplayname%' => 'User display name',
-				'%userfirstname%' => 'User first name',
-				'%userlastname%' => 'User last name',
-				'%networkname%' => 'Network name',
-				'%networkurl%' => 'Network url',
-				'%membershipname%' => 'Membership name',
-				'%total%' => 'Invoice Total',
-				'%taxname%' => 'Tax name',
-				'%taxamount%' => 'Tax amount',
-		);
-	}
-	
+		
 	public function after_load() {
 	
 		parent::after_load();
@@ -84,10 +64,8 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 				You are now member of %membershipname%.
 			</p>
 			<p>
-				Invoice details: <br/><br/>
-				Tax name: %taxname% <br/><br/>
-				Tax amount: %taxamount% <br/><br/>
-				Total: %total% <br/><br/>
+				Invoice details: <br /><br />
+				%invoice%
 			</p>
 		<?php 
 		$html = ob_get_clean();

@@ -59,7 +59,11 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_Failed_Payment</h1>
+			<h2>Hi, %username%,</h2>
+			<br /><br />
+			your recurring payment has failed.
+			<br /><br />
+			%invoice%
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_failed_payment_get_default_message', $html );

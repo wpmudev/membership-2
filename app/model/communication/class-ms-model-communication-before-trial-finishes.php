@@ -51,7 +51,11 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_Before_Trial_Finishes</h1>
+			<h2>Hi, %username%,</h2>
+			<br /><br />
+			your membership trial period will finish in %membershipremainingdays%,
+			<br /><br />
+			%invoice%
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_trial_finishes_get_default_message', $html );

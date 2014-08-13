@@ -32,22 +32,6 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_BEFORE_FINISHES;
 	
-	public function __construct() {
-		$this->comm_vars = array(
-				'TODO' => 'configure before finish vars',
-				'%blogname%' => 'Blog/site name',
-				'%blogurl%' => 'Blog/site url',
-				'%username%' => 'Username',
-				'%usernicename%' => 'User nice name',
-				'%userdisplayname%' => 'User display name',
-				'%userfirstname%' => 'User first name',
-				'%userlastname%' => 'User last name',
-				'%networkname%' => 'Network name',
-				'%networkurl%' => 'Network url',
-				'%membershipname%' => 'Membership name',
-		);
-	}
-	
 	public function enqueue_messages( $ms_relationship, $expire ) {
 		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_TRIAL == $ms_relationship->status ) {
 			$days = MS_Helper_Period::get_period_in_days( $comm->period );
@@ -77,7 +61,11 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_Before_Finishes</h1>
+			<h2>Hi, %username%,</h2>
+			<br /><br />
+			your membership will finish in %membershipremainingdays%,
+			<br /><br />
+			%invoice%
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_finishes_get_default_message', $html );
