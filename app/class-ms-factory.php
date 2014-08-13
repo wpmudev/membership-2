@@ -104,7 +104,7 @@ class MS_Factory {
 					continue;
 				}
 				if( isset( $settings[ $field ] ) ) {
-					$model->$field = $settings[ $field ];
+					$model->set_field( $field, $settings[ $field ] );
 				}
 			}
 		
@@ -144,7 +144,7 @@ class MS_Factory {
 					continue;
 				}
 				if( isset( $settings[ $field ] ) ) {
-					$model->$field = $settings[ $field ];
+					$model->set_field( $field, $settings[ $field ] );
 				}
 			}
 		
@@ -185,7 +185,7 @@ class MS_Factory {
 						continue;
 					}
 					if ( isset( $post_meta[ $field ][ 0 ] ) ) {
-						$model->$field = maybe_unserialize( $post_meta[ $field ][ 0 ] );
+						$model->set_field( $field, maybe_unserialize( $post_meta[ $field ][ 0 ] ) );
 					}
 				}
 				
@@ -196,7 +196,7 @@ class MS_Factory {
 				$model->user_id = $post->post_author;
 			}
 		}
-	
+		
 		$model->after_load();
 
 		return apply_filters( 'ms_factory_load_from_custom_post_type', $model, $class, $model_id );
@@ -232,7 +232,7 @@ class MS_Factory {
 					continue;
 				}
 				if( isset( $member_details[ "ms_$field" ][0] ) ) {
-					$member->$field = maybe_unserialize( $member_details[ "ms_$field" ][0] );
+					$member->set_field( $field, maybe_unserialize( $member_details[ "ms_$field" ][0] ) );
 				}
 			}
 			

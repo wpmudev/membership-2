@@ -72,6 +72,21 @@ class MS_Model extends MS_Hooker {
 		do_action( 'membership_parent_model_construct', $this );		
 	}
 	
+	/**
+	 * Set field value, bypassing the __set validation.
+	 * 
+	 * Used for loading from db.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param string $field
+	 * @param mixed $value
+	 */
+	public function set_field( $field, $value ) {
+		if( property_exists( $this, $field ) ) {
+			$this->$field = $value;
+		}
+	}
 	
 	/**
 	 * Prepare data before saving model.
@@ -113,7 +128,7 @@ class MS_Model extends MS_Hooker {
 	 *
 	 * @since 4.0.0
 	 */		
-	public static function load( $model_id = false ) {
+	public function load( $model_id = false ) {
 		throw new Exception ("Method to be implemented in child class");
 	}
 
