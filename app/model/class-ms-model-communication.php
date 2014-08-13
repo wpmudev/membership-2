@@ -80,21 +80,27 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	protected $sent_queue = array();
 	
+	protected $content_type = 'text/html';
+	
+	public $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters', 'ignore_fields', 'post_type', 'comm_vars' );
+		
 	public function __construct() {
 		
 		$this->comm_vars = array(
-				'TODO' => 'config '. $this->type,
-				'%blogname%' => __( 'Blog/site name', MS_TEXT_DOMAIN ),
-				'%blogurl%' => __( 'Blog/site url', MS_TEXT_DOMAIN ),
-				'%username%' => __( 'Username', MS_TEXT_DOMAIN ),
-				'%usernicename%' => __( 'User nice name', MS_TEXT_DOMAIN ),
+				'%membershipname%' => __( 'Membership name', MS_TEXT_DOMAIN ),
+				'%invoice%' => __( 'Invoice details', MS_TEXT_DOMAIN ),
+				'%accountpage%' => __( 'Account page url', MS_TEXT_DOMAIN ),
+				'%membershipremainingdays%' => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
+				'%membershipexpiry%' => __( 'Membership expiry date', MS_TEXT_DOMAIN ),
+// 				'%usernicename%' => __( 'User nice name', MS_TEXT_DOMAIN ),
 				'%userdisplayname%' => __( 'User display name', MS_TEXT_DOMAIN ),
 				'%userfirstname%' => __( 'User first name', MS_TEXT_DOMAIN ),
 				'%userlastname%' => __( 'User last name', MS_TEXT_DOMAIN ),
+				'%blogname%' => __( 'Blog/site name', MS_TEXT_DOMAIN ),
+				'%blogurl%' => __( 'Blog/site url', MS_TEXT_DOMAIN ),
+				'%username%' => __( 'Username', MS_TEXT_DOMAIN ),
 				'%networkname%' => __( 'Network name', MS_TEXT_DOMAIN ),
 				'%networkurl%' => __( 'Network url', MS_TEXT_DOMAIN ),
-				'%membershipname%' => __( 'Membership name', MS_TEXT_DOMAIN ),
-				'%invoice%' => __( 'Invoice details', MS_TEXT_DOMAIN ),
 // 				'%total%' => __( 'Invoice Total', MS_TEXT_DOMAIN ),
 // 				'%taxname%' => __( 'Tax name', MS_TEXT_DOMAIN ),
 // 				'%taxamount%' => __( 'Tax amount', MS_TEXT_DOMAIN ),
@@ -114,7 +120,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
-	public $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters', 'ignore_fields' );
 	
 	/**
 	 * Communication types.
@@ -129,7 +134,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_FINISHES,
 				self::COMM_TYPE_CANCELLED,
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
-				self::COMM_TYPE_INFO_UPDATE,
+// 				self::COMM_TYPE_INFO_UPDATE,
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE,
 				self::COMM_TYPE_FAILED_PAYMENT,
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE,
@@ -151,7 +156,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_FINISHES => 'MS_Model_Communication_After_Finishes',
 				self::COMM_TYPE_CANCELLED => 'MS_Model_Communication_Cancelled',
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => 'MS_Model_Communication_Before_Trial_Finishes',
-				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
+// 				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
 				self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
@@ -169,7 +174,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_CANCELLED => __( 'Membership cancelled', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Before Trial finishes', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INFO_UPDATE => __( 'Updating personal info/Billing details', MS_TEXT_DOMAIN ),
+// 				self::COMM_TYPE_INFO_UPDATE => __( 'Updating personal info/Billing details', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
@@ -288,7 +293,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( ! $this->enabled ) {
 			return;
 		}
-		if( ! array_key_exists( $ms_relationship_id, $this->queue ) && ! array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
+// 		if( ! array_key_exists( $ms_relationship_id, $this->queue ) && ! array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
+		if( ! array_key_exists( $ms_relationship_id, $this->queue ) ) {	
 			$this->queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
 		}	
 	}
@@ -297,15 +303,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		$this->sent_queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
 		unset( $this->queue[ $ms_relationship_id ] );
 		
-		$max_history = apply_filters( 'ms_model_communication_sent_queue_max_history', 200 );
+		$max_history = apply_filters( 'ms_model_communication_sent_queue_max_history', 300 );
 		/** Delete history */
 		if( count( $this->sent_queue ) > $max_history ) {
-			$this->sent_queue = array_slice( $this->sent_queue, -1, $max_history, true );
+			$this->sent_queue = array_slice( $this->sent_queue, -100, $max_history, true );
 		}
 	}
 	
 	public function send_message( $ms_relationship ) {
-		
 		$wp_user = new WP_User( $ms_relationship->user_id );
 		if ( ! is_email( $wp_user->user_email ) || ! $this->enabled ) {
 			return;
@@ -349,7 +354,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					$comm_vars[ $key ] = get_site_option( 'siteurl' );
 					break;
 				case '%membershipname%':
-					if( ! empty( $membership->name ) ) {
+					if( $membership->name ) {
 						$comm_vars[ $key ] = $membership->name;
 					}
 					else {
@@ -382,7 +387,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					break;
 				case '%invoice%':
 					if( isset( $invoice ) && $invoice->total > 0 ) {
-						MS_Helper_Debug::log(do_shortcode( sprintf( '[%s post_id="%s"]', MS_Helper_Shortcode::SCODE_MS_INVOICE, $invoice->id ) ));
 						$comm_vars[ $key ] = do_shortcode( sprintf( '[%s post_id="%s" display_pay_button="false"]', 
 								MS_Helper_Shortcode::SCODE_MS_INVOICE, 
 								$invoice->id 
@@ -391,34 +395,34 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					else {
 						$comm_vars[ $key ] = '';
 					}
-					break;		
-				default:
-					$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", '', $ms_relationship->user_id );
+					break;
+				case '%accountpage%':
+					$comm_vars[ $key ] = MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+					break;
+				case '%membershipremainingdays%':
+					$interval = $ms_relationship->get_remaining_period();
+					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $interval->days,  abs( $interval->days ) > 1 ? 's': '' );
+					break;
+				case '%membershipexpiry%':
+					$comm_vars[ $key ] = $ms_relationship->expire_date;
 					break;
 			}
+			$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", $comm_vars[ $key ], $ms_relationship );
 		}
 
-		// Globally replace the values in the ping and then make it into an array to send
+		/** Replace the variables. */
 		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
 	
 		$html_message = wpautop( $message );
 		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
 	
-		$this->add_filter( 'wp_mail_content_type', 'set_mail_content_type' );
+		$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
+		$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
 		
-		global $wp_better_emails;
-		$lambda_function = false;
-		if ( $wp_better_emails ) {
-			$html_message = apply_filters( 'wpbe_html_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $html_message, 'template' ) ) );
-			$text_message = apply_filters( 'wpbe_plaintext_body', $wp_better_emails->template_vars_replacement( $wp_better_emails->set_email_template( $text_message, 'plaintext_template' ) ) );
-	
-			// lets use WP Better Email to wrap communication content if the plugin is used
-			$lambda_function = create_function( '', sprintf( 'return "%s";', addslashes( $text_message ) ) );
-			add_filter( 'wpbe_plaintext_body', $lambda_function );
-			add_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
-		} 
-		elseif ( apply_filters( 'ms_model_communication_wrap_communication', true ) ) {
-			$html_message = "<html><head></head><body>{$html_message}</body></html>";
+		$message = $text_message;
+		if( 'text/html' == $this->get_mail_content_type() ) {
+			$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
+			$message = $html_message;	
 		}
 		
 		$recipients = array( $wp_user->user_email );
@@ -426,14 +430,12 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$recipients[] = $this->cc_email;
 		}
 
-		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $html_message );
+		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $message );
 		
-		$this->remove_filter( 'wp_mail_content_type', 'set_mail_content_type' );
-		if ( $lambda_function ) {
-			remove_filter( 'wpbe_plaintext_body', $lambda_function );
-			remove_filter( 'wpbe_plaintext_body', 'stripslashes', 11 );
+		if( 'text/html' == $this->get_mail_content_type() ) {
+			$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
 		}
-		
+
 		return $sent;
 	}
 	
@@ -444,8 +446,8 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @return string
 	 */
-	public function set_mail_content_type() {
-		return apply_filters( 'ms_model_communication_set_html_content_type', 'text/html' );
+	public function get_mail_content_type() {
+		return apply_filters( 'ms_model_communication_set_html_content_type', $this->content_type );
 	}
 	
 	/**
