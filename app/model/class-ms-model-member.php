@@ -274,7 +274,7 @@ class MS_Model_Member extends MS_Model {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			do_action( 'ms_model_membership_drop_membership', $this->membership_relationships[ $membership_id ], $this );
 			
-			$this->membership_relationships[ $membership_id ]->deactivate_membership();
+			$this->membership_relationships[ $membership_id ]->deactivate_membership( false );
 			unset( $this->membership_relationships[ $membership_id ] );
 		}
 	}
@@ -291,7 +291,7 @@ class MS_Model_Member extends MS_Model {
 		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
 			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
 		
-			$this->membership_relationships[ $membership_id ]->cancel_membership();
+			$this->membership_relationships[ $membership_id ]->cancel_membership( false );
 		}
 	}
 	
