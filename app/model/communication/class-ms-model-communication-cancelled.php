@@ -42,13 +42,13 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( 'Sent when member cancels a membership', MS_TEXT_DOMAIN );
+		return __( 'Sent when membership is cancelled.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Membership cancelled', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership was cancelled', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,9 +59,9 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership %membershipname% was cancelled.
+			your membership <?php echo self::COMM_VAR_MS_NAME; ?> was cancelled.
 			<br /> <br />
 		<?php 
 		$html = ob_get_clean();

@@ -42,13 +42,13 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( 'Sent when a member payment fails', MS_TEXT_DOMAIN );
+		return __( 'Sent when a member automatic recurring payment fails.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Failed payment', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership payment has failed', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,11 +59,11 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your recurring payment has failed.
+			your recurring payment for <?php echo self::COMM_VAR_MS_NAME; ?> has failed.
 			<br /><br />
-			%invoice%
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_failed_payment_get_default_message', $html );

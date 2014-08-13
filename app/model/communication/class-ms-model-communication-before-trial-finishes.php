@@ -33,13 +33,13 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	protected $type = self::COMM_TYPE_BEFORE_TRIAL_FINISHES;
 	
 	public function get_description() {
-		return __( 'Sent a predefined numer of days before the trial period finishes. You must decide how many days beforehand a message is to be sent', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined numer of days before the trial period finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Before Trial finishes', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership trial will finish soon', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -51,11 +51,11 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership trial period will finish in %membershipremainingdays%,
+			your membership trial will finish in <?php echo self::COMM_VAR_MS_REMAINING_DAYS; ?>
 			<br /><br />
-			%invoice%
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_trial_finishes_get_default_message', $html );

@@ -42,13 +42,13 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( 'Sent each time a payment has been made. Contains any tax information if relevant', MS_TEXT_DOMAIN );
+		return __( 'Sent each time a payment has been made.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Invoice', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership invoice', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,7 +59,11 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1> MS_Model_Communication_Invoice</h1>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<br /><br />
+			We've reveived your payment, thanks!
+			<br /><br />
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );

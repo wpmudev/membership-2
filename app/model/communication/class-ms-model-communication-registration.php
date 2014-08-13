@@ -42,13 +42,13 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( 'Sent when a member completes the registration for a  membership. For the first one, the terms of the membership are to be presented and the invoice will also be included in this email', MS_TEXT_DOMAIN );
+		return __( 'Sent when a member completes the signup for a  membership.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Registration complete', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Signup completed', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,13 +59,13 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2> Welcome, %username%,</h2>
+			<h2> Welcome, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<p>
-				You are now member of %membershipname%.
+				You are now member of <?php echo self::COMM_VAR_MS_NAME; ?>.
 			</p>
 			<p>
 				Invoice details: <br /><br />
-				%invoice%
+				<?php echo self::COMM_VAR_MS_INVOICE; ?>
 			</p>
 		<?php 
 		$html = ob_get_clean();
@@ -73,7 +73,6 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	}
 	
 	public function process_communication_registration( $event, $ms_relationship ) {
-MS_Helper_Debug::log("process_communication_registration");
 		$this->send_message( $ms_relationship );
 	}
 }

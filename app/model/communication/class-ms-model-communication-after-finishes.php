@@ -33,13 +33,13 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	protected $type = self::COMM_TYPE_AFTER_FINISHES;
 	
 	public function get_description() {
-		return __( 'Sent a predefined numer of days after the membership finishes. You must decide how many days after a message is to be sent', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined numer of days after the membership finishes. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'After Membership finishes', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership has finished', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -51,11 +51,11 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership has finished in %membershipexpiry%.
+			your membership has finished in <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
 			<br /><br />
-			%invoice%
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_after_finished_get_default_message', $html );

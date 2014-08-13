@@ -43,7 +43,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
@@ -61,11 +61,11 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership will finish in %membershipremainingdays%,
+			your membership will finish in <?php echo self::COMM_VAR_MS_REMAINING_DAYS; ?>.
 			<br /><br />
-			%invoice%
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_finishes_get_default_message', $html );

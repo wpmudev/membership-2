@@ -42,13 +42,13 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	}
 	
 	public function get_description() {
-		return __( "A notice to indicate that the member's credit card is about to expire", MS_TEXT_DOMAIN );
+		return __( "A notice to indicate that the member's credit card is about to expire.", MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Credit card is about to expire', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your credit card is about to expire', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->period_enabled = true;
@@ -60,11 +60,11 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi %username%,</h2>
+			<h2>Hi <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br />
 			your credit card is about to expire.
 			<br />
-			To continue a member, please change the card number before you next invoice date in your %accountpage%.
+			To continue a member, please change the card number before you next invoice date in your <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
 			<br />
 		<?php 
 		$html = ob_get_clean();

@@ -37,18 +37,18 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 		parent::after_load();
 	
 		if( $this->enabled ) {
-			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_EXPIRED, 'enqueue_messages', 10, 2 );
+			$this->add_action( 'ms_model_event_' . MS_Model_Event::TYPE_MS_DEACTIVATED, 'enqueue_messages', 10, 2 );
 		}
 	}
 	
 	public function get_description() {
-		return __( 'Sent as soon as the membership finishes', MS_TEXT_DOMAIN );
+		return __( 'Sent as soon as the membership is deactivated.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Membership finished', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your membership has finished', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,12 +59,12 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, %username%,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership has finished in %membershipexpiry%.
+			your membership has finished in <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
 			<br /><br />
-			%invoice%
 			
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_finished_get_default_message', $html );

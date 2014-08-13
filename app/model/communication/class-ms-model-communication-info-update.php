@@ -48,7 +48,7 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Updating personal info/Billing details', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Your billing details has been changed.', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,7 +59,11 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h1>MS_Model_Communication_Info_Update</h1>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<br /><br />
+			your payment details has been changed.
+			<br /><br />
+			More details in your <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_info_update_get_default_message', $html );
