@@ -235,7 +235,7 @@ class MS_Controller_Settings extends MS_Controller {
 					$type = $_GET['comm_type'];
 				}
 				if( ! empty( $_POST['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
-					wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type']) ) ) ;
+					wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
 				}
 				$this->model = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
 				
