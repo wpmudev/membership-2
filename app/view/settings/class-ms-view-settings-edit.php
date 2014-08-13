@@ -334,31 +334,30 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 	   		<h3><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h3>
-	   		<p class="description"><?php _e( 'Custom message displayed when not having access to a protected content.', MS_TEXT_DOMAIN );?></p>
 	   		<form class="ms-form" action="" method="post">
 				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
-				<div class="postbox metabox-holder">
-					<h3><label for="title"><?php _e( 'Content protection message', MS_TEXT_DOMAIN ); ?></label></h3>
-					<div class="inside">
-						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
-						<?php MS_Helper_Html::html_input( $this->fields['shortcode'] ); ?>
-					</div>
-				</div>
-				<div class="postbox metabox-holder">
-					<h3><label for="title"><?php _e( 'Shortcode protection message', MS_TEXT_DOMAIN ); ?></label></h3>
-					<div class="inside">
-						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
-						<?php MS_Helper_Html::html_input( $this->fields['more_tag'] ); ?>
-					</div>
-				</div>
-				<div class="postbox metabox-holder">
-					<h3><label for="title"><?php _e( 'More tag protection message', MS_TEXT_DOMAIN ); ?></label></h3>
-					<div class="inside">
-						<p class="description"><?php _e( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ); ?></p>
-						<?php MS_Helper_Html::html_input( $this->fields['content'] ); ?>
-					</div>
-				</div>
+				<?php
+					MS_Helper_Html::settingsbox(
+						array( $this->fields['content'] ), 
+						__( 'Content protection message', MS_TEXT_DOMAIN ), 
+						__( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
+						array( 'label_element' => 'h3' ) );
+				?>
+				<?php
+					MS_Helper_Html::settingsbox(
+						array( $this->fields['shortcode'] ), 
+						__( 'Shortcode protection message', MS_TEXT_DOMAIN ), 
+						__( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
+						array( 'label_element' => 'h3' ) );
+				?>
+				<?php
+					MS_Helper_Html::settingsbox(
+						array( $this->fields['more_tag'] ), 
+						__( 'More tag protection message', MS_TEXT_DOMAIN ), 
+						__( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
+						array( 'label_element' => 'h3' ) );
+				?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['submit'] ); ?>
 			</form>
@@ -443,15 +442,12 @@ class MS_View_Settings_Edit extends MS_View {
 									<table>
 										<tr>
 											<th>Variable values</th>
-											<th>Description</th>
 										</tr>
 										<?php foreach( $this->model->comm_vars as $var => $description ): ?>
 											<tr>
 												<td>
-													<?php echo $var;?>
-												</td>
-												<td>
-													<?php echo $description;?>
+													<?php MS_Helper_html::tooltip( $description ); ?>
+													<?php echo $var; ?>
 												</td>
 											</tr>
 										<?php endforeach; ?>
@@ -516,7 +512,7 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
 						'value' => $this->model->subject,
-						'class' => '',
+						'class' => 'ms-comm-subject',
 				),
 				'message' => array(
 						'id' => 'message',
