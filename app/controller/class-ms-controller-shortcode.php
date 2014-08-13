@@ -276,9 +276,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 				shortcode_atts(
 						array(
 								'post_id' => 0,
-								'display_pay_button' => true,
+								'pay_button' => 1,
 						),
-						$atts
+						$atts,
+						MS_Helper_Shortcode::SCODE_MS_INVOICE
 				)
 		);
 
