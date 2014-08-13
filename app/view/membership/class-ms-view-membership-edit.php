@@ -161,7 +161,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Name', MS_TEXT_DOMAIN ),
 						'value' => $this->model->name,
 						'class' => 'ms-field-input-name',
-						'tooltip' => __( 'Name your membership.<br />e.g. <strong>"Basic"</strong>, <strong>"Premium"</strong>', MS_TEXT_DOMAIN ),
+// 						'tooltip' => __( 'Name your membership.<br />e.g. <strong>"Basic"</strong>, <strong>"Premium"</strong>', MS_TEXT_DOMAIN ),
 				),
 				'description' => array(
 						'id' => 'description',
@@ -170,7 +170,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Description', MS_TEXT_DOMAIN ),
 						'value' => $this->model->description,
 						'class' => 'ms-field-input-description',
-						'tooltip' => __( 'This description will appear on Membership listing pages.', MS_TEXT_DOMAIN ),
+// 						'tooltip' => __( 'This description will appear on Membership listing pages.', MS_TEXT_DOMAIN ),
 				),
 				'price' => array(
 						'id' => 'price',
@@ -179,7 +179,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Cost', MS_TEXT_DOMAIN ),
 						'value' => $this->model->price,
 						'class' => 'ms-field-input-price',
-						'tooltip' => __( 'This will be displayed in the currency value you specified in "Settings > Payment". <br /> Use <strong>.</strong> as the decimal separator.', MS_TEXT_DOMAIN ),
+// 						'tooltip' => __( 'This will be displayed in the currency value you specified in "Settings > Payment". <br /> Use <strong>.</strong> as the decimal separator.', MS_TEXT_DOMAIN ),
 				),
 				'membership_type' => array(
 						'id' => 'membership_type',
@@ -189,10 +189,12 @@ class MS_View_Membership_Edit extends MS_View {
 						'value' => $this->model->membership_type,
 						'field_options' => MS_Model_Membership::get_membership_types(),
 						'class' => 'ms-field-input-membership-type',
+						/*
 						'tooltip' => '<strong>Single payment for permanent access:</strong><br />Members pay once and can access assigned content indefinitely or until manually removed.<br /><br />' . 
 						             '<strong>Single payment for finite access:</strong><br />Members pay once and can access assigned content until membership expires.<br /><br /> ' . 
 						             '<strong>Single payment for date range access:</strong><br />Members pay once to access content within a set date range.<br /><br />' .
 						             '<strong>Recurring payment:</strong><br />Members pay an ongoing subscription to access content.' ,
+						 */
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
