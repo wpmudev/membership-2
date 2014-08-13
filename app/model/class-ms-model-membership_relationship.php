@@ -622,7 +622,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @return string
 	 */
 	public function get_remaining_trial_period() {
-		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->trial_expire_date );
+		return MS_Helper_Period::subtract_dates( $this->trial_expire_date, MS_Helper_Period::current_date() );
 	}
 	
 	/**
@@ -632,7 +632,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @return string
 	 */
 	public function get_remaining_period() {
-		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->expire_date );
+		return MS_Helper_Period::subtract_dates( $this->expire_date, MS_Helper_Period::current_date() );
 	}
 	
 	/**

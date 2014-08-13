@@ -255,7 +255,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if( count( $item->membership_relationships ) > 0 ) {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
-				$period = $membership_relationship->get_current_period()->format( "%a days");
+				$period = sprintf( __( '%s days' ), $membership_relationship->get_current_period() );
 				$html[] = "$membership_relationship->start_date ($period)";
 			}
 			$html = join('<br /> ', $html);
@@ -272,7 +272,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		$html = array();
 		foreach( $item->membership_relationships as $membership_relationship ) {
 			if( $membership_relationship->trial_expire_date )  {
-				$period = $membership_relationship->get_remaining_trial_period()->format( "%r%a days");
+				$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_trial_period() );
 				$html[] = "$membership_relationship->trial_expire_date ($period)";
 			}
 			else {
@@ -293,7 +293,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$html = array();
 			foreach( $item->membership_relationships as $membership_relationship ) {
 				if( $membership_relationship->expire_date )  {
-					$period = $membership_relationship->get_remaining_period()->format( "%r%a days");
+					$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_period() );
 					$html[] = "$membership_relationship->expire_date ($period)";
 				}
 				else {
