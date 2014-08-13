@@ -493,6 +493,10 @@ class MS_Controller_Gateway extends MS_Controller {
 				case MS_Model_Gateway::GATEWAY_STRIPE:
 					if( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
 						$gateway->add_card( $member, $_POST['stripeToken'] );
+						if( ! empty( $_POST['ms_relationship_id'] ) ) {
+							$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
+						}
 						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
 					}
 					break;
@@ -503,6 +507,10 @@ class MS_Controller_Gateway extends MS_Controller {
 					elseif( ! empty( $_POST['ms_relationship_id'] ) && $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 						$gateway->update_cim_profile( $member );
 						$gateway->save_card_info( $member );
+						if( ! empty( $_POST['ms_relationship_id'] ) ) {
+							$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
+						}
 						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
 					}
 					break;
