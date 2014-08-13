@@ -102,9 +102,10 @@ class MS_Helper_Period extends MS_Helper {
 	public static function subtract_dates( $end_date, $start_date ) {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
-		$interval = $end_date->diff( $start_date );
+
+		$days = round( ($end_date->format('U') - $start_date->format('U') ) / ( 60 * 60 * 24 ) );
 		
-		return apply_filters( 'ms_helper_period_get_periods', $interval );
+		return apply_filters( 'ms_helper_period_get_periods', $days );
 	}
 	
 	/**

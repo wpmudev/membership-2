@@ -440,18 +440,18 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 				switch( $ms_relationship->get_status() ) {
 					case MS_Model_Membership_Relationship::STATUS_TRIAL:
 						if( $invoice->trial_period ) {
-							$remaining = $ms_relationship->get_remaining_trial_period();
-							$total = MS_Helper_Period::subtract_dates(  $ms_relationship->trial_expire_date, $ms_relationship->start_date );
-							$value = $remaining->days / $total->days;
+							$remaining_days = $ms_relationship->get_remaining_trial_period();
+							$total_days = MS_Helper_Period::subtract_dates(  $ms_relationship->trial_expire_date, $ms_relationship->start_date );
+							$value = $remaining_days / $total_days;
 							$value *= $invoice->total;
 						}
 						break;
 					case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 					case MS_Model_Membership_Relationship::STATUS_CANCELED:
 						if( ! $invoice->trial_period ) {
-							$remaining = $ms_relationship->get_remaining_period();
-							$total = MS_Helper_Period::subtract_dates( $ms_relationship->expire_date, $ms_relationship->start_date );
-							$value = $remaining->days / $total->days;
+							$remaining_days = $ms_relationship->get_remaining_period();
+							$total_days = MS_Helper_Period::subtract_dates( $ms_relationship->expire_date, $ms_relationship->start_date );
+							$value = remaining_days / $total_days;
 							$value *= $invoice->total;
 						}
 						break;

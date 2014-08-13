@@ -204,7 +204,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				$this->fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start )->days,
+				'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start ),
 				);
 				$this->fields['t3'] = array(
 						'id' => 't3',
