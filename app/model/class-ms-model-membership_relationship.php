@@ -755,8 +755,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 		
 		if( ! in_array( $status, $allowed_status ) ) {
-			$this->status = $status;
-			$status = $this->calculate_status();
+			$status = $this->calculate_status( $status );
 			$this->handle_status_change( $status );
 		}
 		else {
@@ -795,7 +794,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @since 4.0.0
 	 */
-	public function calculate_status() {
+	public function calculate_status( $set_status = null ) {
 		$membership = $this->get_membership();
 		$status = null;
 		if( $this->trial_expire_date > $this->start_date && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
@@ -817,7 +816,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		/**
 		 * If user canceled the membership before expire date, still have access until expires.
 		 */
-		if( self::STATUS_CANCELED == $this->status ) {
+		if( self::STATUS_CANCELED == $this->status && self::STATUS_ACTIVE != $set_status ) {
 			/** For expired memberships or MEMBERSHIP_TYPE_PERMANENT deactivate it immediately. */
 			if( self::STATUS_EXPIRED == $status || MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->membership_type ) {
 				$status = self::STATUS_DEACTIVATED;
@@ -839,7 +838,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function handle_status_change( $status ) {
 		
-		if( $this->is_valid() && $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
+		if( ! empty( $this->status ) && $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
 			
 			do_action( 'ms_model_membership_relationship_handle_status_change', $status, $this );
 				
@@ -1041,7 +1040,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					}
 				}
 				break;
-				
+			case self::STATUS_PAID:
+				//@todo add payment made event.
+				break;
 			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
 			default:
