@@ -944,17 +944,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
 		$deactivate_trial_expired_after_days = 5; //@todo create a setting to configure this period.
 	
-		$expire = $this->get_remaining_period();
-		$trial_expire = $this->get_remaining_trial_period();
+		$remaining_days = $this->get_remaining_period();
+		$remaining_trial_days = $this->get_remaining_trial_period();
 		
-		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $expire );
+		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $remaining_days );
 		switch( $this->get_status() ) {
 			case self::STATUS_TRIAL:
 				/** Send trial end communication. */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
 				if( $comm->enabled ) {
 					$days = MS_Helper_Period::get_period_in_days( $comm->period );
-					if( ! $trial_expire->invert && $days == $trial_expire->days ) {
+					if( $days == $remaining_trial_days ) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES, $this );
 					}
@@ -976,7 +976,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$gateway->check_card_expiration( $ms_relationship );
 				
 				/** Deactivate expired memberships after a period of time. */
-				if( $trial_expire->invert && $trial_expire->days > $deactivate_trial_expired_after_days ) {
+				if( - $remaining_trial_days > $deactivate_trial_expired_after_days ) {
 					$this->set_status( self::STATUS_DEACTIVATED );
 
 					/** Move membership to configured membership. */
@@ -998,20 +998,20 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this );
 					
 				/** Create next invoice before expire date.*/
-				if( ! $expire->invert && $expire->days < $invoice_before_days ) {
+				if( $remaining_days < $invoice_before_days ) {
 					$invoice = $this->get_next_invoice();
 				}
 					
 				/** Configure communication messages.*/
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				if( ! $expire->invert && $days == $expire->days ) {
+				if( $days == $remaining_days ) {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $this );
 				}
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				if( $expire->invert && $days == $expire->days ) {
+				if( $days == $remaining_days ) {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
 				}
@@ -1022,14 +1022,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$gateway->check_card_expiration( $this );
 				
 				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
-				if( $expire->invert ) {
+				if( $remaining_days <= 0 ) {
 					$gateway->request_payment( $this );
 					/** Refresh status after payment */
-					$expire = $this->get_remaining_period();
+					$remaining_days = $this->get_remaining_period();
 				}
 				
 				/** Deactivate expired memberships after a period of time. */
-				if( $expire->invert && $expire->days > $deactivate_expired_after_days ) {
+				if( - $remaining_days > $deactivate_expired_after_days ) {
 					$this->set_status( self::STATUS_DEACTIVATED );
 
 					/** Move membership to configured membership. */
@@ -1041,7 +1041,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				}
 				break;
 			case self::STATUS_PAID:
-				//@todo add payment made event.
+				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_MADE ];
+				$days = MS_Helper_Period::get_period_in_days( $comm->period );
+				$invoice = $this->get_previous_invoice(); 
+				$paid_days = MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $invoice->due_date );
+				if( $days == $paid_days ) {
+					$comm->add_to_queue( $this->id );
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_MADE, $this );
+				}
 				break;
 			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
