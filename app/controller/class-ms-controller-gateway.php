@@ -497,7 +497,6 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					if( $this->verify_nonce() ) {
-						MS_Helper_Debug::log("ms_controller_public_signup_gateway_form");
 						do_action( 'ms_controller_public_signup_gateway_form', $this );
 					}
 					elseif( ! empty( $_POST['ms_relationship_id'] ) && $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {

@@ -133,7 +133,6 @@ class MS_Controller_Public extends MS_Controller {
 	 */
 	public function signup_process() {
 		$step = $this->get_signup_step();
-		MS_Helper_Debug::log("step:: $step");
 		
 		switch( $step ) {
 			/**
