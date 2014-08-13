@@ -244,11 +244,14 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_MS_BEFORE_TRIAL_FINISHES,
 				self::TYPE_MS_BEFORE_FINISHES,
 				self::TYPE_MS_AFTER_FINISHES,
+				self::TYPE_CREDIT_CARD_EXPIRE,
 		) );
 		
-		if( in_array( $event->type, $check_events ) && $event = self::get_last_event_of_type( $event->type ) ) {
-			if( date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $event->modified ) ) == MS_Helper_Period::current_date() ) {
+		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event->type ) ) {
+			if( $last_event->user_id == $event->user_id && date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->modified ) ) == MS_Helper_Period::current_date() ) {
 				$is_duplicate = true;
+				MS_Helper_Debug::log( "duplicate event:" );
+				MS_Helper_Debug::log( $event );
 			}
 		}
 		
