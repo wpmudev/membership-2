@@ -46,6 +46,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_controller_settings_admin_settings_manager_gateway', 'gateway_settings_manager' );
 		$this->add_filter( 'ms_controller_settings_gateway_edit_view', 'gateway_settings_edit' );
 		
+		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_controller_public_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_public_signup_process_purchase', 'process_purchase', 1 );

@@ -102,9 +102,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<?php if( $gateway->manual_payment && $this->data['display_pay_button'] && $invoice->status != MS_Model_Invoice::STATUS_PAID ): ?>
 							<tr>
 								<td class='ms-buy-now-column' colspan='2' >
-									<?php
-										$gateway->purchase_button( $ms_relationship );
-									?>
+									<?php do_action( 'ms_view_shortcode_invoice_purchase_button', $ms_relationship ); ?>
 								</td>
 							</tr>
 						<?php endif; ?>
