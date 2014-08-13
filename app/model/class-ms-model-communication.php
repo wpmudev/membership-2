@@ -58,6 +58,21 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	const COMM_TYPE_AFTER_PAYMENT_MADE = 'type_after_payment_made';
 	
+	const COMM_VAR_MS_NAME = '%ms-name%';
+	const COMM_VAR_MS_INVOICE = '%ms-invoice%';
+	const COMM_VAR_MS_ACCOUNT_PAGE_URL = '%ms-account-page-url%';
+	const COMM_VAR_MS_REMAINING_DAYS = '%ms-remaining-days%';
+	const COMM_VAR_MS_REMAINING_TRIAL_DAYS = '%ms-remaining-trial-days%';
+	const COMM_VAR_MS_EXPIRY_DATE = '%ms-expiry-date%';
+	const COMM_VAR_USER_DISPLAY_NAME = '%user-display-name%';
+	const COMM_VAR_USER_FIRST_NAME = '%user-first-name%';
+	const COMM_VAR_USER_LAST_NAME = '%user-last-name%';
+	const COMM_VAR_USERNAME = '%username%';
+	const COMM_VAR_BLOG_NAME = '%blog-name%';
+	const COMM_VAR_BLOG_URL = '%blog-url%';
+	const COMM_VAR_NET_NAME = '%network-name%';
+	const COMM_VAR_NET_URL = '%network-url%';
+	
 	protected $type;
 	
 	protected $subject;
@@ -87,23 +102,20 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	public function __construct() {
 		
 		$this->comm_vars = array(
-				'%membershipname%' => __( 'Membership name', MS_TEXT_DOMAIN ),
-				'%invoice%' => __( 'Invoice details', MS_TEXT_DOMAIN ),
-				'%accountpage%' => __( 'Account page url', MS_TEXT_DOMAIN ),
-				'%membershipremainingdays%' => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
-				'%membershipexpiry%' => __( 'Membership expiry date', MS_TEXT_DOMAIN ),
-// 				'%usernicename%' => __( 'User nice name', MS_TEXT_DOMAIN ),
-				'%userdisplayname%' => __( 'User display name', MS_TEXT_DOMAIN ),
-				'%userfirstname%' => __( 'User first name', MS_TEXT_DOMAIN ),
-				'%userlastname%' => __( 'User last name', MS_TEXT_DOMAIN ),
-				'%blogname%' => __( 'Blog/site name', MS_TEXT_DOMAIN ),
-				'%blogurl%' => __( 'Blog/site url', MS_TEXT_DOMAIN ),
-				'%username%' => __( 'Username', MS_TEXT_DOMAIN ),
-				'%networkname%' => __( 'Network name', MS_TEXT_DOMAIN ),
-				'%networkurl%' => __( 'Network url', MS_TEXT_DOMAIN ),
-// 				'%total%' => __( 'Invoice Total', MS_TEXT_DOMAIN ),
-// 				'%taxname%' => __( 'Tax name', MS_TEXT_DOMAIN ),
-// 				'%taxamount%' => __( 'Tax amount', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiry date', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
+				 self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
 		);
 	}
 	
@@ -134,7 +146,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_FINISHES,
 				self::COMM_TYPE_CANCELLED,
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
-// 				self::COMM_TYPE_INFO_UPDATE,
+				self::COMM_TYPE_INFO_UPDATE,
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE,
 				self::COMM_TYPE_FAILED_PAYMENT,
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE,
@@ -156,7 +168,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_FINISHES => 'MS_Model_Communication_After_Finishes',
 				self::COMM_TYPE_CANCELLED => 'MS_Model_Communication_Cancelled',
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => 'MS_Model_Communication_Before_Trial_Finishes',
-// 				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
+				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
 				self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
@@ -167,14 +179,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	public static function get_communication_type_titles() {
 		
 		return apply_filters( 'ms_model_communication_get_communication_type_titles', array(
-				self::COMM_TYPE_REGISTRATION => __( 'Registration complete', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_INVOICE => __( 'Invoice', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_CANCELLED => __( 'Membership cancelled', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Before Trial finishes', MS_TEXT_DOMAIN ),
-// 				self::COMM_TYPE_INFO_UPDATE => __( 'Updating personal info/Billing details', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INFO_UPDATE => __( 'Billing details updated', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
@@ -311,49 +323,115 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function send_message( $ms_relationship ) {
-		$wp_user = new WP_User( $ms_relationship->user_id );
-		if ( ! is_email( $wp_user->user_email ) || ! $this->enabled ) {
+		if( ! $this->enabled ) {
 			return;
 		}
+		
+		$wp_user = new WP_User( $ms_relationship->user_id );
+		if( ! is_email( $wp_user->user_email ) ) {
+			MS_Helper_Debug::log( "Invalid user email. User_id: $ms_relationship->user_id, email: $wp_user->user_email" );
+			return;
+		}
+		
+		$sent = false;
+		$comm_vars = $this->get_comm_vars( $ms_relationship, $wp_user );
+		
+		/** Replace the variables. */
+		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
+		
+		$html_message = wpautop( $message );
+		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
+		
+		$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
+		$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
+		
+		$message = $text_message;
+		if( 'text/html' == $this->get_mail_content_type() ) {
+			$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
+			$message = $html_message;
+		}
+		
+		$recipients = array( $wp_user->user_email );
+		if( $this->cc_enabled ) {
+			$recipients[] = $this->cc_email;
+		}
+		
+		$admin_emails = MS_Model_Member::get_admin_user_emails();
+		$headers = '';
+		if( ! empty( $admin_emails[0] ) ) {
+			$headers = array(
+					sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
+			);
+		}
+		$headers = apply_filters( 'ms_model_communication_send_message_headers', $headers );
+		 
+		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $message, $headers );
+		
+		if( 'text/html' == $this->get_mail_content_type() ) {
+			$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
+		}
 
+		return $sent;
+	}
+	
+	/**
+	 * Replace comm_vars with corresponding values.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function get_comm_vars( $ms_relationship, $wp_user ) {
+		
 		$currency = MS_Plugin::instance()->settings->currency . ' ';
 		$membership = $ms_relationship->get_membership();
 		
-		if( ! $invoice = $ms_relationship->get_previous_invoice() ) {
+		$class = get_class( $this );
+		$previous_invoice = array(
+				'MS_Model_Communication_Registration',
+				'MS_Model_Communication_Invoice',
+				'MS_Model_Communication_After_Payment_Made',
+		);
+		
+		$invoice = null;
+		if( in_array( $class, $previous_invoice ) ) {
+			if( ! $invoice = $ms_relationship->get_previous_invoice() ) {
+				$invoice = $ms_relationship->get_current_invoice();
+			}
+		}
+		else {
 			$invoice = $ms_relationship->get_current_invoice();
 		}
-
-		$comm_vars = apply_filters( 'membership_comm_vars_list', $this->comm_vars );
+		
+		$comm_vars = apply_filters( 'ms_model_communication_comm_vars', $this->comm_vars );
+		
 		foreach ( $comm_vars as $key => $description ) {
 			switch ( $key ) {
-				case '%blogname%':
+				case self::COMM_VAR_BLOG_NAME:
 					$comm_vars[ $key ] = get_option( 'blogname' );
 					break;
-				case '%blogurl%':
+				case self::COMM_VAR_BLOG_URL:
 					$comm_vars[ $key ] = get_option( 'home' );
 					break;
-				case '%username%':
+				case self::COMM_VAR_USERNAME:
 					$comm_vars[ $key ] = $wp_user->user_login;
 					break;
-				case '%usernicename%':
-					$comm_vars[ $key ] = $wp_user->user_nicename;
-					break;
-				case '%userdisplayname%':
+				case self::COMM_VAR_USER_DISPLAY_NAME:
 					$comm_vars[ $key ] = $wp_user->display_name;
 					break;
-				case '%userfirstname%':
+				case self::COMM_VAR_USER_FIRST_NAME:
 					$comm_vars[ $key ] = $wp_user->user_firstname;
 					break;
-				case '%userlastname%':
+				case self::COMM_VAR_USER_LAST_NAME:
 					$comm_vars[ $key ] = $wp_user->user_lastname;
 					break;
-				case '%networkname%':
+				case self::COMM_VAR_NET_NAME:
 					$comm_vars[ $key ] = get_site_option( 'site_name' );
 					break;
-				case '%networkurl%':
+				case self::COMM_VAR_NET_URL:
 					$comm_vars[ $key ] = get_site_option( 'siteurl' );
 					break;
-				case '%membershipname%':
+				case self::COMM_VAR_MS_NAME:
 					if( $membership->name ) {
 						$comm_vars[ $key ] = $membership->name;
 					}
@@ -361,82 +439,38 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 						$comm_vars[ $key ] = '';
 					}
 					break;
-				case '%taxname%':
-					if( isset( $invoice ) ) {
-						$comm_vars[ $key ] = $currency . $invoice->tax_name;
-					}
-					else {
-						$comm_vars[ $key ] = 0;
-					}
-					break;
-				case '%taxamount%':
-					if( isset( $invoice ) ) {
-						$comm_vars[ $key ] = $currency . $invoice->tax_rate * $invoice->amount;
-					}
-					else {
-						$comm_vars[ $key ] = 0;
-					}
-					break;
-				case '%total%':
-					if( isset( $invoice ) ) {
-						$comm_vars[ $key ] = $currency . $invoice->total;
-					}
-					else {
-						$comm_vars[ $key ] = 0;
-					}
-					break;
-				case '%invoice%':
+				case self::COMM_VAR_MS_INVOICE:
 					if( isset( $invoice ) && $invoice->total > 0 ) {
-						$comm_vars[ $key ] = do_shortcode( sprintf( '[%s post_id="%s" display_pay_button="false"]', 
-								MS_Helper_Shortcode::SCODE_MS_INVOICE, 
-								$invoice->id 
+						$comm_vars[ $key ] = do_shortcode( sprintf( '[%s post_id="%s" pay_button="0"]',
+								MS_Helper_Shortcode::SCODE_MS_INVOICE,
+								$invoice->id
 						) );
 					}
 					else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
-				case '%accountpage%':
-					$comm_vars[ $key ] = MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+				case self::COMM_VAR_MS_ACCOUNT_PAGE_URL:
+					$comm_vars[ $key ] = sprintf( '<a href="%s">%s</a>', 
+						MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ), 
+						__( 'account page', MS_TEXT_DOMAIN )
+					);
 					break;
-				case '%membershipremainingdays%':
-					$interval = $ms_relationship->get_remaining_period();
-					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $interval->days,  abs( $interval->days ) > 1 ? 's': '' );
+				case self::COMM_VAR_MS_REMAINING_DAYS:
+					$days = $ms_relationship->get_remaining_period();
+					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
 					break;
-				case '%membershipexpiry%':
+				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
+					$days = $ms_relationship->get_remaining_trial_period();
+					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
+					break;
+				case self::COMM_VAR_MS_EXPIRY_DATE:
 					$comm_vars[ $key ] = $ms_relationship->expire_date;
 					break;
 			}
 			$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", $comm_vars[ $key ], $ms_relationship );
 		}
-
-		/** Replace the variables. */
-		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
-	
-		$html_message = wpautop( $message );
-		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
-	
-		$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
-		$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
-		
-		$message = $text_message;
-		if( 'text/html' == $this->get_mail_content_type() ) {
-			$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
-			$message = $html_message;	
-		}
-		
-		$recipients = array( $wp_user->user_email );
-		if( $this->cc_enabled ) {
-			$recipients[] = $this->cc_email;
-		}
-
-		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $message );
-		
-		if( 'text/html' == $this->get_mail_content_type() ) {
-			$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
-		}
-
-		return $sent;
+		return apply_filters( 'ms_model_communication_get_comm_vars', $comm_vars );	
 	}
 	
 	/**
