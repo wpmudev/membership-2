@@ -130,6 +130,10 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $page_id;
 	}
 	
+	public function get_special_page_url( $type ) {
+		return apply_filters( 'ms_model_settings_get_special_page_url', get_permalink( $this->get_special_page( $type ) ) );	
+	}
+	
 	public function create_page_no_access( $virtual ) {
 		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
 		$page_details = array( 
