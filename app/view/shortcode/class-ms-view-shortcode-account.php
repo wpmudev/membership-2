@@ -15,7 +15,13 @@ class MS_View_Shortcode_Account extends MS_View {
 		?>
 		<div class="ms-account-wrapper">
 			<?php if( MS_Model_Member::is_logged_user() ): ?>
-				<h2><?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', __( 'Your Membership', MS_TEXT_DOMAIN ), $signup_url, __( 'Change', MS_TEXT_DOMAIN ) ); ?></h2>
+				<h2>
+					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
+							__( 'Your Membership', MS_TEXT_DOMAIN ), 
+							$signup_url, 
+							__( 'Change', MS_TEXT_DOMAIN ) ); 
+					?>
+				</h2>
 				<?php if( ! empty( $this->data['membership'] ) ) :?>
 					<table>
 						<tr>
@@ -42,7 +48,13 @@ class MS_View_Shortcode_Account extends MS_View {
 				<?php else: ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN );?>
 				<?php endif;?>
-				<h2><?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', __( 'Personnal details', MS_TEXT_DOMAIN ), get_edit_user_link(), __( 'Edit', MS_TEXT_DOMAIN ) ); ?></h2>
+				<h2>
+					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
+							__( 'Personnal details', MS_TEXT_DOMAIN ), 
+							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_EDIT_PROFILE ) ), 
+							__( 'Edit', MS_TEXT_DOMAIN ) ); 
+					?>
+				</h2>
 				<table>
 					<?php foreach( $this->personnal_info as $field => $title ): ?>
 						<tr>
@@ -52,7 +64,13 @@ class MS_View_Shortcode_Account extends MS_View {
 					<?php endforeach;?>
 				</table>
 				<?php do_action( 'ms_view_shortcode_account_card_info', $this->data );?>
-				<h2>Invoice</h2>
+				<h2>
+					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
+							__( 'Invoice', MS_TEXT_DOMAIN ), 
+							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_VIEW_INVOICES ) ), 
+							__( 'View all', MS_TEXT_DOMAIN ) ); 
+					?>
+				</h2>
 				<table>
 					<thead>
 						<tr>
@@ -75,7 +93,13 @@ class MS_View_Shortcode_Account extends MS_View {
 					<?php endforeach;?>
 					</tbody>
 				</table>				
-				<h2>Activity</h2>
+				<h2>
+					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
+							__( 'Activity', MS_TEXT_DOMAIN ), 
+							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_VIEW_ACTIVITIES ) ), 
+							__( 'View all', MS_TEXT_DOMAIN ) ); 
+					?>
+				</h2>
 				<table>
 					<thead>
 						<tr>
@@ -84,10 +108,10 @@ class MS_View_Shortcode_Account extends MS_View {
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach( $this->data['news'] as $news ): ?>
+					<?php foreach( $this->data['events'] as $event ): ?>
 						<tr>
-							<td><?php echo $news->post_modified;?></td>
-							<td><?php echo $news->description;?></td>
+							<td><?php echo $event->post_modified;?></td>
+							<td><?php echo $event->description;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody>

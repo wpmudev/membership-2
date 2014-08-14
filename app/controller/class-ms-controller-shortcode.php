@@ -256,15 +256,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 		$data['invoices'] = MS_Model_Invoice::get_invoices( array( 
 				'author' => $data['member']->id,
-				'posts_per_page' => 50,
+				'posts_per_page' => 12,
 				'meta_query' => array( array(
 								'key' => 'amount',
 								'value' => '0',
 								'compare' => '!='
 		) ) ) );
-		$data['news'] = MS_Model_Event::get_events( array(
+		$data['events'] = MS_Model_Event::get_events( array(
 				'author' => $data['member']->id,
-				'posts_per_page' => 50,
+				'posts_per_page' => 10,
 		) );
 		$view = apply_filters( 'ms_view_shortcode_account', new MS_View_Shortcode_Account() );
 		$view->data = $data;
