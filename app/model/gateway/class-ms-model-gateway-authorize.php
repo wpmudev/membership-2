@@ -341,11 +341,9 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		if( empty( $cim_payment_profile_id ) ) {
 			$response = $this->get_cim()->createCustomerPaymentProfile( $cim_profile_id, $this->create_cim_payment_profile() );
 			$cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
-			MS_Helper_Debug::log($response);
 		}
 		else {
 			$response = $this->get_cim()->updateCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id, self::create_cim_payment_profile() );
-			MS_Helper_Debug::log($response);
 		}
 		
 		/** If the error is not due to a duplicate customer payment profile.*/
