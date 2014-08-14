@@ -166,11 +166,14 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @param object $post The post object.
 	 */			
 	public function save_metabox_data( $post_id, $post ) {
-		if ( empty( $post_id ) || empty( $post ) ) return;
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-		if ( is_int( wp_is_post_revision( $post ) ) ) return;
-		if ( is_int( wp_is_post_autosave( $post ) ) ) return;
-// 		if ( ! current_user_can( 'edit_post', $post_id )) return;
+		if( empty( $post_id ) || empty( $post ) ) return;
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+		if( is_int( wp_is_post_revision( $post ) ) ) return;
+		if( is_int( wp_is_post_autosave( $post ) ) ) return;
+		if( ! $this->is_admin_user() ) {
+			return;
+		}
+		
 		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
 		if ( empty( $_POST[ $nonce ]) || ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) return;
 		
@@ -190,7 +193,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @return array $post_data
 	 */
 	public function save_attachment_data( $post_data ) {
-		if ( ! current_user_can( 'edit_post', $post_data['post_ID'] ) ) return;
+// 		if ( ! current_user_can( 'edit_post', $post_data['post_ID'] ) ) return;
+		if( ! $this->is_admin_user() ) {
+			return;
+		}
+		
 		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
 		if ( empty( $post_data[ $nonce ]) || ! wp_verify_nonce( $post_data[ $nonce ], $nonce ) ) return;
 		

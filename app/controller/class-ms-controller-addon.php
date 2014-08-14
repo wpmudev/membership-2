@@ -99,7 +99,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 */
 	public function ajax_action_toggle_addon() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) && $this->is_admin_user() ) {
 			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
 		}
 	
@@ -214,7 +214,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @param object[] $addons The add-on or add-ons to update. 
 	 */	
 	public function save_addon( $action, $addons ) {
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return;
 		}
 

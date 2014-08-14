@@ -105,9 +105,10 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * @param int[] $coupons The list of coupons ids to process.
 	 */
 	public function coupon_do_action( $action, $coupon_ids ) {
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return;
 		}
+		
 		if( is_array( $coupon_ids ) ) {
 			foreach( $coupon_ids as $coupon_id ) {
 				switch( $action ) {
@@ -157,9 +158,10 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * @param mixed $fields Coupon fields
 	 */
 	private function save_coupon( $fields ) {
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return;
 		}
+		
 		if( is_array( $fields ) ) {
 			$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
 			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::get_factory()->load_coupon( $coupon_id ), $coupon_id );

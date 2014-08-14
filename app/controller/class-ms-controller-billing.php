@@ -148,7 +148,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 */	
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
@@ -176,7 +176,7 @@ class MS_Controller_Billing extends MS_Controller {
 		
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		

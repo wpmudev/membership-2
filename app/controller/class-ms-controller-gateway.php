@@ -88,7 +88,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function toggle_ajax_action() {
 		$msg = 0;
 		
-		if( $this->verify_nonce() && ! empty( $_POST['gateway_id'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['gateway_id'] ) && $this->is_admin_user() ) {
 			$gateway_id = $_POST['gateway_id'];
 			$msg = $this->gateway_list_do_action( 'toggle_activation', array( $_POST['gateway_id'] ) );
 		}
@@ -188,7 +188,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function gateway_list_do_action( $action, $gateways, $fields = null ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 	

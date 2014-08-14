@@ -58,7 +58,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) && $this->is_admin_user() ) {
 			$msg = $this->rule_list_do_action( 'toggle_activation',  $_POST['rule'], array( $_POST['item'] ) );
 		}
 	
@@ -77,7 +77,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule_default() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && $this->is_admin_user() ) {
 			$this->active_tab = $_POST['rule'];
 			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
 		}
@@ -148,7 +148,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function rule_list_do_action( $action, $rule_type, $items ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 	
@@ -192,7 +192,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function save_url_group( $fields ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		
@@ -225,10 +225,10 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function save_dripped_schedule( $items ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-	
+		
 		$membership = $this->get_membership();
 		if( empty( $membership ) ) {
 			return $msg;
@@ -269,10 +269,10 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function copy_dripped_schedule( $copy_from_id ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-	
+		
 		$membership = $this->get_membership();
 		if( empty( $membership ) ) {
 			return $msg;

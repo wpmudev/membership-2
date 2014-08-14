@@ -90,7 +90,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
 		
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['setting'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['setting'] ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( 'toggle_activation', array( $_POST['setting'] => 1 ) );
 		}
 	
@@ -299,9 +299,10 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function save_general( $action, $settings ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
+		
 		if( is_array( $settings ) ) {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
@@ -339,7 +340,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function special_pages_do_action( $action, $fields = null ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		
@@ -383,8 +384,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 */	
 	public function save_protection_messages( $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 	
@@ -412,7 +412,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function save_communication( $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		

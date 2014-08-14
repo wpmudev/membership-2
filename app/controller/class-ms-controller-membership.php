@@ -95,7 +95,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function ajax_action_toggle_membership() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) && $this->is_admin_user() ) {
 			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
 		}
 	
@@ -143,8 +143,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return number Resulting message id.
 	 */	
 	private function membership_list_do_action( $action, $membership_ids ) {
-		if ( ! current_user_can( $this->capability ) ) {
-			return MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if( ! $this->is_admin_user() ) {
+			return $msg;
 		}
 		
 		$msg = 0;
@@ -395,7 +396,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	private function save_membership( $fields ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		

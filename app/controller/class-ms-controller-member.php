@@ -71,7 +71,7 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function ajax_action_toggle_member() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['member_id'] ) ) {
+		if( $this->verify_nonce() && ! empty( $_POST['member_id'] ) && $this->is_admin_user() ) {
 			$msg = $this->member_list_do_action( 'toggle_activation', array( $_POST['member_id'] ) );
 		}
 		
@@ -259,7 +259,7 @@ class MS_Controller_Member extends MS_Controller {
 	 */	
 	public function member_list_do_action( $action, $members, $membership_id = null ) {
 		$msg = MS_Helper_Member::MSG_MEMBER_NOT_UPDATED;
-		if ( ! current_user_can( $this->capability ) ) {
+		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		
