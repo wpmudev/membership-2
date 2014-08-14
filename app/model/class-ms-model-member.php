@@ -75,6 +75,9 @@ class MS_Model_Member extends MS_Model {
 			$wp_user->first_name = $this->first_name;
 			$wp_user->last_name = $this->last_name;
 			$wp_user->display_name = $this->name;
+			if( ! empty( $this->password ) && $this->password == $this->password2 ) {
+				$wp_user->user_pass = $this->password;
+			}
 			wp_update_user( get_object_vars( $wp_user ) );
 		}				
 				
@@ -95,13 +98,13 @@ class MS_Model_Member extends MS_Model {
 				'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
 		);
 		
-		foreach ( $required as $field => $message ) {
-			if ( empty( $this->$field ) ) {
+		foreach( $required as $field => $message ) {
+			if( empty( $this->$field ) ) {
 				$validation_errors->add( $field, __( 'Please ensure that the ', MS_TEXT_DOMAIN ) . "<strong>$message</strong>" . __( ' information is completed.', MS_TEXT_DOMAIN ) );
 			}
 		}
 		
-		if ( $this->password != $this->password2 ) {
+		if( $this->password != $this->password2 ) {
 			$validation_errors->add( 'passmatch', __( 'Please ensure the passwords match.', MS_TEXT_DOMAIN ) );
 		}
 			
@@ -109,15 +112,15 @@ class MS_Model_Member extends MS_Model {
 			$validation_errors->add( 'usernamenotvalid', __( 'The username is not valid, sorry.', MS_TEXT_DOMAIN ) );
 		}
 			
-		if ( username_exists( $this->username ) ) {
+		if( username_exists( $this->username ) ) {
 			$validation_errors->add( 'usernameexists', __( 'That username is already taken, sorry.', MS_TEXT_DOMAIN ) );
 		}
 			
-		if ( ! is_email( $this->email ) ) {
+		if( ! is_email( $this->email ) ) {
 			$validation_errors->add( 'emailnotvalid', __( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN ) );
 		}
 			
-		if ( email_exists( $this->email ) ) {
+		if( email_exists( $this->email ) ) {
 			$validation_errors->add( 'emailexists', __( 'That email address is already taken, sorry.', MS_TEXT_DOMAIN ) );
 		}
 
@@ -363,7 +366,7 @@ class MS_Model_Member extends MS_Model {
 		return is_user_logged_in();
 	}
 	
-	public static function is_admin_user( $user_id = null ) {
+	public static function is_admin_user( $user_id = null, $capability = null ) {
 		$is_admin = false;
 
 		if( empty( $user_id ) ) {
@@ -373,9 +376,15 @@ class MS_Model_Member extends MS_Model {
 			$wp_user = new WP_User( $user_id );
 		}
 		
-		if ( ! empty( $wp_user ) && ( $wp_user->has_cap( 'ms_membershipadmin' ) || $wp_user->has_cap( 'manage_options' ) || is_super_admin( $wp_user->ID ) ) ) {
-			$is_admin = true;
-		}
+		if ( ! empty( $wp_user ) ) {
+			if( ! empty( $capability ) ) {
+				$is_admin = $wp_user->has_cap( $capability );
+			}
+			if( is_super_admin( $wp_user->ID ) ) {
+				$is_admin = true;
+			}
+		} 
+
 		return $is_admin;
 	}
 	
@@ -421,6 +430,25 @@ class MS_Model_Member extends MS_Model {
 		$this->gateway_profiles[ $gateway ][ $field ] = $value;
 	}
 
+	public function validate_member_info() {
+		$validation_errors = new WP_Error();
+		if( ! is_email( $this->email ) ) {
+			$validation_errors->add( 'emailnotvalid', __( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN ) );
+		}
+		if( $this->password != $this->password2 ) {
+			MS_Helper_Debug::log("no macth");
+			$validation_errors->add( 'passmatch', __( 'Please ensure the passwords match.', MS_TEXT_DOMAIN ) );
+		}
+		$errors = $validation_errors->get_error_messages();
+		MS_Helper_Debug::log($validation_errors);
+		if( ! empty( $errors ) ) {
+			throw new Exception( implode( '<br/>', $errors ) );
+		}
+		else {
+			return true;
+		}
+	}
+	
 	/**
 	 * Set specific property.
 	 *
