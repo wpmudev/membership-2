@@ -38,6 +38,10 @@ class MS_Controller_Public extends MS_Controller {
 	const STEP_GATEWAY_FORM = 'gateway_form';
 	const STEP_PROCESS_PURCHASE = 'process_purchase';
 	
+	const ACTION_EDIT_PROFILE = 'edit_profile';
+	const ACTION_VIEW_INVOICES = 'view_invoices';
+	const ACTION_VIEW_ACTIVITIES = 'view_activities';
+	
 	private $register_errors;
 	
 	private $allowed_actions = array( 'signup_process', 'register_user' );
@@ -59,7 +63,7 @@ class MS_Controller_Public extends MS_Controller {
 			$this->add_filter( 'register_url', 'signup_location', 999 );
 			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 			
-			$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles');
+			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
 		}		
 	}
 	
@@ -116,7 +120,7 @@ class MS_Controller_Public extends MS_Controller {
 				}
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
-				$this->add_filter( 'the_content', 'user_account', 1 );
+				$this->user_account_mgr();
 				break;
 			case MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS:
 				$this->add_filter( 'the_content', 'protected_page', 1 );
@@ -271,7 +275,6 @@ class MS_Controller_Public extends MS_Controller {
 	 */
 	public function register_user() {
 		if( ! $this->verify_nonce() ) {
-			MS_Helper_Debug::log( "nonce not verified" );
 			return;
 		}
 		try {
@@ -373,6 +376,72 @@ class MS_Controller_Public extends MS_Controller {
 	}
 	
 	/**
+	 * Manage user account actions.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function user_account_mgr() {
+		
+		$action = $this->get_action();
+		$member = MS_Model_Member::get_current_member();
+		switch( $action ) {
+			case self::ACTION_EDIT_PROFILE:
+				$data = array();
+				if( $this->verify_nonce() ) {
+					if( is_array( $_POST ) ) {
+						foreach( $_POST as $field => $value ) {
+							$member->$field = $value; 
+						}
+					}
+					try {
+						$member->validate_member_info();
+						$member->save();
+						wp_safe_redirect( remove_query_arg( 'action' ) );
+						exit;
+						
+					} 
+					catch (Exception $e) {
+						$data['errors']  = $e->getMessage(); 
+					}
+				}
+				$view = apply_filters( 'ms_view_frontend_profile', new MS_View_Frontend_Profile() );
+				$data['member'] = $member;
+				$data['action'] = $action;
+				$view->data = $data;
+				$view->add_filter( 'the_content', 'to_html', 1 );
+				break;
+			case self::ACTION_VIEW_INVOICES:
+				$data['invoices'] = MS_Model_Invoice::get_invoices( array(
+						'author' => $member->id,
+						'posts_per_page' => -1,
+						'meta_query' => array( array(
+								'key' => 'amount',
+								'value' => '0',
+								'compare' => '!='
+				) ) ) );
+				$view = apply_filters( 'ms_view_frontend_invoices', new MS_View_Frontend_Invoices() );
+				$view->data = $data;
+				$view->add_filter( 'the_content', 'to_html', 1 );
+				break;
+			case self::ACTION_VIEW_ACTIVITIES:
+				$data['events'] = MS_Model_Event::get_events( array(
+					'author' => $member->id,
+					'posts_per_page' => -1,
+				) );
+				$view = apply_filters( 'ms_view_frontend_invoices', new MS_View_Frontend_Activities() );
+				$view->data = $data;
+				$view->add_filter( 'the_content', 'to_html', 1 );
+				break;
+			default:
+				do_action( 'ms_controller_public_user_account_mgr_' . $action );
+				$this->add_filter( 'the_content', 'user_account', 1 );
+				break;
+		}
+	}
+	
+	/**
 	 * Show user account page.
 	 *
 	 * Search for account shortcode, injecting if not found.
@@ -391,7 +460,6 @@ class MS_Controller_Public extends MS_Controller {
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, $content ) ) {
 			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
 		}
-	
 		return $content;
 	}
 	
@@ -457,18 +525,21 @@ class MS_Controller_Public extends MS_Controller {
 	}
 	
 	/**
-	 * Adds CSS for Membership special pages used in the front end.
+	 * Adds CSS and JS for Membership special pages used in the front end.
 	 *
 	 * @since 4.0.0
 	 *	
 	 * @return void
 	 */	
-	public function enqueue_styles() {
+	public function enqueue_scripts() {
 		$settings = MS_Factory::get_factory()->load_settings();
 		$is_special_page = $settings->is_special_page();
 		if( $settings->is_special_page() ) {
 			wp_enqueue_style( 'membership-admin' );
 		}
+		if( $settings->is_special_page( null, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ) && self::ACTION_EDIT_PROFILE == $this->get_action() ) {
+			wp_enqueue_script( 'ms-view-frontend-profile' );
+		} 
 		
 	}
 }
