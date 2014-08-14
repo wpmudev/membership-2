@@ -95,4 +95,15 @@ class MS_Controller extends MS_Hooker {
 		return $verified;
 	}
 	
+	/**
+	 * Verify if current user can perform management actions.
+	 *
+	 * @since 4.0.0
+	 * @return bool True if can, false otherwise.
+	 */
+	public function is_admin_user() {
+		$is_admin_user = false;
+		$is_admin_user = MS_Model_Member::is_admin_user( null, $this->capability );
+		return apply_filters( 'ms_controller_current_user_can', $is_admin_user, $this->capability );
+	}
 }
