@@ -10,7 +10,7 @@ jQuery( document ).ready(function( $ ) {
 				},
 				'password': {
 					'required': true,
-					'minlenght': 5,
+					'minlength': 5,
 				},
 				'password2': {
 					'required': true,
