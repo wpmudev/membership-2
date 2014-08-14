@@ -21,14 +21,14 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 			<?php $this->render_errors() ?>
 			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo add_query_arg( 'action', 'register_user', $permalink ) ?>" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
-				<legend><?php _e( 'Create an Account', 'membership' ) ?></legend>
+				<legend><?php _e( 'Create an Account', MS_TEXT_DOMAIN ); ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
 					<div class="ms-form-element">
 						<?php MS_Helper_Html::html_input( $field );?>
 					</div>
 				<?php endforeach;?>
-				<?php do_action( 'ms_view_shortcode_membership_register_user_presubmit_content' ); ?>
-				<?php do_action( 'signup_extra_fields', $this->error ); ?>
+				<?php do_action( 'ms_view_shortcode_membership_register_user_after_fields' ); ?>
+				<?php do_action( 'ms_view_shortcode_membership_register_user_extra_fields', $this->error ); ?>
 			</form>
 			<?php  MS_Helper_Html::html_link( $login_link ); ?>
 		</div>
