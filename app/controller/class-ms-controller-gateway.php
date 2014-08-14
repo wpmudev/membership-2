@@ -362,6 +362,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					wp_safe_redirect( $url );
 					exit;
 				}
+				/** For manual gateway payments */
 				else{
 					$this->add_action( 'the_content', 'purchase_info_content' );
 				}

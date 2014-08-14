@@ -48,8 +48,27 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	public function purchase_info_content() {
 		if( empty( $this->payment_info ) ) {
 			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
-			$this->payment_info = __( "You need to edit you manual payment gateway instructions <a href='$link'>here</a>");
+			ob_start();
+			?>
+				<?php _e( 'It is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
+				<br />
+				<?php echo sprintf( '%s <a href="%s">%s</a>', __( 'Edit it', MS_TEXT_DOMAIN ), $link, __( 'here.', MS_TEXT_DOMAIN ) ); ?>
+				<br /><br />
+				<?php _e( 'Name: Example name.', MS_TEXT_DOMAIN ); ?>
+				<br />
+				<?php _e( 'Bank: Example bank.', MS_TEXT_DOMAIN ); ?>
+				<br />
+				<?php _e( 'Bank account: Example bank acount 1234.', MS_TEXT_DOMAIN ); ?>
+				<br />
+			<?php 
+			$this->payment_info = ob_get_clean();
 		}
+		if( ! empty( $_POST['ms_relationship_id'] ) ) {
+			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
+			$invoice = $ms_relationship->get_current_invoice();
+			$this->payment_info .= sprintf( '<br />%s: %s%s', __( 'Total value', MS_TEXT_DOMAIN ), $invoice->currency, $invoice->total );
+		}
+		
 		return wpautop( $this->payment_info ); 
 	}
 		
