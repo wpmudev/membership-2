@@ -88,20 +88,23 @@ class MS_View_Settings_Edit extends MS_View {
 				<form action="" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] );?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
-					<div class="postbox">
-						<h3 class="hndle"><?php _e( 'Enable plugin', MS_TEXT_DOMAIN ); ?></h3>
-						<div class="inside">
-							<?php MS_Helper_Html::html_input( $this->fields['plugin_enabled'] ); ?>
-						</div>
-					</div>
-					<div class="postbox">
-						<h3 class="hndle"><?php _e( 'Enable Default Membership', MS_TEXT_DOMAIN ); ?></h3>
-						<div class="inside">
-							<?php MS_Helper_Html::html_input( $this->fields['default_membership_enabled'] ); ?>
-						</div>
-					</div>
 					<?php 
-						//MS_Helper_Html::html_submit( array( 'id' => 'submit_general' ) );
+						MS_Helper_Html::settingsbox( 
+							array( $this->fields['plugin_enabled'] ),
+							__( 'Enable plugin', MS_TEXT_DOMAIN ) 
+						); 
+					?>
+					<?php 
+						MS_Helper_Html::settingsbox( 
+							array( $this->fields['default_membership_enabled'] ),
+							__( 'Enable default membership level', MS_TEXT_DOMAIN ) 
+						); 
+					?>
+					<?php 
+						MS_Helper_Html::settingsbox( 
+							array( $this->fields['hide_admin_bar'] ),
+							__( 'Hide admin bar', MS_TEXT_DOMAIN ) 
+						); 
 					?>
 				</form>
 			</div>
@@ -129,6 +132,16 @@ class MS_View_Settings_Edit extends MS_View {
 						'field_options' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'default_membership_enabled',
+						),
+				),
+				'hide_admin_bar' => array(
+						'id' => 'hide_admin_bar',
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'title' => __( 'Hide admin bar for non administrator users.', MS_TEXT_DOMAIN ),
+						'value' => $this->model->hide_admin_bar,
+						'field_options' => array(
+								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+								'setting' => 'hide_admin_bar',
 						),
 				),
 				'action' => array(

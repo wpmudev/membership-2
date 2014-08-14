@@ -52,6 +52,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $default_membership_enabled;
 	
+	protected $hide_admin_bar = true;
+	
 	protected $currency = 'USD';
 	
 	protected $tax;
