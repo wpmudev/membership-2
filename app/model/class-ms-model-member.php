@@ -67,14 +67,14 @@ class MS_Model_Member extends MS_Model {
 				update_user_meta( $this->id, "ms_$field", $this->$field);
 			}
 		}
-		if( isset( $this->name ) ) {
+		if( isset( $this->username ) ) {
 			$wp_user = new stdClass();
 			$wp_user->ID = $this->id;
-			$wp_user->nickname = $this->name;
-			$wp_user->user_nicename = $this->name;
+			$wp_user->nickname = $this->username;
+			$wp_user->user_nicename = $this->username;
 			$wp_user->first_name = $this->first_name;
 			$wp_user->last_name = $this->last_name;
-			$wp_user->display_name = $this->name;
+			$wp_user->display_name = $this->username;
 			if( ! empty( $this->password ) && $this->password == $this->password2 ) {
 				$wp_user->user_pass = $this->password;
 			}
