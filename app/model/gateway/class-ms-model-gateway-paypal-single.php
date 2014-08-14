@@ -197,29 +197,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	}
 	
 	public function get_paypal_sites() {
-		return apply_filters( 'ms_model_gateway_paylpay_standard_get_paypal_sites', array(
-		          'AU'	=> __( 'Australia', MS_TEXT_DOMAIN ),
-		          'AT'	=> __( 'Austria', MS_TEXT_DOMAIN ),
-		          'BE'	=> __( 'Belgium', MS_TEXT_DOMAIN ),
-		          'CA'	=> __( 'Canada', MS_TEXT_DOMAIN ),
-		          'CN'	=> __( 'China', MS_TEXT_DOMAIN ),
-		          'FR'	=> __( 'France', MS_TEXT_DOMAIN ),
-		          'DE'	=> __( 'Germany', MS_TEXT_DOMAIN ),
-		          'HK'	=> __( 'Hong Kong', MS_TEXT_DOMAIN ),
-		          'IT'	=> __( 'Italy', MS_TEXT_DOMAIN ),
-				  'jp_JP' => __( 'Japan',MS_TEXT_DOMAIN ),
-		          'MX'	=> __( 'Mexico', MS_TEXT_DOMAIN ),
-		          'NL'	=> __( 'Netherlands', MS_TEXT_DOMAIN ),
-				  'NZ'	=> __( 'New Zealand', MS_TEXT_DOMAIN ),
-		          'PL'	=> __( 'Poland', MS_TEXT_DOMAIN ),
-		          'SG'	=> __( 'Singapore', MS_TEXT_DOMAIN ),
-		          'ES'	=> __( 'Spain', MS_TEXT_DOMAIN ),
-		          'SE'	=> __( 'Sweden', MS_TEXT_DOMAIN ),
-		          'CH'	=> __( 'Switzerland', MS_TEXT_DOMAIN ),
-		          'GB'	=> __( 'United Kingdom', MS_TEXT_DOMAIN ),
-		          'US'	=> __( 'United States', MS_TEXT_DOMAIN ),
-			)
-		);
+		return apply_filters( 'ms_model_gateway_paylpay_single_get_paypal_sites', self::get_country_codes() );
 	}
 	
 	/**
