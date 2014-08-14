@@ -48,6 +48,8 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_PASSWORD = 'password';
 	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
 	
+	const TYPE_HTML_LINK = 'html_link';
+	
 	/**
 	 * Method for creating FORM elements/fields. 
 	 *
@@ -78,7 +80,8 @@ class MS_Helper_Html extends MS_Helper {
 		 	'alt'		=> '',
 			'read_only' => false,
 			);
-		extract( wp_parse_args( $field_args, $defaults ) );
+		$field_args = wp_parse_args( $field_args, $defaults );
+		extract( $field_args );
 	
 		if( empty( $name ) ) {
 			if( ! empty( $section ) ) {
@@ -195,6 +198,9 @@ class MS_Helper_Html extends MS_Helper {
 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
+			case self::TYPE_HTML_LINK:
+				self::html_link( $field_args );
+				break;
 		}		
 		
 		// Return the output buffer
@@ -208,27 +214,29 @@ class MS_Helper_Html extends MS_Helper {
 		
 		// If its a fields array, great, if not, make a fields array
 		$fields = $fields_in;
-		if ( ! is_array( $fields_in[0] ) ) {
+		if ( ! is_array( $fields_in ) ) {
 			$fields = array();
 			$fields[] = $fields_in;
 		}
 		
 		// Grab the title and tooltip of the first field if not set.
 		$the_title = $title;
-		if ( '' == $title ) {
-			$the_title = $fields[0]['title'];
-			$fields[0]['title'] = '';
-		} 
+// 		if ( '' == $title ) {
+// 			$the_title = $fields[0]['title'];
+// 			$fields[0]['title'] = '';
+// 		} 
 		
 		$the_description = $description;
-		if ( empty ( $description ) ) {
-			$the_description = $fields[0]['tooltip'];
-			$fields[0]['tooltip'] = '';
-		} 
+// 		if ( empty ( $description ) ) {
+// 			$the_description = $fields[0]['tooltip'];
+// 			$fields[0]['tooltip'] = '';
+// 		} 
 		
 		echo '<div class="ms-settings-box-wrapper">';
 		echo '<div class="ms-settings-box">';
-		echo '<h3>' . $the_title . '</h3>';
+		if( ! empty( $the_title ) ) {
+			echo '<h3>' . $the_title . '</h3>';
+		}
 		echo '<div class="inside">';
 		echo '<span class="ms-field-label">' . $the_description . '</span>';
 		foreach( $fields as $field ) {
@@ -277,7 +285,7 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		extract( wp_parse_args( $args, $defaults ) );
 		$url = esc_url( $url );
-		$html = "<a id='$id' title='$title' class='$class' href='$url'>$value</a>";
+		$html = "<a id='$id' title='$title' class='ms-link $class' href='$url'>$value</a>";
 		if( $return ) {
 			return $html;
 		}
