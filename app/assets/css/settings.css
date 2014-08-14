@@ -145,7 +145,7 @@ h2.ms-settings-title,
 	margin: 10px 0;	
 }
 .ms-field-input {
-	
+	margin: 0.5em 0 1em;
 }
 .ms-field-wp-editor {
 	height: 5em;
@@ -159,6 +159,12 @@ h2.ms-settings-title,
 }
 .ms-period-wrapper select {
 	width: 7em;
+}
+.ms-text {
+	display: block;
+}
+.ms-link-button, .ms-submit {
+	margin: 0 0.5em 0 0 !important;
 }
 
 #member-search-box {
