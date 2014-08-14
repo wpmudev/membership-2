@@ -63,6 +63,8 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this->add_filter( 'register_url', 'signup_location', 999 );
 			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 			
+			$this->add_filter( 'login_redirect', 'login_redirect', 10, 3 );
+			
 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
 		}		
 	}
@@ -522,6 +524,25 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( ! is_ssl() ) {
 			wp_set_auth_cookie( $user->ID, true, true );
 		}
+	}
+	
+	/**
+	 * Redirect user to account page.
+	 *
+	 * Only redirect when no previous redirect_to is set or when going to /wp-admin/.
+	 *  
+	 * @since 4.0.0
+	 * 
+	 * @param string $redirect_to URL to redirect to.
+	 * @param string $request URL the user is coming from.
+	 * @param object $user Logged user's data.
+	 * @return string
+	 */
+	public function login_redirect( $redirect_to, $request, $user ) {
+		if( empty( $redirect_to ) || admin_url() == $redirect_to ) {
+			$redirect_to= MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+		}
+		return $redirect_to;
 	}
 	
 	/**
