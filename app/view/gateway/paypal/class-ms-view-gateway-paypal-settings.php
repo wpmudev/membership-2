@@ -12,36 +12,31 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2><?php echo $this->data['model']->name;?> settings</h2>
-				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( $this->data['action'] ); ?>
-					<table class="form-table">
-						<tbody>
-							<?php foreach( $this->fields as $field ): ?>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_input( $field ); ?>
-									</td>
-								</tr>
-								<?php endforeach; ?>
-								<tr>
-									<td>
-										<?php 
-											MS_Helper_Html::html_link(  array(
-												'id' => 'cancel',
-												'title' => __('Cancel', MS_TEXT_DOMAIN ),
-												'value' => __('Cancel', MS_TEXT_DOMAIN ),
-												'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
-												'class' => 'button',
-											) ); 
-										?>
-										<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
-									</td>
-								</tr>
-						</tbody>
-					</table>
-				</form>
-				<div class="clear"></div>
+				<div class='ms-settings'>
+					<h2><?php echo $this->data['model']->name;?> settings</h2>
+					<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
+						<?php wp_nonce_field( $this->data['action'] ); ?>
+						<?php
+							$description = '';
+							if( MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD == $this->data['model']->id ) {
+								$description = sprintf( '%s <br />%s <strong>%s<strong> <br /><a href="%s">%s</a>',
+									__( 'In order for Membership to function correctly you must setup an IPN listening URL with PayPal. Failure to do so will prevent your site from being notified when a member cancels their subscription.', MS_TEXT_DOMAIN ),
+									__( 'Your IPN listening URL is:', MS_TEXT_DOMAIN ),
+									$this->data['model']->get_return_url(),
+									'https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/',
+									__( 'Instructions »', MS_TEXT_DOMAIN )
+								); 
+							}
+							MS_Helper_Html::settingsbox(
+								$this->fields, 
+								'', 
+								$description,
+								array( 'label_element' => 'h3' ) 
+							);
+						?>
+					</form>
+					<div class="clear"></div>
+				</div>
 			</div>
 		<?php
 		$html = ob_get_clean();
@@ -98,6 +93,19 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 					'id' => 'gateway_id',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $model->id,
+			),
+			'cancel' => array(
+					'id' => 'cancel',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'title' => __('Cancel', MS_TEXT_DOMAIN ),
+					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
+					'class' => 'ms-link-button button',
+			),
+			'submit_gateway' => array(
+					'id' => 'submit_gateway',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 	}

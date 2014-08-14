@@ -14,36 +14,21 @@ class MS_View_Gateway_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2><?php echo $this->data['model']->name;?> settings</h2>
-				<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( self::GATEWAY_NONCE, self::GATEWAY_NONCE ); ?>
-					<table class="form-table">
-						<tbody>
-							<?php foreach( $this->fields as $field ): ?>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_input( $field ); ?>
-									</td>
-								</tr>
-								<?php endforeach; ?>
-								<tr>
-									<td>
-										<?php 
-											MS_Helper_Html::html_link(  array(
-												'id' => 'cancel',
-												'title' => __('Cancel', MS_TEXT_DOMAIN ),
-												'value' => __('Cancel', MS_TEXT_DOMAIN ),
-												'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
-												'class' => 'button',
-											) ); 
-										?>
-										<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_gateway') ); ?>
-									</td>
-								</tr>
-						</tbody>
-					</table>
-				</form>
-				<div class="clear"></div>
+				<div class='ms-settings'>
+					<h2><?php echo $this->data['model']->name;?> settings</h2>
+					<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
+						<?php wp_nonce_field( self::GATEWAY_NONCE, self::GATEWAY_NONCE ); ?>
+						<?php
+							MS_Helper_Html::settingsbox(
+								$this->fields, 
+								'', 
+								'',
+								array( 'label_element' => 'h3' ) 
+							);
+						?>
+					</form>
+					<div class="clear"></div>
+				</div>
 			</div>
 		<?php
 		$html = ob_get_clean();
@@ -68,6 +53,19 @@ class MS_View_Gateway_Settings extends MS_View {
 					'id' => 'gateway_id',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $model->id,
+			),
+			'cancel' => array(
+					'id' => 'cancel',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'title' => __('Cancel', MS_TEXT_DOMAIN ),
+					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
+					'class' => 'ms-link-button button',
+			),
+			'submit_gateway' => array(
+					'id' => 'submit_gateway',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 	}
