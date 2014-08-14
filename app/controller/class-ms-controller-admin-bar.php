@@ -82,6 +82,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
+		if( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
+			add_filter( 'show_admin_bar', '__return_false' );
+			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar_front', 999 );
+			$this->add_action( 'admin_head-profile.php', 'customize_admin_sidebar', 999 );
+		}
 		$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar', 999 );
 		$this->add_action( 'add_admin_bar_menus', 'add_admin_bar_menus' );
 		$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts');
@@ -133,10 +138,12 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function remove_admin_bar_nodes( $exclude = array() ) {
 		global $wp_admin_bar;
-		$nodes = array();
-		foreach ($wp_admin_bar->get_nodes() as $node) {
-			if ( is_array( $exclude) && ! in_array ( $node->id, $exclude ) ) {
-				$wp_admin_bar->remove_node( $node->id );
+		$nodes = $wp_admin_bar->get_nodes();
+		if( is_array( $nodes ) ) {
+			foreach( $nodes as $node) {
+				if ( is_array( $exclude) && ! in_array ( $node->id, $exclude ) ) {
+					$wp_admin_bar->remove_node( $node->id );
+				}
 			}
 		}
 	}	
@@ -419,6 +426,41 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				break;
 		}
 
+	}
+	
+	/**
+	 * Customize the Admin Toolbar for front end users.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_before_admin_bar_render
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 */
+	public function customize_toolbar_front() {
+		if( ! $this->is_admin_user() ) {
+			$this->remove_admin_bar_nodes();
+		}
+	}
+	
+	/**
+	 * Customize the Admin sidebar for front end users.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * admin_head-profile.php
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 */
+	public function customize_admin_sidebar() {
+		if( ! $this->is_admin_user() ) {
+			global $menu;
+			foreach( $menu as $key => $menu_item ) {
+				unset( $menu[ $key ] );
+			}
+		}
 	}
 	
 	/**
