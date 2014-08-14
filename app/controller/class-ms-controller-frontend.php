@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Controller
  */
-class MS_Controller_Public extends MS_Controller {
+class MS_Controller_Frontend extends MS_Controller {
 
 	const STEP_CHOOSE_MEMBERSHIP = 'choose_membership';
 	const STEP_REGISTER_FORM = 'register_form';
@@ -350,7 +350,7 @@ class MS_Controller_Public extends MS_Controller {
 		$data['member'] = $member;
 		$data['ms_relationship'] = $ms_relationship;
 			
-		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Registration_Payment() );
+		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Frontend_Payment() );
 		$view->data = $data;
 
 		return $view->to_html();

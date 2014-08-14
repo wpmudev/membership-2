@@ -126,8 +126,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership_shortcode'] = apply_filters( 'ms_controller_shortcode', new MS_Controller_Shortcode() );
 
 		/** Membership registration controller - front end */
-		$this->controllers['public'] = apply_filters( 'ms_controller_public', new MS_Controller_Public() );
-// 		$this->controllers['registration'] = apply_filters( 'ms_controller_registration', new MS_Controller_Registration() );
+		$this->controllers['frontend'] = apply_filters( 'ms_controller_public', new MS_Controller_Frontend() );
 		
 		$this->add_filter( 'single_template', 'custom_template' );
 		flush_rewrite_rules(); //TODO No need to execute every time.

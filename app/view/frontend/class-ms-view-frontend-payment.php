@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Registration_Payment extends MS_View {
+class MS_View_Frontend_Payment extends MS_View {
 	
 	protected $data;
 	

@@ -75,7 +75,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				)
 		);
 		$data['action'] = 'register_user';
-		$data['step'] = MS_Controller_Public::STEP_REGISTER_SUBMIT;
+		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_register_user', new MS_View_Shortcode_Membership_Register_User() );
 		$view->data = $data;
@@ -155,7 +155,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 		
 		$data['action'] = 'membership_signup';
-		$data['step'] = MS_Controller_Public::STEP_PAYMENT_TABLE;
+		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 		
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;

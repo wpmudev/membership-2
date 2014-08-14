@@ -51,7 +51,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<h2>
 					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
 							__( 'Personnal details', MS_TEXT_DOMAIN ), 
-							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_EDIT_PROFILE ) ), 
+							add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE ) ), 
 							__( 'Edit', MS_TEXT_DOMAIN ) ); 
 					?>
 				</h2>
@@ -67,7 +67,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<h2>
 					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
 							__( 'Invoice', MS_TEXT_DOMAIN ), 
-							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_VIEW_INVOICES ) ), 
+							add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES ) ), 
 							__( 'View all', MS_TEXT_DOMAIN ) ); 
 					?>
 				</h2>
@@ -96,7 +96,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<h2>
 					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
 							__( 'Activity', MS_TEXT_DOMAIN ), 
-							add_query_arg( array( 'action' => MS_Controller_Public::ACTION_VIEW_ACTIVITIES ) ), 
+							add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES ) ), 
 							__( 'View all', MS_TEXT_DOMAIN ) ); 
 					?>
 				</h2>
