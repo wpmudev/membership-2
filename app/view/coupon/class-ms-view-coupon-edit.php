@@ -17,18 +17,7 @@ class MS_View_Coupon_Edit extends MS_View {
 				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->data['action'] ); ?>
-					<table class="form-table">
-						<tbody>
-							<?php foreach( $this->fields as $field ): ?>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_input( $field ); ?>
-									</td>
-								</tr>
-								<?php endforeach; ?>
-						</tbody>
-					</table>
-					<?php MS_Helper_Html::html_submit(); ?>
+					<?php MS_Helper_Html::settingsbox( $this->fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -103,6 +92,19 @@ class MS_View_Coupon_Edit extends MS_View {
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
+			),
+			'cancel' => array(
+					'id' => 'cancel',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'title' => __('Cancel', MS_TEXT_DOMAIN ),
+					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'url' => remove_query_arg( array( 'action', 'coupon_id' ) ),
+					'class' => 'ms-link-button button',
+			),
+			'submit' => array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 	}
