@@ -80,7 +80,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	
 	protected $pro_rate;
 	
-	private $total;
+	protected $total;
 	
 	/**
 	 * Get invoice status.
