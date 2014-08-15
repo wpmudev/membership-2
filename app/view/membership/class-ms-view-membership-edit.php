@@ -67,7 +67,7 @@ class MS_View_Membership_Edit extends MS_View {
 							<td>
 								<?php
 									$fields = array( $this->fields['name'], $this->fields['description'] );
-									MS_Helper_Html::settingsbox( $fields, __( 'Membership Information', MS_TEXT_DOMAIN ), ' ', array( 'label_element' => 'h3' ) );
+									MS_Helper_Html::settingsbox( $fields, __( 'Membership Information', MS_TEXT_DOMAIN ) );
 								?>
 							</td>
 						</tr>
@@ -76,7 +76,7 @@ class MS_View_Membership_Edit extends MS_View {
 								<td>
 								<?php
 									$fields = array( $this->fields['price'] );
-									MS_Helper_Html::settingsbox( $fields, __( 'Membership Pricing', MS_TEXT_DOMAIN ), ' ', array( 'label_element' => 'h3' ) );
+									MS_Helper_Html::settingsbox( $fields, __( 'Membership Pricing', MS_TEXT_DOMAIN ) );
 								?>
 								</td>
 							</tr>
@@ -86,26 +86,26 @@ class MS_View_Membership_Edit extends MS_View {
 										<div class="ms-settings-box">
 											<h3><?php _e( 'Membership Type', MS_TEXT_DOMAIN ); ?></h3>
 											<div class="inside">
-												<?php MS_Helper_Html::html_input( $this->fields['membership_type'], false, array( 'label_element' => 'h3' ) );?>
+												<?php MS_Helper_Html::html_input( $this->fields['membership_type'] );?>
 	
 												<div id="ms-membership-type-wrapper">
 													<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
-														<?php MS_Helper_Html::html_input( $this->fields['period_unit'], false, array( 'label_element' => 'h3' ) );?>
+														<?php MS_Helper_Html::html_input( $this->fields['period_unit'] );?>
 														<?php MS_Helper_Html::html_input( $this->fields['period_type'] );?>
 													</div>
 													<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
-														<?php MS_Helper_Html::html_input( $this->fields['pay_cycle_period_unit'], false, array( 'label_element' => 'h3' ) );?>
+														<?php MS_Helper_Html::html_input( $this->fields['pay_cycle_period_unit'] );?>
 														<?php MS_Helper_Html::html_input( $this->fields['pay_cycle_period_type'] );?>
 													</div>
 													<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
-														<?php MS_Helper_Html::html_input( $this->fields['period_date_start'], false, array( 'label_element' => 'h3' ) );?>
+														<?php MS_Helper_Html::html_input( $this->fields['period_date_start'] );?>
 														<span> to </span>
 														<?php MS_Helper_Html::html_input( $this->fields['period_date_end'] );?>
 													</div>											
 												</div>
 												
 												<div id="ms-membership-on-end-membership-wrapper">
-													<?php MS_Helper_Html::html_input( $this->fields['on_end_membership_id'], false, array( 'label_element' => 'h3' ) );?>
+													<?php MS_Helper_Html::html_input( $this->fields['on_end_membership_id'] );?>
 												</div>
 											</div>
 										</div>
@@ -120,12 +120,12 @@ class MS_View_Membership_Edit extends MS_View {
 											<div class="ms-settings-box">
 												<h3><?php _e( 'Membership Trial', MS_TEXT_DOMAIN ); ?></h3>
 												<div class="inside">
-													<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'], false, array( 'label_element' => 'span' ) );?>
+													<?php MS_Helper_Html::html_input( $this->fields['trial_period_enabled'] );?>
 													<div id="ms-trial-period-wrapper">
-														<?php MS_Helper_Html::html_input( $this->fields['trial_price'], false, array( 'label_element' => 'h3' ) );?>
+														<?php MS_Helper_Html::html_input( $this->fields['trial_price'] );?>
 														<div class="ms-period-wrapper">
-															<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'], false, array( 'label_element' => 'h3' ) );?>
-															<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'], false, array( 'label_element' => 'h3' ) );?>
+															<?php MS_Helper_Html::html_input( $this->fields['trial_period_unit'] );?>
+															<?php MS_Helper_Html::html_input( $this->fields['trial_period_type'] );?>
 														</div>
 													</div>
 												</div>
@@ -260,7 +260,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'id' => 'trial_period_enabled',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-						'field_options' => array( 'checkbox_position' => 'right' ),
+// 						'field_options' => array( 'checkbox_position' => 'right' ),
 						'title' => __( 'Offer Membership Trial', MS_TEXT_DOMAIN ),
 						'value' => $this->model->trial_period_enabled,
 						'class' => 'ms-field-input-trial-period-enabled',

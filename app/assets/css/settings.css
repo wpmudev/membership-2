@@ -123,6 +123,9 @@ h2.ms-settings-title,
 .ms-field-input-label {
 	margin-top: 10px;
 	font-style: normal;
+	color: #222;
+    font-size: 1.1em;
+    font-weight: 600;
 }
 
 .ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
@@ -357,7 +360,10 @@ table.widefat {
 }
 
 /* SETTING: GENERAL */
-textarea.ms-field-input { min-width: 80%; }
+textarea.ms-field-input { 
+	min-width: 80%;
+	display: block; 
+}
 
 
 /* MEMBERS LIST */
