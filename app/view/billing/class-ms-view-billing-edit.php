@@ -18,18 +18,7 @@ class MS_View_Billing_Edit extends MS_View {
 				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['invoice']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Billing', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'invoice_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<table class="form-table">
-						<tbody>
-							<?php foreach( $this->fields as $field ): ?>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_input( $field ); ?>
-									</td>
-								</tr>
-								<?php endforeach; ?>
-						</tbody>
-					</table>
-					<?php MS_Helper_Html::html_submit(); ?>
+					<?php MS_Helper_Html::settingsbox( $this->fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -123,14 +112,14 @@ class MS_View_Billing_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'value' => $invoice->get_notes_desc(),
 			),
-			'gateway_id' => array(
-					'id' => 'gateway_id',
-					'section' => self::BILLING_SECTION,
-					'title' => __( 'Gateway', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'value' => $invoice->gateway_id,
-					'field_options' => $this->data['gateways'],
-			),
+// 			'gateway_id' => array(
+// 					'id' => 'gateway_id',
+// 					'section' => self::BILLING_SECTION,
+// 					'title' => __( 'Gateway', MS_TEXT_DOMAIN ),
+// 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+// 					'value' => $invoice->gateway_id,
+// 					'field_options' => $this->data['gateways'],
+// 			),
 			'invoice_id' => array(
 					'id' => 'invoice_id',
 					'section' => self::BILLING_SECTION,
@@ -141,6 +130,19 @@ class MS_View_Billing_Edit extends MS_View {
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
+			),
+			'cancel' => array(
+					'id' => 'cancel',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'title' => __('Cancel', MS_TEXT_DOMAIN ),
+					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'url' => remove_query_arg( array( 'action', 'invoice_id' ) ),
+					'class' => 'ms-link-button button',
+			),
+			'submit' => array(
+					'id' => 'submit',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 		if( $invoice->id > 0 ) {
