@@ -317,11 +317,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				$html[] = $membership_relationship->gateway_id;
 			}
 			$html = join('<br /> ', $html);
-			$actions = array(
-					'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move_gateway', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
-				);
 			
-			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+			echo $html;
 		}
 	}
 	
