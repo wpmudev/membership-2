@@ -69,9 +69,7 @@ class MS_Model_Upgrade extends MS_Model {
 		/** Compare current src version to DB version */
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
 			switch( $settings->version ) {
-				case '4.0.0.0.2':
-					break;
-				case '4.0.0.0.0':
+				default:
 					self::cleanup_db();
 					flush_rewrite_rules();
 					break;

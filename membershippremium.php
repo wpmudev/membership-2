@@ -65,7 +65,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 4.0.0
  */
-define( 'MS_PLUGIN_VERSION', '4.0.0.0.2' );
+define( 'MS_PLUGIN_VERSION', '4.0.0.0.3' );
 
 /**
  * Hooks 'membership_class_path_overrides'. 
