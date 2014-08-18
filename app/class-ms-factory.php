@@ -224,7 +224,7 @@ class MS_Factory {
 			$member->first_name = $wp_user->first_name;
 			$member->last_name = $wp_user->last_name;
 		
-			$member->is_admin = $member->is_admin_user( $wp_user );
+			$member->is_admin = $member->is_admin_user( $user_id );
 		
 			$fields = $member->get_object_vars();
 			foreach( $fields as $field => $val ) {
