@@ -366,26 +366,25 @@ class MS_Model_Member extends MS_Model {
 		return is_user_logged_in();
 	}
 	
-	public static function is_admin_user( $user_id = null, $capability = null ) {
+	public static function is_admin_user( $user_id = false, $capability = null ) {
 		$is_admin = false;
 
-		if( empty( $user_id ) ) {
-			$wp_user = wp_get_current_user();
+		if( is_super_admin( $user_id ) ) {
+			$is_admin = true;
 		}
-		else {
-			$wp_user = new WP_User( $user_id );
+
+		if( ! empty( $capability ) ) {
+			$wp_user = null;
+			if( empty( $user_id ) ) {
+				$wp_user = wp_get_current_user();
+			}
+			else {
+				$wp_user = new WP_User( $user_id );
+			}
+			$is_admin = $wp_user->has_cap( $capability );
 		}
 		
-		if ( ! empty( $wp_user ) ) {
-			if( ! empty( $capability ) ) {
-				$is_admin = $wp_user->has_cap( $capability );
-			}
-			if( is_super_admin( $wp_user->ID ) ) {
-				$is_admin = true;
-			}
-		} 
-
-		return $is_admin;
+		return apply_filters( 'ms_model_member_is_admin_user', $is_admin, $user_id );
 	}
 	
 	public static function get_admin_user_emails() {
