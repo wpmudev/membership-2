@@ -357,9 +357,8 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	public function delete_all_membership_usermeta() {
-		$this->membership_ids = array();
 		$this->membership_relationships = array();
-		$this->transactions = array();
+		$this->gateway_profiles = array();
 	}
 	
 	public static function is_logged_user() {
@@ -403,6 +402,11 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 		return $admins;
+	}
+	
+	public static function get_username( $user_id ) {
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		return apply_filters( 'ms_model_member_get_username', $member->username, $user_id );
 	}
 	
 	public function is_valid() {
