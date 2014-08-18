@@ -438,7 +438,16 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function card_info( $data = null ) {
 		if( ! empty( $data['gateway'] ) && is_array( $data['gateway'] ) ) {
+			$gateways = array();
 			foreach( $data['gateway'] as $ms_relationship_id => $gateway ) {
+				/** avoid duplicates */
+				if( ! in_array( $gateway->id, $gateways ) ) {
+					$gateways[] = $gateway->id;
+				}
+				else {
+					continue;
+				}
+				
 				switch( $gateway->id ) {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$member = MS_Model_Member::get_current_member();
