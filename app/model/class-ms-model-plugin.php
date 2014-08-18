@@ -161,14 +161,14 @@ class MS_Model_Plugin extends MS_Model {
 		if( is_home() || is_front_page() ) {
 			$has_access = true;
 		}
-				
+
 		if( ! $has_access ) {
 			$no_access_page_url = get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) );
 			
 			$current_page_url = MS_Helper_Utility::get_current_page_url();
 			
 			/** Don't redirect the protection page. */
-			if( ! $settings->is_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
+			if( ! $settings->is_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) && ! is_404() ) {
 				$no_access_page_url = add_query_arg( array( 'redirect_to' =>  $current_page_url ), $no_access_page_url );
 				wp_safe_redirect( $no_access_page_url );
 				exit;
