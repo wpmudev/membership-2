@@ -222,9 +222,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 				/** Check for moving memberships */
 				if( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status && $ms_relationship->move_from_id && 
 					! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
-
 					$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
-					if( ! empty( $move_from->id ) ) {
+					if( $move_from->is_valid() ) {
 						/** if allow pro rate, immediatly deactivate */
 						if( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
 							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );

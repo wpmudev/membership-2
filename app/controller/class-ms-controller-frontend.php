@@ -314,10 +314,10 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function payment_table() {
 
-		$membership_id = $_REQUEST['membership_id'];
+		$membership_id = $_POST['membership_id'];
 		$membership = MS_Factory::get_factory()->load_membership( $membership_id );
 		$member = MS_Model_Member::get_current_member();
-		$move_from_id = ! empty ( $_REQUEST['move_from_id'] ) ? $_REQUEST['move_from_id'] : 0;
+		$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
 
 		if( ! empty( $_POST['coupon_code'] ) ) {
 			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
