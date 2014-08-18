@@ -539,8 +539,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string
 	 */
 	public function login_redirect( $redirect_to, $request, $user ) {
-		if( empty( $redirect_to ) || admin_url() == $redirect_to ) {
-			$redirect_to= MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+		if( ! empty( $user->ID ) && ! MS_Model_Member::is_admin_user( $user->ID ) && ( empty( $redirect_to ) || admin_url() == $redirect_to ) ) {
+			$redirect_to = MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
 		}
 		return $redirect_to;
 	}
