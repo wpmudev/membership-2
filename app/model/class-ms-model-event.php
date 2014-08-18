@@ -90,29 +90,90 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	public static function get_event_types() {
 		return apply_filters( 'ms_model_news_get_event_types', array(
-				self::TYPE_MS_REGISTERED => array( 'topic' => self::TOPIC_USER ),
-				self::TYPE_UPDATED_INFO => array( 'topic' => self::TOPIC_USER ),
+				/** User topic */
+				self::TYPE_MS_REGISTERED => array( 
+						'topic' => self::TOPIC_USER,
+						'desc' => __( 'has registered.', MS_TEXT_DOMAIN ), 
+				),
+				self::TYPE_UPDATED_INFO => array( 
+						'topic' => self::TOPIC_USER,
+						'desc' => __( 'has updated billing information.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_CREDIT_CARD_EXPIRE => array(
+						'topic' => self::TOPIC_USER,
+						'desc' => __( 'credit card expire warning date.', MS_TEXT_DOMAIN ),
+				),
 				
-				self::TYPE_MS_SIGNED_UP => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_MOVED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_EXPIRED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_DROPPED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_RENEWED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_DEACTIVATED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
-				self::TYPE_MS_CANCELED => array( 'topic' => self::TOPIC_MEMBERSHIP ),
+				/** Membership topic */
+				self::TYPE_MS_SIGNED_UP => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'has signed up to membership level %s.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_MOVED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'has moved to membership level %s.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_EXPIRED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'membership level %s has expired.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_DROPPED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'dropped membership level %s.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_RENEWED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'renewed membership level %s', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_DEACTIVATED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'membership level %s has been deactivated', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_CANCELED => array( 
+						'topic' => self::TOPIC_MEMBERSHIP,
+						'desc' => __( 'membership level %s has been cancelled.', MS_TEXT_DOMAIN ),
+				),
 				
-				self::TYPE_MS_BEFORE_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
-				self::TYPE_MS_AFTER_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
-				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_WARNING ),
+				/** Warning topic */
+				self::TYPE_MS_BEFORE_FINISHES => array( 
+						'topic' => self::TOPIC_WARNING,
+						'desc' => __( 'before membership level %s finishes warning date.', MS_TEXT_DOMAIN ),
+				),
 				
-				self::TYPE_CREDIT_CARD_EXPIRE => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAID => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAYMENT_FAILED => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAYMENT_PENDING => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAYMENT_DENIED => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAYMENT_BEFORE_DUE => array( 'topic' => self::TOPIC_PAYMENT ),
-				self::TYPE_PAYMENT_AFTER_MADE => array( 'topic' => self::TOPIC_PAYMENT ),
+				self::TYPE_MS_AFTER_FINISHES => array( 
+						'topic' => self::TOPIC_WARNING,
+						'desc' => __( 'after membership level %s finishes warning date.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 
+						'topic' => self::TOPIC_WARNING,
+						'desc' => __( 'before trial finishes of membership level %s warning date.', MS_TEXT_DOMAIN ),
+				),
+				
+				/** payment topic */
+				self::TYPE_PAID => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'has paid membership level %s.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_PAYMENT_FAILED => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'payment for membership level %s has failed.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_PAYMENT_PENDING => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'payment for membership level %s is pending.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_PAYMENT_DENIED => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'payment for membership level %s was denied.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_PAYMENT_BEFORE_DUE => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'invoice date for membership level %s warning date.', MS_TEXT_DOMAIN ),
+				),
+				self::TYPE_PAYMENT_AFTER_MADE => array( 
+						'topic' => self::TOPIC_PAYMENT,
+						'desc' => __( 'after payment made for membership level %s warning date.', MS_TEXT_DOMAIN ),
+				),
 		) );
 	}
 	
@@ -156,6 +217,17 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		}
 		
 		return apply_filters( 'ms_model_event_get_topic', $topic, $type );
+	}
+	
+	public static function get_description( $type ) {
+		$desc = '';
+	
+		$types = self::get_event_types();
+		if( ! empty( $types[ $type ]['desc'] ) ) {
+			$desc = $types[ $type ]['desc'];
+		}
+	
+		return apply_filters( 'ms_model_event_get_description', $desc, $type );
 	}
 	
 	public static function get_events( $args = null ) {
@@ -206,9 +278,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 						
-						$description = sprintf( __( '<span class="ms-news-bold">%s</span> has %s membership <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-								$member->username,
-								$type,
+						$description = sprintf( self::get_description( $type ),
 								$membership->name
 						);
 					}
@@ -230,10 +300,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 					}						
-					$description = sprintf( __( '<span class="ms-news-bold">%s</span> - event: <span class="ms-news-bold">%s</span>', MS_TEXT_DOMAIN ),
-							$member->username,
-							$type
-					);
+					$description = self::get_description( $type );
 					break;
 				default:
 					MS_Helper_Debug::log(" event topic not implemented $event->topic");
@@ -276,5 +343,5 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		}
 		
 		return $is_duplicate;
-	}	
+	}
 }
