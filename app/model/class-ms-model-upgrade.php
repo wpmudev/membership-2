@@ -118,9 +118,13 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $gateways as $gateway ) {
 			$gateway->delete();
 		}
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$settings->tax = array( 'tax_name' => false, 'tax_rate' => false );
 		$settings->save();
+		
+		$addon = MS_Factory::load( 'MS_Model_Addon' );
+		$addon->addons = array();
+		$addon->save();
 		
 		$simulate = MS_Factory::get_factory()->load_simulate();
 		$simulate->reset_simulation();

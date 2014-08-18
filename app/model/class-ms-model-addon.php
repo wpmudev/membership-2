@@ -66,7 +66,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		if( in_array( $addon, self::get_addon_types() ) ) {
 			$enabled = ! empty( $model->addons[ $addon ] );
 		}
-// 		MS_Helper_Debug::log($model);
+
 		return apply_filters( 'ms_model_addon_is_enabled', $enabled, $addon );
 	}
 	
