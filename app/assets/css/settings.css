@@ -365,6 +365,10 @@ textarea.ms-field-input {
 	display: block; 
 }
 
+/* SETTING: PAGES */
+.ms-create-page {
+	margin: 0.5em 0 1em 0.5em !important;
+}
 
 /* MEMBERS LIST */
 #search_options {
@@ -372,3 +376,4 @@ textarea.ms-field-input {
     height: 28px;
     margin: 0 4px 0 0;
 }
+

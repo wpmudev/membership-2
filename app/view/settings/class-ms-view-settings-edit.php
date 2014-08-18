@@ -176,6 +176,7 @@ class MS_View_Settings_Edit extends MS_View {
 									MS_Helper_Html::html_submit( array( 
 										'id' => "create_page_{$field['id']}", 
 										'value' => __('Create new page', MS_TEXT_DOMAIN ), 
+										'class' => 'button button-primary ms-create-page',
 									) );
 								?>
 								<div id="ms-settings-page-links-wrapper">
