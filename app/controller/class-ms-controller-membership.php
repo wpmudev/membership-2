@@ -75,13 +75,13 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->model = apply_filters( 'ms_model_membership', MS_Factory::get_factory()->load_membership( $membership_id ) );
 		
 		$this->add_action( 'load-membership_page_all-memberships', 'admin_membership_list_manager' );
-		$this->add_action( 'load-admin_page_membership-edit', 'membership_edit_manager' );
+		$this->add_action( 'load-membership_page_membership-edit', 'membership_edit_manager' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		
-		$this->add_action( 'admin_print_scripts-admin_page_membership-edit', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_scripts-membership_page_membership-edit', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_all-memberships', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-admin_page_membership-edit', 'enqueue_styles' );
+		$this->add_action( 'admin_print_styles-membership_page_membership-edit', 'enqueue_styles' );
 	}
 	
 	/**
