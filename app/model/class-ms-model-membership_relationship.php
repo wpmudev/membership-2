@@ -911,6 +911,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc = __( 'Pending payment.', MS_TEXT_DOMAIN );
 				break;
 			case self::STATUS_TRIAL:
+				$desc = __( 'Membership level trial expires on: ', MS_TEXT_DOMAIN ) . $this->trial_expire_date;
+				break;
 			case self::STATUS_ACTIVE:
 				if( ! empty( $this->expire_date ) ) {
 					$desc = __( 'Membership level expires on: ', MS_TEXT_DOMAIN ) . $this->expire_date;
