@@ -173,7 +173,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		$page_details = array(
 				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
 				'post_name' => 'welcome',
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_status' => 'virtual',
 				'post_type' => 'page',
 				'ping_status' => 'closed',
 				'comment_status' => 'closed' ,
