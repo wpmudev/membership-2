@@ -5,6 +5,7 @@
 }
 #simulate_period_unit {
 	width: 2em;
+	display: inline;
 }
 #simulate_date {
 	width: 6em;
