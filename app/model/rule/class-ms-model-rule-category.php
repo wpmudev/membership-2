@@ -54,25 +54,16 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		 */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			
-			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
+			if( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
 
-				/** If default access is true, set which posts should be protected. */
-				if( $this->rule_value_default ) {
-					foreach( $this->rule_value as $id => $value ) {
-						if( ! $value ) {
-							$wp_query->query_vars['category__not_in'][] = $id;
-						}
+				$categories = array();
+				$contents = $this->get_content();
+				foreach( $contents as $content ) {
+					if( $content->access ) {
+						$categories[] = $content->id;
 					}
 				}
-				/** If default is false, set which posts has access. */
-				else {
-					foreach( $this->rule_value as $id => $value ) {
-						if( $value ) {
-							$categories[] = $id;
-							$wp_query->query_vars['category__in'][] = $id;
-						}
-					}
-				}
+				$wp_query->query_vars['category__in'] = $categories;
 			}
 		}
 	}
