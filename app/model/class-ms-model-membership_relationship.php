@@ -763,7 +763,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $status, $allowed_status ) ) {
 			$status = $this->calculate_status( $status );
-			$this->handle_status_change( $status );
+			if( MS_Model_Member::is_admin_user( $this->user_id ) ) {
+				$this->status = $status;
+			}
+			else {
+				$this->handle_status_change( $status );
+			}
 		}
 		else {
 			$this->status = $status;
@@ -788,7 +793,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( ! in_array( $this->status, $allowed_status ) ) {
 			$status = $this->calculate_status();
-			$this->handle_status_change( $status );
+			if( MS_Model_Member::is_admin_user( $this->user_id ) ) {
+				$this->status = $status;
+			}
+			else {
+				$this->handle_status_change( $status );
+			}
 		}
 		
 		return apply_filters( 'membership_model_membership_relationship_get_status', $this->status, $this );
