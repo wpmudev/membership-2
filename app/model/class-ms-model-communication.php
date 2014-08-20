@@ -229,15 +229,19 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$model = MS_Factory::load( $comm_classes[ $type ], $item[0]->ID );
 		}
 		else {
-			$model = self::create_default_communication( $type, $comm_classes[ $type ] );
+			$model = self::communication_factory( $type, $comm_classes[ $type ] );
 		}		
 		return $model;
 	}
 	
-	public static function create_default_communication( $type, $class ) {
+	public static function communication_factory( $type, $class ) {
 		$model = new $class();
 		$model->create_default_communication();
-		return $model;
+		return apply_filters( 'ms_model_communication_communication_factory', $model, $type, $class );
+	}
+	
+	public static function create_default_communication() {
+		
 	}
 	
 	public static function load_communications() {

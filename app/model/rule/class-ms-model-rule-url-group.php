@@ -43,7 +43,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 * @access public
 	 * @return boolean
 	 */
-	 public function has_access() {
+	 public function has_access( $id = null ) {
 
 	 	if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 	 		
