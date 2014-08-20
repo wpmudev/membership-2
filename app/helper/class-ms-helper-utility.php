@@ -75,6 +75,8 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Get the current page url.
 	 * 
+	 * @since 4.0.0
+	 * 
 	 * @return string The url.
 	 */
 	public static function get_current_page_url( $force_ssl = false ) {
@@ -95,6 +97,18 @@ class MS_Helper_Utility extends MS_Helper {
 		return apply_filters( 'ms_helper_utility_get_current_page_url', $current_page_url );
 	}
 
+	/**
+	 * Replace http protocol to https 
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $url the original url
+	 * @return string The changed url.
+	 */
+	public static function get_ssl_url( $url ) {
+		return apply_filters( 'ms_helper_utility_get_ssl_url', preg_replace( '|^http://|', 'https://', $url ), $url );
+	}
+	
 	/**
 	 * Returns user IP address.
 	 *
