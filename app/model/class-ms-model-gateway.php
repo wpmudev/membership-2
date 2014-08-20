@@ -205,7 +205,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function process_transaction( $invoice ) {
 	
-		$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
+		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
 		switch( $invoice->status ) {
 			case MS_Model_Invoice::STATUS_BILLED:

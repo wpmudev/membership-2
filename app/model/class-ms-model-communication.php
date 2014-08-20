@@ -279,7 +279,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				if( ( time() > $start_time + $time_limit ) || ( ++$count > $max_emails_qty ) ) {
 					break;
 				}
-				$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $ms_relationship_id );
+				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $ms_relationship_id );
 				if( $this->send_message( $ms_relationship ) ) {
 					$this->remove_from_queue( $ms_relationship_id ); 
 				}

@@ -64,7 +64,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			$this->payment_info = ob_get_clean();
 		}
 		if( ! empty( $_POST['ms_relationship_id'] ) ) {
-			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 			$invoice = $ms_relationship->get_current_invoice();
 			$this->payment_info .= sprintf( '<br />%s: %s%s', __( 'Total value', MS_TEXT_DOMAIN ), $invoice->currency, $invoice->total );
 		}

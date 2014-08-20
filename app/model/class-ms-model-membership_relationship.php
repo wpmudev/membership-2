@@ -275,7 +275,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$membership_relationships = array();
 		if( ! empty( $posts ) ) {
 			foreach( $posts as $post_id ) {
-				$membership_relationship = MS_Factory::get_factory()->load_membership_relationship( $post_id );
+				$membership_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post_id );
 				if( ! empty( $args['author'] ) ) {
 					$membership_relationships[ $membership_relationship->membership_id ] = $membership_relationship;
 				}
@@ -324,7 +324,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		$ms_relationship = null;
 		if( ! empty( $post[0] ) ) {
-			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $post[0] );
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post[0] );
 		}
 		
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship', $ms_relationship );

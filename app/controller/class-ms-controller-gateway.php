@@ -307,7 +307,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) ) {
 			$data['gateway'] = $_POST['gateway'];
 			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
-			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 			switch( $_POST['gateway'] ) {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					$member = $ms_relationship->get_member();
@@ -350,7 +350,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
 				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 	
-			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 	
 			$gateway_id = $_POST['gateway'];
 			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
