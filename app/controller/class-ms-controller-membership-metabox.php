@@ -219,7 +219,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$rule_type = $post_type;
 		if( ! empty( $membership_access ) && in_array( $post_type, $this->post_types ) ) {
 			foreach( $membership_access as $membership_id => $has_access ) {
-				$membership = MS_Factory::get_factory()->load_membership( $membership_id );
+				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 				if( in_array( $rule_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
 					$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 				}

@@ -87,7 +87,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							<td><?php echo sprintf( '<a href="%s">%s</a>', get_permalink(  $invoice->id ),  $invoice->id );?></td>
 							<td><?php echo $invoice->status;?></td>
 							<td><?php echo $invoice->total;?></td>
-							<td><?php echo MS_Factory::get_factory()->load_membership( $invoice->membership_id )->name;?></td>
+							<td><?php echo MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id )->name;?></td>
 							<td><?php echo $invoice->due_date;?></td>
 						</tr>
 					<?php endforeach;?>

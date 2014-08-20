@@ -607,7 +607,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_membership() {
 		if( empty ( $this->membership->id ) ) {
-			$this->membership = MS_Factory::get_factory()->load_membership( $this->membership_id ); 
+			$this->membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id ); 
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_membership', $this->membership );
 	}

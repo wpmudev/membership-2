@@ -175,7 +175,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				$html = MS_Factory::get_factory()->load_member( $item->user_id )->username;
 				break;
 			case 'membership':
-				$membership = MS_Factory::get_factory()->load_membership( $item->membership_id );
+				$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
 				$html = $membership->name;
 				break;
 			default:

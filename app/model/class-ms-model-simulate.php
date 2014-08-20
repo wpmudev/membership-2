@@ -68,7 +68,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	
 	public function simulate_period_filter( $current_date ) {
 		if( ! empty( $this->period ) ) {
-			$membership = MS_Factory::get_factory()->load_membership( $this->membership_id );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
 			if( in_array( $this->period['period_type'], MS_Helper_Period::get_periods() ) ) {
 				$current_date = MS_Helper_Period::add_interval( $this->period['period_unit'], $this->period['period_type'] );
 			}
@@ -112,7 +112,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 					$this->$property = 0;
 					$id = absint( $value );
 					if( 0 < $id ) {
-						$membership = MS_Factory::get_factory()->load_membership( $id );
+						$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 						if ( 0 < $membership->id ) {
 							$this->$property = $id;
 							if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {

@@ -19,20 +19,20 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 							$msg = $ms_relationship->get_status_description();
 	 							switch( $ms_relationship->status ) {
 	 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
-	 									$this->membership_box_html( MS_Factory::get_factory()->load_membership( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
+	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-	 									$this->membership_box_html( MS_Factory::get_factory()->load_membership( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
+	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
 	 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-	 									$this->membership_box_html( MS_Factory::get_factory()->load_membership( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg );
+	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_PENDING:
-	 									$this->membership_box_html( MS_Factory::get_factory()->load_membership( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg );
+	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg );
 	 									break;
 	 								default:
-	 									$this->membership_box_html( MS_Factory::get_factory()->load_membership( $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
+	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
 	 									break; 
 	 							}
 	 						}

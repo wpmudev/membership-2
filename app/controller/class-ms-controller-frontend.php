@@ -315,7 +315,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function payment_table() {
 
 		$membership_id = $_POST['membership_id'];
-		$membership = MS_Factory::get_factory()->load_membership( $membership_id );
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		$member = MS_Model_Member::get_current_member();
 		$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
 

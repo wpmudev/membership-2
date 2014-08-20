@@ -168,7 +168,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			);
 			$memberships[] = $reset_simulation;
 			
-			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $simulate->membership_id );
 			
 			$title = null;
 			$html = null;
@@ -491,7 +491,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			);
 			$memberships[] = $reset_simulation;
 			
-			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $simulate->membership_id );
 			
 			$title = null;
 			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
@@ -525,7 +525,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 		
 		if( $simulate->is_simulating() ) {
-			$membership = MS_Factory::get_factory()->load_membership( $simulate->membership_id );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $simulate->membership_id );
 			$title .= $membership->name;
 		}
 		else {

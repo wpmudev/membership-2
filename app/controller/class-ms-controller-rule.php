@@ -278,7 +278,7 @@ class MS_Controller_Rule extends MS_Controller {
 			return $msg;
 		}
 		
-		$src_membership = MS_Factory::get_factory()->load_membership( $copy_from_id );
+		$src_membership = MS_Factory::load( 'MS_Model_Membership', $copy_from_id );
 		if( $src_membership->id > 0 ) {
 	
 			$rule_types = array( 'post', 'page' );
@@ -309,7 +309,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		$membership = null;
 		if( ! empty( $membership_id ) ) {
-			$membership = MS_Factory::get_factory()->load_membership( $membership_id );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 		
 		return apply_filters( 'ms_controller_rule_get_membership', $membership );
