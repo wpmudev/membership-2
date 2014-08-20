@@ -48,8 +48,8 @@ class MS_Controller_Gateway extends MS_Controller {
 		
 		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
-		$this->add_action( 'ms_controller_public_signup_gateway_form', 'gateway_form_mgr', 1 );
-		$this->add_action( 'ms_controller_public_signup_process_purchase', 'process_purchase', 1 );
+		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
+		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
 		
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 		
@@ -282,7 +282,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Set hook to handle gateway extra form to commit payments.
 	 *
 	 * **Hooks Actions: **
-	 * * ms_controller_public_signup_gateway_form
+	 * * ms_controller_frontend_signup_gateway_form
 	 *
 	 * @since 4.0.0
 	 */
@@ -341,7 +341,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Process purchase using gateway.
 	 *
 	 * **Hooks Actions: **
-	 * * ms_controller_public_signup_process_purchase
+	 * * ms_controller_frontend_signup_process_purchase
 	 * 
 	 * @since 4.0.0
 	 */
@@ -373,7 +373,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 						$_POST['auth_error'] = $e->getMessage();
 						/** call action to step back */
-						do_action( 'ms_controller_public_signup_gateway_form' );
+						do_action( 'ms_controller_frontend_signup_gateway_form' );
 						break;
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$_POST['stripe_error'] = $e->getMessage();
@@ -512,7 +512,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					if( $this->verify_nonce() ) {
-						do_action( 'ms_controller_public_signup_gateway_form', $this );
+						do_action( 'ms_controller_frontend_signup_gateway_form', $this );
 					}
 					elseif( ! empty( $_POST['ms_relationship_id'] ) && $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
 						$gateway->update_cim_profile( $member );

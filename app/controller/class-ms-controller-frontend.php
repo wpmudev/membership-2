@@ -54,7 +54,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function __construct() {
 
 		if( MS_Plugin::instance()->settings->plugin_enabled ) {
-			do_action( 'ms_controller_public_construct', $this );
+			do_action( 'ms_controller_frontend_construct', $this );
 		
 			$this->add_action( 'template_redirect', 'process_actions', 1 );
 			$this->add_filter( 'template_redirect', 'check_for_membership_pages', 1 );
@@ -170,14 +170,14 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Handled by MS_Controller_Gateway.
 			 */
 			case self::STEP_GATEWAY_FORM:
-				do_action( 'ms_controller_public_signup_gateway_form', $this );
+				do_action( 'ms_controller_frontend_signup_gateway_form', $this );
 				break;
 			/**
 			 * Process the purchase action.
 			 * Handled by MS_Controller_Gateway.
 			 */	
 			case self::STEP_PROCESS_PURCHASE:
-				do_action( 'ms_controller_public_signup_process_purchase', $this );
+				do_action( 'ms_controller_frontend_signup_process_purchase', $this );
 				break;
 			default:
 				MS_Helper_Debug::log( "No handler for step: $step" );
@@ -289,7 +289,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( ! MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
 				wp_new_user_notification( $user->id, $user->password );
 			}
-			do_action( 'ms_controller_registration_register_user_complete', $user );
+			do_action( 'ms_controller_frontend_register_user_complete', $user );
 
 			/** Go to membership signup payment form. */
 			$this->add_action( 'the_content', self::STEP_PAYMENT_TABLE, 1 );
@@ -300,7 +300,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			
 			/** step back */
 			$this->add_action( 'the_content', self::STEP_REGISTER_FORM, 1 );
-			do_action( 'ms_controller_registration_register_user_error', $this->register_errors );
+			do_action( 'ms_controller_frontend_register_user_error', $this->register_errors );
 		}
 	}
 	
@@ -437,7 +437,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$view->add_filter( 'the_content', 'to_html', 1 );
 				break;
 			default:
-				do_action( 'ms_controller_public_user_account_mgr_' . $action );
+				do_action( 'ms_controller_frontend_user_account_mgr_' . $action );
 				$this->add_filter( 'the_content', 'user_account', 1 );
 				break;
 		}
@@ -507,7 +507,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function signup_location( $url ) {
 		$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
 	
-		return apply_filters( 'ms_controller_registration_signup_location', $url );
+		return apply_filters( 'ms_controller_frontend_signup_location', $url );
 	}
 	
 	/**
