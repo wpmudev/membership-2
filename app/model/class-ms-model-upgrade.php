@@ -126,7 +126,7 @@ class MS_Model_Upgrade extends MS_Model {
 		$addon->addons = array();
 		$addon->save();
 		
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$simulate->reset_simulation();
 		
 	}

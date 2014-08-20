@@ -333,7 +333,7 @@ class MS_Model_Member extends MS_Model {
 				MS_Model_Membership_Relationship::STATUS_CANCELED, 
 			)
 		);
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		
 		if ( $this->is_admin && ! $simulate->is_simulating() ) {
 			$is_member = true;

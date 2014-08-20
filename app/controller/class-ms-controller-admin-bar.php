@@ -108,7 +108,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	public function add_admin_bar_menus() {
 		 
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 
 		if( isset( $_GET['membership_id'] ) && $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
 			$simulate->membership_id = $_GET['membership_id'];
@@ -158,7 +158,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		global $wp_admin_bar;
 		$admin_url_func = $this->admin_url_function;
 		
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 				
 		$memberships = MS_Model_Membership::get_memberships();
 		if ( $simulate->is_simulating() ) {	
@@ -216,7 +216,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		global $wp_admin_bar;
 		$admin_url_func = $this->admin_url_function;
 		
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$memberships = MS_Model_Membership::get_memberships();
 
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
@@ -402,7 +402,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	public function customize_toolbar() {
 		// $this->original_nodes = $this->get_original_node();
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$method = '';
 		if( MS_Model_Member::is_admin_user() ) {
 			$method = MS_Plugin::is_enabled()
@@ -481,7 +481,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		? 'network_admin_url'
 				: 'admin_url';
 		
-		$simulate = MS_Factory::get_factory()->load_simulate();
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 				
 		$memberships = MS_Model_Membership::get_memberships();
 		if ( $simulate->is_simulating() ) {	
