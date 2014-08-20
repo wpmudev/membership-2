@@ -14,14 +14,19 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		ob_start();
 		?>
 			<div class="entry-content ms-invoice-wrapper">
-				<h2>
-					<div class="ms-invoice-sender-name">
-						<?php echo MS_Plugin::instance()->settings->invoice_sender_name; ?>
-					</div>
-				</h2>
 				<h2><?php echo sprintf( '<a href="%s">%s%s</a>', get_permalink(  $invoice->id ), __( 'Invoice #', MS_TEXT_DOMAIN ), $invoice->id ); ?></h2>
 				<div class="ms-invoice-details-wrapper">
 					<table class='ms-purchase-table'>
+						<?php if( MS_Plugin::instance()->settings->invoice_sender_name ) : ?>
+							<tr>
+								<td class='ms-title-column'>
+									<?php _e( 'Sender', MS_TEXT_DOMAIN ); ?>
+								</td>
+								<td class='ms-details-column'>
+									<?php echo MS_Plugin::instance()->settings->invoice_sender_name; ?>
+								</td>
+							</tr>
+						<?php endif; ?>
 						<tr>
 							<td class='ms-title-column'>
 								<?php _e( 'Invoice to', MS_TEXT_DOMAIN ); ?>

@@ -66,7 +66,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<?php do_action( 'ms_view_shortcode_account_card_info', $this->data );?>
 				<h2>
 					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
-							__( 'Invoice', MS_TEXT_DOMAIN ), 
+							__( 'Invoices', MS_TEXT_DOMAIN ), 
 							add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES ) ), 
 							__( 'View all', MS_TEXT_DOMAIN ) ); 
 					?>
@@ -95,7 +95,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				</table>				
 				<h2>
 					<?php echo sprintf( '%s <a href="%s" class="ms-edit-profile">%s</a>', 
-							__( 'Activity', MS_TEXT_DOMAIN ), 
+							__( 'Activities', MS_TEXT_DOMAIN ), 
 							add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES ) ), 
 							__( 'View all', MS_TEXT_DOMAIN ) ); 
 					?>
