@@ -79,7 +79,7 @@ class MS_Controller_Addon extends MS_Controller {
 		 * @uses Filter: 'membership_model_addon'
 		 * @since 4.0.0
 		 */		
-		$this->model = MS_Factory::get_factory()->load_addon();
+		$this->model = MS_Factory::load( 'MS_Model_Addon' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON, 'ajax_action_toggle_addon' );
 		

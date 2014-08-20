@@ -60,7 +60,7 @@ class MS_Model_Addon extends MS_Model_Option {
 
 	public static function is_enabled( $addon ) {
 	
-		$model = MS_Factory::get_factory()->load_addon();
+		$model = MS_Factory::load( 'MS_Model_Addon' );
 		$enabled = false;
 	
 		if( in_array( $addon, self::get_addon_types() ) ) {
