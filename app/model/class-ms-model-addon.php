@@ -47,14 +47,14 @@ class MS_Model_Addon extends MS_Model_Option {
 	public static function get_addon_types() {
 		return apply_filters( 'ms_model_addon_get_addon_types', array( 
 				self::ADDON_MULTI_MEMBERSHIPS,
-				self::ADDON_POST_BY_POST,
-				self::ADDON_URL_GROUPS,
-				self::ADDON_CPT_POST_BY_POST,
-				self::ADDON_COUPON,
 				self::ADDON_TRIAL,
-				self::ADDON_MEDIA,
+				self::ADDON_COUPON,
 				self::ADDON_PRIVATE_MEMBERSHIPS,
+				self::ADDON_POST_BY_POST,
+				self::ADDON_CPT_POST_BY_POST,
+				self::ADDON_MEDIA,
 				self::ADDON_SHORTCODE,
+				self::ADDON_URL_GROUPS,
 		) );
 	}
 
@@ -96,17 +96,29 @@ class MS_Model_Addon extends MS_Model_Option {
 					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
 				),
+				self::ADDON_TRIAL => (object) array(
+						'id' => self::ADDON_TRIAL,
+						'name' => __( 'Trial', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable trial period.', MS_TEXT_DOMAIN ),
+						'active' => $this->is_enabled( self::ADDON_TRIAL ),
+				),
+				self::ADDON_COUPON => (object) array(
+						'id' => self::ADDON_COUPON,
+						'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
+						'active' => $this->is_enabled( self::ADDON_COUPON ),
+				),
+				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
+						'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
+						'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable private memberships.', MS_TEXT_DOMAIN ),
+						'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
+				),
 				self::ADDON_POST_BY_POST => (object) array(
 					'id' => self::ADDON_POST_BY_POST,
 					'name' => __( 'Post by Post', MS_TEXT_DOMAIN ),
 					'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_POST_BY_POST ),
-				),
-				self::ADDON_URL_GROUPS => (object) array(
-					'id' => self::ADDON_URL_GROUPS,
-					'name' => __( 'Url Groups', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable Url Groups protection.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_URL_GROUPS ),
 				),
 				self::ADDON_CPT_POST_BY_POST => (object) array(
 					'id' => self::ADDON_CPT_POST_BY_POST,
@@ -114,35 +126,23 @@ class MS_Model_Addon extends MS_Model_Option {
 					'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_CPT_POST_BY_POST ),
 				),
-				self::ADDON_COUPON => (object) array(
-					'id' => self::ADDON_COUPON,
-					'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_COUPON ),
-				),
-				self::ADDON_TRIAL => (object) array(
-					'id' => self::ADDON_TRIAL,
-					'name' => __( 'Trial', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable trial period.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_TRIAL ),
-				),
 				self::ADDON_MEDIA => (object) array(
 					'id' => self::ADDON_MEDIA,
 					'name' => __( 'Media', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable media protection.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_MEDIA ),
 				),
-				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
-					'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
-					'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable private memberships.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
-				),
 				self::ADDON_SHORTCODE => (object) array(
 					'id' => self::ADDON_SHORTCODE,
 					'name' => __( 'Shortcode protection', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable shortcode protection.', MS_TEXT_DOMAIN ),
 					'active' => $this->is_enabled( self::ADDON_SHORTCODE ),
+				),
+				self::ADDON_URL_GROUPS => (object) array(
+						'id' => self::ADDON_URL_GROUPS,
+						'name' => __( 'Url Groups', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable Url Groups protection.', MS_TEXT_DOMAIN ),
+						'active' => $this->is_enabled( self::ADDON_URL_GROUPS ),
 				),
 			)
 		);
