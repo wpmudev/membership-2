@@ -234,7 +234,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				self::SPECIAL_PAGE_ACCOUNT,
 				self::SPECIAL_PAGE_WELCOME,
 				self::SPECIAL_PAGE_SIGNUP,
-				self::SPECIAL_PAGE_MENU,
+// 				self::SPECIAL_PAGE_MENU,
 			)
 		);
 		
