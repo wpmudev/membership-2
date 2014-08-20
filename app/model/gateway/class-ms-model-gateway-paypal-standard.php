@@ -116,7 +116,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				exit;
 			}
 			
-			$invoice = MS_Factory::get_factory()->load_invoice( $_POST['custom'] );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['custom'] );
 			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
 			$membership = $ms_relationship->get_membership();
 			$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );

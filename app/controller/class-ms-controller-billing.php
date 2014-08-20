@@ -122,7 +122,7 @@ class MS_Controller_Billing extends MS_Controller {
 		 */
 		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['invoice_id'] ) ) {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
-			$data['invoice'] =  apply_filters( 'ms_model_invoice', MS_Factory::get_factory()->load_invoice( $_GET['invoice_id'] ) );
+			$data['invoice'] =  apply_filters( 'ms_model_invoice', MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] ) );
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_members_usernames();
 			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
@@ -156,7 +156,7 @@ class MS_Controller_Billing extends MS_Controller {
 			foreach( $invoice_ids as $invoice_id ) {
 				switch( $action ) {
 					case 'delete':
-						$invoice = MS_Factory::get_factory()->load_invoice( $invoice_id );
+						$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 						$invoice->delete();
 						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 						break;
@@ -195,7 +195,7 @@ class MS_Controller_Billing extends MS_Controller {
 				$ms_relationship->save();
 			}
 			
-			$invoice = apply_filters( 'ms_model_invoice', MS_Factory::get_factory()->load_invoice( $fields['invoice_id'] ) );
+			$invoice = apply_filters( 'ms_model_invoice', MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] ) );
 			if( ! $invoice->is_valid() ) {
 				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
