@@ -345,7 +345,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$invoice = $ms_relationship->get_current_invoice();
 		$data['invoice'] = $invoice;
 		if( $invoice->coupon_id ) {
-			$data['coupon'] = MS_Factory::get_factory()->load_coupon( $invoice->coupon_id );
+			$data['coupon'] = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
 		}
 			
 		$data['membership'] = $membership;

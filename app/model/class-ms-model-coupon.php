@@ -98,7 +98,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 		$coupons = array();
 		foreach ( $items as $item ) {
-			$coupons[] = MS_Factory::get_factory()->load_coupon( $item->ID );
+			$coupons[] = MS_Factory::load( 'MS_Model_Coupon', $item->ID );
 		}
 		return $coupons;
 	}
@@ -137,7 +137,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$coupon_id = $item[0];
 		}
 		
-		return MS_Factory::get_factory()->load_coupon( $coupon_id );
+		return MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
 	}
 	
 	/**
@@ -279,7 +279,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		
 		$coupon = null;
 		if( ! empty ( $transient_value ) ) {
-			$coupon = MS_Factory::get_factory()->load_coupon( $transient_value['coupon_id'] );
+			$coupon = MS_Factory::load( 'MS_Model_Coupon', $transient_value['coupon_id'] );
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
 		

@@ -113,7 +113,7 @@ class MS_Controller_Coupon extends MS_Controller {
 			foreach( $coupon_ids as $coupon_id ) {
 				switch( $action ) {
 					case 'delete':
-						$coupon = MS_Factory::get_factory()->load_coupon( $coupon_id );
+						$coupon = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
 						$coupon->delete();
 						break;
 				}			
@@ -132,7 +132,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		 */
 		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['coupon_id'] ) ) {
 			$coupon_id = ! empty( $_GET['coupon_id'] ) ? $_GET['coupon_id'] : 0;
-			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::get_factory()->load_coupon( $coupon_id ), $coupon_id );
+			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::load( 'MS_Model_Coupon', $coupon_id ), $coupon_id );
 			$data['coupon'] = $this->model;
 			$data['memberships'] = MS_Model_Membership::get_membership_names();
 			$data['memberships'][0] = __( 'Any', MS_TEXT_DOMAIN );
@@ -164,7 +164,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		
 		if( is_array( $fields ) ) {
 			$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
-			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::get_factory()->load_coupon( $coupon_id ), $coupon_id );
+			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::load( 'MS_Model_Coupon', $coupon_id ), $coupon_id );
 				
 			foreach( $fields as $field => $value ) {
 				$this->model->$field = $value;
