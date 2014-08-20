@@ -9,6 +9,7 @@
 }
 #simulate_date {
 	width: 6em;
+	display: inline;
 }
 #simulate_submit {
 /*    padding: 5px 10px;*/
