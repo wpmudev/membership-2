@@ -212,7 +212,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 						"%s %s's - **** **** **** %s ",
 						$profile['billTo']['firstName'],
 						$profile['billTo']['lastName'],
-						$profile['payment']['creditCard']['cardNumber']
+						str_replace( 'XXXX', '', $profile['payment']['creditCard']['cardNumber'] )
 				) );
 				if( ! $first_key ) {
 					$first_key = $profile['customerPaymentProfileId'];
