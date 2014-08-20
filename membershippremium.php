@@ -279,7 +279,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->settings = apply_filters( 'membership_model_settings', MS_Factory::get_factory()->load_settings(), $this );
+		$this->settings = apply_filters( 'membership_model_settings', MS_Factory::load( 'MS_Model_Settings' ), $this );
 
 		/**
 		 * Creates and Filters the Addon Model.

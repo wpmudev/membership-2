@@ -57,7 +57,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	 * @param unknown $member
 	 */
 	public function subscribe_registered( $event, $member ) {
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ) ) {
 			if( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
@@ -66,7 +66,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	}
 	
 	public function subscribe_members( $event, $ms_relationship ) {
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$member = $ms_relationship->get_member();
 		
 		/** Verify if is subscribed to registered mail list and remove it. */
@@ -93,7 +93,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	}
 	
 	public function subscribe_deactivated( $event, $ms_relationship ) {
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$member = $ms_relationship->get_member();
 		
 		/** Verify if is subscribed to registered mail list and remove it. */
@@ -247,7 +247,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 					require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 				}
 				
-				$settings = MS_Factory::get_factory()->load_settings();
+				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				
 				$options = apply_filters( 'ms_integration_mailchimp_load_mailchimp_api_options', array(
 						'timeout' => false,
@@ -338,7 +338,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	public static function subscribe_user( $member, $list_id ) {
 	
 		if( is_email( $member->email ) && self::get_api_status() ) {
-			$settings = MS_Factory::get_factory()->load_settings();
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$auto_opt_in = $settings->get_custom_settings( 'mailchimp', 'auto_opt_in' );
 			$update = apply_filters( 'ms_integration_mailchimp_subscribe_user_update', true, $member, $list_id );
 			

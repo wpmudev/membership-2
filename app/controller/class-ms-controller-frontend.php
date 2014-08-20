@@ -109,7 +109,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function check_for_membership_pages() {
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$is_special_page = $settings->is_special_page();
 		
 		switch( $is_special_page ) {
@@ -553,7 +553,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return void
 	 */	
 	public function enqueue_scripts() {
-		$settings = MS_Factory::get_factory()->load_settings();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$is_special_page = $settings->is_special_page();
 		if( $settings->is_special_page() ) {
 			wp_enqueue_style( 'membership-admin' );
