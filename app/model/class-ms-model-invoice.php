@@ -333,7 +333,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		}
 		
 		$invoice = null;
-		$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 		$invoice_status = self::STATUS_BILLED;
 		$notes = null;
 		$due_date = null;

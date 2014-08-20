@@ -119,7 +119,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['custom'] );
 			$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
 			$membership = $ms_relationship->get_membership();
-			$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 			
 			$currency = $_POST['mc_currency'];
 			$status = null;
@@ -305,7 +305,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	 */
 	public function process_transaction( $invoice ) {
 		$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
-		$member = MS_Factory::get_factory()->load_member( $invoice->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
 		switch( $invoice->status ) {
 			case self::STATUS_REVERSED:
 			case self::STATUS_REFUNDED:

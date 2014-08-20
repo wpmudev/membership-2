@@ -594,7 +594,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function get_member() {
 		$member = null;
 		if( ! empty ( $this->user_id ) ) {
-			$member = MS_Factory::get_factory()->load_member( $this->user_id );
+			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 		}
 		return apply_filters( 'ms_model_membership_relationship_get_member', $member );
 	}
@@ -1003,7 +1003,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 						/** Move membership to configured membership. */
 						$membership = $this->get_membership();
 						if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
-							$member = MS_Factory::get_factory()->load_member( $this->user_id );
+							$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 							$member->add_membership( $membership->on_end_membership_id );
 						}
 					}
@@ -1070,7 +1070,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					/** Move membership to configured membership. */
 					$membership = $this->get_membership();
 					if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
-						$member = MS_Factory::get_factory()->load_member( $this->user_id );
+						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 						$member->add_membership( $membership->on_end_membership_id );
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $member->membership_relationships[ $membership->on_end_membership_id ] );
 					}

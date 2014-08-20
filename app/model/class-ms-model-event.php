@@ -273,7 +273,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 					$ms_relationship = $data;
 					if( $ms_relationship->id > 0 ) { 
 						$membership = $ms_relationship->get_membership();
-						$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+						$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 						$event->user_id = $ms_relationship->user_id;
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
@@ -295,7 +295,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 					elseif( $data instanceof MS_Model_Membership_Relationship ) {
 						$ms_relationship = $data;
 						$membership = $ms_relationship->get_membership();
-						$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+						$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 						$event->user_id = $ms_relationship->user_id;
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );

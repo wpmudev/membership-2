@@ -69,7 +69,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$invoice = $ms_relationship->get_current_invoice();
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 		
-			$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 		
 			/** manage authorize customer profile */
 			$cim_profile_id = $this->get_cim_profile_id( $member );

@@ -182,7 +182,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function check_card_expiration( $ms_relationship ) {
 
-		$member = MS_Factory::get_factory()->load_member( $ms_relationship->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
 		if( ! empty( $card_exp ) ) {
 			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
@@ -206,7 +206,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public function process_transaction( $invoice ) {
 	
 		$ms_relationship = MS_Factory::get_factory()->load_membership_relationship( $invoice->ms_relationship_id );
-		$member = MS_Factory::get_factory()->load_member( $invoice->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
 		switch( $invoice->status ) {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;

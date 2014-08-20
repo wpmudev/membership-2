@@ -48,7 +48,7 @@ class MS_Model_Member extends MS_Model {
 	public $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters', 'ignore_fields' );
 		
 	public static function get_current_member() {
-		return MS_Factory::get_factory()->load_member( get_current_user_id() );
+		return MS_Factory::load( 'MS_Model_Member', get_current_user_id() );
 	}
 	
 	public function save()
@@ -199,7 +199,7 @@ class MS_Model_Member extends MS_Model {
 
 		$members = array();
 		foreach( $users as $user_id ) {
-			$members[] = MS_Factory::get_factory()->load_member( $user_id );
+			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 		}
 		
 		return $members;

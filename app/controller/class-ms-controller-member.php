@@ -200,7 +200,7 @@ class MS_Controller_Member extends MS_Controller {
 		/** Single action */
 		else {
 			/** Member Model */
-			$member = apply_filters( 'membership_member_model', MS_Factory::get_factory()->load_member( $member_id ) );
+			$member = apply_filters( 'membership_member_model', MS_Factory::load( 'MS_Model_Member', $member_id ) );
 			$data['member_id'] = array( $member_id );
 			switch( $action ) {
 				case 'add':
@@ -265,7 +265,7 @@ class MS_Controller_Member extends MS_Controller {
 		
 		foreach( $members as $member_id ){
 			/** Member Model */
-			$member = apply_filters( 'membership_member_model', MS_Factory::get_factory()->load_member( $member_id ) );
+			$member = apply_filters( 'membership_member_model', MS_Factory::load( 'MS_Model_Member', $member_id ) );
 			switch( $action ) {
 				case 'add':
 					$member->add_membership( $membership_id );
