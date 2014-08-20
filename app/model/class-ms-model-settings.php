@@ -132,11 +132,15 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $page_id;
 	}
 	
-	public function get_special_page_url( $type ) {
-		return apply_filters( 'ms_model_settings_get_special_page_url', get_permalink( $this->get_special_page( $type ) ) );	
+	public function get_special_page_url( $type, $ssl = false ) {
+		$url = get_permalink( $this->get_special_page( $type ) );
+		if( $ssl ) {
+			$url = MS_Helper_Utility::get_ssl_url( $url );
+		}
+		return apply_filters( 'ms_model_settings_get_special_page_url',  $url );	
 	}
 	
-	public function create_page_no_access( $virtual ) {
+	public function create_page_no_access( $virtual = true ) {
 		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
 		$page_details = array( 
 				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
@@ -151,7 +155,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
 	}
 	
-	public function create_page_account( $virtual ) {
+	public function create_page_account( $virtual = false ) {
 // 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
 		$content = '';
 		$page_details = array(
@@ -168,12 +172,12 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
 	}
 	
-	public function create_page_welcome( $virtual ) {
+	public function create_page_welcome( $virtual = true ) {
 		$content = '';
 		$page_details = array(
 				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
 				'post_name' => 'welcome',
-				'post_status' => 'virtual',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
 				'post_type' => 'page',
 				'ping_status' => 'closed',
 				'comment_status' => 'closed' ,
@@ -183,7 +187,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
 	}
 
-	public function create_page_signup( $virtual ) {
+	public function create_page_signup( $virtual = false ) {
 // 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
 		$content = '';
 		$page_details = array(
