@@ -1023,6 +1023,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				if( $remaining_days < $invoice_before_days ) {
 					$invoice = $this->get_next_invoice();
 				}
+				else {
+					$invoice = $this->get_current_invoice();
+				}
 					
 				/** Configure communication messages.*/
 				/** Before finishes communication. */
