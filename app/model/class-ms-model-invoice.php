@@ -132,6 +132,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 				'post_status' => 'any',
 				'fields' => 'ids',
 				'order' => 'DESC',
+				'orderby' => 'ID',
 		);
 		$args = apply_filters( 'ms_model_invoice_get_invoices_args', wp_parse_args( $args, $defaults ) );
 		
