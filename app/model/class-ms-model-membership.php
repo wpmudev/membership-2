@@ -162,6 +162,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_membership_names( $args = null ) {
 		$args = self::get_query_args( $args );
 		
+		$args['order'] = 'ASC';
+		
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
 		
