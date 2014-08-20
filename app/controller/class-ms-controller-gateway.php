@@ -312,7 +312,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					$member = $ms_relationship->get_member();
 					$view = apply_filters( 'ms_view_gateway_authorize', new MS_View_Gateway_Authorize_Form() );
-					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Factory::get_factory()->load_gateway_authorize() );
+					$gateway = apply_filters( 'ms_model_gateway_authorize', MS_Factory::load( 'MS_Model_Gateway_Authorize' ) );
 					$data['countries'] = $gateway->get_country_codes();
 					
 					$data['action'] = $this->get_action();

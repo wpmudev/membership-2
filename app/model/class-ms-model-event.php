@@ -253,7 +253,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		
 		$events = array();
 		foreach ( $items as $item ) {
-			$events[] = MS_Factory::get_factory()->load_event( $item );
+			$events[] = MS_Factory::load( 'MS_Model_Event', $item );
 		}
 		return $events;
 	}
