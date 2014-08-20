@@ -70,6 +70,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $model->get_paypal_sites(),
 					'value' => $model->paypal_site,
+					'class' => 'chosen-select',
 			),
 			'mode' => array(
 					'id' => 'mode',

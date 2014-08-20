@@ -416,7 +416,6 @@ class MS_Controller_Membership extends MS_Controller {
 				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 			}
 		}
-		MS_Helper_Debug::log($this->model->name);
 		return $msg;
 	}
 		
