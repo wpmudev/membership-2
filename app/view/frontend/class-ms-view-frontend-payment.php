@@ -146,6 +146,22 @@ class MS_View_Frontend_Payment extends MS_View {
 		}
 		$coupon_message = $coupon->coupon_message;
 		$have_coupon_message = __( 'Have a coupon code?', MS_TEXT_DOMAIN );
+		
+		$fields['membership_id'] = array(
+				'id' => 'membership_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['membership']->id,
+		);
+		$fields['move_from_id'] = array(
+				'id' => 'move_from_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['ms_relationship']->move_from_id,
+		);
+		$fields['step'] = array(
+				'id' => 'step',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => MS_Controller_Frontend::STEP_PAYMENT_TABLE,
+		);
 		?>
 		<div class="membership-coupon">
 			<div class="membership_coupon_form couponbar">
