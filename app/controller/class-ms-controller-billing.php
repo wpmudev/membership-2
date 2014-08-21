@@ -126,7 +126,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_members_usernames();
 			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
-			$data['memberships'] = MS_Model_Membership::get_membership_names();
+			$data['memberships'] = MS_Model_Membership::get_membership_names( null, true );
 			$this->views['edit'] = apply_filters( 'ms_view_billing_edit', new MS_View_Billing_Edit() );
 			$this->views['edit']->data = $data;
 			$this->views['edit']->render();

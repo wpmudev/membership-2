@@ -159,7 +159,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
-	public static function get_membership_names( $args = null ) {
+	public static function get_membership_names( $args = null, $hide_default_memberships = false ) {
 		$args = self::get_query_args( $args );
 		
 		$args['order'] = 'ASC';
@@ -170,6 +170,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$memberships = array();
 		foreach ( $items as $item ) {
 			$memberships[ $item->ID ] = $item->name;
+		}
+		if( $hide_default_memberships ) {
+			unset( $memberships[ self::get_visitor_membership()->id ] );
+			unset( $memberships[ self::get_default_membership()->id ] );
 		}
 		return $memberships;
 		
