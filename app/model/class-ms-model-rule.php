@@ -123,7 +123,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @param int $content_id The content id to add.
 	 */
 	public function add_rule_value( $content_id ) {
-		$this->rule_value[ $content_id ] = $content_id;
+		$this->rule_value[ $content_id ] = true;
 	}
 	
 	/**
@@ -131,7 +131,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @param int $content_id The content id to remove.
 	 */
 	public function remove_rule_value( $content_id ) {
-		unset( $this->rule_value[ $content_id ] );
+		$this->rule_value[ $content_id ] = false;
 	}
 	
 	/**
