@@ -11,7 +11,7 @@ class MS_View_Membership_Metabox extends MS_View {
 	protected $special_page;
 	
 	public function to_html() {
-		
+		$dripped = array();
 		ob_start();
 		wp_nonce_field( self::MEMBERSHIP_METABOX_NONCE, self::MEMBERSHIP_METABOX_NONCE );
 		?>
@@ -30,11 +30,9 @@ class MS_View_Membership_Metabox extends MS_View {
 							</th>
 						</tr>
 						
-						<?php $dripped = array(); ?>
-						<?php foreach( $this->data as $membership_id => $data ): ?>
+						<?php foreach( $this->data['access'] as $membership_id => $data ): ?>
 							<?php
-								
-								if ( $data['dripped'] && $data['has_access'] ) { 
+								if( $data['dripped'] && $data['has_access'] ) {
 									// Using array to notify users which Memberships has dripped content.
 									$dripped[] = sprintf( __( '%s membership', MS_TEXT_DOMAIN ), $data['name'] );
 								} 
@@ -52,16 +50,21 @@ class MS_View_Membership_Metabox extends MS_View {
 												'value' => $data['has_access'],
 												'class' => '',
 												'read_only' => $this->read_only,
+												'field_options' => array(
+														'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
+														'post_id' => $this->data['post_id'],
+														'post_type' => $this->data['post_type'],
+														'membership_id' => $membership_id,
+												),
 										);
 										 MS_Helper_Html::html_input( $toggle );
 									?>
 								</td>
 							</tr>
 						<?php endforeach; ?>				
-											
 				</tbody>
 				</table>
-				<?php if ( ! empty( $dripped ) ) : ?>
+				<?php if( count( $dripped ) > 0 ) : ?>
 						<div class="dripped" title="<?php printf( __( "Set as dripped in '%s'.", MS_TEXT_DOMAIN ), implode( "', '", $dripped ) ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?>
 						<div class="tooltip">
 							<div class="tooltip-content">

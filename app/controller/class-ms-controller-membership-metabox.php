@@ -32,6 +32,8 @@
  */
 class MS_Controller_Membership_Metabox extends MS_Controller {
 
+	const AJAX_ACTION_TOGGLE_ACCESS = 'toggle_metabox_access';
+	
 	/**
 	 * The custom post type used with Memberships and access.
 	 *
@@ -91,10 +93,35 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		
 		if( MS_Plugin::instance()->settings->plugin_enabled ) {
 			$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
-			$this->add_action( 'save_post', 'save_metabox_data', 10, 2 );
-			$this->add_action( 'attachment_fields_to_save', 'save_attachment_data' );
+// 			$this->add_action( 'save_post', 'save_metabox_data', 10, 2 );
+// 			$this->add_action( 'attachment_fields_to_save', 'save_attachment_data' );
 			$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
+			$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS, 'ajax_action_toggle_metabox_access' );
 		}
+	}
+	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_toggle_metabox_access
+	 *
+	 * @since 4.0.0
+	 */
+	public function ajax_action_toggle_metabox_access() {
+
+		$required_fields = array( 'membership_id', 'post_type', 'post_id' );
+		if( $this->verify_nonce() && $this->is_admin_user() ) {
+			foreach( $required_fields as $field ) {
+				if( empty( $_POST[ $field ] ) ) {
+					exit;
+				}
+			}
+			$this->toggle_membership_access( $_POST['post_id'], $_POST['post_type'], $_POST['membership_id'] );
+			echo true;
+		}
+		exit;
 	}
 	
 	/**
@@ -132,8 +159,8 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 					case 'post':
 						$post_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 						$category_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
-						$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
-						$data[ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $post->ID );
+						$data['access'][ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
+						$data['access'][ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $post->ID );
 						break;
 					case 'attachment':
 						$parent_id = $post->post_parent;
@@ -141,26 +168,28 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 						
 						$post_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 						$category_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
-						$data[ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $parent_id ) || $membership->rules['category']->has_access( $parent_id );
-						$data[ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $parent_id );
+						$data['access'][ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $parent_id ) || $membership->rules['category']->has_access( $parent_id );
+						$data['access'][ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $parent_id );
 						break;
 					default:
 						if( in_array( $rule_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
 							$rule_cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 							$rule_cpt_group = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
-							$data[ $membership->id ]['has_access'] = $rule_cpt->has_access( $post->ID ) || $rule_cpt_group->has_access( $post->ID );
-							$data[ $membership->id ]['dripped'] = false;
+							$data['access'][ $membership->id ]['has_access'] = $rule_cpt->has_access( $post->ID ) || $rule_cpt_group->has_access( $post->ID );
+							$data['access'][ $membership->id ]['dripped'] = false;
 						}
 						else {
 							$rule = $membership->get_rule( $rule_type );
-							$data[ $membership->id ]['has_access'] = $rule->has_access( $post->ID );
-							$data[ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
+							$data['access'][ $membership->id ]['has_access'] = $rule->has_access( $post->ID );
+							$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
 						}
 					break;
 				}
-				$data[ $membership->id ]['name'] = $membership->name;
+				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
+		$data['post_id'] = $post->ID;
+		$data['post_type'] = $post->post_type;
 		$view->data = $data;
 		$view->read_only = $this->is_read_only( $post->post_type );
 		
@@ -170,6 +199,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	/**
 	 * Save the metabox data for given post.
 	 *
+	 * @deprecated
 	 * @todo Consider whether both parameters are needed.
 	 *
 	 * @since 4.0.0
@@ -196,30 +226,32 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	/**
 	 * Save the metabox data for given attachment.
 	 *
-	 *
+	 * @deprecated 
+	 * Media access is determined by parent post.
+	 *   
 	 * @since 4.0.0
 	 * @filter attachment_fields_to_save
 	 * @param array $post_data The $_POST data.
 	 * @return array $post_data
 	 */
 	public function save_attachment_data( $post_data ) {
-// 		if ( ! current_user_can( 'edit_post', $post_data['post_ID'] ) ) return;
 		if( ! $this->is_admin_user() ) {
 			return;
 		}
-		
-		$nonce = MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE;
-		if ( empty( $post_data[ $nonce ]) || ! wp_verify_nonce( $post_data[ $nonce ], $nonce ) ) return;
-		
-		if( ! empty( $post_data['post_type'] ) && ! empty( $post_data['post_ID'] ) && ! empty( $post_data['ms_access'] ) ) {
-			$this->save_membership_access( $post_data['post_ID'], $post_data['post_type'], $post_data['ms_access'] );
-		}
-		
+				
+		if( $this->verify_nonce( MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE, 'POST', MS_View_Membership_Metabox::MEMBERSHIP_METABOX_NONCE ) ) {
+			if( ! empty( $post_data['post_type'] ) && ! empty( $post_data['post_ID'] ) && ! empty( $post_data['ms_access'] ) ) {
+				$this->save_membership_access( $post_data['post_ID'], $post_data['post_type'], $post_data['ms_access'] );
+			}
+		}		
 		return $post_data;
 	}
 	
 	/**
 	 * Save membership access information.
+	 * 
+	 * @deprecated
+	 * @since 4.0.0
 	 * 
 	 * @param int $post_id The post id or attachment id to save access to.
 	 * @param string $post_type The post type dictates with rule_type is used.
@@ -246,6 +278,33 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 					$membership->set_rule( $rule_type, $rule );
 					$membership->save();
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Toggle membership access.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $post_id The post id or attachment id to save access to.
+	 * @param string $post_type The post type dictates with rule_type is used.
+	 * @param array $membership_id The membership id to toggle access 
+	 */
+	public function toggle_membership_access( $post_id, $post_type, $membership_id ) {
+		$rule_type = $post_type;
+		if( in_array( $post_type, $this->post_types ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			if( in_array( $rule_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
+			}
+			else {
+				$rule = $membership->get_rule( $rule_type );
+			}
+			if( $rule ) {
+				$rule->toggle_access( $post_id );
+				$membership->set_rule( $rule_type, $rule );
+				$membership->save();
 			}
 		}
 	}
@@ -288,6 +347,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		if( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
 			wp_register_script( 'membership-metabox', MS_Plugin::instance()->url. 'app/assets/js/ms-view-membership-metabox.js' );
 			wp_enqueue_script( 'membership-metabox' );
+			wp_enqueue_script( 'ms-radio-slider' );
 		}
 		
 	}
