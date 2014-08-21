@@ -94,12 +94,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 		$html = '';
 		switch( $column_name ) {
 			default:
-				if( property_exists( $item, $column_name ) ) {
-					$html = $item->$column_name;
-				}
-				else {
-					$html = print_r( $item, true ) ;
-				}
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;

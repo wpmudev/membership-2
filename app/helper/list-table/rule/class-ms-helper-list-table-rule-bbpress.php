@@ -65,9 +65,7 @@ class MS_Helper_List_Table_Rule_Bbpress extends MS_Helper_List_Table_Rule {
 		$html = '';
 		switch( $column_name ) {
 			default:
-				if( property_exists( $item, $column_name ) ) {
-					$html = $item->$column_name;
-				}
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;

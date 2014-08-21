@@ -108,12 +108,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		$html = '';
 		switch( $column_name ) {
 			default:
-				if( property_exists( $item, $column_name ) ) {
-					$html = $item->$column_name;
-				}
-				else {
-					$html = print_r( $item, true ) ;
-				}
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;
