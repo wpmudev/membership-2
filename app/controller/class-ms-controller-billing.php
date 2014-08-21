@@ -184,7 +184,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
-			$gateway_id = $fields['gateway_id'];
+			$gateway_id = 'admin';
 			
 			$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $member->id, $membership_id );
 			if( empty( $ms_relationship ) ){
