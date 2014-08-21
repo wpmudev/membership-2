@@ -107,8 +107,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function factory( $gateway_id ) {
 		$gateway = null;
 		
-		if( 'admin' == $gateway_id || empty( $gateway_id ) ) {
-			return new self();
+		if( 'admin' == $gateway_id || empty( $gateway_id ) || 'gateway' == $gateway_id ) {
+			$gateway = new self();
 		}
 		elseif( self::is_valid_gateway( $gateway_id ) ) {
 			$gateways = self::get_gateways();
