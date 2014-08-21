@@ -638,46 +638,31 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="metabox-holder">
-					<div class="postbox">
-					<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Edit URL group', MS_TEXT_DOMAIN ) ?></h3>
-						<div class="inside">
-							<form action="" method="post" class="ms-form">
-								<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-								<table class="form-table">
-									<tbody>
-										<?php foreach( $this->fields as $field ): ?>
-											<tr>
-												<td>
-													<?php MS_Helper_Html::html_input( $field ); ?>
-												</td>
-											</tr>
-											<?php endforeach; ?>
-									</tbody>
-								</table>
-								<?php MS_Helper_Html::html_submit( array( 'id' => 'url_group_submit' ) ); ?>
-							</form>
-							<div class="clear"></div>
-						</div>
-					</div>
-				</div>
-				<div class="metabox-holder">
-					<div class="postbox">
-						<h3 class="hndle" style="cursor:auto"><?php esc_html_e( 'Test URL group', MS_TEXT_DOMAIN ) ?></h3>
-						<div class="inside">
-							<?php 
-								MS_Helper_Html::html_input( array( 
-									'id' => 'url_test',
-									'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
-									'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-									'class' => 'widefat',
-								) ); 
-							?>
-							<div id="url-test-results-wrapper">
-							</div>
-						</div>
-					</div>
-				</div>
+				<form action="" method="post" class="ms-form">
+					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
+					<?php
+						MS_Helper_Html::settingsbox(
+							$this->fields, 
+							__( 'Edit URL access rules', MS_TEXT_DOMAIN ), 
+							'',
+							array( 'label_element' => 'h3' ) 
+						);
+					?>
+				</form>
+				<?php
+					MS_Helper_Html::settingsbox(
+						array( array( 
+							'id' => 'url_test',
+							'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
+							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+							'class' => 'widefat',
+						) ), 
+						__( 'Test URL group', MS_TEXT_DOMAIN ),
+						'', 
+						array( 'label_element' => 'h3' ) 
+					);
+				?>
+				<div id="url-test-results-wrapper"></div>
 			</div>
 		<?php 	
 		$html = ob_get_clean();
@@ -699,6 +684,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 						'value' => implode( PHP_EOL, $model->rule_value ),
+						'class' => 'ms-textarea-medium',
 				),
 				'strip_query_string' => array(
 						'id' => 'strip_query_string',
@@ -722,6 +708,12 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->model->id,
 				),
+				'url_group_submit' => array(
+						'id' => 'url_group_submit',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				),
+
 		);
 	}
 	
