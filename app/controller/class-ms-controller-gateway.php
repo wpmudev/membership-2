@@ -447,7 +447,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				else {
 					continue;
 				}
-				
+				$view = null; 
 				switch( $gateway->id ) {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$member = MS_Model_Member::get_current_member();
