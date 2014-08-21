@@ -122,7 +122,7 @@ class MS_Controller_Rule extends MS_Controller {
 		/**
 		 * Rule bulk actions
 		 */
-		elseif( $this->verify_nonce( 'bulk-rules', 'POST' ) ) {
+		elseif( $this->verify_nonce( 'bulk-rules', 'POST' ) && ! empty( $_POST['action'] ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->rule_list_do_action( $action, $rule_type, $_POST['item'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
