@@ -139,7 +139,7 @@ class MS_Model_Plugin extends MS_Model {
 		/**
 		 * Search permissions through all memberships joined.
 		 */
-		foreach( $this->member->membership_relationships as $ms_relationship ) {
+		foreach( $this->member->ms_relationships as $ms_relationship ) {
 			/**
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
@@ -199,7 +199,7 @@ class MS_Model_Plugin extends MS_Model {
 		/**
 		 * Search permissions through all memberships joined.
 		 */
-		foreach( $this->member->membership_relationships as $ms_relationship ) {
+		foreach( $this->member->ms_relationships as $ms_relationship ) {
 			/**
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.

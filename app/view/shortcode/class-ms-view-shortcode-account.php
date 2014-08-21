@@ -33,7 +33,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN );?></th>
 						</tr>
 						<?php foreach( $this->data['membership'] as $membership ):
-								$ms_relationship = $this->data['member']->membership_relationships[ $membership->id ]; 
+								$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ]; 
 						?>
 							<tr>
 								<td><?php echo $membership->name; ?></td>

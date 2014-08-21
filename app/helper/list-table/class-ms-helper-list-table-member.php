@@ -223,7 +223,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			return __( 'Admin User', MS_TEXT_DOMAIN );
 		}
 		$html = array();
-		foreach( $item->membership_relationships as $id => $membership_relationship ) {
+		foreach( $item->ms_relationships as $id => $membership_relationship ) {
 			$membership = $membership_relationship->get_membership(); 
 			$html[] = "{$membership->name} ({$membership_relationship->status})";
 		}
@@ -238,7 +238,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		
 		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) );
 
-		if( count( $item->membership_relationships ) > 0 ) {
+		if( count( $item->ms_relationships ) > 0 ) {
 			if( ! $multiple_membership ) {
 				unset( $actions['add'] );
 			}
@@ -252,9 +252,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_start( $item ) {
-		if( count( $item->membership_relationships ) > 0 ) {
+		if( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach( $item->membership_relationships as $membership_relationship ) {
+			foreach( $item->ms_relationships as $membership_relationship ) {
 				$period = sprintf( __( '%s days' ), $membership_relationship->get_current_period() );
 				$html[] = "$membership_relationship->start_date ($period)";
 			}
@@ -270,7 +270,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
 	function column_trial( $item ) {
 		$html = array();
-		foreach( $item->membership_relationships as $membership_relationship ) {
+		foreach( $item->ms_relationships as $membership_relationship ) {
 			if( $membership_relationship->trial_expire_date )  {
 				$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_trial_period() );
 				$html[] = "$membership_relationship->trial_expire_date ($period)";
@@ -289,9 +289,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	function column_expire( $item ) {
-		if( count( $item->membership_relationships ) > 0 ) {
+		if( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach( $item->membership_relationships as $membership_relationship ) {
+			foreach( $item->ms_relationships as $membership_relationship ) {
 				if( $membership_relationship->expire_date )  {
 					$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_period() );
 					$html[] = "$membership_relationship->expire_date ($period)";
@@ -311,9 +311,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 
 	function column_gateway( $item ) {
-		if( count( $item->membership_relationships ) > 0 ) {
+		if( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach( $item->membership_relationships as $membership_relationship ) {
+			foreach( $item->ms_relationships as $membership_relationship ) {
 				$html[] = $membership_relationship->gateway_id;
 			}
 			$html = join('<br /> ', $html);

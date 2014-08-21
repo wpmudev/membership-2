@@ -1072,7 +1072,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
 						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 						$member->add_membership( $membership->on_end_membership_id );
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $member->membership_relationships[ $membership->on_end_membership_id ] );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $member->ms_relationships[ $membership->on_end_membership_id ] );
 					}
 				}
 				

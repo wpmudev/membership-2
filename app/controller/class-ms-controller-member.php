@@ -205,26 +205,26 @@ class MS_Controller_Member extends MS_Controller {
 			switch( $action ) {
 				case 'add':
 					$memberships = MS_Model_Membership::get_membership_names();
-					$memberships = array_diff_key( $memberships, $member->membership_relationships );
+					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
 				case 'cancel':
-					$args = array( 'post__in' => array_keys( $member->membership_relationships ) );
+					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
 					$memberships = MS_Model_Membership::get_membership_names( $args );
 					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
 					break;
 				case 'drop':
-					$args = array( 'post__in' => array_keys( $member->membership_relationships ) );
+					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
 					$memberships = MS_Model_Membership::get_membership_names( $args );
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 					break;
 				case 'move':
-					$args = array( 'post__in' => array_keys( $member->membership_relationships ) );
+					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
 					$memberships_move = MS_Model_Membership::get_membership_names( $args );
 					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
 						
 					$memberships = MS_Model_Membership::get_membership_names();
-					$memberships = array_diff_key( $memberships, $member->membership_relationships );
+					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
 					break;
 				case 'edit_date':
@@ -292,7 +292,7 @@ class MS_Controller_Member extends MS_Controller {
 				case 'edit_date':
 					if( is_array( $membership_id ) ) {
 						foreach ( $membership_id as $id ) {
-							$ms_relationship = $member->membership_relationships[ $id ];
+							$ms_relationship = $member->ms_relationships[ $id ];
 							if( ! empty( $_POST[ "start_date_$id" ] ) ){
 								$ms_relationship->start_date = $_POST[ "start_date_$id" ];
 								$ms_relationship->set_trial_expire_date();

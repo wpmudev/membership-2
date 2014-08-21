@@ -141,7 +141,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			/** Membership Relationship status which can move to another one */
-			foreach( $data['member']->membership_relationships as $ms_relationship ) {
+			foreach( $data['member']->ms_relationships as $ms_relationship ) {
 				if( in_array( $ms_relationship->status, array(
 						MS_Model_Membership_Relationship::STATUS_TRIAL,
 						MS_Model_Membership_Relationship::STATUS_ACTIVE,
@@ -247,8 +247,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 				)
 		);
 		$data['member'] = MS_Model_Member::get_current_member();
-		if( is_array( $data['member']->membership_relationships ) ) {
-			foreach( $data['member']->membership_relationships as $ms_relationship ) {
+		if( is_array( $data['member']->ms_relationships ) ) {
+			foreach( $data['member']->ms_relationships as $ms_relationship ) {
 				$data['membership'][] = $ms_relationship->get_membership();
 				$gateway = $ms_relationship->get_gateway();
 				$data['gateway'][ $ms_relationship->id ] = $gateway;

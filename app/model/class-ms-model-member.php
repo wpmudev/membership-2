@@ -246,7 +246,7 @@ class MS_Model_Member extends MS_Model {
 		}
 		$ms_relationship = null;
 		
-		if( ! array_key_exists( $membership_id,  $this->membership_relationships ) ) {
+		if( ! array_key_exists( $membership_id,  $this->ms_relationships ) ) {
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $this->id, $gateway_id, $move_from_id );
 
 			do_action( 'ms_model_membership_add_membership', $ms_relationship, $this );
@@ -255,11 +255,11 @@ class MS_Model_Member extends MS_Model {
 				$ms_relationship->get_current_invoice();
 			}
 			if( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
-				$this->membership_relationships[ $membership_id ] = $ms_relationship;
+				$this->ms_relationships[ $membership_id ] = $ms_relationship;
 			}
 		}
 		else {
-			$ms_relationship = $this->membership_relationships[ $membership_id ];
+			$ms_relationship = $this->ms_relationships[ $membership_id ];
 		}
 		
 		return $ms_relationship;
@@ -274,11 +274,11 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function drop_membership( $membership_id ) {
 		
-		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			do_action( 'ms_model_membership_drop_membership', $this->membership_relationships[ $membership_id ], $this );
+		if( array_key_exists( $membership_id,  $this->ms_relationships ) ) {
+			do_action( 'ms_model_membership_drop_membership', $this->ms_relationships[ $membership_id ], $this );
 			
-			$this->membership_relationships[ $membership_id ]->deactivate_membership( false );
-			unset( $this->membership_relationships[ $membership_id ] );
+			$this->ms_relationships[ $membership_id ]->deactivate_membership( false );
+			unset( $this->ms_relationships[ $membership_id ] );
 		}
 	}
 
@@ -291,10 +291,10 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function cancel_membership( $membership_id ) {
 		
-		if( array_key_exists( $membership_id,  $this->membership_relationships ) ) {
-			do_action( 'ms_model_membership_cancel_membership', $this->membership_relationships[ $membership_id ], $this );
+		if( array_key_exists( $membership_id,  $this->ms_relationships ) ) {
+			do_action( 'ms_model_membership_cancel_membership', $this->ms_relationships[ $membership_id ], $this );
 		
-			$this->membership_relationships[ $membership_id ]->cancel_membership( false );
+			$this->ms_relationships[ $membership_id ]->cancel_membership( false );
 		}
 	}
 	
@@ -305,14 +305,14 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $move_to_id The membership id to move to.
 	 */
 	public function move_membership( $move_from_id, $move_to_id ) {
-		if( array_key_exists( $move_from_id,  $this->membership_relationships ) ) {
-			$move_from = $this->membership_relationships[ $move_from_id ];
+		if( array_key_exists( $move_from_id,  $this->ms_relationships ) ) {
+			$move_from = $this->ms_relationships[ $move_from_id ];
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $move_to_id, $this->id, $move_from->gateway_id, $move_from_id );
 			
 			$this->cancel_membership( $move_from_id );
-			$this->membership_relationships[ $move_to_id ] = $ms_relationship;
+			$this->ms_relationships[ $move_to_id ] = $ms_relationship;
 				
-			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVE, $this->membership_relationships[ $move_to_id ] );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVE, $this->ms_relationships[ $move_to_id ] );
 		}
 	}
 	
@@ -340,13 +340,13 @@ class MS_Model_Member extends MS_Model {
 		}
 		
 		if( ! empty( $membership_id ) ) {
-			if( array_key_exists( $membership_id,  $this->membership_relationships ) && 
-					in_array( $this->membership_relationships[ $membership_id ]->get_status(), $allowed_status ) ) {
+			if( array_key_exists( $membership_id,  $this->ms_relationships ) && 
+					in_array( $this->ms_relationships[ $membership_id ]->get_status(), $allowed_status ) ) {
 				$is_member = true;
 			}
 		}
-		elseif ( ! empty ( $this->membership_relationships ) ) {
-			foreach( $this->membership_relationships as $membership_relationship ) {
+		elseif ( ! empty ( $this->ms_relationships ) ) {
+			foreach( $this->ms_relationships as $membership_relationship ) {
 				if( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
 					$is_member = true;
 				}
@@ -357,7 +357,7 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	public function delete_all_membership_usermeta() {
-		$this->membership_relationships = array();
+		$this->ms_relationships = array();
 		$this->gateway_profiles = array();
 	}
 	

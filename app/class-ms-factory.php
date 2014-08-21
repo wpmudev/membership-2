@@ -239,7 +239,7 @@ class MS_Factory {
 			/**
 			 * Load membership_relationships
 			 */
-			$member->membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+			$member->ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
 		}
 		
 		return apply_filters( 'ms_factory_load_from_wp_user', $member, $class, $user_id );
