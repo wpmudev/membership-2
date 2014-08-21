@@ -22,7 +22,7 @@
 
 class MS_Model_Member extends MS_Model {
 
-	protected $membership_relationships = array();
+	protected $ms_relationships = array();
 	
 	protected $is_admin = false;
 	
