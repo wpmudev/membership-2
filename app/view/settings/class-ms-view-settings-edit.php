@@ -168,8 +168,9 @@ class MS_View_Settings_Edit extends MS_View {
 						MS_Helper_Html::html_input( $action );
 					?>
 					<?php foreach( $this->fields as $field ): ?>
-						<div class="postbox metabox-holder">
-							<h3><label for="title"><?php echo $field['title'];?></label></h3>
+						<div class="ms-settings-box-wrapper">
+							<div class="ms-settings-box">
+							<h3><?php echo $field['box_title'];?></h3>
 							<div class="inside">
 								<?php 
 									MS_Helper_Html::html_input( $field );
@@ -214,6 +215,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'value' => $pages['no_access'],
 					'field_options' => $all_pages,
 					'class' => '',
+					'box_title' => __( 'Protected content page', MS_TEXT_DOMAIN ),
 			),
 			'account' => array(
 					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
@@ -222,6 +224,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'value' => $pages['account'],
 					'field_options' => $all_pages,
 					'class' => '',
+					'box_title' => __( 'Account page', MS_TEXT_DOMAIN ),
 			),
 			'welcome' => array(
 					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
@@ -230,6 +233,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'value' => $pages['welcome'],
 					'field_options' => $all_pages,
 					'class' => '',
+					'box_title' => __( 'Welcome page', MS_TEXT_DOMAIN ),
 			),
 			'signup' => array(
 					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
@@ -238,6 +242,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'value' => $pages['signup'],
 					'field_options' => $all_pages,
 					'class' => '',
+					'box_title' => __( 'Signup page', MS_TEXT_DOMAIN ),
 			),
 		);
 	}
@@ -347,21 +352,21 @@ class MS_View_Settings_Edit extends MS_View {
 					MS_Helper_Html::settingsbox(
 						array( $this->fields['content'] ), 
 						__( 'Content protection message', MS_TEXT_DOMAIN ), 
-						__( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
+						'',
 						array( 'label_element' => 'h3' ) );
 				?>
 				<?php
 					MS_Helper_Html::settingsbox(
 						array( $this->fields['shortcode'] ), 
 						__( 'Shortcode protection message', MS_TEXT_DOMAIN ), 
-						__( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
+						'',
 						array( 'label_element' => 'h3' ) );
 				?>
 				<?php
 					MS_Helper_Html::settingsbox(
 						array( $this->fields['more_tag'] ), 
 						__( 'More tag protection message', MS_TEXT_DOMAIN ), 
-						__( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
+						'',
 						array( 'label_element' => 'h3' ) );
 				?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
@@ -376,20 +381,26 @@ class MS_View_Settings_Edit extends MS_View {
 			'content' => array(
 					'id' => 'content',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+					'class' => 'ms-textarea-medium',
 			),
 			'shortcode' => array(
 					'id' => 'shortcode',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+					'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+					'class' => 'ms-textarea-medium',
 			),
 			'more_tag' => array(
 					'id' => 'more_tag',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+					'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+					'class' => 'ms-textarea-medium',
 			),
 			'submit' => array(
 					'id' => 'submit',
