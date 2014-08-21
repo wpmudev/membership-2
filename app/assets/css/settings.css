@@ -108,6 +108,7 @@ h2.ms-settings-title,
 	font-size: 1.4em;
 	border-bottom: 1px solid #EEEEEE;
 	margin: 0;
+	padding: 5px 0;
 }
 .ms-form-table, .ms-form-table td {
 	border: 0 !important;
@@ -174,6 +175,9 @@ h2.ms-settings-title,
 	display:inline;
 	height: 2em;
 	vertical-align: bottom;
+}
+.ms-textarea-medium {
+	height: 10em;
 }
 
 /** Member search */
