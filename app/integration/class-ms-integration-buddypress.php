@@ -170,10 +170,12 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_rule_tabs( $tabs, $membership_id ) {
 
 		$rule = self::RULE_TYPE_BUDDYPRESS;
-		$tabs[ $rule  ] = array(
-				'title' => __( 'Buddypress', MS_TEXT_DOMAIN ),
-				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
-		);
+		if( $membership_id ) {
+			$tabs[ $rule  ] = array(
+					'title' => __( 'Buddypress', MS_TEXT_DOMAIN ),
+					'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
+			);
+		}
 		/** @todo integrate it better in 4.1
 		$rule = self::RULE_TYPE_BUDDYPRESS_BLOG;
 		$tabs[ $rule  ] = array(

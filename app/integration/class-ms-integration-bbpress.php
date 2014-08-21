@@ -84,8 +84,8 @@ class MS_Integration_Bbpress extends MS_Integration {
 	public function bbpress_addon_list( $list ) {
 		$list[ self::ADDON_BBPRESS ] = (object) array(
 				'id' => self::ADDON_BBPRESS,
-				'name' => __( 'bbpress Integration', MS_TEXT_DOMAIN ),
-				'description' => __( 'Enable bbpress rules integration.', MS_TEXT_DOMAIN ),
+				'name' => __( 'bbPress Integration', MS_TEXT_DOMAIN ),
+				'description' => __( 'Enable bbPress rules integration.', MS_TEXT_DOMAIN ),
 				'active' => MS_Model_Addon::is_enabled( self::ADDON_BBPRESS ),
 		);
 	
@@ -157,11 +157,12 @@ class MS_Integration_Bbpress extends MS_Integration {
 	public function bbpress_rule_tabs( $tabs, $membership_id ) {
 
 		$rule = self::RULE_TYPE_BBPRESS;
-		$tabs[ $rule  ] = array(
-				'title' => __( 'BBPress', MS_TEXT_DOMAIN ),
-				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
-		);
-		
+		if( $membership_id ) {
+			$tabs[ $rule  ] = array(
+					'title' => __( 'BBPress', MS_TEXT_DOMAIN ),
+					'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
+			);
+		}		
 		return $tabs;
 	}
 	
