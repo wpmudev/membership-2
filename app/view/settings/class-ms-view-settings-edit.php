@@ -251,30 +251,22 @@ class MS_View_Settings_Edit extends MS_View {
 				<form action="" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ) ;?>
-					<div class="postbox metabox-holder">
-						<h3><label for="title"><?php _e( 'Payment currency', MS_TEXT_DOMAIN ) ;?></label></h3>
-						<div class="inside">
-							<p class="description"><?php _e( 'This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.', MS_TEXT_DOMAIN );?> </p>
-							<?php MS_Helper_Html::html_input( $this->fields['currency'] ) ;?>
-						</div>
-					</div>
-					<div class="postbox metabox-holder">
-						<h3><label for="title"><?php _e( 'Invoice', MS_TEXT_DOMAIN ) ;?></label></h3>
-						<div class="inside">
-							<p class="description"><?php _e( 'This is the name used in the invoice.', MS_TEXT_DOMAIN );?> </p>
-							<?php MS_Helper_Html::html_input( $this->fields['invoice_sender_name'] ) ;?>
-						</div>
-					</div>
-					<!-- 
-					<div class="postbox metabox-holder">
-						<h3><label for="title"><?php _e( 'Tax', MS_TEXT_DOMAIN ) ;?></label></h3>
-						<div class="inside">
-							<p class="description"><?php _e( 'Tax included in the invoice.', MS_TEXT_DOMAIN );?> </p>
-							<?php MS_Helper_Html::html_input( $this->fields['tax_name'] ) ;?>
-							<?php MS_Helper_Html::html_input( $this->fields['tax_rate'] ) ;?>
-						</div>
-					</div>
-					 -->
+					<?php
+						MS_Helper_Html::settingsbox(
+							array( $this->fields['currency'] ), 
+							__( 'Payment currency', MS_TEXT_DOMAIN ), 
+							__( 'This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.', MS_TEXT_DOMAIN ),
+							array( 'label_element' => 'h3' ) 
+						);
+					?>
+					<?php
+						MS_Helper_Html::settingsbox(
+							array( $this->fields['invoice_sender_name'] ), 
+							__( 'Invoice Configuration', MS_TEXT_DOMAIN ), 
+							__( 'This is the name used in the invoice.', MS_TEXT_DOMAIN ),
+							array( 'label_element' => 'h3' ) 
+						);
+					?>
 					<p>
 						<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_payment' ) );?>
 					</p>
@@ -584,7 +576,7 @@ class MS_View_Settings_Edit extends MS_View {
 									</tr>
 									<tr>
 										<td>
-											<span class="ms-field-label"><?php _e( 'Your upload location', MS_TEXT_DOMAIN ); ?></span>
+											<span class="ms-field-label ms-field-input-label"><?php _e( 'Current upload location', MS_TEXT_DOMAIN ); ?></span>
 											<div>
 												<?php 
 													$upload_dir = wp_upload_dir(); 
