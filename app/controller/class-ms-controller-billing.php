@@ -180,7 +180,7 @@ class MS_Controller_Billing extends MS_Controller {
 			return $msg;
 		}
 		
-		if( is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) && ! empty( $fields['gateway_id'] ) ) {
+		if( is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
 
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
