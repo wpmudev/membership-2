@@ -852,7 +852,7 @@ class MS_View_Membership_Edit extends MS_View {
 						'id' => 'period_unit',
 						'section' => self::DRIPPED_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Days/Months/Years until the content becomes available', MS_TEXT_DOMAIN ),
+						'title' => __( 'Days/Months/Years after the membership start date, when the content becomes available', MS_TEXT_DOMAIN ),
 						'value' => 1,
 						'class' => '',
 				),

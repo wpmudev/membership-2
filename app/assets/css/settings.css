@@ -140,7 +140,7 @@ h2.ms-settings-title,
 	font-style: oblique;
 	font-size:1.05em;
 }
-
+/** html fields */
 .ms-field-description {
 	
 }
@@ -148,11 +148,17 @@ h2.ms-settings-title,
 	margin: 10px 0;	
 }
 .ms-field-input {
-	margin: 0.5em 0 1em;
+	margin: 0.5em 0;
 }
 .ms-field-wp-editor {
 	height: 5em;
 	width: 100%;
+}
+.ms-text {
+	display: block;
+}
+.ms-link-button, .ms-submit {
+	margin: 0 0.5em 0 0 !important;
 }
 .ms-period-wrapper {
 	margin: 1em 0;
@@ -162,14 +168,15 @@ h2.ms-settings-title,
 }
 .ms-period-wrapper select {
 	width: 7em;
+	padding: 0;
 }
-.ms-text {
-	display: block;
-}
-.ms-link-button, .ms-submit {
-	margin: 0 0.5em 0 0 !important;
+.ms-period-wrapper input[type="text"] {
+	display:inline;
+	height: 2em;
+	vertical-align: bottom;
 }
 
+/** Member search */
 #member-search-box {
 	float:right;
 }
