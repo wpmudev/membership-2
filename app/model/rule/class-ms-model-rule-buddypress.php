@@ -34,7 +34,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 *
 	 * @return boolean
 	 */
-	public function has_access() {
+	public function has_access( $post_id = null ) {
 		$has_access = false;
 		global $bp;
 		
