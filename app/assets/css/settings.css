@@ -179,6 +179,10 @@ h2.ms-settings-title,
 .ms-textarea-medium {
 	height: 10em;
 }
+.ms-separator {
+	border-bottom: 1px solid #eeeeee;
+	margin: 15px 0;
+}
 
 /** Member search */
 #member-search-box {
