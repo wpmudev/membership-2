@@ -480,6 +480,7 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 						<tr>
 							<td>
+								<?php MS_Helper_Html::html_separator();?>
 								<?php MS_Helper_Html::html_input( $this->fields['save_email'] );?>
 							</td>
 						</tr>
