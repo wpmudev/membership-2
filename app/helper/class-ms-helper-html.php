@@ -214,7 +214,7 @@ class MS_Helper_Html extends MS_Helper {
 
 	}
 	
-	public static function settingsbox( $fields_in, $title = '', $description = '', $args = array() ) {
+	public static function settings_box( $fields_in, $title = '', $description = '', $args = array() ) {
 		
 		/** If its a fields array, great, if not, make a fields array */
 		$fields = $fields_in;
