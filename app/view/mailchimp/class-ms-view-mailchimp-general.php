@@ -10,31 +10,24 @@ class MS_View_Mailchimp_General extends MS_View {
 		$this->prepare_fields();
 		ob_start();
 		?>
+		<div class='ms-wrap'>
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Mailchimp settings', MS_TEXT_DOMAIN ); ?></h3>
 				<form action="" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['action'] ) ;?>
-					<div class="postbox metabox-holder">
-						<div class="inside">
-							<?php 
-								foreach( $this->fields as $field ) {
-									MS_Helper_Html::html_input( $field );
-								}
-							?>
-						</div>
-					</div>
-					<p>
-						<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_settings' ) );?>
-					</p>
+					<?php
+						MS_Helper_Html::settings_box( $this->fields );
+					?>
 				</form>
 			</div>
+		</div>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
 	
 	public function prepare_fields() {
+		$api_status = MS_Integration_Mailchimp::get_api_status();
 		$settings = $this->data['settings'];
 		$this->fields = array(
 				'mailchimp_api_key' => array(
@@ -48,10 +41,10 @@ class MS_View_Mailchimp_General extends MS_View {
 				),
 				'mailchimp_api_test' => array(
 						'id' => 'mailchimp_api_test',
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Mailchimp api test', MS_TEXT_DOMAIN ),
-						'value' => MS_Integration_Mailchimp::get_api_status() ? __( 'Passed', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
-						'class' => '',
+						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+						'title' => __( 'Mailchimp api test status', MS_TEXT_DOMAIN ),
+						'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
+						'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
 				),
 				'auto_opt_in' => array(
 						'id' => 'auto_opt_in',
@@ -94,6 +87,15 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => 'save_mailchimp',
 				),
+				'separator' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				),
+				'submit_settings' => array(
+						'id' => 'submit_settings',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				),
+
 		);
 	}
 }
