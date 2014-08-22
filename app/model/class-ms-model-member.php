@@ -45,7 +45,7 @@ class MS_Model_Member extends MS_Model {
 		
 	protected $gateway_profiles;
 	
-	public $ignore_fields = array( 'membership_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters', 'ignore_fields' );
+	public $ignore_fields = array( 'ms_relationships', 'id', 'name', 'username', 'email', 'name', 'first_name', 'last_name', 'password', 'password2', 'actions', 'filters', 'ignore_fields' );
 		
 	public static function get_current_member() {
 		return MS_Factory::load( 'MS_Model_Member', get_current_user_id() );
@@ -312,7 +312,7 @@ class MS_Model_Member extends MS_Model {
 			$this->cancel_membership( $move_from_id );
 			$this->ms_relationships[ $move_to_id ] = $ms_relationship;
 				
-			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVE, $this->ms_relationships[ $move_to_id ] );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $this->ms_relationships[ $move_to_id ] );
 		}
 	}
 	
