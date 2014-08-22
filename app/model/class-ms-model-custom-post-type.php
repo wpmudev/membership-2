@@ -76,6 +76,9 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				update_post_meta( $this->id, $field, $this->$field );
 			}
 		}
+		
+		wp_cache_set( $this->id, $this, $class );
+		
 		$this->after_save();
 	}
 

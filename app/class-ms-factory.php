@@ -93,21 +93,29 @@ class MS_Factory {
 	
 		$model = new $class();
 		
-		if( empty( $model->instance )  ) {
-			$settings = get_option( $class );
-		
+		if( empty( $model->instance ) ) {
+			
 			$model->before_load();
-		
-			$fields = $model->get_object_vars();
-			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, $model->ignore_fields ) ) {
-					continue;
-				}
-				if( isset( $settings[ $field ] ) ) {
-					$model->set_field( $field, $settings[ $field ] );
+			
+			$cache = wp_cache_get( $class, 'MS_Model_Option' );
+			
+			if( $cache ) {
+				$model = $cache;
+			}
+			else {
+				$settings = get_option( $class );
+			
+				$fields = $model->get_object_vars();
+				foreach ( $fields as $field => $val) {
+					if ( in_array( $field, $model->ignore_fields ) ) {
+						continue;
+					}
+					if( isset( $settings[ $field ] ) ) {
+						$model->set_field( $field, $settings[ $field ] );
+					}
 				}
 			}
-		
+			
 			$model->after_load();
 		
 			$model->instance = $model;
@@ -133,24 +141,31 @@ class MS_Factory {
 		$model = new $class();
 		
 		if( empty( $model->instance )  ) {
-			$settings = get_transient( $class );
-		
-		
+			
 			$model->before_load();
-		
-			$fields = $model->get_object_vars();
-			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, $model->ignore_fields ) ) {
-					continue;
-				}
-				if( isset( $settings[ $field ] ) ) {
-					$model->set_field( $field, $settings[ $field ] );
-				}
+			
+			$cache = wp_cache_get( $class, 'MS_Model_Transient' );
+			
+			if( $cache ) {
+				$model = $cache;
 			}
-		
-			$model->after_load();
-		
-			$model->instance = $model;
+			else {
+				$settings = get_transient( $class );
+				
+				$fields = $model->get_object_vars();
+				foreach ( $fields as $field => $val) {
+					if ( in_array( $field, $model->ignore_fields ) ) {
+						continue;
+					}
+					if( isset( $settings[ $field ] ) ) {
+						$model->set_field( $field, $settings[ $field ] );
+					}
+				}
+			
+				$model->after_load();
+			
+				$model->instance = $model;
+			}
 		}
 		else {
 			$model = $model->instance;
@@ -174,26 +189,33 @@ class MS_Factory {
 		$model->before_load();
 	
 		if ( ! empty( $model_id ) ) {
+
+			$cache = wp_cache_get( $model_id, $class );
 				
-			$post = get_post( $model_id );
-			if( ! empty( $post ) && $model->post_type == $post->post_type ) {
-				$post_meta = get_post_meta( $model_id );
-				
-				$fields = $model->get_object_vars();
-				foreach ( $fields as $field => $val) {
-					if ( in_array( $field, $model->ignore_fields ) ) {
-						continue;
+			if( $cache ) {
+				$model = $cache;
+			}
+			else {
+				$post = get_post( $model_id );
+				if( ! empty( $post ) && $model->post_type == $post->post_type ) {
+					$post_meta = get_post_meta( $model_id );
+					
+					$fields = $model->get_object_vars();
+					foreach ( $fields as $field => $val) {
+						if ( in_array( $field, $model->ignore_fields ) ) {
+							continue;
+						}
+						if ( isset( $post_meta[ $field ][ 0 ] ) ) {
+							$model->set_field( $field, maybe_unserialize( $post_meta[ $field ][ 0 ] ) );
+						}
 					}
-					if ( isset( $post_meta[ $field ][ 0 ] ) ) {
-						$model->set_field( $field, maybe_unserialize( $post_meta[ $field ][ 0 ] ) );
-					}
+					
+					$model->id = $post->ID;
+					$model->name = ! empty( $post->post_name ) ? $post->post_name : $post->post_title;
+					$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
+					$model->description = $post->post_content;
+					$model->user_id = $post->post_author;
 				}
-				
-				$model->id = $post->ID;
-				$model->name = ! empty( $post->post_name ) ? $post->post_name : $post->post_title;
-				$model->title = ! empty( $post->post_title ) ? $post->post_title : $post->post_name;
-				$model->description = $post->post_content;
-				$model->user_id = $post->post_author;
 			}
 		}
 		
@@ -214,32 +236,39 @@ class MS_Factory {
 	protected static function load_from_wp_user( $class, $user_id, $name = null ) {
 		$member = new $class();
 		
-		$wp_user = new WP_User( $user_id, $name );
-		if( ! empty( $wp_user->ID ) ) {
-			$member_details = get_user_meta( $user_id );
-			$member->id = $wp_user->ID;
-			$member->username = $wp_user->user_login;
-			$member->email = $wp_user->user_email;
-			$member->name = $wp_user->user_nicename;
-			$member->first_name = $wp_user->first_name;
-			$member->last_name = $wp_user->last_name;
+		$cache = wp_cache_get( $user_id, $class );
 		
-			$member->is_admin = $member->is_admin_user( $user_id );
-		
-			$fields = $member->get_object_vars();
-			foreach( $fields as $field => $val ) {
-				if( in_array( $field, $member->ignore_fields ) ) {
-					continue;
-				}
-				if( isset( $member_details[ "ms_$field" ][0] ) ) {
-					$member->set_field( $field, maybe_unserialize( $member_details[ "ms_$field" ][0] ) );
-				}
-			}
+		if( $cache ) {
+			$member = $cache;
+		}
+		else {
+			$wp_user = new WP_User( $user_id, $name );
+			if( ! empty( $wp_user->ID ) ) {
+				$member_details = get_user_meta( $user_id );
+				$member->id = $wp_user->ID;
+				$member->username = $wp_user->user_login;
+				$member->email = $wp_user->user_email;
+				$member->name = $wp_user->user_nicename;
+				$member->first_name = $wp_user->first_name;
+				$member->last_name = $wp_user->last_name;
 			
-			/**
-			 * Load membership_relationships
-			 */
-			$member->ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+				$member->is_admin = $member->is_admin_user( $user_id );
+			
+				$fields = $member->get_object_vars();
+				foreach( $fields as $field => $val ) {
+					if( in_array( $field, $member->ignore_fields ) ) {
+						continue;
+					}
+					if( isset( $member_details[ "ms_$field" ][0] ) ) {
+						$member->set_field( $field, maybe_unserialize( $member_details[ "ms_$field" ][0] ) );
+					}
+				}
+				
+				/**
+				 * Load membership_relationships
+				 */
+				$member->ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+			}
 		}
 		
 		return apply_filters( 'ms_factory_load_from_wp_user', $member, $class, $user_id );

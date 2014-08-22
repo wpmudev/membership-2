@@ -47,5 +47,7 @@ class MS_Model_Transient extends MS_Model {
 		$this->instance = $this;
 	
 		$this->after_save();
+		
+		wp_cache_set( $class, $this, 'MS_Model_Transient' );
 	}	
 }
