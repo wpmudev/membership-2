@@ -30,6 +30,13 @@ class MS_View_Mailchimp_General extends MS_View {
 		$api_status = MS_Integration_Mailchimp::get_api_status();
 		$settings = $this->data['settings'];
 		$this->fields = array(
+				'mailchimp_api_test' => array(
+						'id' => 'mailchimp_api_test',
+						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+						'title' => __( 'Mailchimp API test status', MS_TEXT_DOMAIN ),
+						'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
+						'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
+				),
 				'mailchimp_api_key' => array(
 						'id' => 'mailchimp_api_key',
 						'name' => 'custom[mailchimp][api_key]',
@@ -39,21 +46,21 @@ class MS_View_Mailchimp_General extends MS_View {
 						'value' => $settings->get_custom_settings( 'mailchimp', 'api_key' ),
 						'class' => '',
 				),
-				'mailchimp_api_test' => array(
-						'id' => 'mailchimp_api_test',
-						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-						'title' => __( 'Mailchimp api test status', MS_TEXT_DOMAIN ),
-						'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
-						'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
+				'separator' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 				),
 				'auto_opt_in' => array(
 						'id' => 'auto_opt_in',
 						'name' => 'custom[mailchimp][auto_opt_in]',
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-						'title' => __( 'Automatically opt-in new users to the mailing list. Users will not receive an email confirmation. Use at your own risk.', MS_TEXT_DOMAIN ),
+						'title' => __( 'Automatically opt-in new users to the mailing list.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Users will not receive an email confirmation. Use at your own risk.', MS_TEXT_DOMAIN ),
 						'value' => $settings->get_custom_settings( 'mailchimp', 'auto_opt_in' ),
 						'field_options' => array( 'checkbox_position' => 'left' ),
 						'class' => '',
+				),
+				'separator1' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 				),
 				'mail_list_registered' => array(
 						'id' => 'mail_list_registered',
@@ -87,7 +94,7 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => 'save_mailchimp',
 				),
-				'separator' => array(
+				'separator2' => array(
 						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 				),
 				'submit_settings' => array(
