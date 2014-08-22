@@ -11,8 +11,12 @@ class MS_View_Member_Date extends MS_View {
 		ob_start();
 		/** Render tabbed interface. */
 		?>
-			<div class='ms-wrap'>
-				<h2 class='ms-settings-title'><i class="fa fa-pencil-square"></i> Add Membership</h2>
+		<div class='ms-wrap'>
+			<div class='ms-settings'>
+				<h2 class='ms-settings-title'>
+					<i class="fa fa-pencil-square"></i>
+					<?php _e( 'Edit membership dates', MS_TEXT_DOMAIN ); ?>
+				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>
@@ -22,15 +26,24 @@ class MS_View_Member_Date extends MS_View {
 						} 
 					?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
+					<?php
+						MS_Helper_Html::settings_box_header(
+							__( 'Membership dates', MS_TEXT_DOMAIN ), 
+							'',
+							array( 'label_element' => 'h3' ) 
+						);
+					?>
 					<table class="form-table">
 						<tbody>
 							<?php foreach( $this->fields['memberships'] as $membership_id => $field ): ?>
 								<tr>
 									<td>
+										<h4><?php echo $field['title']; ?></h4>
 										<?php MS_Helper_Html::html_input( $field ); ?>
 										<span><?php _e( 'Start date', MS_TEXT_DOMAIN ); ?></span>
 										<?php MS_Helper_Html::html_input( $this->fields['dates'][$membership_id]['start_date'] ); ?>
-										<?php if($this->fields['dates'][$membership_id]['expire_date']['value']): ?>
+										
+										<?php if( $this->fields['dates'][$membership_id]['expire_date']['value']): ?>
 											<span><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></span>
 											<?php MS_Helper_Html::html_input( $this->fields['dates'][$membership_id]['expire_date'] ); ?>
 										<?php endif;?>
@@ -39,15 +52,18 @@ class MS_View_Member_Date extends MS_View {
 								<?php endforeach; ?>
 							<tr>
 								<td>
+									<?php MS_Helper_Html::html_separator(); ?>
 									<?php MS_Helper_Html::html_link( $this->fields['cancel'] ); ?>
 									<?php MS_Helper_Html::html_submit( $this->fields['submit'] ); ?>
 								</td>
 							</tr>
 						</tbody>
 					</table>
+					<?php MS_Helper_Html::settings_box_footer(); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
+		</div>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
@@ -79,8 +95,8 @@ class MS_View_Member_Date extends MS_View {
 			),
 		);
 		
-		foreach( $this->data['membership_relationships'] as $membership_relationship ) {
-			$membership_id = $membership_relationship->membership_id;
+		foreach( $this->data['ms_relationships'] as $ms_relationship ) {
+			$membership_id = $ms_relationship->membership_id;
 			$this->fields['membership_id'][] = array(
 					'id' => "membership_id_$membership_id",
 					'name' => "membership_id[]",
@@ -89,28 +105,28 @@ class MS_View_Member_Date extends MS_View {
 			);
 			$this->fields['memberships'][ $membership_id ] = array(
 				'id' => "membership_id_$membership_id",
-				'title' => __( 'Membership', MS_TEXT_DOMAIN ) . ': '. $membership_relationship->get_membership()->name,
+				'title' => __( 'Membership', MS_TEXT_DOMAIN ) . ': '. $ms_relationship->get_membership()->name,
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => '',
 			);
-			$this->fields['dates'] [$membership_id] ['start_date'] = array(
+			$this->fields['dates'][ $membership_id ]['start_date'] = array(
 				'id' => "start_date_$membership_id",
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $membership_relationship->start_date,
+				'value' => $ms_relationship->start_date,
 				'class' => 'ms-date',
 			);
 			$this->fields['dates'][ $membership_id ]['trial_expire_date'] = array(
 					'id' => "trial_expire_date_$membership_id",
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $membership_relationship->trial_expire_date,
+					'value' => $ms_relationship->trial_expire_date,
 					'class' => 'ms-date',
 			);
 			$this->fields['dates'][ $membership_id ]['expire_date'] = array(
 				'id' => "expire_date_$membership_id",
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $membership_relationship->expire_date,
+				'value' => $ms_relationship->expire_date,
 				'class' => 'ms-date',
 			);
-		}		
+		}
 	}
 }
