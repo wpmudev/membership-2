@@ -342,12 +342,11 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		
 		/** Replace the variables. */
 		$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
+		$subject = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->subject ) );
 		
 		$html_message = wpautop( $message );
 		$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
-		
-		$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
-		$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
+		$subject = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $subject ) );
 		
 		$message = $text_message;
 		if( 'text/html' == $this->get_mail_content_type() ) {
@@ -367,9 +366,13 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
 			);
 		}
+		
+		$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
+		$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
+		$subject = apply_filters( 'ms_model_communication_send_message_subject', $subject, $this, $ms_relationship );
 		$headers = apply_filters( 'ms_model_communication_send_message_headers', $headers );
 		 
-		$sent = @wp_mail( $recipients, stripslashes( $this->subject ), $message, $headers );
+		$sent = @wp_mail( $recipients, $subject, $message, $headers );
 		
 		if( 'text/html' == $this->get_mail_content_type() ) {
 			$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
