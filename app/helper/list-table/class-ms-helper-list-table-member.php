@@ -53,7 +53,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
 			unset( $columns['trial'] );
 		}
-		return $columns;
+		
+		return apply_filters( 'ms_helper_list_table_member_get_columns', $columns );
 	}
 	
 	public function get_hidden_columns() {
@@ -61,7 +62,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	}
 	
 	public function get_sortable_columns() {
-		return array(
+		return apply_filters( 'ms_helper_list_table_member_get_sortable_columns', array(
 			'username' => array( 'login', false ),
 			'email' => array( 'email', false ),
 			'active' => array( 'active', false ),			
@@ -70,7 +71,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 // 			'trial' => array( 'trial', false ),
 // 			'expire' => array( 'expire', false ),
 // 			'gateway' => array( 'gateway', false ),
-		);
+		) );
 	}
 	
 	public function prepare_items() {
