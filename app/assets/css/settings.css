@@ -405,3 +405,7 @@ textarea.ms-field-input {
     margin: 0 4px 0 0;
 }
 
+/* MEDIA /DOWNLOADS TAB */
+#masked_url {
+	display: inline;
+}

@@ -574,47 +574,20 @@ class MS_View_Settings_Edit extends MS_View {
 			<h3><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h3>	
 			<div class="metabox-holder">
 				<form action="" method="post">
-					<div class="postbox">
-						<h3 class="hndle"><?php _e( 'Media / Download protection', MS_TEXT_DOMAIN ); ?></h3>
-						<div class="inside">
-							<?php wp_nonce_field( $this->fields['action']['value'] );?>
-							<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
-							<table class="form-table">
-								<tbody>
-									<tr>
-										<td>
-											<?php MS_Helper_Html::html_input( $this->fields['protection_type'] ); ?>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="ms-field-label ms-field-input-label"><?php _e( 'Current upload location', MS_TEXT_DOMAIN ); ?></span>
-											<div>
-												<?php 
-													$upload_dir = wp_upload_dir(); 
-													echo trailingslashit( $upload_dir['baseurl'] );
-												?>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<?php 
-												MS_Helper_Html::html_input( $this->fields['masked_url'] ); 
-											?>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_downloads' ) );?>
+					<?php wp_nonce_field( $this->fields['action']['value'] );?>
+					<?php
+						MS_Helper_Html::settings_box(
+							$this->fields 
+						);
+					?>
 				</form>
 			</div>
 		</div>
 		<?php
 	}
 	public function prepare_downloads() {
+		$upload_dir = wp_upload_dir();
+ 
 		$this->fields = array(
 				'protection_type' => array(
 						'id' => 'protection_type',
@@ -623,6 +596,14 @@ class MS_View_Settings_Edit extends MS_View {
 						'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
 						'value' => $this->model->downloads['protection_type'],
 						'field_options' => MS_Model_Rule_Media::get_protection_types(),
+				),
+				'upload_url' => array(
+						'id' => 'mailchimp_api_test',
+						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+						'title' => __( 'Current upload location', MS_TEXT_DOMAIN ),
+						'value' => trailingslashit( $upload_dir['baseurl'] ),
+						'wrapper' => 'div',
+						'class' => '',
 				),
 				'masked_url' => array(
 						'id' => 'masked_url',
@@ -633,11 +614,24 @@ class MS_View_Settings_Edit extends MS_View {
 						'value' => $this->model->downloads['masked_url'],
 						'class' => '',
 				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => wp_create_nonce( 'save_downloads' ),
+				),
 				'action' => array(
 						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => 'save_downloads',
 				),
+				'separator2' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				),
+				'submit_downloads' => array(
+						'id' => 'submit_downloads',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				)
 		);
 	}
 	
