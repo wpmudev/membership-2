@@ -80,7 +80,9 @@ class MS_Model_Member extends MS_Model {
 			}
 			wp_update_user( get_object_vars( $wp_user ) );
 		}				
-				
+		$class = get_class( $this );
+		wp_cache_set( $this->id, $this, $class );
+		
 		return $this;
 	}
 	
