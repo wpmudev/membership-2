@@ -93,9 +93,9 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach( $comms as $comm ) {
 			$comm->delete();
 		}
-		$membership_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'status' => 'all' ) );
-		foreach( $membership_relationships as $membership_relationship ) {
-			$membership_relationship->delete();
+		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'status' => 'all' ) );
+		foreach( $ms_relationships as $ms_relationship ) {
+			$ms_relationship->delete();
 		}
 		$invoices = MS_Model_Invoice::get_invoices( array( 'posts_per_page' => -1 ) );
 		foreach( $invoices as $invoice ) {

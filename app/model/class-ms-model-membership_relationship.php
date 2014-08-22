@@ -272,19 +272,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$query = new WP_Query( $args );
 		$posts = $query->get_posts();
 
-		$membership_relationships = array();
+		$ms_relationships = array();
 		if( ! empty( $posts ) ) {
 			foreach( $posts as $post_id ) {
-				$membership_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post_id );
+				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post_id );
 				if( ! empty( $args['author'] ) ) {
-					$membership_relationships[ $membership_relationship->membership_id ] = $membership_relationship;
+					$ms_relationships[ $ms_relationship->membership_id ] = $ms_relationship;
 				}
 				else {
-					$membership_relationships[ $post_id ] = $membership_relationship;
+					$ms_relationships[ $post_id ] = $ms_relationship;
 				}
 			}
 		}
-		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $membership_relationships, $args );
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $ms_relationships, $args );
 	}
 	
 	/**
