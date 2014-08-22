@@ -71,6 +71,9 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $model->id,
 			),
+			'separator' => array(
+					'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+			),
 			'cancel' => array(
 					'id' => 'cancel',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,

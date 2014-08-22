@@ -131,6 +131,9 @@ class MS_View_Billing_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $this->data['action'],
 			),
+			'separator' => array(
+					'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+			),
 			'cancel' => array(
 					'id' => 'cancel',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,

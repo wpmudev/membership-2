@@ -708,6 +708,9 @@ class MS_View_Membership_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->model->id,
 				),
+				'separator' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				),
 				'url_group_submit' => array(
 						'id' => 'url_group_submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
