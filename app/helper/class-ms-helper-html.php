@@ -50,6 +50,7 @@ class MS_Helper_Html extends MS_Helper {
 	
 	const TYPE_HTML_LINK = 'html_link';
 	const TYPE_HTML_SEPARATOR = 'html_separator';
+	const TYPE_HTML_TEXT = 'html_text';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -204,6 +205,13 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::TYPE_HTML_SEPARATOR:
 				self::html_separator();
+				break;
+			case self::TYPE_HTML_TEXT:
+				if( empty( $wrapper ) ) {
+					$wrapper = 'span';
+				}
+				echo ($title != '') ? "<{$label_element} class='ms-text-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo "<{$wrapper} class='{$class}'>{$value}</{$wrapper}>";
 				break;
 		}		
 		
