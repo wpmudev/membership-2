@@ -84,7 +84,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		$toggle = array(
 				'id' => 'ms-toggle-' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $item->active,
+				'value' => $item->public,
 				'class' => '',
 				'field_options' => array(
 						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
@@ -103,7 +103,12 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 	
 	public function get_sortable_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array() );
+		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
+				'name' => array( 'name', true ),
+				'membership_type' => array( 'membership_type', true ),
+				'active' => array( 'active', true ),
+				'public' => array( 'public', true ),
+		) );
 	}
 	
 	public function prepare_items() {
@@ -117,8 +122,22 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		$args = array(
 				'posts_per_page' => $per_page,
 				'offset' => ( $current_page - 1 ) * $per_page,
-			);
+		);
 		
+		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order'] = $_REQUEST['order'];
+		}
+		/**
+		 * Prepare order by statement.
+		 */
+		if( ! empty( $args['orderby'] ) ) {
+			if( property_exists( 'MS_Model_Membership', $args['orderby'] ) ) {
+				$args['meta_key'] = $args['orderby'];
+				$args['orderby'] = 'meta_value';
+			}
+		}
+
 		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships( $args ) );
 		
 		$this->set_pagination_args( array(
