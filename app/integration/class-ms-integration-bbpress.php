@@ -159,7 +159,7 @@ class MS_Integration_Bbpress extends MS_Integration {
 		$rule = self::RULE_TYPE_BBPRESS;
 		if( $membership_id ) {
 			$tabs[ $rule  ] = array(
-					'title' => __( 'BBPress', MS_TEXT_DOMAIN ),
+					'title' => __( 'bbPress', MS_TEXT_DOMAIN ),
 					'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
 			);
 		}		
