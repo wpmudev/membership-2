@@ -218,7 +218,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 		catch( Exception $e ) {
 			MS_Helper_Debug::log( $e );
 		}
-		
+
 		return $status;
 	}
 	
@@ -232,21 +232,8 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	public static function load_mailchimp_api() {
 		if( empty( self::$mailchimp_api ) ) {
 			
-			/** wpmudev mailchimp newsletter integration.*/
-			global $mailchimp_sync;
-			
 			if( empty( $mailchimp_sync->api ) ) {
 
-				/** verify if mailchimp newsletter plugin lib exists and load it to avoid conflict */
-				$mailchimp_sync_plugin_lib = apply_filters( 'ms_integration_mailchimp_load_mailchimp_api_mailchimp_sync_lib', 
-						WP_PLUGIN_DIR . '/mailchimp-sync/mailchimp-api/Mailchimp.php' );
-				if( file_exists( $mailchimp_sync_plugin_lib ) ) {
-					require_once $mailchimp_sync_plugin_lib;
-				}
-				else {
-					require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
-				}
-				
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				
 				$options = apply_filters( 'ms_integration_mailchimp_load_mailchimp_api_options', array(
@@ -256,9 +243,12 @@ class MS_Integration_Mailchimp extends MS_Integration {
 						'ssl_cainfo' => false,
 						'debug' => false,
 				) );
-			
+				
+				if( ! class_exists( 'Mailchimp' ) ) {
+					require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
+				}
 				$api = new Mailchimp( $settings->get_custom_settings( 'mailchimp', 'api_key' ), $options );
-			
+				
 				/** Pinging the server */
 				$ping = $api->helper->ping();
 			
