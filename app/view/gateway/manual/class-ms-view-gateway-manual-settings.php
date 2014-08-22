@@ -15,7 +15,6 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 				<div class='ms-settings'>
 					<h2><?php echo $this->data['model']->name;?> settings</h2>
 					<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
-						<?php wp_nonce_field( $this->data['action'] ); ?>
 						<?php
 							MS_Helper_Html::settings_box(
 								$this->fields, 
@@ -48,6 +47,11 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $model->pay_button_url,
+			),
+			'_wpnonce' => array(
+					'id' => '_wpnonce',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => wp_create_nonce( $this->data['action'] ),
 			),
 			'action' => array(
 					'id' => 'action',

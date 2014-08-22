@@ -21,7 +21,6 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					<div class='ms-validation-error'><p><?php echo $this->data['auth_error']; ?></p></div>
 				<?php endif; ?>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
-					<?php wp_nonce_field( "{$this->data['gateway']}_{$this->data['ms_relationship_id']}" ); ?>
 					<?php foreach( $this->fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_input( $field ); ?>
 					<?php endforeach;?>
@@ -88,6 +87,11 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['ms_relationship_id'],
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => wp_create_nonce( "{$this->data['gateway']}_{$this->data['ms_relationship_id']}" ),
 				),
 				'action' => array(
 						'id' => 'action',

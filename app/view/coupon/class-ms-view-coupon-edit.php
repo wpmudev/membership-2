@@ -14,9 +14,16 @@ class MS_View_Coupon_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
+				<h2 class="ms-settings-title">
+					<i class="fa fa-pencil-square"></i>
+					<?php 
+						echo empty( $this->data['coupon']->id ) 
+							? __( 'Add', MS_TEXT_DOMAIN ) 
+							: __( 'Edit', MS_TEXT_DOMAIN ); 
+						_e( ' Coupon', MS_TEXT_DOMAIN ); 
+					?>
+				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
-					<?php wp_nonce_field( $this->data['action'] ); ?>
 					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
 				</form>
 				<div class="clear"></div>
@@ -88,6 +95,11 @@ class MS_View_Coupon_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $coupon->id,
 			),
+			'_wpnonce' => array(
+					'id' => '_wpnonce',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => wp_create_nonce( $this->data['action'] ),
+			),				
 			'action' => array(
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

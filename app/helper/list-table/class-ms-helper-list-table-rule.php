@@ -30,11 +30,7 @@
 class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	protected $id = 'rule';
-	
-	const NONCE_ACTION = 'rulenonce';
-	
-	protected $nonce;
-	
+		
 	protected $model;
 	
 	public function __construct( $model ) {
@@ -45,7 +41,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		) );
 		
 		$this->model = $model;
-		$this->nonce = wp_create_nonce( self::NONCE_ACTION );
 	}
 		
 	public function get_columns() {

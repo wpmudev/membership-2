@@ -25,7 +25,6 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 					</tbody>
 				</table>
 				<form action="" method="post">
-					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php
 						foreach( $this->fields as $field) {
 							MS_Helper_Html::html_input( $field );
@@ -62,6 +61,11 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 						'id' => 'ms_relationship_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['ms_relationship_id'],
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => wp_create_nonce( 'update_card' ),
 				),
 				'action' => array(
 						'id' => 'action',

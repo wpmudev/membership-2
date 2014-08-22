@@ -385,7 +385,7 @@ class MS_View_Membership_Edit extends MS_View {
 	public function render_post() {
 		$model = array( 
 			'post' => $this->model->get_rule( 'post' ), 
-			'category'	=> $this->model->rules['category'],
+			'category'	=> $this->model->get_rule( 'category' ),
 		);
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $model );
 		$rule_list_table->prepare_items();

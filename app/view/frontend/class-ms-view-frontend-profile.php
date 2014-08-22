@@ -21,7 +21,6 @@ class MS_View_Frontend_Profile extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors() ?>
 			<form id="ms-view-frontend-profile-form" class="form-membership" action="" method="post">
-				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<legend><?php _e( 'Edit profile', MS_TEXT_DOMAIN ); ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
 					<div class="ms-form-element">
@@ -79,6 +78,11 @@ class MS_View_Frontend_Profile extends MS_View {
 						'id' => 'submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => wp_create_nonce( $this->data['action'] ),
 				),
 				'action' => array(
 						'id' => 'action',
