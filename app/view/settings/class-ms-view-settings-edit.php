@@ -89,19 +89,19 @@ class MS_View_Settings_Edit extends MS_View {
 					<?php wp_nonce_field( $this->fields['action']['value'] );?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<?php 
-						MS_Helper_Html::settingsbox( 
+						MS_Helper_Html::settings_box( 
 							array( $this->fields['plugin_enabled'] ),
 							__( 'Enable plugin', MS_TEXT_DOMAIN ) 
 						); 
 					?>
 					<?php 
-						MS_Helper_Html::settingsbox( 
+						MS_Helper_Html::settings_box( 
 							array( $this->fields['default_membership_enabled'] ),
 							__( 'Enable default membership level', MS_TEXT_DOMAIN ) 
 						); 
 					?>
 					<?php 
-						MS_Helper_Html::settingsbox( 
+						MS_Helper_Html::settings_box( 
 							array( $this->fields['hide_admin_bar'] ),
 							__( 'Hide admin bar', MS_TEXT_DOMAIN ) 
 						); 
@@ -257,7 +257,7 @@ class MS_View_Settings_Edit extends MS_View {
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ) ;?>
 					<?php
-						MS_Helper_Html::settingsbox(
+						MS_Helper_Html::settings_box(
 							array( $this->fields['currency'] ), 
 							__( 'Payment currency', MS_TEXT_DOMAIN ), 
 							__( 'This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.', MS_TEXT_DOMAIN ),
@@ -265,7 +265,7 @@ class MS_View_Settings_Edit extends MS_View {
 						);
 					?>
 					<?php
-						MS_Helper_Html::settingsbox(
+						MS_Helper_Html::settings_box(
 							array( $this->fields['invoice_sender_name'] ), 
 							__( 'Invoice Configuration', MS_TEXT_DOMAIN ), 
 							__( 'This is the name used in the invoice.', MS_TEXT_DOMAIN ),
@@ -349,21 +349,21 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
 				<?php
-					MS_Helper_Html::settingsbox(
+					MS_Helper_Html::settings_box(
 						array( $this->fields['content'] ), 
 						__( 'Content protection message', MS_TEXT_DOMAIN ), 
 						'',
 						array( 'label_element' => 'h3' ) );
 				?>
 				<?php
-					MS_Helper_Html::settingsbox(
+					MS_Helper_Html::settings_box(
 						array( $this->fields['shortcode'] ), 
 						__( 'Shortcode protection message', MS_TEXT_DOMAIN ), 
 						'',
 						array( 'label_element' => 'h3' ) );
 				?>
 				<?php
-					MS_Helper_Html::settingsbox(
+					MS_Helper_Html::settings_box(
 						array( $this->fields['more_tag'] ), 
 						__( 'More tag protection message', MS_TEXT_DOMAIN ), 
 						'',

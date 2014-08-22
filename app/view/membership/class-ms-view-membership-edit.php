@@ -67,7 +67,7 @@ class MS_View_Membership_Edit extends MS_View {
 							<td>
 								<?php
 									$fields = array( $this->fields['name'], $this->fields['description'] );
-									MS_Helper_Html::settingsbox( $fields, __( 'Membership Information', MS_TEXT_DOMAIN ) );
+									MS_Helper_Html::settings_box( $fields, __( 'Membership Information', MS_TEXT_DOMAIN ) );
 								?>
 							</td>
 						</tr>
@@ -76,7 +76,7 @@ class MS_View_Membership_Edit extends MS_View {
 								<td>
 								<?php
 									$fields = array( $this->fields['price'] );
-									MS_Helper_Html::settingsbox( $fields, __( 'Membership Pricing', MS_TEXT_DOMAIN ) );
+									MS_Helper_Html::settings_box( $fields, __( 'Membership Pricing', MS_TEXT_DOMAIN ) );
 								?>
 								</td>
 							</tr>
@@ -641,7 +641,7 @@ class MS_View_Membership_Edit extends MS_View {
 				<form action="" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php
-						MS_Helper_Html::settingsbox(
+						MS_Helper_Html::settings_box(
 							$this->fields, 
 							__( 'Edit URL access rules', MS_TEXT_DOMAIN ), 
 							'',
@@ -650,7 +650,7 @@ class MS_View_Membership_Edit extends MS_View {
 					?>
 				</form>
 				<?php
-					MS_Helper_Html::settingsbox(
+					MS_Helper_Html::settings_box(
 						array( array( 
 							'id' => 'url_test',
 							'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),

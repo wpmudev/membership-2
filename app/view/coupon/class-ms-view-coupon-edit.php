@@ -17,7 +17,7 @@ class MS_View_Coupon_Edit extends MS_View {
 				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['coupon']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Coupon', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->data['action'] ); ?>
-					<?php MS_Helper_Html::settingsbox( $this->fields ); ?>
+					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>

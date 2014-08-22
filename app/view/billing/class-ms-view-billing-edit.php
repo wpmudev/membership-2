@@ -18,7 +18,7 @@ class MS_View_Billing_Edit extends MS_View {
 				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['invoice']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Billing', MS_TEXT_DOMAIN ); ?></h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'invoice_id' ) ); ?>" method="post" class="ms-form">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::settingsbox( $this->fields ); ?>
+					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>

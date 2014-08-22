@@ -27,7 +27,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 									__( 'Instructions »', MS_TEXT_DOMAIN )
 								); 
 							}
-							MS_Helper_Html::settingsbox(
+							MS_Helper_Html::settings_box(
 								$this->fields, 
 								'', 
 								$description,

@@ -19,7 +19,7 @@ class MS_View_Gateway_Settings extends MS_View {
 					<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
 						<?php wp_nonce_field( self::GATEWAY_NONCE, self::GATEWAY_NONCE ); ?>
 						<?php
-							MS_Helper_Html::settingsbox(
+							MS_Helper_Html::settings_box(
 								$this->fields, 
 								'', 
 								'',
