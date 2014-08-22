@@ -49,6 +49,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
 	
 	const TYPE_HTML_LINK = 'html_link';
+	const TYPE_HTML_SEPARATOR = 'html_separator';
 	
 	/**
 	 * Method for creating FORM elements/fields. 
@@ -201,6 +202,9 @@ class MS_Helper_Html extends MS_Helper {
 			case self::TYPE_HTML_LINK:
 				self::html_link( $field_args );
 				break;
+			case self::TYPE_HTML_SEPARATOR:
+				self::html_separator();
+				break;
 		}		
 		
 		// Return the output buffer
@@ -212,39 +216,37 @@ class MS_Helper_Html extends MS_Helper {
 	
 	public static function settingsbox( $fields_in, $title = '', $description = '', $args = array() ) {
 		
-		// If its a fields array, great, if not, make a fields array
+		/** If its a fields array, great, if not, make a fields array */
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
 			$fields = array();
 			$fields[] = $fields_in;
 		}
-		
-		// Grab the title and tooltip of the first field if not set.
-		$the_title = $title;
-// 		if ( '' == $title ) {
-// 			$the_title = $fields[0]['title'];
-// 			$fields[0]['title'] = '';
-// 		} 
-		
-		$the_description = $description;
-// 		if ( empty ( $description ) ) {
-// 			$the_description = $fields[0]['tooltip'];
-// 			$fields[0]['tooltip'] = '';
-// 		} 
-		
-		echo '<div class="ms-settings-box-wrapper">';
-		echo '<div class="ms-settings-box">';
-		if( ! empty( $the_title ) ) {
-			echo '<h3>' . $the_title . '</h3>';
-		}
-		echo '<div class="inside">';
-		echo '<span class="ms-field-label">' . $the_description . '</span>';
+		self::settings_box_header( $title, $description );		
 		foreach( $fields as $field ) {
 			MS_Helper_Html::html_input( $field, false, $args );
 		}
+		self::settings_box_footer();
+	}
+	
+	public static function settings_box_header( $title = '', $description = '' ) {
+		do_action( 'ms_helper_settings_box_header_init', $title, $description );
+		echo '<div class="ms-settings-box-wrapper">';
+		echo '<div class="ms-settings-box">';
+		if( ! empty( $title ) ) {
+			echo '<h3>' . $title . '</h3>';
+		}
+		echo '<div class="inside">';
+		echo '<span class="ms-field-label">' . $description . '</span>';
+		do_action( 'ms_helper_settings_box_header_end', $title, $description );
+	}
+	
+	public static function settings_box_footer() {
+		do_action( 'ms_helper_settings_box_footer_init' );
 		echo '</div>';
 		echo '</div>';
 		echo '</div>';
+		do_action( 'ms_helper_settings_box_footer_end' );
 	}
 	
 	/**
@@ -360,5 +362,8 @@ class MS_Helper_Html extends MS_Helper {
 			return ob_get_clean();
 		}
 	}
-	
+
+	public static function html_separator() {
+		echo "<div class='ms-separator'></div>";	
+	}
 }
