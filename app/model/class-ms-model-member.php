@@ -367,13 +367,13 @@ class MS_Model_Member extends MS_Model {
 		return is_user_logged_in();
 	}
 	
-	public static function is_admin_user( $user_id = false, $capability = null ) {
+	public static function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
 		$is_admin = false;
 
 		if( is_super_admin( $user_id ) ) {
 			$is_admin = true;
 		}
-
+		$capability = apply_filters( 'ms_model_member_is_admin_user_capability', $capability );
 		if( ! empty( $capability ) ) {
 			$wp_user = null;
 			if( empty( $user_id ) ) {
