@@ -164,6 +164,7 @@ class MS_Helper_Html extends MS_Helper {
 					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
 				echo "</span>";
+				echo ($desc != '') ? "<div><span class='ms-field-description'>$desc</span></div>" : '';
 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
