@@ -204,7 +204,7 @@ class MS_Controller_Member extends MS_Controller {
 			$data['member_id'] = array( $member_id );
 			switch( $action ) {
 				case 'add':
-					$memberships = MS_Model_Membership::get_membership_names();
+					$memberships = MS_Model_Membership::get_membership_names( null, true );
 					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
@@ -215,7 +215,7 @@ class MS_Controller_Member extends MS_Controller {
 					break;
 				case 'drop':
 					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
-					$memberships = MS_Model_Membership::get_membership_names( $args );
+					$memberships = MS_Model_Membership::get_membership_names( $args, true );
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 					break;
 				case 'move':
@@ -223,14 +223,14 @@ class MS_Controller_Member extends MS_Controller {
 					$memberships_move = MS_Model_Membership::get_membership_names( $args );
 					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
 						
-					$memberships = MS_Model_Membership::get_membership_names();
+					$memberships = MS_Model_Membership::get_membership_names( null, true );
 					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
 					break;
 				case 'edit_date':
 					$view = apply_filters( 'membership_view_member_date', new MS_View_Member_Date() );
 					$data['member_id'] = $member_id;
-					$data['membership_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+					$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
 					break;
 			}
 		}
