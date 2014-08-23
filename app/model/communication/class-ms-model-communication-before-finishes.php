@@ -32,12 +32,24 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	
 	protected $type = self::COMM_TYPE_BEFORE_FINISHES;
 	
-	public function enqueue_messages( $ms_relationship, $expire ) {
-		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_TRIAL == $ms_relationship->status ) {
-			$days = MS_Helper_Period::get_period_in_days( $comm->period );
-			if( ! $expire->invert && $days == $expire->days ) {
+	public function after_load() {
+	
+		parent::after_load();
+	
+// 		if( $this->enabled ) {
+// 			$this->add_action( 'ms_model_plugin_check_membership_status_'. MS_Model_Membership_Relationship::STATUS_ACTIVE, 'check_enqueue_messages', 10, 3 );
+// 		}
+	}
+	
+	public function check_enqueue_messages( $ms_relationship, $remaining_days, $remaining_trial_days ) {
+		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_ACTIVE == $ms_relationship->status ) {
+				
+			$days = MS_Helper_Period::get_period_in_days( $this->period );
+			if( $days == $remaining_days ) {
 				$this->add_to_queue( $ms_relationship->id );
 				$this->save();
+	
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $ms_relationship );
 			}
 		}
 	}

@@ -32,6 +32,28 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	
 	protected $type = self::COMM_TYPE_BEFORE_TRIAL_FINISHES;
 	
+	public function after_load() {
+	
+		parent::after_load();
+	
+// 		if( $this->enabled ) {
+// 			$this->add_action( 'ms_model_plugin_check_membership_status_'. MS_Model_Membership_Relationship::STATUS_TRIAL, 'check_enqueue_messages', 10, 3 );
+// 		}
+	}
+	
+	public function check_enqueue_messages( $ms_relationship, $remaining_days, $remaining_trial_days ) {
+		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_TRIAL == $ms_relationship->status && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			
+			$days = MS_Helper_Period::get_period_in_days( $this->period );
+			if( $days == $remaining_trial_days ) {
+				$this->add_to_queue( $ms_relationship->id );
+				$this->save();
+				
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES, $ms_relationship );
+			}
+		}
+	}
+	
 	public function get_description() {
 		return __( 'Sent a predefined numer of days before the trial period finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
 	}
