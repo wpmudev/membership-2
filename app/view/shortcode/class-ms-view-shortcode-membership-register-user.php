@@ -13,7 +13,6 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 		$login_link = array(
 			'title' => __( 'Login', MS_TEXT_DOMAIN ),
 			'url' => wp_login_url( add_query_arg( array( 'step' => 'choose_membership' ), $permalink ) ),
-// 			'url' => $permalink,
 			'class' => 'alignleft',
 			'value' => __( 'Already have a user account?', MS_TEXT_DOMAIN ),
 		);
