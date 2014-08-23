@@ -208,11 +208,13 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_separator();
 				break;
 			case self::TYPE_HTML_TEXT:
+				echo "<div class='ms-html-text-wrapper'>";
 				if( empty( $wrapper ) ) {
 					$wrapper = 'span';
 				}
 				echo ($title != '') ? "<{$label_element} class='ms-text-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<{$wrapper} class='{$class}'>{$value}</{$wrapper}>";
+				echo "</div>";
 				break;
 		}		
 		

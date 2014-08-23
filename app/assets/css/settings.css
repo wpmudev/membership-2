@@ -129,6 +129,9 @@ h2.ms-settings-title,
     font-weight: 600;
 }
 
+.ms-html-text-wrapper {
+	margin: 10px 0;
+}
 .ms-text-label, .ms-ok, .ms-nok {
 	color: #222;
     font-size: 1.1em;
@@ -140,7 +143,7 @@ h2.ms-settings-title,
 	color: #7ad03a;
 }
 .ms-nok {
-	color: #7ad03a;
+	color: red;
 }
 .ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
 	border: none;
