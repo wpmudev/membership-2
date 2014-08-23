@@ -52,32 +52,37 @@ class MS_View_Dashboard extends MS_View {
 		ob_start();
 		?>
 		<div class='ms-wrap'>
+		<div class='settings'>
 			<div class="icon32" id="icon-index"><br></div>
-			<h2 class='ms-settings-title'><i class="fa fa-bar-chart-o"></i> <?php _e( 'Membership Dashboard', MS_TEXT_DOMAIN );?></h2>		
+			<h2 class='ms-settings-title'>
+				<i class="fa fa-bar-chart-o"></i> 
+				<?php _e( 'Membership Dashboard', MS_TEXT_DOMAIN );?>
+			</h2>
 			<div id="dashboard-widgets-wrap">
 				<div class="metabox-holder" id="dashboard-widgets">
-					<div style="width: 49%;" class="postbox-container">
+					<div class="postbox-container ms-wigdet">
 						<div class="meta-box-sortables ui-sortable" id="normal-sortables">
 							<?php $this->dashboard_members_html();?>
 						</div>
 					</div>
-					<div style="width: 49%;" class="postbox-container">
+					<div class="postbox-container ms-wigdet">
 						<div class="meta-box-sortables ui-sortable" id="side-sortables">
-							<?php $this->dashboard_news_html();?>
+							<?php $this->dashboard_events_html();?>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
 	
-	public function dashboard_news_html() {
+	public function dashboard_events_html() {
 		?>
 			<div class="postbox " id="ms-dashboard-news">
-			<h3 class="hndle"><span><?php _e( 'News', MS_TEXT_DOMAIN ); ?></span></h3>
+			<h3 class="hndle"><span><?php _e( 'Events', MS_TEXT_DOMAIN ); ?></span></h3>
 				<div class="inside">
 					<?php if( ! empty( $this->data['events'] ) ): ?>
 						<table>
@@ -102,36 +107,25 @@ class MS_View_Dashboard extends MS_View {
 			</div>
 		<?php 
 	}
-	public function dashboard_news_html1() {
-		?>
-			<div class="postbox " id="ms-dashboard-news">
-			<h3 class="hndle"><span><?php _e( 'News', MS_TEXT_DOMAIN ); ?></span></h3>
-				<div class="inside">
-					<?php if( ! empty( $this->data['news'] ) ): ?>
-						<?php foreach( $this->data['news'] as $key => $news_item):?>
-							<p class="ms-news-item"> [ <?php echo date( MS_Helper_Period::DATE_TIME_FORMAT, strtotime( $news_item->post_modified ) ); ?> ]
-								<?php  echo $news_item->description; ?>
-							</p>
-						<?php endforeach;?>
-					<?php else: ?>
-						<p><?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>		
-					<?php endif;?>
-					<br class="clear">
-				</div>
-			</div>
-		<?php 
-	}
 	
 	public function dashboard_members_html() {
 		?>
 		<div class="postbox " id="ms-dashboard-members">
 			<h3 class="hndle"><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></h3>
 			<div class="inside">
-				<p>Membership protection is <?php echo $this->data['plugin_enabled'] ? __( 'Enabled', MS_TEXT_DOMAIN ) : __( 'Disabled', MS_TEXT_DOMAIN ); ?></p>
+				<?php 
+					$enabled = array(
+							'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+							'title' => __( 'Membership protection: ', MS_TEXT_DOMAIN ),
+							'value' => $this->data['plugin_enabled'] ? __( 'Enabled', MS_TEXT_DOMAIN ) : __( 'Disabled', MS_TEXT_DOMAIN ),
+							'class' => $this->data['plugin_enabled'] ? 'ms-ok' : 'ms-nok',
+					);
+					MS_Helper_Html::html_input( $enabled ); 
+				?>
 				<h4><?php _e( 'Membership breakdown', MS_TEXT_DOMAIN );?></h4>
 				<table class="ms-membership-breakdown-wrapper">
 					<tr>
-						<th><?php _e( 'Membership', MS_TEXT_DOMAIN); ?></th>
+						<th><?php _e( 'Level', MS_TEXT_DOMAIN); ?></th>
 						<th><?php _e( 'Count', MS_TEXT_DOMAIN); ?></th>
 					</tr>
 					<?php foreach( $this->data['memberships'] as $membership ): ?>
