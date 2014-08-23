@@ -8,7 +8,7 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 	
 	public function to_html() {
 		$this->prepare_fields();
-		$invoice = $this->data['ms_relationship']->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
 		$member = MS_Model_Member::get_current_member();
 		$gateway = $this->data['gateway'];
 		$action_url = apply_filters( 'ms_view_gateway_button_form_action_url', '' );

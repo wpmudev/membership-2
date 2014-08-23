@@ -933,7 +933,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$remaining_days = $this->get_remaining_period();
 		$remaining_trial_days = $this->get_remaining_trial_period();
 		
-		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $remaining_days );
+		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $remaining_days, $remaining_trial_days );
 		switch( $this->get_status() ) {
 			case self::STATUS_TRIAL:
 				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
@@ -954,7 +954,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				break;
 			case self::STATUS_TRIAL_EXPIRED:
 				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-					$invoice = $this->get_current_invoice();
+					$invoice = MS_Model_Invoice::get_current_invoice( $this );
 						
 					/** Request payment to the gateway (for gateways that allows it). */
 					$gateway = $this->get_gateway();
@@ -988,10 +988,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					
 				/** Create next invoice before expire date.*/
 				if( $remaining_days < $invoice_before_days ) {
-					$invoice = $this->get_next_invoice();
+					$invoice = MS_Model_Invoice::get_next_invoice( $this );
 				}
 				else {
-					$invoice = $this->get_current_invoice();
+					$invoice = MS_Model_Invoice::get_current_invoice( $this );
 				}
 					
 				/** Configure communication messages.*/
