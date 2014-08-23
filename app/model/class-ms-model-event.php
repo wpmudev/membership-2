@@ -88,6 +88,8 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	protected $ms_relationship_id;
 	
+	protected $date;
+	
 	public static function get_event_types() {
 		return apply_filters( 'ms_model_news_get_event_types', array(
 				/** User topic */
@@ -307,6 +309,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 					break;	
 			}
 			$event->description = apply_filters( 'ms_model_event_description', $description, $type, $data );
+			$event->date = MS_Helper_Period::current_date();
 				
 			$event = apply_filters( 'ms_model_news_record_user_signup_object', $event );
 			
@@ -335,9 +338,8 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_CREDIT_CARD_EXPIRE,
 				self::TYPE_PAYMENT_AFTER_MADE,
 		) );
-		
 		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event ) ) {
-			if( gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->post_modified ) ) == MS_Helper_Period::current_date() ) {
+			if( gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->date ) ) == MS_Helper_Period::current_date() ) {
 				$is_duplicate = true;
 			}
 		}
