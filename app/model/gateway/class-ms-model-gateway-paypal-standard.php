@@ -218,7 +218,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 // 			MS_Helper_Debug::log( "transaction_id: $invoice_id, ext_id: $external_id status: $status, notes: $notes" );
 			
 			if( empty( $invoice ) ) {
- 				$invoice = $ms_relationship->get_current_invoice();
+ 				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 			}
 			$invoice->external_id = $external_id;
 			if( ! empty( $notes ) ) {

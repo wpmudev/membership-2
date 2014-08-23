@@ -137,7 +137,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @access public
 	 */
 	public function process_purchase( $ms_relationship ) {
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 		

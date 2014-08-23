@@ -45,7 +45,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 
 		$gateway = $this->data['gateway'];
 		
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$regular_invoice = null;
 		
 		$this->fields = array(
@@ -148,7 +148,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				
 		/** Trial period */
 		if( $membership->trial_period_enabled && $invoice->trial_period ) {
-			$regular_invoice = $ms_relationship->get_next_invoice();
+			$regular_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
 			$this->fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

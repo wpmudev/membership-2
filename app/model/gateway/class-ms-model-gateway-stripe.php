@@ -58,7 +58,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	public function process_purchase( $ms_relationship ) {
 
 		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		
 		if( ! empty( $_POST['stripeToken'] ) ) {
 			$token = $_POST['stripeToken'];
@@ -111,7 +111,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	public function request_payment( $ms_relationship ) {
 	
 		$member = $ms_relationship->get_member();
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 	
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) { 
 			try {

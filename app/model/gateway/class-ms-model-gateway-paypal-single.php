@@ -170,7 +170,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			}
 			
 			if( empty( $invoice ) ) {
-				$invoice = $ms_relationship->get_current_invoice();
+				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 			}
 			$invoice->external_id = $external_id;
 			if( ! empty( $notes ) ) {

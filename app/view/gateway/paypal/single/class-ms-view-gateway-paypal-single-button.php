@@ -39,7 +39,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 		}
 		
 		$gateway = $this->data['gateway'];
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$this->fields = array(
 				'_wpnonce' => array(
 						'id' => '_wpnonce',

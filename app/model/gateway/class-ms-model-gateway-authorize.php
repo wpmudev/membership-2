@@ -66,7 +66,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
 		}
 	
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 		
 			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
@@ -102,7 +102,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	public function request_payment( $ms_relationship ) {
 	
 		$member = $ms_relationship->get_member();
-		$invoice = $ms_relationship->get_current_invoice();
+		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 	
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 		

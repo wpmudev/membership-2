@@ -668,39 +668,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Get current membership invoice.
-	 * 
-	 * @since 4.0.0
-	 * 
-	 * @return MS_Model_Invoice
-	 */
-	public function get_current_invoice() {
-		return MS_Model_Invoice::get_current_invoice( $this );
-	}
-	
-	/**
-	 * Get next membership invoice.
-	 * 
-	 * @since 4.0.0
-	 * 
-	 * @return MS_Model_Invoice
-	 */
-	public function get_next_invoice() {
-		return MS_Model_Invoice::get_next_invoice( $this );
-	}
-	
-	/**
-	 * Get previous membership invoice.
-	 * 
-	 * @since 4.0.0
-	 * 
-	 * @return MS_Model_Invoice
-	 */
-	public function get_previous_invoice() {
-		return MS_Model_Invoice::get_previous_invoice( $this );
-	}
-	
-	/**
 	 * Get payment information description.
 	 *
 	 * A more .
@@ -1079,7 +1046,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				/** After payment made event */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_MADE ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				$invoice = $this->get_previous_invoice(); 
+				$invoice = MS_Model_Invoice::get_previous_invoice( $this ); 
 				$paid_days = MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $invoice->due_date );
 				if( $days == $paid_days && MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
 					$comm->add_to_queue( $this->id );

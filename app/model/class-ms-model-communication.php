@@ -402,12 +402,12 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		
 		$invoice = null;
 		if( in_array( $class, $previous_invoice ) ) {
-			if( ! $invoice = $ms_relationship->get_previous_invoice() ) {
-				$invoice = $ms_relationship->get_current_invoice();
+			if( ! $invoice = MS_Model_Invoice::get_previous_invoice( $ms_relationship ) ) {
+				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 			}
 		}
 		else {
-			$invoice = $ms_relationship->get_current_invoice();
+			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		}
 		
 		$comm_vars = apply_filters( 'ms_model_communication_comm_vars', $this->comm_vars );
