@@ -63,7 +63,7 @@ class MS_Controller_Dashboard extends MS_Controller {
 		$data['events'] = MS_Model_Event::get_events();
 		$data['plugin_enabled'] = MS_Plugin::instance()->settings->plugin_enabled;
 		$data['members_count'] = MS_Model_Member::get_members_count();
-		$memberships = MS_Model_Membership::get_membership_names();
+		$memberships = MS_Model_Membership::get_membership_names( null, true );
 		foreach( $memberships as $id => $name ) {
 			$data['memberships'][ $id ] = array( 
 					'name' => $name, 
@@ -71,7 +71,7 @@ class MS_Controller_Dashboard extends MS_Controller {
 			);
 		}
 		$this->views['dashboard'] = apply_filters( 'ms_view_dashboard', new MS_View_Dashboard() );
-		$this->views['dashboard']->data = $data; 
+		$this->views['dashboard']->data = apply_filters( 'ms_view_dashboard_data', $data ); 
 		$this->views['dashboard']->render();
 	}
 	
