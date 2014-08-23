@@ -212,7 +212,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if( ! MS_Model_Member::is_logged_user() ) {
 				$step = self::STEP_REGISTER_FORM;
 			}
-			if( empty( $_REQUEST['membership_id'] ) || ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
+			if( empty( $_POST['membership_id'] ) || ! MS_Model_Membership::is_valid_membership( $_POST['membership_id'] ) ) {
 				$step = self::STEP_CHOOSE_MEMBERSHIP;
 			}
 		}
