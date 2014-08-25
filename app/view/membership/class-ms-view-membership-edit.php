@@ -722,8 +722,8 @@ class MS_View_Membership_Edit extends MS_View {
 	
 	public function render_dripped() {
 		$model = array(
-			'post' => $this->model->rules['post'],
-			'page'	=> $this->model->rules['page'],
+			'post' => $this->model->get_rule( 'post' ),
+			'page'	=> $this->model->get_rule( 'page' ),
 		);
 		$this->prepare_dripped( $model );
 		
