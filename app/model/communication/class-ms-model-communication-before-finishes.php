@@ -61,7 +61,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Membership will finish soon', MS_TEXT_DOMAIN );
+		$model->subject = sprintf( __( 'Your %s membership will end soon', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -73,11 +73,9 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership will finish in <?php echo self::COMM_VAR_MS_REMAINING_DAYS; ?>.
-			<br /><br />
-			<?php echo self::COMM_VAR_MS_INVOICE; ?>
+			This is just a reminder that your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> will end in <?php echo self::COMM_VAR_MS_REMAINING_DAYS; ?>.
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_finishes_get_default_message', $html );

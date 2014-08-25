@@ -62,6 +62,7 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 		$model = new self();
 	
 		$model->subject = __( 'Your membership trial will finish soon', MS_TEXT_DOMAIN );
+		$model->subject = sprintf( __( 'Your %s membership trial will end soon', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -73,12 +74,12 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership trial will finish in <?php echo self::COMM_VAR_MS_REMAINING_DAYS; ?>
+			This is a remainder that your <?php echo self::COMM_VAR_MS_NAME; ?> membership trial at <?php echo self::COMM_VAR_BLOG_NAME; ?> will end in <?php echo self::COMM_VAR_MS_REMAINING_TRIAL_DAYS; ?>.
 			<br /><br />
-			<?php echo self::COMM_VAR_MS_INVOICE; ?>
-		<?php 
+			You can renew and edit your membership details here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>
+		<?php
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_before_trial_finishes_get_default_message', $html );
 	}

@@ -48,7 +48,7 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Your membership was cancelled', MS_TEXT_DOMAIN );
+		$model->subject = sprintf( __( 'Your %s membership was canceled', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -61,8 +61,13 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 		?>
 			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership <?php echo self::COMM_VAR_MS_NAME; ?> was cancelled.
+			Your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> was sucessfully cancelled.
 			<br /> <br />
+			Should you change your mind, you can renew your membership here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>
+			<br /> <br />
+			Here are your latest payment details: 
+			<br /><br />
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_cancelled_get_default_message', $html );

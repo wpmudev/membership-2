@@ -61,9 +61,9 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 		?>
 			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your payment details has been changed.
+			This is to confirm that your billing information has been changed.
 			<br /><br />
-			More details in your <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
+			You can review your account details here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_info_update_get_default_message', $html );

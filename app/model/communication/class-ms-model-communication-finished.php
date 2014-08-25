@@ -48,7 +48,7 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Your membership has finished', MS_TEXT_DOMAIN );
+		$model->subject = sprintf( __( 'Your %s membership has ended', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -59,13 +59,12 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your membership has finished in <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
+			Your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> has ended on <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
 			<br /><br />
-			
-			<?php echo self::COMM_VAR_MS_INVOICE; ?>
-		<?php 
+			You can renew your membership here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>
+		<?php  
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_finished_get_default_message', $html );
 	}

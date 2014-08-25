@@ -48,7 +48,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Signup completed', MS_TEXT_DOMAIN );
+		$model->subject = sprintf( __( 'Confirmation of your membership at %s', MS_TEXT_DOMAIN ), self::COMM_VAR_BLOG_NAME );
 		$model->message = self::get_default_message();
 		$model->enabled = true;
 		$model->save();
@@ -60,13 +60,14 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 		ob_start();
 		?>
 			<h2> Welcome, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
-			<p>
-				You are now member of <?php echo self::COMM_VAR_MS_NAME; ?>.
-			</p>
-			<p>
-				Invoice details: <br /><br />
-				<?php echo self::COMM_VAR_MS_INVOICE; ?>
-			</p>
+			<br /><br />
+			You have successfully subscribed to our <?php echo self::COMM_VAR_MS_NAME; ?> membership level at <?php echo self::COMM_VAR_BLOG_NAME; ?>
+			<br /><br />
+			You can review and edit your membership details here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>
+			<br /> <br />
+			Here are your latest payment details: 
+			<br /><br />
+			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );

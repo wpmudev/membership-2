@@ -180,7 +180,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		
 		return apply_filters( 'ms_model_communication_get_communication_type_titles', array(
 				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INVOICE => __( 'Invoice', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INVOICE => __( 'Invoice/Receipt', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),

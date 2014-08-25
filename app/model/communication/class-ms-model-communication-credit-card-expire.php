@@ -61,11 +61,10 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 		ob_start();
 		?>
 			<h2>Hi <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
-			<br />
-			your credit card is about to expire.
-			<br />
-			To continue a member, please change the card number before you next invoice date in your <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
-			<br />
+			<br /><br />
+			This is a reminder that your credit card is about to expire.
+			<br /><br />
+			To continue your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?>, please update your card details before your next payment is due here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>.
 		<?php 
 		$html = ob_get_clean();
 		return apply_filters( 'ms_model_communication_credit_card_expire_get_default_message', $html );

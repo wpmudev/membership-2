@@ -39,7 +39,7 @@ class MS_Model_Communication_After_Payment_Made extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject =  __( 'Payment made', MS_TEXT_DOMAIN );
+		$model->subject =  __( 'Payment received', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -51,9 +51,11 @@ class MS_Model_Communication_After_Payment_Made extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			We've reveived your payment, thanks!
+			We've received your payment for your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?>, thanks!
+			<br /><br />
+			Here are your latest payment details: 
 			<br /><br />
 			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php  

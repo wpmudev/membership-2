@@ -61,7 +61,11 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 		?>
 			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your recurring payment for <?php echo self::COMM_VAR_MS_NAME; ?> has failed.
+			Unfortunately, your recurring payment for your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> has failed.
+			<br /><br />
+			To continue as a member, please review and edit your billing information as necessary in your account here: <?php echo self::COMM_VAR_MS_ACCOUNT_PAGE_URL; ?>
+			<br /><br />
+			Here is your latest invoice which is now due:
 			<br /><br />
 			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 

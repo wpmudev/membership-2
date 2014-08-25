@@ -39,7 +39,7 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject = __( 'Before payment due', MS_TEXT_DOMAIN );
+		$model->subject = __( 'Membership payment due soon', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -53,7 +53,9 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 		?>
 			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			your invoice will be billed in <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
+			This is a reminder that the next payment for your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> will be due on <?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>.
+			<br /><br />
+			Here are your latest invoice details:
 			<br /><br />
 			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
