@@ -296,7 +296,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$dripped = array( 'post', 'page' );
 		foreach( $dripped as $type ) {
 			//using count() as !empty() never returned true
-			if ( 0 < count( $this->rules[ $type ]->dripped ) ) {
+			if ( 0 < count( $this->get_rule( $type )->dripped ) ) {
 				return true;
 			}
 		}
