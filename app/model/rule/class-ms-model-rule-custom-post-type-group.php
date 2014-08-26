@@ -98,11 +98,12 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 */
 	public function get_content( $args = null ) {
 		$cpts = self::get_custom_post_types();
-		
+
 		$contents = array();
 		foreach( $cpts as $key => $content ) {
 			$contents[ $key ] = new StdClass();
 			$contents[ $key ]->id = $key;
+			$contents[ $key ]->name = $content;
 			$contents[ $key ]->type = $this->rule_type;
 
 			$contents[ $key ]->access = parent::has_access( $key );
@@ -111,6 +112,20 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 		return $contents;
+	}
+	
+	/**
+	 * Get content array( id => title ).
+	 * Used to show content in html select.
+	 */
+	public function get_content_array() {
+		$cont = array();
+		$contents = $this->get_content();
+		foreach( $contents as $content ) {
+			$cont[ $content->id ] = $content->name;
+		}
+
+		return $cont;
 	}
 	
 	/**
