@@ -1,0 +1,29 @@
+.ms-rule-wrapper {
+	width: 49%;
+	float: left;
+}
+.ms-chosen-rule {
+	width: 20em;
+}
+/** save text ajax */
+#ms-save-text {
+	font-size: 1.1em;
+}
+#ms-save-text span {
+	display: inline-block;
+    width: 140px;
+}
+#ms-save-text .ms-saving-text{
+	display: none;
+}
+.ms-saved-text{
+	display: inline;
+	color: #7ad03a;
+}
+
+.ms-processing .ms-saving-text{
+	display: inline-block !important;
+}
+.ms-processing .ms-saved-text{
+	display: none !important;
+}
