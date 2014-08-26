@@ -79,6 +79,10 @@ class MS_Controller extends MS_Hooker {
 	 * Verify nonce.
 	 *
 	 * @since 4.0.0
+	 * 
+	 * @param string $action The action name to verify nonce.
+	 * @param string $request_method POST or GET
+	 * @param string $nonce_field The nonce field name
 	 * @return bool True if verified, false otherwise.
 	 */
 	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
@@ -105,5 +109,33 @@ class MS_Controller extends MS_Hooker {
 		$is_admin_user = false;
 		$is_admin_user = MS_Model_Member::is_admin_user( null, $this->capability );
 		return apply_filters( 'ms_controller_current_user_can', $is_admin_user, $this->capability );
+	}
+	
+	/**
+	 * Verify required fields aren't empty.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param string[] $fields The array of fields to validate.
+	 * @param string $request_method POST or GET
+	 * @param bool $not_empty if true use empty method, else use isset method.
+	 * @return bool True all fields are validated
+	 */
+	public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
+		$validated = true;
+		$request_fields = ( 'POST' == $request_method ) ? $_POST : $_GET;
+		foreach( $fields as $field ) {
+			if( $not_empty ) {
+				if( empty( $request_fields[ $field ] ) ) {
+					$validated = false;
+				}				
+			}
+			else {
+				if( ! isset( $request_fields[ $field ] ) ) {
+					$validated = false;
+				}				
+			}
+		}
+		return $validated;
 	}
 }
