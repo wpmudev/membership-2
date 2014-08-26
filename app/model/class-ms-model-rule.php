@@ -243,6 +243,14 @@ class MS_Model_Rule extends MS_Model {
 		throw new Exception ("Method to be implemented in child class");
 	}
 	
+	public function reset_rule_values() {
+		$this->rule_value = array();
+	}
+	
+	public function set_access( $id, $has_access ) {
+		$has_access = $this->validate_bool( $has_access );
+		$this->rule_value[ $id ] = $has_access;
+	}
 	public function give_access( $id ) {
 		$this->rule_value[ $id ] = true;
 	}
