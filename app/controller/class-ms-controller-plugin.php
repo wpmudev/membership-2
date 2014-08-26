@@ -91,6 +91,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		/** Membership controller */
 		$this->controllers['membership'] = apply_filters( 'ms_controller_membership', new MS_Controller_Membership() );
+		$this->controllers['membership_content_type'] = apply_filters( 'ms_controller_membership_content_type', new MS_Controller_Membership_Content_Type() );
+		$this->controllers['membership_dripped'] = apply_filters( 'ms_controller_membership_dripped', new MS_Controller_Membership_Dripped() );
+		$this->controllers['membership_tier'] = apply_filters( 'ms_controller_membership_tier', new MS_Controller_Membership_Tier() );
 		
 		/** Rule controller */
 		$this->controllers['rule'] = apply_filters( 'ms_controller_rule', new MS_Controller_Rule() );
@@ -197,13 +200,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', null, MS_Plugin::instance()->url . 'app/assets/images/members.png' );
 
 		/** Create Membership Dashboard */
-		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
+// 		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
 		
 		/** Lists all memberships. */
-		$pages[] = add_submenu_page( 'membership', __( 'Memberships levels', MS_TEXT_DOMAIN ), __( 'Membership levels', MS_TEXT_DOMAIN ), $this->capability, 'all-memberships', array( $this->controllers['membership'], 'admin_membership_list' ) );
+		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['membership'], 'admin_membership' ) );
 		
 		/** Manage membership */
-		$pages[] = add_submenu_page( 'membership', __( 'Edit Membership', MS_TEXT_DOMAIN ), __( 'Add Membership level', MS_TEXT_DOMAIN ), $this->capability, 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
+// 		$pages[] = add_submenu_page( 'membership', __( 'Edit Membership', MS_TEXT_DOMAIN ), __( 'Add Membership level', MS_TEXT_DOMAIN ), $this->capability, 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
 
 		/** Create Members Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), $this->capability, 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
