@@ -9,7 +9,7 @@
     float: left;
     margin: 0;
     padding: 0;
-    width: 200px;
+    width: 225px;
 }
 .ms-wrap .ms-tab {
     position: relative;
@@ -49,10 +49,19 @@ h2.ms-settings-title,
   font-size: 2em; 
   font-weight: bold;
   line-height: 29px;
-  padding: 9px 15px 30px 0;
+  padding: 9px 15px;
   margin: 0;
+  text-align: center;
 }
 
+.ms-settings-desc {
+    margin: 10px 0 20px;
+}
+.ms-settings-desc div{
+	font-size: 1em;
+    width: 40em;
+    margin: 0 auto;
+}
 .ms-wrap .ms-settings {
     background: #fff;
     border: 1px solid #ccc;
@@ -64,7 +73,7 @@ h2.ms-settings-title,
 
 .ms-wrap .ms-settings h3 {
 	margin: 0.5em 1em 0.5em 0;
-	font-size: 1.6em;
+	font-size: 1.4em;
 }
 
 .ms-wrap .ms-settings .settings-description {
@@ -84,6 +93,11 @@ h2.ms-settings-title,
     margin-top: 5px;
 }
 
+.ms-settings-footer{
+	left:225px;
+	margin: 10px 0;
+	position:relative;
+}
 /** Settings Box **/
 .ms-settings-box-wrapper {
     background: none repeat scroll 0 0 #FFFFFF;
@@ -118,11 +132,10 @@ h2.ms-settings-title,
 }
 .ms-field-label {
 	display: block;
-	font-style: oblique;
 }
 
 .ms-field-input-label {
-	margin-top: 10px;
+	margin: 10px 0;
 	font-style: normal;
 	color: #222;
     font-size: 1.1em;
@@ -154,8 +167,7 @@ h2.ms-settings-title,
 }
 
 .ms-settings .settings-description {
-	font-style: oblique;
-	font-size:1.05em;
+	color: #888;
 }
 /** html fields */
 .ms-field-description {
