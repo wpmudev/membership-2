@@ -67,7 +67,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			$enabled = ! empty( $model->addons[ $addon ] );
 		}
 
-		return apply_filters( 'ms_model_addon_is_enabled', $enabled, $addon );
+		return apply_filters( 'ms_model_addon_is_enabled_' . $addon, $enabled );
 	}
 	
 	public function enable( $addon ) {
