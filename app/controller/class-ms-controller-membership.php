@@ -42,6 +42,8 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
 	const STEP_SETUP_PAYMENT = 'setup_payment';
 	
+	protected $active_tab;
+	
 	/**
 	 * Prepare the Membership manager.
 	 *
@@ -53,7 +55,9 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		
+		$this->add_action( 'admin_print_scripts-membership_page_protected-content', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_memberships', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-membership_page_protected-content', 'enqueue_styles' );
 		$this->add_action( 'admin_print_styles-membership_page_memberships', 'enqueue_styles' );
 	}
 	
@@ -126,7 +130,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$view = new MS_View_Membership_Overview();
 				break;
 			case self::STEP_SETUP_PROTECTED_CONTENT:
-				$view = new MS_View_Membership_Setup_Protection();
+				$this->setup_protected_content();
 				break;
 			case self::STEP_CHOOSE_MS_TYPE:
 				$view = new MS_View_Membership_Choose_Type();
@@ -166,6 +170,95 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
+	}
+	
+	public function setup_protected_content() {
+
+		$data = array();
+		$data['tabs'] = $this->get_tabs();
+		$data['step'] = $this->get_step();
+		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
+		$data['membership'] = MS_Model_Membership::get_visitor_membership();
+		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
+		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
+		$view->render();
+	}
+	
+	/**
+	 * Get available tabs for editing the membership.
+	 *
+	 * @return array The tabs configuration.
+	 */
+	public function get_tabs() {
+		$membership_id = $this->load_membership()->id;
+	
+		$tabs = array(
+			'category' => array(
+					'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
+			),
+			'post' => array(
+					'title' => __( 'Post by post, Custom Post Types', MS_TEXT_DOMAIN ),
+			),
+			'page' => array(
+					'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+			),
+			'comment' => array(
+					'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
+			),
+			'shortcode' => array(
+					'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+			),
+			'urlgroup' => array(
+					'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
+			),
+		);
+		/**
+		 * Enable / Disable post by post tab.
+		 */
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			unset( $tabs['category'] );
+		}
+		else {
+			unset( $tabs['post'] );
+		}
+		/**
+		 * Disable urlgroup tab.
+		 */
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			unset( $tabs['urlgroup'] );
+		}
+		/**
+		 * Disable shortcode tab.
+		 */
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+			unset( $tabs['shortcode'] );
+		}
+
+		foreach( $tabs as $key => $tab ) {
+			$tabs[ $key ]['url'] = "admin.php?page=membership&action=edit&tab={$key}&membership_id={$membership_id}";
+		}
+		
+		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
+	}
+	
+	/**
+	 * Get the current active settings page/tab.
+	 *
+	 * @since 4.0.0
+	 */
+	public function get_active_tab() {
+		$tabs = $this->get_tabs();
+	
+		reset( $tabs );
+		$first_key = key( $tabs );
+	
+		/** Setup navigation tabs. */
+		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		if ( ! array_key_exists( $active_tab, $tabs ) ) {
+			$active_tab = $first_key;
+			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
+		}
+		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );
 	}
 	
 	/**
@@ -270,14 +363,15 @@ class MS_Controller_Membership extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 		
-		if( 'general' == $this->active_tab ) {
-			wp_enqueue_style( 'jquery-ui' );
-			wp_enqueue_style( 'jquery-chosen' );
+		switch( $this->get_active_tab() ) {
+			case 'category':
+				wp_enqueue_style( 'jquery-chosen' );
+				break;
+			default:
+				wp_enqueue_style( 'jquery-ui' );
+				break;
 		}
-		elseif( 'dripped' == $this->active_tab ) {
-			wp_enqueue_style( 'jquery-chosen' );
-		}
-		wp_enqueue_style( 'ms_membership_view_edit', $plugin_url. 'app/assets/css/ms-view-membership-edit.css', null, $version );
+		wp_enqueue_style( 'ms_view_membership', $plugin_url. 'app/assets/css/ms-view-membership.css', null, $version );
 	}
 	
 	/**
@@ -286,36 +380,32 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */				
 	public function enqueue_scripts() {
-	
+
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 		
-		wp_register_script( 'jquery-tmpl', $plugin_url. 'app/assets/js/jquery.tmpl.js', array( 'jquery' ), $version );
-				
-		if( 'general' == $this->active_tab ) {
-			wp_enqueue_script( 'ms-view-membership-render-general', $plugin_url. 'app/assets/js/ms-view-membership-render-general.js', array( 'jquery' ), $version );
-			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_script( 'jquery-validate' );
-		}
-		elseif( 'dripped' == $this->active_tab ) {
-			wp_enqueue_script( 'ms-view-membership-render-dripped', $plugin_url. 'app/assets/js/ms-view-membership-render-dripped.js', array( 'jquery' ), $version );
-			wp_enqueue_script( 'jquery-tmpl' );
-			wp_enqueue_script( 'jquery-chosen' );
-			wp_enqueue_script( 'jquery-validate' );
-		}	
-		elseif( 'urlgroup' == $this->active_tab ) {
-			wp_register_script( 'ms-view-membership-render-url-group', $plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', array( 'jquery' ), $version );
-			wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array( 
+		wp_enqueue_script( 'ms-radio-slider' );
+		
+		switch( $this->get_active_tab() ) {
+			case 'category':
+				wp_enqueue_style( 'jquery-chosen' );
+				wp_enqueue_script( 'ms-view-membership-setup-protected-content', $plugin_url. 'app/assets/js/ms-view-membership-setup-protected-content.js', array( 'jquery', 'jquery-chosen' ), $version );
+				break;
+			case 'url_group':
+				wp_register_script( 'ms-view-membership-render-url-group', $plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', array( 'jquery' ), $version );
+				wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array(
 				'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
 				'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
 				'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
 				'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
-			));
-			wp_enqueue_script( 'ms-view-membership-render-url-group' );
-		}
-		else {
-			/* Toggle Button Behaviour */
-			wp_enqueue_script( 'ms-radio-slider' );				
+				));
+				wp_enqueue_script( 'ms-view-membership-render-url-group' );
+				
+				break;
+			default:
+				wp_enqueue_script( 'jquery-ui-datepicker' );
+				wp_enqueue_script( 'jquery-validate' );
+				break;
 		}
 	}
 	
