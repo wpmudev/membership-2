@@ -81,6 +81,8 @@ class MS_Helper_Html extends MS_Helper {
 			'tooltip'   => '',
 		 	'alt'		=> '',
 			'read_only' => false,
+			'data_placeholder' => '',
+			'data_ms' => '',
 			);
 		$field_args = wp_parse_args( $field_args, $defaults );
 		extract( $field_args );
@@ -96,7 +98,7 @@ class MS_Helper_Html extends MS_Helper {
 		
 		/* Input arguments */
 		$input_defaults = array(
-			'label_element' => 'span',
+			'label_element' => 'label',
 		);
 		extract( wp_parse_args( $input_args, $input_defaults ) );
 		
@@ -121,17 +123,30 @@ class MS_Helper_Html extends MS_Helper {
 				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
 				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name'>$value</textarea>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_SELECT:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple >";
-				foreach ($field_options as $key => $option ) {
-					$selected = selected( $key, $value, false );
+				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				$data_placeholder = empty( $data_placeholder ) ? '' : "data-placeholder='$data_placeholder'";
+				if( ! empty( $data_ms ) ) {
+					$data_ms = esc_attr( json_encode( $data_ms ) );
+					$data_ms = "data-ms='{$data_ms}'";
+				}
+				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple $data_placeholder $data_ms >";
+				foreach( $field_options as $key => $option ) {
+					$selected = '';
+					if( is_array( $value ) ) {
+						if( array_key_exists( $key, $value ) ) {
+							$selected = selected( $key, $key, false );
+						}
+					}
+					else {
+						$selected = selected( $key, $value, false );
+					}
 					$key = esc_attr( $key );
 					echo "<option $selected value='$key'>$option</option>";
 				}
