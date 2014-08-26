@@ -81,6 +81,7 @@ define( 'MS_PLUGIN_VERSION', '4.0.0.0.3' );
 function membership_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
+	$overrides['MS_Controller_Membership_Content_Type'] =  "app/controller/membership/class-ms-controller-membership-content-type.php";
 	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
 	$overrides['MS_Helper_List_Table_Rule_Buddypress_Blog'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php";
@@ -106,6 +107,13 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
 	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
 	$overrides['MS_View_Admin_Bar'] = "app/view/class-ms-view-admin-bar.php";
+	$overrides['MS_View_Membership_Accessible_Content'] = "app/view/membership/class-ms-view-membership-accessible-content.php";
+	$overrides['MS_View_Membership_Choose_Type'] = "app/view/membership/class-ms-view-membership-choose-type.php";
+	$overrides['MS_View_Membership_Setup_Content_Type'] = "app/view/membership/class-ms-view-membership-setup-content-type.php";
+	$overrides['MS_View_Membership_Setup_Dripped'] = "app/view/membership/class-ms-view-membership-setup-dripped.php";
+	$overrides['MS_View_Membership_Setup_Payment'] = "app/view/membership/class-ms-view-membership-setup-payment.php";
+	$overrides['MS_View_Membership_Setup_Protected_Content'] = "app/view/membership/class-ms-view-membership-setup-protected-content.php";
+	$overrides['MS_View_Membership_Setup_Tier'] = "app/view/membership/class-ms-view-membership-setup-tier.php";
 	$overrides['MS_View_Shortcode_Membership_Signup'] =  "app/view/shortcode/class-ms-view-shortcode-membership-signup.php";
 	$overrides['MS_View_Shortcode_Membership_Login'] =  "app/view/shortcode/class-ms-view-shortcode-membership-login.php";
 	$overrides['MS_View_Shortcode_Membership_Register_User'] =  "app/view/shortcode/class-ms-view-shortcode-membership-register-user.php";
