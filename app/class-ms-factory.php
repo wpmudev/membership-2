@@ -76,7 +76,7 @@ class MS_Factory {
 			}
 		}
 
-		return apply_filters( 'ms_factory_load', $model, $class, $model_id );
+		return apply_filters( 'ms_factory_load_'. $class, $model, $model_id );
 	}
 	
 	/**
