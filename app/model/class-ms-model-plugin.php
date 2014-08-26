@@ -86,10 +86,6 @@ class MS_Model_Plugin extends MS_Model {
 			if( ! MS_Model_Member::is_logged_user() ){
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
-			/** Logged user with no memberships: assign default Membership */
-			elseif( MS_Model_Member::is_logged_user() && ! $this->member->is_member() ) {
-				$this->member->add_membership( MS_Model_Membership::get_default_membership()->id );
-			}
 		}
 	}
 	

@@ -252,7 +252,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	public function save() {
 		if( ! empty( $this->user_id ) && ! MS_Model_Member::is_admin_user( $this->user_id ) ) {
 			$membership = $this->get_membership();
-			if( ! $membership->visitor_membership && ! $membership->default_membership ) {
+			if( ! $membership->visitor_membership ) {
 				parent::save();
 			}
 		}

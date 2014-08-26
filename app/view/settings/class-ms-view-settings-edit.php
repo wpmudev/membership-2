@@ -96,12 +96,6 @@ class MS_View_Settings_Edit extends MS_View {
 					?>
 					<?php 
 						MS_Helper_Html::settings_box( 
-							array( $this->fields['default_membership_enabled'] ),
-							__( 'Enable default membership level', MS_TEXT_DOMAIN ) 
-						); 
-					?>
-					<?php 
-						MS_Helper_Html::settings_box( 
 							array( $this->fields['hide_admin_bar'] ),
 							__( 'Hide admin bar', MS_TEXT_DOMAIN ) 
 						); 
@@ -122,16 +116,6 @@ class MS_View_Settings_Edit extends MS_View {
 						'field_options' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'plugin_enabled',
-						),
-				),
-				'default_membership_enabled' => array(
-						'id' => 'default_membership_enabled',
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-						'title' => __( 'This setting enable/disable default membership to logged in users without any membership.', MS_TEXT_DOMAIN ),
-						'value' => $this->model->default_membership_enabled,
-						'field_options' => array(
-								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-								'setting' => 'default_membership_enabled',
 						),
 				),
 				'hide_admin_bar' => array(

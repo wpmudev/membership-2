@@ -50,8 +50,6 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $pages = array();
 	
-	protected $default_membership_enabled;
-	
 	protected $hide_admin_bar = true;
 	
 	protected $currency = 'USD';
@@ -356,7 +354,6 @@ class MS_Model_Settings extends MS_Model_Option {
 					break;
 				case 'plugin_enabled':
 				case 'initial_setup':
-				case 'show_default_membership':
 					$this->$property = $this->validate_bool( $value );
 					break;
 				default:

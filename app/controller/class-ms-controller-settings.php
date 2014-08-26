@@ -319,12 +319,6 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 			$this->model->save();
 			
-			/**
-			 * Initialise default membership if it is enabled.
-			 */
-			if( $this->model->default_membership_enabled ) {
-				MS_Model_Membership::get_default_membership();
-			}
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		return $msg;

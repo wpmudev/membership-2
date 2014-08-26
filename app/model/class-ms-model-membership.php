@@ -30,6 +30,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public $post_type = 'ms_membership';
 	
+	const TYPE_SIMPLE = 'simple';
+	const TYPE_CONTENT_TYPE = 'content_type';
+	const TYPE_TIER = 'tier';
+	const TYPE_DRIPPED = 'dripped';
+	
 	const MEMBERSHIP_TYPE_PERMANENT = 'permanent';
 	
 	const MEMBERSHIP_TYPE_FINITE = 'finite';
@@ -54,13 +59,23 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	protected $name;
 	
+	/**
+	 * @deprecated
+	 * @var unknown
+	 */
 	protected $gateway_id;
+	
+	protected $type;
 	
 	protected $membership_type;
 	
-	protected $visitor_membership = false;
+	protected $linked_membership_ids;
 	
-	protected $default_membership = false;
+	protected $active = false;
+	
+	protected $public = true;
+	
+	protected $visitor_membership = false;
 	
 	protected $price;
 	
@@ -78,19 +93,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $trial_period;
 		
+	/**
+	 * @deprecated
+	 * @var unknown
+	 */
 	protected $on_end_membership_id;
-
-	protected $next_membership_id;
-	
-	protected $linked_membership_ids;
-	
-	protected $linked_weight;
-	
-	protected $active = true;
-	
-	protected $public = true;
 	
 	protected $rules = array();
+	
+	public static function get_types() {
+		return array(
+				self::TYPE_SIMPLE => __( 'Simple', MS_TEXT_DOMAIN ),
+				self::TYPE_CONTENT_TYPE => __( 'Multiple content types', MS_TEXT_DOMAIN ),
+				self::TYPE_TIER => __( 'Tier Based', MS_TEXT_DOMAIN ),
+				self::TYPE_DRIPPED => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+		);
+	}
 	
 	public static function get_membership_types() {
 		return array(
@@ -147,13 +165,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'post_status' => 'any',
 		);
 		$args = wp_parse_args( $args, $defaults );
-		if( ! MS_Plugin::instance()->settings->default_membership_enabled ) {
-			$args['meta_query']['default_membership']  = array(
-					'key' => 'default_membership',
-					'value' => '1',
-					'compare' => '!='
-			);
-		}
 
 		return $args;
 		
@@ -173,7 +184,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		if( $hide_default_memberships ) {
 			unset( $memberships[ self::get_visitor_membership()->id ] );
-			unset( $memberships[ self::get_default_membership()->id ] );
 		}
 		return $memberships;
 		
@@ -210,56 +220,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
-			$visitor_membership->default_membership = false;
 			$visitor_membership->active = true;
 			$visitor_membership->public = true;
 			$visitor_membership->save();
 			$visitor_membership = MS_Factory::load( 'MS_Model_Membership', $visitor_membership->id );
 		}
 		return $visitor_membership;
-	}
-	
-	public static function get_default_membership() {
-		$settings = MS_Plugin::instance()->settings;
-		
-		if( $settings->default_membership_enabled ) {
-			$args = array(
-					'post_type' => self::$POST_TYPE,
-					'post_status' => 'any',
-					'meta_query' => array(
-							array(
-									'key' => 'default_membership',
-									'value' => '1',
-									'compare' => '='
-							)
-					)
-			);
-			$query = new WP_Query( $args );
-			$item = $query->get_posts();
-
-			$default_membership = null;
-			if( ! empty( $item[0] ) ) {
-				$default_membership = MS_Factory::load( 'MS_Model_Membership', $item[0]->ID );
-			}
-			else {
-				$description = __( 'Default membership for non members', MS_TEXT_DOMAIN );
-				$default_membership = new self();
-				$default_membership->name = __( 'Default', MS_TEXT_DOMAIN );
-				$default_membership->membership_type = self::MEMBERSHIP_TYPE_PERMANENT;
-				$default_membership->title = $description;
-				$default_membership->description = $description;
-				$default_membership->visitor_membership = false;
-				$default_membership->default_membership = true;
-				$default_membership->active = true;
-				$default_membership->public = true;
-				$default_membership->save();
-				$default_membership = MS_Factory::load( 'MS_Model_Membership', $default_membership->id );
-			}
-		}
-		else {
-			$default_membership = self::get_visitor_membership();
-		}
-		return $default_membership;
 	}
 	
 	public function get_members_count() {

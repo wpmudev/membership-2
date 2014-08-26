@@ -118,7 +118,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		foreach( $data['ms_relationships'] as $ms_relationship ) {
 			$not_in[] = $ms_relationship->membership_id;
 		}
-		$not_in = array_merge( $not_in, array( MS_Model_Membership::get_visitor_membership()->id, MS_Model_Membership::get_default_membership()->id ) );
+		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
 		
 		/** Only active memberships */
