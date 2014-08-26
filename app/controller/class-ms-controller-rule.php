@@ -34,7 +34,9 @@ class MS_Controller_Rule extends MS_Controller {
 	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
 	
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
-		
+
+	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
+	
 	/**
 	 * Prepare the Rule manager.
 	 *
@@ -43,6 +45,9 @@ class MS_Controller_Rule extends MS_Controller {
 	public function __construct() {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
+		
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
+		
 		
 		$this->add_action( 'ms_controller_membership_edit_manager', 'edit_rule_manager' );
 	}
@@ -86,6 +91,34 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 	
+	public function ajax_action_update_rule() {
+		$required = array( 'membership_id', 'rule_type', 'rule_ids', 'rule_value' );
+		$msg = 0;
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+			$msg = $this->update_rule( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
+		}
+	
+		echo $msg;
+		exit;
+	}
+	
+	public function update_rule( $rule_type, $rule_ids, $rule_values ) {
+		$membership = $this->get_membership();
+		
+		$rule = $membership->get_rule( $rule_type );
+		$rule->reset_rule_values();
+		foreach( $rule_ids as $id ) {
+			if( is_array( $rule_values ) ) {
+				$rule_value = $rule_values[ $id ];
+			}
+			else{
+				$rule_value = $rule_values;
+			}
+			$rule->set_access( $id, $rule_value );
+		}
+		$membership->set_rule( $rule_type, $rule );
+		$membership->save();
+	}
 	/**
 	 * Handles Membership Rule form submissions.
 	 *
