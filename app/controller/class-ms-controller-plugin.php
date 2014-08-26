@@ -205,12 +205,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Lists all memberships. */
 		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['membership'], 'admin_membership' ) );
 		
-		/** Manage membership */
-// 		$pages[] = add_submenu_page( 'membership', __( 'Edit Membership', MS_TEXT_DOMAIN ), __( 'Add Membership level', MS_TEXT_DOMAIN ), $this->capability, 'membership-edit', array( $this->controllers['membership'], 'membership_edit' ) );
-
 		/** Create Members Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), $this->capability, 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
 
+		/** Protected Content */
+		$pages[] = add_submenu_page( 'membership', __( 'Select Content to Protect', MS_TEXT_DOMAIN ), __( 'Protected Content', MS_TEXT_DOMAIN ), $this->capability, 'protected-content', array( $this->controllers['membership'], 'setup_protected_content' ) );
+		
 		/** Create Billings Page */
 		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), $this->capability, 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
 
