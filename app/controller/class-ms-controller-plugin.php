@@ -33,6 +33,8 @@
  */
 class MS_Controller_Plugin extends MS_Controller {
 	
+	const MENU_SLUG = 'protected-content';
+	
 	/**
 	 * Instance of MS_Model_Plugin.
 	 *
@@ -194,40 +196,81 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function add_menu_pages() {
-		$pages = array();
-
+		
 		/** Create primary menu item: Membership */
-		$pages[] = add_menu_page( __( 'Membership', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', null, MS_Plugin::instance()->url . 'app/assets/images/members.png' );
-
-		/** Create Membership Dashboard */
-// 		$pages[] = add_submenu_page( 'membership', __( 'Dashboard', MS_TEXT_DOMAIN ), __( 'Dashboard', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['dashboard'], 'admin_dashboard' ) );
+		add_menu_page( 
+				__( 'Protected Content', MS_TEXT_DOMAIN ), 
+				__( 'Protected Content', MS_TEXT_DOMAIN ), 
+				$this->capability, 
+				self::MENU_SLUG,
+				null, 
+				MS_Plugin::instance()->url . 'app/assets/images/members.png' 
+		);
 		
-		/** Lists all memberships. */
-		$pages[] = add_submenu_page( 'membership', __( 'Memberships', MS_TEXT_DOMAIN ), __( 'Membership', MS_TEXT_DOMAIN ), $this->capability, 'membership', array( $this->controllers['membership'], 'membership_admin_page_manager' ) );
-		
-		/** Create Members Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Members', MS_TEXT_DOMAIN ), __( 'Members', MS_TEXT_DOMAIN ), $this->capability, 'membership-members', array( $this->controllers['member'], 'admin_member_list' ) );
-
-		/** Protected Content */
-		$pages[] = add_submenu_page( 'membership', __( 'Select Content to Protect', MS_TEXT_DOMAIN ), __( 'Protected Content', MS_TEXT_DOMAIN ), $this->capability, 'protected-content', array( $this->controllers['membership'], 'setup_protected_content' ) );
-		
-		/** Create Billings Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Billing', MS_TEXT_DOMAIN ), __( 'Billing', MS_TEXT_DOMAIN ), $this->capability, 'membership-billing', array( $this->controllers['billing'], 'admin_billing' ) );
-
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
-			/** Create Coupons Page */
-			$pages[] = add_submenu_page( 'membership', __( 'Coupons', MS_TEXT_DOMAIN ), __( 'Coupons', MS_TEXT_DOMAIN ), $this->capability, 'membership-coupons', array( $this->controllers['coupon'], 'admin_coupon' ) );
-		}
+		/** Submenus definition */
+		$pages = array(
+				'memberships' => array( 
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 
+						'menu_title' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG,
+						'function' => array( $this->controllers['membership'], 'membership_admin_page_manager' ),
+				),
+				'members' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-members',
+						'function' => array( $this->controllers['member'], 'admin_member_list' ),
+				),
+				'protected-content' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-setup',
+						'function' => array( $this->controllers['membership'], 'setup_protected_content' ),
+				),
+				'billing' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Billing', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-billing',
+						'function' => array( $this->controllers['billing'], 'admin_billing' ),
+				),
+				'coupons' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-coupons',
+						'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
+				),
+				'addon' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-addon',
+						'function' => array( $this->controllers['addon'], 'admin_member' ),
+				),
+				'settings' => array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Settings', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-settings',
+						'function' => array( $this->controllers['settings'], 'admin_member' ),
+				),
 				
-		/** Filter to hook in other addon pages. */
-		$pages = apply_filters( 'membership_submenu_pages', $pages );
+		);
 
-		/** Create Add-ons Page */
-		$pages[] = add_submenu_page( 'membership', __( 'Add-ons', MS_TEXT_DOMAIN ), __( 'Add-ons', MS_TEXT_DOMAIN ), $this->capability, 'membership-addons', array( $this->controllers['addon'], 'admin_addon' ) );
-
-		/** Global Membership Plugin settings. */
-		$pages[] = add_submenu_page( 'membership', __( 'Settings', MS_TEXT_DOMAIN ), __( 'Settings', MS_TEXT_DOMAIN ), $this->capability, 'membership-settings', array( $this->controllers['settings'], 'admin_settings' ) );
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
+			unset( $pages['coupons'] );
+		}
 		
+		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );
+		/** Create submenus */
+		foreach( $pages as $page ) {
+			extract( $page );
+			add_submenu_page( $parent_slug, $page_title, $menu_title, $this->capability, $menu_slug, $function );
+		}
 	}
 
 	public function custom_template( $template ) {

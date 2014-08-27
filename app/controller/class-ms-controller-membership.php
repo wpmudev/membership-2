@@ -55,9 +55,9 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		
-		$this->add_action( 'admin_print_scripts-membership_page_protected-content', 'enqueue_scripts' );
+		$this->add_action( 'admin_print_scripts-protected-content_page_protected-content-setup', 'enqueue_scripts' );
 		$this->add_action( 'admin_print_scripts-membership_page_memberships', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_protected-content', 'enqueue_styles' );
+		$this->add_action( 'admin_print_styles-protected-content_page_protected-content-setup', 'enqueue_styles' );
 		$this->add_action( 'admin_print_styles-membership_page_memberships', 'enqueue_styles' );
 	}
 	
