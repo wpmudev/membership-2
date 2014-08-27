@@ -100,6 +100,12 @@ class MS_View_Settings_Edit extends MS_View {
 							__( 'Hide admin bar', MS_TEXT_DOMAIN ) 
 						); 
 					?>
+					<?php 
+						MS_Helper_Html::settings_box( 
+							array( $this->fields['initial_setup'] ),
+							__( 'Enable wizard', MS_TEXT_DOMAIN ) 
+						); 
+					?>
 				</form>
 			</div>
 		</div>
@@ -126,6 +132,16 @@ class MS_View_Settings_Edit extends MS_View {
 						'field_options' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'hide_admin_bar',
+						),
+				),
+				'initial_setup' => array(
+						'id' => 'initial_setup',
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'title' => __( 'Enable wizard.', MS_TEXT_DOMAIN ),
+						'value' => $this->model->initial_setup,
+						'field_options' => array(
+								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+								'setting' => 'initial_setup',
 						),
 				),
 				'action' => array(
