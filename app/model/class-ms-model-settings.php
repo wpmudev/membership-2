@@ -48,6 +48,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $initial_setup;
 	
+	protected $wizard_step;
+	
 	protected $pages = array();
 	
 	protected $hide_admin_bar = true;
@@ -354,6 +356,7 @@ class MS_Model_Settings extends MS_Model_Option {
 					break;
 				case 'plugin_enabled':
 				case 'initial_setup':
+				case 'hide_admin_bar':
 					$this->$property = $this->validate_bool( $value );
 					break;
 				default:
