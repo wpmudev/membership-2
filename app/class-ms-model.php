@@ -192,17 +192,14 @@ class MS_Model extends MS_Hooker {
 	 * @param bool $value Boolean to validate.
 	 */		
 	public function validate_bool( $value ) {
-		if( in_array( $value, array( 'false', false, 0 ) ) ) {
-			$value = false;
-		}
-		elseif( in_array( $value, array( 'true', true, 1, '1' ) ) ) {
-			$value = true;
-		}
-		elseif( function_exists( 'boolval' ) ) {
-			$value = boolval( $value );
-		}
-		else {
-			$value = (bool) $value;
+		if( ! is_bool( $value )  ) {
+			if( function_exists( 'boolval' ) ) {
+				$value = boolval( $value );
+			
+			}
+			else {
+				$value = (bool) $value;
+			}
 		}
 		return $value;
 	}
