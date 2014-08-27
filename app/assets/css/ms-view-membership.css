@@ -8,6 +8,7 @@
 /** save text ajax */
 #ms-save-text {
 	font-size: 1.1em;
+	font-weight:600;
 }
 #ms-save-text span {
 	display: inline-block;
@@ -18,7 +19,7 @@
 }
 .ms-saved-text{
 	display: inline;
-	color: #7ad03a;
+	color: rgb(107, 187, 26);
 }
 
 .ms-processing .ms-saving-text{
