@@ -68,12 +68,13 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function __construct() {
-		$this->add_action( 'load-membership_page_membership-settings', 'admin_settings_manager' );
+		$hook = 'protected-content_page_protected-content-settings';
+		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		
-		$this->add_action( 'admin_print_scripts-membership_page_membership-settings', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_membership-settings', 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 	
 	/**
@@ -91,7 +92,7 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		$msg = 0;
 		if( $this->verify_nonce() && ! empty( $_POST['setting'] ) && $this->is_admin_user() ) {
-			$msg = $this->save_general( 'toggle_activation', array( $_POST['setting'] => 1 ) );
+			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 	
 		echo $msg;
@@ -117,37 +118,36 @@ class MS_Controller_Settings extends MS_Controller {
 		$tabs = array(
 				'general' => array(
 						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=general',
 				),
 				'pages' => array(
 						'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=pages',
 				),
 				'payment' => array(
 						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=payment',
 				),
 				'gateway' => array(
 						'title' =>	__( 'Payment Gateways', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=gateway',
 				),
 				'messages-protection' => array(
 						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=messages-protection',
 				),
 				'messages-automated' => array(
 						'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=messages-automated',
 				),
 				'downloads' => array(
 						'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
-						'url' => 'admin.php?page=membership-settings&tab=downloads',
 				),
 		);
 	
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			unset( $tabs['downloads'] );
 		}
+		
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-settings';
+		foreach( $tabs as $key => $tab ) {
+			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}";
+		}
+		
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
 	}
 	/**
@@ -307,6 +307,7 @@ class MS_Controller_Settings extends MS_Controller {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
 					case 'toggle_activation':
+					case 'toggle_settings':
 						$this->model->$field = ! $this->model->$field;
 						break;
 					case 'save_general':
