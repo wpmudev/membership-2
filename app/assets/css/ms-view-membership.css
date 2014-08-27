@@ -28,3 +28,17 @@
 .ms-processing .ms-saved-text{
 	display: none !important;
 }
+/* choose membership */
+.ms-type-wrapper{
+	position: relative;
+	
+}
+.ms-name-wrapper{
+	clear:both;
+	float:left;
+	width: 45%;
+}
+.ms-private-wrapper{
+	float:left;
+	width: 45%;
+}
