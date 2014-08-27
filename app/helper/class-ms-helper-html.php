@@ -156,10 +156,19 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_RADIO:
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				foreach ($field_options as $key => $option ) {
+					if( is_array( $option ) ) {
+						$text = $option['text'];
+						$desc = $option['desc'];
+					}
+					else {
+						$text = $option;
+						$desc = '';
+					}
 					$checked = checked( $key, $value, false );
 					echo "<div class='ms-radio-wrapper'>";
 					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked /> ";
-					echo "<label for='{$id}_{$key}'>$option</label>";
+					echo "<label for='{$id}_{$key}'>$text</label>";
+					echo ! empty( $desc ) ? "<div class='ms-radio-description'>$desc</div>" : '';
 					echo "</div>";
 				}
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
@@ -179,7 +188,7 @@ class MS_Helper_Html extends MS_Helper {
 					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
 				echo "</span>";
-				echo ($desc != '') ? "<div><span class='ms-field-description'>$desc</span></div>" : '';
+				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
@@ -240,7 +249,29 @@ class MS_Helper_Html extends MS_Helper {
 
 	}
 	
-	public static function settings_footer( $args = null, $merge_fields = true ) {
+	public static function settings_header( $args = null ) {
+		$defaults = array(
+				'title' => '',
+				'title_icon_class' => '',
+				'desc' => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
+		extract($args);
+		
+		?>
+			<div class='ms-settings-title'>
+				<i class="<?php echo $title_icon_class; ?>"></i>
+				<?php echo $title; ?>
+			</div>		
+			<div class="ms-settings-desc">
+				<div>
+				<?php echo $desc; ?>
+				</div>
+			</div>
+		<?php 
+	}
+	public static function settings_footer( $args = null, $merge_fields = true, $show_saving_feedback = true ) {
 		$defaults = array(
 			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
 			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
@@ -252,6 +283,15 @@ class MS_Helper_Html extends MS_Helper {
 				),
 			),
 		);
+		if( ! $show_saving_feedback ) {
+			unset( $defaults['fields']['next'] );
+			$defaults['fields']['save'] = array(
+					'id' => 'save',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Save and continue', MS_TEXT_DOMAIN ),
+			);
+		}
+		
 		$args = wp_parse_args( $args, $defaults );
 		
 		if( $merge_fields ) {
@@ -269,8 +309,10 @@ class MS_Helper_Html extends MS_Helper {
 			<div class="ms-settings-footer">
 				<form method="post" >
 					<span id="ms-save-text">
-						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
-						<span class="ms-saving-text"><?php echo $saving_text ;?></span>
+						<?php if( $show_saving_feedback ) : ?>
+							<span class="ms-saved-text"><?php echo $saved_text ;?></span>
+							<span class="ms-saving-text"><?php echo $saving_text ;?></span>
+						<?php endif; ?>
 						<?php
 							foreach( $fields as $field ) {
 								MS_Helper_Html::html_input( $field );
