@@ -212,7 +212,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				'memberships' => array( 
 						'parent_slug' => self::MENU_SLUG,
 						'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 
-						'menu_title' => __( 'Membership', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG,
 						'function' => array( $this->controllers['membership'], 'membership_admin_page_manager' ),
 				),
@@ -249,20 +249,41 @@ class MS_Controller_Plugin extends MS_Controller {
 						'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
 						'menu_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG . '-addon',
-						'function' => array( $this->controllers['addon'], 'admin_member' ),
+						'function' => array( $this->controllers['addon'], 'admin_addon' ),
 				),
 				'settings' => array(
 						'parent_slug' => self::MENU_SLUG,
 						'page_title' => __( 'Settings', MS_TEXT_DOMAIN ),
 						'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG . '-settings',
-						'function' => array( $this->controllers['settings'], 'admin_member' ),
+						'function' => array( $this->controllers['settings'], 'admin_settings' ),
 				),
 				
 		);
 
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 			unset( $pages['coupons'] );
+		}
+		
+		if( MS_Plugin::instance()->settings->initial_setup ) {
+			$pages = array(
+					'setup' => array(
+							'parent_slug' => self::MENU_SLUG,
+							'page_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+							'menu_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+							'menu_slug' => self::MENU_SLUG,
+							'function' => array( $this->controllers['membership'], 'membership_admin_page_manager' ),
+					),
+			);
+			if( MS_Controller_Membership::STEP_CHOOSE_MS_TYPE == MS_Plugin::instance()->settings->wizard_step ) {
+				$pages['protected-content'] = array(
+						'parent_slug' => self::MENU_SLUG,
+						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+						'menu_slug' => self::MENU_SLUG . '-setup',
+						'function' => array( $this->controllers['membership'], 'setup_protected_content' ),
+				);
+			}
 		}
 		
 		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );
