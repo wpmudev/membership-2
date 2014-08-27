@@ -51,7 +51,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function __construct() {
 
-		$this->add_action( 'load-membership_page_memberships', 'admin_membership_manager' );
+		$this->add_action( 'load-membership_page_memberships', 'membership_admin_page_process' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		
@@ -104,7 +104,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 */
-	public function admin_membership_manager() {
+	public function membership_admin_page_process() {
 		$this->print_admin_message();
 		$msg = 0;
 // 		if( ! empty( $_GET['action'] ) && ! empty( $_GET['membership_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
@@ -118,7 +118,7 @@ class MS_Controller_Membership extends MS_Controller {
 // 		}
 	}
 	
-	public function admin_membership() {
+	public function membership_admin_page_manager() {
 		$view = null;
 		$data = array();
 		$step = $this->get_step();
