@@ -5,6 +5,12 @@
 .ms-wrap {
 	margin:10px 20px 0 2px;
 }
+.ms-wrap .ms-tab-container {
+	min-height: 550px;
+	float: left;
+	width: 225px;
+}
+
 .ms-wrap .ms-tabs {
     float: left;
     margin: 0;
@@ -94,7 +100,6 @@ h2.ms-settings-title,
 }
 
 .ms-settings-footer{
-	left:225px;
 	margin: 10px 0;
 	position:relative;
 }
@@ -171,10 +176,19 @@ h2.ms-settings-title,
 }
 /** html fields */
 .ms-field-description {
-	
+	margin: 10px 0;	
 }
 .ms-radio-wrapper {
-	margin: 10px 0;	
+	margin: 1%;
+	float: left;
+	width: 20%;
+}
+.ms-radio-wrapper label{
+	font-size: 1.1em;
+	font-weight: 600;
+}
+.ms-radio-description {
+	margin: 1em;
 }
 .ms-field-input {
 	margin: 0.5em 0;
