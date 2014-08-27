@@ -240,6 +240,48 @@ class MS_Helper_Html extends MS_Helper {
 
 	}
 	
+	public static function settings_footer( $args = null, $merge_fields = true ) {
+		$defaults = array(
+			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
+			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
+			'fields' => array(
+				'next' => array(
+						'id' => 'next',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Next', MS_TEXT_DOMAIN ),
+				),
+			),
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		if( $merge_fields ) {
+			foreach( $defaults['fields'] as $key => $field ) {
+				if( ! isset( $args['fields'][ $key ] ) ) {
+					$args['fields'][ $key ] = $field;
+				}
+			}
+			
+		}
+		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
+		extract($args);
+		
+		?>
+			<div class="ms-settings-footer">
+				<form method="post" >
+					<span id="ms-save-text">
+						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
+						<span class="ms-saving-text"><?php echo $saving_text ;?></span>
+						<?php
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_input( $field );
+							} 
+						?>
+					</span>
+				</form>
+			</div>
+		<?php 
+	}
+	
 	public static function settings_box( $fields_in, $title = '', $description = '', $args = array() ) {
 		
 		/** If its a fields array, great, if not, make a fields array */

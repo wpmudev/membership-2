@@ -54,14 +54,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php MS_Helper_Html::html_input( $this->fields['cpt_group'] );?>
 				</div>
 			</div>
-			<div class="ms-settings-footer">
-				<span id="ms-save-text">
-					<span class="ms-saved-text"><?php _e( 'All Changes Saved', MS_TEXT_DOMAIN ) ;?></span>
-					<span class="ms-saving-text"><?php _e( 'Saving changes...', MS_TEXT_DOMAIN ) ;?></span>
-				</span>
-				<?php MS_Helper_Html::html_input( $this->fields['next'] );?>
-			</div>
-			
+			<?php MS_Helper_Html::settings_footer( array( 'fields' => array( $this->fields['step'] ) ) ); ?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
@@ -124,11 +117,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['step'],
 				),
-				'next' => array(
-						'id' => 'next',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Next', MS_TEXT_DOMAIN ),
-				),
+				
 		);
 	}
 	
