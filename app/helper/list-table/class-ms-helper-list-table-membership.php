@@ -84,7 +84,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		$toggle = array(
 				'id' => 'ms-toggle-' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $item->public,
+				'value' => $item->private,
 				'class' => '',
 				'field_options' => array(
 						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
