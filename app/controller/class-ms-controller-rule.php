@@ -95,7 +95,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$required = array( 'membership_id', 'rule_type', 'rule_ids', 'rule_value' );
 		$msg = 0;
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
-			$msg = $this->update_rule( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
+			$msg = $this->update_rule( $_POST['rule_type'], $_POST['rule_ids'], ! empty( $_POST['rule_value'] ) );
 		}
 	
 		echo $msg;
