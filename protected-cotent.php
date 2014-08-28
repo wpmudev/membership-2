@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Membership Premium Development
+Plugin Name: Protected Content
 Version: 4.0.0
-Plugin URI: http://premium.wpmudev.org/project/membership
+Plugin URI: http://premium.wpmudev.org/project/protected-content
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
@@ -13,8 +13,9 @@ Text Domain: wpmudev_membership
 
 /**
  * @copyright Incsub (http://incsub.com/)
- * Author - Fabio Jun, Rheinard Korf
- * Contributors - Joji Mori 
+ * Authors: Fabio Jun Onishi, Victor Ivanov, Rheinard Korf, Jack Kitterhing 
+ * Lead Developer: Fabio Jun Onishi
+ * Contributors: Joji Mori, Patrick Cohen 
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  * 
  * This program is free software; you can redistribute it and/or modify 
