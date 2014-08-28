@@ -118,6 +118,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 		);
 	}
+	
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			return $this->rules[ $rule_type ];
@@ -226,6 +227,21 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership = MS_Factory::load( 'MS_Model_Membership', $visitor_membership->id );
 		}
 		return $visitor_membership;
+	}
+	
+	public function merge_protected_content_rules() {
+		$protected_content_rules = self::get_visitor_membership()->rules;
+		
+		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
+			$rule = $this->get_rule( $rule_type );
+			/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
+			$rule_value = array_intersect_key( $rule->rule_value, $protect_rule->rule_value ) + $protect_rule->rule_value;
+
+			$rule->rule_value = $rule_value;
+			$this->set_rule( $rule_type, $rule );
+		}
+		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules );
+		$this->save();
 	}
 	
 	public function get_members_count() {
