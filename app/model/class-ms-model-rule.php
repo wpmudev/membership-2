@@ -71,6 +71,18 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
+	 * Verify if this model has rules set.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @return boolean True if it has rules, false otherwise.
+	 */
+	public function has_rules() {
+		$has_rules = ! empty( $this->rule_value ) ;
+		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this->rule_value );	
+	}
+	
+	/**
 	 * Verify access to the current asset.
 	 * 
 	 * @since 4.0.0
