@@ -10,7 +10,6 @@ jQuery( document ).ready( function( $ ) {
 			
 			data = $( select_obj ).data( 'ms' );
 			data.rule_ids = $( select_obj ).val();
-			data.rule_value = false;
 			$.post( ajaxurl, data, function( response ) {
 				$( save_obj_selector ).removeClass( processing_class );
 			});

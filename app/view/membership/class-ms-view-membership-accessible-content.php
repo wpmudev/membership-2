@@ -33,4 +33,6 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		echo $html;
 		
 	}
+	public function render_category() {
+	}
 }
