@@ -304,7 +304,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array();
 		$data['step'] = self::STEP_CHOOSE_MS_TYPE;
 		$data['action'] = 'save_membership';
-		$data['type'] = MS_Model_Membership::get_types_desc();
 		$data['membership'] = $this->load_membership();
 		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_Choose_Type() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );

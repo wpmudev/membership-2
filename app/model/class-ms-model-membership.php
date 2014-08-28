@@ -110,27 +110,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		);
 	}
 
-	public static function get_types_desc() {
-		return array(
-				self::TYPE_SIMPLE => array(
-						'text' => __( 'I simply want to protecte some of my content', MS_TEXT_DOMAIN ),
-						'desc' => __( "This is the most basic membership that creates as single membership level. Members will have access to all protected content. <br /><br />eg. Visitors don't see protected content, members access all protected content.", MS_TEXT_DOMAIN ),
-				),
-				self::TYPE_CONTENT_TYPE => array(
-						'text' => __( 'I want to have different content available to different members', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This option is for when you have different types of content that you want to make available to different type of members. <br /><br />eg. Music members get access to Guitar Courses, Cooking members get access to Recipes. ', MS_TEXT_DOMAIN ),
-				),
-				self::TYPE_TIER => array(
-						'text' => __( 'I want to set up a Tier Level-based membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This options allows you to set up different tier level membership. <br /><br />eg. Silver >> Gold >> Platinum. The higher the level, the more content members will have access to.', MS_TEXT_DOMAIN ),
-				),
-				self::TYPE_DRIPPED => array(
-						'text' => __( 'I want to set up a Dripped Content membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This option will allow you to set up a membership where content will be revelead to users over a period of time. <br /><br />eg. A weekly training / excercize program. ', MS_TEXT_DOMAIN ),
-				),
-		);
-	}
-	
 	public static function get_membership_types() {
 		return array(
 				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
