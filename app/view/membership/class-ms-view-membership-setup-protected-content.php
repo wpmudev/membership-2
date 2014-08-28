@@ -81,6 +81,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
+							'rule_value' => 0,
 							'_wpnonce' => $nonce,
 							'action' => $action,
 						),
@@ -97,6 +98,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+								'rule_value' => 0,
 								'_wpnonce' => $nonce,
 								'action' => $action,
 						),
