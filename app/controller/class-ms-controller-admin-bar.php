@@ -368,7 +368,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private function add_enable_membership_node() {
 		global $wp_admin_bar;
 
-		$linkurl = 'admin.php?page=membership-settings&tab=general&setting=plugin_enabled&action=toggle_activation';
+		$linkurl = 'admin.php?page=protected-content-settings&tab=general&setting=plugin_enabled&action=toggle_activation';
 		$linkurl = wp_nonce_url( $linkurl, 'toggle_activation' );
 		
 		$wp_admin_bar->add_node( array(
