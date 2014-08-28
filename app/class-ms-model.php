@@ -193,13 +193,7 @@ class MS_Model extends MS_Hooker {
 	 */		
 	public function validate_bool( $value ) {
 		if( ! is_bool( $value )  ) {
-			if( function_exists( 'boolval' ) ) {
-				$value = boolval( $value );
-			
-			}
-			else {
-				$value = (bool) $value;
-			}
+			$value = ( bool ) $value;
 		}
 		return $value;
 	}
