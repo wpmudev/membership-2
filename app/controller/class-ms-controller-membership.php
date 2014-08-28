@@ -42,6 +42,15 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
 	const STEP_SETUP_PAYMENT = 'setup_payment';
 	
+	/**
+	 * The model to use for loading/saving Membership data.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 * @var $model
+	 */
+	private $model;
+	
 	protected $active_tab;
 	
 	/**
@@ -85,9 +94,14 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function load_membership() {
-		$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
-	
-		return apply_filters( 'ms_controller_membership_load_membership', MS_Factory::load( 'MS_Model_Membership', $membership_id ) );
+		if( empty( $this->model ) || ! $this->model->is_valid() ) {
+			
+			$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
+			
+			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		}
+		
+		return apply_filters( 'ms_controller_membership_load_membership', $this->model );
 	}
 	
 	
@@ -115,14 +129,31 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		MS_Helper_Debug::log("step: $step");
 		switch( $step ) {
+			case self::STEP_SETUP_PROTECTED_CONTENT:
+				if( $this->verify_nonce() ) {
+					wp_safe_redirect( add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ) ) ) ;
+				}
+				break;
 			case self::STEP_CHOOSE_MS_TYPE:
 				if( $this->verify_nonce() ) {
 					if( empty( $_POST['private'] ) ) {
 						$_POST['private'] = false;
 					}
 					$msg = $this->save_membership( $_POST );
-					wp_safe_redirect( add_query_arg( array( 'membership_id' => $_POST['membership_id'], 'step' => self::STEP_ACCESSIBLE_CONTENT ) ) ) ;
+					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => self::STEP_ACCESSIBLE_CONTENT ) ) ) ;
 				}
+				break;
+			case self::STEP_ACCESSIBLE_CONTENT:
+				if( $this->verify_nonce() ) {
+					$msg = $this->save_membership( $_POST );
+					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => self::STEP_SETUP_PAYMENT ) ) ) ;
+				}
+				break;
+			case self::STEP_SETUP_PAYMENT:
+				
+				break;
+					
+			default:
 				break;
 		}
 	}
@@ -176,20 +207,6 @@ class MS_Controller_Membership extends MS_Controller {
 				$step = self::STEP_SETUP_PROTECTED_CONTENT;
 			}
 		}
-		
-//		MS_Helper_Debug::log("CURENT step: $step");
-		
-// 		/** calculate next step */
-// 		if( empty( $step ) ) {
-// 			$index = 0;
-// 		}
-// 		else {
-// 			$index = array_keys( $steps, $step );
-// 			$index = $index[0]; 
-// 		}
-		
-// 		$step = $steps[ $index + 1 ];
-// 		MS_Helper_Debug::log("step: $step, $index");
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
@@ -205,7 +222,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
-		$data['step'] = self::STEP_CHOOSE_MS_TYPE;
+		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
@@ -266,7 +283,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}&membership_id={$membership_id}";
+			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&tab=%s', $page, $key);
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -302,9 +319,10 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	public function choose_membership_type() {
 		$data = array();
-		$data['step'] = self::STEP_CHOOSE_MS_TYPE;
+		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['membership'] = $this->load_membership();
+// 		MS_Helper_Debug::log($data['membership']);
 		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_Choose_Type() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
 		$view->render();
@@ -313,7 +331,7 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	public function accessible_content() {
 		$data = array();
-		$data['step'] = self::STEP_MS_LIST;
+		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $this->load_membership();
@@ -367,9 +385,10 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['shortcode'] );
 		}
 		
+		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}&membership_id={$membership_id}";
+			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $membership_id );
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -400,7 +419,7 @@ class MS_Controller_Membership extends MS_Controller {
 					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ACTIVATION_TOGGLED;
 					break;
 				case 'toggle_public':
-					$membership->public = ! $membership->public;
+					$membership->private = ! $membership->private;
 					$membership->save();
 					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_STATUS_TOGGLED;
 					break;
