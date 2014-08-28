@@ -18,7 +18,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					MS_Helper_Html::settings_header( array(
 						'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'fa fa-pencil-square',
-						'desc' => __( 'Hello and welcome to Membership by WPMU DEV. Lets begin by settinup up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Hello and welcome to Protected Content by WPMU DEV. Lets begin by settinup up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
 					) ); 
 				?>
 				<?php
