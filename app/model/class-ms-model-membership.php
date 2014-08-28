@@ -73,7 +73,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $active = false;
 	
-	protected $public = true;
+	protected $private = true;
 	
 	protected $visitor_membership = false;
 	
@@ -221,7 +221,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
 			$visitor_membership->active = true;
-			$visitor_membership->public = true;
+			$visitor_membership->private = true;
 			$visitor_membership->save();
 			$visitor_membership = MS_Factory::load( 'MS_Model_Membership', $visitor_membership->id );
 		}
@@ -362,6 +362,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				case 'title':
 				case 'description':
 					$this->$property = sanitize_text_field( $value );
+					break;
+				case 'type':
+					if( array_key_exists( $value, self::get_types() ) ) {
+						$this->$property = $value;
+					}
 					break;
 				case 'membership_type':
 					if( array_key_exists( $value, self::get_membership_types() ) ) {
