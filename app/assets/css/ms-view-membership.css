@@ -1,3 +1,4 @@
+/* Protected Content Page*/
 .ms-rule-wrapper {
 	width: 49%;
 	float: left;
@@ -6,26 +7,28 @@
 	width: 20em;
 }
 /** save text ajax */
-#ms-save-text {
+.ms-save-text-wrapper {
 	font-size: 1.1em;
 	font-weight:600;
 }
-#ms-save-text span {
+.ms-save-text-wrapper.ms-init span {
+    visibility:hidden;
+}
+.ms-save-text-wrapper span {
 	display: inline-block;
     width: 140px;
 }
-#ms-save-text .ms-saving-text{
+.ms-save-text-wrapper .ms-saving-text{
 	display: none;
 }
 .ms-saved-text{
 	display: inline;
 	color: rgb(107, 187, 26);
 }
-
-.ms-processing .ms-saving-text{
+.ms-save-text-wrapper.ms-processing .ms-saving-text{
 	display: inline-block !important;
 }
-.ms-processing .ms-saved-text{
+.ms-save-text-wrapper.ms-processing .ms-saved-text{
 	display: none !important;
 }
 /* choose membership */

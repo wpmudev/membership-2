@@ -308,7 +308,7 @@ class MS_Helper_Html extends MS_Helper {
 		?>
 			<div class="ms-settings-footer">
 				<form method="post" >
-					<span id="ms-save-text">
+					<span class="ms-save-text-wrapper ms-init">
 						<?php if( $show_saving_feedback ) : ?>
 							<span class="ms-saved-text"><?php echo $saved_text ;?></span>
 							<span class="ms-saving-text"><?php echo $saving_text ;?></span>
