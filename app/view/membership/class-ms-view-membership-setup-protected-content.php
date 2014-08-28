@@ -65,6 +65,8 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	}
 	public function prepare_category() {
 		$membership = $this->data['membership'];
+		$nonce = wp_create_nonce( $this->data['action'] );
+		$action = $this->data['action'];
 		
 		$this->fields = array(
 				'category' => array(
@@ -79,8 +81,8 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
-							'_wpnonce' => wp_create_nonce( $this->data['action'] ),
-							'action' => $this->data['action'],
+							'_wpnonce' => $nonce,
+							'action' => $action,
 						),
 				),
 				'cpt_group' => array(
@@ -88,15 +90,15 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Protect Custom Post Types (CPTs):', MS_TEXT_DOMAIN ),
 						'value' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->rule_value,
-						'data_placeholder' => __( 'Choose a cpt', MS_TEXT_DOMAIN ),
+						'data_placeholder' => __( 'Choose a CPT', MS_TEXT_DOMAIN ),
 						'multiple' => 'multiple',
 						'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->get_content_array(),
 						'class' => 'ms-chosen-rule chosen-select',
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-								'_wpnonce' => wp_create_nonce( $this->data['action'] ),
-								'action' => $this->data['action'],
+								'_wpnonce' => $nonce,
+								'action' => $action,
 						),
 				),
 				'protect_category' => array(
@@ -114,12 +116,17 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				'action' => array(
 						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->data['action'],
+						'value' => $action,
 				),
 				'step' => array(
 						'id' => 'step',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $this->data['step'],
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $nonce,
 				),
 				
 		);
