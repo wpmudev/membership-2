@@ -61,12 +61,13 @@ h2.ms-settings-title,
 }
 
 .ms-settings-desc {
-    margin: 10px 0 20px;
+    margin: 9px 15px;
 }
 .ms-settings-desc div{
 	font-size: 1em;
-    width: 40em;
+    text-align: center;
     margin: 0 auto;
+    max-width: 40em;
 }
 .ms-wrap .ms-settings {
     background: #fff;
