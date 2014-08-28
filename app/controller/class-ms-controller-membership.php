@@ -140,6 +140,7 @@ class MS_Controller_Membership extends MS_Controller {
 						$_POST['private'] = false;
 					}
 					$msg = $this->save_membership( $_POST );
+					$this->model->merge_protected_content_rules();
 					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => self::STEP_ACCESSIBLE_CONTENT ) ) ) ;
 				}
 				break;
@@ -388,7 +389,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $membership_id );
+			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $key, $membership_id );
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
