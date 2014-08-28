@@ -42,3 +42,42 @@
 	float:left;
 	width: 45%;
 }
+.ms-chose-type {
+	padding: 80px 20px 20px 0;
+	background-color: transparent;
+	outline:none;
+	position: relative;
+	-webkit-transition: border .25s ease-in-out;
+	   -moz-transition: border .25s ease-in-out;
+	    -ms-transition: border .25s ease-in-out;
+	     -o-transition: border .25s ease-in-out;
+	        transition: border .25s ease-in-out;
+}
+.ms-chose-type:before {
+  content:'';
+  background:url(../images/membership_sprite.png);
+  background:url(../images/membership_sprite.svg), none;
+  display: inline-block;
+  position: absolute;
+  left:30%;
+  top: 0;
+  width:60px;
+  height:60px;
+}
+
+.ms-chose-type.ms-simple:before {
+  background-position: -29px -30px;
+}
+.ms-chose-type.ms-content_type:before {
+  background-position: -119px -20px;
+}
+.ms-chose-type.ms-tier:before {
+  background-position: -229px -30px;
+}
+.ms-chose-type.ms-dripped:before {
+  background-position: -329px -30px;
+}
+.ms-radio-description .ms-eg {
+	margin: 1em 0;
+	font-style: italic;
+}
