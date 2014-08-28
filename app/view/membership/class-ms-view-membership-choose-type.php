@@ -41,12 +41,12 @@ class MS_View_Membership_Choose_Type extends MS_View {
 	
 	public function prepare_fields() {
 		$membership = $this->data['membership'];
-		
+
 		$this->fields = array(
 			'type' => array(
 					'id' => 'type',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-					'value' => ! empty( $membership->type ) ? $membership->type : MS_Model_Membership::TYPE_SIMPLE,
+					'value' => ( $membership->type ) ? $membership->type : MS_Model_Membership::TYPE_SIMPLE,
 					'class' => 'ms-chose-type',
 					'field_options' => array(
 							MS_Model_Membership::TYPE_SIMPLE => array(
@@ -70,7 +70,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 			'name' => array(
 					'id' => 'name',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Choose a name for you membership', MS_TEXT_DOMAIN ),
+					'title' => __( 'Choose a name for your membership:', MS_TEXT_DOMAIN ),
 					'value' => $membership->name,
 					'class' => 'ms-field-input-name',
 			),
