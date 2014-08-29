@@ -155,6 +155,7 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_RADIO:
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
 				foreach ($field_options as $key => $option ) {
 					if( is_array( $option ) ) {
 						$text = $option['text'];
@@ -264,9 +265,9 @@ class MS_Helper_Html extends MS_Helper {
 				<i class="<?php echo $title_icon_class; ?>"></i>
 				<?php echo $title; ?>
 			</div>		
-			<div class="ms-settings-desc">
-				<div>
-				<?php echo $desc; ?>
+			<div class="ms-settings-desc-wrapper">
+				<div class="ms-settings-desc">
+					<?php echo $desc; ?>
 				</div>
 			</div>
 		<?php 
