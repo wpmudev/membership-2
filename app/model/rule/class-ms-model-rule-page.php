@@ -137,21 +137,23 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	/**
 	 * Get the total content count.
 	 * For list table pagination.
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @param string $args The default query post args.
 	 * @return number The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$exclude = $this->get_excluded_content();
-		$defaults = array(
-				'posts_per_page' => -1,
-				'post_type'   => 'page',
-				'post_status' => array('publish', 'virtual'), 
-				'exclude'     => $exclude,
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$count = 0;
 		
-		$query = new WP_Query($args);
-		return $query->found_posts;
+		$args = self::get_query_args( $args );
+		$query = new WP_Query( $args );
+
+		/** @todo verify why $query->found_posts != count( $contents )*/
+		$contents = get_posts( $args );
+		
+		$count = count( $contents );
+		return apply_filters( 'ms_model_rule_page_get_content_count', $count, $args );
 	}
 	
 	/**
@@ -160,24 +162,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @return array The content.
 	 */
 	public function get_content( $args = null ) {
-		$exclude = $this->get_excluded_content();
-		$defaults = array(
-				'posts_per_page' => -1,
-				'offset'      => 0,
-				'orderby'     => 'post_date',
-				'order'       => 'DESC',
-				'post_type'   => 'page',
-				'post_status' => array('publish', 'virtual'), //Classifieds plugin uses a "virtual" status for some of it's pages
-				'exclude'     => $exclude,
-			);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
+		
+		$query = new WP_Query( $args );
 		
 		$contents = get_posts( $args );
-		
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
-
+			
 			$content->access = self::has_access( $content->id );
 			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
@@ -196,22 +189,52 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		return $contents;
 	}
 
+	public function get_query_args( $args = null ) {
+		
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'post_date',
+				'order'       => 'DESC',
+				'post_type'   => 'page',
+				'post_status' => array( 'publish', 'virtual' ), //Classifieds plugin uses a "virtual" status for some of it's pages
+				'exclude'     => $this->get_excluded_content(),
+				'include'	  => array_keys( $this->rule_value ),
+		);
+		$args = wp_parse_args( $args, $defaults );
+		
+		return apply_filters( 'ms_model_rule_get_query_args', $args );
+	}
+	
 	/**
-	 * Get content array( id => title ).
+	 * Get page content array.
 	 * Used to show content in html select.
+	 * 
+	 * @since 1.0.0
+	 * @return array of id => page title 
 	 */
-	public function get_content_array() {
+	public function get_content_array( $args = null ) {
 		$cont = array();
-		$contents = $this->get_content();
+
+		$args = self::get_query_args( $args );
+		unset( $args['include'] );
+		
+		$query = new WP_Query($args);
+		
+		$contents = get_posts( $args );
 		foreach( $contents as $content ) {
-			$cont[ $content->id ] = $content->post_title;
+			$cont[ $content->ID ] = $content->post_title;
 		}
-		return $cont;
+
+		return apply_filters( 'ms_model_rule_page_get_content_array', $cont );
 	}
 	
 	/**
 	 * Get pages that should not be protected.
 	 * Settings pages like protected, subscribe, etc.
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @return array The page ids.
 	 */
 	private function get_excluded_content() {
@@ -221,6 +244,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		foreach ( $special_page_types as $type ) {
 			$exclude[] = $settings->get_special_page( $type );
 		}
-		return $exclude;
+		
+		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude );
 	}
 }
