@@ -168,19 +168,19 @@ class MS_Controller_Membership extends MS_Controller {
 				$this->membership_list_page();
 				break;
 			case self::STEP_OVERVIEW:
-				$view = new MS_View_Membership_Overview();
+				$this->overview_page();
 				break;
 			case self::STEP_SETUP_PROTECTED_CONTENT:
-				$this->setup_protected_content();
+				$this->setup_protected_content_page();
 				break;
 			case self::STEP_CHOOSE_MS_TYPE:
-				$this->choose_membership_type();
+				$this->choose_membership_type_page();
 				break;
 			case self::STEP_ACCESSIBLE_CONTENT:
-				$this->accessible_content();
+				$this->accessible_content_page();
 				break;
 			case self::STEP_SETUP_PAYMENT:
-				$view = new MS_View_Membership_Setup_Payment();
+				$this->setup_payment_page();
 				break;
 		}
 	}
@@ -224,7 +224,7 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 	}
 	
-	public function setup_protected_content() {
+	public function setup_protected_content_page() {
 
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
@@ -323,26 +323,26 @@ class MS_Controller_Membership extends MS_Controller {
 		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );
 	}
 	
-	public function choose_membership_type() {
+	public function choose_membership_type_page() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['membership'] = $this->load_membership();
 // 		MS_Helper_Debug::log($data['membership']);
 		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_Choose_Type() ); ;
-		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
+		$view->data = apply_filters( 'ms_view_membership_choose_type_data', $data );
 		$view->render();
 		
 	}
 	
-	public function accessible_content() {
+	public function accessible_content_page() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $this->load_membership();
-		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_Accessible_Content() ); ;
-		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
+		$view = apply_filters( 'ms_view_membership_accessible_content', new MS_View_Membership_Accessible_Content() ); ;
+		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data );
 		$view->render();
 	}
 	
@@ -374,11 +374,39 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $this->load_membership();
-		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_List() ); ;
-		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
+		$view = apply_filters( 'ms_view_membership_list', new MS_View_Membership_List() ); ;
+		$view->data = apply_filters( 'ms_view_membership_list_data', $data );
 		$view->render();
 		
 	}
+	
+	public function setup_payment_page() {
+		$data = array();
+		$data['step'] = $this->get_step();
+		$data['action'] = 'save_membership';
+		$data['membership'] = $this->load_membership();
+		$view = apply_filters( 'ms_view_membership_setup_payment', new MS_View_Membership_Setup_Payment() ); ;
+		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data );
+		$view->render();
+	}
+	
+	public function overview_page() {
+		$data = array();
+		$data['step'] = $this->get_step();
+		$data['action'] = 'save_membership';
+		$data['events'] = MS_Model_Event::get_events();
+		$data['membership'] = $this->load_membership();
+		$data['members'] = array();
+		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $data['membership']->id ) );
+		foreach( $ms_relationships as $ms_relationship ) {
+			$data['members'][] = $ms_relationship->get_member();
+		} 
+
+		$view = apply_filters( 'ms_view_membership_overview', new MS_View_Membership_Overview() ); ;
+		$view->data = apply_filters( 'ms_view_membership_overview_data', $data );
+		$view->render();
+	}
+	
 	/**
 	 * Execute action in Membership model.
 	 * 

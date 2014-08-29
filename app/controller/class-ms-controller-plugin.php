@@ -228,7 +228,7 @@ class MS_Controller_Plugin extends MS_Controller {
 						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG . '-setup',
-						'function' => array( $this->controllers['membership'], 'setup_protected_content' ),
+						'function' => array( $this->controllers['membership'], 'setup_protected_content_page' ),
 				),
 				'billing' => array(
 						'parent_slug' => self::MENU_SLUG,
