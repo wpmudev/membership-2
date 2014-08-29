@@ -33,11 +33,8 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 			
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Category name', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
-			'slug' => __( 'Slug', MS_TEXT_DOMAIN ),
-			'posts' => __( 'Posts', MS_TEXT_DOMAIN ),
 		) );
 	}
 
@@ -45,9 +42,6 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
 				'name' => 'name',
 				'access' => 'access',
-				'dripped' => 'dripped',
-				'slug' => 'slug',
-				'posts' => 'posts',
 		) );
 	}
 				
