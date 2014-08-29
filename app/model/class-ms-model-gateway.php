@@ -67,12 +67,12 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public static function get_gateways( $only_active = false ) {
 		if( empty( self::$gateways ) ) {
 			self::$gateways = array(
-				self::GATEWAY_FREE => MS_Factory::load( 'MS_Model_Gateway_Free' ),
-				self::GATEWAY_MANUAL => MS_Factory::load( 'MS_Model_Gateway_Manual' ),
-				self::GATEWAY_PAYPAL_STANDARD => MS_Factory::load( 'MS_Model_Gateway_Paypal_Standard' ),
-				self::GATEWAY_PAYPAL_SINGLE => MS_Factory::load( 'MS_Model_Gateway_Paypal_Single' ),
-				self::GATEWAY_AUTHORIZE => MS_Factory::load( 'MS_Model_Gateway_Authorize' ),
-				self::GATEWAY_STRIPE => MS_Factory::load( 'MS_Model_Gateway_Stripe' ),
+					self::GATEWAY_STRIPE => MS_Factory::load( 'MS_Model_Gateway_Stripe' ),
+					self::GATEWAY_PAYPAL_STANDARD => MS_Factory::load( 'MS_Model_Gateway_Paypal_Standard' ),
+					self::GATEWAY_PAYPAL_SINGLE => MS_Factory::load( 'MS_Model_Gateway_Paypal_Single' ),
+					self::GATEWAY_AUTHORIZE => MS_Factory::load( 'MS_Model_Gateway_Authorize' ),
+					self::GATEWAY_MANUAL => MS_Factory::load( 'MS_Model_Gateway_Manual' ),
+					self::GATEWAY_FREE => MS_Factory::load( 'MS_Model_Gateway_Free' ),
 			);
 		}
 		if( $only_active ) {
