@@ -83,6 +83,19 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
+	 * Verify if this model has rule for a content.
+	 * 
+	 * @since 4.0.0
+	 * 
+	 * @param $id The content id to verify rules.
+	 * @return boolean True if it has rules, false otherwise.
+	 */
+	public function has_rule( $id ) {
+		$has_rule = isset( $this->rule_value[ $id ] ) ;
+		return apply_filters( 'ms_model_rule_has_rule', $has_rule, $id, $this->rule_value );	
+	}
+	
+	/**
 	 * Verify access to the current asset.
 	 * 
 	 * @since 4.0.0
