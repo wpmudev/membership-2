@@ -1,11 +1,13 @@
 jQuery( document ).ready( function( $ ) {
 
 	$( '.ms-radio-slider' ).click( function() {
-		var object = this;
+		var object = this, save_obj_selector = '.ms-save-text-wrapper', processing_class = 'ms-processing', init_class = 'ms-init'
 		
 		if( ! $( object ).hasClass( 'processing' ) ) {
-			
-			$( object ).addClass( 'processing' );
+			$( save_obj_selector ).addClass( processing_class );
+			$( save_obj_selector ).removeClass( init_class );
+
+			$( object ).addClass( processing_class );
 			
 			if( $( object ).hasClass( 'on' ) ) {
 	            $( object ).removeClass( 'on' );
@@ -17,7 +19,8 @@ jQuery( document ).ready( function( $ ) {
 			data = $( object ).children( '.ms-toggle' ).data( 'toggle' );
 	        
 			$.post( ajaxurl, data, function( response ) {
-				$( object ).removeClass( 'processing' );
+				$( object ).removeClass( processing_class );
+				$( save_obj_selector ).removeClass( processing_class );
 				$( object ).children( 'input' ).val( $( object ).hasClass( 'on' ) );
 			});
 		}
