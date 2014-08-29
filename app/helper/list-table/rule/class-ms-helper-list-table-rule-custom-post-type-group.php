@@ -33,7 +33,6 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 			
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
