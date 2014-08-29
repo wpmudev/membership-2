@@ -272,6 +272,8 @@ class MS_Helper_Html extends MS_Helper {
 		<?php 
 	}
 	public static function settings_footer( $args = null, $merge_fields = true, $show_saving_feedback = true ) {
+		$action = 'next';
+		$nonce = wp_create_nonce( $action );
 		$defaults = array(
 			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
 			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
@@ -280,6 +282,16 @@ class MS_Helper_Html extends MS_Helper {
 						'id' => 'next',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => __( 'Next', MS_TEXT_DOMAIN ),
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $action,
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $nonce,
 				),
 			),
 		);
