@@ -7,15 +7,25 @@ class MS_View_Membership_List extends MS_View {
 		$membership_list = new MS_Helper_List_Table_Membership();
 		$membership_list->prepare_items();
 
+		$create_new_button = array(
+			'id' => 'create_new_ms_button',
+			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
+		);
 		ob_start();
 		?>
 		
 		<div class="wrap ms-wrap">
-			<h2 class="ms-settings-title"><i class="fa fa-shield"></i> <?php  _e( 'Membership levels', MS_TEXT_DOMAIN ) ; ?>
-				<a class="add-new-h2" href="admin.php?page=membership-edit"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
-			</h2>
+			<?php 
+				MS_Helper_Html::settings_header( array(
+					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),			
+				) ); 
+			?>
 			<form action="" method="post">
-				<?php $membership_list->display(); ?>
+				<div class="ms-list-table-wrapper">
+					<?php MS_Helper_Html::html_input( $create_new_button );?>
+					<?php $membership_list->display(); ?>
+				</div>
 			</form>
 		</div>
 		

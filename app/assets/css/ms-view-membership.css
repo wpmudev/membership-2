@@ -1,3 +1,8 @@
+/* Membership list page */
+#create_new_ms_button{
+	margin: 10px 0;
+}
+
 /* Protected Content Page*/
 .ms-rule-wrapper {
 	width: 49%;
