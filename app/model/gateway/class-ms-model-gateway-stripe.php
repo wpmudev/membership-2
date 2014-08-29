@@ -30,7 +30,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	
 	protected $name = 'Stripe Gateway';
 	
-	protected $description = 'Stripe gateway integration';
+	protected $description = '';
 	
 	protected $manual_payment = false;
 	

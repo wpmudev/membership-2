@@ -42,7 +42,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
 	protected $name = 'PayPal Single Gateway';
 	
-	protected $description = 'PayPal for single payments (not recurring).';
+	protected $description = '';
 	
 	protected $manual_payment = true;
 	

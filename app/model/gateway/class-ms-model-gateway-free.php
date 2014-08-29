@@ -30,7 +30,7 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
 	protected $name = 'Free Gateway';
 	
-	protected $description = 'Free Memberships';
+	protected $description = '';
 	
 	protected $manual_payment = true;
 	

@@ -30,7 +30,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	protected $name = 'Manual Gateway';
 	
-	protected $description = 'Manual Gateway description';
+	protected $description = '(Bank orders, cash, etc)';
 	
 	protected $pro_rate = true;
 	

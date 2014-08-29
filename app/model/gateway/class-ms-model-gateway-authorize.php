@@ -36,7 +36,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 	protected $name = 'Authorize.net Gateway';
 	
-	protected $description = 'Authorize.net gateway integration';
+	protected $description = '';
 	
 	protected $manual_payment = false;
 	
