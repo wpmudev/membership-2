@@ -92,17 +92,17 @@ class MS_Controller_Rule extends MS_Controller {
 	}
 	
 	public function ajax_action_update_rule() {
-		$required = array( 'membership_id', 'rule_type', 'rule_ids', 'rule_value' );
+		$required = array( 'membership_id', 'rule_type', 'rule_ids' );
 		$msg = 0;
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
-			$msg = $this->update_rule( $_POST['rule_type'], $_POST['rule_ids'], ! empty( $_POST['rule_value'] ) );
+			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], ! empty( $_POST['rule_value'] ) );
 		}
 	
 		echo $msg;
 		exit;
 	}
 	
-	public function update_rule( $rule_type, $rule_ids, $rule_values ) {
+	public function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
 		$membership = $this->get_membership();
 		
 		$rule = $membership->get_rule( $rule_type );
@@ -116,8 +116,11 @@ class MS_Controller_Rule extends MS_Controller {
 			}
 			$rule->set_access( $id, $rule_value );
 		}
+
 		$membership->set_rule( $rule_type, $rule );
 		$membership->save();
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		return $msg;
 	}
 	/**
 	 * Handles Membership Rule form submissions.
