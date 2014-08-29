@@ -107,7 +107,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'field_options' => array(
 						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE,
 						'membership_id' => $_REQUEST['membership_id'],
-						'rule' => $_REQUEST['tab'],
+						'rule' => $item->type,
 						'item' => $item->id,
 				),
 		);
