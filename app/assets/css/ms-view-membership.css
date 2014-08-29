@@ -89,3 +89,38 @@
 	margin: 1em 0;
 	font-style: italic;
 }
+
+/* Payment setup page */
+.ms-payment-wrapper{
+
+}
+.ms-settings-desc .ms-field-description {
+	color: #888;
+	font-size: 1em;
+}
+.ms-payments-choice {
+	margin: 0 0 0 5em;
+    width: 10em;
+}
+
+/* Overview Page */
+.ms-overview-news-wrapper {
+	width: 55%;
+	float: left;
+	padding: 0 10px 0 0;
+}
+.ms-overview-members-wrapper {
+	width: 40%;
+	float: left;
+}
+.ms-overview-available-content-wrapper {
+	clear: both;
+	background-color: #eee;
+}
+.ms-overview-content-box-wrapper {
+	border-right: 1px solid #ccc;
+    float: left;
+    margin: 10px;
+    min-height: 10em;
+    width: 18%;
+}
