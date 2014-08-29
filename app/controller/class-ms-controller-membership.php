@@ -162,10 +162,10 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_manager() {
 		$this->wizard_tracker();
 		$step = $this->get_step();
-// 		MS_Helper_Debug::log($step);
+		MS_Helper_Debug::log($step);
 		switch( $step ) {
 			case self::STEP_MS_LIST:
-				$view  = new MS_View_Membership_List();
+				$this->membership_list_page();
 				break;
 			case self::STEP_OVERVIEW:
 				$view = new MS_View_Membership_Overview();
@@ -366,6 +366,18 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
+	}
+	
+	public function membership_list_page() {
+		$data = array();
+		$data['step'] = $this->get_step();
+		$data['action'] = 'save_membership';
+		$data['tabs'] = $this->get_accessible_content_tabs();
+		$data['membership'] = $this->load_membership();
+		$view = apply_filters( 'ms_view_membership_choose_type', new MS_View_Membership_List() ); ;
+		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
+		$view->render();
+		
 	}
 	/**
 	 * Execute action in Membership model.
