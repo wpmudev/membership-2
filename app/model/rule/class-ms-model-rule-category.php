@@ -205,7 +205,10 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	
 	/**
 	 * Prepare content to be shown in list table.
-	 * @param string $args The default query post args.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $args The default query args.
 	 * @return array The content.
 	 */
 	public function get_content( $args = null ) {
@@ -213,6 +216,10 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 		foreach( $contents as $key => $content ) {
 			$content->id = $content->term_id;
+			if( ! $this->has_rule( $content->id ) ) {
+				unset( $contents[ $key ] );
+				continue;
+			}
 			$content->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
 
 			$content->access = parent::has_access( $content->id );
@@ -232,16 +239,20 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Get content array( id => title ).
+	 * Get category content array.
 	 * Used to show content in html select.
+	 *
+	 * @since 1.0.0
+	 * @return array of id => category name
 	 */
 	public function get_content_array() {
 		$cont = array();
-		$contents = $this->get_content();
-		foreach( $contents as $content ) {
-			$cont[ $content->id ] = $content->name;
+		$contents = get_categories( 'get=all' );
+		
+		foreach( $contents as $key => $content ) {
+			$cont[ $content->term_id ] = $content->name;
 		}
-		return $cont;
+		return apply_filters( 'ms_model_rule_category_get_content_array', $cont );
 	}
 	
 }
