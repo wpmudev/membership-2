@@ -338,7 +338,7 @@ label.ms-validation-error {
   background: rgb(107,187,26);
 }
 
-.ms-radio-slider.processing {
+.ms-radio-slider.ms-processing {
 	cursor: wait;
 }
 
@@ -438,4 +438,14 @@ textarea.ms-field-input {
 /* MEDIA /DOWNLOADS TAB */
 #masked_url {
 	display: inline;
+}
+
+/* list tables */
+.ms-list-table-wrapper .tablenav{
+	display: none;
+}
+.ms-list-table-half {
+	float: left;
+    margin: 0 10px;
+    width: 40%;
 }
