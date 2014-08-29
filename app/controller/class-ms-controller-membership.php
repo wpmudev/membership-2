@@ -125,12 +125,13 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_process() {
 		$this->print_admin_message();
 		$msg = 0;
-//		MS_Helper_Debug::log($_POST);
+		MS_Helper_Debug::log($_POST);
 		$step = $this->get_step();
 		MS_Helper_Debug::log("step: $step");
 		switch( $step ) {
 			case self::STEP_SETUP_PROTECTED_CONTENT:
 				if( $this->verify_nonce() ) {
+					MS_Helper_Debug::log("verified");
 					wp_safe_redirect( add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ) ) ) ;
 				}
 				break;
@@ -140,7 +141,6 @@ class MS_Controller_Membership extends MS_Controller {
 						$_POST['private'] = false;
 					}
 					$msg = $this->save_membership( $_POST );
-					$this->model->merge_protected_content_rules();
 					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => self::STEP_ACCESSIBLE_CONTENT ) ) ) ;
 				}
 				break;
@@ -162,6 +162,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_manager() {
 		$this->wizard_tracker();
 		$step = $this->get_step();
+// 		MS_Helper_Debug::log($step);
 		switch( $step ) {
 			case self::STEP_MS_LIST:
 				$view  = new MS_View_Membership_List();
@@ -186,6 +187,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_step() {
 		/** Initial step */
 		$step = self::STEP_MS_LIST;
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		
 		$steps = array(
 				0 => self::STEP_MS_LIST,
@@ -200,9 +202,9 @@ class MS_Controller_Membership extends MS_Controller {
 		if( ! empty( $_REQUEST['step'] ) && in_array( $_REQUEST['step'], $steps ) ) {
 			$step = $_REQUEST['step'];
 		}
-		elseif( MS_Plugin::instance()->settings->initial_setup ) {
-			if( MS_Plugin::instance()->settings->wizard_step ) {
-				$step = MS_Plugin::instance()->settings->wizard_step;
+		elseif( $settings->initial_setup ) {
+			if( $settings->wizard_step ) {
+				$step = $settings->wizard_step;
 			}
 			else {
 				$step = self::STEP_SETUP_PROTECTED_CONTENT;
@@ -212,9 +214,12 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function wizard_tracker() {
-		$settings = MS_Plugin::instance()->settings;
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if( $settings->initial_setup && ! empty( $_POST['step'] ) ) {
 			$settings->wizard_step = $_POST['step'];
+			if( self::STEP_SETUP_PROTECTED_CONTENT == $settings->wizard_step ) {
+				$settings->initial_setup = false;
+			}
 			$settings->save();
 		}
 	}
@@ -344,52 +349,20 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_accessible_content_tabs() {
 		$membership_id = $this->load_membership()->id;
 		
-		$tabs = array(
-				'category' => array(
-						'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
-				),
-				'post' => array(
-						'title' => __( 'Post by post, Custom Post Types', MS_TEXT_DOMAIN ),
-				),
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-				),
-				'comment' => array(
-						'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
-				),
-				'shortcode' => array(
-						'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
-				),
-				'urlgroup' => array(
-						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
-				),
-		);
-		/**
-		 * Enable / Disable post by post tab.
-		*/
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			unset( $tabs['category'] );
-		}
-		else {
-			unset( $tabs['post'] );
-		}
-		/**
-		 * Disable urlgroup tab.
-		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			unset( $tabs['urlgroup'] );
-		}
-		/**
-		 * Disable shortcode tab.
-		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
-			unset( $tabs['shortcode'] );
-		}
+		$tabs = $this->get_protected_content_tabs();
+		
+		$protected_content = MS_Model_Membership::get_visitor_membership();
 		
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
-		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $key, $membership_id );
+		foreach( $tabs as $tab => $title ) {
+			$rule = $protected_content->get_rule( $tab );
+			if( $rule->has_rules() ) {
+				$tabs[ $tab ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $tab, $membership_id );
+			}
+			else {
+				unset( $tabs[ $tab ] );
+			}
 		}
 		
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
