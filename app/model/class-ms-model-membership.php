@@ -119,6 +119,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		);
 	}
 	
+	public function after_load() {
+		/** validate rules using protected content rules */
+		if( ! $this->visitor_membership ) {
+			$this->merge_protected_content_rules();
+		}
+	}
+	
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			return $this->rules[ $rule_type ];
@@ -236,12 +243,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$rule = $this->get_rule( $rule_type );
 			/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
 			$rule_value = array_intersect_key( $rule->rule_value, $protect_rule->rule_value ) + $protect_rule->rule_value;
-
 			$rule->rule_value = $rule_value;
 			$this->set_rule( $rule_type, $rule );
 		}
 		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules );
-		$this->save();
 	}
 	
 	public function get_members_count() {
