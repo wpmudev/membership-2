@@ -41,13 +41,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		
 	public function get_columns() {
 		$columns = array(
-				'cb'     => '<input type="checkbox" />',
 				'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
-				'membership_type' => __( 'Type', MS_TEXT_DOMAIN ),
+				'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 				'active' => __( 'Active', MS_TEXT_DOMAIN ),
-				'public' => __( 'Public', MS_TEXT_DOMAIN ),
 				'members' => __( 'Members', MS_TEXT_DOMAIN ),
-				'shortcode' => __( 'Shortcode', MS_TEXT_DOMAIN ),
+				'price' => __( 'Cost', MS_TEXT_DOMAIN ),
+				'payment_structure' => __( 'Payment Structure', MS_TEXT_DOMAIN ),
+				'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
 		);
 		
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
@@ -115,14 +115,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 		
-		$total_items =  MS_Model_Membership::get_membership_count();
-		$per_page = $this->get_items_per_page( 'membership_per_page', 10 );
-		$current_page = $this->get_pagenum();
-		
-		$args = array(
-				'posts_per_page' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
-		);
+		$args = array();
 		
 		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
 			$args['orderby'] = $_REQUEST['orderby'];
@@ -140,16 +133,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships( $args ) );
 		
-		$this->set_pagination_args( array(
-					'total_items' => $total_items,
-					'per_page' => $per_page,
-				)
-			);
 	}
 
 	public function column_name( $item ) {
 		$actions = array(
-				sprintf( '<a href="?page=membership-edit&membership_id=%s">%s</a>',
+				sprintf( '<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
+						$_REQUEST['page'],
+						MS_Controller_Membership::STEP_OVERVIEW,
 						$item->id,
 						__('Edit', MS_TEXT_DOMAIN )
 				),
@@ -182,23 +172,14 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				$html = '['. MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE ." id='$item->id']";
 				break;
 			default:
-				if( property_exists( $item, $column_name ) ) {
-					$html = $item->$column_name;
-				}
-				else {
-					$html = print_r( $item, true );
-				}
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;
 	}
 	
 	public function get_bulk_actions() {
-		return apply_filters( 'membership_helper_list_table_membership_bulk_actions', array(
-			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
-			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
-			'toggle_public' => __( 'Toggle Public Status', MS_TEXT_DOMAIN ),
-		) );
+		return apply_filters( 'ms_helper_list_table_membership_bulk_actions', array() );
 	}
 	
 }
