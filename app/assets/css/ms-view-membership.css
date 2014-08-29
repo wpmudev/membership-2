@@ -12,7 +12,7 @@
 	font-weight:600;
 }
 .ms-save-text-wrapper.ms-init span {
-    visibility:hidden;
+    display: none;
 }
 .ms-save-text-wrapper span {
 	display: inline-block;
