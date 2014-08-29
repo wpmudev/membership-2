@@ -69,16 +69,17 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	}
 
 	public function column_name( $item ) {
-		$html = sprintf( '<div>%1$s</div><div>%2$s</div>', $item->name, $item->description );
+		$html = sprintf( '<div>%s %s</div>', $item->name, $item->description );
 		$actions = array(
 				sprintf( '<a href="?page=%s&tab=%s&gateway_id=%s&action=%s">%s</a>',
-						$_REQUEST['page'],
-						$_REQUEST['tab'],
+						MS_Controller_Plugin::MENU_SLUG . '-settings',
+						'gateway',
 						$item->id,
 						'edit',
 						__('Settings', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<a href="?page=membership-billing&gateway_id=%s">%s</a>',
+				sprintf( '<a href="?page=%s&gateway_id=%s">%s</a>',
+						MS_Controller_Plugin::MENU_SLUG . '-billings',
 						$item->id,
 						__('View Transactions', MS_TEXT_DOMAIN )
 				),
