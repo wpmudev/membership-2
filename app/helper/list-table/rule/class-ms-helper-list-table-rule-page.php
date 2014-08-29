@@ -30,7 +30,14 @@
 class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_page';
-		
+	
+	protected $membership;
+	
+	public function __construct( $page_rule, $membership ) {
+		parent::__construct( $page_rule );
+		$this->membership = $membership;	
+	}
+	
 	public function prepare_items() {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
@@ -58,13 +65,17 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 	}
 	
 	public function get_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
+		$columns = array(
 				'cb'     => '<input type="checkbox" />',
 				'name' => __( 'Page title', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-				'page_date' => __( 'Page date', MS_TEXT_DOMAIN ),
-		) );
+		);
+		if( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
+			unset( $columns['dripped'] );
+		}
+		
+		return apply_filters( "membership_helper_list_table_{$this->id}_columns", $columns );
 	}
 	
 	public function column_name( $item ) {
