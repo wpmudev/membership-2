@@ -102,23 +102,70 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $rules = array();
 	
 	public static function get_types() {
-		return array(
+		return apply_filters( 'ms_model_membership_get_types', array(
 				self::TYPE_SIMPLE => __( 'Simple', MS_TEXT_DOMAIN ),
 				self::TYPE_CONTENT_TYPE => __( 'Multiple content types', MS_TEXT_DOMAIN ),
 				self::TYPE_TIER => __( 'Tier Based', MS_TEXT_DOMAIN ),
 				self::TYPE_DRIPPED => __( 'Recurring payment', MS_TEXT_DOMAIN ),
-		);
+		) );
 	}
 
+	public static function is_valid_type( $type ) {
+		return apply_filters( 'ms_model_membership_is_valid_type', array_key_exists( $type, self::get_types() ) );
+	}
+	
+	public function get_type_description() {
+		$description = array();
+		
+		if( self::is_valid_type( $this->type ) ) {
+			$types = self::get_types();
+			$description[] = $types[ $this->type ];
+			if( $this->is_private_eligible() ) {
+				if( $this->is_private() ) {
+					$description[] = __( 'Private', MS_TEXT_DOMAIN );
+				}
+				else {
+					$description[] = __( 'Public', MS_TEXT_DOMAIN );
+				}
+			}
+		}
+		$description = join( ', ', $description );
+		
+		return apply_filters( 'ms_model_membership_get_type_description', $description );
+	}
+	
 	public static function get_membership_types() {
-		return array(
+		return apply_filters( 'ms_model_membership_get_payment_types', array(
 				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
-		);
+		) );
 	}
 	
+	public function is_private() {
+		$private = false;
+	
+		if( $this->is_private_eligible() && $this->private ) {
+			$private = true;
+		}
+		
+		return apply_filters( 'ms_model_membership_is_private', $private );
+	}
+	
+	public function is_private_eligible() {
+		$is_private_eligible = false;
+		
+		/** Private only can be enabled in these types */
+		$private_eligible_types = apply_filters( 'ms_model_membership_private_eligible_types', array(
+				self::TYPE_SIMPLE,
+				self::TYPE_CONTENT_TYPE,
+		) );
+		if( in_array( $this->type, $private_eligible_types ) ) {
+			$is_private_eligible = true;
+		}
+		return apply_filters( 'ms_model_membership_is_private_eligible', $is_private_eligible );
+	}
 	public function after_load() {
 		/** validate rules using protected content rules */
 		if( ! $this->visitor_membership ) {
@@ -365,6 +412,34 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		foreach( $rules as $rule ) {
 			$rule->protect_content( $ms_relationship );
 		}
+	}
+	
+	/**
+	 * Returns property associated with the render.
+	 *
+	 * @since 1.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+		$value = null;
+		switch( $property ) {
+			case 'type_description':
+				$value = $this->get_type_description();
+				break;
+			case 'private':
+				$value=  $this->is_private();
+				break;
+			default:
+				if( property_exists( $this, $property ) ) {
+					$value = $this->$property;
+				}
+				break;
+		}
+		
+		return apply_filters( 'ms_model_membership__get', $value, $property );
 	}
 	
 	/**
