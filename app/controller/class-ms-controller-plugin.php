@@ -265,7 +265,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			unset( $pages['coupons'] );
 		}
 		
-		if( MS_Plugin::instance()->settings->initial_setup ) {
+		if( MS_Factory::load( 'MS_Model_Settings' )->initial_setup ) {
 			$pages = array(
 					'setup' => array(
 							'parent_slug' => self::MENU_SLUG,
