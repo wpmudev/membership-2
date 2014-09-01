@@ -214,7 +214,7 @@ class MS_Controller_Plugin extends MS_Controller {
 						'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ), 
 						'menu_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG,
-						'function' => array( $this->controllers['membership'], 'membership_admin_page_manager' ),
+						'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 				),
 				'members' => array(
 						'parent_slug' => self::MENU_SLUG,
@@ -228,7 +228,7 @@ class MS_Controller_Plugin extends MS_Controller {
 						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
 						'menu_slug' => self::MENU_SLUG . '-setup',
-						'function' => array( $this->controllers['membership'], 'setup_protected_content_page' ),
+						'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
 				),
 				'billing' => array(
 						'parent_slug' => self::MENU_SLUG,
@@ -272,7 +272,7 @@ class MS_Controller_Plugin extends MS_Controller {
 							'page_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
 							'menu_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
 							'menu_slug' => self::MENU_SLUG,
-							'function' => array( $this->controllers['membership'], 'membership_admin_page_manager' ),
+							'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 					),
 			);
 			if( MS_Controller_Membership::STEP_CHOOSE_MS_TYPE == MS_Plugin::instance()->settings->wizard_step ) {
