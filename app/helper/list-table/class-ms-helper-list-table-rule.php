@@ -33,7 +33,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		
 	protected $model;
 	
-	public function __construct( $model ) {
+	protected $membership;
+	
+	public function __construct( $model, $membership = null ) {
 		parent::__construct( array(
 			'singular'  => "rule_$this->id",
 			'plural'    => "rules",
@@ -41,6 +43,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		) );
 		
 		$this->model = $model;
+		$this->membership = $membership;
 	}
 		
 	public function get_columns() {
@@ -98,7 +101,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_access( $item ) {
-		
 		$toggle = array(
 				'id' => 'ms-toggle-' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
@@ -106,7 +108,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'class' => '',
 				'field_options' => array(
 						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE,
-						'membership_id' => $_REQUEST['membership_id'],
+						'membership_id' => $this->get_membership_id(),
 						'rule' => $item->type,
 						'item' => $item->id,
 				),
@@ -121,7 +123,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				sprintf( 
 					'<a href="?page=%s&tab=dripped&membership_id=%s">%s</a>',
 					$_REQUEST['page'],
-					$_REQUEST['membership_id'],
+					$this->get_membership_id(),
 					__('Edit', MS_TEXT_DOMAIN )
 				),
 		);
@@ -133,11 +135,22 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$membership_id = array(
 				'id' => 'membership_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $_REQUEST['membership_id'],
+				'value' => $this->get_membership_id(),
 		);
 		MS_Helper_Html::html_input( $membership_id );
 		
 		parent::display();
+	}
+	
+	protected function get_membership_id() {
+		$membership_id = 0;
+		if( ! empty( $this->membership ) && $this->membership->is_valid() ) {
+			$membership_id = $this->membership->id;
+		}
+		elseif( ! empty( $_REQUEST['membership_id'] ) ) {
+			$membership_id = $_REQUEST['membership_id'];
+		}
+		return apply_filters( 'ms_helper_list_table_rule_get_membership_id', $membership_id );
 	}
 	
 	public function get_views(){
