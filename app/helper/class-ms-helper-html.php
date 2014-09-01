@@ -260,15 +260,20 @@ class MS_Helper_Html extends MS_Helper {
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
 		extract($args);
 		
+		if( ! is_array( $desc ) ) {
+			$desc = array( $desc );
+		}
 		?>
 			<div class='ms-settings-title'>
 				<i class="<?php echo $title_icon_class; ?>"></i>
 				<?php echo $title; ?>
 			</div>		
 			<div class="ms-settings-desc-wrapper">
-				<div class="ms-settings-desc">
-					<?php echo $desc; ?>
-				</div>
+				<?php foreach( $desc as $description ): ?> 
+					<div class="ms-settings-desc">
+						<?php echo $description; ?>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		<?php 
 	}
