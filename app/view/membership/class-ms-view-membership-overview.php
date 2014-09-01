@@ -98,6 +98,7 @@ class MS_View_Membership_Overview extends MS_View {
 	private function content_box( $rule ) {
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
+		$contents = $rule->get_content();
 		?>
 			<div class="ms-overview-content-box-wrapper">
 				<div class="ms-title">
@@ -105,7 +106,7 @@ class MS_View_Membership_Overview extends MS_View {
 				</div>
 				<?php foreach( $rule->rule_value as $id => $has_access ): ?>
 					<?php if( $has_access ): ?>
-						<span class="ms-available-content-name"><?php echo $id;?></span>
+						<span class="ms-available-content-name"><?php echo $contents[ $id ]->name ;?></span>
 					<?php endif; ?>
 				<?php endforeach;;?>
 				<div>
