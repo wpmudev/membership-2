@@ -9,8 +9,10 @@ class MS_View_Membership_List extends MS_View {
 
 		$create_new_button = array(
 			'id' => 'create_new_ms_button',
-			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_CHOOSE_MS_TYPE ), remove_query_arg( 'membership' ) ),
 			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
+			'class' => 'button',
 		);
 		ob_start();
 		?>
