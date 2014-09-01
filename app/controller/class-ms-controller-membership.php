@@ -131,15 +131,19 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 		MS_Helper_Debug::log($_POST);
 		$step = $this->get_step();
+		$goto_url = null;
+		
 		MS_Helper_Debug::log("step: $step");
-		switch( $step ) {
-			case self::STEP_SETUP_PROTECTED_CONTENT:
-				if( $this->verify_nonce() ) {
-					wp_safe_redirect( add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ) ) ) ;
-				}
-				break;
-			case self::STEP_CHOOSE_MS_TYPE:
-				if( $this->verify_nonce() ) {
+		/** Verify nonce action in request */
+		if( $this->verify_nonce() ) {
+			MS_Helper_Debug::log("nonce verified for $step");
+			/** Take next actions based in current step.*/
+			switch( $step ) {
+				case self::STEP_SETUP_PROTECTED_CONTENT:
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_CHOOSE_MS_TYPE, $step );
+					$goto_url = add_query_arg( array( 'step' => $next_step ) );
+					break;
+				case self::STEP_CHOOSE_MS_TYPE:
 					if( empty( $_POST['private'] ) ) {
 						$_POST['private'] = false;
 					}
@@ -160,23 +164,48 @@ class MS_Controller_Membership extends MS_Controller {
 							$next_step = self::STEP_ACCESSIBLE_CONTENT;
 							break;
 					}
-					
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step );
-					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) ) );
-				}
-				break;
-			case self::STEP_ACCESSIBLE_CONTENT:
-				if( $this->verify_nonce() ) {
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				case self::STEP_ACCESSIBLE_CONTENT:
 					$msg = $this->save_membership( $_POST );
-					wp_safe_redirect( add_query_arg( array( 'membership_id' => $this->model->id, 'step' => self::STEP_SETUP_PAYMENT ) ) ) ;
-				}
-				break;
-			case self::STEP_SETUP_PAYMENT:
-				
-				break;
-					
-			default:
-				break;
+					$next_step = self::STEP_ACCESSIBLE_CONTENT;
+					switch( $this->model->type ) {
+						case MS_Model_Membership::TYPE_CONTENT_TYPE:
+							$next_step = self::STEP_SETUP_CONTENT_TYPES;
+							break;
+						case MS_Model_Membership::TYPE_TIER:
+							$next_step = self::STEP_SETUP_MS_TIERS;
+							break;
+						default:
+							$next_step = self::STEP_MS_LIST;
+							break;
+					}
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				case self::STEP_SETUP_PAYMENT:
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				case self::STEP_SETUP_CONTENT_TYPES:
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				case self::STEP_SETUP_MS_TIERS:
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				case self::STEP_SETUP_DRIPPED:
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					break;
+				default:
+					break;
+			}
+			if( ! empty( $goto_url ) ) {
+				wp_safe_redirect( $goto_url );
+			}
 		}
 	}
 	
@@ -284,6 +313,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_content_type';
 		$data['membership'] = $this->load_membership();
+		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
 		
 		$view = apply_filters( 'ms_view_membership_setup_content_types', new MS_View_Membership_Setup_Content_Type() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_content_types_data', $data );
@@ -306,6 +336,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['membership'] = $this->load_membership();
+		$data['tabs'] = $this->get_setup_dripped_tabs();
 		
 		$view = apply_filters( 'ms_view_membership_setup_dripped', new MS_View_Membership_Setup_Dripped() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_dripped_data', $data );
@@ -320,6 +351,7 @@ class MS_Controller_Membership extends MS_Controller {
 				self::STEP_CHOOSE_MS_TYPE,
 				self::STEP_SETUP_CONTENT_TYPES,
 				self::STEP_SETUP_MS_TIERS,
+				self::STEP_SETUP_DRIPPED,
 				self::STEP_ACCESSIBLE_CONTENT,
 				self::STEP_SETUP_PAYMENT,
 		);
@@ -376,14 +408,14 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership_id = $this->load_membership()->id;
 	
 		$tabs = array(
+				'page' => array(
+						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+				),
 				'category' => array(
 						'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
 				),
 				'post' => array(
 						'title' => __( 'Post by post, Custom Post Types', MS_TEXT_DOMAIN ),
-				),
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
 				),
 				'comment' => array(
 						'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
@@ -418,8 +450,11 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 	
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
-		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%s&tab=%s', $page, $key);
+		foreach( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = add_query_arg( array(
+					'page' => $page,
+					'tab' => $tab,
+			) );
 		}
 	
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -434,14 +469,52 @@ class MS_Controller_Membership extends MS_Controller {
 	
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
-		foreach( $tabs as $tab => $title ) {
+		foreach( $tabs as $tab => $info ) {
 			$rule = $protected_content->get_rule( $tab );
 			if( $rule->has_rules() ) {
-				$tabs[ $tab ]['url'] = sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', $page, $step, $tab, $membership_id );
+				$tabs[ $tab ]['url'] = add_query_arg( array(
+						'page' => $page,
+						'step' => $step,
+						'tab' => $tab,
+						'membership_id' => $membership_id,
+				) );
 			}
 			else {
 				unset( $tabs[ $tab ] );
 			}
+		}
+	
+		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
+	}
+	
+	/**
+	 * Get available tabs for dripped membership.
+	 * 
+	 * @since 1.0
+	 *
+	 * @return array The tabs configuration.
+	 */
+	public function get_setup_dripped_tabs() {
+		$membership_id = $this->load_membership()->id;
+	
+		$tabs = array(
+				'post' => array(
+						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+				),
+				'page' => array(
+						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+				),
+		);
+		
+		$step = $this->get_step();
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content';
+		foreach( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = add_query_arg( array( 
+					'page' => $page,
+					'step' => $step, 
+					'tab' => $tab, 
+					'membership_id' => $membership_id,
+			) );
 		}
 	
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -461,7 +534,9 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif( self::STEP_ACCESSIBLE_CONTENT ) {
 			$tabs = $this->get_accessible_content_tabs();
 		}
-	
+		elseif( self::STEP_SETUP_DRIPPED ) {
+			$tabs = $this->get_setup_dripped_tabs();
+		}
 	
 		reset( $tabs );
 		$first_key = key( $tabs );
