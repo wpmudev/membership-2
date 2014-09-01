@@ -18,7 +18,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					MS_Helper_Html::settings_header( array(
 						'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'fa fa-pencil-square',
-						'desc' => __( 'Hello and welcome to Protected Content by WPMU DEV. Lets begin by settinup up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
+						'desc' => array( 
+							__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
+							__( 'Lets begin by settinup up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ), 
+						),
 					) ); 
 				?>
 				<?php
@@ -141,33 +144,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	public function render_page() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( 'page' );
-		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
 		$rule_list_table->prepare_items();
-	
-		$toggle = array(
-				'id' => 'ms-toggle-rule',
-				'title' => __( 'Default acccess rule:', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $rule->rule_value_default,
-				'class' => '',
-				'field_options' => array(
-						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
-						'membership_id' => $membership->id,
-						'rule' => $rule->rule_type,
-				),
-		);
 	
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h3><?php echo __( 'Page access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<h3><?php echo __( 'Pages ', MS_TEXT_DOMAIN ); ?></h3>
 				<div class="settings-description">
-				<div class="settings-description">
-					<?php _e( 'Select the pages below that you would like to give access to as part of this membership. ', MS_TEXT_DOMAIN ); ?>
-					<?php MS_Helper_Html::html_input( $toggle ); ?>
+					<?php _e( 'Protect the following Pages to members only. ', MS_TEXT_DOMAIN ); ?>
 				</div>
-				
 				<hr />
+				
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
