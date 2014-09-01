@@ -217,9 +217,9 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
-		$contents = get_posts( $args );
-		
-		foreach( $contents as $content ) {
+		$posts = get_posts( $args );
+		$contents = array();
+		foreach( $posts as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_POST;
 			$content->access = false;
@@ -247,6 +247,8 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			else {
 				$content->delayed_period = '';
 			}
+			
+			$contents[ $content->id ] = $content;
 		}
 		
 		if( ! empty( $args['rule_status'] ) ) {

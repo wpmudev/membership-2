@@ -166,8 +166,9 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		
 		$query = new WP_Query( $args );
 		
-		$contents = get_posts( $args );
-		foreach( $contents as $content ) {
+		$pages = get_posts( $args );
+		$content = array();
+		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
 			
@@ -180,6 +181,8 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			else {
 				$content->delayed_period = '';
 			}
+			
+			$contents[ $content->id ] = $content;
 		}
 		
 		if( ! empty( $args['rule_status'] ) ) {
