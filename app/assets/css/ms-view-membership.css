@@ -101,6 +101,16 @@
     width: 18%;
 }
 
+/* setup content type */
+.ms-content-type-wrapper {
+	width: 50%;
+	margin: 50px auto;
+}
+#content_type_name, #submit_content_type {
+	display: inline-block;
+	margin: 10px 5px 10px 0;	
+}
+
 /** save text ajax */
 .ms-save-text-wrapper {
 	font-size: 1.1em;
