@@ -67,7 +67,6 @@ h2.ms-settings-title,
 	font-size: 1em;
     text-align: center;
     margin: 0 auto;
-    max-width: 40em;
 }
 .ms-wrap .ms-settings {
     background: #fff;
@@ -200,7 +199,12 @@ h2.ms-settings-title,
 }
 .ms-text {
 	display: block;
+	height: 2.1em;
 }
+.ms-text-medium {
+	width: 300px;
+}
+
 .ms-link-button, .ms-submit {
 	margin: 0 0.5em 0 0 !important;
 }
