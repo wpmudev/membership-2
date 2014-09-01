@@ -60,10 +60,10 @@ h2.ms-settings-title,
   text-align: center;
 }
 
-.ms-settings-desc {
+.ms-settings-desc-wrapper {
     margin: 9px 15px;
 }
-.ms-settings-desc div{
+.ms-settings-desc {
 	font-size: 1em;
     text-align: center;
     margin: 0 auto;
@@ -101,7 +101,7 @@ h2.ms-settings-title,
 }
 
 .ms-settings-footer{
-	margin: 10px 0;
+	margin: 10px;
 	position:relative;
 }
 /** Settings Box **/
@@ -185,7 +185,7 @@ h2.ms-settings-title,
 	width: 20%;
 }
 .ms-radio-wrapper label{
-	font-size: 1.1em;
+	font-size: 1em;
 	font-weight: 600;
 }
 .ms-radio-description {

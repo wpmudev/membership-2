@@ -323,8 +323,28 @@ class MS_Helper_Html extends MS_Helper {
 				<form method="post" >
 					<span class="ms-save-text-wrapper ms-init">
 						<?php if( $show_saving_feedback ) : ?>
+							<span class="ms-saving-text">
+								<div id="floatingCirclesG">
+									<div class="f_circleG" id="frotateG_01">
+									</div>
+									<div class="f_circleG" id="frotateG_02">
+									</div>
+									<div class="f_circleG" id="frotateG_03">
+									</div>
+									<div class="f_circleG" id="frotateG_04">
+									</div>
+									<div class="f_circleG" id="frotateG_05">
+									</div>
+									<div class="f_circleG" id="frotateG_06">
+									</div>
+									<div class="f_circleG" id="frotateG_07">
+									</div>
+									<div class="f_circleG" id="frotateG_08">
+									</div>
+								</div>
+								<?php echo $saving_text ;?>
+							</span>
 							<span class="ms-saved-text"><?php echo $saved_text ;?></span>
-							<span class="ms-saving-text"><?php echo $saving_text ;?></span>
 						<?php endif; ?>
 						<?php
 							foreach( $fields as $field ) {
