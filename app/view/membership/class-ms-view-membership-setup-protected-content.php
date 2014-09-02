@@ -242,22 +242,23 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
-		
+		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
+		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
 		$this->fields = array(
 			'comment' => array(
 					'id' => 'comment',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
-					'value' => 0,//TODO
-					'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->get_content_array(),
+					'value' => $rule_comment->get_rule_value(),
+					'field_options' => $rule_comment->get_content_array(),
 					'class' => 'chosen-select',
 					'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_COMMENT,
-							'rule_value' => 0,
-							'_wpnonce' => $nonce,
+							'rule_ids' => MS_Model_Rule_Comment::CONTENT_ID,
 							'action' => $action,
+							'_wpnonce' => $nonce,
 					),
 			),
 			'more_tag' => array(
@@ -265,15 +266,15 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-					'value' => 0, //TODO
-					'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_content_array(),
+					'value' => $rule_more_tag->has_access( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
+					'field_options' => $rule_more_tag->get_options_array(),
 					'class' => '',
 					'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,
-							'rule_value' => 0,
-							'_wpnonce' => $nonce,
+							'rule_ids' => MS_Model_Rule_More::CONTENT_ID,
 							'action' => $action,
+							'_wpnonce' => $nonce,
 					),
 			),
 			'menu_id' => array(

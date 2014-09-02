@@ -166,9 +166,14 @@ class MS_Helper_Html extends MS_Helper {
 						$text = $option;
 						$desc = '';
 					}
+					if( ! empty( $data_ms ) ) {
+						$data_ms_att = esc_attr( json_encode( $data_ms ) );
+						$data_ms_att = "data-ms='{$data_ms_att}'";
+					}
+						
 					$checked = checked( $key, $value, false );
 					echo "<div class='ms-radio-wrapper $class ms-{$key}'>";
-					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked /> ";
+					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms_att/> ";
 					echo "<label for='{$id}_{$key}'>$text</label>";
 					echo ! empty( $desc ) ? "<div class='ms-radio-description'>$desc</div>" : '';
 					echo "</div>";

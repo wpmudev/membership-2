@@ -81,7 +81,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function ajax_action_toggle_rule_default() {
-		$msg = 0;
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && $this->is_admin_user() ) {
 			$this->active_tab = $_POST['rule'];
 			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
@@ -92,10 +92,11 @@ class MS_Controller_Rule extends MS_Controller {
 	}
 	
 	public function ajax_action_update_rule() {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		
 		$required = array( 'membership_id', 'rule_type', 'rule_ids' );
-		$msg = 0;
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
-			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], ! empty( $_POST['rule_value'] ) );
+		if( $this->verify_nonce() && $this->validate_required( $required, null, false ) && $this->is_admin_user() ) {
+			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
 		}
 	
 		echo $msg;
@@ -103,23 +104,28 @@ class MS_Controller_Rule extends MS_Controller {
 	}
 	
 	public function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$membership = $this->get_membership();
-		
-		$rule = $membership->get_rule( $rule_type );
-		$rule->reset_rule_values();
-		foreach( $rule_ids as $id ) {
-			if( is_array( $rule_values ) ) {
-				$rule_value = $rule_values[ $id ];
-			}
-			else{
-				$rule_value = $rule_values;
-			}
-			$rule->set_access( $id, $rule_value );
-		}
 
-		$membership->set_rule( $rule_type, $rule );
-		$membership->save();
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		if( $membership->is_valid() ) {
+			$rule = $membership->get_rule( $rule_type );
+			$rule->reset_rule_values();
+			if( ! is_array( $rule_ids ) ) {
+				$rule_ids = array( $rule_ids );
+			}
+			foreach( $rule_ids as $id ) {
+				if( is_array( $rule_values ) ) {
+					$rule_value = $rule_values[ $id ];
+				}
+				else{
+					$rule_value = $rule_values;
+				}
+				$rule->set_access( $id, $rule_value );
+			}
+			$membership->set_rule( $rule_type, $rule );
+			$membership->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		}
 		return $msg;
 	}
 	/**
