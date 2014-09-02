@@ -6,7 +6,7 @@
 	margin:10px 20px 0 2px;
 }
 .ms-wrap .ms-tab-container {
-	min-height: 550px;
+	min-height: 620px;
 	float: left;
 	width: 225px;
 }
@@ -176,7 +176,7 @@ h2.ms-settings-title,
 }
 /** html fields */
 .ms-field-description {
-	margin: 10px 0;	
+	margin: 10px 10px 10px 0;	
 }
 .ms-radio-wrapper {
 	margin: 1%;
@@ -445,6 +445,9 @@ textarea.ms-field-input {
 }
 
 /* list tables */
+.ms-list-table-wrapper {
+	clear:both;
+}
 .ms-list-table-wrapper .tablenav{
 	display: none;
 }

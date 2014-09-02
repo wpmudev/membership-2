@@ -30,29 +30,40 @@
 class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_menu';
+	
+	protected $menu_id;
+	
+	public function __construct( $model, $membership, $menu_id ) {
+		parent::__construct( $model, $membership );
+	
+		$this->menu_id = $menu_id;
+	}
 		
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-				'cb'     => '<input type="checkbox" />',
-				'menu' => __( 'Menu title', MS_TEXT_DOMAIN ),
+				'title' => __( 'Menu title', MS_TEXT_DOMAIN ),
 				'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
+	}
+	
+	public function get_bulk_actions() {
+		return apply_filters( "membership_helper_list_table_{$this->id}_bulk_actions", array() );
+	}
+	
+	public function prepare_items() {
+		
+		$args = apply_filters( 'ms_helper_list_table_rule_menu_prepare_items_args', array( 'menu_id' => $this->menu_id ) );
+		
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+	
+		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
 	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'menu':
-				if( $item->parent_id ) {
-					$html = "&#8211;&nbsp; $item->title";
-				}
-				else {
-					$html = "MENU - $item->title";
-				}
-				
-				break;
 			default:
-				$html = print_r( $item, true ) ;
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;

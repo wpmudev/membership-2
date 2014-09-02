@@ -48,35 +48,40 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		
 	public function get_content( $args = null ) {
 		$contents = array();
-		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
-		if( ! empty( $navs ) ) {
-			foreach( $navs as $nav ) {
-				$contents[ $nav->term_id ] = $nav;
-				$contents[ $nav->term_id ]->id = $nav->term_id;
-				$contents[ $nav->term_id ]->title = esc_html( $nav->name );
-				$contents[ $nav->term_id ]->parent_id = false;
-				$contents[ $nav->term_id ]->ignore = true;
-				$contents[ $nav->term_id ]->delayed_period = '';
-				$items = wp_get_nav_menu_items( $nav->term_id );
-				if( ! empty( $items ) ) {
-					foreach( $items as $item ) {
-						$item_id = $item->ID;
-						$contents[ $item_id ] = $item;
-						$contents[ $item_id ]->id = $item_id;
-						$contents[ $item_id ]->title = esc_html( $item->title );
-						$contents[ $item_id ]->parent_id = $nav->term_id;
-						
-						$contents[ $item_id ]->access = parent::has_access( $contents[ $item_id ]->id );
-					}
+
+		if( ! empty( $args['menu_id'] ) ) {
+			$menu_id = $args['menu_id'];
+			$items = wp_get_nav_menu_items( $menu_id );
+			if( ! empty( $items ) ) {
+				foreach( $items as $item ) {
+					$item_id = $item->ID;
+					$contents[ $item_id ] = $item;
+					$contents[ $item_id ]->id = $item_id;
+					$contents[ $item_id ]->title = esc_html( $item->title );
+					$contents[ $item_id ]->parent_id = $menu_id;
+					$contents[ $item_id ]->type = $this->rule_type;
+					$contents[ $item_id ]->access = parent::has_access( $contents[ $item_id ]->id );
 				}
 			}
-		}
-		
+		}		
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 		
-		return $contents;
+		return apply_filters( 'ms_model_rule_menu_get_content', $contents );
 	}
 	
+	public function get_menu_array() {
+		$contents = array( __( 'No menus found.', MS_TEXT_DOMAIN ) );
+		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+
+		if( ! empty( $navs ) ) {
+			$contents = array();
+			foreach( $navs as $nav ) {
+				$contents[ $nav->term_id ] = esc_html( $nav->name );
+			}
+		}
+		
+		return apply_filters( 'ms_model_rule_menu_get_menu_array', $contents );
+	}
 }

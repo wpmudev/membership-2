@@ -131,6 +131,7 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_SELECT:
 				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$data_placeholder = empty( $data_placeholder ) ? '' : "data-placeholder='$data_placeholder'";
 				if( ! empty( $data_ms ) ) {
 					$data_ms = esc_attr( json_encode( $data_ms ) );

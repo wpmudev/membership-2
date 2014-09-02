@@ -222,6 +222,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$this->$method();
 			}
 			else {
+				do_action( 'ms_controller_membership_membership_admin_page_router_' . $step );
 				MS_Helper_Debug::log( "Method $method not found for step $step" );
 			}
 		}
@@ -239,6 +240,9 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
 		
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
+		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
+		$first_value = reset( $data['menus'] );
+		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' ); 
 		 
 		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
@@ -676,6 +680,7 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		switch( $this->get_active_tab() ) {
 			case 'category':
+			case 'comment':
 				wp_enqueue_style( 'jquery-chosen' );
 				wp_enqueue_script( 'ms-view-membership-setup-protected-content', $plugin_url. 'app/assets/js/ms-view-membership-setup-protected-content.js', array( 'jquery', 'jquery-chosen' ), $version );
 				break;

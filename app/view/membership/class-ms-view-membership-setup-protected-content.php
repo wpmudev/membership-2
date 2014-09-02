@@ -201,6 +201,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	
 	public function render_comment() {
 		$this->prepare_comment();
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( 'menu' );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $rule, $membership, $this->data['menu_id'] );
+		$rule_list_table->prepare_items();
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -214,6 +218,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				</div>
 				<div class="ms-rule-wrapper">
 					<?php MS_Helper_Html::html_input( $this->fields['more_tag'] );?>
+				</div>
+				<div class="ms-list-table-wrapper">
+					<form id="ms-menu-form" method="post">
+						<?php MS_Helper_Html::html_input( $this->fields['menu_id'] );?>
+					</form>
+					<?php $rule_list_table->display(); ?>
 				</div>
 			</div>
 			<?php 
@@ -241,7 +251,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
 					'value' => 0,//TODO
 					'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->get_content_array(),
-					'class' => '',
+					'class' => 'chosen-select',
 					'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_COMMENT,
@@ -266,12 +276,14 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'action' => $action,
 					),
 			),
-			'menus' => array(
-					'id' => 'menus',
-					'value' => __( 'Menus:', MS_TEXT_DOMAIN ),
+			'menu_id' => array(
+					'id' => 'menu_id',
+					'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Select menu to load:', MS_TEXT_DOMAIN ),
+					'value' => $this->data['menu_id'],
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_content_array(),
-					'class' => '',
+					'field_options' => $this->data['menus'],
+					'class' => 'chosen-select',
 			),
 			'action' => array(
 					'id' => 'action',

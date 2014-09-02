@@ -136,6 +136,41 @@ class MS_Controller extends MS_Hooker {
 				}				
 			}
 		}
-		return $validated;
+		
+		return apply_filters( 'ms_controller_validate_required', $validated, $fields );
+	}
+	
+	/**
+	 * Get field from request parameters.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $id The field ID  
+	 * @param mixed $default The default value of the field.
+	 * @param string $request_method POST or GET
+	 * @return mixed The value of the request field.
+	 */
+	public function get_request_field( $id, $default = '', $request_method = 'POST' ) {
+		$value = $default;
+		$request_fields = null;
+		switch( $request_method ) {
+			case 'GET':
+				$request_fields = $_GET;
+				break;
+			case 'REQUEST':
+				$request_fields = $_REQUEST;
+				break;
+			default:
+			case 'POST':
+				$request_fields = $_POST;
+				break;
+			
+		}
+
+		if( isset( $request_fields[ $id ] ) ) {
+			$value = $request_fields[ $id ];
+		}
+		
+		return apply_filters( 'ms_controller_get_request_field', $value, $id, $default );
 	}
 }

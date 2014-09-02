@@ -15,6 +15,9 @@ jQuery( document ).ready( function( $ ) {
 			});
 		}
 	});
-	
+	$( '#menu_id' ).change( function() {
+		$( '#ms-menu-form' ).submit();
+	});
+
 	
 });
