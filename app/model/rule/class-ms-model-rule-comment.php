@@ -52,12 +52,36 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	}
 	
 	public function get_content( $args = null ) {
+		$contents = array();
 		$content = new StdClass();
-		$content->id = 1;
-		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
-
+		$content->id = 'read';
+		$content->name = __( 'Read Only Access', MS_TEXT_DOMAIN );
 		$content->access = parent::has_access( $content->id );
+		$contents[] = $content;
 		
-		return array( $content );
+		$content = new StdClass();
+		$content->id = 'write';
+		$content->name = __( 'Read and Write Access', MS_TEXT_DOMAIN );
+		$content->access = parent::has_access( $content->id );
+		$contents[] = $content;
+		
+		$content = new StdClass();
+		$content->id = 'no_access';
+		$content->name = __( 'No Access to Comments', MS_TEXT_DOMAIN );
+		$content->access = parent::has_access( $content->id );
+		$contents[] = $content;
+		
+		return apply_filters( 'ms_model_rule_comment_get_content', $contents );
+	}
+	
+	public function get_content_array( $args = null ) {
+		
+		$contents = array();
+		$cont = $this->get_content( $args );
+		foreach( $cont as $content ) {
+			$contents[ $content->id ] = $content->name;
+		}
+		
+		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents );
 	}
 }

@@ -50,6 +50,20 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			$args['rule_status'] = $_GET['status'];
 		}
 		
+		/**
+		 * Search string.
+		 */
+		if( ! empty( $_REQUEST['s'] ) ) {
+			$args['s'] = $_REQUEST['s'];
+		}
+		
+		/**
+		 * Month filter.
+		 */
+		if( ! empty( $_REQUEST['m'] ) && strlen( $_REQUEST['m'] ) == 6 ) {
+			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
+			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
+		}
 		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
 		$this->set_pagination_args( array(
@@ -102,5 +116,25 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 				break;
 		}
 		return $html;
+	}
+	
+	function extra_tablenav( $which ) {
+		if( 'top' != $which ) {
+			return;
+		}
+		$filter_button = array(
+				'id' => 'filter_button',
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'value' => __( 'Filter', MS_TEXT_DOMAIN ),
+				'class' => 'button',
+		);
+		?>
+		<div class="alignleft actions">
+		<?php
+			$this->months_dropdown( 'page' );
+			MS_Helper_Html::html_input( $filter_button );
+		?>
+		</div>
+	<?php
 	}
 }

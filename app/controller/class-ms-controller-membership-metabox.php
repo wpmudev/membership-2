@@ -270,10 +270,10 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				}
 				if( $rule ) {
 					if( $has_access ) {
-						$rule->add_rule_value( $post_id );
+						$rule->give_access( $post_id );
 					}
 					else {
-						$rule->remove_rule_value( $post_id );
+						$rule->remove_access( $post_id );
 					}
 					$membership->set_rule( $rule_type, $rule );
 					$membership->save();

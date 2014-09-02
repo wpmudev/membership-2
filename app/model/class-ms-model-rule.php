@@ -64,10 +64,114 @@ class MS_Model_Rule extends MS_Model {
 	protected $rule_value_default = true;
 
 	/**
-	 * Set initial protection.
+	 * Rule types.
+	 *
+	 * @todo change array to be rule -> title.
+	 *
+	 * This array is ordered in the hierarchy way.
+	 * First one has more priority than the last one.
+	 * This hierarchy is used to determine access to protected content.
 	 */
-	public function protect_content( $membership_relationship = false ) {
-
+	public static function get_rule_types() {
+		$rule_types =  array(
+				0 => self::RULE_TYPE_POST,
+				1 => self::RULE_TYPE_CATEGORY,
+				2 => self::RULE_TYPE_CUSTOM_POST_TYPE,
+				3 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+				4 => self::RULE_TYPE_PAGE,
+				5 => self::RULE_TYPE_MORE_TAG,
+				6 => self::RULE_TYPE_MENU,
+				7 => self::RULE_TYPE_SHORTCODE,
+				8 => self::RULE_TYPE_COMMENT,
+				9 => self::RULE_TYPE_MEDIA,
+				10 => self::RULE_TYPE_URL_GROUP,
+		);
+	
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+			unset( $rule_types[9] );
+		}
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			unset( $rule_types[10] );
+		}
+	
+		return  apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+	}
+	
+	/**
+	 * Rule types and respective classes.
+	 *
+	 * This array is ordered in the hierarchy way.
+	 * First one has more priority than the last one.
+	 * This hierarchy is used to determine access to protected content.
+	 */
+	public static function get_rule_type_classes() {
+		return apply_filters( 'ms_model_rule_get_rule_type_classes', array(
+				self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
+				self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
+				self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_Custom_Post_Type',
+				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Model_Rule_Custom_Post_Type_Group',
+				self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
+				self::RULE_TYPE_MORE_TAG => 'MS_Model_Rule_More',
+				self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
+				self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
+				self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
+				self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
+				self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
+		)
+		);
+	}
+	
+	public static function get_rule_type_titles() {
+		return apply_filters( 'ms_model_rule_get_rule_type_titles', array(
+				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_MORE_TAG => __( 'More Tag', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type Group', MS_TEXT_DOMAIN ),
+		)
+		);
+	}
+	
+	public static function rule_factory( $rule_type ) {
+		if( self::is_valid_rule_type( $rule_type ) ) {
+			$rule_types = self::get_rule_type_classes();
+			return apply_filters( 'ms_model_rule_rule_factory', new $rule_types[ $rule_type ]() );
+		}
+		else {
+			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
+		}
+	}
+	
+	public static function rule_set_factory( $rules = null ) {
+		$rule_types = self::get_rule_type_classes();
+	
+		foreach( $rule_types as $type => $class ) {
+			if( empty( $rules[ $type ]) ) {
+				$rules[ $type ] = new $rule_types[ $type ]();
+			}
+		}
+	
+		return apply_filters( 'ms_model_rule_rule_set_factory', $rules );
+	}
+	
+	public static function is_valid_rule_type( $rule_type ) {
+		return apply_filters( 'ms_model_rule_is_valid_rule_type', array_key_exists( $rule_type, self::get_rule_type_classes() ) );
+	}
+	
+	/**
+	 * Set initial protection.
+	 * To be implemented by children classes.
+	 * 
+	 * @since 1.0
+	 */
+	public function protect_content( $ms_relationship = false ) {
+		return false;
 	}
 	
 	/**
@@ -143,120 +247,32 @@ class MS_Model_Rule extends MS_Model {
 		
 	}
 	
-	/**
-	 * Add single rule value.
-	 * @param int $content_id The content id to add.
-	 */
-	public function add_rule_value( $content_id ) {
-		$this->rule_value[ $content_id ] = true;
-	}
-	
-	/**
-	 * Remove single rule value.
-	 * @param int $content_id The content id to remove.
-	 */
-	public function remove_rule_value( $content_id ) {
-		$this->rule_value[ $content_id ] = false;
-	}
-	
-	/**
-	 * Rule types.
-	 *
-	 * @todo change array to be rule -> title.
-	 *  
-	 * This array is ordered in the hierarchy way.
-	 * First one has more priority than the last one.
-	 * This hierarchy is used to determine access to protected content.
-	 */
-	public static function get_rule_types() {
-		$rule_types =  array(
-			0 => self::RULE_TYPE_POST,
-			1 => self::RULE_TYPE_CATEGORY,
-			2 => self::RULE_TYPE_CUSTOM_POST_TYPE,
-			3 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-			4 => self::RULE_TYPE_PAGE,
-			5 => self::RULE_TYPE_MORE_TAG,
-			6 => self::RULE_TYPE_MENU,
-			7 => self::RULE_TYPE_SHORTCODE,
-			8 => self::RULE_TYPE_COMMENT,
-			9 => self::RULE_TYPE_MEDIA,
-			10 => self::RULE_TYPE_URL_GROUP,
-		);
-
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			unset( $rule_types[9] );
-		}
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			unset( $rule_types[10] );
-		}
-		
-		return  apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
-	}
-	/**
-	 * Rule types and respective classes.
-	 *
-	 * This array is ordered in the hierarchy way.
-	 * First one has more priority than the last one.
-	 * This hierarchy is used to determine access to protected content.
-	 */
-	public static function get_rule_type_classes() {
-		 return apply_filters( 'ms_model_rule_get_rule_type_classes', array(
-				self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
-				self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
-		 		self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_Custom_Post_Type',
-		 		self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Model_Rule_Custom_Post_Type_Group',
-				self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
-		 		self::RULE_TYPE_MORE_TAG => 'MS_Model_Rule_More',
-				self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
-				self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
-				self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
-				self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
-				self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
-		 	)
-		);
-	}
-	
-	public static function get_rule_type_titles() {
-		return apply_filters( 'ms_model_rule_get_rule_type_titles', array(
-				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_MORE_TAG => __( 'More Tag', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type Group', MS_TEXT_DOMAIN ),
-			)
-		);
-	}
-	
-	public static function rule_factory( $rule_type ) {
-		if( self::is_valid_rule_type( $rule_type ) ) {
-			$rule_types = self::get_rule_type_classes();
-			return apply_filters( 'ms_model_rule_rule_factory', new $rule_types[ $rule_type ]() );
-		}
-		else {
-			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
-		}
-	}
-	
-	public static function rule_set_factory( $rules = null ) {
-		$rule_types = self::get_rule_type_classes();
-		
-		foreach( $rule_types as $type => $class ) {
-			if( empty( $rules[ $type ]) ) {
-				$rules[ $type ] = new $rule_types[ $type ]();
+	public function count_item_access() {
+		$total = $this->get_content_count();
+		$count_accessible = 0;
+		$count_restricted = 0;
+		foreach( $this->rule_value as $value ) {
+			if( $value ) {
+				$count_accessible++;
+			}
+			else {
+				$count_restricted++;
 			}
 		}
 		
-		return apply_filters( 'ms_model_rule_rule_set_factory', $rules );
-	}
-	
-	public static function is_valid_rule_type( $rule_type ) {
-		return apply_filters( 'ms_model_rule_is_valid_rule_type', array_key_exists( $rule_type, self::get_rule_type_classes() ) );
+		if( $this->rule_value_default ) {
+			$count_accessible = $total - $count_restricted;
+		}
+		else {
+			$count_restricted = $total - $count_accessible;
+		}
+		$count = array( 
+				'total' => $total, 
+				'accessible' => $count_accessible,
+				'restricted' => $count_restricted,
+		);
+		
+		return apply_filters( 'ms_model_rule_count_item_access', $count );
 	}
 	
 	/**

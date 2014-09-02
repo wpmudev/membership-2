@@ -154,11 +154,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function get_views(){
+		$count = $this->model->count_item_access();
+		
 		return apply_filters( "membership_helper_list_table_{$this->id}_views", array(
-				'all' => sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) ),
-				'has_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ) ), __( 'Has Access', MS_TEXT_DOMAIN ) ),
-				'dripped' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_DRIPPED ) ), __( 'Dripped Content', MS_TEXT_DOMAIN ) ),
-				'no_access' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ) ), __( 'No Access', MS_TEXT_DOMAIN ) ),
+				'all' => sprintf( '<a href="%s">%s(%s)</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ), $count['total'] ),
+				'has_access' => sprintf( '<a href="%s">%s(%s)</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ) ), __( 'Has Access', MS_TEXT_DOMAIN ), $count['accessible'] ),
+				'no_access' => sprintf( '<a href="%s">%s(%s)</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ) ), __( 'Access Restricted', MS_TEXT_DOMAIN ), $count['restricted'] ),
 		) );
 	}
 }

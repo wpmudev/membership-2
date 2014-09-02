@@ -56,7 +56,7 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	
-		$total_items =  $this->model['post']->get_content_count();
+		$total_items =  $this->model->get_content_count();
 		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 10 );
 		$current_page = $this->get_pagenum();
 	
@@ -69,7 +69,7 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 			$args['rule_status'] = $_GET['status'];
 		}
 		
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model['post']->get_content( $args, $this->model['category'] ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,

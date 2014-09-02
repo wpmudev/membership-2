@@ -166,8 +166,8 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		
 		$query = new WP_Query( $args );
 		
+		$contents = array();
 		$pages = get_posts( $args );
-		$content = array();
 		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
@@ -202,7 +202,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				'post_type'   => 'page',
 				'post_status' => array( 'publish', 'virtual' ), //Classifieds plugin uses a "virtual" status for some of it's pages
 				'exclude'     => $this->get_excluded_content(),
-				'include'	  => array_keys( $this->rule_value ),
+// 				'include'	  => array_keys( $this->rule_value ),
 		);
 		$args = wp_parse_args( $args, $defaults );
 		

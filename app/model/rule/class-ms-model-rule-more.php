@@ -65,6 +65,17 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 
 		$content->access = parent::has_access( $content->id );
 		
-		return array( $content );
+		$contents = array( $content );
+		
+		return apply_filters( 'ms_model_rule_more_get_content', $contents );
+	}
+	
+	public function get_content_array( $args = null ) {
+		$contents = array(
+			1 => __( 'Yes', MS_TEXT_DOMAIN ),
+			0 => __( 'No', MS_TEXT_DOMAIN ),
+		);
+		
+		return apply_filters( 'ms_model_rule_more_get_content_array', $contents );
 	}
 }
