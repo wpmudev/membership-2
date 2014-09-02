@@ -111,6 +111,16 @@
 	margin: 10px 5px 10px 0;	
 }
 
+/* setup ms tier */
+.ms-tier-wrapper {
+	width: 50%;
+	margin: 50px auto;
+}
+#tier_name, #submit_tier {
+	display: inline-block;
+	margin: 10px 5px 10px 0;	
+}
+
 /** save text ajax */
 .ms-save-text-wrapper {
 	font-size: 1.1em;

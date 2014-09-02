@@ -31,7 +31,13 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 					<?php MS_Helper_Html::html_input( $this->fields['content_type_name'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['submit_content_type'] ); ?>
 				</form>
-				<?php MS_Helper_Html::settings_footer(); ?>
+				<?php 
+					MS_Helper_Html::settings_footer( 
+							array( 'fields' => array( $this->fields['step'] ) ),
+							true,
+							$this->data['initial_setup']
+					); 
+				?>
 			</div>	
 			<div class="clear"></div>
 		</div>
