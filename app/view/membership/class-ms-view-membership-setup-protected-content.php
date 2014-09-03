@@ -28,7 +28,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 				
 					/** Call the appropriate form to render. */
-					$render_callback =  apply_filters( 'ms_view_membership_edit_render_callback', array( $this, 'render_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+					$render_callback =  apply_filters( 'ms_view_membership_edit_render_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
 					call_user_func( $render_callback );
 				?>
 			</div>
@@ -36,8 +36,9 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	public function render_category() {
-		$this->prepare_category();
+	
+	public function render_tab_category() {
+		$fields = $this->get_tab_category_fields();
 		$title = array();
 		$desc = array();
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
@@ -56,18 +57,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<hr />
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ): ?>
 					<div class="ms-rule-wrapper">
-						<?php MS_Helper_Html::html_input( $this->fields['category'] );?>
+						<?php MS_Helper_Html::html_input( $fields['category'] );?>
 					</div>
 				<?php endif; ?>
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
 					<div class="ms-rule-wrapper">
-						<?php MS_Helper_Html::html_input( $this->fields['cpt_group'] );?>
+						<?php MS_Helper_Html::html_input( $fields['cpt_group'] );?>
 					</div>
 				<?php endif; ?>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
-						array( 'fields' => array( $this->fields['step'] ) ),
+						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['initial_setup']
 				); 
@@ -76,12 +77,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	public function prepare_category() {
+	
+	public function get_tab_category_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
 		
-		$this->fields = array(
+		$fields = array(
 				'category' => array(
 						'id' => 'category',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -143,12 +145,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $nonce,
 				),
-				
 		);
+		
+		return apply_filters( 'ms_view_membership_setup_protected_content_get_category_fields', $fields );
 	}
 	
-	public function render_page() {
-		$this->prepare_page();
+	public function render_tab_page() {
+		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
@@ -171,7 +174,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
-						array( 'fields' => array( $this->fields['step'] ) ),
+						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['initial_setup']
 				); 
@@ -181,12 +184,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 	
-	public function prepare_page() {
+	public function get_control_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
 	
-		$this->fields = array(
+		$fields = array(
 				'action' => array(
 						'id' => 'action',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -204,10 +207,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				),
 	
 		);
+		return apply_filters( 'ms_view_membership_setup_protected_content_get_control_fields', $fields );
 	}
 	
-	public function render_post() {
-		$this->prepare_page();
+	public function render_tab_post() {
+		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
@@ -230,7 +234,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
-						array( 'fields' => array( $this->fields['step'] ) ),
+						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['initial_setup']
 				); 
@@ -240,8 +244,8 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 	
-	public function render_cpt() {
-		$this->prepare_page();
+	public function render_tab_cpt() {
+		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
@@ -264,7 +268,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
-						array( 'fields' => array( $this->fields['step'] ) ),
+						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['initial_setup']
 				); 
@@ -274,8 +278,8 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 	
-	public function render_comment() {
-		$this->prepare_comment();
+	public function render_tab_comment() {
+		$fields = $this->get_tab_comment_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( 'menu' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $rule, $membership, $this->data['menu_id'] );
@@ -289,21 +293,21 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				</div>
 				<hr />
 				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $this->fields['comment'] );?>
+					<?php MS_Helper_Html::html_input( $fields['comment'] );?>
 				</div>
 				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $this->fields['more_tag'] );?>
+					<?php MS_Helper_Html::html_input( $fields['more_tag'] );?>
 				</div>
 				<div class="ms-list-table-wrapper">
 					<form id="ms-menu-form" method="post">
-						<?php MS_Helper_Html::html_input( $this->fields['menu_id'] );?>
+						<?php MS_Helper_Html::html_input( $fields['menu_id'] );?>
 					</form>
 					<?php $rule_list_table->display(); ?>
 				</div>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
-						array( 'fields' => array( $this->fields['step'] ) ),
+						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['initial_setup']
 				); 
@@ -313,13 +317,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 	
-	public function prepare_comment() {
+	public function get_tab_comment_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-		$this->fields = array(
+		$fields = array(
 			'comment' => array(
 					'id' => 'comment',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -376,14 +380,46 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $nonce,
 			),
+		);
 
-		);	
+		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );	
 	}
 	
-	public function render_shortcode() {
-	
+	public function render_tab_shortcode() {
+		$fields = $this->get_control_fields();
+		
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_SHORTCODE );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $rule, $membership );
+		$rule_list_table->prepare_items();
+		
+		$title = __( 'Shortcodes', MS_TEXT_DOMAIN );
+		$desc = __( 'Protect the following Custom Post Type to members only. ', MS_TEXT_DOMAIN );
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+				<hr />
+				
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+			<?php 
+				MS_Helper_Html::settings_footer( 
+						array( 'fields' => array( $fields['step'] ) ),
+						true,
+						$this->data['initial_setup']
+				); 
+			?>
+		<?php
+		
+		$html = ob_get_clean();
+		echo apply_filters( 'ms_view_membership_protected_content_render_tab_shortcode', $html );
 	}
-	public function render_urlgroup() {
+	public function render_tab_urlgroup() {
 	
 	}
 	

@@ -284,6 +284,10 @@ class MS_Model_Rule extends MS_Model {
 		throw new Exception ("Method to be implemented in child class");
 	}
 	
+	public function get_content_count( $args = null ) {
+		return 0;
+	}
+	
 	public function reset_rule_values() {
 		$this->rule_value = array();
 	}

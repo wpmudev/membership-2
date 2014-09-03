@@ -140,6 +140,16 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	}
 	
 	/**
+	 * Get the total content count.
+	 * For list table pagination.
+	 * @param string $args The default query post args.
+	 * @return number The total content count.
+	 */
+	public function get_content_count( $args = null ) {
+		return count( $this->get_content() );
+	}
+	
+	/**
 	 * Get content to protect.
 	 *
 	 * @since 4.0.0
@@ -161,7 +171,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents[ $id ] = new StdClass();
 			$contents[ $id ]->id = $id;
 			$contents[ $id ]->name = "[$key]";
-			
+			$contents[ $id ]->type = $this->rule_type;
 			$contents[ $id ]->access = parent::has_access( $id );
 		}
 		
@@ -169,6 +179,11 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 		
+		if( ! empty( $args['posts_per_page'] ) ) {
+			$total = $args['posts_per_page'];
+			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
+			$contents = array_slice( $contents, $offset, $total );
+		}
 		return $contents;
 	}
 }
