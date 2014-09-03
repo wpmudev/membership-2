@@ -446,7 +446,7 @@ textarea.ms-field-input {
 
 /* list tables */
 .ms-list-table-wrapper {
-	clear:both;
+	
 }
 .ms-list-table-wrapper .tablenav{
 	display: none;

@@ -142,10 +142,16 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		MS_Helper_Debug::log("step: $step");
 		/** Verify nonce action in request */
-		if( $this->verify_nonce() ) {
-			MS_Helper_Debug::log("nonce verified for $step");
+		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			/** Take next actions based in current step.*/
 			switch( $step ) {
+				case self::STEP_MS_LIST:
+					$this->print_admin_message();
+					$msg = 0;
+					$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
+					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
+					$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=protected-content') );
+					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_CHOOSE_MS_TYPE, $step );
 					$goto_url = add_query_arg( array( 'step' => $next_step ) );
@@ -445,6 +451,7 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
 				),
 		);
+		$title = array();
 		/**
 		 * Enable / Disable post by post tab.
 		 */

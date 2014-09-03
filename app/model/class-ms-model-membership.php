@@ -203,7 +203,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_memberships( $args = null ) {
 		$args = self::get_query_args( $args );
 		
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		
 		$memberships = array();
@@ -221,6 +221,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		);
 		$args = wp_parse_args( $args, $defaults );
 
+		if( empty( $arg['visitor'] ) ){
+			$args['meta_query']['active'] = array(
+				'key'     => 'visitor_membership',
+				'value'   => '',
+			); 
+		}
 		return $args;
 		
 	}

@@ -51,6 +51,7 @@ class MS_Integration_BuddyPress extends MS_Integration {
 			$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'buddypress_rule_type_titles' );
 			$this->add_filter( 'ms_controller_membership_tabs', 'buddypress_rule_tabs', 10, 2 );
 			$this->add_filter( 'ms_view_membership_setup_protected_content_render_tab_callback', 'buddypress_manage_render_callback', 10, 3 );
+			$this->add_filter( 'ms_view_membership_accessible_content_render_tab_callback', 'buddypress_manage_render_callback', 10, 3 );
 		}
 	}
 
