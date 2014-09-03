@@ -197,7 +197,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		);
 		$args = wp_parse_args( $args, $defaults );
 	
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
 		return $query->found_posts;
 	}
 	
@@ -217,7 +217,9 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
-		$posts = get_posts( $args );
+		$query = new WP_Query( $args );
+		$posts = $query->get_posts();
+		
 		$contents = array();
 		foreach( $posts as $content ) {
 			$content->id = $content->ID;

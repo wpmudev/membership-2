@@ -38,21 +38,32 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	}
 	public function render_category() {
 		$this->prepare_category();
+		$title = array();
+		$desc = array();
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
+			$desc['category'] = __( 'The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted.', MS_TEXT_DOMAIN );
+		}
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+			$desc['cpt_group'] = __( 'You can choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN );
+		}
+		
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h3><?php echo __( 'Categories & Custom Post Types', MS_TEXT_DOMAIN ); ?></h3>
-				<div class="settings-description">
-					<div><?php _e( 'The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted.', MS_TEXT_DOMAIN ); ?></div>
-					<div><?php _e( 'You can also choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN ); ?></div>
-				</div>
+				<?php MS_Helper_Html::settings_tab_header( array( 'title' => implode( ' &', $title ), 'desc' => $desc ) ); ?>
 				<hr />
-				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $this->fields['category'] );?>
-				</div>
-				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $this->fields['cpt_group'] );?>
-				</div>
+				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ): ?>
+					<div class="ms-rule-wrapper">
+						<?php MS_Helper_Html::html_input( $this->fields['category'] );?>
+					</div>
+				<?php endif; ?>
+				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
+					<div class="ms-rule-wrapper">
+						<?php MS_Helper_Html::html_input( $this->fields['cpt_group'] );?>
+					</div>
+				<?php endif; ?>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
@@ -136,14 +147,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		);
 	}
 	
-	public function render_post() {
-	
-	}
-	
 	public function render_page() {
 		$this->prepare_page();
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( 'page' );
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
@@ -197,6 +204,74 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				),
 	
 		);
+	}
+	
+	public function render_post() {
+		$this->prepare_page();
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
+		$rule_list_table->prepare_items();
+	
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h3><?php echo __( 'Posts ', MS_TEXT_DOMAIN ); ?></h3>
+				<div class="settings-description">
+					<?php _e( 'Protect the following Posts to members only. ', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<hr />
+				
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+			<?php 
+				MS_Helper_Html::settings_footer( 
+						array( 'fields' => array( $this->fields['step'] ) ),
+						true,
+						$this->data['initial_setup']
+				); 
+			?>
+		<?php
+		$html = ob_get_clean();
+		echo $html;
+	}
+	
+	public function render_cpt() {
+		$this->prepare_page();
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
+		$rule_list_table->prepare_items();
+	
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h3><?php echo __( 'Custom Post Types', MS_TEXT_DOMAIN ); ?></h3>
+				<div class="settings-description">
+					<?php _e( 'Protect the following Custom Post Type to members only. ', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<hr />
+				
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
+					<?php $rule_list_table->display(); ?>
+				</form>
+			</div>
+			<?php 
+				MS_Helper_Html::settings_footer( 
+						array( 'fields' => array( $this->fields['step'] ) ),
+						true,
+						$this->data['initial_setup']
+				); 
+			?>
+		<?php
+		$html = ob_get_clean();
+		echo $html;
 	}
 	
 	public function render_comment() {

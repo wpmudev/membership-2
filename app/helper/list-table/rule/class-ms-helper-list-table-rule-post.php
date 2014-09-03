@@ -32,14 +32,23 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 	protected $id = 'rule_post';
 			
 	public function get_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
+		$columns = array(
 			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Post title', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 			'category' => __( 'Categories', MS_TEXT_DOMAIN ),
 			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),
-		) );
+		);
+		
+		if( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
+			unset( $columns['dripped'] );
+		}
+		if( ! empty( $_GET['step'] ) && MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT == $_GET['step'] ) {
+			$columns['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
+		}
+		
+		return apply_filters( "ms_helper_list_table_{$this->id}_columns", $columns );
 	}
 		
 	public function get_sortable_columns() {
@@ -68,6 +77,27 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		if( ! empty( $_GET['status'] ) ) {
 			$args['rule_status'] = $_GET['status'];
 		}
+		
+		/**
+		 * Search string.
+		 */
+		if( ! empty( $_REQUEST['s'] ) ) {
+			$args['s'] = $_REQUEST['s'];
+		}
+		
+		/**
+		 * Month filter.
+		 */
+		if( ! empty( $_REQUEST['m'] ) && strlen( $_REQUEST['m'] ) == 6 ) {
+			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
+			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
+		}
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		
+		$this->set_pagination_args( array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+		) );
 		
 		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
@@ -111,4 +141,23 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		return $html;
 	}
 
+	public function extra_tablenav( $which ) {
+		if( 'top' != $which ) {
+			return;
+		}
+		$filter_button = array(
+				'id' => 'filter_button',
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'value' => __( 'Filter', MS_TEXT_DOMAIN ),
+				'class' => 'button',
+		);
+		?>
+		<div class="alignleft actions">
+		<?php
+			$this->months_dropdown( 'page' );
+			MS_Helper_Html::html_input( $filter_button );
+		?>
+		</div>
+	<?php
+	}
 }

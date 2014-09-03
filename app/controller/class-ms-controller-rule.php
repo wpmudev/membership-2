@@ -49,7 +49,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		
 		
-		$this->add_action( 'ms_controller_membership_edit_manager', 'edit_rule_manager' );
+		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
 	}
 	
 	/**
@@ -64,7 +64,7 @@ class MS_Controller_Rule extends MS_Controller {
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
 		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) && $this->is_admin_user() ) {
-			$msg = $this->rule_list_do_action( 'toggle_activation',  $_POST['rule'], array( $_POST['item'] ) );
+			$msg = $this->rule_list_do_action( 'toggle_access',  $_POST['rule'], array( $_POST['item'] ) );
 		}
 	
 		echo $msg;
@@ -138,7 +138,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
-		
+
 		/**
 		 * Copy membership dripped schedule
 		 */
@@ -209,7 +209,8 @@ class MS_Controller_Rule extends MS_Controller {
 						break;
 					case 'no_access':
 						$rule->remove_access( $item );
-					case 'toggle_activation':
+						break;
+					case 'toggle_access':
 						$rule->toggle_access( $item );
 						break;
 					case self::AJAX_ACTION_TOGGLE_RULE_DEFAULT:

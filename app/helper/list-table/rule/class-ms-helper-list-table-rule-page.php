@@ -64,7 +64,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,
@@ -88,7 +88,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			$columns['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
 		}
 		
-		return apply_filters( "membership_helper_list_table_{$this->id}_columns", $columns );
+		return apply_filters( "ms_helper_list_table_{$this->id}_columns", $columns );
 	}
 	
 	public function column_name( $item ) {
@@ -103,7 +103,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 							__('View', MS_TEXT_DOMAIN )
 					),
 		);
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
 		
 		return sprintf( '%1$s %2$s', $item->post_title, $this->row_actions( $actions ) );
 	}
@@ -118,7 +118,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 		return $html;
 	}
 	
-	function extra_tablenav( $which ) {
+	public function extra_tablenav( $which ) {
 		if( 'top' != $which ) {
 			return;
 		}

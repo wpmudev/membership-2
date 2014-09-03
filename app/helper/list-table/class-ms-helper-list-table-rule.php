@@ -47,7 +47,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 		
 	public function get_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
+		return apply_filters( "ms_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
 			'content' => __( 'Content', MS_TEXT_DOMAIN ),
 			'rule_type' => __( 'Rule type', MS_TEXT_DOMAIN ),
@@ -56,11 +56,11 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function get_hidden_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_hidden_columns", array() );
+		return apply_filters( "ms_helper_list_table_{$this->id}_hidden_columns", array() );
 	}
 	
 	public function get_sortable_columns() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
+		return apply_filters( "ms_helper_list_table_{$this->id}_sortable_columns", array(
 				'content' => 'content',
 				'access' => 'access',
 				'dripped' => 'dripped',
@@ -68,7 +68,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function get_bulk_actions() {
-		return apply_filters( "membership_helper_list_table_{$this->id}_bulk_actions", array(
+		return apply_filters( "ms_helper_list_table_{$this->id}_bulk_actions", array(
 				'give_access' => __( 'Give access', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
 		) );
@@ -81,7 +81,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$args['rule_status'] = $_GET['status']; 
 		}
 		
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}
@@ -127,7 +127,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 					__('Edit', MS_TEXT_DOMAIN )
 				),
 		);
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_dripped_actions", $actions, $item );
+		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_dripped_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $item->delayed_period, $this->row_actions( $actions ) );
 	}
 	
@@ -156,10 +156,20 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	public function get_views(){
 		$count = $this->model->count_item_access();
 		
-		return apply_filters( "membership_helper_list_table_{$this->id}_views", array(
-				'all' => sprintf( '<a href="%s">%s(%s)</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ), $count['total'] ),
-				'has_access' => sprintf( '<a href="%s">%s(%s)</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ) ), __( 'Has Access', MS_TEXT_DOMAIN ), $count['accessible'] ),
-				'no_access' => sprintf( '<a href="%s">%s(%s)</a>', add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ) ), __( 'Access Restricted', MS_TEXT_DOMAIN ), $count['restricted'] ),
+		$url = apply_filters( "ms_helper_list_table_{$this->id}_url", remove_query_arg( array ( 'status', 'paged' ) ) );
+		
+		return apply_filters( "ms_helper_list_table_{$this->id}_views", array(
+				'all' => sprintf( '<a href="%s">%s</a> (%s)', $url, __( 'All', MS_TEXT_DOMAIN ), $count['total'] ),
+				'has_access' => sprintf( '<a href="%s">%s</a> (%s)', 
+						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ), $url ), 
+						__( 'Has Access', MS_TEXT_DOMAIN ), 
+						$count['accessible'] 
+				),
+				'no_access' => sprintf( '<a href="%s">%s</a> (%s)', 
+						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ), $url ),
+						 __( 'Access Restricted', MS_TEXT_DOMAIN ), 
+						$count['restricted'] 
+				),
 		) );
 	}
 }

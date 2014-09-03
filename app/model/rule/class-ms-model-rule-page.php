@@ -150,9 +150,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$query = new WP_Query( $args );
 
 		/** @todo verify why $query->found_posts != count( $contents )*/
-		$contents = get_posts( $args );
+		$pages = $query->get_posts();
 		
-		$count = count( $contents );
+		$count = count( $pages );
+// 		MS_Helper_Debug::log("------------get_content_count args:");
+// 		MS_Helper_Debug::log($args);
+// 		MS_Helper_Debug::log("count: $count, found posts: $query->found_posts");
+// 		MS_Helper_Debug::log($pages);
 		return apply_filters( 'ms_model_rule_page_get_content_count', $count, $args );
 	}
 	
@@ -165,9 +169,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query( $args );
-		
+// 		MS_Helper_Debug::log("***************get_content args:");
+// 		MS_Helper_Debug::log($args);
+// 		MS_Helper_Debug::log($query);
+// 		$pages = get_posts( $args );
+// 		$count = count( $pages );
+// 		MS_Helper_Debug::log($pages);
+// 		MS_Helper_Debug::log("count: $count, found posts::: $query->found_posts");
 		$contents = array();
-		$pages = get_posts( $args );
+		$pages = $query->get_posts();
 		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
@@ -201,7 +211,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				'order'       => 'DESC',
 				'post_type'   => 'page',
 				'post_status' => array( 'publish', 'virtual' ), //Classifieds plugin uses a "virtual" status for some of it's pages
-				'exclude'     => $this->get_excluded_content(),
+				'post__not_in'     => $this->get_excluded_content(),
 // 				'include'	  => array_keys( $this->rule_value ),
 		);
 		$args = wp_parse_args( $args, $defaults );

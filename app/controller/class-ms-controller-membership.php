@@ -68,6 +68,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$protected_content_setup_hook = 'protected-content_page_protected-content-setup';
 		
 		$this->add_action( 'load-' . $protected_content_menu_hook, 'membership_admin_page_process' );
+		$this->add_action( 'load-' . $protected_content_setup_hook, 'membership_admin_page_process' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		
@@ -108,7 +109,6 @@ class MS_Controller_Membership extends MS_Controller {
 		return apply_filters( 'ms_controller_membership_load_membership', $this->model );
 	}
 	
-	
 	/**
 	 * Show admin notices.
 	 * 
@@ -129,9 +129,12 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_process() {
 		$this->print_admin_message();
 		$msg = 0;
-		MS_Helper_Debug::log($_POST);
+		$next_step = null;
+// 		MS_Helper_Debug::log($_POST);
 		$step = $this->get_step();
 		$goto_url = null;
+		
+		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
 		
 		MS_Helper_Debug::log("step: $step");
 		/** Verify nonce action in request */
@@ -389,6 +392,10 @@ class MS_Controller_Membership extends MS_Controller {
 				$step = self::STEP_SETUP_PROTECTED_CONTENT;
 			}
 		}
+		
+		if( ! empty( $_GET['page'] )  && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_GET['page'] ) {
+			$step = self::STEP_SETUP_PROTECTED_CONTENT;
+		}
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
@@ -419,7 +426,10 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
 				),
 				'post' => array(
-						'title' => __( 'Post by post, Custom Post Types', MS_TEXT_DOMAIN ),
+						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+				),
+				'cpt' => array(
+						'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 				),
 				'comment' => array(
 						'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
@@ -433,13 +443,26 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 		/**
 		 * Enable / Disable post by post tab.
-		*/
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		 */
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			unset( $tabs['post'] );
+			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
+		}
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+		}
+		$tabs['category']['title'] = implode( ', ', $title );
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) && 
+			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST	) ) {
 			unset( $tabs['category'] );
 		}
-		else {
-			unset( $tabs['post'] );
+		/**
+		 * Enable / Disable custom post by post tab.
+		 */
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			unset( $tabs['cpt'] );
 		}
+		
 		/**
 		 * Disable urlgroup tab.
 		 */
@@ -452,13 +475,16 @@ class MS_Controller_Membership extends MS_Controller {
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
 			unset( $tabs['shortcode'] );
 		}
-	
+		
+		$url = admin_url( 'admin.php'); 
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = add_query_arg( array(
 					'page' => $page,
 					'tab' => $tab,
-			) );
+				),
+				$url 
+			);
 		}
 	
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
