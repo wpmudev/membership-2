@@ -67,8 +67,10 @@ class MS_Controller_Addon extends MS_Controller {
 		 */
 		do_action( 'membership_addon_controller_construct_pre_processing', $this );
 		
+		$addon_menu_hook = 'protected-content_page_protected-content-addon';
+		
 		/** Load the add-on manager model. */
-		$this->add_action( 'load-membership_page_membership-addons', 'membership_addon_manager' );
+		$this->add_action( 'load-' . $addon_menu_hook, 'membership_addon_manager' );
 		
 		/**
 		 * Reference the Addon model.
@@ -84,8 +86,8 @@ class MS_Controller_Addon extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON, 'ajax_action_toggle_addon' );
 		
 		/** Enqueue scripts and styles. */
-		$this->add_action( 'admin_print_scripts-membership_page_membership-addons', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_membership-addons', 'enqueue_styles' );		
+		$this->add_action( 'admin_print_scripts-' . $addon_menu_hook, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $addon_menu_hook, 'enqueue_styles' );		
 	}
 
 	/**
