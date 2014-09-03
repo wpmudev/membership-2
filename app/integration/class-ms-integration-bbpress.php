@@ -46,13 +46,12 @@ class MS_Integration_Bbpress extends MS_Integration {
 		
 		/** Always remove bbpress from MS_Model_Rule_Custom_Post_Type_Group. */
 		$this->add_filter( 'ms_model_rule_custom_post_type_group_get_excluded_content', 'exclude_bbpress_cpts' );
-		
 		if( MS_Model_Addon::is_enabled( self::ADDON_BBPRESS ) ) {
 			$this->add_filter( 'ms_model_rule_get_rule_types', 'bbpress_rule_types' );
 			$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
 			$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
-			$this->add_filter( 'ms_controller_membership_get_tabs', 'bbpress_rule_tabs', 10, 2 );
-			$this->add_filter( 'ms_view_membership_edit_render_callback', 'bbpress_manage_render_callback', 10, 3 );
+			$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs', 10, 2 );
+			$this->add_filter( 'ms_view_membership_setup_protected_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
 		}
 	}
 
@@ -155,13 +154,9 @@ class MS_Integration_Bbpress extends MS_Integration {
 	 * @return array The filtered tabs.
 	 */
 	public function bbpress_rule_tabs( $tabs, $membership_id ) {
-
 		$rule = self::RULE_TYPE_BBPRESS;
 		if( $membership_id ) {
-			$tabs[ $rule  ] = array(
-					'title' => __( 'bbPress', MS_TEXT_DOMAIN ),
-					'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
-			);
+			$tabs[ $rule  ]['title'] = __( 'bbPress', MS_TEXT_DOMAIN );
 		}		
 		return $tabs;
 	}

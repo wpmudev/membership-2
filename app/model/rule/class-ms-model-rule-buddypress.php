@@ -176,6 +176,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 				(object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP,
 						'name' => __( 'Friendship request', MS_TEXT_DOMAIN ),
+						'type' => $this->rule_type,
 						'description' => __( 'Allows the sending friendship requests to be limited to members.', MS_TEXT_DOMAIN ),
 						'access' => parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP ),
 						
@@ -183,12 +184,14 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 				(object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION,
 						'name' => __( 'Group creation', MS_TEXT_DOMAIN ),
+						'type' => $this->rule_type,
 						'description' => __( 'Allows group creation to be allowed to members only.', MS_TEXT_DOMAIN ),
 						'access' => parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION ),
 				),
 				(object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG,
 						'name' => __( 'Private messaging', MS_TEXT_DOMAIN ),
+						'type' => $this->rule_type,
 						'description' => __( 'Allows the sending of private messages to be limited to members.', MS_TEXT_DOMAIN ),
 						'access' => parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG ),
 				),

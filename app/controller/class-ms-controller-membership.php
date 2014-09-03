@@ -100,10 +100,14 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	public function load_membership() {
 		if( empty( $this->model ) || ! $this->model->is_valid() ) {
-			
-			$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
-			
-			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			$step = $this->get_step();
+			if( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
+				$this->model = MS_Model_Membership::get_visitor_membership();
+			}
+			else {
+				$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
+				$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			}
 		}
 		
 		return apply_filters( 'ms_controller_membership_load_membership', $this->model );
@@ -215,7 +219,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_router() {
 		$this->wizard_tracker();
 		$step = $this->get_step();
-		MS_Helper_Debug::log($step);
+// 		MS_Helper_Debug::log($step);
 		
 		if( self::is_valid_step( $step ) ) {
 			do_action( 'ms_controller_membership_membership_admin_page_router_' . $step );
@@ -476,6 +480,7 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['shortcode'] );
 		}
 		
+		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php'); 
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $tab => $info ) {

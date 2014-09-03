@@ -28,7 +28,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 				
 					/** Call the appropriate form to render. */
-					$render_callback =  apply_filters( 'ms_view_membership_edit_render_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+					$render_callback =  apply_filters( 'ms_view_membership_setup_protected_content_render_tab_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
 					call_user_func( $render_callback );
 				?>
 			</div>
@@ -428,13 +428,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<h3><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<form action="" method="post" class="ms-form">
-					<?php wp_nonce_field( $fields['action']['value'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box(
 							$fields, 
-							__( 'Edit URL access rules', MS_TEXT_DOMAIN ), 
-							'',
-							array( 'label_element' => 'h3' ) 
+							__( 'Edit URL access rules', MS_TEXT_DOMAIN ) 
 						);
 					?>
 				</form>

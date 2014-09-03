@@ -49,8 +49,8 @@ class MS_Integration_BuddyPress extends MS_Integration {
 			$this->add_filter( 'ms_model_rule_get_rule_types', 'buddypress_rule_types' );
 			$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'buddypress_rule_type_classes' );
 			$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'buddypress_rule_type_titles' );
-			$this->add_filter( 'ms_controller_membership_get_tabs', 'buddypress_rule_tabs', 10, 2 );
-			$this->add_filter( 'ms_view_membership_edit_render_callback', 'buddypress_manage_render_callback', 10, 3 );
+			$this->add_filter( 'ms_controller_membership_tabs', 'buddypress_rule_tabs', 10, 2 );
+			$this->add_filter( 'ms_view_membership_setup_protected_content_render_tab_callback', 'buddypress_manage_render_callback', 10, 3 );
 		}
 	}
 
@@ -171,21 +171,16 @@ class MS_Integration_BuddyPress extends MS_Integration {
 
 		$rule = self::RULE_TYPE_BUDDYPRESS;
 		if( $membership_id ) {
-			$tabs[ $rule  ] = array(
-					'title' => __( 'Buddypress', MS_TEXT_DOMAIN ),
-					'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
-			);
+			$tabs[ $rule  ]['title']  = __( 'BuddyPress', MS_TEXT_DOMAIN );
 		}
 		/** @todo integrate it better in 4.1
 		$rule = self::RULE_TYPE_BUDDYPRESS_BLOG;
 		$tabs[ $rule  ] = array(
 				'title' => __( 'Buddypress blog', MS_TEXT_DOMAIN ),
-				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
 		);
 		$rule = self::RULE_TYPE_BUDDYPRESS_GROUP;
 		$tabs[ $rule  ] = array(
 				'title' => __( 'Buddypress groups', MS_TEXT_DOMAIN ),
-				'url' => "admin.php?page=membership-edit&tab={$rule}&membership_id={$membership_id}",
 		);
 		*/
 		
