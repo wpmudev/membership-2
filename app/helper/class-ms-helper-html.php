@@ -309,11 +309,11 @@ class MS_Helper_Html extends MS_Helper {
 		);
 		if( ! $wizard_mode ) {
 			unset( $defaults['fields']['next'] );
-			$defaults['fields']['save'] = array(
-					'id' => 'save',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Save and continue', MS_TEXT_DOMAIN ),
-			);
+// 			$defaults['fields']['save'] = array(
+// 					'id' => 'save',
+// 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+// 					'value' => __( 'Save and continue', MS_TEXT_DOMAIN ),
+// 			);
 		}
 		
 		$args = wp_parse_args( $args, $defaults );
@@ -366,6 +366,31 @@ class MS_Helper_Html extends MS_Helper {
 		<?php 
 	}
 	
+	public static function settings_tab_header( $args = null ) {
+		$defaults = array(
+				'title' => '',
+				'desc' => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
+		extract($args);
+	
+		if( ! is_array( $desc ) ) {
+			$desc = array( $desc );
+		}
+		?>
+			<div class='ms-settings-tab-title'>
+				<h3><?php echo $title; ?></h3>
+			</div>		
+			<div class="ms-settings-tab-desc-wrapper">
+				<?php foreach( $desc as $description ): ?> 
+					<div class="ms-settings-tab-desc">
+						<?php echo $description; ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		<?php 
+	}
 	public static function settings_box( $fields_in, $title = '', $description = '', $args = array() ) {
 		
 		/** If its a fields array, great, if not, make a fields array */

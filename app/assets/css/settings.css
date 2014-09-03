@@ -171,7 +171,7 @@ h2.ms-settings-title,
 	margin-top: 15px;
 }
 
-.ms-settings .settings-description {
+.ms-settings .settings-description, .ms-settings-tab-desc {
 	color: #888;
 }
 /** html fields */
