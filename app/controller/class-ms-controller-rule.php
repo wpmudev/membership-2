@@ -245,7 +245,7 @@ class MS_Controller_Rule extends MS_Controller {
 		}
 		
 		if( is_array( $fields ) ) {
-			$rule_type = 'url_group';
+			$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
 			$rule = $membership->get_rule( $rule_type );
 	
 			foreach( $fields as $field => $value ) {

@@ -47,10 +47,9 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 
 	 	if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 	 		
-			$url = is_ssl() ? "https://" : "http://";
-			$url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-	
-			if ( $this->strip_query_string ) {
+			$url = MS_Helper_Utility::get_current_page_url();
+			
+			if( $this->strip_query_string ) {
 				$url = current( explode(  '?', $url ) );
 			}
 			
@@ -153,7 +152,10 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		if ( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'rule_value':
-					$this->$property = array_filter( array_map( 'trim', explode( PHP_EOL, $value ) ) )	;
+					if( ! is_array( $value ) ) {
+						$value = explode( PHP_EOL, $value );
+					}
+					$this->$property = array_filter( array_map( 'trim', $value ) )	;
 					break;
 				case 'strip_query_string':
 				case 'is_regex':

@@ -251,6 +251,9 @@ class MS_Model_Rule extends MS_Model {
 		$total = $this->get_content_count();
 		$count_accessible = 0;
 		$count_restricted = 0;
+		if( ! is_array( $this->rule_value ) ) {
+			$this->rule_value = array();
+		}
 		foreach( $this->rule_value as $value ) {
 			if( $value ) {
 				$count_accessible++;
@@ -290,6 +293,21 @@ class MS_Model_Rule extends MS_Model {
 	
 	public function reset_rule_values() {
 		$this->rule_value = array();
+	}
+	
+	public function merge_rule_values( $src_rule ) {
+		
+		$rule_value = $this->rule_value;
+		if( ! is_array( $this->rule_value ) ) {
+			$rule_value = array();
+		}
+		$src_rule_value = $src_rule->rule_value;
+		if( ! is_array( $src_rule->rule_value ) ) {
+			$src_rule_value = array();
+		}
+		
+		/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
+		$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
 	}
 	
 	public function set_access( $id, $has_access ) {
@@ -337,6 +355,34 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 		return $contents;
+	}
+	
+	/**
+	 * Returns property associated with the render.
+	 *
+	 * @since 1.0
+	 *
+	 * @access public
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+		$value = null;
+		switch( $property ) {
+			case 'rule_value':
+				if( ! is_array( $this->rule_value ) ) {
+					$this->rule_value = array();
+				}
+				$value = $this->rule_value;
+				break;
+			default:
+				if( property_exists( $this, $property ) ) {
+					$value = $this->$property;
+				}
+				break;
+		}
+	
+		return apply_filters( 'ms_model_rule__get', $value, $property );
 	}
 	
 	/**

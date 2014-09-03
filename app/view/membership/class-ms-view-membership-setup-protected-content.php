@@ -419,9 +419,110 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$html = ob_get_clean();
 		echo apply_filters( 'ms_view_membership_protected_content_render_tab_shortcode', $html );
 	}
-	public function render_tab_urlgroup() {
 	
+	public function render_tab_url_group() {
+		$fields = $this->prepare_url_group_fields();
+		
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<h3><?php echo __( 'URL Groups access for ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
+				<form action="" method="post" class="ms-form">
+					<?php wp_nonce_field( $fields['action']['value'] ); ?>
+					<?php
+						MS_Helper_Html::settings_box(
+							$fields, 
+							__( 'Edit URL access rules', MS_TEXT_DOMAIN ), 
+							'',
+							array( 'label_element' => 'h3' ) 
+						);
+					?>
+				</form>
+				<?php
+					MS_Helper_Html::settings_box(
+						array( array( 
+							'id' => 'url_test',
+							'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
+							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+							'class' => 'widefat',
+						) ), 
+						__( 'Test URL group', MS_TEXT_DOMAIN ),
+						'', 
+						array( 'label_element' => 'h3' ) 
+					);
+				?>
+				<div id="url-test-results-wrapper"></div>
+			</div>
+		<?php 	
+		$html = ob_get_clean();
+		echo $html;	
 	}
 	
+	function prepare_url_group_fields() {
+
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP );
+
+		$nonce = wp_create_nonce( $this->data['action'] );
+		$action = $this->data['action'];
+		
+		$fields = array(
+				'access' => array(
+						'id' => 'access',
+						'title' => __( 'Access', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $rule->access,
+				),
+				'rule_value' => array(
+						'id' => 'rule_value',
+						'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+						'value' => implode( PHP_EOL, $rule->rule_value ),
+						'class' => 'ms-textarea-medium',
+				),
+				'strip_query_string' => array(
+						'id' => 'strip_query_string',
+						'title' => __( 'Strip query strings from URL', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $rule->strip_query_string,
+				),
+				'is_regex' => array(
+						'id' => 'is_regex',
+						'title' => __( 'Is regular expression', MS_TEXT_DOMAIN ),
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => $rule->is_regex,
+				),
+				'_wpnonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $nonce,
+				),
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $action,
+				),
+				'step' => array(
+						'id' => 'step',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $this->data['step'],
+				),
+				'membership_id' => array(
+						'id' => 'membership_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $membership->id,
+				),
+				'separator' => array(
+						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				),
+				'url_group_submit' => array(
+						'id' => 'url_group_submit',
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				),
+
+		);
+		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
+	}
 	
 }

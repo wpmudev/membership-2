@@ -288,9 +288,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
 			$rule = $this->get_rule( $rule_type );
-			/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
-			$rule_value = array_intersect_key( $rule->rule_value, $protect_rule->rule_value ) + $protect_rule->rule_value;
-			$rule->rule_value = $rule_value;
+			$rule->merge_rule_values( $protect_rule );
 			$this->set_rule( $rule_type, $rule );
 		}
 		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules );
