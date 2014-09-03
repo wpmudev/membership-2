@@ -95,16 +95,16 @@ class MS_Model_Settings extends MS_Model_Option {
 				$page_id = get_the_ID();
 			}
 		}
-	
+		$special_page_types = self::get_special_page_types();
 		if( ! empty( $page_id ) ) {
-			if( ! empty( $special_page_type ) ) {
+			if( ! empty( $special_page_type ) && in_array( $special_page_type, $special_page_types ) ) {
 				if( ! empty( $this->pages[ $special_page_type ] ) && $page_id == $this->pages[ $special_page_type ] ) {
 					$is_special_page = $special_page_type;
 				}
 			}
 			else {
 				foreach( $this->pages as $special_page_type => $special_page_id ) {
-					if( $page_id == $special_page_id ) {
+					if(  in_array( $special_page_type, $special_page_types ) && $page_id == $special_page_id ) {
 						$is_special_page = $special_page_type;
 						break;
 					}
