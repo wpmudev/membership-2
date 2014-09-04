@@ -64,7 +64,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
-		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,

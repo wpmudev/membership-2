@@ -89,7 +89,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$args['rule_status'] = $_GET['status']; 
 		}
 		
-		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}

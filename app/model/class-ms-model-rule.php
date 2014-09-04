@@ -293,7 +293,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @todo Specify a return content interface
 	 * @throws Exception
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		throw new Exception ("Method to be implemented in child class");
 	}
 	

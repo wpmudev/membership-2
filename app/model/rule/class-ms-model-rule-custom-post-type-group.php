@@ -96,7 +96,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 * @param string $args The default query post args.
 	 * @return array The content.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$cpts = self::get_custom_post_types();
 
 		$contents = array();
@@ -120,7 +120,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 */
 	public function get_content_array() {
 		$cont = array();
-		$contents = $this->get_content();
+		$contents = $this->get_contents();
 		foreach( $contents as $content ) {
 			$cont[ $content->id ] = $content->name;
 		}

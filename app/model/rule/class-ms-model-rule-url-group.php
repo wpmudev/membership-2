@@ -123,7 +123,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 * @access public
 	 * @return object[] The content array.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$contents = array();
 		foreach( $this->urls as $id => $url ) {
 			$contents[ $id ] = new StdClass();

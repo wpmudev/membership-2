@@ -65,7 +65,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 			$args['rule_status'] = $_GET['status'];
 		}
 	
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,

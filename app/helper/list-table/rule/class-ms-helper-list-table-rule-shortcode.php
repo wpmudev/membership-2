@@ -69,14 +69,14 @@ class MS_Helper_List_Table_Rule_Shortcode extends MS_Helper_List_Table_Rule {
 			$args['rule_status'] = $_GET['status'];
 		}
 	
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,
 				'per_page' => $per_page,
 		) );
 	
-		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,

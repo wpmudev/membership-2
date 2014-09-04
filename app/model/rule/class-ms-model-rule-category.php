@@ -57,7 +57,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			if( in_array( $wp_query->get( 'post_type' ), array( 'post', '' )  ) ) {
 
 				$categories = array();
-				$contents = $this->get_content();
+				$contents = $this->get_contents();
 				foreach( $contents as $content ) {
 					if( $content->access ) {
 						$categories[] = $content->id;
@@ -211,7 +211,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @param string $args The default query args.
 	 * @return array The content.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$contents = get_categories( 'get=all' );
 
 		foreach( $contents as $key => $content ) {

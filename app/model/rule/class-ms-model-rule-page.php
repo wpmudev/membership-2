@@ -165,7 +165,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @param string $args The default query post args.
 	 * @return array The content.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query( $args );

@@ -46,7 +46,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		return $items;
 	}
 		
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$contents = array();
 
 		if( ! empty( $args['menu_id'] ) ) {

@@ -378,7 +378,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 * @access public
 	 * @return object[] The content array.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$defaults = array(
 				'posts_per_page' => -1,
 				'offset'      => 0,

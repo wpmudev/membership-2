@@ -57,7 +57,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		return $content;
 	}
 	
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$contents = array();
 // 		$content = new StdClass();
 // 		$content->id = 'read';

@@ -55,7 +55,7 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 		
 		$args = apply_filters( 'ms_helper_list_table_rule_menu_prepare_items_args', array( 'menu_id' => $this->menu_id ) );
 		
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_content( $args ) );
+		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 	}

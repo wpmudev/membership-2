@@ -143,7 +143,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 * @param string $args The default query post args.
 	 * @return array The content.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$cpts = MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types();
 
 		if( empty( $cpts ) ) {

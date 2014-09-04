@@ -179,7 +179,7 @@ class MS_View_Rule extends MS_View {
 						'section' => $section,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => '',
-						'field_options' => MS_Model_Rule::rule_factory( $rule_type )->get_content(),
+						'field_options' => MS_Model_Rule::rule_factory( $rule_type )->get_contents(),
 						'class' => 'ms-select-rule-type',
 						'multiple' => 'multiple',
 			);

@@ -62,7 +62,7 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 		return $the_content;
 	}
 	
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$content = new StdClass();
 		$content->id = self::CONTENT_ID;
 		$content->name = __( 'User can read full post content beyond the More tag.', MS_TEXT_DOMAIN );

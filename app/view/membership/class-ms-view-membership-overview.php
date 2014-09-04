@@ -98,7 +98,7 @@ class MS_View_Membership_Overview extends MS_View {
 	private function content_box( $rule ) {
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
-		$contents = $rule->get_content();
+		$contents = $rule->get_contents();
 		?>
 			<div class="ms-overview-content-box-wrapper">
 				<div class="ms-title">

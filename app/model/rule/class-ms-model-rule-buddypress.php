@@ -168,7 +168,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 * @param $args Not used, but kept due to method override.
 	 * @return array The content eligible to protect by this rule domain.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$contents = array(
 				MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP => (object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP,

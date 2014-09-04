@@ -61,8 +61,8 @@ class MS_Helper_List_Table_Rule_Dripped extends MS_Helper_List_Table {
 		$args['rule_status'] = MS_Model_Rule::FILTER_DRIPPED;
 // 		$args= null;
 		
-		$posts = apply_filters( "membership_helper_list_table_rule_post_items", $this->model['post']->get_content( $args ) );
-		$pages = apply_filters( "membership_helper_list_table_rule_page_items", $this->model['page']->get_content( $args ) );
+		$posts = apply_filters( "membership_helper_list_table_rule_post_items", $this->model['post']->get_contents( $args ) );
+		$pages = apply_filters( "membership_helper_list_table_rule_page_items", $this->model['page']->get_contents( $args ) );
 		
 		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", array_merge( $posts, $pages ) );
 	

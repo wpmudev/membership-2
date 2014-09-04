@@ -146,7 +146,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return number The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		return count( $this->get_content() );
+		return count( $this->get_contents() );
 	}
 	
 	/**
@@ -157,7 +157,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @param $args The content filtering arguments.
 	 * @return array The content eligible to protect by this rule domain.
 	 */
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		global $shortcode_tags;
 		
 		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();

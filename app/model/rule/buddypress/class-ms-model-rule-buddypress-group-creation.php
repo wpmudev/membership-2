@@ -33,7 +33,7 @@ class MS_Model_Rule_Buddypress_Group_Creation extends MS_Model_Rule {
 	public function protect_content( $membership_relationship = false ) {
 	}
 	
-	public function get_content( $args = null ) {
+	public function get_contents( $args = null ) {
 		$content = new StdClass();
 		$content->id = 1;
 		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
