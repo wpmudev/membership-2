@@ -81,6 +81,7 @@ class MS_Helper_Html extends MS_Helper {
 			'tooltip'   => '',
 		 	'alt'		=> '',
 			'read_only' => false,
+			'placeholder' => '',
 			'data_placeholder' => '',
 			'data_ms' => '',
 			);
@@ -108,7 +109,7 @@ class MS_Helper_Html extends MS_Helper {
 		if ( $return ) {
 			ob_start();
 		}
-		
+		$placeholder = empty( $placeholder ) ? '' : "placeholder='$placeholder'";
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
@@ -119,7 +120,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr />";
+				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr $placeholder />";
 				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:

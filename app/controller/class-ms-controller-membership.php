@@ -738,26 +738,50 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		wp_enqueue_script( 'ms-radio-slider' );
 		
-		switch( $this->get_active_tab() ) {
-			case 'category':
-			case 'comment':
-				wp_enqueue_style( 'jquery-chosen' );
-				wp_enqueue_script( 'ms-view-membership-setup-protected-content', $plugin_url. 'app/assets/js/ms-view-membership-setup-protected-content.js', array( 'jquery', 'jquery-chosen' ), $version );
-				break;
-			case 'url_group':
-				wp_register_script( 'ms-view-membership-render-url-group', $plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', array( 'jquery' ), $version );
-				wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array(
-						'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
-						'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
-						'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
-						'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
-				));
-				wp_enqueue_script( 'ms-view-membership-render-url-group' );
-				wp_dequeue_script( 'ms-radio-slider' );
-				break;
-			default:
-				wp_enqueue_script( 'jquery-ui-datepicker' );
+		switch( $this->get_step() ) {
+			case self::STEP_CHOOSE_MS_TYPE:
 				wp_enqueue_script( 'jquery-validate' );
+				wp_enqueue_script( 
+					'ms-view-membership-choose-type', 
+					$plugin_url. 'app/assets/js/ms-view-membership-choose-type.js', 
+					array( 'jquery', 'jquery-validate' ), 
+					$version 
+				);
+				break;
+			case self::STEP_SETUP_PROTECTED_CONTENT:
+			case self::STEP_ACCESSIBLE_CONTENT:
+				switch( $this->get_active_tab() ) {
+					case 'category':
+					case 'comment':
+						wp_enqueue_style( 'jquery-chosen' );
+						wp_enqueue_script( 
+							'ms-view-membership-setup-protected-content', 
+							$plugin_url. 'app/assets/js/ms-view-membership-setup-protected-content.js', 
+							array( 'jquery', 'jquery-chosen' ), 
+							$version 
+						);
+						break;
+					case 'url_group':
+						wp_register_script( 
+							'ms-view-membership-render-url-group', 
+							$plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js', 
+							array( 'jquery' ), 
+							$version 
+						);
+						wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array(
+								'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
+								'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
+								'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
+								'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
+						) );
+						wp_enqueue_script( 'ms-view-membership-render-url-group' );
+						wp_dequeue_script( 'ms-radio-slider' );
+						break;
+					default:
+						wp_enqueue_script( 'jquery-ui-datepicker' );
+						wp_enqueue_script( 'jquery-validate' );
+						break;
+				}
 				break;
 		}
 	}

@@ -204,6 +204,9 @@ h2.ms-settings-title,
 .ms-text-medium {
 	width: 300px;
 }
+.ms-text-large {
+	width: 400px;
+}
 
 .ms-link-button, .ms-submit {
 	margin: 0 0.5em 0 0 !important;

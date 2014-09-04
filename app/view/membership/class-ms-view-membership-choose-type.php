@@ -16,7 +16,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 					) ); 
 				?>
 				<div class='ms-settings'>
-					<form action="" method="post">
+					<form action="" method="post" id="ms-choose-type-form">
 						<div class="ms-type-wrapper">
 							<h3><?php _e( 'What kind of membership do you want to set up?', MS_TEXT_DOMAIN ); ?></h3>
 							<?php MS_Helper_Html::html_input( $this->fields['type'] ); ?>
@@ -72,7 +72,8 @@ class MS_View_Membership_Choose_Type extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'title' => __( 'Choose a name for your membership:', MS_TEXT_DOMAIN ),
 					'value' => $membership->name,
-					'class' => 'ms-field-input-name',
+					'class' => 'ms-field-input-name ms-text-large',
+					'placeholder' => __( 'Choose a good name that will identify this membership...', MS_TEXT_DOMAIN ),
 			),
 			'private' => array(
 					'id' => 'private',
