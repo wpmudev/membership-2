@@ -89,6 +89,18 @@ class MS_Model_Rule extends MS_Model {
 				10 => self::RULE_TYPE_URL_GROUP,
 		);
 	
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			unset( $rule_types[1] );
+		}
+		else {
+			unset( $rule_types[0] );
+		}
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			unset( $rule_types[3] );
+		}
+		else {
+			unset( $rule_types[2] );
+		}
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			unset( $rule_types[9] );
 		}
@@ -135,7 +147,7 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type Group', MS_TEXT_DOMAIN ),
+				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
 		)
 		);
 	}
@@ -186,6 +198,11 @@ class MS_Model_Rule extends MS_Model {
 	public function has_rules() {
 		$has_rules = ! empty( $this->rule_value ) ;
 		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this->rule_value );	
+	}
+	
+	public function count_rules() {
+		$count = count( $this->rule_value ) ;
+		return apply_filters( 'ms_model_rule_count_rules', $count, $this->rule_value );
 	}
 	
 	/**
@@ -297,6 +314,28 @@ class MS_Model_Rule extends MS_Model {
 		throw new Exception ("Method to be implemented in child class");
 	}
 	
+	public function get_content( $id ) {
+		$content = null;
+		$contents = $this->get_contents();
+		if( ! empty( $contents[ $id ]->name ) ) {
+			$content = $contents[ $id ]->name;
+		}
+		elseif( ! empty( $contents[ $id ]->post_name ) ) {
+			$content = $contents[ $id ]->post_name;
+				
+		}
+		elseif( ! empty( $contents[ $id ]->title ) ) {
+			$content = $contents[ $id ]->title;
+		}
+		elseif( ! empty( $contents[ $id ] ) ) {
+			$content = $contents[ $id ];
+		}
+		else {
+			$content = $id;
+		}
+		
+		return apply_filters( 'ms_model_rule_get_content', $content, $id );
+	}
 	public function get_content_count( $args = null ) {
 		return 0;
 	}

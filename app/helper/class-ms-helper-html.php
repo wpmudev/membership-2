@@ -545,4 +545,13 @@ class MS_Helper_Html extends MS_Helper {
 	public static function html_separator() {
 		echo "<div class='ms-separator'></div>";	
 	}
+	
+	public static function content_desc( $descriptions ) {
+		if( ! is_array( $descriptions ) ) {
+			$descriptions = array( $descriptions );
+		}
+		foreach( $descriptions as $desc ) {
+			echo "<span class='ms-content-desc'>$desc</span>";
+		}
+	}
 }

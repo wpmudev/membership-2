@@ -185,20 +185,22 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query( $args );
-		$contents = $query->get_posts();
-				
-		foreach( $contents as $content ) {
-			$content->id = $content->ID;
-			$content->type = $this->rule_type;
-			$content->access = false;
+		$posts = $query->get_posts();
 
+		$contents = array();
+		foreach( $posts as $content ) {
+			$content->id = $content->ID;
+			$content->name = $content->post_title;
+			$content->type = $this->rule_type;
 			$content->access = parent::has_access( $content->id  );
+			
+			$contents[ $content->id ] = $content;
 		}
 
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
-		return $contents;
+		return apply_filters( 'ms_model_rule_bbpress_get_contents', $contents );
 	}
 	
 	public function get_query_args( $args = null ) {

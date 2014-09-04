@@ -76,6 +76,19 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		return apply_filters( 'ms_model_rule_menu_get_content', $contents );
 	}
 	
+	public function get_content( $id ) {
+		$content = null;
+		$navs = $this->get_menu_array();
+		foreach( $navs as $menu_id => $name ) {
+			$contents = $this->get_contents( array( 'menu_id' => $menu_id ) );
+			if( array_key_exists( $id, $contents ) ) {
+				$content = $contents[ $id ]->title;
+				break;
+			}
+		}
+		return apply_filters( 'ms_model_rule_menu_get_content', $content, $id );
+	}
+	
 	public function get_menu_array() {
 		$contents = array( __( 'No menus found.', MS_TEXT_DOMAIN ) );
 		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );

@@ -109,7 +109,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 		$html = '';
 		switch( $column_name ) {
 			default:
-				$html = $item->post_date;
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;

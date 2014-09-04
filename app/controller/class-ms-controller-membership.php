@@ -608,7 +608,19 @@ class MS_Controller_Membership extends MS_Controller {
 		/** Setup navigation tabs. */
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
 		if ( ! array_key_exists( $active_tab, $tabs ) ) {
-			$active_tab = $first_key;
+			switch( $active_tab ) {
+				case 'cpt_group':
+					$active_tab = 'category';
+					break;
+				case 'menu':
+				case 'more_tag':
+					$active_tab = 'comment';
+					break;
+				default:
+					$active_tab = $first_key;
+					break;
+			}
+			
 			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
 		}
 		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );

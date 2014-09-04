@@ -27,8 +27,6 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	
 	protected $rule_type = self::RULE_TYPE_URL_GROUP;
 	
-	protected $urls = array();
-	
 	protected $access;
 	
 	protected $strip_query_string;
@@ -124,20 +122,12 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 * @return object[] The content array.
 	 */
 	public function get_contents( $args = null ) {
-		$contents = array();
-		foreach( $this->urls as $id => $url ) {
-			$contents[ $id ] = new StdClass();
-			$contents[ $id ]->id = $id;
-			$contents[ $id ]->url = $url['url'];
-			if( in_array( $id, $this->rule_value ) ) {
-				$contents[ $id ]->access = true;
-			}
-			else {
-				$contents[ $id ]->access = false;
-			}
-		} 
-		return $contents;
+		
 	}
+	
+	public function get_content( $id ) {
+		return $this->rule_value;
+	} 
 	
 	/**
 	 * Validate specific property before set.
