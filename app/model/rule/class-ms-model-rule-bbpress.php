@@ -182,18 +182,11 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 	 */
 	public function get_content( $args = null ) {
 		
-		$defaults = array(
-				'posts_per_page' => -1,
-				'offset'      => 0,
-				'orderby'     => 'ID',
-				'order'       => 'DESC',
-				'post_type'   => MS_Integration_Bbpress::CPT_BB_FORUM,
-				'post_status' => 'publish',
-		);
-		$args = wp_parse_args( $args, $defaults );
-
-		$contents = get_posts( $args );
+		$args = self::get_query_args( $args );
 		
+		$query = new WP_Query( $args );
+		$contents = $query->get_posts();
+				
 		foreach( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = $this->rule_type;
@@ -208,4 +201,20 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		return $contents;
 	}
 	
+	public function get_query_args( $args = null ) {
+	
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'ID',
+				'order'       => 'DESC',
+				'post_type'   => MS_Integration_Bbpress::CPT_BB_FORUM,
+				'post_status' => 'publish',
+		);
+		
+		$args = wp_parse_args( $args, $defaults );
+		$args = parent::get_query_args( $args );
+		
+		return apply_filters( 'ms_model_rule_bbpress_get_query_args', $args );
+	}	
 }

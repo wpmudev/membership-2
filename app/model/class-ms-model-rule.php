@@ -348,6 +348,36 @@ class MS_Model_Rule extends MS_Model {
 		$this->set_access( $id, $has_access );
 	}
 	
+	public function get_query_args( $args = null ) {
+	
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'ID',
+				'order'       => 'DESC',
+				'post_status' => 'publish',
+		);
+		$args = wp_parse_args( $args, $defaults );
+	
+		/** If not visitor membership, just show protected content */
+		if( ! $this->rule_value_invert ) {
+			$args['post__in'] = array_keys( $this->rule_value );
+		}
+			
+		/** Cannot use post__in and post_not_in at the same time.*/
+		if( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
+			$include = $args['post__in'];
+			$exclude = $args['post__not_in'];
+			foreach( $exclude as $id ) {
+				$key = array_search( $id, $include );
+				unset( $include[ $key ] );
+			}
+			unset( $args['post__not_in'] );
+		}
+	
+		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
+	}
+	
 	public function filter_content( $status, $contents ) {
 		foreach( $contents as $key => $content ) {
 			if( !empty( $content->ignore ) ) {

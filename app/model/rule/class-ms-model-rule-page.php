@@ -203,36 +203,21 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	}
 
 	public function get_query_args( $args = null ) {
-		
+	
 		$defaults = array(
 				'posts_per_page' => -1,
 				'offset'      => 0,
 				'orderby'     => 'post_date',
 				'order'       => 'DESC',
 				'post_type'   => 'page',
-				'post_status' => array( 'publish', 'virtual' ), //Classifieds plugin uses a "virtual" status for some of it's pages
+				/**custom "virtual" status for special pages (classifieds plugin)*/
+				'post_status' => array( 'publish', 'virtual' ), 
 				'post__not_in'     => $this->get_excluded_content(),
 		);
+	
 		$args = wp_parse_args( $args, $defaults );
-		
-		/** If not visitor membership, just show protected content */
-		if( ! $this->rule_value_invert ) {
-			$visitor_membership = MS_Model_Membership::get_visitor_membership();
-			$rule = $visitor_membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
-			$args['post__in'] = array_keys( $rule->rule_value );
-		}
-		
-		/** Cannot use post__in and post_not_in at the same time.*/
-		if( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
-			$include = $args['post__in'];
-			$exclude = $args['post__not_in'];
-			foreach( $exclude as $id ) {
-				$key = array_search( $id, $include );
-				unset( $include[ $key ] );
-			}
-			unset( $args['post__not_in'] );
-		}
-		
+		$args = parent::get_query_args( $args );
+	
 		return apply_filters( 'ms_model_rule_page_get_query_args', $args );
 	}
 	

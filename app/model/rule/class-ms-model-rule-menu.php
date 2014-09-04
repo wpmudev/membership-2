@@ -63,7 +63,12 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 					$contents[ $item_id ]->access = parent::has_access( $contents[ $item_id ]->id );
 				}
 			}
-		}		
+		}
+		/** If not visitor membership, just show protected content */
+		if( ! $this->rule_value_invert ) {
+			$contents = array_intersect_key( $contents,  $this->rule_value );
+		}
+		
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}

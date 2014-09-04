@@ -158,6 +158,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
 				foreach ($field_options as $key => $option ) {
+					$data_ms_att = '';
 					if( is_array( $option ) ) {
 						$text = $option['text'];
 						$desc = $option['desc'];

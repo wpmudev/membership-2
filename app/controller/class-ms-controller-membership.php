@@ -255,9 +255,10 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
-		$first_value = reset( $data['menus'] );
-		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' ); 
-		 
+		$first_value = array_keys( $data['menus'] );
+		$first_value = reset( $first_value );
+		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
+				 
 		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
 		$view->render();
@@ -278,10 +279,14 @@ class MS_Controller_Membership extends MS_Controller {
 	public function page_accessible_content() {
 		$data = array();
 		$data['step'] = $this->get_step();
-		$data['action'] = 'save_membership';
+		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $this->load_membership();
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
+		$first_value = array_keys( $data['menus'] );
+		$first_value = reset( $first_value );
+		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
 		
 		$view = apply_filters( 'ms_view_membership_accessible_content', new MS_View_Membership_Accessible_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data );
@@ -516,19 +521,33 @@ class MS_Controller_Membership extends MS_Controller {
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $tab => $info ) {
 			$rule = $protected_content->get_rule( $tab );
-			if( $rule->has_rules() ) {
-				$tabs[ $tab ]['url'] = add_query_arg( array(
-						'page' => $page,
-						'step' => $step,
-						'tab' => $tab,
-						'membership_id' => $membership_id,
-				) );
-			}
-			else {
-				unset( $tabs[ $tab ] );
+			switch( $tab ) {
+				case 'category':
+					if( ! $rule->has_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->has_rules() ) {
+						unset( $tabs[ $tab ] );
+					}
+					break;
+				case 'comment':
+					if(!  $rule->has_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->has_rules() &&
+						! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->has_rules() ) {
+						unset( $tabs[ $tab ] );
+					}
+					break;
+				default:
+					if( ! $rule->has_rules() ) {
+						unset( $tabs[ $tab ] );
+					}
+					break;
 			}
 		}
-	
+		foreach( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = add_query_arg( array(
+					'page' => $page,
+					'step' => $step,
+					'tab' => $tab,
+					'membership_id' => $membership_id,
+			) );
+		}
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}
 	

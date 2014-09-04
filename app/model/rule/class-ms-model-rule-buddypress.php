@@ -30,11 +30,11 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Verify access to the current page.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 *
 	 * @return boolean
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id = null ) {
 		$has_access = false;
 		global $bp;
 		
@@ -44,10 +44,8 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 				switch( $component ) {
 					/** Private messaging direct access. */
 					case 'messages':
-						if( 'compose' == $bp->current_action &&
-							in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
-							
-								$has_access = true;
+						if( 'compose' == $bp->current_action && parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG ) ) {
+							$has_access = true;
 						}
 						break;
 					/** Don't modify, handled by MS_Model_Rule_Buddypress_Group */	
@@ -67,7 +65,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 * 
-	 * @since 4.0.0
+	 * @since q.0
 	 * 
 	 * @param optional $membership_relationship The membership relationship info. 
 	 */
@@ -80,11 +78,11 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Protect private messaging.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0
 	 * 
 	 */
 	protected function protect_private_messaging() {
-		if( ! in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG, $this->rule_value ) ) {
+		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG ) ) {
 			$this->add_filter( 'bp_get_send_message_button', 'hide_private_message_button' );
 		}
 	}
@@ -92,7 +90,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Adds filter to prevent friendship button rendering.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @filter bp_get_send_message_button
 	 *
 	 * @access public
@@ -106,11 +104,11 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Protect friendship request.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0
 	 * 
 	 */
 	protected function protect_friendship_request() {
-		if( ! in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP, $this->rule_value ) ) {
+		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP ) ) {
 			$this->add_filter( 'bp_get_add_friend_button', 'hide_add_friend_button' );
 		}
 	}
@@ -118,7 +116,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Adds filter to prevent friendship button rendering.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @filter bp_get_add_friend_button
 	 *
 	 * @access public
@@ -133,7 +131,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Prevents button rendering.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @filter bp_get_button
 	 *
 	 * @access public
@@ -147,7 +145,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Checks the ability to create groups.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @filter bp_user_can_create_groups
 	 *
 	 * @param string $can_create The initial access.
@@ -155,8 +153,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 */
 	public function protect_create_bp_group( $can_create ) {
 		$can_create = false;
-		
-		if( in_array( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION, $this->rule_value ) ) {
+		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION ) ) {
 			$can_create = true;
 		}
 		
@@ -173,7 +170,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 */
 	public function get_content( $args = null ) {
 		$contents = array(
-				(object) array(
+				MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP => (object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP,
 						'name' => __( 'Friendship request', MS_TEXT_DOMAIN ),
 						'type' => $this->rule_type,
@@ -181,14 +178,14 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 						'access' => parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP ),
 						
 				),
-				(object) array(
+				MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION => (object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION,
 						'name' => __( 'Group creation', MS_TEXT_DOMAIN ),
 						'type' => $this->rule_type,
 						'description' => __( 'Allows group creation to be allowed to members only.', MS_TEXT_DOMAIN ),
 						'access' => parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION ),
 				),
-				(object) array(
+				MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG => (object) array(
 						'id' => MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG,
 						'name' => __( 'Private messaging', MS_TEXT_DOMAIN ),
 						'type' => $this->rule_type,
@@ -197,6 +194,11 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 				),
 				
 		);
+
+		/** If not visitor membership, just show protected content */
+		if( ! $this->rule_value_invert ) {
+			$contents = array_intersect_key( $contents,  $this->rule_value );
+		}
 		return apply_filters( 'ms_model_rule_buddypress_get_content', $contents );
 	}
 }
