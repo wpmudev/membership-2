@@ -138,10 +138,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$goto_url = null;
 		
+		/** MS_Controller_Rule is executed using this action*/
 		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
 		
-		MS_Helper_Debug::log("step: $step");
-		/** Verify nonce action in request */
+// 		MS_Helper_Debug::log("step: $step");
+		/** Verify intent in request, only accessible to admin users */
 		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			/** Take next actions based in current step.*/
 			switch( $step ) {
@@ -150,7 +151,7 @@ class MS_Controller_Membership extends MS_Controller {
 					$msg = 0;
 					$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
-					$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=protected-content') );
+					$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_CHOOSE_MS_TYPE, $step );
@@ -280,6 +281,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $this->load_membership();
+		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		
 		$view = apply_filters( 'ms_view_membership_accessible_content', new MS_View_Membership_Accessible_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data );
 		$view->render();

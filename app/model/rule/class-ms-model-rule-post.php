@@ -190,12 +190,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * @return number The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$defaults = array(
-				'posts_per_page' => -1,
-				'post_type'   => 'post',
-				'post_status' => 'publish',
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
 	
 		$query = new WP_Query( $args );
 		return $query->found_posts;
@@ -207,15 +202,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * @return array The content.
 	 */
 	public function get_content( $args = null ) {
-		$defaults = array(
-				'posts_per_page' => -1,
-				'offset'      => 0,
-				'orderby'     => 'post_date',
-				'order'       => 'DESC',
-				'post_type'   => 'post',
-				'post_status' => 'publish',
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
 		
 		$query = new WP_Query( $args );
 		$posts = $query->get_posts();
@@ -258,6 +245,38 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		}
 		return $contents;
 		
+	}
+	
+	public function get_query_args( $args = null ) {
+	
+		$defaults = array(
+				'posts_per_page' => -1,
+				'offset'      => 0,
+				'orderby'     => 'post_date',
+				'order'       => 'DESC',
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+		);
+		$args = wp_parse_args( $args, $defaults );
+	
+		if( ! $this->rule_value_invert ) {
+			$visitor_membership = MS_Model_Membership::get_visitor_membership();
+			$rule = $visitor_membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+			$args['post__in'] = array_keys( $rule->rule_value );
+		}
+	
+		/** Cannot use post__in and post_not_in at the same time.*/
+		if( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
+			$include = $args['post__in'];
+			$exclude = $args['post__not_in'];
+			foreach( $exclude as $id ) {
+				$key = array_search( $id, $include );
+				unset( $include[ $key ] );
+			}
+			unset( $args['post__not_in'] );
+		}
+
+		return apply_filters( 'ms_model_rule_page_get_query_args', $args );
 	}
 	
 	/**

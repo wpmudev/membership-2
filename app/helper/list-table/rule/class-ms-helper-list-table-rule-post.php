@@ -35,7 +35,7 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		$columns = array(
 			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Post title', MS_TEXT_DOMAIN ),
-			'access' => __( 'Access', MS_TEXT_DOMAIN ),
+			'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 			'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 			'category' => __( 'Categories', MS_TEXT_DOMAIN ),
 			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),

@@ -175,6 +175,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
+			if( $this->visitor_membership ) {
+				$this->rules[ $rule_type ]->rule_value_invert = true;
+			}
 			return $this->rules[ $rule_type ];
 		}
 		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
@@ -182,6 +185,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		else {
 			$this->rules[ $rule_type ] = MS_Model_Rule::rule_factory( $rule_type );
+			if( $this->visitor_membership ) {
+				$this->rules[ $rule_type ]->rule_value_invert = true;
+			}
 			return $this->rules[ $rule_type ];
 		}
 	}

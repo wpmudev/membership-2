@@ -63,7 +63,9 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && ! empty( $_POST['item'] ) && $this->is_admin_user() ) {
+		
+		$required = array( 'membership_id', 'rule', 'item' );
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
 			$msg = $this->rule_list_do_action( 'toggle_access',  $_POST['rule'], array( $_POST['item'] ) );
 		}
 	

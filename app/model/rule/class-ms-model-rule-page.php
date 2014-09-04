@@ -212,11 +212,28 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 				'post_type'   => 'page',
 				'post_status' => array( 'publish', 'virtual' ), //Classifieds plugin uses a "virtual" status for some of it's pages
 				'post__not_in'     => $this->get_excluded_content(),
-// 				'include'	  => array_keys( $this->rule_value ),
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
-		return apply_filters( 'ms_model_rule_get_query_args', $args );
+		/** If not visitor membership, just show protected content */
+		if( ! $this->rule_value_invert ) {
+			$visitor_membership = MS_Model_Membership::get_visitor_membership();
+			$rule = $visitor_membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
+			$args['post__in'] = array_keys( $rule->rule_value );
+		}
+		
+		/** Cannot use post__in and post_not_in at the same time.*/
+		if( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
+			$include = $args['post__in'];
+			$exclude = $args['post__not_in'];
+			foreach( $exclude as $id ) {
+				$key = array_search( $id, $include );
+				unset( $include[ $key ] );
+			}
+			unset( $args['post__not_in'] );
+		}
+		
+		return apply_filters( 'ms_model_rule_page_get_query_args', $args );
 	}
 	
 	/**
@@ -230,11 +247,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$cont = array();
 
 		$args = self::get_query_args( $args );
-		unset( $args['include'] );
 		
 		$query = new WP_Query($args);
 		
-		$contents = get_posts( $args );
+		$contents = $query->get_posts();
 		foreach( $contents as $content ) {
 			$cont[ $content->ID ] = $content->post_title;
 		}

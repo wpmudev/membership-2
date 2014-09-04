@@ -77,15 +77,12 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 		$columns = array(
 				'cb'     => '<input type="checkbox" />',
 				'name' => __( 'Page title', MS_TEXT_DOMAIN ),
-				'access' => __( 'Protected', MS_TEXT_DOMAIN ),
+				'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 				'post_date' => __( 'Date', MS_TEXT_DOMAIN ),
 		);
 		if( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
 			unset( $columns['dripped'] );
-		}
-		if( ! empty( $_GET['step'] ) && MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT == $_GET['step'] ) {
-			$columns['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
 		}
 		
 		return apply_filters( "ms_helper_list_table_{$this->id}_columns", $columns );

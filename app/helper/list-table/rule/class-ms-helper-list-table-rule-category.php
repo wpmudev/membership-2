@@ -48,17 +48,8 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
-				$html = $item->name;
-				break;
-			case 'slug':
-				$html = $item->slug;
-				break;
-			case 'posts':
-				$html = 0;
-				break;
 			default:
-				$html = print_r( $item, true ) ;
+				$html = $item->$column_name ;
 				break;
 		}
 		return $html;

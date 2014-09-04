@@ -68,10 +68,18 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function get_bulk_actions() {
-		return apply_filters( "ms_helper_list_table_{$this->id}_bulk_actions", array(
+		$bulk_actions = array(
 				'give_access' => __( 'Give access', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
-		) );
+		);
+		if( $this->membership->visitor_membership ) {
+			$bulk_actions = array(
+					'give_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
+					'no_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
+			);
+		}		
+		
+		return apply_filters( "ms_helper_list_table_{$this->id}_bulk_actions", $bulk_actions );
 	}
 	
 	public function prepare_items() {
@@ -155,6 +163,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	
 	public function get_views(){
 		$count = $this->model->count_item_access();
+		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
+		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );
+		if( $this->membership->visitor_membership ) {
+			$has_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
+			$no_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
+		}
 		
 		$url = apply_filters( "ms_helper_list_table_{$this->id}_url", remove_query_arg( array ( 'status', 'paged' ) ) );
 		
@@ -162,12 +176,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'all' => sprintf( '<a href="%s">%s</a> (%s)', $url, __( 'All', MS_TEXT_DOMAIN ), $count['total'] ),
 				'has_access' => sprintf( '<a href="%s">%s</a> (%s)', 
 						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ), $url ), 
-						__( 'Has Access', MS_TEXT_DOMAIN ), 
+						$has_access_desc, 
 						$count['accessible'] 
 				),
 				'no_access' => sprintf( '<a href="%s">%s</a> (%s)', 
 						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ), $url ),
-						 __( 'Access Restricted', MS_TEXT_DOMAIN ), 
+						$no_access_desc, 
 						$count['restricted'] 
 				),
 		) );

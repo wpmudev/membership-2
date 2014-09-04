@@ -62,6 +62,8 @@ class MS_Model_Rule extends MS_Model {
 	protected $dripped = array();
 	
 	protected $rule_value_default = true;
+	
+	protected $rule_value_invert = false;
 
 	/**
 	 * Rule types.
@@ -211,14 +213,18 @@ class MS_Model_Rule extends MS_Model {
 		$has_access = false;
 		
 		if( ! empty( $id ) ) {
-			if( ! isset( $this->rule_value[ $id ] ) ) {
-				$has_access = $this->rule_value_default;
-			}
-			else {
+			if( isset( $this->rule_value[ $id ] ) ) {
 				$has_access = $this->rule_value[ $id ];
 			}
+			else {
+				$has_access = $this->rule_value_default;
+			}
 		}
-				
+		
+		if( $this->rule_value_invert ) {
+			$has_access = ! $has_access;
+		}
+		
 		return apply_filters( 'ms_model_rule_has_access', $has_access, $id );
 	}
 	
@@ -247,14 +253,18 @@ class MS_Model_Rule extends MS_Model {
 		
 	}
 	
-	public function count_item_access() {
-		$total = $this->get_content_count();
+	public function count_item_access( $args = null ) {
+		if( $this->rule_value_invert ) {
+			$args['default'] = 1;
+		}
+		
+		$total = $this->get_content_count( $args );
 		$count_accessible = 0;
 		$count_restricted = 0;
 		if( ! is_array( $this->rule_value ) ) {
 			$this->rule_value = array();
 		}
-		foreach( $this->rule_value as $value ) {
+		foreach( $this->rule_value as $id => $value ) {
 			if( $value ) {
 				$count_accessible++;
 			}
@@ -312,23 +322,30 @@ class MS_Model_Rule extends MS_Model {
 	
 	public function set_access( $id, $has_access ) {
 		$has_access = $this->validate_bool( $has_access );
+		
 		$this->rule_value[ $id ] = $has_access;
+		if( $this->rule_value_invert ) {
+			if( $this->rule_value[ $id ] ) {
+				unset( $this->rule_value[ $id ] );
+			}
+		}
 	}
 	public function give_access( $id ) {
-		$this->rule_value[ $id ] = true;
+		$this->set_access( $id, true );
 	}
 	
 	public function remove_access( $id ) {
-		$this->rule_value[ $id ] = false;
+		$this->set_access( $id, false );
 	}
 	
 	public function toggle_access( $id ) {
 		if( isset( $this->rule_value[ $id ] ) ) {
-			$this->rule_value[ $id ] = ! $this->rule_value[ $id ];
+			$has_access = ! $this->rule_value[ $id ];
 		}
 		else {
-			$this->rule_value[ $id ] = ! $this->rule_value_default;
+			$has_access = ! $this->rule_value_default;
 		}
+		$this->set_access( $id, $has_access );
 	}
 	
 	public function filter_content( $status, $contents ) {
