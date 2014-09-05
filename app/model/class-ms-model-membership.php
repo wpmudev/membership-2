@@ -58,16 +58,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 4.0.0
 	 */
 	protected $name;
-	
-	/**
-	 * @deprecated
-	 * @var unknown
-	 */
-	protected $gateway_id;
-	
+		
 	protected $type;
 	
+	/**
+	 * @deprecated change to payment_type 
+	 * @var unknown
+	 */
 	protected $membership_type;
+	
+	protected $parent_id = 0;
 	
 	protected $linked_membership_ids;
 	
@@ -101,6 +101,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $rules = array();
 	
+	public function after_load() {
+		/** validate rules using protected content rules */
+		if( ! $this->visitor_membership ) {
+			$this->merge_protected_content_rules();
+		}
+	}
+	
 	public static function get_types() {
 		return apply_filters( 'ms_model_membership_get_types', array(
 				self::TYPE_SIMPLE => __( 'Simple', MS_TEXT_DOMAIN ),
@@ -117,9 +124,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_type_description() {
 		$description = array();
 		
-		if( self::is_valid_type( $this->type ) ) {
+		if( self::is_valid_type( $this->type ) && empty( $this->parent_id ) ) {
 			$types = self::get_types();
-			$description[] = $types[ $this->type ];
+			$desc = $types[ $this->type ];
+			if( $this->can_have_children() ) {
+				$desc .= sprintf( ' (%s)', $this->get_children_count() );
+			}
+			$description[] = $desc;
 			if( $this->is_private_eligible() ) {
 				if( $this->is_private() ) {
 					$description[] = __( 'Private', MS_TEXT_DOMAIN );
@@ -141,6 +152,47 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				self::MEMBERSHIP_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 		) );
+	}
+	
+	public function can_have_children() {
+		$can_have_children = false;
+		
+		$can_have_children_types = array( self::TYPE_CONTENT_TYPE, self::TYPE_TIER );
+		if( 0 == $this->parent_id && in_array( $this->type, $can_have_children_types ) ) {
+			$can_have_children = true;
+		}
+		
+		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this->type );
+	}
+	
+	
+	public function create_child( $name ) {
+		$child = null;
+		
+		if( $this->can_have_children() ) {
+			$child = MS_Factory::create( 'MS_Model_Membership' );
+			
+			$fields = $this->get_object_vars();
+			foreach ( $fields as $field => $val) {
+				if ( in_array( $field, $this->ignore_fields ) ) {
+					continue;
+				}
+				$child->set_field( $field, $this->$field );
+			}
+			$child->id = 0;
+			$child->parent_id = $this->id;
+			$child->name = $name;
+			$child->save();
+		}
+		
+		return apply_filters( 'ms_model_membership_create_child', $child );
+	}
+	
+	public function get_children_count() {
+		$args['post_parent'] = $this->id;
+		$children = self::get_memberships( $args );
+		$count = count( $children );
+		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
 	}
 	
 	public function is_private() {
@@ -166,13 +218,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		return apply_filters( 'ms_model_membership_is_private_eligible', $is_private_eligible );
 	}
-	public function after_load() {
-		/** validate rules using protected content rules */
-		if( ! $this->visitor_membership ) {
-			$this->merge_protected_content_rules();
-		}
-	}
-	
+		
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			if( $this->visitor_membership ) {
@@ -219,11 +265,39 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $memberships;
 	}
 	
+	public static function get_grouped_memberships( $args ) {
+		/** Get parent memberships */
+		$args['post_parent'] = 0; 
+		$memberships = self::get_memberships( $args );
+		foreach( $memberships as $ms ) {
+			MS_Helper_Debug::log("name: $ms->name, $ms->id, $ms->parent_id");
+		}
+		
+		/** Get children memberships */
+		$args = array();
+		$args['post_parent__not_in'] = array( 0 );
+		$children = self::get_memberships( $args );
+		foreach( $children as $child ) {
+			$new = array();
+			foreach( $memberships as $ms ){
+				$new[] = $ms;
+				if( $ms->id == $child->parent_id ) {
+					$new[ $child->id ] = $child;
+				}
+			}
+			$memberships = $new;
+		}
+		 
+		return apply_filters( 'ms_model_membership_get_grouped_memberships', $memberships );
+	}
+	
 	public static function get_query_args( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
 				'order' => 'DESC',
+				'orderby' => 'ID',
 				'post_status' => 'any',
+				'post_per_page' => -1,
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -233,7 +307,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'value'   => '',
 			); 
 		}
-		return $args;
+		
+		return apply_filters( 'ms_model_membership_get_query_args', $args );
 		
 	}
 	

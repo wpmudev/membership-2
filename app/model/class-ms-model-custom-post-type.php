@@ -55,6 +55,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 				'post_status' => 'private',
 				'post_title' => sanitize_text_field( ! empty( $this->title ) ? $this->title : $this->name ),
 				'post_type' => $this->post_type,
+				'post_parent' => $this->parent_id,
 				'post_modified' => $this->post_modified, 
 		);
 		if ( empty( $this->id ) ) {

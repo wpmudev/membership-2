@@ -45,6 +45,20 @@ class MS_Factory {
 	}
 	
 	/**
+	 * Create an MS Object.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $class
+	 */
+	public static function create( $class ) {
+
+		$obj = new $class();
+		
+		return apply_filters( 'ms_factory_create_'. $class, $obj );
+	}
+	
+	/**
 	 * Load an MS Object.
 	 * 
 	 * @since 4.0.0
