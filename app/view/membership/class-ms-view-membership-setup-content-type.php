@@ -10,6 +10,9 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 		$this->prepare_fields();
 		$membership = $this->data['membership'];
 		
+		$list_table = new MS_Helper_List_Table_Membership_Group( $membership );
+		$list_table->prepare_items();
+		
 		ob_start();
 		?>
 						
@@ -28,9 +31,10 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['step'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['_wpnonce'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['content_type_name'] ); ?>
+					<?php MS_Helper_Html::html_input( $this->fields['name'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['submit_content_type'] ); ?>
 				</form>
+				<?php $list_table->display(); ?>
 				<?php 
 					MS_Helper_Html::settings_footer( 
 							array( 'fields' => array( $this->fields['step'] ) ),
@@ -53,12 +57,13 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 		$nonce = wp_create_nonce( $action );
 		
 		$this->fields = array(
-				'content_type_name' => array(
-						'id' => 'content_type_name',
+				'name' => array(
+						'id' => 'name',
 						'title' => __( 'Name Your Content Type:', MS_TEXT_DOMAIN ),
 						'value' => '',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'class' => 'ms-text-medium',
+						'class' => 'ms-text-large',
+						'placeholder' => __( 'eg. Cooking recipes', MS_TEXT_DOMAIN ),
 				),
 				'submit_content_type' => array(
 						'id' => 'submit_content_type',

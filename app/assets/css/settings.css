@@ -198,7 +198,7 @@ h2.ms-settings-title,
 	width: 100%;
 }
 .ms-text {
-	display: block;
+	display: inline-block;
 	height: 2.1em;
 }
 .ms-text-medium {
@@ -362,51 +362,6 @@ div.dripped .tooltip {
 /* Settings Page Settings */
 #ms-settings-page-links-wrapper {
 	margin: .5em;
-}
-
-/* Shadow Tables */
-.shadow-table
-{
-    position: relative;
-    width: 100%;
-    background: #ddd;
-    padding: 0em 0em;
-    color: rgba(0,0,0, .8);
-    text-shadow: 0 1px 0 #fff;
-    line-height: 1.5;
-    margin: 0px auto;
-}
-
-.shadow-table:before, .shadow-table:after 
-{
-    z-index: -1; 
-    position: absolute; 
-    content: "";
-    bottom: 15px;
-    left: 10px;
-    width: 50%; 
-    top: 80%;
-    max-width:300px;
-    background: rgba(0, 0, 0, 0.7); 
-    -webkit-box-shadow: 0 15px 10px rgba(0,0,0, 0.3);   
-    -moz-box-shadow: 0 15px 10px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 15px 10px rgba(0, 0, 0, 0.3);
-    -webkit-transform: rotate(-3deg);    
-    -moz-transform: rotate(-3deg);   
-    -o-transform: rotate(-3deg);
-    -ms-transform: rotate(-3deg);
-    transform: rotate(-3deg);
-}
-
-.shadow-table:after 
-{
-    -webkit-transform: rotate(3deg);
-    -moz-transform: rotate(3deg);
-    -o-transform: rotate(3deg);
-    -ms-transform: rotate(3deg);
-    transform: rotate(3deg);
-    right: 10px;
-    left: auto;
 }
 
 table.widefat {

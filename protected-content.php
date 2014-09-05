@@ -85,6 +85,7 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_Controller_Membership_Content_Type'] =  "app/controller/membership/class-ms-controller-membership-content-type.php";
 	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
 	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
+	$overrides['MS_Helper_List_Table_Membership_Group'] =  "app/helper/list-table/class-ms-helper-list-table-membership-group.php";
 	$overrides['MS_Helper_List_Table_Rule_Buddypress_Blog'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php";
 	$overrides['MS_Helper_List_Table_Rule_Buddypress_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-group.php";
 	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php";
