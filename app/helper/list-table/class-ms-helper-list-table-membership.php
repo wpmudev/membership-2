@@ -57,8 +57,17 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return apply_filters( 'membership_helper_list_table_membership_columns', $columns );
 	}
 	
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="membership_id[]" value="%1$s" />', $item->id );
+	public function get_hidden_columns() {
+		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
+	}
+	
+	public function get_sortable_columns() {
+		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
+				'name' => array( 'name', true ),
+				'type' => array( 'type', true ),
+				'active' => array( 'active', true ),
+				'public' => array( 'public', true ),
+		) );
 	}
 	
 	function column_active( $item ) {
@@ -97,20 +106,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return $html;
 	}
 	
-	
-	public function get_hidden_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
-	}
-	
-	public function get_sortable_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
-				'name' => array( 'name', true ),
-				'membership_type' => array( 'membership_type', true ),
-				'active' => array( 'active', true ),
-				'public' => array( 'public', true ),
-		) );
-	}
-	
 	public function prepare_items() {
 	
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
@@ -131,7 +126,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			}
 		}
 
-		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships( $args ) );
+		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_grouped_memberships( $args ) );
 		
 	}
 
@@ -162,11 +157,19 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'membership_type':
-				$html = $item->membership_type;
-				break;
 			case 'members':
 				$html = $item->get_members_count();
+				break;
+			case 'price':
+				if( $item->can_have_children() ) {
+					$html = __( 'Varied', MS_TEXT_DOMAIN );	
+				}
+				elseif( $item->price > 0 ) {
+					$html = $item->price;
+				}
+				else {
+					$html = __( 'Free', MS_TEXT_DOMAIN );
+				}
 				break;
 			case 'shortcode':
 				$html = '['. MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE ." id='$item->id']";
