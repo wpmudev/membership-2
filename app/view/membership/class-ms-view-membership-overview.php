@@ -71,12 +71,12 @@ class MS_View_Membership_Overview extends MS_View {
 						<table>
 							<tr>
 								<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'Member', MS_TEXT_DOMAIN ); ?></th>
+								<th><?php _e( 'User', MS_TEXT_DOMAIN ); ?></th>
 								<th><?php _e( 'Event', MS_TEXT_DOMAIN ); ?></th>
 							</tr>
 							<?php foreach( $this->data['events'] as $event ): ?>
 								<tr>
-									<td><?php echo date( MS_Helper_Period::DATE_TIME_FORMAT, strtotime( $event->post_modified ) ); ?></td>
+									<td><?php echo date( MS_Helper_Period::PERIOD_FORMAT, strtotime( $event->post_modified ) ); ?></td>
 									<td><?php echo MS_Model_Member::get_username( $event->user_id ); ?></td>
 									<td><?php echo $event->description; ?></td>
 								</td>

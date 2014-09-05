@@ -362,7 +362,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = '';
 		$data['membership'] = $this->load_membership();
-		$data['events'] = MS_Model_Event::get_events();
+		$args = apply_filters( 'ms_controller_membership_page_ms_news_event_args', array( 'posts_per_page' => -1 ) );
+		$data['events'] = MS_Model_Event::get_events( $args );
 		
 		$view = apply_filters( 'ms_view_membership_news', new MS_View_Membership_News() ); ;
 		$view->data = apply_filters( 'ms_view_membership_news', $data );
@@ -408,6 +409,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$steps = array(
 				self::STEP_MS_LIST,
 				self::STEP_OVERVIEW,
+				self::STEP_NEWS,
 				self::STEP_SETUP_PROTECTED_CONTENT,
 				self::STEP_CHOOSE_MS_TYPE,
 				self::STEP_SETUP_CONTENT_TYPES,

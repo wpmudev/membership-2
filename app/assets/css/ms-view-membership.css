@@ -115,7 +115,6 @@
 .ms-membership-status.ms-active div{
 	display: none;
 }
-
 .ms-membership-status-wrapper .ms-radio-slider {
 	left: 4em;
 }
@@ -124,6 +123,13 @@
 	float: left;
 	padding: 0 10px 0 0;
 }
+.ms-overview-news-wrapper th {
+	text-align: left;
+	padding: 0 15px 10px 0;
+}
+.ms-overview-news-wrapper td {
+	padding: 0 15px 0 0;
+} 
 .ms-overview-members-wrapper {
 	width: 40%;
 	float: left;
