@@ -37,6 +37,7 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	const STEP_MS_LIST = 'ms_list';
 	const STEP_OVERVIEW = 'ms_overview';
+	const STEP_NEWS = 'ms_news';
 	const STEP_SETUP_PROTECTED_CONTENT = 'setup_protected_content';
 	const STEP_CHOOSE_MS_TYPE = 'choose_ms_type';
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
@@ -320,19 +321,54 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
-		$data['events'] = MS_Model_Event::get_events();
-		$data['membership'] = $this->load_membership();
+		$membership = $this->load_membership();
+		$data['membership'] = $membership;
+		
+		$args = array();
+		$args['meta_query']['membership_id'] = array(
+				'key'     => 'membership_id',
+				'value'   => array( $membership->id, 0 ),
+				'compare' => 'IN',
+		);
+		$data['events'] = MS_Model_Event::get_events( $args );
+		
 		$data['members'] = array();
-		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $data['membership']->id ) );
+		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership->id ) );
 		foreach( $ms_relationships as $ms_relationship ) {
 			$data['members'][] = $ms_relationship->get_member();
 		} 
-
-		$view = apply_filters( 'ms_view_membership_ms_overview', new MS_View_Membership_Overview() ); ;
+		switch( $membership->type ) {
+			case MS_Model_Membership::TYPE_DRIPPED:
+				$view = new MS_View_Membership_Overview_Dripped();
+				break;
+			case MS_Model_Membership::TYPE_TIER:
+				$view = new MS_View_Membership_Overview_Tier();
+				break;
+			case MS_Model_Membership::TYPE_CONTENT_TYPE:
+				$view = new MS_View_Membership_Overview_Content_Type();
+				break;
+			default:
+			case MS_Model_Membership::TYPE_SIMPLE:
+				$view = new MS_View_Membership_Overview();
+				break;
+		}
+		$view = apply_filters( 'ms_view_membership_ms_overview', $view );
 		$view->data = apply_filters( 'ms_view_membership_ms_overview_data', $data );
 		$view->render();
 	}
 	
+	public function page_ms_news() {
+		$data = array();
+		$data['step'] = $this->get_step();
+		$data['action'] = '';
+		$data['membership'] = $this->load_membership();
+		$data['events'] = MS_Model_Event::get_events();
+		
+		$view = apply_filters( 'ms_view_membership_news', new MS_View_Membership_News() ); ;
+		$view->data = apply_filters( 'ms_view_membership_news', $data );
+		$view->render();
+	}
+
 	public function page_setup_content_types() {
 		$data = array();
 		$data['step'] = $this->get_step();
@@ -758,6 +794,14 @@ class MS_Controller_Membership extends MS_Controller {
 					$plugin_url. 'app/assets/js/ms-view-membership-choose-type.js', 
 					array( 'jquery', 'jquery-validate' ), 
 					$version 
+				);
+				break;
+			case self::STEP_OVERVIEW:
+				wp_enqueue_script(
+					'ms-view-membership-overview',
+					$plugin_url. 'app/assets/js/ms-view-membership-overview.js',
+					null,
+					$version
 				);
 				break;
 			case self::STEP_SETUP_PROTECTED_CONTENT:

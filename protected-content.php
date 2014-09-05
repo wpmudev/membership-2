@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Protected Content
-Version: 4.0.0
+Version: 1.0
 Plugin URI: http://premium.wpmudev.org/project/protected-content
 Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
 Author: WPMU DEV
@@ -110,6 +110,7 @@ function membership_class_path_overrides( $overrides ) {
 	$overrides['MS_View_Admin_Bar'] = "app/view/class-ms-view-admin-bar.php";
 	$overrides['MS_View_Membership_Accessible_Content'] = "app/view/membership/class-ms-view-membership-accessible-content.php";
 	$overrides['MS_View_Membership_Choose_Type'] = "app/view/membership/class-ms-view-membership-choose-type.php";
+	$overrides['MS_View_Membership_Overview_Content_Type'] = "app/view/membership/overview/class-ms-view-membership-overview-content-type.php";
 	$overrides['MS_View_Membership_Setup_Content_Type'] = "app/view/membership/class-ms-view-membership-setup-content-type.php";
 	$overrides['MS_View_Membership_Setup_Dripped'] = "app/view/membership/class-ms-view-membership-setup-dripped.php";
 	$overrides['MS_View_Membership_Setup_Payment'] = "app/view/membership/class-ms-view-membership-setup-payment.php";

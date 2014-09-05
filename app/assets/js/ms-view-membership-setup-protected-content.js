@@ -9,7 +9,6 @@ jQuery( document ).ready( function( $ ) {
 				
 				data = $( obj ).data( 'ms' );
 				data.rule_value = $( obj ).val();
-				console.log(data);
 				$.post( ajaxurl, data, function( response ) {
 					$( save_obj_selector ).removeClass( processing_class );
 				});

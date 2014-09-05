@@ -396,8 +396,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			 * Dripped has the final decision.
 			 */
 			foreach( $dripped as $rule_type ) {
-				if( $rules[ $rule_type ]->has_dripped_rules( $post_id ) ) {
-					$has_access = $rules[ $rule_type ]->has_dripped_access( $ms_relationship->start_date, $post_id );
+				$rule = $this->get_rule( $rule_type );
+				if( $rule->has_dripped_rules( $post_id ) ) {
+					$has_access = $rule->has_dripped_access( $ms_relationship->start_date, $post_id );
 				}
 			}
 		}

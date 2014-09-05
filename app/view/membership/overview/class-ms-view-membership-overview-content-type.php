@@ -1,48 +1,19 @@
 <?php
 
-class MS_View_Membership_Overview extends MS_View {
+class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overview {
 
+	protected $fields = array();
+	
 	protected $data;
 	
 	public function to_html() {
 		$membership = $this->data['membership'];
 		
-		$toggle = array(
-				'id' => 'ms-toggle-' . $membership->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $membership->active,
-				'class' => '',
-				'field_options' => array(
-						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-						'field' => 'active',
-						'membership_id' => $membership->id,
-				),
-		);
-		$status_class = '';
-		if( $membership->active ) {
-			$status_class = 'ms-active';
-		}
 		ob_start();
 		?>
 				
 		<div class="wrap ms-wrap">
-			<div class="ms-membership-status-wrapper">
-				<?php MS_Helper_Html::html_input( $toggle ); ?>
-				<div id='ms-membership-status' class="ms-membership-status <?php echo $status_class; ?>">
-					<?php 
-						printf( '<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>', 
-							__( 'Membership is', MS_TEXT_DOMAIN ),
-							__( 'Active', MS_TEXT_DOMAIN ) 
-						); 
-					?>
-					<?php 
-						printf( '<div><span>%s </span><span id="ms-membership-status-text" class="ms-nok">%s</span></div>', 
-							__( 'Membership is', MS_TEXT_DOMAIN ),
-							__( 'Disabled', MS_TEXT_DOMAIN ) 
-						); 
-					?>
-				</div>
-			</div>
+		Content type view
 			<?php 
 				MS_Helper_Html::settings_header( array(
 					'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
@@ -82,17 +53,6 @@ class MS_View_Membership_Overview extends MS_View {
 								</td>
 							<?php endforeach;?>
 						</table>
-						<div class="ms-news-view-wrapper">
-							<?php 
-								MS_Helper_Html::html_input( array(
-										'id' => 'view_news',
-										'type' => MS_Helper_Html::TYPE_HTML_LINK,
-										'value' => __( 'View More News', MS_TEXT_DOMAIN ), 
-										'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
-										'class' => 'ms-link-button button',
-								) );
-							?>
-						</div>
 					<?php else: ?>
 						<p><?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>		
 					<?php endif;?>
@@ -103,27 +63,15 @@ class MS_View_Membership_Overview extends MS_View {
 	}
 	
 	public function members_panel() {
-		$count = count( $this->data['members'] );
 		?>
 			<div class="ms-overview-members-wrapper">
-				<h3 class="hndle"><span><?php printf( __( 'Members (%s):', MS_TEXT_DOMAIN ), $count ); ?></span></h3>
+				<h3 class="hndle"><span><?php _e( 'Members:', MS_TEXT_DOMAIN ); ?></span></h3>
 				<div class="inside">
 					<div><?php _e( 'Active Members');?></div>
-					<?php if( $count > 0 ): ?>
+					<?php if( ! empty( $this->data['members'] ) ): ?>
 						<?php foreach( $this->data['members'] as $member ): ?>
 							<div class="ms-overview-member-name"><?php echo $member->username; ?></div>
 						<?php endforeach;?>
-						<div class="ms-member-edit-wrapper">
-							<?php 
-								MS_Helper_Html::html_input( array(
-										'id' => 'edit_members',
-										'type' => MS_Helper_Html::TYPE_HTML_LINK,
-										'value' => __( 'Edit Members', MS_TEXT_DOMAIN ), 
-										'url' => admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-members' ),
-										'class' => 'ms-link-button button',
-								) );
-							?>
-						</div>
 					<?php else: ?>
 						<p><?php _e( 'No members yet.', MS_TEXT_DOMAIN ); ?>		
 					<?php endif;?>
@@ -169,16 +117,14 @@ class MS_View_Membership_Overview extends MS_View {
 					<?php endif; ?>
 				<?php endforeach;?>
 				<div class="ms-protection-edit-wrapper">
-					<?php 
-						MS_Helper_Html::html_input( array(
+					<?php MS_Helper_Html::html_input( array(
 							'id' => 'edit_' . $rule->rule_type,
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => $title,
 							'value' => sprintf( __( 'Edit %s Restrictions', MS_TEXT_DOMAIN ), $title ), 
 							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'tab' => $rule->rule_type ) ),
 							'class' => 'ms-link-button button',
-						) );
-					?>
+					) );?>
 				</div>
 			</div>
 		<?php 

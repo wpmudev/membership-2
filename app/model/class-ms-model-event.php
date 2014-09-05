@@ -80,13 +80,15 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	protected $user_id;
 	
+	protected $membership_id;
+
+	protected $ms_relationship_id;
+	
 	protected $description;
 	
 	protected $topic;
 	
 	protected $type;
-	
-	protected $ms_relationship_id;
 	
 	protected $date;
 	
@@ -277,6 +279,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$membership = $ms_relationship->get_membership();
 						$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 						$event->user_id = $ms_relationship->user_id;
+						$event->membership_id = $ms_relationship->membership_id;
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 						
@@ -299,6 +302,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$membership = $ms_relationship->get_membership();
 						$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 						$event->user_id = $ms_relationship->user_id;
+						$event->membership_id = $ms_relationship->membership_id;
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 					}						

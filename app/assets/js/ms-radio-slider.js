@@ -22,6 +22,7 @@ jQuery( document ).ready( function( $ ) {
 				$( object ).removeClass( processing_class );
 				$( save_obj_selector ).removeClass( processing_class );
 				$( object ).children( 'input' ).val( $( object ).hasClass( 'on' ) );
+				$( object ).trigger( "ms-radio-slider-updated" );
 			});
 		}
 		

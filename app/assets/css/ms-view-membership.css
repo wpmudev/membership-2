@@ -101,6 +101,24 @@
 }
 
 /* Overview Page */
+.ms-membership-status-wrapper {
+	width: 15em;
+	position: absolute;
+	
+}
+.ms-membership-status .ms-active {
+	display: none;
+}
+.ms-membership-status.ms-active .ms-active{
+	display: block;
+}
+.ms-membership-status.ms-active div{
+	display: none;
+}
+
+.ms-membership-status-wrapper .ms-radio-slider {
+	left: 4em;
+}
 .ms-overview-news-wrapper {
 	width: 55%;
 	float: left;
@@ -119,7 +137,7 @@
     float: left;
     margin: 10px;
     min-height: 230px;
-    width: 18%;
+    width: 23%;
 }
 .ms-content-desc {
     background: none repeat scroll 0 0 #888;
@@ -133,7 +151,7 @@
 	font-weight: 600;
 	margin: 5px 0;	
 }
-.ms-overview-content-box-wrapper .ms-protection-edit-wrapper {
+.ms-protection-edit-wrapper, .ms-member-edit-wrapper, .ms-news-view-wrapper{
 	margin-top: 30px;
 }
 
