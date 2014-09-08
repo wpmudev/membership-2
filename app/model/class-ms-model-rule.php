@@ -200,8 +200,20 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this->rule_value );	
 	}
 	
-	public function count_rules() {
-		$count = count( $this->rule_value ) ;
+	public function count_rules( $has_access_only = true ) {
+		$count = 0;
+		
+		if( $has_access_only ) {
+			foreach( $this->rule_value as $val ) {
+				if( $val ) {
+					$count++;
+				}
+			}
+		}
+		else {
+			$count = count( $this->rule_value );
+		}
+		
 		return apply_filters( 'ms_model_rule_count_rules', $count, $this->rule_value );
 	}
 	

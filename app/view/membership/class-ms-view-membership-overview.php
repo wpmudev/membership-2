@@ -161,7 +161,7 @@ class MS_View_Membership_Overview extends MS_View {
 		?>
 			<div class="ms-overview-content-box-wrapper">
 				<div class="ms-title">
-					<?php echo sprintf( '%s (%s):', $title, $rule->count_rules() );;?>
+					<?php echo sprintf( '%s (%s):', $title, $rule->count_rules() );?>
 				</div>
 				<?php foreach( $rule->rule_value as $id => $has_access ): ?>
 					<?php if( $has_access ): ?>
