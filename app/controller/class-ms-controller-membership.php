@@ -101,14 +101,8 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	public function load_membership() {
 		if( empty( $this->model ) || ! $this->model->is_valid() ) {
-			$step = $this->get_step();
-			if( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
-				$this->model = MS_Model_Membership::get_visitor_membership();
-			}
-			else {
-				$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
-				$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			}
+			$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
+			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 		
 		return apply_filters( 'ms_controller_membership_load_membership', $this->model );
@@ -443,6 +437,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/** Initial step */
 		$step = self::STEP_MS_LIST;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$membership = $this->load_membership();
 	
 		if( ! empty( $_REQUEST['step'] ) && self::is_valid_step( $_REQUEST['step'] ) ) {
 			$step = $_REQUEST['step'];
@@ -459,6 +454,11 @@ class MS_Controller_Membership extends MS_Controller {
 		if( ! empty( $_GET['page'] )  && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_GET['page'] ) {
 			$step = self::STEP_SETUP_PROTECTED_CONTENT;
 		}
+
+		if( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
+			$step = self::STEP_OVERVIEW; 
+		}
+		
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
@@ -865,6 +865,17 @@ class MS_Controller_Membership extends MS_Controller {
 						break;
 				}
 				break;
+			case self::STEP_SETUP_CONTENT_TYPES:
+			case self::STEP_SETUP_MS_TIERS:
+				wp_enqueue_script( 'jquery-validate' );
+				wp_enqueue_script(
+					'ms-view-membership-create-child',
+					$plugin_url. 'app/assets/js/ms-view-membership-create-child.js',
+					array( 'jquery', 'jquery-validate' ),
+					$version
+				);
+				break;
+			
 		}
 	}
 	

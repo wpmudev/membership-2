@@ -27,7 +27,7 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 				) );
 			?>
 			<div class="ms-content-type-wrapper">
-				<form action="" method="post">
+				<form action="" method="post" id="ms-create-child-form" >
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['step'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['_wpnonce'] ); ?>
