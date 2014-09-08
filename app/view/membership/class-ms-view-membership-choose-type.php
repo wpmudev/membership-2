@@ -28,11 +28,13 @@ class MS_View_Membership_Choose_Type extends MS_View {
 						<div class="ms-private-wrapper">
 							<?php MS_Helper_Html::html_input( $this->fields['private'] ); ?>
 						</div>
-						<?php
-							foreach( $this->fields['control_fields'] as $field ) {
-								MS_Helper_Html::html_input( $field );		
-							} 
-						?>
+						<div class="ms-control-fields-wrapper">
+							<?php
+								foreach( $this->fields['control_fields'] as $field ) {
+									MS_Helper_Html::html_input( $field );		
+								} 
+							?>
+						</div>
 					</form>
 				</div>
 			</div>

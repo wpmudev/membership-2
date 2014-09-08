@@ -208,15 +208,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function is_private_eligible() {
 		$is_private_eligible = false;
 		
-		/** Private only can be enabled in these types */
-		$private_eligible_types = apply_filters( 'ms_model_membership_private_eligible_types', array(
-				self::TYPE_SIMPLE,
-				self::TYPE_CONTENT_TYPE,
-		) );
-		if( in_array( $this->type, $private_eligible_types ) ) {
+		if( in_array( $this->type, self::get_private_eligible_types() ) ) {
 			$is_private_eligible = true;
 		}
 		return apply_filters( 'ms_model_membership_is_private_eligible', $is_private_eligible );
+	}
+	
+	public static function get_private_eligible_types() {
+		/** Private memberships can only be enabled in these types */
+		$private_eligible_types = array(
+				self::TYPE_SIMPLE,
+				self::TYPE_CONTENT_TYPE,
+		);
+		
+		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types );
 	}
 		
 	public function get_rule( $rule_type ) {

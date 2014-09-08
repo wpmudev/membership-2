@@ -813,12 +813,14 @@ class MS_Controller_Membership extends MS_Controller {
 		switch( $this->get_step() ) {
 			case self::STEP_CHOOSE_MS_TYPE:
 				wp_enqueue_script( 'jquery-validate' );
-				wp_enqueue_script( 
+				wp_register_script( 
 					'ms-view-membership-choose-type', 
 					$plugin_url. 'app/assets/js/ms-view-membership-choose-type.js', 
 					array( 'jquery', 'jquery-validate' ), 
 					$version 
 				);
+				wp_localize_script( 'ms-view-membership-choose-type', 'ms_private_types', MS_Model_Membership::get_private_eligible_types() );
+				wp_enqueue_script( 'ms-view-membership-choose-type' );
 				break;
 			case self::STEP_OVERVIEW:
 				wp_enqueue_script(

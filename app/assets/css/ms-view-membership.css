@@ -40,12 +40,15 @@
 }
 .ms-name-wrapper{
 	clear:both;
+	display:block;
 	float:left;
 	width: 45%;
+	height: 9em;
 }
 .ms-private-wrapper{
 	float:left;
 	width: 45%;
+	height: 9em;
 }
 .ms-chose-type {
 	padding: 80px 20px 20px 0;
@@ -86,7 +89,9 @@
 	margin: 1em 0;
 	font-style: italic;
 }
-
+.ms-control-fields-wrapper {
+	clear: both;
+}
 /* Payment setup page */
 .ms-payment-wrapper{
 
