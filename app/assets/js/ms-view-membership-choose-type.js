@@ -10,7 +10,7 @@ jQuery( document ).ready(function( $ ) {
 		}
 	});
 	
-	$( 'input[name="type"]' ).change( function() {
+	$( 'input[name="type"]' ).click( function() {
 		if( $.inArray( $( this ).val(), ms_private_types ) > -1 ) {
 			$( '.ms-private-wrapper' ).show();
 		}
@@ -19,5 +19,5 @@ jQuery( document ).ready(function( $ ) {
 		}
 	});
 	
-	$( 'input[name="type"]' ).change();
+	$( 'input[name="type"]' ).first().click();
 });
