@@ -199,9 +199,9 @@ class MS_Controller_Membership extends MS_Controller {
 					break;
 				case self::STEP_SETUP_CONTENT_TYPES:
 					if( $this->validate_required( array( 'name' ) ) && 'create_content_type' == $_POST['action'] ) {
-						$this->create_child_membership(  $_POST['name'] );
+						$child = $this->create_child_membership(  $_POST['name'] );
 						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_ACCESSIBLE_CONTENT, $step );
-						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
 					}
 					else {
 						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
@@ -209,8 +209,15 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					break;
 				case self::STEP_SETUP_MS_TIERS:
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					if( $this->validate_required( array( 'name' ) ) && 'create_tier' == $_POST['action'] ) {
+						$child = $this->create_child_membership(  $_POST['name'] );
+						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_ACCESSIBLE_CONTENT, $step );
+						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
+					}
+					else {
+						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					}
 					break;
 				case self::STEP_SETUP_DRIPPED:
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
@@ -388,7 +395,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_tier';
 		$data['membership'] = $this->load_membership();
-
+		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		
 		$view = apply_filters( 'ms_view_membership_ms_tiers', new MS_View_Membership_Setup_Tier() ); ;
 		$view->data = apply_filters( 'ms_view_membership_ms_tiers_data', $data );
 		$view->render();
@@ -763,18 +771,17 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	private function create_child_membership( $name ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_ADDED;
+		$membership = null;
 		if( ! $this->is_admin_user() ) {
-			return $msg;
+			return;
 		}
 		
 		$parent = $this->load_membership();
 		if( $parent->is_valid() && $parent->can_have_children() ) {
-			$parent->create_child( $name );
-			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
+			$membership = $parent->create_child( $name );
 		}
 		
-		return $msg;
+		return $membership;
 	}
 	
 	/**

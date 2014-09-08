@@ -59,24 +59,6 @@ class MS_Helper_List_Table_Membership_Group extends MS_Helper_List_Table {
 		return apply_filters( 'ms_helper_list_table_membership_group_columns', $columns );
 	}
 	
-	function column_active( $item ) {
-		
-		$toggle = array(
-				'id' => 'ms-toggle-' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $item->active,
-				'class' => '',
-				'field_options' => array(
-						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-						'field' => 'active',
-						'membership_id' => $item->id,
-				),
-		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
-		
-		return $html;
-	}
-	
 	public function get_hidden_columns() {
 		return apply_filters( 'ms_helper_list_table_membership_group_hidden_columns', array() );
 	}
@@ -94,15 +76,36 @@ class MS_Helper_List_Table_Membership_Group extends MS_Helper_List_Table {
 		/**
 		 * Get children memberships.
 		 */
-		$args['meta_query']['children'] = array(
-				'key'     => 'parent_id',
-				'value'   => $this->membership->id,
-		);
-		
-		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_memberships( $args ) );
+		$this->items = apply_filters( 'membership_helper_list_table_membership_items', $this->membership->get_children() );
 		
 	}
 
+	function column_active( $item ) {
+	
+		$toggle = array(
+				'id' => 'ms-toggle-' . $item->id,
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $item->active,
+				'class' => '',
+				'field_options' => array(
+						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+						'field' => 'active',
+						'membership_id' => $item->id,
+				),
+		);
+		$html = MS_Helper_Html::html_input( $toggle, true );
+	
+		return $html;
+	}
+	
+	public function column_edit( $item ) {
+		$html = sprintf( '<a href="%s">%s</a>',
+				add_query_arg( array( 'step' => MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'membership_id' => $item->id ) ),
+				__( 'Edit Accessible Content', MS_TEXT_DOMAIN )
+		);
+		return $html;
+	}
+	
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {

@@ -2,36 +2,40 @@
 
 class MS_View_Membership_Setup_Tier extends MS_View {
 
-protected $fields = array();
+	protected $fields = array();
 	
 	protected $data;
 	
 	public function to_html() {
 		$this->prepare_fields();
 		$membership = $this->data['membership'];
-		
+	
+		$list_table = new MS_Helper_List_Table_Membership_Group( $membership );
+		$list_table->prepare_items();
+	
 		ob_start();
 		?>
-						
+							
 		<div class="wrap ms-wrap">
 			<?php 
 				MS_Helper_Html::settings_header( array(
-					'title' => __( 'Set Up Content Types', MS_TEXT_DOMAIN ),
+					'title' => __( 'Set Up Membership Tiers', MS_TEXT_DOMAIN ),
 					'desc' => array( 
 							sprintf( __( 'Set up different Tier Levels for %s.', MS_TEXT_DOMAIN ), $membership->name ),
 							__( 'You can have as many Tier Levels as you want, though remember, less is more.', MS_TEXT_DOMAIN ),
-							__( 'Begin with your lowest Level and move up.', MS_TEXT_DOMAIN ),
+							__( 'Begin with your lowest Tier Level and move up.', MS_TEXT_DOMAIN ),
 					),
 				) );
 			?>
-			<div class="ms-tier-wrapper">
-				<form action="" method="post">
+			<div class="ms-content-type-wrapper">
+				<form action="" method="post" id="ms-create-child-form" >
 					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['step'] ); ?>
 					<?php MS_Helper_Html::html_input( $this->fields['_wpnonce'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['tier_name'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['submit_tier'] ); ?>
+					<?php MS_Helper_Html::html_input( $this->fields['name'] ); ?>
+					<?php MS_Helper_Html::html_input( $this->fields['submit_content_type'] ); ?>
 				</form>
+				<?php $list_table->display(); ?>
 				<?php 
 					MS_Helper_Html::settings_footer( 
 							array( 'fields' => array( $this->fields['step'] ) ),
@@ -54,16 +58,17 @@ protected $fields = array();
 		$nonce = wp_create_nonce( $action );
 		
 		$this->fields = array(
-				'tier_name' => array(
-						'id' => 'tier_name',
-						'title' => __( 'Name Your Content Type:', MS_TEXT_DOMAIN ),
+				'name' => array(
+						'id' => 'name',
+						'title' => __( 'Tier Level name:', MS_TEXT_DOMAIN ),
 						'value' => '',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'class' => 'ms-text-medium',
+						'class' => 'ms-text-large',
+						'placeholder' => __( 'eg. Bronze', MS_TEXT_DOMAIN ),
 				),
-				'submit_tier' => array(
-						'id' => 'submit_tier',
-						'value' => __( 'Create New Tier Level', MS_TEXT_DOMAIN ),
+				'submit_content_type' => array(
+						'id' => 'submit_content_type',
+						'value' => __( 'Add Content Type', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'class' => '',
 				),
@@ -86,3 +91,4 @@ protected $fields = array();
 		);
 	}
 }
+	

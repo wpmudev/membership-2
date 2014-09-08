@@ -165,14 +165,35 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this->type );
 	}
 	
+	public function get_last_descendant() {
+		$last = null;
+		if( is_array( $this->linked_membership_ids ) && $count = count( $this->linked_membership_ids ) ) { 
+			$last = MS_Factory::load( 'MS_Model_Membership', $this->linked_membership_ids[ $count -1 ] );
+		}
+		else {
+			$this->linked_membership_ids = array();
+			$last = $this;
+		}
+		
+		return apply_filters( 'ms_model_membership_get_last_descendant', $last );
+	}
 	
 	public function create_child( $name ) {
 		$child = null;
+		$parent = null;
 		
 		if( $this->can_have_children() ) {
 			$child = MS_Factory::create( 'MS_Model_Membership' );
 			
-			$fields = $this->get_object_vars();
+			if( self::TYPE_TIER == $this->type ) {
+				$parent = $this->get_last_descendant();
+			}
+			else {
+				$parent = $this;
+			}
+			
+			$fields = $parent->get_object_vars();
+				
 			foreach ( $fields as $field => $val) {
 				if ( in_array( $field, $this->ignore_fields ) ) {
 					continue;
@@ -180,17 +201,37 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$child->set_field( $field, $this->$field );
 			}
 			$child->id = 0;
-			$child->parent_id = $this->id;
+			$child->parent_id = $parent->id;
 			$child->name = $name;
 			$child->save();
+			
+			$this->linked_membership_ids[] = $child->id;
+			$this->save(); 
 		}
 		
 		return apply_filters( 'ms_model_membership_create_child', $child );
 	}
 	
+	public function get_children() {
+		$children = array();
+		if( ! empty( $this->linked_membership_ids ) ) {
+			$args['post__in'] = $this->linked_membership_ids;
+			$children = self::get_memberships( $args );
+		}
+// 		else {
+// 			$args['meta_query']['children'] = array(
+// 					'key'     => 'parent_id',
+// 					'value'   => $this->membership->id,
+// 			);
+// 		}
+		
+		return apply_filters( 'ms_model_membership_get_children', $children );
+	}
+	
 	public function get_children_count() {
-		$args['post_parent'] = $this->id;
-		$children = self::get_memberships( $args );
+// 		$args['post_parent'] = $this->id;
+// 		$children = self::get_memberships( $args );
+		$children = $this->get_children();
 		$count = count( $children );
 		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
 	}
@@ -259,7 +300,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static function get_memberships( $args = null ) {
 		$args = self::get_query_args( $args );
-		
+// MS_Helper_Debug::log($args);		
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		
@@ -281,6 +322,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		/** Get children memberships */
 		$args = array();
 		$args['post_parent__not_in'] = array( 0 );
+		$args['order'] = 'ASC';
 		$children = self::get_memberships( $args );
 		foreach( $children as $child ) {
 			$new = array();
