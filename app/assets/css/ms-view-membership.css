@@ -2,6 +2,12 @@
 #create_new_ms_button{
 	margin: 10px 0;
 }
+.ms-child-row td:first-child{
+	border-left: 5px solid #eee;
+}
+.ms-type-desc {
+	font-weight: 600;
+}
 
 /* Protected Content Page*/
 .ms-rule-wrapper {

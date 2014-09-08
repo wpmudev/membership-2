@@ -135,9 +135,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				if( $this->is_private() ) {
 					$description[] = __( 'Private', MS_TEXT_DOMAIN );
 				}
-				else {
-					$description[] = __( 'Public', MS_TEXT_DOMAIN );
-				}
 			}
 		}
 		$description = join( ', ', $description );
@@ -204,7 +201,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$child->parent_id = $parent->id;
 			$child->name = $name;
 			$child->save();
-			
+
 			$this->linked_membership_ids[] = $child->id;
 			$this->save(); 
 		}

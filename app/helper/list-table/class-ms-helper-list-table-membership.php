@@ -160,6 +160,9 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			case 'members':
 				$html = $item->get_members_count();
 				break;
+			case 'type_description':
+				$html = sprintf( '<div class="ms-type-desc ms-%s"><span>%s<span></div>', $item->type, $item->type_description );
+				break;
 			case 'price':
 				if( $item->can_have_children() ) {
 					$html = __( 'Varied', MS_TEXT_DOMAIN );	
@@ -185,4 +188,22 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return apply_filters( 'ms_helper_list_table_membership_bulk_actions', array() );
 	}
 	
+	/**
+	 * Generates content for a single row of the table
+	 *
+	 * @since 1.0
+	 *
+	 * @param object $item The current item
+	 */
+	public function single_row( $item ) {
+		static $row_class = '';
+	
+		$row_class = ( $row_class == '' ? 'alternate' : '' );
+		$class = ( $item->parent_id > 0 ) ? 'ms-child-row' : '';
+		$class = "class='$row_class $class'";
+		
+		echo "<tr $class >";
+		$this->single_row_columns( $item );
+		echo '</tr>';
+	}
 }
