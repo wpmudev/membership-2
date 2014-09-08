@@ -347,19 +347,21 @@ class MS_Controller_Membership extends MS_Controller {
 		} 
 		switch( $membership->type ) {
 			case MS_Model_Membership::TYPE_DRIPPED:
-				$view = new MS_View_Membership_Overview_Dripped();
+				$view = MS_Factory::create( 'MS_View_Membership_Overview_Dripped' );
 				break;
 			case MS_Model_Membership::TYPE_TIER:
-				$view = new MS_View_Membership_Overview_Tier();
+				$view = MS_Factory::create( 'MS_View_Membership_Overview_Tier' );
 				$data['tabs'] = $this->get_children_tabs( $membership );
 				$data['child_membership'] = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				break;
 			case MS_Model_Membership::TYPE_CONTENT_TYPE:
-				$view = new MS_View_Membership_Overview_Content_Type();
+				$view = MS_Factory::create( 'MS_View_Membership_Overview_Content_Type' );
+				$data['tabs'] = $this->get_children_tabs( $membership );
+				$data['child_membership'] = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				break;
 			default:
 			case MS_Model_Membership::TYPE_SIMPLE:
-				$view = new MS_View_Membership_Overview();
+				$view = MS_Factory::create( 'MS_View_Membership_Overview' );
 				break;
 		}
 		$view = apply_filters( 'ms_view_membership_ms_overview', $view );

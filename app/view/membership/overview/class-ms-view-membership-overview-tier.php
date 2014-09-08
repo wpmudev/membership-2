@@ -8,7 +8,7 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 		?>
 			<div class="ms-overview-available-content-wrapper">
 				<h3 class="hndle"><span><?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></span></h3>
-				<div><?php printf( __( 'This is Protected Content which %s members has access to.', MS_TEXT_DOMAIN ), $this->data['membership']->name ); ?></div>
+				<div><?php printf( __( 'This is Protected Content which <b>%s</b> members has access to.', MS_TEXT_DOMAIN ), $this->data['membership']->name ); ?></div>
 				<div>
 					<?php 
 						MS_Helper_Html::html_input( array(
