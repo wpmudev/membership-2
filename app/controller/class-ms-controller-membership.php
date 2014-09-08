@@ -351,6 +351,8 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 			case MS_Model_Membership::TYPE_TIER:
 				$view = new MS_View_Membership_Overview_Tier();
+				$data['tabs'] = $this->get_children_tabs( $membership );
+				$data['child_membership'] = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				break;
 			case MS_Model_Membership::TYPE_CONTENT_TYPE:
 				$view = new MS_View_Membership_Overview_Content_Type();
@@ -466,7 +468,7 @@ class MS_Controller_Membership extends MS_Controller {
 		if( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
 			$step = self::STEP_OVERVIEW; 
 		}
-		
+
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
@@ -637,6 +639,21 @@ class MS_Controller_Membership extends MS_Controller {
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}
 	
+	public function get_children_tabs() {
+		$tabs = array();
+		
+		$membership = $this->load_membership();
+		$children = $membership->get_children();
+		foreach( $children as $child ) {
+			$tabs[ $child->id ] = array( 
+					'title' => $child->name,
+					'url' => add_query_arg( array( 'tab' => $child->id ) ), 
+			);
+		}
+// 		MS_Helper_Debug::log($tabs);
+		return apply_filters( 'ms_controller_membership_get_children_tabs', $tabs );
+	}
+	
 	/**
 	 * Get the current active settings page/tab.
 	 *
@@ -644,17 +661,20 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function get_active_tab() {
 		$step = $this->get_step();
-	
-		if( self::STEP_SETUP_PROTECTED_CONTENT ) {
+		$tabs = array();
+		
+		if( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
 			$tabs = $this->get_protected_content_tabs();
 		}
-		elseif( self::STEP_ACCESSIBLE_CONTENT ) {
+		elseif( self::STEP_ACCESSIBLE_CONTENT == $step ) {
 			$tabs = $this->get_accessible_content_tabs();
 		}
-		elseif( self::STEP_SETUP_DRIPPED ) {
+		elseif( self::STEP_SETUP_DRIPPED == $step ) {
 			$tabs = $this->get_setup_dripped_tabs();
 		}
-	
+		elseif( self::STEP_OVERVIEW == $step ) {
+			$tabs = $this->get_children_tabs();
+		}
 		reset( $tabs );
 		$first_key = key( $tabs );
 	
@@ -673,9 +693,8 @@ class MS_Controller_Membership extends MS_Controller {
 					$active_tab = $first_key;
 					break;
 			}
-			
-			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
 		}
+		
 		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );
 	}
 	
