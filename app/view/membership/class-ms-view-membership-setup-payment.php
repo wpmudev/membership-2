@@ -57,8 +57,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
 						'class' => 'ms-payments-choice ms-ajax-update',
 						'field_options' => array(
-								'1' => __( 'Yes', MS_TEXT_DOMAIN ),
-								'0' => __( 'No', MS_TEXT_DOMAIN ),
+								1 => __( 'Yes', MS_TEXT_DOMAIN ),
+								0 => __( 'No', MS_TEXT_DOMAIN ),
 						),
 						'data_ms' => array(
 								'field' => 'is_free',
@@ -165,16 +165,16 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 					<?php MS_Helper_Html::html_input( $fields['price'] ); ?>
 					<?php MS_Helper_Html::html_input( $fields['payment_type'] ); ?>
 				</div>
-				<div id="ms-membership-type-wrapper">
-					<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
+				<div class="ms-payment-types-wrapper">
+					<div class="ms-payment-type-wrapper ms-payment-type-finite ms-period-wrapper">
 						<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
 						<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
 					</div>
-					<div id="ms-membership-type-recurring-wrapper" class="ms-period-wrapper ms-membership-type">
+					<div class="ms-payment-type-wrapper ms-payment-type-recurring ms-period-wrapper">
 						<?php MS_Helper_Html::html_input( $fields['pay_cycle_period_unit'] );?>
 						<?php MS_Helper_Html::html_input( $fields['pay_cycle_period_type'] );?>
 					</div>
-					<div id="ms-membership-type-date-range-wrapper" class="ms-membership-type">
+					<div class="ms-payment-type-wrapper ms-payment-type-date-range">
 						<?php MS_Helper_Html::html_input( $fields['period_date_start'] );?>
 						<span> to </span>
 						<?php MS_Helper_Html::html_input( $fields['period_date_end'] );?>
@@ -201,7 +201,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	
 		$fields = array(
 				'price' => array(
-						'id' => 'price',
+						'id' => 'price_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Structure:', MS_TEXT_DOMAIN ),
 						'desc' => '$',
@@ -215,11 +215,11 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'payment_type' => array(
-						'id' => 'payment_type',
+						'id' => 'payment_type_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $membership->payment_type,
 						'field_options' => MS_Model_Membership::get_payment_types(),
-						'class' => 'ms-field-input-membership-type ms-ajax-update',
+						'class' => 'ms-field-input-membership-type ms-payment-type ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'payment_type',
 								'_wpnonce' => $nonce,
@@ -228,7 +228,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'period_unit' => array(
-						'id' => 'period_unit',
+						'id' => 'period_unit_' . $membership->id,
 						'name' => '[period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
@@ -242,7 +242,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'period_type' => array(
-						'id' => 'period_type',
+						'id' => 'period_type_' . $membership->id,
 						'name' => '[period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $membership->period['period_type'],
@@ -256,7 +256,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'pay_cycle_period_unit' => array(
-						'id' => 'pay_cycle_period_unit',
+						'id' => 'pay_cycle_period_unit_' . $membership->id,
 						'name' => '[pay_cycle_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
@@ -270,7 +270,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'pay_cycle_period_type' => array(
-						'id' => 'pay_cycle_period_type',
+						'id' => 'pay_cycle_period_type_' . $membership->id,
 						'name' => '[pay_cycle_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $membership->pay_cycle_period['period_type'],
@@ -284,7 +284,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'period_date_start' => array(
-						'id' => 'period_date_start',
+						'id' => 'period_date_start_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
 						'value' => $membership->period_date_start,
@@ -297,7 +297,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'period_date_end' => array(
-						'id' => 'period_date_end',
+						'id' => 'period_date_end_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $membership->period_date_end,
 						'class' => 'ms-field-input-period-date-end ms-ajax-update',
@@ -309,7 +309,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'on_end_membership_id' => array(
-						'id' => 'on_end_membership_id',
+						'id' => 'on_end_membership_id_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'After membership ends, change to', MS_TEXT_DOMAIN ),
 						'value' => $membership->on_end_membership_id,
@@ -323,7 +323,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'trial_period_enabled' => array(
-						'id' => 'trial_period_enabled',
+						'id' => 'trial_period_enabled_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 						'title' => __( 'Offer Free Trial lasting', MS_TEXT_DOMAIN ),
 						'value' => $membership->trial_period_enabled,
@@ -336,7 +336,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'trial_period_unit' => array(
-						'id' => 'trial_period_unit',
+						'id' => 'trial_period_unit_' . $membership->id,
 						'name' => '[trial_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $membership->trial_period['period_unit'],
@@ -349,7 +349,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 				'trial_period_type' => array(
-						'id' => 'trial_period_type',
+						'id' => 'trial_period_type_' . $membership->id,
 						'name' => '[trial_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $membership->trial_period['period_type'],

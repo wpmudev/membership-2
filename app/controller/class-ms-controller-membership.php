@@ -106,7 +106,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 
 		$required = array( 'membership_id', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+		if( $this->verify_nonce() && $this->validate_required( $required, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
 		}
 
