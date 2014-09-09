@@ -350,12 +350,16 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function page_setup_payment() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$membership = $this->load_membership();
+		
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_payment_settings';
-		$membership = $this->load_membership();
 		$data['membership'] = $membership;
-		$data['children'] = $membership->get_children(); 
+		$data['children'] = $membership->get_children();
+		$data['is_global_payments_set'] = $settings->is_global_payments_set;
+		
 		$view = apply_filters( 'ms_view_membership_setup_payment', new MS_View_Membership_Setup_Payment() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data );
 		$view->render();

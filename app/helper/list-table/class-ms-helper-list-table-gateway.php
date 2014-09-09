@@ -85,6 +85,8 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	
 	public function column_active( $item ) {
 
+		$class = $item->is_configured() ? 'ms-gateway-configured' : 'ms-gateway-not-configured';
+		$html = "<div class='$class'>";
 		$toggle = array(
 			'id' => 'ms-toggle-' . $item->id,
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
@@ -95,7 +97,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 				'gateway_id' => $item->id,
 			),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html .= MS_Helper_Html::html_input( $toggle, true );
 		
 		$html .= sprintf( '<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="?page=%s&tab=%s&gateway_id=%s&action=%s&width=%s&height=%s&TB_iframe=true">%s</a></div>',
 				MS_Controller_Plugin::MENU_SLUG . '-settings',
@@ -106,8 +108,9 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 				'700',
 				__( 'Configure', MS_TEXT_DOMAIN )
 		);
+		$html .= "</div>";
 		
-		return $html;		
+		return apply_filters( 'ms_helper_list_table_gateway_column_active', $html );		
 	}
 	
 	public function column_default( $item, $column_name ) {

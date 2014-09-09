@@ -205,6 +205,11 @@ class MS_Controller_Gateway extends MS_Controller {
 						$gateway->$field = $value;
 					}
 					$gateway->save();
+					if( $gateway->is_configured() ) {
+						$settings = MS_Factory::load( 'MS_Model_Settings' );
+						$settings->is_global_payments_set = true;
+						$settings->save();
+					}
 					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					break;
 			}

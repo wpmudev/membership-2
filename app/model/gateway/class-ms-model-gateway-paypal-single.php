@@ -232,6 +232,26 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	}
 	
 	/**
+	 * Verify required fields.
+	 *
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function is_configured() {
+		$is_configured = true;
+		$required = array( 'paypal_email', 'paypal_site' );
+		foreach( $required as $field ) {
+			if( empty( $this->$field ) ) {
+				$is_configured = false;
+				break;
+			}
+		}
+	
+		return apply_filters( 'ms_model_gateway_paypal_single_is_configured', $is_configured );
+	}
+	
+	/**
 	 * Validate specific property before set.
 	 *
 	 * @since 4.0

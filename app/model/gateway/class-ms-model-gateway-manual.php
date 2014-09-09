@@ -71,7 +71,27 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 		
 		return wpautop( $this->payment_info ); 
 	}
-		
+
+	/**
+	 * Verify required fields.
+	 *
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function is_configured() {
+		$is_configured = true;
+		$required = array( 'payment_info' );
+		foreach( $required as $field ) {
+			if( empty( $this->$field ) ) {
+				$is_configured = false;
+				break;
+			}
+		}
+	
+		return apply_filters( 'ms_model_gateway_manual_is_configured', $is_configured );
+	}
+	
 	/**
 	 * Validate specific property before set.
 	 *

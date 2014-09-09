@@ -409,4 +409,24 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 		return $transaction;
 	}
+	
+	/**
+	 * Verify required fields.
+	 *
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function is_configured() {
+		$is_configured = true;
+		$required = array( 'api_login_id', 'api_transaction_key' );
+		foreach( $required as $field ) {
+			if( empty( $this->$field ) ) {
+				$is_configured = false;
+				break;
+			}
+		}
+	
+		return apply_filters( 'ms_model_gateway_authorize_is_configured', $is_configured );
+	}
 }

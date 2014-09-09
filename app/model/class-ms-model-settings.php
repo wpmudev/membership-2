@@ -59,6 +59,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $tax;
 	
 	protected $invoice_sender_name;
+	
+	protected $is_global_payments_set = false;
 
 	/** For extensions settings.*/
 	protected $custom;

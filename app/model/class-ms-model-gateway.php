@@ -298,6 +298,19 @@ class MS_Model_Gateway extends MS_Model_Option {
 	}
 	
 	/**
+	 * Verify required fields.
+	 * 
+	 * To be overridden in children classes.
+	 *
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function is_configured() {
+		return false;
+	}
+	
+	/**
 	 * Validate specific property before set.
 	 *
 	 * @since 4.0

@@ -95,6 +95,11 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	}
 	
 	public function global_payment_settings() {
+
+		if( $this->data['is_global_payments_set'] ) {
+			return;
+		}
+		
 		$gateway_list = new MS_Helper_List_Table_Gateway();
 		$gateway_list->prepare_items();
 		$fields = $this->get_global_payment_fields();

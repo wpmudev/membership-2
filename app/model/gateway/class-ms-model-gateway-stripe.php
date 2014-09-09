@@ -276,4 +276,24 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 		}
 		return $secret_key;
 	}
+	
+	/**
+	 * Verify required fields.
+	 *
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function is_configured() {
+		$is_configured = true;
+		$required = array( 'secret_key', 'test_secret_key', 'publishable_key', 'test_publishable_key' );
+		foreach( $required as $field ) {
+			if( empty( $this->$field ) ) {
+				$is_configured = false;
+				break;
+			}
+		}
+		
+		return apply_filters( 'ms_model_gateway_stripe_is_configured', $is_configured );
+	}
 }

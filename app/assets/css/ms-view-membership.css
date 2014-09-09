@@ -110,6 +110,18 @@
 	margin: 0 0 0 5em;
     width: 10em;
 }
+.ms-gateway-configured .ms-radio-slider {
+	display: block;
+}
+.ms-gateway-configured .ms-gateway-setup-wrapper {
+	display: none;
+}
+.ms-gateway-not-configured .ms-radio-slider {
+	display: none;
+}
+.ms-gateway-not-configured .ms-gateway-setup-wrapper {
+	display: block;
+}
 
 /* Overview Page */
 .ms-membership-status-wrapper {
