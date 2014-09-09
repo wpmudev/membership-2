@@ -173,7 +173,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 
 		$tabs[ self::ADDON_MAILCHIMP  ] = array(
 				'title' => __( 'Mailchimp', MS_TEXT_DOMAIN ),
-				'url' => 'admin.php?page=membership-settings&tab=' . self::ADDON_MAILCHIMP,
+				'url' => 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&tab=' . self::ADDON_MAILCHIMP,
 		);
 		
 		return $tabs;
