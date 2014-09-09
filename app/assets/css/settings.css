@@ -59,7 +59,13 @@ h2.ms-settings-title,
   margin: 0;
   text-align: center;
 }
-
+.ms-title {
+	color: #222;
+    font-size: 1.1em;
+    font-style: normal;
+    font-weight: bold;
+    margin: 10px 0;
+}
 .ms-settings-desc-wrapper {
     margin: 9px 15px;
 }
@@ -200,6 +206,9 @@ h2.ms-settings-title,
 .ms-text {
 	display: inline-block;
 	height: 2.1em;
+}
+.ms-text-small {
+	width: 4em;
 }
 .ms-text-medium {
 	width: 300px;

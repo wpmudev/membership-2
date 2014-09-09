@@ -110,6 +110,11 @@ class MS_Helper_Html extends MS_Helper {
 			ob_start();
 		}
 		$placeholder = empty( $placeholder ) ? '' : "placeholder='$placeholder'";
+		if( ! empty( $data_ms ) ) {
+			$data_ms = esc_attr( json_encode( $data_ms ) );
+			$data_ms = "data-ms='{$data_ms}'";
+		}
+		
 		switch ( $type )
 		{
 			case self::INPUT_TYPE_HIDDEN:
@@ -120,10 +125,6 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				if( ! empty( $data_ms ) ) {
-					$data_ms = esc_attr( json_encode( $data_ms ) );
-					$data_ms = "data-ms='{$data_ms}'";
-				}
 				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr $placeholder $data_ms/>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
@@ -131,17 +132,13 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name'>$value</textarea>";
+				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name' $data_ms>$value</textarea>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_SELECT:
 				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$data_placeholder = empty( $data_placeholder ) ? '' : "data-placeholder='$data_placeholder'";
-				if( ! empty( $data_ms ) ) {
-					$data_ms = esc_attr( json_encode( $data_ms ) );
-					$data_ms = "data-ms='{$data_ms}'";
-				}
 				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple $data_placeholder $data_ms >";
 				foreach( $field_options as $key => $option ) {
 					$selected = '';
@@ -162,7 +159,7 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_RADIO:
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
-				foreach ($field_options as $key => $option ) {
+				foreach( $field_options as $key => $option ) {
 					$data_ms_att = '';
 					if( is_array( $option ) ) {
 						$text = $option['text'];
@@ -188,21 +185,19 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );
-				echo "<div class='ms-field-container'>";
+// 				echo "<div class='ms-field-container'>";
 				if ( ! empty( $field_options['checkbox_position'] ) &&  'right' == $field_options['checkbox_position'] ) {
 					echo "<span class='ms-label-checkbox'>";
 					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
-				echo "<span class=''>";
-				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked />";
-				echo "</span>";
+				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked $data_ms/>";
 				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
 					echo "<span class='ms-label-checkbox'>";
 					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
 				}
 				echo "</span>";
 				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
-				echo "</div>";
+// 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_WP_EDITOR:

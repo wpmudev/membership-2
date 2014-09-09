@@ -220,17 +220,28 @@ class MS_Model extends MS_Hooker {
 	public function validate_period( $period, $default_period_unit = 0, $default_period_type = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
 		$default = array( 'period_unit' => $default_period_unit, 'period_type' => $default_period_type );
 		if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
-			$period['period_unit'] = intval( $period['period_unit'] ); 
-			if( $period['period_unit'] < 0 ) {
-				$period['period_unit'] = $default['period_unit'];
-			}
-			if( ! in_array( $period['period_type'], MS_Helper_Period::get_periods() ) ){
-				$period['period_type'] = $default['period_type'];
-			}
+			$period['period_unit'] = $this->validate_period_unit( $period['period_unit'] );
+			$period['period_type'] = $this->validate_period_type( $period['period_type'] );
 		}
 		else {
 			$period = $default;
 		}
 		return $period;
+	}
+	
+	public function validate_period_unit( $period_unit, $default = 0 ) {
+		$period_unit = intval( $period_unit );
+		if( $period_unit < 0 ) {
+			$period_unit = 0;
+		}
+		return apply_filters( 'ms_model_validate_period_unit', $period_unit );
+	}
+	
+	public function validate_period_type( $period_type, $default = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
+		if( ! in_array( $period_type, MS_Helper_Period::get_periods() ) ){
+			$period_type = $default;
+		}
+		
+		return apply_filters( 'ms_model_validate_period_type', $period_type );
 	}
 }

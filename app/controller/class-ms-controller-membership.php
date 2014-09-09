@@ -35,6 +35,8 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	const AJAX_ACTION_TOGGLE_MEMBERSHIP = 'toggle_membership';
 	
+	const AJAX_ACTION_UPDATE_MEMBERSHIP = 'update_membership';
+	
 	const STEP_MS_LIST = 'ms_list';
 	const STEP_OVERVIEW = 'ms_overview';
 	const STEP_NEWS = 'ms_news';
@@ -72,6 +74,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'load-' . $protected_content_setup_hook, 'membership_admin_page_process' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
 		
 		$this->add_action( 'admin_print_scripts-' . $protected_content_setup_hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $protected_content_setup_hook, 'enqueue_styles' );
@@ -99,9 +102,30 @@ class MS_Controller_Membership extends MS_Controller {
 		exit;
 	}
 	
+	public function ajax_action_update_membership() {
+		$msg = 0;
+
+		$required = array( 'membership_id', 'field', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
+		}
+
+		echo $msg;
+		exit;
+		
+	}
+	
 	public function load_membership() {
+		$membership_id = 0;
+		
 		if( empty( $this->model ) || ! $this->model->is_valid() ) {
-			$membership_id = ! empty( $_GET['membership_id'] ) ? $_GET['membership_id'] : 0;
+			if( ! empty( $_GET['membership_id'] ) ) {
+				$membership_id = $_GET['membership_id'];
+			}
+			elseif( ! empty( $_POST['membership_id'] ) ) {
+				$membership_id = $_POST['membership_id'];
+			}
+			
 			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 		
@@ -329,7 +353,9 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_payment_settings';
-		$data['membership'] = $this->load_membership();
+		$membership = $this->load_membership();
+		$data['membership'] = $membership;
+		$data['children'] = $membership->get_children(); 
 		$view = apply_filters( 'ms_view_membership_setup_payment', new MS_View_Membership_Setup_Payment() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data );
 		$view->render();

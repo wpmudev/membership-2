@@ -582,7 +582,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
+		if( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'name':
 				case 'title':
@@ -622,8 +622,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				case 'period':
 				case 'pay_cycle_period':
 				case 'trial_period':
-						$this->$property = $this->validate_period( $value );
-						break;
+					$this->$property = $this->validate_period( $value );
+					break;
 				case 'period_date_start':
 				case 'period_date_end':
 					$this->$property = $this->validate_date( $value );
@@ -635,6 +635,29 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				default:
 					$this->$property = $value;
 					break;
+			}
+		}
+		else {
+			switch( $property ) {
+				case 'period_unit':
+					$this->period['period_unit'] = $this->validate_period_unit( $value );
+					break;
+				case 'period_type':
+					$this->period['period_type'] = $this->validate_period_type( $value );
+					break;
+				case 'pay_cycle_period_unit':
+					$this->pay_cycle_period['period_unit'] = $this->validate_period_unit( $value );
+					break;
+				case 'pay_cycle_period_type':
+					$this->pay_cycle_period['period_type'] = $this->validate_period_type( $value );
+					break;
+				case 'trial_period_unit':
+					$this->trial_period['period_unit'] = $this->validate_period_unit( $value );
+					break;
+				case 'trial_period_type':
+					$this->trial_period['period_type'] = $this->validate_period_type( $value );
+					break;
+						
 			}
 		}
 	}
