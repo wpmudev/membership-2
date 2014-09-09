@@ -2,21 +2,12 @@
 
 class MS_View_Membership_Setup_Payment extends MS_View {
 
-	protected $fields = array();
-	
 	protected $data;
 	
 	public function to_html() {		
-		$this->prepare_fields();
-		$gateway_list = new MS_Helper_List_Table_Gateway();
-		$gateway_list->prepare_items();
+		$fields = $this->get_fields();
 
-		$create_new_button = array(
-			'id' => 'create_new_ms_button',
-			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
-		);
-		$desc = MS_Helper_Html::html_input( $this->fields['free'], true );
+		$desc = MS_Helper_Html::html_input( $fields['free'], true );
 		
 		ob_start();
 		?>
@@ -25,16 +16,12 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<?php 
 				MS_Helper_Html::settings_header( array(
 					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-					'desc' => $desc 
+					'desc' => "$desc" 
 				) ); 
 			?>
 			<div class="clear"></div>
 			<hr />
-			<div class="ms-payment-wrapper">
-				<div class="ms-list-table-wrapper ms-list-table-half">
-					<?php $gateway_list->display(); ?>
-				</div>
-			</div>
+			<?php $this->global_payments_html(); ?>
 			<div class="clear"></div>
 			<?php MS_Helper_Html::settings_footer( array( 'fields' => $this->fields['control_fields'] ) ); ?>
 		</div>
@@ -44,10 +31,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		echo $html;
 	}
 	
-	public function prepare_fields() {
+	public function get_fields() {
 		$membership = $this->data['membership'];
 	
-		$this->fields = array(
+		$fields = array(
 				'free' => array(
 						'id' => 'free',
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
@@ -82,5 +69,67 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 		);
+		
+		return apply_filters( 'ms_view_memebrship_setup_payment_get_fields', $fields );
+	}
+	
+	public function global_payments_html() {
+		$gateway_list = new MS_Helper_List_Table_Gateway();
+		$gateway_list->prepare_items();
+		$fields = $this->get_global_fields();
+		
+		?>
+		<div class="ms-global-payment-wrapper">
+			<div class="ms-list-table-wrapper ms-list-table-half">
+			<div class="ms-field-input-label"><?php _e( 'Global Payment Settings', MS_TEXT_DOMAIN );?></div>
+			<div class="ms-description"><?php _e( 'These are shared across all memberships', MS_TEXT_DOMAIN );?></div>
+			<div class="ms-setup-half-width">
+				<?php MS_Helper_Html::html_input( $fields['currency'] ); ?>
+			</div>
+			<div class="ms-setup-half-width">
+				<?php MS_Helper_Html::html_input( $fields['invoice_sender_name'] ); ?>
+			</div>
+			<?php $gateway_list->display(); ?>
+			</div>
+		</div>
+		<?php 
+	}
+	
+	public function get_global_fields() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+// 		$action = $this->data['action'];
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
+		$nonce = wp_create_nonce( $action );
+		
+		$fields = array(
+			'currency' => array(
+					'id' => 'currency',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select payment currency', MS_TEXT_DOMAIN ),
+					'value' => $settings->currency,
+					'field_options' => $settings->get_currencies(),
+					'class' => '',
+					'class' => 'chosen-select',
+					'data_ms' => array(
+							'field' => 'currency',
+							'_wpnonce' => $nonce,
+							'action' => $action,
+					),
+			),
+			'invoice_sender_name' => array(
+					'id' => 'invoice_sender_name',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
+					'value' => $settings->invoice_sender_name,
+					'class' => '',
+					'data_ms' => array(
+							'field' => 'invoice_sender_name',
+							'_wpnonce' => $nonce,
+							'action' => $action,
+					),
+			),
+		);
+
+		return apply_filters( 'ms_view_memebrship_setup_payment_get_global_fields', $fields );
 	}
 }

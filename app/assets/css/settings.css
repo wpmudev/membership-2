@@ -378,6 +378,11 @@ table.widefat {
 .widefat tbody th.check-column{
     padding: 15px 0 14px;
 }
+.ms-setup-half-width {
+	float: left;
+	margin: 0 20px 0 0;
+    width: 40%;
+}
 
 /* SETTING: GENERAL */
 textarea.ms-field-input { 

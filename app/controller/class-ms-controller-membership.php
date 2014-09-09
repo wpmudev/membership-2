@@ -186,6 +186,9 @@ class MS_Controller_Membership extends MS_Controller {
 						case MS_Model_Membership::TYPE_TIER:
 							$next_step = self::STEP_SETUP_MS_TIERS;
 							break;
+						case MS_Model_Membership::TYPE_SIMPLE:
+							$next_step = self::STEP_SETUP_PAYMENT;
+							break;
 						default:
 							$next_step = self::STEP_MS_LIST;
 							break;
@@ -318,7 +321,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function page_setup_payment() {
 		$data = array();
 		$data['step'] = $this->get_step();
-		$data['action'] = 'save_membership';
+		$data['action'] = 'save_payment_settings';
 		$data['membership'] = $this->load_membership();
 		$view = apply_filters( 'ms_view_membership_setup_payment', new MS_View_Membership_Setup_Payment() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data );
@@ -903,7 +906,16 @@ class MS_Controller_Membership extends MS_Controller {
 					$version
 				);
 				break;
-			
+			case self::STEP_SETUP_PAYMENT:
+				wp_enqueue_style( 'jquery-chosen' );
+				add_thickbox();
+				wp_enqueue_script(
+					'ms-view-membership-setup-payment',
+					$plugin_url. 'app/assets/js/ms-view-membership-setup-payment.js',
+					array( 'jquery', 'jquery-chosen' ),
+					$version
+				);
+				break;
 		}
 	}
 	

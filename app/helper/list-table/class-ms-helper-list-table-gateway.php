@@ -41,14 +41,9 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	
 	public function get_columns() {
 		return apply_filters( 'membership_helper_list_table_gateway_columns', array(
-			'cb'     => '<input type="checkbox" />',
 			'name' => __( 'Gateway Name', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 		) );
-	}
-	
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="gateway_id[]" value="%1$s" />', $item->id );
 	}
 	
 	public function get_hidden_columns() {
@@ -101,6 +96,16 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			),
 		);
 		$html = MS_Helper_Html::html_input( $toggle, true );
+		
+		$html .= sprintf( '<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="?page=%s&tab=%s&gateway_id=%s&action=%s&width=%s&height=%s&TB_iframe=true">%s</a></div>',
+				MS_Controller_Plugin::MENU_SLUG . '-settings',
+				'gateway',
+				$item->id,
+				'edit',
+				'500',
+				'700',
+				__( 'Configure', MS_TEXT_DOMAIN )
+		);
 		
 		return $html;		
 	}

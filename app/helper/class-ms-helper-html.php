@@ -120,7 +120,11 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr $placeholder />";
+				if( ! empty( $data_ms ) ) {
+					$data_ms = esc_attr( json_encode( $data_ms ) );
+					$data_ms = "data-ms='{$data_ms}'";
+				}
+				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr $placeholder $data_ms/>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';
 				break;
 			case self::INPUT_TYPE_TEXT_AREA:
@@ -310,7 +314,7 @@ class MS_Helper_Html extends MS_Helper {
 			),
 		);
 		if( ! $wizard_mode ) {
-			unset( $defaults['fields']['next'] );
+// 			unset( $defaults['fields']['next'] );
 // 			$defaults['fields']['save'] = array(
 // 					'id' => 'save',
 // 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
