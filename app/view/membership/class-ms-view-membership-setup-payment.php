@@ -190,6 +190,9 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						</div>
 					</div>
 				</div>
+				<div class="ms-after-end-wrapper">
+					<?php MS_Helper_Html::html_input( $fields['on_end_membership_id'] );?>
+				</div>
 			<?php MS_Helper_Html::settings_box_footer(); ?>
 		</div>
 		<?php 
@@ -357,6 +360,20 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'class' => 'ms-field-input-trial-period-type ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'trial_period_type',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+								'membership_id' => $membership->id,
+						),
+				),
+				'on_end_membership_id' => array(
+						'id' => 'on_end_membership_id',
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'After membership ends', MS_TEXT_DOMAIN ),
+						'value' => $membership->on_end_membership_id,
+						'field_options' => MS_Model_Membership::get_membership_names(),
+						'class' => 'ms-field-input-on-end-membership ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'on_end_membership_id',
 								'_wpnonce' => $nonce,
 								'action' => $action,
 								'membership_id' => $membership->id,

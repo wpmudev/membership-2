@@ -30,6 +30,14 @@ jQuery( document ).ready( function( $ ) {
 			$( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
 			payment_type = $( obj ).val();
 			$( obj ).parent().parent().find( '.ms-payment-type-' + payment_type).show();
+			
+			after_end = $( obj ).parent().parent().find( '.ms-after-end-wrapper' );
+			if( 'permanent' == payment_type ) {
+				after_end.hide();
+			}
+			else {
+				after_end.show();
+			}
 		},
 		is_free: function() {
 			if( 1 == $( 'input[name="is_free"]:checked' ).val() ) {
