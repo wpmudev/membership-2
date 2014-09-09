@@ -86,7 +86,7 @@ class MS_View_Membership_Edit extends MS_View {
 										<div class="ms-settings-box">
 											<h3><?php _e( 'Membership Type', MS_TEXT_DOMAIN ); ?></h3>
 											<div class="inside">
-												<?php MS_Helper_Html::html_input( $this->fields['membership_type'] );?>
+												<?php MS_Helper_Html::html_input( $this->fields['payment_type'] );?>
 	
 												<div id="ms-membership-type-wrapper">
 													<div id="ms-membership-type-finite-wrapper" class="ms-period-wrapper ms-membership-type">
@@ -181,13 +181,13 @@ class MS_View_Membership_Edit extends MS_View {
 						'class' => 'ms-field-input-price',
 // 						'tooltip' => __( 'This will be displayed in the currency value you specified in "Settings > Payment". <br /> Use <strong>.</strong> as the decimal separator.', MS_TEXT_DOMAIN ),
 				),
-				'membership_type' => array(
-						'id' => 'membership_type',
+				'payment_type' => array(
+						'id' => 'payment_type',
 						'section' => self::MEMBERSHIP_SECTION,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Type of membership', MS_TEXT_DOMAIN ),
-						'value' => $this->model->membership_type,
-						'field_options' => MS_Model_Membership::get_membership_types(),
+						'value' => $this->model->payment_type,
+						'field_options' => MS_Model_Membership::get_payment_types(),
 						'class' => 'ms-field-input-membership-type',
 						/*
 						'tooltip' => '<strong>Single payment for permanent access:</strong><br />Members pay once and can access assigned content indefinitely or until manually removed.<br /><br />' . 

@@ -172,13 +172,13 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			
 			$title = null;
 			$html = null;
-			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
+			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->payment_type ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
 				$view->simulate_date = $simulate->date;
 				$title = __( 'View on: ', MS_TEXT_DOMAIN );
 				$html = $view->to_html();
 			}
-			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->membership_type || $membership->has_dripped_content() ) {
+			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->payment_type || $membership->has_dripped_content() ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
 				$view->simulate_period_unit = $simulate->period['period_unit'];
 				$view->simulate_period_type = $simulate->period['period_type'];
@@ -494,12 +494,12 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $simulate->membership_id );
 			
 			$title = null;
-			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->membership_type ) {
+			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->payment_type ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
 				$view->simulate_date = $simulate->date;
 				$title = $view->to_html();
 			}
-			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->membership_type || $membership->has_dripped_content() ) {
+			elseif( MS_Model_Membership::MEMBERSHIP_TYPE_FINITE == $membership->payment_type || $membership->has_dripped_content() ) {
 				$view = apply_filters( 'membership_view_admin_bar', new MS_View_Admin_Bar() );
 				$view->simulate_period_unit = $simulate->period['period_unit'];
 				$view->simulate_period_type = $simulate->period['period_type'];

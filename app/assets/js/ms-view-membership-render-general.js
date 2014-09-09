@@ -9,18 +9,18 @@ jQuery( document ).ready(function( $ ) {
 		}
 	}
 
-	$( '#membership_type').change( function() {
+	$( '#payment_type').change( function() {
 		$( '.ms-membership-type' ).hide();
-		membership_type = $( this ).val();
+		payment_type = $( this ).val();
 
-		if ( 'permanent' == membership_type ) {
+		if ( 'permanent' == payment_type ) {
 			$( '.ms-membership-type' ).parents('#ms-membership-type-wrapper').hide();
 		} else {
 			$( '.ms-membership-type' ).parents('#ms-membership-type-wrapper').show();
 		}
 		
-		$( '#ms-membership-type-' + membership_type + '-wrapper').show();
-		if( 'finite' == membership_type || 'date-range' == membership_type ) {
+		$( '#ms-membership-type-' + payment_type + '-wrapper').show();
+		if( 'finite' == payment_type || 'date-range' == payment_type ) {
 			$( '#ms-membership-on-end-membership-wrapper' ).show();
 		}
 		else {
@@ -37,7 +37,7 @@ jQuery( document ).ready(function( $ ) {
 	$( '#trial_period_enabled' ).click( ms_show_trial_period );
 
 	ms_show_trial_period();
-	$( '#membership_type' ).change();
+	$( '#payment_type' ).change();
 	
 	$( '.ms-form' ).validate({
 			onkeyup: false,

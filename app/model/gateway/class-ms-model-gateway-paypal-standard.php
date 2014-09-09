@@ -252,7 +252,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	 */
 	public function cancel_button( $html_link, $membership ) {
 	
-		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->membership_type || $membership->trial_period_enabled ) {
+		if( MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
 			if( ! empty( $this->cancel_button_url ) && strpos( $this->cancel_button_url, 'http' ) !== 0 ) {
 				$cancel_btn = array(
 						'id' => 'submit',

@@ -65,7 +65,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @deprecated change to payment_type 
 	 * @var unknown
 	 */
-	protected $membership_type;
+	protected $payment_type;
 	
 	protected $parent_id = 0;
 	
@@ -142,7 +142,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_type_description', $description );
 	}
 	
-	public static function get_membership_types() {
+	public static function get_payment_types() {
 		return apply_filters( 'ms_model_membership_get_payment_types', array(
 				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
@@ -402,7 +402,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
 			$visitor_membership = new self();
 			$visitor_membership->name = __( 'Visitor', MS_TEXT_DOMAIN );
-			$visitor_membership->membership_type = self::MEMBERSHIP_TYPE_PERMANENT;
+			$visitor_membership->payment_type = self::MEMBERSHIP_TYPE_PERMANENT;
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;
@@ -594,8 +594,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						$this->$property = $value;
 					}
 					break;
-				case 'membership_type':
-					if( array_key_exists( $value, self::get_membership_types() ) ) {
+				case 'payment_type':
+					if( array_key_exists( $value, self::get_payment_types() ) ) {
 						if( empty( $this->$property ) || empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
 							$this->$property = $value;
 						}

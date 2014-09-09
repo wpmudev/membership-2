@@ -174,7 +174,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		);
 		
 		$recurring = 0;
-		switch( $membership->membership_type ) {
+		switch( $membership->payment_type ) {
 			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
 				$this->fields['p3'] = array(
 				'id' => 'p3',
