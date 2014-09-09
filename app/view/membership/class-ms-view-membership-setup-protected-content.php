@@ -343,7 +343,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-					'value' => $rule_more_tag->has_access( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
+					'value' => $rule_more_tag->has_access( MS_Model_Rule_More::CONTENT_ID ) ? 0 : 1,
 					'field_options' => $rule_more_tag->get_options_array(),
 					'class' => '',
 					'data_ms' => array(
