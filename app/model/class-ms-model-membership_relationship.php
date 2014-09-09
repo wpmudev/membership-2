@@ -433,7 +433,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if( ! empty( $start_date ) ) {
 			$this->start_date = $start_date;
 		}
-		elseif( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->payment_type ) {
+		elseif( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
 			$this->start_date = $membership->period_date_start;
 		}
 		else {
@@ -495,7 +495,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		
 		if( $this->is_trial_eligible() ) {
-			if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->payment_type ) {
+			if( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
 				$trial_expire_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $membership->period_date_start );
 			}
 			else {
@@ -529,16 +529,16 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		else {
 			switch( $membership->payment_type ){
-				case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+				case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 					$expire_date = false;
 					break;
-				case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 					$expire_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $trial_expire_date );
 					break;
-				case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 					$expire_date = $membership->period_date_end;
 					break;
-				case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 					$expire_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $trial_expire_date );
 					break;
 			}
@@ -685,16 +685,16 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$desc = sprintf( __( 'You will pay %s %s ', MS_TEXT_DOMAIN ), $currency, number_format( $membership->price, 2 ) );
 
 		switch( $membership->payment_type ){
-			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				$desc .= __( 'for permanent access.', MS_TEXT_DOMAIN );
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				$desc .= sprintf( __( 'for access until %s.', MS_TEXT_DOMAIN ), $this->expire_date );
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $this->start_date, $this->expire_date );
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 				$desc .= sprintf( __( 'each %s %s.', MS_TEXT_DOMAIN ), $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'] );
 				break;
 		}
@@ -788,7 +788,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				strtotime( $this->trial_expire_date ) > strtotime( MS_Helper_Period::current_date() ) ) {
 			$status = self::STATUS_TRIAL_EXPIRED;
 		}
-		elseif( MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->payment_type ) {
+		elseif( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
 			$status = self::STATUS_ACTIVE;
 		}
 		elseif( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
@@ -801,8 +801,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		 * If user canceled the membership before expire date, still have access until expires.
 		 */
 		if( self::STATUS_CANCELED == $this->status && self::STATUS_ACTIVE != $set_status ) {
-			/** For expired memberships or MEMBERSHIP_TYPE_PERMANENT deactivate it immediately. */
-			if( self::STATUS_EXPIRED == $status || MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT == $membership->payment_type ) {
+			/** For expired memberships or PAYMENT_TYPE_PERMANENT deactivate it immediately. */
+			if( self::STATUS_EXPIRED == $status || MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
 				$status = self::STATUS_DEACTIVATED;
 			}
 			else {

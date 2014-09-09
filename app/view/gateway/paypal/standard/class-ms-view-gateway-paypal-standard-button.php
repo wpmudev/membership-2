@@ -175,7 +175,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		
 		$recurring = 0;
 		switch( $membership->payment_type ) {
-			case MS_Model_Membership::MEMBERSHIP_TYPE_RECURRING:
+			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 				$this->fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -188,7 +188,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				);
 				$recurring = 1;
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_FINITE:
+			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				$this->fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -200,7 +200,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
 				);
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE:
+			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				$this->fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -212,7 +212,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
 				);
 				break;
-			case MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT:
+			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				$this->fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

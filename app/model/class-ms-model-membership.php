@@ -35,13 +35,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	const TYPE_TIER = 'tier';
 	const TYPE_DRIPPED = 'dripped';
 	
-	const MEMBERSHIP_TYPE_PERMANENT = 'permanent';
+	const PAYMENT_TYPE_PERMANENT = 'permanent';
 	
-	const MEMBERSHIP_TYPE_FINITE = 'finite';
+	const PAYMENT_TYPE_FINITE = 'finite';
 	
-	const MEMBERSHIP_TYPE_DATE_RANGE = 'date-range';
+	const PAYMENT_TYPE_DATE_RANGE = 'date-range';
 	
-	const MEMBERSHIP_TYPE_RECURRING = 'recurring';
+	const PAYMENT_TYPE_RECURRING = 'recurring';
 	
 	protected static $CLASS_NAME = __CLASS__;
 
@@ -144,10 +144,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static function get_payment_types() {
 		return apply_filters( 'ms_model_membership_get_payment_types', array(
-				self::MEMBERSHIP_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 		) );
 	}
 	
@@ -402,7 +402,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
 			$visitor_membership = new self();
 			$visitor_membership->name = __( 'Visitor', MS_TEXT_DOMAIN );
-			$visitor_membership->payment_type = self::MEMBERSHIP_TYPE_PERMANENT;
+			$visitor_membership->payment_type = self::PAYMENT_TYPE_PERMANENT;
 			$visitor_membership->title = $description;
 			$visitor_membership->description = $description;
 			$visitor_membership->visitor_membership = true;

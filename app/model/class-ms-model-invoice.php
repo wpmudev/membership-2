@@ -435,7 +435,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$value = 0;
 		$membership = $ms_relationship->get_membership();
 		
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && MS_Model_Membership::MEMBERSHIP_TYPE_PERMANENT != $membership->payment_type ) {
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && MS_Model_Membership::PAYMENT_TYPE_PERMANENT != $membership->payment_type ) {
 			$invoice = self::get_previous_invoice( $ms_relationship );
 			if( ! empty( $invoice ) && self::STATUS_PAID == $invoice->status ) {
 				switch( $ms_relationship->get_status() ) {

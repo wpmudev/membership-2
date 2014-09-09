@@ -115,7 +115,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 						$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 						if ( 0 < $membership->id ) {
 							$this->$property = $id;
-							if( MS_Model_Membership::MEMBERSHIP_TYPE_DATE_RANGE == $membership->payment_type ) {
+							if( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
 								$this->date = $membership->period_date_start;
 							}
 							else {
