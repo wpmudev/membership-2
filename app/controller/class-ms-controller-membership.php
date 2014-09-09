@@ -136,7 +136,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/** MS_Controller_Rule is executed using this action*/
 		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
 		
-// 		MS_Helper_Debug::log("step: $step");
+		MS_Helper_Debug::log("step: $step");
 		/** Verify intent in request, only accessible to admin users */
 		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			/** Take next actions based in current step.*/
@@ -179,12 +179,19 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_ACCESSIBLE_CONTENT:
 					$msg = $this->save_membership( $_POST );
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
+					$membership_id = $this->model->id;
 					switch( $this->model->type ) {
 						case MS_Model_Membership::TYPE_CONTENT_TYPE:
 							$next_step = self::STEP_SETUP_CONTENT_TYPES;
+							if( $this->model->parent_id ) {
+								$membership_id = $this->model->parent_id;
+							}
 							break;
 						case MS_Model_Membership::TYPE_TIER:
 							$next_step = self::STEP_SETUP_MS_TIERS;
+							if( $this->model->parent_id ) {
+								$membership_id = $this->model->parent_id;
+							}
 							break;
 						case MS_Model_Membership::TYPE_SIMPLE:
 							$next_step = self::STEP_SETUP_PAYMENT;
@@ -194,7 +201,7 @@ class MS_Controller_Membership extends MS_Controller {
 							break;
 					}
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step, $step );
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					$goto_url = add_query_arg( array( 'membership_id' => $membership_id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_PAYMENT:
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
