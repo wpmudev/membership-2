@@ -157,10 +157,10 @@ class MS_Helper_Html extends MS_Helper {
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_RADIO:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
+				echo ! empty( $title ) ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
+				echo ! empty( $desc ) ? "<div class='ms-field-description'>$desc</div>" : '';
+				echo "<div class='ms-radio-wrapper'>";
 				foreach( $field_options as $key => $option ) {
-					$data_ms_att = '';
 					if( is_array( $option ) ) {
 						$text = $option['text'];
 						$desc = $option['desc'];
@@ -169,19 +169,15 @@ class MS_Helper_Html extends MS_Helper {
 						$text = $option;
 						$desc = '';
 					}
-					if( ! empty( $data_ms ) ) {
-						$data_ms_att = esc_attr( json_encode( $data_ms ) );
-						$data_ms_att = "data-ms='{$data_ms_att}'";
-					}
-						
 					$checked = checked( $key, $value, false );
-					echo "<div class='ms-radio-wrapper $class ms-{$key}'>";
-					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms_att/> ";
+					echo "<span class='ms-radio-input-wrapper ms-{$key}'>";
+					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms/> ";
 					echo "<label for='{$id}_{$key}'>$text</label>";
 					echo ! empty( $desc ) ? "<div class='ms-radio-description'>$desc</div>" : '';
-					echo "</div>";
+					echo "</span>";
 				}
-				echo ( empty( $title ) ) ? $tooltip_output : '';				
+				echo ( empty( $title ) ) ? $tooltip_output : '';
+				echo "</div>";				
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );
