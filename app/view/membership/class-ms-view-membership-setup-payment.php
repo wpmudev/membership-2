@@ -7,7 +7,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	public function to_html() {		
 		$fields = $this->get_fields();
 
-		$desc = MS_Helper_Html::html_input( $fields['free'], true );
+		$desc = MS_Helper_Html::html_input( $fields['is_free'], true );
 		
 		ob_start();
 		?>
@@ -21,17 +21,19 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			?>
 			<div class="clear"></div>
 			<hr />
-			<?php $this->global_payment_settings(); ?>
-			<?php
-				if( $this->data['membership']->can_have_children() ) { 
-					foreach( $this->data['children'] as $child ) {
-						$this->specific_payment_settings( $child );
+			<div id="ms-payment-settings-wrapper">
+				<?php $this->global_payment_settings(); ?>
+				<?php
+					if( $this->data['membership']->can_have_children() ) { 
+						foreach( $this->data['children'] as $child ) {
+							$this->specific_payment_settings( $child );
+						}
 					}
-				}
-				else {
-					$this->specific_payment_settings( $this->data['membership'] );
-				}
-			?>
+					else {
+						$this->specific_payment_settings( $this->data['membership'] );
+					}
+				?>
+			</div>
 			<div class="clear"></div>
 			<?php MS_Helper_Html::settings_footer( array( 'fields' => $this->fields['control_fields'] ) ); ?>
 		</div>
@@ -44,16 +46,25 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	private function get_fields() {
 		$membership = $this->data['membership'];
 	
+		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
+		$nonce = wp_create_nonce( $action );
+		
 		$fields = array(
-				'free' => array(
-						'id' => 'free',
+				'is_free' => array(
+						'id' => 'is_free',
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-						'value' => $this->data['membership']->free,
+						'value' => $membership->is_free,
 						'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
-						'class' => 'ms-payments-choice',
+						'class' => 'ms-payments-choice ms-ajax-update',
 						'field_options' => array(
 								'1' => __( 'Yes', MS_TEXT_DOMAIN ),
 								'0' => __( 'No', MS_TEXT_DOMAIN ),
+						),
+						'data_ms' => array(
+								'field' => 'is_free',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+								'membership_id' => $membership->id,
 						),
 				),
 				'control_fields' => array(

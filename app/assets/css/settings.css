@@ -185,11 +185,13 @@ h2.ms-settings-title,
 	margin: 10px 10px 10px 0;	
 }
 .ms-radio-wrapper {
-	margin: 1%;
-	float: left;
+	margin: 0 auto;
+}
+.ms-radio-input-wrapper {
+	margin: 0 5em;
 	width: 20%;
 }
-.ms-radio-wrapper label{
+.ms-radio-input-wrapper label {
 	font-size: 1em;
 	font-weight: 600;
 }
@@ -241,6 +243,9 @@ h2.ms-settings-title,
 .ms-separator {
 	border-bottom: 1px solid #eeeeee;
 	margin: 15px 0;
+}
+.chosen-container {
+    margin: 0.5em 0;
 }
 
 /** Member search */
