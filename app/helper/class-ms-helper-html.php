@@ -170,11 +170,11 @@ class MS_Helper_Html extends MS_Helper {
 						$desc = '';
 					}
 					$checked = checked( $key, $value, false );
-					echo "<span class='ms-radio-input-wrapper ms-{$key}'>";
+					echo "<div class='ms-radio-input-wrapper $class ms-{$key}'>";
 					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms/> ";
 					echo "<label for='{$id}_{$key}'>$text</label>";
 					echo ! empty( $desc ) ? "<div class='ms-radio-description'>$desc</div>" : '';
-					echo "</span>";
+					echo "</div>";
 				}
 				echo ( empty( $title ) ) ? $tooltip_output : '';
 				echo "</div>";				

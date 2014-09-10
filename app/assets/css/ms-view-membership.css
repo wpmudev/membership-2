@@ -57,6 +57,9 @@
 	height: 9em;
 }
 .ms-chose-type {
+	float: left;
+    margin: 1%;
+    width: 20%;
 	padding: 80px 20px 20px 0;
 	background-color: transparent;
 	outline:none;
@@ -107,7 +110,7 @@
 	font-size: 1em;
 }
 .ms-payments-choice {
-	margin: 0 0 0 5em;
+	display: inline;
     width: 10em;
 }
 .ms-gateway-configured .ms-radio-slider {
