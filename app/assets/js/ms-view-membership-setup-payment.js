@@ -55,7 +55,7 @@ jQuery( document ).ready( function( $ ) {
 	
 	$( '#currency' ).chosen().change( function() { ms_functions.feedback( this ) } ); 
 	
-	$( '.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
+	$( 'input.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
 	
 	$( '.ms-payment-type').change( function() { ms_functions.payment_type( this ) } );
 
