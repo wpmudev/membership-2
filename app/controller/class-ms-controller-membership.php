@@ -457,6 +457,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = 'save_membership';
 		$data['membership'] = $this->load_membership();
 		$data['tabs'] = $this->get_setup_dripped_tabs();
+		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		
 		$view = apply_filters( 'ms_view_membership_setup_dripped', new MS_View_Membership_Setup_Dripped() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_dripped_data', $data );
@@ -881,6 +882,22 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 				$bread_crumbs['current'] = array(
 						'title' => __( 'Membership Tiers', MS_TEXT_DOMAIN ),
+				);
+				$bread_crumbs['next'] = array(
+						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+				);
+				break;
+			case self::STEP_SETUP_DRIPPED:
+				$bread_crumbs['prev'] = array(
+						'title' => $membership->name,
+						'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
+								MS_Controller_Plugin::MENU_SLUG,
+								self::STEP_OVERVIEW,
+								$membership->id
+						) ),
+				);
+				$bread_crumbs['current'] = array(
+						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 				);
 				$bread_crumbs['next'] = array(
 						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
