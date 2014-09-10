@@ -556,20 +556,20 @@ class MS_Helper_Html extends MS_Helper {
 		$crumbs = array();
 		$html = '';
 		
-		foreach( $bread_crumbs as $bread_crumb ) {
+		foreach( $bread_crumbs as $key => $bread_crumb ) {
 			if( ! empty( $bread_crumb['url'] ) ) {
-				$crumbs[] = sprintf( '<span><a href="%s">%s</a></span>', $bread_crumb['url'], $bread_crumb['title'] );
+				$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s"><a href="%s">%s</a></span>', $key, $bread_crumb['url'], $bread_crumb['title'] );
 			}
 			elseif( ! empty( $bread_crumb['title'] ) ) {
-				$crumbs[] = sprintf( '<span>%s</span>', $bread_crumb['title'] );
+				$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s">%s</span>', $key, $bread_crumb['title'] );
 			}
 		}
 		if( count( $crumbs ) > 0 ) {
 			$html = '<div class="ms-bread-crumb">';
-			$html .= implode( ' >> ', $crumbs );
+			$html .= implode( '<span class="ms-bread-crumb-sep"> >> </span>', $crumbs );
 			$html .= '</div>';
 		}
-		MS_Helper_Debug::log($html);
+
 		echo apply_filters( 'ms_helper_html_bread_crumbs', $html );
 	}
 }

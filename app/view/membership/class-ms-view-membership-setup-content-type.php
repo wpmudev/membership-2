@@ -24,6 +24,7 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 							sprintf( __( 'Here you can set-up different types of content to be available to different types of %s members.', MS_TEXT_DOMAIN ), $membership->name ),
 							__( '(eg. Cooking recipes for Cooking Members, PHP tutorials for Programming Members) ', MS_TEXT_DOMAIN ), 
 					),
+					'bread_crumbs' => $this->data['bread_crumbs'],
 				) );
 			?>
 			<div class="ms-content-type-wrapper">

@@ -25,6 +25,7 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 							__( 'You can have as many Tier Levels as you want, though remember, less is more.', MS_TEXT_DOMAIN ),
 							__( 'Begin with your lowest Tier Level and move up.', MS_TEXT_DOMAIN ),
 					),
+					'bread_crumbs' => $this->data['bread_crumbs'],
 				) );
 			?>
 			<div class="ms-content-type-wrapper">

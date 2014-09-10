@@ -211,6 +211,13 @@
 .ms-bread-crumb {
     text-align: center;
 }
+.ms-bread-crumb-sep{
+	font-size: .7em;
+	margin: 0 .5em;
+}
+.ms-bread-crumb-next {
+	color: #aaa;
+}
 /** save text ajax */
 .ms-save-text-wrapper {
 	font-size: 1.1em;

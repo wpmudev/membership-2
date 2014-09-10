@@ -16,7 +16,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<?php 
 				MS_Helper_Html::settings_header( array(
 					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-					'desc' => "$desc" 
+					'desc' => "$desc",
+					'bread_crumbs' => $this->data['bread_crumbs'],
 				) ); 
 			?>
 			<div class="clear"></div>
