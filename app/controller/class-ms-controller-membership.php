@@ -516,6 +516,10 @@ class MS_Controller_Membership extends MS_Controller {
 		if( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
 			$step = self::STEP_OVERVIEW; 
 		}
+		
+		if( self::STEP_ACCESSIBLE_CONTENT == $step && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+			$step = self::STEP_SETUP_DRIPPED;
+		}
 
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
@@ -1092,6 +1096,14 @@ class MS_Controller_Membership extends MS_Controller {
 					'ms-view-membership-setup-payment',
 					$plugin_url. 'app/assets/js/ms-view-membership-setup-payment.js',
 					array( 'jquery', 'jquery-chosen' ),
+					$version
+				);
+				break;
+			case self::STEP_SETUP_DRIPPED:
+				wp_enqueue_script(
+					'ms-view-membership-setup-dripped',
+					$plugin_url. 'app/assets/js/ms-view-membership-setup-dripped.js',
+					array( 'jquery' ),
 					$version
 				);
 				break;
