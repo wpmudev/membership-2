@@ -153,6 +153,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
+	public function get_parent() {
+		$parent = null;
+		if( $this->parent_id > 0 ) {
+			$parent = MS_Factory::load( 'MS_Model_Membership', $this->parent_id );
+		}
+		return apply_filters( 'ms_model_membership_get_parent', $parent );
+	}
 	public function can_have_children() {
 		$can_have_children = false;
 		

@@ -258,6 +258,7 @@ class MS_Helper_Html extends MS_Helper {
 				'title' => '',
 				'title_icon_class' => '',
 				'desc' => '',
+				'bread_crumbs' => null,
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
@@ -267,6 +268,7 @@ class MS_Helper_Html extends MS_Helper {
 			$desc = array( $desc );
 		}
 		?>
+			<?php MS_Helper_Html::bread_crumbs( $bread_crumbs );?>
 			<div class='ms-settings-title'>
 				<i class="<?php echo $title_icon_class; ?>"></i>
 				<?php echo $title; ?>
@@ -548,5 +550,26 @@ class MS_Helper_Html extends MS_Helper {
 		foreach( $descriptions as $desc ) {
 			echo "<span class='ms-content-desc'>$desc</span>";
 		}
+	}
+	
+	public static function bread_crumbs( $bread_crumbs ) {
+		$crumbs = array();
+		$html = '';
+		
+		foreach( $bread_crumbs as $bread_crumb ) {
+			if( ! empty( $bread_crumb['url'] ) ) {
+				$crumbs[] = sprintf( '<span><a href="%s">%s</a></span>', $bread_crumb['url'], $bread_crumb['title'] );
+			}
+			elseif( ! empty( $bread_crumb['title'] ) ) {
+				$crumbs[] = sprintf( '<span>%s</span>', $bread_crumb['title'] );
+			}
+		}
+		if( count( $crumbs ) > 0 ) {
+			$html = '<div class="ms-bread-crumb">';
+			$html .= implode( ' >> ', $crumbs );
+			$html .= '</div>';
+		}
+		MS_Helper_Debug::log($html);
+		echo apply_filters( 'ms_helper_html_bread_crumbs', $html );
 	}
 }

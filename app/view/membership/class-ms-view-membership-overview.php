@@ -46,7 +46,8 @@ class MS_View_Membership_Overview extends MS_View {
 			<?php 
 				MS_Helper_Html::settings_header( array(
 					'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
-					'desc' => __( "Here you can view a quick summary of this membership, and alter any of it's details.", MS_TEXT_DOMAIN ), 
+					'desc' => __( "Here you can view a quick summary of this membership, and alter any of it's details.", MS_TEXT_DOMAIN ),
+					'bread_crumbs' => $this->data['bread_crumbs'], 
 				) ); 
 			?>
 			<div class="clear"></div>

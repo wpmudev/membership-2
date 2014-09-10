@@ -207,6 +207,10 @@
 	margin: 10px 5px 10px 0;	
 }
 
+/* Bread crumbs */
+.ms-bread-crumb {
+    text-align: center;
+}
 /** save text ajax */
 .ms-save-text-wrapper {
 	font-size: 1.1em;

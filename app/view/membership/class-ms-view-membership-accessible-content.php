@@ -19,6 +19,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 						'title' => __( 'Accessible content', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'fa fa-cog',
 						'desc' => sprintf( __( 'Setup which Protected Content is available to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name ),
+						'bread_crumbs' => $this->data['bread_crumbs'],
 					) ); 
 				?>
 				<?php
