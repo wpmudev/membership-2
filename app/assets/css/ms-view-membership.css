@@ -210,6 +210,13 @@
 	margin: 10px 5px 10px 0;	
 }
 
+/* Setup Dripped Page */
+.ms-dripped-type {
+	display: inline-block;
+	margin: 1em;
+	width: auto;
+}
+
 /* Bread crumbs */
 .ms-bread-crumb {
     text-align: center;

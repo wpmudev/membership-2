@@ -37,6 +37,8 @@ class MS_Controller_Rule extends MS_Controller {
 
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
 	
+	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
+	
 	/**
 	 * Prepare the Rule manager.
 	 *
@@ -47,6 +49,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 		
 		
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
@@ -129,6 +132,33 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 		return $msg;
+	}
+	
+	public function ajax_action_update_dripped() {
+// 		MS_Helper_Debug::log( $_POST );
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+
+		$required = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+			$membership = $this->get_membership();
+			if( $membership->is_valid() ) {
+				$rule_type = $_POST['rule_type'];
+				$dripped_type = $_POST['dripped_type'];
+				$id = $_POST['id'];
+				$field = $_POST['field'];
+				$value = $_POST['value'];
+				$rule = $membership->get_rule( $rule_type );
+				
+				$rule->set_dripped_value( $dripped_type, $id, $field, $value );
+// 				MS_Helper_Debug::log( $rule->dripped );
+				$membership->set_rule( $rule_type, $rule );
+				$membership->save();
+				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+			}
+		}
+		
+		echo $msg;
+		exit;
 	}
 	/**
 	 * Handles Membership Rule form submissions.

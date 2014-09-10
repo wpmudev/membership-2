@@ -25,6 +25,8 @@
  * 
  */
 class MS_Model_Membership extends MS_Model_Custom_Post_Type {
+
+	protected static $CLASS_NAME = __CLASS__;
 	
 	public static $POST_TYPE = 'ms_membership';
 	
@@ -36,15 +38,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	const TYPE_DRIPPED = 'dripped';
 	
 	const PAYMENT_TYPE_PERMANENT = 'permanent';
-	
 	const PAYMENT_TYPE_FINITE = 'finite';
-	
 	const PAYMENT_TYPE_DATE_RANGE = 'date-range';
-	
 	const PAYMENT_TYPE_RECURRING = 'recurring';
 	
-	protected static $CLASS_NAME = __CLASS__;
-
 	/**
 	 * ID of the model object.
 	 *
@@ -94,7 +91,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $trial_price;
 	
 	protected $trial_period;
-		
+
+	protected $dripped_type;
+	
 	/**
 	 * @deprecated
 	 * @var unknown
@@ -113,9 +112,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_types() {
 		return apply_filters( 'ms_model_membership_get_types', array(
 				self::TYPE_SIMPLE => __( 'Simple', MS_TEXT_DOMAIN ),
-				self::TYPE_CONTENT_TYPE => __( 'Multiple content types', MS_TEXT_DOMAIN ),
+				self::TYPE_CONTENT_TYPE => __( 'Multiple Content Types', MS_TEXT_DOMAIN ),
 				self::TYPE_TIER => __( 'Tier Based', MS_TEXT_DOMAIN ),
-				self::TYPE_DRIPPED => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+				self::TYPE_DRIPPED => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 		) );
 	}
 

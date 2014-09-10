@@ -24,32 +24,24 @@
 class MS_Model_Rule extends MS_Model {
 	
 	const RULE_TYPE_CATEGORY = 'category';
-	
 	const RULE_TYPE_COMMENT = 'comment';
-	
 	const RULE_TYPE_MEDIA = 'media';
-	
 	const RULE_TYPE_MENU = 'menu';
-	
 	const RULE_TYPE_PAGE = 'page';
-	
 	const RULE_TYPE_POST = 'post';
-	
 	const RULE_TYPE_MORE_TAG = 'more_tag';
-	
 	const RULE_TYPE_CUSTOM_POST_TYPE = 'cpt';
-	
 	const RULE_TYPE_CUSTOM_POST_TYPE_GROUP = 'cpt_group';
-	
 	const RULE_TYPE_SHORTCODE = 'shortcode';
-	
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	
 	const FILTER_HAS_ACCESS = 'has_access';
-	
 	const FILTER_NO_ACCESS = 'no_access';
-	
 	const FILTER_DRIPPED = 'dripped';
+	
+	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
+	const DRIPPED_TYPE_FROM_TODAY = 'from_today';
+	const DRIPPED_TYPE_FROM_REGISTRATION = 'from_registration';
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
@@ -148,8 +140,19 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
-		)
-		);
+		) );
+	}
+	
+	public static function get_dripped_types() {
+		return apply_filters( 'ms_model_rule_get_dripped_types', array(
+				self::DRIPPED_TYPE_SPEC_DATE => __( "Reveal Dripped Content on specific dates", MS_TEXT_DOMAIN ),
+				self::DRIPPED_TYPE_FROM_TODAY => __( "Reveal Dripped Content 'X' days from today", MS_TEXT_DOMAIN ),
+				self::DRIPPED_TYPE_FROM_REGISTRATION => __( "Reveal Dripped Content 'X' days from user registration", MS_TEXT_DOMAIN ),
+		) );
+	}
+	
+	public static function is_valid_dripped_type( $type ) {
+		return apply_filters( 'ms_model_rule_is_valid_dripped_type', array_key_exists( $type, self::get_dripped_types() ) );
 	}
 	
 	public static function rule_factory( $rule_type ) {
@@ -280,6 +283,22 @@ class MS_Model_Rule extends MS_Model {
 			return false;
 		}
 		
+	}
+	
+	public function get_dripped_value( $dripped_type, $id, $field ) {
+		$value = null;
+		
+		if( self::is_valid_dripped_type( $dripped_type ) && isset( $this->dripped[ $dripped_type ][ $id ][ $field ] ) ) {
+			$value = $this->dripped[ $dripped_type ][ $id ][ $field ];
+		}
+		
+		return apply_filters( 'ms_model_rule_get_dripped_value', $value );
+	}
+	
+	public function set_dripped_value( $dripped_type, $id, $field = 'spec_date', $value ) {
+		if( self::is_valid_dripped_type( $dripped_type ) ) {
+			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters( 'ms_model_rule_set_dripped_value', $value, $dripped_type, $id, $field );
+		}
 	}
 	
 	public function count_item_access( $args = null ) {

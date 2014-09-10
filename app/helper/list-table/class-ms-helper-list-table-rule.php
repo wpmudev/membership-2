@@ -127,16 +127,84 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 	
 	public function column_dripped( $item ) {
-		$actions = array( 
-				sprintf( 
-					'<a href="?page=%s&tab=dripped&membership_id=%s">%s</a>',
-					$_REQUEST['page'],
-					$this->get_membership_id(),
-					__('Edit', MS_TEXT_DOMAIN )
+		$action = MS_Controller_Rule::AJAX_ACTION_UPDATE_DRIPPED;
+		$nonce = wp_create_nonce( $action );
+		$rule = $this->model;
+		$membership = $this->membership;
+		
+		$fields = array(
+				'spec_date' => array(
+						'id' => 'spec_date_' . $item->id,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 						'desc' => sprintf( __( 'on %s', MS_TEXT_DOMAIN ), $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE, $item->id ) ),
+						'value' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE, $item->id, 'spec_date' ),
+						'class' => 'ms-dripped-value ms-dripped-spec-date ms-ajax-update',
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE,
+								'id' => $item->id,
+								'field' => 'spec_date',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
+				'period_unit' => array(
+						'id' => 'period_unit_' . $item->id,
+						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 						'desc' => sprintf( __( '%s after registration', MS_TEXT_DOMAIN ), $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE, $item->id ) ),
+						'value' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_unit' ),
+						'class' => 'ms-dripped-value ms-dripped-from-registration ms-field-input-period-unit ms-ajax-update',
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
+								'field' => 'period_unit',
+								'id' => $item->id,
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+				),
+				'period_type' => array(
+						'id' => 'period_type_' . $membership->id,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'value' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_type' ),
+						'field_options' => MS_Helper_Period::get_periods(),
+						'class' => 'ms-field-input-period-type ms-ajax-update',
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
+								'field' => 'period_unit',
+								'id' => $item->id,
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+				),
+				'ok' => array(
+						'id' => 'ok_' . $membership->id,
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => __( 'Ok', MS_TEXT_DOMAIN ),
+						'class' => '',
+				),
+				
+
 		);
-		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_dripped_actions", $actions, $item );
-		return sprintf( '%1$s %2$s', $item->delayed_period, $this->row_actions( $actions ) );
+		
+		ob_start();
+		?>
+			<div class="ms-dripped-type-spec-date-wrapper">
+				<?php MS_Helper_Html::html_input( $fields['spec_date'] );?>
+				<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+			</div>
+			<div class="ms-dripped-type-from-registration-wrapper ms-period-wrapper">
+				<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
+				<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
+				<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+			</div>
+		<?php 
+		$html = ob_get_clean();
+		return apply_filters( 'ms_helper_list_table_rule_column_dripped', $html );
 	}
 	
 	public function display() {

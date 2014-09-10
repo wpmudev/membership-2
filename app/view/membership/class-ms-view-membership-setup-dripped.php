@@ -22,10 +22,30 @@ protected $fields = array();
 					) ); 
 				?>
 				<?php
+					$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
+					$nonce = wp_create_nonce( $action );
+					$membership = $this->data['membership'];
+					
+					MS_Helper_Html::html_input( array(
+								'id' => 'dripped_type',
+								'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+								'value' => $membership->dripped_type,
+								'field_options' => MS_Model_Rule::get_dripped_types(),
+								'class' => 'ms-dripped-type ms-ajax-update',
+								'data_ms' => array(
+										'membership_id' => $membership->id,
+										'field' => 'dripped_type',
+										'action' => $action,
+										'_wpnonce' => $nonce,
+								),
+					) );
+				?>
+				<div class="clear"></div>
+				<?php 
 					$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 				
 					/** Call the appropriate form to render. */
-					$render_callback =  apply_filters( 'ms_view_membership_setup_dripped_render_callback', array( $this, 'render_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+					$render_callback =  apply_filters( 'ms_view_membership_setup_dripped_render_tab_callback', array( $this, 'render_tab_' . str_replace( '-', '_', $active_tab ) ), $active_tab, $this->data );
 					call_user_func( $render_callback );
 				?>
 			</div>
@@ -35,7 +55,7 @@ protected $fields = array();
 		
 	}
 	
-	public function render_page() {
+	public function render_tab_page() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
@@ -61,7 +81,7 @@ protected $fields = array();
 		echo $html;
 	}
 	
-	public function render_post() {
+	public function render_tab_post() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );

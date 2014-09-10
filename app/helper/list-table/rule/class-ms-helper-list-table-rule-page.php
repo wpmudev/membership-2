@@ -78,8 +78,8 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 				'cb'     => '<input type="checkbox" />',
 				'name' => __( 'Page title', MS_TEXT_DOMAIN ),
 				'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
-				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 				'post_date' => __( 'Date', MS_TEXT_DOMAIN ),
+				'dripped' => __( 'When to Reveal Content', MS_TEXT_DOMAIN ),
 		);
 		if( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
 			unset( $columns['dripped'] );
