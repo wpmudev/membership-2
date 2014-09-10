@@ -40,4 +40,11 @@ jQuery( document ).ready( function( $ ) {
     });
 	
 	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]') );
+	
+	$( '.ms-dripped-pen' ).click( function() {
+		$( this ).parent().addClass( 'ms-dripped-edit' );
+	});
+	$( '.ms-dripped-edit-ok' ).click( function() {
+		$( this ).parent().removeClass( 'ms-dripped-edit' );
+	});
 });

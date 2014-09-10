@@ -198,7 +198,7 @@ h2.ms-settings-title,
 .ms-radio-description {
 	margin: 1em;
 }
-.ms-field-input {
+.ms-field-input, .ms-field-input.button {
 	margin: 0.5em 0;
 }
 .ms-field-wp-editor {
@@ -226,10 +226,10 @@ h2.ms-settings-title,
 	margin: 1em 0;
 }
 .ms-period-wrapper input[type="text"] {
-	width: 5em;
+	width: 3em;
 }
 .ms-period-wrapper select {
-	width: 7em;
+	width: 6em;
 	padding: 0;
 }
 .ms-period-wrapper input[type="text"] {

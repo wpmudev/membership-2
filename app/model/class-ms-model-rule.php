@@ -265,7 +265,14 @@ class MS_Model_Rule extends MS_Model {
 	 * @return boolean
 	 */
 	public function has_dripped_rules() {
-		return ! empty( $this->dripped );
+		$has_dripped = false;
+		foreach( self::get_dripped_types as $dripped_type ) {
+			if( ! empty( $this->dripped[ $dripped_type ] ) ) {
+				$has_dripped = true;
+				break;
+			}
+		}
+		return apply_filters( 'ms_model_rule_has_dripped_rules', $has_dripped );
 	}
 		
 	/**

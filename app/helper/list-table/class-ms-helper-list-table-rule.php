@@ -185,7 +185,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 						'id' => 'ok_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 						'value' => __( 'Ok', MS_TEXT_DOMAIN ),
-						'class' => '',
+						'class' => 'ms-dripped-edit-ok',
 				),
 				
 
@@ -193,14 +193,19 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		
 		ob_start();
 		?>
-			<div class="ms-dripped-type-spec-date-wrapper">
-				<?php MS_Helper_Html::html_input( $fields['spec_date'] );?>
-				<?php MS_Helper_Html::html_input( $fields['ok'] );?>
-			</div>
-			<div class="ms-dripped-type-from-registration-wrapper ms-period-wrapper">
-				<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
-				<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
-				<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+			<div class="ms-dripped-edit-wrapper">
+				<div class="ms-dripped-type-spec-date-wrapper">
+					<span class="ms-dripped-desc"><?php _e( 'on', MS_TEXT_DOMAIN );?> </span>
+					<?php MS_Helper_Html::html_input( $fields['spec_date'] );?>
+					<span class="ms-dripped-calendar"></span>
+				</div>
+				<div class="ms-dripped-type-from-registration-wrapper ms-period-wrapper">
+					<span class="ms-dripped-desc"><?php _e( 'in', MS_TEXT_DOMAIN );?> </span>
+					<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
+					<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
+					<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+					<span class="ms-dripped-pen"></span>
+				</div>
 			</div>
 		<?php 
 		$html = ob_get_clean();

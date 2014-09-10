@@ -64,11 +64,6 @@
 	background-color: transparent;
 	outline:none;
 	position: relative;
-	-webkit-transition: border .25s ease-in-out;
-	   -moz-transition: border .25s ease-in-out;
-	    -ms-transition: border .25s ease-in-out;
-	     -o-transition: border .25s ease-in-out;
-	        transition: border .25s ease-in-out;
 }
 .ms-chose-type:before {
   content:'';
@@ -215,6 +210,48 @@
 	display: inline-block;
 	margin: 1em;
 	width: auto;
+}
+.ms-dripped-edit-wrapper input[type="button"] {
+	display:none;
+}
+.ms-dripped-edit-wrapper input, .ms-dripped-edit-wrapper select {
+	border:none;
+	background-color: inherit;
+	box-shadow: none;
+}
+.ms-dripped-edit .ms-dripped-pen {
+	display:none;
+}
+.ms-dripped-edit input[type="button"] {
+	display:inline-block;
+}
+.ms-dripped-type-spec-date-wrapper {
+	position: relative;
+}
+input.ms-dripped-spec-date {
+	border:none;
+	background-color: inherit;
+	box-shadow: none;
+	width: 6em;
+}
+.ms-dripped-calendar:after {
+    color: #0094dc;
+    content: "\f145";
+    font-family: "dashicons";
+    font-size: 2em;
+    position: relative;
+    top: 5px;
+}
+.ms-dripped-pen:after {
+	content:'';
+	display: inline-block;
+	background:url(../images/membership_sprite.png);
+  	background:url(../images/membership_sprite.svg), none;
+  	background-position: -329px -130px;
+	position: relative;
+	width:30px;
+	height:30px;
+	background-color: transparent;
 }
 
 /* Bread crumbs */
