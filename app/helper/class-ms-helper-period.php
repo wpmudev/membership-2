@@ -57,12 +57,16 @@ class MS_Helper_Period extends MS_Helper {
 		if( empty ( $start_date ) ) {
 			$start_date = gmdate( self::PERIOD_FORMAT );
 		}
+		if( self::PERIOD_TYPE_YEARS == $period_type ) {
+			$period_unit *= 365;
+			$period_type = self::PERIOD_TYPE_DAYS;
+		}
 		
 		$end_dt = strtotime( '+' . $period_unit . $period_type , strtotime( $start_date ) ); 
 		if ( $end_dt === false) {
 			throw new Exception( 'error add_interval' );
 		} 
-		return apply_filters( 'membership_helper_period_add_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) ); 
+		return apply_filters( 'ms_helper_period_add_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) ); 
 	}
 	
 	/**
@@ -85,7 +89,7 @@ class MS_Helper_Period extends MS_Helper {
 		if ( $end_dt === false) {
 			throw new Exception( 'error subtract_interval' );
 		}
-		return apply_filters( 'membership_helper_period_subtract_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) );
+		return apply_filters( 'ms_helper_period_subtract_interval', gmdate( self::PERIOD_FORMAT, $end_dt ) );
 	}
 	
 	/**
@@ -115,8 +119,19 @@ class MS_Helper_Period extends MS_Helper {
 	 *  
 	 * @return string The current date.
 	 */
-	public static function current_date( $format = self::PERIOD_FORMAT ) {
-		return apply_filters( 'membership_helper_period_current_date', gmdate( $format ) );
+	public static function current_date( $format = null, $ignore_filters = false ) {
+		if( empty( $format ) ) {
+			$format = self::PERIOD_FORMAT;
+		}
+		
+		$format = apply_filters( 'ms_helper_period_current_date_format', $format );
+		$date = gmdate( $format );
+		
+		if( ! $ignore_filters ) {
+			$date = apply_filters( 'ms_helper_period_current_date', $date );	
+		}
+		
+		return $date;
 	}
 	
 	/**
@@ -127,7 +142,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The current date.
 	 */
 	public static function current_time() {
-		return current_time( 'mysql', true );
+		return apply_filters( 'ms_helper_period_current_time', current_time( 'mysql', true ) );
 	}
 	
 	/**

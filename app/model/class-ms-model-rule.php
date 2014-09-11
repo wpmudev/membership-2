@@ -267,11 +267,11 @@ class MS_Model_Rule extends MS_Model {
 	public function has_dripped_rules( $id = null ) {
 		$has_dripped = false;
 		foreach( self::get_dripped_types() as $dripped_type => $title ) {
-			if( ! empty( $id ) && count( $this->dripped[ $dripped_type ][ $id ] ) > 0) {
+			if( ! empty( $id ) && ! empty( $this->dripped[ $dripped_type ][ $id ] ) > 0) {
 				$has_dripped = true;
 				break;
 			}
-			elseif( count( $this->dripped[ $dripped_type ] ) > 0 ) {
+			elseif( ! empty( $this->dripped[ $dripped_type ] ) > 0 ) {
 				$has_dripped = true;
 				break;
 			}
@@ -285,15 +285,15 @@ class MS_Model_Rule extends MS_Model {
 	 * @param $start_date The start date of the member membership.
 	 */
 	public function has_dripped_access( $start_date, $id ) {
-		if( array_key_exists( $id, $this->dripped ) ) {
-			$dripped = MS_Helper_Period::add_interval( $this->dripped[ $id ]['period_unit'],  $this->dripped[ $id ]['period_type'], $start_date );
-			$now = MS_Helper_Period::current_date();
-			if( strtotime( $now ) >= strtotime( $dripped ) ) {
-				return true;
-			}
-			return false;
+		$has_dripped_access = false;
+		
+		$avail_date = $this->get_dripped_avail_date( $id );
+		$now = MS_Helper_Period::current_date();
+		if( strtotime( $now ) >= strtotime( $avail_date ) ) {
+			$has_dripped_access = true;
 		}
 		
+		return apply_filters( 'ms_model_rule_has_dripped_access', $has_dripped_access );
 	}
 	
 	public function get_dripped_value( $dripped_type, $id, $field ) {
@@ -324,12 +324,41 @@ class MS_Model_Rule extends MS_Model {
 	public function set_dripped_value( $dripped_type, $id, $field = 'spec_date', $value ) {
 		if( self::is_valid_dripped_type( $dripped_type ) ) {
 			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters( 'ms_model_rule_set_dripped_value', $value, $dripped_type, $id, $field );
+			$this->dripped['dripped_type'] = $dripped_type;
+			$this->dripped['modified'] = MS_Helper_Period::current_date( null, false );
 		}
 	}
 	
 	public function get_dripped_avail_date( $id ) {
+		$avail_date = MS_Helper_Period::current_date();
 		
+		$dripped_type = self::DRIPPED_TYPE_SPEC_DATE;
+		if( ! empty( $this->dripped['dripped_type'] ) ) {
+			$dripped_type = $this->dripped['dripped_type'];
+		}
+
+		switch( $dripped_type ) {
+			case self::DRIPPED_TYPE_SPEC_DATE:
+				$avail_date = $this->get_dripped_value( $dripped_type, $id, 'spec_date' );
+				break;
+			case self::DRIPPED_TYPE_FROM_TODAY:
+				$modified = ! empty( $this->dripped['modified'] ) ? $this->dripped['modified'] : MS_Helper_Period::current_date( null, false );
+				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
+				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
+				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $modified );
+				break;
+			case self::DRIPPED_TYPE_FROM_REGISTRATION:
+				$modified = MS_Helper_Period::current_date( null, false );
+				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
+				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
+				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $modified );
+				break;
+						
+		}	
+		
+		return apply_filters( 'ms_model_rule_get_dripped_avail_date', $avail_date );
 	}
+	
 	public function count_item_access( $args = null ) {
 		if( $this->rule_value_invert ) {
 			$args['default'] = 1;

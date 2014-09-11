@@ -195,7 +195,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => $rule->rule_type,
-								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
+								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
 								'field' => 'period_unit',
 								'id' => $item->id,
 								'action' => $action,
@@ -211,7 +211,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => $rule->rule_type,
-								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
+								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
 								'field' => 'period_type',
 								'id' => $item->id,
 								'action' => $action,

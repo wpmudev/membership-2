@@ -134,14 +134,15 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		
 		/**
 		 * Only verify permission if ruled by post by post.
+		 * @todo verify addon handling
 		 */
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+// 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$has_access = false;
 			if( empty( $post_id ) ) {
 				$post_id  = $this->get_current_post_id();
 			}
 			$has_access = parent::has_access( $post_id );
-		}
+// 		}
 		/**
 		 * Feed page request
 		 */
