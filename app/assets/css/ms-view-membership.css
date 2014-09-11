@@ -139,10 +139,13 @@
 .ms-membership-status-wrapper .ms-radio-slider {
 	left: 4em;
 }
-.ms-overview-news-wrapper {
-	width: 55%;
+.ms-overview-panel-wrapper {
+	width: 48%;
 	float: left;
-	padding: 0 10px 0 0;
+	margin: 0 10px 0 0;
+}
+.ms-overview-news-wrapper {
+	border-right: 1px solid #ccc;
 }
 .ms-overview-news-wrapper th {
 	text-align: left;
@@ -152,8 +155,6 @@
 	padding: 0 15px 0 0;
 } 
 .ms-overview-members-wrapper {
-	width: 40%;
-	float: left;
 }
 .ms-overview-available-content-wrapper {
 	clear: both;

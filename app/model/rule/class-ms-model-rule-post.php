@@ -163,7 +163,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$post_id  = $this->get_current_post_id();
 		}
 		
-		return array_key_exists( $post_id, $this->dripped );	
+		return apply_filters( 'ms_model_rule_post_has_dripped_rules', parent::has_dripped_rules( $post_id ) );	
 	}
 	
 	/**

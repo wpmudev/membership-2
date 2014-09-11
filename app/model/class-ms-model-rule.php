@@ -264,10 +264,14 @@ class MS_Model_Rule extends MS_Model {
 	 * Verify if has dripped rules.
 	 * @return boolean
 	 */
-	public function has_dripped_rules() {
+	public function has_dripped_rules( $id = null ) {
 		$has_dripped = false;
-		foreach( self::get_dripped_types as $dripped_type ) {
-			if( ! empty( $this->dripped[ $dripped_type ] ) ) {
+		foreach( self::get_dripped_types() as $dripped_type => $title ) {
+			if( ! empty( $id ) && count( $this->dripped[ $dripped_type ][ $id ] ) > 0) {
+				$has_dripped = true;
+				break;
+			}
+			elseif( count( $this->dripped[ $dripped_type ] ) > 0 ) {
 				$has_dripped = true;
 				break;
 			}
@@ -323,6 +327,9 @@ class MS_Model_Rule extends MS_Model {
 		}
 	}
 	
+	public function get_dripped_avail_date( $id ) {
+		
+	}
 	public function count_item_access( $args = null ) {
 		if( $this->rule_value_invert ) {
 			$args['default'] = 1;

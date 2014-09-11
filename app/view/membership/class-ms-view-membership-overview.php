@@ -65,7 +65,7 @@ class MS_View_Membership_Overview extends MS_View {
 	
 	public function news_panel() {
 		?>
-			<div class="ms-overview-news-wrapper">
+			<div class="ms-overview-panel-wrapper ms-overview-news-wrapper">
 				<h3 class="hndle"><span><?php _e( 'News:', MS_TEXT_DOMAIN ); ?></span></h3>
 				<div class="inside">
 					<?php if( ! empty( $this->data['events'] ) ): ?>
@@ -106,7 +106,7 @@ class MS_View_Membership_Overview extends MS_View {
 	public function members_panel() {
 		$count = count( $this->data['members'] );
 		?>
-			<div class="ms-overview-members-wrapper">
+			<div class="ms-overview-panel-wrapper ms-overview-members-wrapper">
 				<h3 class="hndle"><span><?php printf( __( 'Members (%s):', MS_TEXT_DOMAIN ), $count ); ?></span></h3>
 				<div class="inside">
 					<div><?php _e( 'Active Members');?></div>

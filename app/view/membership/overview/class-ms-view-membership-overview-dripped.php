@@ -5,6 +5,8 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 	protected $data;
 	
 	public function available_content_panel() {
+		$available = array();
+		$soon = array();
 		?>
 			<div class="ms-overview-available-content-wrapper">
 				<h3 class="hndle"><span><?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></span></h3>
@@ -12,40 +14,59 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 				<?php 
 					$membership = $this->data['membership'];
 					$visitor_membership = MS_Model_Membership::get_visitor_membership();
-					$rule_types = MS_Model_Rule::get_rule_types();
+					$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 					foreach( $rule_types as $rule_type ) {
 						if( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
-							$this->content_box( $membership->get_rule( $rule_type ) );
+							$rule = $membership->get_rule( $rule_type );
+							foreach( $rule->rule_value as $id => $has_access ) {
+								if( $rule->has_dripped_rules( $id ) ) {
+									$content = array(
+											'title' => $rule->get_content( $id ),
+											'avail_date' => $rule->get_dripped_avail_date( $id ),
+									);
+									if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $id ) ) {
+										$available[] = $content;
+									}
+									else {
+										$soon[] = $content;
+ 									}
+								}
+							}
 						}
-					} 
-				
+					}
 				?>
-				
+				<?php $this->content_panel( $soon, 'ms-available-soon', __( 'Soon to be available content:', MS_TEXT_DOMAIN ) ); ?>
+				<?php $this->content_panel( $available, 'ms-available', __( 'Already available content:', MS_TEXT_DOMAIN ) ); ?>
 			</div>
 		<?php 
 	}
 	
-	private function content_box( $rule ) {
-		$rule_titles = MS_Model_Rule::get_rule_type_titles();
-		$title = $rule_titles[ $rule->rule_type ];
-
+	private function content_panel( $contents, $class, $title ) {
+		
 		?>
-			<div class="ms-overview-content-box-wrapper">
+			<div class="ms-overview-panel-wrapper <?php echo $class; ?>">
 				<div class="ms-title">
-					<?php echo sprintf( '%s (%s):', $title, $rule->count_rules() );;?>
+					<?php echo $title ;?>
 				</div>
-				<?php foreach( $rule->rule_value as $id => $has_access ): ?>
-					<?php if( $has_access ): ?>
-						<?php MS_Helper_Html::content_desc( $rule->get_content( $id ) ) ;?>
-					<?php endif; ?>
-				<?php endforeach;?>
+				<table>
+					<tr>
+						<th><?php _e( 'Post / Page Title', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Content Available', MS_TEXT_DOMAIN ); ?></th>
+					</tr>
+					<?php foreach( $contents as $id => $content ): ?>
+						<tr>
+							<td><?php echo $content['title']; ?></td>
+							<td><?php echo $content['avail_date']; ?></td>
+						</td>
+					<?php endforeach;?>
+				</table>
 				<div class="ms-protection-edit-wrapper">
 					<?php MS_Helper_Html::html_input( array(
-							'id' => 'edit_' . $rule->rule_type,
+							'id' => 'edit_dripped',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
-							'title' => $title,
-							'value' => sprintf( __( 'Edit %s Restrictions', MS_TEXT_DOMAIN ), $title ), 
-							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'tab' => $rule->rule_type ) ),
+							'title' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ),
+							'value' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ), 
+							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_SETUP_DRIPPED ) ),
 							'class' => 'ms-link-button button',
 					) );?>
 				</div>

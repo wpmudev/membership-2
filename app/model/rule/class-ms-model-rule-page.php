@@ -114,7 +114,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$page_id = $this->get_current_page_id();
 		}
 
-		return array_key_exists( $page_id, $this->dripped );
+		return apply_filters( 'ms_model_rule_page_has_dripped_rules', parent::has_dripped_rules( $page_id ) );
 	}
 	
 	/**
