@@ -27,7 +27,10 @@ jQuery( document ).ready( function( $ ) {
 			}
 		},
 		change_dripped_type: function( obj ) {
-			console.log("djo");
+			var type = $( obj ).val();
+			
+			$( '.ms-dripped-edit-wrapper' ).hide();
+			$( '.ms-dripped-type-' + type ).show();
 		}
 	}
 	
@@ -39,20 +42,23 @@ jQuery( document ).ready( function( $ ) {
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format
     });
 	
-	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]') );
+	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]:checked') );
 
 	$( '.ms-dripped-calendar' ).click( function() {
 		$( this ).parent().find( '.ms-dripped-spec-date.ms-ajax-update' ).datepicker( 'show' );
 	});
 	
-	$( '.ms-dripped-pen' ).click( function() {
-		$( this ).parent().parent().addClass( 'ms-dripped-edit' );
+	$( '.ms-period-desc-wrapper' ).click( function() {
+		$( this ).parent().addClass( 'ms-dripped-edit' );
 	});
-	$( '.ms-dripped-edit-ok' ).click( function() {
+	
+	$( 'input.ms-dripped-edit-ok' ).click( function() {
 		$( this ).parent().parent().removeClass( 'ms-dripped-edit' );
+		console.log( $( this ).parent().parent());
 		period_unit = $( this ).parent().find( 'input' ).val();
 		period_type = $( this ).parent().find( 'select' ).val();
 		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit );
 		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type );
 	});
+	
 });

@@ -217,6 +217,7 @@
 }
 .ms-period-desc-wrapper {
 	display:inline-block;
+	cursor: pointer;
 }
 
 .ms-period-editor-wrapper {

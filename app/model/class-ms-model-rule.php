@@ -295,8 +295,23 @@ class MS_Model_Rule extends MS_Model {
 	public function get_dripped_value( $dripped_type, $id, $field ) {
 		$value = null;
 		
-		if( self::is_valid_dripped_type( $dripped_type ) && isset( $this->dripped[ $dripped_type ][ $id ][ $field ] ) ) {
-			$value = $this->dripped[ $dripped_type ][ $id ][ $field ];
+		if( self::is_valid_dripped_type( $dripped_type ) ) {
+			if( isset( $this->dripped[ $dripped_type ][ $id ][ $field ] ) ) {
+				$value = $this->dripped[ $dripped_type ][ $id ][ $field ];
+			}
+			else {
+				switch( $field ) {
+					case 'period_unit':
+						$value = $this->validate_period_unit( $value );
+					break;
+					case 'period_type':
+						$value = $this->validate_period_type( $value );
+					break;
+					case 'spec_date':
+						$value = MS_Helper_Period::current_date();
+					break;
+				}
+			}
 		}
 		
 		return apply_filters( 'ms_model_rule_get_dripped_value', $value );

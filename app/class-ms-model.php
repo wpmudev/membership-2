@@ -227,10 +227,10 @@ class MS_Model extends MS_Hooker {
 		return $period;
 	}
 	
-	public function validate_period_unit( $period_unit, $default = 0 ) {
+	public function validate_period_unit( $period_unit, $default = 1 ) {
 		$period_unit = intval( $period_unit );
-		if( $period_unit < 0 ) {
-			$period_unit = 0;
+		if( $period_unit <= 0 ) {
+			$period_unit = $default;
 		}
 		return apply_filters( 'ms_model_validate_period_unit', $period_unit );
 	}
