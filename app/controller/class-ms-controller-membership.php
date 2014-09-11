@@ -168,19 +168,24 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_MS_LIST:
 					$this->print_admin_message();
 					$msg = 0;
-					$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
-					$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
+					$fields = array( 'action', 'membership_id' );
+					if( $this->validate_required( $fields, 'GET' ) ) {
+						$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
+						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
+						$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
+					}
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
 					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_CHOOSE_MS_TYPE, $step );
 					$goto_url = add_query_arg( array( 'step' => $next_step ) );
 					break;
 				case self::STEP_CHOOSE_MS_TYPE:
-					if( empty( $_POST['private'] ) ) {
-						$_POST['private'] = false;
+					$fields = $_POST;
+					
+					if( ! $this->validate_required( array( 'private' ) ) ) {
+						$fields['private'] = false;
 					}
-					$msg = $this->save_membership( $_POST );
+					$msg = $this->save_membership( $fields );
 					
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					switch( $this->model->type ) {
@@ -201,7 +206,8 @@ class MS_Controller_Membership extends MS_Controller {
 					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_ACCESSIBLE_CONTENT:
-					$msg = $this->save_membership( $_POST );
+					$fields = $_POST;
+					$msg = $this->save_membership( $fields );
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					$membership_id = $this->model->id;
 					switch( $this->model->type ) {

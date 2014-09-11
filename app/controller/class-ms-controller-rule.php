@@ -87,7 +87,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule_default() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) && $this->is_admin_user() ) {
+		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) ) {
 			$this->active_tab = $_POST['rule'];
 			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
 		}
@@ -100,7 +100,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		
 		$required = array( 'membership_id', 'rule_type', 'rule_ids' );
-		if( $this->verify_nonce() && $this->validate_required( $required, null, false ) && $this->is_admin_user() ) {
+		if( $this->verify_nonce() && $this->validate_required( $required ) && isset( $_POST['rule_value'] ) ) {
 			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
 		}
 	
@@ -108,8 +108,12 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 	
-	public function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
+	private function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		if( ! $this->is_admin_user() ) {
+			return $msg;
+		}
+		
 		$membership = $this->get_membership();
 
 		if( $membership->is_valid() ) {
@@ -138,8 +142,8 @@ class MS_Controller_Rule extends MS_Controller {
 // 		MS_Helper_Debug::log( $_POST );
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 
-		$required = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$membership = $this->get_membership();
 			if( $membership->is_valid() ) {
 				$rule_type = $_POST['rule_type'];
@@ -160,6 +164,7 @@ class MS_Controller_Rule extends MS_Controller {
 		echo $msg;
 		exit;
 	}
+	
 	/**
 	 * Handles Membership Rule form submissions.
 	 *
