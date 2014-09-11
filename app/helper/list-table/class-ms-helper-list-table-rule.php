@@ -131,6 +131,10 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$nonce = wp_create_nonce( $action );
 		$rule = $this->model;
 		$membership = $this->membership;
+		$period = array(
+				'period_unit' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_unit' ),
+				'period_type' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_type' ),
+		);
 		
 		$fields = array(
 				'spec_date' => array(
@@ -152,8 +156,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'period_unit' => array(
 						'id' => 'period_unit_' . $item->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 						'desc' => sprintf( __( '%s after registration', MS_TEXT_DOMAIN ), $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE, $item->id ) ),
-						'value' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_unit' ),
+						'value' => $period['period_unit'],
 						'class' => 'ms-dripped-value ms-dripped-from-registration ms-field-input-period-unit ms-ajax-update',
 						'data_ms' => array(
 								'membership_id' => $membership->id,
@@ -168,14 +171,14 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'period_type' => array(
 						'id' => 'period_type_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $rule->get_dripped_value( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION, $item->id, 'period_type' ),
+						'value' => $period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-field-input-period-type ms-ajax-update',
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => $rule->rule_type,
 								'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-								'field' => 'period_unit',
+								'field' => 'period_type',
 								'id' => $item->id,
 								'action' => $action,
 								'_wpnonce' => $nonce,
@@ -190,21 +193,25 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				
 
 		);
-		
+		MS_Helper_Debug::log($period);
 		ob_start();
 		?>
 			<div class="ms-dripped-edit-wrapper">
 				<div class="ms-dripped-type-spec-date-wrapper">
-					<span class="ms-dripped-desc"><?php _e( 'on', MS_TEXT_DOMAIN );?> </span>
+					<?php _e( 'on', MS_TEXT_DOMAIN );?><span class="ms-dripped-desc"></span>
 					<?php MS_Helper_Html::html_input( $fields['spec_date'] );?>
 					<span class="ms-dripped-calendar"></span>
 				</div>
-				<div class="ms-dripped-type-from-registration-wrapper ms-period-wrapper">
-					<span class="ms-dripped-desc"><?php _e( 'in', MS_TEXT_DOMAIN );?> </span>
-					<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
-					<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
-					<?php MS_Helper_Html::html_input( $fields['ok'] );?>
-					<span class="ms-dripped-pen"></span>
+				<div class="ms-period-edit-wrapper ms-dripped-type-from-registration ms-period-wrapper">
+					<div class="ms-period-desc-wrapper">
+						<?php _e( 'in', MS_TEXT_DOMAIN );?><?php echo MS_Helper_Html::period_desc( $period, 'ms-dripped-period' ); ?>
+						<span class="ms-dripped-pen"></span>
+					</div>
+					<div class="ms-period-editor-wrapper">
+						<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
+						<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
+						<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+					</div>
 				</div>
 			</div>
 		<?php 

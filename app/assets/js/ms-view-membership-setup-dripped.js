@@ -31,7 +31,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 	
-	$( 'input.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
+	$( 'input.ms-ajax-update, select.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
 	
 	$( 'input[name="dripped_type"]').change( function() { ms_functions.change_dripped_type( this ) } );
 
@@ -40,11 +40,19 @@ jQuery( document ).ready( function( $ ) {
     });
 	
 	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]') );
+
+	$( '.ms-dripped-calendar' ).click( function() {
+		$( this ).parent().find( '.ms-dripped-spec-date.ms-ajax-update' ).datepicker( 'show' );
+	});
 	
 	$( '.ms-dripped-pen' ).click( function() {
-		$( this ).parent().addClass( 'ms-dripped-edit' );
+		$( this ).parent().parent().addClass( 'ms-dripped-edit' );
 	});
 	$( '.ms-dripped-edit-ok' ).click( function() {
-		$( this ).parent().removeClass( 'ms-dripped-edit' );
+		$( this ).parent().parent().removeClass( 'ms-dripped-edit' );
+		period_unit = $( this ).parent().find( 'input' ).val();
+		period_type = $( this ).parent().find( 'select' ).val();
+		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit );
+		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type );
 	});
 });

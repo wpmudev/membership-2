@@ -572,4 +572,15 @@ class MS_Helper_Html extends MS_Helper {
 
 		echo apply_filters( 'ms_helper_html_bread_crumbs', $html );
 	}
+	
+	public static function period_desc( $period, $class = '' ) {
+		$html = sprintf( "<span class='ms-period-desc %s'> <span class='ms-period-unit'>%s</span> <span class='ms-period-type'>%s</span></span>",
+			$class, 
+			$period['period_unit'],
+			$period['period_type']
+		);
+
+		return apply_filters( 'ms_helper_html_period_desc', $html );
+	}
+
 }

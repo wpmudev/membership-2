@@ -211,20 +211,25 @@
 	margin: 1em;
 	width: auto;
 }
-.ms-dripped-edit-wrapper input[type="button"] {
-	display:none;
+.ms-period-desc {
+	font-size: 14px;
+	font-weight: bold;	
 }
-.ms-dripped-edit-wrapper input, .ms-dripped-edit-wrapper select {
-	border:none;
-	background-color: inherit;
-	box-shadow: none;
-}
-.ms-dripped-edit .ms-dripped-pen {
-	display:none;
-}
-.ms-dripped-edit input[type="button"] {
+.ms-period-desc-wrapper {
 	display:inline-block;
 }
+
+.ms-period-editor-wrapper {
+	display:none;
+}
+.ms-dripped-edit .ms-period-desc-wrapper {
+	display:none;
+}
+
+.ms-dripped-edit .ms-period-editor-wrapper {
+	display:inline-block;
+}
+
 .ms-dripped-type-spec-date-wrapper {
 	position: relative;
 }
@@ -249,6 +254,7 @@ input.ms-dripped-spec-date {
   	background:url(../images/membership_sprite.svg), none;
   	background-position: -329px -130px;
 	position: relative;
+	top: 5px;
 	width:30px;
 	height:30px;
 	background-color: transparent;
