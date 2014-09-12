@@ -46,7 +46,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $plugin_enabled = false;
 	
-	protected $initial_setup;
+	protected $initial_setup = true;
 	
 	protected $wizard_step;
 	

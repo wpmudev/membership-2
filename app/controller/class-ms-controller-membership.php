@@ -171,12 +171,13 @@ class MS_Controller_Membership extends MS_Controller {
 					$fields = array( 'action', 'membership_id' );
 					if( $this->validate_required( $fields, 'GET' ) ) {
 						$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
-						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
+						$next_step = self::STEP_MS_LIST;
 						$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 					}
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_CHOOSE_MS_TYPE, $step );
+					$this->wizard_tracker( true );
+					$next_step = self::STEP_CHOOSE_MS_TYPE;
 					$goto_url = add_query_arg( array( 'step' => $next_step ) );
 					break;
 				case self::STEP_CHOOSE_MS_TYPE:
@@ -202,7 +203,6 @@ class MS_Controller_Membership extends MS_Controller {
 							$next_step = self::STEP_ACCESSIBLE_CONTENT;
 							break;
 					}
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step, $step );
 					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_ACCESSIBLE_CONTENT:
@@ -230,43 +230,43 @@ class MS_Controller_Membership extends MS_Controller {
 							$next_step = self::STEP_MS_LIST;
 							break;
 					}
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', $next_step, $step );
 					$goto_url = add_query_arg( array( 'membership_id' => $membership_id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_PAYMENT:
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_MS_LIST, $step );
+					$next_step = self::STEP_MS_LIST;
 					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_CONTENT_TYPES:
 					if( $this->validate_required( array( 'name' ) ) && 'create_content_type' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
-						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_ACCESSIBLE_CONTENT, $step );
+						$next_step = self::STEP_ACCESSIBLE_CONTENT;
 						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
 					}
 					else {
-						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+						$next_step = self::STEP_SETUP_PAYMENT;
 						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					}
 					break;
 				case self::STEP_SETUP_MS_TIERS:
 					if( $this->validate_required( array( 'name' ) ) && 'create_tier' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
-						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_ACCESSIBLE_CONTENT, $step );
+						$next_step = self::STEP_ACCESSIBLE_CONTENT;
 						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
 					}
 					else {
-						$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+						$next_step = self::STEP_SETUP_PAYMENT;
 						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					}
 					break;
 				case self::STEP_SETUP_DRIPPED:
-					$next_step = apply_filters( 'ms_controller_membership_membership_admin_page_process_next_step', self::STEP_SETUP_PAYMENT, $step );
+					$next_step = self::STEP_SETUP_PAYMENT;
 					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				default:
 					break;
 			}
 			if( ! empty( $goto_url ) ) {
+				$goto_url = apply_filters( 'ms_controller_membership_membership_admin_page_process_goto_url', $goto_url, $next_step );
 				wp_safe_redirect( $goto_url );
 			}
 		}
@@ -544,11 +544,11 @@ class MS_Controller_Membership extends MS_Controller {
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
-	public function wizard_tracker() {
+	public function wizard_tracker( $end_wizard = false ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		if( $settings->initial_setup && ! empty( $_POST['step'] ) ) {
-			$settings->wizard_step = $_POST['step'];
-			if( self::STEP_SETUP_PROTECTED_CONTENT == $settings->wizard_step ) {
+		if( $settings->initial_setup && $step = $this->get_step() ) {
+			$settings->wizard_step = $step;
+			if( $end_wizard ) {
 				$settings->initial_setup = false;
 			}
 			$settings->save();

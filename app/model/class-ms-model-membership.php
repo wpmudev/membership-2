@@ -424,7 +424,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		else {
 			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
-			$visitor_membership = new self();
+			$visitor_membership = MS_Factory::create( 'MS_Model_Membership' );
 			$visitor_membership->name = __( 'Visitor', MS_TEXT_DOMAIN );
 			$visitor_membership->payment_type = self::PAYMENT_TYPE_PERMANENT;
 			$visitor_membership->title = $description;
@@ -442,9 +442,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$protected_content_rules = self::get_visitor_membership()->rules;
 		
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
-			$rule = $this->get_rule( $rule_type );
-			$rule->merge_rule_values( $protect_rule );
-			$this->set_rule( $rule_type, $rule );
+			try {
+				$rule = $this->get_rule( $rule_type );
+				$rule->merge_rule_values( $protect_rule );
+				$this->set_rule( $rule_type, $rule );
+			} 
+			catch( Exception $e ) {
+				MS_Helper_Debug::log( $e );
+			}
 		}
 		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules );
 	}

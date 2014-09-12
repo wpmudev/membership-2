@@ -67,7 +67,7 @@ class MS_Model_Upgrade extends MS_Model {
 	public static function upgrade() {
 		$settings = MS_Plugin::instance()->settings;
 		/** Compare current src version to DB version */
-		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
+		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
 			switch( $settings->version ) {
 				default:
 					self::cleanup_db();
