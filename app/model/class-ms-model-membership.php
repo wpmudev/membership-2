@@ -58,14 +58,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	protected $type;
 	
-	/**
-	 * @deprecated change to payment_type 
-	 * @var unknown
-	 */
 	protected $payment_type;
 	
 	protected $parent_id = 0;
 	
+	/**
+	 * @deprecated  
+	 * @var unknown
+	 */
 	protected $linked_membership_ids;
 	
 	protected $active = false;
@@ -94,10 +94,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 	protected $dripped_type;
 	
-	/**
-	 * @deprecated
-	 * @var unknown
-	 */
 	protected $on_end_membership_id;
 	
 	protected $rules = array();
@@ -159,6 +155,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 		return apply_filters( 'ms_model_membership_get_parent', $parent );
 	}
+	
 	public function can_have_children() {
 		$can_have_children = false;
 		
@@ -170,66 +167,61 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this->type );
 	}
 	
-	public function get_last_descendant() {
-		$last = null;
-		if( is_array( $this->linked_membership_ids ) && $count = count( $this->linked_membership_ids ) ) { 
-			$last = MS_Factory::load( 'MS_Model_Membership', $this->linked_membership_ids[ $count -1 ] );
-		}
-		else {
-			$this->linked_membership_ids = array();
-			$last = $this;
-		}
-		
-		return apply_filters( 'ms_model_membership_get_last_descendant', $last );
-	}
-	
 	public function create_child( $name ) {
 		$child = null;
-		$parent = null;
+		$src = null;
 		
 		if( $this->can_have_children() ) {
-			$child = MS_Factory::create( 'MS_Model_Membership' );
-			
 			if( self::TYPE_TIER == $this->type ) {
-				$parent = $this->get_last_descendant();
+				$src = $this->get_last_descendant();
 			}
 			else {
-				$parent = $this;
+				$src = $this;
 			}
-			
-			$fields = $parent->get_object_vars();
 				
-			foreach ( $fields as $field => $val) {
-				if ( in_array( $field, $this->ignore_fields ) ) {
-					continue;
-				}
-				$child->set_field( $field, $this->$field );
-			}
+			$child = $src;
 			$child->id = 0;
-			$child->parent_id = $parent->id;
+			$child->parent_id = $this->id;
 			$child->name = $name;
 			$child->save();
-
-			$this->linked_membership_ids[] = $child->id;
-			$this->save(); 
 		}
 		
 		return apply_filters( 'ms_model_membership_create_child', $child );
 	}
 	
-	public function get_children() {
+	public function get_children( $args = null ) {
 		$children = array();
-		if( empty( $this->parent_id ) && ! empty( $this->linked_membership_ids ) ) {
-			$args['post__in'] = $this->linked_membership_ids;
+		if( empty( $this->parent_id ) ) {
+			$args['meta_query']['children'] = array(
+					'key'     => 'parent_id',
+					'value'   => $this->id,
+			);
+				
 			$children = self::get_memberships( $args );
 		}
 		
 		return apply_filters( 'ms_model_membership_get_children', $children );
 	}
 	
+	public function get_last_descendant() {
+		$last = null;
+		if( $this->can_have_children() ) {
+			$child = $this->get_children( array( 'post_per_page' => 1 ) );
+			if( isset( $child[0] ) ) {
+				$last = $child[0];
+			}
+			else {
+				$last = $this;
+			}
+		}
+	
+		return apply_filters( 'ms_model_membership_get_last_descendant', $last );
+	}
+	
 	public function get_children_count() {
 		$children = $this->get_children();
 		$count = count( $children );
+		
 		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
 	}
 	
