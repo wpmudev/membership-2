@@ -580,6 +580,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function __get( $property ) {
 		$value = null;
 		switch( $property ) {
+			case 'payment_type':
+				if( empty( $this->payment_type ) ) {
+					$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+				}
+				$value = $this->payment_type;
+				break;
 			case 'type_description':
 				$value = $this->get_type_description();
 				break;
