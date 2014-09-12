@@ -568,7 +568,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$value = $this->get_type_description();
 				break;
 			case 'private':
-				$value=  $this->is_private();
+				$value = $this->is_private();
+				break;
+			case 'period_unit':
+				$value = MS_Helper_Period::get_period_value( $this->period, 'period_unit' );
+				break;
+			case 'period_type':
+				$value = MS_Helper_Period::get_period_value( $this->period, 'period_type' );
+				break;
+			case 'pay_cycle_period_unit':
+				$value = MS_Helper_Period::get_period_value( $this->pay_cycle_period, 'period_unit' );
+				break;
+			case 'pay_cycle_period_type':
+				$value = MS_Helper_Period::get_period_value( $this->pay_cycle_period, 'period_type' );
+				break;
+			case 'trial_period_unit':
+				$value = MS_Helper_Period::get_period_value( $this->trial_period, 'period_unit' );
+				break;
+			case 'trial_period_type':
+				$value = MS_Helper_Period::get_period_value( $this->trial_period, 'period_type' );
 				break;
 			default:
 				if( property_exists( $this, $property ) ) {

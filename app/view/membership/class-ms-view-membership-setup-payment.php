@@ -98,66 +98,11 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	public function global_payment_settings() {
 
 		if( $this->data['is_global_payments_set'] ) {
-			return;
+// 			return;
 		}
 		
-		$gateway_list = new MS_Helper_List_Table_Gateway();
-		$gateway_list->prepare_items();
-		$fields = $this->get_global_payment_fields();
-		
-		?>
-		<div class="ms-global-payment-wrapper">
-			<div class="ms-list-table-wrapper ms-list-table-half">
-			<div class="ms-field-input-label"><?php _e( 'Global Payment Settings', MS_TEXT_DOMAIN );?></div>
-			<div class="ms-description"><?php _e( 'These are shared across all memberships', MS_TEXT_DOMAIN );?></div>
-			<div class="ms-setup-half-width">
-				<?php MS_Helper_Html::html_input( $fields['currency'] ); ?>
-			</div>
-			<div class="ms-setup-half-width">
-				<?php MS_Helper_Html::html_input( $fields['invoice_sender_name'] ); ?>
-			</div>
-			<?php $gateway_list->display(); ?>
-			</div>
-		</div>
-		<?php 
-	}
-	
-	private function get_global_payment_fields() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-// 		$action = $this->data['action'];
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
-		$nonce = wp_create_nonce( $action );
-		
-		$fields = array(
-			'currency' => array(
-					'id' => 'currency',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select payment currency', MS_TEXT_DOMAIN ),
-					'value' => $settings->currency,
-					'field_options' => $settings->get_currencies(),
-					'class' => '',
-					'class' => 'chosen-select',
-					'data_ms' => array(
-							'field' => 'currency',
-							'_wpnonce' => $nonce,
-							'action' => $action,
-					),
-			),
-			'invoice_sender_name' => array(
-					'id' => 'invoice_sender_name',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
-					'value' => $settings->invoice_sender_name,
-					'class' => '',
-					'data_ms' => array(
-							'field' => 'invoice_sender_name',
-							'_wpnonce' => $nonce,
-							'action' => $action,
-					),
-			),
-		);
-
-		return apply_filters( 'ms_view_memebrship_setup_payment_get_global_fields', $fields );
+		$view = MS_Factory::create( 'MS_View_Gateway_Global' );
+		$view->render();
 	}
 	
 	public function specific_payment_settings( $membership ) {
@@ -241,7 +186,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'name' => '[period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
-						'value' => $membership->period['period_unit'],
+						'value' => $membership->period_unit,
 						'class' => 'ms-field-input-period-unit ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'period_unit',
@@ -254,7 +199,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'id' => 'period_type_' . $membership->id,
 						'name' => '[period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $membership->period['period_type'],
+						'value' => $membership->period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-field-input-period-type ms-ajax-update',
 						'data_ms' => array(
@@ -269,7 +214,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'name' => '[pay_cycle_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
-						'value' => $membership->pay_cycle_period['period_unit'],
+						'value' => $membership->pay_cycle_period_unit,
 						'class' => 'ms-field-input-pay-cycle-period-unit ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'pay_cycle_period_unit',
@@ -282,7 +227,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'id' => 'pay_cycle_period_type_' . $membership->id,
 						'name' => '[pay_cycle_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $membership->pay_cycle_period['period_type'],
+						'value' => $membership->pay_cycle_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-field-input-pay-cycle-period-type ms-ajax-update',
 						'data_ms' => array(
@@ -348,7 +293,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'id' => 'trial_period_unit_' . $membership->id,
 						'name' => '[trial_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => $membership->trial_period['period_unit'],
+						'value' => $membership->trial_period_unit,
 						'class' => 'ms-field-input-trial-period-unit ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'trial_period_unit',
@@ -361,7 +306,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'id' => 'trial_period_type_' . $membership->id,
 						'name' => '[trial_period][period_type]',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $membership->trial_period['period_type'],
+						'value' => $membership->trial_period_type,
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-field-input-trial-period-type ms-ajax-update',
 						'data_ms' => array(

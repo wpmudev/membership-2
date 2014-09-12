@@ -192,4 +192,12 @@ class MS_Helper_Period extends MS_Helper {
 		}
 		return apply_filters( 'ms_helper_period_get_period_in_days', $days, $period );
 	}
+	
+	public static function get_period_value( $period, $field ) {
+		$value = null;
+		if( isset( $period[ $field ] ) ) {
+			$value = $period[ $field ];
+		}
+		return apply_filters( 'ms_helper_period_get_period_value', $value );
+	}
 }
