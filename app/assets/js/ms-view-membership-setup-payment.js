@@ -59,17 +59,14 @@ jQuery( document ).ready( function( $ ) {
 	
 	$( '.ms-payment-type').change( function() { ms_functions.payment_type( this ) } );
 
-	$( '#period_date_start' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-	$( '#period_date_end' ).datepicker({
+	$( '.ms-datepicker' ).datepicker({
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format
     });
 	
 	ms_functions.payment_type( $( '.ms-payment-type' ) );
 	ms_functions.is_free();
 	
-	$( '.ms-close-button' ).click(function(){
+	$( '.ms-close-button' ).click( function(){
 		self.parent.tb_remove();
 	});
 });

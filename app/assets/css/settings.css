@@ -111,7 +111,7 @@ h2.ms-settings-title,
 }
 /** Settings Box **/
 .ms-settings-box-wrapper {
-    background: none repeat scroll 0 0 #FFFFFF;
+    background: none repeat scroll 0 0 #f9f9f9;
     border: 1px solid #E5E5E5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.04);   
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);

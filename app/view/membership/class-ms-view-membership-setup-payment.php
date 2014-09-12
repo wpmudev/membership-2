@@ -244,7 +244,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
 						'value' => $membership->period_date_start,
-						'class' => 'ms-field-input-period-date-start ms-ajax-update',
+						'class' => 'ms-datepicker ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'period_date_start',
 								'_wpnonce' => $nonce,
@@ -256,7 +256,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'id' => 'period_date_end_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $membership->period_date_end,
-						'class' => 'ms-field-input-period-date-end ms-ajax-update',
+						'class' => 'ms-datepicker ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'period_date_end',
 								'_wpnonce' => $nonce,
@@ -269,7 +269,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'After membership ends, change to', MS_TEXT_DOMAIN ),
 						'value' => $membership->on_end_membership_id,
-						'field_options' => MS_Model_Membership::get_membership_names(),
+						'field_options' => $membership->get_after_ms_ends_options(),
 						'class' => 'ms-field-input-on-end-membership ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'on_end_membership_id',
@@ -318,20 +318,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 								'membership_id' => $membership->id,
 						),
 				),
-				'on_end_membership_id' => array(
-						'id' => 'on_end_membership_id',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'After membership ends', MS_TEXT_DOMAIN ),
-						'value' => $membership->on_end_membership_id,
-						'field_options' => MS_Model_Membership::get_membership_names(),
-						'class' => 'ms-field-input-on-end-membership ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'on_end_membership_id',
-								'_wpnonce' => $nonce,
-								'action' => $action,
-								'membership_id' => $membership->id,
-						),
-				),
 				'membership_id' => array(
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -343,7 +329,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'value' => $this->data['action'],
 				),
 		);
-	
+
 		return apply_filters( 'ms_view_memebrship_setup_payment_get_global_fields', $fields );
 	}
 	

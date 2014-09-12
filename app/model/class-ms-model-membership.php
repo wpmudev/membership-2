@@ -219,23 +219,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public function get_children() {
 		$children = array();
-		if( ! empty( $this->linked_membership_ids ) ) {
+		if( empty( $this->parent_id ) && ! empty( $this->linked_membership_ids ) ) {
 			$args['post__in'] = $this->linked_membership_ids;
 			$children = self::get_memberships( $args );
 		}
-// 		else {
-// 			$args['meta_query']['children'] = array(
-// 					'key'     => 'parent_id',
-// 					'value'   => $this->membership->id,
-// 			);
-// 		}
 		
 		return apply_filters( 'ms_model_membership_get_children', $children );
 	}
 	
 	public function get_children_count() {
-// 		$args['post_parent'] = $this->id;
-// 		$children = self::get_memberships( $args );
 		$children = $this->get_children();
 		$count = count( $children );
 		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
@@ -305,7 +297,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public static function get_memberships( $args = null ) {
 		$args = self::get_query_args( $args );
-// MS_Helper_Debug::log($args);		
+
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		
@@ -364,12 +356,34 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
+	public function get_after_ms_ends_options( $args = null ) {
+		$options = array(
+				self::get_visitor_membership()->id => __( 'Restrict access to Protected Content', MS_TEXT_DOMAIN ),
+		);
+		switch( $this->type ) {
+			case self::TYPE_TIER:
+				$parent = $this;
+				if( $this->parent_id > 0 ) {
+					$parent = $this->get_parent();
+				}
+				$children = $parent->get_children();
+				foreach ( $children as $child ) {
+					$options[ $child->id ] = sprintf( __( 'Downgrade to %s', MS_TEXT_DOMAIN ), $child->name );
+				}
+				
+				break;
+			default:
+				break;
+		}
+
+		return apply_filters( 'ms_model_membership_get_membership_names', $options );
+	}
+	
 	public static function get_membership_names( $args = null, $hide_default_memberships = false ) {
+		$args['order'] = 'ASC';
 		$args = self::get_query_args( $args );
 		
-		$args['order'] = 'ASC';
-		
-		$query = new WP_Query($args);
+		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		
 		$memberships = array();
@@ -379,8 +393,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if( $hide_default_memberships ) {
 			unset( $memberships[ self::get_visitor_membership()->id ] );
 		}
-		return $memberships;
 		
+		return apply_filters( 'ms_model_membership_get_membership_names', $memberships );
 	}
 	
 	public static function is_valid_membership( $membership_id ) {
