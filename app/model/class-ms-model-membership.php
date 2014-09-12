@@ -148,9 +148,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
+	public function has_parent() {
+		$has_parent = false;
+		
+		if( $this->parent_id > 0 ) {
+			$has_parent = true;
+		}
+		
+		return apply_filters( 'ms_model_membership_has_parent', $has_parent );
+	}
 	public function get_parent() {
 		$parent = null;
-		if( $this->parent_id > 0 ) {
+		if( $this->has_parent() ) {
 			$parent = MS_Factory::load( 'MS_Model_Membership', $this->parent_id );
 		}
 		return apply_filters( 'ms_model_membership_get_parent', $parent );
@@ -160,7 +169,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$can_have_children = false;
 		
 		$can_have_children_types = array( self::TYPE_CONTENT_TYPE, self::TYPE_TIER );
-		if( 0 == $this->parent_id && in_array( $this->type, $can_have_children_types ) ) {
+		if( ! $this->has_parent() && in_array( $this->type, $can_have_children_types ) ) {
 			$can_have_children = true;
 		}
 		
@@ -191,7 +200,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	public function get_children( $args = null ) {
 		$children = array();
-		if( empty( $this->parent_id ) ) {
+		
+		if( ! $this->has_parent() ) {
 			$args['meta_query']['children'] = array(
 					'key'     => 'parent_id',
 					'value'   => $this->id,

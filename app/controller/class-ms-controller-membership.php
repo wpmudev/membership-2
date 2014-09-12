@@ -270,6 +270,19 @@ class MS_Controller_Membership extends MS_Controller {
 				wp_safe_redirect( $goto_url );
 			}
 		}
+		else {
+			switch( $step ) {
+				/** Child overview page is shown in parent's overview, redirect */
+				case self::STEP_OVERVIEW:
+					$membership = $this->load_membership();
+					if( $membership->has_parent() && empty( $_GET['tab'] ) ) {
+						wp_safe_redirect( add_query_arg( array( 'membership_id' => $membership->parent_id, 'tab' => $membership->id ) ) );
+						exit;
+					}
+					break;
+			}
+		}
+		
 	}
 	
 	public function membership_admin_page_router() {
@@ -374,10 +387,11 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function page_ms_overview() {
+		$membership = $this->load_membership();
+		
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
-		$membership = $this->load_membership();
 		$data['membership'] = $membership;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		

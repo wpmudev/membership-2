@@ -132,13 +132,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function column_name( $item ) {
 		$actions = array(
-				sprintf( '<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
+			 	'edit' => sprintf( '<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
 						$_REQUEST['page'],
 						MS_Controller_Membership::STEP_OVERVIEW,
 						$item->id,
-						__('Edit', MS_TEXT_DOMAIN )
+						__( 'Edit', MS_TEXT_DOMAIN )
 				),
-				sprintf( '<span class="delete"><a href="%s">%s</a></span>',
+				'delete' => sprintf( '<span class="delete"><a href="%s">%s</a></span>',
 					wp_nonce_url( 
 						sprintf( '?page=%s&membership_id=%s&action=%s',
 							$_REQUEST['page'],
@@ -147,10 +147,20 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 							),
 						'delete'
 						),
-					__('Delete', MS_TEXT_DOMAIN )
+					__( 'Delete', MS_TEXT_DOMAIN )
 				),
 		);
-		$actions = apply_filters( "membership_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+		if( $item->has_parent() ) {
+			$actions['edit'] = sprintf( '<a href="?page=%s&step=%s&membership_id=%s&tab=%s">%s</a>',
+					$_REQUEST['page'],
+					MS_Controller_Membership::STEP_OVERVIEW,
+					$item->parent_id,
+					$item->id,
+					__( 'Edit', MS_TEXT_DOMAIN )
+			);
+		}
+		
+		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
 		
 	}
