@@ -179,7 +179,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function create_child( $name ) {
 		$child = null;
 		$src = null;
-		
+
 		if( $this->can_have_children() ) {
 			if( self::TYPE_TIER == $this->type ) {
 				$src = $this->get_last_descendant();
@@ -188,7 +188,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$src = $this;
 			}
 				
-			$child = $src;
+			$child = clone $src;
 			$child->id = 0;
 			$child->parent_id = $this->id;
 			$child->name = $name;
