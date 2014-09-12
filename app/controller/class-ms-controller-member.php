@@ -51,12 +51,14 @@ class MS_Controller_Member extends MS_Controller {
 	 */		
 	public function __construct() {
 		
-		$this->add_action( 'load-membership_page_membership-members', 'admin_member_list_manager' );
+		$hook = 'protected-content_page_protected-content-members';
+		
+		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
 		
-		$this->add_action( 'admin_print_scripts-membership_page_membership-members', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_membership-members', 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 		
 	}
 
@@ -99,36 +101,34 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 */
-	public function admin_member_list_manager() {
+	public function members_admin_page_process() {
 		$this->print_admin_message();
 		
 		$msg = 0;
-		/**
-		 * Execute list table single action.
-		 */
-		if( ! empty( $_GET['action'] ) && ! empty( $_GET['member_id'] ) && 
-			! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'], $_GET['action'] ) ) {
+		if( $this->is_admin_user() ) {
 			
-			$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
-		}
-		/**
-		 * Execute list table bulk actions.
-		 */
-		elseif( ! empty( $_POST['member_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-members' ) ) {
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			if( $action == 'toggle_activation') {
-				$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
-				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			/**
+			 * Execute list table single action.
+			 */
+			$fields = array( 'member_id', 'action' );
+			if( $this->verify_nonce( null, 'GET' ) && $this->validate_required( $fields, 'GET' ) ) {
+				$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
+				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
 			}
-		}
-		/**
-		 * Execute edit view page action submit.
-		 */
-		elseif( ! empty( $_POST['submit'] ) ) {
-			if ( ! empty( $_POST['member_id'] ) && ! empty( $_POST['action'] ) && ! empty( $_POST['membership_id'] ) &&
-				! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], $_POST['action'] ) ) {
-				
+			/**
+			 * Execute list table bulk actions.
+			 */
+			elseif( $this->verify_nonce( 'bulk-members' ) && $this->validate_required( $fields, 'POST' ) ) {
+				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+				if( $action == 'toggle_activation') {
+					$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+				}
+			}
+			/**
+			 * Execute edit view page action submit.
+			 */
+			elseif( ! empty( $_POST['submit'] ) && $this->verify_nonce() && $this->validate_required( $fields, 'POST' ) ) {
 				$member_ids = is_array( $_POST['member_id'] ) ? $_POST['member_id'] : explode( ',', $_POST['member_id'] );
 				$msg = $this->member_list_do_action( $_POST['action'], $member_ids, $_POST['membership_id'] );
 				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -145,19 +145,15 @@ class MS_Controller_Member extends MS_Controller {
 	 */	
 	public function admin_member_list() {
 		
-		// Don't render the view if it was a toggle button AJAX call.
-		if( isset( $_GET['toggle_action'] ) ) {
-			exit;
-		}
-		
 		/**
 		 * Action view edit page request
 		 */
-		if( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['member_id'] ) ) {
+		$fields = array( 'member_id', 'action' );
+		if( $this->validate_required( $fields, 'REQUEST' ) ) {
 			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
 		}
 		else {
-			$view = apply_filters( 'ms_view_member_list', new MS_View_Member_List() );
+			$view = MS_Factory::create( 'MS_View_Member_List' );
 			$view->render();
 		}
 	}
@@ -228,7 +224,7 @@ class MS_Controller_Member extends MS_Controller {
 					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
 					break;
 				case 'edit_date':
-					$view = apply_filters( 'membership_view_member_date', new MS_View_Member_Date() );
+					$view = MS_Factory::create( 'MS_View_Member_Date' );
 					$data['member_id'] = $member_id;
 					$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
 					break;
@@ -236,7 +232,7 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		
 		if( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
-			$view = apply_filters( 'ms_view_member_membership', new MS_View_Member_Membership() );
+			$view = MS_Factory::create( 'MS_View_Member_Membership' );
 			$data['memberships'] = $memberships;
 			if( 'move' == $action ){
 				$data['memberships_move'] = $memberships_move;
@@ -265,7 +261,7 @@ class MS_Controller_Member extends MS_Controller {
 		
 		foreach( $members as $member_id ){
 			/** Member Model */
-			$member = apply_filters( 'membership_member_model', MS_Factory::load( 'MS_Model_Member', $member_id ) );
+			$member = MS_Factory::load( 'MS_Model_Member', $member_id );
 			switch( $action ) {
 				case 'add':
 					$member->add_membership( $membership_id );

@@ -123,7 +123,21 @@ class MS_Controller extends MS_Hooker {
 	 */
 	public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
 		$validated = true;
-		$request_fields = ( 'POST' == $request_method ) || empty( $request_method ) ? $_POST : $_GET;
+		$request_fields = null;
+		switch( $request_method ) {
+			case 'GET':
+				$request_fields = $_GET;
+				break;
+			case 'REQUEST':
+				$request_fields = $_REQUEST;
+				break;
+			default:
+			case 'POST':
+				$request_fields = $_POST;
+				break;
+					
+		}
+		
 		foreach( $fields as $field ) {
 			if( $not_empty ) {
 				if( empty( $request_fields[ $field ] ) ) {
