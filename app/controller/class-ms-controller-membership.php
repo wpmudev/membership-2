@@ -224,7 +224,12 @@ class MS_Controller_Membership extends MS_Controller {
 							}
 							break;
 						case MS_Model_Membership::TYPE_SIMPLE:
-							$next_step = self::STEP_SETUP_PAYMENT;
+							if( $this->model->private ) {
+								$next_step = self::STEP_MS_LIST;
+							}
+							else {
+								$next_step = self::STEP_SETUP_PAYMENT;
+							}
 							break;
 						default:
 							$next_step = self::STEP_MS_LIST;
@@ -240,12 +245,16 @@ class MS_Controller_Membership extends MS_Controller {
 					if( $this->validate_required( array( 'name' ) ) && 'create_content_type' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
 						$next_step = self::STEP_ACCESSIBLE_CONTENT;
-						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
 					}
 					else {
-						$next_step = self::STEP_SETUP_PAYMENT;
-						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+						if( $this->model->private ) {
+							$next_step = self::STEP_MS_LIST;
+						}
+						else {
+							$next_step = self::STEP_SETUP_PAYMENT;
+						}
 					}
+					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_MS_TIERS:
 					if( $this->validate_required( array( 'name' ) ) && 'create_tier' == $_POST['action'] ) {
@@ -891,9 +900,11 @@ class MS_Controller_Membership extends MS_Controller {
 				$bread_crumbs['current'] = array(
 						'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
 				);
-				$bread_crumbs['next'] = array(
-						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-				);
+				if( ! $this->model->private ) {
+					$bread_crumbs['next'] = array(
+							'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					);
+				}
 				break;
 			case self::STEP_SETUP_MS_TIERS:
 				$bread_crumbs['prev'] = array(
