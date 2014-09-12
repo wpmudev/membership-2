@@ -247,99 +247,21 @@ class MS_View_Settings_Edit extends MS_View {
 		);
 	}
 	public function render_payment() {
-
-		$this->prepare_payment();
 		ob_start();
 		?>
-			<div class='ms-settings'>
-				<h3><?php echo __( 'Payment Settings', MS_TEXT_DOMAIN ); ?></h3>
-				<form action="" method="post">
-					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['action'] ) ;?>
-					<?php
-						MS_Helper_Html::settings_box(
-							array( $this->fields['currency'] ), 
-							__( 'Payment currency', MS_TEXT_DOMAIN ), 
-							__( 'This is the currency that will be used across all gateways. Note: Some gateways have a limited number of currencies available.', MS_TEXT_DOMAIN ),
-							array( 'label_element' => 'h3' ) 
-						);
-					?>
-					<?php
-						MS_Helper_Html::settings_box(
-							array( $this->fields['invoice_sender_name'] ), 
-							__( 'Invoice Configuration', MS_TEXT_DOMAIN ), 
-							__( 'This is the name used in the invoice.', MS_TEXT_DOMAIN ),
-							array( 'label_element' => 'h3' ) 
-						);
-					?>
-					<p>
-						<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_payment' ) );?>
-					</p>
-				</form>
+		<div class='ms-settings'>
+			<div id="ms-payment-settings-wrapper">
+			<?php 
+				$view = MS_Factory::create( 'MS_View_Gateway_Global' );
+				$view->render();
+			?>
 			</div>
-		<?php
+		</div>
+		<?php 
 		$html = ob_get_clean();
 		echo $html;
 	}
 	
-	public function prepare_payment() {
-		$this->fields = array(
-			'currency' => array(
-					'id' => 'currency',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select payment currency', MS_TEXT_DOMAIN ),
-					'value' => $this->model->currency,
-					'field_options' => $this->model->get_currencies(),
-					'class' => '',
-			),
-			'invoice_sender_name' => array(
-					'id' => 'invoice_sender_name',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
-					'value' => $this->model->invoice_sender_name,
-					'class' => '',
-			),
-			'tax_name' => array(
-					'id' => 'tax_name',
-					'name' => 'tax[tax_name]',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
-					'value' => $this->model->tax['tax_name'],
-					'class' => '',
-			),
-			'tax_rate' => array(
-					'id' => 'tax_rate',
-					'name' => 'tax[tax_rate]',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
-					'value' => $this->model->tax['tax_rate'],
-					'class' => '',
-			),
-			'action' => array(
-					'id' => 'action',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => 'save_payments',
-			),
-		);
-	}
-	public function render_gateway() {
-	
-		$list_table = new MS_Helper_List_Table_Gateway();
-		$list_table->prepare_items();
-	
-		ob_start();
-		?>
-			<div class='ms-settings'>
-				<h3><?php echo __( 'Gateway Settings', MS_TEXT_DOMAIN ); ?></h3>
-				<form action="" method="post">
-					<?php $list_table->display(); ?>
-				</form>
-			</div>
-		<?php
-		$html = ob_get_clean();
-		echo $html;
-	}
-
 	public function render_messages_protection() {
 		$this->prepare_messages_protection();
 		?>

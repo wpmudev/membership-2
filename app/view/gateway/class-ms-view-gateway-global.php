@@ -14,7 +14,7 @@ class MS_View_Gateway_Global extends MS_View {
 		
 		?>
 		<div class="ms-global-payment-wrapper">
-			<div class="ms-list-table-wrapper ms-list-table-half">
+			<div class="ms-list-table-wrapper">
 				<div class="ms-field-input-label"><?php _e( 'Global Payment Settings', MS_TEXT_DOMAIN );?></div>
 				<div class="ms-description"><?php _e( 'These are shared across all memberships', MS_TEXT_DOMAIN );?></div>
 				<div class="ms-setup-half-width">

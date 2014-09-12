@@ -142,9 +142,6 @@ class MS_Controller_Settings extends MS_Controller {
 				'payment' => array(
 						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
 				),
-				'gateway' => array(
-						'title' =>	__( 'Payment Gateways', MS_TEXT_DOMAIN ),
-				),
 				'messages-protection' => array(
 						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
 				),
@@ -160,7 +157,7 @@ class MS_Controller_Settings extends MS_Controller {
 			unset( $tabs['downloads'] );
 		}
 		
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-settings';
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : MS_Controller_Plugin::MENU_SLUG . '-settings';
 		foreach( $tabs as $key => $tab ) {
 			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}";
 		}

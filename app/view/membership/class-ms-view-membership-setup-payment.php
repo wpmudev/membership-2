@@ -23,7 +23,9 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<div class="clear"></div>
 			<hr />
 			<div id="ms-payment-settings-wrapper">
-				<?php $this->global_payment_settings(); ?>
+				<div class="ms-list-table-half">
+					<?php $this->global_payment_settings(); ?>
+				</div>
 				<?php
 					if( $this->data['membership']->can_have_children() ) { 
 						foreach( $this->data['children'] as $child ) {
