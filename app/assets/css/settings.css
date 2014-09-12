@@ -408,6 +408,11 @@ textarea.ms-field-input {
 	margin: 0.5em 0 1em 0.5em !important;
 }
 
+/* SETTINGS GATEWAY */
+.ms-gateway-settings-wrapper {
+	display: none;
+} 
+
 /* MEMBERS LIST */
 #search_options {
 	float: left;

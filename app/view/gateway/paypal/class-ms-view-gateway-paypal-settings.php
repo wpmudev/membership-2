@@ -60,7 +60,6 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 					'value' => $model->merchant_id,
 			);
 		}
-		
 		$this->fields = array(
 			'merchant_id' => $merchant_id_field,
 			'paypal_site' => array(
@@ -69,7 +68,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $model->get_paypal_sites(),
 					'value' => $model->paypal_site,
-					'class' => 'chosen-select',
+// 					'class' => 'chosen-select',
 			),
 			'mode' => array(
 					'id' => 'mode',
@@ -102,18 +101,16 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 			'separator' => array(
 					'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),
-			'cancel' => array(
-					'id' => 'cancel',
-					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'title' => __('Cancel', MS_TEXT_DOMAIN ),
-					'value' => __('Cancel', MS_TEXT_DOMAIN ),
-					'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
-					'class' => 'ms-link-button button',
+			'close' => array(
+					'id' => 'close',
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Close', MS_TEXT_DOMAIN ),
+					'class' => 'ms-link-button ms-close-button',
 			),
-			'submit_gateway' => array(
-					'id' => 'submit_gateway',
+			'activate' => array(
+					'id' => 'activate',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+					'value' => __( 'Activate', MS_TEXT_DOMAIN ),
 			),
 		);
 	}

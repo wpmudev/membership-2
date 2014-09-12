@@ -66,12 +66,11 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function column_name( $item ) {
 		$html = sprintf( '<div>%s %s</div>', $item->name, $item->description );
 		$actions = array(
-				sprintf( '<a href="?page=%s&tab=%s&gateway_id=%s&action=%s">%s</a>',
-						MS_Controller_Plugin::MENU_SLUG . '-settings',
-						'gateway',
+				sprintf( '<a class="thickbox" href="?admin.php#TB_inline&width=%s&height=%s&inlineId=ms-gateway-settings-%s">%s</a>',
+						'500',
+						'700',
 						$item->id,
-						'edit',
-						__('Settings', MS_TEXT_DOMAIN )
+						__( 'Configure', MS_TEXT_DOMAIN )
 				),
 				sprintf( '<a href="?page=%s&gateway_id=%s">%s</a>',
 						MS_Controller_Plugin::MENU_SLUG . '-billings',
@@ -99,13 +98,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 		$html .= MS_Helper_Html::html_input( $toggle, true );
 		
-		$html .= sprintf( '<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="?page=%s&tab=%s&gateway_id=%s&action=%s&width=%s&height=%s&TB_iframe=true">%s</a></div>',
-				MS_Controller_Plugin::MENU_SLUG . '-settings',
-				'gateway',
-				$item->id,
-				'edit',
+		$html .= sprintf( '<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="?admin.php#TB_inline&width=%s&height=%s&inlineId=ms-gateway-settings-%s">%s</a></div>',
 				'500',
 				'700',
+				$item->id,
 				__( 'Configure', MS_TEXT_DOMAIN )
 		);
 		$html .= "</div>";

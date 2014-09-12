@@ -68,4 +68,8 @@ jQuery( document ).ready( function( $ ) {
 	
 	ms_functions.payment_type( $( '.ms-payment-type' ) );
 	ms_functions.is_free();
+	
+	$( '.ms-close-button' ).click(function(){
+		self.parent.tb_remove();
+	});
 });

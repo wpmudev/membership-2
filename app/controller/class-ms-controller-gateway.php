@@ -44,7 +44,8 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
 		
 		$this->add_action( 'ms_controller_settings_admin_settings_manager_gateway', 'gateway_settings_manager' );
-		$this->add_filter( 'ms_controller_settings_gateway_edit_view', 'gateway_settings_edit' );
+// 		$this->add_filter( 'ms_controller_settings_gateway_edit_view', 'gateway_settings_edit' );
+		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
 		
 		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
@@ -146,34 +147,33 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 */
-	public function gateway_settings_edit( $view ) {
-		if ( ! empty( $_GET['gateway_id'] ) ) {
-			$gateway_id = $_GET['gateway_id'];
-			if( MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
-				switch( $gateway_id ) {
-					case MS_Model_Gateway::GATEWAY_MANUAL:
-						$view = new MS_View_Gateway_Manual_Settings();
-						break;
-					case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
-					case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
-						$view = new MS_View_Gateway_Paypal_Settings();
-						break;
-					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-						$view = new MS_View_Gateway_Authorize_Settings();
-						break;
-					case MS_Model_Gateway::GATEWAY_STRIPE:
-						$view = new MS_View_Gateway_Stripe_Settings();
-						break;
-					default:
-						$view = new MS_View_Gateway_Settings();
-						break;
-				}
-				$data = array();
-				$data['model'] = MS_Model_Gateway::factory( $gateway_id );
-				$data['action'] = $_GET['action'];
-				$view->data = apply_filters( 'ms_view_gateway_settings_edit_data', $data );
+	public function gateway_settings_edit( $gateway_id ) {
+		if( ! empty( $gateway_id ) && MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
+			switch( $gateway_id ) {
+				case MS_Model_Gateway::GATEWAY_MANUAL:
+					$view = new MS_View_Gateway_Manual_Settings();
+					break;
+				case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
+				case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
+					$view = new MS_View_Gateway_Paypal_Settings();
+					break;
+				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					$view = new MS_View_Gateway_Authorize_Settings();
+					break;
+				case MS_Model_Gateway::GATEWAY_STRIPE:
+					$view = new MS_View_Gateway_Stripe_Settings();
+					break;
+				default:
+					$view = new MS_View_Gateway_Settings();
+					break;
 			}
-			return apply_filters( 'ms_view_gateway_settings_edit', $view, $gateway_id ); ;
+			$data = array();
+			$data['model'] = MS_Model_Gateway::factory( $gateway_id );
+			$data['action'] = 'edit';
+
+			$view->data = apply_filters( 'ms_view_gateway_settings_edit_data', $data );
+			$view = apply_filters( 'ms_view_gateway_settings_edit', $view, $gateway_id ); ;
+			$view->render();
 		}
 	}
 	
