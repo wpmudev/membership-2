@@ -101,6 +101,10 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 
 		$contents = array();
 		foreach( $cpts as $key => $content ) {
+			if( ! empty( $args['protected_content'] ) && ! $this->has_rule( $key ) ) {
+				continue;
+			}
+				
 			$contents[ $key ] = new StdClass();
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->name = $content;

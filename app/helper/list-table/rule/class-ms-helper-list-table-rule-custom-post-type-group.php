@@ -33,7 +33,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 			
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-			'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+			'id' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
 	}
@@ -48,14 +48,25 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
-			case 'name':
-				$html = $item->id;
-				break;
 			default:
-				$html = print_r( $item, true ) ;
+				$html = $item->$column_name;
 				break;
 		}
 		return $html;
 	}
 
+	public function prepare_items() {
+	
+		$args = null;
+		if( ! empty( $_GET['status'] ) ) {
+			$args['rule_status'] = $_GET['status'];
+		}
+	
+		if( ! $this->model->visitor_membership ) {
+			$args['protected_content'] = 1;
+		}
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
+	
+		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+	}
 }
