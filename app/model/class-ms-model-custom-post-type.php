@@ -34,6 +34,8 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	
 	protected $user_id;
 	
+	protected $parent_id;
+	
 	protected $post_modified;
 	
 	public $ignore_fields = array( 'actions', 'filters', 'ignore_fields', 'post_type' );
