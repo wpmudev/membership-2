@@ -94,7 +94,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
-							'rule_value' => 0,
+							'rule_value' => 1,
 							'_wpnonce' => $nonce,
 							'action' => $action,
 						),
@@ -111,7 +111,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-								'rule_value' => 0,
+								'rule_value' => 1,
 								'_wpnonce' => $nonce,
 								'action' => $action,
 						),
@@ -327,7 +327,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
-					'value' => $rule_comment->get_rule_value(),
+					'value' => $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ),
 					'field_options' => $rule_comment->get_content_array(),
 					'class' => 'chosen-select',
 					'data_ms' => array(
@@ -343,7 +343,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-					'value' => $rule_more_tag->has_access( MS_Model_Rule_More::CONTENT_ID ) ? 0 : 1,
+					'value' => $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
 					'field_options' => $rule_more_tag->get_options_array(),
 					'class' => '',
 					'data_ms' => array(

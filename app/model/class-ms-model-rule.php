@@ -233,10 +233,16 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( 'ms_model_rule_has_rule', $has_rule, $id, $this->rule_value );	
 	}
 	
+	public function get_rule_value( $id ) {
+		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $this->rule_value_default;
+		return apply_filters( 'ms_model_rule_get_rule_value', $value, $id, $this->rule_value );
+		
+	}
+	
 	/**
 	 * Verify access to the current asset.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0
 	 * 
 	 * @param $id The item id to verify access.
 	 * @return boolean True if has access, false otherwise.
@@ -245,12 +251,7 @@ class MS_Model_Rule extends MS_Model {
 		$has_access = false;
 		
 		if( ! empty( $id ) ) {
-			if( isset( $this->rule_value[ $id ] ) ) {
-				$has_access = $this->rule_value[ $id ];
-			}
-			else {
-				$has_access = $this->rule_value_default;
-			}
+ 			$has_access = $this->get_rule_value( $id );
 		}
 		
 		if( $this->rule_value_invert ) {
@@ -452,12 +453,8 @@ class MS_Model_Rule extends MS_Model {
 		$has_access = $this->validate_bool( $has_access );
 		
 		$this->rule_value[ $id ] = $has_access;
-		if( $this->rule_value_invert ) {
-			if( $this->rule_value[ $id ] ) {
-				unset( $this->rule_value[ $id ] );
-			}
-		}
 	}
+	
 	public function give_access( $id ) {
 		$this->set_access( $id, true );
 	}

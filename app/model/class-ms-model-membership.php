@@ -268,6 +268,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			if( $this->visitor_membership ) {
 				$this->rules[ $rule_type ]->rule_value_invert = true;
+				$this->rules[ $rule_type ]->rule_value_default = false;
 			}
 			return $this->rules[ $rule_type ];
 		}
@@ -347,7 +348,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		);
 		$args = wp_parse_args( $args, $defaults );
 
-		if( empty( $arg['visitor'] ) ){
+		if( empty( $args['include_visitor'] ) ){
 			$args['meta_query']['active'] = array(
 				'key'     => 'visitor_membership',
 				'value'   => '',

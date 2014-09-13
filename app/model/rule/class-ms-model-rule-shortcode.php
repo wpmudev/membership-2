@@ -32,6 +32,18 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	protected $membership_id = 0;
 	
 	/**
+	 * Verify access to the current asset.
+	 *
+	 * @since 1.0
+	 *
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_access( $id = null ) {
+		return false;
+	}
+	
+	/**
 	 * Set initial protection.
 	 * 
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.

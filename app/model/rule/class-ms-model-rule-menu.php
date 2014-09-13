@@ -28,6 +28,18 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_MENU;
 	
 	/**
+	 * Verify access to the current asset.
+	 *
+	 * @since 1.0
+	 *
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_access( $id = null ) {
+		return false;
+	}
+	
+	/**
 	 * Set initial protection.
 	 */
 	public function protect_content( $menu_id = null ) {

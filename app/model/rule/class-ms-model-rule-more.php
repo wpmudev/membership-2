@@ -31,7 +31,17 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	
 	protected $protection_message;
 	
-	
+	/**
+	 * Verify access to the current asset.
+	 * 
+	 * @since 1.0
+	 * 
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_access( $id = null ) {
+		return false;
+	}
 	
 	/**
 	 * Set initial protection.
@@ -39,7 +49,8 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	public function protect_content( $membership_relationship = false ) {
 		$this->protection_message = MS_Plugin::instance()->settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG );
 		
-		if( parent::has_access( self::CONTENT_ID ) ) {
+		if( ! parent::has_access( self::CONTENT_ID ) ) {
+			MS_Helper_Debug::log("more NOT have access " );
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
 			$this->add_filter( 'the_content_feed', 'replace_moretag_content', 1 );
@@ -76,8 +87,8 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	
 	public function get_options_array( $args = null ) {
 		$contents = array(
-			1 => __( 'Yes', MS_TEXT_DOMAIN ),
-			0 => __( 'No', MS_TEXT_DOMAIN ),
+			true => __( 'Yes', MS_TEXT_DOMAIN ),
+			false => __( 'No', MS_TEXT_DOMAIN ),
 		);
 		
 		return apply_filters( 'ms_model_rule_more_get_content_array', $contents );

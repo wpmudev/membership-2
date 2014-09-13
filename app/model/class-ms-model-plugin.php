@@ -74,14 +74,17 @@ class MS_Model_Plugin extends MS_Model {
 		
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		
-		/** Protected Content: assign Visitor Membership to all users */
-		$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
-
 		/** Admin user simulating membership */
 		if( MS_Model_Member::is_admin_user() ) {
 			if( $simulate->is_simulating() ) {
 				$this->member->add_membership( $simulate->membership_id );
 				$simulate->start_simulation();
+			}
+		}
+		else {
+			/** Visitor: assign a Visitor Membership = Protected Content */
+			if( ! $this->member->is_member() ){
+				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 		}
 	}

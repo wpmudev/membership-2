@@ -42,6 +42,18 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	protected $ms_relationship;
 	
 	/**
+	 * Verify access to the current asset.
+	 *
+	 * @since 1.0
+	 *
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_access( $id = null ) {
+		return false;
+	}
+	
+	/**
 	 * Get the protection type available.
 	 * 
 	 * @since 4.0.0

@@ -34,6 +34,18 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	const RULE_VALUE_WRITE = 2;
 	
 	/**
+	 * Verify access to the current asset.
+	 *
+	 * @since 1.0
+	 *
+	 * @param $id The item id to verify access.
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_access( $id = null ) {
+		return false;
+	}
+	
+	/**
 	 * Set initial protection.
 	 */
 	public function protect_content( $membership_relationship = false ) {
@@ -89,14 +101,6 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		);
 		
 		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents );
-	}
-	
-	public function get_rule_value() {
-		$value = null;
-		if( isset( $this->rule_value[ self::CONTENT_ID ] ) ) {
-			$value = $this->rule_value[ self::CONTENT_ID ];
-		}
-		return apply_filters( 'ms_model_rule_comment_get_rule_value', $value );
 	}
 	
 	public function set_access( $id, $rule_value ) {
