@@ -160,7 +160,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 				
-		$memberships = MS_Model_Membership::get_memberships();
+		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 		if ( $simulate->is_simulating() ) {	
 			$reset_simulation = (object) array(
 					'id' => 0,
@@ -217,8 +217,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$admin_url_func = $this->admin_url_function;
 		
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
-		$memberships = MS_Model_Membership::get_memberships();
-
+		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
+		
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 
 		$select_options = array();
@@ -291,7 +291,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		$admin_url_func = $this->admin_url_function;
 
-		$memberships = MS_Model_Membership::get_memberships();
+		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 		$id = ! empty( $memberships ) ? $memberships[0]->id : false;
 
 		if ( $id ) {
@@ -331,7 +331,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		$admin_url_func = $this->admin_url_function;
 		
-		$memberships = MS_Model_Membership::get_memberships();
 		$id = 0;
 
 			$link_url = wp_nonce_url( 
@@ -482,8 +481,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				: 'admin_url';
 		
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
-				
-		$memberships = MS_Model_Membership::get_memberships();
+
+		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 		if ( $simulate->is_simulating() ) {	
 			$reset_simulation = (object) array(
 					'id' => 0,

@@ -85,7 +85,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$user->delete_all_membership_usermeta();
 			$user->save();
 		}
-		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => -1, 'visitor' => 1 ) );
+		$memberships = MS_Model_Membership::get_memberships( array( 'posts_per_page' => -1, 'include_visitor' => 1 ) );
 		foreach( $memberships as $membership ) {
 			$membership->delete( true );
 		}

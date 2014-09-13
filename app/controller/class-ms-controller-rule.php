@@ -299,6 +299,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Save new 'dripped content' schedule(s).
 	 *
+	 * @deprecated
 	 * @since 4.0.0
 	 *
 	 * @param mixed[] $items The item ids which action will be taken.
@@ -343,6 +344,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Coppy 'dripped content' schedule from one Membership to another.
 	 *
+	 * @deprecated
 	 * @since 4.0.0
 	 *
 	 * @param int $copy_from_id The Membership ID to copy from.
