@@ -92,6 +92,12 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
+		
+		/** show all content instead of protected only @todo review this */
+		if( MS_Controller_Membership::STEP_SETUP_DRIPPED ) {
+			$args['show_all'] = 1;
+		}
+		
 		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 		
 		$this->set_pagination_args( array(

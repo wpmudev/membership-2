@@ -519,6 +519,10 @@ class MS_Model_Rule extends MS_Model {
 			}
 			unset( $args['post__not_in'] );
 		}
+		if( ! empty( $args['show_all'] ) ) {
+			unset( $args['post__in'] );
+			unset( $args['post__not_in'] );
+		}
 	
 		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
 	}
