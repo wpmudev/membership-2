@@ -92,10 +92,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 				$post_id  = $this->get_current_post_id();
 			}
 			if( ! empty( $post_id ) ) {
-				if( in_array( get_post_type( $post_id ), MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types() ) ) {
+				$post_type =  get_post_type( $post_id ); 
+				if( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types() ) ) {
 					$has_access = true;
 				}
-				else {
+				elseif( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
 					$has_access = parent::has_access( $post_id  );
 				}
 			}
