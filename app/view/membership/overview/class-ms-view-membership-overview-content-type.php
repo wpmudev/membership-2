@@ -21,28 +21,30 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 						) );
 					?>
 				</div>
-				<div class='ms-wrap wrap'>
-					<div class="ms-tabs-title">
-						<span class="ms-tabs"><?php _e( 'Content Type:', MS_TEXT_DOMAIN );?></span>
-						<span><?php _e( 'Accessible Content:', MS_TEXT_DOMAIN );?></span>
+				<?php if( $this->data['child_membership']->is_valid() ): ?>
+					<div class='ms-wrap wrap'>
+						<div class="ms-tabs-title">
+							<span class="ms-tabs"><?php _e( 'Content Type:', MS_TEXT_DOMAIN );?></span>
+							<span><?php _e( 'Accessible Content:', MS_TEXT_DOMAIN );?></span>
+						</div>
+						<?php
+							$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] );
+						?>
 					</div>
-					<?php
-						$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] );
-					?>
-				</div>
-				<div class='ms-settings'>
-					<?php 
-						$membership = $this->data['child_membership'];
-						$visitor_membership = MS_Model_Membership::get_visitor_membership();
-						$rule_types = MS_Model_Rule::get_rule_types();
-						foreach( $rule_types as $rule_type ) {
-							if( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
-								$this->content_box( $membership->get_rule( $rule_type ) );
-							}
-						} 
-					
-					?>
-				</div>
+					<div class='ms-settings'>
+						<?php 
+							$membership = $this->data['child_membership'];
+							$visitor_membership = MS_Model_Membership::get_visitor_membership();
+							$rule_types = MS_Model_Rule::get_rule_types();
+							foreach( $rule_types as $rule_type ) {
+								if( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
+									$this->content_box( $membership->get_rule( $rule_type ) );
+								}
+							} 
+						
+						?>
+					</div>
+				<?php endif; ?>
 			</div>
 		<?php 
 	}
