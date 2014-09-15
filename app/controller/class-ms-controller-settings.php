@@ -460,8 +460,18 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function enqueue_scripts() {
-		wp_register_script( 'ms-view-settings', MS_Plugin::instance()->url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), MS_Plugin::instance()->version );
-		wp_enqueue_script( 'ms-view-settings' );
+		$plugin_url = MS_Plugin::instance()->url;
+		$version = MS_Plugin::instance()->version;
+		
 		wp_enqueue_script( 'ms-radio-slider' );
+		
+		wp_register_script( 'ms-view-settings', $plugin_url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), $version );
+		wp_enqueue_script( 'ms-view-settings' );
+		
+		switch( $this->get_active_tab() ) {
+			case 'payment':
+				wp_enqueue_script( 'ms-view-settings-payment' );
+				break;
+		}		
 	}
 }

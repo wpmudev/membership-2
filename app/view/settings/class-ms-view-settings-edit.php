@@ -252,7 +252,7 @@ class MS_View_Settings_Edit extends MS_View {
 		<div class='ms-settings'>
 			<div id="ms-payment-settings-wrapper">
 			<?php 
-				$view = MS_Factory::create( 'MS_View_Gateway_Global' );
+				$view = MS_Factory::create( 'MS_View_Settings_Payment' );
 				$view->render();
 			?>
 			</div>

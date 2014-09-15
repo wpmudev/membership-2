@@ -1,5 +1,5 @@
 jQuery( document ).ready( function( $ ) {
-	
+
 	var ms_functions = {
 		feedback: function( obj ) {
 			var data = [], save_obj_selector = '.ms-save-text-wrapper', processing_class = 'ms-processing', init_class = 'ms-init';
@@ -26,41 +26,18 @@ jQuery( document ).ready( function( $ ) {
 				});
 			}
 		},
-		payment_type: function( obj ) {
-			$( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
-			payment_type = $( obj ).val();
-			$( obj ).parent().parent().find( '.ms-payment-type-' + payment_type).show();
-			
-			after_end = $( obj ).parent().parent().find( '.ms-after-end-wrapper' );
-			if( 'permanent' == payment_type ) {
-				after_end.hide();
-			}
-			else {
-				after_end.show();
-			}
-		},
-		is_free: function() {
-			if( 1 == $( 'input[name="is_free"]:checked' ).val() ) {
-				$( '#ms-payment-settings-wrapper' ).show();
-			}
-			else {
-				$( '#ms-payment-settings-wrapper' ).hide();
-			}
-			
-		}
 	}
-
+	$( '.chosen-select' ).chosen({disable_search_threshold: 5});
+	
+	$( '#currency' ).chosen().change( function() { ms_functions.feedback( this ) } ); 
+	
+	$( 'input.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
+	
 	$( '.ms-datepicker' ).datepicker({
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format
     });
 	
-	$( 'input[name="is_free"]' ).change( function() { ms_functions.is_free() } );
-
-	$( '.ms-payment-type').change( function() { ms_functions.payment_type( this ) } );
-
-	ms_functions.payment_type( $( '.ms-payment-type' ) );
-	ms_functions.is_free();
-	
-
-	
+	$( '.ms-close-button' ).click( function(){
+		self.parent.tb_remove();
+	});
 });

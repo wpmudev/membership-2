@@ -103,7 +103,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 // 			return;
 		}
 		
-		$view = MS_Factory::create( 'MS_View_Gateway_Global' );
+		$view = MS_Factory::create( 'MS_View_Settings_Payment' );
 		$view->render();
 	}
 	
