@@ -520,7 +520,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return boolean 
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
-		
 		$has_access = false;
 		if( $this->active ) {
 			/** If 'has access' is found in the hierarchy, it does have access. */
@@ -533,12 +532,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 			
 			/**
-			 * Search for the following dripped rules.
+			 * Search for dripped rules.
 			 */
-			$dripped = apply_filters( 'ms_model_membership_has_access_to_current_page_dripped_rules', array(
-					MS_Model_Rule::RULE_TYPE_PAGE,
-					MS_Model_Rule::RULE_TYPE_POST
-			) );
+			$dripped = MS_Model_Rule::get_dripped_rule_types();
 			
 			/**
 			 * Verify membership dripped rules hierachyly.
@@ -547,7 +543,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			foreach( $dripped as $rule_type ) {
 				$rule = $this->get_rule( $rule_type );
 				if( $rule->has_dripped_rules( $post_id ) ) {
-					$has_access = $rule->has_dripped_access( $ms_relationship->start_date, $post_id );
+					$has_access = $rule->has_dripped_access( $ms_relationship->start_date, $post_id, $this->dripped_type );
 				}
 			}
 		}

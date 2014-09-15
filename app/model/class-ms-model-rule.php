@@ -143,6 +143,15 @@ class MS_Model_Rule extends MS_Model {
 		) );
 	}
 	
+	public static function get_dripped_rule_types() {
+		$dripped = array(
+			MS_Model_Rule::RULE_TYPE_PAGE,
+			MS_Model_Rule::RULE_TYPE_POST
+		);
+		
+		return apply_filters( 'ms_model_rule_get_dripped_rule_types', $dripped );
+	}
+	
 	public static function get_dripped_types() {
 		return apply_filters( 'ms_model_rule_get_dripped_types', array(
 				self::DRIPPED_TYPE_SPEC_DATE => __( "Reveal Dripped Content on specific dates", MS_TEXT_DOMAIN ),
@@ -261,38 +270,50 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( 'ms_model_rule_has_access', $has_access, $id );
 	}
 	
+	public function get_dripped_type() {
+		$dripped_type = self::DRIPPED_TYPE_SPEC_DATE;
+		if( ! empty( $this->dripped['dripped_type'] ) ) {
+			$dripped_type = $this->dripped['dripped_type'];
+		}
+		return apply_filters( 'ms_model_rule_get_dripped_type', $dripped_type );
+	}
+	
 	/**
 	 * Verify if has dripped rules.
 	 * @return boolean
 	 */
 	public function has_dripped_rules( $id = null ) {
 		$has_dripped = false;
-		foreach( self::get_dripped_types() as $dripped_type => $title ) {
-			if( ! empty( $id ) && ! empty( $this->dripped[ $dripped_type ][ $id ] ) > 0) {
-				$has_dripped = true;
-				break;
-			}
-			elseif( ! empty( $this->dripped[ $dripped_type ] ) > 0 ) {
-				$has_dripped = true;
-				break;
-			}
+		$dripped_type = $this->get_dripped_type();
+		
+		if( ! empty( $id ) && ! empty( $this->dripped[ $dripped_type ][ $id ] ) ) {
+			$has_dripped = true;
 		}
+
 		return apply_filters( 'ms_model_rule_has_dripped_rules', $has_dripped );
 	}
 		
 	/**
 	 * Verify access to dripped content.
-	 * @param $id The content id to verify dripped acccess. 
+	 * 
+	 * The MS_Helper_Period::current_date may be simulating a date.
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param $start_date The start date of the member membership.
+	 * @param $id The content id to verify dripped acccess. 
 	 */
 	public function has_dripped_access( $start_date, $id ) {
 		$has_dripped_access = false;
 		
-		$avail_date = $this->get_dripped_avail_date( $id );
+		$avail_date = $this->get_dripped_avail_date( $id, $start_date );
 		$now = MS_Helper_Period::current_date();
 		if( strtotime( $now ) >= strtotime( $avail_date ) ) {
 			$has_dripped_access = true;
 		}
+		
+		$has_access = $this->has_access( $id );
+		$has_dripped_access = $has_dripped_access && $has_access;
 		
 		return apply_filters( 'ms_model_rule_has_dripped_access', $has_dripped_access );
 	}
@@ -330,13 +351,10 @@ class MS_Model_Rule extends MS_Model {
 		}
 	}
 	
-	public function get_dripped_avail_date( $id ) {
+	public function get_dripped_avail_date( $id, $start_date = null ) {
 		$avail_date = MS_Helper_Period::current_date();
 		
-		$dripped_type = self::DRIPPED_TYPE_SPEC_DATE;
-		if( ! empty( $this->dripped['dripped_type'] ) ) {
-			$dripped_type = $this->dripped['dripped_type'];
-		}
+		$dripped_type = $this->get_dripped_type();
 
 		switch( $dripped_type ) {
 			case self::DRIPPED_TYPE_SPEC_DATE:
@@ -349,10 +367,12 @@ class MS_Model_Rule extends MS_Model {
 				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $modified );
 				break;
 			case self::DRIPPED_TYPE_FROM_REGISTRATION:
-				$modified = MS_Helper_Period::current_date( null, false );
+				if( empty( $start_date ) ) {
+					$start_date = MS_Helper_Period::current_date( null, false ); 
+				}
 				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
 				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
-				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $modified );
+				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $start_date );
 				break;
 						
 		}	
