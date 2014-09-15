@@ -87,7 +87,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		}
 	
 		foreach( (array) $terms as $key => $term ) {
-			if( $term->taxonomy == 'category' ) { 
+			if( ! empty( $term->taxonomy ) && 'category' == $term->taxonomy ) { 
 				if ( parent::has_access( $term->term_id ) ) {
 					$new_terms[ $key ] = $term;
 				}
