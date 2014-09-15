@@ -63,7 +63,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	}
 	
 	public function simulate_period() {
-		$this->add_filter( 'membership_helper_period_current_date', 'simulate_period_filter' );
+		$this->add_filter( 'ms_helper_period_current_date', 'simulate_period_filter' );
 	}
 	
 	public function simulate_period_filter( $current_date ) {
@@ -78,7 +78,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	}
 	
 	public function simulate_date() {
-		$this->add_filter( 'membership_helper_period_current_date', 'simulate_date_filter' );
+		$this->add_filter( 'ms_helper_period_current_date', 'simulate_date_filter' );
 	}
 	
 	public function simulate_date_filter( $current_date ) {
@@ -92,7 +92,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		$this->membership_id = 0;
 		$this->date = null;
 		$this->period = null;
-		$this->remove_filter( 'membership_helper_period_current_date', 'simulate_date_filter' );
+		$this->remove_filter( 'ms_helper_period_current_date', 'simulate_date_filter' );
 		$this->save();
 	}
 	
