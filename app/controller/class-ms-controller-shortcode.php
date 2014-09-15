@@ -129,12 +129,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 		
 		/** Only public memberships when add-on is enabled. */
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
-			$args['meta_query']['public'] = array(
-				'key'     => 'public',
-				'value'   => true,
+			$args['meta_query']['private'] = array(
+				'key'     => 'private',
+				'value'   => '',
 			); 
 		}
-		
+			
 		/** Retrieve memberships user is not part of, using selected args */
 		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
 		

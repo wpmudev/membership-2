@@ -349,7 +349,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$args = wp_parse_args( $args, $defaults );
 
 		if( empty( $args['include_visitor'] ) ){
-			$args['meta_query']['active'] = array(
+			$args['meta_query']['visitor'] = array(
 				'key'     => 'visitor_membership',
 				'value'   => '',
 			); 
