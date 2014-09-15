@@ -26,18 +26,36 @@ jQuery( document ).ready( function( $ ) {
 				});
 			}
 		},
+		close_gateway_settings: function() {
+			self.parent.tb_remove();
+		},
 	}
 	$( '.chosen-select' ).chosen({disable_search_threshold: 5});
 	
 	$( '#currency' ).chosen().change( function() { ms_functions.feedback( this ) } ); 
 	
-	$( 'input.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
+	$( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
 	
 	$( '.ms-datepicker' ).datepicker({
         dateFormat : 'yy-mm-dd' //TODO get wp configured date format
     });
 	
-	$( '.ms-close-button' ).click( function(){
-		self.parent.tb_remove();
+	$( '.ms-gateway-setings-form' ).each( function(){
+		$( this ).validate({
+			onkeyup: false,
+			errorClass: 'ms-validation-error',
+			submitHandler: function( form ) {
+				gateway = $( form ).data( 'ms');
+				
+				console.log( gateway );
+				ms_functions.close_gateway_settings();
+				wrapper = '.ms-active-wrapper-' + gateway;
+				console.log( wrapper );
+				$( wrapper ).removeClass( 'ms-gateway-not-configured' );
+				$( wrapper ).addClass( 'ms-gateway-configured' ); 
+			}
+		});
 	});
+	
+	$( '.ms-close-button' ).click( ms_functions.close_gateway_settings );
 });

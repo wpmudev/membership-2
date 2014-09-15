@@ -282,7 +282,7 @@ class MS_Helper_Html extends MS_Helper {
 			</div>
 		<?php 
 	}
-	public static function settings_footer( $args = null, $merge_fields = true, $wizard_mode = true ) {
+	public static function settings_footer( $args = null, $merge_fields = true, $hide_next_button = false ) {
 		$action = 'next';
 		$nonce = wp_create_nonce( $action );
 		$defaults = array(
@@ -306,13 +306,8 @@ class MS_Helper_Html extends MS_Helper {
 				),
 			),
 		);
-		if( ! $wizard_mode ) {
-// 			unset( $defaults['fields']['next'] );
-// 			$defaults['fields']['save'] = array(
-// 					'id' => 'save',
-// 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-// 					'value' => __( 'Save and continue', MS_TEXT_DOMAIN ),
-// 			);
+		if( $hide_next_button ) {
+			unset( $defaults['fields']['next'] );
 		}
 		
 		$args = wp_parse_args( $args, $defaults );

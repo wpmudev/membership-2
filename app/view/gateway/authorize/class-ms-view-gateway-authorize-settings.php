@@ -8,13 +8,14 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 	
 	public function to_html() {
 		$this->prepare_fields();
+		$gateway = $this->data['model'];
 		ob_start();
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
 				<div class='ms-settings'>
-					<h2><?php echo $this->data['model']->name;?> settings</h2>
-					<form action="<?php echo remove_query_arg( array( 'action', 'gateway_id' ) ); ?>" method="post" class="ms-form">
+					<h2><?php echo sprintf( __( '%s settings', MS_TEXT_DOMAIN ), $gateway->name ); ?></h2>
+					<form class="ms-gateway-setings-form ms-form" data-ms="<?php echo $gateway->id;?>">
 						<?php
 							MS_Helper_Html::settings_box(
 								$this->fields, 
@@ -33,61 +34,75 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 	}
 	
 	function prepare_fields() {
-		$model = $this->data['model'];
+		$gateway = $this->data['model'];
+		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
+		$nonce = wp_create_nonce( $action );
+		
 		$this->fields = array(
 			'mode' => array(
 					'id' => 'mode',
 					'title' => __( 'Mode', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'value' => $model->mode,
-					'field_options' => $model->get_mode_types(),
+					'value' => $gateway->mode,
+					'field_options' => $gateway->get_mode_types(),
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+							'gateway_id' => $gateway->id,
+							'field' => 'mode',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 			'api_login_id' => array(
 					'id' => 'api_login_id',
 					'title' => __( 'API Login ID', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->api_login_id,
+					'value' => $gateway->api_login_id,
+					'class' => 'required ms-ajax-update',
+					'data_ms' => array(
+							'gateway_id' => $gateway->id,
+							'field' => 'api_login_id',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 			'api_transaction_key' => array(
 					'id' => 'api_transaction_key',
 					'title' => __( 'API Transaction Key', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->api_transaction_key,
+					'value' => $gateway->api_transaction_key,
+					'class' => 'required ms-ajax-update',
+					'data_ms' => array(
+							'gateway_id' => $gateway->id,
+							'field' => 'api_transaction_key',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 			'pay_button_url' => array(
 					'id' => 'pay_button_url',
 					'title' => __( 'Payment button', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $model->pay_button_url,
-			),
-			'_wpnonce' => array(
-					'id' => '_wpnonce',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => wp_create_nonce( $this->data['action'] ),
-			),
-			'action' => array(
-					'id' => 'action',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $this->data['action'],
-			),
-			'gateway_id' => array(
-					'id' => 'gateway_id',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $model->id,
+					'value' => $gateway->pay_button_url,
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+							'gateway_id' => $gateway->id,
+							'field' => 'pay_button_url',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 			'separator' => array(
 					'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),
-			'cancel' => array(
-					'id' => 'cancel',
-					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'title' => __('Cancel', MS_TEXT_DOMAIN ),
-					'value' => __('Cancel', MS_TEXT_DOMAIN ),
-					'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
-					'class' => 'ms-link-button button',
+			'close' => array(
+					'id' => 'close',
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Close', MS_TEXT_DOMAIN ),
+					'class' => 'ms-link-button ms-close-button',
 			),
-			'submit_gateway' => array(
-					'id' => 'submit_gateway',
+			'save' => array(
+					'id' => 'save',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),

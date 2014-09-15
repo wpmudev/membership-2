@@ -470,6 +470,8 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		switch( $this->get_active_tab() ) {
 			case 'payment':
+				wp_enqueue_style( 'jquery-chosen' );
+				add_thickbox();
 				wp_enqueue_script( 'ms-view-settings-payment' );
 				break;
 		}		

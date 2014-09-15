@@ -85,7 +85,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function column_active( $item ) {
 
 		$class = $item->is_configured() ? 'ms-gateway-configured' : 'ms-gateway-not-configured';
-		$html = "<div class='$class'>";
+		$html = "<div class='$class ms-active-wrapper-{$item->id}'>";
 		$toggle = array(
 			'id' => 'ms-toggle-' . $item->id,
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,

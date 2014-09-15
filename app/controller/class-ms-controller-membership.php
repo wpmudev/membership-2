@@ -1123,6 +1123,7 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_SETUP_PAYMENT:
 				wp_enqueue_style( 'jquery-chosen' );
 				add_thickbox();
+				wp_enqueue_script( 'jquery-validate' );
 				wp_enqueue_script( 'ms-view-settings-payment' );
 				wp_enqueue_script( 'ms-view-membership-setup-payment',
 					$plugin_url. 'app/assets/js/ms-view-membership-setup-payment.js',

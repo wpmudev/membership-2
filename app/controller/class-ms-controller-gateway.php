@@ -33,6 +33,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	
 	const AJAX_ACTION_TOGGLE_GATEWAY = 'toggle_gateway';
 	
+	const AJAX_ACTION_UPDATE_GATEWAY = 'update_gateway';
+	
 	private $allowed_actions = array( 'update_card', 'purchase_button', 9 );
 	
 	/**
@@ -57,6 +59,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_GATEWAY, 'toggle_ajax_action' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_GATEWAY, 'ajax_action_update_gateway' );
 	}
 	
 	/**
@@ -89,11 +92,22 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function toggle_ajax_action() {
 		$msg = 0;
 		
-		if( $this->verify_nonce() && ! empty( $_POST['gateway_id'] ) && $this->is_admin_user() ) {
-			$gateway_id = $_POST['gateway_id'];
+		$fields = array( 'gateway_id' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$msg = $this->gateway_list_do_action( 'toggle_activation', array( $_POST['gateway_id'] ) );
 		}
 		
+		echo $msg;
+		exit;
+	}
+	
+	public function ajax_action_update_gateway() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+	
+		$fields = array( 'action', 'gateway_id', 'field' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && isset( $_POST['value'] ) && $this->is_admin_user() ) {
+			$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), array( $_POST['field'] => $_POST['value'] ) );
+		}
 		echo $msg;
 		exit;
 	}
@@ -201,6 +215,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					break;
 				case 'edit':
+				case 'update_gateway':
 					foreach( $fields as $field => $value ) {
 						$gateway->$field = $value;
 					}
