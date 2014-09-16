@@ -476,13 +476,15 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @return string Active tab.
 	 */	
-	public static function html_admin_vertical_tabs( $tabs ) {
+	public static function html_admin_vertical_tabs( $tabs, $active_tab = null ) {
 		
 		reset($tabs);
 		$first_key = key($tabs);
 
-		/** Setup navigation tabs. */		
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		/** Setup navigation tabs. */
+		if( empty( $active_tab ) ) {		
+			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		}
 		
 		if ( !array_key_exists( $active_tab, $tabs ) ) { $active_tab = $first_key; }
 		

@@ -320,6 +320,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
+		$data['active_tab'] = $this->get_active_tab();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
@@ -353,6 +354,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		$data['tabs'] = $this->get_accessible_content_tabs();
+		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();

@@ -23,8 +23,9 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					) ); 
 				?>
 				<?php
-					$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
-				
+					$active_tab = $this->data['active_tab']; 
+					MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
+
 					/** Call the appropriate form to render. */
 					$render_callback =  apply_filters( 'ms_view_membership_setup_protected_content_render_tab_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
 					call_user_func( $render_callback );
