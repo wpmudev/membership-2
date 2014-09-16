@@ -173,6 +173,9 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			case 'type_description':
 				$html = sprintf( '<div class="ms-type-desc ms-%s"><span>%s<span></div>', $item->type, $item->type_description );
 				break;
+			case 'payment_structure':
+				$html = $item->get_payment_type_desc();
+				break;
 			case 'price':
 				if( $item->can_have_children() ) {
 					$html = __( 'Varied', MS_TEXT_DOMAIN );	

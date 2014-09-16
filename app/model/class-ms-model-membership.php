@@ -148,6 +148,26 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
+	public function get_payment_type_desc() {
+		$desc = __( 'N/A', MS_TEXT_DOMAIN );
+		switch( $this->payment_type ) {
+			case self::PAYMENT_TYPE_PERMANENT:
+				$desc = __( 'Single payment', MS_TEXT_DOMAIN );
+				break;
+			case self::PAYMENT_TYPE_FINITE:
+				$desc = sprintf( __( 'For %s', MS_TEXT_DOMAIN ),  MS_Helper_Period::get_period_desc( $this->period ) );
+				break;
+			case self::PAYMENT_TYPE_DATE_RANGE:
+				$desc = sprintf( __( 'From %s to %s', MS_TEXT_DOMAIN ),  $this->period_date_start, $this->period_date_end );
+				break;
+			case self::PAYMENT_TYPE_RECURRING:
+				$desc = sprintf( __( 'Each %s', MS_TEXT_DOMAIN ),  MS_Helper_Period::get_period_desc( $this->pay_cycle_period ) );
+				break;
+					
+		}
+		return apply_filters( 'ms_model_membership_get_payment_type_desc', $desc );	
+	}
+	
 	public function has_parent() {
 		$has_parent = false;
 		

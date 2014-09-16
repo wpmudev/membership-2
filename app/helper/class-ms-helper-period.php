@@ -198,6 +198,23 @@ class MS_Helper_Period extends MS_Helper {
 		if( isset( $period[ $field ] ) ) {
 			$value = $period[ $field ];
 		}
+		elseif( 'period_unit' == $field ) {
+			$value = 0;
+		}
+		elseif( 'period_type' == $field ) {
+			$value = self::PERIOD_TYPE_DAYS;
+		}
 		return apply_filters( 'ms_helper_period_get_period_value', $value );
+	}
+	
+	public static function get_period_desc( $period ) {
+		$period_unit = MS_Helper_Period::get_period_value( $period, 'period_unit' );
+		$period_type = MS_Helper_Period::get_period_value( $period, 'period_type' );
+		if( abs( $period_unit < 2 ) ) {
+			$period_type = preg_replace( '/s$/', '', $period_type );
+		}  
+		$desc = sprintf( '%s %s', $period_unit, $period_type );
+		
+		return apply_filters( 'ms_helper_period_get_period_desc', $desc );
 	}
 }
