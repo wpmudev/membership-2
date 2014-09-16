@@ -99,8 +99,9 @@ class MS_Controller_Rule extends MS_Controller {
 	public function ajax_action_update_rule() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		
-		$required = array( 'membership_id', 'rule_type', 'rule_ids' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && isset( $_POST['rule_value'] ) ) {
+		$required = array( 'membership_id', 'rule_type' );
+		$isset = array( 'rule_ids', 'rule_value' );
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
 			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
 		}
 	
@@ -255,6 +256,7 @@ class MS_Controller_Rule extends MS_Controller {
 						break;
 				}
 			}
+//			MS_Helper_Debug::log($rule);
 			$membership->set_rule( $rule_type, $rule );
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
