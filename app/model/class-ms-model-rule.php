@@ -45,6 +45,10 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected $id;
+	
+	protected $membership_id;
+	
 	protected $rule_type;
 	
 	protected $rule_value = array();
@@ -57,6 +61,11 @@ class MS_Model_Rule extends MS_Model {
 	
 	protected $rule_value_invert = false;
 
+	public function __construct( $membership_id ) {
+		$this->membership_id = $membership_id;
+		parent::__construct();
+	}
+	
 	/**
 	 * Rule types.
 	 *
@@ -155,7 +164,7 @@ class MS_Model_Rule extends MS_Model {
 	public static function get_dripped_types() {
 		return apply_filters( 'ms_model_rule_get_dripped_types', array(
 				self::DRIPPED_TYPE_SPEC_DATE => __( "Reveal Dripped Content on specific dates", MS_TEXT_DOMAIN ),
-				self::DRIPPED_TYPE_FROM_TODAY => __( "Reveal Dripped Content 'X' days from today", MS_TEXT_DOMAIN ),
+// 				self::DRIPPED_TYPE_FROM_TODAY => __( "Reveal Dripped Content 'X' days from today", MS_TEXT_DOMAIN ),
 				self::DRIPPED_TYPE_FROM_REGISTRATION => __( "Reveal Dripped Content 'X' days from user registration", MS_TEXT_DOMAIN ),
 		) );
 	}
@@ -164,22 +173,24 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( 'ms_model_rule_is_valid_dripped_type', array_key_exists( $type, self::get_dripped_types() ) );
 	}
 	
-	public static function rule_factory( $rule_type ) {
+	public static function rule_factory( $rule_type, $membership_id) {
 		if( self::is_valid_rule_type( $rule_type ) ) {
 			$rule_types = self::get_rule_type_classes();
-			return apply_filters( 'ms_model_rule_rule_factory', new $rule_types[ $rule_type ]() );
+			$class = $rule_types[ $rule_type ];
+			$rule = new $class( $membership_id );
+			return apply_filters( 'ms_model_rule_rule_factory', $rule, $rule_type, $membership_id );
 		}
 		else {
 			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
 		}
 	}
 	
-	public static function rule_set_factory( $rules = null ) {
+	public static function rule_set_factory( $rules = null, $membership_id ) {
 		$rule_types = self::get_rule_type_classes();
 	
 		foreach( $rule_types as $type => $class ) {
-			if( empty( $rules[ $type ]) ) {
-				$rules[ $type ] = new $rule_types[ $type ]();
+			if( empty( $rules[ $type ] ) ) {
+				$rules[ $type ] = self::rule_factory( $type, $membership_id );
 			}
 		}
 	
@@ -348,7 +359,12 @@ class MS_Model_Rule extends MS_Model {
 			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters( 'ms_model_rule_set_dripped_value', $value, $dripped_type, $id, $field );
 			$this->dripped['dripped_type'] = $dripped_type;
 			$this->dripped['modified'] = MS_Helper_Period::current_date( null, false );
+
+			if( self::DRIPPED_TYPE_FROM_TODAY == $dripped_type ) {
+				$this->dripped[ $dripped_type ][ $id ]['avail_date'] = $this->get_dripped_avail_date( $id );
+			}
 		}
+		
 	}
 	
 	public function get_dripped_avail_date( $id, $start_date = null ) {
@@ -386,13 +402,14 @@ class MS_Model_Rule extends MS_Model {
 		}
 		
 		$total = $this->get_content_count( $args );
+		$contents = $this->get_contents( $args );
 		$count_accessible = 0;
 		$count_restricted = 0;
 		if( ! is_array( $this->rule_value ) ) {
 			$this->rule_value = array();
 		}
-		foreach( $this->rule_value as $id => $value ) {
-			if( $value ) {
+		foreach( $contents as $id => $content ) {
+			if( $content->access ) {
 				$count_accessible++;
 			}
 			else {
@@ -522,6 +539,7 @@ class MS_Model_Rule extends MS_Model {
 		if( ! empty( $args['show_all'] ) ) {
 			unset( $args['post__in'] );
 			unset( $args['post__not_in'] );
+			unset( $args['show_all'] );
 		}
 	
 		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
@@ -551,6 +569,11 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 		return $contents;
+	}
+	
+	public function get_membership() {
+		$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+		return apply_filters( 'ms_model_rule_get_membership', $membership );
 	}
 	
 	/**

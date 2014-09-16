@@ -284,7 +284,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		return apply_filters( 'ms_helper_list_table_rule_get_membership_id', $membership_id );
 	}
 	
-	public function get_views(){
+	public function get_views() {
 		$count = $this->model->count_item_access();
 		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
 		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );

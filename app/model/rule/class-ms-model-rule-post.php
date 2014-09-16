@@ -124,6 +124,19 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		return $post_id;
 	}
 
+	public function get_rule_value( $id ) {
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $this->rule_value_default;
+		}
+		else {
+			$membership = $this->get_membership();
+			$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
+			$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $rule_category->has_access( $id );
+		}
+		return apply_filters( 'ms_model_rule_post_get_rule_value', $value, $id, $this->rule_value );
+	
+	}
+	
 	/**
 	 * Verify access to the current post.
 	 * @return boolean
@@ -132,17 +145,20 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	
 		$has_access = false;
 		
+		if( empty( $post_id ) ) {
+			$post_id  = $this->get_current_post_id();
+		}
 		/**
 		 * Only verify permission if ruled by post by post.
 		 * @todo verify addon handling
 		 */
-// 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$has_access = false;
-			if( empty( $post_id ) ) {
-				$post_id  = $this->get_current_post_id();
-			}
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$has_access = parent::has_access( $post_id );
-// 		}
+		}
+		else {
+			$has_access = $this->get_rule_value( $post_id );
+		}
+
 		/**
 		 * Feed page request
 		 */
@@ -230,13 +246,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 
 			$content->access = self::has_access( $content->id );
 			
-			if( array_key_exists( $content->id, $this->dripped ) ) {
-				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
-				$content->dripped = $this->dripped[ $content->id ];
-			}
-			else {
-				$content->delayed_period = '';
-			}
+			$content->delayed_period = $this->has_dripped_rules( $content->id );
 			
 			$contents[ $content->id ] = $content;
 		}
@@ -258,6 +268,14 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				'post_type'   => 'post',
 				'post_status' => 'publish',
 		);
+		
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			$membership = $this->get_membership();
+			$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
+				
+			$args['category__in'] = array_keys( $rule_category->rule_value );
+			$args['tax_query'] = array( 'relation' => 'OR' );			
+		}
 		
 		$args = wp_parse_args( $args, $defaults );
 		$args = parent::get_query_args( $args );

@@ -276,7 +276,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			return $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		}
 		else {
-			$this->rules[ $rule_type ] = MS_Model_Rule::rule_factory( $rule_type );
+			$this->rules[ $rule_type ] = MS_Model_Rule::rule_factory( $rule_type, $this->id );
 			if( $this->visitor_membership ) {
 				$this->rules[ $rule_type ]->rule_value_invert = true;
 			}

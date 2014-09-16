@@ -16,20 +16,19 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					$visitor_membership = MS_Model_Membership::get_visitor_membership();
 					$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 					foreach( $rule_types as $rule_type ) {
-						if( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
-							$rule = $membership->get_rule( $rule_type );
-							foreach( $rule->rule_value as $id => $has_access ) {
-								if( $rule->has_dripped_rules( $id ) ) {
-									$content = array(
-											'title' => $rule->get_content( $id ),
-											'avail_date' => $rule->get_dripped_avail_date( $id ),
-									);
-									if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $id ) ) {
-										$available[] = $content;
-									}
-									else {
-										$soon[] = $content;
- 									}
+						$rule = $membership->get_rule( $rule_type );
+						$contents = $rule->get_contents( array( 'rule_status' => MS_Model_Rule::FILTER_DRIPPED ) );
+						foreach( $contents as $content ) {
+							if( $rule->has_dripped_rules( $content->id )  ) {
+								$content = array(
+										'title' => $rule->get_content( $id ),
+										'avail_date' => $rule->get_dripped_avail_date( $id ),
+								);
+								if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $id ) ) {
+									$available[] = $content;
+								}
+								else {
+									$soon[] = $content;
 								}
 							}
 						}

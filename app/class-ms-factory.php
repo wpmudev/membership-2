@@ -325,7 +325,7 @@ class MS_Factory {
 		$model = self::load( $class, $model_id );
 	
 		if( empty( $model->rules ) ) {
-			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules );
+			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules, $this->id );
 		}
 
 		return apply_filters( "ms_factory_load_membership", $model );
