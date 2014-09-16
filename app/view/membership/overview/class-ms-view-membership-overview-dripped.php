@@ -17,7 +17,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 					foreach( $rule_types as $rule_type ) {
 						$rule = $membership->get_rule( $rule_type );
-						$contents = $rule->get_contents();
+						$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 						foreach( $contents as $content ) {
 							if( $rule->has_dripped_rules( $content->id )  ) {
 								if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $content->id ) ) {
@@ -65,7 +65,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 			</tr>
 			<?php foreach( $contents as $id => $content ): ?>
 				<tr>
-					<td><?php echo $content->title; ?></td>
+					<td><?php echo $content->name; ?></td>
 					<td><?php echo $content->avail_date; ?></td>
 				</td>
 			<?php endforeach;?>

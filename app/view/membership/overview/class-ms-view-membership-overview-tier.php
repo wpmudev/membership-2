@@ -52,15 +52,15 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 	private function content_box( $rule ) {
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
-
+		$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 		?>
 			<div class="ms-overview-content-box-wrapper">
 				<div class="ms-title">
 					<?php echo sprintf( '%s (%s):', $title, $rule->count_rules() );;?>
 				</div>
-				<?php foreach( $rule->rule_value as $id => $has_access ): ?>
-					<?php if( $has_access ): ?>
-						<?php MS_Helper_Html::content_desc( $rule->get_content( $id ) ) ;?>
+				<?php foreach( $contents as $content ): ?>
+					<?php if( $content->access ): ?>
+						<?php MS_Helper_Html::content_desc( $content->name ) ;?>
 					<?php endif; ?>
 				<?php endforeach;?>
 				<div class="ms-protection-edit-wrapper">

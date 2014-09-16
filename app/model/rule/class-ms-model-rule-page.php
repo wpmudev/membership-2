@@ -181,7 +181,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
-			$content->title = $content->post_name;
+			$content->name = $content->post_name;
 			
 			$content->access = self::has_access( $content->id );
 				

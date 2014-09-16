@@ -229,7 +229,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_POST;
 			$content->access = false;
-			$content->title = $content->post_name;
+			$content->name = $content->post_name;
 				
 			$content->categories = array();
 			$cats = array();
