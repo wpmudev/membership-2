@@ -124,13 +124,15 @@ class MS_Controller_Rule extends MS_Controller {
 				$rule_ids = array( $rule_ids );
 			}
 			foreach( $rule_ids as $id ) {
-				if( is_array( $rule_values ) ) {
-					$rule_value = $rule_values[ $id ];
+				if( ! empty( $id ) ) {
+					if( is_array( $rule_values ) ) {
+						$rule_value = $rule_values[ $id ];
+					}
+					else{
+						$rule_value = $rule_values;
+					}
+					$rule->set_access( $id, $rule_value );
 				}
-				else{
-					$rule_value = $rule_values;
-				}
-				$rule->set_access( $id, $rule_value );
 			}
 			$membership->set_rule( $rule_type, $rule );
 			$membership->save();
