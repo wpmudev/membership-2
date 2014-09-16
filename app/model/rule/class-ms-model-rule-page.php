@@ -181,17 +181,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
+			$content->title = $content->post_name;
 			
 			$content->access = self::has_access( $content->id );
-			
-			if( array_key_exists( $content->id, $this->dripped ) ) {
-				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
-				$content->dripped = $this->dripped[ $content->id ];
-			}
-			else {
-				$content->delayed_period = '';
-			}
-			
+				
+			$content->delayed_period = $this->has_dripped_rules( $content->id );
+			$content->avail_date = $this->get_dripped_avail_date( $content->id );
+				
 			$contents[ $content->id ] = $content;
 		}
 		

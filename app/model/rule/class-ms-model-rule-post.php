@@ -229,6 +229,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_POST;
 			$content->access = false;
+			$content->title = $content->post_name;
 				
 			$content->categories = array();
 			$cats = array();
@@ -247,6 +248,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			$content->access = self::has_access( $content->id );
 			
 			$content->delayed_period = $this->has_dripped_rules( $content->id );
+			$content->avail_date = $this->get_dripped_avail_date( $content->id );
 			
 			$contents[ $content->id ] = $content;
 		}

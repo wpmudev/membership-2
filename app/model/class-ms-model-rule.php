@@ -536,7 +536,7 @@ class MS_Model_Rule extends MS_Model {
 			}
 			unset( $args['post__not_in'] );
 		}
-		if( ! empty( $args['show_all'] ) ) {
+		if( ! empty( $args['show_all'] ) || ! empty( $args['category__in'] ) ) {
 			unset( $args['post__in'] );
 			unset( $args['post__not_in'] );
 			unset( $args['show_all'] );

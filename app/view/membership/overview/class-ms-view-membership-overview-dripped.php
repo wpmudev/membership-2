@@ -17,14 +17,10 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 					foreach( $rule_types as $rule_type ) {
 						$rule = $membership->get_rule( $rule_type );
-						$contents = $rule->get_contents( array( 'rule_status' => MS_Model_Rule::FILTER_DRIPPED ) );
+						$contents = $rule->get_contents();
 						foreach( $contents as $content ) {
 							if( $rule->has_dripped_rules( $content->id )  ) {
-								$content = array(
-										'title' => $rule->get_content( $id ),
-										'avail_date' => $rule->get_dripped_avail_date( $id ),
-								);
-								if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $id ) ) {
+								if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $content->id ) ) {
 									$available[] = $content;
 								}
 								else {
@@ -69,8 +65,8 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 			</tr>
 			<?php foreach( $contents as $id => $content ): ?>
 				<tr>
-					<td><?php echo $content['title']; ?></td>
-					<td><?php echo $content['avail_date']; ?></td>
+					<td><?php echo $content->title; ?></td>
+					<td><?php echo $content->avail_date; ?></td>
 				</td>
 			<?php endforeach;?>
 		</table>
