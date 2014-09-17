@@ -192,7 +192,7 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 			$content->id = $content->ID;
 			$content->name = $content->post_title;
 			$content->type = $this->rule_type;
-			$content->access = parent::has_access( $content->id  );
+			$content->access = $this->get_rule_value( $content->id  );
 			
 			$contents[ $content->id ] = $content;
 		}

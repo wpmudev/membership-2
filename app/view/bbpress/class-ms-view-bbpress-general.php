@@ -19,6 +19,13 @@ class MS_View_Bbpress_General extends MS_View {
 		$title = __( 'bbPress', MS_TEXT_DOMAIN );
 		$desc = __( 'Protect the following bbPress content to members only. ', MS_TEXT_DOMAIN );
 	
+		$edit_link = array(
+				'id' => 'bbpress_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected bbPress Forums', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Integration_Bbpress::RULE_TYPE_BBPRESS ),
+		);
+		
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -29,6 +36,11 @@ class MS_View_Bbpress_General extends MS_View {
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
 				</form>
+				<?php if( empty( $this->data['protected_content'] ) ): ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_input( $edit_link );?>
+					</div>
+				<?php endif;?>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
