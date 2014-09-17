@@ -74,8 +74,8 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		);
 		if( $this->membership->visitor_membership ) {
 			$bulk_actions = array(
-					'give_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
-					'no_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
+					'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
+					'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
 			);
 		}		
 		
