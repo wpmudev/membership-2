@@ -144,6 +144,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	public function create_page_no_access( $virtual = true ) {
 		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
+		$content = '';
 		$page_details = array( 
 				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
 				'post_name' => 'protected', 

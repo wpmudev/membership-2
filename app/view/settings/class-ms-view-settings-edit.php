@@ -170,25 +170,26 @@ class MS_View_Settings_Edit extends MS_View {
 					<?php foreach( $this->fields as $field ): ?>
 						<div class="ms-settings-box-wrapper">
 							<div class="ms-settings-box">
-							<h3><?php echo $field['box_title'];?></h3>
-							<div class="inside">
-								<?php 
-									MS_Helper_Html::html_input( $field );
-									MS_Helper_Html::html_submit( array( 
-										'id' => "create_page_{$field['id']}", 
-										'value' => __('Create new page', MS_TEXT_DOMAIN ), 
-										'class' => 'button button-primary ms-create-page',
-									) );
-								?>
-								<div id="ms-settings-page-links-wrapper">
-									<?php
-										MS_Helper_Html::html_link( array(
-											'url' => get_permalink( $field['value'] ),
-											'value' => __( 'View', MS_TEXT_DOMAIN ),
+								<h3><?php echo $field['box_title'];?></h3>
+								<div class="inside">
+									<?php 
+										MS_Helper_Html::html_input( $field );
+										MS_Helper_Html::html_submit( array( 
+											'id' => "create_page_{$field['id']}", 
+											'value' => __('Create new page', MS_TEXT_DOMAIN ), 
+											'class' => 'button button-primary ms-create-page',
 										) );
 									?>
-									<span> | </span>	
-									<?php edit_post_link( __( 'Edit', MS_TEXT_DOMAIN ), '', '', $field['value'] ); ?>
+									<div id="ms-settings-page-links-wrapper">
+										<?php
+											MS_Helper_Html::html_link( array(
+												'url' => get_permalink( $field['value'] ),
+												'value' => __( 'View', MS_TEXT_DOMAIN ),
+											) );
+										?>
+										<span> | </span>	
+										<?php edit_post_link( __( 'Edit', MS_TEXT_DOMAIN ), '', '', $field['value'] ); ?>
+									</div>
 								</div>
 							</div>
 						</div>
