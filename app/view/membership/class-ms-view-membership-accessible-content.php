@@ -37,12 +37,13 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 	}
 
 	public function render_tab_category() {
+		$fields = $this->get_tab_category_fields();
 		$membership = $this->data['membership'];
+
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
 		$category_rule_list_table = new MS_Helper_List_Table_Rule_Category( $rule, $membership );
 		$category_rule_list_table->prepare_items();
 		
-		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
 		$cpt_rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group( $rule, $membership );
 		$cpt_rule_list_table->prepare_items();
@@ -68,6 +69,11 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 							<?php _e( 'Protected Categories:', MS_TEXT_DOMAIN );?>
 						</div>
 						<?php $category_rule_list_table->display(); ?>
+						<?php if( empty( $this->data['protected_content'] ) ): ?>
+							<div class="ms-protection-edit-link">
+								<?php MS_Helper_Html::html_input( $fields['category_rule_edit'] );?>
+							</div>
+						<?php endif;?>
 					</div>
 				<?php endif; ?>
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
@@ -76,6 +82,11 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 							<?php _e( 'Protected Custom Post Types:', MS_TEXT_DOMAIN );?> 
 						</div>
 						<?php $cpt_rule_list_table->display(); ?>
+						<?php if( empty( $this->data['protected_content'] ) ): ?>
+							<div class="ms-protection-edit-link">
+								<?php MS_Helper_Html::html_input( $fields['cpt_group_rule_edit'] );?>
+							</div>
+						<?php endif;?>
 					</div>
 				<?php endif; ?>
 			</div>

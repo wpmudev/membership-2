@@ -100,6 +100,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'action' => $action,
 						),
 				),
+				'category_rule_edit' => array(
+						'id' => 'category_rule_edit',
+						'type' => MS_Helper_Html::TYPE_HTML_LINK,
+						'value' => __( 'Manage Protected Categories', MS_TEXT_DOMAIN ),
+						'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CATEGORY ),
+				),
 				'cpt_group' => array(
 						'id' => 'cpt_group',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -116,6 +122,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 								'_wpnonce' => $nonce,
 								'action' => $action,
 						),
+				),
+				'cpt_group_rule_edit' => array(
+						'id' => 'cpt_group_rule_edit',
+						'type' => MS_Helper_Html::TYPE_HTML_LINK,
+						'value' => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
+						'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP ),
 				),
 				'protect_category' => array(
 						'id' => 'protect_category',
@@ -156,6 +168,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
+		$edit_link = array(
+				'id' => 'page_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Pages', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_PAGE ),
+		);
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -169,6 +188,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<form action="" method="post">
 					<?php $rule_list_table->search_box( __( 'Search Pages', MS_TEXT_DOMAIN ), 'search' ); ?>
 					<?php $rule_list_table->display(); ?>
+					<?php if( empty( $this->data['protected_content'] ) ): ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_input( $edit_link );?>
+						</div>
+					<?php endif;?>
 				</form>
 			</div>
 			<?php 
@@ -216,6 +240,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
+		$edit_link = array(
+				'id' => 'page_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Posts', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_POST ),
+		);
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -229,6 +260,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<form action="" method="post">
 					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
 					<?php $rule_list_table->display(); ?>
+					<?php if( empty( $this->data['protected_content'] ) ): ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_input( $edit_link );?>
+						</div>
+					<?php endif;?>
 				</form>
 			</div>
 			<?php 
@@ -250,6 +286,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
+		$edit_link = array(
+				'id' => 'page_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE ),
+		);
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -264,6 +306,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
 					<?php $rule_list_table->display(); ?>
 				</form>
+				<?php if( empty( $this->data['protected_content'] ) ): ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_input( $edit_link );?>
+					</div>
+				<?php endif;?>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
@@ -293,15 +340,30 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<hr />
 				<div class="ms-rule-wrapper">
 					<?php MS_Helper_Html::html_input( $fields['comment'] );?>
+					<?php if( empty( $this->data['protected_content'] ) ): ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_input( $fields['comment_rule_edit'] );?>
+						</div>
+					<?php endif;?>
 				</div>
 				<div class="ms-rule-wrapper">
 					<?php MS_Helper_Html::html_input( $fields['more_tag'] );?>
+					<?php if( empty( $this->data['protected_content'] ) ): ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_input( $fields['more_tag_rule_edit'] );?>
+						</div>
+					<?php endif;?>
 				</div>
 				<div class="ms-list-table-wrapper">
 					<form id="ms-menu-form" method="post">
 						<?php MS_Helper_Html::html_input( $fields['menu_id'] );?>
 					</form>
 					<?php $rule_list_table->display(); ?>
+					<?php if( empty( $this->data['protected_content'] ) ): ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_input( $fields['menu_rule_edit'] );?>
+						</div>
+					<?php endif;?>
 				</div>
 			</div>
 			<?php 
@@ -322,7 +384,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$action = $this->data['action'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-		$desc = ( MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT == $this->data['step'] ) 
+		$desc = ( $this->data['protected_content'] ) 
 			? __( 'Visitors', MS_TEXT_DOMAIN ) 
 			: __( 'Members', MS_TEXT_DOMAIN );
 		$fields = array(
@@ -342,6 +404,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'_wpnonce' => $nonce,
 					),
 			),
+			'comment_rule_edit' => array(
+					'id' => 'comment_rule_edit',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'value' => __( 'Edit Comments Restrictions', MS_TEXT_DOMAIN ),
+					'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_COMMENT ),
+			),
 			'more_tag' => array(
 					'id' => 'more_tag',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
@@ -358,6 +426,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'_wpnonce' => $nonce,
 					),
 			),
+			'more_tag_rule_edit' => array(
+					'id' => 'more_tag_rule_edit',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'value' => __( 'Edit More Tag Restrictions', MS_TEXT_DOMAIN ),
+					'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_MORE_TAG ),
+			),
 			'menu_id' => array(
 					'id' => 'menu_id',
 					'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
@@ -366,6 +440,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $this->data['menus'],
 					'class' => 'chosen-select',
+			),
+			'menu_rule_edit' => array(
+					'id' => 'menu_rule_edit',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'value' => __( 'Edit Menu Restrictions', MS_TEXT_DOMAIN ),
+					'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_MENU ),
 			),
 			'action' => array(
 					'id' => 'action',
@@ -398,6 +478,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$title = __( 'Shortcodes', MS_TEXT_DOMAIN );
 		$desc = __( 'Protect the following Custom Post Type to members only. ', MS_TEXT_DOMAIN );
 		
+		$edit_link = array(
+				'id' => 'shortcode_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Shortcodes', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_SHORTCODE ),
+		);
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -408,6 +494,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
 				</form>
+				<?php if( empty( $this->data['protected_content'] ) ): ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_input( $edit_link );?>
+					</div>
+				<?php endif;?>
 			</div>
 			<?php 
 				MS_Helper_Html::settings_footer( 
@@ -424,6 +515,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	
 	public function render_tab_url_group() {
 		$fields = $this->prepare_url_group_fields();
+		$edit_link = array(
+				'id' => 'menu_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_URL_GROUP ),
+		);
 		
 		ob_start();
 		?>
@@ -437,6 +534,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						);
 					?>
 				</form>
+				<div class="clear"></div>
+				<?php if( empty( $this->data['protected_content'] ) ): ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_input( $edit_link );?>
+					</div>
+				<?php endif;?>
 				<?php
 					MS_Helper_Html::settings_box(
 						array( array( 
@@ -445,9 +548,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 							'class' => 'widefat',
 						) ), 
-						__( 'Test URL group', MS_TEXT_DOMAIN ),
-						'', 
-						array( 'label_element' => 'h3' ) 
+						__( 'Test URL group', MS_TEXT_DOMAIN )
 					);
 				?>
 				<?php 

@@ -330,6 +330,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
+		$data['protected_content'] = 1;
 				 
 		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
@@ -361,6 +362,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
+		$data['protected_content'] = 0;
 		
 		$view = apply_filters( 'ms_view_membership_accessible_content', new MS_View_Membership_Accessible_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data );

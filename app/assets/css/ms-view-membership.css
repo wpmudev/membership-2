@@ -21,6 +21,9 @@
 	display:inline;
 	margin: 0 2em 0 0;
 }
+.ms-protection-edit-link {
+	margin: 1em 0;
+}
 /* url group tab */
 #url-test-results-wrapper { 
 	margin: 10px 0; 
