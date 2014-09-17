@@ -186,10 +186,6 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		
 		$args = parent::get_query_args( $args );
 		
-		if( isset( $args['post__in'] ) && count( $args['post__in'] ) == 0 ) {
-			$args['post__in'] = array( -1 );
-		}
-		
 		return apply_filters( 'ms_model_rule_cpt_get_query_args', $args );
 	}
 }

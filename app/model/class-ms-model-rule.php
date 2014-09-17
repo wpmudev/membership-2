@@ -219,7 +219,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @return boolean True if it has rules, false otherwise.
 	 */
 	public function has_rules() {
-		$has_rules = ! empty( $this->rule_value ) ;
+		$has_rules = ! empty( $this->rule_value );
 		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this->rule_value );	
 	}
 	
@@ -486,8 +486,10 @@ class MS_Model_Rule extends MS_Model {
 				unset( $src_rule_value[ $id ] );
 			}
 		}
+		
 		/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
 		$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
+		
 	}
 	
 	public function set_access( $id, $has_access ) {
@@ -546,6 +548,10 @@ class MS_Model_Rule extends MS_Model {
 			unset( $args['show_all'] );
 		}
 	
+		if( isset( $args['post__in'] ) && count( $args['post__in'] ) == 0 ) {
+			$args['post__in'] = array( -1 );
+		}
+		
 		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
 	}
 	
