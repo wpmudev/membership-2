@@ -92,8 +92,8 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
 		
-		/** show all content instead of protected only @todo review this */
-		if( MS_Controller_Membership::STEP_SETUP_DRIPPED ) {
+		/** show all content instead of protected only for dripped */
+		if( MS_Model_Membership::TYPE_DRIPPED == $this->membership->type ) {
 			$args['show_all'] = 1;
 		}
 		

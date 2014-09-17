@@ -184,7 +184,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents[ $id ]->id = $id;
 			$contents[ $id ]->name = "[$key]";
 			$contents[ $id ]->type = $this->rule_type;
-			$contents[ $id ]->access = parent::has_access( $id );
+			$contents[ $id ]->access = $this->get_rule_value( $id );
 		}
 		
 		/** If not visitor membership, just show protected content */
