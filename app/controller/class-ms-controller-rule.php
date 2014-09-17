@@ -57,6 +57,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
+		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'edit_rule_manager' );
 	}
 	
 	/**
@@ -187,8 +188,6 @@ class MS_Controller_Rule extends MS_Controller {
 				
 				$rule = $membership->get_rule( $rule_type );
 				$rule->$field = $value;
-				MS_Helper_Debug::log( "field: $field, $value, $rule_type");
-				MS_Helper_Debug::log( $rule);
 				$membership->set_rule( $rule_type, $rule );
 				
 				$membership->save();
@@ -211,21 +210,6 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function edit_rule_manager( $rule_type ) {
 
-		/**
-		 * Copy membership dripped schedule
-		 */
-		if( ! empty( $_POST['copy_dripped'] ) && ! empty( $_POST['membership_copy'] ) && $this->verify_nonce() ) {
-			$msg = $this->copy_dripped_schedule( $_POST['membership_copy'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-		}
-		/**
-		 * Save membership dripped schedule
-		 */
-		elseif( ! empty( $_POST['dripped_submit'] ) && $this->verify_nonce( 'bulk-rules', 'POST' ) ) {
-			$items = ! empty( $_POST['item'] ) ?  $_POST['item'] : null;
-			$msg = $this->save_dripped_schedule( $items );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-		}
 		/**
 		 * Rule single action
 		 */
@@ -330,83 +314,6 @@ class MS_Controller_Rule extends MS_Controller {
 		}
 		return $msg;
 	
-	}
-	
-	/**
-	 * Save new 'dripped content' schedule(s).
-	 *
-	 * @deprecated
-	 * @since 4.0.0
-	 *
-	 * @param mixed[] $items The item ids which action will be taken.
-	 */
-	private function save_dripped_schedule( $items ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-		
-		$membership = $this->get_membership();
-		if( empty( $membership ) ) {
-			return $msg;
-		}
-		
-		$dripped = array(
-				'post' => array(),
-				'page' => array(),
-		);
-	
-		if( is_array( $items ) ) {
-			foreach( $items as $item ) {
-				$dripped[ $item['type'] ][ $item['id'] ] = array(
-						'period_unit' => $item['period_unit'],
-						'period_type' => $item['period_type'],
-				);
-			}
-	
-		}
-	
-		foreach( $dripped as $rule_type => $drip ) {
-			$rule = $membership->rules[ $rule_type ];
-			$rule->dripped = $drip;
-			$membership->set_rule( $rule_type, $rule );
-		}
-	
-		$membership->save();
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-		return $msg;
-	}
-	
-	/**
-	 * Coppy 'dripped content' schedule from one Membership to another.
-	 *
-	 * @deprecated
-	 * @since 4.0.0
-	 *
-	 * @param int $copy_from_id The Membership ID to copy from.
-	 */
-	private function copy_dripped_schedule( $copy_from_id ) {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_NOT_COPIED;
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-		
-		$membership = $this->get_membership();
-		if( empty( $membership ) ) {
-			return $msg;
-		}
-		
-		$src_membership = MS_Factory::load( 'MS_Model_Membership', $copy_from_id );
-		if( $src_membership->id > 0 ) {
-	
-			$rule_types = array( 'post', 'page' );
-			foreach( $rule_types as $rule_type) {
-				$membership->set_rule( $rule_type, $src_membership->rules[ $rule_type ] );
-			}
-			$membership->save();
-			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DRIPPED_COPIED;
-		}
-		return $msg;
 	}
 	
 	/**
