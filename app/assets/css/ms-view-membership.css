@@ -17,6 +17,10 @@
 .ms-chosen-rule {
 	width: 20em;
 }
+.ms-more-tag {
+	display:inline;
+	margin: 0 2em 0 0;
+}
 /* url group tab */
 #url-test-results-wrapper { 
 	margin: 10px 0; 

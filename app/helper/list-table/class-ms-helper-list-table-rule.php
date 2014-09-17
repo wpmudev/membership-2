@@ -289,8 +289,8 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
 		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );
 		if( $this->membership->visitor_membership ) {
-			$has_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
-			$no_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
+			$has_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
+			$no_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
 		}
 		
 		$url = apply_filters( "ms_helper_list_table_{$this->id}_url", remove_query_arg( array ( 'status', 'paged' ) ) );

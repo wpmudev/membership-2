@@ -183,7 +183,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
 			$content->name = $content->post_name;
 			
-			$content->access = self::has_access( $content->id );
+			$content->access = $this->get_rule_value( $content->id );
 				
 			$content->delayed_period = $this->has_dripped_rules( $content->id );
 			$content->avail_date = $this->get_dripped_avail_date( $content->id );

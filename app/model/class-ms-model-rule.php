@@ -481,15 +481,19 @@ class MS_Model_Rule extends MS_Model {
 		if( ! is_array( $src_rule->rule_value ) ) {
 			$src_rule_value = array();
 		}
-		
+		foreach( $src_rule_value as $id => $value ) {
+			if( ! $value ) {
+				unset( $src_rule_value[ $id ] );
+			}
+		}
 		/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
 		$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
 	}
 	
 	public function set_access( $id, $has_access ) {
-		$has_access = $this->validate_bool( $has_access );
+// 		$has_access = $this->validate_bool( $has_access );
 		
-		$this->rule_value[ $id ] = $has_access;
+		$this->rule_value[ $id ] = $has_access;		
 	}
 	
 	public function give_access( $id ) {

@@ -222,7 +222,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			}
 			$content->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
 
-			$content->access = parent::has_access( $content->id );
+			$content->access = $this->get_rule_value( $content->id );
 			
 			if( array_key_exists( $content->id, $this->dripped ) ) {
 				$content->delayed_period = $this->dripped[ $content->id ]['period_unit'] . ' ' . $this->dripped[ $content->id ]['period_type'];
