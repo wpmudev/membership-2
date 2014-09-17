@@ -56,7 +56,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	const COMM_TYPE_BEFORE_PAYMENT_DUE = 'type_before_payment_due';
 	
-	const COMM_TYPE_AFTER_PAYMENT_MADE = 'type_after_payment_made';
+	const COMM_TYPE_AFTER_PAYMENT_DUE = 'type_after_payment_due';
 	
 	const COMM_VAR_MS_NAME = '%ms-name%';
 	const COMM_VAR_MS_INVOICE = '%ms-invoice%';
@@ -148,7 +148,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE,
 				self::COMM_TYPE_FAILED_PAYMENT,
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE,
-				self::COMM_TYPE_AFTER_PAYMENT_MADE,
+				self::COMM_TYPE_AFTER_PAYMENT_DUE,
 			)
 		);
 	}
@@ -170,7 +170,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
 				self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
-				self::COMM_TYPE_AFTER_PAYMENT_MADE => 'MS_Model_Communication_After_Payment_Made',
+				self::COMM_TYPE_AFTER_PAYMENT_DUE => 'MS_Model_Communication_After_Payment_Due',
 			)
 		);
 	}
@@ -188,7 +188,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_AFTER_PAYMENT_MADE => __( 'After payment made', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'After payment due', MS_TEXT_DOMAIN ),
 			)
 		);
 	}

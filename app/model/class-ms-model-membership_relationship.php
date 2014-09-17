@@ -1017,6 +1017,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE, $this );
 				}
+				/** After payment due event */
+				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
+				$days = MS_Helper_Period::get_period_in_days( $comm->period );
+				$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
+				if( MS_Model_Invoice::STATUS_BILLED == $invoice->status && $days == $invoice_days ) {
+					$comm->add_to_queue( $this->id );
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
+				}
 				
 				$gateway = $this->get_gateway();
 
@@ -1043,15 +1051,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					}
 				}
 				
-				/** After payment made event */
-				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_MADE ];
-				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				$invoice = MS_Model_Invoice::get_previous_invoice( $this ); 
-				$paid_days = MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $invoice->due_date );
-				if( $days == $paid_days && MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
-					$comm->add_to_queue( $this->id );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_MADE, $this );
-				}
 				break;
 			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:

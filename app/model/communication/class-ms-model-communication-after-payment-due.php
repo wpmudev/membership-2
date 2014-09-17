@@ -24,22 +24,22 @@
  * Communicataion model class.
  * 
  */
-class MS_Model_Communication_After_Payment_Made extends MS_Model_Communication {
+class MS_Model_Communication_After_Payment_Due extends MS_Model_Communication {
 	
 	public static $POST_TYPE = 'ms_communication';
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
-	protected $type = self::COMM_TYPE_AFTER_PAYMENT_MADE;
+	protected $type = self::COMM_TYPE_AFTER_PAYMENT_DUE;
 	
 	public function get_description() {
-		return __( 'Sent a predefined numer of days after the payment made. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined numer of days after the payment is due. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	public static function create_default_communication() {
 		$model = new self();
 	
-		$model->subject =  __( 'Payment received', MS_TEXT_DOMAIN );
+		$model->subject =  __( 'Membership payment due', MS_TEXT_DOMAIN );
 		$model->message = self::get_default_message();
 		$model->enabled = false;
 		$model->period_enabled = true;
@@ -51,11 +51,11 @@ class MS_Model_Communication_After_Payment_Made extends MS_Model_Communication {
 	public static function get_default_message() {
 		ob_start();
 		?>
-			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
+			<h2>Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
 			<br /><br />
-			We've received your payment for your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?>, thanks!
+			This is a reminder that the payment for your <?php echo self::COMM_VAR_MS_NAME; ?> membership at <?php echo self::COMM_VAR_BLOG_NAME; ?> is now due (<?php echo self::COMM_VAR_MS_EXPIRY_DATE; ?>).
 			<br /><br />
-			Here are your latest payment details: 
+			Here are your latest invoice details:
 			<br /><br />
 			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php  

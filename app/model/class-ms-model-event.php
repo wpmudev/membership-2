@@ -76,7 +76,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	
 	const TYPE_PAYMENT_BEFORE_DUE = 'payment_before_due';
 	
-	const TYPE_PAYMENT_AFTER_MADE = 'payment_after_made';
+	const TYPE_PAYMENT_AFTER_DUE = 'payment_after_made';
 	
 	protected $user_id;
 	
@@ -111,72 +111,72 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				/** Membership topic */
 				self::TYPE_MS_SIGNED_UP => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Member has signed up to membership level %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Member has signed up to membership %s.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_MOVED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Member has moved to membership level %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Member has moved to membership %s.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_EXPIRED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Membership level %s has expired.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s has expired.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_DROPPED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Membership level %s dropped.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s dropped.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_RENEWED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Membership level %s renewed', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s renewed', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_DEACTIVATED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Membership level %s deactivated', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s deactivated', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_CANCELED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Membership level %s cancelled.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s cancelled.', MS_TEXT_DOMAIN ),
 				),
 				
 				/** Warning topic */
 				self::TYPE_MS_BEFORE_FINISHES => array( 
 						'topic' => self::TOPIC_WARNING,
-						'desc' => __( 'Membership level %s about to finish warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s about to finish warning date.', MS_TEXT_DOMAIN ),
 				),
 				
 				self::TYPE_MS_AFTER_FINISHES => array( 
 						'topic' => self::TOPIC_WARNING,
-						'desc' => __( 'Membership level %s finished warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership %s finished warning date.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_BEFORE_TRIAL_FINISHES => array( 
 						'topic' => self::TOPIC_WARNING,
-						'desc' => __( 'Membership level % s trial about to finish warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Membership % s trial about to finish warning date.', MS_TEXT_DOMAIN ),
 				),
 				
 				/** payment topic */
 				self::TYPE_PAID => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Member has paid membership level %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Member has paid membership %s.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_FAILED => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership level %s has failed.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Payment for membership %s has failed.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_PENDING => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership level %s is pending.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Payment for membership %s is pending.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_DENIED => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership level %s was denied.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Payment for membership %s was denied.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_BEFORE_DUE => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Invoice date for membership level %s warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice date for membership %s warning date.', MS_TEXT_DOMAIN ),
 				),
-				self::TYPE_PAYMENT_AFTER_MADE => array( 
+				self::TYPE_PAYMENT_AFTER_DUE => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Membership level %s after payment warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice date for membership %s is due warning date.', MS_TEXT_DOMAIN ),
 				),
 		) );
 	}
