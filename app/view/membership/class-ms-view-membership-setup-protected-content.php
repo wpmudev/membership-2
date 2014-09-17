@@ -464,6 +464,29 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			),
 		);
 
+		if( ! $this->data['protected_content'] ) {
+			$protected_content = MS_Model_Membership::get_visitor_membership();
+			if( MS_Model_Rule_Comment::RULE_VALUE_WRITE == $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ) ) {
+				$fields['comment'] = array(
+							'id' => 'comment',
+							'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+							'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
+							'value' => __( 'Members can Read & Post comments', MS_TEXT_DOMAIN ),
+							'class' => 'ms-field-description',
+							'wrapper' => 'div',
+				);
+			}
+			if( $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ) {
+				$fields['more_tag'] = array(
+							'id' => 'more_tag',
+							'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+							'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
+							'value' => __( 'Members can read full post (beyond the More Tag)', MS_TEXT_DOMAIN ),
+							'class' => 'ms-field-description',
+							'wrapper' => 'div',
+				);
+			}
+		}
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );	
 	}
 	
@@ -540,6 +563,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						<?php MS_Helper_Html::html_input( $edit_link );?>
 					</div>
 				<?php endif;?>
+				<?php 
+					MS_Helper_Html::settings_footer( 
+							array( 'fields' => array( $fields['step'] ) ),
+							true,
+							$this->data['initial_setup']
+					); 
+				?>
 				<?php
 					MS_Helper_Html::settings_box(
 						array( array( 
@@ -550,13 +580,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						) ), 
 						__( 'Test URL group', MS_TEXT_DOMAIN )
 					);
-				?>
-				<?php 
-					MS_Helper_Html::settings_footer( 
-							array( 'fields' => array( $fields['step'] ) ),
-							true,
-							$this->data['initial_setup']
-					); 
 				?>
 				<div id="url-test-results-wrapper"></div>
 			</div>
