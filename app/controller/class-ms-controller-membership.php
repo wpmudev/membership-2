@@ -644,7 +644,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$url 
 			);
 		}
-	
+
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}
 	
@@ -661,18 +661,18 @@ class MS_Controller_Membership extends MS_Controller {
 			$rule = $protected_content->get_rule( $tab );
 			switch( $tab ) {
 				case 'category':
-					if( ! $rule->has_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->has_rules() ) {
+					if( ! $rule->count_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->count_rules() ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
 				case 'comment':
-					if(!  $rule->has_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->has_rules() &&
-						! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->has_rules() ) {
+					if( ! $rule->count_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->count_rules() &&
+						! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->count_rules() ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
 				default:
-					if( ! $rule->has_rules() ) {
+					if( ! $rule->count_rules() ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
