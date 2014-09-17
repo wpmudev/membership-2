@@ -39,7 +39,8 @@ class MS_Controller_Rule extends MS_Controller {
 	
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
 	
-	const AJAX_ACTION_URL_GROUP = 'update_url_group';
+	const AJAX_ACTION_UPDATE_FIELD = 'update_update_field';
+	
 	
 	/**
 	 * Prepare the Rule manager.
@@ -52,7 +53,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_URL_GROUP, 'ajax_action_update_url_group' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
 		
 		
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
@@ -103,10 +104,10 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		
 		$required = array( 'membership_id', 'rule_type' );
-		$isset = array( 'rule_ids', 'rule_value' );
+		$isset = array( 'rule_ids', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
 			$rule_type = $_POST['rule_type'];
-			$msg = $this->save_rule_values( $rule_type, $_POST['rule_ids'], $_POST['rule_value'] );
+			$msg = $this->save_rule_values( $rule_type, $_POST['rule_ids'], $_POST['value'] );
 		}
 	
 		echo $msg;
@@ -172,19 +173,24 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 	
-	public function ajax_action_update_url_group() {
+	public function ajax_action_update_field() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		$fields = array( 'membership_id', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
+		$required = array( 'membership_id', 'rule_type', 'field' );
+		$isset = array( 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$membership = $this->get_membership();
 			if( $membership->is_valid() ) {
 				
-				$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
+				$rule_type = $_POST['rule_type'];
+				$value = $_POST['value'];
+				$field = $_POST['field'];
+				
 				$rule = $membership->get_rule( $rule_type );
-				
-				$rule->rule_value = $_POST['value'];
-				
+				$rule->$field = $value;
+				MS_Helper_Debug::log( "field: $field, $value, $rule_type");
+				MS_Helper_Debug::log( $rule);
 				$membership->set_rule( $rule_type, $rule );
+				
 				$membership->save();
 				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 			}

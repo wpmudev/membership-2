@@ -218,11 +218,16 @@ class MS_Helper_Html extends MS_Helper {
 				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
 				if( empty( $field_options['_wpnonce'] ) && ! empty( $field_options['action'] ) ) {
 					$field_options['_wpnonce'] = wp_create_nonce( $field_options['action'] );
-				}				
-				$data = esc_attr( json_encode( $field_options ) );
+				}
+				$data_toggle = null;
+				if( ! empty( $field_options ) ) {
+					$data_toggle = esc_attr( json_encode( $field_options ) );
+					$data_toggle = "data-toggle='$data_toggle'";
+				}
+				
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
-		    	echo "<div class='ms-toggle' data-toggle='$data'>$link_url</div>";
+		    	echo "<div class='ms-toggle' $data_toggle $data_ms>$link_url</div>";
 		    	if( ! $read_only ) {
 					echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 		    	}

@@ -95,7 +95,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
-							'rule_value' => 1,
+							'value' => 1,
 							'_wpnonce' => $nonce,
 							'action' => $action,
 						),
@@ -112,7 +112,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-								'rule_value' => 1,
+								'value' => 1,
 								'_wpnonce' => $nonce,
 								'action' => $action,
 						),
@@ -322,12 +322,15 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$action = $this->data['action'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
+		$desc = ( MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT == $this->data['step'] ) 
+			? __( 'Visitors', MS_TEXT_DOMAIN ) 
+			: __( 'Members', MS_TEXT_DOMAIN );
 		$fields = array(
 			'comment' => array(
 					'id' => 'comment',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
+					'desc' => sprintf( __( '%s have:', MS_TEXT_DOMAIN ), $desc ),
 					'value' => $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ),
 					'field_options' => $rule_comment->get_content_array(),
 					'class' => 'chosen-select',
@@ -343,10 +346,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'id' => 'more_tag',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
+					'desc' => sprintf( __( '%s can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ), $desc ),
 					'value' => $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
 					'field_options' => $rule_more_tag->get_options_array(),
-					'class' => '',
+					'class' => 'ms-more-tag ms-ajax-update',
 					'data_ms' => array(
 							'membership_id' => $membership->id,
 							'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,
@@ -475,6 +478,14 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'title' => __( 'Access', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => $rule->access,
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'field' => 'access',
+								'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
+						),
 				),
 				'rule_value' => array(
 						'id' => 'rule_value',
@@ -484,8 +495,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'class' => 'ms-textarea-medium ms-ajax-update',
 						'data_ms' => array(
 								'membership_id' => $membership->id,
-								'action' => MS_Controller_Rule::AJAX_ACTION_URL_GROUP,
-								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_URL_GROUP ),
+								'rule_type' => $rule->rule_type,
+								'field' => 'rule_value',
+								'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
 						),
 				),
 				'strip_query_string' => array(
@@ -493,12 +506,26 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'title' => __( 'Strip query strings from URL', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => $rule->strip_query_string,
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'field' => 'strip_query_string',
+								'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
+						),
 				),
 				'is_regex' => array(
 						'id' => 'is_regex',
 						'title' => __( 'Is regular expression', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => $rule->is_regex,
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'rule_type' => $rule->rule_type,
+								'field' => 'is_regex',
+								'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
+						),
 				),
 				'_wpnonce' => array(
 						'id' => '_wpnonce',
