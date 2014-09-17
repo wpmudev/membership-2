@@ -39,6 +39,8 @@ class MS_Controller_Rule extends MS_Controller {
 	
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
 	
+	const AJAX_ACTION_URL_GROUP = 'update_url_group';
+	
 	/**
 	 * Prepare the Rule manager.
 	 *
@@ -50,6 +52,7 @@ class MS_Controller_Rule extends MS_Controller {
 		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_URL_GROUP, 'ajax_action_update_url_group' );
 		
 		
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
@@ -102,7 +105,8 @@ class MS_Controller_Rule extends MS_Controller {
 		$required = array( 'membership_id', 'rule_type' );
 		$isset = array( 'rule_ids', 'rule_value' );
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
-			$msg = $this->save_rule_values( $_POST['rule_type'], $_POST['rule_ids'], $_POST['rule_value'] );
+			$rule_type = $_POST['rule_type'];
+			$msg = $this->save_rule_values( $rule_type, $_POST['rule_ids'], $_POST['rule_value'] );
 		}
 	
 		echo $msg;
@@ -168,6 +172,28 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 	
+	public function ajax_action_update_url_group() {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$fields = array( 'membership_id', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
+			$membership = $this->get_membership();
+			if( $membership->is_valid() ) {
+				
+				$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
+				$rule = $membership->get_rule( $rule_type );
+				
+				$rule->rule_value = $_POST['value'];
+				
+				$membership->set_rule( $rule_type, $rule );
+				$membership->save();
+				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+			}
+		}
+		
+		echo $msg;
+		exit;
+		
+	}
 	/**
 	 * Handles Membership Rule form submissions.
 	 *

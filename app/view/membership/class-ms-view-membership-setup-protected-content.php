@@ -447,6 +447,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						array( 'label_element' => 'h3' ) 
 					);
 				?>
+				<?php 
+					MS_Helper_Html::settings_footer( 
+							array( 'fields' => array( $fields['step'] ) ),
+							true,
+							$this->data['initial_setup']
+					); 
+				?>
 				<div id="url-test-results-wrapper"></div>
 			</div>
 		<?php 	
@@ -474,7 +481,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 						'value' => implode( PHP_EOL, $rule->rule_value ),
-						'class' => 'ms-textarea-medium',
+						'class' => 'ms-textarea-medium ms-ajax-update',
+						'data_ms' => array(
+								'membership_id' => $membership->id,
+								'action' => MS_Controller_Rule::AJAX_ACTION_URL_GROUP,
+								'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_URL_GROUP ),
+						),
 				),
 				'strip_query_string' => array(
 						'id' => 'strip_query_string',
@@ -507,14 +519,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $membership->id,
-				),
-				'separator' => array(
-						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-				),
-				'url_group_submit' => array(
-						'id' => 'url_group_submit',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 				),
 
 		);

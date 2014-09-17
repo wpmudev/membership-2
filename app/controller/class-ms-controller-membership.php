@@ -368,8 +368,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function page_ms_list() {
-		MS_Helper_Debug::log("page_ms_list");
-		
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
@@ -1104,7 +1102,6 @@ class MS_Controller_Membership extends MS_Controller {
 								'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
 						) );
 						wp_enqueue_script( 'ms-view-membership-render-url-group' );
-						wp_dequeue_script( 'ms-radio-slider' );
 						break;
 					default:
 						wp_enqueue_script( 'jquery-ui-datepicker' );

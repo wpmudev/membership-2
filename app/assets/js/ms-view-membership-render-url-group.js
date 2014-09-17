@@ -1,66 +1,84 @@
 jQuery( document ).ready( function( $ ) {
 	var timeout = false;
 
-	function test_url() {
-		if( timeout ) {
-			clearTimeout( timeout );
-		}
+	var ms_functions = {
+		feedback: function( obj ) {
+			var data = [], save_obj_selector = '.ms-save-text-wrapper', processing_class = 'ms-processing', init_class = 'ms-init';
+			
+			if( ! $( obj ).hasClass( processing_class ) ) {
+				$( save_obj_selector ).addClass( processing_class );
+				$( save_obj_selector ).removeClass( init_class );
 
-		timeout = setTimeout(function() {
-			var container = $( '#url-test-results-wrapper' ),
-				url = $.trim($( '#url_test' ).val() ),
-				rules = $( '#rule_value' ).val().split( "\n" );
-
-			if ( url == '' ) {
-				container.html('<div><i>' + ms.nothing_msg + '</i></div>');
-				return;
+				data = $( obj ).data( 'ms' );
+				if( $( obj ).is( ':checkbox' ) ) {
+					if( $( obj ).attr( 'checked' ) ) {
+						data.value = true;
+					}
+					else {
+						data.value = false;
+					}
+				}
+				else {
+					data.value = $( obj ).val();
+				}
+				
+				$.post( ajaxurl, data, function( response ) {
+					$( save_obj_selector ).removeClass( processing_class );
+				});
+			}
+		},
+		test_url: function() {
+			if( timeout ) {
+				clearTimeout( timeout );
 			}
 
-			container.empty();
-			
-			$.each( rules, function( i, rule ) {
-				var line, result, reg;
+			timeout = setTimeout(function() {
+				var container = $( '#url-test-results-wrapper' ),
+					url = $.trim($( '#url_test' ).val() ),
+					rules = $( '#rule_value' ).val().split( "\n" );
 
-				rule = $.trim(rule);
-				if (rule == '') {
+				if ( url == '' ) {
+					container.html('<div><i>' + ms.nothing_msg + '</i></div>');
 					return;
 				}
 
-				result = $( '<span></span>' );
+				container.empty();
+				
+				$.each( rules, function( i, rule ) {
+					var line, result, reg;
 
-				line = $( '<div></div>' );
-				line.html( rule );
-				line.append( result );
+					rule = $.trim(rule);
+					if (rule == '') {
+						return;
+					}
 
-				reg = new RegExp( rule, 'i' );
-				if ( reg.test( url ) ) {
-					line.addClass( 'ms-rule-valid' );
-					result.text( ms.valid_rule_msg );
-				} 
-				else {
-					line.addClass( 'ms-rule-invalid' );
-					result.text( ms.invalid_rule_msg );
+					result = $( '<span></span>' );
+
+					line = $( '<div></div>' );
+					line.html( rule );
+					line.append( result );
+
+					reg = new RegExp( rule, 'i' );
+					if ( reg.test( url ) ) {
+						line.addClass( 'ms-rule-valid' );
+						result.text( ms.valid_rule_msg );
+					} 
+					else {
+						line.addClass( 'ms-rule-invalid' );
+						result.text( ms.invalid_rule_msg );
+					}
+
+					container.append( line );
+				});
+
+				if ( container.find( '> div' ).length == 0 ) {
+					container.html( '<div><i>' + ms.empty_msg + '</i></div>' );
+					return;
 				}
-
-				container.append( line );
-			});
-
-			if ( container.find( '> div' ).length == 0 ) {
-				container.html( '<div><i>' + ms.empty_msg + '</i></div>' );
-				return;
-			}
-		}, 500);
+			}, 500);
+		}
 	}
-	$( '#url_test, #rule_value' ).keyup( test_url );
+	$( '#url_test, #rule_value' ).keyup( ms_functions.test_url );
 	
-	$( '.ms-radio-slider' ).click( function() {
-        if ( $( this ).hasClass( 'on' ) ) {
-            $( this ).removeClass( 'on' );
-            $( this ).children('input').val( 0 );
-        } 
-        else { 
-            $( this ).addClass( 'on' );
-            $( this ).children('input').val( 1 );
-        } 
-	});	
+	$( 'textarea.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
 });
