@@ -97,7 +97,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	
 	protected $content_type = 'text/html';
 	
-	public $ignore_fields = array( 'subject', 'message', 'description', 'name', 'title', 'actions', 'filters', 'ignore_fields', 'post_type', 'comm_vars' );
+	public $ignore_fields = array( 'message', 'description', 'name', 'actions', 'filters', 'ignore_fields', 'post_type', 'comm_vars' );
 		
 	public function __construct() {
 		
@@ -120,12 +120,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	}
 	
 	public function before_save() {
-		$this->title = $this->subject;
 		$this->description = $this->message;
 	}
 	
 	public function after_load() {
-		$this->subject = $this->title;
 		$this->message = $this->description;
 		if( $this->enabled ) {
 			$this->add_action( 'ms_model_plugin_process_communications', 'process_communication' );

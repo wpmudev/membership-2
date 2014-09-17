@@ -50,7 +50,6 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 		$this->protection_message = MS_Plugin::instance()->settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG );
 		
 		if( ! parent::has_access( self::CONTENT_ID ) ) {
-			MS_Helper_Debug::log("more NOT have access " );
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
 			$this->add_filter( 'the_content_feed', 'replace_moretag_content', 1 );

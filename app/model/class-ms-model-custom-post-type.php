@@ -28,6 +28,10 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	
 	protected static $CLASS_NAME = __CLASS__;
 	
+	protected $id;
+	
+	protected $name;
+	
 	protected $title;
 	
 	protected $description;
