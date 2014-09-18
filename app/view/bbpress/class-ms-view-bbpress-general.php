@@ -46,7 +46,7 @@ class MS_View_Bbpress_General extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						$this->data['hide_next_button']
 				); 
 			?>
 		<?php

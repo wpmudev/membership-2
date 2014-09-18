@@ -37,11 +37,7 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 				</form>
 				<?php $list_table->display(); ?>
 				<?php 
-					MS_Helper_Html::settings_footer( 
-							array( 'fields' => array( $this->fields['step'] ) ),
-							true,
-							$this->data['initial_setup']
-					); 
+					MS_Helper_Html::settings_footer( array( 'fields' => array( $this->fields['step'] ) ) ); 
 				?>
 			</div>	
 			<div class="clear"></div>
