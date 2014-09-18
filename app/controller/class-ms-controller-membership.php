@@ -163,11 +163,11 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
-					$this->wizard_tracker();
 					$next_step = self::STEP_CHOOSE_MS_TYPE;
+					$this->wizard_tracker( $next_step );
 					break;
 				case self::STEP_CHOOSE_MS_TYPE:
-					$this->wizard_tracker( true );
+					$this->wizard_tracker( $step, true );
 					$fields = $_POST;
 					
 					if( ! $this->validate_required( array( 'private' ) ) ) {
@@ -288,7 +288,6 @@ class MS_Controller_Membership extends MS_Controller {
 	public function membership_admin_page_router() {
 		$this->wizard_tracker();
 		$step = $this->get_step();
-// 		MS_Helper_Debug::log($step);
 		
 		if( self::is_valid_step( $step ) ) {
 			do_action( 'ms_controller_membership_membership_admin_page_router_' . $step );
@@ -576,9 +575,12 @@ class MS_Controller_Membership extends MS_Controller {
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
 	}
 	
-	public function wizard_tracker( $end_wizard = false ) {
+	public function wizard_tracker( $step = null, $end_wizard = false ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		if( $settings->initial_setup && $step = $this->get_step() ) {
+		if( empty( $step ) ) {
+			$step = $this->get_step();
+		}
+		if( $settings->initial_setup ) {
 			$settings->wizard_step = $step;
 			if( $end_wizard ) {
 				$settings->initial_setup = false;
