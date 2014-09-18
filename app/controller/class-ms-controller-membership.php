@@ -176,11 +176,12 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
-					$this->wizard_tracker( true );
+					$this->wizard_tracker();
 					$next_step = self::STEP_CHOOSE_MS_TYPE;
 					$goto_url = add_query_arg( array( 'step' => $next_step ) );
 					break;
 				case self::STEP_CHOOSE_MS_TYPE:
+					$this->wizard_tracker( true );
 					$fields = $_POST;
 					
 					if( ! $this->validate_required( array( 'private' ) ) ) {

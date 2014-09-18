@@ -69,7 +69,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -199,7 +199,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -271,7 +271,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -316,7 +316,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -370,7 +370,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -527,7 +527,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				MS_Helper_Html::settings_footer( 
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
-						$this->data['initial_setup']
+						! $this->data['initial_setup']
 				); 
 			?>
 		<?php
@@ -567,7 +567,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					MS_Helper_Html::settings_footer( 
 							array( 'fields' => array( $fields['step'] ) ),
 							true,
-							$this->data['initial_setup']
+							! $this->data['initial_setup']
 					); 
 				?>
 				<?php
