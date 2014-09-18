@@ -293,6 +293,14 @@ class MS_Controller_Plugin extends MS_Controller {
 			add_submenu_page( $parent_slug, $page_title, $menu_title, $this->capability, $menu_slug, $function );
 		}
 	}
+	
+	public static function get_admin_url() {
+		return apply_filters( 'ms_controller_plugin_get_admin_url', admin_url( 'admin.php?page=' . self::MENU_SLUG ) );
+	}
+	
+	public static function get_admin_settings_url() {
+		return apply_filters( 'ms_controller_plugin_get_admin_url', admin_url( 'admin.php?page=' . self::MENU_SLUG . '-settings') );
+	}
 
 	public function custom_template( $template ) {
 		global $post;

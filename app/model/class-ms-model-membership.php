@@ -96,6 +96,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $on_end_membership_id;
 	
+	protected $is_setup_completed;
+	
 	protected $rules = array();
 	
 	public function after_load() {
@@ -335,9 +337,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		/** Get parent memberships */
 		$args['post_parent'] = 0; 
 		$memberships = self::get_memberships( $args );
-		foreach( $memberships as $ms ) {
-			MS_Helper_Debug::log("name: $ms->name, $ms->id, $ms->parent_id");
-		}
 		
 		/** Get children memberships */
 		$args = array();
@@ -528,6 +527,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$rules[ $rule_type ] = $this->get_rule( $rule_type );
 		}
 		return apply_filters( 'ms_model_membership_get_rules_hierarchy', $rules );
+	}
+	
+	/**
+	 * Mark membership setup as completed.
+	 * 
+	 * @since 1.0
+	 * 
+	 * @return bool $marked True in the first time setup is finished.array
+	 */
+	public function mark_setup_completed() {
+		$marked = false;
+		if( ! $this->is_setup_completed ) {
+			$this->is_setup_completed = true;
+			$marked = true;
+		}
+		return apply_filters( 'ms_model_memberhsip_mark_setup_completed', $marked, $this );
 	}
 	
 	/**

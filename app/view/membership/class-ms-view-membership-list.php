@@ -10,17 +10,20 @@ class MS_View_Membership_List extends MS_View {
 		$create_new_button = array(
 			'id' => 'create_new_ms_button',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_CHOOSE_MS_TYPE ), remove_query_arg( 'membership' ) ),
+			'url' => $this->data['create_new_url'],
 			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
 			'class' => 'button',
 		);
+		$desc = $this->data['admin_message'];
+		$title = empty( $desc ) ? __( 'Memberships', MS_TEXT_DOMAIN ) : __( 'Congratulations!', MS_TEXT_DOMAIN ); 
 		ob_start();
 		?>
 		
 		<div class="wrap ms-wrap">
 			<?php 
 				MS_Helper_Html::settings_header( array(
-					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),			
+					'title' => $title,
+					'desc' => $desc,
 				) ); 
 			?>
 			<form action="" method="post">

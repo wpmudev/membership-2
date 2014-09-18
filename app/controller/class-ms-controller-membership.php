@@ -133,16 +133,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	/**
-	 * Show admin notices.
-	 * 
-	 * @since 4.0.0
-	 *
-	 */
-	public function print_admin_message() {
-		add_action( 'admin_notices', array( 'MS_Helper_Membership', 'print_admin_message' ) );
-	}
-	
-	/**
 	 * Manages membership actions.
 	 * 
 	 * Verifies GET and POST requests to manage memberships
@@ -150,12 +140,12 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function membership_admin_page_process() {
-		$this->print_admin_message();
 		$msg = 0;
 		$next_step = null;
-// 		MS_Helper_Debug::log($_POST);
 		$step = $this->get_step();
 		$goto_url = null;
+		$membership = $this->load_membership();
+		$membership_id = $membership->id;
 		
 		/** MS_Controller_Rule is executed using this action*/
 		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
@@ -166,19 +156,15 @@ class MS_Controller_Membership extends MS_Controller {
 			/** Take next actions based in current step.*/
 			switch( $step ) {
 				case self::STEP_MS_LIST:
-					$this->print_admin_message();
-					$msg = 0;
 					$fields = array( 'action', 'membership_id' );
 					if( $this->validate_required( $fields, 'GET' ) ) {
 						$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
 						$next_step = self::STEP_MS_LIST;
-						$goto_url = add_query_arg( array( 'step' => $next_step ), admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 					}
 					break;
 				case self::STEP_SETUP_PROTECTED_CONTENT:
 					$this->wizard_tracker();
 					$next_step = self::STEP_CHOOSE_MS_TYPE;
-					$goto_url = add_query_arg( array( 'step' => $next_step ) );
 					break;
 				case self::STEP_CHOOSE_MS_TYPE:
 					$this->wizard_tracker( true );
@@ -190,7 +176,7 @@ class MS_Controller_Membership extends MS_Controller {
 					$msg = $this->save_membership( $fields );
 					
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
-					switch( $this->model->type ) {
+					switch( $membership->type ) {
 						case MS_Model_Membership::TYPE_CONTENT_TYPE:
 							$next_step = self::STEP_SETUP_CONTENT_TYPES;
 							break;
@@ -204,29 +190,28 @@ class MS_Controller_Membership extends MS_Controller {
 							$next_step = self::STEP_ACCESSIBLE_CONTENT;
 							break;
 					}
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_ACCESSIBLE_CONTENT:
 					$fields = $_POST;
 					$msg = $this->save_membership( $fields );
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
-					$membership_id = $this->model->id;
-					switch( $this->model->type ) {
+					switch( $membership->type ) {
 						case MS_Model_Membership::TYPE_CONTENT_TYPE:
 							$next_step = self::STEP_SETUP_CONTENT_TYPES;
-							if( $this->model->parent_id ) {
-								$membership_id = $this->model->parent_id;
+							if( $membership->parent_id ) {
+								$membership_id = $membership->parent_id;
 							}
 							break;
 						case MS_Model_Membership::TYPE_TIER:
 							$next_step = self::STEP_SETUP_MS_TIERS;
-							if( $this->model->parent_id ) {
-								$membership_id = $this->model->parent_id;
+							if( $membership->parent_id ) {
+								$membership_id = $membership->parent_id;
 							}
 							break;
 						case MS_Model_Membership::TYPE_SIMPLE:
-							if( $this->model->private ) {
+							if( $membership->private ) {
 								$next_step = self::STEP_MS_LIST;
+								$msg = $this->mark_setup_completed();
 							}
 							else {
 								$next_step = self::STEP_SETUP_PAYMENT;
@@ -234,13 +219,14 @@ class MS_Controller_Membership extends MS_Controller {
 							break;
 						default:
 							$next_step = self::STEP_MS_LIST;
+							$msg = $this->mark_setup_completed();
 							break;
 					}
 					$goto_url = add_query_arg( array( 'membership_id' => $membership_id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_PAYMENT:
 					$next_step = self::STEP_MS_LIST;
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
+					$msg = $this->mark_setup_completed();
 					break;
 				case self::STEP_SETUP_CONTENT_TYPES:
 					if( $this->validate_required( array( 'name' ) ) && 'create_content_type' == $_POST['action'] ) {
@@ -248,34 +234,39 @@ class MS_Controller_Membership extends MS_Controller {
 						$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					}
 					else {
-						if( $this->model->private ) {
+						if( $membership->private ) {
 							$next_step = self::STEP_MS_LIST;
+							$msg = $this->mark_setup_completed();
 						}
 						else {
 							$next_step = self::STEP_SETUP_PAYMENT;
 						}
 					}
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_MS_TIERS:
 					if( $this->validate_required( array( 'name' ) ) && 'create_tier' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
 						$next_step = self::STEP_ACCESSIBLE_CONTENT;
-						$goto_url = add_query_arg( array( 'membership_id' => $child->id, 'step' => $next_step ) );
 					}
 					else {
 						$next_step = self::STEP_SETUP_PAYMENT;
-						$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					}
 					break;
 				case self::STEP_SETUP_DRIPPED:
 					$next_step = self::STEP_SETUP_PAYMENT;
-					$goto_url = add_query_arg( array( 'membership_id' => $this->model->id, 'step' => $next_step ) );
 					break;
 				default:
 					break;
 			}
-			if( ! empty( $goto_url ) ) {
+			if( ! empty( $next_step ) ) {
+				$args = array( 
+						'step' => $next_step,
+						'membership_id' => $membership_id,
+				);
+				if( ! empty( $msg ) ) {
+					$args['msg'] = $msg;
+				}
+				$goto_url = add_query_arg( $args, MS_Controller_Plugin::get_admin_url() );
 				$goto_url = apply_filters( 'ms_controller_membership_membership_admin_page_process_goto_url', $goto_url, $next_step );
 				wp_safe_redirect( $goto_url );
 			}
@@ -284,7 +275,6 @@ class MS_Controller_Membership extends MS_Controller {
 			switch( $step ) {
 				/** Child overview page is shown in parent's overview, redirect */
 				case self::STEP_OVERVIEW:
-					$membership = $this->load_membership();
 					if( $membership->has_parent() && empty( $_GET['tab'] ) ) {
 						wp_safe_redirect( add_query_arg( array( 'membership_id' => $membership->parent_id, 'tab' => $membership->id ) ) );
 						exit;
@@ -317,6 +307,21 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 	}
 	
+	private function mark_setup_completed() {
+		$msg = 0;
+		$membership = $this->load_membership();
+		if( $membership->mark_setup_completed() ) {
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
+			$this->auto_setup();
+		}
+		return apply_filters( 'ms_controller_membership_mark_setup_completed', $msg );
+	}
+	
+	private function auto_setup() {
+		MS_Helper_Debug::log("auto_setup");
+		
+	}
+	
 	public function page_setup_protected_content() {
 
 		$data = array();
@@ -324,7 +329,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['hide_next_button'] = ! MS_Plugin::instance()->settings->initial_setup;
 		
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
@@ -358,7 +363,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
-		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['hide_next_button'] = false;
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
@@ -371,11 +376,14 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 	
 	public function page_ms_list() {
+		$membership = $this->load_membership();
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
-		$data['membership'] = $this->load_membership();
+		$data['membership'] = $membership;
+		$data['create_new_url'] = add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ), MS_Controller_Plugin::get_admin_url() );
+		$data['admin_message'] = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
 		$view = apply_filters( 'ms_view_membership_list', new MS_View_Membership_List() ); ;
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data );
 		$view->render();
@@ -529,9 +537,13 @@ class MS_Controller_Membership extends MS_Controller {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$membership = $this->load_membership();
 	
+		/** Get current step from request */
 		if( ! empty( $_REQUEST['step'] ) && self::is_valid_step( $_REQUEST['step'] ) ) {
 			$step = $_REQUEST['step'];
 		}
+		/**
+		 * If left in the middle of the wizard, try to recover last wizard step. 
+		 */
 		elseif( $settings->initial_setup ) {
 			if( $settings->wizard_step ) {
 				$step = $settings->wizard_step;
@@ -541,16 +553,24 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 		
+		/** Hack to use same page in two different menus */
 		if( ! empty( $_GET['page'] )  && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_GET['page'] ) {
 			$step = self::STEP_SETUP_PROTECTED_CONTENT;
 		}
 
+		/** If trying to setup children of not supported type, or already is a child (grand child not allowed) */
 		if( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
 			$step = self::STEP_OVERVIEW; 
 		}
 		
+		/** Accessible content page is not available to dripped type */
 		if( self::STEP_ACCESSIBLE_CONTENT == $step && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
 			$step = self::STEP_SETUP_DRIPPED;
+		}
+		
+		/** Can't modify membership type */
+		if( self::STEP_CHOOSE_MS_TYPE == $step && $membership->is_valid() ) {
+			$step = self::STEP_OVERVIEW;
 		}
 
 		return apply_filters( 'ms_controller_membership_get_next_step', $step );
