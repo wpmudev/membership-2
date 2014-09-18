@@ -1087,6 +1087,8 @@ class MS_Controller_Membership extends MS_Controller {
 		
 		switch( $this->get_step() ) {
 			case self::STEP_CHOOSE_MS_TYPE:
+				wp_enqueue_style( 'wp-pointer' );
+				wp_enqueue_script( 'wp-pointer' );
 				wp_enqueue_script( 'jquery-validate' );
 				wp_register_script( 
 					'ms-view-membership-choose-type', 
@@ -1094,7 +1096,22 @@ class MS_Controller_Membership extends MS_Controller {
 					array( 'jquery', 'jquery-validate' ), 
 					$version 
 				);
-				wp_localize_script( 'ms-view-membership-choose-type', 'ms_private_types', MS_Model_Membership::get_private_eligible_types() );
+				$ms_pointer = array(
+					'hide_wizard_pointer' => MS_Model_Settings::get_setting( 'hide_wizard_pointer' ),
+					'message' => sprintf( '<div class="ms-pointer-text">%s</div>',  
+									__( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN ) 
+								),
+					'pointer_class' => 'ms-pointer-wrapper',
+					'field' => 'hide_wizard_pointer',
+					'value' => true,
+					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'nonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
+				);
+				$data = array(
+					'ms_private_types' => MS_Model_Membership::get_private_eligible_types(),
+					'ms_pointer' => $ms_pointer,
+				);
+				wp_localize_script( 'ms-view-membership-choose-type', 'ms_data', $data );
 				wp_enqueue_script( 'ms-view-membership-choose-type' );
 				break;
 			case self::STEP_OVERVIEW:

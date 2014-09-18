@@ -268,3 +268,18 @@ input.ms-dripped-spec-date {
 .ms-bread-crumb-next {
 	color: #aaa;
 }
+
+/* Admin pointer */
+.ms-pointer-wrapper {
+	font-weight: bold;
+}
+.ms-pointer-text {
+	padding: 0 15px;
+	margin: 30px 10px 10px;
+}
+.ms-pointer-wrapper .wp-pointer-buttons{
+	position: absolute;
+	right: 0;
+    top: 0;
+}
+

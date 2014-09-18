@@ -50,6 +50,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	
 	protected $wizard_step;
 	
+	protected $hide_wizard_pointer;
+	
 	protected $pages = array();
 	
 	protected $hide_admin_bar = true;
@@ -80,7 +82,22 @@ class MS_Model_Settings extends MS_Model_Option {
 	public function __construct() {
 		$this->add_action( 'wp_loaded', 'initial_setup' );	
 	}
-		
+	
+	public static function get_setting( $field ) {
+		$value = null;
+		if( empty( self::$instance ) ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+		}
+		else {
+			$settings = self::$instance;
+		}
+		if( property_exists( $settings, $field ) ) {
+			$value = $settings->$field;
+		}
+
+		return apply_filters( 'ms_model_settings_get_setting', $value, $field );
+	}
+	
 	public function initial_setup() {
 		MS_Model_Membership::get_visitor_membership();
 		if( ! $this->initial_setup ) {
