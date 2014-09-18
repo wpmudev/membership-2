@@ -671,6 +671,11 @@ class MS_Controller_Membership extends MS_Controller {
 						unset( $tabs[ $tab ] );
 					}
 					break;
+				case 'url_group':
+					if( ! $rule->count_rules() || ! $rule->access ) {
+						unset( $tabs[ $tab ] );
+					}
+					break;
 				default:
 					if( ! $rule->count_rules() ) {
 						unset( $tabs[ $tab ] );

@@ -599,7 +599,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$fields = array(
 				'access' => array(
 						'id' => 'access',
-						'title' => __( 'Access', MS_TEXT_DOMAIN ),
+						'title' => __( 'Members Access', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => $rule->access,
 						'class' => 'ms-ajax-update',
