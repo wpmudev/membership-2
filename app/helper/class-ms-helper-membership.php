@@ -67,7 +67,7 @@ class MS_Helper_Membership extends MS_Helper {
 	}
 	
 	public static function print_admin_message() {
-		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
+		$msg = self::get_msg_id();
 
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 		
@@ -79,12 +79,16 @@ class MS_Helper_Membership extends MS_Helper {
 	
 	public static function get_admin_message( $args = null, $membership = null ) {
 	
-		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
-		if ( $msg = self::get_admin_messages( $msg ) ) {
+		$msg = '';
+		$msg_id = self::get_msg_id();
+		if ( $msg = self::get_admin_messages( $msg_id ) ) {
 			if( ! empty( $args ) && $count = substr_count( $msg, '%s' ) ) {
 				$msg = array( vsprintf( $msg, $args ) );
 			}
-			if( ! empty( $membership ) && ! $membership->private ) {
+			if( self::MEMBERSHIP_MSG_ADDED == $msg_id && ! empty( $membership ) && empty( $membership->private ) ) {
+				if( ! is_array( $msg ) ) {
+					$msg = array( $msg );
+				}
 				$url = MS_Controller_Plugin::get_admin_settings_url();
 	
 				$msg[] = sprintf( 'We have automatically created %s, %s & %s for you.',
@@ -97,7 +101,22 @@ class MS_Helper_Membership extends MS_Helper {
 				);
 			}
 		}
-	
+
 		return apply_filters( 'ms_helper_membership_get_admin_message', $msg );
+	}
+	
+	public static function get_admin_title() {
+		$title = __( 'Memberships', MS_TEXT_DOMAIN );
+		
+		$msg = self::get_msg_id();
+		if( self::MEMBERSHIP_MSG_ADDED == $msg ) {
+			$title = __( 'Congratulations!', MS_TEXT_DOMAIN ) ;
+		}
+		return apply_filters( 'ms_helper_membership_get_admin_title', $title );
+	}
+	
+	public static function get_msg_id() {
+		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
+		return apply_filters( 'ms_helper_membership_get_msg_id', $msg );
 	}
 }

@@ -4,6 +4,10 @@ class MS_View_Membership_List extends MS_View {
 	
 	public function to_html() {		
 
+		$membership = $this->data['membership'];
+		$admin_message = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
+		$title = MS_Helper_Membership::get_admin_title();
+		
 		$membership_list = new MS_Helper_List_Table_Membership();
 		$membership_list->prepare_items();
 
@@ -14,8 +18,7 @@ class MS_View_Membership_List extends MS_View {
 			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
 			'class' => 'button',
 		);
-		$desc = $this->data['admin_message'];
-		$title = empty( $desc ) ? __( 'Memberships', MS_TEXT_DOMAIN ) : __( 'Congratulations!', MS_TEXT_DOMAIN ); 
+		
 		ob_start();
 		?>
 		
@@ -23,7 +26,7 @@ class MS_View_Membership_List extends MS_View {
 			<?php 
 				MS_Helper_Html::settings_header( array(
 					'title' => $title,
-					'desc' => $desc,
+					'desc' => $admin_message,
 				) ); 
 			?>
 			<form action="" method="post">

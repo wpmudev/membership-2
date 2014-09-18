@@ -175,6 +175,10 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					$msg = $this->save_membership( $fields );
 					
+					/** Reload membership after creating*/
+					$membership = $this->load_membership();
+					$membership_id = $membership->id;
+					
 					$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					switch( $membership->type ) {
 						case MS_Model_Membership::TYPE_CONTENT_TYPE:
@@ -382,7 +386,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $membership;
 		$data['create_new_url'] = add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ), MS_Controller_Plugin::get_admin_url() );
-		$data['admin_message'] = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
+
 		$view = apply_filters( 'ms_view_membership_list', new MS_View_Membership_List() ); ;
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data );
 		$view->render();
