@@ -312,6 +312,7 @@ class MS_View_Settings_Edit extends MS_View {
 				$view->render();
 			?>
 			</div>
+			<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 		</div>
 		<?php 
 		$html = ob_get_clean();

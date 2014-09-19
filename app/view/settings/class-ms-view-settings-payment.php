@@ -36,7 +36,6 @@ class MS_View_Settings_Payment extends MS_View {
 	
 	private function get_global_payment_fields() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-// 		$action = $this->data['action'];
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
 		$nonce = wp_create_nonce( $action );
 		
@@ -48,7 +47,7 @@ class MS_View_Settings_Payment extends MS_View {
 					'value' => $settings->currency,
 					'field_options' => $settings->get_currencies(),
 					'class' => '',
-					'class' => 'chosen-select',
+					'class' => 'chosen-select ms-ajax-update',
 					'data_ms' => array(
 							'field' => 'currency',
 							'_wpnonce' => $nonce,
@@ -60,7 +59,7 @@ class MS_View_Settings_Payment extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
 					'value' => $settings->invoice_sender_name,
-					'class' => '',
+					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 							'field' => 'invoice_sender_name',
 							'_wpnonce' => $nonce,

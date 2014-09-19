@@ -338,7 +338,7 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		MS_Helper_Debug::log($action);		
+
 		if( is_array( $settings ) ) {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
