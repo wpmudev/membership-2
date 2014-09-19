@@ -37,6 +37,8 @@ class MS_Controller_Settings extends MS_Controller {
 	
 	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
 	
+	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
+	
 	/**
 	 * The model to use for loading/saving Membership settings data.
 	 *
@@ -74,8 +76,8 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
-		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
@@ -92,7 +94,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function ajax_action_toggle_settings() {
 		
-		$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
+		$this->model = MS_Factory::load( 'MS_Model_Settings' );
 		
 		$msg = 0;
 		if( $this->verify_nonce() && ! empty( $_POST['setting'] ) && $this->is_admin_user() ) {
@@ -105,10 +107,10 @@ class MS_Controller_Settings extends MS_Controller {
 	
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
+		$this->model = MS_Factory::load( 'MS_Model_Settings' );
 		$required = array( 'field' );
 		$isset = array( 'value' );
-// 		MS_Helper_Debug::log($_POST);
+
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
 		}
@@ -117,6 +119,25 @@ class MS_Controller_Settings extends MS_Controller {
 		exit;
 	}
 	
+	public function ajax_action_update_protection_msg() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if( ! $this->is_admin_user() ) {
+			return $msg;
+		}
+		
+		$isset = array( 'type', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+			if( MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] ) ) {
+				$this->model = MS_Factory::load( 'MS_Model_Settings' );
+				$this->model->set_protection_message( $_POST['type'], $_POST['value'] );
+				$this->model->save();
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+			}
+		}
+		
+		echo $msg;
+		exit;
+	}
 	/**
 	 * Show admin notices.
 	 *
@@ -392,6 +413,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * 
 	 * @since 4.0.0
 	 *
+	 * @deprecated
 	 * @param mixed[] $fields The data to process.
 	 */	
 	public function save_protection_messages( $fields ) {
@@ -399,7 +421,7 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-	
+
 		if( ! empty( $fields ) ) {
 			$types = MS_Model_Settings::get_protection_msg_types();
 

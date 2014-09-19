@@ -319,50 +319,52 @@ class MS_View_Settings_Edit extends MS_View {
 	}
 	
 	public function render_messages_protection() {
-		$this->prepare_messages_protection();
+		$fields = $this->prepare_protection_messages_fields();
 		?>
 		<div class='ms-settings'>
-	   		<h3><?php  _e( 'Protection Messages', MS_TEXT_DOMAIN ) ; ?></h3>
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) ) ); ?>
 	   		<form class="ms-form" action="" method="post">
-				<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-				<?php MS_Helper_Html::html_input( $this->fields['action'] );?>
 				<?php
 					MS_Helper_Html::settings_box(
-						array( $this->fields['content'] ), 
-						__( 'Content protection message', MS_TEXT_DOMAIN ), 
-						'',
-						array( 'label_element' => 'h3' ) );
+						array( $fields['content'] ), 
+						__( 'Content protection message', MS_TEXT_DOMAIN ) 
+					);
 				?>
 				<?php
 					MS_Helper_Html::settings_box(
-						array( $this->fields['shortcode'] ), 
-						__( 'Shortcode protection message', MS_TEXT_DOMAIN ), 
-						'',
-						array( 'label_element' => 'h3' ) );
+						array( $fields['shortcode'] ), 
+						__( 'Shortcode protection message', MS_TEXT_DOMAIN ) 
+					);
 				?>
 				<?php
 					MS_Helper_Html::settings_box(
-						array( $this->fields['more_tag'] ), 
-						__( 'More tag protection message', MS_TEXT_DOMAIN ), 
-						'',
-						array( 'label_element' => 'h3' ) );
+						array( $fields['more_tag'] ), 
+						__( 'More tag protection message', MS_TEXT_DOMAIN ) 
+					);
 				?>
-				<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
-				<?php MS_Helper_Html::html_input( $this->fields['submit'] ); ?>
+				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 			</form>
    		</div>
 		<?php
 	}
 
-	public function prepare_messages_protection() {
-		$this->fields = array(
+	public function prepare_protection_messages_fields() {
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_PROTECTION_MSG;
+		$nonce = wp_create_nonce( $action );
+
+		$fields = array(
 			'content' => array(
 					'id' => 'content',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium',
+					'class' => 'ms-textarea-medium ms-ajax-update',
+					'data_ms' => array(
+							'type' => 'content',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 			'shortcode' => array(
 					'id' => 'shortcode',
@@ -370,7 +372,13 @@ class MS_View_Settings_Edit extends MS_View {
 					'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium',
+					'class' => 'ms-textarea-medium ms-ajax-update',
+					'data_ms' => array(
+							'type' => 'shortcode',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
+
 			),
 			'more_tag' => array(
 					'id' => 'more_tag',
@@ -378,19 +386,15 @@ class MS_View_Settings_Edit extends MS_View {
 					'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
 					'value' => $this->model->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium',
-			),
-			'submit' => array(
-					'id' => 'submit',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Submit', MS_TEXT_DOMAIN ),
-			),
-			'action' => array(
-					'id' => 'action',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => 'save_messages_protection',
+					'class' => 'ms-textarea-medium ms-ajax-update',
+					'data_ms' => array(
+							'type' => 'more_tag',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
 			),
 		);
+		return apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
 	}
 	
 	public function render_messages_automated() {

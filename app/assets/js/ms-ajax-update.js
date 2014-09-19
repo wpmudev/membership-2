@@ -61,6 +61,7 @@ jQuery( document ).ready( function( $ ) {
 
 	$( '.ms-radio-slider' ).click( ms_functions.feedback );
 	$( '.chosen-select' ).chosen({ disable_search_threshold: 5 });
-	$( '.chosen-select.ms-ajax-update' ).chosen().change( function() { ms_functions.feedback( this ) } ); 
+	$( '.chosen-select.ms-ajax-update' ).chosen().change( function() { ms_functions.feedback( this ) } );
+	$( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
 	
 });
