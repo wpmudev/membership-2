@@ -90,6 +90,45 @@ class MS_Model_Settings extends MS_Model_Option {
 		return apply_filters( 'ms_model_settings_get_setting', $value, $field );
 	}
 	
+	public function create_menu( $type ) {
+		if( self::is_valid_special_page_type( $type ) ) {
+			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+			foreach( $navs as $nav ) {
+				$args['meta_query'] = array(
+						array(
+								'key' => '_menu_item_object_id' ,
+								'value' => $this->get_special_page( $type, true ), 
+						),
+						array(
+								'key' => '_menu_item_object' ,
+								'value' => 'page', 
+						),
+						array(
+								'key' => '_menu_item_type' ,
+								'value' => 'post_type', 
+						),
+				);
+				/** Search for existing menu item and create it if not found*/
+				$items = wp_get_nav_menu_items( $nav, $args );
+				if( empty( $items ) ) {
+					$page = get_post( $this->get_special_page( $type ) );
+
+					$menu_item = apply_filters( 'ms_model_settings_create_menu_item', array(
+							'menu-item-object-id' => $page->ID,
+							'menu-item-object' => 'page',
+							'menu-item-parent-id' => 0,
+							'menu-item-position' => 0,
+							'menu-item-type' => 'post_type',
+							'menu-item-title' => $page->post_title,
+							'menu-item-url' => get_permalink( $page->ID ),
+							'menu-item-status' => 'publish',
+					) );
+					wp_update_nav_menu_item( $nav->term_id, 0, $menu_item );
+				}
+			}
+		}
+	}
+	
 	public function is_special_page( $page_id = null, $special_page_type = null ) {
 	
 		$is_special_page = false;
@@ -119,9 +158,17 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $is_special_page;
 	}
 	
-	public function get_special_page( $type, $create = false ) {
-		$page_id = null;
+	public static function is_valid_special_page_type( $type ) {
+		$valid = false;
 		if( in_array( $type, self::get_special_page_types() ) ) {
+			$valid = true;
+		}
+		return apply_filters( 'ms_model_settings_is_valid_special_page_type', $valid );
+	}
+	
+	public function get_special_page( $type, $create_if_not_exists = false ) {
+		$page_id = null;
+		if( self::is_valid_special_page_type( $type ) ) {
 			if( ! empty( $this->pages[ $type ] ) ){
 				$page_id = $this->pages[ $type ];
 				$page = get_post( $page_id );
@@ -129,7 +176,7 @@ class MS_Model_Settings extends MS_Model_Option {
 					$page_id = 0;
 				}
 			}
-			if( empty( $page_id ) && $create ){
+			if( empty( $page_id ) && $create_if_not_exists ){
 				$page_id = $this->create_special_page( $type );
 			}
 		}

@@ -534,7 +534,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @since 1.0
 	 * 
-	 * @return bool $marked True in the first time setup is finished.array
+	 * @return bool $marked True in the first time setup is finished.
 	 */
 	public function mark_setup_completed() {
 		$marked = false;

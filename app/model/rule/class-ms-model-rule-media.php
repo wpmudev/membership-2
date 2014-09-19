@@ -69,7 +69,16 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 				self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
 		) );
 	}
-		
+	
+	public static function is_valid_protection_type( $type ) {
+		$valid = false;
+		$types = self::get_protection_types();
+		if( array_key_exists( $type, $types ) ) {
+			$valid = true;
+		}
+		return apply_filters( 'ms_model_rule_media_is_valid_protection_type', $valid );
+	}
+	
 	/**
 	 * Setup filter hook to protect media file.
 	 *  

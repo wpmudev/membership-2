@@ -67,7 +67,10 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 	
 	/**
-	 * Get settings model 
+	 * Get settings model
+	 * 
+	 * @since 1.0
+	 * 
 	 * @return MS_Model_Settings
 	 */
 	public function get_model() {	
@@ -149,12 +152,20 @@ class MS_Controller_Settings extends MS_Controller {
 	public function auto_setup_settings( $membership ) {
 		MS_Helper_Debug::log("auto_setup_settings");
 		
-		/** Create menus/special pages */
 		$settings = $this->get_model();
+		
+		/** Create menus/special pages */
+		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, true );
+		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT, true );
+		
+		$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
 		
 		/** Create additional menus */
 		if( ! $membership->private ) {
-						
+			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME, true );
+			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP, true );
+			
+			$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 		}
 
 	}

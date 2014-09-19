@@ -313,16 +313,13 @@ class MS_Controller_Membership extends MS_Controller {
 	private function mark_setup_completed() {
 		$msg = 0;
 		$membership = $this->load_membership();
+		
 		if( $membership->mark_setup_completed() ) {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
-			$this->auto_setup();
+			do_action( 'ms_controller_membership_setup_completed', $membership );
 		}
-		return apply_filters( 'ms_controller_membership_mark_setup_completed', $msg );
-	}
-	
-	private function auto_setup() {
-		MS_Helper_Debug::log("auto_setup");
 		
+		return apply_filters( 'ms_controller_membership_mark_setup_completed', $msg );
 	}
 	
 	public function page_setup_protected_content() {
@@ -934,7 +931,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$bread_crumbs['current'] = array(
 						'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
 				);
-				if( ! $this->model->private ) {
+				if( ! $membership->private ) {
 					$bread_crumbs['next'] = array(
 							'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 					);
