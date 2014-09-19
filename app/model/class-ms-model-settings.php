@@ -384,5 +384,21 @@ class MS_Model_Settings extends MS_Model_Option {
 					break;
 			}
 		}
+		else {
+			switch( $property ) {
+				case 'page_no_access':
+					$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $value;
+					break;
+				case 'page_account':
+					$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $value;
+					break;
+				case 'page_welcome':
+					$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $value;
+					break;
+				case 'page_signup':
+					$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $value;
+					break;
+			}
+		}
 	}
 }

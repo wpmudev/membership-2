@@ -106,9 +106,10 @@ class MS_Controller_Settings extends MS_Controller {
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-
-		$required = array( 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
+		$required = array( 'field' );
+		$isset = array( 'value' );
+// 		MS_Helper_Debug::log($_POST);
+		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
 		}
 		
@@ -316,7 +317,7 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+		MS_Helper_Debug::log($action);		
 		if( is_array( $settings ) ) {
 			foreach( $settings as $field => $value ) {
 				switch( $action ) {
@@ -328,6 +329,7 @@ class MS_Controller_Settings extends MS_Controller {
 					case 'submit_payment':
 					case 'save_downloads':
 					case 'save_payment_settings':
+					case 'update_setting':
 					default:
 						$this->model->$field = $value;
 						break;
@@ -462,15 +464,17 @@ class MS_Controller_Settings extends MS_Controller {
 	public function enqueue_scripts() {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
+
+		wp_enqueue_style( 'jquery-chosen' );
 		
-		wp_enqueue_script( 'ms-radio-slider' );
+// 		wp_enqueue_script( 'ms-radio-slider' );
+		wp_enqueue_script( 'ms-ajax-update' );
 		
 		wp_register_script( 'ms-view-settings', $plugin_url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-view-settings' );
 		
 		switch( $this->get_active_tab() ) {
 			case 'payment':
-				wp_enqueue_style( 'jquery-chosen' );
 				add_thickbox();
 				wp_enqueue_script( 'ms-view-settings-payment' );
 				break;

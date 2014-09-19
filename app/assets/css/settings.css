@@ -246,7 +246,9 @@ h2.ms-settings-title,
 .chosen-container {
     margin: 0.5em 0;
 }
-
+.ms-hidden {
+	display:none;
+}
 /** Member search */
 #member-search-box {
 	float:right;

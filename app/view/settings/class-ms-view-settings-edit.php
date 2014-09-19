@@ -153,99 +153,154 @@ class MS_View_Settings_Edit extends MS_View {
 	}
 	
 	public function render_pages() {
-		$this->prepare_pages();
-		$action = array(
-			'id' => 'action',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => 'create_special_page',
-		);
+		$fields = $this->prepare_pages_fields();
+		
 		?>
 			<div class='ms-settings'>
-			   	<h3><?php  _e( 'Page Settings', MS_TEXT_DOMAIN ) ; ?></h3>
+				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) ) ); ?>
 				<form action="" method="post">
 					<?php
-						wp_nonce_field( $action['value'] );
-						MS_Helper_Html::html_input( $action );
+						MS_Helper_Html::html_input( $fields['control']['action'] );
+						MS_Helper_Html::html_input( $fields['control']['nonce'] );
+						MS_Helper_Html::html_input( $fields['page_urls'] );
+						MS_Helper_Html::html_input( $fields['page_edit_urls'] );
 					?>
-					<?php foreach( $this->fields as $field ): ?>
-						<div class="ms-settings-box-wrapper">
-							<div class="ms-settings-box">
-								<h3><?php echo $field['box_title'];?></h3>
-								<div class="inside">
-									<?php 
-										MS_Helper_Html::html_input( $field );
-										MS_Helper_Html::html_submit( array( 
-											'id' => "create_page_{$field['id']}", 
-											'value' => __('Create new page', MS_TEXT_DOMAIN ), 
-											'class' => 'button button-primary ms-create-page',
-										) );
-									?>
-									<div id="ms-settings-page-links-wrapper">
-										<?php
-											MS_Helper_Html::html_link( array(
-												'url' => get_permalink( $field['value'] ),
-												'value' => __( 'View', MS_TEXT_DOMAIN ),
-											) );
-										?>
-										<span> | </span>	
-										<?php edit_post_link( __( 'Edit', MS_TEXT_DOMAIN ), '', '', $field['value'] ); ?>
-									</div>
-								</div>
+					<?php foreach( $fields['pages'] as $field ): ?>
+						<?php MS_Helper_Html::settings_box_header( );?>
+							<?php 
+								MS_Helper_Html::html_input( $field );
+								MS_Helper_Html::html_submit( array( 
+									'id' => "create_page_{$field['id']}", 
+									'value' => __('Create new page', MS_TEXT_DOMAIN ), 
+									'class' => 'button button-primary ms-create-page',
+								) );
+							?>
+							<div id="ms-settings-page-links-wrapper">
+								<?php
+									MS_Helper_Html::html_link( array(
+										'id' => "url_page_{$field['id']}",
+										'url' => get_permalink( $field['value'] ),
+										'value' => __( 'View', MS_TEXT_DOMAIN ),
+									) );
+								?>
+								<span> | </span>
+								<?php
+									MS_Helper_Html::html_link( array(
+										'id' => "edit_url_page_{$field['id']}",
+										'url' => get_edit_post_link( $field['value'] ),
+										'value' => __( 'Edit', MS_TEXT_DOMAIN ),
+									) );
+								?>	
 							</div>
-						</div>
+						<?php MS_Helper_Html::settings_box_footer();?>
 					<?php endforeach;?>
-					<?php MS_Helper_Html::html_submit( array( 'id' => 'submit_pages' ) );?>
 		   		</form>
+		   		<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 			</div>
 		<?php
 	}
 	
-	public function prepare_pages() {
+	public function prepare_pages_fields() {
 
 		$pages['no_access'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS );
 		$pages['account'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
 		$pages['welcome'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME );
 		$pages['signup'] = $this->model->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 		
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
+		$nonce = wp_create_nonce( $action );
+		
 		$all_pages = $this->model->get_pages();
-		$this->fields = array(
-			'no_access' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
-					'value' => $pages['no_access'],
-					'field_options' => $all_pages,
-					'class' => '',
-					'box_title' => __( 'Protected content page', MS_TEXT_DOMAIN ),
+		$page_urls = array();
+		$page_edit_urls = array();
+		foreach( $all_pages as $id => $page ) {
+			$page_urls[ $id ] = get_permalink( $id );
+			$page_edit_urls[ $id ] = get_edit_post_link( $id );
+		}
+		 
+		$fields = array(
+			'pages' => array(
+				'no_access' => array(
+						'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
+						'value' => $pages['no_access'],
+						'field_options' => $all_pages,
+						'class' => 'chosen-select ms-ajax-update',
+						'data_ms' => array(
+							'field' => 'page_no_access',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+						),
+				),
+				'account' => array(
+						'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
+						'value' => $pages['account'],
+						'field_options' => $all_pages,
+						'class' => 'chosen-select ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'page_account',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+				),
+				'welcome' => array(
+						'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
+						'value' => $pages['welcome'],
+						'field_options' => $all_pages,
+						'class' => 'chosen-select ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'page_welcome',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+				),
+				'signup' => array(
+						'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
+						'value' => $pages['signup'],
+						'field_options' => $all_pages,
+						'class' => 'chosen-select ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'page_signup',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+				),
 			),
-			'account' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
-					'value' => $pages['account'],
-					'field_options' => $all_pages,
-					'class' => '',
-					'box_title' => __( 'Account page', MS_TEXT_DOMAIN ),
+			'control' => array(
+				'action' => array(
+						'id' => 'action',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 'create_special_page',
+				),
+				'nonce' => array(
+						'id' => '_wpnonce',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => wp_create_nonce( 'create_special_page' ),
+				),
 			),
-			'welcome' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
+			'page_urls' => array(
+					'id' => 'page_urls',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
-					'value' => $pages['welcome'],
-					'field_options' => $all_pages,
-					'class' => '',
-					'box_title' => __( 'Welcome page', MS_TEXT_DOMAIN ),
+					'field_options' => $page_urls,
+					'class' => 'ms-hidden',
 			),
-			'signup' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
+			'page_edit_urls' => array(
+					'id' => 'page_edit_urls',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
-					'value' => $pages['signup'],
-					'field_options' => $all_pages,
-					'class' => '',
-					'box_title' => __( 'Signup page', MS_TEXT_DOMAIN ),
+					'field_options' => $page_edit_urls,
+					'class' => 'ms-hidden',
 			),
+			
 		);
+
+		return apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
 	}
 	public function render_payment() {
 		ob_start();
