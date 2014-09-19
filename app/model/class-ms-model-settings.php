@@ -398,6 +398,12 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'page_signup':
 					$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $value;
 					break;
+				case 'protection_type':
+					$this->downloads['protection_type'] = $value;
+					break;
+				case 'masked_url':
+					$this->downloads['masked_url'] = $value;
+					break;
 			}
 		}
 	}

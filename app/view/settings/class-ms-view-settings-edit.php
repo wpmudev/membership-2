@@ -550,27 +550,30 @@ class MS_View_Settings_Edit extends MS_View {
 	}
 	
 	public function render_downloads() {
-		$this->prepare_downloads();
+		$fields = $this->prepare_downloads_fields();
 		?>
 		<div class='ms-settings'>
 			<h3><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h3>	
 			<div class="metabox-holder">
 				<form action="" method="post">
-					<?php wp_nonce_field( $this->fields['action']['value'] );?>
 					<?php
 						MS_Helper_Html::settings_box(
-							$this->fields 
+							$fields 
 						);
 					?>
+					<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 				</form>
 			</div>
 		</div>
 		<?php
 	}
-	public function prepare_downloads() {
+	public function prepare_downloads_fields() {
 		$upload_dir = wp_upload_dir();
  
-		$this->fields = array(
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
+		$nonce = wp_create_nonce( $action );
+		
+		$fields = array(
 				'protection_type' => array(
 						'id' => 'protection_type',
 						'name' => 'downloads[protection_type]',
@@ -578,6 +581,12 @@ class MS_View_Settings_Edit extends MS_View {
 						'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
 						'value' => $this->model->downloads['protection_type'],
 						'field_options' => MS_Model_Rule_Media::get_protection_types(),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'protection_type',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
 				'upload_url' => array(
 						'id' => 'mailchimp_api_test',
@@ -594,27 +603,15 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Masked download url', MS_TEXT_DOMAIN ),
 						'value' => $this->model->downloads['masked_url'],
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'field' => 'masked_url',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
-				'_wpnonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => wp_create_nonce( 'save_downloads' ),
-				),
-				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'save_downloads',
-				),
-				'separator2' => array(
-						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-				),
-				'submit_downloads' => array(
-						'id' => 'submit_downloads',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
-				)
 		);
+		return apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
 	}
 	
 }
