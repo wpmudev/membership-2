@@ -71,7 +71,7 @@ jQuery( document ).ready( function( $ ) {
 
 	$( 'div.ms-radio-slider' ).click( function() { ms_functions.radio_slider_ajax_update( this ) });
 	$( '.chosen-select' ).chosen({ disable_search_threshold: 5 });
-	$( '.chosen-select.ms-ajax-update' ).chosen().change( function() { ms_functions.ajax_update( this ) } );
+//	$( '.chosen-select.ms-ajax-update' ).chosen().change( function() { ms_functions.ajax_update( this ) } );
 	$( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() { ms_functions.ajax_update( this ) } );
 	
 });
