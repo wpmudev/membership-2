@@ -40,27 +40,9 @@ class MS_Controller_Settings extends MS_Controller {
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
 	
 	/**
-	 * The model to use for loading/saving Membership settings data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */	
-	private $model;
-
-	/**
-	 * View to use for rendering Membership Settings manager.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $views
-	 */	
-	private $views;
-
-	/**
 	 * The current active tab in the vertical navigation.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var $active_tab
 	 */
@@ -69,11 +51,12 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Prepare Membership settings manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */		
 	public function __construct() {
 		$hook = 'protected-content_page_protected-content-settings';
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
+		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
@@ -84,20 +67,27 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 	
 	/**
+	 * Get settings model 
+	 * @return MS_Model_Settings
+	 */
+	public function get_model() {	
+		return MS_Factory::load( 'MS_Model_Settings' );
+	}
+	
+	/**
 	 * Handle Ajax toggle action.
 	 *
 	 * **Hooks Actions: **
 	 *
 	 * * wp_ajax_toggle_settings
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	public function ajax_action_toggle_settings() {
-		
-		$this->model = MS_Factory::load( 'MS_Model_Settings' );
-		
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['setting'] ) && $this->is_admin_user() ) {
+		
+		$fields = array( 'setting' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 	
@@ -105,13 +95,20 @@ class MS_Controller_Settings extends MS_Controller {
 		exit;
 	}
 	
+	/**
+	 * Handle Ajax update setting action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_setting
+	 *
+	 * @since 1.0
+	 */
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		$this->model = MS_Factory::load( 'MS_Model_Settings' );
-		$required = array( 'field' );
-		$isset = array( 'value' );
-
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+		
+		$isset = array( 'field', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
 		}
 		
@@ -119,29 +116,53 @@ class MS_Controller_Settings extends MS_Controller {
 		exit;
 	}
 	
+	/**
+	 * Handle Ajax update protection msg.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_protection_msg
+	 *
+	 * @since 1.0
+	 */
 	public function ajax_action_update_protection_msg() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
+		$settings = $this->get_model();
 		
 		$isset = array( 'type', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
-			if( MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] ) ) {
-				$this->model = MS_Factory::load( 'MS_Model_Settings' );
-				$this->model->set_protection_message( $_POST['type'], $_POST['value'] );
-				$this->model->save();
-				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-			}
+		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && 
+				$this->is_admin_user() && MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] ) ) {
+			
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
+			$settings->save();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		
 		echo $msg;
 		exit;
 	}
+	
+	public function auto_setup_settings( $membership ) {
+		MS_Helper_Debug::log("auto_setup_settings");
+		
+		/** Create menus/special pages */
+		$settings = $this->get_model();
+		
+		/** Create additional menus */
+		if( ! $membership->private ) {
+						
+		}
+
+	}
+	
 	/**
 	 * Show admin notices.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 *
 	 */
 	public function print_admin_message() {
@@ -186,10 +207,11 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
 	}
+	
 	/**
 	 * Get the current active settings page/tab.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	public function get_active_tab() {
 		$tabs = $this->get_tabs();
@@ -210,99 +232,54 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Manages settings actions.
 	 *
 	 * Verifies GET and POST requests to manage settings.
-	 * @since 4.0.0	
+	 * @since 1.0	
 	 */
 	public function admin_settings_manager() {
 		$this->print_admin_message();
 		$this->get_active_tab();
-
+// 		MS_Helper_Debug::log($_POST);
 		$msg = 0;
-		switch( $this->active_tab ) {
-			case 'general':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				/**
-				 * Admin bar enable request.
-				 */
-				if( ! empty( $_GET['action'] ) && ! empty( $_GET['setting'] ) && $this->verify_nonce( $_GET['action'], 'GET' ) ) {
-					$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
-				}
-				/**
-				 * General tab submit request.
-				 */
-				elseif( ! empty( $_POST['submit_general'] ) && $this->verify_nonce() ) {
-					$msg =  $this->save_general( $_POST['action'], $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
-				}
-				break;
-			case 'pages':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if ( $this->verify_nonce() ) {
-					if( ! empty( $_POST['submit_pages'] ) ) {		
-						$msg = $this->special_pages_do_action( 'submit_pages', $_POST );
-					}
-					else {
-						$msg = $this->special_pages_do_action( 'create_special_page', $_POST );
-					}
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
-				}
-				break;
-			case 'payment':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				/**
-				 * Save payment settings tab
-				 */
-				if ( ! empty( $_POST['submit_payment'] ) && $this->verify_nonce() ) {
-					$msg = $this->save_general( 'submit_payment', $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-				}
-				break;
-			case 'messages-protection':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				if ( ! empty( $_POST['submit'] ) && $this->verify_nonce() ) {
-					
-					$msg = $this->save_protection_messages( $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-				}
-				break;
-			case 'messages-automated':
-				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-				if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
-					$type = $_GET['comm_type'];
-				}
-				if( ! empty( $_POST['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
-					wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
-				}
-				$this->model = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
-				
-				if ( ! empty( $_POST['save_email'] ) && $this->verify_nonce() ) {
-					$msg = $this->save_communication( $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
-				}
-				break;
-			case 'downloads':
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				/**
-				 * Download tab submit request.
-				 */
-				if( ! empty( $_POST['submit_downloads'] ) && $this->verify_nonce() ) {
-					$msg = $this->save_general( $_POST['action'], $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
-				}
-				break;
-			default:
-				$this->model = apply_filters( 'ms_model_settings', MS_Plugin::instance()->settings );
-				/**
-				 * Settings tab submit request.
-				 */
-				if( ! empty( $_POST['submit_settings'] ) && $this->verify_nonce() ) {
-					$msg = $this->save_general( $_POST['action'], $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
-				}
-				break;
-		}
 		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
 		
+		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
+			switch( $this->active_tab ) {
+				case 'general':
+					/**
+					 * Admin bar enable request.
+					 */
+					$fields = array( 'action', 'setting' );
+					if( $this->validate_required( $fields, 'GET' ) ) {
+						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
+					}
+					break;
+				case 'pages':
+					/** Create special page */
+					$msg = $this->special_pages_do_action( $_POST['action'], $_POST );
+					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
+					break;
+				case 'messages-automated':
+					$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+					if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
+						$type = $_GET['comm_type'];
+					}
+					/** Load comm type from user select */
+					if( $this->validate_required( array( 'comm_type' ) ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
+						wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
+					}
+					
+					if( $this->validate_required( array( 'save_email' ) ) ) {
+						$msg = $this->save_communication( $type, $_POST );
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
+					}
+					break;
+				case 'payment':
+				case 'messages-protection':
+				case 'downloads':
+				default:
+					break;
+			}
+		}
 	}
 	
 	/**
@@ -319,10 +296,20 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
 		$data['tabs'] = $this->get_tabs();
-		$data['settings'] = $this->model;
+		$data['settings'] = $this->get_model();
+		
+		if( 'messages-automated' == $this->get_active_tab() ) {
+			$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+			if( ! empty( $_GET['comm_type'] ) ) {
+				$type = $_GET['comm_type'];
+			}
+			$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
+			$data['comm'] = $comm;
+		}
 		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
-		$view->model = $this->model;
+		$view->model = $this->get_model();
 		$view->render();
+		
 	}
 
 	/**
@@ -333,18 +320,19 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @param string $action The action to execute.
 	 * @param string $settings Array of settings to which action will be taken.
 	 */
-	public function save_general( $action, $settings ) {
+	public function save_general( $action, $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-
-		if( is_array( $settings ) ) {
-			foreach( $settings as $field => $value ) {
+		$settings = $this->get_model();
+		
+		if( is_array( $fields ) ) {
+			foreach( $fields as $field => $value ) {
 				switch( $action ) {
 					case 'toggle_activation':
 					case 'toggle_settings':
-						$this->model->$field = ! $this->model->$field;
+						$settings->$field = ! $settings->$field;
 						break;
 					case 'save_general':
 					case 'submit_payment':
@@ -352,11 +340,11 @@ class MS_Controller_Settings extends MS_Controller {
 					case 'save_payment_settings':
 					case 'update_setting':
 					default:
-						$this->model->$field = $value;
+						$settings->$field = $value;
 						break;
 				}
 			}
-			$this->model->save();
+			$settings->save();
 			
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
@@ -379,17 +367,18 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		do_action( 'ms_controller_settings_special_pages_do_action', $action, $fields );
 		
+		$settings = $this->get_model();
 		switch( $action ) {
 			case 'submit_pages':
 				$special_pages_types = MS_Model_Settings::get_special_page_types();
-				$pages = $this->model->pages;
+				$pages = $settings->pages;
 				foreach( $special_pages_types as $type ) {
 					if( ! empty( $fields[ $type ] ) ) {
 						$pages[ $type ] = $fields[ $type ];
 					}
 				}
-				$this->model->pages = $pages;
-				$this->model->save();
+				$settings->pages = $pages;
+				$settings->save();
 				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 				break;
 			case 'create_special_page':
@@ -397,8 +386,8 @@ class MS_Controller_Settings extends MS_Controller {
 				foreach( $special_pages_types as $type ) {
 					$submit = "create_page_{$type}";
 					if( ! empty( $fields[ $submit ] ) ) {
-						$this->model->create_special_page( $type, false );
-						$this->model->save();
+						$settings->create_special_page( $type, false );
+						$settings->save();
 						$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 					}
 				}
@@ -409,58 +398,31 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 	
 	/**
-	 * Handle saving of Protection messages settings.
-	 * 
-	 * @since 4.0.0
-	 *
-	 * @deprecated
-	 * @param mixed[] $fields The data to process.
-	 */	
-	public function save_protection_messages( $fields ) {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-
-		if( ! empty( $fields ) ) {
-			$types = MS_Model_Settings::get_protection_msg_types();
-
-			foreach( $types as $type ) {
-				if( isset( $fields[ $type ] ) ) {
-					$this->model->set_protection_message( $type, $fields[ $type ] );
-				}
-			}
-			$this->model->save();
-			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-		}
-		
-		return $msg;
-	}
-	
-	/**
 	 * Handle saving of Communication settings.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param mixed[] $fields The data to process.
 	 */
-	public function save_communication( $fields ) {
+	public function save_communication( $type, $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		
+		$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
+		
 		if( ! empty( $fields ) ) {
 			$period = array();
-			$this->model->enabled = ! empty( $fields['enabled'] );
-			$this->model->subject = ! empty( $fields['subject'] ) ? $fields['subject'] : '';
-			$this->model->message = ! empty( $fields['message'] ) ? $fields['message'] : '';
+			$comm->enabled = ! empty( $fields['enabled'] );
+			$comm->subject = ! empty( $fields['subject'] ) ? $fields['subject'] : '';
+			$comm->message = ! empty( $fields['message'] ) ? $fields['message'] : '';
 			$period['period_unit'] = ! empty( $fields['period_unit'] ) ? $fields['period_unit'] : '';
 			$period['period_type'] = ! empty( $fields['period_type'] ) ? $fields['period_type'] : '';
-			$this->model->period = $period;
-			$this->model->cc_enabled = ! empty( $fields['cc_enabled'] );
-			$this->model->cc_email = ! empty( $fields['cc_email'] ) ? $fields['cc_email'] : '';
-			$this->model->save();
+			$comm->period = $period;
+			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
+			$comm->cc_email = ! empty( $fields['cc_email'] ) ? $fields['cc_email'] : '';
+			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		return $msg;
@@ -489,7 +451,6 @@ class MS_Controller_Settings extends MS_Controller {
 
 		wp_enqueue_style( 'jquery-chosen' );
 		
-// 		wp_enqueue_script( 'ms-radio-slider' );
 		wp_enqueue_script( 'ms-ajax-update' );
 		
 		wp_register_script( 'ms-view-settings', $plugin_url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), $version );

@@ -78,19 +78,11 @@ class MS_Model_Settings extends MS_Model_Option {
 		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED,
 		'masked_url' => 'downloads',
 	);
-	
-	public function __construct() {
-		$this->add_action( 'wp_loaded', 'initial_setup' );	
-	}
-	
+		
 	public static function get_setting( $field ) {
 		$value = null;
-		if( empty( self::$instance ) ) {
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
-		}
-		else {
-			$settings = self::$instance;
-		}
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
 		if( property_exists( $settings, $field ) ) {
 			$value = $settings->$field;
 		}
@@ -98,13 +90,6 @@ class MS_Model_Settings extends MS_Model_Option {
 		return apply_filters( 'ms_model_settings_get_setting', $value, $field );
 	}
 	
-	public function initial_setup() {
-		MS_Model_Membership::get_visitor_membership();
-		if( ! $this->initial_setup ) {
-// 			$this->create_initial_pages();
-		}
-	}
-
 	public function is_special_page( $page_id = null, $special_page_type = null ) {
 	
 		$is_special_page = false;
@@ -134,7 +119,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		return $is_special_page;
 	}
 	
-	public function get_special_page( $type ) {
+	public function get_special_page( $type, $create = false ) {
 		$page_id = null;
 		if( in_array( $type, self::get_special_page_types() ) ) {
 			if( ! empty( $this->pages[ $type ] ) ){
@@ -144,99 +129,11 @@ class MS_Model_Settings extends MS_Model_Option {
 					$page_id = 0;
 				}
 			}
-			if( empty( $page_id ) ){
+			if( empty( $page_id ) && $create ){
 				$page_id = $this->create_special_page( $type );
 			}
 		}
-		return $page_id;
-	}
-	
-	public function get_special_page_url( $type, $ssl = false ) {
-		$url = get_permalink( $this->get_special_page( $type ) );
-		if( $ssl ) {
-			$url = MS_Helper_Utility::get_ssl_url( $url );
-		}
-		return apply_filters( 'ms_model_settings_get_special_page_url',  $url );	
-	}
-	
-	public function create_page_no_access( $virtual = true ) {
-		$content = '<p>' . __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN ) . '</p>';
-		$content = '';
-		$page_details = array( 
-				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
-				'post_name' => 'protected', 
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish', 
-				'post_type' => 'page', 
-				'ping_status' => 'closed', 
-				'comment_status' => 'closed' , 
-				'post_content' => $content,
-		);
-		$id = wp_insert_post( $page_details );
-		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
-	}
-	
-	public function create_page_account( $virtual = false ) {
-// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
-		$content = '';
-		$page_details = array(
-				'post_title' => __( 'Account', MS_TEXT_DOMAIN ),
-				'post_name' => 'account',
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
-				'post_type' => 'page',
-				'ping_status' => 'closed',
-				'comment_status' => 'closed' ,
-				'post_content' => $content,
-// 				'post_parent' => $post_parent,
-		);
-		$id = wp_insert_post( $page_details );
-		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
-	}
-	
-	public function create_page_welcome( $virtual = true ) {
-		$content = '';
-		$page_details = array(
-				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
-				'post_name' => 'welcome',
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
-				'post_type' => 'page',
-				'ping_status' => 'closed',
-				'comment_status' => 'closed' ,
-				'post_content' => $content
-		);
-		$id = wp_insert_post( $page_details );
-		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
-	}
-
-	public function create_page_signup( $virtual = false ) {
-// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
-		$content = '';
-		$page_details = array(
-				'post_title' => __( 'Signup', MS_TEXT_DOMAIN ),
-				'post_name' => 'signup',
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
-				'post_type' => 'page',
-				'ping_status' => 'closed',
-				'comment_status' => 'closed' ,
-				'post_content' => $content,
-// 				'post_parent' => $post_parent,
-		);
-		$id = wp_insert_post( $page_details );
-		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
-	}
-	
-	public function create_page_menu( $virtual ) {
-		$content = '';
-		$page_details = array(
-				'post_title' => __( 'Membership', MS_TEXT_DOMAIN ),
-				'post_name' => 'membership',
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
-				'post_type' => 'page',
-				'ping_status' => 'closed',
-				'comment_status' => 'closed' ,
-				'post_content' => $content
-		);
-		$id = wp_insert_post( $page_details );
-		$this->pages[ self::SPECIAL_PAGE_MENU ] = $id;
+		return apply_filters( 'ms_model_settings_get_special_page', $page_id );
 	}
 	
 	public function create_special_page( $type, $virtual = false ) {
@@ -248,6 +145,90 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 	}
 	
+	public function get_special_page_url( $type, $ssl = false ) {
+		$url = get_permalink( $this->get_special_page( $type ) );
+		if( $ssl ) {
+			$url = MS_Helper_Utility::get_ssl_url( $url );
+		}
+		return apply_filters( 'ms_model_settings_get_special_page_url',  $url );	
+	}
+	
+	protected function create_page_no_access( $virtual = true ) {
+		$page_details = apply_filters( 'ms_model_settings_create_page_no_access', array( 
+				'post_title' => __( 'Protected Content', MS_TEXT_DOMAIN ), 
+				'post_name' => 'protected', 
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish', 
+				'post_type' => 'page', 
+				'ping_status' => 'closed', 
+				'comment_status' => 'closed' , 
+				'post_content' => '',
+		) );
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $id;
+		$this->save();
+	}
+	
+	protected function create_page_account( $virtual = false ) {
+// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
+		$page_details = apply_filters( 'ms_model_settings_create_page_account', array(
+				'post_title' => __( 'Account', MS_TEXT_DOMAIN ),
+				'post_name' => 'account',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => '',
+// 				'post_parent' => $post_parent,
+		) );
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $id;
+	}
+	
+	protected function create_page_welcome( $virtual = true ) {
+		$page_details = apply_filters( 'ms_model_settings_create_page_welcome', array(
+				'post_title' => __( 'Welcome', MS_TEXT_DOMAIN ),
+				'post_name' => 'welcome',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => ''
+		) );
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $id;
+	}
+
+	protected function create_page_signup( $virtual = false ) {
+// 		$post_parent = $this->get_special_page( self::SPECIAL_PAGE_MENU );
+		$content = '';
+		$page_details = apply_filters( 'ms_model_settings_create_page_signup', array(
+				'post_title' => __( 'Signup', MS_TEXT_DOMAIN ),
+				'post_name' => 'signup',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => '',
+// 				'post_parent' => $post_parent,
+		) );
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $id;
+	}
+	
+	protected function create_page_menu( $virtual ) {
+		$page_details = apply_filters( 'ms_model_settings_create_page_menu', array(
+				'post_title' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'post_name' => 'membership',
+				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
+				'post_type' => 'page',
+				'ping_status' => 'closed',
+				'comment_status' => 'closed' ,
+				'post_content' => ''
+		) );
+		$id = wp_insert_post( $page_details );
+		$this->pages[ self::SPECIAL_PAGE_MENU ] = $id;
+	}
+		
 	public static function get_special_page_types() {
 		return apply_filters( 'ms_model_settings_get_special_page_types', array( 
 				self::SPECIAL_PAGE_NO_ACCESS,
@@ -277,11 +258,9 @@ class MS_Model_Settings extends MS_Model_Option {
 			$cont[ $content->ID ] = $content->post_title;
 		}
 		
-		return $cont;
+		return apply_filters( 'ms_model_settings_get_pages', $cont );
 	}
 		
-
-	
 	public static function get_protection_msg_types() {
 		$types = array(
 				self::PROTECTION_MSG_CONTENT,
@@ -387,22 +366,24 @@ class MS_Model_Settings extends MS_Model_Option {
 		else {
 			switch( $property ) {
 				case 'page_no_access':
-					$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $value;
+					$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $this->validate_min( $value, 0 );
 					break;
 				case 'page_account':
-					$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $value;
+					$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $this->validate_min( $value, 0 );
 					break;
 				case 'page_welcome':
-					$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $value;
+					$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $this->validate_min( $value, 0 );
 					break;
 				case 'page_signup':
-					$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $value;
+					$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $this->validate_min( $value, 0 );
 					break;
 				case 'protection_type':
-					$this->downloads['protection_type'] = $value;
+					if( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {
+						$this->downloads['protection_type'] = $value;
+					}
 					break;
 				case 'masked_url':
-					$this->downloads['masked_url'] = $value;
+					$this->downloads['masked_url'] = sanitize_text_field( $value );
 					break;
 			}
 		}
