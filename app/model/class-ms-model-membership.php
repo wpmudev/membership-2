@@ -100,6 +100,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $rules = array();
 	
+	public function before_save() {
+		foreach( $this->rules as $rule ) {
+			$rule->membership_id = $this->id;
+		}
+	}
+	
 	public function after_load() {
 		/** validate rules using protected content rules */
 		if( ! $this->visitor_membership ) {
