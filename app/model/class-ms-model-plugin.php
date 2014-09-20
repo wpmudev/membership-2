@@ -159,7 +159,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		if( ! $has_access ) {
-			$no_access_page_url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, true );
+			$no_access_page_url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, false, true );
 			$current_page_url = MS_Helper_Utility::get_current_page_url();
 
 			/** Don't redirect the protection page. */

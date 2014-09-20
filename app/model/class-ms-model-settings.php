@@ -192,8 +192,8 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 	}
 	
-	public function get_special_page_url( $type, $ssl = false ) {
-		$url = get_permalink( $this->get_special_page( $type ) );
+	public function get_special_page_url( $type, $ssl = false, $create_if_not_exists = false ) {
+		$url = get_permalink( $this->get_special_page( $type, $create_if_not_exists ) );
 		if( $ssl ) {
 			$url = MS_Helper_Utility::get_ssl_url( $url );
 		}
