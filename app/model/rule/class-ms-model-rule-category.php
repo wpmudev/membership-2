@@ -58,9 +58,10 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 				$categories = array();
 				$contents = $this->get_contents();
+				$contents = get_categories( 'get=all' );
 				foreach( $contents as $content ) {
-					if( $content->access ) {
-						$categories[] = $content->id;
+					if( parent::has_access( $content->term_id ) ) {
+						$categories[] = $content->term_id;
 					}
 				}
 				$wp_query->query_vars['category__in'] = $categories;
