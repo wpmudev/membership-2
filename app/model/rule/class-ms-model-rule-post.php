@@ -46,37 +46,28 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			 * Only verify permission if ruled by post by post.
 			 */
 			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-
-				/** If default access is true, set which posts should be protected. */
-				if( $this->rule_value_default ) {
-					foreach( $this->rule_value as $id => $value ) {
-						if( ! $value ) {
-							$wp_query->query_vars['post__not_in'][] = $id;
-						}
-					}
-						
-				}
-				/** If default is false, set which posts has access. */
-				else {
-					foreach( $this->rule_value as $id => $value ) {
-						if( $value ) {
-							$wp_query->query_vars['post__in'][] = $id;
-						}
+				foreach( $this->rule_value as $id => $value ) {
+					if( ! $this->has_access( $id ) ) {
+						$wp_query->query_vars['post__not_in'][] = $id;
 					}
 				}
 			}
 			
-			/**
-			 * Exclude dripped content.
-			 * Can't include posts, just exclude because of category clause conflict to post_in.
-			 * Using filter 'posts_where' to include dripped content.
-			 * * @todo handle default rule value.
-			 */
-			foreach( $this->dripped as $post_id => $period ) {
-				if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
-					$wp_query->query_vars['post__not_in'][] = $post_id;
-					if( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
-						unset( $wp_query->query_vars['post__in'][ $key ] );
+			$membership = $this->get_membership();
+			if( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+				$dripped_type = $this->get_dripped_type();
+				/**
+				 * Exclude dripped content.
+				 * Can't include posts, just exclude because of category clause conflict to post_in.
+				 * Using filter 'posts_where' to include dripped content.
+				 * * @todo handle default rule value.
+				 */
+				foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
+					if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
+						$wp_query->query_vars['post__not_in'][] = $post_id;
+						if( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
+							unset( $wp_query->query_vars['post__in'][ $key ] );
+						}
 					}
 				}
 			}
@@ -97,15 +88,20 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
 			&& ( ! isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
 			
-			$posts = array();
-			foreach( $this->dripped as $post_id => $period ) {
-				if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
-					$posts[] = $post_id;
+			$membership = $this->get_membership();
+			if( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+				$dripped_type = $this->get_dripped_type();
+						
+				$posts = array();
+				foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
+					if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
+						$posts[] = $post_id;
+					}
 				}
-			}
-			if( ! empty( $posts ) ) {
-				$post__in = join( ',', $posts );
-				$where .= " OR {$wpdb->posts}.ID IN ($post__in)";
+				if( ! empty( $posts ) ) {
+					$post__in = join( ',', $posts );
+					$where .= " OR {$wpdb->posts}.ID IN ($post__in)";
+				}
 			}
 		}
 		return $where;

@@ -48,15 +48,19 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function protect_pages( $pages ) {
 		$rule_value = apply_filters( 'ms_model_rule_page_protect_pages_rule_value', $this->rule_value );
 	
-		foreach ( (array) $pages as $key => $page ) {
+		$membership = $this->get_membership();
+		foreach( (array) $pages as $key => $page ) {
 			if( ! self::has_access( $page->ID ) ) {
 				unset( $pages[ $key ] );
 			}
+			
 			/**
 			 * Dripped content.
 			 */
-			if( $this->has_dripped_rules( $page->ID ) && ! $this->has_dripped_access( $this->start_date, $page->ID ) ) {
-				unset( $pages[ $key ] );
+			if( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+				if( $this->has_dripped_rules( $page->ID ) && ! $this->has_dripped_access( $this->start_date, $page->ID ) ) {
+					unset( $pages[ $key ] );
+				}
 			}
 				
 		}
