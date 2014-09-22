@@ -88,32 +88,38 @@ class MS_Model_Addon extends MS_Model_Option {
 		}
 	}
 	
+	public function auto_config( $membership ) {
+		if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
+			$this->enable( self::ADDON_MULTI_MEMBERSHIPS );	
+		}
+	}
+	
 	public function get_addon_list() {
 		return apply_filters( 'ms_model_addon_get_addon_list', array( 
-				self::ADDON_MULTI_MEMBERSHIPS => (object) array(
-					'id' => self::ADDON_MULTI_MEMBERSHIPS,
-					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ), 	
-					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
-				),
-				self::ADDON_TRIAL => (object) array(
-						'id' => self::ADDON_TRIAL,
-						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
-						'active' => $this->is_enabled( self::ADDON_TRIAL ),
-				),
+// 				self::ADDON_MULTI_MEMBERSHIPS => (object) array(
+// 					'id' => self::ADDON_MULTI_MEMBERSHIPS,
+// 					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ), 	
+// 					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
+// 					'active' => $this->is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
+// 				),
+// 				self::ADDON_TRIAL => (object) array(
+// 						'id' => self::ADDON_TRIAL,
+// 						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
+// 						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
+// 						'active' => $this->is_enabled( self::ADDON_TRIAL ),
+// 				),
 				self::ADDON_COUPON => (object) array(
 						'id' => self::ADDON_COUPON,
 						'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
 						'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
 						'active' => $this->is_enabled( self::ADDON_COUPON ),
 				),
-				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
-						'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
-						'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable private membership levels.', MS_TEXT_DOMAIN ),
-						'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
-				),
+// 				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
+// 						'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
+// 						'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
+// 						'description' => __( 'Enable private membership levels.', MS_TEXT_DOMAIN ),
+// 						'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
+// 				),
 				self::ADDON_POST_BY_POST => (object) array(
 					'id' => self::ADDON_POST_BY_POST,
 					'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
@@ -141,7 +147,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_URL_GROUPS => (object) array(
 						'id' => self::ADDON_URL_GROUPS,
 						'name' => __( 'Url Groups Protection', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable Url Groups protection. This rule will override all other rules. Use it carefully', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable Url Groups protection. This protection will override all other rules. Use it carefully.', MS_TEXT_DOMAIN ),
 						'active' => $this->is_enabled( self::ADDON_URL_GROUPS ),
 				),
 			)

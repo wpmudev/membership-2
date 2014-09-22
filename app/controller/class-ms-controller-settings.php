@@ -167,7 +167,8 @@ class MS_Controller_Settings extends MS_Controller {
 			
 			$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 		}
-
+		$settings->plugin_enabled = true;
+		$settings->save();
 	}
 	
 	/**

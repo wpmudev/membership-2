@@ -65,7 +65,7 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 	
 	public static function upgrade() {
-		$settings = MS_Plugin::instance()->settings;
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		/** Compare current src version to DB version */
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
 			switch( $settings->version ) {
@@ -74,6 +74,7 @@ class MS_Model_Upgrade extends MS_Model {
 					flush_rewrite_rules();
 					break;
 			}
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->version = MS_Plugin::instance()->version;
 			$settings->save();
 		}
@@ -119,7 +120,9 @@ class MS_Model_Upgrade extends MS_Model {
 			$gateway->delete();
 		}
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$settings->tax = array( 'tax_name' => false, 'tax_rate' => false );
+		$settings->delete();
+		$settings = MS_Factory::create( 'MS_Model_Settings' );
+		$settings->instance = $settings;
 		$settings->save();
 		
 		$addon = MS_Factory::load( 'MS_Model_Addon' );

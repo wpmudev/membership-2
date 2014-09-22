@@ -100,7 +100,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	public function global_payment_settings() {
 
 		if( $this->data['is_global_payments_set'] ) {
-// 			return;
+			return;
 		}
 		
 		$view = MS_Factory::create( 'MS_View_Settings_Payment' );

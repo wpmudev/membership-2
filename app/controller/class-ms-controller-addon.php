@@ -72,6 +72,8 @@ class MS_Controller_Addon extends MS_Controller {
 		/** Load the add-on manager model. */
 		$this->add_action( 'load-' . $addon_menu_hook, 'membership_addon_manager' );
 		
+		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_addons' );
+		
 		/**
 		 * Reference the Addon model.
 		 *
@@ -107,6 +109,22 @@ class MS_Controller_Addon extends MS_Controller {
 	
 		echo $msg;
 		exit;
+	}
+	
+	/**
+	 * Auto setup addons when membership setup is completed.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * ms_controller_membership_setup_completed
+	 *
+	 * @since 1.0
+	 */
+	public function auto_setup_addons( $membership ) {
+		MS_Helper_Debug::log("auto_setup_addons");
+		$addons = MS_Factory::load( 'MS_Model_Addon' );
+		
+		$addons->auto_config( $membership );
 	}
 	
 	/**
