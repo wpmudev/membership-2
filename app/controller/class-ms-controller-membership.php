@@ -542,10 +542,11 @@ class MS_Controller_Membership extends MS_Controller {
 			$step = $_REQUEST['step'];
 		}
 		/**
-		 * If left in the middle of the wizard, try to recover last wizard step. 
+		 * If left before completing the wizard, try to recover last wizard step. 
 		 */
 		elseif( $settings->initial_setup ) {
-			if( $settings->wizard_step ) {
+			$wizard_steps = apply_filters( 'ms_controller_membership_wizard_steps', array( self::STEP_SETUP_PROTECTED_CONTENT, self::STEP_CHOOSE_MS_TYPE ) );
+			if( $settings->wizard_step && in_array( $settings->wizard_step, $wizard_steps ) ) {
 				$step = $settings->wizard_step;
 			}
 			else {
