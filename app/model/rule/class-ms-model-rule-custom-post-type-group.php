@@ -77,17 +77,20 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			else {	
 				$post = get_queried_object();
 			}
-			$post_type = ! empty( $post->post_type ) ? $post->post_type : '';
 			
-			if( is_a( $post, 'WP_Post' ) ) {
-				if( in_array( $post_type, self::get_ms_post_types() ) ) {
-					$has_access = true;
-				}
-				elseif( in_array( $post_type, self::get_custom_post_types() ) && parent::has_access( $post_type ) )  {
-					$has_access = true;
-				}
+			$post_type = ! empty( $post->post_type ) ? $post->post_type : '';
+			if( empty( $post_type ) && ! empty( $post->query_var ) ) {
+				$post_type = $post->query_var;
+			}
+			
+			if( in_array( $post_type, self::get_ms_post_types() ) ) {
+				$has_access = true;
+			}
+			elseif( in_array( $post_type, self::get_custom_post_types() ) && parent::has_access( $post_type ) )  {
+				$has_access = true;
 			}
 		}
+
 		return $has_access;
 	}
 	
