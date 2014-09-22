@@ -37,17 +37,17 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 	public function has_access( $post_id = null ) {
 	
 		$has_access = false;
-		/**
-		 * Only verify permission if ruled by cpt post by post.
-		 */
-		if( MS_Model_Addon::is_enabled( MS_Integration_Bbpress::ADDON_BBPRESS ) ) {
-			if( empty( $post_id ) ) {
-				$post_id  = $this->get_current_post_id();
-			}
+		if( empty( $post_id ) ) {
+			$post_id  = $this->get_current_post_id();
+		}
 			
-			if( ! empty( $post_id ) ) {
-				$post_type = get_post_type( $post_id );
-				if( in_array( $post_type, MS_Integration_Bbpress::get_bb_custom_post_types() ) ) {
+		if( ! empty( $post_id ) ) {
+			$post_type = get_post_type( $post_id );
+			if( in_array( $post_type, MS_Integration_Bbpress::get_bb_custom_post_types() ) ) {
+				/**
+				 * Only verify permission if addon is enabled.
+				 */
+				if( MS_Model_Addon::is_enabled( MS_Integration_Bbpress::ADDON_BBPRESS ) ) {
 					switch( $post_type ) {
 						case MS_Integration_Bbpress::CPT_BB_FORUM:
 							$has_access = parent::has_access( $post_id );
@@ -66,19 +66,23 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 							break;
 					}
 				}
-			}
-			else {
-				global $wp_query;
-				/** 
-				 * If post type is forum and no post_id, it is the forum list page, give access. 
-				 * @todo Find another way to find if the current page is the forum list page.
-				 */
-				if( MS_Integration_Bbpress::CPT_BB_FORUM == $wp_query->get( 'post_type' ) ) {
+				else {
 					$has_access = true;
 				}
-				
 			}
 		}
+		else {
+			global $wp_query;
+			/**
+			 * If post type is forum and no post_id, it is the forum list page, give access.
+			 * @todo Find another way to verify if the current page is the forum list page.
+			 */
+			if( MS_Integration_Bbpress::CPT_BB_FORUM == $wp_query->get( 'post_type' ) ) {
+				$has_access = true;
+			}
+		
+		}
+
 	
 		return $has_access;
 	}
@@ -109,27 +113,14 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		/**
 		 * Only protect if add-on is enabled.
 		 * Restrict query to show only has_access cpt posts.
-		 * @todo handle default rule value
 		*/
 		if( MS_Model_Addon::is_enabled( MS_Integration_Bbpress::ADDON_BBPRESS ) ) {
 			if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] ) && 
 				! empty( $post_type ) && MS_Integration_Bbpress::CPT_BB_FORUM == $post_type ) {
 				
-				/** If default access is true, set which posts should be protected. */
-				if( $this->rule_value_default ) {
-					foreach( $this->rule_value as $id => $value ) {
-						if( ! $value ) {
-							$wp_query->query_vars['post__not_in'][] = $id;
-						}
-					}
-				
-				}
-				/** If default is false, set which posts has access. */
-				else {
-					foreach( $this->rule_value as $id => $value ) {
-						if( $value ) {
-							$wp_query->query_vars['post__in'][] = $id;
-						}
+				foreach( $this->rule_value as $id => $value ) {
+					if( ! $this->has_access( $id ) ) {
+						$wp_query->query_vars['post__not_in'][] = $id;
 					}
 				}
 			}
