@@ -617,6 +617,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 						'value' => implode( PHP_EOL, $rule->rule_value ),
 						'class' => 'ms-textarea-medium ms-ajax-update',
+						'read_only' => ( $this->data['protected_content'] ) ? '' : 'readonly',
 						'data_ms' => array(
 								'membership_id' => $membership->id,
 								'rule_type' => $rule->rule_type,

@@ -43,6 +43,8 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 */
 	 public function has_access( $id = null ) {
 
+	 	$has_access = false;
+	 	
 	 	if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 	 		
 			$url = MS_Helper_Utility::get_current_page_url();
@@ -57,20 +59,35 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 			 * Check for exclude list.
 			 */
 			if( $this->check_url_expression_match( $url, $exclude ) ) {
-				return true;
+				$has_access = true;
 			}
 			
 			/**
 			 * Check for url group.
 			 */
 			if( $this->check_url_expression_match( $url, $this->rule_value ) ) {
-				return $this->access;
-			}
-			else {
-				return false;
+				$has_access = $this->access;
+				if( $this->rule_value_invert ) {
+					$has_access = ! $has_access;
+				}
 			}
 	 	}
-	 	return false;
+	 	return apply_filters( 'ms_model_rule_url_group_has_access', $has_access );
+	}
+	
+	public function has_rule_for_current_url() {
+		$has_rules = false;
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			$url = MS_Helper_Utility::get_current_page_url();
+			if( $this->strip_query_string ) {
+				$url = current( explode(  '?', $url ) );
+			}
+			
+			if( $this->check_url_expression_match( $url, $this->rule_value ) ) {
+				$has_rules = true;
+			}
+		}
+		return apply_filters( 'ms_model_rule_url_group_has_access', $has_rules );
 	}
 	
 	/**

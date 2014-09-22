@@ -77,39 +77,42 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_rule_types() {
 		$rule_types =  array(
+				-10 => self::RULE_TYPE_URL_GROUP,
 				0 => self::RULE_TYPE_POST,
-				1 => self::RULE_TYPE_CATEGORY,
-				2 => self::RULE_TYPE_CUSTOM_POST_TYPE,
-				3 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-				4 => self::RULE_TYPE_PAGE,
-				5 => self::RULE_TYPE_MORE_TAG,
-				6 => self::RULE_TYPE_MENU,
-				7 => self::RULE_TYPE_SHORTCODE,
-				8 => self::RULE_TYPE_COMMENT,
-				9 => self::RULE_TYPE_MEDIA,
-				10 => self::RULE_TYPE_URL_GROUP,
+				10 => self::RULE_TYPE_CATEGORY,
+				20 => self::RULE_TYPE_CUSTOM_POST_TYPE,
+				30 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+				40 => self::RULE_TYPE_PAGE,
+				50 => self::RULE_TYPE_MORE_TAG,
+				60 => self::RULE_TYPE_MENU,
+				70 => self::RULE_TYPE_SHORTCODE,
+				80 => self::RULE_TYPE_COMMENT,
+				90 => self::RULE_TYPE_MEDIA,
 		);
 	
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			unset( $rule_types[1] );
+			unset( $rule_types[10] );
 		}
 		else {
 			unset( $rule_types[0] );
 		}
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			unset( $rule_types[3] );
+			unset( $rule_types[30] );
 		}
 		else {
-			unset( $rule_types[2] );
+			unset( $rule_types[20] );
 		}
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			unset( $rule_types[9] );
+			unset( $rule_types[90] );
 		}
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			unset( $rule_types[10] );
+			unset( $rule_types[-10] );
 		}
 	
-		return  apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+		$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+		$rule_type = ksort( $rule_types );
+
+		return  $rule_types;
 	}
 	
 	/**

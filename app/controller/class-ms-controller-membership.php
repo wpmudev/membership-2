@@ -648,7 +648,7 @@ class MS_Controller_Membership extends MS_Controller {
 		 * Disable urlgroup tab.
 		 */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			unset( $tabs['urlgroup'] );
+			unset( $tabs['url_group'] );
 		}
 		/**
 		 * Disable shortcode tab.

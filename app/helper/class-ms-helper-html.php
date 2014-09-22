@@ -132,7 +132,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name' $data_ms>$value</textarea>";
+				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name' $read_only $data_ms>$value</textarea>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_SELECT:

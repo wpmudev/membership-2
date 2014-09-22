@@ -141,7 +141,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_URL_GROUPS => (object) array(
 						'id' => self::ADDON_URL_GROUPS,
 						'name' => __( 'Url Groups Protection', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable Url Groups protection.', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable Url Groups protection. This rule will override all other rules. Use it carefully', MS_TEXT_DOMAIN ),
 						'active' => $this->is_enabled( self::ADDON_URL_GROUPS ),
 				),
 			)
