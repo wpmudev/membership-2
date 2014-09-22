@@ -144,17 +144,21 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		if( empty( $post_id ) ) {
 			$post_id  = $this->get_current_post_id();
 		}
-		/**
-		 * Only verify permission if ruled by post by post.
-		 * @todo verify addon handling
-		 */
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$has_access = parent::has_access( $post_id );
+		
+		$post_type = get_post_type( $post_id );
+		if( in_array( $post_type, array( 'post', '' ) ) ) {
+			/**
+			 * Only verify permission if ruled by post by post.
+			 * @todo verify addon handling
+			 */
+			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+				$has_access = parent::has_access( $post_id );
+			}
+			else {
+				$has_access = $this->get_rule_value( $post_id );
+			}
 		}
-		else {
-			$has_access = $this->get_rule_value( $post_id );
-		}
-
+		
 		/**
 		 * Feed page request
 		 */
