@@ -267,17 +267,33 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				'post_status' => 'publish',
 		);
 		
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$membership = $this->get_membership();
-			$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
+		/** If not visitor membership, just show protected content */
+		if( ! $this->rule_value_invert ) {
+			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+				if( ! empty( $this->rule_value ) ) {
+					$args['post__in'] = array_keys( $this->rule_value );
+				}
+				else {
+					$args['post__in'] = array( 0 );
+				}
+			}
+			/** Category rules */
+			else {
+				$membership = $this->get_membership();
+				$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
+					
+				if( ! empty( $rule_category->rule_value ) ) {
+					$args['category__in'] = array_keys( $rule_category->rule_value );
+					$args['tax_query'] = array( 'relation' => 'OR' );
+				}
+				else {
+					$args['post__in'] = array( 0 );
+				}
 				
-			$args['category__in'] = array_keys( $rule_category->rule_value );
-			$args['tax_query'] = array( 'relation' => 'OR' );			
+			}
 		}
-		
 		$args = wp_parse_args( $args, $defaults );
-		$args = parent::get_query_args( $args );
-
+		
 		return apply_filters( 'ms_model_rule_post_get_query_args', $args );
 	}
 	
