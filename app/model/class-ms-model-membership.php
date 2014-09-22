@@ -74,9 +74,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	protected $visitor_membership = false;
 	
-	protected $is_free;
+	protected $is_free = false;
 	
-	protected $price;
+	protected $price = 0;
 	
 	protected $period;
 		

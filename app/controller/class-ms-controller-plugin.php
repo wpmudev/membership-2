@@ -381,7 +381,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script( 'ms-tooltips', $plugin_url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-tooltips' );
 		
-		wp_register_script( 'ms-view-settings-payment', $plugin_url. 'app/assets/js/ms-view-settings-payment.js', array( 'jquery', 'jquery-chosen', 'jquery-validate' ), $version );
+		wp_register_script( 'ms-view-settings-payment', $plugin_url. 'app/assets/js/ms-view-settings-payment.js', array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-ajax-update' ), $version );
 	}
 
 	/**
