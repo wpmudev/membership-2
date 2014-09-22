@@ -120,23 +120,29 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
 		$args = array( 'post__not_in' => array_unique ( $not_in ) );
-		
-		/** Only active memberships */
-		$args['meta_query']['active'] = array(
-			'key'     => 'active',
-			'value'   => true,
-		); 
-		
-		/** Only public memberships when add-on is enabled. */
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRIVATE_MEMBERSHIPS ) ) {
-			$args['meta_query']['private'] = array(
-				'key'     => 'private',
-				'value'   => '',
-			); 
-		}
-			
+				
 		/** Retrieve memberships user is not part of, using selected args */
-		$data['memberships'] = MS_Model_Membership::get_memberships( $args );
+		$memberships = MS_Model_Membership::get_grouped_memberships( $args );
+		
+		$parent_ids = array();
+		foreach( $memberships as $key => $membership ) {
+			if( $membership->can_have_children() ) {
+				if( ! $membership->active ) {
+					$parent_ids[] = $membership->id;
+				}
+				/** Remove parent memberships */
+				unset( $memberships[ $key ] );
+			}
+			/** If parent is disabled, remove all children */
+			if( in_array( $membership->parent_id, $parent_ids ) ) {
+				unset( $memberships[ $key ] );
+			}
+			/** if private or not active, remove */
+			if( ! $membership->active || $membership->private ) {
+				unset( $memberships[ $key ] );
+			}
+		}
+		$data['memberships'] = $memberships;
 		
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
