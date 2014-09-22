@@ -562,11 +562,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
 		$has_access = false;
+//		MS_Helper_Debug::log("------------------------------");
 		if( $this->active ) {
 			/** If 'has access' is found in the hierarchy, it does have access. */
 			$rules = $this->get_rules_hierarchy();
 			foreach( $rules as $rule ) {
-				$has_access = ( $has_access || $rule->has_access( $post_id ) );
+				/** url groups have final decision */
+				if( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_current_url() ) {
+					$has_access = $rule->has_access();
+					break;
+				}
+				else {
+					$has_access = ( $has_access || $rule->has_access( $post_id ) );
+				}
+//				MS_Helper_Debug::log("rule: $rule->rule_type, $has_access");
 				if( $has_access ) {
 					break;
 				}
