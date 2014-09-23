@@ -533,13 +533,17 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$expire_date = false;
 					break;
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					$expire_date = MS_Helper_Period::add_interval( $membership->period['period_unit'], $membership->period['period_type'], $trial_expire_date );
+					$period_unit = MS_Helper_Period::get_period_value( $membership->period, 'period_unit' );
+					$period_type = MS_Helper_Period::get_period_value( $membership->period, 'period_type' );
+					$expire_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $trial_expire_date );
 					break;
 				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 					$expire_date = $membership->period_date_end;
 					break;
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-					$expire_date = MS_Helper_Period::add_interval( $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'], $trial_expire_date );
+					$period_unit = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_unit' );
+					$period_type = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_type' );
+					$expire_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $trial_expire_date );
 					break;
 			}
 		}
