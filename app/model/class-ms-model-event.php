@@ -340,7 +340,8 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				self::TYPE_MS_BEFORE_FINISHES,
 				self::TYPE_MS_AFTER_FINISHES,
 				self::TYPE_CREDIT_CARD_EXPIRE,
-				self::TYPE_PAYMENT_AFTER_MADE,
+				self::TYPE_PAYMENT_BEFORE_DUE,
+				self::TYPE_PAYMENT_AFTER_DUE,
 		) );
 		if( in_array( $event->type, $check_events ) && $last_event = self::get_last_event_of_type( $event ) ) {
 			if( gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->date ) ) == MS_Helper_Period::current_date() ) {
