@@ -408,20 +408,13 @@ class MS_Controller_Membership extends MS_Controller {
 	
 	public function page_ms_overview() {
 		$membership = $this->load_membership();
+		$membership_id = $membership->id;
 		
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
 		$data['membership'] = $membership;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		
-		$args = array();
-		$args['meta_query']['membership_id'] = array(
-				'key'     => 'membership_id',
-				'value'   => array( $membership->id, 0 ),
-				'compare' => 'IN',
-		);
-		$data['events'] = MS_Model_Event::get_events( $args );
 		
 		$data['members'] = array();
 		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership->id ) );
@@ -435,18 +428,30 @@ class MS_Controller_Membership extends MS_Controller {
 			case MS_Model_Membership::TYPE_TIER:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Tier' );
 				$data['tabs'] = $this->get_children_tabs( $membership );
-				$data['child_membership'] = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
+				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
+				$data['child_membership'] = $child;
+				$membership_id = $child->id;
 				break;
 			case MS_Model_Membership::TYPE_CONTENT_TYPE:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Content_Type' );
 				$data['tabs'] = $this->get_children_tabs( $membership );
-				$data['child_membership'] = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
+				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
+				$data['child_membership'] = $child;
+				$membership_id = $child->id;
 				break;
 			default:
 			case MS_Model_Membership::TYPE_SIMPLE:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview' );
 				break;
 		}
+		$args = array();
+		$args['meta_query']['membership_id'] = array(
+				'key'     => 'membership_id',
+				'value'   => array( $membership_id, 0 ),
+				'compare' => 'IN',
+		);
+		$data['events'] = MS_Model_Event::get_events( $args );
+		
 		$view = apply_filters( 'ms_view_membership_ms_overview', $view );
 		$view->data = apply_filters( 'ms_view_membership_ms_overview_data', $data );
 		$view->render();
