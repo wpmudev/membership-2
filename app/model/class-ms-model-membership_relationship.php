@@ -166,12 +166,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 		
 		if( 'admin' == $gateway_id ) {
-			$ms_relationship->config_period();
 			$ms_relationship->set_status( self::STATUS_ACTIVE );
 		}
 		else {
 			$ms_relationship->get_status();
 		}
+		$ms_relationship->config_period();
 		$ms_relationship->save();
 
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
@@ -408,8 +408,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		) );
 		
 		$eligible = false;
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) &&
-				in_array( $this->status, $trial_eligible_status ) && 
+		if( in_array( $this->status, $trial_eligible_status ) && 
 				! $this->trial_period_completed && $membership->trial_period_enabled ) {
 			
 			$eligible = true;
@@ -496,10 +495,14 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( $this->is_trial_eligible() ) {
 			if( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
-				$trial_expire_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $membership->period_date_start );
+				$period_unit = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_unit' );
+				$period_type = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_type' );
+				$trial_expire_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $membership->period_date_start );
 			}
 			else {
-				$trial_expire_date = MS_Helper_Period::add_interval( $membership->trial_period['period_unit'], $membership->trial_period['period_type'] , $start_date );
+				$period_unit = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_unit' );
+				$period_type = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_type' );
+				$trial_expire_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $start_date );
 			}
 		}
 		else {
@@ -522,7 +525,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		$trial_expire_date = $this->calc_trial_expire_date( $start_date );
 		$expire_date = null;
-		
+
 		/** When in trial period and gateway does not send automatic recurring payment, the expire date is equal to trial expire date. */
 		if( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
 			$expire_date = $trial_expire_date;
@@ -699,14 +702,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $this->start_date, $this->expire_date );
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-				$desc .= sprintf( __( 'each %s %s.', MS_TEXT_DOMAIN ), $membership->pay_cycle_period['period_unit'], $membership->pay_cycle_period['period_type'] );
+				$period_unit = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_unit' );
+				$period_type = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_type' );
+				$desc .= sprintf( __( 'each %s %s.', MS_TEXT_DOMAIN ), $period_unit, $period_type );
 				break;
 		}
 	
 		if( $this->is_trial_eligible() ) {
+			$period_unit = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_unit' );
+			$period_type = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_type' );
+				
 			$desc .= sprintf( __( ' <br />In the trial period of %s %s, you will pay %s %s.', MS_TEXT_DOMAIN ),
-					$membership->trial_period['period_unit'],
-					$membership->trial_period['period_type'],
+					$period_unit,
+					$period_type,
 					$currency,
 					number_format( $membership->trial_price, 2 )
 			);
