@@ -45,18 +45,65 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		return false;
 	}
 	
+	public function get_rule_value( $id ) {
+		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : 0;
+		return apply_filters( 'ms_model_rule_comment_get_rule_value', $value, $id, $this->rule_value );
+	
+	}
+	
 	/**
 	 * Set initial protection.
 	 */
 	public function protect_content( $membership_relationship = false ) {
 		$this->add_filter( 'the_content', 'check_special_page' );
 		
-		if( parent::has_access( self::CONTENT_ID ) ) {
-			add_filter( 'comments_open', '__return_true', 99 );
+		$rule_value = $this->get_rule_value( self::CONTENT_ID );
+		switch( $rule_value ) {
+			case self::RULE_VALUE_WRITE:
+				add_filter( 'comments_open', '__return_true', 99 );
+				break;
+			case self::RULE_VALUE_READ:
+				$this->add_filter( 'comment_reply_link', 'comment_reply_link', 99 );
+				$this->add_filter( 'comments_open', 'read_only_comments', 99 );
+				break;
+			case self::RULE_VALUE_NO_ACCESS:
+				add_filter( 'comments_open', '__return_false', 99 );
+				break;
 		}
-		else {
-			add_filter( 'comments_open', '__return_false', 99 );
+	}
+	
+	/**
+	 * Workaround to enable read only comments.
+	 * 
+	 * @todo find a better way to allow read only comments.
+	 * 
+	 * **Hooks Filters: **
+	 *
+	 * * comments_open
+	 * 
+	 * @since 1.0
+	 * 
+	 * @param bool $open 
+	 * @return boolean
+	 */
+	public function read_only_comments( $open ) {
+		$traces = MS_Helper_Debug::debug_trace( true );
+		if( false !== strpos( $traces, 'function: comment_form' ) ) {
+			$open = false;
 		}
+		return $open;
+	}
+	
+	/**
+	 * Workaroudn to hide reply link when in read only mode.
+	 * 
+	 * @since 1.0
+	 * 
+	 * @param string $link
+	 * @return string
+	 */
+	public function comment_reply_link( $link ) {
+		return '';
 	}
 	
 	/**
@@ -71,32 +118,14 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	
 	public function get_contents( $args = null ) {
 		$contents = array();
-// 		$content = new StdClass();
-// 		$content->id = 'read';
-// 		$content->name = __( 'Read Only Access', MS_TEXT_DOMAIN );
-// 		$content->access = parent::has_access( $content->id );
-// 		$contents[] = $content;
-		
-// 		$content = new StdClass();
-// 		$content->id = 'write';
-// 		$content->name = __( 'Read and Write Access', MS_TEXT_DOMAIN );
-// 		$content->access = parent::has_access( $content->id );
-// 		$contents[] = $content;
-		
-// 		$content = new StdClass();
-// 		$content->id = 'no_access';
-// 		$content->name = __( 'No Access to Comments', MS_TEXT_DOMAIN );
-// 		$content->access = parent::has_access( $content->id );
-// 		$contents[] = $content;
-		
 		return apply_filters( 'ms_model_rule_comment_get_content', $contents );
 	}
 	
 	public function get_content_array( $args = null ) {
 		
 		$contents = array(
-				self::RULE_VALUE_READ => __( 'Read Only Access', MS_TEXT_DOMAIN ),
 				self::RULE_VALUE_WRITE => __( 'Read and Write Access', MS_TEXT_DOMAIN ),
+				self::RULE_VALUE_READ => __( 'Read Only Access', MS_TEXT_DOMAIN ),
 				self::RULE_VALUE_NO_ACCESS => __( 'No Access to Comments', MS_TEXT_DOMAIN ),
 		);
 		

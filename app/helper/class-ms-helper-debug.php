@@ -77,7 +77,7 @@ class MS_Helper_Debug extends MS_Helper {
 		}
 	}
 	
-	public static function debug_trace() {
+	public static function debug_trace( $return = false ) {
 		$traces = debug_backtrace();
 		$fields = array(
 			'file',
@@ -95,7 +95,12 @@ class MS_Helper_Debug extends MS_Helper {
 			}
 			$log[] = "  [$i]". implode( '; ', $line );
 		}
-		error_log( implode( "\n", $log) );
+		if( $return ) {
+			return implode( "\n", $log);	
+		}
+		else {
+			error_log( implode( "\n", $log) );
+		}
 	}
 	
 	public static function process_error_backtrace( $errno, $errstr, $errfile, $errline, $errcontext ) {
