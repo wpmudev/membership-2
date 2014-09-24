@@ -52,7 +52,7 @@
 
 h2.ms-settings-title,
 .ms-wrap .ms-settings-title {
-  font-size: 2em; 
+  font-size: 1.4em; 
   font-weight: bold;
   line-height: 29px;
   padding: 9px 15px;
@@ -85,7 +85,7 @@ h2.ms-settings-title,
 
 .ms-wrap .ms-settings h3 {
 	margin: 0.5em 1em 0.5em 0;
-	font-size: 1.4em;
+	font-size: 1.1em;
 }
 
 .ms-wrap .ms-settings .settings-description {
@@ -192,7 +192,7 @@ h2.ms-settings-title,
 	width: 20%;
 }
 .ms-radio-input-wrapper label {
-	font-size: 1em;
+	font-size: .9em;
 	font-weight: 600;
 }
 .ms-radio-description {

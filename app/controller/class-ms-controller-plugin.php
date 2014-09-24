@@ -328,7 +328,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
 
-		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/settings.css', $version );
+		wp_enqueue_style( 'membership-normalize', $plugin_url. 'app/assets/css/ms-normalize.css', $version );
+		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/ms-settings.css', $version );
 		wp_enqueue_style( 'membership-admin' );
 		
 		wp_register_style( 'membership-tooltip', $plugin_url. 'app/assets/css/ms-tooltip.css', $version );
@@ -353,7 +354,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
 		
-		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/settings.css', $version );
+		wp_enqueue_style( 'membership-normalize', $plugin_url. 'app/assets/css/ms-normalize.css', $version );
+		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/ms-settings.css', $version );
 		
 		wp_register_style( 'membership-shortcode', $plugin_url. 'app/assets/css/ms-shortcode.css', $version );
 		wp_enqueue_style( 'membership-shortcode' );
