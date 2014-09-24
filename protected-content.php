@@ -3,12 +3,12 @@
 Plugin Name: Protected Content
 Version: 1.0
 Plugin URI: http://premium.wpmudev.org/project/protected-content
-Description: The most powerful, easy to use and flexible membership plugin for WordPress, Multisite and BuddyPress sites available. Offer downloads, posts, pages, forums and more to paid members.
+Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
-WDP ID: 140
+WDP ID: 
 License: GNU General Public License (Version 2 - GPLv2)
-Text Domain: wpmudev_membership
+Text Domain: wpmudev_protected_content
  */
 
 /**
@@ -40,11 +40,11 @@ Text Domain: wpmudev_membership
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
 /**
- * Membership text domain.
+ * Plugin text domain.
  *
  * @since 4.0.0
  */
-define('MS_TEXT_DOMAIN', 'wpmudev_membership' );
+define('MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
 
 /**
  * Constant used in wp_enqueue_style and wp_enqueue_script version.
@@ -69,7 +69,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
 
 /**
- * Hooks 'membership_class_path_overrides'. 
+ * Hooks 'ms_class_path_overrides'. 
  *
  * Overrides plugin class paths to adhere to naming conventions
  * where object names are separated by underscores or for special cases.
@@ -79,7 +79,7 @@ define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
  */
-function membership_class_path_overrides( $overrides ) {
+function ms_class_path_overrides( $overrides ) {
 
 	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
 	$overrides['MS_Controller_Membership_Content_Type'] =  "app/controller/membership/class-ms-controller-membership-content-type.php";
@@ -123,10 +123,10 @@ function membership_class_path_overrides( $overrides ) {
 	
 	return $overrides;
 }
-add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides' );
+add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
 
 /**
- * Hooks 'membership_class_file_override'. 
+ * Hooks 'ms_class_file_override'. 
  *
  * Overrides file class paths.
  *
@@ -135,13 +135,13 @@ add_filter( 'membership_class_path_overrides', 'membership_class_path_overrides'
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
  */
-function membership_class_file_override( $file ) {
+function ms_class_file_override( $file ) {
 
 	/** Override all list-table paths. */
 	$file = str_replace( 'helper/list/table', 'helper/list-table', $file );
 	return $file;
 }
-add_filter( 'membership_class_file_override', 'membership_class_file_override' );
+add_filter( 'ms_class_file_override', 'ms_class_file_override' );
 
 /**
  * Primary Membership plugin class.
@@ -244,7 +244,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'membership_plugin_construct_pre_processing', $this );
+		do_action( 'ms_plugin_construct_pre_processing', $this );
 		
 		/** Setup plugin properties */
 		$this->name = MS_PLUGIN_NAME;
@@ -261,7 +261,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'membership_plugin_languages_path', $this->name . '/languages/', $this ) );
+		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this ) );
 						
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
@@ -272,7 +272,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'membership_plugin_loading', $this ); 
+		do_action( 'ms_plugin_loading', $this ); 
 
 		/** 
 		 * Hooks init to register custom post types.
@@ -282,7 +282,7 @@ class MS_Plugin {
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
-		add_action( 'init', array( &$this, 'membership_plugin_constructing' ) );
+		add_action( 'init', array( &$this, 'ms_plugin_constructing' ) );
 		
 		/**
 		 * Creates and Filters the Settings Model.
@@ -290,7 +290,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->settings = apply_filters( 'membership_model_settings', MS_Factory::load( 'MS_Model_Settings' ), $this );
+		$this->settings = apply_filters( 'ms_model_settings', MS_Factory::load( 'MS_Model_Settings' ), $this );
 
 		/**
 		 * Creates and Filters the Addon Model.
@@ -298,7 +298,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->addon = apply_filters( 'membership_model_addon', MS_Factory::load( 'MS_Model_Addon' ), $this );		
+		$this->addon = apply_filters( 'ms_model_addon', MS_Factory::load( 'MS_Model_Addon' ), $this );		
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
@@ -312,7 +312,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'membership_plugin_loaded', $this ); 
+		do_action( 'ms_plugin_loaded', $this ); 
 
 		/**
 		 * Load membership integrations.
@@ -326,7 +326,7 @@ class MS_Plugin {
 	 * @since 4.0.0
 	 * @return void
 	 */	
-	public function membership_plugin_constructing() {
+	public function ms_plugin_constructing() {
 		/**
 		 * Creates and Filters the Plugin Controller.
 		 *
@@ -336,7 +336,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		$this->controller = apply_filters( 'membership_controller_plugin', new MS_Controller_Plugin(), $this );		
+		$this->controller = apply_filters( 'ms_controller_plugin', new MS_Controller_Plugin(), $this );		
 	}
 
 	/**
@@ -397,7 +397,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'membership_plugin_class_loader_pre_processing', $this );
+		do_action( 'ms_plugin_class_loader_pre_processing', $this );
 
 		$basedir = dirname( __FILE__ );
 		$namespaces = array( 'MS_' );
@@ -408,7 +408,7 @@ class MS_Plugin {
 		 * @since 4.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		$path_overrides = apply_filters( 'membership_class_path_overrides', array(), $this );
+		$path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
 		
 		/** 
 		 * Restrict class autoloading to provided namespaces.
@@ -437,7 +437,7 @@ class MS_Plugin {
 							 * @since 4.0.0
 							 * @param object $this The MS_Plugin object.
 							 */
-							$filename = apply_filters( 'membership_class_file_override', $filename, $this );
+							$filename = apply_filters( 'ms_class_file_override', $filename, $this );
 							
 							if ( is_readable( $filename ) ) {
 								require $filename;
@@ -453,7 +453,7 @@ class MS_Plugin {
 						 * @since 4.0.0
 						 * @param object $this The MS_Plugin object.
 						 */
-						$filename = apply_filters( 'membership_class_file_override', $filename, $this );
+						$filename = apply_filters( 'ms_class_file_override', $filename, $this );
 						
 						if ( is_readable( $filename ) ) {
 							require $filename;
@@ -469,7 +469,7 @@ class MS_Plugin {
 						 * @since 4.0.0
 						 * @param object $this The MS_Plugin object.
 						 */
-						do_action( 'membership_plugin_class_loader_namespace', $namespace, $this );
+						do_action( 'ms_plugin_class_loader_namespace', $namespace, $this );
 					break;
 
 			}
@@ -500,7 +500,7 @@ class MS_Plugin {
 			 * @since 4.0.0
 			 * @param object $this The MS_Plugin object.
 			 */
-			$settings_link = apply_filters( 'membership_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
+			$settings_link = apply_filters( 'ms_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
 		} else {
 			
 			/**
@@ -509,7 +509,7 @@ class MS_Plugin {
 			 * @since 4.0.0
 			 * @param object $this The MS_Plugin object.
 			 */
-			$settings_link = apply_filters( 'membership_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
+			$settings_link = apply_filters( 'ms_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
 		}
 		array_unshift( $links, $settings_link );
 

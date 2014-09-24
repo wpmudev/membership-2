@@ -93,9 +93,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		/** Membership controller */
 		$this->controllers['membership'] = apply_filters( 'ms_controller_membership', new MS_Controller_Membership() );
-		$this->controllers['membership_content_type'] = apply_filters( 'ms_controller_membership_content_type', new MS_Controller_Membership_Content_Type() );
-		$this->controllers['membership_dripped'] = apply_filters( 'ms_controller_membership_dripped', new MS_Controller_Membership_Dripped() );
-		$this->controllers['membership_tier'] = apply_filters( 'ms_controller_membership_tier', new MS_Controller_Membership_Tier() );
 		
 		/** Rule controller */
 		$this->controllers['rule'] = apply_filters( 'ms_controller_rule', new MS_Controller_Rule() );
