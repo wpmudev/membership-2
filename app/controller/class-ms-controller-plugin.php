@@ -375,12 +375,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		
 		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_register_script( 'ms-radio-slider', $plugin_url. 'app/assets/js/ms-radio-slider.js', null, $version );
-		wp_register_script( 'ms-ajax-update', $plugin_url. 'app/assets/js/ms-ajax-update.js', array( 'jquery', 'jquery-chosen'), $version );
+		wp_register_script( 'ms-functions', $plugin_url. 'app/assets/js/ms-functions.js', array( 'jquery', 'jquery-chosen'), $version );
 
 		wp_register_script( 'ms-tooltips', $plugin_url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-tooltips' );
 		
-		wp_register_script( 'ms-view-settings-payment', $plugin_url. 'app/assets/js/ms-view-settings-payment.js', array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-ajax-update' ), $version );
+		wp_register_script( 'ms-view-settings-payment', $plugin_url. 'app/assets/js/ms-view-settings-payment.js', array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-functions' ), $version );
 	}
 
 	/**

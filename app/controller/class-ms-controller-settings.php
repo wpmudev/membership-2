@@ -463,7 +463,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		wp_enqueue_style( 'jquery-chosen' );
 		
-		wp_enqueue_script( 'ms-ajax-update' );
+		wp_enqueue_script( 'ms-functions' );
 		
 		wp_register_script( 'ms-view-settings', $plugin_url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'ms-view-settings' );
