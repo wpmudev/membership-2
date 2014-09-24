@@ -384,15 +384,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$action = $this->data['action'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-		$desc = ( $this->data['protected_content'] ) 
+		$comments_desc = ( $this->data['protected_content'] ) 
 			? __( 'Visitors', MS_TEXT_DOMAIN ) 
+			: __( 'Members', MS_TEXT_DOMAIN );
+		$desc = ( $this->data['protected_content'] ) 
+			? __( 'Only Members', MS_TEXT_DOMAIN ) 
 			: __( 'Members', MS_TEXT_DOMAIN );
 		$fields = array(
 			'comment' => array(
 					'id' => 'comment',
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-					'desc' => sprintf( __( '%s have:', MS_TEXT_DOMAIN ), $desc ),
+					'desc' => sprintf( __( '%s have:', MS_TEXT_DOMAIN ), $comments_desc ),
 					'value' => $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ),
 					'field_options' => $rule_comment->get_content_array(),
 					'class' => 'chosen-select',
@@ -476,7 +479,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 							'wrapper' => 'div',
 				);
 			}
-			if( $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ) {
+			if( ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ) {
 				$fields['more_tag'] = array(
 							'id' => 'more_tag',
 							'type' => MS_Helper_Html::TYPE_HTML_TEXT,
