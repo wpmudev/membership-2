@@ -173,7 +173,7 @@ class MS_Helper_Html extends MS_Helper {
 					echo "<div class='ms-radio-input-wrapper $class ms-{$key}'>";
 					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms/> ";
 					echo "<label for='{$id}_{$key}'>$text</label>";
-					echo ! empty( $desc ) ? "<div class='ms-radio-description'>$desc</div>" : '';
+					echo ! empty( $desc ) ? "<div><label for='{$id}_{$key}' class='ms-radio-description'>$desc</label></div>" : '';
 					echo "</div>";
 				}
 				echo ( empty( $title ) ) ? $tooltip_output : '';
@@ -181,19 +181,13 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
 				$checked = checked( $value, true, false );
-// 				echo "<div class='ms-field-container'>";
-				if ( ! empty( $field_options['checkbox_position'] ) &&  'right' == $field_options['checkbox_position'] ) {
-					echo "<span class='ms-label-checkbox'>";
-					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
-				}
 				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked $data_ms/>";
 				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
 					echo "<span class='ms-label-checkbox'>";
-					echo "<label for='$id'><{$label_element} class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</{$label_element}></label>";					
+					echo "<label for='$id' class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</label>";					
 				}
 				echo "</span>";
 				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
-// 				echo "</div>";
 				echo ( empty( $title ) ) ? $tooltip_output : '';				
 				break;
 			case self::INPUT_TYPE_WP_EDITOR:

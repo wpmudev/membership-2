@@ -52,16 +52,16 @@
 	
 }
 .ms-name-wrapper{
-	clear:both;
-	display:block;
-	float:left;
+	clear: both;
+	display: block;
+	float: left;
 	width: 45%;
-	height: 9em;
+	height: 7em;
 }
 .ms-private-wrapper{
-	float:left;
+	float: left;
 	width: 45%;
-	height: 9em;
+	height: 7em;
 }
 .ms-chose-type {
 	float: left;
@@ -69,36 +69,37 @@
     width: 20%;
 	padding: 80px 20px 20px 0;
 	background-color: transparent;
-	outline:none;
+	outline: none;
 	position: relative;
 }
 .ms-chose-type:before {
-  content:'';
-  background:url(../images/membership_sprite.png);
-  background:url(../images/membership_sprite.svg), none;
-  display: inline-block;
-  position: absolute;
-  left:30%;
-  top: 0;
-  width:60px;
-  height:60px;
+	content:'';
+	background:url(../images/membership_sprite.png);
+	background:url(../images/membership_sprite.svg), none;
+	display: inline-block;
+	position: absolute;
+	left: 30%;
+	top: 0;
+	width: 80px;
+	height: 80px;
 }
 
 .ms-chose-type.ms-simple:before {
-  background-position: -29px -30px;
+	background-position: -29px -30px;
 }
 .ms-chose-type.ms-content_type:before {
-  background-position: -119px -20px;
+	background-position: -119px -20px;
 }
 .ms-chose-type.ms-tier:before {
-  background-position: -229px -30px;
+	background-position: -212px -18px;
+    left: 20%;
 }
 .ms-chose-type.ms-dripped:before {
-  background-position: -329px -30px;
+	background-position: -320px -20px;
+    left: 20%;
 }
-.ms-radio-description .ms-eg {
+.ms-radio-description .ms-italic {
 	margin: 1em 0;
-	font-style: italic;
 }
 .ms-control-fields-wrapper {
 	clear: both;
