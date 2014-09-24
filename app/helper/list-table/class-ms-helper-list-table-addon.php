@@ -83,7 +83,7 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $item->active,
 				'class' => '',
-				'field_options' => array(
+				'data_ms' => array(
 						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
 						'field' => 'active',
 						'addon' => $item->id,

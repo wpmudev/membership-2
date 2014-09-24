@@ -77,7 +77,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $item->active,
 				'class' => '',
-				'field_options' => array(
+				'data_ms' => array(
 						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
 						'field' => 'active',
 						'membership_id' => $item->id,
@@ -95,7 +95,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $item->private,
 				'class' => '',
-				'field_options' => array(
+				'data_ms' => array(
 						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
 						'field' => 'public',
 						'membership_id' => $item->id,

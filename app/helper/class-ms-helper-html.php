@@ -111,6 +111,10 @@ class MS_Helper_Html extends MS_Helper {
 		}
 		$placeholder = empty( $placeholder ) ? '' : "placeholder='$placeholder'";
 		if( ! empty( $data_ms ) ) {
+			if( empty( $data_ms['_wpnonce'] ) && ! empty( $data_ms['action'] ) ) {
+				$data_ms['_wpnonce'] = wp_create_nonce( $data_ms['action'] );
+			}
+				
 			$data_ms = esc_attr( json_encode( $data_ms ) );
 			$data_ms = "data-ms='{$data_ms}'";
 		}
@@ -210,18 +214,10 @@ class MS_Helper_Html extends MS_Helper {
 			case self::INPUT_TYPE_RADIO_SLIDER:
 				$turned = ( $value ) ? 'on' : ''; 
 				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
-				if( empty( $field_options['_wpnonce'] ) && ! empty( $field_options['action'] ) ) {
-					$field_options['_wpnonce'] = wp_create_nonce( $field_options['action'] );
-				}
-				$data_toggle = null;
-				if( ! empty( $field_options ) ) {
-					$data_toggle = esc_attr( json_encode( $field_options ) );
-					$data_toggle = "data-toggle='$data_toggle'";
-				}
 				
 				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo "<div class='ms-radio-slider $turned'>";
-		    	echo "<div class='ms-toggle' $data_toggle $data_ms>$link_url</div>";
+		    	echo "<div class='ms-toggle' $data_ms>$link_url</div>";
 		    	if( ! $read_only ) {
 					echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
 		    	}

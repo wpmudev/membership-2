@@ -50,7 +50,7 @@ class MS_View_Membership_Metabox extends MS_View {
 												'value' => $data['has_access'],
 												'class' => '',
 												'read_only' => $this->read_only,
-												'field_options' => array(
+												'data_ms' => array(
 														'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 														'post_id' => $this->data['post_id'],
 														'post_type' => $this->data['post_type'],

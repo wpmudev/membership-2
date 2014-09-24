@@ -114,7 +114,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $item->access,
 				'class' => '',
-				'field_options' => array(
+				'data_ms' => array(
 						'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE,
 						'membership_id' => $this->get_membership_id(),
 						'rule' => $item->type,

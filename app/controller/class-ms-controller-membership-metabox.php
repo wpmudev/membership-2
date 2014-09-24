@@ -111,13 +111,8 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function ajax_action_toggle_metabox_access() {
 
-		$required_fields = array( 'membership_id', 'post_type', 'post_id' );
-		if( $this->verify_nonce() && $this->is_admin_user() ) {
-			foreach( $required_fields as $field ) {
-				if( empty( $_POST[ $field ] ) ) {
-					exit;
-				}
-			}
+		$fields = array( 'membership_id', 'post_type', 'post_id' );
+		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['post_type'], $_POST['membership_id'] );
 			echo true;
 		}
@@ -347,7 +342,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		if( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
 			wp_register_script( 'membership-metabox', MS_Plugin::instance()->url. 'app/assets/js/ms-view-membership-metabox.js' );
 			wp_enqueue_script( 'membership-metabox' );
-			wp_enqueue_script( 'ms-radio-slider' );
+			wp_enqueue_script( 'ms-functions' );
 		}
 		
 	}

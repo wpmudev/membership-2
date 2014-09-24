@@ -1090,7 +1090,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 		
-		wp_enqueue_script( 'ms-radio-slider' );
+		wp_enqueue_script( 'ms-functions' );
 		
 		switch( $this->get_step() ) {
 			case self::STEP_CHOOSE_MS_TYPE:

@@ -12,7 +12,7 @@ class MS_View_Membership_Overview extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $membership->active,
 				'class' => '',
-				'field_options' => array(
+				'data_ms' => array(
 						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
 						'field' => 'active',
 						'membership_id' => $membership->id,

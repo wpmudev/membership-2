@@ -510,12 +510,7 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	public function toggle_access( $id ) {
-		if( isset( $this->rule_value[ $id ] ) ) {
-			$has_access = ! $this->rule_value[ $id ];
-		}
-		else {
-			$has_access = ! $this->rule_value_default;
-		}
+		$has_access = ! $this->get_rule_value( $id );
 		$this->set_access( $id, $has_access );
 	}
 	

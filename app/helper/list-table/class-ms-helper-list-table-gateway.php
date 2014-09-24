@@ -91,7 +91,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 			'value' => $item->active,
 			'class' => '',
-			'field_options' => array(
+			'data_ms' => array(
 				'action' => MS_Controller_Gateway::AJAX_ACTION_TOGGLE_GATEWAY,
 				'gateway_id' => $item->id,
 			),

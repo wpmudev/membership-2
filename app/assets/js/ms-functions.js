@@ -47,15 +47,10 @@ var ms_functions = {
 	            value = 1;
 	        }
 			
-			//TODO change all radio sliders to use ms_data instead of ms-toggle 
-			data = jQuery( obj ).children( '.ms-toggle' ).data( 'toggle' );
-			if( null == data ) {
-				data = jQuery( obj ).children( '.ms-toggle' ).data( 'ms' );
-			}
-			
+			data = jQuery( obj ).children( '.ms-toggle' ).data( 'ms' );
 			if( null != data ) {
+				data.value = value;
 				jQuery.post( ajaxurl, data, function( response ) {
-					data.value = value;
 					jQuery( ms_functions.save_obj_selector ).removeClass( ms_functions.processing_class );
 					jQuery( obj ).removeClass( ms_functions.processing_class );
 					jQuery( obj ).children( 'input' ).val( jQuery( obj ).hasClass( ms_functions.radio_slider_on_class ) );

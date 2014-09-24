@@ -114,7 +114,7 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
 						'value' => $settings->plugin_enabled,
-						'field_options' => array(
+						'data_ms' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'plugin_enabled',
 						),
@@ -124,7 +124,7 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'Hide admin bar for non administrator users.', MS_TEXT_DOMAIN ),
 						'value' => $settings->hide_admin_bar,
-						'field_options' => array(
+						'data_ms' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'hide_admin_bar',
 						),
@@ -134,7 +134,7 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'title' => __( 'Enable wizard.', MS_TEXT_DOMAIN ),
 						'value' => $settings->initial_setup,
-						'field_options' => array(
+						'data_ms' => array(
 								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 								'setting' => 'initial_setup',
 						),

@@ -252,6 +252,7 @@ class MS_Controller_Addon extends MS_Controller {
 			}
 		}
 		$this->model->save();
+		return true;
 	}	
 
 	/**
@@ -268,7 +269,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 4.0.0
 	 */	
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'ms-radio-slider' );		
+		wp_enqueue_script( 'ms-functions' );		
 	}
 		
 }
