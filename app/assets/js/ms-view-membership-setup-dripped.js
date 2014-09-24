@@ -1,41 +1,13 @@
 jQuery( document ).ready( function( $ ) {
 
-	var ms_functions = {
-		feedback: function( obj ) {
-			var data = [], save_obj_selector = '.ms-save-text-wrapper', processing_class = 'ms-processing', init_class = 'ms-init';
-			
-			if( ! $( obj ).hasClass( processing_class ) ) {
-				$( save_obj_selector ).addClass( processing_class );
-				$( save_obj_selector ).removeClass( init_class );
-
-				data = $( obj ).data( 'ms' );
-				if( $( obj ).is( ':checkbox' ) ) {
-					if( $( obj ).attr( 'checked' ) ) {
-						data.value = true;
-					}
-					else {
-						data.value = false;
-					}
-				}
-				else {
-					data.value = $( obj ).val();
-				}
-				
-				$.post( ajaxurl, data, function( response ) {
-					$( save_obj_selector ).removeClass( processing_class );
-				});
-			}
-		},
-		change_dripped_type: function( obj ) {
-			var type = $( obj ).val();
-			
-			$( '.ms-dripped-edit-wrapper' ).hide();
-			$( '.ms-dripped-type-' + type ).show();
-		}
+	//global functions defined in ms-functions.js
+	ms_functions.change_dripped_type = function( obj ) {
+		var type = $( obj ).val();
+		
+		$( '.ms-dripped-edit-wrapper' ).hide();
+		$( '.ms-dripped-type-' + type ).show();
 	}
-	
-	$( 'input.ms-ajax-update, select.ms-ajax-update' ).change( function() { ms_functions.feedback( this ) } );
-	
+		
 	$( 'input[name="dripped_type"]').change( function() { ms_functions.change_dripped_type( this ) } );
 
 	$( '.ms-dripped-spec-date' ).datepicker({
@@ -54,7 +26,6 @@ jQuery( document ).ready( function( $ ) {
 	
 	$( 'input.ms-dripped-edit-ok' ).click( function() {
 		$( this ).parent().parent().removeClass( 'ms-dripped-edit' );
-		console.log( $( this ).parent().parent());
 		period_unit = $( this ).parent().find( 'input' ).val();
 		period_type = $( this ).parent().find( 'select' ).val();
 		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit );

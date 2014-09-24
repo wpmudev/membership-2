@@ -1,6 +1,6 @@
 jQuery( document ).ready( function( $ ) {
 	
-	//global functions defined in ms-ajax-update.js
+	//global functions defined in ms-functions.js
 	ms_functions.payment_type = function( obj ) {
 		$( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
 		payment_type = $( obj ).val();
