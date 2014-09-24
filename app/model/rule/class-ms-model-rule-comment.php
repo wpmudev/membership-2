@@ -29,9 +29,9 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	
 	const CONTENT_ID = 'comment';
 	
-	const RULE_VALUE_NO_ACCESS = 0;
-	const RULE_VALUE_READ = 1;
-	const RULE_VALUE_WRITE = 2;
+	const RULE_VALUE_NO_ACCESS = 1;
+	const RULE_VALUE_READ = 2;
+	const RULE_VALUE_WRITE = 3;
 	
 	/**
 	 * Verify access to the current asset.
@@ -68,6 +68,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 				break;
 			case self::RULE_VALUE_NO_ACCESS:
 				add_filter( 'comments_open', '__return_false', 99 );
+				$this->add_filter( 'get_comments_number', 'get_comments_number' );
 				break;
 		}
 	}
@@ -95,7 +96,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Workaroudn to hide reply link when in read only mode.
+	 * Workaround to hide reply link when in read only mode.
 	 * 
 	 * @since 1.0
 	 * 
@@ -104,6 +105,21 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 */
 	public function comment_reply_link( $link ) {
 		return '';
+	}
+	
+	/**
+	 * Workaround to hide existing comments.
+	 *
+	 * **Hooks Filters: **
+	 *
+	 * * get_comments_number
+	 * 
+	 * @since 1.0
+	 *
+	 * @return int
+	 */
+	public function get_comments_number() {
+		return 0;
 	}
 	
 	/**
@@ -133,6 +149,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	}
 	
 	public function set_access( $id, $rule_value ) {
+		MS_Helper_Debug::log("id: $id, rulevalue: $rule_value");
 		$this->rule_value[ $id ] = $rule_value;
 	}
 }
