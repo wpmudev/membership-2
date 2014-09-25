@@ -5,11 +5,19 @@ body {
   box-sizing: border-box;
 }
 
-h1 {
+.ms-wrap h1 {
   font-size: 2.5em;
 }
 
-input {
+.ms-wrap h2 {
+	font-size: 2em;
+}
+
+.ms-wrap h3 {
+	font-size: 1.4em;
+}
+input,
+select {
 	font-size: .9em;
 }
 .ms-bold {
@@ -43,7 +51,8 @@ input {
     border: 1px solid transparent;
     border-radius: 4px 0 0 4px;
     border-width: 1px 0 1px 1px;
-    font-weight: 700;
+    font-size: .8em;
+    font-weight: 500;
 }
 .ms-wrap .ms-tab.active {
     background: #fff;
@@ -89,7 +98,7 @@ h2.ms-settings-title,
     margin: 9px 15px;
 }
 .ms-settings-desc {
-	font-size: 1em;
+	font-size: .9em;
     text-align: center;
     margin: 0 auto;
 }
@@ -149,7 +158,6 @@ h2.ms-settings-title,
 }
 
 .ms-wrap .ms-settings .ms-settings-box h3 {
-	font-size: 1.4em;
 	border-bottom: 1px solid #EEEEEE;
 	margin: 0;
 	padding: 5px 0;
@@ -168,7 +176,7 @@ h2.ms-settings-title,
 	margin: 10px 0 0;
 	font-style: normal;
 	color: #222;
-    font-size: 1em;
+    font-size: .9em;
 }
 
 .ms-html-text-wrapper {
@@ -197,6 +205,7 @@ h2.ms-settings-title,
 
 .ms-settings .settings-description, .ms-settings-tab-desc {
 	color: #888;
+	font-size: 0.8em;
 }
 /** html fields */
 .ms-field-description {
@@ -214,7 +223,6 @@ h2.ms-settings-title,
 	font-size: .9em;
 	font-weight: 500;
 	position: relative;
-	top: -8px;
 }
 label.ms-radio-description {
 	color: #666;
@@ -492,8 +500,8 @@ textarea.ms-field-input {
 
 /** save text ajax */
 .ms-save-text-wrapper {
-	font-size: 1.1em;
-	font-weight:600;
+	font-size: .9em;
+	font-weight:500;
 }
 .ms-save-text-wrapper.ms-init span {
     display: none;

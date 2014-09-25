@@ -16,9 +16,6 @@ class MS_View_Bbpress_General extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Bbpress( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
-		$title = __( 'bbPress', MS_TEXT_DOMAIN );
-		$desc = __( 'Protect the following bbPress content to members only. ', MS_TEXT_DOMAIN );
-	
 		$edit_link = array(
 				'id' => 'bbpress_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -26,6 +23,13 @@ class MS_View_Bbpress_General extends MS_View {
 				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Integration_Bbpress::RULE_TYPE_BBPRESS ),
 		);
 		
+		$title = __( 'bbPress', MS_TEXT_DOMAIN );
+		if( empty( $this->data['protected_content'] ) ) {
+			$desc = sprintf( __( 'Give access to protected bbPress content to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
+		}
+		else {
+			$desc = __( 'Protect the following bbPress content to members only. ', MS_TEXT_DOMAIN );
+		}
 		ob_start();
 		?>
 			<div class='ms-settings'>

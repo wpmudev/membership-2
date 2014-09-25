@@ -16,9 +16,6 @@ class MS_View_Buddypress_General extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Buddypress( $rule, $membership );
 		$rule_list_table->prepare_items();
 	
-		$title = __( 'BuddyPress', MS_TEXT_DOMAIN );
-		$desc = __( 'Protect the following BuddyPress content to members only. ', MS_TEXT_DOMAIN );
-	
 		$edit_link = array(
 				'id' => 'buddypress_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -26,6 +23,13 @@ class MS_View_Buddypress_General extends MS_View {
 				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS ),
 		);
 		
+		$title = __( 'BuddyPress', MS_TEXT_DOMAIN );
+		if( empty( $this->data['protected_content'] ) ) {
+			$desc = sprintf( __( 'Give access to protected BuddyPress content to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
+		}
+		else {
+			$desc = __( 'Protect the following BuddyPress content to members only. ', MS_TEXT_DOMAIN );
+		}
 		ob_start();
 		?>
 			<div class='ms-settings'>
