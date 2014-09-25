@@ -4,7 +4,7 @@ jQuery( document ).ready( function( $ ) {
 	ms_functions.payment_type = function( obj ) {
 		$( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
 		payment_type = $( obj ).val();
-		$( obj ).parent().parent().find( '.ms-payment-type-' + payment_type).show();
+		$( obj ).parent().parent().find( '.ms-payment-type-' + payment_type ).show();
 		
 		after_end = $( obj ).parent().parent().find( '.ms-after-end-wrapper' );
 		if( 'permanent' == payment_type ) {
@@ -29,9 +29,9 @@ jQuery( document ).ready( function( $ ) {
 	
 	$( 'input[name="is_free"]' ).change( function() { ms_functions.is_free() } );
 
-	$( '.ms-payment-type').change( function() { ms_functions.payment_type( this ) } );
+	$( '.ms-payment-type' ).change( function() { ms_functions.payment_type( this ) } );
 
-	ms_functions.payment_type( $( '.ms-payment-type' ) );
+	$( '.ms-payment-type' ).change();
 	ms_functions.is_free();
 	
 });
