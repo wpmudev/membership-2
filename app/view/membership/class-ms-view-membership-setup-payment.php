@@ -154,7 +154,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	private function get_specific_payment_fields( $membership ) {
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
-	
+
 		$fields = array(
 				'price' => array(
 						'id' => 'price_' . $membership->id,
@@ -175,6 +175,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $membership->payment_type,
 						'field_options' => MS_Model_Membership::get_payment_types(),
+						'read_only' => ( $membership->get_members_count() > 0 ) ? 'disabled' : '',
 						'class' => 'ms-field-input-membership-type ms-payment-type ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'payment_type',

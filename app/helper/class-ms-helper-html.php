@@ -143,7 +143,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
 				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
 				$data_placeholder = empty( $data_placeholder ) ? '' : "data-placeholder='$data_placeholder'";
-				echo "<select id='$id' class='ms-field-input ms-select $class' name='$name' $multiple $data_placeholder $data_ms >";
+				echo "<select id='$id' $read_only class='ms-field-input ms-select $class' name='$name' $multiple $data_placeholder $data_ms >";
 				foreach( $field_options as $key => $option ) {
 					$selected = '';
 					if( is_array( $value ) ) {
