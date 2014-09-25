@@ -7,7 +7,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	public function to_html() {		
 		$fields = $this->get_fields();
 
-		$desc = MS_Helper_Html::html_input( $fields['is_free'], true );
+		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
 		
 		ob_start();
 		?>
@@ -115,36 +115,36 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		<div class="ms-specific-payment-wrapper ms-setup-half-width">
 			<?php MS_Helper_Html::settings_box_header( $title, $desc ); ?>
 				<div class="ms-payment-structure-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['price'] ); ?>
-					<?php MS_Helper_Html::html_input( $fields['payment_type'] ); ?>
+					<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
+					<?php MS_Helper_Html::html_element( $fields['payment_type'] ); ?>
 				</div>
 				<div class="ms-payment-types-wrapper">
 					<div class="ms-payment-type-wrapper ms-payment-type-finite ms-period-wrapper">
-						<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
-						<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
+						<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
+						<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
 					</div>
 					<div class="ms-payment-type-wrapper ms-payment-type-recurring ms-period-wrapper">
-						<?php MS_Helper_Html::html_input( $fields['pay_cycle_period_unit'] );?>
-						<?php MS_Helper_Html::html_input( $fields['pay_cycle_period_type'] );?>
+						<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );?>
+						<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );?>
 					</div>
 					<div class="ms-payment-type-wrapper ms-payment-type-date-range">
-						<?php MS_Helper_Html::html_input( $fields['period_date_start'] );?>
+						<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
 						<span> to </span>
-						<?php MS_Helper_Html::html_input( $fields['period_date_end'] );?>
+						<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
 					</div>											
 				</div>
 				<div class="ms-trial-wrapper">
 					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
 						<div class="ms-period-wrapper">
-							<?php MS_Helper_Html::html_input( $fields['trial_period_enabled'] );?>
-							<?php MS_Helper_Html::html_input( $fields['trial_period_unit'] );?>
-							<?php MS_Helper_Html::html_input( $fields['trial_period_type'] );?>
+							<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
+							<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
+							<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
 						</div>
 					</div>
 				</div>
 				<div class="ms-after-end-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['on_end_membership_id'] );?>
+					<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
 				</div>
 			<?php MS_Helper_Html::settings_box_footer(); ?>
 		</div>

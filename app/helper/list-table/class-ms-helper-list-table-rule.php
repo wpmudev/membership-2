@@ -121,7 +121,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 						'item' => $item->id,
 				),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html = MS_Helper_Html::html_element( $toggle, true );
 		
 		return $html;
 	}
@@ -232,7 +232,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		?>
 			<div class="ms-dripped-edit-wrapper ms-dripped-type-<?php echo MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE; ?>">
 				<?php _e( 'on', MS_TEXT_DOMAIN );?><span class="ms-dripped-desc"></span>
-				<?php MS_Helper_Html::html_input( $fields['spec_date'] );?>
+				<?php MS_Helper_Html::html_element( $fields['spec_date'] );?>
 				<span class="ms-dripped-calendar"></span>
 			</div>
 			<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper ms-dripped-type-<?php echo MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION; ?>">
@@ -241,9 +241,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 					<span class="ms-dripped-pen"></span>
 				</div>
 				<div class="ms-period-editor-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['period_unit_from_reg'] );?>
-					<?php MS_Helper_Html::html_input( $fields['period_type_from_reg'] );?>
-					<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+					<?php MS_Helper_Html::html_element( $fields['period_unit_from_reg'] );?>
+					<?php MS_Helper_Html::html_element( $fields['period_type_from_reg'] );?>
+					<?php MS_Helper_Html::html_element( $fields['ok'] );?>
 				</div>
 			</div>
 			<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper ms-dripped-type-<?php echo MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY; ?>">
@@ -252,9 +252,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 					<span class="ms-dripped-pen"></span>
 				</div>
 				<div class="ms-period-editor-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['period_unit_from_today'] );?>
-					<?php MS_Helper_Html::html_input( $fields['period_type_from_today'] );?>
-					<?php MS_Helper_Html::html_input( $fields['ok'] );?>
+					<?php MS_Helper_Html::html_element( $fields['period_unit_from_today'] );?>
+					<?php MS_Helper_Html::html_element( $fields['period_type_from_today'] );?>
+					<?php MS_Helper_Html::html_element( $fields['ok'] );?>
 				</div>
 			</div>
 		<?php 
@@ -268,7 +268,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->get_membership_id(),
 		);
-		MS_Helper_Html::html_input( $membership_id );
+		MS_Helper_Html::html_element( $membership_id );
 		
 		parent::display();
 	}

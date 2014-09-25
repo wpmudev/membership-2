@@ -71,7 +71,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 						<?php $category_rule_list_table->display(); ?>
 						<?php if( empty( $this->data['protected_content'] ) ): ?>
 							<div class="ms-protection-edit-link">
-								<?php MS_Helper_Html::html_input( $fields['category_rule_edit'] );?>
+								<?php MS_Helper_Html::html_element( $fields['category_rule_edit'] );?>
 							</div>
 						<?php endif;?>
 					</div>
@@ -84,7 +84,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 						<?php $cpt_rule_list_table->display(); ?>
 						<?php if( empty( $this->data['protected_content'] ) ): ?>
 							<div class="ms-protection-edit-link">
-								<?php MS_Helper_Html::html_input( $fields['cpt_group_rule_edit'] );?>
+								<?php MS_Helper_Html::html_element( $fields['cpt_group_rule_edit'] );?>
 							</div>
 						<?php endif;?>
 					</div>

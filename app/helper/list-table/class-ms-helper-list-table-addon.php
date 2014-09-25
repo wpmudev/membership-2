@@ -89,7 +89,7 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 						'addon' => $item->id,
 				),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html = MS_Helper_Html::html_element( $toggle, true );
 		
 		return $html;
 	}

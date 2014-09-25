@@ -27,7 +27,7 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 				<form action="" method="post">
 					<?php
 						foreach( $this->fields as $field) {
-							MS_Helper_Html::html_input( $field );
+							MS_Helper_Html::html_element( $field );
 						} 
 					?>
 					<script

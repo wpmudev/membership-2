@@ -11,7 +11,7 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 				<div><?php printf( __( 'This is Protected Content which <b>%s</b> members has access to.', MS_TEXT_DOMAIN ), $this->data['child_membership']->name ); ?></div>
 				<div>
 					<?php 
-						MS_Helper_Html::html_input( array(
+						MS_Helper_Html::html_element( array(
 							'id' => 'setup_tiers',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => __( 'Setup Content Types', MS_TEXT_DOMAIN ),
@@ -65,7 +65,7 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 				<?php endforeach;?>
 				<div class="ms-protection-edit-wrapper">
 					<?php 
-						MS_Helper_Html::html_input( array(
+						MS_Helper_Html::html_element( array(
 							'id' => 'edit_' . $rule->rule_type,
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => $title,

@@ -61,13 +61,13 @@ class MS_View_Admin_Bar extends MS_View {
 		<form action="" method="post">
 			<?php  
 				if( isset( $this->simulate_date ) ) {
-					MS_Helper_Html::html_input( $this->fields['simulate_date'] );
+					MS_Helper_Html::html_element( $this->fields['simulate_date'] );
 				}
 				elseif( isset( $this->simulate_period_type ) ) {
-					MS_Helper_Html::html_input( $this->fields['simulate_period_unit'] );
-					MS_Helper_Html::html_input( $this->fields['simulate_period_type'] );
+					MS_Helper_Html::html_element( $this->fields['simulate_period_unit'] );
+					MS_Helper_Html::html_element( $this->fields['simulate_period_type'] );
 				}
-				MS_Helper_Html::html_input( $this->fields['simulate_submit'] );
+				MS_Helper_Html::html_element( $this->fields['simulate_submit'] );
 			?>
 		</form>
 		<?php

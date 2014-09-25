@@ -83,7 +83,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						'membership_id' => $item->id,
 				),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html = MS_Helper_Html::html_element( $toggle, true );
 		
 		return $html;
 	}
@@ -101,7 +101,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						'membership_id' => $item->id,
 				),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html = MS_Helper_Html::html_element( $toggle, true );
 		
 		return $html;
 	}

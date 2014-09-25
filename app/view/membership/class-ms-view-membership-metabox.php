@@ -57,7 +57,7 @@ class MS_View_Membership_Metabox extends MS_View {
 														'membership_id' => $membership_id,
 												),
 										);
-										 MS_Helper_Html::html_input( $toggle );
+										 MS_Helper_Html::html_element( $toggle );
 									?>
 								</td>
 							</tr>

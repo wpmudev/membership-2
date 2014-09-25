@@ -18,7 +18,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 					<form action="<?php echo $action_url; ?>" method="post">
 						<?php 
 							foreach( $this->fields as $field ) {
-								MS_Helper_Html::html_input( $field ); 
+								MS_Helper_Html::html_element( $field ); 
 							}
 						?>
 						<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >

@@ -24,7 +24,7 @@ class MS_View_Frontend_Profile extends MS_View {
 				<legend><?php _e( 'Edit profile', MS_TEXT_DOMAIN ); ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
 					<div class="ms-form-element">
-						<?php MS_Helper_Html::html_input( $field );?>
+						<?php MS_Helper_Html::html_element( $field );?>
 					</div>
 				<?php endforeach;?>
 				<?php do_action( 'ms_view_frontend_profile_after_fields' ); ?>

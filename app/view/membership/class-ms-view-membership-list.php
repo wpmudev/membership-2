@@ -31,7 +31,7 @@ class MS_View_Membership_List extends MS_View {
 			?>
 			<form action="" method="post">
 				<div class="ms-list-table-wrapper">
-					<?php MS_Helper_Html::html_input( $create_new_button );?>
+					<?php MS_Helper_Html::html_element( $create_new_button );?>
 					<?php $membership_list->display(); ?>
 				</div>
 			</form>

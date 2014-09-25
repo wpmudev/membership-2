@@ -177,7 +177,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								echo "<div class='couponQuestion'>$have_coupon_message</div>";
 							}
 							foreach( $fields as $field ){
-								MS_Helper_Html::html_input( $field );
+								MS_Helper_Html::html_element( $field );
 							}
 						?>
 					</div>

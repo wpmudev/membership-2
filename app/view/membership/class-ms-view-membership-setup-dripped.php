@@ -26,7 +26,7 @@ protected $fields = array();
 					$nonce = wp_create_nonce( $action );
 					$membership = $this->data['membership'];
 					
-					MS_Helper_Html::html_input( array(
+					MS_Helper_Html::html_element( array(
 								'id' => 'dripped_type',
 								'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 								'value' => $membership->dripped_type,

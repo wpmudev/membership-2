@@ -88,7 +88,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 			<?php 
 				foreach( $this->fields as $field ) {
-					MS_Helper_Html::html_input( $field );
+					MS_Helper_Html::html_element( $field );
 				}
 			?>
 			<div id="ms-membership-wrapper-<?php echo $membership->id; ?>" class="ms-membership-details-wrapper">
@@ -113,7 +113,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							'value' => esc_html( $this->data[ "{$action}_text" ] ),
 							'class' => $class,
 						);
-						MS_Helper_Html::html_input( $submit );
+						MS_Helper_Html::html_element( $submit );
 					?>
 				</div>
 			</div>

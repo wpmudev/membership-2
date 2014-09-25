@@ -19,13 +19,13 @@ class MS_View_Member_Date extends MS_View {
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['member_id'] ); ?>
 					<?php 
 						foreach ( $this->fields['membership_id'] as $field ){
-							MS_Helper_Html::html_input( $field );	
+							MS_Helper_Html::html_element( $field );	
 						} 
 					?>
-					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box_header(
 							__( 'Membership dates', MS_TEXT_DOMAIN ), 
@@ -39,13 +39,13 @@ class MS_View_Member_Date extends MS_View {
 								<tr>
 									<td>
 										<h4><?php echo $field['title']; ?></h4>
-										<?php MS_Helper_Html::html_input( $field ); ?>
+										<?php MS_Helper_Html::html_element( $field ); ?>
 										<span><?php _e( 'Start date', MS_TEXT_DOMAIN ); ?></span>
-										<?php MS_Helper_Html::html_input( $this->fields['dates'][$membership_id]['start_date'] ); ?>
+										<?php MS_Helper_Html::html_element( $this->fields['dates'][$membership_id]['start_date'] ); ?>
 										
 										<?php if( $this->fields['dates'][$membership_id]['expire_date']['value']): ?>
 											<span><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></span>
-											<?php MS_Helper_Html::html_input( $this->fields['dates'][$membership_id]['expire_date'] ); ?>
+											<?php MS_Helper_Html::html_element( $this->fields['dates'][$membership_id]['expire_date'] ); ?>
 										<?php endif;?>
 									</td>
 								</tr>

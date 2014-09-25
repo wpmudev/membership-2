@@ -23,10 +23,10 @@ class MS_View_Settings_Payment extends MS_View {
 				?>
 				<hr />
 				<div class="ms-setup-half-width">
-					<?php MS_Helper_Html::html_input( $fields['currency'] ); ?>
+					<?php MS_Helper_Html::html_element( $fields['currency'] ); ?>
 				</div>
 				<div class="ms-setup-half-width">
-					<?php MS_Helper_Html::html_input( $fields['invoice_sender_name'] ); ?>
+					<?php MS_Helper_Html::html_element( $fields['invoice_sender_name'] ); ?>
 				</div>
 				<?php $gateway_list->display(); ?>
 			</div>

@@ -96,7 +96,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 				'gateway_id' => $item->id,
 			),
 		);
-		$html .= MS_Helper_Html::html_input( $toggle, true );
+		$html .= MS_Helper_Html::html_element( $toggle, true );
 		
 		$html .= sprintf( '<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="#TB_inline?width=%s&height=%s&inlineId=ms-gateway-settings-%s">%s</a></div>',
 				'500',

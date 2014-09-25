@@ -19,8 +19,8 @@ class MS_View_Member_Membership extends MS_View {
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['member_id'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['member_id'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box_header(
 							sprintf( __( 'Membership to %s', MS_TEXT_DOMAIN ), $this->data['title'] ), 
@@ -34,9 +34,9 @@ class MS_View_Member_Membership extends MS_View {
 								<td>
 									<?php
 										if( ! empty( $this->data['memberships_move'] ) ) {
-											MS_Helper_Html::html_input( $this->fields['membership_move'] );
+											MS_Helper_Html::html_element( $this->fields['membership_move'] );
 										} 
-										MS_Helper_Html::html_input( $this->fields['membership_list'] ); 
+										MS_Helper_Html::html_element( $this->fields['membership_list'] ); 
 									?>
 								</td>
 							</tr>

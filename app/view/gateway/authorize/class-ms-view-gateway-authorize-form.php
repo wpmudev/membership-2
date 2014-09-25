@@ -22,7 +22,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 				<?php endif; ?>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
 					<?php foreach( $this->fields['hidden'] as $field ): ?>
-						<?php MS_Helper_Html::html_input( $field ); ?>
+						<?php MS_Helper_Html::html_element( $field ); ?>
 					<?php endforeach;?>
 					<?php $this->render_cim_profiles() ?>
 					<div id="ms-authorize-card-wrapper">
@@ -31,18 +31,18 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 							<tbody>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_input( $this->fields['card']['card_num'] ); ?>
+										<?php MS_Helper_Html::html_element( $this->fields['card']['card_num'] ); ?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_input( $this->fields['card']['card_code'] ); ?>
+										<?php MS_Helper_Html::html_element( $this->fields['card']['card_code'] ); ?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_input( $this->fields['card']['exp_month'] ); ?>
-										<?php MS_Helper_Html::html_input( $this->fields['card']['exp_year'] ); ?>
+										<?php MS_Helper_Html::html_element( $this->fields['card']['exp_month'] ); ?>
+										<?php MS_Helper_Html::html_element( $this->fields['card']['exp_year'] ); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -53,7 +53,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 								<?php foreach( $this->fields['billing'] as $field ): ?>
 									<tr>
 										<td>
-											<?php MS_Helper_Html::html_input( $field ); ?>
+											<?php MS_Helper_Html::html_element( $field ); ?>
 										</td>
 									</tr>
 								<?php endforeach; ?>
@@ -233,7 +233,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 		?>
 			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
 				<div class="authorize-form-block-title"><?php _e( 'Credit card:', MS_TEXT_DOMAIN ); ?></div>
-				<?php MS_Helper_Html::html_input( $cim );?>
+				<?php MS_Helper_Html::html_element( $cim );?>
 			</div>
 		<?php
 	}

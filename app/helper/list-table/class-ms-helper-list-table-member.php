@@ -209,7 +209,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 						'member_id' => $item->id,
 				),
 		);
-		$html = MS_Helper_Html::html_input( $toggle, true );
+		$html = MS_Helper_Html::html_element( $toggle, true );
 		
 		return $html;
 	}
@@ -437,8 +437,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		<div id="member-search-box" class="search-box">
 			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
 			<div class="input-container">
-				<?php MS_Helper_Html::html_input( $search_options ); ?>
-				<?php MS_Helper_Html::html_input( $membership_names ); ?>
+				<?php MS_Helper_Html::html_element( $search_options ); ?>
+				<?php MS_Helper_Html::html_element( $membership_names ); ?>
 				<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />
 				<?php submit_button( $text , 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 			</div>

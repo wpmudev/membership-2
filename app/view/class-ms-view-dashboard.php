@@ -120,7 +120,7 @@ class MS_View_Dashboard extends MS_View {
 							'value' => $this->data['plugin_enabled'] ? __( 'Enabled', MS_TEXT_DOMAIN ) : __( 'Disabled', MS_TEXT_DOMAIN ),
 							'class' => $this->data['plugin_enabled'] ? 'ms-ok' : 'ms-nok',
 					);
-					MS_Helper_Html::html_input( $enabled ); 
+					MS_Helper_Html::html_element( $enabled ); 
 				?>
 				<h4><?php _e( 'Membership breakdown', MS_TEXT_DOMAIN );?></h4>
 				<table class="ms-membership-breakdown-wrapper">

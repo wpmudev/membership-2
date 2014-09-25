@@ -36,7 +36,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 				</div>
 				<?php $this->content_panel( $soon ); ?>
 				<div class="ms-protection-edit-wrapper">
-					<?php MS_Helper_Html::html_input( array(
+					<?php MS_Helper_Html::html_element( array(
 							'id' => 'edit_dripped',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ),

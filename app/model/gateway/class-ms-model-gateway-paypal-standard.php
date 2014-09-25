@@ -276,7 +276,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			}
 			MS_Helper_Html::html_link( array(
 				'url' => $action . '?cmd=_subscr-find&alias=' . $this->merchant_id,
-				'value' => MS_Helper_Html::html_input( $cancel_btn, true ),
+				'value' => MS_Helper_Html::html_element( $cancel_btn, true ),
 			) );
 		}
 	}

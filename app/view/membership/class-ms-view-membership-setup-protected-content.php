@@ -56,12 +56,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<hr />
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ): ?>
 					<div class="ms-rule-wrapper">
-						<?php MS_Helper_Html::html_input( $fields['category'] );?>
+						<?php MS_Helper_Html::html_element( $fields['category'] );?>
 					</div>
 				<?php endif; ?>
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
 					<div class="ms-rule-wrapper">
-						<?php MS_Helper_Html::html_input( $fields['cpt_group'] );?>
+						<?php MS_Helper_Html::html_element( $fields['cpt_group'] );?>
 					</div>
 				<?php endif; ?>
 			</div>
@@ -194,7 +194,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php $rule_list_table->display(); ?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
 						<div class="ms-protection-edit-link">
-							<?php MS_Helper_Html::html_input( $edit_link );?>
+							<?php MS_Helper_Html::html_element( $edit_link );?>
 						</div>
 					<?php endif;?>
 				</form>
@@ -270,7 +270,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php $rule_list_table->display(); ?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
 						<div class="ms-protection-edit-link">
-							<?php MS_Helper_Html::html_input( $edit_link );?>
+							<?php MS_Helper_Html::html_element( $edit_link );?>
 						</div>
 					<?php endif;?>
 				</form>
@@ -321,7 +321,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				</form>
 				<?php if( empty( $this->data['protected_content'] ) ): ?>
 					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_input( $edit_link );?>
+						<?php MS_Helper_Html::html_element( $edit_link );?>
 					</div>
 				<?php endif;?>
 			</div>
@@ -358,29 +358,29 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<hr />
 				
 				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['comment'] );?>
+					<?php MS_Helper_Html::html_element( $fields['comment'] );?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
 						<div class="ms-protection-edit-link">
-							<?php MS_Helper_Html::html_input( $fields['comment_rule_edit'] );?>
+							<?php MS_Helper_Html::html_element( $fields['comment_rule_edit'] );?>
 						</div>
 					<?php endif;?>
 				</div>
 				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_input( $fields['more_tag'] );?>
+					<?php MS_Helper_Html::html_element( $fields['more_tag'] );?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
 						<div class="ms-protection-edit-link">
-							<?php MS_Helper_Html::html_input( $fields['more_tag_rule_edit'] );?>
+							<?php MS_Helper_Html::html_element( $fields['more_tag_rule_edit'] );?>
 						</div>
 					<?php endif;?>
 				</div>
 				<div class="ms-list-table-wrapper">
 					<form id="ms-menu-form" method="post">
-						<?php MS_Helper_Html::html_input( $fields['menu_id'] );?>
+						<?php MS_Helper_Html::html_element( $fields['menu_id'] );?>
 					</form>
 					<?php $rule_list_table->display(); ?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
 						<div class="ms-protection-edit-link">
-							<?php MS_Helper_Html::html_input( $fields['menu_rule_edit'] );?>
+							<?php MS_Helper_Html::html_element( $fields['menu_rule_edit'] );?>
 						</div>
 					<?php endif;?>
 				</div>
@@ -547,7 +547,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				</form>
 				<?php if( empty( $this->data['protected_content'] ) ): ?>
 					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_input( $edit_link );?>
+						<?php MS_Helper_Html::html_element( $edit_link );?>
 					</div>
 				<?php endif;?>
 			</div>
@@ -592,7 +592,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<div class="clear"></div>
 				<?php if( empty( $this->data['protected_content'] ) ): ?>
 					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_input( $edit_link );?>
+						<?php MS_Helper_Html::html_element( $edit_link );?>
 					</div>
 				<?php endif;?>
 				<?php 

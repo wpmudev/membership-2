@@ -18,10 +18,10 @@ class MS_View_Gateway_Authorize_Button extends MS_View {
 			<tr>
 				<td class='ms-buy-now-column' colspan='2' >
 					<form action="<?php echo $action_url; ?>" method="post">
-						<?php MS_Helper_Html::html_input( $this->fields['gateway'] ); ?>
-						<?php MS_Helper_Html::html_input( $this->fields['ms_relationship_id'] ); ?>
-						<?php MS_Helper_Html::html_input( $this->fields['step'] ); ?>
-						<?php MS_Helper_Html::html_input( $this->fields['submit'] ); ?>
+						<?php MS_Helper_Html::html_element( $this->fields['gateway'] ); ?>
+						<?php MS_Helper_Html::html_element( $this->fields['ms_relationship_id'] ); ?>
+						<?php MS_Helper_Html::html_element( $this->fields['step'] ); ?>
+						<?php MS_Helper_Html::html_element( $this->fields['submit'] ); ?>
 					</form>
 				</td>
 			</tr>

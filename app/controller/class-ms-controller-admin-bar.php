@@ -260,9 +260,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		);				
 									
 		ob_start();
-		MS_Helper_Html::html_input( $action_field );
-		MS_Helper_Html::html_input( $membership_field );
-		MS_Helper_Html::html_input( $nonce_field );
+		MS_Helper_Html::html_element( $action_field );
+		MS_Helper_Html::html_element( $membership_field );
+		MS_Helper_Html::html_element( $nonce_field );
 		$html .= ob_get_clean();
 		
 		$html .= '</form>';

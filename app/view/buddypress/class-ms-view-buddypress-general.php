@@ -42,7 +42,7 @@ class MS_View_Buddypress_General extends MS_View {
 				</form>
 				<?php if( empty( $this->data['protected_content'] ) ): ?>
 					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_input( $edit_link );?>
+						<?php MS_Helper_Html::html_element( $edit_link );?>
 					</div>
 				<?php endif;?>
 			</div>

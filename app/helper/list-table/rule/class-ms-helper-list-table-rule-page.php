@@ -129,7 +129,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 		<div class="alignleft actions">
 		<?php
 			$this->months_dropdown( 'page' );
-			MS_Helper_Html::html_input( $filter_button );
+			MS_Helper_Html::html_element( $filter_button );
 		?>
 		</div>
 	<?php

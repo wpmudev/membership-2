@@ -19,19 +19,19 @@ class MS_View_Membership_Choose_Type extends MS_View {
 					<form action="" method="post" id="ms-choose-type-form">
 						<div class="ms-type-wrapper">
 							<h3><?php _e( 'What kind of membership do you want to set up?', MS_TEXT_DOMAIN ); ?></h3>
-							<?php MS_Helper_Html::html_input( $this->fields['type'] ); ?>
+							<?php MS_Helper_Html::html_element( $this->fields['type'] ); ?>
 						</div>
 						<div class="clear"><hr /></div>
 						<div class="ms-name-wrapper">
-							<?php MS_Helper_Html::html_input( $this->fields['name'] ); ?>
+							<?php MS_Helper_Html::html_element( $this->fields['name'] ); ?>
 						</div>
 						<div class="ms-private-wrapper">
-							<?php MS_Helper_Html::html_input( $this->fields['private'] ); ?>
+							<?php MS_Helper_Html::html_element( $this->fields['private'] ); ?>
 						</div>
 						<div class="ms-control-fields-wrapper">
 							<?php
 								foreach( $this->fields['control_fields'] as $field ) {
-									MS_Helper_Html::html_input( $field );		
+									MS_Helper_Html::html_element( $field );		
 								} 
 							?>
 						</div>

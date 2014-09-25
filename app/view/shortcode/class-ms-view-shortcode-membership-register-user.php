@@ -24,7 +24,7 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 				<legend><?php _e( 'Create an Account', MS_TEXT_DOMAIN ); ?></legend>
 				<?php foreach( $this->fields as $field ): ?>
 					<div class="ms-form-element">
-						<?php MS_Helper_Html::html_input( $field );?>
+						<?php MS_Helper_Html::html_element( $field );?>
 					</div>
 				<?php endforeach;?>
 				<?php do_action( 'ms_view_shortcode_membership_register_user_after_fields' ); ?>

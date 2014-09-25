@@ -30,11 +30,11 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 			?>
 			<div class="ms-content-type-wrapper">
 				<form action="" method="post" id="ms-create-child-form" >
-					<?php MS_Helper_Html::html_input( $this->fields['action'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['step'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['_wpnonce'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['name'] ); ?>
-					<?php MS_Helper_Html::html_input( $this->fields['submit_content_type'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['step'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['_wpnonce'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['name'] ); ?>
+					<?php MS_Helper_Html::html_element( $this->fields['submit_content_type'] ); ?>
 				</form>
 				<?php $list_table->display(); ?>
 				<?php 

@@ -27,7 +27,7 @@ class MS_View_Membership_Overview extends MS_View {
 				
 		<div class="wrap ms-wrap">
 			<div class="ms-membership-status-wrapper">
-				<?php MS_Helper_Html::html_input( $toggle ); ?>
+				<?php MS_Helper_Html::html_element( $toggle ); ?>
 				<div id='ms-membership-status' class="ms-membership-status <?php echo $status_class; ?>">
 					<?php 
 						printf( '<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>', 
@@ -85,7 +85,7 @@ class MS_View_Membership_Overview extends MS_View {
 						</table>
 						<div class="ms-news-view-wrapper">
 							<?php 
-								MS_Helper_Html::html_input( array(
+								MS_Helper_Html::html_element( array(
 										'id' => 'view_news',
 										'type' => MS_Helper_Html::TYPE_HTML_LINK,
 										'value' => __( 'View More News', MS_TEXT_DOMAIN ), 
@@ -116,7 +116,7 @@ class MS_View_Membership_Overview extends MS_View {
 						<?php endforeach;?>
 						<div class="ms-member-edit-wrapper">
 							<?php 
-								MS_Helper_Html::html_input( array(
+								MS_Helper_Html::html_element( array(
 										'id' => 'edit_members',
 										'type' => MS_Helper_Html::TYPE_HTML_LINK,
 										'value' => __( 'Edit Members', MS_TEXT_DOMAIN ), 
@@ -171,7 +171,7 @@ class MS_View_Membership_Overview extends MS_View {
 				<?php endforeach;?>
 				<div class="ms-protection-edit-wrapper">
 					<?php 
-						MS_Helper_Html::html_input( array(
+						MS_Helper_Html::html_element( array(
 							'id' => 'edit_' . $rule->rule_type,
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => $title,

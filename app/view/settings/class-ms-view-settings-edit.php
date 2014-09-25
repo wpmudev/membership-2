@@ -158,15 +158,15 @@ class MS_View_Settings_Edit extends MS_View {
 			<hr />
 			<form action="" method="post">
 				<?php
-					MS_Helper_Html::html_input( $fields['control']['action'] );
-					MS_Helper_Html::html_input( $fields['control']['nonce'] );
-					MS_Helper_Html::html_input( $fields['page_urls'] );
-					MS_Helper_Html::html_input( $fields['page_edit_urls'] );
+					MS_Helper_Html::html_element( $fields['control']['action'] );
+					MS_Helper_Html::html_element( $fields['control']['nonce'] );
+					MS_Helper_Html::html_element( $fields['page_urls'] );
+					MS_Helper_Html::html_element( $fields['page_edit_urls'] );
 				?>
 				<?php foreach( $fields['pages'] as $field ): ?>
 					<?php MS_Helper_Html::settings_box_header( );?>
 						<?php 
-							MS_Helper_Html::html_input( $field );
+							MS_Helper_Html::html_element( $field );
 							MS_Helper_Html::html_submit( array( 
 								'id' => "create_page_{$field['id']}", 
 								'value' => __('Create new page', MS_TEXT_DOMAIN ), 
@@ -407,41 +407,41 @@ class MS_View_Settings_Edit extends MS_View {
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) ) ); ?>
 			<hr />
 			<form id="ms-comm-type-form" action="" method="post">
-				<?php MS_Helper_Html::html_input( $fields['load_action'] );?>
-				<?php MS_Helper_Html::html_input( $fields['load_nonce'] );?>
-				<?php MS_Helper_Html::html_input( $fields['comm_type'] );?>
+				<?php MS_Helper_Html::html_element( $fields['load_action'] );?>
+				<?php MS_Helper_Html::html_element( $fields['load_nonce'] );?>
+				<?php MS_Helper_Html::html_element( $fields['comm_type'] );?>
 				<p><?php echo $comm->get_description(); ?></p>
 			</form>
 			<form action="" method="post">
-				<?php MS_Helper_Html::html_input( $fields['action'] );?>
-				<?php MS_Helper_Html::html_input( $fields['nonce'] );?>
-				<?php MS_Helper_Html::html_input( $fields['type'] );?>
+				<?php MS_Helper_Html::html_element( $fields['action'] );?>
+				<?php MS_Helper_Html::html_element( $fields['nonce'] );?>
+				<?php MS_Helper_Html::html_element( $fields['type'] );?>
 				<table class="form-table">
 					<tbody>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_input( $fields['enabled'] );?>
+								<?php MS_Helper_Html::html_element( $fields['enabled'] );?>
 							</td>
 						</tr>
 						<?php if( $comm->period_enabled ) : ?>
 							<tr>
 								<td>
 									<div class="ms-period-wrapper">
-										<?php MS_Helper_Html::html_input( $fields['period_unit'] );?>
-										<?php MS_Helper_Html::html_input( $fields['period_type'] );?>
+										<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
+										<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
 									</div>
 								</td>
 							</tr>
 						<?php endif; ?>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_input( $fields['subject'] );?>
+								<?php MS_Helper_Html::html_element( $fields['subject'] );?>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div id="ms-comm-message-wrapper">
-								<?php MS_Helper_Html::html_input( $fields['message'] );?>
+								<?php MS_Helper_Html::html_element( $fields['message'] );?>
 								</div>
 								<div id="ms-comm-var-wrapper">
 									<table>
@@ -462,14 +462,14 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_input( $fields['cc_enabled'] );?>
-								<?php MS_Helper_Html::html_input( $fields['cc_email'] );?>
+								<?php MS_Helper_Html::html_element( $fields['cc_enabled'] );?>
+								<?php MS_Helper_Html::html_element( $fields['cc_email'] );?>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<?php MS_Helper_Html::html_separator();?>
-								<?php MS_Helper_Html::html_input( $fields['save_email'] );?>
+								<?php MS_Helper_Html::html_element( $fields['save_email'] );?>
 							</td>
 						</tr>
 					</tbody>

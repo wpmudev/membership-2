@@ -62,7 +62,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @return void But does output HTML.
 	 */
-	public static function html_input( $field_args, $return = false, $input_args = array() ) {
+	public static function html_element( $field_args, $return = false, $input_args = array() ) {
 		
 		/** Field arguments */
 		$defaults = array(
@@ -346,7 +346,7 @@ class MS_Helper_Html extends MS_Helper {
 						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
 						<?php
 							foreach( $fields as $field ) {
-								MS_Helper_Html::html_input( $field );
+								MS_Helper_Html::html_element( $field );
 							} 
 						?>
 					</span>
@@ -390,7 +390,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 		self::settings_box_header( $title, $description );		
 		foreach( $fields as $field ) {
-			MS_Helper_Html::html_input( $field, false, $args );
+			MS_Helper_Html::html_element( $field, false, $args );
 		}
 		self::settings_box_footer();
 	}
