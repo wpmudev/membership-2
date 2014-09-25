@@ -98,7 +98,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						<span class="ms-membership-description"><?php echo $this->data['ms_relationship']->get_payment_description(); ?></span>
 					</td>
 				</tr>
-				<?php do_action( 'ms_view_registration_payment_purchase_button', $this->data['ms_relationship'] ); ?>
+				<?php do_action( 'ms_view_frontend_payment_purchase_button', $this->data['ms_relationship'] ); ?>
 			</table>
 		</div>
 		<?php $this->coupon_html(); ?>

@@ -50,7 +50,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
 		
 		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button' );
-		$this->add_action( 'ms_view_registration_payment_purchase_button', 'purchase_button' );
+		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
 		
@@ -157,7 +157,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * **Hooks Actions: **
 	 *
-	 * * ms_view_registration_payment_purchase_button
+	 * * ms_view_frontend_payment_purchase_button
 	 *
 	 * @since 4.0.0
 	 */
@@ -239,7 +239,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * **Hooks Actions: **
 	 *
-	 * * ms_view_registration_payment_purchase_button
+	 * * ms_view_frontend_payment_purchase_button
 	 *
 	 * @since 4.0.0
 	 */
@@ -398,7 +398,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$_POST['stripe_error'] = $e->getMessage();
 						/** Hack to send the error message back to the payment_table. */
-						MS_Plugin::instance()->controller->controllers['registration']->add_action( 'the_content', 'payment_table', 1 );
+						MS_Plugin::instance()->controller->controllers['frontend']->add_action( 'the_content', 'payment_table', 1 );
 						break;
 					default:
 						do_action( 'ms_controller_gateway_form_error', $e );
