@@ -105,6 +105,9 @@
 .ms-control-fields-wrapper {
 	clear: both;
 }
+.ms-chose-type input {
+	top: 8px;
+}
 /* Payment setup page */
 .ms-payment-wrapper{
 
@@ -115,6 +118,7 @@
 }
 .ms-payments-choice {
 	display: inline;
+	margin: 0 2em;
     width: 10em;
 }
 
