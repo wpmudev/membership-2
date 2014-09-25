@@ -2,8 +2,6 @@
 
 class MS_View_Gateway_Authorize_Form extends MS_View {
 
-	protected $fields = array();
-	
 	protected $data;
 	
 	public function to_html() {
@@ -12,7 +10,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 			return;
 		}
 		
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		ob_start();
 		/** Render tabbed interface. */
 		?>
@@ -21,7 +19,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					<div class='ms-validation-error'><p><?php echo $this->data['auth_error']; ?></p></div>
 				<?php endif; ?>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
-					<?php foreach( $this->fields['hidden'] as $field ): ?>
+					<?php foreach( $fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_element( $field ); ?>
 					<?php endforeach;?>
 					<?php $this->render_cim_profiles() ?>
@@ -31,18 +29,18 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 							<tbody>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_element( $this->fields['card']['card_num'] ); ?>
+										<?php MS_Helper_Html::html_element( $fields['card']['card_num'] ); ?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_element( $this->fields['card']['card_code'] ); ?>
+										<?php MS_Helper_Html::html_element( $fields['card']['card_code'] ); ?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<?php MS_Helper_Html::html_element( $this->fields['card']['exp_month'] ); ?>
-										<?php MS_Helper_Html::html_element( $this->fields['card']['exp_year'] ); ?>
+										<?php MS_Helper_Html::html_element( $fields['card']['exp_month'] ); ?>
+										<?php MS_Helper_Html::html_element( $fields['card']['exp_year'] ); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -50,7 +48,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 						<?php _e( 'Billing Information', MS_TEXT_DOMAIN ); ?>
 						<table class="form-table ms-form-table">
 							<tbody>
-								<?php foreach( $this->fields['billing'] as $field ): ?>
+								<?php foreach( $fields['billing'] as $field ): ?>
 									<tr>
 										<td>
 											<?php MS_Helper_Html::html_element( $field ); ?>
@@ -77,7 +75,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 	
 	public function prepare_fields() {
 		$currency = MS_Plugin::instance()->settings->currency;
-		$this->fields['hidden'] = array(
+		$fields['hidden'] = array(
 				'gateway' => array(
 						'id' => 'gateway',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -113,7 +111,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 		for( $i = gmdate( 'Y' ), $maxYear = $i + 15; $i <= $maxYear; $i++ ) {
 			$years[ $i ] = $i;
 		}
-		$this->fields['card'] = array(
+		$fields['card'] = array(
 				'card_num' => array(
 						'id' => 'card_num',
 						'title' => __( 'Card Number', MS_TEXT_DOMAIN ),
@@ -137,7 +135,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 						'field_options' => $years,
 				),
 		);
-		$this->fields['billing'] = array(
+		$fields['billing'] = array(
 			'first_name' => array(
 					'id' => 'first_name',
 					'title' => __( 'First Name', MS_TEXT_DOMAIN ),
@@ -148,7 +146,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
-			'company' => array(
+/*			'company' => array(
 					'id' => 'company',
 					'title' => __( 'Company', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -173,6 +171,12 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					'title' => __( 'Zip code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
+			'phone' => array(
+					'id' => 'phone',
+					'title' => __( 'Phone', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			),
+*/
 			'country' => array(
 					'id' => 'country',
 					'title' => __( 'Country', MS_TEXT_DOMAIN ),
@@ -180,13 +184,9 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					'field_options' => $this->data['countries'],
 					'class' => 'chosen-select',
 			),
-			'phone' => array(
-					'id' => 'phone',
-					'title' => __( 'Phone', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			),
-
 		);
+		
+		return apply_filters( 'ms_view_gateway_authorize_form_prepare_fields', $fields );
 	}
 	
 	/**

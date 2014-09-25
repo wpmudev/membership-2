@@ -67,26 +67,31 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		}
 	
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+
+		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+	
+		/** manage authorize customer profile */
+		$cim_profile_id = $this->get_cim_profile_id( $member );
+		if( empty( $cim_profile_id ) ) {
+			$this->create_cim_profile( $member );
+		}
+		/** Fetch for user selected cim profile */
+		elseif( $cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
+			$response = $this->get_cim()->getCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id );
+			if ( $response->isError() ) {
+				throw new Exception( __( 'The selected payment profile is invalid, enter a new credit card', MS_TEXT_DOMAIN ) );
+			}
+		}
+		else {
+			$this->update_cim_profile( $member );
+		}
+		
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
-		
-			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
-		
-			/** manage authorize customer profile */
-			$cim_profile_id = $this->get_cim_profile_id( $member );
-			if( empty( $cim_profile_id ) ) {
-				$this->create_cim_profile( $member );
-			}
-			/** Fetch for user selected cim profile */
-			elseif( $cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
-				$response = $this->get_cim()->getCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id );
-				if ( $response->isError() ) {
-					throw new Exception( __( 'The selected payment profile is invalid, enter a new credit card', MS_TEXT_DOMAIN ) );
-				}
-			}
-			else {
-				$this->update_cim_profile( $member );
-			}
 			$this->online_purchase( $invoice, $member );
+			$this->process_transaction( $invoice );
+		}
+		elseif( 0 == $invoice->price ) {
+			$this->process_transaction( $invoice );
 		}
 		
 		return $invoice;
@@ -317,13 +322,25 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$customer->paymentProfiles[] = $this->create_cim_payment_profile();
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 		if ( $response->isError() ) {
-			MS_Helper_Debug::log($response);
-			throw new Exception( __( 'Payment failed due to CIM profile not created: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
+			MS_Helper_Debug::log( $response );
+			
+			/** Duplicate record, delete the old one. */
+			if( 'E00039' == $response->xml->messages->message->code ) {
+				$cim_profile_id = str_replace( 'A duplicate record with ID ', '', $response->xml->messages->message->text );
+				$cim_profile_id = (int)str_replace( ' already exists.', '', $cim_profile_id );
+				
+				$this->get_cim()->deleteCustomerProfile( $cim_profile_id );
+				/** Try again */
+				$this->create_cim_profile( $member );
+				return;
+			}
+			else {
+				throw new Exception( __( 'Payment failed due to CIM profile not created: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
+			}
 		}
 	
 		$cim_profile_id = $response->getCustomerProfileId();
 		$cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
-		
 		$this->save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id );
 	}
 	
