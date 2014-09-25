@@ -1,10 +1,12 @@
 body { 
-  font: normal 16px/22px 'Helvetica Neue', Helvetica, Arial, sans-serif; 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
+.ms-wrap {
+	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+}
 .ms-wrap h1 {
   font-size: 2.5em;
 }
@@ -15,7 +17,9 @@ body {
 
 .ms-wrap h3 {
 	font-size: 1.3em;
+	margin: 0.5em 1em 0.5em 0;
 }
+
 input,
 select {
 	font-size: .9em;
@@ -51,7 +55,7 @@ select {
     border: 1px solid transparent;
     border-radius: 4px 0 0 4px;
     border-width: 1px 0 1px 1px;
-    font-size: .8em;
+    font-size: .9em;
     font-weight: 500;
 }
 .ms-wrap .ms-tab.active {
@@ -98,7 +102,6 @@ h2.ms-settings-title,
     margin: 9px 15px;
 }
 .ms-settings-desc {
-	font-size: .9em;
     text-align: center;
     margin: 0 auto;
 }
@@ -109,11 +112,6 @@ h2.ms-settings-title,
     padding: 10px 20px 20px;
 	min-height: 350px;
 	position:relative;
-}
-
-.ms-wrap h3 {
-	margin: 0.5em 1em 0.5em 0;
-	font-size: 1.1em;
 }
 
 .ms-wrap .ms-settings .settings-description {
@@ -176,7 +174,6 @@ h2.ms-settings-title,
 	margin: 10px 0 0;
 	font-style: normal;
 	color: #222;
-    font-size: .9em;
 }
 
 .ms-html-text-wrapper {
@@ -207,11 +204,11 @@ h2.ms-settings-title,
 .ms-settings-tab-desc,
 .ms-settings-description {
 	color: #888;
-	font-size: 0.8em;
+	font-size: 0.9em;
 }
 /** html fields */
 .ms-field-description {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	margin: 10px 10px 10px 0;	
 }
 .ms-radio-wrapper {
@@ -221,14 +218,13 @@ h2.ms-settings-title,
 	width: 20%;
 }
 .ms-radio-input-wrapper label {
-	font-size: .9em;
 	font-weight: 500;
 	position: relative;
 }
 label.ms-radio-description {
 	color: #666;
     display: inline-block;
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: normal;
     margin: 10px 0;
 }
@@ -334,7 +330,7 @@ label.ms-validation-error {
 	background: #ffefef;
     border: 1px solid #ffd2d2;
     color: #666;
-    font-size: 0.8em;
+    font-size: 0.9em;
     margin: 5px;
     padding: 2px;
     position: absolute;
