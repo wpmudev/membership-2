@@ -2,12 +2,10 @@
 
 class MS_View_Gateway_Manual_Settings extends MS_View {
 
-	protected $fields = array();
-	
 	protected $data;
 	
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
 		ob_start();
 		/** Render tabbed interface. */
@@ -18,7 +16,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					<form class="ms-gateway-setings-form ms-form" data-ms="<?php echo $gateway->id;?>">
 					<?php
 							MS_Helper_Html::settings_box(
-								$this->fields, 
+								$fields, 
 								'', 
 								__( 'Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation.', MS_TEXT_DOMAIN )
 							);
@@ -38,7 +36,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
 		
-		$this->fields = array(
+		$fields = array(
 			'payment_info' => array(
 					'id' => 'payment_info',
 					'title' => __( 'Payment Info', MS_TEXT_DOMAIN ),
@@ -61,7 +59,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 							'gateway_id' => $gateway->id,
-							'field' => 'mode',
+							'field' => 'pay_button_url',
 							'action' => $action,
 							'_wpnonce' => $nonce,
 					),
@@ -81,5 +79,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
+		
+		return apply_filters( 'ms_view_gateway_manual_settings_prepare_fields', $fields );
 	}
 }
