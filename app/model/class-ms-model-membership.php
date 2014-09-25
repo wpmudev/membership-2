@@ -346,7 +346,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$memberships = self::get_memberships( $args );
 		
 		/** Get children memberships */
-		$args = array();
+		if( ! empty( $args['post__not_in'] ) ) {
+			$args = array( 'post__not_in' => $args['post__not_in'] );
+		}
+		else {
+			$args = array();
+		}
 		$args['post_parent__not_in'] = array( 0 );
 		$args['order'] = 'ASC';
 		$children = self::get_memberships( $args );
