@@ -9,27 +9,29 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 		$soon = array();
 		?>
 		<div class="ms-overview-available-content-wrapper">
-			<h3 class="hndle"><span><?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></span></h3>
-			<div><?php echo sprintf( __( 'This is Protected Content which %s members has access to', MS_TEXT_DOMAIN ), $this->data['membership']->name ); ?></div>
 			<?php 
-					$membership = $this->data['membership'];
-					$visitor_membership = MS_Model_Membership::get_visitor_membership();
-					$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
-					foreach( $rule_types as $rule_type ) {
-						$rule = $membership->get_rule( $rule_type );
-						$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
-						foreach( $contents as $content ) {
-							if( $rule->has_dripped_rules( $content->id )  ) {
-								if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $content->id ) ) {
-									$available[] = $content;
-								}
-								else {
-									$soon[] = $content;
-								}
+				MS_Helper_Html::settings_tab_header( array(
+					'title' => __( 'Available Content', MS_TEXT_DOMAIN ), 
+					'desc' => sprintf( __( 'This is Protected Content which %s members has access to', MS_TEXT_DOMAIN ), $this->data['membership']->name ) 
+				) ); 
+				$membership = $this->data['membership'];
+				$visitor_membership = MS_Model_Membership::get_visitor_membership();
+				$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
+				foreach( $rule_types as $rule_type ) {
+					$rule = $membership->get_rule( $rule_type );
+					$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
+					foreach( $contents as $content ) {
+						if( $rule->has_dripped_rules( $content->id )  ) {
+							if( $rule->has_dripped_access( MS_Helper_Period::current_date(), $content->id ) ) {
+								$available[] = $content;
+							}
+							else {
+								$soon[] = $content;
 							}
 						}
 					}
-				?>
+				}
+			?>
 			<div class="ms-overview-panel-wrapper ms-available-soon">
 				<div class="ms-title">
 					<?php _e( 'Soon to be available content:', MS_TEXT_DOMAIN ) ;?>

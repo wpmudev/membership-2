@@ -26,10 +26,12 @@ jQuery( document ).ready( function( $ ) {
 	
 	$( 'input.ms-dripped-edit-ok' ).click( function() {
 		$( this ).parent().parent().removeClass( 'ms-dripped-edit' );
-		period_unit = $( this ).parent().find( 'input' ).val();
-		period_type = $( this ).parent().find( 'select' ).val();
-		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit );
-		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type );
+		period_unit = $( this ).parent().find( 'input' );
+		period_type = $( this ).parent().find( 'select' );
+		period_unit.change();
+		period_type.change();
+		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit.val() );
+		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
 	});
 	
 });
