@@ -111,7 +111,7 @@ h2.ms-settings-title,
 	position:relative;
 }
 
-.ms-wrap .ms-settings h3 {
+.ms-wrap h3 {
 	margin: 0.5em 1em 0.5em 0;
 	font-size: 1.1em;
 }
@@ -184,7 +184,7 @@ h2.ms-settings-title,
 }
 .ms-text-label, .ms-ok, .ms-nok {
 	color: #222;
-    font-size: 1.1em;
+    font-size: 1em;
     font-style: normal;
     font-weight: 600;
     margin-top: 10px;
@@ -203,7 +203,9 @@ h2.ms-settings-title,
 	margin-top: 15px;
 }
 
-.ms-settings .settings-description, .ms-settings-tab-desc {
+.ms-settings .settings-description, 
+.ms-settings-tab-desc,
+.ms-settings-description {
 	color: #888;
 	font-size: 0.8em;
 }

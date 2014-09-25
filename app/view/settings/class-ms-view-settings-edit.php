@@ -61,15 +61,20 @@ class MS_View_Settings_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class='ms-wrap wrap'>
-		<h2 class='ms-settings-title'><i class="fa fa-cog"></i> <?php  _e( 'Membership Settings', MS_TEXT_DOMAIN ) ; ?></h2>		
-
-		<?php
-		$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+			<?php 
+				MS_Helper_Html::settings_header( array(
+					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
+					'title_icon_class' => 'fa fa-cog',
+				) ); 
+			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 		
-		/** Call the appropriate form to render. */
-		$render_callback =  apply_filters( 'ms_view_settings_edit_render_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
-		call_user_func( $render_callback );
-		
+			/** Call the appropriate form to render. */
+			$render_callback =  apply_filters( 'ms_view_settings_edit_render_callback', 
+					array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), 
+					$active_tab, 
+					$this->data 
+			);
+			call_user_func( $render_callback );
 		?>
 		</div>
 		<?php
@@ -82,6 +87,7 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) ) ); ?>
+			<hr />
 			<form action="" method="post">
 				<?php 
 					MS_Helper_Html::settings_box( 
@@ -149,6 +155,7 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) ) ); ?>
+			<hr />
 			<form action="" method="post">
 				<?php
 					MS_Helper_Html::html_input( $fields['control']['action'] );
@@ -316,6 +323,7 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class='ms-settings'>
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) ) ); ?>
+			<hr />
 	   		<form class="ms-form" action="" method="post">
 				<?php
 					MS_Helper_Html::settings_box(
@@ -396,7 +404,8 @@ class MS_View_Settings_Edit extends MS_View {
 		$comm = $this->data['comm'];
 		?>
 		<div class='ms-settings'>
-			<h3><?php  _e( 'Automated Messages', MS_TEXT_DOMAIN ) ; ?></h3>
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) ) ); ?>
+			<hr />
 			<form id="ms-comm-type-form" action="" method="post">
 				<?php MS_Helper_Html::html_input( $fields['load_action'] );?>
 				<?php MS_Helper_Html::html_input( $fields['load_nonce'] );?>
@@ -569,8 +578,9 @@ class MS_View_Settings_Edit extends MS_View {
 		$fields = $this->prepare_downloads_fields();
 		?>
 		<div class='ms-settings'>
-			<h3><?php  _e( 'Media / Download Settings', MS_TEXT_DOMAIN ) ; ?></h3>	
-			<div class="metabox-holder">
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Media / Download Settings', MS_TEXT_DOMAIN ) ) ); ?>
+			<hr />
+			<div>
 				<form action="" method="post">
 					<?php
 						MS_Helper_Html::settings_box(

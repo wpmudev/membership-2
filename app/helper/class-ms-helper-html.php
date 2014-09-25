@@ -403,7 +403,7 @@ class MS_Helper_Html extends MS_Helper {
 			echo '<h3>' . $title . '</h3>';
 		}
 		echo '<div class="inside">';
-		echo '<span class="ms-field-label">' . $description . '</span>';
+		echo '<span class="ms-settings-description">' . $description . '</span>';
 		do_action( 'ms_helper_settings_box_header_end', $title, $description );
 	}
 	

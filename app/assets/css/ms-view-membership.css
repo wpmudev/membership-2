@@ -122,6 +122,9 @@
     width: 10em;
 }
 
+.ms-trial-wrapper {
+	margin: 20px 0;
+}
 /* Overview Page */
 .ms-membership-status-wrapper {
 	width: 15em;

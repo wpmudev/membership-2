@@ -134,7 +134,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 					</div>											
 				</div>
 				<div class="ms-trial-wrapper">
-					<div class="ms-title"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
+					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
 						<div class="ms-period-wrapper">
 							<?php MS_Helper_Html::html_input( $fields['trial_period_enabled'] );?>

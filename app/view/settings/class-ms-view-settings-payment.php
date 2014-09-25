@@ -15,8 +15,13 @@ class MS_View_Settings_Payment extends MS_View {
 		?>
 		<div class="ms-global-payment-wrapper">
 			<div class="ms-list-table-wrapper">
-				<div class="ms-field-input-label"><?php _e( 'Global Payment Settings', MS_TEXT_DOMAIN );?></div>
-				<div class="ms-description"><?php _e( 'These are shared across all memberships', MS_TEXT_DOMAIN );?></div>
+				<?php 
+					MS_Helper_Html::settings_tab_header( array( 
+							'title' => __( 'Global Payment Settings', MS_TEXT_DOMAIN ),
+							'desc' =>  __( 'These are shared across all memberships.', MS_TEXT_DOMAIN ) 
+					) ); 
+				?>
+				<hr />
 				<div class="ms-setup-half-width">
 					<?php MS_Helper_Html::html_input( $fields['currency'] ); ?>
 				</div>
