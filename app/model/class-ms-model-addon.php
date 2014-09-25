@@ -92,6 +92,9 @@ class MS_Model_Addon extends MS_Model_Option {
 		if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
 			$this->enable( self::ADDON_MULTI_MEMBERSHIPS );	
 		}
+		if( $membership->trial_period_enabled ) {
+			$this->enable( self::ADDON_TRIAL );	
+		}
 	}
 	
 	public function get_addon_list() {
@@ -102,12 +105,12 @@ class MS_Model_Addon extends MS_Model_Option {
 // 					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
 // 					'active' => $this->is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
 // 				),
-// 				self::ADDON_TRIAL => (object) array(
-// 						'id' => self::ADDON_TRIAL,
-// 						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
-// 						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
-// 						'active' => $this->is_enabled( self::ADDON_TRIAL ),
-// 				),
+				self::ADDON_TRIAL => (object) array(
+						'id' => self::ADDON_TRIAL,
+						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
+						'active' => $this->is_enabled( self::ADDON_TRIAL ),
+				),
 				self::ADDON_COUPON => (object) array(
 						'id' => self::ADDON_COUPON,
 						'name' => __( 'Coupon', MS_TEXT_DOMAIN ),

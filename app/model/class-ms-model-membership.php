@@ -88,7 +88,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	protected $trial_period_enabled;
 	
-	protected $trial_price;
+	protected $trial_price = 0;
 	
 	protected $trial_period;
 

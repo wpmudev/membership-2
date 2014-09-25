@@ -121,10 +121,10 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0
 	 */
 	public function auto_setup_addons( $membership ) {
-		MS_Helper_Debug::log("auto_setup_addons");
 		$addons = MS_Factory::load( 'MS_Model_Addon' );
 		
 		$addons->auto_config( $membership );
+		$addons->save();
 	}
 	
 	/**
