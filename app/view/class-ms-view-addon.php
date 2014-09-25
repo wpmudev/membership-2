@@ -31,7 +31,7 @@
  */
 class MS_View_Addon extends MS_View {
 
-	protected $model;
+	protected $data;
 	
 	/**
 	 * Overrides parent's to_html() method.
@@ -50,7 +50,7 @@ class MS_View_Addon extends MS_View {
 	 */
 	public function to_html() {		
 		ob_start();
-		$list_table = new MS_Helper_List_Table_Addon( $this->model );
+		$list_table = new MS_Helper_List_Table_Addon( $this->data['addon'] );
 		$list_table->prepare_items();
 		
 		?>
