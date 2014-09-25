@@ -431,6 +431,10 @@ class MS_Controller_Membership extends MS_Controller {
 				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				$data['child_membership'] = $child;
 				$membership_id = $child->id;
+				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership_id ) );
+				foreach( $ms_relationships as $ms_relationship ) {
+					$data['members'][] = $ms_relationship->get_member();
+				}
 				break;
 			case MS_Model_Membership::TYPE_CONTENT_TYPE:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Content_Type' );
@@ -438,6 +442,10 @@ class MS_Controller_Membership extends MS_Controller {
 				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				$data['child_membership'] = $child;
 				$membership_id = $child->id;
+				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership_id ) );
+				foreach( $ms_relationships as $ms_relationship ) {
+					$data['members'][] = $ms_relationship->get_member();
+				}
 				break;
 			default:
 			case MS_Model_Membership::TYPE_SIMPLE:
