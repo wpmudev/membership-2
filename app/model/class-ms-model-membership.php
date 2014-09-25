@@ -475,9 +475,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
 			try {
-				$rule = $this->get_rule( $rule_type );
-				$rule->merge_rule_values( $protect_rule );
-				$this->set_rule( $rule_type, $rule );
+				if( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
+					$rule = $this->get_rule( $rule_type );
+					$rule->merge_rule_values( $protect_rule );
+					$this->set_rule( $rule_type, $rule );
+				}
 			} 
 			catch( Exception $e ) {
 				MS_Helper_Debug::log( $e );
