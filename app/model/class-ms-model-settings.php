@@ -341,13 +341,17 @@ class MS_Model_Settings extends MS_Model_Option {
 
 		return apply_filters( 'ms_model_settings_get_protection_message', $msg, $type );
 	}
+
+	public function set_custom_setting( $group, $field, $value ) {
+		$this->custom[ $group ][ $field ] = apply_filters( 'ms_model_settings_set_custom_setting', $value, $group, $field );
+	}
 	
-	public function get_custom_settings( $group, $name ) {
-		$setting = '';
-		if( ! empty( $this->custom[ $group ][ $name ] ) ) {
-			$setting = $this->custom[ $group ][ $name ];
+	public function get_custom_setting( $group, $field ) {
+		$value = '';
+		if( ! empty( $this->custom[ $group ][ $field ] ) ) {
+			$value = $this->custom[ $group ][ $field ];
 		}
-		return apply_filters( 'ms_model_settings_get_custom_settings', $setting, $group, $name );
+		return apply_filters( 'ms_model_settings_get_custom_setting', $value, $group, $field );
 	}
 	
 	public static function get_currencies() {

@@ -42,6 +42,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 		
 		if( MS_Model_Addon::is_enabled( self::ADDON_MAILCHIMP ) ) {
 			$this->add_filter( 'ms_controller_settings_get_tabs', 'mailchimp_settings_tabs', 10, 2 );
+			$this->add_action( 'ms_controller_settings_enqueue_scripts_' . self::ADDON_MAILCHIMP, 'enqueue_scripts' );
 			$this->add_filter( 'ms_view_settings_edit_render_callback', 'mailchimp_manage_render_callback', 10, 3 );
 			
 			$this->add_action( 'ms_model_event_'. MS_Model_Event::TYPE_MS_REGISTERED, 'subscribe_registered', 10, 2 );
@@ -58,7 +59,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	 */
 	public function subscribe_registered( $event, $member ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
 			if( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
 			}
@@ -70,21 +71,21 @@ class MS_Integration_Mailchimp extends MS_Integration {
 		$member = $ms_relationship->get_member();
 		
 		/** Verify if is subscribed to registered mail list and remove it. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
 			if( self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::unsubscribe_user( $member->email, $list_id );
 			}
 		}
 		
 		/** Subscribe to members mail list. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_members' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
 			if( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
 		
 		/** Verify if is subscribed to deactivated mail list and remove it. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_deactivated' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
 			if( self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::unsubscribe_user( $member->email, $list_id );
 			}
@@ -97,21 +98,21 @@ class MS_Integration_Mailchimp extends MS_Integration {
 		$member = $ms_relationship->get_member();
 		
 		/** Verify if is subscribed to registered mail list and remove it. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
 			if( self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::unsubscribe_user( $member->email, $list_id );
 			}
 		}
 		
 		/** Verify if is subscribed to members mail list and remove it. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_members' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
 			if( self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::unsubscribe_user( $member->email, $list_id );
 			}
 		}
 		
 		/** Subscribe to deactiveted members mail list. */
-		if( $list_id = $settings->get_custom_settings( 'mailchimp', 'mail_list_deactivated' ) ) {
+		if( $list_id = $settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
 			if( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
 			}
@@ -179,6 +180,9 @@ class MS_Integration_Mailchimp extends MS_Integration {
 		return $tabs;
 	}
 	
+	public function enqueue_scripts() {
+		wp_enqueue_script( 'ms-view-settings', MS_Plugin::instance()->url. 'app/assets/js/ms-view-settings-mailchimp.js', array( 'jquery' ), MS_Plugin::instance()->version );
+	}
 	/**
 	 * Add mailchimp views callback.
 	 * 
@@ -247,7 +251,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 				if( ! class_exists( 'Mailchimp' ) ) {
 					require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 				}
-				$api = new Mailchimp( $settings->get_custom_settings( 'mailchimp', 'api_key' ), $options );
+				$api = new Mailchimp( $settings->get_custom_setting( 'mailchimp', 'api_key' ), $options );
 				
 				/** Pinging the server */
 				$ping = $api->helper->ping();
@@ -329,7 +333,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	
 		if( is_email( $member->email ) && self::get_api_status() ) {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
-			$auto_opt_in = $settings->get_custom_settings( 'mailchimp', 'auto_opt_in' );
+			$auto_opt_in = $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' );
 			$update = apply_filters( 'ms_integration_mailchimp_subscribe_user_update', true, $member, $list_id );
 			
 			$merge_vars = array();

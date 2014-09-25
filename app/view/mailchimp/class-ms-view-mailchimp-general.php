@@ -12,13 +12,15 @@ class MS_View_Mailchimp_General extends MS_View {
 		?>
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
-				<h3><?php echo __( 'Mailchimp settings', MS_TEXT_DOMAIN ); ?></h3>
+				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Mailchimp Settings', MS_TEXT_DOMAIN ) ) ); ?>
+				<hr />
+			
 				<form action="" method="post">
-					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box( $this->fields );
 					?>
 				</form>
+				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 			</div>
 		</div>
 		<?php
@@ -29,11 +31,15 @@ class MS_View_Mailchimp_General extends MS_View {
 	public function prepare_fields() {
 		$api_status = MS_Integration_Mailchimp::get_api_status();
 		$settings = $this->data['settings'];
+		
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
+		$nonce = wp_create_nonce( $action );
+		
 		$this->fields = array(
 				'mailchimp_api_test' => array(
 						'id' => 'mailchimp_api_test',
 						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-						'title' => __( 'Mailchimp API test status', MS_TEXT_DOMAIN ),
+						'title' => __( 'Mailchimp API test status: ', MS_TEXT_DOMAIN ),
 						'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
 						'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
 				),
@@ -42,9 +48,15 @@ class MS_View_Mailchimp_General extends MS_View {
 						'name' => 'custom[mailchimp][api_key]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Mailchimp API Key', MS_TEXT_DOMAIN ),
-						'desc' => 'Visit your <a target="_blank" href="http://admin.mailchimp.com/account/api">your API dashboard</a> to create an API Key.',
-						'value' => $settings->get_custom_settings( 'mailchimp', 'api_key' ),
-						'class' => '',
+						'desc' => '<div>Visit your <a target="_blank" href="http://admin.mailchimp.com/account/api">your API dashboard</a> to create an API Key.</div>',
+						'value' => $settings->get_custom_setting( 'mailchimp', 'api_key' ),
+						'class' => 'ms-ajax-update ms-text-medium',
+						'data_ms' => array(
+								'group' => 'mailchimp',
+								'field' => 'api_key',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+						),
 				),
 				'separator' => array(
 						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
@@ -55,9 +67,14 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 						'title' => __( 'Automatically opt-in new users to the mailing list.', MS_TEXT_DOMAIN ),
 						'desc' => __( 'Users will not receive an email confirmation. Use at your own risk.', MS_TEXT_DOMAIN ),
-						'value' => $settings->get_custom_settings( 'mailchimp', 'auto_opt_in' ),
-						'field_options' => array( 'checkbox_position' => 'left' ),
-						'class' => '',
+						'value' => $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' ),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'group' => 'mailchimp',
+								'field' => 'auto_opt_in',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+						),
 				),
 				'separator1' => array(
 						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
@@ -68,8 +85,15 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Registered users mailing list (not members)', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_registered' ),
-						'class' => '',
+						'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'group' => 'mailchimp',
+								'field' => 'mail_list_registered',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+						),
+						
 				),
 				'mail_list_members' => array(
 						'id' => 'mail_list_members',
@@ -77,8 +101,14 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Members mailing list', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_members' ),
-						'class' => '',
+						'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_members' ),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'group' => 'mailchimp',
+								'field' => 'mail_list_members',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+						),
 				),
 				'mail_list_deactivated' => array(
 						'id' => 'mail_list_deactivated',
@@ -86,23 +116,16 @@ class MS_View_Mailchimp_General extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'title' => __( 'Deactivated memberships mailing list', MS_TEXT_DOMAIN ),
 						'field_options' => MS_Integration_Mailchimp::get_mail_lists(),
-						'value' => $settings->get_custom_settings( 'mailchimp', 'mail_list_deactivated' ),
-						'class' => '',
-				),
-				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'save_mailchimp',
-				),
-				'separator2' => array(
-						'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-				),
-				'submit_settings' => array(
-						'id' => 'submit_settings',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
-				),
+						'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'group' => 'mailchimp',
+								'field' => 'mail_list_deactivated',
+								'_wpnonce' => $nonce,
+								'action' => $action,
+						),
 
+				),
 		);
 	}
 }

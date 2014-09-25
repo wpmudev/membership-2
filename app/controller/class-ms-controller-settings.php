@@ -37,6 +37,8 @@ class MS_Controller_Settings extends MS_Controller {
 	
 	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
 	
+	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
+	
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
 	
 	/**
@@ -60,6 +62,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
@@ -113,6 +116,21 @@ class MS_Controller_Settings extends MS_Controller {
 		$isset = array( 'field', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
+		}
+		
+		echo $msg;
+		exit;
+	}
+	
+	public function ajax_action_update_custom_setting() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		
+		$isset = array( 'group', 'field', 'value' );
+		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+			$settings = $this->get_model();
+			$settings->set_custom_setting( $_POST['group'], $_POST['field'], $_POST['value'] );
+			$settings->save();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		
 		echo $msg;
@@ -458,6 +476,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */		
 	public function enqueue_scripts() {
+		do_action( 'ms_controller_settings_enqueue_scripts_' . $this->get_active_tab() );
+		
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 

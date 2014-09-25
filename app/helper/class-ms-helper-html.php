@@ -184,7 +184,7 @@ class MS_Helper_Html extends MS_Helper {
 				echo "</div>";				
 				break;
 			case self::INPUT_TYPE_CHECKBOX:
-				$checked = checked( $value, true, false );
+				$checked = ( $value == true ) ? 'checked="checked"' : '';
 				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked $data_ms/>";
 				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
 					echo "<span class='ms-label-checkbox'>";
@@ -402,14 +402,12 @@ class MS_Helper_Html extends MS_Helper {
 		if( ! empty( $title ) ) {
 			echo '<h3>' . $title . '</h3>';
 		}
-		echo '<div class="inside">';
 		echo '<span class="ms-settings-description">' . $description . '</span>';
 		do_action( 'ms_helper_settings_box_header_end', $title, $description );
 	}
 	
 	public static function settings_box_footer() {
 		do_action( 'ms_helper_settings_box_footer_init' );
-		echo '</div>';
 		echo '</div>';
 		echo '</div>';
 		do_action( 'ms_helper_settings_box_footer_end' );
