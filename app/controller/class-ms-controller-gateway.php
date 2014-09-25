@@ -157,7 +157,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * **Hooks Actions: **
 	 *
-	 * * ms_view_frontend_payment_purchase_button
+	 * * ms_controller_gateway_settings_render_view
 	 *
 	 * @since 4.0.0
 	 */
@@ -258,7 +258,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$membership = $ms_relationship->get_membership();
 			
 			/** Free membership, show only free gateway */
-			if( 0 == $membership->price ) {
+			if( 0 == $membership->price || $membership->is_free ) {
 				if( MS_Model_Gateway::GATEWAY_FREE != $gateway->id ) {
 					continue;
 				}
@@ -366,10 +366,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function process_purchase() {
-		$settings = MS_Plugin::instance()->settings;
-		if( ! empty( $_POST['gateway'] ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) && ! empty( $_POST['ms_relationship_id'] ) &&
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$fields = array( 'gateway', 'ms_relationship_id' );	
+
+		if( $this->validate_required( $fields ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) &&
 				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
-	
+
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 	
 			$gateway_id = $_POST['gateway'];
@@ -378,7 +380,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$invoice = $gateway->process_purchase( $ms_relationship );
 
 				if( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
-					$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) );
+					$url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_WELCOME, false, true );
 					wp_safe_redirect( $url );
 					exit;
 				}
