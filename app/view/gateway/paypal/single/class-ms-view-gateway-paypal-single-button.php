@@ -2,12 +2,10 @@
 
 class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 
-	protected $fields = array();
-	
 	protected $data;
 	
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		
 		$action_url = apply_filters( 'ms_view_gateway_paypal_single_button_form_action_url', $this->data['action_url'] );
 		
@@ -17,7 +15,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 				<td class='ms-buy-now-column' colspan='2' >
 					<form action="<?php echo $action_url; ?>" method="post">
 						<?php 
-							foreach( $this->fields as $field ) {
+							foreach( $fields as $field ) {
 								MS_Helper_Html::html_element( $field ); 
 							}
 						?>
@@ -40,12 +38,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 		
 		$gateway = $this->data['gateway'];
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-		$this->fields = array(
-				'_wpnonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => wp_create_nonce( "{$this->data['gateway']->id}_{$this->data['ms_relationship']->id}" ),
-				),
+		$fields = array(
 				'business' => array(
 						'id' => 'business',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -110,7 +103,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 		
 		/** Don't send to paypal if free */
 		if( 0 == $invoice->total ) {
-			$this->fields = array(
+			$fields = array(
 					'gateway' => array(
 							'id' => 'gateway',
 							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -126,6 +119,11 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 							'value' => 'process_purchase',
 					),
+					'_wpnonce' => array(
+							'id' => '_wpnonce',
+							'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+							'value' => wp_create_nonce( "{$this->data['gateway']->id}_{$this->data['ms_relationship']->id}" ),
+					),
 			);
 			$this->data['action_url'] = null;
 		}
@@ -138,7 +136,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 			}
 		}
 		
-		$this->fields['submit'] = array(
+		$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
 				'value' => 'https://www.paypalobjects.com/en_US/i/btn/x-click-but06.gif',
@@ -147,15 +145,17 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 		/** custom pay button defined in gateway settings */
 		if( ! empty( $gateway->pay_button_url ) ) {
 			if( strpos( $gateway->pay_button_url, 'http' ) !== 0 ) {
-				$this->fields['submit']['value'] = $gateway->pay_button_url; 		
+				$fields['submit']['value'] = $gateway->pay_button_url; 		
 			}
 			else {
-				$this->fields['submit'] = array(
+				$fields['submit'] = array(
 						'id' => 'submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Paypal', MS_TEXT_DOMAIN ),
 				);
 			}
 		}
+		
+		return apply_filters( 'ms_view_gateway_paypal_single_prepare_fields', $fields );
 	}
 }
