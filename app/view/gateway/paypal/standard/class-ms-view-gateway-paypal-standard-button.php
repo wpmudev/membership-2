@@ -7,7 +7,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 	protected $data;
 	
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		
 		$action_url = apply_filters( 'ms_view_gateway_paypal_standard_button_form_action_url', $this->data['action_url'] );
 		
@@ -15,9 +15,9 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		?>
 			<tr>
 				<td class='ms-buy-now-column' colspan='2' >
-					<form $action_url="<?php echo $action_url; ?>" method="post" id="ms-paypal-form">
+					<form action="<?php echo $action_url; ?>" method="post" id="ms-paypal-form">
 						<?php 
-							foreach( $this->fields as $field ) {
+							foreach( $fields as $field ) {
 								MS_Helper_Html::html_element( $field ); 
 							}
 						?>
@@ -48,7 +48,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$regular_invoice = null;
 		
-		$this->fields = array(
+		$fields = array(
 				'_wpnonce' => array(
 						'id' => '_wpnonce',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -126,7 +126,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				),
 		);
 		
-		$this->fields['submit'] = array(
+		$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
 				'value' => 'https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif',
@@ -135,10 +135,10 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		/** custom pay button defined in gateway settings */
 		if( ! empty( $gateway->pay_button_url ) ) {
 			if( strpos( $gateway->pay_button_url, 'http' ) !== 0 ) {
-				$this->fields['submit']['value'] = $gateway->pay_button_url;
+				$fields['submit']['value'] = $gateway->pay_button_url;
 			}
 			else {
-				$this->fields['submit'] = array(
+				$fields['submit'] = array(
 						'id' => 'submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 						'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Paypal', MS_TEXT_DOMAIN ),
@@ -149,17 +149,17 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		/** Trial period */
 		if( $membership->trial_period_enabled && $invoice->trial_period ) {
 			$regular_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
-			$this->fields['a1'] = array(
+			$fields['a1'] = array(
 					'id' => 'a1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => ( $invoice->trial_period ) ? $invoice->total : $membership->trial_price,
 			);
-			$this->fields['p1'] = array(
+			$fields['p1'] = array(
 					'id' => 'p1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => ! empty( $membership->trial_period['period_unit'] ) ? $membership->trial_period['period_unit']: 1,
 			);
-			$this->fields['t1'] = array(
+			$fields['t1'] = array(
 					'id' => 't1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => ! empty( $membership->trial_period['period_type'] ) ? strtoupper( $membership->trial_period['period_type'][0] ) : 'D',
@@ -167,7 +167,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		}
 		
 		/** Membership price */
-		$this->fields['a3'] = array(
+		$fields['a3'] = array(
 				'id' => 'a3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => ( ! $invoice->trial_period ) ? $invoice->total : $regular_invoice->total,
@@ -176,12 +176,12 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		$recurring = 0;
 		switch( $membership->payment_type ) {
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-				$this->fields['p3'] = array(
+				$fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => ! empty( $membership->pay_cycle_period['period_unit'] ) ? $membership->pay_cycle_period['period_unit']: 0,
 				);
-				$this->fields['t3'] = array(
+				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => ! empty( $membership->pay_cycle_period['period_type'] ) ? strtoupper( $membership->pay_cycle_period['period_type'][0] ) : 'D',
@@ -189,36 +189,36 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				$recurring = 1;
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-				$this->fields['p3'] = array(
+				$fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => ! empty( $membership->period['period_unit'] ) ? $membership->period['period_unit']: 1,
 				);
-				$this->fields['t3'] = array(
+				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
 				);
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
-				$this->fields['p3'] = array(
+				$fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start ),
 				);
-				$this->fields['t3'] = array(
+				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
 				);
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
-				$this->fields['p3'] = array(
+				$fields['p3'] = array(
 				'id' => 'p3',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => 5,
 				);
-				$this->fields['t3'] = array(
+				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => 'Y',
@@ -231,7 +231,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		 * 0 – subscription payments do not recur
 		 * 1 – subscription payments recur
 		 */
-		$this->fields['src'] = array(
+		$fields['src'] = array(
 				'id' => 'src',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $recurring,
@@ -244,7 +244,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		 * 1 – allows subscribers to sign up for new subscriptions and modify their current subscriptions
 		 * 2 – allows subscribers to modify only their current subscriptions
 		*/
-		$this->fields['modify'] = array(
+		$fields['modify'] = array(
 				'id' => 'modify',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => empty( $move_from_id ) ? 0 : 2,
@@ -256,5 +256,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		else {
 			$this->data['action_url'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 		}
+		
+		return apply_filters( 'ms_view_gateway_paypal_standard_prepare_fields', $fields );
 	}
 }
