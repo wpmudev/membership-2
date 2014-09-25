@@ -199,7 +199,7 @@ class MS_Helper_Period extends MS_Helper {
 			$value = $period[ $field ];
 		}
 		elseif( 'period_unit' == $field ) {
-			$value = 0;
+			$value = 1;
 		}
 		elseif( 'period_type' == $field ) {
 			$value = self::PERIOD_TYPE_DAYS;
