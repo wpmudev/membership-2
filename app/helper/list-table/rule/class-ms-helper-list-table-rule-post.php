@@ -53,11 +53,11 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		
 	public function get_sortable_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_sortable_columns", array(
-				'name' => 'name',
-				'access' => 'access',
-				'dripped' => 'dripped',
-				'slug' => 'slug',
-				'posts' => 'posts',
+				'name' => array( 'name', false ),
+				'access' => array( 'access', false ),
+				'dripped' => array( 'dripped', false ),
+				'slug' => array( 'slug', false ),
+				'posts' => array( 'posts', false ),
 		) );
 	}
 	
@@ -98,20 +98,12 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 		}
 		
 		$total_items =  $this->model->get_content_count( $args );
-		$this->items = apply_filters( "membership_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
+		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
 		
 		$this->set_pagination_args( array(
 				'total_items' => $total_items,
 				'per_page' => $per_page,
 		) );
-		
-		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );
-	
-		$this->set_pagination_args( array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
-			)
-		);
 	}
 	
 	public function column_name( $item ) {
