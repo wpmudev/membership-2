@@ -699,7 +699,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc .= sprintf( __( 'for access until %s.', MS_TEXT_DOMAIN ), $this->calc_expire_date( $this->expire_date ) );
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
-				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $this->start_date, $this->expire_date );
+				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $membership->period_date_start, $membership->period_date_end );
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 				$period_unit = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_unit' );
