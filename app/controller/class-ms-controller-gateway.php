@@ -398,15 +398,15 @@ class MS_Controller_Gateway extends MS_Controller {
 						do_action( 'ms_controller_frontend_signup_gateway_form' );
 						break;
 					case MS_Model_Gateway::GATEWAY_STRIPE:
-						$_POST['stripe_error'] = $e->getMessage();
+						$_POST['error'] = sprintf( __( 'Error: %s', MS_TEXT_DOMAIN ), $e->getMessage() );
 						/** Hack to send the error message back to the payment_table. */
 						MS_Plugin::instance()->controller->controllers['frontend']->add_action( 'the_content', 'payment_table', 1 );
 						break;
 					default:
 						do_action( 'ms_controller_gateway_form_error', $e );
+						$this->add_action( 'the_content', 'purchase_error_content' );
 						break; 
 				}
-				$this->add_action( 'the_content', 'purchase_error_content' );
 			}
 		}
 		else {

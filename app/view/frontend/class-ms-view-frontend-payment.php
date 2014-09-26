@@ -7,12 +7,18 @@ class MS_View_Frontend_Payment extends MS_View {
 	public function to_html() {
 		$membership = $this->data['membership'];
 		$invoice = $this->data['invoice'];
+		$class = 'ms-alert-success';
+		$msg = __( 'Please check the details of the membership below and click on the relevant button to complete the signup.', MS_TEXT_DOMAIN );
+		if( ! empty( $this->data['error'] ) ) {
+			$class = 'ms-alert-error';
+			$msg = $this->data['error'];
+		}
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
 			<legend><?php _e( 'Join Membership', MS_TEXT_DOMAIN ) ?></legend>
-			<p class="ms-alert-box ms-alert-success">
-				<?php _e( 'Please check the details of the membership below and click on the relevant button to complete the signup.', MS_TEXT_DOMAIN ); ?>
+			<p class="ms-alert-box <?php echo $class; ?>">
+				<?php echo $msg; ?>
 			</p>
 			<table class='ms-purchase-table'>
 				<tr>

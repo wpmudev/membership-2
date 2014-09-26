@@ -313,12 +313,25 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function payment_table() {
+		$data = array();
 
-		$membership_id = $_POST['membership_id'];
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$fields = array( 'membership_id', 'move_from_id' );
+		if( $this->validate_required( $fields, 'POST', false ) ) { 
+			$membership_id = $_POST['membership_id'];
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, '', $move_from_id );
+		}
+		/** Error path */
+		elseif( ! empty( $_POST['ms_relationship_id'] ) ) {
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+			$membership = $ms_relationship->get_membership();
+			if( ! empty( $_POST['error'] ) ) {
+				$data['error'] = $_POST['error'];
+			}
+		}
 		$member = MS_Model_Member::get_current_member();
-		$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
-
+		
 		if( ! empty( $_POST['coupon_code'] ) ) {
 			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
 			if( ! empty( $_POST['remove_coupon_code'] ) ) {
@@ -338,8 +351,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		else {
 			$coupon = new MS_Model_Coupon();
 		}
-			
-		$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, '', $move_from_id );
 
 		$data['coupon'] = $coupon;
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
@@ -352,7 +363,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data['member'] = $member;
 		$data['ms_relationship'] = $ms_relationship;
 			
-		$view = apply_filters( 'ms_view_registration_payment', new MS_View_Frontend_Payment() );
+		$view = MS_Factory::create( 'MS_View_Frontend_Payment' );
 		$view->data = $data;
 
 		return $view->to_html();
