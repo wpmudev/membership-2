@@ -17,12 +17,8 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 					<h2><?php echo sprintf( __( '%s settings', MS_TEXT_DOMAIN ), $gateway->name ); ?></h2>
 					<form class="ms-gateway-setings-form ms-form" data-ms="<?php echo $gateway->id;?>">
 						<?php
-							MS_Helper_Html::settings_box(
-								$this->fields, 
-								'', 
-								'',
-								array( 'label_element' => 'h3' ) 
-							);
+							MS_Helper_Html::settings_box( $this->fields );
+							MS_Helper_Html::settings_footer( null, null, true );
 						?>
 					</form>
 					<div class="clear"></div>
