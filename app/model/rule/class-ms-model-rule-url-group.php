@@ -129,17 +129,32 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		return false;
 	}
 	
+	public function count_rules() {
+		$count = 0;
+		if( $this->access ) {
+			$count = count( $this->rule_value );
+		}
+		return apply_filters( 'ms_model_rule_url_group_count_rules', $count );
+	}
+	
 	/**
 	 * Get content eligible for protection.
 	 * 
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 *
 	 * @access public
 	 * @return object[] The content array.
 	 */
 	public function get_contents( $args = null ) {
-		
+		$contents = array();
+		foreach( $this->rule_value as $value ) {
+			$content = new StdClass();
+			$content->name = $value;
+			$content->access = $this->access;
+			$contents[] = $content;
+		}
+		return apply_filters( 'ms_model_rule_url_group_get_contents', $contents );
 	}
 	
 	public function get_content( $id ) {
