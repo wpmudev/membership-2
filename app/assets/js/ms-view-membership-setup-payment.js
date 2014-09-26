@@ -16,7 +16,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 	};
 	ms_functions.is_free = function() {
-		if( 1 == $( 'input[name="is_free"]:checked' ).val() ) {
+		if( 0 == $( 'input[name="is_free"]:checked' ).val() ) {
 			$( '#ms-payment-settings-wrapper' ).show();
 		}
 		else {

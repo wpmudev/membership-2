@@ -60,8 +60,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
 						'class' => 'ms-payments-choice ms-ajax-update',
 						'field_options' => array(
-								1 => __( 'Yes', MS_TEXT_DOMAIN ),
-								0 => __( 'No', MS_TEXT_DOMAIN ),
+								0 => __( 'Yes', MS_TEXT_DOMAIN ),
+								1 => __( 'No', MS_TEXT_DOMAIN ),
 						),
 						'data_ms' => array(
 								'field' => 'is_free',
