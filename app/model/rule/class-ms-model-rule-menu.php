@@ -61,7 +61,14 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		if( ! empty( $args['menu_id'] ) ) {
+		if( ! empty( $args['protected_content'] ) ) {
+			$menus = $this->get_menu_array();
+			foreach( $menus as $menu_id => $menu ) {
+				$contents = array_merge( $contents, $this->get_contents( array( 'menu_id' => $menu_id ) ) );
+			}
+			return $contents;
+		}
+		elseif( ! empty( $args['menu_id'] ) ) {
 			$menu_id = $args['menu_id'];
 			$items = wp_get_nav_menu_items( $menu_id );
 			if( ! empty( $items ) ) {
@@ -70,6 +77,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 					$contents[ $item_id ] = $item;
 					$contents[ $item_id ]->id = $item_id;
 					$contents[ $item_id ]->title = esc_html( $item->title );
+					$contents[ $item_id ]->name = esc_html( $item->title );
 					$contents[ $item_id ]->parent_id = $menu_id;
 					$contents[ $item_id ]->type = $this->rule_type;
 					$contents[ $item_id ]->access = $this->get_rule_value( $contents[ $item_id ]->id );
@@ -85,6 +93,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
+		$ms = MS_Model_Membership::get_visitor_membership();
 		
 		return apply_filters( 'ms_model_rule_menu_get_content', $contents );
 	}
