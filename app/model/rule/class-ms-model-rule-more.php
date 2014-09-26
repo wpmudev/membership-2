@@ -73,13 +73,16 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 	}
 	
 	public function get_contents( $args = null ) {
-		$content = new StdClass();
-		$content->id = self::CONTENT_ID;
-		$content->name = __( 'User can read full post content beyond the More tag.', MS_TEXT_DOMAIN );
-
-		$content->access = parent::has_access( $content->id );
+		$contents = array();
 		
-		$contents = array( $content );
+		if( $this->get_rule_value( $content->id ) ) {
+			$content = new StdClass();
+			$content->id = self::CONTENT_ID;
+			$content->name = __( 'User can read full post content beyond the More tag.', MS_TEXT_DOMAIN );
+			$content->access = $this->get_rule_value( $content->id );
+			
+			$contents[] = $content;
+		}		
 		
 		return apply_filters( 'ms_model_rule_more_get_content', $contents );
 	}
