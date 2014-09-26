@@ -105,10 +105,13 @@ class MS_Model_Rule extends MS_Model {
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			unset( $rule_types[90] );
 		}
+		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+			unset( $rule_types[70] );
+		}
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			unset( $rule_types[-10] );
 		}
-	
+		
 		$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 		$rule_type = ksort( $rule_types );
 
@@ -496,9 +499,11 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	public function set_access( $id, $has_access ) {
-// 		$has_access = $this->validate_bool( $has_access );
+		$this->rule_value[ $id ] = $has_access;
 		
-		$this->rule_value[ $id ] = $has_access;		
+		if( $this->rule_value_invert && ! $has_access ) {
+			unset( $this->rule_value[ $id ] );
+		}
 	}
 	
 	public function give_access( $id ) {
