@@ -316,8 +316,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data = array();
 
 		$member = MS_Model_Member::get_current_member();
-		$fields = array( 'membership_id', 'move_from_id' );
-		if( $this->validate_required( $fields, 'POST', false ) ) { 
+		if( ! empty( $_POST['membership_id'] ) ) { 
 			$membership_id = $_POST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
@@ -330,6 +329,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			if( ! empty( $_POST['error'] ) ) {
 				$data['error'] = $_POST['error'];
 			}
+		}
+		else {
+			MS_Helper_Debug::log( 'Error: missing POST params' );
+			MS_Helper_Debug::log( $_POST );
+			return;
 		}
 		
 		if( ! empty( $_POST['coupon_code'] ) ) {
