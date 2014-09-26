@@ -315,6 +315,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function payment_table() {
 		$data = array();
 
+		$member = MS_Model_Member::get_current_member();
 		$fields = array( 'membership_id', 'move_from_id' );
 		if( $this->validate_required( $fields, 'POST', false ) ) { 
 			$membership_id = $_POST['membership_id'];
@@ -330,7 +331,6 @@ class MS_Controller_Frontend extends MS_Controller {
 				$data['error'] = $_POST['error'];
 			}
 		}
-		$member = MS_Model_Member::get_current_member();
 		
 		if( ! empty( $_POST['coupon_code'] ) ) {
 			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
