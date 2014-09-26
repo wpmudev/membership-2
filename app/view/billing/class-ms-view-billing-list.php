@@ -50,21 +50,28 @@ class MS_View_Billing_List extends MS_View {
 		$billing_list = new MS_Helper_List_Table_Billing();
 		$billing_list->prepare_items();
 
+		$title = __( 'Billing', MS_TEXT_DOMAIN );
+		if( ! empty( $_GET['gateway_id'] ) ) {
+			$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
+			if( $gateway->name ) {
+				$title .= ' - '. $gateway->name;
+			}
+		}
+		$add_new = sprintf( '<a class="add-new-h2" href="admin.php?page=%s&action=edit&invoice_id=0">%s</a>',
+				MS_Controller_Plugin::MENU_SLUG . '-billing',
+				__( 'Add New', MS_TEXT_DOMAIN )
+		);
+
 		ob_start();
 		?>
 		
 		<div class="wrap ms-wrap">
-			<h2 class="ms-settings-title"><i class="fa fa-credit-card"></i> <?php  
-					_e( 'Billing', MS_TEXT_DOMAIN ); 
-					if( ! empty( $_GET['gateway_id'] ) ) {
-						$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
-						if( $gateway->name ) {
-							echo ' - '. $gateway->name;
-						}
-					} 
-				?>
-				<a class="add-new-h2" href="admin.php?page=membership-billing&action=edit&invoice_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
-			</h2>
+			<?php 
+				MS_Helper_Html::settings_header( array(
+					'title' => $title . $add_new,
+					'title_icon_class' => 'fa fa-credit-card',
+				) ); 
+			?>
 			<?php $billing_list->views(); ?>
 			<form action="" method="post">
 				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search'); ?>
