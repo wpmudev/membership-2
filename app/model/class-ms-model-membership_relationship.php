@@ -167,11 +167,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( 'admin' == $gateway_id ) {
 			$ms_relationship->set_status( self::STATUS_ACTIVE );
+			$ms_relationship->config_period();
 		}
 		else {
 			$ms_relationship->get_status();
 		}
-		$ms_relationship->config_period();
 		$ms_relationship->save();
 
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
@@ -408,7 +408,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		) );
 		
 		$eligible = false;
-		if( in_array( $this->status, $trial_eligible_status ) && 
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) && in_array( $this->status, $trial_eligible_status ) && 
 				! $this->trial_period_completed && $membership->trial_period_enabled ) {
 			
 			$eligible = true;
@@ -696,7 +696,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc .= __( 'for permanent access.', MS_TEXT_DOMAIN );
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-				$desc .= sprintf( __( 'for access until %s.', MS_TEXT_DOMAIN ), $this->expire_date );
+				$desc .= sprintf( __( 'for access until %s.', MS_TEXT_DOMAIN ), $this->calc_expire_date( $this->expire_date ) );
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				$desc .= sprintf( __( 'to access from %s to %s.', MS_TEXT_DOMAIN ), $this->start_date, $this->expire_date );
