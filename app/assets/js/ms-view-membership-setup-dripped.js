@@ -49,7 +49,7 @@ jQuery( document ).ready( function( $ ) {
 	});
 	
 	$( '.ms-radio-slider' ).each( function() {
-		var value = ( 'true' == $( this ).children( 'input' ).val() ) ? 1 : 0;
+		var value = ( true == $( this ).children( 'input' ).val() ) ? 1 : 0;
 		ms_functions.change_access( value, this );
 	});
 });

@@ -200,6 +200,12 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		return $has_access;
 	}
 	
+	public function merge_rule_values( $src_rule ) {
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			parent::merge_rule_values( $src_rule );
+		}
+	}
+	
 	/**
 	 * Get the total content count.
 	 * For list table pagination. 
