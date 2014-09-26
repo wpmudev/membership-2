@@ -375,7 +375,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 	
 			$gateway_id = $_POST['gateway'];
-			$gateway = apply_filters( 'ms_model_gateway', MS_Model_Gateway::factory( $gateway_id ), $gateway_id );
+			$gateway = MS_Model_Gateway::factory( $gateway_id );
 			try {
 				$invoice = $gateway->process_purchase( $ms_relationship );
 

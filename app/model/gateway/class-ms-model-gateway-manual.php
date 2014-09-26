@@ -47,7 +47,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
 	public function purchase_info_content() {
 		if( empty( $this->payment_info ) ) {
-			$link = admin_url( 'admin.php?page=membership-settings&tab=payment&gateway_id=manual_gateway&action=edit' );
+			$link = admin_url( sprintf( 'admin.php?page=%s&tab=payment', MS_Controller_Plugin::MENU_SLUG . '-settings' ) );
 			ob_start();
 			?>
 				<?php _e( 'It is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
