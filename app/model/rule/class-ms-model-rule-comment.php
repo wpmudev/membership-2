@@ -29,9 +29,9 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	
 	const CONTENT_ID = 'comment';
 	
-	const RULE_VALUE_NO_ACCESS = 1;
-	const RULE_VALUE_READ = 2;
-	const RULE_VALUE_WRITE = 3;
+	const RULE_VALUE_NO_ACCESS = 2;
+	const RULE_VALUE_READ = 1;
+	const RULE_VALUE_WRITE = 0;
 	
 	/**
 	 * Verify access to the current asset.
@@ -132,8 +132,23 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		return $content;
 	}
 	
+	public function count_rules() {
+		$count = 0;
+		$count = count( $this->rule_value );
+		return apply_filters( 'ms_model_rule_comment_count_rules', $count );
+	}
+	
 	public function get_contents( $args = null ) {
 		$contents = array();
+		if( count( $this->rule_value) > 0 ) {
+			$rule_value = $this->get_rule_value( self::CONTENT_ID );
+			$content_array = $this->get_content_array();
+			$content = new StdClass;
+			$content->id = self::CONTENT_ID;
+			$content->name = $content_array[ $rule_value ];
+			$content->access = true;
+			$contents[] = $content;
+		}		
 		return apply_filters( 'ms_model_rule_comment_get_content', $contents );
 	}
 	
@@ -148,8 +163,4 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents );
 	}
 	
-	public function set_access( $id, $rule_value ) {
-		MS_Helper_Debug::log("id: $id, rulevalue: $rule_value");
-		$this->rule_value[ $id ] = $rule_value;
-	}
 }
