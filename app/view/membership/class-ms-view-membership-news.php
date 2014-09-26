@@ -4,32 +4,31 @@ class MS_View_Membership_News extends MS_View {
 
 	protected $data;
 	
+	/**
+	 * Overrides parent's to_html() method.
+	 *
+	 * @since 1.0
+	 *
+	 * @return object
+	 */
 	public function to_html() {
+		$list_table = MS_Factory::create( 'MS_Helper_List_Table_Event' );
+		$list_table->prepare_items();
+	
+		ob_start();
 		?>
-			<div class="ms-overview-news-wrapper">
-				<h3 class="hndle"><span><?php _e( 'News:', MS_TEXT_DOMAIN ); ?></span></h3>
-				<div class="inside">
-					<?php if( ! empty( $this->data['events'] ) ): ?>
-						<table>
-							<tr>
-								<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'User', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'Event', MS_TEXT_DOMAIN ); ?></th>
-							</tr>
-							<?php foreach( $this->data['events'] as $event ): ?>
-								<tr>
-									<td><?php echo date( MS_Helper_Period::DATE_TIME_FORMAT, strtotime( $event->post_modified ) ); ?></td>
-									<td><?php echo MS_Model_Member::get_username( $event->user_id ); ?></td>
-									<td><?php echo $event->description; ?></td>
-								</td>
-							<?php endforeach;?>
-						</table>
-					<?php else: ?>
-						<p><?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>		
-					<?php endif;?>
-					<br class="clear">
-				</div>
-			</div>
-		<?php 
+			
+		<div class="wrap ms-wrap">
+			<?php MS_Helper_Html::settings_header( array( 'title' => __( 'Membership News', MS_TEXT_DOMAIN ) ) ); ?>
+			<?php $list_table->views(); ?>
+			<form action="" method="post">
+				<?php $list_table->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search'); ?>
+				<?php $list_table->display(); ?>
+			</form>
+		</div>
+		
+		<?php
+		$html = ob_get_clean();
+		echo apply_filters( 'ms_view_membership_news_to_html', $html );
 	}
 }

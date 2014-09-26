@@ -234,24 +234,26 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_event_get_description', $desc, $type );
 	}
 	
+	/**
+	 * Get the total event count.
+	 * For list table pagination.
+	 * 
+	 * @since 1.0
+	 * 
+	 * @param array $args The default query event args.
+	 * @return int The total count.
+	 */
+	public static function get_event_count( $args = null ) {
+		$args = self::get_query_args( $args );
+	
+		$query = new WP_Query( $args );
+		return $query->found_posts;
+	}
+	
 	public static function get_events( $args = null ) {
-		$defaults = array(
-				'post_type' => self::$POST_TYPE,
-				'posts_per_page' => 10,
-				'fields' => 'ids',
-				'post_status' => 'any',
-				'order' => 'DESC',
-		);
-		$args = apply_filters( 'ms_model_events_get_events_args', wp_parse_args( $args, $defaults ) );
-
-		if( ! empty( $args['topic'] ) ) {
-			$args['meta_query']['topic'] = array(
-					'key'     => 'topic',
-					'value'   => $args['topic'],
-			);
-			unset( $args['topic'] );
-		}
 		
+		$args = self::get_query_args( $args );
+
 		$query = new WP_Query($args);
 		$items = $query->get_posts();
 		
@@ -260,6 +262,27 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$events[] = MS_Factory::load( 'MS_Model_Event', $item );
 		}
 		return $events;
+	}
+	
+	public static function get_query_args( $args ) {
+		$defaults = array(
+				'post_type' => self::$POST_TYPE,
+				'posts_per_page' => 10,
+				'fields' => 'ids',
+				'post_status' => 'any',
+				'order' => 'DESC',
+		);
+		if( ! empty( $args['topic'] ) ) {
+			$args['meta_query']['topic'] = array(
+					'key'     => 'topic',
+					'value'   => $args['topic'],
+			);
+			unset( $args['topic'] );
+		}
+		
+		$args = wp_parse_args( $args, $defaults );
+		
+		return apply_filters( 'ms_model_event_get_query_args', $args );
 	}
 	
 	public static function save_event( $type, $data ) {
