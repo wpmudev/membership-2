@@ -13,9 +13,11 @@ Text Domain: wpmudev_protected_content
 
 /**
  * @copyright Incsub (http://incsub.com/)
- * Authors: Fabio Jun Onishi, Victor Ivanov, Rheinard Korf, Jack Kitterhing 
+ * 
+ * Authors: Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf 
  * Lead Developer: Fabio Jun Onishi
- * Contributors: Joji Mori, Patrick Cohen 
+ * Contributors: Philipp Stracker, Joji Mori, Patrick Cohen
+ * 
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  * 
  * This program is free software; you can redistribute it and/or modify 
@@ -42,17 +44,9 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 /**
  * Plugin text domain.
  *
- * @since 4.0.0
+ * @since 1.0
  */
 define('MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
-
-/**
- * Constant used in wp_enqueue_style and wp_enqueue_script version.
- *
- * @since 4.0.0
- * @todo Decide if its still needed.
- */
-define('MS_VERSION_DT', '2014-04-04' );
 
 /**
  * Plugin name dir constant.
@@ -150,7 +144,7 @@ add_filter( 'ms_class_file_override', 'ms_class_file_override' );
  * Control of plugin is passed to the MVC implementation found
  * inside the /app/ folder.
  *
- * @since 4.0.0
+ * @since 1.0
  *
  * @return object Plugin instance.
  */
@@ -159,7 +153,7 @@ class MS_Plugin {
 	/**
 	 * Singletone instance of the plugin.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @access private
 	 * @var MS_Plugin
@@ -169,7 +163,7 @@ class MS_Plugin {
 	/**
 	 * The plugin name.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var name
 	 */
@@ -178,7 +172,7 @@ class MS_Plugin {
 	/**
 	 * The plugin version.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var version
 	 */
@@ -187,7 +181,7 @@ class MS_Plugin {
 	/**
 	 * The plugin file.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var file
 	 */
@@ -196,7 +190,7 @@ class MS_Plugin {
 	/**
 	 * The plugin path.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var dir
 	 */
@@ -205,25 +199,25 @@ class MS_Plugin {
 	/**
 	 * The plugin URL.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
-	 * @var _url
+	 * @var url
 	 */
 	private $url;
 
 	/**
 	 * The plugin settings.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var settings
 	 */
 	private $settings;
 	
-		/**
+	/**
 	 * The plugin add-on settings.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 * @var addon
 	 */
@@ -234,17 +228,17 @@ class MS_Plugin {
 	 *
 	 * Set properties, registers hooks and loads the plugin.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	function __construct() {
 		
 		/**
 		 * Actions to execute before the plugin construction starts.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'ms_plugin_construct_pre_processing', $this );
+		do_action( 'ms_plugin_construct_start', $this );
 		
 		/** Setup plugin properties */
 		$this->name = MS_PLUGIN_NAME;
@@ -258,7 +252,7 @@ class MS_Plugin {
 		 *
 		 * @uses load_plugin_textdomain()
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this ) );
@@ -266,18 +260,12 @@ class MS_Plugin {
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
-		/**
-		 * Actions to execute before construction is complete.
-		 *
-		 * @since 4.0.0
-		 * @param object $this The MS_Plugin object.
-		 */
-		do_action( 'ms_plugin_loading', $this ); 
-
 		/** 
 		 * Hooks init to register custom post types.
 		 */
-		add_action( 'init', array( &$this, 'register_custom_post_type' ), 1 );
+		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
+		
+		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
 		
 		/**
 		 * Hooks init to create the primary plugin controller.
@@ -287,18 +275,18 @@ class MS_Plugin {
 		/**
 		 * Creates and Filters the Settings Model.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->settings = apply_filters( 'ms_model_settings', MS_Factory::load( 'MS_Model_Settings' ), $this );
+		$this->settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		/**
 		 * Creates and Filters the Addon Model.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */		
-		$this->addon = apply_filters( 'ms_model_addon', MS_Factory::load( 'MS_Model_Addon' ), $this );		
+		$this->addon = MS_Factory::load( 'MS_Model_Addon' );		
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
@@ -307,23 +295,24 @@ class MS_Plugin {
 		self::$instance = $this;
 		
 		/**
-		 * Actions to execute when the Plugin object has successfully constructed.
-		 *
-		 * @since 4.0.0
-		 * @param object $this The MS_Plugin object.
-		 */
-		do_action( 'ms_plugin_loaded', $this ); 
-
-		/**
 		 * Load membership integrations.
 		 */
 		MS_Integration::load_integrations();
+		
+		/**
+		 * Actions to execute when the Plugin object has successfully constructed.
+		 *
+		 * @since 1.0
+		 * @param object $this The MS_Plugin object.
+		 */
+		do_action( 'ms_plugin_construct_end', $this ); 
+
 	}
 
 	/**
 	 * Loads primary plugin controllers.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @return void
 	 */	
 	public function ms_plugin_constructing() {
@@ -333,47 +322,51 @@ class MS_Plugin {
 		 * Main entry point controller for plugin.
 		 *
 		 * @uses MS_Controller_Plugin
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		$this->controller = apply_filters( 'ms_controller_plugin', new MS_Controller_Plugin(), $this );		
+		$this->controller = MS_Factory::create( 'MS_Controller_Plugin' );		
 	}
 
 	/**
-	 * Register membership plugin custom post types. 
+	 * Register plugin custom post types. 
 	 *
-	 * @todo Better configure custom post type args
-	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @return void
 	 */	
-	public function register_custom_post_type() {
+	public function register_custom_post_types() {
 		
-		do_action( 'ms_plugin_register_custom_post_type', $this );
+		do_action( 'ms_plugin_register_custom_post_types', $this );
 		
-		$cpts = array(
+		$cpts = apply_filters( 'ms_plugin_register_custom_post_types_ctps', array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
 				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
-				
-		);
+		) );
 		foreach( $cpts as $cpt => $args ) {
 			MS_Helper_Utility::register_post_type( $cpt, $args );
-		}
-		
+		}		
+	}
+	
+	/**
+	 * Register plugin custom post status.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
+	public function register_post_status() {
 		/** post_status "virtual" for pages not to be displayed in the menus but that users should not be editing. */
 		register_post_status( 'virtual', array(
-			'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
-			'public' => ( ! is_admin() ), //This trick prevents the virtual pages from appearing in the All Pages list but can be display on the front end.
-			'exclude_from_search' => false,
-			'show_in_admin_all_list' => false,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
+				'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
+				'public' => ( ! is_admin() ), //This trick prevents the virtual pages from appearing in the All Pages list but can be display on the front end.
+				'exclude_from_search' => false,
+				'show_in_admin_all_list' => false,
+				'show_in_admin_status_list' => true,
+				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
 		) );
-		
 	}
 	
 	/**
@@ -383,7 +376,7 @@ class MS_Plugin {
 	 * Avoids creating include functions for each file in the MVC structure.
 	 * **MS_** namespace ONLY will be based on folder structure in /app/
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @access private
 	 *
 	 * @param  string $class Uses PHP autoloader function.
@@ -394,7 +387,7 @@ class MS_Plugin {
 		/**
 		 * Actions to execute before the autoloader loads a class.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_class_loader_pre_processing', $this );
@@ -405,7 +398,7 @@ class MS_Plugin {
 		/**
 		 * Adds and Filters class path overrides.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		$path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
@@ -415,14 +408,13 @@ class MS_Plugin {
 		 *
 		 * This prevents autoloading from interfering with other plugins in their own namespaces.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0
 		 */
 		foreach ( $namespaces as $namespace ) {
 			switch ( $namespace ) {
-			
 				/** Use /app/ path and structure only for MS_ classes */
 				case "MS_":
-					if ( !array_key_exists( trim( $class ), $path_overrides ) ) {
+					if( !array_key_exists( trim( $class ), $path_overrides ) ) {
 						if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
 							$sub_path = strtolower( str_replace( 'MS_', '', $class ) );
 							$path_array = explode( '_', $sub_path );
@@ -434,92 +426,83 @@ class MS_Plugin {
 							/**
 							 * Overrides the filename and path.
 							 *
-							 * @since 4.0.0
+							 * @since 1.0
 							 * @param object $this The MS_Plugin object.
 							 */
 							$filename = apply_filters( 'ms_class_file_override', $filename, $this );
 							
-							if ( is_readable( $filename ) ) {
-								require $filename;
+							if( is_readable( $filename ) ) {
+								require_once $filename;
 								return true;
 							}
 						}						
-					} else {
+					} 
+					else {
 						$filename = $basedir . '/' . $path_overrides[ $class ];
 						
 						/**
 						 * Overrides the filename and path.
 						 *
-						 * @since 4.0.0
+						 * @since 1.0
 						 * @param object $this The MS_Plugin object.
 						 */
 						$filename = apply_filters( 'ms_class_file_override', $filename, $this );
 						
-						if ( is_readable( $filename ) ) {
-							require $filename;
+						if( is_readable( $filename ) ) {
+							require_once $filename;
 							return true;
 						}						
 					}
 					break; 
-				
 				default:
-						/**
-						 * Actions to add additional namespaces to this autoloading function.
-						 *
-						 * @since 4.0.0
-						 * @param object $this The MS_Plugin object.
-						 */
-						do_action( 'ms_plugin_class_loader_namespace', $namespace, $this );
-					break;
-
+					/**
+					 * Actions to add additional namespaces to this autoloading function.
+					 *
+					 * @since 1.0
+					 * @param object $this The MS_Plugin object.
+					 */
+					do_action( 'ms_plugin_class_loader_namespace', $namespace, $this );
+				break;
 			}
 		}
 
 		return false;
 	}
-	
 
 	/**
 	 * Add link to settings page in plugins page.
 	 * 
-	 * @todo Adjust multisite link. Maybe show wizard link for first access.
-	 *
-	 * @since 4.0.0
-	 * @access private
+	 * @since 1.0
 	 *
 	 * @param array $links Wordpress default array of links.
 	 * @return array Array of links with settings page links added.
 	 */
 	public function plugin_settings_link( $links ) {
-		$settings = __( 'Settings', MS_TEXT_DOMAIN );
-		if ( is_multisite() ) {
+		if( ! is_network_admin() ) {
+			$text = __( 'Settings', MS_TEXT_DOMAIN );
+			$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG . '-settings' );
 			
-			/**
-			 * Filter the plugin settings link.  
-			 *
-			 * @since 4.0.0
-			 * @param object $this The MS_Plugin object.
-			 */
-			$settings_link = apply_filters( 'ms_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
-		} else {
-			
-			/**
-			 * Filter the plugin settings link.  
-			 *
-			 * @since 4.0.0
-			 * @param object $this The MS_Plugin object.
-			 */
-			$settings_link = apply_filters( 'ms_plugin_settings_link', "<a href='admin.php?page=membership-settings'>$settings</a>", $this );
-		}
-		array_unshift( $links, $settings_link );
+			if( $this->settings->initial_setup ) {
+				$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG );
+			}
 
+			/**
+			 * Filter the plugin settings link.  
+			 *
+			 * @since 1.0
+			 * @param object $this The MS_Plugin object.
+			 */
+			$settings_link = apply_filters( 'ms_plugin_settings_link', sprintf( '<a href="%s">%s</a>', $url, $text ), $this );
+			array_unshift( $links, $settings_link );
+		}
+		
 		return $links;
 	}	
 	
 	/**
 	 * Returns singletone instance of the plugin.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @static
 	 * @access public
@@ -528,21 +511,24 @@ class MS_Plugin {
 	 * @return MS_Plugin
 	 */
 	public static function instance( $instance = null ) {
-		if ( ! $instance || 'MS_Plugin' != get_class( $instance ) ){
+		if( ! $instance || 'MS_Plugin' != get_class( $instance ) ) {
 			if ( is_null( self::$instance ) ) {
 				self::$instance = new MS_Plugin();
 			}
-		} else {
-			if ( is_null( self::$instance ) ) {
+		} 
+		else {
+			if( is_null( self::$instance ) ) {
 				self::$instance = $instance;
 			}			
 		}
-		return self::$instance;
+		
+		return apply_filters( 'ms_plugin_instance', self::$instance );
 	}
+	
 	/**
 	 * Returns plugin enabled status.
 	 *
-	 * @since 4.0
+	 * @since 1.0
 	 * @access public
 	 *
 	 * @static
@@ -556,14 +542,14 @@ class MS_Plugin {
 	/**
 	 * Returns property associated with the plugin.
 	 *
-	 * @since 4.0
+	 * @since 1.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
-		if ( property_exists( $this, $property ) ) {
+		if( property_exists( $this, $property ) ) {
 			return $this->$property;
 		}
 	}
@@ -574,6 +560,6 @@ class MS_Plugin {
  *
  * This is the primary entry point for the Membership plugin.
  *
- * @since 4.0.0
+ * @since 1.0
  */
 MS_Plugin::instance( new MS_Plugin() );
