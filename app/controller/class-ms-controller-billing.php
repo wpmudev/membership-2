@@ -25,40 +25,23 @@
 /**
  * Controller to manage billing and invoices.
  *
- * @since 4.0.0
+ * @since 1.0
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Billing extends MS_Controller {
 	
 	/**
-	 * The model to use for loading/saving billing data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */	
-	private $model;
-
-	/**
-	 * View to use for rendering billing settings and lists.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $views
-	 */	
-	private $views;
-
-	/**
 	 * Prepare the Billing manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */		
 	public function __construct() {
-		$this->add_action( 'load-membership_page_membership-billing', 'admin_billing_manager' );
+		$hook = 'protected-content_page_protected-content-billing';
+		$this->add_action( 'load-' . $hook, 'admin_billing_manager' );
 		
-		$this->add_action( 'admin_print_scripts-membership_page_membership-billing', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_membership-billing', 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 	
 	/**
@@ -85,25 +68,15 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Save billing add/edit
 		 */
-		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['_wpnonce'] )  && ! empty(  $_POST['action'] ) && check_admin_referer( $_POST['action'] ) ) {
-			$section = MS_View_Billing_Edit::BILLING_SECTION;
-			if( ! empty( $_POST[ $section ] ) ) {
-				$msg = $this->save_invoice( $_POST[ $section ] );
-			}
+		$fields = array( 'submit', 'user_id', 'membership_id' );
+		if ( $this->validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
+			$msg = $this->save_invoice( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
-		}
-		/**
-		 * Execute table single action.
-		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['invoice_id'] ) && ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( $_GET['_wpnonce'] ) ) {
-			$msg = $this->billing_do_action( $_GET['action'], array( $_GET['invoice_id'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
-			die();
 		}
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( ! empty( $_POST['invoice_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-billings' ) ) {
+		elseif( $this->validate_required( array( 'invoice_id', 'bulk-billings' ) ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -120,29 +93,28 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Action view page request
 		 */
-		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['invoice_id'] ) ) {
+		$isset = array( 'action', 'invoice_id' ); 
+		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
-			$data['invoice'] =  apply_filters( 'ms_model_invoice', MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] ) );
+			$data['invoice'] =  MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_members_usernames();
 			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
 			$data['memberships'] = MS_Model_Membership::get_membership_names( null, true );
-			$this->views['edit'] = apply_filters( 'ms_view_billing_edit', new MS_View_Billing_Edit() );
-			$this->views['edit']->data = $data;
-			$this->views['edit']->render();
+			$view = MS_Factory::create( 'MS_View_Billing_Edit' );
+			$view->data = apply_filters( 'ms_view_billing_edit_data',  $data );
+			$view->render();
 		}
 		else {
-			$this->views['billing'] = apply_filters( 'ms_view_billing_list', new MS_View_Billing_List() );
-			$this->views['billing']->render();
+			$view = MS_Factory::create( 'MS_View_Billing_List' );
+			$view->render();
 		}
 	}
 
 	/**
 	 * Perform actions for each invoice.
 	 *
-	 * @todo Still incomplete.
-	 *
-	 * @since 4.0.0	
+	 * @since 1.0	
 	 * @param string $action The action to perform on selected invoices
 	 * @param int[] $invoice_ids The list of invoices ids to process.
 	 */	
@@ -160,6 +132,9 @@ class MS_Controller_Billing extends MS_Controller {
 						$invoice->delete();
 						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 						break;
+					default:
+						do_action( 'ms_controller_billing_do_action_' . $action, $invoice_ids );
+						break;
 				}
 			}
 		}
@@ -169,11 +144,11 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Save invoices using the invoices model.
 	 *
-	 * @since 4.0.0	
+	 * @since 1.0	
 	 * @param mixed $fields Transaction fields
 	 */	
-	public function save_invoice( $fields ) {
-		
+	private function save_invoice( $fields ) {
+
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		
 		if( ! $this->is_admin_user() ) {
@@ -195,7 +170,7 @@ class MS_Controller_Billing extends MS_Controller {
 				$ms_relationship->save();
 			}
 			
-			$invoice = apply_filters( 'ms_model_invoice', MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] ) );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
 			if( ! $invoice->is_valid() ) {
 				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
@@ -222,7 +197,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Load Billing specific styles.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */	
 	public function enqueue_styles() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
@@ -233,7 +208,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Load Billing specific scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */	
 	public function enqueue_scripts() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {

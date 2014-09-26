@@ -10,14 +10,20 @@ class MS_View_Billing_Edit extends MS_View {
 	protected $data;
 	
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		ob_start();
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2 class="ms-settings-title"><i class="fa fa-pencil-square"></i> <?php echo empty( $this->data['invoice']->id ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN ) ; _e( ' Billing', MS_TEXT_DOMAIN ); ?></h2>
+				<?php 
+					$text =  empty( $this->data['invoice']->is_valid() ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
+					MS_Helper_Html::settings_header( array(
+						'title' => sprintf( __( ' %s Billing', MS_TEXT_DOMAIN ), $text ),
+						'title_icon_class' => 'fa fa-pencil-square',
+					) ); 
+				?>
 				<form action="<?php echo remove_query_arg( array( 'action', 'invoice_id' ) ); ?>" method="post" class="ms-form">
-					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
+					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -29,17 +35,15 @@ class MS_View_Billing_Edit extends MS_View {
 	function prepare_fields() {
 		$invoice = $this->data['invoice'];
 		$currency = MS_Plugin::instance()->settings->currency;
-		$this->fields = array(
+		$fields = array(
 			'execute' => array(
 					'id' => 'execute',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Execute status change actions (add/remove membership).', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 					'value' => true,
 			),
 			'status' => array(
 					'id' => 'status',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Status', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => MS_Model_Invoice::get_status(),
@@ -47,7 +51,6 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'user_id' => array(
 					'id' => 'user_id',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Username', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'value' => $invoice->user_id,
@@ -55,7 +58,6 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'section' => self::BILLING_SECTION,
 				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $invoice->membership_id,
@@ -63,42 +65,24 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'description' => array(
 					'id' => 'description',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Description', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $invoice->description,
 			),
 			'amount' => array(
 					'id' => 'amount',
-					'section' => self::BILLING_SECTION,
 					'title' => sprintf( __( 'Amount (%s)', MS_TEXT_DOMAIN ), $currency ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $invoice->amount,
 			),
 			'discount' => array(
 					'id' => 'discount',
-					'section' => self::BILLING_SECTION,
 					'title' => sprintf( __( 'Discount (%s)', MS_TEXT_DOMAIN ), $currency ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $invoice->discount,
 			),				
-// 			'tax_name' => array(
-// 					'id' => 'tax_name',
-// 					'section' => self::BILLING_SECTION,
-// 					'title' => __( 'Tax name', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $invoice->tax_name,
-// 			),
-// 			'tax_rate' => array(
-// 					'id' => 'tax_rate',
-// 					'section' => self::BILLING_SECTION,
-// 					'title' => __( 'Tax rate', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 					'value' => $invoice->tax_rate,
-// 			),
 			'due_date' => array(
 					'id' => 'due_date',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Due date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $invoice->due_date,
@@ -106,22 +90,12 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'notes' => array(
 					'id' => 'notes',
-					'section' => self::BILLING_SECTION,
 					'title' => __( 'Notes', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 					'value' => $invoice->get_notes_desc(),
 			),
-// 			'gateway_id' => array(
-// 					'id' => 'gateway_id',
-// 					'section' => self::BILLING_SECTION,
-// 					'title' => __( 'Gateway', MS_TEXT_DOMAIN ),
-// 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-// 					'value' => $invoice->gateway_id,
-// 					'field_options' => $this->data['gateways'],
-// 			),
 			'invoice_id' => array(
 					'id' => 'invoice_id',
-					'section' => self::BILLING_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $invoice->id,
 			),
@@ -141,8 +115,8 @@ class MS_View_Billing_Edit extends MS_View {
 			'cancel' => array(
 					'id' => 'cancel',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'title' => __('Cancel', MS_TEXT_DOMAIN ),
-					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
+					'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'url' => remove_query_arg( array( 'action', 'invoice_id' ) ),
 					'class' => 'ms-link-button button',
 			),
@@ -153,8 +127,10 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 		);
 		if( $invoice->id > 0 ) {
-			$this->fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN ;
-			$this->fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
+			$fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN ;
+			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 		}
+		
+		return apply_filters( 'ms_view_billing_edit_prepare_fields', $fields );
 	}
 }
