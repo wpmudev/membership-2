@@ -25,40 +25,23 @@
 /**
  * Controller to manage Membership coupons.
  *
- * @since 4.0.0
+ * @since 1.0
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Coupon extends MS_Controller {
 
 	/**
-	 * The model to use for loading/saving coupon data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */	
-	private $model;
-
-	/**
-	 * View to use for rendering coupon settings.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $views
-	 */	
-	private $views;
-
-	/**
 	 * Prepare the Coupon manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */		
 	public function __construct() {
-		$this->add_action( 'load-membership_page_membership-coupons', 'admin_coupon_manager' );
+		$hook = 'protected-content_page_protected-content-coupons';
+		$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
 		
-		$this->add_action( 'admin_print_scripts-membership_page_membership-coupons', 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-membership_page_membership-coupons', 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 	
 	/**
@@ -66,30 +49,29 @@ class MS_Controller_Coupon extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	public function admin_coupon_manager() {
+		MS_Helper_Debug::log($_POST);
 		/**
 		 * Save coupon add/edit
 		 */
-		if ( ! empty( $_POST['submit'] ) && ! empty( $_POST['_wpnonce'] )  && ! empty(  $_POST['action'] ) && check_admin_referer( $_POST['action'] ) ) {
-			$section = MS_View_Coupon_Edit::COUPON_SECTION;
-			if( ! empty( $_POST[ $section ] ) ) {
-				$msg = $this->save_coupon( $_POST[ $section ] );
-			}
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'coupon_id') ) ) ) ;
+		$isset = array( 'submit', 'membership_id' );
+		if ( $this->validate_required( $isset, 'POST', false ) && $this->verify_nonce() && $this->is_admin_user() ) {
+			$msg = $this->save_coupon( $_POST );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id') ) ) ) ;
 		}
 		/**
 		 * Execute table single action.
 		 */
-		elseif( ! empty( $_GET['action'] ) && ! empty( $_GET['coupon_id'] ) && ! empty( $_GET['_wpnonce'] ) && check_admin_referer( $_GET['action'] ) ) {
+		elseif( $this->validate_required( array( 'coupon_id', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {	
 			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['coupon_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) ) ) );
 		}
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( ! empty( $_POST['coupon_id'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-coupons' ) ) {
+		elseif( $this->validate_required( array( 'coupon_id' ) ) && $this->verify_nonce( 'bulk-coupons' ) && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->coupon_do_action( $action, $_POST['coupon_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -124,37 +106,37 @@ class MS_Controller_Coupon extends MS_Controller {
 	/**
 	 * Render the Coupon admin manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */	
 	public function admin_coupon() {
 		/**
 		 * Edit action view page request
 		 */
-		if( ! empty( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['coupon_id'] ) ) {
+		$isset = array( 'action', 'coupon_id' );
+		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$coupon_id = ! empty( $_GET['coupon_id'] ) ? $_GET['coupon_id'] : 0;
-			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::load( 'MS_Model_Coupon', $coupon_id ), $coupon_id );
-			$data['coupon'] = $this->model;
+			$data['coupon'] = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
 			$data['memberships'] = MS_Model_Membership::get_membership_names();
 			$data['memberships'][0] = __( 'Any', MS_TEXT_DOMAIN );
 			$data['action'] = $_GET['action'];
 			
-			$this->views['edit'] = apply_filters( 'ms_view_coupon_edit', new MS_View_Coupon_Edit() );
-			$this->views['edit']->data = $data;
-			$this->views['edit']->render();
+			$view = MS_Factory::create( 'MS_View_Coupon_Edit' );
+			$view->data = apply_filters( 'ms_view_coupon_edit_data', $data );
+			$view->render();
 		}
 		/**
 		 * Coupon admin list page 
 		 */
 		else {
-			$this->views['coupon'] = apply_filters( 'ms_view_coupon_list', new MS_View_Coupon_List() );
-			$this->views['coupon']->render();
+			$view = MS_Factory::create( 'MS_View_Coupon_List' );
+			$view->render();
 		}
 	}
 
 	/**
 	 * Save coupon using the coupon model.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 * @param mixed $fields Coupon fields
 	 */
 	private function save_coupon( $fields ) {
@@ -164,19 +146,19 @@ class MS_Controller_Coupon extends MS_Controller {
 		
 		if( is_array( $fields ) ) {
 			$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
-			$this->model = apply_filters( 'ms_model_coupon', MS_Factory::load( 'MS_Model_Coupon', $coupon_id ), $coupon_id );
+			$coupon = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
 				
 			foreach( $fields as $field => $value ) {
-				$this->model->$field = $value;
+				$coupon->$field = $value;
 			}				
-			$this->model->save();
+			$coupon->save();
 		}
 	}
 	
 	/**
 	 * Load Coupon specific styles.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	public function enqueue_styles() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
@@ -187,7 +169,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	/**
 	 * Load Coupon specific scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 */
 	public function enqueue_scripts() {
 		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {

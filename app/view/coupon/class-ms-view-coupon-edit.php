@@ -2,29 +2,25 @@
 
 class MS_View_Coupon_Edit extends MS_View {
 
-	const COUPON_SECTION = 'coupon_section';
-	
 	protected $fields = array();
 	
 	protected $data;
 	
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		ob_start();
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<h2 class="ms-settings-title">
-					<i class="fa fa-pencil-square"></i>
-					<?php 
-						echo empty( $this->data['coupon']->id ) 
-							? __( 'Add', MS_TEXT_DOMAIN ) 
-							: __( 'Edit', MS_TEXT_DOMAIN ); 
-						_e( ' Coupon', MS_TEXT_DOMAIN ); 
-					?>
-				</h2>
+				<?php 
+					$text = $this->data['coupon']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
+					MS_Helper_Html::settings_header( array(
+						'title' => sprintf( __( ' %s Coupon', MS_TEXT_DOMAIN ), $text ),
+						'title_icon_class' => 'fa fa-pencil-square',
+					) ); 
+				?>	
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
-					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
+					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
 				<div class="clear"></div>
 			</div>
@@ -35,24 +31,21 @@ class MS_View_Coupon_Edit extends MS_View {
 	
 	function prepare_fields() {
 		$coupon = $this->data['coupon'];
-		$this->fields = array(
+		$fields = array(
 			'code' => array(
 					'id' => 'code',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Coupon code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->code,
 			),
 			'discount' => array(
 					'id' => 'discount',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Discount', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->discount,
 			),
 			'discount_type' => array(
 					'id' => 'discount_type',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Discount Type', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $coupon->get_discount_types(),
@@ -60,7 +53,6 @@ class MS_View_Coupon_Edit extends MS_View {
 			),
 			'start_date' => array(
 					'id' => 'start_date',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Start date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => ( $coupon->start_date ) ? $coupon->start_date : MS_Helper_Period::current_date(),
@@ -68,7 +60,6 @@ class MS_View_Coupon_Edit extends MS_View {
 			),
 			'expire_date' => array(
 					'id' => 'expire_date',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->expire_date,
@@ -76,7 +67,6 @@ class MS_View_Coupon_Edit extends MS_View {
 			),
 			'membership_id' => array(
 					'id' => 'membership_id',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $this->data['memberships'],
@@ -84,14 +74,12 @@ class MS_View_Coupon_Edit extends MS_View {
 			),
 			'max_uses' => array(
 					'id' => 'max_uses',
-					'section' => self::COUPON_SECTION,
 					'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $coupon->max_uses,
 			),
 			'coupon_id' => array(
 					'id' => 'coupon_id',
-					'section' => self::COUPON_SECTION,
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $coupon->id,
 			),
@@ -111,8 +99,8 @@ class MS_View_Coupon_Edit extends MS_View {
 			'cancel' => array(
 					'id' => 'cancel',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'title' => __('Cancel', MS_TEXT_DOMAIN ),
-					'value' => __('Cancel', MS_TEXT_DOMAIN ),
+					'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
+					'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'url' => remove_query_arg( array( 'action', 'coupon_id' ) ),
 					'class' => 'ms-link-button button',
 			),
@@ -122,5 +110,6 @@ class MS_View_Coupon_Edit extends MS_View {
 					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
+		return apply_filters( 'ms_view_coupon_edit_prepare_fields', $fields );
 	}
 }

@@ -50,13 +50,21 @@ class MS_View_Coupon_List extends MS_View {
 		$coupon_list = new MS_Helper_List_Table_Coupon();
 		$coupon_list->prepare_items();
 
+		$title = __( 'Coupons', MS_TEXT_DOMAIN );
+		$add_new = sprintf( '<a class="add-new-h2" href="admin.php?page=%s&action=edit&coupon_id=0">%s</a>',
+				MS_Controller_Plugin::MENU_SLUG . '-coupons',
+				__( 'Add New', MS_TEXT_DOMAIN )
+		);
+		
 		ob_start();
 		?>
-		
 		<div class="wrap ms-wrap">
-			<h2 class="ms-settings-title"><i class="fa fa-ticket"></i> <?php  _e( 'Membership Coupons', MS_TEXT_DOMAIN ) ; ?>
-				<a class="add-new-h2" href="admin.php?page=membership-coupons&action=edit&coupon_id=0"><?php _e( 'Add New', MS_TEXT_DOMAIN ); ?></a>
-			</h2>
+			<?php 
+				MS_Helper_Html::settings_header( array(
+					'title' => $title . $add_new,
+					'title_icon_class' => 'fa fa-credit-card',
+				) ); 
+			?>
 			<form action="" method="post">
 				<?php $coupon_list->display(); ?>
 			</form>
