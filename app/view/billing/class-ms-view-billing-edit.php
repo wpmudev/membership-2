@@ -16,7 +16,7 @@ class MS_View_Billing_Edit extends MS_View {
 		?>
 			<div class='ms-wrap'>
 				<?php 
-					$text =  empty( $this->data['invoice']->is_valid() ) ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
+					$text = $this->data['invoice']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
 						'title' => sprintf( __( ' %s Billing', MS_TEXT_DOMAIN ), $text ),
 						'title_icon_class' => 'fa fa-pencil-square',

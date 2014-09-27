@@ -76,7 +76,7 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( $this->validate_required( array( 'invoice_id', 'bulk-billings' ) ) && $this->verify_nonce() && $this->is_admin_user() ) {
+		elseif( $this->validate_required( array( 'invoice_id' ) ) && $this->verify_nonce( 'bulk-billings' ) && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
