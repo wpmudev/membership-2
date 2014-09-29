@@ -474,12 +474,17 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 					</tbody>
 				</table>
+				<?php// MS_Helper_Html::settings_footer( null, false, true ); ?>
 			</form>
 		</div>	
 		<?php
 	}
 	public function prepare_messages_automated_fields() {
 		$comm = $this->data['comm'];
+		
+		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
+		$nonce = wp_create_nonce( $action );
+		
 		$fields = array(
 				'comm_type' => array(
 						'id' => 'comm_type',
@@ -498,50 +503,96 @@ class MS_View_Settings_Edit extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 						'title' => __( 'Enabled', MS_TEXT_DOMAIN ),
 						'value' => $comm->enabled,
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'enabled',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
 				'period_unit' => array(
 						'id' => 'period_unit',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
 						'value' => $comm->period['period_unit'],
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'period_unit',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
 				'period_type' => array(
 						'id' => 'period_type',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $comm->period['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'period_type',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+
 				),
 				'subject' => array(
 						'id' => 'subject',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
 						'value' => $comm->subject,
-						'class' => 'ms-comm-subject',
+						'class' => 'ms-comm-subject ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'subject',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
 				),
 				'message' => array(
 						'id' => 'message',
 						'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
 // 						'title' => __( 'Message', MS_TEXT_DOMAIN ),
 						'value' => $comm->description,
-						'field_options' => array( 'media_buttons' => false ),
-						'class' => '',
+						'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'message',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+
 				),
 				'cc_enabled' => array(
 						'id' => 'cc_enabled',
 						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 						'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
 						'value' => $comm->cc_enabled,
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'cc_enabled',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+
 				),
 				'cc_email' => array(
 						'id' => 'cc_email',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' => $comm->cc_email,
 						'field_options' => MS_Model_Member::get_admin_user_emails(),
-						'class' => '',
+						'class' => 'ms-ajax-update',
+						'data_ms' => array(
+								'type' => $comm->type,
+								'field' => 'cc_email',
+								'action' => $action,
+								'_wpnonce' => $nonce,
+						),
+
 				),
 				'save_email' => array(
 						'id' => 'save_email',

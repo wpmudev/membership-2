@@ -229,7 +229,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		else {
 			$model = self::communication_factory( $type, $comm_classes[ $type ] );
 		}		
-		return $model;
+		return apply_filters( 'ms_model_communication_' . $type, $model );
 	}
 	
 	public static function communication_factory( $type, $class ) {
@@ -523,6 +523,16 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					break;
 				default:
 					$this->$property = $value;
+					break;
+			}
+		}
+		else {
+			switch( $property ) {
+				case 'period_unit':
+					$this->period['period_unit'] = $this->validate_period_unit( $value );
+					break;
+				case 'period_type':
+					$this->period['period_type'] = $this->validate_period_type( $value );
 					break;
 			}
 		}

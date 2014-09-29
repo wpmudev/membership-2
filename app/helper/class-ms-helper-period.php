@@ -130,7 +130,7 @@ class MS_Helper_Period extends MS_Helper {
 		if( ! $ignore_filters ) {
 			$date = apply_filters( 'ms_helper_period_current_date', $date );	
 		}
-		
+// 		$format = date_i18n( get_option('date_format'), $date );
 		return $date;
 	}
 	
