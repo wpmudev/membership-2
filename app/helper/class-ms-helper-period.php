@@ -141,8 +141,8 @@ class MS_Helper_Period extends MS_Helper {
 	 *  
 	 * @return string The current date.
 	 */
-	public static function current_time() {
-		return apply_filters( 'ms_helper_period_current_time', current_time( 'mysql', true ) );
+	public static function current_time( $type = 'mysql') {
+		return apply_filters( 'ms_helper_period_current_time', current_time( $type, true ) );
 	}
 	
 	/**
