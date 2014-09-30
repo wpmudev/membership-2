@@ -89,7 +89,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		if( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 			$this->online_purchase( $invoice, $member );
 		}
-		elseif( 0 == $invoice->price ) {
+		elseif( 0 == $invoice->total ) {
 			$this->process_transaction( $invoice );
 		}
 		
