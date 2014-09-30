@@ -73,7 +73,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 						__( 'Configure', MS_TEXT_DOMAIN )
 				),
 				sprintf( '<a href="?page=%s&gateway_id=%s">%s</a>',
-						MS_Controller_Plugin::MENU_SLUG . '-billings',
+						MS_Controller_Plugin::MENU_SLUG . '-billing',
 						$item->id,
 						__('View Transactions', MS_TEXT_DOMAIN )
 				),
