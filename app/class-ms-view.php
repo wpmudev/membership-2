@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -32,7 +32,7 @@
  * @package Membership
  */
 class MS_View extends MS_Hooker {
-	
+
 	/**
 	 * The storage of all data associated with this render.
 	 *
@@ -84,7 +84,7 @@ class MS_View extends MS_Hooker {
 	public function __construct( $data = array() ) {
 		$this->data = $data;
 		$this->cache_ttl = 10 * MINUTE_IN_SECONDS;
-		
+
 		/**
 		 * Actions to execute when constructing the parent View.
 		 *
@@ -103,48 +103,48 @@ class MS_View extends MS_Hooker {
 	 * @param string $name The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
-// 	public function __get( $name ) {
-// 		return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : null;
-// 	}
-	
-// 	/**
-// 	 * Checks whether the render has specific property or not.
-// 	 *
-// 	 * @since 3.5
-// 	 *
-// 	 * @access public
-// 	 * @param string $name
-// 	 * @return boolean TRUE if the property exists, otherwise FALSE.
-// 	 */
-// 	public function __isset( $name ) {
-// 		return array_key_exists( $name, $this->data );
-// 	}
-	
-// 	/**
-// 	 * Associates the render with specific property.
-// 	 *
-// 	 * @since 3.5
-// 	 *
-// 	 * @access public
-// 	 * @param string $name The name of a property to associate.
-// 	 * @param mixed $value The value of a property.
-// 	 */
-// 	public function __set( $name, $value ) {
-// 		$this->data[ $name ] = $value;
-// 	}
-	
-// 	/**
-// 	 * Unassociates specific property from the render.
-// 	 *
-// 	 * @since 3.5
-// 	 *
-// 	 * @access public
-// 	 * @param string $name The name of the property to unassociate.
-// 	 */
-// 	public function __unset( $name ) {
-// 		unset( $this->data[ $name ] );
-// 	}
-		
+//	public function __get( $name ) {
+//		return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : null;
+//	}
+
+//	/**
+//	 * Checks whether the render has specific property or not.
+//	 *
+//	 * @since 3.5
+//	 *
+//	 * @access public
+//	 * @param string $name
+//	 * @return boolean TRUE if the property exists, otherwise FALSE.
+//	 */
+//	public function __isset( $name ) {
+//		return array_key_exists( $name, $this->data );
+//	}
+
+//	/**
+//	 * Associates the render with specific property.
+//	 *
+//	 * @since 3.5
+//	 *
+//	 * @access public
+//	 * @param string $name The name of a property to associate.
+//	 * @param mixed $value The value of a property.
+//	 */
+//	public function __set( $name, $value ) {
+//		$this->data[ $name ] = $value;
+//	}
+
+//	/**
+//	 * Unassociates specific property from the render.
+//	 *
+//	 * @since 3.5
+//	 *
+//	 * @access public
+//	 * @param string $name The name of the property to unassociate.
+//	 */
+//	public function __unset( $name ) {
+//		unset( $this->data[ $name ] );
+//	}
+
 	/**
 	 * Sets flags to cache or not output.
 	 *
@@ -159,10 +159,10 @@ class MS_View extends MS_Hooker {
 		if ( func_num_args() > 0 ) {
 			$this->cache = (bool)$cache;
 		}
-	
+
 		return $old;
 	}
-	
+
 	/**
 	 * Sets cache time to live value.
 	 *
@@ -177,10 +177,10 @@ class MS_View extends MS_Hooker {
 		if ( func_num_args() > 0 ) {
 			$this->cache_ttl = absint( $new_ttl );
 		}
-	
+
 		return $old;
 	}
-	
+
 	/**
 	 * Returns cache key.
 	 *
@@ -192,7 +192,7 @@ class MS_View extends MS_Hooker {
 	protected function get_cache_key() {
 		return __CLASS__;
 	}
-	
+
 	/**
 	 * Returns HTML from cache.
 	 *
@@ -201,12 +201,12 @@ class MS_View extends MS_Hooker {
 	 * @access public
 	 * @return string|boolean HTML on success, otherwise FALSE.
 	 */
-	public function get_html_from_cahce() {
+	public function get_html_from_cache() {
 		return $this->use_network_cache
 			? get_site_transient( $this->get_cache_key() )
 			: get_transient( $this->get_cache_key() );
 	}
-	
+
 	/**
 	 * Caches generated HTML.
 	 *
@@ -222,7 +222,7 @@ class MS_View extends MS_Hooker {
 			set_transient( $this->get_cache_key(), $html, $this->cache_ttl );
 		}
 	}
-	
+
 	/**
 	 * Builds template and return it as string.
 	 *
@@ -232,8 +232,10 @@ class MS_View extends MS_Hooker {
 	 * @return string
 	 */
 	protected function to_html() {
+		// This function is implemented different in each child class.
+		return '';
 	}
-	
+
 	/**
 	 * Returns built template as string.
 	 *
@@ -245,7 +247,7 @@ class MS_View extends MS_Hooker {
 	public function toString() {
 		return $this->to_html();
 	}
-	
+
 	/**
 	 * Renders the template.
 	 *
@@ -255,16 +257,13 @@ class MS_View extends MS_Hooker {
 	 */
 	public function render() {
 		// render template
-		ob_start();
-		$this->to_html();
-		$html = ob_get_clean();
-	
+		$html = $this->to_html();
+
 		// cache template if need be
 		if ( $this->cache ) {
 			$this->cache_html( $html );
 		}
-	
+
 		echo $html;
-		
-	}	
+	}
 }
