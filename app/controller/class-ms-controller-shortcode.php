@@ -97,7 +97,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				shortcode_atts( 
 					array(
 						MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP . '_text' =>  __( 'Signup', MS_TEXT_DOMAIN ),
-						MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Move', MS_TEXT_DOMAIN ),
+						MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Change', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW . '_text' => __( 'Renew', MS_TEXT_DOMAIN ),
 					), 
