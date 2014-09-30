@@ -314,8 +314,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function payment_table() {
 		$data = array();
-
+		$ms_relationship = null;
 		$member = MS_Model_Member::get_current_member();
+		
 		if( ! empty( $_POST['membership_id'] ) ) { 
 			$membership_id = $_POST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
@@ -340,11 +341,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
 			if( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
-				$coupon = new MS_Model_Coupon();
+				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
 			}
 			elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
 				if( $coupon->is_valid_coupon() ) {
-					$coupon->save_coupon_application( $membership );
+					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
 				}
 				else {
@@ -353,7 +354,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			}
 		}
 		else {
-			$coupon = new MS_Model_Coupon();
+			$coupon = MS_Factory::create( 'MS_Model_Coupon' );
 		}
 
 		$data['coupon'] = $coupon;

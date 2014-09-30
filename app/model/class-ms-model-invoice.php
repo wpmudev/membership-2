@@ -379,7 +379,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		/** Apply coupon discount. */
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) && $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
 			$invoice->coupon_id = $coupon->id;
-			$discount = $coupon->get_discount_value( $membership );
+			$discount = $coupon->get_discount_value( $ms_relationship );
 			$invoice->discount = $discount;
 			$notes[] = sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $invoice->currency, $discount );
 		}
