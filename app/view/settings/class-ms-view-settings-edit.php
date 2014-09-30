@@ -474,7 +474,7 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 					</tbody>
 				</table>
-				<?php// MS_Helper_Html::settings_footer( null, false, true ); ?>
+				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
 			</form>
 		</div>	
 		<?php
