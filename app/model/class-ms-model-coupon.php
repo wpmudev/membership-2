@@ -57,6 +57,13 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 	public $ignore_fields = array( 'coupon_message', 'actions', 'filters', 'ignore_fields', 'post_type' );
 	
+	/**
+	 * Defines and return discount types.
+	 *
+	 * @since 1.0
+	 *
+	 * @return array The discount types array  
+	 */
 	public static function get_discount_types() {
 		return apply_filters( 'ms_model_coupon_get_discount_types', array(
 				self::TYPE_VALUE => __( '$', MS_TEXT_DOMAIN ),
@@ -65,6 +72,28 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		);
 	}
 	
+	/**
+	 * Defines and return discount types.
+	 *
+	 * @since 1.0
+	 *
+	 * @return array The discount types array
+	 */
+	public static function is_valid_discount_type( $type ) {
+		$valid = false;
+		if( array_key_exists( $value, self::get_discount_types() ) ) {
+			$valid = true;
+		}
+		return apply_filters( 'ms_model_coupon_is_valid_discount_type', $valid );
+	}
+	
+	/**
+	 * Defines and return discount types descriptions.
+	 *
+	 * @since 1.0
+	 *
+	 * @return array The discount types description array  
+	 */
 	public static function get_discount_type_desc( $type ) {
 		$types = self::get_discount_types();
 		if( array_key_exists( $type, $types) ) {
@@ -72,6 +101,16 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
+	/**
+	 * Get the count of all existing coupons.
+	 * 
+	 * For list table count.
+	 * Include expired coupon too.
+	 *
+	 * @since 1.0
+	 *
+	 * @return array The discount types array
+	 */
 	public static function get_coupon_count( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -80,10 +119,19 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$args = wp_parse_args( $args, $defaults );
 	
 		$query = new WP_Query($args);
-		return $query->found_posts;
+		return apply_filters( 'ms_model_coupon_get_coupon_count', $query->found_posts );
 	
 	}
 	
+	/**
+	 * Get Coupons
+	 * 
+	 * @since 1.0
+	 *
+	 * @param string[] The arguments to filter the search. See WP wp_query documentation.
+	 *  
+	 * @return MS_Model_Coupon[] The found coupon objects.
+	 */
 	public static function get_coupons( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -100,13 +148,14 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		foreach ( $items as $item ) {
 			$coupons[] = MS_Factory::load( 'MS_Model_Coupon', $item->ID );
 		}
-		return $coupons;
+		
+		return apply_filters( 'ms_model_coupon_get_coupons', $coupons );
 	}
 	
 	/**
 	 * Load coupon using coupon code.
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * 
 	 * @access public
 	 * @param string $code The coupon code used to load model
@@ -141,11 +190,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Verify is coupon is valid.
+	 * Verify if coupon is valid.
 	 * 
 	 * Checks for maximun number of uses, date range and membership_id restriction.
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * 
 	 * @access public
 	 * @param int $membership_id The membership id for which coupon is applied
@@ -153,29 +202,30 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 */
 	public function is_valid_coupon( $membership_id = 0 ) {
 
+		$valid = true;
 		if ( empty( $this->code ) ) {
 			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
-			return false;
+			$valid = false;
 		}
 		if( $this->max_uses && $this->used > $this->max_uses ) {
 			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
-			return false;
+			$valid = false;
 		}
-		$timestamp = current_time( 'timestamp', true );
+		$timestamp = MS_Helper_Period::current_time( 'timestamp');
 		if( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
 			$this->coupon_message = __( 'This Coupon is not valid yet.', MS_TEXT_DOMAIN );
-			return false;
+			$valid = false;
 		}
 		if( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
 			$this->coupon_message = __( 'This Coupon has expired.', MS_TEXT_DOMAIN );
-			return false;
+			$valid = false;
 		}
 		if( ! empty( $this->membership_id ) && $membership_id != $this->membership_id ) {
 			$this->coupon_message = __( 'This Coupon is not valid for this membership.', MS_TEXT_DOMAIN );
-			return false;
+			$valid = false;
 		}
 		
-		return true;
+		return apply_filters( 'ms_coupon_model_is_valid_coupon', $valid, $this, $membership_id );
 	}
 	
 	/**
@@ -185,17 +235,18 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * If the membership price is free, the discount will be zero.
 	 * If discount is bigger than the price, the discount will be equal to the price.
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * 
-	 * @param MS_Model_Membership $membership The membership to apply coupon.
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to apply coupon.
 	 * @return float The discount value.
 	 */
-	public function get_discount_value( $membership ) {
+	public function get_discount_value( $ms_relationship ) {
 		
-		$price = ( $membership->trial_period_enabled ) ? $membership->trial_price : $membership->price;
+		$membership = $ms_relationship->get_membership();
+		$price = ( $ms_relationship->is_trial_eligible() ) ? $membership->trial_price : $membership->price;
 		$original_price = $price;
 		$discount = 0;
-		
+
 		if( $this->is_valid_coupon( $membership->id ) ) {
 			if( self::TYPE_PERCENT == $this->discount_type && $this->discount < 100 ) {
 				$price = $price - $price * $this->discount / 100;
@@ -208,11 +259,14 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 				$price = 0;
 			}
 			$discount = $original_price - $price;
-			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. Discount applied: %s %s', MS_TEXT_DOMAIN ), $this->code, MS_Plugin::instance()->settings->currency, $discount );
+			$this->coupon_message = sprintf( __( 'Using Coupon code: %s. Discount applied: %s %s', MS_TEXT_DOMAIN ), 
+					$this->code, 
+					MS_Plugin::instance()->settings->currency, 
+					$discount 
+			);
 		}
 		
 		return apply_filters( 'ms_model_coupon_apply_discount', $discount, $membership, $this );
-	
 	}
 	
 	/**
@@ -221,30 +275,33 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * Saving the application to keep track of the application in gateway return.
 	 * Using COUPON_REDEMPTION_TIME to expire coupon application.
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * @param int $membership_id The membership id to apply the coupon.
 	 * @param float $discount The discount value.
 	 */
-	public function save_coupon_application( $membership ) {
+	public function save_coupon_application( $ms_relationship ) {
 		global $blog_id;
 	
-		$discount = $this->get_discount_value( $membership );
+		$membership = $ms_relationship->get_membership();
 		
-		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
+		$discount = $this->get_discount_value( $ms_relationship );
+		
+		/** @todo Handle for network/multsite mode.*/
+		$global = false;
 		
 		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', self::COUPON_REDEMPTION_TIME );
 	
 		/** Grab the user account as we should be logged in by now */
 		$user = MS_Model_Member::get_current_member();
 	
-		$transient_name = "ms_coupon_{$blog_id}_{$user->id}_{$membership->id}";
-		$transient_value = array(
+		$transient_name = apply_filters( 'ms_model_coupon_transient_name', "ms_coupon_{$blog_id}_{$user->id}_{$membership->id}" );
+		$transient_value = apply_filters( 'ms_model_coupon_transient_value', array(
 				'coupon_id' => $this->id,
 				'user_id' => $user->id,
 				'membership_id'	=> $membership->id,
 				'discount' => $discount,
 				'coupon_message' => $this->coupon_message,
-		);
+		) );
 
 		if ( $global && function_exists( 'get_site_transient' ) ) {
 			set_site_transient( $transient_name, $transient_value, $time );
@@ -252,13 +309,13 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		else {
 			set_transient( $transient_name, $transient_value, $time );
 		}
+		$this->save();
 	}
 	
 	/**
 	 * Get coupon application for user.
 	 * 
-	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
 	 * @return MS_Model_Coupon The coupon model object.
@@ -266,9 +323,10 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	public static function get_coupon_application( $user_id, $membership_id ) {
 		global $blog_id;
 		
-		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
+		/** @todo Handle for network/multsite mode.*/
+		$global = false;
 		
-		$transient_name = "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}";
+		$transient_name = apply_filters( 'ms_model_coupon_transient_name', "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}" );
 		
 		if ( $global && function_exists( 'get_site_transient' ) ) {
 			$transient_value = get_site_transient( $transient_name );
@@ -283,13 +341,13 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
 		
-		return $coupon;
+		return apply_filters( 'ms_model_coupon_get_coupon_aplication', $coupon );
 	}
 	
 	/**
 	 * Remove the application for this coupon.
 	 * 
-	 * @since 4.0
+	 * @since 1.0
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
 	 */
@@ -297,11 +355,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	
 		global $blog_id;
 	
-		$global = ( defined( 'MS_MEMBERSHIP_GLOBAL_TABLES' ) && MS_MEMBERSHIP_GLOBAL_TABLES === true );
+		/** @todo Handle for network/multsite mode.*/
+		$global = false;
 		
-		$transient_name = "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}";
+		$transient_name = apply_filters( 'ms_model_coupon_transient_name', "ms_coupon_{$blog_id}_{$user_id}_{$membership_id}" );
 		
-		if ( $global && function_exists( 'get_site_transient' ) ) {
+		if ( $global && function_exists( 'delete_site_transient' ) ) {
 			delete_site_transient( $transient_name );
 		}
 		else {
@@ -313,7 +372,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	/**
 	 * Returns property.
 	 *
-	 * @since 4.0
+	 * @since 1.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property.
@@ -340,14 +399,14 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 4.0
+	 * @since 1.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
+		if( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'code':
 					$value = sanitize_text_field( preg_replace("/[^a-zA-Z0-9\s]/", "", $value ) );
@@ -358,7 +417,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 					$this->$property = floatval( $value );
 					break;
 				case 'discount_type':
-					if( array_key_exists( $value, self::get_discount_types() ) ) {
+					if( self::is_valid_discount_type( $value ) ) {
 						$this->$property = $value;
 					}
 					break;
