@@ -62,7 +62,7 @@ html {
 	-webkit-text-size-adjust: 100%; /* 5 */
 }
 
-/* 
+/*
  * 1. Addresses text resizing limitations in IE6/7
  *    Improves text sizing inconsistency in all browsers
  *    Known issue: text sizing unnecessary for 'form'
@@ -73,7 +73,7 @@ body,
 form,
 input,
 button,
-select, 
+select,
 textarea {
 	font-size: 100%; /* 1 */
 	margin: 0; /* 2 */
@@ -124,9 +124,9 @@ abbr[title] {
  * Corrects style set incorrectly as 'bolder' in FF3/4 S4/5 C10
 */
 
-b, 
-strong { 
-	font-weight: bold; 
+b,
+strong {
+	font-weight: bold;
 }
 
 /*
@@ -268,7 +268,7 @@ img {
 }
 
 /*
- * Corrects overflow displayed oddly in IE9 
+ * Corrects overflow displayed oddly in IE9
  */
 
 svg:not(:root) {
@@ -296,7 +296,7 @@ button,
 input,
 select,
 textarea {
-	-webkit-appearance: none;
+	/*-webkit-appearance: none;*/
 	border-radius: 0;
 	vertical-align: baseline;
 	*vertical-align: middle;
@@ -317,8 +317,8 @@ input {
 /* 3 */
 
 button,
-input[type="button"], 
-input[type="reset"], 
+input[type="button"],
+input[type="reset"],
 input[type="submit"] {
 	overflow: visible;
 }
@@ -376,7 +376,7 @@ textarea {
    Tables
    ========================================================================== */
 
-/* 
+/*
  * Improves visual appearance in all browsers
  */
 

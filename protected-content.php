@@ -6,33 +6,33 @@ Plugin URI: http://premium.wpmudev.org/project/protected-content
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
-WDP ID: 
+WDP ID:
 License: GNU General Public License (Version 2 - GPLv2)
 Text Domain: wpmudev_protected_content
  */
 
 /**
  * @copyright Incsub (http://incsub.com/)
- * 
- * Authors: Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf 
+ *
+ * Authors: Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf
  * Lead Developer: Fabio Jun Onishi
  * Contributors: Philipp Stracker, Joji Mori, Patrick Cohen
- * 
+ *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -63,7 +63,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
 
 /**
- * Hooks 'ms_class_path_overrides'. 
+ * Hooks 'ms_class_path_overrides'.
  *
  * Overrides plugin class paths to adhere to naming conventions
  * where object names are separated by underscores or for special cases.
@@ -114,13 +114,13 @@ function ms_class_path_overrides( $overrides ) {
 	$overrides['MS_View_Shortcode_Membership_Signup'] =  "app/view/shortcode/class-ms-view-shortcode-membership-signup.php";
 	$overrides['MS_View_Shortcode_Membership_Login'] =  "app/view/shortcode/class-ms-view-shortcode-membership-login.php";
 	$overrides['MS_View_Shortcode_Membership_Register_User'] =  "app/view/shortcode/class-ms-view-shortcode-membership-register-user.php";
-	
+
 	return $overrides;
 }
 add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
 
 /**
- * Hooks 'ms_class_file_override'. 
+ * Hooks 'ms_class_file_override'.
  *
  * Overrides file class paths.
  *
@@ -149,7 +149,7 @@ add_filter( 'ms_class_file_override', 'ms_class_file_override' );
  * @return object Plugin instance.
  */
 class MS_Plugin {
-	
+
 	/**
 	 * Singletone instance of the plugin.
 	 *
@@ -168,7 +168,7 @@ class MS_Plugin {
 	 * @var name
 	 */
 	private $name;
-	
+
 	/**
 	 * The plugin version.
 	 *
@@ -177,7 +177,7 @@ class MS_Plugin {
 	 * @var version
 	 */
 	private $version;
-	
+
 	/**
 	 * The plugin file.
 	 *
@@ -185,8 +185,8 @@ class MS_Plugin {
 	 * @access private
 	 * @var file
 	 */
-	private $file;	
-	
+	private $file;
+
 	/**
 	 * The plugin path.
 	 *
@@ -194,7 +194,7 @@ class MS_Plugin {
 	 * @access private
 	 * @var dir
 	 */
-	private $dir;	
+	private $dir;
 
 	/**
 	 * The plugin URL.
@@ -213,7 +213,7 @@ class MS_Plugin {
 	 * @var settings
 	 */
 	private $settings;
-	
+
 	/**
 	 * The plugin add-on settings.
 	 *
@@ -222,7 +222,7 @@ class MS_Plugin {
 	 * @var addon
 	 */
 	private $addon;
-	
+
 	/**
 	 * Plugin constructor.
 	 *
@@ -231,7 +231,7 @@ class MS_Plugin {
 	 * @since 1.0
 	 */
 	function __construct() {
-		
+
 		/**
 		 * Actions to execute before the plugin construction starts.
 		 *
@@ -239,14 +239,14 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_construct_start', $this );
-		
+
 		/** Setup plugin properties */
 		$this->name = MS_PLUGIN_NAME;
-		$this->version = MS_PLUGIN_VERSION;		
+		$this->version = MS_PLUGIN_VERSION;
 		$this->file = __FILE__;
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
-		
+
 		/**
 		 * Filter the languages path before loading the textdomain.
 		 *
@@ -256,28 +256,28 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this ) );
-						
+
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
-		/** 
+		/**
 		 * Hooks init to register custom post types.
 		 */
 		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
-		
+
 		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
-		
+
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
 		add_action( 'init', array( &$this, 'ms_plugin_constructing' ) );
-		
+
 		/**
 		 * Creates and Filters the Settings Model.
 		 *
 		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
-		 */		
+		 */
 		$this->settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		/**
@@ -285,27 +285,27 @@ class MS_Plugin {
 		 *
 		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
-		 */		
-		$this->addon = MS_Factory::load( 'MS_Model_Addon' );		
+		 */
+		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
 		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
 
 		/** Grab instance of self. */
 		self::$instance = $this;
-		
+
 		/**
 		 * Load membership integrations.
 		 */
 		MS_Integration::load_integrations();
-		
+
 		/**
 		 * Actions to execute when the Plugin object has successfully constructed.
 		 *
 		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		do_action( 'ms_plugin_construct_end', $this ); 
+		do_action( 'ms_plugin_construct_end', $this );
 
 	}
 
@@ -314,7 +314,7 @@ class MS_Plugin {
 	 *
 	 * @since 1.0
 	 * @return void
-	 */	
+	 */
 	public function ms_plugin_constructing() {
 		/**
 		 * Creates and Filters the Plugin Controller.
@@ -325,19 +325,19 @@ class MS_Plugin {
 		 * @since 1.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		$this->controller = MS_Factory::create( 'MS_Controller_Plugin' );		
+		$this->controller = MS_Factory::create( 'MS_Controller_Plugin' );
 	}
 
 	/**
-	 * Register plugin custom post types. 
+	 * Register plugin custom post types.
 	 *
 	 * @since 1.0
 	 * @return void
-	 */	
+	 */
 	public function register_custom_post_types() {
-		
+
 		do_action( 'ms_plugin_register_custom_post_types', $this );
-		
+
 		$cpts = apply_filters( 'ms_plugin_register_custom_post_types_ctps', array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
 				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
@@ -348,9 +348,9 @@ class MS_Plugin {
 		) );
 		foreach( $cpts as $cpt => $args ) {
 			MS_Helper_Utility::register_post_type( $cpt, $args );
-		}		
+		}
 	}
-	
+
 	/**
 	 * Register plugin custom post status.
 	 *
@@ -368,11 +368,11 @@ class MS_Plugin {
 				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
 		) );
 	}
-	
+
 	/**
 	 * Class autoloading callback function.
 	 *
-	 * Uses the **MS_** namespace to autoload classes when called. 
+	 * Uses the **MS_** namespace to autoload classes when called.
 	 * Avoids creating include functions for each file in the MVC structure.
 	 * **MS_** namespace ONLY will be based on folder structure in /app/
 	 *
@@ -394,7 +394,7 @@ class MS_Plugin {
 
 		$basedir = dirname( __FILE__ );
 		$namespaces = array( 'MS_' );
-		
+
 		/**
 		 * Adds and Filters class path overrides.
 		 *
@@ -402,8 +402,8 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		$path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
-		
-		/** 
+
+		/**
 		 * Restrict class autoloading to provided namespaces.
 		 *
 		 * This prevents autoloading from interfering with other plugins in their own namespaces.
@@ -420,9 +420,9 @@ class MS_Plugin {
 							$path_array = explode( '_', $sub_path );
 							array_pop( $path_array );
 							$sub_path = implode( '_', $path_array );
-							$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_', 
+							$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_',
 							'-', "class-{$class}.php" ) );
-							
+
 							/**
 							 * Overrides the filename and path.
 							 *
@@ -430,16 +430,16 @@ class MS_Plugin {
 							 * @param object $this The MS_Plugin object.
 							 */
 							$filename = apply_filters( 'ms_class_file_override', $filename, $this );
-							
+
 							if( is_readable( $filename ) ) {
 								require_once $filename;
 								return true;
 							}
-						}						
-					} 
+						}
+					}
 					else {
 						$filename = $basedir . '/' . $path_overrides[ $class ];
-						
+
 						/**
 						 * Overrides the filename and path.
 						 *
@@ -447,13 +447,13 @@ class MS_Plugin {
 						 * @param object $this The MS_Plugin object.
 						 */
 						$filename = apply_filters( 'ms_class_file_override', $filename, $this );
-						
+
 						if( is_readable( $filename ) ) {
 							require_once $filename;
 							return true;
-						}						
+						}
 					}
-					break; 
+					break;
 				default:
 					/**
 					 * Actions to add additional namespaces to this autoloading function.
@@ -471,7 +471,7 @@ class MS_Plugin {
 
 	/**
 	 * Add link to settings page in plugins page.
-	 * 
+	 *
 	 * @since 1.0
 	 *
 	 * @param array $links Wordpress default array of links.
@@ -481,13 +481,13 @@ class MS_Plugin {
 		if( ! is_network_admin() ) {
 			$text = __( 'Settings', MS_TEXT_DOMAIN );
 			$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG . '-settings' );
-			
+
 			if( $this->settings->initial_setup ) {
 				$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG );
 			}
 
 			/**
-			 * Filter the plugin settings link.  
+			 * Filter the plugin settings link.
 			 *
 			 * @since 1.0
 			 * @param object $this The MS_Plugin object.
@@ -495,10 +495,10 @@ class MS_Plugin {
 			$settings_link = apply_filters( 'ms_plugin_settings_link', sprintf( '<a href="%s">%s</a>', $url, $text ), $this );
 			array_unshift( $links, $settings_link );
 		}
-		
+
 		return $links;
-	}	
-	
+	}
+
 	/**
 	 * Returns singletone instance of the plugin.
 	 *
@@ -507,24 +507,16 @@ class MS_Plugin {
 	 * @static
 	 * @access public
 	 *
-	 * @param Object $instance Can use "new MS_Plugin()" to instantiate. Only once.
 	 * @return MS_Plugin
 	 */
-	public static function instance( $instance = null ) {
-		if( ! $instance || 'MS_Plugin' != get_class( $instance ) ) {
-			if ( is_null( self::$instance ) ) {
-				self::$instance = new MS_Plugin();
-			}
-		} 
-		else {
-			if( is_null( self::$instance ) ) {
-				self::$instance = $instance;
-			}			
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new MS_Plugin();
 		}
-		
+
 		return apply_filters( 'ms_plugin_instance', self::$instance );
 	}
-	
+
 	/**
 	 * Returns plugin enabled status.
 	 *
@@ -537,7 +529,7 @@ class MS_Plugin {
 	 */
 	public static function is_enabled() {
 		return self::instance()->settings->plugin_enabled;
-	}	
+	}
 
 	/**
 	 * Returns property associated with the plugin.
@@ -562,4 +554,4 @@ class MS_Plugin {
  *
  * @since 1.0
  */
-MS_Plugin::instance( new MS_Plugin() );
+MS_Plugin::instance();
