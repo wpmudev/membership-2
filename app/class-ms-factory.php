@@ -52,8 +52,13 @@ class MS_Factory {
 	 * @param string $class
 	 */
 	public static function create( $class ) {
-
-		$obj = new $class();
+		$class = trim( $class );
+		if( class_exists( $class ) ) {
+			$obj = new $class();
+		}
+		else {
+			throw new Exception( "Class $class does not exist.");
+		}
 		
 		return apply_filters( 'ms_factory_create_'. $class, $obj );
 	}
