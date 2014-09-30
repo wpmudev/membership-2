@@ -568,6 +568,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return void
 	 */	
 	public function enqueue_scripts() {
+		
+		do_action( 'ms_controller_frontend_enqueue_scripts', $this->get_signup_step(), $this->get_action() );
+		
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$is_special_page = $settings->is_special_page();
 		if( $settings->is_special_page() ) {
