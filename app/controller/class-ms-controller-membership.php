@@ -150,7 +150,7 @@ class MS_Controller_Membership extends MS_Controller {
 		/** MS_Controller_Rule is executed using this action*/
 		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
 		
-		MS_Helper_Debug::log("step: $step");
+// 		MS_Helper_Debug::log("step: $step");
 		/** Verify intent in request, only accessible to admin users */
 		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			/** Take next actions based in current step.*/
@@ -675,12 +675,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$url = admin_url( 'admin.php'); 
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
 		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = add_query_arg( array(
-					'page' => $page,
-					'tab' => $tab,
-				),
-				$url 
-			);
+			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&tab=%s',
+					$page,
+					$tab
+			) );
 		}
 
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -722,11 +720,11 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = add_query_arg( array(
-					'page' => $page,
-					'step' => $step,
-					'tab' => $tab,
-					'membership_id' => $membership_id,
+			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', 
+					$page,
+					$step, 
+					$tab, 
+					$membership_id
 			) );
 		}
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -754,11 +752,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content';
 		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = add_query_arg( array( 
-					'page' => $page,
-					'step' => $step, 
-					'tab' => $tab, 
-					'membership_id' => $membership_id,
+			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s', 
+					$page,
+					$step, 
+					$tab, 
+					$membership_id
 			) );
 		}
 	

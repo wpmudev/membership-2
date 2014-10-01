@@ -244,7 +244,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		);
 		
 		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null; 
-		switch( $args['rule_status'] ) {
+		switch( $status ) {
 			case MS_Model_Rule::FILTER_HAS_ACCESS;
 				$args['post__in'] = array_keys( $this->rule_value, true );
 				break;
