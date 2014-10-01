@@ -1,11 +1,12 @@
-body { 
+/*
+body {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
 .ms-wrap {
-	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .ms-wrap h1 {
   font-size: 2.5em;
@@ -82,10 +83,9 @@ select {
     padding: 8px 15px;
     text-decoration: none;
 }
-
 h2.ms-settings-title,
 .ms-wrap .ms-settings-title {
-  font-size: 1.4em; 
+  font-size: 1.4em;
   line-height: 29px;
   padding: 9px 15px;
   margin: 0;
@@ -105,6 +105,7 @@ h2.ms-settings-title,
     text-align: center;
     margin: 0 auto;
 }
+*/
 .ms-wrap .ms-settings {
     background: #fff;
     border: 1px solid #ccc;
@@ -130,27 +131,26 @@ h2.ms-settings-title,
     margin-left: 15px;
     margin-top: 5px;
 }
-
+/*
 .ms-settings-footer{
 	margin: 10px;
 	position:relative;
 }
+*/
 /** Settings Box **/
 .ms-settings-box-wrapper {
     background: none repeat scroll 0 0 #f9f9f9;
     border: 1px solid #E5E5E5;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.04);   
-    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     min-width: 255px;
-    position: relative;	
+    position: relative;
 	margin-bottom: 15px;
 }
-
+/*
 .ms-wrap .form-table td{
 	padding: 0;
 }
-
+*/
 .ms-settings-box {
 	padding: 10px;
 }
@@ -160,9 +160,11 @@ h2.ms-settings-title,
 	margin: 0;
 	padding: 5px 0;
 }
+/*
 .ms-form-table, .ms-form-table td {
 	border: 0 !important;
 }
+*/
 .ms-field-container {
 	margin: 10px 0;
 }
@@ -200,7 +202,7 @@ h2.ms-settings-title,
 	margin-top: 15px;
 }
 
-.ms-settings .settings-description, 
+.ms-settings .settings-description,
 .ms-settings-tab-desc,
 .ms-settings-description {
 	color: #888;
@@ -209,7 +211,7 @@ h2.ms-settings-title,
 /** html fields */
 .ms-field-description {
 	font-size: 0.9em;
-	margin: 10px 10px 10px 0;	
+	margin: 10px 10px 10px 0;
 }
 .ms-radio-wrapper {
 	margin: 0 auto;
@@ -311,7 +313,7 @@ label.ms-radio-description {
 	    margin: 0;
 	    padding: 0;
 	    width: 100px;
-		
+
 	}
 	.ms-wrap .ms-tabs a {
 		padding: 5px;
@@ -319,7 +321,7 @@ label.ms-radio-description {
 	}
 	.ms-wrap .ms-settings {
 		min-height: 350px;
-	}	
+	}
 }
 
 /** jquery validation */
@@ -371,7 +373,7 @@ label.ms-validation-error:before {
 }
 
 #membership_access .ms-radio-slider {
-  margin:10px 20px;	
+  margin:10px 20px;
 }
 
 .ms-radio-slider:hover {
@@ -407,8 +409,8 @@ label.ms-validation-error:before {
 }
 
 /* Dripped icon indicator */
-div.dripped { 
-	background: url("../images/dripped-icon.png") no-repeat 3px 1px #efefef;	
+div.dripped {
+	background: url("../images/dripped-icon.png") no-repeat 3px 1px #efefef;
 	padding: 2px 2px 2px 30px;
 	cursor: pointer;
 }
@@ -442,9 +444,9 @@ table.widefat {
 }
 
 /* SETTING: GENERAL */
-textarea.ms-field-input { 
+textarea.ms-field-input {
 	min-width: 80%;
-	display: block; 
+	display: block;
 }
 
 /* SETTING: PAGES */
@@ -484,7 +486,7 @@ textarea.ms-field-input {
 
 /* list tables */
 .ms-list-table-wrapper {
-	
+
 }
 .ms-list-table-wrapper .tablenav{
 	display: none;
@@ -528,10 +530,8 @@ textarea.ms-field-input {
 	top: -8px;
 	width:32px;
 	height:32px;
-	-moz-transform:scale(0.6);
 	-webkit-transform:scale(0.6);
 	-ms-transform:scale(0.6);
-	-o-transform:scale(0.6);
 	transform:scale(0.6);
 }
 
@@ -561,107 +561,85 @@ textarea.ms-field-input {
 	-o-animation-iteration-count:infinite;
 	-o-animation-direction:linear;
 	border-radius:3px;
+	-webkit-animation-name:f_fadeG;
 	animation-name:f_fadeG;
+	-webkit-animation-duration:1.04s;
 	animation-duration:1.04s;
+	-webkit-animation-iteration-count:infinite;
 	animation-iteration-count:infinite;
+	-webkit-animation-direction:linear;
 	animation-direction:linear;
 }
 
 #frotateG_01{
 	left:0;
 	top:13px;
-	-moz-animation-delay:0.39s;
 	-webkit-animation-delay:0.39s;
 	-ms-animation-delay:0.39s;
-	-o-animation-delay:0.39s;
 	animation-delay:0.39s;
 }
 
 #frotateG_02{
 	left:4px;
 	top:4px;
-	-moz-animation-delay:0.52s;
 	-webkit-animation-delay:0.52s;
 	-ms-animation-delay:0.52s;
-	-o-animation-delay:0.52s;
 	animation-delay:0.52s;
 }
 
 #frotateG_03{
 	left:13px;
 	top:0;
-	-moz-animation-delay:0.65s;
 	-webkit-animation-delay:0.65s;
 	-ms-animation-delay:0.65s;
-	-o-animation-delay:0.65s;
 	animation-delay:0.65s;
 }
 
 #frotateG_04{
 	right:4px;
 	top:4px;
-	-moz-animation-delay:0.78s;
 	-webkit-animation-delay:0.78s;
 	-ms-animation-delay:0.78s;
-	-o-animation-delay:0.78s;
 	animation-delay:0.78s;
 }
 
 #frotateG_05{
 	right:0;
 	top:13px;
-	-moz-animation-delay:0.91s;
 	-webkit-animation-delay:0.91s;
 	-ms-animation-delay:0.91s;
-	-o-animation-delay:0.91s;
 	animation-delay:0.91s;
 }
 
 #frotateG_06{
 	right:4px;
 	bottom:4px;
-	-moz-animation-delay:1.04s;
 	-webkit-animation-delay:1.04s;
 	-ms-animation-delay:1.04s;
-	-o-animation-delay:1.04s;
 	animation-delay:1.04s;
 }
 
 #frotateG_07{
 	left:13px;
 	bottom:0;
-	-moz-animation-delay:1.17s;
 	-webkit-animation-delay:1.17s;
 	-ms-animation-delay:1.17s;
-	-o-animation-delay:1.17s;
 	animation-delay:1.17s;
 }
 
 #frotateG_08{
 	left:4px;
 	bottom:4px;
-	-moz-animation-delay:1.3s;
 	-webkit-animation-delay:1.3s;
 	-ms-animation-delay:1.3s;
-	-o-animation-delay:1.3s;
 	animation-delay:1.3s;
-}
-
-@-moz-keyframes f_fadeG{
-	0%{
-		background-color:#000000
-	}
-	
-	100%{
-		background-color:#FFFFFF
-	}
 }
 
 @-webkit-keyframes f_fadeG{
 	0%{
 		background-color:#000000
 	}
-	
+
 	100%{
 		background-color:#FFFFFF
 	}
@@ -671,17 +649,7 @@ textarea.ms-field-input {
 	0%{
 		background-color:#000000
 	}
-	
-	100%{
-		background-color:#FFFFFF
-	}
-}
 
-@-o-keyframes f_fadeG{
-	0%{
-		background-color:#000000
-	}
-	
 	100%{
 		background-color:#FFFFFF
 	}
@@ -691,7 +659,7 @@ textarea.ms-field-input {
 	0%{
 		background-color:#000000
 	}
-	
+
 	100%{
 		background-color:#FFFFFF
 	}

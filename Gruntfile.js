@@ -2,17 +2,11 @@
 module.exports = function( grunt ) {
 	var paths = {
 		js_files_concat: {
-			'app/assets/js/jquery.tmpl.js': ['app/assets/js/vendors/jquery.tmpl.js']
+			//'app/assets/js/jquery.tmpl.js': ['app/assets/js/vendors/jquery.tmpl.js']
 		},
 
 		css_files_compile: {
-			'css/popup-admin.css':                  'css/sass/popup-admin.scss',
-			'css/tpl/cabriolet/style.css':          'css/sass/tpl/cabriolet/style.scss',
-			'css/tpl/minimal/style.css':            'css/sass/tpl/minimal/style.scss',
-			'css/tpl/simple/style.css':             'css/sass/tpl/simple/style.scss',
-			'css/tpl/old-default/style.css':        'css/sass/tpl/old-default/style.scss',
-			'css/tpl/old-fixed/style.css':          'css/sass/tpl/old-fixed/style.scss',
-			'css/tpl/old-fullbackground/style.css': 'css/sass/tpl/old-fullbackground/style.scss'
+			'app/assets/css/ms-admin.css': 'app/assets/css/sass/ms-admin.scss'
 		},
 
 		plugin_dir: 'protected-content/'
@@ -103,6 +97,36 @@ module.exports = function( grunt ) {
 		},
 
 
+		autoprefixer: {
+			options: {
+				browsers: ['last 2 version', 'ie 8', 'ie 9'],
+				diff: false
+			},
+			single_file: {
+				files: [{
+					expand: true,
+					src: ['*.css', '!*.min.css'],
+					cwd: 'app/assets/css/',
+					dest: 'app/assets/css/',
+					ext: '.css',
+					extDot: 'last'
+				}]
+			}
+		},
+
+
+		//compass - required for autoprefixer
+		compass: {
+			options: {
+			},
+			server: {
+				options: {
+					debugInfo: true
+				}
+			}
+		},
+
+
 		cssmin: {
 			options: {
 				banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
@@ -127,7 +151,7 @@ module.exports = function( grunt ) {
 				files: [
 					'app/assets/css/sass/**/*.scss'
 				],
-				tasks: ['sass', 'cssmin'],
+				tasks: ['sass', 'autoprefixer', 'cssmin'],
 				options: {
 					debounceDelay: 500
 				}
@@ -206,6 +230,8 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-autoprefixer');
+	grunt.loadNpmTasks('grunt-contrib-compass');
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-clean');
@@ -214,7 +240,7 @@ module.exports = function( grunt ) {
 
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'cssmin'] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
 
 	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
 

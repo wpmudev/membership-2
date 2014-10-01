@@ -1,0 +1,20 @@
+/**
+ * Styles for tables.
+ */
+
+/* Form table */
+.ms-wrap {
+	.form-table {
+		border: 0;
+
+		td,
+		th {
+			vertical-align: top;
+		}
+
+		td {
+			padding: 0;
+			border: 0;
+		}
+	}
+}

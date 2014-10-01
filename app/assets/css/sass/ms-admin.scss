@@ -1,0 +1,17 @@
+/**
+ * Collects all SASS files into a single css file.
+ *
+ * https://make.wordpress.org/core/handbook/coding-standards/css/
+ * The coding standard is applied to the SASS source files and formatting might
+ * be slightly changed by compilation into CSS files. However, there is a
+ * expanded dev-version of the CSS files and also a minified version without
+ * any comments.
+ */
+
+
+@import "styles_general.scss";
+@import "styles_tables.scss";
+@import "styles_tabs.scss";
+@import "styles_header_footer.scss";
+
+@import "unclear.scss";
