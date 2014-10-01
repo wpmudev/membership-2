@@ -1,0 +1,34 @@
+/**
+ * Settings header and footer.
+ */
+
+/* Header styles */
+.ms-wrap {
+	.ms-settings-title {
+		padding: 9px 15px;
+		margin: 0;
+
+		font-size: 1.4em;
+		line-height: 29px;
+		text-align: center;
+	}
+
+	.ms-settings-desc-wrapper {
+		margin: 9px 15px;
+	}
+
+	.ms-settings-desc {
+		margin: 0 auto;
+
+		text-align: center;
+	}
+}
+
+
+/* Footer styles */
+.ms-wrap {
+	.ms-settings-footer{
+		position: relative;
+		margin: 10px;
+	}
+}

@@ -1,0 +1,61 @@
+/**
+ * Navigational tabs.
+ */
+
+.ms-wrap {
+	.ms-tab-container {
+		float: left;
+		width: 225px;
+		min-height: 620px;
+	}
+
+	.ms-tabs {
+		float: left;
+		width: 225px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.ms-tab {
+		position: relative;
+		z-index: 10;
+
+		border: 1px solid transparent;
+		border-radius: 4px 0 0 4px;
+		border-width: 1px 0 1px 1px;
+
+		font-size: .9em;
+		font-weight: 500;
+
+		&.active {
+			background: #fff;
+			border-color: #ccc;
+
+			&:after {
+				content: "";
+				display: block;
+
+				position: absolute;
+				top: 0;
+				right: -1px;
+				width: 1px;
+				bottom: 0;
+
+				background: #fff;
+				font-size: 0;
+				line-height: 0;
+			}
+
+			.ms-tab-link {
+				color: #222;
+			}
+		}
+	}
+
+	.ms-tab-link {
+		display: block;
+		padding: 8px 15px;
+
+		text-decoration: none;
+	}
+}

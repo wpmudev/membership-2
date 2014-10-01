@@ -3,27 +3,27 @@
 class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 	protected $data;
-	
+
 	public function to_html() {
-		
+
 		$tabs = $this->data['tabs'];
 		ob_start();
-		
+
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap wrap'>
-				<?php 
+				<?php
 					MS_Helper_Html::settings_header( array(
 						'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'fa fa-pencil-square',
-						'desc' => array( 
+						'desc' => array(
 							__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
-							__( 'Lets begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ), 
+							__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
 						),
-					) ); 
+					) );
 				?>
 				<?php
-					$active_tab = $this->data['active_tab']; 
+					$active_tab = $this->data['active_tab'];
 					MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
 					/** Call the appropriate form to render. */
@@ -35,7 +35,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function render_tab_category() {
 		$fields = $this->get_tab_category_fields();
 		$title = array();
@@ -48,7 +48,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 			$desc['cpt_group'] = __( 'You can choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN );
 		}
-		
+
 		ob_start();
 		?>
 			<div class='ms-settings'>
@@ -65,23 +65,23 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					</div>
 				<?php endif; ?>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function get_tab_category_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
-		
+
 		$fields = array(
 				'category' => array(
 						'id' => 'category',
@@ -157,17 +157,17 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'value' => $nonce,
 				),
 		);
-		
+
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_category_fields', $fields );
 	}
-	
+
 	public function render_tab_page() {
 		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
 		$rule_list_table->prepare_items();
-	
+
 		$edit_link = array(
 				'id' => 'page_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -177,7 +177,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 		$title = __( 'Pages ', MS_TEXT_DOMAIN );
 		if( empty( $this->data['protected_content'] ) ) {
-			$desc = sprintf( __( 'Give access to following Pages to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name ); 
+			$desc = sprintf( __( 'Give access to following Pages to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
 		}
 		else {
 			$desc = __( 'Protect the following Pages to members only. ', MS_TEXT_DOMAIN );
@@ -187,7 +187,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->search_box( __( 'Search Pages', MS_TEXT_DOMAIN ), 'search' ); ?>
@@ -199,23 +199,23 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php endif;?>
 				</form>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function get_control_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
-	
+
 		$fields = array(
 				'action' => array(
 						'id' => 'action',
@@ -232,18 +232,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $nonce,
 				),
-	
+
 		);
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_control_fields', $fields );
 	}
-	
+
 	public function render_tab_post() {
 		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
 		$rule_list_table->prepare_items();
-	
+
 		$edit_link = array(
 				'id' => 'page_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -263,7 +263,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
@@ -275,25 +275,25 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php endif;?>
 				</form>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function render_tab_cpt() {
 		$fields = $this->get_control_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
 		$rule_list_table->prepare_items();
-	
+
 		$edit_link = array(
 				'id' => 'page_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -313,7 +313,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
@@ -325,25 +325,25 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					</div>
 				<?php endif;?>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function render_tab_comment() {
 		$fields = $this->get_tab_comment_fields();
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( 'menu' );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $rule, $membership, $this->data['menu_id'] );
 		$rule_list_table->prepare_items();
-		
+
 		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
 		if( empty( $this->data['protected_content'] ) ) {
 			$desc = sprintf( __( 'Give access to protected Comments, More Tag & Menus to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
@@ -356,7 +356,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<div class="ms-rule-wrapper">
 					<?php MS_Helper_Html::html_element( $fields['comment'] );?>
 					<?php if( empty( $this->data['protected_content'] ) ): ?>
@@ -385,31 +385,31 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					<?php endif;?>
 				</div>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function get_tab_comment_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-		$comments_desc = ( $this->data['protected_content'] ) 
-			? __( 'Visitors', MS_TEXT_DOMAIN ) 
+		$comments_desc = ( $this->data['protected_content'] )
+			? __( 'Visitors', MS_TEXT_DOMAIN )
 			: __( 'Members', MS_TEXT_DOMAIN );
-		$desc = ( $this->data['protected_content'] ) 
-			? __( 'Only Members', MS_TEXT_DOMAIN ) 
+		$desc = ( $this->data['protected_content'] )
+			? __( 'Only Members', MS_TEXT_DOMAIN )
 			: __( 'Members', MS_TEXT_DOMAIN );
-		
+
 		$fields = array(
 			'comment' => array(
 					'id' => 'comment',
@@ -510,17 +510,17 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				);
 			}
 		}
-		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );	
+		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );
 	}
-	
+
 	public function render_tab_shortcode() {
 		$fields = $this->get_control_fields();
-		
+
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_SHORTCODE );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $rule, $membership );
 		$rule_list_table->prepare_items();
-		
+
 		$edit_link = array(
 				'id' => 'shortcode_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -540,7 +540,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
 					<?php $rule_list_table->display(); ?>
@@ -551,19 +551,19 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					</div>
 				<?php endif;?>
 			</div>
-			<?php 
-				MS_Helper_Html::settings_footer( 
+			<?php
+				MS_Helper_Html::settings_footer(
 						array( 'fields' => array( $fields['step'] ) ),
 						true,
 						$this->data['hide_next_button']
-				); 
+				);
 			?>
 		<?php
-		
+
 		$html = ob_get_clean();
 		echo apply_filters( 'ms_view_membership_protected_content_render_tab_shortcode', $html );
 	}
-	
+
 	public function render_tab_url_group() {
 		$fields = $this->prepare_url_group_fields();
 		$edit_link = array(
@@ -572,7 +572,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				'value' => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
 				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_URL_GROUP ),
 		);
-		
+
 		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
 		if( empty( $this->data['protected_content'] ) ) {
 			$desc = sprintf( __( 'Give access to protected URL Groups to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
@@ -585,7 +585,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 				<hr />
-				
+
 				<form action="" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
@@ -595,31 +595,31 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						<?php MS_Helper_Html::html_element( $edit_link );?>
 					</div>
 				<?php endif;?>
-				<?php 
-					MS_Helper_Html::settings_footer( 
+				<?php
+					MS_Helper_Html::settings_footer(
 							array( 'fields' => array( $fields['step'] ) ),
 							true,
 							$this->data['hide_next_button']
-					); 
+					);
 				?>
 				<?php
 					MS_Helper_Html::settings_box(
-						array( array( 
+						array( array(
 							'id' => 'url_test',
 							'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
 							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 							'class' => 'widefat',
-						) ), 
+						) ),
 						__( 'Test URL group', MS_TEXT_DOMAIN )
 					);
 				?>
 				<div id="url-test-results-wrapper"></div>
 			</div>
-		<?php 	
+		<?php
 		$html = ob_get_clean();
-		echo $html;	
+		echo $html;
 	}
-	
+
 	function prepare_url_group_fields() {
 
 		$membership = $this->data['membership'];
@@ -627,7 +627,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
-		
+
 		$fields = array(
 				'access' => array(
 						'id' => 'access',
@@ -712,5 +712,5 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		}
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
 	}
-	
+
 }

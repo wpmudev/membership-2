@@ -1,0 +1,132 @@
+/**
+ * Collects all SASS files into a single css file.
+ *
+ * https://make.wordpress.org/core/handbook/coding-standards/css/
+ * The coding standard is applied to the SASS source files and formatting might
+ * be slightly changed by compilation into CSS files. However, there is a
+ * expanded dev-version of the CSS files and also a minified version without
+ * any comments.
+ */
+/**
+ * General styles used in settings screens.
+ */
+/* Affects all elements beneath .ms-wrap container */
+.ms-wrap * {
+  box-sizing: border-box;
+}
+
+/* Define general layout states */
+.ms-wrap {
+  margin: 10px 20px 0 2px;
+  font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.ms-wrap input,
+.ms-wrap select,
+.ms-wrap textarea {
+  font-size: .9em;
+}
+.ms-wrap .ms-bold {
+  font-weight: bold;
+}
+.ms-wrap .ms-italic {
+  font-style: italic;
+}
+
+/**
+ * Styles for tables.
+ */
+/* Form table */
+.ms-wrap .form-table {
+  border: 0;
+}
+.ms-wrap .form-table td,
+.ms-wrap .form-table th {
+  vertical-align: top;
+}
+.ms-wrap .form-table td {
+  padding: 0;
+  border: 0;
+}
+
+/**
+ * Navigational tabs.
+ */
+.ms-wrap .ms-tab-container {
+  float: left;
+  width: 225px;
+  min-height: 620px;
+}
+.ms-wrap .ms-tabs {
+  float: left;
+  width: 225px;
+  margin: 0;
+  padding: 0;
+}
+.ms-wrap .ms-tab {
+  position: relative;
+  z-index: 10;
+  border: 1px solid transparent;
+  border-radius: 4px 0 0 4px;
+  border-width: 1px 0 1px 1px;
+  font-size: .9em;
+  font-weight: 500;
+}
+.ms-wrap .ms-tab.active {
+  background: #fff;
+  border-color: #ccc;
+}
+.ms-wrap .ms-tab.active:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 1px;
+  bottom: 0;
+  background: #fff;
+  font-size: 0;
+  line-height: 0;
+}
+.ms-wrap .ms-tab.active .ms-tab-link {
+  color: #222;
+}
+.ms-wrap .ms-tab-link {
+  display: block;
+  padding: 8px 15px;
+  text-decoration: none;
+}
+
+/**
+ * Settings header and footer.
+ */
+/* Header styles */
+.ms-wrap .ms-settings-title {
+  padding: 9px 15px;
+  margin: 0;
+  font-size: 1.4em;
+  line-height: 29px;
+  text-align: center;
+}
+.ms-wrap .ms-settings-desc-wrapper {
+  margin: 9px 15px;
+}
+.ms-wrap .ms-settings-desc {
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Footer styles */
+.ms-wrap .ms-settings-footer {
+  position: relative;
+  margin: 10px;
+}
+
+.ms-title {
+  color: #222;
+  font-size: 1.1em;
+  font-style: normal;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #F00;
+  background: #FEE;
+}
