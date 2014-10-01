@@ -37,6 +37,8 @@ class MS_Model_Rule extends MS_Model {
 	
 	const FILTER_HAS_ACCESS = 'has_access';
 	const FILTER_NO_ACCESS = 'no_access';
+	const FILTER_PROTECTED = 'protected';
+	const FILTER_NOT_PROTECTED = 'not_protected';
 	const FILTER_DRIPPED = 'dripped';
 	
 	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
@@ -499,6 +501,7 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	public function set_access( $id, $has_access ) {
+// 		$this->rule_value[ $id ] = $has_access ? 1 : 0;
 		$this->rule_value[ $id ] = $has_access;
 		
 		if( $this->rule_value_invert && ! $has_access ) {
@@ -535,6 +538,13 @@ class MS_Model_Rule extends MS_Model {
 			$args['post__in'] = array_keys( $this->rule_value );
 		}
 			
+		$args = $this->validate_query_args( $args );
+		
+		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
+	}
+	
+	public function validate_query_args( $args ) {
+		
 		/** Cannot use post__in and post_not_in at the same time.*/
 		if( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
 			$include = $args['post__in'];
@@ -550,12 +560,12 @@ class MS_Model_Rule extends MS_Model {
 			unset( $args['post__not_in'] );
 			unset( $args['show_all'] );
 		}
-	
+		
 		if( isset( $args['post__in'] ) && count( $args['post__in'] ) == 0 ) {
 			$args['post__in'] = array( -1 );
 		}
 		
-		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
+		return apply_filters( "ms_model_rule_{$this->id}_validate_query_args", $args );
 	}
 	
 	public function filter_content( $status, $contents ) {
@@ -564,11 +574,13 @@ class MS_Model_Rule extends MS_Model {
 				continue;
 			}
 			switch( $status ) {
+				case MS_Model_Rule::FILTER_PROTECTED:
 				case self::FILTER_HAS_ACCESS:
 					if( ! $content->access ) {
 						unset( $contents[ $key ] );
 					}
 					break;
+				case MS_Model_Rule::FILTER_NOT_PROTECTED:
 				case self::FILTER_NO_ACCESS:
 					if( $content->access ) {
 						unset( $contents[ $key ] );

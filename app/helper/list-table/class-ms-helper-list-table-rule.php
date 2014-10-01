@@ -288,9 +288,14 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$count = $this->model->count_item_access();
 		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
 		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );
+		$has_access_status = MS_Model_Rule::FILTER_HAS_ACCESS;
+		$no_access_status = MS_Model_Rule::FILTER_NO_ACCESS;
+		
 		if( $this->membership->visitor_membership ) {
 			$has_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
 			$no_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
+			$has_access_status = MS_Model_Rule::FILTER_PROTECTED;
+			$no_access_status = MS_Model_Rule::FILTER_NOT_PROTECTED;
 		}
 		
 		$url = apply_filters( "ms_helper_list_table_{$this->id}_url", remove_query_arg( array ( 'status', 'paged' ) ) );
@@ -298,12 +303,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		return apply_filters( "ms_helper_list_table_{$this->id}_views", array(
 				'all' => sprintf( '<a href="%s">%s</a> (%s)', $url, __( 'All', MS_TEXT_DOMAIN ), $count['total'] ),
 				'has_access' => sprintf( '<a href="%s">%s</a> (%s)', 
-						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_HAS_ACCESS ), $url ), 
+						add_query_arg( array ( 'status' => $has_access_status ), $url ), 
 						$has_access_desc, 
 						$count['accessible'] 
 				),
 				'no_access' => sprintf( '<a href="%s">%s</a> (%s)', 
-						add_query_arg( array ( 'status' => MS_Model_Rule::FILTER_NO_ACCESS ), $url ),
+						add_query_arg( array ( 'status' => $no_access_status ), $url ),
 						$no_access_desc, 
 						$count['restricted'] 
 				),
