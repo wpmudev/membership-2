@@ -42,7 +42,7 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 	public function get_columns() {
 		$menus = $this->model->get_menu_array();
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
-				'title' => sprintf( '<span class="ms-menu-name">%s</span> - %s', $menus[ $this->menu_id ], __( 'Members title', MS_TEXT_DOMAIN ) ),
+				'title' => sprintf( '<span class="ms-menu-name">%s</span> - %s', $menus[ $this->menu_id ], __( 'Menu title', MS_TEXT_DOMAIN ) ),
 				'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 		) );
 	}

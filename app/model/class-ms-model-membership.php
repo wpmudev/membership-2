@@ -402,6 +402,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				}
 				$children = $parent->get_children();
 				foreach ( $children as $child ) {
+					if( $child->id >= $this->id ) {
+						continue;
+					}
 					$options[ $child->id ] = sprintf( __( 'Downgrade to %s', MS_TEXT_DOMAIN ), $child->name );
 				}
 				

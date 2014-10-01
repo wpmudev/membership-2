@@ -268,7 +268,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'on_end_membership_id' => array(
 						'id' => 'on_end_membership_id_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'After membership ends, change to', MS_TEXT_DOMAIN ),
+						'title' => __( 'After this membership ends:', MS_TEXT_DOMAIN ),
 						'value' => $membership->on_end_membership_id,
 						'field_options' => $membership->get_after_ms_ends_options(),
 						'class' => 'ms-field-input-on-end-membership ms-ajax-update',

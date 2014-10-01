@@ -25,19 +25,13 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 4.0.0
+ * @since 1.0
  *
  * @return object
  */
 class MS_View_Admin_Bar extends MS_View {
 	
-	protected $simulate_period_unit;
-	
-	protected $simulate_period_type;
-	
-	protected $simulate_date;
-	
-	protected $fields;
+	protected $data;
 	
 	/**
 	 * Overrides parent's to_html() method.
@@ -50,49 +44,50 @@ class MS_View_Admin_Bar extends MS_View {
 	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
 	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0
 	 *
 	 * @return object
 	 */
 	public function to_html() {		
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		ob_start();
 		?>
 		<form action="" method="post">
 			<?php  
-				if( isset( $this->simulate_date ) ) {
-					MS_Helper_Html::html_element( $this->fields['simulate_date'] );
+				if( ! empty( $this->data['simulate_date'] ) ) {
+					MS_Helper_Html::html_element( $fields['simulate_date'] );
 				}
-				elseif( isset( $this->simulate_period_type ) ) {
-					MS_Helper_Html::html_element( $this->fields['simulate_period_unit'] );
-					MS_Helper_Html::html_element( $this->fields['simulate_period_type'] );
+				elseif( empty( $this->data['simulate_period_type'] ) ) {
+					MS_Helper_Html::html_element( $fields['simulate_period_unit'] );
+					MS_Helper_Html::html_element( $fields['simulate_period_type'] );
 				}
-				MS_Helper_Html::html_element( $this->fields['simulate_submit'] );
+				MS_Helper_Html::html_element( $fields['simulate_submit'] );
 			?>
 		</form>
 		<?php
 		$html = ob_get_clean();
 		return $html;
 	}
+	
 	public function prepare_fields() {
-		$this->fields = array(
+		$fields = array(
 				'simulate_period_unit' => array(
 						'id' => 'simulate_period_unit',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => $this->simulate_period_unit,
+						'value' => $this->data['period_unit'],
 						'class' => 'ms-admin-bar-period-unit',
 				),
 				'simulate_period_type' => array(
 						'id' => 'simulate_period_type',
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $this->simulate_period_type,
+						'value' => $this->data['period_type'],
 						'field_options' => MS_Helper_Period::get_periods(),
 						'class' => 'ms-admin-bar-period-type',
 				),
 				'simulate_date' => array(
 						'id' => 'simulate_date',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'value' => $this->simulate_date,
+						'value' => $this->data['simulate_date'],
 						'class' => 'ms-admin-bar-date ms-date',
 				),
 				'simulate_submit' => array(
@@ -102,5 +97,6 @@ class MS_View_Admin_Bar extends MS_View {
 						'class' => 'ms-admin-bar-submit',
 				),
 		);
+		return apply_filters( 'ms_view_admin_bar_prepare_fields', $fields );
 	}
 }
