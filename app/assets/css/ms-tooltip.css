@@ -6,9 +6,7 @@
 	left:10px; 
 	color: #555555; 
 	border-radius: 5px; 
-	display:none; 
-    -webkit-box-shadow: -3px 0px 10px 1px rgba(0,0,0, 0.3);   
-    -moz-box-shadow: -3px 0px 10px 1px rgba(0, 0, 0, 0.3);	
+	display:none;	
 	box-shadow: rgba(0, 0, 0, 0.12) -3px 0px 10px 1px;
 	border: 1px solid #ffffff;
 
