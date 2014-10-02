@@ -1,0 +1,75 @@
+/**
+ * Special styles used on "Membership" pages
+ */
+
+/* Page: Create new Membership */
+.ms-wrap {
+	.ms-type-wrapper {
+	}
+
+	.ms-name-wrapper,
+	.ms-private-wrapper {
+		float: left;
+		width: 50%;
+		min-height: 7em;
+		max-width: 880px;
+
+		&.disabled * {
+			color: #999;
+			opacity: .7;
+		}
+	}
+
+	.ms-control-fields-wrapper {
+		clear: both;
+	}
+
+	.ms-chose-type {
+		position: relative;
+		float: left;
+
+		margin: 1em 0 0;
+		padding: 80px 40px 0 0;
+		width: 25%;
+		min-width: 250px;
+		max-width: 440px;
+
+		background-color: transparent;
+		outline: none;
+
+		label:before {
+			display: inline-block;
+			position: absolute;
+			content: '';
+
+			left: 50%;
+			top: -80px;
+			width: 100px;
+			height: 80px;
+			margin-left: -50px;
+
+			background: url(../images/membership_sprite.png);
+			background: url(../images/membership_sprite.svg), none;
+		}
+
+		&.ms-simple label:before {
+			background-position: 0 -30px;
+		}
+
+		&.ms-content_type label:before {
+			background-position: -100px -20px;
+		}
+
+		&.ms-tier label:before {
+			background-position: -200px -18px;
+		}
+
+		&.ms-dripped label:before {
+			background-position: -300px -20px;
+		}
+
+		.ms-radio-caption {
+			margin-bottom: 1em;
+		}
+	}
+}

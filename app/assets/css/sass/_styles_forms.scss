@@ -1,0 +1,79 @@
+/**
+ * Styles for forms and input elements
+ */
+
+/* General styles */
+.ms-wrap {
+	.ms-field-description {
+		display: inline-block;
+		margin: 10px 0;
+		color: #666;
+		font-size: 0.9em;
+		font-weight: normal;
+	}
+
+	.ms-field-input,
+	.ms-field-input.button {
+		margin: 0.5em 0;
+	}
+
+	.ms-field-container {
+		margin: 10px 0;
+	}
+
+	.ms-field-label {
+		display: block;
+	}
+
+	.ms-field-input-label {
+		margin: 2px 0;
+		font-style: normal;
+		color: #222;
+	}
+
+	.disabled input,
+	input.disabled,
+	input[disabled] {
+		cursor: default;
+	}
+}
+
+/* Radio buttons */
+.ms-wrap {
+	.ms-radio {
+		margin: 2px 4px 0 0;
+		float: left;
+	}
+
+	.ms-radio-wrapper {
+		margin: 0 auto;
+
+		.ms-radio-caption {
+			padding-left: 24px;
+			font-weight: 500;
+		}
+
+		label {
+			position: relative;
+			float: left;
+			width: 100%;
+		}
+	}
+}
+
+/* Checkbox buttons */
+.ms-wrap {
+	.ms-checkbox {
+		margin: 2px 4px 0 0;
+		float: left;
+	}
+
+	.ms-checkbox-wrapper {
+		margin: 0 auto;
+
+		.ms-checkbox-caption {
+			padding-left: 24px;
+			font-weight: 500;
+		}
+	}
+}

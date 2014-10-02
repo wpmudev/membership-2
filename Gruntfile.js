@@ -2,11 +2,13 @@
 module.exports = function( grunt ) {
 	var paths = {
 		js_files_concat: {
-			//'app/assets/js/jquery.tmpl.js': ['app/assets/js/vendors/jquery.tmpl.js']
+			'app/assets/js/select2.js': ['app/assets/js/vendors/select2.js'],
+			'app/assets/js/ms-view-membership-choose-type.js': ['app/assets/js/src/ms-view-membership-choose-type.js']
 		},
 
 		css_files_compile: {
-			'app/assets/css/ms-admin.css': 'app/assets/css/sass/ms-admin.scss'
+			'app/assets/css/ms-admin.css': 'app/assets/css/sass/ms-admin.scss',
+			'app/assets/css/select2.css':  'app/assets/css/sass/select2.scss'
 		},
 
 		plugin_dir: 'protected-content/'

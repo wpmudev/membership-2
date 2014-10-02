@@ -75,9 +75,9 @@ class MS_Helper_Html extends MS_Helper {
 			'type'      => 'text',
 			'class'     => '',
 			'maxlength' => '',
-			'equalTo'	=> '' ,
+			'equalTo'	=> '',
 			'field_options' => array(),
-			'multiple'	=> '',
+			'multiple'	=> false,
 			'tooltip'   => '',
 			'alt'		=> '',
 			'read_only' => false,
@@ -105,139 +105,272 @@ class MS_Helper_Html extends MS_Helper {
 
 		$tooltip_output = MS_Helper_Html::tooltip( $tooltip, true );
 
-		// Capture to output buffer
-		if ( $return ) {
-			ob_start();
-		}
-		$placeholder = empty( $placeholder ) ? '' : "placeholder='$placeholder'";
+		$placeholder = empty( $placeholder ) ? '' : 'placeholder="' . esc_attr( $placeholder ) . '" ';
+
 		if( ! empty( $data_ms ) ) {
 			if( empty( $data_ms['_wpnonce'] ) && ! empty( $data_ms['action'] ) ) {
 				$data_ms['_wpnonce'] = wp_create_nonce( $data_ms['action'] );
 			}
 
-			$data_ms = esc_attr( json_encode( $data_ms ) );
-			$data_ms = "data-ms='{$data_ms}'";
+			$data_ms = 'data-ms="' . esc_attr( json_encode( $data_ms ) ) . '" ';
 		}
 
-		switch ( $type )
-		{
+		$max_attr = empty( $maxlength ) ? '' : 'maxlength="' . esc_attr( $maxlength ) . '" ';
+
+		$read_only = empty( $read_only ) ? '' : 'readonly="readonly" ';
+
+		$multiple = empty( $multiple ) ? '' : 'multiple="multiple" ';
+
+		$data_placeholder = empty( $data_placeholder ) ? '' : 'data-placeholder="' . esc_attr( $data_placeholder ) . '" ';
+
+		// Capture to output buffer
+		if ( $return ) {
+			ob_start();
+		}
+		switch ( $type ) {
+
 			case self::INPUT_TYPE_HIDDEN:
-				echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+				printf(
+					'<input class="ms-field-input ms-hidden" type="hidden" id="%1$s" name="%2$s" value="%3$s" />',
+					esc_attr( $id ),
+					esc_attr( $name ),
+					esc_attr( $value )
+				);
 				break;
+
 			case self::INPUT_TYPE_TEXT:
 			case self::INPUT_TYPE_PASSWORD:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
-				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<input class='ms-field-input ms-$type $class' type='$type' id='$id' name='$name' value='$value' $max_attr $placeholder $data_ms/>";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				printf(
+					'<input class="ms-field-input ms-%1$s %2$s" type="%1$s" id="%3$s" name="%4$s" value="%5$s" %6$s />',
+					esc_attr( $type ),
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					esc_attr( $value ),
+					$max_attr . $placeholder . $data_ms
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_TEXT_AREA:
-				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
-				$max_attr = empty($maxlength)?'':"maxlength='$maxlength'";
-				echo "<textarea class='ms-field-input ms-textarea $class' type='text' id='$id' name='$name' $read_only $data_ms>$value</textarea>";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				printf(
+					'<textarea class="ms-field-input ms-textarea %1$s" type="text" id="%2$s" name="%3$s" %4$s>%5$s</textarea>',
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					$read_only . $data_ms,
+					esc_textarea( $value )
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_SELECT:
-				echo ($title != '') ? "<{$label_element} for='$id' class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
-				$data_placeholder = empty( $data_placeholder ) ? '' : "data-placeholder='$data_placeholder'";
-				echo "<select id='$id' $read_only class='ms-field-input ms-select $class' name='$name' $multiple $data_placeholder $data_ms >";
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				printf(
+					'<select id="%1$s" class="ms-field-input ms-select %2$s" name="%3$s" %4$s>',
+					esc_attr( $id ),
+					esc_attr( $class ),
+					esc_attr( $name ),
+					$multiple . $read_only . $data_placeholder . $data_ms
+				);
 				foreach( $field_options as $key => $option ) {
 					$selected = '';
 					if( is_array( $value ) ) {
-						if( array_key_exists( $key, $value ) ) {
-							$selected = selected( $key, $key, false );
-						}
+						$selected = selected( array_key_exists( $key, $value ), true, false );
 					}
 					else {
 						$selected = selected( $key, $value, false );
 					}
-					$key = esc_attr( $key );
-					echo "<option $selected value='$key'>$option</option>";
+					printf(
+						'<option %1$s value="%2$s">%3$s</option>',
+						$selected,
+						esc_attr( $key ),
+						$option
+					);
 				}
-				echo "</select>";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				echo '</select>';
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_RADIO:
-				echo ! empty( $title ) ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ! empty( $desc ) ? "<div class='ms-field-description'>$desc</div>" : '';
-				echo "<div class='ms-radio-wrapper'>";
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				echo '<div class="ms-radio-wrapper">';
 				foreach( $field_options as $key => $option ) {
 					if( is_array( $option ) ) {
-						$text = $option['text'];
-						$desc = $option['desc'];
+						$item_text = $option['text'];
+						$item_desc = $option['desc'];
 					}
 					else {
-						$text = $option;
-						$desc = '';
+						$item_text = $option;
+						$item_desc = '';
 					}
-					$checked = ( $value == $key ) ? 'checked="checked"' : '';
-					echo "<div class='ms-radio-input-wrapper $class ms-{$key}'>";
-					echo "<input class='ms-field-input ms-radio $class' type='radio' id='{$id}_{$key}' name='$name' value='$key' $checked $data_ms/> ";
-					echo "<label for='{$id}_{$key}'>$text</label>";
-					echo ! empty( $desc ) ? "<div><label for='{$id}_{$key}' class='ms-radio-description'>$desc</label></div>" : '';
-					echo "</div>";
+					$checked = checked( $value, $key, false );
+					$radio_desc = '';
+					if( ! empty( $item_desc ) ) {
+						$radio_desc = sprintf( '<div class="ms-input-description"><p>%1$s</p></div>', $item_desc );
+					}
+					printf(
+						'<div class="ms-radio-input-wrapper %1$s ms-%2$s"><label class="ms-field-input-label"><input class="ms-field-input ms-radio" type="radio" name="%3$s" id="%4$s_%2$s" value="%2$s" %5$s /><div class="ms-radio-caption">%6$s</div>%7$s</label></div>',
+						esc_attr( $class ),
+						esc_attr( $key ),
+						esc_attr( $name ),
+						esc_attr( $id ),
+						$data_ms . $checked,
+						$item_text,
+						$radio_desc
+					);
 				}
-				echo ( empty( $title ) ) ? $tooltip_output : '';
-				echo "</div>";
+
+				self::html_element_hint( $title, $tooltip_output );
+				echo '</div>';
 				break;
+
 			case self::INPUT_TYPE_CHECKBOX:
-				$checked = ( $value == true ) ? 'checked="checked"' : '';
-				echo "<input class='ms-field-input ms-field-checkbox $class' type='checkbox' id='$id' name='$name' value='1' $checked $data_ms/>";
-				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
-					echo "<span class='ms-label-checkbox'>";
-					echo "<label for='$id' class='ms-field-checkbox-label ms-field-input-label'>$title $tooltip</label>";
+				$checked = checked( $value, true, false );
+
+				$item_desc = '';
+				if( ! empty( $desc ) ) {
+					$item_desc = sprintf( '<div class="ms-field-description"><p>%1$s</p></div>', $desc );
 				}
-				echo "</span>";
-				echo ($desc != '') ? "<div class='ms-field-description'>$desc</div>" : '';
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+
+				$item_label = '';
+				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
+					$item_label = sprintf(
+						'<div class="ms-checkbox-caption">%1$s %2$s</div>',
+						$title,
+						$tooltip
+					);
+				}
+
+				printf(
+					'<label class="ms-checkbox-wrapper ms-field-input-label"><input id="%1$s" class="ms-field-input ms-checkbox %2$s" type="checkbox" name="%3$s" value="1" %4$s />%5$s %6$s</label>',
+					esc_attr( $id ),
+					esc_attr( $class ),
+					esc_attr( $name ),
+					$data_ms . $checked,
+					$item_label,
+					$item_desc
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_WP_EDITOR:
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo ($desc != '') ? "<span class='ms-field-description'>$desc</span>" : '';
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
 				wp_editor( $value, $id, $field_options );
 				break;
+
 			case self::INPUT_TYPE_BUTTON:
-				echo "<input class='ms-field-input button $class' type='button' id='$id' name='$name' value='$value' />";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				printf(
+					'<button class="ms-field-input button %1$s" type="button" id="%2$s" name="%3$s">%4$s</button>',
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					$value
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_SUBMIT:
-				echo "<input class='ms-field-input ms-submit button-primary $class' type='submit' id='$id' name='$name' value='$value' />";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				printf(
+					'<button class="ms-field-input ms-submit button-primary %1$s" type="submit" id="%2$s" name="%3$s">%4$s</button>',
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					$value
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_IMAGE:
-				echo "<input type='image' id='$id' name='$name' border='0' src='$value' class='ms-field-input ms-input-image $class' alt='$alt' />";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+				printf(
+					'<input type="image" class="ms-field-input ms-input-image %1$s" id="%2$s" name="%3$s" border="0" src="%4$s" alt="%5$s" />',
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					esc_url( $value ),
+					esc_attr( $alt )
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::INPUT_TYPE_RADIO_SLIDER:
 				$turned = ( $value ) ? 'on' : '';
-				$link_url = ! empty( $url ) ? "<a href='$url'></a>" : '';
+				$link_url = ! empty( $url ) ? '<a href="' . esc_url( $url ) . '"></a>' : '';
 
-				echo ($title != '') ? "<{$label_element} class='ms-field-label ms-field-input-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo "<div class='ms-radio-slider $turned'>";
-				echo "<div class='ms-toggle' $data_ms>$link_url</div>";
+				$attr_input = '';
 				if( ! $read_only ) {
-					echo "<input class='ms-field-input ms-hidden' type='hidden' id='$id' name='$name' value='$value' />";
+					$attr_input = sprintf(
+						'<input class="ms-field-input ms-hidden" type="hidden" id="%1$s" name="%2$s" value="%3$s" />',
+						esc_attr( $id ),
+						esc_attr( $name ),
+						esc_attr( $value )
+					);
 				}
-				echo "</div>";
-				echo ( empty( $title ) ) ? $tooltip_output : '';
+
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				printf(
+					'<div class="ms-radio-slider %1$s"><div class="ms-toggle" %2$s>%3$s</div>%4$s</div>',
+					esc_attr( $turned ),
+					$data_ms,
+					$link_url,
+					$attr_input
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
 				break;
+
 			case self::TYPE_HTML_LINK:
 				self::html_link( $field_args );
 				break;
+
 			case self::TYPE_HTML_SEPARATOR:
 				self::html_separator();
 				break;
+
 			case self::TYPE_HTML_TEXT:
-				echo "<div class='ms-html-text-wrapper'>";
-				if( empty( $wrapper ) ) {
-					$wrapper = 'span';
+				if( empty( $wrapper ) ) { $wrapper = 'span'; }
+				echo '<div class="ms-html-text-wrapper">';
+
+				// TODO: Can we use html_element_label instead of this block?
+				if( $title != '') {
+					printf(
+						'<%1$s class="ms-text-label">%2$s %3$s</%1$s>',
+						$label_element,
+						$title,
+						$tooltip_output
+					);
 				}
-				echo ($title != '') ? "<{$label_element} class='ms-text-label'>$title {$tooltip_output}</{$label_element}>" : '';
-				echo "<{$wrapper} class='{$class}'>{$value}</{$wrapper}>";
-				echo "</div>";
+
+				printf(
+					'<%1$s class="%2$s">%3$s</%1$s>',
+					$wrapper,
+					esc_attr( $class ),
+					$value
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
+				echo '</div>';
 				break;
 		}
 
@@ -247,6 +380,49 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 	}
+
+	/**
+	 * Helper function used by `html_element`
+	 *
+	 * @since  1.0.0
+	 */
+	private static function html_element_label( $title, $label_element, $id, $tooltip_output ) {
+		if( ! empty( $title ) ) {
+			printf(
+				'<%1$s for="%2$s" class="ms-field-label ms-field-input-label">%3$s %4$s</%1$s>',
+				$label_element,
+				esc_attr( $id ),
+				$title,
+				$tooltip_output
+			);
+		}
+	}
+
+	/**
+	 * Helper function used by `html_element`
+	 *
+	 * @since  1.0.0
+	 */
+	private static function html_element_desc( $desc ) {
+		if( $desc != '' ) {
+			printf(
+				'<span class="ms-field-description">%1$s</span>',
+				$desc
+			);
+		}
+	}
+
+	/**
+	 * Helper function used by `html_element`
+	 *
+	 * @since  1.0.0
+	 */
+	private static function html_element_hint( $title, $tooltip_output ) {
+		if ( empty( $title ) ) {
+			echo $tooltip_output;
+		}
+	}
+
 
 	public static function settings_header( $args = null ) {
 		$defaults = array(
@@ -277,6 +453,7 @@ class MS_Helper_Html extends MS_Helper {
 			</div>
 		<?php
 	}
+
 	public static function settings_footer( $args = null, $merge_fields = true, $hide_next_button = false ) {
 		$action = 'next';
 		$nonce = wp_create_nonce( $action );
@@ -368,7 +545,7 @@ class MS_Helper_Html extends MS_Helper {
 			$desc = array( $desc );
 		}
 		?>
-			<div class='ms-settings-tab-title'>
+			<div class="ms-settings-tab-title">
 				<h3><?php echo $title; ?></h3>
 			</div>
 			<div class="ms-settings-tab-desc-wrapper">
@@ -380,6 +557,7 @@ class MS_Helper_Html extends MS_Helper {
 			</div>
 		<?php
 	}
+
 	public static function settings_box( $fields_in, $title = '', $description = '', $args = array() ) {
 
 		/** If its a fields array, great, if not, make a fields array */
@@ -432,6 +610,7 @@ class MS_Helper_Html extends MS_Helper {
 
 		echo "<input class='ms-field-input ms-submit $class' type='submit' id='$id' name='$id' value='$value'/>";
 	}
+
 	/**
 	 * Method for creating html link.
 	 *
@@ -530,7 +709,7 @@ class MS_Helper_Html extends MS_Helper {
 	}
 
 	public static function html_separator() {
-		echo "<div class='ms-separator'></div>";
+		echo '<div class="ms-separator"></div>';
 	}
 
 	public static function content_desc( $descriptions ) {
@@ -538,7 +717,7 @@ class MS_Helper_Html extends MS_Helper {
 			$descriptions = array( $descriptions );
 		}
 		foreach( $descriptions as $desc ) {
-			echo "<span class='ms-content-desc'>$desc</span>";
+			echo '<span class="ms-content-desc">' . $desc . '</span>';
 		}
 	}
 
@@ -556,7 +735,7 @@ class MS_Helper_Html extends MS_Helper {
 			}
 			if( count( $crumbs ) > 0 ) {
 				$html = '<div class="ms-bread-crumb">';
-				$html .= implode( '<span class="ms-bread-crumb-sep"> >> </span>', $crumbs );
+				$html .= implode( '<span class="ms-bread-crumb-sep"> &raquo; </span>', $crumbs );
 				$html .= '</div>';
 			}
 		}
@@ -564,7 +743,7 @@ class MS_Helper_Html extends MS_Helper {
 	}
 
 	public static function period_desc( $period, $class = '' ) {
-		$html = sprintf( "<span class='ms-period-desc %s'> <span class='ms-period-unit'>%s</span> <span class='ms-period-type'>%s</span></span>",
+		$html = sprintf( '<span class="ms-period-desc %s"> <span class="ms-period-unit">%s</span> <span class="ms-period-type">%s</span></span>',
 			$class,
 			$period['period_unit'],
 			$period['period_type']

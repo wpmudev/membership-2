@@ -1,156 +1,33 @@
-/*
-body {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 
-.ms-wrap {
-	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-.ms-wrap h1 {
-  font-size: 2.5em;
-}
 
-.ms-wrap h2 {
-	font-size: 2em;
-}
-
-.ms-wrap h3 {
-	font-size: 1.3em;
-	margin: 0.5em 1em 0.5em 0;
-}
-
-input,
-select {
-	font-size: .9em;
-}
-.ms-bold {
-	font-weight: bold;
-}
-.ms-italic {
-	font-style: italic;
-}
-.ms-wrap .form-table td,
-.ms-wrap .form-table th {
-    vertical-align: top;
-}
-.ms-wrap {
-	margin:10px 20px 0 2px;
-}
-.ms-wrap .ms-tab-container {
-	min-height: 620px;
-	float: left;
-	width: 225px;
-}
-
-.ms-wrap .ms-tabs {
-    float: left;
-    margin: 0;
-    padding: 0;
-    width: 225px;
-}
-.ms-wrap .ms-tab {
-    position: relative;
-    z-index: 10;
-    border: 1px solid transparent;
-    border-radius: 4px 0 0 4px;
-    border-width: 1px 0 1px 1px;
-    font-size: .9em;
-    font-weight: 500;
-}
-.ms-wrap .ms-tab.active {
-    background: #fff;
-    border-color: #ccc;
-}
-.ms-wrap .ms-tab.active:after {
-    position: absolute;
-    top: 0;
-    right: -1px;
-    bottom: 0;
-    background: #fff;
-    content: "";
-    display: block;
-    font-size: 0;
-    line-height: 0;
-    width: 1px;
-}
-.ms-wrap .ms-tab.active .ms-tab-link {
-    color: #222;
-}
-.ms-wrap .ms-tab-link {
-    display: block;
-    padding: 8px 15px;
-    text-decoration: none;
-}
-h2.ms-settings-title,
-.ms-wrap .ms-settings-title {
-  font-size: 1.4em;
-  line-height: 29px;
-  padding: 9px 15px;
-  margin: 0;
-  text-align: center;
-}
-.ms-title {
-	color: #222;
-    font-size: 1.1em;
-    font-style: normal;
-    font-weight: bold;
-    margin: 10px 0;
-}
-.ms-settings-desc-wrapper {
-    margin: 9px 15px;
-}
-.ms-settings-desc {
-    text-align: center;
-    margin: 0 auto;
-}
-*/
-.ms-wrap .ms-settings {
-    background: #fff;
-    border: 1px solid #ccc;
-    overflow: hidden;
-    padding: 10px 20px 20px;
-	min-height: 350px;
-	position:relative;
-}
 
 .ms-wrap .ms-settings .settings-description {
-    margin: 1em 0;
+	margin: 1em 0;
 }
 
 .ms-wrap .ms-label {
-    display: block;
-    padding-bottom: 5px;
+	display: block;
+	padding-bottom: 5px;
 }
 .ms-margin-right{
-    margin-right: 10px;
+	margin-right: 10px;
 }
 .ms-wrap.ms-postbox.ms-default-margin{
-    margin-right: 15px;
-    margin-left: 15px;
-    margin-top: 5px;
+	margin-right: 15px;
+	margin-left: 15px;
+	margin-top: 5px;
 }
-/*
-.ms-settings-footer{
-	margin: 10px;
-	position:relative;
-}
-*/
+
 /** Settings Box **/
 .ms-settings-box-wrapper {
-    background: none repeat scroll 0 0 #f9f9f9;
-    border: 1px solid #E5E5E5;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-    min-width: 255px;
-    position: relative;
+	background: none repeat scroll 0 0 #f9f9f9;
+	border: 1px solid #E5E5E5;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	min-width: 255px;
+	position: relative;
 	margin-bottom: 15px;
 }
-/*
-.ms-wrap .form-table td{
-	padding: 0;
-}
-*/
+
 .ms-settings-box {
 	padding: 10px;
 }
@@ -160,33 +37,17 @@ h2.ms-settings-title,
 	margin: 0;
 	padding: 5px 0;
 }
-/*
-.ms-form-table, .ms-form-table td {
-	border: 0 !important;
-}
-*/
-.ms-field-container {
-	margin: 10px 0;
-}
-.ms-field-label {
-	display: block;
-}
 
-.ms-field-input-label {
-	margin: 10px 0 0;
-	font-style: normal;
-	color: #222;
-}
 
 .ms-html-text-wrapper {
 	margin: 10px 0;
 }
 .ms-text-label, .ms-ok, .ms-nok {
 	color: #222;
-    font-size: 1em;
-    font-style: normal;
-    font-weight: 600;
-    margin-top: 10px;
+	font-size: 1em;
+	font-style: normal;
+	font-weight: 600;
+	margin-top: 10px;
 }
 .ms-ok {
 	color: #7ad03a;
@@ -209,30 +70,7 @@ h2.ms-settings-title,
 	font-size: 0.9em;
 }
 /** html fields */
-.ms-field-description {
-	font-size: 0.9em;
-	margin: 10px 10px 10px 0;
-}
-.ms-radio-wrapper {
-	margin: 0 auto;
-}
-.ms-radio-input-wrapper {
-	width: 20%;
-}
-.ms-radio-input-wrapper label {
-	font-weight: 500;
-	position: relative;
-}
-label.ms-radio-description {
-	color: #666;
-    display: inline-block;
-    font-size: 0.9em;
-    font-weight: normal;
-    margin: 10px 0;
-}
-.ms-field-input, .ms-field-input.button {
-	margin: 0.5em 0;
-}
+
 .ms-field-wp-editor {
 	height: 5em;
 	width: 100%;
@@ -276,7 +114,7 @@ label.ms-radio-description {
 	margin: 15px 0;
 }
 .chosen-container {
-    margin: 0.5em 0;
+	margin: 0.5em 0;
 }
 .ms-hidden {
 	display:none;
@@ -306,13 +144,11 @@ label.ms-radio-description {
 
 
 @media (max-width: 900px) {
-    .ms-wrap .ms-settings {
-	}
 	.ms-wrap .ms-tabs {
-	    float: left;
-	    margin: 0;
-	    padding: 0;
-	    width: 100px;
+		float: left;
+		margin: 0;
+		padding: 0;
+		width: 100px;
 
 	}
 	.ms-wrap .ms-tabs a {
@@ -330,28 +166,28 @@ label.ms-radio-description {
 }
 label.ms-validation-error {
 	background: #ffefef;
-    border: 1px solid #ffd2d2;
-    color: #666;
-    font-size: 0.9em;
-    margin: 5px;
-    padding: 2px;
-    position: absolute;
-    width: auto;
-    border-radius: 3px;
+	border: 1px solid #ffd2d2;
+	color: #666;
+	font-size: 0.9em;
+	margin: 5px;
+	padding: 2px;
+	position: absolute;
+	width: auto;
+	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 }
 
 label.ms-validation-error:before {
 	content:'';
-  	background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
+	background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
 	background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
 	background-position: -640px -138px;
 	display: inline-block;
-    height: 20px;
-    position: relative;
-    top: 1px;
-    width: 20px;
+	height: 20px;
+	position: relative;
+	top: 1px;
+	width: 20px;
 }
 
 /** radio slider */
@@ -425,22 +261,22 @@ div.dripped .tooltip {
 
 table.widefat {
 	border: 1px solid #E5E5E5;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
 
 .widefat td{
-    font-size: 12px;
-    padding: 15px 6px 2px;
-    vertical-align: top;
+	font-size: 12px;
+	padding: 15px 6px 2px;
+	vertical-align: top;
 }
 
 .widefat tbody th.check-column{
-    padding: 15px 0 14px;
+	padding: 15px 0 14px;
 }
 .ms-setup-half-width {
 	float: left;
 	margin: 0 20px 0 0;
-    width: 40%;
+	width: 40%;
 }
 
 /* SETTING: GENERAL */
@@ -475,8 +311,8 @@ textarea.ms-field-input {
 /* MEMBERS LIST */
 #search_options {
 	float: left;
-    height: 28px;
-    margin: 0 4px 0 0;
+	height: 28px;
+	margin: 0 4px 0 0;
 }
 
 /* MEDIA /DOWNLOADS TAB */
@@ -493,8 +329,8 @@ textarea.ms-field-input {
 }
 .ms-list-table-half {
 	float: left;
-    margin: 0 10px;
-    width: 40%;
+	margin: 0 10px;
+	width: 40%;
 }
 
 /** save text ajax */
@@ -503,11 +339,11 @@ textarea.ms-field-input {
 	font-weight:500;
 }
 .ms-save-text-wrapper.ms-init span {
-    display: none;
+	display: none;
 }
 .ms-save-text-wrapper span {
 	display: inline-block;
-    width: 155px;
+	width: 155px;
 }
 .ms-save-text-wrapper .ms-saving-text{
 	display: none;
