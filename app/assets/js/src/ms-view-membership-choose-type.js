@@ -20,11 +20,11 @@ jQuery( document ).ready(function() {
 	jQuery( 'input[name="type"]' ).click( function() {
 		if( jQuery.inArray( jQuery( this ).val(), ms_data.ms_private_types ) > -1 ) {
 			el_private.removeClass( 'disabled' );
-			el_private.find( 'inpup' ).prop( 'disabled', false );
+			el_private.find( 'input' ).prop( 'disabled', false );
 		}
 		else {
 			el_private.addClass( 'disabled' );
-			el_private.find( 'inpup' ).prop( 'disabled', true );
+			el_private.find( 'input' ).prop( 'disabled', true ).prop( 'checked', false );
 		}
 	});
 

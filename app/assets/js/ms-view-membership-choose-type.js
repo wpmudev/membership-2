@@ -26,7 +26,7 @@ jQuery( document ).ready(function() {
 		}
 		else {
 			el_private.addClass( 'disabled' );
-			el_private.find( 'input' ).prop( 'disabled', true );
+			el_private.find( 'input' ).prop( 'disabled', true ).prop( 'checked', false );
 		}
 	});
 
