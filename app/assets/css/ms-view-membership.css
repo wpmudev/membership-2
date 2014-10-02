@@ -26,31 +26,31 @@
 	margin: 1em 0;
 }
 /* url group tab */
-#url-test-results-wrapper { 
-	margin: 10px 0; 
-	border: 1px dotted #ddd; 
+#url-test-results-wrapper {
+	margin: 10px 0;
+	border: 1px dotted #ddd;
 }
-#url-test-results-wrapper div { 
-	border: 1px dotted #ddd; 
-	padding: 10px; 
+#url-test-results-wrapper div {
+	border: 1px dotted #ddd;
+	padding: 10px;
 }
 #url-test-results-wrapper div:last-child {
-	border-bottom: 0; 
+	border-bottom: 0;
 }
 #url-test-results-wrapper span {
 	float: right;
 }
 .ms-rule-valid {
-	color: green; 
+	color: green;
 	font-weight: bold;
 }
 .ms-rule-invalid {
-	color: red; 
+	color: red;
 }
 /* choose membership */
 .ms-type-wrapper{
 	position: relative;
-	
+
 }
 .ms-name-wrapper{
 	clear: both;
@@ -64,49 +64,11 @@
 	width: 45%;
 	height: 7em;
 }
-.ms-chose-type {
-	float: left;
-    margin: 1%;
-    width: 20%;
-	padding: 80px 20px 20px 0;
-	background-color: transparent;
-	outline: none;
-	position: relative;
-}
-.ms-chose-type:before {
-	content:'';
-	background:url(../images/membership_sprite.png);
-	background:url(../images/membership_sprite.svg), none;
-	display: inline-block;
-	position: absolute;
-	left: 30%;
-	top: 0;
-	width: 80px;
-	height: 80px;
-}
-
-.ms-chose-type.ms-simple:before {
-	background-position: -29px -30px;
-}
-.ms-chose-type.ms-content_type:before {
-	background-position: -119px -20px;
-}
-.ms-chose-type.ms-tier:before {
-	background-position: -212px -18px;
-    left: 20%;
-}
-.ms-chose-type.ms-dripped:before {
-	background-position: -320px -20px;
-    left: 20%;
-}
 .ms-radio-description .ms-italic {
 	margin: 1em 0;
 }
 .ms-control-fields-wrapper {
 	clear: both;
-}
-.ms-chose-type input {
-	top: 8px;
 }
 /* Payment setup page */
 .ms-payment-wrapper{
@@ -129,7 +91,7 @@
 .ms-membership-status-wrapper {
 	width: 15em;
 	position: absolute;
-	
+
 }
 .ms-membership-status .ms-active {
 	display: none;
@@ -157,7 +119,7 @@
 }
 .ms-overview-news-wrapper td {
 	padding: 0 15px 0 0;
-} 
+}
 .ms-overview-members-wrapper {
 }
 .ms-overview-available-content-wrapper {
@@ -181,13 +143,13 @@
 }
 .ms-overview-content-box-wrapper .ms-title, .ms-tabs-title {
 	font-weight: 600;
-	margin: 5px 0;	
+	margin: 5px 0;
 }
 .ms-protection-edit-wrapper, .ms-member-edit-wrapper, .ms-news-view-wrapper{
 	margin-top: 30px;
 }
 .ms-tabs-title {
-	margin: 5px 15px;	
+	margin: 5px 15px;
 }
 
 /* setup content type */
@@ -197,7 +159,7 @@
 }
 #content_type_name, #submit_content_type {
 	display: inline-block;
-	margin: 10px 5px 10px 0;	
+	margin: 10px 5px 10px 0;
 }
 
 /* setup ms tier */
@@ -207,7 +169,7 @@
 }
 #tier_name, #submit_tier {
 	display: inline-block;
-	margin: 10px 5px 10px 0;	
+	margin: 10px 5px 10px 0;
 }
 
 /* Setup Dripped Page */
@@ -218,7 +180,7 @@
 }
 .ms-period-desc {
 	font-size: 14px;
-	font-weight: bold;	
+	font-weight: bold;
 }
 .ms-period-desc-wrapper {
 	display:inline-block;

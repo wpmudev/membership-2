@@ -1,6 +1,4 @@
-/*! Protected Content - v1.0.0
- * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2014; * Licensed GPLv2+ */
+/*global jQuery:false */
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
@@ -22,11 +20,11 @@ jQuery( document ).ready(function() {
 	jQuery( 'input[name="type"]' ).click( function() {
 		if( jQuery.inArray( jQuery( this ).val(), ms_data.ms_private_types ) > -1 ) {
 			el_private.removeClass( 'disabled' );
-			el_private.find( 'input' ).prop( 'disabled', false );
+			el_private.find( 'inpup' ).prop( 'disabled', false );
 		}
 		else {
 			el_private.addClass( 'disabled' );
-			el_private.find( 'input' ).prop( 'disabled', true );
+			el_private.find( 'inpup' ).prop( 'disabled', true );
 		}
 	});
 

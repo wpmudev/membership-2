@@ -220,10 +220,10 @@ class MS_Helper_Html extends MS_Helper {
 					$checked = checked( $value, $key, false );
 					$radio_desc = '';
 					if( ! empty( $item_desc ) ) {
-						$radio_desc = sprintf( '<div class="ms-radio-description">%1$s</div>', $item_desc );
+						$radio_desc = sprintf( '<div class="ms-input-description"><p>%1$s</p></div>', $item_desc );
 					}
 					printf(
-						'<div class="ms-radio-input-wrapper %1$s ms-%2$s"><label><input class="ms-field-input ms-radio %1$s" type="radio" name="%3$s" id="%4$s_%2$s" value="%2$s" %5$s />%6$s %7$s</label></div>',
+						'<div class="ms-radio-input-wrapper %1$s ms-%2$s"><label class="ms-field-input-label"><input class="ms-field-input ms-radio" type="radio" name="%3$s" id="%4$s_%2$s" value="%2$s" %5$s /><div class="ms-radio-caption">%6$s</div>%7$s</label></div>',
 						esc_attr( $class ),
 						esc_attr( $key ),
 						esc_attr( $name ),
@@ -243,20 +243,20 @@ class MS_Helper_Html extends MS_Helper {
 
 				$item_desc = '';
 				if( ! empty( $desc ) ) {
-					$item_desc = sprintf( '<div class="ms-field-description">%1$s</div>', $desc );
+					$item_desc = sprintf( '<div class="ms-field-description"><p>%1$s</p></div>', $desc );
 				}
 
 				$item_label = '';
 				if ( empty( $field_options['checkbox_position'] ) ||  'left' == $field_options['checkbox_position'] ) {
 					$item_label = sprintf(
-						'<span class="ms-label-checkbox">%1$s %2$s</span>',
+						'<div class="ms-checkbox-caption">%1$s %2$s</div>',
 						$title,
 						$tooltip
 					);
 				}
 
 				printf(
-					'<label class="ms-field-checkbox-label ms-field-input-label"><input id="%1$s" class="ms-field-input ms-field-checkbox %2$s" type="checkbox" name="%3$s" value="1" %4$s />%5$s %6$s</label>',
+					'<label class="ms-checkbox-wrapper ms-field-input-label"><input id="%1$s" class="ms-field-input ms-checkbox %2$s" type="checkbox" name="%3$s" value="1" %4$s />%5$s %6$s</label>',
 					esc_attr( $id ),
 					esc_attr( $class ),
 					esc_attr( $name ),
