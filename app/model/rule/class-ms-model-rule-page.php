@@ -48,7 +48,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		do_action( 'ms_model_rule_page_protect_content', $ms_relationship, $this );
 		
-		$this->start_date = $membership_relationship->start_date;
+		$this->start_date = $ms_relationship->start_date;
 		$this->add_filter( 'get_pages', 'protect_pages', 99 );
 	}
 	
