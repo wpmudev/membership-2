@@ -80,6 +80,9 @@
 .ms-form-element {
 	margin: 1em;
 }
+.ms-form-element label {
+	display: inline;
+}
 .ms-form-element span {
 	display: inline;
 }
