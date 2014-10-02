@@ -132,7 +132,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		return $content;
 	}
 	
-	public function count_rules() {
+	public function count_rules( $has_access_only = true ) {
 		$count = 0;
 		$count = count( $this->rule_value );
 		return apply_filters( 'ms_model_rule_comment_count_rules', $count );
