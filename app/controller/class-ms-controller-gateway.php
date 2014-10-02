@@ -359,6 +359,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				/** If invoice is successfully paid, redirect to welcome page */
 				if( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
 					$url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_WELCOME, false, true );
+					$url = add_query_arg( array( 'ms_relationship_id' => $ms_relationship->id ), $url );
 					wp_safe_redirect( $url );
 					exit;
 				}

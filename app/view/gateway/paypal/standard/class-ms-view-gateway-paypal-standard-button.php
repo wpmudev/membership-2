@@ -47,6 +47,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$regular_invoice = null;
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		
 		$fields = array(
 				'_wpnonce' => array(
@@ -92,12 +93,13 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 				'return' => array(
 						'id' => 'return',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME ) ),
+						'value' => add_query_arg( array( 'ms_relationship_id' => $ms_relationship->id ),
+								$settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_WELCOME, false, true ) ),
 				),
 				'cancel_return' => array(
 						'id' => 'cancel_return',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) ),
+						'value' => $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ),
 				),
 				'notify_url' => array(
 						'id' => 'notify_url',
