@@ -566,7 +566,6 @@ class MS_Controller_Gateway extends MS_Controller {
 		switch( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
 				if( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
-					MS_Helper_Debug::log("YEAH $gateway_id");
 					wp_enqueue_style('jquery-chosen');
 					
 					wp_enqueue_script('jquery-chosen');
