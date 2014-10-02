@@ -208,6 +208,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	
 		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
+		$membership = $ms_relationship->get_membership();
+		
 		switch( $invoice->status ) {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;
@@ -238,13 +240,19 @@ class MS_Model_Gateway extends MS_Model_Option {
 						$move_from->save();
 					}
 				}
-				
+				/* The trial period info gets updated after MS_Model_Membership_Relationship::config_period() */ 
+				$trial_period = $ms_relationship->is_trial_eligible();
 				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $invoice->invoice_number + 1 );
 				$member->active = true;
 				$ms_relationship->config_period();
 				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
+				
 				/** Generate next invoice */
-				MS_Model_Invoice::get_current_invoice( $ms_relationship );
+				if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $trial_period ) {
+					$next_invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+					$next_invoice->gateway_id = $this->id;
+					$next_invoice->save();
+				}
 				break;
 			case MS_Model_Invoice::STATUS_FAILED:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
