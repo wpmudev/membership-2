@@ -97,11 +97,11 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				/** User topic */
 				self::TYPE_MS_REGISTERED => array( 
 						'topic' => self::TOPIC_USER,
-						'desc' => __( 'User has registered.', MS_TEXT_DOMAIN ), 
+						'desc' => __( 'Has registered.', MS_TEXT_DOMAIN ), 
 				),
 				self::TYPE_UPDATED_INFO => array( 
 						'topic' => self::TOPIC_USER,
-						'desc' => __( 'Member has updated billing information.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Has updated billing information.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_CREDIT_CARD_EXPIRE => array(
 						'topic' => self::TOPIC_USER,
@@ -111,11 +111,11 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				/** Membership topic */
 				self::TYPE_MS_SIGNED_UP => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Member has signed up to membership %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Has signed up to membership %s.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_MOVED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
-						'desc' => __( 'Member has moved to membership %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Has moved to membership %s.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_MS_EXPIRED => array( 
 						'topic' => self::TOPIC_MEMBERSHIP,
@@ -156,27 +156,27 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 				/** payment topic */
 				self::TYPE_PAID => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Member has paid membership %s.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s for membership %1$s - Paid.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_FAILED => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership %s has failed.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Failed.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_PENDING => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership %s is pending.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Pending.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_DENIED => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Payment for membership %s was denied.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Denied.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_BEFORE_DUE => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Invoice date for membership %s warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s before due date for membership %1$s warning.', MS_TEXT_DOMAIN ),
 				),
 				self::TYPE_PAYMENT_AFTER_DUE => array( 
 						'topic' => self::TOPIC_PAYMENT,
-						'desc' => __( 'Invoice date for membership %s is due warning date.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Invoice #%2$s after due date for membership %1$s warning.', MS_TEXT_DOMAIN ),
 				),
 		) );
 	}
@@ -306,9 +306,18 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						$event->ms_relationship_id = $ms_relationship->id;
 						$event->name = sprintf( 'user: %s, membership: %s, type: %s', $member->name, $membership->name, $type );
 						
-						$description = sprintf( self::get_description( $type ),
-								$membership->name
-						);
+						if( self::TOPIC_PAYMENT == $event->topic ) {
+							$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+							$description = sprintf( self::get_description( $type ),
+									$membership->name,
+									$invoice->id
+							);
+						}
+						else {
+							$description = sprintf( self::get_description( $type ),
+									$membership->name
+							);
+						}
 					}
 					else {
 						throw new Exception( __( 'Invalid Membership Relationship', MS_TEXT_DOMAIN ) );
