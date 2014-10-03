@@ -2,8 +2,6 @@
 
 class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 
-	protected $fields = array();
-	
 	protected $data;
 	
 	public function to_html() {
@@ -249,7 +247,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		$fields['modify'] = array(
 				'id' => 'modify',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => empty( $move_from_id ) ? 0 : 2,
+				'value' => ( ! empty( $move_from_id ) && MS_Model_Membership::TYPE_TIER == $membership->type ) ? 2 : 0,
 		);
 			
 		if( $gateway->is_live_mode() ) {
