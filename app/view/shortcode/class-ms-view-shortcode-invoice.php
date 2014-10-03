@@ -65,7 +65,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 								<?php _e( 'Description', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class='ms-desc-column' colspan='2'>
-									<span class="ms-membership-description"><?php echo $invoice->title; ?></span>
+									<span class="ms-membership-description"><?php echo $invoice->description; ?></span>
 								</td>
 							</tr>
 						<?php endif;?>
