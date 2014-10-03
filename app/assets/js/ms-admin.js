@@ -4,8 +4,23 @@
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
+/*global ms_functions:false */
 
-jQuery( document ).ready(function() {
+window.ms_init = window.ms_init || {};
+
+jQuery(function() {
+	var callback = ms_data.ms_init;
+	if ( undefined !== callback && undefined !== window.ms_init[callback] ) {
+		window.ms_init[callback]();
+	}
+});
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_membership_choose_type = function init () {
 	var el_private = jQuery( '.ms-private-wrapper' ),
 		ms_pointer = ms_data.ms_pointer;
 
@@ -31,6 +46,15 @@ jQuery( document ).ready(function() {
 	});
 
 	jQuery( 'input[name="type"]' ).first().click();
+
+	// Cancel the wizard.
+	jQuery( '#cancel' ).click( function() {
+		var me = jQuery( this );
+
+		// Simply reload the page after the setting has been changed.
+		me.on( 'ms-ajax-updated', function() { window.location = window.location; } );
+		ms_functions.ajax_update( me );
+	});
 
 	if( ! ms_pointer.hide_wizard_pointer ) {
 		jQuery( '#adminmenu li' ).find( 'a[href="admin.php?page=protected-content-setup"]' ).pointer({
@@ -59,4 +83,4 @@ jQuery( document ).ready(function() {
 			}
 		}).pointer( 'open' );
 	}
-});
+};

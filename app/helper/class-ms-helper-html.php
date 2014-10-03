@@ -277,11 +277,12 @@ class MS_Helper_Html extends MS_Helper {
 
 			case self::INPUT_TYPE_BUTTON:
 				printf(
-					'<button class="ms-field-input button %1$s" type="button" id="%2$s" name="%3$s">%4$s</button>',
+					'<button class="ms-field-input button %1$s" type="button" id="%2$s" name="%3$s" %5$s>%4$s</button>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
-					$value
+					$value,
+					$data_ms
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
@@ -289,11 +290,12 @@ class MS_Helper_Html extends MS_Helper {
 
 			case self::INPUT_TYPE_SUBMIT:
 				printf(
-					'<button class="ms-field-input ms-submit button-primary %1$s" type="submit" id="%2$s" name="%3$s">%4$s</button>',
+					'<button class="ms-field-input ms-submit button-primary %1$s" type="submit" id="%2$s" name="%3$s" %5$s>%4$s</button>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
-					$value
+					$value,
+					$data_ms
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
@@ -301,12 +303,13 @@ class MS_Helper_Html extends MS_Helper {
 
 			case self::INPUT_TYPE_IMAGE:
 				printf(
-					'<input type="image" class="ms-field-input ms-input-image %1$s" id="%2$s" name="%3$s" border="0" src="%4$s" alt="%5$s" />',
+					'<input type="image" class="ms-field-input ms-input-image %1$s" id="%2$s" name="%3$s" border="0" src="%4$s" alt="%5$s" %6$s/>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
 					esc_url( $value ),
-					esc_attr( $alt )
+					esc_attr( $alt ),
+					$data_ms
 				);
 
 				self::html_element_hint( $title, $tooltip_output );

@@ -40,6 +40,10 @@
   border: 0;
   border-top: 1px solid #E5E5E5;
 }
+.ms-wrap .ms-hidden {
+  display: none;
+  visibility: hidden;
+}
 
 /* Box styles */
 .ms-wrap .ms-settings {
@@ -152,9 +156,13 @@
   font-size: 0.9em;
   font-weight: normal;
 }
-.ms-wrap .ms-field-input,
-.ms-wrap .ms-field-input.button {
-  margin: 0.5em 0;
+.ms-wrap .ms-field-input {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.ms-wrap .button,
+.ms-wrap .button-primary {
+  margin-right: .5em;
 }
 .ms-wrap .ms-field-container {
   margin: 10px 0;
@@ -219,6 +227,7 @@
 .ms-wrap .ms-private-wrapper.disabled * {
   color: #999;
   opacity: .7;
+  cursor: default;
 }
 .ms-wrap .ms-control-fields-wrapper {
   clear: both;

@@ -12,9 +12,14 @@
 		font-weight: normal;
 	}
 
-	.ms-field-input,
-	.ms-field-input.button {
-		margin: 0.5em 0;
+	.ms-field-input {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	.button,
+	.button-primary {
+		margin-right: .5em;
 	}
 
 	.ms-field-container {

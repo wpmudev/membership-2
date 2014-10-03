@@ -2,8 +2,11 @@
 module.exports = function( grunt ) {
 	var paths = {
 		js_files_concat: {
-			'app/assets/js/select2.js': ['app/assets/js/vendors/select2.js'],
-			'app/assets/js/ms-view-membership-choose-type.js': ['app/assets/js/src/ms-view-membership-choose-type.js']
+			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js'],
+			'app/assets/js/ms-admin.js': [
+				'app/assets/js/src/ms-admin.js',
+				'app/assets/js/src/ms-view-membership-choose-type.js'
+			]
 		},
 
 		css_files_compile: {

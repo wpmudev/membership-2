@@ -1,9 +1,9 @@
 /** Global functions */
 
 var ms_functions = {
-	data: [], 
-	save_obj_selector: '.ms-save-text-wrapper', 
-	processing_class: 'ms-processing', 
+	data: [],
+	save_obj_selector: '.ms-save-text-wrapper',
+	processing_class: 'ms-processing',
 	init_class: 'ms-init',
 	radio_slider_on_class: 'on',
 	value: 0,
@@ -25,7 +25,7 @@ var ms_functions = {
 			else {
 				data.value = jQuery( obj ).val();
 			}
-						
+
 			jQuery.post( ajaxurl, data, function( response ) {
 				jQuery( ms_functions.save_obj_selector ).removeClass( ms_functions.processing_class );
 				jQuery( obj ).trigger( 'ms-ajax-updated', data );
@@ -33,20 +33,20 @@ var ms_functions = {
 		}
 	},
 	radio_slider_ajax_update: function( obj ) {
-		
+
 		if( ! jQuery( obj ).hasClass( this.processing_class ) ) {
 			jQuery( obj ).addClass( this.processing_class );
 			jQuery( this.save_obj_selector ).addClass( this.processing_class );
 			jQuery( this.save_obj_selector ).removeClass( this.init_class );
 			if( jQuery( obj ).hasClass( this.radio_slider_on_class ) ) {
-	            jQuery( obj ).removeClass( this.radio_slider_on_class );
-	            value = 0;
-	        } 
-	        else { 
-	            jQuery( obj ).addClass( this.radio_slider_on_class );
-	            value = 1;
-	        }
-			
+				jQuery( obj ).removeClass( this.radio_slider_on_class );
+				value = 0;
+			}
+			else {
+				jQuery( obj ).addClass( this.radio_slider_on_class );
+				value = 1;
+			}
+
 			data = jQuery( obj ).children( '.ms-toggle' ).data( 'ms' );
 			if( null != data ) {
 				data.value = value;
@@ -68,5 +68,5 @@ jQuery( document ).ready( function( $ ) {
 	$( '.chosen-select' ).chosen({ disable_search_threshold: 5 });
 //	$( '.chosen-select.ms-ajax-update' ).chosen().change( function() { ms_functions.ajax_update( this ) } );
 	$( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() { ms_functions.ajax_update( this ) } );
-	
+
 });
