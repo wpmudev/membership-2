@@ -342,7 +342,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style( 'font-awesome', $plugin_url. 'app/assets/css/font-awesome.min.css', $version );
 		wp_enqueue_style( 'font-awesome' );
 
-		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/chosen.css', null, $version );
+		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/select2.css', null, $version );
 	}
 
 	/**
@@ -364,7 +364,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style( 'membership-shortcode', $plugin_url. 'app/assets/css/ms-shortcode.css', $version );
 		wp_enqueue_style( 'membership-shortcode' );
 
-		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/chosen.css', null, $version );
+		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/select2.css', null, $version );
 	}
 
 	/**
@@ -378,7 +378,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 
-		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/select2.js', array( 'jquery' ), $version );
 
 		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_register_script( 'ms-functions', $plugin_url. 'app/assets/js/ms-functions.js', array( 'jquery', 'jquery-chosen'), $version );
@@ -409,6 +409,6 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		wp_register_script( 'ms-view-frontend-profile', $plugin_url. 'app/assets/js/ms-view-frontend-profile.js', array( 'jquery-validate' ), $version );
 
-		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/chosen.jquery.js', array( 'jquery' ), $version );
+		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/select2.js', array( 'jquery' ), $version );
 	}
 }

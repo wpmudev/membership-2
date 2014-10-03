@@ -1,5 +1,5 @@
 jQuery( document ).ready(function( $ ) {
-	$( '.chosen-select' ).chosen();
+	$( '.chosen-select' ).select2( ms_functions.chosen_options );
 	if( $( '#ms-authorize-cim-profiles-wrapper' ).is(':visible') ) {
 		$( 'input[name="profile"]').change( function() {
 			console.log("djaos:" + $( this ).val());
@@ -12,10 +12,10 @@ jQuery( document ).ready(function( $ ) {
 				$( '#ms-authorize-card-wrapper' ).hide();
 			}
 		});
-		
+
 		$( 'input[name="profile"]').first().change();
 	}
-	
+
 	$('#ms-authorize-extra-form').validate({
 			onkeyup: false,
 			errorClass: 'ms-validation-error',

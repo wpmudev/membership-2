@@ -213,6 +213,46 @@
   font-weight: 500;
 }
 
+/* Select2 */
+.ms-select2.select2-container {
+  margin-right: .5em;
+}
+.ms-select2.select2-container .select2-choice .select2-arrow {
+  border: 0;
+  background: transparent;
+}
+.ms-select2.select2-container .select2-choice {
+  height: 23px;
+  line-height: 23px;
+  font-size: 14px;
+}
+.ms-select2 .select2-search {
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+.ms-select2 .select2-results {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+.ms-select2 .select2-results .select2-result {
+  margin: 0;
+}
+.ms-select2 .select2-results .select2-highlighted {
+  background: #F4F4F4;
+  color: #000;
+}
+.ms-select2 .select2-results .select2-match {
+  text-decoration: none;
+  background: #77C9FF;
+  color: #FFF;
+  border-radius: 3px;
+  font-weight: 100;
+}
+.ms-select2 .select2-results .select2-match:empty {
+  display: none;
+}
+
 /**
  * Special styles used on "Membership" pages
  */

@@ -108,9 +108,6 @@
 	border-bottom: 1px solid #eeeeee;
 	margin: 15px 0;
 }
-.chosen-container {
-	margin: 0.5em 0;
-}
 
 /** Member search */
 #member-search-box {
@@ -276,11 +273,6 @@ table.widefat {
 textarea.ms-field-input {
 	min-width: 80%;
 	display: block;
-}
-
-/* SETTING: PAGES */
-.ms-create-page {
-	margin: 0.5em 0 1em 0.5em !important;
 }
 
 /* SETTINGS GATEWAY */

@@ -14,6 +14,13 @@ window.ms_functions = {
 	init_class: 'ms-init',
 	radio_slider_on_class: 'on',
 	value: 0,
+	chosen_options: {
+		minimumResultsForSearch: 6,
+		width: 'resolve',
+		dropdownAutoWidth: true,
+		dropdownCssClass: 'ms-select2',
+		containerCssClass: 'ms-select2'
+	},
 
 	ajax_update: function( obj ) {
 		var data,
@@ -91,9 +98,7 @@ jQuery( document ).ready( function() {
 		fn.radio_slider_ajax_update( this );
 	});
 
-	jQuery( '.chosen-select' ).chosen({
-		disable_search_threshold: 5
-	});
+	jQuery( '.chosen-select' ).select2( fn.chosen_options );
 
 	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() {
 		fn.ajax_update( this );
