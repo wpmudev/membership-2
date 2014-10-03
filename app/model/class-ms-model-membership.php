@@ -1213,8 +1213,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function __set( $property, $value ) {
 		
-		do_action( 'ms_model_membership__set', $property, $value, $this );
-		
 		if( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'name':
@@ -1293,6 +1291,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						
 			}
 		}
+		
+		do_action( 'ms_model_membership__set_after', $property, $value, $this );
 	}
 
 	/**

@@ -20,85 +20,173 @@
  *
 */
 
+/**
+ * Membership Relationship model.
+ *
+ * Persisted by parent class MS_Model_Custom_Post_Type.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	
+	/**
+	 * Model custom post type.
+	 *
+	 * Both static and class property are used to handle php 5.2 limitations.
+	 *
+	 * @since 1.0.0
+	 * @var string $POST_TYPE
+	 */
 	public static $POST_TYPE = 'ms_relationship';
-	
 	public $post_type = 'ms_relationship';
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Membership Relationship Status constants.
+	 *
+	 * @since 1.0.0
+	 * @see $status property.
+	 * @var string $status The status
+	 */
 	const STATUS_PENDING = 'pending';
-	
 	const STATUS_ACTIVE = 'active';
-	
 	const STATUS_TRIAL = 'trial';
-	
 	const STATUS_TRIAL_EXPIRED = 'trial_expired';
-
 	const STATUS_EXPIRED = 'expired';
-	
 	const STATUS_DEACTIVATED = 'deactivated';
-	
 	const STATUS_CANCELED = 'canceled';
 	
 	/**
 	 * ID of the model object.
 	 *
-	 * @since 4.0.0
+	 * Saved as WP post ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
 	 */
 	protected $id;
 	
 	/**
-	 * Model name.
+	 * Membership Relationship name.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @var string $name
 	 */
 	protected $name;
-	
+		
+	/**
+	 * The Membership ID.
+	 *
+	 * @since 1.0.0
+	 * @var string $membership_id
+	 */
 	protected $membership_id;
 	
+	/**
+	 * The Membership ID.
+	 *
+	 * @since 1.0.0
+	 * @var string $membership_id
+	 */
 	protected $user_id;
 	
+	/**
+	 * The Gateway ID.
+	 *
+	 * The gateway used to make payments.
+	 * 
+	 * @since 1.0.0
+	 * @var string $gateway_id
+	 */
 	protected $gateway_id;
 	
+	/**
+	 * The start date of the membership relationship.
+	 *
+	 * @since 1.0.0
+	 * @var string $start_date
+	 */
 	protected $start_date;
 	
+	/**
+	 * The expire date of the membership relationship.
+	 *
+	 * @since 1.0.0
+	 * @var string $expire_date
+	 */
 	protected $expire_date;
 		
+	/**
+	 * The trial expire date of the membership relationship.
+	 *
+	 * @since 1.0.0
+	 * @var string $trial_expire_date
+	 */
 	protected $trial_expire_date;
 	
+	/**
+	 * Trial period completed flag.
+	 *
+	 * Indicates if already used a trial period and can't have another trial period.
+	 * 
+	 * @since 1.0.0
+	 * @var string $trial_period_completed
+	 */
 	protected $trial_period_completed;
 	
+	/**
+	 * The status of the membership relationship.
+	 *
+	 * @since 1.0.0
+	 * @var string $status
+	 */
 	protected $status;
 	
 	/**
 	 * Current invoice number.
 	 * 
+	 * @since 1.0.0 
 	 * @var $current_invoice_number
 	 */
 	protected $current_invoice_number = 1;
 	
+	/**
+	 * The moving/change/downgrade/upgrade from membership ID.
+	 *
+	 * @since 1.0.0
+	 * @var string $move_from_id
+	 */
 	protected $move_from_id;
 	
+	/**
+	 * The related membership model object.
+	 *
+	 * @since 1.0.0
+	 * @var MS_Model_Membership $membership
+	 */
 	private $membership;
 	
 	/**
-	 * Don't save theses fields to usermeta 
+	 * Don't persist this fields. 
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @var string[] The fields to ignore when persisting.
 	 */
 	public $ignore_fields = array( 'membership', 'actions', 'filters', 'ignore_fields', 'post_type' );
 	
-	
 	/**
-	 * Return existing status types.
+	 * Return existing status types and names.
 	 * 
-	 * @since 4.0
-	 * @return array of status 
+	 * @since 1.0.0
+	 * @return array{
+	 * 		Return array of ( $type => name );
+	 * 		@type string $type The status type.
+	 * 		@type string $name The status name.
+	 * }
 	 */
 	public static function get_status_types() {
-		return apply_filters( 'ms_model_membership_relationship_get_status_types', array(
+		$status_types = array(
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
 				self::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
 				self::STATUS_TRIAL => __( 'Trial', MS_TEXT_DOMAIN ),
@@ -106,7 +194,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				self::STATUS_EXPIRED => __( 'Expired', MS_TEXT_DOMAIN ),
 				self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
 				self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
-		));
+		);
+		
+		return apply_filters( 'ms_model_membership_relationship_get_status_types', $status_types );
 	}
 	
 	/**
@@ -115,78 +205,81 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Search for existing relationship (unique object), creating if not exists.
 	 * Set initial status. 
 	 * 
-	 * @since 4.0
+	 * @since 1.0.0
 	 * @return MS_Model_Membership_Relationship The created relationship. 
 	 */
 	public static function create_ms_relationship( $membership_id = 0, $user_id = 0, $gateway_id = 'admin', $move_from_id = 0 ) {
-		if( ! MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			return null;
-		}
 		
-		/** Try to reuse existing db record to keep history. */
-		$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
+		do_action( 'ms_model_membership_relationship_create_ms_relationship_before', $membership_id, $user_id, $gateway_id, $move_from_id );
 		
-		/** Not found, create a new one. */
-		if( empty( $ms_relationship ) ) {
-			$ms_relationship = new self();
-			$ms_relationship->membership_id = $membership_id;
-			$ms_relationship->user_id = $user_id;
-			$ms_relationship->status = self::STATUS_PENDING;
-		}
+		$ms_relationship = null;
 		
-		/** Always update these fields. */
-		$ms_relationship->move_from_id = $move_from_id;
-		$ms_relationship->gateway_id = $gateway_id;
-		
-		/** Set initial state. */
-		switch( $ms_relationship->status ) {
-			/**
-			 * The invoice/transaction history is keep (using the membership_relationship_id ).
-			 */
-			case self::STATUS_DEACTIVATED:
-// 				$ms_relationship->current_invoice_number = 1;
-				$ms_relationship->status = self::STATUS_PENDING;
-				
-			/** Initial status */
-			default:
-			case self::STATUS_PENDING:
-				$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
-				$ms_relationship->description = $ms_relationship->name;
-				$ms_relationship->set_start_date();
-				$ms_relationship->trial_period_completed = false;
-				break;
-			case self::STATUS_TRIAL:
-			case self::STATUS_TRIAL_EXPIRED:
-			case self::STATUS_ACTIVE:
-			case self::STATUS_EXPIRED:
-			case self::STATUS_CANCELED:
-				/** Once a member or have tried the membership, not eligible to another trial period, unless the relationship is permanetly deleted. */
-				$ms_relationship->trial_period_completed = true;
-				break;
-		}
-		
-		if( 'admin' == $gateway_id ) {
-			$ms_relationship->set_status( self::STATUS_ACTIVE );
-			$ms_relationship->config_period();
-		}
-		else {
-			$ms_relationship->get_status();
-		}
-		$ms_relationship->save();
+		if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 
-		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship );
+			/** Try to reuse existing db record to keep history. */
+			$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
+			
+			/** Not found, create a new one. */
+			if( empty( $ms_relationship ) ) {
+				$ms_relationship = MS_Factory::create( 'MS_Model_Membership_Relationship' );
+				$ms_relationship->membership_id = $membership_id;
+				$ms_relationship->user_id = $user_id;
+				$ms_relationship->status = self::STATUS_PENDING;
+			}
+			
+			/** Always update these fields. */
+			$ms_relationship->move_from_id = $move_from_id;
+			$ms_relationship->gateway_id = $gateway_id;
+			
+			/** Set initial state. */
+			switch( $ms_relationship->status ) {
+				/**
+				 * The invoice/transaction history is keep (using the membership_relationship_id ).
+				 */
+				case self::STATUS_DEACTIVATED:
+					$ms_relationship->status = self::STATUS_PENDING;
+					
+				/** Initial status */
+				default:
+				case self::STATUS_PENDING:
+					$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
+					$ms_relationship->description = $ms_relationship->name;
+					$ms_relationship->set_start_date();
+					$ms_relationship->trial_period_completed = false;
+					break;
+				case self::STATUS_TRIAL:
+				case self::STATUS_TRIAL_EXPIRED:
+				case self::STATUS_ACTIVE:
+				case self::STATUS_EXPIRED:
+				case self::STATUS_CANCELED:
+					/** Once a member or have tried the membership, not eligible to another trial period, unless the relationship is permanetly deleted. */
+					$ms_relationship->trial_period_completed = true;
+					break;
+			}
+			
+			if( 'admin' == $gateway_id ) {
+				$ms_relationship->set_status( self::STATUS_ACTIVE );
+				$ms_relationship->config_period();
+			}
+			else {
+				/* Force status calculation. */
+				$ms_relationship->get_status();
+			}
+			$ms_relationship->save();
+		}
+		
+		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship, $membership_id, $user_id, $gateway_id, $move_from_id );
 	}
 	
 	/**
 	 * Cancel membership.
 	 *
-	 * @since 4.0.0
-	 * 
-	 * @param optional bool $generate_event Defines if cancel events are generated.
+	 * @since 1.0.0
+	 * @param bool $generate_event Optional. Defines if cancel events are generated.
 	 */
 	public function cancel_membership( $generate_event = true ) {
 	
-		do_action( 'ms_model_membership_relationship_cancel_membership', $this, $generate_event );
+		do_action( 'ms_model_membership_relationship_cancel_membership_before', $this, $generate_event );
 	
 		try {
 			/** Canceling in trial period -> change the expired date. */
@@ -211,6 +304,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
 		}
 	
+		do_action( 'ms_model_membership_relationship_cancel_membership_after', $this, $generate_event );
 	}
 	
 	/**
@@ -218,13 +312,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Cancel membership and move to deactivated state.
 	 *
-	 * @since 4.0.0
-	 * 
-	 * @param optional bool $generate_event Defines if cancel events are generated.
+	 * @since 1.0.0
+	 * @param bool $generate_event Optional. Defines if cancel events are generated.
 	 */
 	public function deactivate_membership( $generate_event = true ) {
 	
-		do_action( 'ms_model_membership_relationship_deactivate_membership', $this, $generate_event );
+		do_action( 'ms_model_membership_relationship_deactivate_membership_before', $this, $generate_event );
 	
 		try {
 			$this->cancel_membership( false );
@@ -235,35 +328,42 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
 			}
 		}
-		catch (Exception $e) {
+		catch( Exception $e ) {
 				
 			MS_Helper_Debug::log( '[Error deactivating membership]: '. $e->getMessage() );
 		}
+		
+		do_action( 'ms_model_membership_relationship_deactivate_membership_after', $this, $generate_event );
 	}	
 	
 	/**
 	 * Save model.
 	 * 
-	 * @since 4.0
+	 * Only saves if is not admin user and not a visitor.
+	 * Don't save visitor memberships/protected content (auto assigned).
 	 * 
-	 * Only saves if is not admin user and not visitor.
-	 * Don't save visitor and default memberships (auto assigned). 
+	 * @since 1.0.0
 	 */
 	public function save() {
+		do_action( 'ms_model_membership_relationship_save_before', $this );
+		
 		if( ! empty( $this->user_id ) && ! MS_Model_Member::is_admin_user( $this->user_id ) ) {
 			$membership = $this->get_membership();
 			if( ! $membership->visitor_membership ) {
 				parent::save();
 			}
 		}
+		
+		do_action( 'ms_model_membership_relationship_after', $this );
 	}
 	
 	/**
 	 * Retrieve membership relationships.
 	 * 
-	 * @since 4.0
-	 * 
-	 * @return MS_Model_Membership_Relationship[] 
+	 * @since 1.0.0
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership_Relationship[] The array of membership relationships.
 	 */
 	public static function get_membership_relationships( $args = null ) {
 		
@@ -284,31 +384,31 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				}
 			}
 		}
+		
 		return apply_filters( 'ms_model_membership_relationship_get_membership_relationships', $ms_relationships, $args );
 	}
 	
 	/**
 	 * Retrieve membership relationship count.
 	 * 
-	 * @since 4.0
-	 * 
-	 * @param array $args
-	 * @return number The found count.
+	 * @since 1.0.0
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The membership relationship count.
 	 */
 	public static function get_membership_relationship_count( $args = null ) {
 		
 		$args = apply_filters( 'ms_model_membership_relationship_get_membership_relationship_count_args', self::get_query_args( $args ) );
-		
 		$query = new WP_Query( $args );
-
-		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship_count', $query->found_posts );
+		$count = $query->found_posts;
+		
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship_count', $count, $args );
 	}
 	
 	/**
 	 * Retrieve membership relationship.
 	 * 
-	 * @since 4.0
-	 * 
+	 * @since 1.0.0
 	 * @param int $user_id The user id 
 	 * @return int $membership_id The membership id.
 	 */
@@ -319,6 +419,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				'membership_id' => $membership_id, 
 				'status' => 'all', 
 		) ) );
+		
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
 		
@@ -327,7 +428,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post[0] );
 		}
 		
-		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship', $ms_relationship );
+		return apply_filters( 'ms_model_membership_relationship_get_membership_relationship', $ms_relationship, $args );
 	}
 	
 	/**
@@ -335,19 +436,22 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Merge received args to default ones.
 	 * 
-	 * @since 4.0
-	 * 
-	 * @param array $args 
+	 * @since 1.0.0
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The args.
 	 */
 	public static function get_query_args( $args = null ) {
-		$defaults = array(
+		
+		$defaults = apply_filters( 'ms_model_membership_relationship_get_query_args_defaults', array(
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
 				'fields' => 'ids',
-		);
+		) );
+		
 		$args = wp_parse_args( $args, $defaults );
 		
+		/* Set filter arguments*/
 		if( ! empty( $args['user_id'] ) ) {
 			$args['author'] = $args['user_id'];
 			unset( $args['user_id'] );
@@ -390,17 +494,18 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					'compare' => 'NOT IN',
 			);
 		}
-		return apply_filters( 'ms_model_membership_relationship_get_query_args', $args );
+		
+		return apply_filters( 'ms_model_membership_relationship_get_query_args', $args, $defaults );
 	}
 	
 	/**
 	 * Verify if the member can use the trial period.
 	 * 
-	 *
-	 * @since 4.0
-	 *
+	 * @since 1.0.0
+	 * @return bool True if trial eligible.
 	 */
 	public function is_trial_eligible() {
+		
 		$membership = $this->get_membership();
 		$trial_eligible_status = apply_filters( 'ms_model_membership_relationship_trial_eligible_status', array(
 				MS_Model_Membership_Relationship::STATUS_PENDING,
@@ -414,18 +519,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$eligible = true;
 		}
 		
-		return apply_filters( 'ms_model_membership_relationship_is_trial_eligible', $eligible );
+		return apply_filters( 'ms_model_membership_relationship_is_trial_eligible', $eligible, $this );
 	}
 	
 	/**
 	 * Set Membership Relationship start date.
 	 *
-	 * @since 4.0
-	 * 
 	 * Also updates trial and expire date.
-	 * @param string optional $start_date
+	 * 
+	 * @since 1.0.0
+	 * @param string $start_date Optional. The start date to set. Default will be calculated.
 	 */
 	public function set_start_date( $start_date = null ) {
+		
 		$membership = $this->get_membership();
 		$this->trial_expire_date = null;
 		
@@ -438,6 +544,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$this->start_date = MS_Helper_Period::current_date();
 		}
+		
+		$this->start_date = apply_filters( 'ms_model_membership_relationship_set_start_date', $this->start_date, $start_date, $this );
 	}
 	
 	/**
@@ -445,10 +553,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Validate to a date greater than start date.
 	 * 
-	 * @since 4.0
-	 * @param string $trial_expire_date
+	 * @since 1.0.0
+	 * @param string $trial_expire_date Optional. The trial expire date to set. Default will be calculated.
 	 */
 	public function set_trial_expire_date( $trial_expire_date = null ) {
+		
 		if( ! empty( $trial_expire_date ) && strtotime( $trial_expire_date ) >= strtotime( $this->start_date ) ) {
 			$this->trial_expire_date = $trial_expire_date;
 		}
@@ -456,6 +565,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
 		}
 		
+		$this->trial_expire_date = apply_filters( 'ms_model_membership_relationship_set_trial_start_date', $this->trial_expire_date, $trial_expire_date, $this );
 	}
 	
 	/**
@@ -463,10 +573,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Validate to a date greater than start date and trial expire date.
 
-	 * @since 4.0
-	 * @param string $trial_expire_date
+	 * @since 1.0.0
+	 * @param string $expire_date Optional. The expire date to set. Default will be calculated.
 	 */
 	public function set_expire_date( $expire_date = null ) {
+		
 		if( ! empty( $expire_date ) && strtotime( $expire_date ) >= strtotime( $this->start_date ) && 
 			( ! empty( $this->trial_expire_date) && strtotime( $expire_date ) >= strtotime( $this->trial_expire_date ) ) ) {
 			$this->expire_date = $expire_date;
@@ -475,6 +586,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->expire_date = $this->calc_expire_date( $this->start_date );
 		}
 		
+		$this->expire_date = apply_filters( 'ms_model_membership_relationship_set_expire_date', $this->expire_date, $expire_date, $this );
 	}
 	
 	/**
@@ -482,10 +594,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Based in the membership definition.
 	 * 
-	 * @param string $start_date
-	 * @return string date
+	 * @since 1.0.0
+	 * @param string $start_date Optional. The start date to calculate date from.
+	 * @return string The calculated trial expire date.
 	 */
 	public function calc_trial_expire_date( $start_date = null ) {
+		
 		$membership = $this->get_membership();
 		$trial_expire_date = null;
 		
@@ -508,7 +622,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$trial_expire_date = $start_date;
 		}
-		return apply_filters( 'ms_model_membership_relationship_calc_trial_expire_date', $trial_expire_date );
+		
+		return apply_filters( 'ms_model_membership_relationship_calc_trial_expire_date', $trial_expire_date, $start_date, $this );
 	}
 	
 	/**
@@ -516,10 +631,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Based in the membership definition
 	 * 
-	 * @param string $start_date
-	 * @return string date
+	 * @since 1.0.0
+	 * @param string $start_date Optional. The start date to calculate date from.
+	 * @return string The calculated expire date.
 	 */
 	public function calc_expire_date( $start_date = null ) {
+		
 		$membership = $this->get_membership();
 		$gateway = $this->get_gateway();
 
@@ -551,7 +668,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_relationship_calc_expire_date', $expire_date );
+		return apply_filters( 'ms_model_membership_relationship_calc_expire_date', $expire_date, $this );
 	}
 	
 	/**
@@ -559,11 +676,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * Set initial membership period or renew periods.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function config_period() {
 	
-		do_action( 'ms_model_membership_relationship_config_period', $this );
+		do_action( 'ms_model_membership_relationship_config_period_before', $this );
 	
 		switch( $this->status ) {
 			case self::STATUS_DEACTIVATED:
@@ -590,104 +707,103 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				do_action( 'ms_model_membership_relationship_config_period_for_status_' . $this->status, $this );
 				break;
 		}
-	}
-	
-	/**
-	 * Get Member model.
-	 *
-	 * @since 4.0
-	 * @return MS_Model_Member
-	 */
-	public function get_member() {
-		$member = null;
-		if( ! empty ( $this->user_id ) ) {
-			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
-		}
-		return apply_filters( 'ms_model_membership_relationship_get_member', $member );
-	}
-	
-	/**
-	 * Get Membership model.
-	 * 
-	 * @since 4.0
-	 * @return MS_Model_Membership
-	 */
-	public function get_membership() {
-		if( empty ( $this->membership->id ) ) {
-			$this->membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id ); 
-		}
-		return apply_filters( 'ms_model_membership_relationship_get_membership', $this->membership );
+		
+		do_action( 'ms_model_membership_relationship_config_period_after', $this );
 	}
 	
 	/**
 	 * Get how many days in this membership.
 	 * 
-	 * @since 4.0
-	 * @return string
+	 * @since 1.0.0
+	 * @return string The period desc.
 	 */
 	public function get_current_period() {
-		return MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->start_date );
+		
+		$period_desc = MS_Helper_Period::subtract_dates( MS_Helper_Period::current_date(), $this->start_date );
+		
+		return apply_filters( 'ms_model_membership_relationship_get_current_period', $period_desc, $this );
 	}
 	
 	/**
 	 * Get how many days until this membership trial expires.
 	 * 
-	 * @since 4.0
-	 * @return string
+	 * @since 1.0.0
+	 * @return string The period desc.
 	 */
 	public function get_remaining_trial_period() {
-		return MS_Helper_Period::subtract_dates( $this->trial_expire_date, MS_Helper_Period::current_date() );
+		
+		$period_desc = MS_Helper_Period::subtract_dates( $this->trial_expire_date, MS_Helper_Period::current_date() );
+		
+		return apply_filters( 'ms_model_membership_relationship_get_remaining_trial_period', $period_desc, $this );
 	}
 	
 	/**
 	 * Get how many days until this membership expires.
 	 * 
-	 * @since 4.0
-	 * @return string
+	 * @since 1.0.0
+	 * @return string The period desc.
 	 */
 	public function get_remaining_period() {
-		return MS_Helper_Period::subtract_dates( $this->expire_date, MS_Helper_Period::current_date() );
+		
+		$period_desc = MS_Helper_Period::subtract_dates( $this->expire_date, MS_Helper_Period::current_date() );
+		
+		return apply_filters( 'ms_model_membership_relationship_get_remaining_period', $period_desc, $this );
 	}
 	
 	/**
-	 * Set elapsed period of time of membership.
-	 * 
-	 * @since 4.0
-	 * @param int $period_unit The elapsed period unit.
-	 * @param string $period_type The elapsed period type.
+	 * Get related Member model.
+	 *
+	 * @since 1.0.0
+	 * @return MS_Model_Member The member object.
 	 */
-	public function set_elapsed_period( $period_unit, $period_type ) {
-		if( in_array( $period_type, MS_Helper_Period::get_periods() ) ) {
-			$this->start_date = MS_Helper_Period::subtract_interval( $period_unit, $period_type );
+	public function get_member() {
+	
+		$member = null;
+		
+		if( ! empty( $this->user_id ) ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 		}
+		
+		return apply_filters( 'ms_model_membership_relationship_get_member', $member );
 	}
-
+	
 	/**
-	 * Get gateway model.
+	 * Get related Membership model.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
+	 * @return MS_Model_Membership The membership model.
+	 */
+	public function get_membership() {
+	
+		if( empty ( $this->membership->id ) ) {
+			$this->membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+		}
+	
+		return apply_filters( 'ms_model_membership_relationship_get_membership', $this->membership );
+	}
+	
+	/**
+	 * Get related gateway model.
 	 *
+	 * @since 1.0.0
 	 * @return MS_Model_Gateway
 	 */
 	public function get_gateway() {
 		
-		return MS_Model_Gateway::factory( $this->gateway_id );
+		$gateway = MS_Model_Gateway::factory( $this->gateway_id ); 
+		
+		return apply_filters( 'ms_model_membership_relationship_get_gateway', $gateway );
 	}
 	
 	/**
 	 * Get payment information description.
 	 *
-	 * A more .
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 * @return boolean
+	 * @since 1.0.0
+	 * @return string The description.
 	 */
 	public function get_payment_description() {
 	
 		$currency = MS_Plugin::instance()->settings->currency;
-	
 		$membership = $this->get_membership();
 		$desc = sprintf( __( 'You will pay %s %s ', MS_TEXT_DOMAIN ), $currency, number_format( $membership->price, 2 ) );
 
@@ -719,27 +835,31 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					number_format( $membership->trial_price, 2 )
 			);
 		}
-	
-		return $desc;
+		
+		return apply_filters( 'ms_model_membership_relationship_get_payment_description', $desc );
 	}
 		
 	/**
 	 * Set membership relationship status.
 	 * 
+	 * Validates every time.
+	 * 
 	 * Check for status that need membership verification for trial, active and expired.
 	 * 
-	 * @since 4.0
-	 * @param string $status
+	 * @since 1.0.0
+	 * @param string $status The status to set.
 	 */
 	public function set_status( $status ) {
-		/** These status are not validated, and promptly assigned */
-		$allowed_status = array( 
+		
+		/* These status are not validated, and promptly assigned */
+		$allowed_status = apply_filters( 'ms_model_membership_relationship_set_status_allowed_status', array( 
 				self::STATUS_DEACTIVATED, 
 				self::STATUS_PENDING,
 				self::STATUS_CANCELED,
 				self::STATUS_TRIAL_EXPIRED,
-		);
+		) );
 		
+		/* Validate status and handle status change */
 		if( ! in_array( $status, $allowed_status ) ) {
 			$status = $this->calculate_status( $status );
 			if( MS_Model_Member::is_admin_user( $this->user_id ) ) {
@@ -752,24 +872,30 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		else {
 			$this->status = $status;
 		}
+		
+		$this->status = apply_filters( 'ms_model_membership_relationship_set_status', $this->status, $this );
 	}
 	
 	/**
 	 * Get membership relationship status.
 	 * 
-	 * Verifies start and end date of a membership and updates status if expired
+	 * Validates every time.
 	 * 
-	 * @since 4.0
+	 * Verifies start and end date of a membership and updates status if expired.
+	 * 
+	 * @since 1.0.0
+	 * @return string The current status.
  	 */
 	public function get_status() {
 
 		/** No further validations for these status */
-		$allowed_status = array(
+		$allowed_status = apply_filters( 'ms_model_membership_relationship_get_status_allowed_status', array(
 				self::STATUS_DEACTIVATED,
 				self::STATUS_PENDING,
 				self::STATUS_TRIAL_EXPIRED,
-		);
+		) );
 		
+		/* Validate current status and handle status change */
 		if( ! in_array( $this->status, $allowed_status ) ) {
 			$status = $this->calculate_status();
 			if( MS_Model_Member::is_admin_user( $this->user_id ) ) {
@@ -788,9 +914,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Calculate status for the membership verifying the start date, trial exire date and expire date.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @param string $set_status The set status to compare.
+	 * @return string The calculated status.
 	 */
 	public function calculate_status( $set_status = null ) {
+		
 		$membership = $this->get_membership();
 		$status = null;
 		if( $this->trial_expire_date > $this->start_date && strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() ) ) {
@@ -822,7 +951,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 		}
 		
-		return apply_filters( 'membership_model_membership_relationship_validate_status', $status, $this );
+		return apply_filters( 'membership_model_membership_relationship_calculate_status', $status, $this );
 	}
 	
 	/**
@@ -830,14 +959,15 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * Save news when status change.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @param string $status The status to change to.
 	 */
 	public function handle_status_change( $status ) {
 		
+		do_action( 'ms_model_membership_relationship_handle_status_change_before', $status, $this );
+				
 		if( ! empty( $this->status ) && $status != $this->status && array_key_exists( $status, self::get_status_types() ) ) {
 			
-			do_action( 'ms_model_membership_relationship_handle_status_change', $status, $this );
-				
 			/** deactivated manually or automatically after a limited expired period (or trial expired period). */
 			if( self::STATUS_DEACTIVATED == $status ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
@@ -891,10 +1021,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->save();
 		}
 		
+		do_action( 'ms_model_membership_relationship_handle_status_change_after', $status, $this );
 	}
 	
+	/**
+	 * Get status description.
+	 *
+	 * @since 1.0.0
+	 * @return string The status description.
+	 */
 	public function get_status_description() {
+		
 		$desc = '';
+		
 		switch( $this->status ) {
 			case self::STATUS_PENDING:
 				$desc = __( 'Pending payment.', MS_TEXT_DOMAIN );
@@ -921,7 +1060,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc = __( 'Memberhship deactivated.', MS_TEXT_DOMAIN );
 				break;
 		}
-		return $desc;
+		
+		return apply_filters( 'ms_model_membership_relationship_get_status_description', $desc );
 	}
 	
 	/**
@@ -930,12 +1070,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Execute actions when time/period condition are met.
 	 * E.g. change membership status, add communication to queue, create invoices.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 */
 	public function check_membership_status() {
 	
+		do_action( 'ms_model_membership_relationship_check_membership_status_before', $this );
+		
 		$comms = MS_Model_Communication::load_communications();
 		$invoice_before_days = 5;//@todo create a setting to configure this period.
 		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
@@ -946,10 +1086,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$remaining_trial_days = $this->get_remaining_trial_period();
 		
 		do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this, $remaining_days, $remaining_trial_days );
+		
 		switch( $this->get_status() ) {
 			case self::STATUS_TRIAL:
 				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-					/** Send trial end communication. */
+					
+					/* Send trial end communication. */
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
 					if( $comm->enabled ) {
 						$days = MS_Helper_Period::get_period_in_days( $comm->period );
@@ -958,28 +1100,28 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES, $this );
 						}
 					}
-					
-					$gateway = $this->get_gateway();
-					/** Check for card expiration */
-					$gateway->check_card_expiration( $this );
 				}
+				/** Check for card expiration */
+				$gateway = $this->get_gateway();
+				$gateway->check_card_expiration( $this );
 				break;
 			case self::STATUS_TRIAL_EXPIRED:
 				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+					
 					$invoice = MS_Model_Invoice::get_current_invoice( $this );
 						
-					/** Request payment to the gateway (for gateways that allows it). */
+					/* Request payment to the gateway (for gateways that allows it). */
 					$gateway = $this->get_gateway();
 					$gateway->request_payment( $this );
 	
-					/** Check for card expiration */
+					/* Check for card expiration */
 					$gateway->check_card_expiration( $this );
 					
-					/** Deactivate expired memberships after a period of time. */
+					/* Deactivate expired memberships after a period of time. */
 					if( - $remaining_trial_days > $deactivate_trial_expired_after_days ) {
 						$this->deactivate_membership();
 	
-						/** Move membership to configured membership. */
+						/* Move membership to configured membership. */
 						$membership = $this->get_membership();
 						if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
 							$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
@@ -988,7 +1130,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					}
 				}
 				break;
-				/**
+				/*
 				 * Send period end communication.
 				 * Deactivate expired memberships after $deactivate_expired_after_days.
 				 * Create invoice.
@@ -996,9 +1138,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case self::STATUS_ACTIVE:
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
+				
 				do_action( 'ms_model_plugin_check_membership_status_' . $this->status, $this );
 					
-				/** Create next invoice before expire date.*/
+				/* Create next invoice before expire date.*/
 				if( $remaining_days < $invoice_before_days ) {
 					$invoice = MS_Model_Invoice::get_next_invoice( $this );
 				}
@@ -1006,22 +1149,23 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$invoice = MS_Model_Invoice::get_current_invoice( $this );
 				}
 					
-				/** Configure communication messages.*/
-				/** Before finishes communication. */
+				/* Configure communication messages.*/
+				
+				/* Before finishes communication. */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
 				if( $days == $remaining_days ) {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $this );
 				}
-				/** After finishes communication. */
+				/* After finishes communication. */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
 				if( $remaining_days < 0 && $days == abs( $remaining_days ) ) {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
 				}
-				/** Before payment due. */
+				/* Before payment due. */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_PAYMENT_DUE ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
 				$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
@@ -1029,7 +1173,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$comm->add_to_queue( $this->id );
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE, $this );
 				}
-				/** After payment due event */
+				/* After payment due event */
 				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
 				$days = MS_Helper_Period::get_period_in_days( $comm->period );
 				$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
@@ -1038,23 +1182,22 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
 				}
 				
+				/* Check for card expiration */
 				$gateway = $this->get_gateway();
-
-				/** Check for card expiration */
 				$gateway->check_card_expiration( $this );
 				
-				/** Request payment to the gateway (for gateways that allows it) when time comes (expired). */
+				/* Request payment to the gateway (for gateways that allows it) when time comes (expired). */
 				if( $remaining_days <= 0 ) {
 					$gateway->request_payment( $this );
 					/** Refresh status after payment */
 					$remaining_days = $this->get_remaining_period();
 				}
 				
-				/** Deactivate expired memberships after a period of time. */
+				/* Deactivate expired memberships after a period of time. */
 				if( - $remaining_days > $deactivate_expired_after_days ) {
 					$this->deactivate_membership();
 
-					/** Move membership to configured membership. */
+					/* Move membership to configured membership. */
 					$membership = $this->get_membership();
 					if( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
 						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
@@ -1072,43 +1215,46 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		foreach( $comms as $comm ) {
 			$comm->save();
 		}
+		
+		do_action( 'ms_model_membership_relationship_check_membership_status_after', $this );
 	}
 	
 	/**
 	 * Returns property.
 	 *
-	 * @since 4.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
+		$value = null;
+		
 		switch( $property ) {
 			case 'status':
-				return $this->get_status();
+				$value = $this->get_status();
 				break;
 			default:
-				if ( ! property_exists( $this, $property ) ) {
+				if( ! property_exists( $this, $property ) ) {
 					MS_Helper_Debug::log( "Property doesn't exist: $property.");
 				}
-				return $this->$property;
+				$value = $this->$property;
 				break;
 		}
-	
+		
+		return apply_filters( 'ms_model_membership_relationship__get', $value, $property, $this );
 	}
 	
 	/**
 	 * Set specific property.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
+		if( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'start_date':
 					$this->set_start_date( $value );
@@ -1127,6 +1273,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_membership_relationship__set_after', $property, $value, $this );
 	}
 	
 }
