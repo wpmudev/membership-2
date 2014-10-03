@@ -21,22 +21,43 @@
 */
 
 /**
- * Membership model class.
- * 
+ * Membership model.
+ *
+ *
+ * @since 1.0
+ * @package Membership
+ * @subpackage Model
  */
 class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Model custom post type.
+	 * 
+	 * Both static and class property are used to handle php 5.2 limitations.
+	 *  
+	 * @since 1.0.0 
+	 * @var string $POST_TYPE
+	 */
 	public static $POST_TYPE = 'ms_membership';
-	
 	public $post_type = 'ms_membership';
 	
+	/**
+	 * Membership type constants.
+	 * 
+	 * @since 1.0.0
+	 * @see $type property.
+	 */
 	const TYPE_SIMPLE = 'simple';
 	const TYPE_CONTENT_TYPE = 'content_type';
 	const TYPE_TIER = 'tier';
 	const TYPE_DRIPPED = 'dripped';
 	
+	/**
+	 * Membership payment type constants.
+	 * 
+	 * @since 1.0.0
+	 * @see $payment_type property.
+	 */
 	const PAYMENT_TYPE_PERMANENT = 'permanent';
 	const PAYMENT_TYPE_FINITE = 'finite';
 	const PAYMENT_TYPE_DATE_RANGE = 'date-range';
@@ -44,68 +65,212 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * ID of the model object.
+	 * 
+	 * Maps to WP post ID.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @var int $id
 	 */
 	protected $id;
 	
 	/**
-	 * Model name.
+	 * Membership name.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * @var string $name
 	 */
 	protected $name;
 		
+	/**
+	 * Membership type.
+	 *
+	 * @since 1.0.0
+	 * @var string $type
+	 */
 	protected $type;
 	
+	/**
+	 * Membership payment type.
+	 *
+	 * @since 1.0.0
+	 * @var string $payment_type
+	 */
 	protected $payment_type;
 	
+	/**
+	 * Membership parent.
+	 * 
+	 * Zero values indicates this membership does not have a parent. 
+	 *
+	 * @since 1.0.0
+	 */
 	protected $parent_id = 0;
 	
-	/**
-	 * @deprecated  
-	 * @var unknown
-	 */
-	protected $linked_membership_ids;
 	
+	/**
+	 * Membership active status.
+	 *
+	 * @since 1.0.0
+	 * @var bool $active
+	 */
 	protected $active = false;
 	
+	/**
+	 * Membership private status.
+	 *
+	 * @since 1.0.0
+	 * @var bool $private
+	 */
 	protected $private = true;
 	
+	/**
+	 * Membership private status.
+	 *
+	 * @deprecated Use $protected_content instead
+	 * @since 1.0.0
+	 */
 	protected $visitor_membership = false;
 	
+	/**
+	 * Protected Content Membership.
+	 * 
+	 * It is the membership assigned to visitors.
+	 *
+	 * @since 1.0.0
+	 * @var bool $protected_content.
+	 */
+	protected $protected_content = true;
+	
+	/**
+	 * Membership free status.
+	 *
+	 * @since 1.0.0
+	 * @var bool $free.
+	 */
 	protected $is_free = false;
 	
+	/**
+	 * Membership price.
+	 *
+	 * @since 1.0.0
+	 * @var float $price.
+	 */
 	protected $price = 0;
 	
+	/**
+	 * Membership period for finite access.
+	 *
+	 * @since 1.0.0
+	 * @var array $period {
+	 * 		@type int $period_unit The period of time quantity. 
+	 * 		@tyep string $period_type The period type (days, weeks, months, years).	
+	 * }
+	 */
 	protected $period;
 		
+	/**
+	 * Membership payment recurring period cycle.
+	 *
+	 * @since 1.0.0
+	 * @var array $pay_cycle_period @see $period.
+	 */
 	protected $pay_cycle_period;
 		
+	/**
+	 * Membership start date for date range payment type.
+	 *
+	 * @since 1.0.0
+	 * @var string The membership start date.
+	 */
 	protected $period_date_start;
 	
+	/**
+	 * Membership end date for date range payment type.
+	 *
+	 * @since 1.0.0
+	 * @var string The membership end date. 
+	 */
 	protected $period_date_end;
-		
+
+	/**
+	 * Membership trial period enabled indicator.
+	 *
+	 * @since 1.0.0
+	 * @var bool $trial_period_enabled.
+	 */
 	protected $trial_period_enabled;
 	
+	/**
+	 * Membership trial price value.
+	 *
+	 * @since 1.0.0
+	 * @var float $trial_price.
+	 */
 	protected $trial_price = 0;
 	
+	/**
+	 * Membership trial period.
+	 *
+	 * @since 1.0.0
+	 * @var array $trial_period @see $period.
+	 */
 	protected $trial_period;
 
+	/**
+	 * Membership dripped type.
+	 *
+	 * @since 1.0.0
+	 * @var string $dripped_type The dripped type used in this membership. 
+	 * 				@see MS_Model_Rule::get_dripped_rule_types()
+	 */
 	protected $dripped_type;
 	
+	/**
+	 * Move to Membership when the current one expires.
+	 *
+	 * After current membership expire move to the indicated membership_id.
+	 * 
+	 * @since 1.0.0
+	 * @var int $on_end_membership_id.
+	 */
 	protected $on_end_membership_id;
 	
+	/**
+	 * Membership setup completed flag.
+	 *
+	 * @since 1.0.0
+	 * @var bool $is_setup_completed.
+	 */
 	protected $is_setup_completed;
 	
+	/**
+	 * Membership composite Rules.
+	 *
+	 * These are protection rules for this membership only. 
+	 * 
+	 * @since 1.0.0
+	 * @var array MS_Model_Rule[].
+	 */
 	protected $rules = array();
 	
+	/**
+	 * Set rules membership_id before saving.  
+	 * 
+	 * @since 1.0.0
+	 */
 	public function before_save() {
 		foreach( $this->rules as $rule ) {
 			$rule->membership_id = $this->id;
 		}
 	}
 	
+	/**
+	 * Merge current rules to protected content.
+	 * 
+	 * Assure the membership rules get updated whenever protected content is changed.
+	 * 
+	 * @since 1.0.0
+	 */
 	public function after_load() {
 		/** validate rules using protected content rules */
 		if( ! $this->visitor_membership ) {
@@ -113,6 +278,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 	}
 	
+	/**
+	 * Get membership types.
+	 * 
+	 * @since 1.0.0
+	 * @return array {
+	 * 		Returns array of $type => $title.
+	 * 
+	 * 		@type string $type The membership type
+	 * 		@type string $title The membership type title
+	 * }
+	 */
 	public static function get_types() {
 		return apply_filters( 'ms_model_membership_get_types', array(
 				self::TYPE_SIMPLE => __( 'Simple', MS_TEXT_DOMAIN ),
@@ -122,10 +298,23 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		) );
 	}
 
+	/**
+	 * Verify membership type validation.
+	 * 
+	 * @since 1.0.0
+	 * @param string $type The type to verify validation.
+	 * @return bool True if valid.
+	 */
 	public static function is_valid_type( $type ) {
 		return apply_filters( 'ms_model_membership_is_valid_type', array_key_exists( $type, self::get_types() ) );
 	}
 	
+	/**
+	 * Get current membership type description.
+	 * 
+	 * @since 1.0.0
+	 * @return string The membership type description.
+	 */
 	public function get_type_description() {
 		$description = array();
 		
@@ -147,6 +336,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_type_description', $description );
 	}
 	
+	/**
+	 * Get membership payment types.
+	 * 
+	 * @since 1.0.0
+	 * @return array {
+	 * 		Returns array of $type => $title.
+	 *  
+	 * 		@type string $type The membership payment type
+	 * 		@type string $title The membership payment type title
+	 * }
+	 */
 	public static function get_payment_types() {
 		return apply_filters( 'ms_model_membership_get_payment_types', array(
 				self::PAYMENT_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
@@ -156,6 +356,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		) );
 	}
 	
+	/**
+	 * Get current payment type description.
+	 *
+	 * Description to show in the admin list table.
+	 * 
+	 * @since 1.0.0
+	 * @return string The current payment type description.
+	 */
 	public function get_payment_type_desc() {
 		$desc = __( 'N/A', MS_TEXT_DOMAIN );
 		switch( $this->payment_type ) {
@@ -176,6 +384,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_payment_type_desc', $desc );	
 	}
 	
+	/**
+	 * Return Parent information.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return bool True if has parent.
+	 */
 	public function has_parent() {
 		$has_parent = false;
 		
@@ -185,6 +400,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		return apply_filters( 'ms_model_membership_has_parent', $has_parent );
 	}
+
+	/**
+	 * Get Parent Membership.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return MS_Model_Membership The parent membership or null if doesn't exist.
+	 */
 	public function get_parent() {
 		$parent = null;
 		if( $this->has_parent() ) {
@@ -193,6 +416,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_parent', $parent );
 	}
 	
+	/**
+	 * Return if current Membership can have children.
+	 *
+	 * No grand child is allowed.
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @return bool True if can have children.
+	 */
 	public function can_have_children() {
 		$can_have_children = false;
 		
@@ -204,6 +436,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this->type );
 	}
 	
+	/**
+	 * Create child membership.
+	 *
+	 * Create a child cloning the parent membership.
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @return MS_Model_Membership The child membership.
+	 */
 	public function create_child( $name ) {
 		$child = null;
 		$src = null;
@@ -226,6 +467,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_create_child', $child );
 	}
 	
+	/**
+	 * Retrieve all children Memberships.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The children memberships.
+	 */
 	public function get_children( $args = null ) {
 		$children = array();
 		
@@ -241,6 +491,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_children', $children );
 	}
 	
+	/**
+	 * Retrieve the last descendant.
+	 * 
+	 * Used to clone the last tier of tiered membership types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return MS_Model_Membership The last descendant.
+	 */
 	public function get_last_descendant() {
 		$last = null;
 		if( $this->can_have_children() ) {
@@ -256,6 +515,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_last_descendant', $last );
 	}
 	
+	/**
+	 * Retrieve the number of children of this membership.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int The children count.
+	 */
 	public function get_children_count() {
 		$children = $this->get_children();
 		$count = count( $children );
@@ -263,6 +529,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
 	}
 	
+	/**
+	 * Retrieve the private status.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool The private status.
+	 */
 	public function is_private() {
 		$private = false;
 	
@@ -273,15 +546,30 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_is_private', $private );
 	}
 	
+	/**
+	 * Verify if this membership can be a private one.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if this membership can be private.
+	 */
 	public function is_private_eligible() {
 		$is_private_eligible = false;
 		
 		if( in_array( $this->type, self::get_private_eligible_types() ) ) {
 			$is_private_eligible = true;
 		}
+		
 		return apply_filters( 'ms_model_membership_is_private_eligible', $is_private_eligible );
 	}
 	
+	/**
+	 * Get the private eligible membership types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[] The private eligible types.
+	 */
 	public static function get_private_eligible_types() {
 		/** Private memberships can only be enabled in these types */
 		$private_eligible_types = array(
@@ -291,7 +579,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types );
 	}
-		
+
+	/**
+	 * Get protection Rule Model.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string The rule model type @see MS_Model_Rule
+	 * @return MS_Model_Rule The requested rule model.
+	 */
 	public function get_rule( $rule_type ) {
 		if( isset( $this->rules[ $rule_type ] ) ) {
 			if( $this->visitor_membership ) {
@@ -312,13 +608,30 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			return $this->rules[ $rule_type ];
 		}
 	}
-		
+
+	/**
+	 * Set protection Rule Model.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string The rule model type @see MS_Model_Rule
+	 * @param MS_Model_Rule $rule The protection rule to set.
+	 */
 	public function set_rule( $rule_type, $rule ) {
 		if( MS_Model_Rule::is_valid_rule_type( $rule_type) ) {
 			$this->rules[ $rule_type ] = $rule;
 		}
 	}
 	
+	/**
+	 * Get available Memberships count.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The membership count.
+	 */
 	public static function get_membership_count( $args = null ) {
 		$args = self::get_query_args( $args );
 		
@@ -327,6 +640,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
+	/**
+	 * Get Memberships models.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args 
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
 	public static function get_memberships( $args = null ) {
 		$args = self::get_query_args( $args );
 
@@ -340,6 +662,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $memberships;
 	}
 	
+	/**
+	 * Get grouped Memberships models.
+	 *
+	 * Used in admin list table to show parent and children memberships grouped.
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
 	public static function get_grouped_memberships( $args ) {
 		/** Get parent memberships */
 		$args['post_parent'] = 0; 
@@ -369,6 +702,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_grouped_memberships', $memberships );
 	}
 	
+	/**
+	 * Get WP_Query object arguments. 
+	 *
+	 * Default search arguments for this custom post_type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array $args The parsed args.
+	 */
 	public static function get_query_args( $args = null ) {
 		$defaults = array(
 				'post_type' => self::$POST_TYPE,
@@ -390,7 +734,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 	}
 	
-	public function get_after_ms_ends_options( $args = null ) {
+	/**
+	 * Get after membership expired options.
+	 * 
+	 * Tiered membership types can downgrade to a lower tier.
+	 * Other membership types can be restricted to protected content = visitor membership.
+	 * 
+	 * @since 1.0.0
+	 * @return array {
+	 * 		Returns array of $membership_id => $description.
+	 * 		@type int $membership_id The membership Id.
+	 * 		@type string $description The expired option description.
+	 * }
+	 */
+	public function get_after_ms_ends_options() {
 		$options = array(
 				self::get_visitor_membership()->id => __( 'Restrict access to Protected Content', MS_TEXT_DOMAIN ),
 		);
@@ -416,6 +773,19 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_membership_names', $options );
 	}
 	
+	/**
+	 * Get membership names.
+	 * 
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param bool $hide_default_memberships Exclude visitor membership from the list.
+	 * @return array {
+	 * 		Returns array of $membership_id => $name
+	 * 		@type int $membership_id The membership Id.
+	 * 		@type string $name The membership name;
+	 * }
+	 */
 	public static function get_membership_names( $args = null, $hide_default_memberships = false ) {
 		$args['order'] = 'ASC';
 		$args = self::get_query_args( $args );
@@ -434,10 +804,40 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_membership_get_membership_names', $memberships );
 	}
 	
+	/**
+	 * Verify if membership is valid.
+	 *
+	 * Verify if membership was not deleted, trying to load from DB.
+	 *  
+	 * @since 1.0.0
+	 * @param int $membership_id The membership id to verify.
+	 * @return bool True if is valid.
+	 */
 	public static function is_valid_membership( $membership_id ) {
 		return ( MS_Factory::load( 'MS_Model_Membership', $membership_id )->id > 0 );
 	}
 	
+	/**
+	 * Get protected content membership.
+	 * 
+	 * It is the same as visitor membership.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return MS_Model_Membership The protected content.
+	 */
+	public static function get_protected_content() {
+		return self::get_visitor_membership();
+	}
+	
+	/**
+	 * Get membership assigned to visitors.
+	 * 
+	 * Create a new membership if visitor membership does not exist.
+	 * 
+	 * @since 1.0.0
+	 * @return MS_Model_Membership The visitor membership.
+	 */
 	public static function get_visitor_membership() {
 		$args = array(
 				'post_type' => self::$POST_TYPE,
@@ -473,8 +873,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		return $visitor_membership;
 	}
 	
+	/**
+	 * Merge protected content rules.
+	 *
+	 * Merge every rule model with protected content/visitor membership rules.
+	 * This ensure rules are consistent with protected content rules.
+	 * 
+	 * @since 1.0.0
+	 */
 	public function merge_protected_content_rules() {
-		$protected_content_rules = self::get_visitor_membership()->rules;
+		$protected_content_rules = self::get_protected_content()->rules;
 		
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
 			try {
@@ -491,11 +899,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules );
 	}
 	
+	/**
+	 * Get members count of this membership.
+	 *
+	 * @since 1.0.0
+	 * @return int The members count.
+	 */
 	public function get_members_count() {
 		return MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) );
 	}
+	
 	/**
 	 * Delete membership.
+	 * 
+	 * @since 1.0.0
 	 * 
 	 * @param $force To force delete memberships with members, visitor or default memberships.
 	 */
@@ -516,9 +933,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * Verify post and page rules if there is a dripped content.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @return boolean
 	 */
 	public function has_dripped_content() {
@@ -534,9 +950,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	
 	/**
 	 * Get protection rules sorted.
+	 * 
 	 * First one has priority over the last one.
 	 * These rules are used to determine access.
-	 * @since 4.0.0
+	 * 
+	 * @since 1.0.0
 	 */
 	private function get_rules_hierarchy() {
 		$rule_types = MS_Model_Rule::get_rule_types();
@@ -549,7 +967,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Mark membership setup as completed.
 	 * 
-	 * @since 1.0
+	 * Used for auto setup purposes.
+	 * 
+	 * @since 1.0.0
 	 * 
 	 * @return bool $marked True in the first time setup is finished.
 	 */
@@ -567,13 +987,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Verify membership rules hierachyly for content accessed directly.
 	 * If 'has access' is found, it does have access.
+	 * Only for active memberships.
+	 * 
+	 * @since 1.0.0
 	 * 
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
-	 * @return boolean 
+	 * @return boolean True if has access to current page. Default is false. 
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
 		$has_access = false;
-//		MS_Helper_Debug::log("------------------------------");
 		if( $this->active ) {
 			/** If 'has access' is found in the hierarchy, it does have access. */
 			$rules = $this->get_rules_hierarchy();
@@ -586,7 +1008,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				else {
 					$has_access = ( $has_access || $rule->has_access( $post_id ) );
 				}
-//				MS_Helper_Debug::log("rule: $rule->rule_type, $has_access");
 				if( $has_access ) {
 					break;
 				}
@@ -617,8 +1038,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * 
 	 * Hide restricted content for this membership.
 	 * 
+	 * @since 1.0.0
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
-	 * @since 4.0.0
 	 */
 	public function protect_content( $ms_relationship ) {
 		$rules = $this->get_rules_hierarchy();
@@ -634,9 +1055,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Returns property associated with the render.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
@@ -686,9 +1106,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $name The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
@@ -776,7 +1195,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public static function get_register_post_type_args() {
 		$args = apply_filters( 'ms_model_membership_register_post_type_args', array(
