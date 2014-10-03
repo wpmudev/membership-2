@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -32,15 +32,15 @@
  * @subpackage Controller
  */
 class MS_Controller_Settings extends MS_Controller {
-	
+
 	const AJAX_ACTION_TOGGLE_SETTINGS = 'toggle_settings';
-	
+
 	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
-	
+
 	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
-	
+
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
-	
+
 	/**
 	 * The current active tab in the vertical navigation.
 	 *
@@ -54,7 +54,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Prepare Membership settings manager.
 	 *
 	 * @since 1.0
-	 */		
+	 */
 	public function __construct() {
 		$hook = 'protected-content_page_protected-content-settings';
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
@@ -64,22 +64,22 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
-		
+
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
-	
+
 	/**
 	 * Get settings model
-	 * 
+	 *
 	 * @since 1.0
-	 * 
+	 *
 	 * @return MS_Model_Settings
 	 */
-	public function get_model() {	
+	public function get_model() {
 		return MS_Factory::load( 'MS_Model_Settings' );
 	}
-	
+
 	/**
 	 * Handle Ajax toggle action.
 	 *
@@ -91,16 +91,16 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function ajax_action_toggle_settings() {
 		$msg = 0;
-		
+
 		$fields = array( 'setting' );
 		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
-	
+
 		echo $msg;
 		exit;
 	}
-	
+
 	/**
 	 * Handle Ajax update setting action.
 	 *
@@ -112,19 +112,19 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		
+
 		$isset = array( 'field', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
 		}
-		
+
 		echo $msg;
 		exit;
 	}
-	
+
 	public function ajax_action_update_custom_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		
+
 		$isset = array( 'group', 'field', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$settings = $this->get_model();
@@ -132,11 +132,11 @@ class MS_Controller_Settings extends MS_Controller {
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		
+
 		echo $msg;
 		exit;
 	}
-	
+
 	/**
 	 * Handle Ajax update protection msg.
 	 *
@@ -152,43 +152,43 @@ class MS_Controller_Settings extends MS_Controller {
 			return $msg;
 		}
 		$settings = $this->get_model();
-		
+
 		$isset = array( 'type', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && 
+		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) &&
 				$this->is_admin_user() && MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] ) ) {
-			
+
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		
+
 		echo $msg;
 		exit;
 	}
-	
+
 	public function auto_setup_settings( $membership ) {
 		MS_Helper_Debug::log("auto_setup_settings");
-		
+
 		$settings = $this->get_model();
-		
+
 		/** Create menus/special pages */
 		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, true );
 		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT, true );
-		
+
 		$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
-		
+
 		/** Create additional menus */
 		if( ! $membership->private ) {
 			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME, true );
 			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP, true );
-			
+
 			$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 		}
 		$settings->plugin_enabled = true;
 		$settings->save();
 	}
-	
+
 	/**
 	 * Show admin notices.
 	 *
@@ -198,7 +198,7 @@ class MS_Controller_Settings extends MS_Controller {
 	public function print_admin_message() {
 		add_action( 'admin_notices', array( 'MS_Helper_Settings', 'print_admin_message' ) );
 	}
-	
+
 	/**
 	 * Get available tabs for editing the membership.
 	 *
@@ -225,19 +225,19 @@ class MS_Controller_Settings extends MS_Controller {
 						'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
 				),
 		);
-	
+
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			unset( $tabs['downloads'] );
 		}
-		
+
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : MS_Controller_Plugin::MENU_SLUG . '-settings';
 		foreach( $tabs as $key => $tab ) {
 			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}";
 		}
-		
+
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
 	}
-	
+
 	/**
 	 * Get the current active settings page/tab.
 	 *
@@ -245,10 +245,10 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function get_active_tab() {
 		$tabs = $this->get_tabs();
-		
+
 		reset( $tabs );
 		$first_key = key( $tabs );
-	
+
 		/** Setup navigation tabs. */
 		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
 		if ( ! array_key_exists( $active_tab, $tabs ) ) {
@@ -257,12 +257,12 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		return $this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 	}
-	
+
 	/**
 	 * Manages settings actions.
 	 *
 	 * Verifies GET and POST requests to manage settings.
-	 * @since 1.0	
+	 * @since 1.0
 	 */
 	public function admin_settings_manager() {
 		$this->print_admin_message();
@@ -270,7 +270,7 @@ class MS_Controller_Settings extends MS_Controller {
 // 		MS_Helper_Debug::log($_POST);
 		$msg = 0;
 		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
-		
+
 		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			switch( $this->active_tab ) {
 				case 'general':
@@ -297,7 +297,7 @@ class MS_Controller_Settings extends MS_Controller {
 					if( $this->validate_required( array( 'comm_type' ) ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
 						wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
 					}
-					
+
 					if( $this->validate_required( array( 'save_email' ) ) ) {
 						$msg = $this->save_communication( $type, $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
@@ -311,7 +311,7 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 		}
 	}
-	
+
 	/**
 	 * Callback function from 'Membership' navigation.
 	 *
@@ -321,13 +321,13 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function admin_settings() {
 		$action = ! empty( $_GET['action'] ) ? $_GET['action'] : '';
-		
+
 		do_action( "ms_controller_settings_{$this->active_tab}_{$action}" );
-		
+
 		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
-		
+
 		if( 'messages-automated' == $this->get_active_tab() ) {
 			$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 			if( ! empty( $_GET['comm_type'] ) ) {
@@ -339,12 +339,12 @@ class MS_Controller_Settings extends MS_Controller {
 		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
 		$view->model = $this->get_model();
 		$view->render();
-		
+
 	}
 
 	/**
 	 * Save general tab settings.
-	 * 
+	 *
 	 * @since 4.0.0
 	 *
 	 * @param string $action The action to execute.
@@ -356,7 +356,7 @@ class MS_Controller_Settings extends MS_Controller {
 			return $msg;
 		}
 		$settings = $this->get_model();
-		
+
 		if( is_array( $fields ) ) {
 			foreach( $fields as $field => $value ) {
 				switch( $action ) {
@@ -375,7 +375,7 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 			}
 			$settings->save();
-			
+
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		return $msg;
@@ -394,9 +394,9 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		do_action( 'ms_controller_settings_special_pages_do_action', $action, $fields );
-		
+
 		$settings = $this->get_model();
 		switch( $action ) {
 			case 'submit_pages':
@@ -423,10 +423,10 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 				break;
 		}
-	
+
 		return $msg;
 	}
-	
+
 	/**
 	 * Handle saving of Communication settings.
 	 *
@@ -439,9 +439,9 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
-		
+
 		if( ! empty( $fields ) ) {
 			$period = array();
 			$comm->enabled = ! empty( $fields['enabled'] );
@@ -457,42 +457,48 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		return $msg;
 	}
-	
+
 	/**
 	 * Load Membership admin styles.
 	 *
 	 * @since 4.0.0
-	 */	
+	 */
 	public function enqueue_styles() {
-		
+
 		if( 'messages-automated' == $this->active_tab ) {
 			wp_enqueue_style( 'ms-view-settings-render-messages-automated', MS_Plugin::instance()->url. 'app/assets/css/ms-view-settings-render-messages-automated.css', null, MS_Plugin::instance()->version );
 		}
 	}
-	
+
 	/**
 	 * Load Membership admin scripts.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function enqueue_scripts() {
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $this->get_active_tab() );
-		
+
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
+		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
 
 		wp_enqueue_style( 'jquery-chosen' );
-		
+
 		wp_enqueue_script( 'ms-functions' );
-		
-		wp_register_script( 'ms-view-settings', $plugin_url. 'app/assets/js/ms-view-settings.js', array( 'jquery' ), $version );
-		wp_enqueue_script( 'ms-view-settings' );
-		
+
+		wp_register_script( 'ms-admin', $plugin_url. 'app/assets/js/ms-admin.js', array( 'jquery' ), $version );
+		$data = array(
+			'ms_init' => 'view_settings',
+			'initial_url' => $initial_url,
+		);
+		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
+
 		switch( $this->get_active_tab() ) {
 			case 'payment':
 				add_thickbox();
 				wp_enqueue_script( 'ms-view-settings-payment' );
 				break;
-		}		
+		}
 	}
 }
