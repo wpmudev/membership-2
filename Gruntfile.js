@@ -153,7 +153,7 @@ module.exports = function( grunt ) {
 				files: [
 					'app/assets/css/sass/**/*.scss'
 				],
-				tasks: ['sass', 'autoprefixer', 'cssmin'],
+				tasks: ['sass', 'autoprefixer'/*, 'cssmin'*/],
 				options: {
 					debounceDelay: 500
 				}
@@ -164,7 +164,7 @@ module.exports = function( grunt ) {
 					'app/assets/js/src/**/*.js',
 					'app/assets/js/vendor/**/*.js'
 				],
-				tasks: ['jshint', 'concat', 'uglify'],
+				tasks: ['jshint', 'concat'/*, 'uglify'*/],
 				options: {
 					debounceDelay: 500
 				}
@@ -242,7 +242,7 @@ module.exports = function( grunt ) {
 
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', /*'uglify',*/ 'sass', 'autoprefixer'/*, 'cssmin'*/] );
 
 	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
 
