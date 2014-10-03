@@ -321,7 +321,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		$valid = array_key_exists( $type, self::get_types() );
 		
-		return apply_filters( 'ms_model_membership_is_valid_type', $valid, $this );
+		return apply_filters( 'ms_model_membership_is_valid_type', $valid );
 	}
 	
 	/**
@@ -626,7 +626,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				self::TYPE_CONTENT_TYPE,
 		);
 		
-		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types, $this );
+		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types );
 	}
 
 	/**
@@ -692,7 +692,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		$count = $query->found_posts;
 		
-		return apply_filters( 'ms_model_membership_get_membership_count', $count, $args, $this );
+		return apply_filters( 'ms_model_membership_get_membership_count', $count, $args );
 	}
 	
 	/**
@@ -861,7 +861,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			unset( $memberships[ self::get_visitor_membership()->id ] );
 		}
 		
-		return apply_filters( 'ms_model_membership_get_membership_names', $memberships, $args, $exclude_visitor_membership, $this );
+		return apply_filters( 'ms_model_membership_get_membership_names', $memberships, $args, $exclude_visitor_membership );
 	}
 	
 	/**
