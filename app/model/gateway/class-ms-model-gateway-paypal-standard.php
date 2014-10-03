@@ -185,6 +185,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			if( ! empty( $_POST['txn_type'] ) ) {
 				switch ( $_POST['txn_type'] ) {
 					case 'subscr_signup':
+					case 'subscr_payment':
 						$notes = __( 'Paypal subscipton profile has been created.', MS_TEXT_DOMAIN );
 						if( 0 == $invoice->total ) {
 							$status = MS_Model_Invoice::STATUS_PAID;
