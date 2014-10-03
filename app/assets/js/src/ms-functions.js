@@ -14,7 +14,6 @@ window.ms_functions = {
 	value: 0,
 	chosen_options: {
 		minimumResultsForSearch: 6,
-		width: 'resolve',
 		dropdownAutoWidth: true,
 		dropdownCssClass: 'ms-select2',
 		containerCssClass: 'ms-select2'

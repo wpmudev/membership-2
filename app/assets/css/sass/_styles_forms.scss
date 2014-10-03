@@ -91,12 +91,24 @@
 		.select2-choice .select2-arrow {
 			border: 0;
 			background: transparent;
+
+			b {
+				background-position: 0 -2px;
+			}
 		}
 
 		.select2-choice {
 			height: 23px;
 			line-height: 23px;
 			font-size: 14px;
+		}
+	}
+
+	&.select2-dropdown-open {
+		.select2-choice .select2-arrow {
+			b {
+				background-position: -18px -2px;
+			}
 		}
 	}
 

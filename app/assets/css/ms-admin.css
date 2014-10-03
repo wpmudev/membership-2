@@ -221,10 +221,16 @@
   border: 0;
   background: transparent;
 }
+.ms-select2.select2-container .select2-choice .select2-arrow b {
+  background-position: 0 -2px;
+}
 .ms-select2.select2-container .select2-choice {
   height: 23px;
   line-height: 23px;
   font-size: 14px;
+}
+.ms-select2.select2-dropdown-open .select2-choice .select2-arrow b {
+  background-position: -18px -2px;
 }
 .ms-select2 .select2-search {
   margin-bottom: 4px;
