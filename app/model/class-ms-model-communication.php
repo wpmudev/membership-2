@@ -25,6 +25,8 @@
  *
  * Persisted by parent class MS_Model_Custom_Post_Type.
  *
+ * @todo change to extend MS_Model_Option.
+ * 
  * @since 1.0.0
  * @package Membership
  * @subpackage Model
@@ -236,6 +238,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		
 		parent::before_save();
 		$this->description = $this->message;
+		
 	}
 	
 	/**
@@ -377,6 +380,9 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				$args = array(
 						'post_type' => self::$POST_TYPE,
 						'post_status' => 'any',
+						'fields' => 'ids',
+						'order' => 'DESC',
+						'orderby' => 'ID',
 						'meta_query' => array(
 								array(
 										'key' => 'type',
@@ -385,12 +391,13 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 								)
 						)
 				);
-				$query = new WP_Query($args);
+				$args = apply_filters( 'ms_model_communication_get_communication_args', $args );
+				$query = new WP_Query( $args );
 				$item = $query->get_posts();
 			
 				$comm_classes = self::get_communication_type_classes();
 				if( ! empty( $item[0] ) ) {
-					$model = MS_Factory::load( $comm_classes[ $type ], $item[0]->ID );
+					$model = MS_Factory::load( $comm_classes[ $type ], $item[0] );
 				}
 				else {
 					$model = self::communication_factory( $type, $comm_classes[ $type ] );
@@ -412,10 +419,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Communication The communication object.
 	 */
 	public static function communication_factory( $type, $class ) {
-		
+
 		$model = MS_Factory::create( $class );
-		$model->create_default_communication();
-		
+		$model->reset_to_default();
+			
 		return apply_filters( 'ms_model_communication_communication_factory', $model, $type, $class );
 	}
 	
@@ -424,11 +431,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 *
 	 * To be overridden by children classes creating a new object with the default subject, message, enabled, etc.
 	 *
-	 * @todo remove static from this method and children overridden methods.
 	 * @since 1.0.0
 	 */
-	public static function create_default_communication() {
-		do_action( 'ms_model_communication_create_default_communication', $this );
+	public function reset_to_default() {
+		do_action( 'ms_model_communication_reset_to_default', $this->type, $this );
 	}
 	
 	/**

@@ -21,55 +21,69 @@
 */
 
 /**
- * Communicataion model class.
- * 
+ * Communication model - before finishes.
+ *
+ * Persisted by parent class MS_Model_Custom_Post_Type.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
  */
 class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	
+	/**
+	 * Model custom post type.
+	 *
+	 * Both static and class property are used to handle php 5.2 limitations.
+	 *
+	 * @since 1.0.0
+	 * @var string $POST_TYPE
+	 * @var string $post_type is inherited.
+	 */
 	public static $POST_TYPE = 'ms_communication';
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Communication type.
+	 *
+	 * @since 1.0.0
+	 * @var string The communication type.
+	 */
 	protected $type = self::COMM_TYPE_BEFORE_FINISHES;
 	
-	public function after_load() {
-	
-		parent::after_load();
-	
-// 		if( $this->enabled ) {
-// 			$this->add_action( 'ms_model_plugin_check_membership_status_'. MS_Model_Membership_Relationship::STATUS_ACTIVE, 'check_enqueue_messages', 10, 3 );
-// 		}
-	}
-	
-	public function check_enqueue_messages( $ms_relationship, $remaining_days, $remaining_trial_days ) {
-		if( $this->enabled && MS_Model_Membership_Relationship::STATUS_ACTIVE == $ms_relationship->status ) {
-				
-			$days = MS_Helper_Period::get_period_in_days( $this->period );
-			if( $days == $remaining_days ) {
-				$this->add_to_queue( $ms_relationship->id );
-				$this->save();
-	
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $ms_relationship );
-			}
-		}
-	}
-	
+	/**
+	 * Get communication description.
+	 *
+	 * @since 1.0.0
+	 * @return string The description.
+	 */
 	public function get_description() {
 		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
-	public static function create_default_communication() {
-		$model = new self();
+	/**
+	 * Communication default communication.
+	 *
+	 * @since 1.0.0
+	 */
+	public function reset_to_default() {
+
+		parent::reset_to_default();
+		
+		$this->subject = sprintf( __( 'Your %s membership will end soon', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
+		$this->message = self::get_default_message();
+		$this->enabled = false;
+		$this->period_enabled = true;
+		$this->save();
 	
-		$model->subject = sprintf( __( 'Your %s membership will end soon', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
-		$model->message = self::get_default_message();
-		$model->enabled = false;
-		$model->period_enabled = true;
-		$model->save();
-	
-		return $model;
+		do_action( 'ms_model_communication_reset_to_default_after', $this->type, $this );
 	}
 	
+	/**
+	 * Get default email message.
+	 *
+	 * @since 1.0.0
+	 * @return string The email message.
+	 */
 	public static function get_default_message() {
 		ob_start();
 		?>
