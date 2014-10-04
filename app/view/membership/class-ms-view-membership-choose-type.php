@@ -111,8 +111,9 @@ class MS_View_Membership_Choose_Type extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 						'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 						'data_ms' => array(
-							'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-							'setting' => 'initial_setup',
+							'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+							'field' => 'initial_setup',
+							'value' => '0',
 						)
 					),
 					'save' => array(

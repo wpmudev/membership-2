@@ -36,7 +36,9 @@ window.ms_init.view_membership_choose_type = function init () {
 		var me = jQuery( this );
 
 		// Simply reload the page after the setting has been changed.
-		me.on( 'ms-ajax-updated', function() { window.location = window.location; } );
+		me.on( 'ms-ajax-updated', function() {
+			window.location = ms_data.initial_url;
+		} );
 		ms_functions.ajax_update( me );
 	});
 

@@ -1095,6 +1095,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
+		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
 
 		wp_enqueue_script( 'ms-functions' );
 		wp_register_script(
@@ -1123,6 +1124,7 @@ class MS_Controller_Membership extends MS_Controller {
 					'ms_private_types' => MS_Model_Membership::get_private_eligible_types(),
 					'ms_pointer' => $ms_pointer,
 					'ms_init' => 'view_membership_choose_type',
+					'initial_url' => $initial_url
 				);
 				wp_localize_script( 'ms-admin', 'ms_data', $data );
 				wp_enqueue_script( 'ms-admin' );
