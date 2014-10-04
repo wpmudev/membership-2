@@ -1,0 +1,134 @@
+/**
+ * Custom icons/sprites/images
+ */
+
+.ms-wrap {
+	.ms-img-type-simple,
+	.ms-img-type-content_type,
+	.ms-img-type-tier,
+	.ms-img-type-dripped,
+	.ms-img-unlock,
+	.ms-img-lock,
+	.ms-img-lock-grey,
+	.ms-img-info,
+	.ms-img-question,
+	.ms-img-warning,
+	.ms-img-cancel {
+		display: inline-block;
+		position: relative;
+		overflow: hidden;
+
+		background: transparent url(../images/membership_sprite.png) no-repeat;
+		background: transparent url(../images/membership_sprite.svg) no-repeat;
+	}
+
+	/* 100 x 80 */
+	.ms-img-type-simple,
+	.ms-img-type-content_type,
+	.ms-img-type-tier,
+	.ms-img-type-dripped {
+		width: 100px;
+		height: 80px;
+	}
+
+	.ms-img-type-simple {
+		background-position: 0 -20px;
+	}
+
+	.ms-img-type-content_type {
+		background-position: -100px -10px;
+	}
+
+	.ms-img-type-tier {
+		background-position: -200px -8px;
+	}
+
+	.ms-img-type-dripped {
+		background-position: -300px -10px;
+	}
+
+	/* 40 x 32 */
+	.small {
+		&.ms-img-type-simple,
+		&.ms-img-type-content_type,
+		&.ms-img-type-tier,
+		&.ms-img-type-dripped {
+			width: 40px;
+			height: 33px;
+		}
+
+		&.ms-img-type-simple {
+			background-position: -430px -33px;
+		}
+
+		&.ms-img-type-content_type {
+			background-position: -530px -33px;
+		}
+
+		&.ms-img-type-tier {
+			background-position: -650px -33px;
+		}
+
+		&.ms-img-type-dripped {
+			background-position: -729px -33px;
+		}
+	}
+
+	.wp-list-table,
+	.widefat {
+		.small {
+			&.ms-img-type-simple,
+			&.ms-img-type-content_type,
+			&.ms-img-type-tier,
+			&.ms-img-type-dripped {
+				vertical-align: middle;
+				margin-top: -5px;
+			}
+		}
+	}
+
+	/* 16 x 16 */
+	.ms-img-unlock,
+	.ms-img-lock,
+	.ms-img-lock-grey,
+	.ms-img-edit,
+	.ms-img-info,
+	.ms-img-question,
+	.ms-img-warning,
+	.ms-img-cancel {
+		width: 16px;
+		height: 16px;
+	}
+
+	.ms-img-unlock {
+		background-position: -42px -143px;
+	}
+
+	.ms-img-lock {
+		background-position: -142px -143px;
+	}
+
+	.ms-img-lock-grey {
+		background-position: -242px -143px;
+	}
+
+	.ms-img-edit {
+		background-position: -342px -143px;
+	}
+
+	.ms-img-info {
+		background-position: -442px -143px;
+	}
+
+	.ms-img-question {
+		background-position: -542px -143px;
+	}
+
+	.ms-img-warning {
+		background-position: -642px -143px;
+	}
+
+	.ms-img-cancel {
+		background-position: -742px -143px;
+	}
+}

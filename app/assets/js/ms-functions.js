@@ -86,6 +86,24 @@ window.ms_functions = {
 				);
 			}
 		}
+	},
+
+	/**
+	 * Select the whole content inside the specified element.
+	 */
+	select_all: function( el ) {
+		var range;
+		el = jQuery( el )[0];
+
+		if( document.selection ) {
+			range = document.body.createTextRange();
+			range.moveToElementText( el );
+			range.select();
+		} else if( window.getSelection ) {
+			range = document.createRange();
+			range.selectNode( el );
+			window.getSelection().addRange( range );
+		}
 	}
 };
 
@@ -102,4 +120,8 @@ jQuery( document ).ready( function() {
 	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() {
 		fn.ajax_update( this );
 	});
+
+	jQuery( '.ms-wrap' ).on( 'click', 'code', function() {
+		fn.select_all( this );
+	} );
 });

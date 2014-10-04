@@ -18,3 +18,52 @@
 		}
 	}
 }
+
+/* List tables */
+.ms-wrap {
+	.widefat {
+		margin: 10px 0;
+
+		tbody th.check-column {
+			padding: 15px 0 14px;
+		}
+
+		tfoot {
+			display: none;
+		}
+
+		td {
+			padding: 15px 6px 2px;
+			vertical-align: top;
+			font-size: 12px;
+		}
+
+		.ms-child-row {
+			.column-name {
+				padding-left: 15px;
+
+				&:before {
+					content: '\2014';
+					display: inline-block;
+					margin-right: 4px;
+				}
+			}
+		}
+
+		&.memberships {
+			td {
+				border-top: 1px solid #CCC;
+			}
+
+			tr:first-child td {
+				border-top: 0;
+			}
+
+			.ms-child-row {
+				td {
+					border-top: 0;
+				}
+			}
+		}
+	}
+}
