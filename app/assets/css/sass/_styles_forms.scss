@@ -41,6 +41,18 @@
 	input[disabled] {
 		cursor: default;
 	}
+
+	.ms-no-data {
+		font-style: italic;
+		padding: 3px 0;
+		line-height: 24px;
+		opacity: .6;
+
+		&:before,
+		&:after {
+			content: ' - ';
+		}
+	}
 }
 
 /* Radio buttons */
@@ -144,3 +156,4 @@
 		}
 	}
 }
+

@@ -181,6 +181,15 @@
 .ms-wrap input[disabled] {
   cursor: default;
 }
+.ms-wrap .ms-no-data {
+  font-style: italic;
+  padding: 3px 0;
+  line-height: 24px;
+  opacity: .6;
+}
+.ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
+  content: ' - ';
+}
 
 /* Radio buttons */
 .ms-wrap .ms-radio {

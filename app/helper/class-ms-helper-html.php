@@ -356,15 +356,7 @@ class MS_Helper_Html extends MS_Helper {
 				if( empty( $wrapper ) ) { $wrapper = 'span'; }
 				echo '<div class="ms-html-text-wrapper">';
 
-				// TODO: Can we use html_element_label instead of this block?
-				if( $title != '') {
-					printf(
-						'<%1$s class="ms-text-label">%2$s %3$s</%1$s>',
-						$label_element,
-						$title,
-						$tooltip_output
-					);
-				}
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
 
 				printf(
 					'<%1$s class="%2$s">%3$s</%1$s>',

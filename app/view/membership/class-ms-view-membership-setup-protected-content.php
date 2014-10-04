@@ -37,9 +37,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	}
 
 	public function render_tab_category() {
+		$membership = $this->data['membership'];
 		$fields = $this->get_tab_category_fields();
 		$title = array();
 		$desc = array();
+		$cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->get_content_array();
+
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 			$desc['category'] = __( 'The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted.', MS_TEXT_DOMAIN );
@@ -61,15 +64,19 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<?php endif; ?>
 				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
 					<div class="ms-rule-wrapper">
-						<?php MS_Helper_Html::html_element( $fields['cpt_group'] );?>
+						<?php if( count( $cpt ) ) {
+							MS_Helper_Html::html_element( $fields['cpt_group'] );
+						} else {
+							MS_Helper_Html::html_element( $fields['no_cpt_group'] );
+						} ?>
 					</div>
 				<?php endif; ?>
 			</div>
 			<?php
 				MS_Helper_Html::settings_footer(
-						array( 'fields' => array( $fields['step'] ) ),
-						true,
-						$this->data['hide_next_button']
+					array( 'fields' => array( $fields['step'] ) ),
+					true,
+					$this->data['hide_next_button']
 				);
 			?>
 		<?php
@@ -123,6 +130,16 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 								'action' => $action,
 						),
 				),
+				'no_cpt_group' => array(
+						'id' => 'no_cpt_group',
+						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+						'title' => __( 'Protect Custom Post Types (CPTs):', MS_TEXT_DOMAIN ),
+						'value' => __( 'No Custom Post Types available', MS_TEXT_DOMAIN ),
+						'class' => 'ms-no-data ms-field-input',
+						'wrapper' => 'div',
+				),
+
+				/* TODO: These are not used? */
 				'cpt_group_rule_edit' => array(
 						'id' => 'cpt_group_rule_edit',
 						'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -337,6 +354,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 
+	/**
+	 * Render tab content for:
+	 * Comments, More tag, Menus
+	 *
+	 * @since  1.0.0
+	 */
 	public function render_tab_comment() {
 		$fields = $this->get_tab_comment_fields();
 		$membership = $this->data['membership'];
@@ -344,7 +367,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $rule, $membership, $this->data['menu_id'] );
 		$rule_list_table->prepare_items();
 
-		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
+		$title = __( 'XXComments, More Tag & Menus', MS_TEXT_DOMAIN );
 		if( empty( $this->data['protected_content'] ) ) {
 			$desc = sprintf( __( 'Give access to protected Comments, More Tag & Menus to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name );
 		}
@@ -397,6 +420,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		echo $html;
 	}
 
+	/**
+	 * Prepare tab fields for:
+	 * Comments, More tag, Menus
+	 *
+	 * @since  1.0.0
+	 */
 	public function get_tab_comment_fields() {
 		$membership = $this->data['membership'];
 		$nonce = wp_create_nonce( $this->data['action'] );
@@ -513,6 +542,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );
 	}
 
+	/**
+	 * Prepare tab fields for:
+	 * Comments, More tag, Menus
+	 *
+	 * @since  1.0.0
+	 */
 	public function render_tab_shortcode() {
 		$fields = $this->get_control_fields();
 
