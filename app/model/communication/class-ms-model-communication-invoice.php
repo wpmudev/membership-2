@@ -21,17 +21,41 @@
 */
 
 /**
- * Communicataion model class.
- * 
+ * Communication model - invoice.
+ *
+ * Persisted by parent class MS_Model_Custom_Post_Type.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
  */
 class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	
+	/**
+	 * Model custom post type.
+	 *
+	 * Both static and class property are used to handle php 5.2 limitations.
+	 *
+	 * @since 1.0.0
+	 * @var string $POST_TYPE
+	 * @var string $post_type is inherited.
+	 */
 	public static $POST_TYPE = 'ms_communication';
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Communication type.
+	 *
+	 * @since 1.0.0
+	 * @var string The communication type.
+	 */
 	protected $type = self::COMM_TYPE_INVOICE;
 	
+	/**
+	 * Add action to paid event.
+	 *
+	 * @since 1.0.0
+	 * @var string The communication type.
+	 */
 	public function after_load() {
 	
 		parent::after_load();
@@ -41,22 +65,41 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 		}
 	}
 	
+	/**
+	 * Get communication description.
+	 *
+	 * @since 1.0.0
+	 * @return string The description.
+	 */
 	public function get_description() {
 		return __( 'Sent each time a payment has been made.', MS_TEXT_DOMAIN );
 	}
 	
-	public static function create_default_communication() {
-		$model = new self();
+	/**
+	 * Communication default communication.
+	 *
+	 * @since 1.0.0
+	 */
+	public function reset_to_default() {
+		
+		parent::reset_to_default();
 	
-		$model->subject = sprintf( __( 'Your %s membership receipt', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
-		$model->message = self::get_default_message();
-		$model->enabled = true;
-		$model->save();
+		$this->subject = sprintf( __( 'Your %s membership receipt', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
+		$this->message = self::get_default_message();
+		$this->enabled = true;
+		$this->save();
 	
-		return apply_filters( 'ms_model_communication_registration_get_default_message', $model );
+		do_action( 'ms_model_communication_reset_to_default_after', $this->type, $this );
 	}
 	
+	/**
+	 * Get default email message.
+	 *
+	 * @since 1.0.0
+	 * @return string The email message.
+	 */
 	public static function get_default_message() {
+		
 		ob_start();
 		?>
 			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
@@ -68,6 +111,7 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 			<?php echo self::COMM_VAR_MS_INVOICE; ?>
 		<?php 
 		$html = ob_get_clean();
+		
 		return apply_filters( 'ms_model_communication_registration_get_default_message', $html );
 	}
 }

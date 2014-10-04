@@ -23,26 +23,36 @@
  */
 
 /**
- * Controller for managing Membership Plugin settings.
+ * Controller for Automated Communications.
  *
- * The primary entry point for managing Membership admin pages.
- *
- * @since 4.0.0
+ * @since 1.0.0
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Communication extends MS_Controller {
 	
+	/**
+	 * Ajax action name.
+	 * 
+	 * @since 1.0.0
+	 * @var string The ajax action name.
+	 */
 	const AJAX_ACTION_UPDATE_COMM = 'update_comm';
 	
 	/**
 	 * Prepare Membership settings manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */		
 	public function __construct() {
+		
+		do_action( 'ms_controller_communication_before', $this );
+		
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_COMM, 'ajax_action_update_communication' );
 		
+		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_communications' );
+		
+		do_action( 'ms_controller_communication_after', $this );
 	}
 	
 	/**
@@ -52,9 +62,12 @@ class MS_Controller_Communication extends MS_Controller {
 	 *
 	 * * wp_ajax_update_comm
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_update_communication() {
+		
+		do_action( 'ms_controller_communication_ajax_action_update_communication_before', $this );
+		
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		
 		$isset = array( 'type', 'field', 'value' );
@@ -67,8 +80,47 @@ class MS_Controller_Communication extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		
-		echo $msg;
+		do_action( 'ms_controller_communication_ajax_action_update_communication_after', $this );
+		
+		echo apply_filters( 'ms_controller_commnucation_ajax_action_update_communication_msg', $msg, $this );
 		exit;
+	}
+	
+	/**
+	 * Auto setup communications.
+	 * 
+	 * Fires after a membership setup is completed.
+	 * 
+	 * **Hooks Actions: **
+	 *
+	 * * ms_controller_membership_setup_completed
+	 * 
+	 * @todo Customize settings enabled/disabled for each membership type.
+	 * 
+	 * @since 1.0.0
+	 * @param MS_Model_Membership $membership
+	 */
+	public function auto_setup_communications( $membership ) {
+		
+		do_action( 'ms_controller_communication_auto_setup_communications_before', $membership, $this );
+		
+		$comms = MS_Model_Communication::load_communications();
+		
+		/* Private memberships don't have communications enabled */
+		if( ! $membership->is_private() ) {
+			switch( $membership->type ) {
+				case MS_Model_Membership::TYPE_SIMPLE:
+					break;
+				case MS_Model_Membership::TYPE_CONTENT_TYPE:
+					break;
+				case MS_Model_Membership::TYPE_TIER:
+					break;
+				case MS_Model_Membership::TYPE_DRIPPED:
+					break;
+			}
+		}
+		
+		do_action( 'ms_controller_communication_auto_setup_communications_after', $membership, $this );
 	}
 	
 }
