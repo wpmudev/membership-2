@@ -356,7 +356,8 @@
   background-position: -530px -33px;
 }
 .ms-wrap .small.ms-img-type-tier {
-  background-position: -650px -33px;
+  background-position: -613px -33px;
+  /* or -649px */
 }
 .ms-wrap .small.ms-img-type-dripped {
   background-position: -729px -33px;
