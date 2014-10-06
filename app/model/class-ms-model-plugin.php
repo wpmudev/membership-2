@@ -20,12 +20,31 @@
  *
 */
 
-
+/**
+ * Main class for protection.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Plugin extends MS_Model {
 	
+	/**
+	 * Current Member object.
+	 *
+	 * @since 1.0.0
+	 * @var string $member
+	 */
 	private $member;
 	
+	/**
+	 * Prepare object.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
+		
+		do_action( 'ms_model_plugin_constructor', $this );
 		
 		/**
 		 * Upgrade membership database if needs to.
@@ -38,10 +57,10 @@ class MS_Model_Plugin extends MS_Model {
 				
 			$this->init_member();
 			
-			/** Init gateways to enable hooking actions/filters */ 
+			/* Init gateways to enable hooking actions/filters */ 
 			MS_Model_Gateway::get_gateways();
 			
-			/** Init communications to enable hooking actions/filters */
+			/* Init communications to enable hooking actions/filters */
 			MS_Model_Communication::load_communications();
 				
 			$this->setup_cron_services();
@@ -49,9 +68,10 @@ class MS_Model_Plugin extends MS_Model {
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 			
-			/** cron service action */
+			/* cron service action */
 			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 			
+			//for testing
 // 			$this->check_membership_status();
 		}
 	}
@@ -62,19 +82,19 @@ class MS_Model_Plugin extends MS_Model {
 	 * Get current member and membership relationships.
 	 * If user is not logged in (visitor), assign a visitor membership.
 	 * If user is logged in but has not any memberships, assign a default membership.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * Deactivated users (active == false) get visitor membership assigned.
+	 * 
+	 * @since 1.0.0
 	 */
 	public function init_member() {
 
+		do_action( 'ms_model_plugin_init_member_before', $this );
+		
 		$this->member = MS_Model_Member::get_current_member();
-		$this->check_member_status();
 		
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		
-		/** Admin user simulating membership */
+		/* Admin user simulating membership */
 		if( MS_Model_Member::is_admin_user() ) {
 			if( $simulate->is_simulating() ) {
 				$this->member->add_membership( $simulate->membership_id );
@@ -82,61 +102,44 @@ class MS_Model_Plugin extends MS_Model {
 			}
 		}
 		else {
-			/** Visitor: assign a Visitor Membership = Protected Content */
+			/* Deactivated status invalidates all memberships*/
+			if( false == $this->member->active ) {
+				$this->member->ms_relationships = array();
+			}
+			/* Visitor: assign a Visitor Membership = Protected Content */
 			if( ! $this->member->is_member() ){
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 		}
+		
+		do_action( 'ms_model_plugin_init_member_after', $this );
 	}
 	
 	/**
-	 * Checks whether curren member is active or not. 
-	 * 
-	 * If member is deactivated, then he has to be logged out immediately.
-	 *
-	 * @since 4.0.0
-	 * @todo Give user a feedback about the lockout
-	 *
-	 * @access public
-	 */
-	public function check_member_status() {
-		if ( ! $this->member->is_logged_user() ) {
-			return;
-		}
-		
-		if( $this->member->is_admin_user() ) {
-			return;
-		}
-		
-		if ( ! $this->member->active ) {
-			wp_logout();
-			wp_redirect( home_url( $_SERVER['REQUEST_URI'] ) );
-			exit;
-		}
-	}
-
-	/**
 	 * Checks member permissions and protects current page.
 	 *
-	 * @since 4.0.0
-	 * @action template_redirect 1
-	 *
-	 * @access public
+	 * ** Hooks Action **
+	 * 
+	 * * template_redirect
+	 * 
+	 * @since 1.0.0
 	 */
 	public function protect_current_page() {
 
-		/** Admin user has access to everything */
+		do_action( 'ms_model_plugin_protect_current_page_before', $this );
+		
+		/* Admin user has access to everything */
 		if( $this->member->is_admin_user() && ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating() ) {
-			return true;
+			return;
 		}
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$has_access = false;
-		/**
+		/*
 		 * Search permissions through all memberships joined.
 		 */
 		foreach( $this->member->ms_relationships as $ms_relationship ) {
-			/**
+			/*
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
@@ -153,7 +156,7 @@ class MS_Model_Plugin extends MS_Model {
 			}
 		}
 		
-		/** If front page or home or not found page. Honours all other rules. */
+		/* If front page or home or not found page. Honours all other rules. */
 		if( is_home() || is_front_page() || is_404() ) {
 			$has_access = true;
 		}
@@ -162,14 +165,18 @@ class MS_Model_Plugin extends MS_Model {
 			$no_access_page_url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, false, true );
 			$current_page_url = MS_Helper_Utility::get_current_page_url();
 
-			/** Don't redirect the protection page. */
+			/* Don't (re) redirect the protection page. */
 			if( ! $settings->is_special_page( null, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
 				$no_access_page_url = add_query_arg( array( 'redirect_to' =>  $current_page_url ), $no_access_page_url );
+				
+				$no_access_page_url = apply_filters( 'ms_model_plugin_protected_content_page', $no_access_page_url );
 				wp_safe_redirect( $no_access_page_url );
+				
 				exit;
 			}
 		}
-
+		
+		do_action( 'ms_model_plugin_protect_current_page_after', $this );
 	}
 	
 	/**
@@ -178,21 +185,26 @@ class MS_Model_Plugin extends MS_Model {
 	 * Hide menu and pages, protect media donwload and feeds.
 	 * Protect feeds.
 	 * 
-	 * @since 4.0.0
-	 * @action parse_request
-	 *
-	 * @access public
+	 * ** Hooks Action **
+	 * 
+	 * * parse_request
+	 * 
+	 * @since 1.0.0
 	 * @param WP $wp Instance of WP class.
 	 */
 	public function setup_protection( WP $wp ){
-		/** Admin user has access to everything */
+		
+		do_action( 'ms_model_plugin_setup_protection_before', $wp, $this );
+		
+		/* Admin user has access to everything */
 		if( $this->member->is_admin_user() && ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating() ) {
 			return true;
 		}
 		
 		$settings = MS_Plugin::instance()->settings;
 		$has_access = false;
-		/**
+		
+		/*
 		 * Search permissions through all memberships joined.
 		 */
 		foreach( $this->member->ms_relationships as $ms_relationship ) {
@@ -207,14 +219,18 @@ class MS_Model_Plugin extends MS_Model {
 			$membership = $ms_relationship->get_membership();
 			$membership->protect_content( $ms_relationship );
 		}
+		
+		do_action( 'ms_model_plugin_setup_protection_after', $wp, $this );
 	}
 	
 	/**
 	 * Config cron time period.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * ** Hooks Action **
+	 * 
+	 * * cron_schedules
+	 * 
+	 * @since 1.0.0
 	 */
 	public function cron_time_period( $periods ) {
 		if ( !is_array( $periods ) ) {
@@ -229,7 +245,7 @@ class MS_Model_Plugin extends MS_Model {
 		$periods['5mins']  = array( 'interval' =>  5 * MINUTE_IN_SECONDS, 'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN ) );
 		$periods['1min']  = array( 'interval' => MINUTE_IN_SECONDS, 'display' => __( 'Every Minute', MS_TEXT_DOMAIN ) );
 	
-		return $periods;
+		return apply_filters( 'ms_model_plugin_cron_time_period', $periods );
 	}
 
 	/**
@@ -239,15 +255,15 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @todo checkperiod review.
 	 * 
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 */
 	public function setup_cron_services() {
 		
+		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
+		
 		if( ! ( $this->member->is_admin_user() && MS_Factory::load( 'MS_Model_Simulate' )->is_simulating() ) ) {
 			
-			/**
+			/*
 			 * Check for membership status.
 			 */
 			$checkperiod = '6hours';
@@ -255,7 +271,8 @@ class MS_Model_Plugin extends MS_Model {
 				/** Action to be called by the cron job */
 				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_check_membership_status' );
 			}
-			/**
+			
+			/*
 			 * Setup automatic communications.
 			 */
 			$checkperiod = '60mins';
@@ -265,6 +282,8 @@ class MS_Model_Plugin extends MS_Model {
 				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_process_communications' );
 			}
 		}
+		
+		do_action( 'ms_model_plugin_setup_cron_services_after', $this );
 	}
 	
 	/**
@@ -273,11 +292,11 @@ class MS_Model_Plugin extends MS_Model {
 	 * Execute actions when time/period condition are met.
 	 * E.g. change membership status, add communication to queue, create invoices.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 */
 	public function check_membership_status() {
+		
+		do_action( 'ms_model_plugin_check_membership_status_before', $this );
 		
 		if( ( $this->member->is_admin_user() && MS_Factory::load( 'MS_Model_Simulate' )->is_simulating() ) ) {
 			return;
@@ -289,5 +308,7 @@ class MS_Model_Plugin extends MS_Model {
 		foreach( $ms_relationships as $ms_relationship ) {
 			$ms_relationship->check_membership_status();
 		}
+		
+		do_action( 'ms_model_plugin_check_membership_status_after', $this );
 	}
 }
