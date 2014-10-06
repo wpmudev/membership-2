@@ -59,7 +59,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_GATEWAY, 'toggle_ajax_action' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_GATEWAY, 'ajax_action_update_gateway' );
 		
-		$this->add_action( 'ms_controller_frontend_enqueue_scripts', 'enqueue_scripts');
+		$this->add_action( 'ms_controller_frontend_enqueue_scripts', 'enqueue_scripts' );
 		
 	}
 	
@@ -560,6 +560,9 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_scripts( $step = null ) {
+		if( empty( $step ) && ! empty( $_POST['step'] ) ) {
+			$step = $_POST['step']; 
+		}
 		
 		$url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
@@ -567,11 +570,16 @@ class MS_Controller_Gateway extends MS_Controller {
 		switch( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
 				if( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
-					wp_enqueue_style('jquery-chosen');
+					wp_enqueue_style( 'jquery-chosen' );
 					
-					wp_enqueue_script('jquery-chosen');
-					wp_enqueue_script('jquery-validate');
-					wp_enqueue_script( 'ms-view-gateway-authorize', $url . 'app/assets/js/ms-view-gateway-authorize.js', array( 'jquery' ), $version );
+					wp_enqueue_script( 'jquery-chosen' );
+					wp_enqueue_script( 'jquery-validate' );
+// 					wp_enqueue_script( 'ms-functions' );
+					wp_enqueue_script( 'ms-view-gateway-authorize', 
+							$url . 'app/assets/js/ms-view-gateway-authorize.js', 
+							array(  'jquery' ), 
+							$version 
+					);
 				}
 				break;
 			case MS_Controller_Frontend::STEP_PAYMENT_TABLE:
