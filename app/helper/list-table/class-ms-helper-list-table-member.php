@@ -342,8 +342,8 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 * @since 4.0.0
 	 * @access public
 	 */
-	public function bulk_actions() {
-		if ( is_null( $this->_actions ) ) {
+	public function bulk_actions( $echo = true ) {
+		if ( empty( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
 			/**
 			 * Filter the list table Bulk Actions drop-down.
