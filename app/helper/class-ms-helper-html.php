@@ -498,6 +498,11 @@ class MS_Helper_Html extends MS_Helper {
 			<div class="ms-settings-footer">
 				<form method="post" >
 					<span class="ms-save-text-wrapper ms-init">
+						<?php
+							foreach( $fields as $field ) {
+								MS_Helper_Html::html_element( $field );
+							}
+						?>
 						<span class="ms-saving-text">
 							<div id="floatingCirclesG">
 								<div class="f_circleG" id="frotateG_01">
@@ -520,11 +525,6 @@ class MS_Helper_Html extends MS_Helper {
 							<?php echo $saving_text ;?>
 						</span>
 						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
-						<?php
-							foreach( $fields as $field ) {
-								MS_Helper_Html::html_element( $field );
-							}
-						?>
 					</span>
 				</form>
 			</div>
