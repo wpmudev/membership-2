@@ -200,8 +200,7 @@ class MS_Controller_Member extends MS_Controller {
 			$data['member_id'] = array( $member_id );
 			switch( $action ) {
 				case 'add':
-					$memberships = MS_Model_Membership::get_membership_names( null, true );
-					$memberships = array_diff_key( $memberships, $member->ms_relationships );
+					$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $member->ms_relationships ), true );
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
 				case 'cancel':

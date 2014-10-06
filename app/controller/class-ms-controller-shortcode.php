@@ -113,35 +113,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
 		}
 		
-		$not_in = array();		
-		/** Prepare select arguments to get the memberships user is not part of. */
-		foreach( $data['ms_relationships'] as $ms_relationship ) {
-			$not_in[] = $ms_relationship->membership_id;
-		}
-		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
-		$args = array( 'post__not_in' => array_unique ( $not_in ) );
-				
-		/** Retrieve memberships user is not part of, using selected args */
-		$memberships = MS_Model_Membership::get_grouped_memberships( $args );
+		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $member->ms_relationships ) );
 		
-		$parent_ids = array();
-		foreach( $memberships as $key => $membership ) {
-			if( $membership->can_have_children() ) {
-				if( ! $membership->active ) {
-					$parent_ids[] = $membership->id;
-				}
-				/** Remove parent memberships */
-				unset( $memberships[ $key ] );
-			}
-			/** If parent is disabled, remove all children */
-			if( in_array( $membership->parent_id, $parent_ids ) ) {
-				unset( $memberships[ $key ] );
-			}
-			/** if private or not active, remove */
-			if( ! $membership->active || $membership->private ) {
-				unset( $memberships[ $key ] );
-			}
-		}
 		$data['memberships'] = $memberships;
 		
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
