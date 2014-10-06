@@ -274,7 +274,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * This parent method only covers free purchases.
 	 * 
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
 		

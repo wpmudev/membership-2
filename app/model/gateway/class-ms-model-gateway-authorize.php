@@ -22,7 +22,8 @@
 
 /**
  * Authorize.net Gateway.
- *
+ * 
+ * Must use SSL to send card info to gateway.
  * Integrate Authorize.net gateway send payment requests.
  *
  * Persisted by parent class MS_Model_Option. Singleton.
@@ -139,6 +140,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * Processes purchase action.
 	 *
 	 * @since 1.0.0
+	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
 		
@@ -182,7 +184,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 * Request automatic payment to the gateway.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
 		
