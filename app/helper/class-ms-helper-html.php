@@ -504,24 +504,7 @@ class MS_Helper_Html extends MS_Helper {
 							}
 						?>
 						<span class="ms-saving-text">
-							<div id="floatingCirclesG">
-								<div class="f_circleG" id="frotateG_01">
-								</div>
-								<div class="f_circleG" id="frotateG_02">
-								</div>
-								<div class="f_circleG" id="frotateG_03">
-								</div>
-								<div class="f_circleG" id="frotateG_04">
-								</div>
-								<div class="f_circleG" id="frotateG_05">
-								</div>
-								<div class="f_circleG" id="frotateG_06">
-								</div>
-								<div class="f_circleG" id="frotateG_07">
-								</div>
-								<div class="f_circleG" id="frotateG_08">
-								</div>
-							</div>
+							<div class="loading-animation"></div>
 							<?php echo $saving_text ;?>
 						</span>
 						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
@@ -547,9 +530,9 @@ class MS_Helper_Html extends MS_Helper {
 			<div class="ms-settings-tab-title">
 				<h3><?php echo $title; ?></h3>
 			</div>
-			<div class="ms-settings-tab-desc-wrapper">
+			<div class="ms-settings-description">
 				<?php foreach( $desc as $description ): ?>
-					<div class="ms-settings-tab-desc ms-description">
+					<div class="ms-description">
 						<?php echo $description; ?>
 					</div>
 				<?php endforeach; ?>

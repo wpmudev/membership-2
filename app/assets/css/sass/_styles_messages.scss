@@ -1,0 +1,50 @@
+/**
+ * Confirmation messages
+ */
+
+
+/* Ajax confirmation message */
+.ms-wrap {
+	.ms-save-text-wrapper {
+		font-size: .9em;
+		font-weight: 500;
+
+		&.ms-init span {
+			display: none;
+		}
+
+		span {
+			display: inline-block;
+			width: 155px;
+		}
+
+		.ms-saving-text {
+			display: none;
+		}
+
+		&.ms-processing .ms-saving-text,
+		&.ms-processing .loading-animation {
+			display: inline-block;
+		}
+
+		&.ms-processing .ms-saved-text {
+			display: none;
+		}
+	}
+
+	.ms-saved-text {
+		display: inline;
+		color: #6DB724;
+	}
+
+	.loading-animation {
+		display: none;
+		float: left;
+		width: 20px;
+		height: 20px;
+		margin-right: 4px;
+
+		overflow: hidden;
+		background: transparent url('../images/spinner.gif') top left no-repeat;
+	}
+}

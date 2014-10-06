@@ -37,6 +37,10 @@
   display: none;
   visibility: hidden;
 }
+.ms-wrap .ms-separator {
+  border-bottom: 1px solid #EEE;
+  margin: 15px 0;
+}
 
 /* Box styles */
 .ms-wrap .ms-settings {
@@ -68,8 +72,9 @@
 .ms-wrap h3 {
   margin: 0;
 }
-.ms-wrap .ms-settings-tab-desc-wrapper {
-  margin: 0 0 15px;
+.ms-wrap .ms-settings-description {
+  margin-bottom: 15px;
+  display: block;
 }
 .ms-wrap .ms-group-head {
   clear: both;
@@ -221,7 +226,7 @@
  ***/
 .ms-wrap .ms-field-description {
   display: inline-block;
-  margin: 10px 0;
+  margin: 10px 4px 10px 0;
   color: #666;
   font-size: 0.9em;
   font-weight: normal;
@@ -244,6 +249,30 @@
   margin: 2px 0;
   font-style: normal;
   color: #222;
+}
+.ms-wrap .ms-field-wp-editor {
+  height: 5em;
+  width: 100%;
+}
+.ms-wrap .ms-text {
+  display: inline-block;
+  height: 2.1em;
+}
+.ms-wrap .ms-text-small {
+  width: 4em;
+}
+.ms-wrap .ms-text-medium {
+  width: 300px;
+}
+.ms-wrap .ms-text-large {
+  width: 400px;
+}
+.ms-wrap .ms-textarea-medium {
+  height: 10em;
+}
+.ms-wrap input[type="text"] {
+  min-height: 28px;
+  line-height: 28px;
 }
 .ms-wrap .disabled input,
 .ms-wrap input.disabled,
@@ -279,16 +308,23 @@
 .ms-wrap .ms-half.space {
   padding-right: 20px;
 }
+.ms-wrap .ms-half.right {
+  float: right;
+}
 
 /***
  * RADIO BUTTONS *
  ***/
 .ms-wrap .ms-radio {
   margin: 2px 4px 0 0;
-  float: left;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 .ms-wrap .ms-radio-wrapper {
   margin: 0 auto;
+  position: relative;
+  display: inline-block;
 }
 .ms-wrap .ms-radio-wrapper .ms-radio-caption {
   padding-left: 24px;
@@ -305,10 +341,14 @@
  ***/
 .ms-wrap .ms-checkbox {
   margin: 2px 4px 0 0;
-  float: left;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 .ms-wrap .ms-checkbox-wrapper {
   margin: 0 auto;
+  position: relative;
+  display: inline-block;
 }
 .ms-wrap .ms-checkbox-wrapper .ms-checkbox-caption {
   padding-left: 24px;
@@ -363,7 +403,9 @@
   display: none;
 }
 
-/* Radio Slider */
+/***
+ * RADIO SLIDER *
+ ***/
 .ms-wrap .ms-radio-slider:focus {
   background: none;
   outline: none;
@@ -406,6 +448,54 @@
 }
 .ms-wrap .ms-radio-slider.ms-processing {
   cursor: wait;
+}
+
+/***
+ * BUTTONS *
+ ***/
+.ms-wrap .button-primary {
+  min-width: 120px;
+}
+.ms-wrap button#next:after {
+  content: ' \00bb';
+}
+
+/**
+ * Confirmation messages
+ */
+/* Ajax confirmation message */
+.ms-wrap .ms-save-text-wrapper {
+  font-size: .9em;
+  font-weight: 500;
+}
+.ms-wrap .ms-save-text-wrapper.ms-init span {
+  display: none;
+}
+.ms-wrap .ms-save-text-wrapper span {
+  display: inline-block;
+  width: 155px;
+}
+.ms-wrap .ms-save-text-wrapper .ms-saving-text {
+  display: none;
+}
+.ms-wrap .ms-save-text-wrapper.ms-processing .ms-saving-text, .ms-wrap .ms-save-text-wrapper.ms-processing .loading-animation {
+  display: inline-block;
+}
+.ms-wrap .ms-save-text-wrapper.ms-processing .ms-saved-text {
+  display: none;
+}
+.ms-wrap .ms-saved-text {
+  display: inline;
+  color: #6DB724;
+}
+.ms-wrap .loading-animation {
+  display: none;
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  overflow: hidden;
+  background: transparent url("../images/spinner.gif") top left no-repeat;
 }
 
 /**
@@ -575,6 +665,7 @@
 /* Page: Payment options */
 .ms-wrap .wrapper-is_free {
   max-width: 400px;
+  display: block;
 }
 .ms-wrap .wrapper-is_free .ms-radio-input-wrapper {
   width: 49.5%;
@@ -592,6 +683,12 @@
 }
 .ms-wrap .ms-global-payment-wrapper .ms-field-input {
   width: 100%;
+}
+.ms-wrap .ms-item-name {
+  color: #4F7984;
+}
+.ms-wrap .ms-trial-wrapper {
+  margin-top: 15px;
 }
 
 .ms-title {

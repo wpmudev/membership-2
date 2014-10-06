@@ -1110,6 +1110,10 @@ class MS_Controller_Membership extends MS_Controller {
 			array( 'jquery', 'jquery-validate' ),
 			$version
 		);
+		$data = array(
+			'ms_init' => '',
+			'initial_url' => $initial_url,
+		);
 
 		switch( $this->get_step() ) {
 			case self::STEP_CHOOSE_MS_TYPE:
@@ -1135,6 +1139,7 @@ class MS_Controller_Membership extends MS_Controller {
 				wp_localize_script( 'ms-admin', 'ms_data', $data );
 				wp_enqueue_script( 'ms-admin' );
 				break;
+
 			case self::STEP_OVERVIEW:
 				wp_enqueue_script(
 					'ms-view-membership-overview',
@@ -1143,6 +1148,7 @@ class MS_Controller_Membership extends MS_Controller {
 					$version
 				);
 				break;
+
 			case self::STEP_SETUP_PROTECTED_CONTENT:
 			case self::STEP_ACCESSIBLE_CONTENT:
 				switch( $this->get_active_tab() ) {
@@ -1177,6 +1183,7 @@ class MS_Controller_Membership extends MS_Controller {
 						break;
 				}
 				break;
+
 			case self::STEP_SETUP_CONTENT_TYPES:
 			case self::STEP_SETUP_MS_TIERS:
 				wp_enqueue_script( 'jquery-validate' );
@@ -1187,17 +1194,16 @@ class MS_Controller_Membership extends MS_Controller {
 					$version
 				);
 				break;
+
 			case self::STEP_SETUP_PAYMENT:
+				$data['ms_init'] = 'view_membership_setup_payment';
+
 				wp_enqueue_style( 'jquery-chosen' );
 				add_thickbox();
 				wp_enqueue_script( 'jquery-validate' );
 				wp_enqueue_script( 'ms-view-settings-payment' );
-				wp_enqueue_script( 'ms-view-membership-setup-payment',
-					$plugin_url. 'app/assets/js/ms-view-membership-setup-payment.js',
-					array( 'ms-view-settings-payment' ),
-					$version
-				);
 				break;
+
 			case self::STEP_SETUP_DRIPPED:
 				wp_enqueue_script(
 					'ms-view-membership-setup-dripped',
@@ -1207,6 +1213,9 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 				break;
 		}
+
+		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
 	}
 
 }

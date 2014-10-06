@@ -10,7 +10,7 @@
 .ms-wrap {
 	.ms-field-description {
 		display: inline-block;
-		margin: 10px 0;
+		margin: 10px 4px 10px 0;
 		color: #666;
 		font-size: 0.9em;
 		font-weight: normal;
@@ -38,6 +38,37 @@
 		margin: 2px 0;
 		font-style: normal;
 		color: #222;
+	}
+
+	.ms-field-wp-editor {
+		height: 5em;
+		width: 100%;
+	}
+
+	.ms-text {
+		display: inline-block;
+		height: 2.1em;
+	}
+
+	.ms-text-small {
+		width: 4em;
+	}
+
+	.ms-text-medium {
+		width: 300px;
+	}
+
+	.ms-text-large {
+		width: 400px;
+	}
+
+	.ms-textarea-medium {
+		height: 10em;
+	}
+
+	input[type="text"] {
+		min-height: 28px;
+		line-height: 28px;
 	}
 
 	.disabled input,
@@ -83,6 +114,10 @@
 		&.space {
 			padding-right: 20px;
 		}
+
+		&.right {
+			float: right;
+		}
 	}
 }
 
@@ -94,11 +129,15 @@
 .ms-wrap {
 	.ms-radio {
 		margin: 2px 4px 0 0;
-		float: left;
+		position: absolute;
+		left: 0;
+		top: 0;
 	}
 
 	.ms-radio-wrapper {
 		margin: 0 auto;
+		position: relative;
+		display: inline-block;
 
 		.ms-radio-caption {
 			padding-left: 24px;
@@ -121,11 +160,15 @@
 .ms-wrap {
 	.ms-checkbox {
 		margin: 2px 4px 0 0;
-		float: left;
+		position: absolute;
+		left: 0;
+		top: 0;
 	}
 
 	.ms-checkbox-wrapper {
 		margin: 0 auto;
+		position: relative;
+		display: inline-block;
 
 		.ms-checkbox-caption {
 			padding-left: 24px;
@@ -200,7 +243,11 @@
 	}
 }
 
-/* Radio Slider */
+
+/***
+ * RADIO SLIDER *
+ ***/
+
 .ms-wrap {
 	.ms-radio-slider:focus {
 		background:none;
@@ -238,6 +285,7 @@
 		border-radius: 50%;
 		transition: all .2s ease-in-out;
 	}
+
 	.ms-radio-slider .ms-toggle:hover {
 		transform: scale(1.1);
 	}
@@ -252,5 +300,22 @@
 
 	.ms-radio-slider.ms-processing {
 		cursor: wait;
+	}
+}
+
+
+/***
+ * BUTTONS *
+ ***/
+
+.ms-wrap {
+	.button-primary {
+		min-width: 120px;
+	}
+
+	button#next {
+		&:after {
+			content: ' \00bb';
+		}
 	}
 }

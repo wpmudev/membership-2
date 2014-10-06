@@ -6,8 +6,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 
 	public function to_html() {
 		$fields = $this->get_fields();
+		$this->data['is_global_payments_set'] = false;
 
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
+		$wrapper_class = $this->data['is_global_payments_set'] ? '' : 'wide';
 
 		ob_start();
 		?>
@@ -23,21 +25,20 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				);
 			?>
 			<br class="clear" />
-			<div class="ms-wrapper-center wide">
+			<div class="ms-wrapper-center <?php echo esc_attr( $wrapper_class ); ?>">
 				<div class="ms-separator"><hr /></div>
 				<div id="ms-payment-settings-wrapper">
-					<div class="ms-half space">
-						<?php $this->global_payment_settings(); ?>
-					</div>
 					<?php
-						if( $this->data['membership']->can_have_children() ) {
-							foreach( $this->data['children'] as $child ) {
-								$this->specific_payment_settings( $child );
-							}
+					$this->global_payment_settings();
+
+					if( $this->data['membership']->can_have_children() ) {
+						foreach( $this->data['children'] as $child ) {
+							$this->specific_payment_settings( $child );
 						}
-						else {
-							$this->specific_payment_settings( $this->data['membership'] );
-						}
+					}
+					else {
+						$this->specific_payment_settings( $this->data['membership'] );
+					}
 					?>
 				</div>
 				<br class="clear" />
@@ -104,20 +105,32 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	public function global_payment_settings() {
 
 		if( $this->data['is_global_payments_set'] ) {
-	#		return;
+			return;
 		}
 
 		$view = MS_Factory::create( 'MS_View_Settings_Payment' );
+
+		echo '<div class="ms-half space">';
 		$view->render();
+		echo '</div>';
 	}
 
 	public function specific_payment_settings( $membership ) {
-		$title = sprintf( __( '%s Specific Payment Settings:', MS_TEXT_DOMAIN ), $membership->name );
-		$desc = sprintf( __( 'Payment Settings for %s.', MS_TEXT_DOMAIN ), $membership->name );
+		$title = sprintf(
+			__( '<span class="ms-item-name">%s</span> Specific Payment Settings:', MS_TEXT_DOMAIN ),
+			$membership->name
+		);
+		$desc = sprintf(
+			__( 'Payment Settings for <span class="ms-bold">%s</span>.', MS_TEXT_DOMAIN ),
+			$membership->name
+		);
 		$fields = $this->get_specific_payment_fields( $membership );
+		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
+
 		?>
-		<div class="ms-specific-payment-wrapper ms-half">
+		<div class="ms-specific-payment-wrapper <?php echo esc_attr( $type_class ); ?>">
 			<?php MS_Helper_Html::settings_box_header( $title, $desc ); ?>
+			<div class="inside">
 				<div class="ms-payment-structure-wrapper">
 					<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
 					<?php MS_Helper_Html::html_element( $fields['payment_type'] ); ?>
@@ -137,6 +150,9 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
 					</div>
 				</div>
+				<div class="ms-after-end-wrapper">
+					<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
+				</div>
 				<div class="ms-trial-wrapper">
 					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
@@ -147,9 +163,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						</div>
 					</div>
 				</div>
-				<div class="ms-after-end-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
-				</div>
+			</div>
 			<?php MS_Helper_Html::settings_box_footer(); ?>
 		</div>
 		<?php
@@ -159,12 +173,18 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
+		$currency = MS_Plugin::instance()->settings->currency;
+		switch ( $currency ) {
+			case 'USD': $currency = '$'; break;
+			case 'EUR': $currency = '&euro;'; break;
+		}
+
 		$fields = array(
 				'price' => array(
 						'id' => 'price_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Structure:', MS_TEXT_DOMAIN ),
-						'desc' => '$',
+						'desc' => $currency,
 						'value' => $membership->price,
 						'class' => 'ms-field-input-price ms-text-small ms-ajax-update',
 						'data_ms' => array(
@@ -301,7 +321,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'name' => '[trial_period][period_unit]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $membership->trial_period_unit,
-						'class' => 'ms-field-input-trial-period-unit ms-ajax-update',
+						'class' => 'ms-field-input-trial-period-unit ms-text-small ms-ajax-update',
 						'data_ms' => array(
 								'field' => 'trial_period_unit',
 								'_wpnonce' => $nonce,

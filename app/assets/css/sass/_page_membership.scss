@@ -79,6 +79,7 @@
 .ms-wrap {
 	.wrapper-is_free {
 		max-width: 400px;
+		display: block;
 
 		.ms-radio-input-wrapper {
 			width: 49.5%;
@@ -104,5 +105,13 @@
 		.ms-field-input {
 			width: 100%;
 		}
+	}
+
+	.ms-item-name {
+		color: #4F7984;
+	}
+
+	.ms-trial-wrapper {
+		margin-top: 15px;
 	}
 }
