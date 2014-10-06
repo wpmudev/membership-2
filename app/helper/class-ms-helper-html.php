@@ -207,7 +207,10 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_label( $title, $label_element, $id, $tooltip_output );
 				self::html_element_desc( $desc );
 
-				echo '<div class="ms-radio-wrapper">';
+				printf(
+					'<div class="ms-radio-wrapper wrapper-%1$s">',
+					esc_attr( $id )
+				);
 				foreach( $field_options as $key => $option ) {
 					if( is_array( $option ) ) {
 						$item_text = $option['text'];
