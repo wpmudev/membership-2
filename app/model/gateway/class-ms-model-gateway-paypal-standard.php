@@ -20,48 +20,128 @@
  *
 */
 
+/**
+ * Paypal Standard Gateway.
+ *
+ * Process single and recurring paypal purchases/payments.
+ *
+ * Persisted by parent class MS_Model_Option. Singleton.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
-	public static $instance;
-	
-	protected $id = self::GATEWAY_PAYPAL_STANDARD;
-	
+	/**
+	 * Gateway transaction status constants.
+	 *
+	 * @since 1.0.0
+	 * @var string $status
+	 */
 	const STATUS_FAILED = 'failed';
-	
 	const STATUS_REVERSED = 'reversed';
-	
 	const STATUS_REFUNDED = 'refunded';
-	
 	const STATUS_PENDING = 'pending';
-	
 	const STATUS_DISPUTE = 'dispute';
-	
 	const STATUS_DENIED = 'denied';
 	
+	/**
+	 * Gateway singleton instance.
+	 *
+	 * @since 1.0.0
+	 * @var string $instance
+	 */
+	public static $instance;
+	
+	/**
+	 * Gateway ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
+	protected $id = self::GATEWAY_PAYPAL_STANDARD;
+	
+	/**
+	 * Gateway name.
+	 *
+	 * @since 1.0.0
+	 * @var string $name
+	 */
 	protected $name = 'PayPal Standard Gateway';
 	
+	/**
+	 * Gateway description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
 	protected $description = '';
 	
-	protected $manual_payment = false;
-	
+	/**
+	 * Gateway allow Pro rating.
+	 *
+	 * @todo To be released in further versions.
+	 * @since 1.0.0
+	 * @var bool $pro_rate
+	 */
 	protected $pro_rate = false;
 	
-	protected $merchant_id;
-	
-	protected $paypal_site;
-	
+	/**
+	 * Gateway operation mode.
+	 *
+	 * Live or sandbox (test) mode.
+	 *
+	 * @since 1.0.0
+	 * @var string $mode
+	 */
 	protected $mode;
 	
+	/**
+	 * Paypal merchant ID.
+	 *
+	 * @since 1.0.0
+	 * @var bool $merchant_id
+	 */
+	protected $merchant_id;
+	
+	/**
+	 * Paypal country site.
+	 *
+	 * @since 1.0.0
+	 * @var bool $paypal_site
+	 */
+	protected $paypal_site;
+	
+	/**
+	 * Hook to add custom transaction status and cancel membership.
+	 *
+	 * @since 1.0.0
+	 */
 	public function after_load() {
+		
 		parent::after_load();
+		
 		if( $this->active ) {
-			$this->add_filter( 'ms_view_shortcode_membership_signup_button_html_membership_cancel_' . $this->id, 'cancel_button', 10, 2 );
+			$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button_' . $this->id, 'cancel_button', 10, 2 );
 			$this->add_filter( 'ms_model_invoice_get_status', 'gateway_custom_status' );
 		}
 	}
 	
+	/**
+	 * Add Gateway custom status.
+	 *
+	 * * Hooks Actions: *
+	 * * ms_model_invoice_get_status
+	 *
+	 * @since 1.0.0
+	 * @return array {
+	 * 		Array of ( $status_id => $status_name ).
+	 *
+	 * 		@type string $status_id The status id.
+	 * 		@type string $status_name The status name.
+	 * }
+	 */
 	public function gateway_custom_status( $status ) {
 		$paypal_status = array(
 				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
@@ -72,9 +152,14 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 		);
 	
-		return array_merge( $status, $paypal_status );
+		return apply_filters( 'ms_model_gateway_paypal_standard_gateway_custom_status', array_merge( $status, $paypal_status ) );
 	}
 	
+	/**
+	 * Processes gateway IPN return.
+	 *
+	 * @since 1.0.0
+	 */
 	public function handle_return() {
 		
 		MS_Helper_Debug::log( 'Paypal standard IPN POST:' );
@@ -98,7 +183,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					'body' => $ipn_data,
 			) );
 		
-			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
+			if( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
 				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
 			} 
 			else {
@@ -219,7 +304,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 						break;
 				}
 			}
-// 			MS_Helper_Debug::log( "transaction_id: $invoice_id, ext_id: $external_id status: $status, notes: $notes" );
 			
 			if( empty( $invoice ) ) {
  				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
@@ -245,17 +329,27 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			MS_Helper_Debug::log( $notes );
 			exit;
 		}
+		
+		do_action( 'ms_model_gateway_paypal_standard_handle_return_after', $this );
 	}
 	
 	/**
 	 * Cancel membership button.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * 
+	 * Propagate the membership cancel to paypal gateway and cancel recurring payments.
+	 * 
+	 * @todo cancel link is not redirecting to paypal site.
+	 *  
+	 * @since 1.0.0
+	 * @return array @see MS_Helper_Html::html_link
 	 */
-	public function cancel_button( $html_link, $membership ) {
+	public function cancel_button( $submit_btn, $ms_relationship ) {
 	
+		if( empty( $ms_relationship ) ) {
+			return;
+		}
+		
+		$membership = $ms_relationship->get_membership();
 		if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
 			if( ! empty( $this->cancel_button_url ) && strpos( $this->cancel_button_url, 'http' ) !== 0 ) {
 				$cancel_btn = array(
@@ -278,21 +372,23 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			else {
 				$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 			}
-			MS_Helper_Html::html_link( array(
+			$link = array(
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
 				'url' => $action . '?cmd=_subscr-find&alias=' . $this->merchant_id,
 				'value' => MS_Helper_Html::html_element( $cancel_btn, true ),
-			) );
+			);
+// 			MS_Helper_Debug::log( $link );
+			return apply_filters( 'ms_model_gateway_paypal_standard_cancel_button', $link );
 		}
 	}
 	
-	public function get_status_types() {
-		return apply_filters( 'ms_model_gateway_paypal_standard_get_status', array(
-				'live' => __( 'Live Site', MS_TEXT_DOMAIN ),
-				'test' => __( 'Test Mode (Sandbox)', MS_TEXT_DOMAIN ),
-			)
-		);
-	}
-	
+	/**
+	 * Get paypal country sites list.
+	 *
+	 * @see MS_Model_Gateway::get_country_codes()
+	 * @since 1.0.0
+	 * @return array
+	 */
 	public function get_paypal_sites() {
 		return apply_filters( 'ms_model_gateway_paylpay_standard_get_paypal_sites', self::get_country_codes() );
 	}
@@ -303,9 +399,10 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Invoice $invoice The Transaction.
+	 * @return MS_Model_Invoice The processed invoice.
 	 */
 	public function process_transaction( $invoice ) {
 		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
@@ -316,7 +413,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			case self::STATUS_DENIED:
 			case self::STATUS_DISPUTE:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
-				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
 				break;
 			default:
@@ -326,13 +422,14 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		$member->save();
 		$ms_relationship->gateway_id = $this->gateway_id;
 		$ms_relationship->save();
+		
+		return apply_filters( 'ms_model_gateway_paypal_standard_processed_transaction', $invoice, $this );
 	}
 	
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0
-	 *
+	 * @since 1.0.0
 	 * @return boolean
 	 */
 	public function is_configured() {
@@ -351,7 +448,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @param string $name The name of a property to associate.
@@ -370,6 +467,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_gateway_paypal_standard__set_after', $property, $value, $this );
 	}
 	
 }

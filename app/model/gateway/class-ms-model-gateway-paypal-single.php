@@ -20,48 +20,139 @@
  *
 */
 
+/**
+ * Paypal Single Gateway.
+ *
+ * Process single paypal purchases/payments.
+ *
+ * Persisted by parent class MS_Model_Option. Singleton.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
-	public static $instance;
-	
-	protected $id = self::GATEWAY_PAYPAL_SINGLE;
-	
+	/**
+	 * Gateway transaction status constants.
+	 *
+	 * @since 1.0.0
+	 * @var string $status
+	 */
 	const STATUS_FAILED = 'failed';
-	
 	const STATUS_REVERSED = 'reversed';
-	
 	const STATUS_REFUNDED = 'refunded';
-	
 	const STATUS_PENDING = 'pending';
-	
 	const STATUS_DISPUTE = 'dispute';
-	
 	const STATUS_DENIED = 'denied';
 	
+	/**
+	 * Gateway singleton instance.
+	 *
+	 * @since 1.0.0
+	 * @var string $instance
+	 */
+	public static $instance;
+	
+	/**
+	 * Gateway ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
+	protected $id = self::GATEWAY_PAYPAL_SINGLE;
+	
+	/**
+	 * Gateway name.
+	 *
+	 * @since 1.0.0
+	 * @var string $name
+	 */
 	protected $name = 'PayPal Single Gateway';
 	
+	/**
+	 * Gateway description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
 	protected $description = '';
 	
-	protected $manual_payment = true;
-	
+	/**
+	 * Gateway allow Pro rating.
+	 *
+	 * @todo To be released in further versions.
+	 * @since 1.0.0
+	 * @var bool $pro_rate
+	 */
 	protected $pro_rate = true;
 	
-	protected $paypal_email;
-	
-	protected $paypal_site;
-	
+	/**
+	 * Gateway operation mode.
+	 *
+	 * Live or sandbox (test) mode.
+	 *
+	 * @since 1.0.0
+	 * @var string $mode
+	 */
 	protected $mode;
 	
+	/**
+	 * Manual payment indicator.
+	 *
+	 * If the gateway does not allow automatic reccuring billing.
+	 *
+	 * @since 1.0.0
+	 * @var bool $manual_payment
+	 */
+	protected $manual_payment = true;
+	
+	/**
+	 * Paypal merchant/seller's email.
+	 *
+	 * @since 1.0.0
+	 * @var bool $paypal_email
+	 */
+	protected $paypal_email;
+	
+	/**
+	 * Paypal country site.
+	 *
+	 * @since 1.0.0
+	 * @var bool $paypal_site
+	 */
+	protected $paypal_site;
+	
+	/**
+	 * Hook to add custom transaction status.
+	 *
+	 * @since 1.0.0
+	 */
 	public function after_load() {
+		
 		parent::after_load();
+		
 		if( $this->active ) {
 			$this->add_filter( 'ms_model_invoice_get_status', 'gateway_custom_status' );
 		}
 	}
 	
+	/**
+	 * Add Gateway custom status. 
+	 *
+	 * * Hooks Actions: *
+	 * * ms_model_invoice_get_status
+	 *
+	 * @since 1.0.0
+	 * @return array {
+	 * 		Array of ( $status_id => $status_name ).
+	 * 
+	 * 		@type string $status_id The status id.
+	 * 		@type string $status_name The status name.
+	 * }
+	 */
 	public function gateway_custom_status( $status ) {
+		
 		$paypal_status = array(
 			self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
 			self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
@@ -71,10 +162,17 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 		);
 		
-		return array_merge( $status, $paypal_status );
+		return apply_filters( 'ms_model_gateway_paypal_single_gateway_custom_status', array_merge( $status, $paypal_status ) );
 	}
 
+	/**
+	 * Processes gateway IPN return.
+	 *
+	 * @since 1.0.0
+	 */
 	public function handle_return() {
+		
+		do_action( 'ms_model_gateway_paypal_single_handle_return_before', $this );
 
 		if( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) ) && ! empty( $_POST['custom'] ) ) {
 			if( $this->is_live_mode() ) {
@@ -94,7 +192,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					'body' => $ipn_data,
 			) );
 		
-			if ( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
+			if( ! is_wp_error( $response ) && 200 == $response['response']['code'] && ! empty( $response['body'] ) && "VERIFIED" == $response['body'] ) {
 				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
 			} 
 			else {
@@ -194,8 +292,17 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			MS_Helper_Debug::log( $notes );
 			exit;
 		}
+		
+		do_action( 'ms_model_gateway_paypal_single_handle_return_after', $this );
 	}
 	
+	/**
+	 * Get paypal country sites list.
+	 *
+	 * @see MS_Model_Gateway::get_country_codes()
+	 * @since 1.0.0
+	 * @return array 
+	 */
 	public function get_paypal_sites() {
 		return apply_filters( 'ms_model_gateway_paylpay_single_get_paypal_sites', self::get_country_codes() );
 	}
@@ -206,35 +313,42 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 * 
 	 * @param MS_Model_Invoice $invoice The Transaction.
+	 * @return MS_Model_Invoice The processed invoice.
 	 */
 	public function process_transaction( $invoice ) {
+		
+		do_action( 'ms_model_gateway_paypal_single_process_transaction_before', $this );
+		
 		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
+		
 		switch( $invoice->status ) {
 			case self::STATUS_REVERSED:
 			case self::STATUS_REFUNDED:
 			case self::STATUS_DENIED:
 			case self::STATUS_DISPUTE:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
-				$ms_relationship->status = MS_Model_Membership_Relationship::STATUS_DEACTIVATED;
 				$member->active = false;
 				break;
 			default:
 				$ms_relationship = parent::process_transaction( $invoice );
 				break;
 		}
+		
 		$member->save();
 		$ms_relationship->gateway_id = $this->gateway_id;
 		$ms_relationship->save();
+		
+		return apply_filters( 'ms_model_gateway_paypal_single_processed_transaction', $invoice, $this );
 	}
 	
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return boolean
 	 */
@@ -254,7 +368,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @param string $name The name of a property to associate.
@@ -278,6 +392,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_gateway_paypal_single__set_after', $property, $value, $this );
 	}
 	
 }
