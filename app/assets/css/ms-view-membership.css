@@ -125,18 +125,6 @@
 	margin: 5px 15px;
 }
 
-/* setup content type */
-#content_type_name, #submit_content_type {
-	display: inline-block;
-	margin: 10px 5px 10px 0;
-}
-
-/* setup ms tier */
-#tier_name, #submit_tier {
-	display: inline-block;
-	margin: 10px 5px 10px 0;
-}
-
 /* Setup Dripped Page */
 .ms-dripped-type {
 	display: inline-block;

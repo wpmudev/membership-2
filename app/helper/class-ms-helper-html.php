@@ -445,7 +445,7 @@ class MS_Helper_Html extends MS_Helper {
 			</h2>
 			<div class="ms-settings-desc-wrapper">
 				<?php foreach( $desc as $description ): ?>
-					<div class="ms-settings-desc">
+					<div class="ms-settings-desc ms-description">
 						<?php echo $description; ?>
 					</div>
 				<?php endforeach; ?>
