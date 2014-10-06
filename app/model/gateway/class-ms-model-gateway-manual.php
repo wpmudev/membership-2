@@ -20,32 +20,117 @@
  *
 */
 
+/**
+ * Manual Gateway.
+ *
+ * Process manual payments (Eg. check, bank transfer)
+ *
+ * Persisted by parent class MS_Model_Option. Singleton.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Gateway singleton instance.
+	 *
+	 * @since 1.0.0
+	 * @var string $instance
+	 */
 	public static $instance;
 	
+	/**
+	 * Gateway ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
 	protected $id = self::GATEWAY_MANUAL;
 	
+	/**
+	 * Gateway name.
+	 *
+	 * @since 1.0.0
+	 * @var string $name
+	 */
 	protected $name = 'Manual Gateway';
 	
+	/**
+	 * Gateway description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
 	protected $description = '(Bank orders, cash, etc)';
 	
+	/**
+	 * Gateway active status.
+	 *
+	 * @since 1.0.0
+	 * @var string $active
+	 */
+	protected $active = false;
+	
+	/**
+	 * Gateway allow Pro rating.
+	 * 
+	 * @todo To be released in further versions.
+	 * @since 1.0.0
+	 * @var bool $pro_rate
+	 */
 	protected $pro_rate = true;
 	
+	/**
+	 * Manual payment indicator.
+	 * 
+	 * If the gateway does not allow automatic reccuring billing.
+	 * 
+	 * @since 1.0.0
+	 * @var bool $manual_payment
+	 */
 	protected $manual_payment = true;
 	
+	/**
+	 * Payment information for customer.
+	 *
+	 * The payment procedures like bank account, agency, etc.
+	 *
+	 * @since 1.0.0
+	 * @var string $payment_info
+	 */
 	protected $payment_info;
 	
+	/**
+	 * Hook to show payment info.
+	 *
+	 * @since 1.0.0
+	 */
 	public function after_load() {
+		
 		parent::after_load();
+		
 		if( $this->active ) {
 			$this->add_action( 'ms_controller_gateway_purchase_info_content', 'purchase_info_content' );
 		}
 	}
 	
+	/**
+	 * Show manual purchase/payment information.
+	 * 
+	 * Returns a default messsage if gateway is not configured.
+	 * 
+	 * * Hooks Actions: *
+	 * * ms_controller_gateway_purchase_info_content
+	 * 
+	 * @since 1.0.0
+	 * @return string The payment info.
+	 */
 	public function purchase_info_content() {
+		
+		do_action( 'ms_model_gateway_manual_purchase_info_content_before', $this );
+		
 		if( empty( $this->payment_info ) ) {
 			$link = admin_url( sprintf( 'admin.php?page=%s&tab=payment', MS_Controller_Plugin::MENU_SLUG . '-settings' ) );
 			ob_start();
@@ -69,15 +154,14 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			$this->payment_info .= sprintf( '<br />%s: %s%s', __( 'Total value', MS_TEXT_DOMAIN ), $invoice->currency, $invoice->total );
 		}
 		
-		return wpautop( $this->payment_info ); 
+		return apply_filters( 'ms_model_gateway_manual_purchase_info_content', wpautop( $this->payment_info ) ); 
 	}
 
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0
-	 *
-	 * @return boolean
+	 * @since 1.0.0
+	 * @return boolean True if configured.
 	 */
 	public function is_configured() {
 		$is_configured = true;
@@ -95,7 +179,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property to associate.
@@ -112,6 +196,8 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_gateway_manual__set_after', $property, $value, $this );
 	}
 	
 }

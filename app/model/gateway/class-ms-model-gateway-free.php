@@ -20,20 +20,67 @@
  *
 */
 
+/**
+ * Free Gateway.
+ *
+ * Process free memberships.
+ *
+ * Persisted by parent class MS_Model_Option. Singleton.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Gateway singleton instance.
+	 *
+	 * @since 1.0.0
+	 * @var string $instance
+	 */
 	public static $instance;
 	
+	/**
+	 * Gateway ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
 	protected $id = self::GATEWAY_FREE;
 	
+	/**
+	 * Gateway name. 
+	 * 
+	 * @since 1.0.0
+	 * @var string $name
+	 */
 	protected $name = 'Free Gateway';
 	
+	/**
+	 * Gateway description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
 	protected $description = '';
 	
-	protected $manual_payment = true;
-	
+	/**
+	 * Gateway active status.
+	 *
+	 * @since 1.0.0
+	 * @var string $active
+	 */
 	protected $active = true;
+	
+	/**
+	 * Manual payment indicator.
+	 * 
+	 * If the gateway does not allow automatic reccuring billing.
+	 * 
+	 * @since 1.0.0
+	 * @var bool $manual_payment
+	 */
+	protected $manual_payment = true;
 	
 }

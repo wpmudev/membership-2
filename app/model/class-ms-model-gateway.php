@@ -161,6 +161,9 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 */
 	public function after_load() {
+		
+		do_action( 'ms_model_gateway_after_load', $this );
+		
 		if( $this->active ) {
 			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
 		}
@@ -352,7 +355,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function process_transaction( $invoice ) {
 	
-		do_action( 'ms_model_gateway_process_transacation_before', $this );
+		do_action( 'ms_model_gateway_process_transaction_before', $this );
 		
 		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
@@ -421,8 +424,6 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 
-		do_action( 'ms_model_gateway_process_transacation_after', $this );
-		
 		return apply_filters( 'ms_model_gateway_processed_transaction', $invoice, $this );
 	}
 	
