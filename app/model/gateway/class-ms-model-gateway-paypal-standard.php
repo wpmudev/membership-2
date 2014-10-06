@@ -114,7 +114,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	protected $paypal_site;
 	
 	/**
-	 * Hook to add custom transaction status and cancel membership.
+	 * Hook to add custom transaction status.
 	 *
 	 * @since 1.0.0
 	 */
@@ -123,7 +123,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		parent::after_load();
 		
 		if( $this->active ) {
-			$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button_' . $this->id, 'cancel_button', 10, 2 );
 			$this->add_filter( 'ms_model_invoice_get_status', 'gateway_custom_status' );
 		}
 	}
@@ -338,48 +337,44 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	 * 
 	 * Propagate the membership cancel to paypal gateway and cancel recurring payments.
 	 * 
-	 * @todo cancel link is not redirecting to paypal site.
-	 *  
 	 * @since 1.0.0
 	 * @return array @see MS_Helper_Html::html_link
 	 */
-	public function cancel_button( $submit_btn, $ms_relationship ) {
+	public function cancel_button( $button, $ms_relationship ) {
 	
-		if( empty( $ms_relationship ) ) {
-			return;
+		if( ! empty( $ms_relationship ) ) {
+			$membership = $ms_relationship->get_membership();
+			if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
+				if( ! empty( $this->cancel_button_url ) && strpos( $this->cancel_button_url, 'http' ) !== 0 ) {
+					$cancel_btn = array(
+							'id' => 'submit',
+							'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+							'value' => $this->pay_button_url,
+					);
+				}
+				else {
+					$cancel_btn = array(
+							'id' => 'submit',
+							'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+							'value' =>  $this->cancel_button_url ? $this->cancel_button_url : 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif',
+					);
+				}
+	
+				if( self::MODE_LIVE == $this->mode ) {
+					$cancel_url = 'https://www.paypal.com/cgi-bin/webscr';
+				}
+				else {
+					$cancel_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+				}
+				$button = array(
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'url' => $cancel_url . '?cmd=_subscr-find&alias=' . $this->merchant_id,
+					'value' => '<img src="https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif" alt="" />',
+				);
+			}
 		}
-		
-		$membership = $ms_relationship->get_membership();
-		if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
-			if( ! empty( $this->cancel_button_url ) && strpos( $this->cancel_button_url, 'http' ) !== 0 ) {
-				$cancel_btn = array(
-						'id' => 'submit',
-						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-						'value' => $this->pay_button_url,
-				);
-			}
-			else {
-				$cancel_btn = array(
-						'id' => 'submit',
-						'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-						'value' =>  $this->cancel_button_url ? $this->cancel_button_url : 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif',
-				);
-			}
 
-			if( self::MODE_LIVE == $this->mode ) {
-				$action = 'https://www.paypal.com/cgi-bin/webscr';
-			}
-			else {
-				$action = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-			}
-			$link = array(
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'url' => $action . '?cmd=_subscr-find&alias=' . $this->merchant_id,
-				'value' => MS_Helper_Html::html_element( $cancel_btn, true ),
-			);
-// 			MS_Helper_Debug::log( $link );
-			return apply_filters( 'ms_model_gateway_paypal_standard_cancel_button', $link );
-		}
+		return apply_filters( 'ms_model_gateway_paypal_standard_cancel_button', $button );
 	}
 	
 	/**

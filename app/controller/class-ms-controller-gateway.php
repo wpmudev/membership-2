@@ -51,6 +51,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button' );
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
+		$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button', 'cancel_button', 10, 2 );		
 		
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 		
@@ -213,6 +214,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Actions: **
 	 *
 	 * * ms_view_frontend_payment_purchase_button
+	 * * ms_view_shortcode_invoice_purchase_button
 	 *
 	 * @since 1.0
 	 */
@@ -272,6 +274,27 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 		}
 		
+	}
+	
+	/**
+	 * Show gateway purchase button.
+	 *
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * ms_view_shortcode_membership_signup_cancel_button
+	 *
+	 * @todo Extract view class from cancel_button method and rewrite this method. @see purchase_button method. 
+	 * @since 1.0
+	 */
+	public function cancel_button( $button, $ms_relationship ) {
+
+		if( $ms_relationship->gateway_id ) {
+			$gateway = MS_Model_Gateway::factory( $ms_relationship->gateway_id );
+			$button = $gateway->cancel_button( $button, $ms_relationship );
+		}
+		
+		return apply_filters( 'ms_controller_gateway_cancel_button', $button );
 	}
 	
 	/**

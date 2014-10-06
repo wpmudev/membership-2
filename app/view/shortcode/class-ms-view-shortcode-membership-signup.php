@@ -14,25 +14,29 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				<p class="ms-alert-box <?php echo count( $this->data['ms_relationships'] > 0 ) ? 'ms-alert-success' : ''; ?>">
 					<?php
 						if( count( $this->data['ms_relationships'] ) > 0 ) {
+							
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
+	 						
 	 						foreach( $this->data['ms_relationships'] as $membership_id => $ms_relationship ){
 	 							$msg = $ms_relationship->get_status_description();
+	 							$membership = MS_Factory::load( 'MS_Model_Membership', $ms_relationship->membership_id );
+	 							
 	 							switch( $ms_relationship->status ) {
 	 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
-	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
+	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg );
+	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
 	 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg );
+	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
 	 									break;
 	 								case MS_Model_Membership_Relationship::STATUS_PENDING:
-	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg );
+	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg, $ms_relationship );
 	 									break;
 	 								default:
-	 									$this->membership_box_html( MS_Factory::load( 'MS_Model_Membership', $membership_id ), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
+	 									$this->membership_box_html( $ms_relationship, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
 	 									break; 
 	 							}
 	 						}
@@ -81,7 +85,8 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		return $html;
 	}
 	
-	private function membership_box_html( $membership, $action, $msg = null ) {
+	private function membership_box_html( $membership, $action, $msg = null, $ms_relationship = null ) {
+
 		$this->prepare_fields( $membership->id, $action );
 		?>
 		<form class="ms-membership-form" method="post">
@@ -107,13 +112,16 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					<?php
 						$class = apply_filters( 'ms_view_shortcode_membership_signup_form_button_class', "ms-signup-button $action" );
 						
-						$submit = array(
+						$button = array(
 							'id' => 'submit',
 							'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 							'value' => esc_html( $this->data[ "{$action}_text" ] ),
 							'class' => $class,
 						);
-						MS_Helper_Html::html_element( $submit );
+						if( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $action ) {
+							$button = apply_filters( 'ms_view_shortcode_membership_signup_cancel_button', $button, $ms_relationship, $this );
+						}
+						MS_Helper_Html::html_element( $button );
 					?>
 				</div>
 			</div>

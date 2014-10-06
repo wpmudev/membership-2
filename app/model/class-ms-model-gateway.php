@@ -245,7 +245,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$gateway = null;
 		
 		if( 'admin' == $gateway_id || empty( $gateway_id ) || 'gateway' == $gateway_id ) {
-			$gateway = new self();
+			$gateway = MS_Factory::create( 'MS_Model_Gateway' );
 		}
 		elseif( self::is_valid_gateway( $gateway_id ) ) {
 			$gateways = self::get_gateways();
@@ -263,7 +263,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 */
 	public function handle_return() {
-		MS_Helper_Debug::log( __( 'Override the handle_return method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
+		
+		do_action( 'ms_model_gateway_handle_return', $ms_relationship, $this );
 	}
 	
 	/**
@@ -299,7 +300,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function cancel_membership( $ms_relationship ) {
-		MS_Helper_Debug::log( __( 'Override the cancel_membership method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
+		
+		do_action( 'ms_model_gateway_cancel_membership', $ms_relationship, $this );
 	}
 	
 	/**
@@ -311,7 +313,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
-		MS_Helper_Debug::log( __( 'Override the request_payment method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
+		
+		do_action( 'ms_model_gateway_request_payment', $ms_relationship, $this );
 	}
 	
 	/**
