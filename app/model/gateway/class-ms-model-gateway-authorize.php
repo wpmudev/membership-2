@@ -20,48 +20,130 @@
  *
 */
 
+/**
+ * Authorize.net Gateway.
+ *
+ * Integrate Authorize.net gateway send payment requests.
+ *
+ * Persisted by parent class MS_Model_Option. Singleton.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
-	const AUTHORIZE_CIM_ID_USER_META = 'ms_authorize_cim_id';
-	
-	const AUTHORIZE_CIM_PAYMENT_PROFILE_ID_USER_META = 'ms_authorize_cim_payment_profile_id';
-	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Gateway singleton instance.
+	 *
+	 * @since 1.0.0
+	 * @var string $instance
+	 */
 	public static $instance;
 	
+	/**
+	 * Authorize.net's Customer Information Manager wrapper.
+	 *
+	 * @since 1.0.0
+	 * @var string $cim
+	 */
 	protected static $cim;
 	
+	/**
+	 * Gateway ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
 	protected $id = self::GATEWAY_AUTHORIZE;
 	
+	/**
+	 * Gateway name. 
+	 * 
+	 * @since 1.0.0
+	 * @var string $name
+	 */
 	protected $name = 'Authorize.net Gateway';
 	
+	/**
+	 * Gateway description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
 	protected $description = '';
 	
-	protected $manual_payment = false;
-	
-	protected $pro_rate = true;
-	
+	/**
+	 * Gateway active status.
+	 *
+	 * @since 1.0.0
+	 * @var string $active
+	 */
 	protected $active = false;
 	
-	protected $api_login_id;
+	/**
+	 * Manual payment indicator.
+	 * 
+	 * If the gateway does not allow automatic reccuring billing.
+	 * 
+	 * @since 1.0.0
+	 * @var bool $manual_payment
+	 */
+	protected $manual_payment = false;
 	
-	protected $api_transaction_key;
+	/**
+	 * Gateway allow Pro rating.
+	 * 
+	 * @todo To be released in further versions.
+	 * @since 1.0.0
+	 * @var bool $pro_rate
+	 */
+	protected $pro_rate = true;
 	
-	protected $log_file;
-	
+	/**
+	 * Gateway operation mode.
+	 *
+	 * Live or sandbox (test) mode.
+	 *
+	 * @since 1.0.0
+	 * @var string $mode
+	 */
 	protected $mode;
 	
-	protected $payment_result;
+	/**
+	 * Authorize.net API login IP.
+	 *
+	 * @see @link https://www.authorize.net/support/CP/helpfiles/Account/Settings/Security_Settings/General_Settings/API_Login_ID_and_Transaction_Key.htm
+	 * @since 1.0.0
+	 * @var string $api_login_id
+	 */
+	protected $api_login_id;
+	
+	/**
+	 * Authorize.net API transaction key.
+	 *
+	 * @since 1.0.0
+	 * @var string $api_transaction_key
+	 */
+	protected $api_transaction_key;
+	
+	/**
+	 * Authorize.net custom log file.
+	 *
+	 * @since 1.0.0
+	 * @var string $log_file
+	 */
+	protected $log_file;
 	
 	/**
 	 * Processes purchase action.
 	 *
-	 * @since 4.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 */
 	public function process_purchase( $ms_relationship ) {
+		
+		do_action( 'ms_model_gateway_authorize_process_purchase_before', $ms_relationship, $this );
+		
 		if ( ! is_ssl() ) {
 			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
 		}
@@ -93,17 +175,18 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$this->process_transaction( $invoice );
 		}
 		
-		return $invoice;
+		return apply_filters( 'ms_model_gateway_authorize_process_purchase', $invoice, $this );
 	}
 	
 	/**
 	 * Request automatic payment to the gateway.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * @since 1.0.0
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
+		
+		do_action( 'ms_model_gateway_authorize_request_payment_before', $ms_relationship, $this );
 	
 		$member = $ms_relationship->get_member();
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
@@ -118,6 +201,8 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
 		}
+		
+		do_action( 'ms_model_gateway_authorize_request_payment_after', $ms_relationship, $this );
 	}
 	
 	/**
@@ -125,13 +210,15 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	 *
 	 * Send to Authorize.net to process the payment immediatly.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
+	 * @since 1.0.0
 	 * @param MS_Model_Invoice $invoice The invoice to pay.
-	 * @return MS_Model_Invoice transaction information on success, otherwise throws an exception.
+	 * @param MS_Model_Member The member paying the invoice.
+	 * @return MS_Model_Invoice The transaction information on success, otherwise throws an exception.
 	 */
 	protected function online_purchase( $invoice, $member ) {
+		
+		do_action( 'ms_model_gateway_authorize_online_purchase_before', $invoice, $member, $this );
+		
 		if ( 0 == $invoice->total ) {
 			$invoice->status = MS_Model_Invoice::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment aproved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
@@ -174,18 +261,20 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		else {
 			throw new Exception( __( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText() );
 		}
-	
-		return $invoice;
+		
+		return apply_filters( 'ms_model_gateway_authorize_online_purchase_invoice', $invoice, $member, $this );
 	}
 	
 	/**
 	 * Save card info.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param MS_Model_Member $member The member.
+	 * Save only 4 last digits and expire date.
+	 * 
+	 * @since 1.0.0
+	 * @param MS_Model_Member $member The member to save card info.
 	 */
 	public function save_card_info( $member ) {
+		
 		$cim_profile_id = $this->get_cim_profile_id( $member );
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 		$profile = $this->get_cim_profile( $member );
@@ -196,103 +285,109 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			$member->set_gateway_profile( $this->id, 'card_exp', gmdate( "Y-m-t", strtotime( "{$exp_year}-{$exp_month}-01") ) );
 			$member->set_gateway_profile( $this->id, 'card_num', str_replace( 'XXXX', '', $profile['payment']['creditCard']['cardNumber'] ) );
 		}
+		
+		do_action( 'ms_model_gateway_authorize_save_card_info_after', $member, $this );
 	}
 	
 	/**
 	 * Loads Authorize.net lib.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
+	 * @since 1.0.0
 	 */
 	protected function load_authorize_lib(){
+		
+		do_action( 'ms_model_gateway_authorize_load_authorize_lib', $this );
+		
 		require_once MS_Plugin::instance()->dir . '/lib/authorize.net/autoload.php';
 	} 
 	
 	/**
 	 * Returns the instance of AuthorizeNetCIM class.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access protected
-	 * @staticvar AuthorizeNetCIM $cim The instance of AuthorizeNetCIM class.
 	 * @return AuthorizeNetCIM The instance of AuthorizeNetCIM class.
 	 */
 	protected function get_cim() {
 	
-		if ( ! empty( self::$cim ) ) {
-			return self::$cim;
+		$cim = null;
+		if( ! empty( self::$cim ) ) {
+			$cim = self::$cim;
 		}
-	
-		$this->load_authorize_lib();
-	
-		$cim = new AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
-		$cim->setSandbox( $this->mode != self::MODE_LIVE );
-		if ( $this->log_file ) {
-			$cim->setLogFile( $this->log_file );
+		else {
+			$this->load_authorize_lib();
+			
+			$cim = new AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
+			$cim->setSandbox( $this->mode != self::MODE_LIVE );
+			if ( $this->log_file ) {
+				$cim->setLogFile( $this->log_file );
+			}
+			self::$cim = $cim;
 		}
-		self::$cim = $cim;
 		
-		return self::$cim;
+		return apply_filters( 'ms_model_gateway_authorize_get_cim', $cim, $this );
 	}
 	
 	/**
-	 * Get customer information manager profile id from user meta.
+	 * Get saved customer information manager profile id.
 	 * 
-	 * @since 4.0.0
-	 *
-	 * @access protected
+	 * @since 1.0.0
 	 * @param int $user_id The user Id.
+	 * @return string The CIM profile Id.
 	 */
 	public function get_cim_profile_id( $member ) {
+		
 		$cim_profile_id = $member->get_gateway_profile( $this->id, 'cim_profile_id' );
 
-		return apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', $cim_profile_id, $member->id );
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_profile_id', $cim_profile_id, $member, $this );
 	}
 	
 	/**
-	 * Get customer information manager payment profile id from user meta.
+	 * Get saved customer information manager payment profile id.
 	 *
-	 * @since 4.0.0
-	 *
+	 * @since 1.0.0
 	 * @param int $user_id The user Id.
+	 * @return string The CIM payment profile Id.
 	 */
 	public function get_cim_payment_profile_id( $member ) {
+		
 		$cim_payment_profile_id = $member->get_gateway_profile( $this->id, 'cim_payment_profile_id' );
-		return apply_filters( 'ms_model_gateway_authorize_get_cim_payment_profile_id', $cim_payment_profile_id, $member->id );
+		
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_payment_profile_id', $cim_payment_profile_id, $member, $this );
 	}
 	
 	/**
-	 * Save cim profile to user meta.
+	 * Save CIM profile IDs.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @param MS_Model_Member $member The member.
+	 * @since 1.0.0
+	 * @param MS_Model_Member $member The member to save CIM IDs.
+	 * @param string $cim_profile_id The CIM profile ID to save.
+	 * @param string $cim_payment_profile_id The CIM payment profile ID to save.
 	 */
 	protected function save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id ) {
+		
 		$member->set_gateway_profile( $this->id, 'cim_profile_id', $cim_profile_id );
 		$member->set_gateway_profile( $this->id, 'cim_payment_profile_id', $cim_payment_profile_id );
 		$this->save_card_info( $member );
 		$member->save();
+
+		do_action( 'ms_model_gateway_authorize_save_cim_profile', $member, $cim_profile_id, $cim_payment_profile_id, $this );
 	}
 		
 	/**
 	 * Get customer information manager profile from Authorize.net.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access protected
 	 * @param MS_Model_Member $member The member.
 	 * @return array The A.net payment profiles array structure.
 	 */
 	public function get_cim_profile( $member ) {
-
+		
 		$cim_profiles = array();
 		$cim_profile_id = $this->get_cim_profile_id( $member );
 		
 		if( $cim_profile_id ) {
-			
 			$response = $this->get_cim()->getCustomerProfile( $cim_profile_id );
 			if ( $response->isOk() ) {
 				$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
@@ -302,23 +397,25 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 		}
 		
-		return $cim_profiles;
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_profile', $cim_profiles, $this );
 	}
 	
 	/**
 	 * Creates Authorize.net CIM profile for current user.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
-	 * @return int Customer profile ID on success, otherwise FALSE.
+	 * @since 1.0.0
+	 * @param MS_Model_Member $member The member to create CIM profile to.
 	 */
 	protected function create_cim_profile( $member ) {
+		
+		do_action( 'ms_model_gateway_authorize_create_cim_profile_before', $member, $this );
+		
 		$this->load_authorize_lib();
 		$customer = new AuthorizeNetCustomer();
 		$customer->merchantCustomerId = $member->id;
 		$customer->email = $member->email;
 		$customer->paymentProfiles[] = $this->create_cim_payment_profile();
+		
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 		if ( $response->isError() ) {
 			MS_Helper_Debug::log( $response );
@@ -346,11 +443,13 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	/**
 	 * Updates CIM profile by adding a new credit card.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @return boolean TRUE on success, otherwise FALSE.
+	 * @since 1.0.0
+	 * @param MS_Model_Member $member The member to update CIM profile.
 	 */
 	public function update_cim_profile( $member ) {
+		
+		do_action( 'ms_model_gateway_authorize_update_cim_profile_before', $member, $this );
+		
 		$cim_profile_id = $this->get_cim_profile_id( $member );
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 		
@@ -373,9 +472,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	/**
 	 * Creates CIM payment profile and fills it with posted credit card data.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
+	 * @since 1.0.0
 	 * @return AuthorizeNetPaymentProfile The instance of AuthorizeNetPaymentProfile class.
 	 */
 	protected function create_cim_payment_profile() {
@@ -384,7 +481,7 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 	
 		$payment = new AuthorizeNetPaymentProfile();
 	
-		// billing information
+		/* billing information */
 		$payment->billTo->firstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
 		$payment->billTo->lastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
 		$payment->billTo->company = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
@@ -395,23 +492,23 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$payment->billTo->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
 		$payment->billTo->phoneNumber = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
 	
-		// card information
+		/* card information */
 		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
 		$payment->payment->creditCard->cardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
 		$payment->payment->creditCard->expirationDate = sprintf( '%04d-%02d', filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ), substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 ) );
 	
-		return $payment;
+		return apply_filters( 'ms_model_gateway_authorize_create_cim_payment_profile', $payment, $this );
 	}
 	
 	/**
 	 * Initializes and returns Authorize.net CIM transaction object.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @access protected
+	 * @since 1.0.0
+	 * @param MS_Model_Member $member The member.
 	 * @return AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
 	 */
 	protected function get_cim_transaction( $member ) {
+		
 		$this->load_authorize_lib();
 	
 		$cim_profile_id = $this->get_cim_profile_id( $member );
@@ -423,15 +520,14 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 		$transaction->customerProfileId = $cim_profile_id;
 		$transaction->customerPaymentProfileId = $cim_payment_profile_id;
 	
-		return $transaction;
+		return apply_filters( 'ms_model_gateway_authorize_get_cim_transaction', $transaction, $member, $this );
 	}
 	
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0
-	 *
-	 * @return boolean
+	 * @since 1.0.0
+	 * @return boolean True if it is configured.
 	 */
 	public function is_configured() {
 		$is_configured = true;
@@ -443,6 +539,6 @@ class MS_Model_Gateway_Authorize extends MS_Model_Gateway {
 			}
 		}
 	
-		return apply_filters( 'ms_model_gateway_authorize_is_configured', $is_configured );
+		return apply_filters( 'ms_model_gateway_authorize_is_configured', $is_configured, $this );
 	}
 }

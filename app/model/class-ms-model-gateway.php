@@ -86,7 +86,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Gateway description. 
 	 * 
 	 * @since 1.0.0
-	 * @var string $name
+	 * @var string $description
 	 */
 	protected $description = 'Abstract Gateway Desc';
 	
@@ -270,8 +270,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * This parent method only covers free purchases.
 	 * 
 	 * @since 1.0.0
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
+		
+		do_action( 'ms_model_gateway_process_purchase_before', $ms_relationship, $this );
 		
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$invoice->gateway_id = $this->id;
@@ -290,6 +293,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Overridden in child classes. 
 	 * 
 	 * @since 1.0.0
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function cancel_membership( $ms_relationship ) {
 		MS_Helper_Debug::log( __( 'Override the cancel_membership method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
@@ -301,8 +305,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Overridden in child gateway classes.
 	 * 
 	 * @since 1.0.0
-	 *
-	 * @access public
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
 		MS_Helper_Debug::log( __( 'Override the request_payment method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
