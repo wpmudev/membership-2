@@ -549,7 +549,7 @@ class MS_Helper_Html extends MS_Helper {
 			</div>
 			<div class="ms-settings-tab-desc-wrapper">
 				<?php foreach( $desc as $description ): ?>
-					<div class="ms-settings-tab-desc">
+					<div class="ms-settings-tab-desc ms-description">
 						<?php echo $description; ?>
 					</div>
 				<?php endforeach; ?>
@@ -579,7 +579,7 @@ class MS_Helper_Html extends MS_Helper {
 		if( ! empty( $title ) ) {
 			echo '<h3>' . $title . '</h3>';
 		}
-		echo '<span class="ms-settings-description">' . $description . '</span>';
+		echo '<span class="ms-settings-description ms-description">' . $description . '</span>';
 		do_action( 'ms_helper_settings_box_header_end', $title, $description );
 	}
 

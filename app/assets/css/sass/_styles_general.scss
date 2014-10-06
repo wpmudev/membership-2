@@ -11,20 +11,11 @@
 /* Define general layout states */
 .ms-wrap {
 	margin: 10px 20px 0 2px;
-	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 	input,
 	select,
 	textarea {
 		font-size: .9em;
-	}
-
-	.ms-bold {
-		font-weight: bold;
-	}
-
-	.ms-italic {
-		font-style: italic;
 	}
 
 	.clear {
@@ -47,7 +38,7 @@
 /* Box styles */
 .ms-wrap {
 	.ms-settings {
-		position:relative;
+		position: relative;
 		overflow: hidden;
 
 		padding: 10px 20px 20px;

@@ -18,18 +18,11 @@
 /* Define general layout states */
 .ms-wrap {
   margin: 10px 20px 0 2px;
-  font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .ms-wrap input,
 .ms-wrap select,
 .ms-wrap textarea {
   font-size: .9em;
-}
-.ms-wrap .ms-bold {
-  font-weight: bold;
-}
-.ms-wrap .ms-italic {
-  font-style: italic;
 }
 .ms-wrap .clear {
   margin: 1em 0;
@@ -54,6 +47,33 @@
   background: #fff;
   border: 1px solid #E5E5E5;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/**
+ * Typographic styles
+ */
+.ms-wrap {
+  font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.ms-wrap .ms-bold {
+  font-weight: bold;
+}
+.ms-wrap .ms-italic {
+  font-style: italic;
+}
+.ms-wrap .ms-description {
+  color: #888;
+  font-size: 0.9em;
+}
+.ms-wrap h3 {
+  margin: 0;
+}
+.ms-wrap .ms-settings-tab-desc-wrapper {
+  margin: 0 0 15px;
+}
+.ms-wrap .ms-group-head {
+  clear: both;
+  padding-top: 15px;
 }
 
 /**
@@ -183,9 +203,6 @@
   line-height: 29px;
   text-align: center;
 }
-.ms-wrap .ms-settings-desc-wrapper {
-  margin: 9px 15px;
-}
 .ms-wrap .ms-settings-desc {
   margin: 0 auto;
   text-align: center;
@@ -200,7 +217,9 @@
 /**
  * Styles for forms and input elements
  */
-/* General styles */
+/***
+ * GENERAL STYLES *
+ ***/
 .ms-wrap .ms-field-description {
   display: inline-block;
   margin: 10px 0;
@@ -241,12 +260,30 @@
 .ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
   content: ' - ';
 }
+
+/***
+ * FORM AND FIELD LAYOUT *
+ ***/
 .ms-wrap .ms-wrapper-center {
   max-width: 800px;
-  margin: 50px auto;
+  margin: 0 auto;
+}
+.ms-wrap .ms-wrapper-center.wide {
+  max-width: 1200px;
+}
+.ms-wrap .ms-half {
+  float: left;
+  width: 50%;
+  margin: 0;
+  padding: 0;
+}
+.ms-wrap .ms-half.space {
+  padding-right: 20px;
 }
 
-/* Radio buttons */
+/***
+ * RADIO BUTTONS *
+ ***/
 .ms-wrap .ms-radio {
   margin: 2px 4px 0 0;
   float: left;
@@ -264,7 +301,9 @@
   width: 100%;
 }
 
-/* Checkbox buttons */
+/***
+ * CHECKBOX *
+ ***/
 .ms-wrap .ms-checkbox {
   margin: 2px 4px 0 0;
   float: left;
@@ -277,7 +316,9 @@
   font-weight: 500;
 }
 
-/* Select2 */
+/***
+ * SELECT2 *
+ ***/
 .ms-select2.select2-container {
   margin-right: .5em;
 }
@@ -321,6 +362,51 @@
 }
 .ms-select2 .select2-results .select2-match:empty {
   display: none;
+}
+
+/* Radio Slider */
+.ms-wrap .ms-radio-slider:focus {
+  background: none;
+  outline: none;
+}
+.ms-wrap .ms-radio-slider {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 18px;
+  margin: 3px 0;
+  border-radius: 10px;
+  background: #b0b0b0;
+  opacity: .8;
+}
+.ms-wrap .ms-radio-slider:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+.ms-wrap .ms-radio-slider .ms-toggle {
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin: 3px;
+  background: #F4F4F4;
+  border-radius: 50%;
+  transition: all .2s ease-in-out;
+}
+.ms-wrap .ms-radio-slider .ms-toggle:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.ms-wrap .ms-radio-slider.on .ms-toggle {
+  left: 21px;
+}
+.ms-wrap .ms-radio-slider.on {
+  background: #6bbb1a;
+}
+.ms-wrap .ms-radio-slider.ms-processing {
+  cursor: wait;
 }
 
 /**
@@ -499,6 +585,14 @@
   float: none;
   display: inline-block;
   width: auto;
+}
+.ms-wrap .widefat th.column-active,
+.ms-wrap .widefat td.column-active {
+  width: 135px;
+  text-align: center;
+}
+.ms-wrap .ms-global-payment-wrapper .ms-field-input {
+  width: 100%;
 }
 
 .ms-title {

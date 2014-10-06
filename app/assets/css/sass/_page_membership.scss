@@ -91,4 +91,18 @@
 			width: auto;
 		}
 	}
+
+	.widefat {
+		th.column-active,
+		td.column-active {
+			width: 135px;
+			text-align: center;
+		}
+	}
+
+	.ms-global-payment-wrapper {
+		.ms-field-input {
+			width: 100%;
+		}
+	}
 }

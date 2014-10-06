@@ -3,60 +3,64 @@
 class MS_View_Membership_Setup_Payment extends MS_View {
 
 	protected $data;
-	
-	public function to_html() {		
+
+	public function to_html() {
 		$fields = $this->get_fields();
 
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
-		
+
 		ob_start();
 		?>
-		
+
 		<div class="wrap ms-wrap">
-			<?php 
-				MS_Helper_Html::settings_header( array(
-					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-					'desc' => "$desc",
-					'bread_crumbs' => $this->data['bread_crumbs'],
-				) ); 
+			<?php
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+						'desc' => "$desc",
+						'bread_crumbs' => $this->data['bread_crumbs'],
+					)
+				);
 			?>
-			<div class="clear"></div>
-			<hr />
-			<div id="ms-payment-settings-wrapper">
-				<div class="ms-list-table-half">
-					<?php $this->global_payment_settings(); ?>
-				</div>
-				<?php
-					if( $this->data['membership']->can_have_children() ) { 
-						foreach( $this->data['children'] as $child ) {
-							$this->specific_payment_settings( $child );
+			<br class="clear" />
+			<div class="ms-wrapper-center wide">
+				<div class="ms-separator"><hr /></div>
+				<div id="ms-payment-settings-wrapper">
+					<div class="ms-half space">
+						<?php $this->global_payment_settings(); ?>
+					</div>
+					<?php
+						if( $this->data['membership']->can_have_children() ) {
+							foreach( $this->data['children'] as $child ) {
+								$this->specific_payment_settings( $child );
+							}
 						}
-					}
-					else {
-						$this->specific_payment_settings( $this->data['membership'] );
-					}
-				?>
+						else {
+							$this->specific_payment_settings( $this->data['membership'] );
+						}
+					?>
+				</div>
+				<br class="clear" />
+				<?php MS_Helper_Html::settings_footer( array( 'fields' => $this->fields['control_fields'] ) ); ?>
 			</div>
-			<div class="clear"></div>
-			<?php MS_Helper_Html::settings_footer( array( 'fields' => $this->fields['control_fields'] ) ); ?>
 		</div>
-		
+
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	private function get_fields() {
 		$membership = $this->data['membership'];
-	
+
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
-		
+
 		$fields = array(
 				'is_free' => array(
 						'id' => 'is_free',
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-						'value' => $membership->is_free,
+						'value' => ( ! $membership->is_free ? 0 : 1),
 						'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
 						'class' => 'ms-payments-choice ms-ajax-update',
 						'field_options' => array(
@@ -93,26 +97,26 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						),
 				),
 		);
-		
+
 		return apply_filters( 'ms_view_memebrship_setup_payment_get_fields', $fields );
 	}
-	
+
 	public function global_payment_settings() {
 
 		if( $this->data['is_global_payments_set'] ) {
-			return;
+	#		return;
 		}
-		
+
 		$view = MS_Factory::create( 'MS_View_Settings_Payment' );
 		$view->render();
 	}
-	
+
 	public function specific_payment_settings( $membership ) {
 		$title = sprintf( __( '%s Specific Payment Settings:', MS_TEXT_DOMAIN ), $membership->name );
 		$desc = sprintf( __( 'Payment Settings for %s.', MS_TEXT_DOMAIN ), $membership->name );
 		$fields = $this->get_specific_payment_fields( $membership );
 		?>
-		<div class="ms-specific-payment-wrapper ms-setup-half-width">
+		<div class="ms-specific-payment-wrapper ms-half">
 			<?php MS_Helper_Html::settings_box_header( $title, $desc ); ?>
 				<div class="ms-payment-structure-wrapper">
 					<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
@@ -131,7 +135,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
 						<span> to </span>
 						<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
-					</div>											
+					</div>
 				</div>
 				<div class="ms-trial-wrapper">
 					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
@@ -148,7 +152,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				</div>
 			<?php MS_Helper_Html::settings_box_footer(); ?>
 		</div>
-		<?php 
+		<?php
 	}
 
 	private function get_specific_payment_fields( $membership ) {
@@ -333,5 +337,5 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 
 		return apply_filters( 'ms_view_memebrship_setup_payment_get_global_fields', $fields );
 	}
-	
+
 }

@@ -1,0 +1,33 @@
+/**
+ * Typographic styles
+ */
+
+.ms-wrap {
+	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+	.ms-bold {
+		font-weight: bold;
+	}
+
+	.ms-italic {
+		font-style: italic;
+	}
+
+	.ms-description {
+		color: #888;
+		font-size: 0.9em;
+	}
+
+	h3 {
+		margin: 0;
+	}
+
+	.ms-settings-tab-desc-wrapper {
+		margin: 0 0 15px;
+	}
+
+	.ms-group-head {
+		clear: both;
+		padding-top: 15px;
+	}
+}

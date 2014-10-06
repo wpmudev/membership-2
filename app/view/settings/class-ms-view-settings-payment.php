@@ -3,47 +3,55 @@
 class MS_View_Settings_Payment extends MS_View {
 
 	protected $data;
-	
-	public function to_html() {		
+
+	public function to_html() {
 
 		$gateway_list = new MS_Helper_List_Table_Gateway();
 		$gateway_list->prepare_items();
 		$fields = $this->get_global_payment_fields();
-		
+
 		$gateways = MS_Model_Gateway::get_gateways();
-		
+
 		?>
 		<div class="ms-global-payment-wrapper">
 			<div class="ms-list-table-wrapper">
-				<?php 
-					MS_Helper_Html::settings_tab_header( array( 
+				<?php
+					MS_Helper_Html::settings_tab_header(
+						array(
 							'title' => __( 'Global Payment Settings', MS_TEXT_DOMAIN ),
-							'desc' =>  __( 'These are shared across all memberships.', MS_TEXT_DOMAIN ) 
-					) ); 
+							'desc' => __( 'These are shared across all memberships.', MS_TEXT_DOMAIN ),
+						)
+					);
 				?>
-				<hr />
-				<div class="ms-setup-half-width">
+				<div class="ms-half space">
 					<?php MS_Helper_Html::html_element( $fields['currency'] ); ?>
 				</div>
-				<div class="ms-setup-half-width">
+				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['invoice_sender_name'] ); ?>
 				</div>
+
+				<div class="ms-group-head">
+					<div class="ms-bold"><?php _e( 'Payment Gateways:', MS_TEXT_DOMAIN ); ?></div>
+					<div class="ms-description"><?php _e( 'You need to set-up at least one Payment Gateway to be able to process payments.', MS_TEXT_DOMAIN ); ?></div>
+				</div>
+
 				<?php $gateway_list->display(); ?>
 			</div>
-			<?php foreach( $gateways as $gateway ) :?>
-				<div class="ms-gateway-settings-wrapper ms-setup-half-width" id="ms-gateway-settings-<?php echo $gateway->id; ?>">
-					<?php do_action( 'ms_controller_gateway_settings_render_view', $gateway->id );?>
+
+			<?php foreach ( $gateways as $gateway ) : ?>
+				<div class="ms-gateway-settings-wrapper ms-half" id="ms-gateway-settings-<?php echo esc_attr( $gateway->id ); ?>">
+					<?php do_action( 'ms_controller_gateway_settings_render_view', $gateway->id ); ?>
 				</div>
-			<?php endforeach;?>
+			<?php endforeach; ?>
 		</div>
-		<?php 
+		<?php
 	}
-	
+
 	private function get_global_payment_fields() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
 		$nonce = wp_create_nonce( $action );
-		
+
 		$fields = array(
 			'currency' => array(
 					'id' => 'currency',
@@ -75,5 +83,5 @@ class MS_View_Settings_Payment extends MS_View {
 
 		return apply_filters( 'ms_view_gateway_get_global_payment_fields', $fields );
 	}
-	
+
 }

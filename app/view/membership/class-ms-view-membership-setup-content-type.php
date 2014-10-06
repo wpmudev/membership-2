@@ -27,7 +27,7 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 					'bread_crumbs' => $this->data['bread_crumbs'],
 				) );
 			?>
-			<div class="ms-content-type-wrapper">
+			<div class="ms-content-type-wrapper ms-wrapper-center">
 				<form action="" method="post" id="ms-create-child-form" >
 					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php MS_Helper_Html::html_element( $this->fields['step'] ); ?>

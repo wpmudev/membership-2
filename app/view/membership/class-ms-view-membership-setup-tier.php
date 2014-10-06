@@ -3,24 +3,24 @@
 class MS_View_Membership_Setup_Tier extends MS_View {
 
 	protected $fields = array();
-	
+
 	protected $data;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		$membership = $this->data['membership'];
-	
+
 		$list_table = new MS_Helper_List_Table_Membership_Group( $membership );
 		$list_table->prepare_items();
-	
+
 		ob_start();
 		?>
-							
+
 		<div class="wrap ms-wrap">
-			<?php 
+			<?php
 				MS_Helper_Html::settings_header( array(
 					'title' => __( 'Set Up Membership Tiers', MS_TEXT_DOMAIN ),
-					'desc' => array( 
+					'desc' => array(
 							sprintf( __( 'Set up different Tier Levels for %s.', MS_TEXT_DOMAIN ), $membership->name ),
 							__( 'You can have as many Tier Levels as you want, though remember, less is more.', MS_TEXT_DOMAIN ),
 							__( 'Begin with your lowest Tier Level and move up.', MS_TEXT_DOMAIN ),
@@ -28,7 +28,7 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 					'bread_crumbs' => $this->data['bread_crumbs'],
 				) );
 			?>
-			<div class="ms-content-type-wrapper">
+			<div class="ms-tier-wrapper ms-wrapper-center">
 				<form action="" method="post" id="ms-create-child-form" >
 					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php MS_Helper_Html::html_element( $this->fields['step'] ); ?>
@@ -37,23 +37,23 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 					<?php MS_Helper_Html::html_element( $this->fields['submit_content_type'] ); ?>
 				</form>
 				<?php $list_table->display(); ?>
-				<?php 
-					MS_Helper_Html::settings_footer( array( 'fields' => array( $this->fields['step'] ) ) ); 
+				<?php
+					MS_Helper_Html::settings_footer( array( 'fields' => array( $this->fields['step'] ) ) );
 				?>
-			</div>	
+			</div>
 			<div class="clear"></div>
 		</div>
-		
+
 		<?php
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	private function prepare_fields() {
 		$membership = $this->data['membership'];
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
-		
+
 		$this->fields = array(
 				'name' => array(
 						'id' => 'name',
@@ -84,8 +84,8 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $nonce,
 				),
-	
+
 		);
 	}
 }
-	
+

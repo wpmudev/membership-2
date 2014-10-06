@@ -308,8 +308,10 @@ class MS_Helper_List_Table {
 	 *
 	 * @since 3.1.0
 	 * @access public
+	 *
+	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
-	public function bulk_actions() {
+	public function bulk_actions( $echo = true ) {
 		if ( is_null( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
 			/**
@@ -332,8 +334,10 @@ class MS_Helper_List_Table {
 		}
 
 		if ( empty( $this->_actions ) ) {
-			return;
+			return '';
 		}
+
+		if ( ! $echo ) { ob_start(); }
 
 		echo "<select name='action$two'>\n";
 		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions' ) . "</option>\n";
@@ -348,6 +352,8 @@ class MS_Helper_List_Table {
 
 		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
 		echo "\n";
+
+		if ( ! $echo ) { return ob_get_clean(); }
 	}
 
 	/**
@@ -567,21 +573,28 @@ class MS_Helper_List_Table {
 	 *
 	 * @since 3.1.0
 	 * @access protected
+	 *
+	 * @param  string $which Either 'top' or 'bottom'
+	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
-	protected function pagination( $which ) {
+	protected function pagination( $which, $echo = true ) {
 		if ( empty( $this->_pagination_args ) ) {
 			return;
 		}
 
 		extract( $this->_pagination_args, EXTR_SKIP );
 
-		$output = '<span class="displaying-num">' . sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
+		$output = '<span class="displaying-num">' .
+			sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) ) .
+			'</span>';
 
 		$current = $this->get_pagenum();
 
 		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 
-		$current_url = remove_query_arg( array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url );
+		$current_url = remove_query_arg(
+			array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
+		);
 
 		$page_links = array();
 
@@ -655,7 +668,11 @@ class MS_Helper_List_Table {
 
 		$this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
 
-		echo $this->_pagination;
+		if ( $echo ) {
+			echo $this->_pagination;
+		} else {
+			return $this->_pagination;
+		}
 	}
 
 	/**
@@ -859,7 +876,7 @@ class MS_Helper_List_Table {
 			</tbody>
 		</table>
 		<?php
-			$this->display_tablenav( 'bottom' );
+		$this->display_tablenav( 'bottom' );
 	}
 
 	/**
@@ -884,20 +901,29 @@ class MS_Helper_List_Table {
 		if ( 'top' == $which ) {
 			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
 		}
-	?>
-	<div class="tablenav <?php echo esc_attr( $which ); ?>">
 
-		<div class="alignleft actions bulkactions">
-			<?php $this->bulk_actions(); ?>
+		$bulk_actions = $this->bulk_actions( false );
+		$extra = $this->extra_tablenav( $which, false );
+		$pagination = $this->pagination( $which, false );
+
+		// Don't display empty tablenav elements.
+		if ( ! $bulk_actions && ! $extra && ! $pagination ) {
+			return;
+		}
+
+		?>
+		<div class="tablenav <?php echo esc_attr( $which ); ?>">
+
+			<div class="alignleft actions bulkactions">
+				<?php echo $bulk_actions; ?>
+			</div>
+			<?php
+			echo $extra . $pagination;
+			?>
+
+			<br class="clear" />
 		</div>
 		<?php
-		$this->extra_tablenav( $which );
-		$this->pagination( $which );
-		?>
-
-		<br class="clear" />
-	</div>
-	<?php
 	}
 
 	/**
@@ -905,8 +931,11 @@ class MS_Helper_List_Table {
 	 *
 	 * @since 3.1.0
 	 * @access protected
+	 *
+	 * @param  string $which Either 'top' or 'bottom'
+	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
-	protected function extra_tablenav( $which ) {}
+	protected function extra_tablenav( $which, $echo = true ) {}
 
 	/**
 	 * Generate the <tbody> part of the table
