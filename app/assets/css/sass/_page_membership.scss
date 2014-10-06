@@ -74,3 +74,21 @@
 		}
 	}
 }
+
+/* Page: Payment options */
+.ms-wrap {
+	.wrapper-is_free {
+		max-width: 400px;
+
+		.ms-radio-input-wrapper {
+			width: 49.5%;
+			float: left;
+		}
+
+		label {
+			float: none;
+			display: inline-block;
+			width: auto;
+		}
+	}
+}

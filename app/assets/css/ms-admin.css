@@ -155,6 +155,24 @@
 }
 
 /**
+ * Navigational elements.
+ */
+.ms-wrap .ms-bread-crumb {
+  text-align: center;
+}
+.ms-wrap .ms-bread-crumb a {
+  text-decoration: none;
+}
+.ms-wrap .ms-bread-crumb .ms-bread-crumb-sep {
+  font-size: .7em;
+  margin: 0 .5em;
+  color: #AAA;
+}
+.ms-wrap .ms-bread-crumb .ms-bread-crumb-next {
+  color: #AAA;
+}
+
+/**
  * Settings header and footer.
  */
 /* Header styles */
@@ -176,7 +194,7 @@
 /* Footer styles */
 .ms-wrap .ms-settings-footer {
   position: relative;
-  margin: 10px;
+  margin: 10px 0;
 }
 
 /**
@@ -222,6 +240,10 @@
 }
 .ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
   content: ' - ';
+}
+.ms-wrap .ms-wrapper-center {
+  max-width: 800px;
+  margin: 50px auto;
 }
 
 /* Radio buttons */
@@ -463,6 +485,20 @@
 }
 .ms-wrap .ms-chose-type .ms-radio-caption {
   margin-bottom: 1em;
+}
+
+/* Page: Payment options */
+.ms-wrap .wrapper-is_free {
+  max-width: 400px;
+}
+.ms-wrap .wrapper-is_free .ms-radio-input-wrapper {
+  width: 49.5%;
+  float: left;
+}
+.ms-wrap .wrapper-is_free label {
+  float: none;
+  display: inline-block;
+  width: auto;
 }
 
 .ms-title {

@@ -1,0 +1,23 @@
+/**
+ * Navigational elements.
+ */
+
+.ms-wrap {
+	.ms-bread-crumb {
+		text-align: center;
+
+		a {
+			text-decoration: none;
+		}
+
+		.ms-bread-crumb-sep {
+			font-size: .7em;
+			margin: 0 .5em;
+			color: #AAA;
+		}
+
+		.ms-bread-crumb-next {
+			color: #AAA;
+		}
+	}
+}

@@ -59,23 +59,7 @@
 .ms-control-fields-wrapper {
 	clear: both;
 }
-/* Payment setup page */
-.ms-payment-wrapper{
 
-}
-.ms-settings-desc .ms-field-description {
-	color: #888;
-	font-size: 1em;
-}
-.ms-payments-choice {
-	display: inline;
-	margin: 0 2em;
-    width: 10em;
-}
-
-.ms-trial-wrapper {
-	margin: 20px 0;
-}
 /* Overview Page */
 .ms-membership-status-wrapper {
 	width: 15em;
@@ -142,20 +126,12 @@
 }
 
 /* setup content type */
-.ms-content-type-wrapper {
-	width: 50%;
-	margin: 50px auto;
-}
 #content_type_name, #submit_content_type {
 	display: inline-block;
 	margin: 10px 5px 10px 0;
 }
 
 /* setup ms tier */
-.ms-tier-wrapper {
-	width: 50%;
-	margin: 50px auto;
-}
 #tier_name, #submit_tier {
 	display: inline-block;
 	margin: 10px 5px 10px 0;
@@ -215,18 +191,6 @@ input.ms-dripped-spec-date {
 	width:30px;
 	height:30px;
 	background-color: transparent;
-}
-
-/* Bread crumbs */
-.ms-bread-crumb {
-    text-align: center;
-}
-.ms-bread-crumb-sep{
-	font-size: .7em;
-	margin: 0 .5em;
-}
-.ms-bread-crumb-next {
-	color: #aaa;
 }
 
 /* Admin pointer */
