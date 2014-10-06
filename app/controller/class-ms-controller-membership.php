@@ -872,6 +872,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership = $this->load_membership();
 
 		$bread_crumbs = array();
+
 		switch( $step ) {
 			case self::STEP_OVERVIEW:
 				$bread_crumbs['prev'] = array(
@@ -882,6 +883,7 @@ class MS_Controller_Membership extends MS_Controller {
 					'title' => $membership->name,
 				);
 				break;
+
 			case self::STEP_ACCESSIBLE_CONTENT:
 				if( $parent = $membership->get_parent() ) {
 					$bread_crumbs['prev'] = array(
@@ -890,7 +892,7 @@ class MS_Controller_Membership extends MS_Controller {
 									MS_Controller_Plugin::MENU_SLUG,
 									self::STEP_OVERVIEW,
 									$parent->id
-							 ) ),
+							) ),
 					);
 					if( MS_Model_Membership::TYPE_TIER == $parent->type ) {
 						$bread_crumbs['prev1'] = array(
@@ -899,7 +901,7 @@ class MS_Controller_Membership extends MS_Controller {
 										MS_Controller_Plugin::MENU_SLUG,
 										self::STEP_SETUP_MS_TIERS,
 										$parent->id
-								 ) ),
+								) ),
 						);
 					}
 					elseif( MS_Model_Membership::TYPE_CONTENT_TYPE == $parent->type ) {
@@ -909,7 +911,7 @@ class MS_Controller_Membership extends MS_Controller {
 										MS_Controller_Plugin::MENU_SLUG,
 										self::STEP_SETUP_CONTENT_TYPES,
 										$parent->id
-								 ) ),
+								) ),
 						);
 					}
 					$bread_crumbs['current'] = array(
@@ -931,6 +933,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 				}
 				break;
+
 			case self::STEP_SETUP_CONTENT_TYPES:
 				$bread_crumbs['prev'] = array(
 						'title' => $membership->name,
@@ -949,6 +952,7 @@ class MS_Controller_Membership extends MS_Controller {
 					);
 				}
 				break;
+
 			case self::STEP_SETUP_MS_TIERS:
 				$bread_crumbs['prev'] = array(
 						'title' => $membership->name,
@@ -965,6 +969,7 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
 				break;
+
 			case self::STEP_SETUP_DRIPPED:
 				$bread_crumbs['prev'] = array(
 						'title' => $membership->name,
@@ -981,6 +986,7 @@ class MS_Controller_Membership extends MS_Controller {
 						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
 				break;
+
 			case self::STEP_SETUP_PAYMENT:
 				$bread_crumbs['prev'] = array(
 						'title' => $membership->name,
@@ -988,7 +994,7 @@ class MS_Controller_Membership extends MS_Controller {
 								MS_Controller_Plugin::MENU_SLUG,
 								self::STEP_OVERVIEW,
 								$membership->id
-						 ) ),
+						) ),
 				);
 				if( MS_Model_Membership::TYPE_TIER == $membership->type ) {
 					$bread_crumbs['prev1'] = array(
@@ -997,7 +1003,7 @@ class MS_Controller_Membership extends MS_Controller {
 									MS_Controller_Plugin::MENU_SLUG,
 									self::STEP_SETUP_MS_TIERS,
 									$membership->id
-							 ) ),
+							) ),
 					);
 				}
 				elseif( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
@@ -1007,7 +1013,7 @@ class MS_Controller_Membership extends MS_Controller {
 									MS_Controller_Plugin::MENU_SLUG,
 									self::STEP_SETUP_CONTENT_TYPES,
 									$membership->id
-							 ) ),
+							) ),
 					);
 				}
 				$bread_crumbs['current'] = array(
