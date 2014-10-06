@@ -216,10 +216,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 
-			/** Try to reuse existing db record to keep history. */
+			/* Try to reuse existing db record to keep history. */
 			$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
 			
-			/** Not found, create a new one. */
+			/* Not found, create a new one. */
 			if( empty( $ms_relationship ) ) {
 				$ms_relationship = MS_Factory::create( 'MS_Model_Membership_Relationship' );
 				$ms_relationship->membership_id = $membership_id;
@@ -227,19 +227,19 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$ms_relationship->status = self::STATUS_PENDING;
 			}
 			
-			/** Always update these fields. */
+			/* Always update these fields. */
 			$ms_relationship->move_from_id = $move_from_id;
 			$ms_relationship->gateway_id = $gateway_id;
 			
 			/** Set initial state. */
 			switch( $ms_relationship->status ) {
-				/**
+				/*
 				 * The invoice/transaction history is keep (using the membership_relationship_id ).
 				 */
 				case self::STATUS_DEACTIVATED:
 					$ms_relationship->status = self::STATUS_PENDING;
 					
-				/** Initial status */
+				/* Initial status */
 				default:
 				case self::STATUS_PENDING:
 					$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
@@ -258,8 +258,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 			
 			if( 'admin' == $gateway_id ) {
-				$ms_relationship->set_status( self::STATUS_ACTIVE );
 				$ms_relationship->config_period();
+				$ms_relationship->status = self::STATUS_ACTIVE;
 			}
 			else {
 				/* Force status calculation. */
