@@ -121,7 +121,7 @@ class MS_Helper_Html extends MS_Helper {
 				$data_ms['_wpnonce'] = wp_create_nonce( $data_ms['action'] );
 			}
 
-			$data_ms = 'data-ms="' . esc_attr( json_encode( $data_ms ) ) . '" ';
+			$data_ms = ' data-ms="' . esc_attr( json_encode( $data_ms ) ) . '" ';
 		}
 
 		$max_attr = empty( $maxlength ) ? '' : 'maxlength="' . esc_attr( $maxlength ) . '" ';
@@ -250,7 +250,7 @@ class MS_Helper_Html extends MS_Helper {
 						$radio_desc = sprintf( '<div class="ms-input-description"><p>%1$s</p></div>', $item_desc );
 					}
 					printf(
-						'<div class="ms-radio-input-wrapper %1$s ms-%2$s"><label class="ms-field-input-label"><input class="ms-field-input ms-radio" type="radio" name="%3$s" id="%4$s_%2$s" value="%2$s" %5$s /><div class="ms-radio-caption">%6$s</div>%7$s</label></div>',
+						'<div class="ms-radio-input-wrapper %1$s ms-%2$s"><label class="ms-field-input-label"><input class="ms-field-input ms-radio %1$s" type="radio" name="%3$s" id="%4$s_%2$s" value="%2$s" %5$s /><div class="ms-radio-caption">%6$s</div>%7$s</label></div>',
 						esc_attr( $class ),
 						esc_attr( $key ),
 						esc_attr( $name ),
