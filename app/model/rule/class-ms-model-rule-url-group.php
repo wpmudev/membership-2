@@ -129,7 +129,15 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		return false;
 	}
 	
-	public function count_rules() {
+   /**
+	* Count protection rules quantity.
+	*
+	* @since 1.0.0
+	* @param bool $has_access_only Optional. Count rules for has_access status only.
+	* @return int $count The rule count result.
+	*/
+	public function count_rules( $has_access_only = true ) {
+	
 		$count = 0;
 		if( $this->access ) {
 			$count = count( $this->rule_value );
@@ -156,11 +164,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		}
 		return apply_filters( 'ms_model_rule_url_group_get_contents', $contents );
 	}
-	
-	public function get_content( $id ) {
-		return $this->rule_value;
-	} 
-	
+		
 	/**
 	 * Validate specific property before set.
 	 *

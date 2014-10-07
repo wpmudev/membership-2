@@ -20,9 +20,23 @@
  *
 */
 
-
+/**
+ * Membership Rule Parent class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule extends MS_Model {
 	
+	/**
+	 * Rule type constants.
+	 * 
+	 * @since 1.0.0
+	 * @var string $rule_type The rule type.
+	 */
 	const RULE_TYPE_CATEGORY = 'category';
 	const RULE_TYPE_COMMENT = 'comment';
 	const RULE_TYPE_MEDIA = 'media';
@@ -35,47 +49,128 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_SHORTCODE = 'shortcode';
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	
+	/**
+	 * Filter type constants.
+	 * 
+	 * @since 1.0.0
+	 */
 	const FILTER_HAS_ACCESS = 'has_access';
 	const FILTER_NO_ACCESS = 'no_access';
 	const FILTER_PROTECTED = 'protected';
 	const FILTER_NOT_PROTECTED = 'not_protected';
 	const FILTER_DRIPPED = 'dripped';
 	
+	/**
+	 * Dripped type constants.
+	 * 
+	 * @since 1.0.0
+	 * @var string $dripped['dripped_type'] The dripped type.
+	 */
 	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
 	const DRIPPED_TYPE_FROM_TODAY = 'from_today';
 	const DRIPPED_TYPE_FROM_REGISTRATION = 'from_registration';
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * ID of the model object.
+	 *
+	 * Saved as WP post ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $id
+	 */
 	protected $id;
 	
+	/**
+	 * Membership ID.
+	 *
+	 * @since 1.0.0
+	 * @var int $membership_id
+	 */
 	protected $membership_id;
 	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 * @var string $rule_type
+	 */	
 	protected $rule_type;
 	
+	/**
+	 * Rule value data.
+	 *
+	 * Each child rule may use it's own data structure, but
+	 * need to override core methods that use parent data structure.
+	 *  
+	 * @since 1.0.0
+	 * @var array $rule_value {
+	 * 		@type int $item_id The protecting item ID.
+	 * 		@type int $value The rule value. 0: no access; 1: has access.
+	 * }
+	 */
 	protected $rule_value = array();
 	
-	protected $inherit_rules;
-	
+	/**
+	 * Dripped Rule data.
+	 *
+	 * Each child rule may use it's own data structure, but
+	 * need to override core methods that use parent data structure.
+	 *
+	 * @since 1.0.0
+	 * @var array{
+	 * 		@type string $dripped_type The selected dripped type.
+	 * 		@type array $rule_value {
+	 *		 	@type int $item_id The protecting item ID.
+	 * 			@type int $dripped_data The dripped data like period or release date.
+	 * 		}
+	 * }
+	 * 
+	 */
 	protected $dripped = array();
 	
-	protected $rule_value_default = true;
+	/**
+	 * Default rule value if no rules are set.
+	 *
+	 * @since 1.0.0
+	 * @var int $rule_value_default The default value. Default 1 (has access).
+	 */
+	protected $rule_value_default = 1;
 	
+	/**
+	 * Rule value invert.
+	 * 
+	 * Invert the access rules. Eg. if has access => no access.
+	 *
+	 * @since 1.0.0
+	 * @var bool $rule_value_invert True if the rule values are inverted.
+	 */
 	protected $rule_value_invert = false;
 
+	/**
+	 * Class constructor.
+	 * 
+	 * @since 1.0.0
+	 * @var int $membership_id The membership that owns this rule object.
+	 */
 	public function __construct( $membership_id ) {
-		$this->membership_id = $membership_id;
+
 		parent::__construct();
+		
+		 $this->membership_id = apply_filters( 'ms_model_rule_contructor_membership_id', $membership_id, $this );
 	}
 	
 	/**
 	 * Rule types.
 	 *
-	 * @todo change array to be rule -> title.
-	 *
 	 * This array is ordered in the hierarchy way.
 	 * First one has more priority than the last one.
 	 * This hierarchy is used to determine access to protected content.
+	 * 
+	 * @since 1.0.0
+	 * @return array $rule_types {
+	 * 		@type in $priority The rule type priority in the execution sequence.
+	 * 		@type string $rule_type The rule type.
+	 * }
 	 */
 	public static function get_rule_types() {
 		$rule_types =  array(
@@ -117,18 +212,21 @@ class MS_Model_Rule extends MS_Model {
 		$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 		$rule_type = ksort( $rule_types );
 
-		return  $rule_types;
+		return apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 	}
 	
 	/**
 	 * Rule types and respective classes.
 	 *
-	 * This array is ordered in the hierarchy way.
-	 * First one has more priority than the last one.
-	 * This hierarchy is used to determine access to protected content.
+	 * @since 1.0.0
+	 * @return array {
+	 * 		@type string $rule_type The rule type constant.
+	 * 		@type string $class_name The rule type class.
+	 * }
 	 */
 	public static function get_rule_type_classes() {
-		return apply_filters( 'ms_model_rule_get_rule_type_classes', array(
+		
+		$classes = array(
 				self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
 				self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
 				self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_Custom_Post_Type',
@@ -140,12 +238,23 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
 				self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
 				self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
-		)
 		);
+		
+		return apply_filters( 'ms_model_rule_get_rule_type_classes', $classes );
 	}
 	
+	/**
+	 * Rule types and respective titles.
+	 *
+	 * @since 1.0.0
+	 * @return array {
+	 * 		@type string $rule_type The rule type constant.
+	 * 		@type string $rule_title The rule title.
+	 * }
+	 */
 	public static function get_rule_type_titles() {
-		return apply_filters( 'ms_model_rule_get_rule_type_titles', array(
+		
+		$titles = array(
 				self::RULE_TYPE_CATEGORY => __( 'Category' , MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
@@ -157,35 +266,82 @@ class MS_Model_Rule extends MS_Model {
 				self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 				self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
-		) );
+		);
+		
+		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );
 	}
 	
+	/**
+	 * Dripped Rule types. 
+	 *
+	 * Return only rule types with dripped rules.
+	 * 
+	 * @since 1.0.0
+	 * @return string[] $rule_type The rule type constant.
+	 */
 	public static function get_dripped_rule_types() {
+		
 		$dripped = array(
-			MS_Model_Rule::RULE_TYPE_PAGE,
-			MS_Model_Rule::RULE_TYPE_POST
+				MS_Model_Rule::RULE_TYPE_PAGE,
+				MS_Model_Rule::RULE_TYPE_POST
 		);
 		
 		return apply_filters( 'ms_model_rule_get_dripped_rule_types', $dripped );
 	}
 	
+	/**
+	 * Get dripped types. 
+	 *
+	 * @todo Remove or develop DRIPPED_TYPE_FROM_TODAY
+	 * 
+	 * @since 1.0.0
+	 * @return array {
+	 * 		@type string $dripped_type The dripped type constant.
+	 * 		@type string $dripped_type_desc The dripped type description.
+	 * }
+	 */
 	public static function get_dripped_types() {
-		return apply_filters( 'ms_model_rule_get_dripped_types', array(
+		
+		$dripped_types = array(
 				self::DRIPPED_TYPE_SPEC_DATE => __( "Reveal Dripped Content on specific dates", MS_TEXT_DOMAIN ),
 // 				self::DRIPPED_TYPE_FROM_TODAY => __( "Reveal Dripped Content 'X' days from today", MS_TEXT_DOMAIN ),
 				self::DRIPPED_TYPE_FROM_REGISTRATION => __( "Reveal Dripped Content 'X' days from user registration", MS_TEXT_DOMAIN ),
-		) );
+		);
+		
+		return apply_filters( 'ms_model_rule_get_dripped_types', $dripped_types );
 	}
 	
+	/**
+	 * Validate dripped type.
+	 *
+	 * @since 1.0.0
+	 * @param string $rule_type The rule type to validate.
+	 * @return bool True if is a valid dripped type.
+	 */
 	public static function is_valid_dripped_type( $type ) {
-		return apply_filters( 'ms_model_rule_is_valid_dripped_type', array_key_exists( $type, self::get_dripped_types() ) );
+		
+		$valid = array_key_exists( $type, self::get_dripped_types() );
+		
+		return apply_filters( 'ms_model_rule_is_valid_dripped_type', $valid );
 	}
 	
+	/**
+	 * Create a rule model.
+	 *
+	 * @since 1.0.0
+	 * @param string $rule_type The rule type to create.
+	 * @param int $membership_id The Membership model this rule belongs to.
+	 * @return MS_Model_Rule The rule model.
+	 * @throws Exception when rule type is not valid.
+	 */
 	public static function rule_factory( $rule_type, $membership_id) {
+		
 		if( self::is_valid_rule_type( $rule_type ) ) {
+			
 			$rule_types = self::get_rule_type_classes();
 			$class = $rule_types[ $rule_type ];
 			$rule = new $class( $membership_id );
+			
 			return apply_filters( 'ms_model_rule_rule_factory', $rule, $rule_type, $membership_id );
 		}
 		else {
@@ -193,7 +349,18 @@ class MS_Model_Rule extends MS_Model {
 		}
 	}
 	
+	/**
+	 * Create all active rule type models.
+	 *
+	 * @todo move this method to MS_Factory.
+	 * 
+	 * @since 1.0.0
+	 * @param MS_Model_Rule[] $rules Optional. The rule array for reuse.
+	 * @param int $membership_id The Membership model this rule belongs to.
+	 * @return MS_Model_Rule[] The rule model set.
+	 */
 	public static function rule_set_factory( $rules = null, $membership_id ) {
+		
 		$rule_types = self::get_rule_type_classes();
 	
 		foreach( $rule_types as $type => $class ) {
@@ -205,33 +372,56 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( 'ms_model_rule_rule_set_factory', $rules );
 	}
 	
+	/**
+	 * Validate rule type.
+	 *
+	 * @since 1.0.0
+	 * @param string $rule_type The rule type to validate.
+	 * @return bool True if is a valid type.
+	 */
 	public static function is_valid_rule_type( $rule_type ) {
-		return apply_filters( 'ms_model_rule_is_valid_rule_type', array_key_exists( $rule_type, self::get_rule_type_classes() ) );
+		
+		$valid = array_key_exists( $rule_type, self::get_rule_type_classes() );
+		
+		return apply_filters( 'ms_model_rule_is_valid_rule_type', $valid );
 	}
 	
 	/**
 	 * Set initial protection.
-	 * To be implemented by children classes.
 	 * 
-	 * @since 1.0
+	 * To be overridden by children classes.
+	 * 
+	 * @since 1.0.0
+	 * @param MS_Model_Membership_Relationship The membership relationship to protect content from.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		return false;
+		
+		do_action( 'ms_model_rule_protect_content', $ms_relationship, $this );
+		
 	}
 	
 	/**
 	 * Verify if this model has rules set.
 	 * 
-	 * @since 4.0.0
-	 * 
+	 * @since 1.0.0
 	 * @return boolean True if it has rules, false otherwise.
 	 */
 	public function has_rules() {
+		
 		$has_rules = ! empty( $this->rule_value );
-		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this->rule_value );	
+		
+		return apply_filters( 'ms_model_rule_has_rules', $has_rules, $this );	
 	}
 	
+   /**
+	* Count protection rules quantity.
+	*
+	* @since 1.0.0
+	* @param bool $has_access_only Optional. Count rules for has_access status only.
+	* @return int $count The rule count result.
+	*/
 	public function count_rules( $has_access_only = true ) {
+		
 		$count = 0;
 		
 		if( $has_access_only ) {
@@ -245,34 +435,46 @@ class MS_Model_Rule extends MS_Model {
 			$count = count( $this->rule_value );
 		}
 		
-		return apply_filters( 'ms_model_rule_count_rules', $count, $this->rule_value );
+		return apply_filters( 'ms_model_rule_count_rules', $count, $has_access_only, $this );
 	}
 	
 	/**
 	 * Verify if this model has rule for a content.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
-	 * @param $id The content id to verify rules.
+	 * @param string $id The content id to verify rules for.
 	 * @return boolean True if it has rules, false otherwise.
 	 */
 	public function has_rule( $id ) {
+		
 		$has_rule = isset( $this->rule_value[ $id ] ) ;
-		return apply_filters( 'ms_model_rule_has_rule', $has_rule, $id, $this->rule_value );	
+		
+		return apply_filters( 'ms_model_rule_has_rule', $has_rule, $id, $this );	
 	}
 	
+	/**
+	 * Get rule value for a specific content.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $id The content id to get rule value for.
+	 * @return boolean The rule value for the requested content. Default $rule_value_default.
+	 */
 	public function get_rule_value( $id ) {
+		
 		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $this->rule_value_default;
-		return apply_filters( 'ms_model_rule_get_rule_value', $value, $id, $this->rule_value );
+		
+		return apply_filters( 'ms_model_rule_get_rule_value', $value, $id, $this );
 		
 	}
 	
 	/**
-	 * Verify access to the current asset.
+	 * Verify access to the current content.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param $id The item id to verify access.
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
@@ -286,22 +488,36 @@ class MS_Model_Rule extends MS_Model {
 			$has_access = ! $has_access;
 		}
 		
-		return apply_filters( 'ms_model_rule_has_access', $has_access, $id );
+		return apply_filters( 'ms_model_rule_has_access', $has_access, $id, $this );
 	}
 	
+	/**
+	 * Get current dripped type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The dripped type.
+	 */
 	public function get_dripped_type() {
+		
 		$dripped_type = self::DRIPPED_TYPE_SPEC_DATE;
+		
 		if( ! empty( $this->dripped['dripped_type'] ) ) {
 			$dripped_type = $this->dripped['dripped_type'];
 		}
-		return apply_filters( 'ms_model_rule_get_dripped_type', $dripped_type );
+		
+		return apply_filters( 'ms_model_rule_get_dripped_type', $dripped_type, $this );
 	}
 	
 	/**
 	 * Verify if has dripped rules.
-	 * @return boolean
+	 * 
+	 * @since 1.0.0
+	 * @param string $id The content id to verify.
+	 * @return boolean True if has dripped rules.
 	 */
 	public function has_dripped_rules( $id = null ) {
+		
 		$has_dripped = false;
 		$dripped_type = $this->get_dripped_type();
 		
@@ -309,7 +525,7 @@ class MS_Model_Rule extends MS_Model {
 			$has_dripped = true;
 		}
 
-		return apply_filters( 'ms_model_rule_has_dripped_rules', $has_dripped );
+		return apply_filters( 'ms_model_rule_has_dripped_rules', $has_dripped, $this );
 	}
 		
 	/**
@@ -317,12 +533,12 @@ class MS_Model_Rule extends MS_Model {
 	 * 
 	 * The MS_Helper_Period::current_date may be simulating a date.
 	 * 
-	 * @since 1.0
-	 * 
-	 * @param $start_date The start date of the member membership.
-	 * @param $id The content id to verify dripped acccess. 
+	 * @since 1.0.0
+	 * @param string $start_date The start date of the member membership.
+	 * @param string $id The content id to verify dripped acccess. 
 	 */
 	public function has_dripped_access( $start_date, $id ) {
+		
 		$has_dripped_access = false;
 		
 		$avail_date = $this->get_dripped_avail_date( $id, $start_date );
@@ -332,11 +548,23 @@ class MS_Model_Rule extends MS_Model {
 		}
 		
 		$has_access = $this->has_access( $id );
+		/* Result is a logic AND between dripped and has access */
 		$has_dripped_access = $has_dripped_access && $has_access;
 		
-		return apply_filters( 'ms_model_rule_has_dripped_access', $has_dripped_access );
+		return apply_filters( 'ms_model_rule_has_dripped_access', $has_dripped_access, $this );
 	}
 	
+	/**
+	 * Get dripped value.
+	 *
+	 * Handler for dripped data content.
+	 * Set default values if not present. 
+	 *
+	 * @since 1.0.0
+	 * @param string $dripped_type The dripped type.
+	 * @param $id The content id to verify dripped acccess.
+	 * @param $field The field to get from dripped type data.
+	 */
 	public function get_dripped_value( $dripped_type, $id, $field ) {
 		$value = null;
 		
@@ -359,10 +587,22 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 		
-		return apply_filters( 'ms_model_rule_get_dripped_value', $value );
+		return apply_filters( 'ms_model_rule_get_dripped_value', $value, $this );
 	}
 	
+	/**
+	 * Set dripped value.
+	 *
+	 * Handler for setting dripped data content.
+	 *
+	 * @since 1.0.0
+	 * @param string $dripped_type The dripped type.
+	 * @param $id The content id to set dripped acccess.
+	 * @param $field The field to set in dripped type data.
+	 * @param $value The value to set for $field.
+	 */
 	public function set_dripped_value( $dripped_type, $id, $field = 'spec_date', $value ) {
+		
 		if( self::is_valid_dripped_type( $dripped_type ) ) {
 			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters( 'ms_model_rule_set_dripped_value', $value, $dripped_type, $id, $field );
 			$this->dripped['dripped_type'] = $dripped_type;
@@ -373,9 +613,18 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 		
+		do_action( 'ms_model_rule_set_dripped_value_after', $dripped_type, $id, $field, $value, $this );
 	}
 	
+	/**
+	 * Get dripped content available date.
+	 *
+	 * @since 1.0.0
+	 * @param string $id The content id to verify dripped acccess.
+	 * @param string $start_date The start date of the member membership.
+	 */
 	public function get_dripped_avail_date( $id, $start_date = null ) {
+		
 		$avail_date = MS_Helper_Period::current_date();
 		
 		$dripped_type = $this->get_dripped_type();
@@ -401,10 +650,23 @@ class MS_Model_Rule extends MS_Model {
 						
 		}	
 		
-		return apply_filters( 'ms_model_rule_get_dripped_avail_date', $avail_date );
+		return apply_filters( 'ms_model_rule_get_dripped_avail_date', $avail_date, $this );
 	}
 	
+	/**
+	 * Count item protected content summary.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array {
+	 * 		@type int $total The total content count.
+	 * 		@type int $accessible The has access content count.
+	 * 		@type int $restricted The protected content count.
+	 * } 
+	 */
 	public function count_item_access( $args = null ) {
+		
 		if( $this->rule_value_invert ) {
 			$args['default'] = 1;
 		}
@@ -441,87 +703,155 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
-	 * Get content of this rule domain.
-	 * @todo Specify a return content interface
-	 * @throws Exception
+	 * Get contents of this rule domain.
+	 * 
+	 * To be overridden in children classes.
+	 * 
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The contents array. 
 	 */
 	public function get_contents( $args = null ) {
-		throw new Exception ("Method to be implemented in child class");
-	}
-	
-	public function get_content( $id ) {
-		$content = null;
-		$contents = $this->get_contents();
-		if( ! empty( $contents[ $id ]->name ) ) {
-			$content = $contents[ $id ]->name;
-		}
-		elseif( ! empty( $contents[ $id ]->post_name ) ) {
-			$content = $contents[ $id ]->post_name;
-				
-		}
-		elseif( ! empty( $contents[ $id ]->title ) ) {
-			$content = $contents[ $id ]->title;
-		}
-		elseif( ! empty( $contents[ $id ] ) ) {
-			$content = $contents[ $id ];
-		}
-		else {
-			$content = $id;
-		}
 		
-		return apply_filters( 'ms_model_rule_get_content', $content, $id );
+		$contents = array();
+		
+		return apply_filters( 'ms_model_rule_get_contents', $contents, $args, $this );
 	}
+	
+	/**
+	 * Get content count.
+	 * 
+	 * To be overridden in children classes.
+	 * 
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The content count. 
+	 */
 	public function get_content_count( $args = null ) {
-		return 0;
+		
+		$count = 0;
+		
+		return apply_filters( 'ms_model_rule_get_contents', $count, $args, $this );
 	}
 	
+   /**
+	* Reset the rule value data.
+	*
+	* @since 1.0.0
+	* @param $args The query post args
+	* 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	* @return int The content count.
+	*/
 	public function reset_rule_values() {
-		$this->rule_value = array();
+		
+		$this->rule_value = apply_filters( 'ms_model_rule_reset_rule_values', array(), $this );
 	}
 	
+   /**
+	* Merge rule values.
+	*
+	* @since 1.0.0
+	* @param MS_Model_Rule $src_rule The source rule model to merge rules to. 
+	*/
 	public function merge_rule_values( $src_rule ) {
 		
-		$rule_value = $this->rule_value;
-		if( ! is_array( $this->rule_value ) ) {
-			$rule_value = array();
-		}
-		$src_rule_value = $src_rule->rule_value;
-		if( ! is_array( $src_rule->rule_value ) ) {
-			$src_rule_value = array();
-		}
-		foreach( $src_rule_value as $id => $value ) {
-			if( ! $value ) {
-				unset( $src_rule_value[ $id ] );
+		if( $src_rule->rule_type == $this->rule_type ) {
+			$rule_value = $this->rule_value;
+			if( ! is_array( $this->rule_value ) ) {
+				$rule_value = array();
 			}
+			$src_rule_value = $src_rule->rule_value;
+			if( ! is_array( $src_rule->rule_value ) ) {
+				$src_rule_value = array();
+			}
+			foreach( $src_rule_value as $id => $value ) {
+				if( ! $value ) {
+					unset( $src_rule_value[ $id ] );
+				}
+			}
+			
+			/* first intersect to preserve only protected rules overrides and after that, merge preserving keys */
+			$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
 		}
 		
-		/** first intersect to preserve only protected rules overrides and after that, merge preserving keys */
-		$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
-		
+		do_action( 'ms_model_rule_merge_rule_values', $src_rule, $this );
 	}
 	
+	/**
+	 * Set access status to content.
+	 *
+	 * @since 1.0.0
+	 * @param string $id The content id to set access to.
+	 * @param int $has_access The access status to set. 
+	 */
 	public function set_access( $id, $has_access ) {
-// 		$this->rule_value[ $id ] = $has_access ? 1 : 0;
+		
+		if( is_bool( $has_access ) ) {
+			$has_access = $has_access ? 1 : 0;
+		}
+		
 		$this->rule_value[ $id ] = $has_access;
 		
 		if( $this->rule_value_invert && ! $has_access ) {
 			unset( $this->rule_value[ $id ] );
 		}
+		
+		do_action( 'ms_model_rule_set_access', $id, $has_access, $this );
 	}
 	
+	/**
+	 * Give access to content.
+	 *
+	 * @since 1.0.0
+	 * @param string $id The content id to give access.
+	 */
 	public function give_access( $id ) {
+		
 		$this->set_access( $id, true );
+		
+		do_action( 'ms_model_rule_give_access', $id, $this );
 	}
 	
+	/**
+	 * Remove access to content.
+	 *
+	 * @since 1.0.0
+	 * @param string $id The content id to remove access.
+	 */
 	public function remove_access( $id ) {
+		
 		$this->set_access( $id, false );
+		
+		do_action( 'ms_model_rule_remove_access', $id, $this );
 	}
 	
+	/**
+	 * Toggle access to content.
+	 *
+	 * @since 1.0.0
+	 * @param string $id The content id to toggle access.
+	 */
 	public function toggle_access( $id ) {
+		
 		$has_access = ! $this->get_rule_value( $id );
 		$this->set_access( $id, $has_access );
+		
+		do_action( 'ms_model_rule_toggle_access', $id, $this );
 	}
 	
+	/**
+	 * Get WP_Query object arguments.
+	 *
+	 * Return default search arguments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array $args The parsed args.
+	 */
 	public function get_query_args( $args = null ) {
 	
 		$defaults = array(
@@ -533,7 +863,7 @@ class MS_Model_Rule extends MS_Model {
 		);
 		$args = wp_parse_args( $args, $defaults );
 	
-		/** If not visitor membership, just show protected content */
+		/* If not visitor membership, just show protected content */
 		if( ! $this->rule_value_invert ) {
 			$args['post__in'] = array_keys( $this->rule_value );
 		}
@@ -543,6 +873,16 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( "ms_model_rule_{$this->id}_get_query_args", $args );
 	}
 	
+	/**
+	 * Validate wp query args.
+	 *
+	 * Avoid post__in and post__not_in conflicts.
+	 *
+	 * @since 1.0.0
+	 * @param mixed $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return mixed $args The validated args.
+	 */
 	public function validate_query_args( $args ) {
 		
 		/** Cannot use post__in and post_not_in at the same time.*/
@@ -568,7 +908,16 @@ class MS_Model_Rule extends MS_Model {
 		return apply_filters( "ms_model_rule_{$this->id}_validate_query_args", $args );
 	}
 	
+	/**
+	 * Filter content.
+	 *
+	 * @since 1.0.0
+	 * @param string $status The status to filter.
+	 * @param mixed[] $contents The content object array.
+	 * @return mixed[] The filtered contents.
+	 */
 	public function filter_content( $status, $contents ) {
+		
 		foreach( $contents as $key => $content ) {
 			if( !empty( $content->ignore ) ) {
 				continue;
@@ -593,20 +942,27 @@ class MS_Model_Rule extends MS_Model {
 					break;
 			}
 		}
-		return $contents;
+		
+		return apply_filters( 'ms_model_rule_filter_content', $contents, $status, $this );
 	}
 	
+	/**
+	 * Returns Membership object.
+	 *
+	 * @since 1.0.0
+	 * @return MS_Model_Membership The membership object.
+	 */
 	public function get_membership() {
+		
 		$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+		
 		return apply_filters( 'ms_model_rule_get_membership', $membership );
 	}
 	
 	/**
 	 * Returns property associated with the render.
 	 *
-	 * @since 1.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
@@ -626,15 +982,13 @@ class MS_Model_Rule extends MS_Model {
 				break;
 		}
 	
-		return apply_filters( 'ms_model_rule__get', $value, $property );
+		return apply_filters( 'ms_model_rule__get', $value, $property, $this );
 	}
 	
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
-	 *
-	 * @access public
+	 * @since 1.0.0
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
@@ -659,5 +1013,7 @@ class MS_Model_Rule extends MS_Model {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_rule___set_after', $property, $value, $this );
 	}
 }
