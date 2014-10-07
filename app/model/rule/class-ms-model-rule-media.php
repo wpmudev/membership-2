@@ -20,74 +20,127 @@
  *
 */
 
-
+/**
+ * Membership Custom Post Type Groups Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Media extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_MEDIA;
 	
+	/**
+	 * Media protection type constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $protection_type
+	 */
 	const PROTECTION_TYPE_DISABLED = 'protection_type_disabled';
-	
 	const PROTECTION_TYPE_BASIC = 'protection_type_basic';
-	
 	const PROTECTION_TYPE_COMPLETE = 'protection_type_complete';
-	
 	const PROTECTION_TYPE_HYBRID = 'protection_type_hybrid';
 	
+	/**
+	 * Media protection file change prefix.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const FILE_PROTECTION_PREFIX = 'ms_';
-	
+
+	/**
+	 * Media protection file seed/token.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const FILE_PROTECTION_INCREMENT = 2771;
 	
 	protected $ms_relationship;
 	
 	/**
-	 * Verify access to the current asset.
-	 *
-	 * @since 1.0
-	 *
-	 * @param $id The item id to verify access.
+	 * Verify access to the current content.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		return false;
+
+		return apply_filters( 'ms_model_rule_custom_post_type_has_access', false, $id, $this );
 	}
 	
 	/**
 	 * Get the protection type available.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access public static
-	 * @return array The protection type => Description.
+	 * @return array {
+	 * 		The protection type => Description.
+	 * 		@type string $protection_type The media protection type.
+	 * 		@type string $description The media protection description.
+	 * }
 	 */
 	public static function get_protection_types() {
-		return apply_filters( 'ms_model_rule_media_get_protection_types', array(
+		
+		$protection_types = array(
 				self::PROTECTION_TYPE_DISABLED => __( 'Disable protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_BASIC => __( 'Basic protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
-		) );
+		);
+		
+		return apply_filters( 'ms_model_rule_media_get_protection_types', $protection_types );
 	}
 	
+	/**
+	 * Validate protection type.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $type The protection type to validate.
+	 * @return boolean True if is valid.
+	 */
 	public static function is_valid_protection_type( $type ) {
+		
 		$valid = false;
 		$types = self::get_protection_types();
+		
 		if( array_key_exists( $type, $types ) ) {
 			$valid = true;
 		}
+		
 		return apply_filters( 'ms_model_rule_media_is_valid_protection_type', $valid );
 	}
 	
 	/**
-	 * Setup filter hook to protect media file.
-	 *  
-	 * @since 4.0.0
-	 *
-	 * @access public
+	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
-		$this->ms_relationship = $membership_relationship;
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content();
+		
+		$this->ms_relationship = $ms_relationship;
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			$this->add_filter( 'the_content', 'protect_download_content' );
 			$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
@@ -99,13 +152,19 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 * 
 	 * Search content and mask media filename and path.
 	 * 
-	 * @since 4.0.0
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * the_content
+	 * 
+	 * @since 1.0.0
 	 *
-	 * @filter the_content  
-	 * @access public
+	 * @param string $the_content The content before filter.
 	 * @return string The content with masked media url.
 	 */
 	public function protect_download_content( $the_content ) {
+		
+		do_action( 'ms_model_rule_media_protect_download_content_before', $the_content, $this );
+		
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 		
 		if( self::PROTECTION_TYPE_DISABLED == $download_settings['protection_type'] ) {
@@ -116,7 +175,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 		$original_url = trailingslashit( $upload_dir['baseurl'] );
 		$new_path = trailingslashit( trailingslashit( get_option( 'home' ) ) . $download_settings['masked_url'] );
 		
-		/**
+		/*
 		 * Find all the urls in the post and then we'll check if they are protected
 		 * Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the 
 		 */
@@ -136,18 +195,18 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 						$post_id = $this->get_attachment_id( $filename );
 
 						if( ! empty( $post_id ) ) {
-							/**
+							/*
 							 * We have a protected file - so we'll mask it
 							 */
 							switch( $download_settings['protection_type'] ) {
 								case self::PROTECTION_TYPE_COMPLETE:	
-									$protected_filename = self::FILE_PROTECTION_PREFIX . ( $post_id + (int) self::FILE_PROTECTION_INCREMENT) . $size_extension;
+									$protected_filename = self::FILE_PROTECTION_PREFIX . ( $post_id + (int) self::FILE_PROTECTION_INCREMENT ) . $size_extension;
 									$protected_filename .= "." . pathinfo( $filename, PATHINFO_EXTENSION );
 		
 									$the_content = str_replace( $matches[0][$found_local], $new_path . $protected_filename, $the_content );
 									break;
 								case self::PROTECTION_TYPE_HYBRID:
-									$protected_filename = self::FILE_PROTECTION_PREFIX . ($post_id + (int) self::FILE_PROTECTION_INCREMENT) . $size_extension;
+									$protected_filename = self::FILE_PROTECTION_PREFIX . ($post_id + (int) self::FILE_PROTECTION_INCREMENT ) . $size_extension;
 									$protected_filename .= "." . pathinfo($filename, PATHINFO_EXTENSION);
 		
 									$the_content = str_replace( $matches[0][ $found_local ], $new_path . "?ms_file=" . $protected_filename, $the_content );
@@ -164,23 +223,27 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 			}
 		}
 		
-		return $the_content;
+		return apply_filters( 'ms_model_rule_media_protect_download_content', $the_content, $this );
 	}
 	
 	/**
 	 * Extract filename and size extension info.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $file The filename to extract info from.
+	 * @return array {
+	 * 		@type string $filename The filename.
+	 * 		@type string $size_extension The wordpress thumbnail size extension. Default empty.
+	 * }
 	 */
 	public function extract_file_info( $file ) {
-		// See if the filename has a size extension and if so, strip it out
+		
+		/* See if the filename has a size extension and if so, strip it out */
 		$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
 		$filematch = array();
 		if( preg_match( $filename_exp, $file, $filematch ) ) {
-			// We have an image with an image size attached
+			/* Image with an image size attached */
 			$filename = $filematch[1] . "." . $filematch[3];
 			$size_extension = '-' . $filematch[2];
 		} 
@@ -188,22 +251,28 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 			$filename = $file;
 			$size_extension = '';
 		}
-		return array( 'filename' => $filename, 'size_extension' => $size_extension );
+		$info = array( 'filename' => $filename, 'size_extension' => $size_extension );
+		
+		return apply_filters( 'ms_model_rule_media_extract_file_info', $info, $file, $this );
 	}
 	
 	/**
 	 * Get attachment post_id using the filename.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $filename The filename to obtain the post_id.
+	 * @return int The post ID or 0 if not found.
 	 */
 	public function get_attachment_id( $filename ) {
+		
+		$post_id = 0;
+		
 		$args = array(
 			'posts_per_page' => 1,
-			'post_type'   => 'attachment',
-			'post_status' => 'any',
+			'post_type'   	=> 'attachment',
+			'post_status' 	=> 'any',
+			'fields'		=> 'ids',
 				'meta_query' => array(
 						'relation' => 'OR',
 						array(
@@ -218,27 +287,34 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 						)
 				)
 		);
+		$args = apply_filters( 'ms_model_rule_media_get_attachment_id_args', $args );
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
 
 		if( ! empty( $post[0] ) ) {
-			return $post[0]->ID;
+			$post_id = $post[0];
 		}
-		return null;		
+		
+		return apply_filters( 'ms_model_rule_get_attachment_id', $post_id, $filename, $this );
 	}
 	
 	/**
 	 * Handle protected media access.
 	 * 
 	 * Search for masked file and show the proper content, or no access image if don't have access.
-	 * 
-	 * @since 4.0.0
 	 *
-	 * @action pre_get_posts  
-	 * @access public
-	 * @param WP_Query $wp_query
+	 * **Hooks Actions/Filters: **
+	 *
+	 * * pre_get_posts
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function handle_download_protection( $wp_query ) {
+		
+		do_action( 'ms_model_rule_media_handle_download_protection_before', $wp_query, $this );
+		
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 
 		if( self::PROTECTION_TYPE_DISABLED == $download_settings['protection_type'] ) {
@@ -286,45 +362,50 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 					$this->show_no_access_image();
 				}
 			}
-			
-				
 		}
+		
+		do_action( 'ms_model_rule_media_handle_download_protection_after', $wp_query, $this );
 	}
+	
 	/**
 	 * Restore filename from post_id.
 	 * 
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
 	 * @todo refactory hack to get extension.
-	 * @access public
+	 * 
 	 * @param int $post_id The attachment post_id.
 	 * @param string $size_extension The image size extension.
 	 * @return string The attachment filename.
 	 */
 	public function restore_filename( $post_id, $size_extension ) {
-		$image = null;
+		
+		$img_filename = null;
+		
 		if ( ! empty( $post_id ) && is_numeric( $post_id ) ) {
-			$image = get_post_meta( $post_id, '_wp_attached_file', true );
+			$img_filename = get_post_meta( $post_id, '_wp_attached_file', true );
 			if ( ! empty( $size_extension ) ) {
 				/** Add back in a size extension if we need to */
-				$image = str_replace( '.' . pathinfo( $image, PATHINFO_EXTENSION ), $size_extension . '.' . pathinfo( $image, PATHINFO_EXTENSION ), $image );
+				$img_filename = str_replace( '.' . pathinfo( $img_filename, PATHINFO_EXTENSION ), $size_extension . '.' . pathinfo( $img_filename, PATHINFO_EXTENSION ), $img_filename );
 				/** hack to remove any double extensions :/ need to change when work out a neater way */
-				$image = str_replace( $size_extension . $size_extension, $size_extension, $image );
+				$img_filename = str_replace( $size_extension . $size_extension, $size_extension, $img_filename );
 			}
 		}
-		return $image;
+		
+		return apply_filters( 'ms_model_rule_restore_filename', $img_filename, $post_id, $this );
 	}
 	
 	/**
 	 * Output file to the browser.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @access private
 	 * @param string $file The complete path to the file.
 	 */
 	private function output_file( $file ) {
 	
+		do_action( 'ms_model_rule_media_output_file_before', $file, $this );
+		
 		if ( ! is_file( $file ) ) {
 			status_header( 404 );
 			die( '404 &#8212; File not found.' );
@@ -376,28 +457,35 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	
 		/** If we made it this far, just serve the file */
 		readfile( $file );
+		
+		do_action( 'ms_model_rule_media_output_file_after', $file, $this );
+		
 		die();
 	}
 	
 	/**
 	 * Show no access image.
 	 * 
-	 * @since 4.0.0
-	 *
-	 * @access private
+	 * @since 1.0.0
 	 */
 	private function show_no_access_image() {
+		
 		$no_access_file = apply_filters( 'ms_model_rule_media_show_no_access_image_path', MS_Plugin::instance()->dir . 'app/assets/images/no-access.png' );
+		
 		$this->output_file( $no_access_file );	
+		
+		do_action( 'ms_model_rule_show_no_access_image_after', $this );
 	}
 	
 	/**
-	 * Get content eligible for protection.
+	 * Get content to protect.
 	 * 
-	 * @since 4.0.0
-	 *
-	 * @access public
-	 * @return object[] The content array.
+	 * To be overridden in children classes.
+	 * 
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The contents array. 
 	 */
 	public function get_contents( $args = null ) {
 		$defaults = array(
@@ -425,6 +513,6 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 		
-		return $contents;
+		return apply_filters( 'ms_model_rule_media_get_contents', $contents, $args, $this );
 	}
 }
