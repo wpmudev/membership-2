@@ -20,19 +20,33 @@
  *
 */
 
-
+/**
+ * Membership bbPress Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string $rule_type
+	 */
 	protected $rule_type = MS_Integration_BbPress::RULE_TYPE_BBPRESS;
 	
 	/**
-	 * Verify access to the current post.
+	 * Verify access to the current content.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @return boolean
+	 * @param int $post_id The content post ID to verify access.
+	 * @return boolean True if has access to current content.
 	 */
 	public function has_access( $post_id = null ) {
 	
@@ -82,32 +96,39 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 			}
 		
 		}
-
 	
-		return $has_access;
+		return apply_filters( 'ms_model_rule_bbpress_has_access', $has_access, $post_id, $this );
 	}
 		
 	/**
 	 * Set initial protection.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
-	 * @param optional $membership_relationship The membership relationship info. 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content();
+		
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 	}
 	
 	/**
 	 * Adds filter for posts query to remove all protected bbpress custom post types.
 	 *
-	 * @since 4.0
-	 * @action pre_get_posts
-	 *
-	 * @access public
+	 * **Hooks Actions: **
+	 * 
+	 * * pre_get_posts
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
+		
+		do_action( 'ms_model_rule_bbpress_protect_posts_before', $wp_query, $this );
+		
 		$post_type = $wp_query->get( 'post_type' );
 	
 		/**
@@ -125,30 +146,38 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 				}
 			}
 		}
+		
+		do_action( 'ms_model_rule_bbpress_protect_posts_after', $wp_query, $this );
 	}
 	
 	/**
 	 * Get the current post id.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
 	 * @return int The post id, or null if it is not a post.
 	 */
 	private function get_current_post_id() {
+
 		$post_id = null;
 		$post = get_queried_object();
 	
 		if( is_a( $post, 'WP_Post' ) )  {
 			$post_id = $post->ID;
 		}
-		return $post_id;
+
+		return apply_filters( 'ms_model_rule_bbpress_get_current_post_id', $post_id );
 	}
 	
 	/**
 	 * Get the total content count.
 	 * For list table pagination.
-	 * @param string $args The default query post args.
-	 * @return number The total content count.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
 		
@@ -160,13 +189,15 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		$args = wp_parse_args( $args, $defaults );
 	
 		$query = new WP_Query($args);
-		return $query->found_posts;
+		$count = $query->found_posts;
+		
+		return apply_filters( 'ms_model_rule_bbpress_get_content_count', $count );
 	}
 	
 	/**
 	 * Prepare content to be shown in list table.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
 	 * @param string $args The default query post args.
 	 * @return array The content.
@@ -191,9 +222,21 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
+		
 		return apply_filters( 'ms_model_rule_bbpress_get_contents', $contents );
 	}
 	
+	/**
+	 * Get WP_Query object arguments.
+	 *
+	 * Return default search arguments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array $args The parsed args.
+	 */
 	public function get_query_args( $args = null ) {
 	
 		$defaults = array(
