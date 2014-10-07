@@ -68,6 +68,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
+		parent::__construct();
 
 		/** Instantiate Plugin model - protection implementation */
 		$this->model = apply_filters( 'ms_model_plugin', new MS_Model_Plugin() );
@@ -80,16 +81,16 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 
 		/** Register admin styles (CSS) */
-		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_styles' );
+		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
 
 		/** Register styles used in the front end (CSS) */
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles');
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
 
 		/** Enque admin scripts (JS) */
-		$this->add_action( 'admin_enqueue_scripts', 'register_plugin_admin_scripts' );
+		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
 
 		/** Register scripts used in the front end (JS) */
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts');
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
 
 		/** Membership controller */
 		$this->controllers['membership'] = apply_filters( 'ms_controller_membership', new MS_Controller_Membership() );
@@ -316,30 +317,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Adds CSS for Membership settings pages.
 	 *
 	 * @since 4.0.0
-	 *
-	 * @return void
 	 */
-	public function register_plugin_admin_styles() {
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-
-		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
-
-		// New clean stylesheet...
-		wp_register_style( 'ms-admin-styles', $plugin_url. 'app/assets/css/ms-admin.css', $version );
+	public function enqueue_plugin_admin_styles() {
 		wp_enqueue_style( 'ms-admin-styles' );
-
-		//wp_enqueue_style( 'membership-normalize', $plugin_url. 'app/assets/css/ms-normalize.css', $version );
-		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/ms-settings.css', $version );
 		wp_enqueue_style( 'membership-admin' );
-
-		wp_register_style( 'membership-tooltip', $plugin_url. 'app/assets/css/ms-tooltip.css', $version );
 		wp_enqueue_style( 'membership-tooltip' );
-
-		wp_register_style( 'font-awesome', $plugin_url. 'app/assets/css/font-awesome.min.css', $version );
 		wp_enqueue_style( 'font-awesome' );
-
-		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/select2.css', null, $version );
+		wp_enqueue_style( 'jquery-chosen' );
 	}
 
 	/**
@@ -350,18 +334,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-
-		wp_register_style( 'jquery-ui', $plugin_url. 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css', $version );
-
-		//wp_enqueue_style( 'membership-normalize', $plugin_url. 'app/assets/css/ms-normalize.css', $version );
-		wp_register_style( 'membership-admin', $plugin_url. 'app/assets/css/ms-settings.css', $version );
-
-		wp_register_style( 'membership-shortcode', $plugin_url. 'app/assets/css/ms-shortcode.css', $version );
 		wp_enqueue_style( 'membership-shortcode' );
-
-		wp_register_style( 'jquery-chosen', $plugin_url. 'app/assets/css/select2.css', null, $version );
 	}
 
 	/**
@@ -371,19 +344,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @return void
 	 */
-	public function register_plugin_admin_scripts() {
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-
-		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/select2.js', array( 'jquery' ), $version );
-
-		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
-		wp_register_script( 'ms-functions', $plugin_url. 'app/assets/js/ms-functions.js', array( 'jquery', 'jquery-chosen'), $version );
-
-		wp_register_script( 'ms-tooltips', $plugin_url. 'app/assets/js/ms-tooltip.js', array( 'jquery' ), $version );
+	public function enqueue_plugin_admin_scripts() {
 		wp_enqueue_script( 'ms-tooltips' );
-
-		wp_register_script( 'ms-view-settings-payment', $plugin_url. 'app/assets/js/ms-view-settings-payment.js', array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-functions' ), $version );
+		wp_enqueue_script( 'jquery-chosen' );
 	}
 
 	/**
@@ -394,18 +357,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_scripts() {
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
+		wp_localize_script(
+			'ms-shortcode',
+			'ms_shortcode',
+			array(
+				'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
+			)
+		);
 
-		wp_register_script( 'jquery-validate',  $plugin_url. 'app/assets/js/jquery.validate.js', array( 'jquery' ), $version );
 		wp_enqueue_script( 'jquery-validate' );
-
-		wp_register_script( 'ms-shortcode', $plugin_url. 'app/assets/js/ms-shortcode.js', array( 'jquery-validate' ), $version );
-		wp_localize_script( 'ms-shortcode', 'ms_shortcode', array( 'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ) ) );
 		wp_enqueue_script( 'ms-shortcode' );
-
-		wp_register_script( 'ms-view-frontend-profile', $plugin_url. 'app/assets/js/ms-view-frontend-profile.js', array( 'jquery-validate' ), $version );
-
-		wp_register_script( 'jquery-chosen', $plugin_url. 'app/assets/js/select2.js', array( 'jquery' ), $version );
 	}
 }

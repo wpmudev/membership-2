@@ -116,36 +116,6 @@
 	}
 }
 
-/***
- * FORM AND FIELD LAYOUT *
- ***/
-
-.ms-wrap {
-	.ms-wrapper-center {
-		max-width: 800px;
-		margin: 0 auto;
-
-		&.wide {
-			max-width: 1200px;
-		}
-	}
-
-	.ms-half {
-		float: left;
-		width: 50%;
-		margin: 0;
-		padding: 0;
-
-		&.space {
-			padding-right: 20px;
-		}
-
-		&.right {
-			float: right;
-		}
-	}
-}
-
 
 /***
  * RADIO BUTTONS *

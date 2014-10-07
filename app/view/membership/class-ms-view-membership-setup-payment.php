@@ -25,7 +25,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			?>
 			<br class="clear" />
 			<div class="ms-wrapper-center <?php echo esc_attr( $wrapper_class ); ?>">
-				<div class="ms-separator"><hr /></div>
+				<div class="ms-separator"></div>
+
 				<div id="ms-payment-settings-wrapper">
 					<?php
 					$this->global_payment_settings();

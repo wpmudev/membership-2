@@ -1,24 +1,24 @@
 <?php
 /**
  * This file defines the MS_Controller_Admin_Bar class.
- * 
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -34,28 +34,31 @@
  * @subpackage Controller
  */
 class MS_Controller_Admin_Bar extends MS_Controller {
-		
+
 	/**
 	 * Prepare the Admin Bar simulator.
 	 *
 	 * @since 1.0
-	 */		
+	 */
 	public function __construct() {
-		/** Hide WP toolbar in fron end to not admin users */ 
+		parent::__construct();
+
+		/* Hide WP toolbar in fron end to not admin users */
 		if( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar_front', 999 );
 			$this->add_action( 'admin_head-profile.php', 'customize_admin_sidebar', 999 );
 		}
-		/** Customize WP toolbar for admin users */
-		if( $this->is_admin_user() ) {
+
+		/* Customize WP toolbar for admin users */
+		if ( $this->is_admin_user() ) {
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar', 999 );
 			$this->add_action( 'add_admin_bar_menus', 'admin_bar_manager' );
-			$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts');
-			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts');
+			$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts' );
+			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		}
 	}
-	
+
 	/**
 	 * Customize the Admin Toolbar.
 	 *
@@ -86,8 +89,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Process GET and POST requests
 	 *
-	 * **Hooks Actions: **  
-	 *  
+	 * **Hooks Actions: **
+	 *
 	 * * add_admin_bar_menus
 	 *
 	 * @since 1.0
@@ -117,7 +120,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			wp_safe_redirect( wp_get_referer() );
 		}
 	}
-	
+
 	/**
 	 * Remove all Admin Bar nodes.
 	 *
@@ -127,12 +130,12 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function remove_admin_bar_nodes( $exclude = array() ) {
 		global $wp_admin_bar;
-		
+
 		$nodes = $wp_admin_bar->get_nodes();
-		
+
 		$exclude = apply_filters( 'ms_controller_admin_bar_remove_admin_bar_nodes_exclude', $exclude, $nodes );
 		do_action( 'ms_controller_admin_bar_remove_admin_bar_nodes', $nodes, $exclude );
-		
+
 		if( is_array( $nodes ) ) {
 			foreach( $nodes as $node) {
 				if( is_array( $exclude) && ! in_array ( $node->id, $exclude ) ) {
@@ -140,8 +143,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				}
 			}
 		}
-	}	
-	
+	}
+
 	/**
 	 * Add simulation nodes.
 	 *
@@ -150,23 +153,23 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function add_simulator_nodes() {
 		global $wp_admin_bar;
-		
+
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
-				
+
 		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
-		if ( $simulate->is_simulating() ) {	
+		if ( $simulate->is_simulating() ) {
 			$reset_simulation = (object) array(
 					'id' => 0,
 					'name' => __( 'Membership Admin', MS_TEXT_DOMAIN ),
 			);
 			$memberships[] = $reset_simulation;
-			
+
 			$membership = MS_Factory::load( 'MS_Model_Membership', $simulate->membership_id );
 			$title = null;
 			$html = null;
 			$data = array();
-			
-			if( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type || 
+
+			if( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ||
 					( MS_Model_Membership::TYPE_DRIPPED == $membership->type && MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE == $membership->dripped_type ) ) {
 				$view = MS_Factory::create( 'MS_View_Admin_Bar' );
 				$data['simulate_date'] = $simulate->date;
@@ -185,7 +188,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$title = __( 'View in: ', MS_TEXT_DOMAIN );
 				$html = $view->to_html();
 			}
-			
+
 			if( $html ) {
 				$wp_admin_bar->add_menu( apply_filters( 'ms_controller_admin_bar_simulate_node', array(
 							'id'     => 'membership-simulate-period',
@@ -199,7 +202,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				) ) );
 			}
 		}
-	}	
+	}
 
 	/**
 	 * Add 'View site as' node.
@@ -211,16 +214,16 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function add_view_site_as_node() {
 		global $wp_admin_bar;
-		
+
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
-		
+
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 
 		$select_options = array();
-		
+
 		$html = '<form id="view-site-as" method="GET">';
-		
+
 		if ( !empty( $memberships ) ) {
 			foreach ( $memberships as $membership ) {
 				// Create nonce fields
@@ -230,39 +233,39 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$select_options[] = "<option value=\"{$membership->id}\" {$selected} nonce=\"{$nonce}\">{$membership->name}</option>";
 			}
 		}
-					
+
 		$html .= '<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">';
 		foreach( $select_options as $option ) {
 			$html .= $option;
 		}
 		$html .= '</select>';
-					
+
 		$action_field = array(
 			'name'      => 'action',
 			'value'		=> 'ms_simulate',
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,					
+			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 		$membership_field = array(
 			'id'		=> 'ab-membership-id',
 			'name'      => 'membership_id',
 			'value'		=> $simulate->membership_id,
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,					
+			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 		$nonce_field = array(
 			'id'		=> '_wpnonce',
 			'name'      => '_wpnonce',
 			'value'		=> '',
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,					
-		);				
-									
+			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+		);
+
 		ob_start();
 		MS_Helper_Html::html_element( $action_field );
 		MS_Helper_Html::html_element( $membership_field );
 		MS_Helper_Html::html_element( $nonce_field );
 		$html .= ob_get_clean();
-		
+
 		$html .= '</form>';
-		
+
 		$wp_admin_bar->add_node( apply_filters( 'ms_controller_admin_bar_add_view_site_as_node', array(
 				'id'     => 'membership-simulate',
 				'title'  => $title,
@@ -289,7 +292,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		if( $id ) {
 
-			$link_url = wp_nonce_url( 
+			$link_url = wp_nonce_url(
 					admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
 			 		"ms_simulate-{$id}"
 			);
@@ -305,7 +308,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 					),
 			) ) );
 		}
-	}	
+	}
 
 	/**
 	 * Add 'Test Memberships' node.
@@ -318,7 +321,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		/** reset simulation */
 		$id = 0;
-		$link_url = wp_nonce_url( 
+		$link_url = wp_nonce_url(
 				admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
 		 		"ms_simulate-{$id}"
 		);
@@ -333,7 +336,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 					'tabindex' => '1',
 				),
 		) ) );
-	}	
+	}
 
 	/**
 	 * Customize the Admin Toolbar for front end users.
@@ -350,7 +353,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$this->remove_admin_bar_nodes();
 		}
 	}
-	
+
 	/**
 	 * Customize the Admin sidebar for front end users.
 	 *
@@ -369,23 +372,31 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enqueues necessary scripts and styles.
 	 *
-	 * **Hooks Actions: **  
-	 * 
-	 * * wp_enqueue_scripts  
-	 * * admin_enqueue_scripts  
+	 * **Hooks Actions: **
+	 *
+	 * * wp_enqueue_scripts
+	 * * admin_enqueue_scripts
 	 *
 	 * @since 1.0
 	 */
-	function enqueue_scripts() {
-		wp_register_script( 'ms-controller-admin-bar', MS_Plugin::instance()->url. 'app/assets/js/ms-controller-admin-bar.js', array( 'jquery' ), MS_Plugin::instance()->version );
-		wp_localize_script( 'ms-controller-admin-bar', 'ms', array( 'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ) ) );
+	public function enqueue_scripts() {
+		wp_localize_script(
+			'ms-controller-admin-bar',
+			'ms',
+			array(
+				'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
+			)
+		);
+
 		wp_enqueue_script( 'ms-controller-admin-bar' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_style( 'ms-admin-bar', MS_Plugin::instance()->url. 'app/assets/css/ms-admin-bar.css', null, MS_Plugin::instance()->version );
+
+		wp_enqueue_style( 'ms-admin-bar' );
 		wp_enqueue_style( 'jquery-ui' );
+
 	}
 }

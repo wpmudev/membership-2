@@ -1,24 +1,24 @@
 <?php
 /**
  * This file defines the MS_Controller_Billing class.
- * 
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -30,20 +30,22 @@
  * @subpackage Controller
  */
 class MS_Controller_Billing extends MS_Controller {
-	
+
 	/**
 	 * Prepare the Billing manager.
 	 *
 	 * @since 1.0
-	 */		
+	 */
 	public function __construct() {
+		parent::__construct();
+
 		$hook = 'protected-content_page_protected-content-billing';
 		$this->add_action( 'load-' . $hook, 'admin_billing_manager' );
-		
+
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
-	
+
 	/**
 	 * Show admin notices.
 	 *
@@ -53,13 +55,13 @@ class MS_Controller_Billing extends MS_Controller {
 	public function print_admin_message() {
 		add_action( 'admin_notices', array( 'MS_Helper_Billing', 'print_admin_message' ) );
 	}
-	
+
 	/**
 	 * Manages billing actions.
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 4.0.0	
+	 * @since 4.0.0
 	 */
 	public function admin_billing_manager() {
 		$this->print_admin_message();
@@ -82,18 +84,18 @@ class MS_Controller_Billing extends MS_Controller {
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 		}
 	}
-	
+
 	/**
 	 * Sets up the 'Billing' navigation and list page.
 	 *
-	 * @since 4.0.0	
+	 * @since 4.0.0
 	 */
 	public function admin_billing() {
 		$this->print_admin_message();
 		/**
 		 * Action view page request
 		 */
-		$isset = array( 'action', 'invoice_id' ); 
+		$isset = array( 'action', 'invoice_id' );
 		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
 			$data['invoice'] =  MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
@@ -114,10 +116,10 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Perform actions for each invoice.
 	 *
-	 * @since 1.0	
+	 * @since 1.0
 	 * @param string $action The action to perform on selected invoices
 	 * @param int[] $invoice_ids The list of invoices ids to process.
-	 */	
+	 */
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
@@ -144,23 +146,23 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Save invoices using the invoices model.
 	 *
-	 * @since 1.0	
+	 * @since 1.0
 	 * @param mixed $fields Transaction fields
-	 */	
+	 */
 	private function save_invoice( $fields ) {
 
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
-		
+
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		if( is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
 
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
-			
+
 			$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $member->id, $membership_id );
 			if( empty( $ms_relationship ) ){
 				$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
@@ -169,7 +171,7 @@ class MS_Controller_Billing extends MS_Controller {
 				$ms_relationship->gateway_id = $gateway_id;
 				$ms_relationship->save();
 			}
-			
+
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
 			if( ! $invoice->is_valid() ) {
 				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship );
@@ -184,23 +186,23 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 
 			$invoice->save();
-		
+
 			if( ! empty( $fields['execute'] ) ) {
 				$gateway = $ms_relationship->get_gateway();
 				$gateway->process_transaction( $invoice );
 			}
 		}
-		
-		return $msg;	
+
+		return $msg;
 	}
 
 	/**
 	 * Load Billing specific styles.
 	 *
 	 * @since 1.0
-	 */	
+	 */
 	public function enqueue_styles() {
-		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
+		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_style( 'jquery-ui' );
 		}
 	}
@@ -209,13 +211,13 @@ class MS_Controller_Billing extends MS_Controller {
 	 * Load Billing specific scripts.
 	 *
 	 * @since 1.0
-	 */	
+	 */
 	public function enqueue_scripts() {
-		if( ! empty($_GET['action']  ) && 'edit' == $_GET['action'] ) {
+		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'ms-view-billing-edit', MS_Plugin::instance()->url. 'app/assets/js/ms-view-billing-edit.js', null, MS_Plugin::instance()->version );
+			wp_enqueue_script( 'ms-view-billing-edit' );
 		}
 	}
-	
+
 }

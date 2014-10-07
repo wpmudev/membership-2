@@ -18,15 +18,15 @@
 		font-size: .9em;
 	}
 
+	hr {
+		margin: 0;
+		border: 0;
+		border-top: 1px solid #E5E5E5;
+	}
+
 	.clear {
 		margin: 1em 0;
 		padding: 0.5em 0;
-
-		hr {
-			margin: 0;
-			border: 0;
-			border-top: 1px solid #E5E5E5;
-		}
 	}
 
 	.ms-hidden {
@@ -34,23 +34,29 @@
 		visibility: hidden;
 	}
 
+	/* horizontal separator */
 	.ms-separator {
-		border-bottom: 1px solid #EEE;
+		border-bottom: 1px solid #E5E5E5;
 		margin: 15px 0;
 	}
-}
 
-/* Box styles */
-.ms-wrap {
-	.ms-settings {
-		position: relative;
-		overflow: hidden;
+	/* vertical separator */
+	.ms-divider {
+		position: absolute;
+		right: 20px;
+		top: 0;
+		bottom: 0;
 
-		padding: 10px 20px 20px;
-		min-height: 350px;
+		border-right: 1px solid #E5E5E5;
+	}
 
-		background: #fff;
-		border: 1px solid #E5E5E5;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	.ms-group {
+		clear: both;
+
+		&:after {
+			content: '';
+			display: table;
+			clear: both;
+		}
 	}
 }

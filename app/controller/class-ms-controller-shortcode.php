@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -30,31 +30,33 @@
  * @subpackage Controller
  */
 class MS_Controller_Shortcode extends MS_Controller {
-	
+
 	/**
-	 * Prepare the shortcode hooks.  
+	 * Prepare the shortcode hooks.
 	 *
 	 * @since 4.0.0
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		add_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, array( $this, 'membership_register_user' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP, array( $this, 'membership_signup' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_UPGRADE, array( $this, 'membership_upgrade' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_RENEW, array( $this, 'membership_renew' ) );
-		
+
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_TITLE, array( $this, 'membership_title' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_DETAILS, array( $this, 'membership_details' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_PRICE, array( $this, 'membership_price' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_BUTTON, array( $this, 'membership_button' ) );
-		
+
 		add_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, array( $this, 'membership_login' ) );
-		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );	
-		
+		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );
+
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE, array( $this, 'membership_invoice' ) );
 	}
 
 	/**
-	 * Membership register callback function.  
+	 * Membership register callback function.
 	 *
 	 * @since 4.0.0
 	 *
@@ -76,33 +78,33 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$data['action'] = 'register_user';
 		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
-		
+
 		$view = apply_filters( 'ms_view_shortcode_membership_register_user', new MS_View_Shortcode_Membership_Register_User() );
 		$view->data = $data;
-		
+
 		return $view->to_html();
 	}
 
 	/**
-	 * Membership signup callback function.  
+	 * Membership signup callback function.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
-	 */	
+	 */
 	public function membership_signup( $atts ) {
 
-		$data = apply_filters( 
-				'ms_controller_shortcode_membership_signup_atts', 
-				shortcode_atts( 
+		$data = apply_filters(
+				'ms_controller_shortcode_membership_signup_atts',
+				shortcode_atts(
 					array(
 						MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP . '_text' =>  __( 'Signup', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Change', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', MS_TEXT_DOMAIN ),
 						MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW . '_text' => __( 'Renew', MS_TEXT_DOMAIN ),
-					), 
+					),
 				$atts
-			) 
+			)
 		);
 
 		$member = MS_Model_Member::get_current_member();
@@ -112,11 +114,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			/** Get member's memberships, including pending relationships. */
 			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
 		}
-		
+
 		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $member->ms_relationships ) );
-		
+
 		$data['memberships'] = $memberships;
-		
+
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			/** Membership Relationship status which can move to another one */
@@ -126,65 +128,65 @@ class MS_Controller_Shortcode extends MS_Controller {
 						MS_Model_Membership_Relationship::STATUS_ACTIVE,
 						MS_Model_Membership_Relationship::STATUS_EXPIRED,
 				 	) ) ) {
-					
+
 					$data['move_from_id'] = $ms_relationship->membership_id;
 					break;
 				}
 			}
 		}
-		
+
 		$data['action'] = 'membership_signup';
 		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
-		
+
 		$view = apply_filters( 'ms_view_shortcode_membership_signup', new MS_View_Shortcode_Membership_Signup() );
 		$view->data = $data;
 
 		return $view->to_html();
 	}
-	
+
 
 	/**
-	 * Membership title shortcode callback function.  
+	 * Membership title shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 */	
+	 */
 	public function membership_title() {
-		
+
 	}
 
 	/**
-	 * Membership details shortcode callback function.  
+	 * Membership details shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function membership_details() {
-		
+
 	}
 
 	/**
-	 * Membership price shortcode callback function.  
+	 * Membership price shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function membership_price() {
-		
+
 	}
 
 	/**
-	 * Membership signup button shortcode callback function.  
+	 * Membership signup button shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function membership_button() {
-		
+
 	}
 
 	/**
-	 * Membership login shortcode callback function.  
+	 * Membership login shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 * @param mixed[] $atts Shortcode attributes.	
-	 */		
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
 	public function membership_login( $atts ) {
 		$data = apply_filters( 'ms_controller_shortcode_membership_login_atts',
 					shortcode_atts(
@@ -212,10 +214,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Membership account page shortcode callback function.  
+	 * Membership account page shortcode callback function.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function membership_account( $atts ) {
 		$data = apply_filters( 'ms_controller_shortcode_membership_account_atts',
 				shortcode_atts(
@@ -233,7 +235,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$data['gateway'][ $ms_relationship->id ] = $gateway;
 			}
 		}
-		$data['invoices'] = MS_Model_Invoice::get_invoices( array( 
+		$data['invoices'] = MS_Model_Invoice::get_invoices( array(
 				'author' => $data['member']->id,
 				'posts_per_page' => 12,
 				'meta_query' => array( array(
@@ -249,7 +251,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view->data = $data;
 		return $view->to_html();
 	}
-	
+
 	public function membership_invoice( $atts ) {
 		$data = apply_filters( 'ms_controller_shortcode_invoice_atts',
 				shortcode_atts(

@@ -3,9 +3,9 @@
 class MS_View_Mailchimp_General extends MS_View {
 
 	protected $fields = array();
-	
+
 	protected $data;
-	
+
 	public function render_tab() {
 		$this->prepare_fields();
 		ob_start();
@@ -13,8 +13,8 @@ class MS_View_Mailchimp_General extends MS_View {
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Mailchimp Settings', MS_TEXT_DOMAIN ) ) ); ?>
-				<hr />
-			
+				<div class="ms-separator"></div>
+
 				<form action="" method="post">
 					<?php
 						MS_Helper_Html::settings_box( $this->fields );
@@ -27,14 +27,14 @@ class MS_View_Mailchimp_General extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function prepare_fields() {
 		$api_status = MS_Integration_Mailchimp::get_api_status();
 		$settings = $this->data['settings'];
-		
+
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
 		$nonce = wp_create_nonce( $action );
-		
+
 		$this->fields = array(
 				'mailchimp_api_test' => array(
 						'id' => 'mailchimp_api_test',
@@ -93,7 +93,7 @@ class MS_View_Mailchimp_General extends MS_View {
 								'_wpnonce' => $nonce,
 								'action' => $action,
 						),
-						
+
 				),
 				'mail_list_members' => array(
 						'id' => 'mail_list_members',

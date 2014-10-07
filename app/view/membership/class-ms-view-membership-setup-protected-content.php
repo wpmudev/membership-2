@@ -63,7 +63,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<?php MS_Helper_Html::settings_tab_header(
 					array( 'title' => implode( ' & ', $title ), 'desc' => $desc )
 				); ?>
-				<hr />
+				<div class="ms-separator"></div>
 				<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 					<div class="ms-rule-wrapper">
 						<?php MS_Helper_Html::html_element( $fields['category'] );?>
@@ -210,7 +210,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -286,7 +286,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -336,7 +336,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -385,7 +385,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<div class="ms-rule-wrapper">
 					<?php MS_Helper_Html::html_element( $fields['comment'] );?>
@@ -581,7 +581,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -626,7 +626,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<form action="" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>

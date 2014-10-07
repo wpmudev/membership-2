@@ -19,7 +19,8 @@ class MS_View_Buddypress_Group extends MS_View {
 			<div class='ms-settings'>
 				<h3><?php echo __( 'Buddypress groups ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
 				<div class="settings-description ms-description"><?php _e( 'Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
-				<hr />
+				<div class="ms-separator"></div>
+
 				<?php $list_table->views(); ?>
 				<form action="" method="post">
 					<?php $list_table->display(); ?>

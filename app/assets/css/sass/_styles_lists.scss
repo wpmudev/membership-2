@@ -1,0 +1,39 @@
+/**
+ * List styles
+ */
+
+
+/***
+ * Tag list *
+ ***/
+
+.ms-wrap {
+	.ms-content-tag-list {
+		margin: 10px 0;
+		list-style: none;
+
+		.ms-content-tag {
+			float: left;
+			margin: 0 2px 2px 0;
+
+			a,
+			span {
+				display: block;
+				padding: 2px 4px;
+
+				border-radius: 3px;
+				background: #BDC3C7;
+				color: #FFF;
+				font-size: 13px;
+				font-weight: 200;
+				text-decoration: none;
+			}
+
+			a:hover,
+			a:active,
+			a:focus {
+				background: #8E9295;
+			}
+		}
+	}
+}

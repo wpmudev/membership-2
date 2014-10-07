@@ -152,7 +152,7 @@ jQuery( document ).ready( function() {
 	});
 
 	// Initialize all select boxes
-	jQuery( 'select, .chosen-select' ).select2( fn.chosen_options );
+	jQuery( '.ms-wrap select, .ms-wrap .chosen-select' ).select2( fn.chosen_options );
 
 	// Ajax-Submit data when ms-ajax-update fields are changed.
 	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() {

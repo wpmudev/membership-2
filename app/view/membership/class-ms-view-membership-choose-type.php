@@ -21,7 +21,8 @@ class MS_View_Membership_Choose_Type extends MS_View {
 							<h3><?php _e( 'What kind of membership do you want to set up?', MS_TEXT_DOMAIN ); ?></h3>
 							<?php MS_Helper_Html::html_element( $this->fields['type'] ); ?>
 						</div>
-						<div class="clear"><hr /></div>
+						<div class="ms-separator"></div>
+
 						<div class="ms-name-wrapper">
 							<?php MS_Helper_Html::html_element( $this->fields['name'] ); ?>
 						</div>

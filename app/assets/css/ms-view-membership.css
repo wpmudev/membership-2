@@ -83,16 +83,6 @@
 	float: left;
 	margin: 0 10px 0 0;
 }
-.ms-overview-news-wrapper {
-	border-right: 1px solid #ccc;
-}
-.ms-overview-news-wrapper th {
-	text-align: left;
-	padding: 0 15px 10px 0;
-}
-.ms-overview-news-wrapper td {
-	padding: 0 15px 0 0;
-}
 .ms-overview-content-box-wrapper {
 	border-right: 1px solid #ccc;
     float: left;
@@ -107,16 +97,6 @@
     display: inline-block;
     margin: 5px 5px 5px 0;
     padding: 5px;
-}
-.ms-overview-content-box-wrapper .ms-title, .ms-tabs-title {
-	font-weight: 600;
-	margin: 5px 0;
-}
-.ms-protection-edit-wrapper, .ms-member-edit-wrapper, .ms-news-view-wrapper{
-	margin-top: 30px;
-}
-.ms-tabs-title {
-	margin: 5px 15px;
 }
 
 /* Setup Dripped Page */

@@ -770,28 +770,37 @@ class MS_Helper_Html extends MS_Helper {
 		echo '<div class="ms-separator"></div>';
 	}
 
-	public static function content_desc( $descriptions ) {
-		if( ! is_array( $descriptions ) ) {
-			$descriptions = array( $descriptions );
-		}
-		foreach( $descriptions as $desc ) {
-			echo '<span class="ms-content-desc">' . $desc . '</span>';
-		}
+	/**
+	 * Used by the overview views to display a list of available content items.
+	 * The items are typically formatted like a taglist via CSS.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  WP_Post $item The item to display.
+	 * @param  string $tag The tag will be wrapped inside this HTML tag.
+	 */
+	public static function content_tag( $item, $tag = 'li' ) {
+		printf(
+			'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
+			$tag,
+			esc_html( $item->post_title ),
+			get_edit_post_link( $item->ID )
+		);
 	}
 
 	public static function bread_crumbs( $bread_crumbs ) {
 		$crumbs = array();
 		$html = '';
-		if( is_array( $bread_crumbs ) ) {
-			foreach( $bread_crumbs as $key => $bread_crumb ) {
-				if( ! empty( $bread_crumb['url'] ) ) {
+		if ( is_array( $bread_crumbs ) ) {
+			foreach ( $bread_crumbs as $key => $bread_crumb ) {
+				if ( ! empty( $bread_crumb['url'] ) ) {
 					$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s"><a href="%s">%s</a></span>', $key, $bread_crumb['url'], $bread_crumb['title'] );
 				}
-				elseif( ! empty( $bread_crumb['title'] ) ) {
+				elseif ( ! empty( $bread_crumb['title'] ) ) {
 					$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s">%s</span>', $key, $bread_crumb['title'] );
 				}
 			}
-			if( count( $crumbs ) > 0 ) {
+			if ( count( $crumbs ) > 0 ) {
 				$html = '<div class="ms-bread-crumb">';
 				$html .= implode( '<span class="ms-bread-crumb-sep"> &raquo; </span>', $crumbs );
 				$html .= '</div>';
@@ -801,7 +810,8 @@ class MS_Helper_Html extends MS_Helper {
 	}
 
 	public static function period_desc( $period, $class = '' ) {
-		$html = sprintf( '<span class="ms-period-desc %s"> <span class="ms-period-unit">%s</span> <span class="ms-period-type">%s</span></span>',
+		$html = sprintf(
+			'<span class="ms-period-desc %s"> <span class="ms-period-unit">%s</span> <span class="ms-period-type">%s</span></span>',
 			$class,
 			$period['period_unit'],
 			$period['period_type']

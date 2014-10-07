@@ -66,6 +66,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function __construct() {
+		parent::__construct();
 
 		$protected_content_menu_hook = 'toplevel_page_protected-content';
 		$protected_content_setup_hook = 'protected-content_page_protected-content-setup';
@@ -1090,19 +1091,13 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function enqueue_styles() {
-
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-
-		switch( $this->get_active_tab() ) {
-			case 'category':
-				wp_enqueue_style( 'jquery-chosen' );
-				break;
+		switch ( $this->get_active_tab() ) {
 			default:
 				wp_enqueue_style( 'jquery-ui' );
 				break;
 		}
-		wp_enqueue_style( 'ms_view_membership', $plugin_url. 'app/assets/css/ms-view-membership.css', null, $version );
+
+		wp_enqueue_style( 'ms_view_membership' );
 	}
 
 	/**
@@ -1111,85 +1106,60 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function enqueue_scripts() {
-
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
-
-		wp_enqueue_script( 'ms-functions' );
-		wp_register_script(
-			'ms-admin',
-			$plugin_url. 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-validate' ),
-			$version
-		);
 		$data = array(
 			'ms_init' => '',
 			'initial_url' => $initial_url,
 		);
 
-		switch( $this->get_step() ) {
+		switch ( $this->get_step() ) {
 			case self::STEP_CHOOSE_MS_TYPE:
 				wp_enqueue_style( 'wp-pointer' );
 				wp_enqueue_script( 'wp-pointer' );
+
 				$ms_pointer = array(
 					'hide_wizard_pointer' => MS_Model_Settings::get_setting( 'hide_wizard_pointer' ),
-					'message' => sprintf( '<div class="ms-pointer-text">%s</div>',
-									__( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN )
-								),
+					'message' => sprintf(
+						'<div class="ms-pointer-text">%s</div>',
+						__( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN )
+					),
 					'pointer_class' => 'ms-pointer-wrapper',
 					'field' => 'hide_wizard_pointer',
 					'value' => true,
 					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 					'nonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
 				);
-				$data = array(
-					'ms_private_types' => MS_Model_Membership::get_private_eligible_types(),
-					'ms_pointer' => $ms_pointer,
-					'ms_init' => 'view_membership_choose_type',
-					'initial_url' => $initial_url
-				);
-				wp_localize_script( 'ms-admin', 'ms_data', $data );
-				wp_enqueue_script( 'ms-admin' );
+
+				$data['ms_private_types'] = MS_Model_Membership::get_private_eligible_types();
+				$data['ms_pointer'] = $ms_pointer;
+				$data['ms_init'] = 'view_membership_choose_type';
 				break;
 
 			case self::STEP_OVERVIEW:
-				wp_enqueue_script(
-					'ms-view-membership-overview',
-					$plugin_url. 'app/assets/js/ms-view-membership-overview.js',
-					null,
-					$version
-				);
+				wp_enqueue_script( 'ms-view-membership-overview' );
 				break;
 
 			case self::STEP_SETUP_PROTECTED_CONTENT:
 			case self::STEP_ACCESSIBLE_CONTENT:
-				switch( $this->get_active_tab() ) {
+				switch ( $this->get_active_tab() ) {
 					case 'category':
 					case 'comment':
-						wp_enqueue_style( 'jquery-chosen' );
-						wp_enqueue_script(
-							'ms-view-membership-setup-protected-content',
-							$plugin_url. 'app/assets/js/ms-view-membership-setup-protected-content.js',
-							array( 'jquery', 'jquery-chosen' ),
-							$version
-						);
+						wp_enqueue_script( 'ms-view-membership-setup-protected-content' );
 						break;
+
 					case 'url_group':
-						wp_register_script(
+						wp_localize_script(
 							'ms-view-membership-render-url-group',
-							$plugin_url. 'app/assets/js/ms-view-membership-render-url-group.js',
-							array( 'jquery' ),
-							$version
-						);
-						wp_localize_script( 'ms-view-membership-render-url-group', 'ms', array(
+							'ms',
+							array(
 								'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
 								'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
 								'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
 								'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
-						) );
+							)
+						);
 						wp_enqueue_script( 'ms-view-membership-render-url-group' );
 						break;
+
 					default:
 						wp_enqueue_script( 'jquery-ui-datepicker' );
 						wp_enqueue_script( 'jquery-validate' );
@@ -1200,30 +1170,19 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_SETUP_CONTENT_TYPES:
 			case self::STEP_SETUP_MS_TIERS:
 				wp_enqueue_script( 'jquery-validate' );
-				wp_enqueue_script(
-					'ms-view-membership-create-child',
-					$plugin_url. 'app/assets/js/ms-view-membership-create-child.js',
-					array( 'jquery', 'jquery-validate' ),
-					$version
-				);
+				wp_enqueue_script( 'ms-view-membership-create-child' );
 				break;
 
 			case self::STEP_SETUP_PAYMENT:
 				$data['ms_init'] = 'view_membership_setup_payment';
 
-				wp_enqueue_style( 'jquery-chosen' );
 				add_thickbox();
 				wp_enqueue_script( 'jquery-validate' );
 				wp_enqueue_script( 'ms-view-settings-payment' );
 				break;
 
 			case self::STEP_SETUP_DRIPPED:
-				wp_enqueue_script(
-					'ms-view-membership-setup-dripped',
-					$plugin_url. 'app/assets/js/ms-view-membership-setup-dripped.js',
-					array( 'jquery' ),
-					$version
-				);
+				wp_enqueue_script( 'ms-view-membership-setup-dripped' );
 				break;
 		}
 

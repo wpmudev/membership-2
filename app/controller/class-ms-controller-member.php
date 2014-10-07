@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -41,25 +41,26 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 4.0.0
 	 * @access private
 	 * @var $model
-	 */	
+	 */
 	private $model;
 
 	/**
 	 * Prepare the Member manager.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function __construct() {
-		
+		parent::__construct();
+
 		$hook = 'protected-content_page_protected-content-members';
-		
+
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
-		
+
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
-		
+
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
-		
+
 	}
 
 	/**
@@ -76,11 +77,11 @@ class MS_Controller_Member extends MS_Controller {
 		if( $this->verify_nonce() && ! empty( $_POST['member_id'] ) && $this->is_admin_user() ) {
 			$msg = $this->member_list_do_action( 'toggle_activation', array( $_POST['member_id'] ) );
 		}
-		
+
 		echo $msg;
 		exit;
 	}
-	
+
 	/**
 	 * Show admin notices.
 	 *
@@ -90,23 +91,23 @@ class MS_Controller_Member extends MS_Controller {
 	public function print_admin_message() {
 		add_action( 'admin_notices', array( 'MS_Helper_Member', 'print_admin_message' ) );
 	}
-	
+
 	/**
 	 * Manages membership actions.
 	 *
 	 * Verifies GET and POST requests to manage members
 	 *
-	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member 
+	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member
 	 * 	membership fields (active, memberships, start, end, gateway)
 	 *
 	 * @since 4.0.0
 	 */
 	public function members_admin_page_process() {
 		$this->print_admin_message();
-		
+
 		$msg = 0;
 		if( $this->is_admin_user() ) {
-			
+
 			/**
 			 * Execute list table single action.
 			 */
@@ -134,17 +135,17 @@ class MS_Controller_Member extends MS_Controller {
 				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 			}
 		}
-		
+
 	}
 
 	/**
 	 * Show member list.
-	 * 
+	 *
 	 * Menu Members, show all users available.
 	 * @since 4.0.0
-	 */	
+	 */
 	public function admin_member_list() {
-		
+
 		/**
 		 * Action view edit page request
 		 */
@@ -160,7 +161,7 @@ class MS_Controller_Member extends MS_Controller {
 
 	/**
 	 * Prepare and show action view.
-	 * 
+	 *
 	 * @since 4.0.0
 	 *
 	 * @param string $action The action to execute.
@@ -169,7 +170,7 @@ class MS_Controller_Member extends MS_Controller {
 	public function prepare_action_view( $action, $member_id ) {
 		$view = null;
 		$data = array();
-		
+
 		/** Bulk actions */
 		if( is_array( $member_id ) ) {
 			$memberships = MS_Model_Membership::get_membership_names();
@@ -187,7 +188,7 @@ class MS_Controller_Member extends MS_Controller {
 				case 'move':
 					$memberships_move = $memberships;
 					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
-			
+
 					$memberships = MS_Model_Membership::get_membership_names();
 					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
 					break;
@@ -217,7 +218,7 @@ class MS_Controller_Member extends MS_Controller {
 					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
 					$memberships_move = MS_Model_Membership::get_membership_names( $args );
 					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
-						
+
 					$memberships = MS_Model_Membership::get_membership_names( null, true );
 					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
@@ -229,7 +230,7 @@ class MS_Controller_Member extends MS_Controller {
 					break;
 			}
 		}
-		
+
 		if( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
 			$view = MS_Factory::create( 'MS_View_Member_Membership' );
 			$data['memberships'] = $memberships;
@@ -237,27 +238,27 @@ class MS_Controller_Member extends MS_Controller {
 				$data['memberships_move'] = $memberships_move;
 			}
 		}
-		
+
 		$data['action'] = $action;
 		$view->data = $data;
 		$view->render();
 	}
-	
+
 	/**
 	 * Handles Member list actions.
-	 * 
+	 *
 	 * @since 4.0.0
 	 *
 	 * @param string $action The action to execute.
-	 * @param object[] $members Array of members.	
+	 * @param object[] $members Array of members.
 	 * @param int $membership_id The Membership to apply action to.
-	 */	
+	 */
 	public function member_list_do_action( $action, $members, $membership_id = null ) {
 		$msg = MS_Helper_Member::MSG_MEMBER_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		foreach( $members as $member_id ){
 			/** Member Model */
 			$member = MS_Factory::load( 'MS_Model_Member', $member_id );
@@ -310,28 +311,28 @@ class MS_Controller_Member extends MS_Controller {
 	 * Load Member manager specific styles.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		wp_enqueue_style( 'jquery-style' );
 	}
 
 	/**
 	 * Load Member manager specific scripts.
 	 *
 	 * @since 4.0.0
-	 */	
+	 */
 	public function enqueue_scripts() {
 		/** Start and expire date edit */
-		if( ! empty( $_GET['action'] ) && 'edit_date' == $_GET['action'] ) {
+		if ( ! empty( $_GET['action'] ) && 'edit_date' == $_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_script( 'ms-view-member-date', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-date.js', null, MS_Plugin::instance()->version );
+			wp_enqueue_script( 'ms-view-member-date' );
 		}
 		/** Members list */
 		else {
 			wp_enqueue_script( 'ms-functions' );
-			wp_enqueue_script( 'ms-view-members-list', MS_Plugin::instance()->url. 'app/assets/js/ms-view-member-list.js', null, MS_Plugin::instance()->version );
+			wp_enqueue_script( 'ms-view-members-list' );
 		}
-				
+
 	}
-	
+
 }

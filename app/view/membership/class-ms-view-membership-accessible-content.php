@@ -131,7 +131,8 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 		?>
 			<div class='ms-settings'>
 				<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-				<hr />
+				<div class="ms-separator"></div>
+
 				<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 					<div class="ms-list-table-wrapper ms-half space">
 						<div class="ms-field-input-label">

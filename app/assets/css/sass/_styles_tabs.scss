@@ -6,7 +6,11 @@
 	.ms-tab-container {
 		float: left;
 		width: 225px;
-		min-height: 620px;
+	}
+
+	.ms-tabs-titlerow {
+		margin-left: 15px;
+		font-weight: bold;
 	}
 
 	.ms-tabs {

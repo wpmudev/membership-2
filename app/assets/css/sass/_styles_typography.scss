@@ -30,6 +30,10 @@
 	.ms-description {
 		color: #888;
 		font-size: 0.9em;
+
+		&.ms-indented-description {
+			padding-left: 20px;
+		}
 	}
 
 	.ms-settings-description {

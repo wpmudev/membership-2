@@ -56,6 +56,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		$hook = 'protected-content_page_protected-content-settings';
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
@@ -465,8 +467,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function enqueue_styles() {
 
-		if( 'messages-automated' == $this->active_tab ) {
-			wp_enqueue_style( 'ms-view-settings-render-messages-automated', MS_Plugin::instance()->url. 'app/assets/css/ms-view-settings-render-messages-automated.css', null, MS_Plugin::instance()->version );
+		if ( 'messages-automated' == $this->active_tab ) {
+			wp_enqueue_style( 'ms-view-settings-render-messages-automated' );
 		}
 	}
 
@@ -482,19 +484,16 @@ class MS_Controller_Settings extends MS_Controller {
 		$version = MS_Plugin::instance()->version;
 		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
 
-		wp_enqueue_style( 'jquery-chosen' );
-
-		wp_enqueue_script( 'ms-functions' );
-
-		wp_register_script( 'ms-admin', $plugin_url. 'app/assets/js/ms-admin.js', array( 'jquery' ), $version );
 		$data = array(
 			'ms_init' => 'view_settings',
 			'initial_url' => $initial_url,
 		);
+
 		wp_localize_script( 'ms-admin', 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+		wp_enqueue_script( 'ms-functions' );
 
-		switch( $this->get_active_tab() ) {
+		switch ( $this->get_active_tab() ) {
 			case 'payment':
 				add_thickbox();
 				wp_enqueue_script( 'ms-view-settings-payment' );

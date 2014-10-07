@@ -68,7 +68,7 @@ protected $fields = array();
 				<div class="settings-description ms-description">
 					<?php echo sprintf( __( 'Give access to protected Pages to %s members. ', MS_TEXT_DOMAIN ), $membership->name ); ?>
 				</div>
-				<hr />
+				<div class="ms-separator"></div>
 
 				<?php $rule_list_table->views(); ?>
 				<form action="" method="post">
@@ -94,7 +94,7 @@ protected $fields = array();
 					<div class="settings-description ms-description">
 						<?php echo sprintf( __( 'Give access to protected Posts to %s members. ', MS_TEXT_DOMAIN ), $membership->name ); ?>
 					</div>
-					<hr />
+					<div class="ms-separator"></div>
 
 					<?php $rule_list_table->views(); ?>
 					<form action="" method="post">

@@ -1,24 +1,24 @@
 <?php
 /**
  * This file defines the MS_Controller_Billing class.
- * 
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -30,36 +30,38 @@
  * @subpackage Controller
  */
 class MS_Controller_Rule extends MS_Controller {
-	
+
 	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
-	
+
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
 
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
-	
+
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
-	
+
 	const AJAX_ACTION_UPDATE_FIELD = 'update_update_field';
-	
-	
+
+
 	/**
 	 * Prepare the Rule manager.
 	 *
 	 * @since 4.0.0
-	 */		
+	 */
 	public function __construct() {
+		parent::__construct();
+
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
-		
+
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
-		
-		
+
+
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'edit_rule_manager' );
 	}
-	
+
 	/**
 	 * Handle Ajax toggle action.
 	 *
@@ -71,16 +73,16 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
-		
+
 		$required = array( 'membership_id', 'rule', 'item' );
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
 			$msg = $this->rule_list_do_action( 'toggle_access',  $_POST['rule'], array( $_POST['item'] ) );
 		}
-	
+
 		echo $msg;
 		exit;
 	}
-	
+
 	/**
 	 * Handle Ajax toggle action.
 	 *
@@ -96,31 +98,31 @@ class MS_Controller_Rule extends MS_Controller {
 			$this->active_tab = $_POST['rule'];
 			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
 		}
-	
+
 		echo $msg;
 		exit;
 	}
-	
+
 	public function ajax_action_update_rule() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		
+
 		$required = array( 'membership_id', 'rule_type' );
 		$isset = array( 'rule_ids', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
 			$rule_type = $_POST['rule_type'];
 			$msg = $this->save_rule_values( $rule_type, $_POST['rule_ids'], $_POST['value'] );
 		}
-	
+
 		echo $msg;
 		exit;
 	}
-	
+
 	private function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		$membership = $this->get_membership();
 
 		if( $membership->is_valid() ) {
@@ -146,7 +148,7 @@ class MS_Controller_Rule extends MS_Controller {
 		}
 		return $msg;
 	}
-	
+
 	public function ajax_action_update_dripped() {
 // 		MS_Helper_Debug::log( $_POST );
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
@@ -161,7 +163,7 @@ class MS_Controller_Rule extends MS_Controller {
 				$field = $_POST['field'];
 				$value = $_POST['value'];
 				$rule = $membership->get_rule( $rule_type );
-				
+
 				$rule->set_dripped_value( $dripped_type, $id, $field, $value );
 // 				MS_Helper_Debug::log( $rule->dripped );
 				$membership->set_rule( $rule_type, $rule );
@@ -169,11 +171,11 @@ class MS_Controller_Rule extends MS_Controller {
 				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 			}
 		}
-		
+
 		echo $msg;
 		exit;
 	}
-	
+
 	public function ajax_action_update_field() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$required = array( 'membership_id', 'rule_type', 'field' );
@@ -181,23 +183,23 @@ class MS_Controller_Rule extends MS_Controller {
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
 			$membership = $this->get_membership();
 			if( $membership->is_valid() ) {
-				
+
 				$rule_type = $_POST['rule_type'];
 				$value = $_POST['value'];
 				$field = $_POST['field'];
-				
+
 				$rule = $membership->get_rule( $rule_type );
 				$rule->$field = $value;
 				$membership->set_rule( $rule_type, $rule );
-				
+
 				$membership->save();
 				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 			}
 		}
-		
+
 		echo $msg;
 		exit;
-		
+
 	}
 	/**
 	 * Handles Membership Rule form submissions.
@@ -232,9 +234,9 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = $this->save_url_group( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 		}
-		
+
 	}
-	
+
 	/**
 	 * Execute action in Rule model.
 	 *
@@ -249,13 +251,13 @@ class MS_Controller_Rule extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-	
-		$membership = $this->get_membership(); 
+
+		$membership = $this->get_membership();
 		if( empty( $membership ) || ! MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
 			return $msg;
 		}
-		
-		
+
+
 		$rule = $membership->get_rule( $rule_type );
 		if( ! empty( $rule ) ) {
 			foreach( $items as $item ) {
@@ -270,7 +272,7 @@ class MS_Controller_Rule extends MS_Controller {
 						$rule->toggle_access( $item );
 						break;
 					case self::AJAX_ACTION_TOGGLE_RULE_DEFAULT:
-						$rule->rule_value_default = ! $rule->rule_value_default; 
+						$rule->rule_value_default = ! $rule->rule_value_default;
 						break;
 				}
 			}
@@ -279,10 +281,10 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		
+
 		return $msg;
 	}
-	
+
 	/**
 	 * Save Url Groups tab.
 	 *
@@ -295,16 +297,16 @@ class MS_Controller_Rule extends MS_Controller {
 		if( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		
+
 		$membership = $this->get_membership();
 		if( empty( $membership ) ) {
 			return $msg;
 		}
-		
+
 		if( is_array( $fields ) ) {
 			$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
 			$rule = $membership->get_rule( $rule_type );
-	
+
 			foreach( $fields as $field => $value ) {
 				$rule->$field = $value;
 			}
@@ -313,14 +315,14 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 		return $msg;
-	
+
 	}
-	
+
 	/**
 	 * Get membership from request.
-	 * 
+	 *
 	 * @since 4.0.0
-	 * 
+	 *
 	 * @return MS_Model_Membership or null if not found.
 	 */
 	private function get_membership() {
@@ -331,12 +333,12 @@ class MS_Controller_Rule extends MS_Controller {
 		elseif( ! empty( $_POST['membership_id'] ) ) {
 			$membership_id = $_POST['membership_id'];
 		}
-		
+
 		$membership = null;
 		if( ! empty( $membership_id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
-		
+
 		return apply_filters( 'ms_controller_rule_get_membership', $membership );
 	}
 }

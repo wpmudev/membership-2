@@ -2,6 +2,88 @@
  * Box-styles (e.g. accordeon box)
  */
 
+
+/***
+ * General settings box *
+ ***/
+
+.ms-wrap {
+	.ms-settings {
+		position: relative;
+		overflow: hidden;
+
+		padding: 10px 20px 20px;
+		min-height: 280px;
+
+		background: #fff;
+		border: 1px solid #E5E5E5;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	}
+
+	.ms-wrapper-center {
+		max-width: 800px;
+		margin: 0 auto;
+
+		&.wide {
+			max-width: 1200px;
+		}
+	}
+
+	.ms-quarter,
+	.ms-half {
+		position: relative;
+		float: left;
+		width: 50%;
+		margin: 0;
+		padding: 0;
+
+		&.space {
+			padding-right: 20px;
+		}
+
+		&.right {
+			float: right;
+		}
+	}
+
+	.ms-quarter {
+		width: 25%;
+	}
+
+	.ms-fixed-height,
+	.ms-settings-box.ms-fixed-height {
+		.inside {
+			overflow: auto;
+			height: 150px;
+			padding: 0;
+			margin: 20px 20px 0 0;
+		}
+	}
+
+	.ms-min-height,
+	.ms-settings-box.ms-min-height {
+		.inside {
+			min-height: 200px;
+			padding: 0;
+			margin: 20px 20px 0 0;
+		}
+	}
+}
+
+
+/* Settings overview with lighter background */
+.ms-wrap {
+	.ms-wrap-top {
+		margin: -15px -15px 0 -20px;
+		padding: 15px 15px 15px 20px;
+
+		background-color: #FAFAFA;
+		border-bottom: 1px solid #E5E5E5;
+	}
+}
+
+
+/* Accordeon box */
 .ms-wrap {
 	.ms-settings-box-wrapper {
 		background: #FBFBFB;
