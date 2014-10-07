@@ -145,7 +145,7 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 	 * @param  string $which Either 'top' or 'bottom'
 	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
-	public function extra_tablenav( $which ) {
+	public function extra_tablenav( $which, $echo = true ) {
 		if( 'top' != $which ) {
 			return;
 		}
