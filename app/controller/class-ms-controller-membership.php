@@ -718,7 +718,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 				case 'url_group':
 					$cnt_url_group = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP )->count_rules();
-					if ( ! $rules_url_group || ! $rule->access ) {
+					if ( ! $cnt_url_group || ! $rule->access ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
@@ -1108,7 +1108,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function enqueue_scripts() {
 		$data = array(
 			'ms_init' => '',
-			'initial_url' => $initial_url,
+// 			'initial_url' => $initial_url,
 		);
 
 		switch ( $this->get_step() ) {
