@@ -1,0 +1,65 @@
+/**
+ * Box-styles (e.g. accordeon box)
+ */
+
+.ms-wrap {
+	.ms-settings-box-wrapper {
+		background: #FBFBFB;
+		border: 1px solid #E5E5E5;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+		min-width: 255px;
+		position: relative;
+		margin-bottom: 15px;
+	}
+
+	.ms-settings-box {
+		padding: 10px;
+
+		.ms-header {
+			padding: 10px;
+			margin: -10px;
+			border-bottom: 1px solid #E5E5E5;
+			background: #F9F9F9;
+		}
+
+		.ms-settings-description {
+			margin-bottom: 0;
+		}
+
+		.inside {
+			padding-top: 20px;
+		}
+
+		.handlediv {
+			float: right;
+			width: 27px;
+			height: 30px;
+			cursor: pointer;
+
+			&:before {
+				content: '\f142';
+
+				position: relative;
+				display: inline-block;
+				right: 12px;
+				top: 0;
+				padding: 8px 10px;
+
+				font: 400 20px/1 dashicons;
+
+				speak: none;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				text-decoration: none!important
+			}
+		}
+
+		&.closed {
+			.handlediv {
+				&:before {
+					content: '\f140';
+				}
+			}
+		}
+	}
+}

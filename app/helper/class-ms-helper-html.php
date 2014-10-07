@@ -37,6 +37,7 @@ class MS_Helper_Html extends MS_Helper {
 	/** Constants for HTML elements. */
 	const INPUT_TYPE_HIDDEN = 'hidden';
 	const INPUT_TYPE_TEXT = 'text';
+	const INPUT_TYPE_DATEPICKER = 'datepicker';
 	const INPUT_TYPE_TEXT_AREA = 'textarea';
 	const INPUT_TYPE_SELECT = 'select';
 	const INPUT_TYPE_RADIO = 'radio';
@@ -88,8 +89,8 @@ class MS_Helper_Html extends MS_Helper {
 		$field_args = wp_parse_args( $field_args, $defaults );
 		extract( $field_args );
 
-		if( empty( $name ) ) {
-			if( ! empty( $section ) ) {
+		if ( empty( $name ) ) {
+			if ( ! empty( $section ) ) {
 				$name = $section . "[$id]";
 			}
 			else {
@@ -105,10 +106,18 @@ class MS_Helper_Html extends MS_Helper {
 
 		$tooltip_output = MS_Helper_Html::tooltip( $tooltip, true );
 
-		$placeholder = empty( $placeholder ) ? '' : 'placeholder="' . esc_attr( $placeholder ) . '" ';
+		$attr_placeholder = '';
+		$attr_data_placeholder = '';
 
-		if( ! empty( $data_ms ) ) {
-			if( empty( $data_ms['_wpnonce'] ) && ! empty( $data_ms['action'] ) ) {
+		if ( '' !== $placeholder && false !== $placeholder ) {
+			$attr_placeholder = 'placeholder="' . esc_attr( $placeholder ) . '" ';
+		}
+		if ( '' !== $data_placeholder && false !== $data_placeholder ) {
+			$attr_data_placeholder = 'data-placeholder="' . esc_attr( $data_placeholder ) . '" ';
+	}
+
+		if ( ! empty( $data_ms ) ) {
+			if ( empty( $data_ms['_wpnonce'] ) && ! empty( $data_ms['action'] ) ) {
 				$data_ms['_wpnonce'] = wp_create_nonce( $data_ms['action'] );
 			}
 
@@ -121,7 +130,6 @@ class MS_Helper_Html extends MS_Helper {
 
 		$multiple = empty( $multiple ) ? '' : 'multiple="multiple" ';
 
-		$data_placeholder = empty( $data_placeholder ) ? '' : 'data-placeholder="' . esc_attr( $data_placeholder ) . '" ';
 
 		// Capture to output buffer
 		if ( $return ) {
@@ -150,7 +158,23 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $id ),
 					esc_attr( $name ),
 					esc_attr( $value ),
-					$max_attr . $placeholder . $data_ms
+					$max_attr . $attr_placeholder . $data_ms
+				);
+
+				self::html_element_hint( $title, $tooltip_output );
+				break;
+
+			case self::INPUT_TYPE_DATEPICKER:
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				printf(
+					'<span class="ms-datepicker-wrapper ms-field-input"><input class="ms-datepicker %1$s" type="text" id="%2$s" name="%3$s" value="%4$s" %5$s /><i class="ms-icon fa fa-calendar"></i></span>',
+					esc_attr( $class ),
+					esc_attr( $id ),
+					esc_attr( $name ),
+					esc_attr( $value ),
+					$max_attr . $attr_placeholder . $data_ms
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
@@ -165,7 +189,7 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
-					$read_only . $data_ms,
+					$read_only . $attr_placeholder . $data_ms,
 					esc_textarea( $value )
 				);
 
@@ -527,6 +551,7 @@ class MS_Helper_Html extends MS_Helper {
 			$desc = array( $desc );
 		}
 		?>
+		<div class="ms-header">
 			<div class="ms-settings-tab-title">
 				<h3><?php echo $title; ?></h3>
 			</div>
@@ -537,39 +562,85 @@ class MS_Helper_Html extends MS_Helper {
 					</div>
 				<?php endforeach; ?>
 			</div>
+		</div>
 		<?php
 	}
 
-	public static function settings_box( $fields_in, $title = '', $description = '', $args = array() ) {
-
+	/**
+	 * Echo a single content box including the header and footer of the box.
+	 * The fields-list will be used to render the box body.
+	 *
+	 * @since  1.0.0
+	 * @param  array $fields_in List of fields to render
+	 * @param  string $title Box title
+	 * @param  string $description Description to display
+	 * @param  array $args Optional arguments used to render the fields
+	 * @param  string $state Toggle-state of the box: static/open/closed
+	 */
+	public static function settings_box( $fields_in, $title = '', $description = '', $args = array(), $state = 'static' ) {
 		/** If its a fields array, great, if not, make a fields array */
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
 			$fields = array();
 			$fields[] = $fields_in;
 		}
-		self::settings_box_header( $title, $description );
+		self::settings_box_header( $title, $description, $state );
 		foreach( $fields as $field ) {
 			MS_Helper_Html::html_element( $field, false, $args );
 		}
 		self::settings_box_footer();
 	}
 
-	public static function settings_box_header( $title = '', $description = '' ) {
-		do_action( 'ms_helper_settings_box_header_init', $title, $description );
-		echo '<div class="ms-settings-box-wrapper">';
-		echo '<div class="ms-settings-box">';
-		if( ! empty( $title ) ) {
-			echo '<h3>' . $title . '</h3>';
+	/**
+	 * Echo the header of a content box. That box has a similar layout to a
+	 * normal WordPress meta-box.
+	 * The box has a title and desription and can optionally be collapsable.
+	 *
+	 * @since  1.0.0
+	 * @param  string $title Box title displayed in the top
+	 * @param  string $description Description to display
+	 * @param  string $state Toggle-state of the box: static/open/closed
+	 */
+	public static function settings_box_header( $title = '', $description = '', $state = 'static' ) {
+		do_action( 'ms_helper_settings_box_header_init', $title, $description, $state );
+
+		$handle = '';
+		if ( $state !== 'static' ) {
+			$state = ('closed' === $state ? 'closed' : 'open');
+			$handle = sprintf(
+				'<div class="handlediv" title="%s"></div>',
+				__( 'Click to toggle' ) // Intentionally no text-domain, so we use WordPress default translation.
+			);
 		}
-		echo '<span class="ms-settings-description ms-description">' . $description . '</span>';
-		do_action( 'ms_helper_settings_box_header_end', $title, $description );
+		$box_class = $state;
+
+		?>
+		<div class="ms-settings-box-wrapper">
+			<div class="ms-settings-box <?php echo esc_attr( $box_class ); ?>">
+				<div class="ms-header">
+					<?php echo $handle; ?>
+					<?php if ( ! empty( $title ) ) : ?>
+						<h3><?php echo $title; ?></h3>
+					<?php endif; ?>
+					<span class="ms-settings-description ms-description"><?php echo $description; ?></span>
+				</div>
+				<div class="inside">
+		<?php
+		do_action( 'ms_helper_settings_box_header_end', $title, $description, $state );
 	}
 
+	/**
+	 * Echo the footer of a content box.
+	 *
+	 * @since  1.0.0
+	 */
 	public static function settings_box_footer() {
 		do_action( 'ms_helper_settings_box_footer_init' );
-		echo '</div>';
-		echo '</div>';
+		?>
+		</div> <!-- .inside -->
+		</div> <!-- .ms-settings-box -->
+		</div> <!-- .ms-settings-box-wrapper -->
+		<?php
 		do_action( 'ms_helper_settings_box_footer_end' );
 	}
 

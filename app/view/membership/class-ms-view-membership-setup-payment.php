@@ -6,7 +6,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 
 	public function to_html() {
 		$fields = $this->get_fields();
-		$this->data['is_global_payments_set'] = false;
 
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
 		$wrapper_class = $this->data['is_global_payments_set'] ? '' : 'wide';
@@ -31,8 +30,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 					<?php
 					$this->global_payment_settings();
 
-					if( $this->data['membership']->can_have_children() ) {
-						foreach( $this->data['children'] as $child ) {
+					if ( $this->data['membership']->can_have_children() ) {
+						foreach ( $this->data['children'] as $child ) {
 							$this->specific_payment_settings( $child );
 						}
 					}
@@ -104,7 +103,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 
 	public function global_payment_settings() {
 
-		if( $this->data['is_global_payments_set'] ) {
+		if ( $this->data['is_global_payments_set'] ) {
 			return;
 		}
 
@@ -116,6 +115,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	}
 
 	public function specific_payment_settings( $membership ) {
+		static $First = true;
+
 		$title = sprintf(
 			__( '<span class="ms-item-name">%s</span> Specific Payment Settings:', MS_TEXT_DOMAIN ),
 			$membership->name
@@ -126,50 +127,52 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		);
 		$fields = $this->get_specific_payment_fields( $membership );
 		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
+		$state = ($First ? 'open' : 'closed');
 
 		?>
 		<div class="ms-specific-payment-wrapper <?php echo esc_attr( $type_class ); ?>">
-			<?php MS_Helper_Html::settings_box_header( $title, $desc ); ?>
-			<div class="inside">
-				<div class="ms-payment-structure-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
-					<?php MS_Helper_Html::html_element( $fields['payment_type'] ); ?>
+			<?php MS_Helper_Html::settings_box_header( $title, $desc, $state ); ?>
+			<div class="ms-payment-structure-wrapper">
+				<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
+				<?php MS_Helper_Html::html_element( $fields['payment_type'] ); ?>
+			</div>
+			<div class="ms-payment-types-wrapper">
+				<div class="ms-payment-type-wrapper ms-payment-type-finite ms-period-wrapper">
+					<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
+					<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
 				</div>
-				<div class="ms-payment-types-wrapper">
-					<div class="ms-payment-type-wrapper ms-payment-type-finite ms-period-wrapper">
-						<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
-						<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
-					</div>
-					<div class="ms-payment-type-wrapper ms-payment-type-recurring ms-period-wrapper">
-						<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );?>
-						<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );?>
-					</div>
-					<div class="ms-payment-type-wrapper ms-payment-type-date-range">
-						<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
-						<span> to </span>
-						<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
-					</div>
+				<div class="ms-payment-type-wrapper ms-payment-type-recurring ms-period-wrapper">
+					<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );?>
+					<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );?>
 				</div>
-				<div class="ms-after-end-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
+				<div class="ms-payment-type-wrapper ms-payment-type-date-range">
+					<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
+					<span> to </span>
+					<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
 				</div>
-				<div class="ms-trial-wrapper">
-					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
-					<div id="ms-trial-period-wrapper">
-						<div class="ms-period-wrapper">
-							<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
-							<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
-							<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
-						</div>
+			</div>
+			<div class="ms-after-end-wrapper">
+				<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
+			</div>
+			<div class="ms-trial-wrapper">
+				<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
+				<div id="ms-trial-period-wrapper">
+					<div class="ms-period-wrapper">
+						<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
+						<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
+						<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
 					</div>
 				</div>
 			</div>
 			<?php MS_Helper_Html::settings_box_footer(); ?>
 		</div>
 		<?php
+		$First = false;
 	}
 
 	private function get_specific_payment_fields( $membership ) {
+		global $wp_locale;
+
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
@@ -187,6 +190,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'desc' => $currency,
 						'value' => $membership->price,
 						'class' => 'ms-field-input-price ms-text-small ms-ajax-update',
+						'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
 						'data_ms' => array(
 								'field' => 'price',
 								'_wpnonce' => $nonce,
@@ -214,7 +218,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Period', MS_TEXT_DOMAIN ),
 						'value' => $membership->period_unit,
-						'class' => 'ms-field-input-period-unit ms-ajax-update',
+						'class' => 'ms-field-input-period-unit ms-text-small ms-ajax-update',
+						'placeholder' => '0',
 						'data_ms' => array(
 								'field' => 'period_unit',
 								'_wpnonce' => $nonce,
@@ -242,7 +247,8 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
 						'value' => $membership->pay_cycle_period_unit,
-						'class' => 'ms-field-input-pay-cycle-period-unit ms-ajax-update',
+						'class' => 'ms-field-input-pay-cycle-period-unit ms-text-small ms-ajax-update',
+						'placeholder' => '0',
 						'data_ms' => array(
 								'field' => 'pay_cycle_period_unit',
 								'_wpnonce' => $nonce,
@@ -266,10 +272,11 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				),
 				'period_date_start' => array(
 						'id' => 'period_date_start_' . $membership->id,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 						'title' => __( 'Date range', MS_TEXT_DOMAIN ),
 						'value' => $membership->period_date_start,
-						'class' => 'ms-datepicker ms-ajax-update',
+						'class' => 'ms-ajax-update',
+						'placeholder' => __( 'Start Date...', MS_TEXT_DOMAIN ),
 						'data_ms' => array(
 								'field' => 'period_date_start',
 								'_wpnonce' => $nonce,
@@ -279,9 +286,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				),
 				'period_date_end' => array(
 						'id' => 'period_date_end_' . $membership->id,
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 						'value' => $membership->period_date_end,
-						'class' => 'ms-datepicker ms-ajax-update',
+						'class' => 'ms-ajax-update',
+						'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
 						'data_ms' => array(
 								'field' => 'period_date_end',
 								'_wpnonce' => $nonce,
@@ -322,6 +330,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'value' => $membership->trial_period_unit,
 						'class' => 'ms-field-input-trial-period-unit ms-text-small ms-ajax-update',
+						'placeholder' => '0',
 						'data_ms' => array(
 								'field' => 'trial_period_unit',
 								'_wpnonce' => $nonce,

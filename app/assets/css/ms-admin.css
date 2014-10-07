@@ -59,6 +59,9 @@
 .ms-wrap {
   font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+.ms-wrap h3 {
+  margin: 0 0 4px 0;
+}
 .ms-wrap .ms-bold {
   font-weight: bold;
 }
@@ -68,9 +71,6 @@
 .ms-wrap .ms-description {
   color: #888;
   font-size: 0.9em;
-}
-.ms-wrap h3 {
-  margin: 0;
 }
 .ms-wrap .ms-settings-description {
   margin-bottom: 15px;
@@ -180,6 +180,55 @@
 }
 
 /**
+ * Box-styles (e.g. accordeon box)
+ */
+.ms-wrap .ms-settings-box-wrapper {
+  background: #FBFBFB;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  min-width: 255px;
+  position: relative;
+  margin-bottom: 15px;
+}
+.ms-wrap .ms-settings-box {
+  padding: 10px;
+}
+.ms-wrap .ms-settings-box .ms-header {
+  padding: 10px;
+  margin: -10px;
+  border-bottom: 1px solid #E5E5E5;
+  background: #F9F9F9;
+}
+.ms-wrap .ms-settings-box .ms-settings-description {
+  margin-bottom: 0;
+}
+.ms-wrap .ms-settings-box .inside {
+  padding-top: 20px;
+}
+.ms-wrap .ms-settings-box .handlediv {
+  float: right;
+  width: 27px;
+  height: 30px;
+  cursor: pointer;
+}
+.ms-wrap .ms-settings-box .handlediv:before {
+  content: '\f142';
+  position: relative;
+  display: inline-block;
+  right: 12px;
+  top: 0;
+  padding: 8px 10px;
+  font: 400 20px/1 dashicons;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none !important;
+}
+.ms-wrap .ms-settings-box.closed .handlediv:before {
+  content: '\f140';
+}
+
+/**
  * Navigational elements.
  */
 .ms-wrap .ms-bread-crumb {
@@ -232,12 +281,12 @@
   font-weight: normal;
 }
 .ms-wrap .ms-field-input {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 .ms-wrap .button,
 .ms-wrap .button-primary {
-  margin-right: .5em;
+  margin-right: 6px;
 }
 .ms-wrap .ms-field-container {
   margin: 10px 0;
@@ -256,7 +305,6 @@
 }
 .ms-wrap .ms-text {
   display: inline-block;
-  height: 2.1em;
 }
 .ms-wrap .ms-text-small {
   width: 4em;
@@ -272,7 +320,9 @@
 }
 .ms-wrap input[type="text"] {
   min-height: 28px;
-  line-height: 28px;
+  line-height: 26px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .ms-wrap .disabled input,
 .ms-wrap input.disabled,
@@ -287,6 +337,25 @@
 }
 .ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
   content: ' - ';
+}
+
+/***
+ * DATEPICKER *
+ ***/
+.ms-wrap .ms-datepicker-wrapper {
+  display: inline-block;
+  position: relative;
+}
+.ms-wrap .ms-datepicker-wrapper .ms-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 28px;
+  width: 21px;
+  line-height: 28px;
+  text-align: left;
+  opacity: .5;
+  cursor: pointer;
 }
 
 /***
@@ -361,20 +430,27 @@
 .ms-select2.select2-container {
   margin-right: .5em;
 }
-.ms-select2.select2-container .select2-choice .select2-arrow {
+.ms-select2.select2-container .select2-choice,
+.ms-select2.select2-container .select2-choices {
+  height: 28px;
+  line-height: 27px;
+  font-size: 14px;
+  border-radius: 3px;
+  border-color: #CCC;
+}
+.ms-select2.select2-container .select2-choice .select2-arrow,
+.ms-select2.select2-container .select2-choices .select2-arrow {
   border: 0;
   background: transparent;
 }
-.ms-select2.select2-container .select2-choice .select2-arrow b {
-  background-position: 0 -2px;
+.ms-select2.select2-dropdown-open .select2-choice,
+.ms-select2.select2-dropdown-open .select2-choices {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
-.ms-select2.select2-container .select2-choice {
-  height: 23px;
-  line-height: 23px;
-  font-size: 14px;
-}
-.ms-select2.select2-dropdown-open .select2-choice .select2-arrow b {
-  background-position: -18px -2px;
+.ms-select2.select2-container-active .select2-choice,
+.ms-select2.select2-container-active .select2-choices {
+  border-color: #5897fb;
 }
 .ms-select2 .select2-search {
   margin-bottom: 4px;
@@ -401,6 +477,19 @@
 }
 .ms-select2 .select2-results .select2-match:empty {
   display: none;
+}
+
+.select2-drop {
+  overflow: hidden;
+  border-radius: 0 0 3px 3px;
+}
+
+/* When a thickbox window is open make sure the select2-dropdown is visible */
+.modal-open .select2-drop-mask {
+  z-index: 999998;
+}
+.modal-open .select2-drop {
+  z-index: 999999;
 }
 
 /***

@@ -17,13 +17,13 @@
 	}
 
 	.ms-field-input {
-		margin-top: 0.5em;
-		margin-bottom: 0.5em;
+		margin-top: 6px;
+		margin-bottom: 6px;
 	}
 
 	.button,
 	.button-primary {
-		margin-right: .5em;
+		margin-right: 6px;
 	}
 
 	.ms-field-container {
@@ -47,7 +47,6 @@
 
 	.ms-text {
 		display: inline-block;
-		height: 2.1em;
 	}
 
 	.ms-text-small {
@@ -68,7 +67,9 @@
 
 	input[type="text"] {
 		min-height: 28px;
-		line-height: 28px;
+		line-height: 26px;
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 
 	.disabled input,
@@ -90,6 +91,30 @@
 	}
 }
 
+
+/***
+ * DATEPICKER *
+ ***/
+
+.ms-wrap {
+	.ms-datepicker-wrapper {
+		display: inline-block;
+		position: relative;
+
+		.ms-icon {
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 28px;
+			width: 21px;
+
+			line-height: 28px;
+			text-align: left;
+			opacity: .5;
+			cursor: pointer;
+		}
+	}
+}
 
 /***
  * FORM AND FIELD LAYOUT *
@@ -186,27 +211,34 @@
 	&.select2-container {
 		margin-right: .5em;
 
-		.select2-choice .select2-arrow {
-			border: 0;
-			background: transparent;
 
-			b {
-				background-position: 0 -2px;
-			}
-		}
-
-		.select2-choice {
-			height: 23px;
-			line-height: 23px;
+		.select2-choice,
+		.select2-choices {
+			height: 28px;
+			line-height: 27px;
 			font-size: 14px;
+			border-radius: 3px;
+			border-color: #CCC;
+
+			.select2-arrow {
+				border: 0;
+				background: transparent;
+			}
 		}
 	}
 
 	&.select2-dropdown-open {
-		.select2-choice .select2-arrow {
-			b {
-				background-position: -18px -2px;
-			}
+		.select2-choice,
+		.select2-choices {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+
+	&.select2-container-active {
+		.select2-choice,
+		.select2-choices {
+			border-color: #5897fb;
 		}
 	}
 
@@ -240,6 +272,22 @@
 				display: none;
 			}
 		}
+	}
+}
+
+.select2-drop {
+	overflow: hidden;
+	border-radius: 0 0 3px 3px;
+}
+
+/* When a thickbox window is open make sure the select2-dropdown is visible */
+.modal-open {
+	.select2-drop-mask {
+		z-index: 999998;
+	}
+
+	.select2-drop {
+		z-index: 999999;
 	}
 }
 

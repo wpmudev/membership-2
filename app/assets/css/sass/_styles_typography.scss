@@ -5,6 +5,10 @@
 .ms-wrap {
 	font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
+	h3 {
+		margin: 0 0 4px 0;
+	}
+
 	.ms-bold {
 		font-weight: bold;
 	}
@@ -16,10 +20,6 @@
 	.ms-description {
 		color: #888;
 		font-size: 0.9em;
-	}
-
-	h3 {
-		margin: 0;
 	}
 
 	.ms-settings-description {

@@ -104,6 +104,31 @@ window.ms_functions = {
 			range.selectNode( el );
 			window.getSelection().addRange( range );
 		}
+	},
+
+	/**
+	 * Toggle the accordeon box state
+	 */
+	toggle_box: function( el ) {
+		var me = jQuery( el ),
+			box = me.parents( '.ms-settings-box' ).first();
+
+		if ( box.hasClass( 'static' ) ) { return false; }
+		if ( box.hasClass( 'closed' ) ) {
+			box.removeClass( 'closed' ).addClass( 'open' );
+		} else {
+			box.removeClass( 'open' ).addClass( 'closed' );
+		}
+	},
+
+	/**
+	 * Toggle datepicker when user clicks on icon.
+	 */
+	toggle_datepicker: function( el ) {
+		var me = jQuery( el ),
+			dp = me.parents( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
+
+		dp.datepicker( 'show' );
 	}
 };
 
@@ -111,17 +136,31 @@ window.ms_functions = {
 jQuery( document ).ready( function() {
 	var fn = window.ms_functions;
 
-	jQuery( 'div.ms-radio-slider' ).click( function() {
+	// Toggle radio-sliders on click.
+	jQuery( '.ms-radio-slider' ).click( function() {
 		fn.radio_slider_ajax_update( this );
 	});
 
-	jQuery( '.chosen-select' ).select2( fn.chosen_options );
+	// Toggle accordeon boxes on click.
+	jQuery( '.ms-settings-box .handlediv' ).click( function() {
+		fn.toggle_box( this );
+	});
 
+	// Toggle datepickers when user clicks on icon.
+	jQuery( '.ms-datepicker-wrapper .ms-icon' ).click( function() {
+		fn.toggle_datepicker( this );
+	});
+
+	// Initialize all select boxes
+	jQuery( 'select, .chosen-select' ).select2( fn.chosen_options );
+
+	// Ajax-Submit data when ms-ajax-update fields are changed.
 	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() {
 		fn.ajax_update( this );
 	});
 
+	// Select all text inside <code> tags on click.
 	jQuery( '.ms-wrap' ).on( 'click', 'code', function() {
 		fn.select_all( this );
-	} );
+	});
 });
