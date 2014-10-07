@@ -1,17 +1,36 @@
 <?php
 
+/**
+ * Render Accessible Content page.
+ *
+ * Extends MS_View for rendering methods and magic methods.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage View
+ */
 class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Protected_Content {
 
-	protected $fields = array();
-
+	/**
+	 * Data set by controller.
+	 *
+	 * @since 1.0.0
+	 * @var mixed $data
+	 */
 	protected $data;
 
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 
 		$tabs = $this->data['tabs'];
+		
 		ob_start();
-
-		/** Render tabbed interface. */
+		/* Render tabbed interface. */
 		?>
 			<div class='ms-wrap wrap'>
 				<?php
@@ -26,16 +45,55 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 					$active_tab = $this->data['active_tab'];
 					MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
-					/** Call the appropriate form to render. */
-					$render_callback =  apply_filters( 'ms_view_membership_accessible_content_render_tab_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+					/* Call the appropriate form to render. */
+					$render_callback = 'render_tab_' . str_replace('-', '_', $active_tab );
+
+					$render_callback =  apply_filters( 'ms_view_membership_accessible_content_render_tab_callback', array( $this, $render_callback  ), $active_tab, $this );
+					
 					call_user_func( $render_callback );
 				?>
 			</div>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		
+		return apply_filters( 'ms_view_membership_accessible_content_to_html', $html, $this );
 	}
 
+	/**
+	 * Render content for inexistent tabs.
+	 *
+	 * @since 1.0.0
+	 */
+	public function render_tab_() {
+
+		$menu_link = array(
+				'id' => 'menu_link',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s', MS_Controller_Plugin::MENU_SLUG . '-setup' ),
+		);
+
+		ob_start();
+		?>
+			<div class='ms-settings'>
+				<div class="ms-not-protected-msg-wrapper">
+					<div class="ms-not-protected-msg">
+						<?php _e( 'You do not have any protection rules set.', MS_TEXT_DOMAIN );?>
+					</div>
+					<?php MS_Helper_Html::html_element( $menu_link );?>
+				</div>
+			</div>
+		<?php 
+		$html = ob_get_clean();
+		
+		echo apply_filters( 'ms_view_membership_accessible_render_tab_', $html );
+	}
+	
+	/**
+	 * Render category tab.
+	 *
+	 * @since 1.0.0
+	 */
 	public function render_tab_category() {
 		$fields = $this->get_tab_category_fields();
 		$membership = $this->data['membership'];
@@ -93,8 +151,8 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 			<?php MS_Helper_Html::settings_footer(); ?>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		
+		echo apply_filters( 'ms_view_membership_accessible_render_tab_category', $html );
 	}
-
-
+	
 }
