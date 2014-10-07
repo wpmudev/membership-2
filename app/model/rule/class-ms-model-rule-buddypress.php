@@ -20,23 +20,38 @@
  *
 */
 
-
+/**
+ * Membership BuddyPress Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS;
 	
 	/**
-	 * Verify access to the current page.
+	 * Verify access to the current content.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
-	 * @return boolean
+	 * @param int $id The content post ID to verify access.
+	 * @return boolean True if has access to current content.
 	 */
 	public function has_access( $id = null ) {
-		$has_access = false;
+		
 		global $bp;
+		$has_access = false;
 		
 		if( function_exists( 'bp_current_component' ) ) {
 			$component = bp_current_component();
@@ -59,17 +74,20 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 			}
 		}
 	
-		return apply_filters( 'ms_model_rule_buddypress_has_access',  $has_access );
+		return apply_filters( 'ms_model_rule_buddypress_has_access',  $has_access, $id, $this );
 	}
 	
 	/**
 	 * Set initial protection.
 	 * 
-	 * @since q.0
+	 * @since 1.0.0
 	 * 
-	 * @param optional $membership_relationship The membership relationship info. 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content();
+		
 		$this->add_filter( 'bp_user_can_create_groups', 'protect_create_bp_group' );
 		$this->protect_friendship_request();
 		$this->protect_private_messaging();
@@ -78,27 +96,31 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	/**
 	 * Protect private messaging.
 	 * 
-	 * @since 1.0
-	 * 
+	 * @since 1.0.0
 	 */
 	protected function protect_private_messaging() {
+		
 		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG ) ) {
 			$this->add_filter( 'bp_get_send_message_button', 'hide_private_message_button' );
 		}
+
+		do_action( 'ms_model_rule_buddypress_protect_private_messaging', $wp_query, $this );
 	}
 	
 	/**
 	 * Adds filter to prevent friendship button rendering.
 	 *
-	 * @since 1.0
-	 * @filter bp_get_send_message_button
-	 *
-	 * @access public
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * bp_get_send_message_button
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @param array $button The button settings.
 	 * @return bool false to hide button.
 	 */
 	public function hide_private_message_button( $button ) {
-		return false;
+		return apply_filters( 'ms_model_rule_buddypress_hide_private_message_button', false, $button, $this );
 	}
 	
 	/**
@@ -108,62 +130,78 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 * 
 	 */
 	protected function protect_friendship_request() {
+		
 		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_FRIENDSHIP ) ) {
 			$this->add_filter( 'bp_get_add_friend_button', 'hide_add_friend_button' );
 		}
+		
+		do_action( 'ms_model_rule_buddypress_protect_friendship_request', $this );
 	}
 	
 	/**
 	 * Adds filter to prevent friendship button rendering.
 	 *
-	 * @since 1.0
-	 * @filter bp_get_add_friend_button
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * bp_get_add_friend_button
 	 *
-	 * @access public
+	 * @since 1.0.0
+	 * 
 	 * @param array $button The button settings.
 	 * @return array The current button settings.
 	 */
 	public function hide_add_friend_button( $button ) {
+		
 		$this->add_filter( 'bp_get_button', 'prevent_button_rendering' );
-		return $button;
+		
+		return apply_filters( 'ms_model_rule_buddypress_hide_add_friend_button', $button, $this );
 	}
 	
 	/**
 	 * Prevents button rendering.
 	 *
-	 * @since 1.0
-	 * @filter bp_get_button
-	 *
-	 * @access public
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * bp_get_button
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @return boolean false to prevent button rendering.
 	 */
 	public function prevent_button_rendering() {
+		
 		$this->remove_filter( 'bp_get_button', 'prevent_button_rendering' );
-		return false;
+		
+		return apply_filters( 'ms_model_rule_buddypress_prevent_button_rendering', false, $this );
 	}
 	
 	/**
 	 * Checks the ability to create groups.
 	 *
-	 * @since 1.0
-	 * @filter bp_user_can_create_groups
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * bp_user_can_create_groups
+	 * 
+	 * @since 1.0.0
 	 *
 	 * @param string $can_create The initial access.
 	 * @return string The initial template if current user can create groups, otherwise blocking message.
 	 */
 	public function protect_create_bp_group( $can_create ) {
+		
 		$can_create = false;
+		
 		if( parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_GROUP_CREATION ) ) {
 			$can_create = true;
 		}
 		
-		return apply_filters( 'ms_model_rule_buddypress_protect_create_bp_group', $can_create );
+		return apply_filters( 'ms_model_rule_buddypress_protect_create_bp_group', $can_create, $this );
 	}
 
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param $args Not used, but kept due to method override.
 	 * @return array The content eligible to protect by this rule domain.
@@ -199,6 +237,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 		if( ! $this->rule_value_invert ) {
 			$contents = array_intersect_key( $contents,  $this->rule_value );
 		}
-		return apply_filters( 'ms_model_rule_buddypress_get_content', $contents );
+		
+		return apply_filters( 'ms_model_rule_buddypress_get_content', $contents, $this );
 	}
 }
