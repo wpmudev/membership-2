@@ -703,7 +703,7 @@ class MS_Model_Rule extends MS_Model {
 	}
 	
 	/**
-	 * Get contents of this rule domain.
+	 * Get content to protect.
 	 * 
 	 * To be overridden in children classes.
 	 * 

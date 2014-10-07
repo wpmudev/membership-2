@@ -180,7 +180,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Prepare content to be shown in list table.
+	 * Get content to protect.
 	 * 
 	 * @since 1.0.0
 	 * 

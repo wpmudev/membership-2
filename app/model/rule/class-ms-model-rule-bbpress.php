@@ -166,12 +166,11 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 			$post_id = $post->ID;
 		}
 
-		return apply_filters( 'ms_model_rule_bbpress_get_current_post_id', $post_id );
+		return apply_filters( 'ms_model_rule_bbpress_get_current_post_id', $post_id, $this );
 	}
 	
 	/**
 	 * Get the total content count.
-	 * For list table pagination.
 	 * 
 	 * @since 1.0.0
 	 * 
@@ -195,7 +194,7 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Prepare content to be shown in list table.
+	 * Get content to protect.
 	 * 
 	 * @since 1.0.0
 	 * 

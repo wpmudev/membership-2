@@ -20,41 +20,85 @@
  *
 */
 
-
+/**
+ * Membership Comment Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Comment extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_COMMENT;
 	
+	/**
+	 * Comment content ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $content_id
+	 */
 	const CONTENT_ID = 'comment';
 	
+	/**
+	 * Rule value constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array $rule_value
+	 */
 	const RULE_VALUE_NO_ACCESS = 2;
 	const RULE_VALUE_READ = 1;
 	const RULE_VALUE_WRITE = 0;
 	
 	/**
-	 * Verify access to the current asset.
-	 *
-	 * @since 1.0
-	 *
-	 * @param $id The item id to verify access.
+	 * Verify access to the current content.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		return false;
+		
+		return apply_filters( 'ms_model_rule_comment_has_access', false, $id, $this );
 	}
 	
+	/**
+	 * Get rule value for a specific content.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $id The content id to get rule value for.
+	 * @return boolean The rule value for the requested content. Default $rule_value_default.
+	 */
 	public function get_rule_value( $id ) {
+		
 		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : 0;
-		return apply_filters( 'ms_model_rule_comment_get_rule_value', $value, $id, $this->rule_value );
-	
+		
+		return apply_filters( 'ms_model_rule_comment_get_rule_value', $value, $id, $this );
 	}
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content();
+		
 		$this->add_filter( 'the_content', 'check_special_page' );
 		
 		$rule_value = $this->get_rule_value( self::CONTENT_ID );
@@ -82,29 +126,33 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 *
 	 * * comments_open
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param bool $open 
-	 * @return boolean
+	 * @param boolean $open The open status before filter. 
+	 * @return boolean The open status after filter.
 	 */
 	public function read_only_comments( $open ) {
+		
 		$traces = MS_Helper_Debug::debug_trace( true );
+		
 		if( false !== strpos( $traces, 'function: comment_form' ) ) {
 			$open = false;
 		}
-		return $open;
+		
+		return apply_filters( 'ms_model_rule_comment_read_only_comments', $open, $this );
 	}
 	
 	/**
 	 * Workaround to hide reply link when in read only mode.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param string $link
-	 * @return string
+	 * @param string $link The reply link before filter. 
+	 * @return string The reply (blank) link after filter.
 	 */
 	public function comment_reply_link( $link ) {
-		return '';
+
+		return apply_filters( 'ms_model_rule_comment_comment_reply_link', '', $this );
 	}
 	
 	/**
@@ -116,30 +164,61 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 * 
 	 * @since 1.0
 	 *
-	 * @return int
+	 * @return int The zero count.
 	 */
 	public function get_comments_number() {
-		return 0;
+		
+		return apply_filters( 'ms_model_rule_comment_get_comments_number', 0, $this );
 	}
 	
 	/**
 	 * Close comments for membership special pages.
+	 * 
+	 * **Hooks Filters: **
+	 *
+	 * * the_content
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $content The content to filter. 
 	 */
 	public function check_special_page( $content ) {
+		
 		if ( MS_Plugin::instance()->settings->is_special_page() ) {
 			add_filter( 'comments_open', '__return_false', 100 );
 		}
-		return $content;
+		
+		return apply_filters( 'ms_model_rule_comment_check_special_page', $content, $this );
 	}
 	
+	/**
+	 * Count protection rules quantity.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param bool $has_access_only Optional. Count rules for has_access status only.
+	 * @return int $count The rule count result.
+	 */
 	public function count_rules( $has_access_only = true ) {
+		
 		$count = 0;
 		$count = count( $this->rule_value );
-		return apply_filters( 'ms_model_rule_comment_count_rules', $count );
+		
+		return apply_filters( 'ms_model_rule_comment_count_rules', $count , $this);
 	}
 	
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args Optional. Not used.
+	 * @return array The content.
+	 */
 	public function get_contents( $args = null ) {
+		
 		$contents = array();
+		
 		if( count( $this->rule_value) > 0 ) {
 			$rule_value = $this->get_rule_value( self::CONTENT_ID );
 			$content_array = $this->get_content_array();
@@ -148,10 +227,22 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			$content->name = $content_array[ $rule_value ];
 			$content->access = true;
 			$contents[] = $content;
-		}		
-		return apply_filters( 'ms_model_rule_comment_get_content', $contents );
+		}
+				
+		return apply_filters( 'ms_model_rule_comment_get_content', $contents, $args, $this );
 	}
 	
+	/**
+	 * Get content array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args Optional. Not used.
+	 * @return array {
+	 * 		@type string $rule_value The rule value.
+	 * 		@type string $description The rule description.
+	 * }
+	 */
 	public function get_content_array( $args = null ) {
 		
 		$contents = array(
@@ -160,7 +251,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 				self::RULE_VALUE_NO_ACCESS => __( 'No Access to Comments', MS_TEXT_DOMAIN ),
 		);
 		
-		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents );
+		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents, $this );
 	}
 	
 }
