@@ -20,35 +20,66 @@
  *
 */
 
-
+/**
+ * Membership Category Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Category extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_CATEGORY;
 	
+	/**
+	 * Membership relationship start date.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $start_date
+	 */
 	protected $start_date; 
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
-		$this->start_date = $membership_relationship->start_date;
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content();
+		
+		$this->start_date = $ms_relationship->start_date;
+		
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
-		$this->add_filter( 'get_terms', 'protect_categories', 99, 3 );
+		$this->add_filter( 'get_terms', 'protect_categories', 99, 2 );
 	}
 	
 	/**
 	 * Adds category__in filter for posts query to remove all posts which not
 	 * belong to allowed categories.
 	 *
-	 * @since 4.0
-	 * @action pre_get_posts 
-	 *
-	 * @access public
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * pre_get_posts
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
+		
 		/**
 		 * Only verify permission if ruled by categories.
 		 */
@@ -67,18 +98,21 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 				$wp_query->query_vars['category__in'] = $categories;
 			}
 		}
+		
+		do_action( 'ms_model_rule_category_protect_posts', $wp_query, $this );
 	}
 	
 	/**
 	 * Filters categories and removes all not accessible categories.
 	 *
-	 * @sicne 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param array $terms The terms array.
-	 * @return array Fitlered terms array.
+	 * @param array $taxonomies The taxonomies array.
+	 * @return array Filtered terms array.
 	 */
-	public function protect_categories( $terms, $taxonomies, $args ) {
+	public function protect_categories( $terms, $taxonomies ) {
+		
 		$new_terms = array();
 	
 		/** bail - not fetching category taxonomy */
@@ -99,12 +133,15 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			}
 		}
 	
-		return $new_terms;
+		return apply_filters( 'ms_model_rule_category_protect_categories', $new_terms );
 	}
 	
 	/**
 	 * Verify access to the current category or post belonging to a catogory.
-	 * @return boolean
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return boolean True if has access to current content.
 	 */
 	public function has_access( $post_id = null ) {
 		
@@ -138,70 +175,8 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 			}
 				
 		}
-		return $has_access;
-	}
-	
-	/**
-	 * Verify if has dripped rules.
-	 * Only if ruled by categories.
-	 * @return boolean
-	 */
-	public function has_dripped_rules( $post_id = null ) {
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			/**
-			 * Verify post access accordinly to category rules.
-			 */
-			if( ! empty( $post_id ) || ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) ) {
-				if( empty( $post_id ) ) {
-					$post_id = get_the_ID();
-				}
-				$categories = wp_get_post_categories( $post_id );
-				$intersect = array_intersect( $categories, array_keys( $this->dripped ) );
-				return ! empty( $intersect );
-			}
-			/**
-			 * Category page.
-			 */
-			elseif( is_category() ) {
-				return array_key_exists( get_queried_object_id(), $this->dripped );
-			}
-		}
-		else {
-			return false;
-		}
 		
-	}
-	
-	/**
-	 * Verify access to dripped content.
-	 * @param $start_date The start date of the member membership.
-	 */
-	public function has_dripped_access( $start_date, $post_id = null ) {
-		
-		$has_access = false;
-		
-		/**
-		 * Verify post access accordinly to category rules.
-		 */
-		if( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) {
-			if( empty( $post_id ) ) {
-				$post_id = get_the_ID();
-			}
-			$categories = wp_get_post_categories( $post_id );
-			if( ! empty( $categories ) ) {
-				foreach( $categories as $category_id ) {
-					$has_access = $has_access || parent::has_dripped_access( $start_date, $category_id );
-				}				
-			}
-		}
-		/**
-		 * Category page.
-		 */
-		elseif( is_category() ) {
-			$has_access = parent::has_dripped_access( $start_date, get_queried_object_id() );
-		}
-		
-		return $has_access;
+		return apply_filters( 'ms_model_rule_category_has_access', $has_access, $post_id, $this );
 	}
 	
 	/**
