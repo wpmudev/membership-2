@@ -56,9 +56,12 @@ window.ms_init.view_membership_setup_payment = function init () {
 		var currency = jQuery( this ).val(),
 			items = jQuery( '.ms-payment-structure-wrapper' );
 
+		// Same translation table in:
+		// -> class-ms-model-settings.php
 		switch ( currency ) {
 			case 'USD': currency = '$'; break;
 			case 'EUR': currency = '&euro;'; break;
+			case 'JPY': currency = '&yen;'; break;
 		}
 
 		items.find( '.ms-field-description' ).html( currency );

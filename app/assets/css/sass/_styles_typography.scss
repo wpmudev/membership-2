@@ -9,12 +9,22 @@
 		margin: 0 0 4px 0;
 	}
 
+	.ms-important {
+		font-weight: bold;
+		color: #222;
+		font-size: 1.1em;
+	}
+
 	.ms-bold {
 		font-weight: bold;
 	}
 
 	.ms-italic {
 		font-style: italic;
+	}
+
+	.ms-low {
+		opacity: 0.6;
 	}
 
 	.ms-description {

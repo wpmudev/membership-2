@@ -176,18 +176,12 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
-		$currency = MS_Plugin::instance()->settings->currency;
-		switch ( $currency ) {
-			case 'USD': $currency = '$'; break;
-			case 'EUR': $currency = '&euro;'; break;
-		}
-
 		$fields = array(
 				'price' => array(
 						'id' => 'price_' . $membership->id,
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'title' => __( 'Payment Structure:', MS_TEXT_DOMAIN ),
-						'desc' => $currency,
+						'desc' => MS_Plugin::instance()->settings->currency_symbol,
 						'value' => $membership->price,
 						'class' => 'ms-field-input-price ms-text-small ms-ajax-update',
 						'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',

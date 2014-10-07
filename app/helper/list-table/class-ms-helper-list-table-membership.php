@@ -32,11 +32,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	protected $id = 'membership';
 
 	public function __construct(){
-		parent::__construct( array(
+		parent::__construct(
+			array(
 				'singular'  => 'membership',
 				'plural'    => 'memberships',
-				'ajax'      => false
-		) );
+				'ajax'      => false,
+			)
+		);
 	}
 
 	public function get_columns() {
@@ -58,15 +60,17 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 
 	public function get_sortable_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
+		return apply_filters(
+			'membership_helper_list_table_membership_sortable_columns',
+			array(
 				'name' => array( 'name', true ),
 				'type_description' => array( 'type', true ),
 				'active' => array( 'active', true ),
-		) );
+			)
+		);
 	}
 
 	public function column_active( $item ) {
-
 		$toggle = array(
 				'id' => 'ms-toggle-' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
@@ -84,58 +88,72 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	}
 
 	public function prepare_items() {
-
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 
 		$args = array();
 
-		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
+		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
 			$args['orderby'] = $_REQUEST['orderby'];
 			$args['order'] = $_REQUEST['order'];
 		}
 		/**
 		 * Prepare order by statement.
 		 */
-		if( ! empty( $args['orderby'] ) ) {
-			if( property_exists( 'MS_Model_Membership', $args['orderby'] ) ) {
+		if ( ! empty( $args['orderby'] ) ) {
+			if ( property_exists( 'MS_Model_Membership', $args['orderby'] ) ) {
 				$args['meta_key'] = $args['orderby'];
 				$args['orderby'] = 'meta_value';
 			}
 		}
 
-		$this->items = apply_filters( 'membership_helper_list_table_membership_items', MS_Model_Membership::get_grouped_memberships( $args ) );
-
+		$this->items = apply_filters(
+			'membership_helper_list_table_membership_items',
+			MS_Model_Membership::get_grouped_memberships( $args )
+		);
 	}
 
 	public function column_name( $item ) {
-		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
-						$_REQUEST['page'],
-						MS_Controller_Membership::STEP_OVERVIEW,
-						$item->id,
-						__( 'Edit', MS_TEXT_DOMAIN )
-				),
-				'delete' => sprintf( '<span class="delete"><a href="%s">%s</a></span>',
-					wp_nonce_url(
-						sprintf( '?page=%s&membership_id=%s&action=%s',
-							$_REQUEST['page'],
-							$item->id,
-							'delete'
-							),
-						'delete'
-						),
-					__( 'Delete', MS_TEXT_DOMAIN )
-				),
-		);
-		if( $item->has_parent() ) {
-			$actions['edit'] = sprintf( '<a href="?page=%s&step=%s&membership_id=%s&tab=%s">%s</a>',
-					$_REQUEST['page'],
-					MS_Controller_Membership::STEP_OVERVIEW,
-					$item->parent_id,
-					$item->id,
-					__( 'Edit', MS_TEXT_DOMAIN )
+		$actions = array();
+
+		if ( ! $item->has_parent() ) {
+			$actions['overview'] = sprintf(
+				'<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
+				$_REQUEST['page'],
+				MS_Controller_Membership::STEP_OVERVIEW,
+				$item->id,
+				__( 'Overview', MS_TEXT_DOMAIN )
+			);
+		} else {
+			$actions['content'] = sprintf(
+				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+				$_REQUEST['page'],
+				MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT,
+				$item->id,
+				__( 'Edit Content', MS_TEXT_DOMAIN )
 			);
 		}
+
+		$actions['payment'] = sprintf(
+			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+			$_REQUEST['page'],
+			MS_Controller_Membership::STEP_SETUP_PAYMENT,
+			$item->id,
+			__( 'Payment options', MS_TEXT_DOMAIN )
+		);
+
+		$actions['delete'] = sprintf(
+			'<span class="delete"><a href="%s">%s</a></span>',
+			wp_nonce_url(
+				sprintf(
+					'?page=%s&membership_id=%s&action=%s',
+					$_REQUEST['page'],
+					$item->id,
+					'delete'
+					),
+				'delete'
+				),
+			__( 'Delete', MS_TEXT_DOMAIN )
+		);
 
 		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
 		return sprintf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
@@ -144,13 +162,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function column_default( $item, $column_name ) {
 		$html = '';
-		switch( $column_name ) {
+		switch ( $column_name ) {
 			case 'members':
 				$html = $item->get_members_count();
 				break;
 
 			case 'type_description':
-				if( ! $item->parent_id ) {
+				if ( ! $item->parent_id ) {
 					$html .= sprintf(
 						'<span class="ms-img-type-%1$s small"></span> ',
 						esc_attr( $item->type )
@@ -161,7 +179,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 					esc_attr( $item->type ),
 					esc_html( $item->type_description )
 				);
-				if( $item->private ) {
+				if ( $item->private ) {
 					$html .= sprintf(
 						'<span class="ms-is-private">, %s</span>',
 						__( 'Private', MS_TEXT_DOMAIN )
@@ -170,18 +188,37 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				break;
 
 			case 'payment_structure':
-				$html = $item->get_payment_type_desc();
+				if ( $item->has_payment() ) {
+					$class = 'ms-bold';
+				} else {
+					$class = 'ms-low';
+				}
+				$html = sprintf(
+					'<span class="%1$s">%2$s</span>',
+					$class,
+					$item->get_payment_type_desc()
+				);
 				break;
 
 			case 'price':
-				if( $item->can_have_children() ) {
-					$html = __( 'Varied', MS_TEXT_DOMAIN );
+				if ( $item->can_have_children() ) {
+					$html = sprintf(
+						'<span class="ms-low">%1$s</span>',
+						__( 'Varied', MS_TEXT_DOMAIN )
+					);
 				}
-				elseif( $item->price > 0 ) {
-					$html = $item->price;
+				elseif ( $item->price > 0 ) {
+					$html = sprintf(
+						__( '<span class="ms-bold"><span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span></span>', MS_TEXT_DOMAIN ),
+						MS_Plugin::instance()->settings->currency_symbol,
+						number_format_i18n( $item->price, 2 )
+					);
 				}
 				else {
-					$html = __( 'Free', MS_TEXT_DOMAIN );
+					$html = sprintf(
+						'<span class="ms-low">%1$s</span>',
+						__( 'Free', MS_TEXT_DOMAIN )
+					);
 				}
 				break;
 
@@ -209,13 +246,19 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	 */
 	public function single_row( $item ) {
 		static $row_class = '';
+		$class = '';
 
-		$row_class = ( $row_class == '' ? 'alternate' : '' );
-		$class = ( $item->parent_id > 0 ) ? 'ms-child-row' : '';
-		$class = "class='$row_class $class'";
+		// Only alternate the background color on top-level (children have same background as the parent).
+		if ( $item->parent_id == 0 ) {
+			$row_class = ( $row_class == '' ? 'alternate' : '' );
+		} else {
+			$class = 'ms-child-row';
+		}
 
-		echo "<tr $class >";
-		$this->single_row_columns( $item );
-		echo '</tr>';
+		?>
+		<tr class="<?php echo esc_attr( $row_class . ' ' . $class ); ?>">
+			<?php $this->single_row_columns( $item ); ?>
+		</tr>
+		<?php
 	}
 }

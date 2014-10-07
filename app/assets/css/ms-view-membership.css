@@ -93,12 +93,6 @@
 .ms-overview-news-wrapper td {
 	padding: 0 15px 0 0;
 }
-.ms-overview-members-wrapper {
-}
-.ms-overview-available-content-wrapper {
-	clear: both;
-	background-color: #eee;
-}
 .ms-overview-content-box-wrapper {
 	border-right: 1px solid #ccc;
     float: left;

@@ -13,21 +13,26 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		?>
 			<div class='ms-wrap wrap'>
 				<?php
-					MS_Helper_Html::settings_header( array(
-						'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-						'title_icon_class' => 'fa fa-pencil-square',
-						'desc' => array(
-							__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
-							__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
-						),
-					) );
-				?>
-				<?php
+					MS_Helper_Html::settings_header(
+						array(
+							'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+							'title_icon_class' => 'fa fa-pencil-square',
+							'desc' => array(
+								__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
+								__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
+							),
+						)
+					);
+
 					$active_tab = $this->data['active_tab'];
 					MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
 					/** Call the appropriate form to render. */
-					$render_callback =  apply_filters( 'ms_view_membership_setup_protected_content_render_tab_callback', array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ), $active_tab, $this->data );
+					$render_callback = apply_filters(
+						'ms_view_membership_setup_protected_content_render_tab_callback',
+						array( $this, 'render_tab_' . str_replace( '-', '_', $active_tab ) ),
+						$active_tab, $this->data
+					);
 					call_user_func( $render_callback );
 				?>
 			</div>
@@ -43,11 +48,11 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$desc = array();
 		$cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->get_content_array();
 
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 			$desc['category'] = __( 'The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted.', MS_TEXT_DOMAIN );
 		}
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 			$desc['cpt_group'] = __( 'You can choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN );
 		}
@@ -55,16 +60,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<?php MS_Helper_Html::settings_tab_header( array( 'title' => implode( ' & ', $title ), 'desc' => $desc ) ); ?>
+				<?php MS_Helper_Html::settings_tab_header(
+					array( 'title' => implode( ' & ', $title ), 'desc' => $desc )
+				); ?>
 				<hr />
-				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ): ?>
+				<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 					<div class="ms-rule-wrapper">
 						<?php MS_Helper_Html::html_element( $fields['category'] );?>
 					</div>
 				<?php endif; ?>
-				<?php if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ): ?>
+				<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) : ?>
 					<div class="ms-rule-wrapper">
-						<?php if( count( $cpt ) ) {
+						<?php if ( count( $cpt ) ) {
 							MS_Helper_Html::html_element( $fields['cpt_group'] );
 						} else {
 							MS_Helper_Html::html_element( $fields['no_cpt_group'] );

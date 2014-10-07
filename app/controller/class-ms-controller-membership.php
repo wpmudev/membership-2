@@ -693,39 +693,52 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
-		foreach( $tabs as $tab => $info ) {
+
+		foreach ( $tabs as $tab => $info ) {
 			$rule = $protected_content->get_rule( $tab );
-			switch( $tab ) {
+
+			switch ( $tab ) {
 				case 'category':
-					if( ! $rule->count_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->count_rules() ) {
+					$cnt_category = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY )->count_rules();
+					$cnt_cpt = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->count_rules();
+					if ( ! $cnt_category && ! $cnt_cpt ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
+
 				case 'comment':
-					if( ! $rule->count_rules() && ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->count_rules() &&
-						! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->count_rules() ) {
+					$cnt_comment = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->count_rules();
+					$cnt_more_tag = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->count_rules();
+					$cnt_menu = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->count_rules();
+					if ( ! $cnt_comment && ! $cnt_more_tag && ! $cnt_menu ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
+
 				case 'url_group':
-					if( ! $rule->count_rules() || ! $rule->access ) {
+					$cnt_url_group = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP )->count_rules();
+					if ( ! $rules_url_group || ! $rule->access ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
+
 				default:
-					if( ! $rule->count_rules() ) {
+					if ( ! $rule->count_rules() ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
 			}
 		}
-		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s',
+		foreach ( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = admin_url(
+				sprintf(
+					'admin.php?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s',
 					$page,
 					$step,
 					$tab,
 					$membership_id
-			) );
+				)
+			);
 		}
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
 	}

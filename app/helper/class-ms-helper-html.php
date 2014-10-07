@@ -456,19 +456,21 @@ class MS_Helper_Html extends MS_Helper {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
-		extract($args);
+		extract( $args );
 
-		if( ! is_array( $desc ) ) {
+		if ( ! is_array( $desc ) ) {
 			$desc = array( $desc );
 		}
 		?>
 			<?php MS_Helper_Html::bread_crumbs( $bread_crumbs );?>
-			<h2 class='ms-settings-title'>
-				<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
+			<h2 class="ms-settings-title">
+				<?php if ( ! empty( $title_icon_class ) ) : ?>
+					<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
+				<?php endif; ?>
 				<?php echo $title; ?>
 			</h2>
 			<div class="ms-settings-desc-wrapper">
-				<?php foreach( $desc as $description ): ?>
+				<?php foreach ( $desc as $description ) : ?>
 					<div class="ms-settings-desc ms-description">
 						<?php echo $description; ?>
 					</div>
