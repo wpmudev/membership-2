@@ -61,5 +61,15 @@
 				}
 			}
 		}
+
+		&.nohead {
+			.ms-header {
+				display: none;
+			}
+
+			.inside {
+				padding: 0;
+			}
+		}
 	}
 }

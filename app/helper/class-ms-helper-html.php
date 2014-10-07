@@ -501,35 +501,35 @@ class MS_Helper_Html extends MS_Helper {
 				),
 			),
 		);
-		if( $hide_next_button ) {
+		if ( $hide_next_button ) {
 			unset( $defaults['fields']['next'] );
 		}
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if( $merge_fields ) {
-			foreach( $defaults['fields'] as $key => $field ) {
-				if( ! isset( $args['fields'][ $key ] ) ) {
+		if ( $merge_fields ) {
+			foreach ( $defaults['fields'] as $key => $field ) {
+				if ( ! isset( $args['fields'][ $key ] ) ) {
 					$args['fields'][ $key ] = $field;
 				}
 			}
-
 		}
+
 		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
-		extract($args);
+		extract( $args );
 
 		?>
 			<div class="ms-settings-footer">
 				<form method="post" >
 					<span class="ms-save-text-wrapper ms-init">
 						<?php
-							foreach( $fields as $field ) {
+							foreach ( $fields as $field ) {
 								MS_Helper_Html::html_element( $field );
 							}
 						?>
 						<span class="ms-saving-text">
 							<div class="loading-animation"></div>
-							<?php echo $saving_text ;?>
+							<?php echo $saving_text; ?>
 						</span>
 						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
 					</span>
@@ -545,7 +545,7 @@ class MS_Helper_Html extends MS_Helper {
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
-		extract($args);
+		extract( $args );
 
 		if( ! is_array( $desc ) ) {
 			$desc = array( $desc );
@@ -556,7 +556,7 @@ class MS_Helper_Html extends MS_Helper {
 				<h3><?php echo $title; ?></h3>
 			</div>
 			<div class="ms-settings-description">
-				<?php foreach( $desc as $description ): ?>
+				<?php foreach ( $desc as $description ): ?>
 					<div class="ms-description">
 						<?php echo $description; ?>
 					</div>
@@ -585,7 +585,7 @@ class MS_Helper_Html extends MS_Helper {
 			$fields[] = $fields_in;
 		}
 		self::settings_box_header( $title, $description, $state );
-		foreach( $fields as $field ) {
+		foreach ( $fields as $field ) {
 			MS_Helper_Html::html_element( $field, false, $args );
 		}
 		self::settings_box_footer();
@@ -613,6 +613,9 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		}
 		$box_class = $state;
+		if ( ! strlen( $title ) && ! strlen( $description ) ) {
+			$box_class .= ' nohead';
+		}
 
 		?>
 		<div class="ms-settings-box-wrapper">

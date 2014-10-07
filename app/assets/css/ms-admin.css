@@ -227,6 +227,12 @@
 .ms-wrap .ms-settings-box.closed .handlediv:before {
   content: '\f140';
 }
+.ms-wrap .ms-settings-box.nohead .ms-header {
+  display: none;
+}
+.ms-wrap .ms-settings-box.nohead .inside {
+  padding: 0;
+}
 
 /**
  * Navigational elements.
