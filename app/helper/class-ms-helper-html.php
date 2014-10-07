@@ -783,8 +783,8 @@ class MS_Helper_Html extends MS_Helper {
 		printf(
 			'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
 			$tag,
-			esc_html( $item->post_title ),
-			get_edit_post_link( $item->ID )
+			esc_html( $item->name ),
+			get_edit_post_link( $item->id )
 		);
 	}
 
