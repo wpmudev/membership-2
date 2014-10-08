@@ -323,7 +323,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 		return apply_filters(
 			"ms_helper_list_table_{$this->id}_views",
-			$_views
+			$views
 		);
 	}
 }
