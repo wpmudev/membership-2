@@ -227,7 +227,6 @@ class MS_Controller_Membership extends MS_Controller {
 							$msg = $this->mark_setup_completed();
 							break;
 					}
-					$goto_url = add_query_arg( array( 'membership_id' => $membership_id, 'step' => $next_step ) );
 					break;
 				case self::STEP_SETUP_PAYMENT:
 					$next_step = self::STEP_MS_LIST;
@@ -236,6 +235,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_SETUP_CONTENT_TYPES:
 					if( $this->validate_required( array( 'name' ) ) && 'create_content_type' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
+						$membership_id = $child->id;
 						$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					}
 					else {
@@ -251,6 +251,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_SETUP_MS_TIERS:
 					if( $this->validate_required( array( 'name' ) ) && 'create_tier' == $_POST['action'] ) {
 						$child = $this->create_child_membership(  $_POST['name'] );
+						$membership_id = $child->id;
 						$next_step = self::STEP_ACCESSIBLE_CONTENT;
 					}
 					else {
@@ -283,6 +284,27 @@ class MS_Controller_Membership extends MS_Controller {
 					if( $membership->has_parent() && empty( $_GET['tab'] ) ) {
 						wp_safe_redirect( add_query_arg( array( 'membership_id' => $membership->parent_id, 'tab' => $membership->id ) ) );
 						exit;
+					}
+					break;
+				case self::STEP_ACCESSIBLE_CONTENT:
+					/* Parent membership can not edit rules */
+					if( $membership->can_have_children() ) {
+						
+						$args = array();
+						$child = $membership->get_last_descendant();
+						
+						if( $child->id != $membership->id ) {
+							$args['membership_id'] = $child->id;	
+						}
+						else {
+							if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {							
+								$args['step'] = self::STEP_SETUP_CONTENT_TYPES;
+							}
+							elseif( MS_Model_Membership::TYPE_TIER == $membership->type ) {
+								$args['step'] = self::STEP_SETUP_MS_TIERS;
+							}
+						}
+						wp_safe_redirect( add_query_arg( $args ) );
 					}
 					break;
 			}
@@ -401,6 +423,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['children'] = $membership->get_children();
 		$data['is_global_payments_set'] = $settings->is_global_payments_set;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
+		$data['show_next_button'] = true;
 
 		$view = apply_filters( 'ms_view_membership_setup_payment', new MS_View_Membership_Setup_Payment() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data );
@@ -486,6 +509,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['membership'] = $this->load_membership();
 		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
+		$data['show_next_button'] = true;
 
 		$view = apply_filters( 'ms_view_membership_setup_content_types', new MS_View_Membership_Setup_Content_Type() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_content_types_data', $data );
