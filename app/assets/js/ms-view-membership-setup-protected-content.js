@@ -15,9 +15,9 @@ jQuery( document ).ready( function( $ ) {
 		}
 	};
 
-	$( '#category, #cpt_group' ).select2( ms_functions.chosen_options ).change( function() { ms_functions.bulk_ajax_update( this ) });
+	$( '#category, #cpt_group' ).change( function() { ms_functions.bulk_ajax_update( this ) });
 
-	$( '#comment' ).select2( ms_functions.chosen_options ).change( function() { ms_functions.ajax_update( this ) } );
+	$( '#comment' ).change( function() { ms_functions.ajax_update( this ) } );
 
 	$( '#menu_id' ).change( function() {
 		$( '#ms-menu-form' ).submit();
