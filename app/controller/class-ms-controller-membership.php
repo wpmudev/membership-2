@@ -330,7 +330,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['hide_next_button'] = ! MS_Plugin::instance()->settings->initial_setup;
+		$data['show_next_button'] = !! MS_Plugin::instance()->settings->initial_setup;
 
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
@@ -364,7 +364,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
-		$data['hide_next_button'] = false;
+		$data['show_next_button'] = true;
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
@@ -614,72 +614,76 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership_id = $this->load_membership()->id;
 
 		$tabs = array(
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-				),
-				'category' => array(
-						'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
-				),
-				'post' => array(
-						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
-				),
-				'cpt' => array(
-						'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
-				),
-				'comment' => array(
-						'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
-				),
-				'shortcode' => array(
-						'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
-				),
-				'url_group' => array(
-						'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
-				),
+			'page' => array(
+				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+			),
+			'category' => array(
+				'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
+			),
+			'post' => array(
+				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+			),
+			'cpt' => array(
+				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
+			),
+			'comment' => array(
+				'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
+			),
+			'shortcode' => array(
+				'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+			),
+			'url_group' => array(
+				'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
+			),
 		);
 		$title = array();
+
 		/**
 		 * Enable / Disable post by post tab.
 		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			unset( $tabs['post'] );
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 		}
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
 		$tabs['category']['title'] = implode( ', ', $title );
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
 			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST	) ) {
 			unset( $tabs['category'] );
 		}
 		/**
 		 * Enable / Disable custom post by post tab.
 		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			unset( $tabs['cpt'] );
 		}
 
 		/**
 		 * Disable urlgroup tab.
 		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			unset( $tabs['url_group'] );
 		}
 		/**
 		 * Disable shortcode tab.
 		 */
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
 			unset( $tabs['shortcode'] );
 		}
 
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
-		$url = admin_url( 'admin.php');
+		$url = admin_url( 'admin.php' );
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
-		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&tab=%s',
+		foreach ( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = admin_url(
+				sprintf(
+					'admin.php?page=%s&tab=%s',
 					$page,
 					$tab
-			) );
+				)
+			);
 		}
 
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -891,7 +895,13 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_OVERVIEW:
 				$bread_crumbs['prev'] = array(
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s', MS_Controller_Plugin::MENU_SLUG, self::STEP_MS_LIST ) ),
+					'url' => admin_url(
+						sprintf(
+							'admin.php?page=%s&step=%s',
+							MS_Controller_Plugin::MENU_SLUG,
+							self::STEP_MS_LIST
+						)
+					),
 				);
 				$bread_crumbs['current'] = array(
 					'title' => $membership->name,
@@ -899,50 +909,65 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 
 			case self::STEP_ACCESSIBLE_CONTENT:
-				if( $parent = $membership->get_parent() ) {
+				if ( $parent = $membership->get_parent() ) {
 					$bread_crumbs['prev'] = array(
-							'title' => $parent->name,
-							'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_OVERVIEW,
-									$parent->id
-							) ),
+						'title' => $parent->name,
+						'url' => admin_url(
+							sprintf(
+								'admin.php?page=%s&step=%s&membership_id=%s',
+								MS_Controller_Plugin::MENU_SLUG,
+								self::STEP_OVERVIEW,
+								$parent->id
+							)
+						),
 					);
-					if( MS_Model_Membership::TYPE_TIER == $parent->type ) {
+					if ( MS_Model_Membership::TYPE_TIER == $parent->type ) {
 						$bread_crumbs['prev1'] = array(
-								'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
-								'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-										MS_Controller_Plugin::MENU_SLUG,
-										self::STEP_SETUP_MS_TIERS,
-										$parent->id
-								) ),
+							'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
+							'url' => admin_url(
+								sprintf(
+									'admin.php?page=%s&step=%s&membership_id=%s',
+									MS_Controller_Plugin::MENU_SLUG,
+									self::STEP_SETUP_MS_TIERS,
+									$parent->id
+								)
+							),
 						);
 					}
-					elseif( MS_Model_Membership::TYPE_CONTENT_TYPE == $parent->type ) {
+					elseif ( MS_Model_Membership::TYPE_CONTENT_TYPE == $parent->type ) {
 						$bread_crumbs['prev1'] = array(
-								'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
-								'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-										MS_Controller_Plugin::MENU_SLUG,
-										self::STEP_SETUP_CONTENT_TYPES,
-										$parent->id
-								) ),
+							'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
+							'url' => admin_url(
+								sprintf(
+									'admin.php?page=%s&step=%s&membership_id=%s',
+									MS_Controller_Plugin::MENU_SLUG,
+									self::STEP_SETUP_CONTENT_TYPES,
+									$parent->id
+								)
+							),
 						);
 					}
 					$bread_crumbs['current'] = array(
-							'title' => sprintf( __( '%s Accessible Content', MS_TEXT_DOMAIN ), $membership->name ),
+						'title' => sprintf(
+							__( '%s Accessible Content', MS_TEXT_DOMAIN ),
+							$membership->name
+						),
 					);
 				}
 				else {
 					$bread_crumbs['prev'] = array(
-							'title' => $membership->name,
-							'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_OVERVIEW,
-									$membership->id
-							) ),
+						'title' => $membership->name,
+						'url' => admin_url(
+							sprintf(
+								'admin.php?page=%s&step=%s&membership_id=%s',
+								MS_Controller_Plugin::MENU_SLUG,
+								self::STEP_OVERVIEW,
+								$membership->id
+							)
+						),
 					);
 					$bread_crumbs['current'] = array(
-							'title' => __( 'Accessible Content', MS_TEXT_DOMAIN ),
+						'title' => __( 'Accessible Content', MS_TEXT_DOMAIN ),
 					);
 
 				}
@@ -950,90 +975,117 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_SETUP_CONTENT_TYPES:
 				$bread_crumbs['prev'] = array(
-						'title' => $membership->name,
-						'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$membership->id
-						) ),
+					'title' => $membership->name,
+					'url' => admin_url(
+						sprintf(
+							'admin.php?page=%s&step=%s&membership_id=%s',
+							MS_Controller_Plugin::MENU_SLUG,
+							self::STEP_OVERVIEW,
+							$membership->id
+						)
+					),
 				);
 				$bread_crumbs['current'] = array(
-						'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
+					'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
 				);
-				if( ! $membership->private ) {
+				if ( ! $membership->private ) {
 					$bread_crumbs['next'] = array(
-							'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 					);
 				}
 				break;
 
 			case self::STEP_SETUP_MS_TIERS:
 				$bread_crumbs['prev'] = array(
-						'title' => $membership->name,
-						'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$membership->id
-						) ),
+					'title' => $membership->name,
+					'url' => admin_url(
+						sprintf(
+							'admin.php?page=%s&step=%s&membership_id=%s',
+							MS_Controller_Plugin::MENU_SLUG,
+							self::STEP_OVERVIEW,
+							$membership->id
+						)
+					),
 				);
 				$bread_crumbs['current'] = array(
-						'title' => __( 'Membership Tiers', MS_TEXT_DOMAIN ),
+					'title' => __( 'Membership Tiers', MS_TEXT_DOMAIN ),
 				);
 				$bread_crumbs['next'] = array(
-						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
 				break;
 
 			case self::STEP_SETUP_DRIPPED:
 				$bread_crumbs['prev'] = array(
-						'title' => $membership->name,
-						'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$membership->id
-						) ),
+					'title' => $membership->name,
+					'url' => admin_url(
+						sprintf(
+							'admin.php?page=%s&step=%s&membership_id=%s',
+							MS_Controller_Plugin::MENU_SLUG,
+							self::STEP_OVERVIEW,
+							$membership->id
+						)
+					),
 				);
 				$bread_crumbs['current'] = array(
-						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+					'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
 				);
 				$bread_crumbs['next'] = array(
-						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
 				break;
 
 			case self::STEP_SETUP_PAYMENT:
 				$bread_crumbs['prev'] = array(
-						'title' => $membership->name,
-						'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$membership->id
-						) ),
+					'title' => $membership->name,
+					'url' => admin_url(
+						sprintf(
+							'admin.php?page=%s&step=%s&membership_id=%s',
+							MS_Controller_Plugin::MENU_SLUG,
+							self::STEP_OVERVIEW,
+							$membership->id
+						)
+					),
 				);
-				if( MS_Model_Membership::TYPE_TIER == $membership->type ) {
+				if ( MS_Model_Membership::TYPE_TIER == $membership->type ) {
 					$bread_crumbs['prev1'] = array(
-							'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
-							'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_SETUP_MS_TIERS,
-									$membership->id
-							) ),
+						'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
+						'url' => admin_url(
+							sprintf(
+								'admin.php?page=%s&step=%s&membership_id=%s',
+								MS_Controller_Plugin::MENU_SLUG,
+								self::STEP_SETUP_MS_TIERS,
+								$membership->id
+							)
+						),
 					);
 				}
-				elseif( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
+				elseif ( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
 					$bread_crumbs['prev1'] = array(
-							'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
-							'url' => admin_url( sprintf( 'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_SETUP_CONTENT_TYPES,
-									$membership->id
-							) ),
+						'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
+						'url' => admin_url(
+							sprintf(
+								'admin.php?page=%s&step=%s&membership_id=%s',
+								MS_Controller_Plugin::MENU_SLUG,
+								self::STEP_SETUP_CONTENT_TYPES,
+								$membership->id
+							)
+						),
 					);
 				}
 				$bread_crumbs['current'] = array(
-						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
 				break;
+		}
+
+		// Add the "edit" param if it is set.
+		if ( 1 == @$_GET['edit'] ) {
+			foreach ( $bread_crumbs as $key => $data ) {
+				if ( isset( $bread_crumbs[$key]['url'] ) ) {
+					$bread_crumbs[$key]['url'] .= '&edit=1';
+				}
+			}
 		}
 
 		return apply_filters( 'ms_controller_membership_get_bread_crumbs', $bread_crumbs );
@@ -1108,7 +1160,6 @@ class MS_Controller_Membership extends MS_Controller {
 	public function enqueue_scripts() {
 		$data = array(
 			'ms_init' => '',
-// 			'initial_url' => $initial_url,
 		);
 
 		switch ( $this->get_step() ) {

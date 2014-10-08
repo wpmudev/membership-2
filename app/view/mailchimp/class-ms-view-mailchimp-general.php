@@ -20,7 +20,7 @@ class MS_View_Mailchimp_General extends MS_View {
 						MS_Helper_Html::settings_box( $this->fields );
 					?>
 				</form>
-				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</div>
 		</div>
 		<?php

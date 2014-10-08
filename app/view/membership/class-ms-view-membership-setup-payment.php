@@ -10,6 +10,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
 		$wrapper_class = $this->data['is_global_payments_set'] ? '' : 'wide';
 
+		if ( 1 == @$_GET['edit'] ) {
+			$this->data[ 'show_next_button' ] = false;
+		}
+
 		ob_start();
 		?>
 
@@ -42,7 +46,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 					?>
 				</div>
 				<br class="clear" />
-				<?php MS_Helper_Html::settings_footer( array( 'fields' => $this->fields['control_fields'] ) ); ?>
+				<?php MS_Helper_Html::settings_footer(
+					$this->fields['control_fields'],
+					$this->data['show_next_button']
+				); ?>
 			</div>
 		</div>
 

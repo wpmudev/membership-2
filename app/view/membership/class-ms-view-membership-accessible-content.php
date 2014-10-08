@@ -29,7 +29,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Setup_Pro
 
 		$tabs = $this->data['tabs'];
 		if ( 1 == @$_GET['edit'] ) {
-			$this->data[ 'hide_next_button' ] = true;
+			$this->data[ 'show_next_button' ] = false;
 		}
 
 		ob_start();

@@ -37,8 +37,25 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 				'value' => __( 'Edit Content Types', MS_TEXT_DOMAIN ),
 				'url' => add_query_arg(
 					array(
-						'step' => MS_Controller_Membership::STEP_SETUP_MS_TIERS,
+						'step' => MS_Controller_Membership::STEP_SETUP_CONTENT_TYPES,
 						'membership_id' => $this->data['membership']->id,
+						'edit' => 1,
+					)
+				),
+				'class' => 'ms-link-button button',
+			)
+		);
+
+		MS_Helper_Html::html_element(
+			array(
+				'id' => 'setup_payment',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+				'url' => add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+						'membership_id' => $this->data['membership']->id,
+						'edit' => 1,
 					)
 				),
 				'class' => 'ms-link-button button',

@@ -3,9 +3,9 @@
 class MS_View_Gateway_Paypal_Settings extends MS_View {
 
 	protected $fields = array();
-	
+
 	protected $data;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		$gateway = $this->data['model'];
@@ -25,10 +25,10 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 									$this->data['model']->get_return_url(),
 									'https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/',
 									__( 'Instructions »', MS_TEXT_DOMAIN )
-								); 
+								);
 							}
 							MS_Helper_Html::settings_box( $this->fields, '', $description );
-							MS_Helper_Html::settings_footer( null, null, true );
+							MS_Helper_Html::settings_footer( null, false );
 						?>
 					</form>
 					<div class="clear"></div>
@@ -38,12 +38,12 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	function prepare_fields() {
 		$gateway = $this->data['model'];
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
-		
+
 		if( $gateway->id == MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE ) {
 			$merchant_id_field = array(
 					'id' => 'paypal_email',

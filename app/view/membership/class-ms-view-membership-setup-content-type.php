@@ -13,19 +13,28 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 		$list_table = new MS_Helper_List_Table_Membership_Group( $membership );
 		$list_table->prepare_items();
 
+		if ( 1 == @$_GET['edit'] ) {
+			$this->data[ 'show_next_button' ] = false;
+		}
+
 		ob_start();
 		?>
 
 		<div class="wrap ms-wrap">
 			<?php
-				MS_Helper_Html::settings_header( array(
-					'title' => __( 'Set Up Content Types', MS_TEXT_DOMAIN ),
-					'desc' => array(
-							sprintf( __( 'Here you can set-up different types of content to be available to different types of %s members.', MS_TEXT_DOMAIN ), $membership->name ),
-							__( '(eg. Cooking recipes for Cooking Members, PHP tutorials for Programming Members) ', MS_TEXT_DOMAIN ),
-					),
-					'bread_crumbs' => $this->data['bread_crumbs'],
-				) );
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => __( 'Set Up Content Types', MS_TEXT_DOMAIN ),
+						'desc' => array(
+							sprintf(
+								__( 'Here you can set-up different types of content to be available to different types of %s members.', MS_TEXT_DOMAIN ),
+								$membership->name
+							),
+							__( '(eg. Cooking recipes for Cooking Members, PHP tutorials for Programming Members)', MS_TEXT_DOMAIN ),
+						),
+						'bread_crumbs' => $this->data['bread_crumbs'],
+					)
+				);
 			?>
 			<div class="clear"></div>
 			<div class="ms-content-type-wrapper ms-wrapper-center">
@@ -38,7 +47,10 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 				</form>
 				<?php
 				$list_table->display();
-				MS_Helper_Html::settings_footer( array( 'fields' => array( $this->fields['step'] ) ) );
+				MS_Helper_Html::settings_footer(
+					array( $this->fields['step'] ),
+					$this->data['show_next_button']
+				);
 				?>
 			</div>
 			<div class="clear"></div>

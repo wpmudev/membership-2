@@ -13,9 +13,9 @@ class MS_View_Membership_Overview extends MS_View {
 				'value' => $membership->active,
 				'class' => '',
 				'data_ms' => array(
-						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-						'field' => 'active',
-						'membership_id' => $membership->id,
+					'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+					'field' => 'active',
+					'membership_id' => $membership->id,
 				),
 		);
 		$status_class = '';
@@ -218,9 +218,9 @@ class MS_View_Membership_Overview extends MS_View {
 		$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 
 		$membership_id = $this->data['membership']->id;
-		
+
 		if( ! empty( $this->data['child_membership'] ) && $this->data['child_membership']->is_valid() ) {
-		 	$membership_id = $this->data['child_membership']->id;
+			$membership_id = $this->data['child_membership']->id;
 		}
 		?>
 		<div class="ms-quarter ms-min-height">
@@ -253,6 +253,7 @@ class MS_View_Membership_Overview extends MS_View {
 										'step' => MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT,
 										'tab' => $rule->rule_type,
 										'membership_id' => $membership_id,
+										'edit' => 1,
 									)
 								),
 								'class' => 'ms-link-button button',

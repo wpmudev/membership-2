@@ -195,7 +195,7 @@ class MS_View_Settings_Edit extends MS_View {
 					<?php MS_Helper_Html::settings_box_footer();?>
 				<?php endforeach;?>
 			</form>
-			<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
 	}
@@ -313,7 +313,7 @@ class MS_View_Settings_Edit extends MS_View {
 				$view->render();
 			?>
 			</div>
-			<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -346,7 +346,7 @@ class MS_View_Settings_Edit extends MS_View {
 						__( 'More tag protection message', MS_TEXT_DOMAIN )
 					);
 				?>
-				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</form>
 		</div>
 		<?php
@@ -478,7 +478,7 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 					</tbody>
 				</table>
-				<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</form>
 		</div>
 		<?php
@@ -643,7 +643,7 @@ class MS_View_Settings_Edit extends MS_View {
 							$fields
 						);
 					?>
-					<?php MS_Helper_Html::settings_footer( null, false, true ); ?>
+					<?php MS_Helper_Html::settings_footer( null, false ); ?>
 				</form>
 			</div>
 		</div>

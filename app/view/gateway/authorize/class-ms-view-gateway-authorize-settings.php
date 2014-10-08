@@ -3,9 +3,9 @@
 class MS_View_Gateway_Authorize_Settings extends MS_View {
 
 	protected $fields = array();
-	
+
 	protected $data;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		$gateway = $this->data['model'];
@@ -18,7 +18,7 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 					<form class="ms-gateway-setings-form ms-form" data-ms="<?php echo $gateway->id;?>">
 						<?php
 							MS_Helper_Html::settings_box( $this->fields );
-							MS_Helper_Html::settings_footer( null, null, true );
+							MS_Helper_Html::settings_footer( null, false );
 						?>
 					</form>
 					<div class="clear"></div>
@@ -28,12 +28,12 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	function prepare_fields() {
 		$gateway = $this->data['model'];
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
-		
+
 		$this->fields = array(
 			'mode' => array(
 					'id' => 'mode',

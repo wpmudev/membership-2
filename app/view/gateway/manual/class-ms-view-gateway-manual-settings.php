@@ -3,7 +3,7 @@
 class MS_View_Gateway_Manual_Settings extends MS_View {
 
 	protected $data;
-	
+
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
@@ -16,11 +16,11 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					<form class="ms-gateway-setings-form ms-form" data-ms="<?php echo $gateway->id;?>">
 					<?php
 							MS_Helper_Html::settings_box(
-								$fields, 
-								'', 
+								$fields,
+								'',
 								__( 'Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation.', MS_TEXT_DOMAIN )
 							);
-							MS_Helper_Html::settings_footer( null, null, true );
+							MS_Helper_Html::settings_footer( null, false );
 						?>
 					</form>
 					<div class="clear"></div>
@@ -30,12 +30,12 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	function prepare_fields() {
 		$gateway = $this->data['model'];
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
-		
+
 		$fields = array(
 			'payment_info' => array(
 					'id' => 'payment_info',
@@ -79,7 +79,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
-		
+
 		return apply_filters( 'ms_view_gateway_manual_settings_prepare_fields', $fields );
 	}
 }

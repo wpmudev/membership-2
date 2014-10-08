@@ -48,9 +48,8 @@ class MS_View_Buddypress_General extends MS_View {
 			</div>
 			<?php
 				MS_Helper_Html::settings_footer(
-						array( 'fields' => array( $fields['step'] ) ),
-						true,
-						$this->data['hide_next_button']
+					array( $fields['step'] ),
+					$this->data['show_next_button']
 				);
 			?>
 		<?php

@@ -380,7 +380,7 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 
 			case self::TYPE_HTML_TEXT:
-				if( empty( $wrapper ) ) { $wrapper = 'span'; }
+				if ( empty( $wrapper ) ) { $wrapper = 'span'; }
 				echo '<div class="ms-html-text-wrapper">';
 
 				self::html_element_label( $title, $label_element, $id, $tooltip_output );
@@ -410,7 +410,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * @since  1.0.0
 	 */
 	private static function html_element_label( $title, $label_element, $id, $tooltip_output ) {
-		if( ! empty( $title ) ) {
+		if ( ! empty( $title ) ) {
 			printf(
 				'<%1$s for="%2$s" class="ms-field-label ms-field-input-label">%3$s %4$s</%1$s>',
 				$label_element,
@@ -427,7 +427,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * @since  1.0.0
 	 */
 	private static function html_element_desc( $desc ) {
-		if( $desc != '' ) {
+		if ( $desc != '' ) {
 			printf(
 				'<span class="ms-field-description">%1$s</span>',
 				$desc
@@ -446,13 +446,20 @@ class MS_Helper_Html extends MS_Helper {
 		}
 	}
 
-
+	/**
+	 * Echo the header part of a settings form, including the title and
+	 * description.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $args Title, description and breadcrumb infos.
+	 */
 	public static function settings_header( $args = null ) {
 		$defaults = array(
-				'title' => '',
-				'title_icon_class' => '',
-				'desc' => '',
-				'bread_crumbs' => null,
+			'title' => '',
+			'title_icon_class' => '',
+			'desc' => '',
+			'bread_crumbs' => null,
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
@@ -461,82 +468,98 @@ class MS_Helper_Html extends MS_Helper {
 		if ( ! is_array( $desc ) ) {
 			$desc = array( $desc );
 		}
+
+		MS_Helper_Html::bread_crumbs( $bread_crumbs );
 		?>
-			<?php MS_Helper_Html::bread_crumbs( $bread_crumbs );?>
-			<h2 class="ms-settings-title">
-				<?php if ( ! empty( $title_icon_class ) ) : ?>
-					<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
-				<?php endif; ?>
-				<?php echo $title; ?>
-			</h2>
-			<div class="ms-settings-desc-wrapper">
-				<?php foreach ( $desc as $description ) : ?>
-					<div class="ms-settings-desc ms-description">
-						<?php echo $description; ?>
-					</div>
-				<?php endforeach; ?>
-			</div>
+		<h2 class="ms-settings-title">
+			<?php if ( ! empty( $title_icon_class ) ) : ?>
+				<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
+			<?php endif; ?>
+			<?php echo $title; ?>
+		</h2>
+		<div class="ms-settings-desc-wrapper">
+			<?php foreach ( $desc as $description ) : ?>
+				<div class="ms-settings-desc ms-description">
+					<?php echo $description; ?>
+				</div>
+			<?php endforeach; ?>
+		</div>
 		<?php
 	}
 
-	public static function settings_footer( $args = null, $merge_fields = true, $hide_next_button = false ) {
-		$action = 'next';
-		$nonce = wp_create_nonce( $action );
-		$defaults = array(
-			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
-			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
-			'fields' => array(
-				'next' => array(
-						'id' => 'next',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Next', MS_TEXT_DOMAIN ),
-				),
-				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $action,
-				),
-				'_wpnonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $nonce,
-				),
-			),
-		);
-		if ( $hide_next_button ) {
-			unset( $defaults['fields']['next'] );
+	/**
+	 * Echo the footer section of a settings form.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  null|array $fields List of fields to display in the footer.
+	 * @param  bool|array $submit_info What kind of submit button to add.
+	 */
+	public static function settings_footer( $fields = null, $submit_info = null ) {
+		// Default Submit-Button is "Next >>"
+		if ( null === $submit_info || true === $submit_info ) {
+			$submit_info = array(
+				'id' => 'next',
+				'value' => __( 'Next', MS_TEXT_DOMAIN ),
+				'action' => 'next',
+			);
 		}
 
-		$args = wp_parse_args( $args, $defaults );
+		if ( null === $fields ) {
+			$fields = array();
+		}
 
-		if ( $merge_fields ) {
-			foreach ( $defaults['fields'] as $key => $field ) {
-				if ( ! isset( $args['fields'][ $key ] ) ) {
-					$args['fields'][ $key ] = $field;
+		if ( $submit_info ) {
+			$submit_fields = array(
+				'next' => array(
+					'id' => @$submit_info['id'],
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => @$submit_info['value'],
+				),
+				'action' => array(
+					'id' => 'action',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => @$submit_info['action'],
+				),
+				'_wpnonce' => array(
+					'id' => '_wpnonce',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => wp_create_nonce( @$submit_info['action'] ),
+				),
+			);
+
+			foreach ( $submit_fields as $key => $field ) {
+				if ( ! isset( $fields[ $key ] ) ) {
+					$fields[ $key ] = $field;
 				}
 			}
 		}
 
+		$args = array(
+			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
+			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
+			'fields' => $fields,
+		);
 		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
 		extract( $args );
 
 		?>
-			<div class="ms-settings-footer">
-				<form method="post" >
-					<span class="ms-save-text-wrapper ms-init">
-						<?php
-							foreach ( $fields as $field ) {
-								MS_Helper_Html::html_element( $field );
-							}
-						?>
-						<span class="ms-saving-text">
-							<div class="loading-animation"></div>
-							<?php echo $saving_text; ?>
-						</span>
-						<span class="ms-saved-text"><?php echo $saved_text ;?></span>
+		<div class="ms-settings-footer">
+			<form method="post" >
+				<span class="ms-save-text-wrapper ms-init">
+					<?php
+					foreach ( $fields as $field ) {
+						MS_Helper_Html::html_element( $field );
+					}
+					?>
+					<span class="ms-saving-text">
+						<div class="loading-animation"></div>
+						<?php echo $saving_text; ?>
 					</span>
-				</form>
-			</div>
+					<span class="ms-saved-text"><?php echo $saved_text; ?></span>
+				</span>
+			</form>
+		</div>
 		<?php
 	}
 
@@ -804,10 +827,19 @@ class MS_Helper_Html extends MS_Helper {
 		if ( is_array( $bread_crumbs ) ) {
 			foreach ( $bread_crumbs as $key => $bread_crumb ) {
 				if ( ! empty( $bread_crumb['url'] ) ) {
-					$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s"><a href="%s">%s</a></span>', $key, $bread_crumb['url'], $bread_crumb['title'] );
+					$crumbs[] = sprintf(
+						'<span class="ms-bread-crumb-%s"><a href="%s">%s</a></span>',
+						$key,
+						$bread_crumb['url'],
+						$bread_crumb['title']
+					);
 				}
 				elseif ( ! empty( $bread_crumb['title'] ) ) {
-					$crumbs[] = sprintf( '<span class="ms-bread-crumb-%s">%s</span>', $key, $bread_crumb['title'] );
+					$crumbs[] = sprintf(
+						'<span class="ms-bread-crumb-%s">%s</span>',
+						$key,
+						$bread_crumb['title']
+					);
 				}
 			}
 			if ( count( $crumbs ) > 0 ) {
