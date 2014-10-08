@@ -286,14 +286,32 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * ms_view_shortcode_membership_signup_cancel_button
 	 *
-	 * @todo Extract view class from cancel_button method and rewrite this method. @see purchase_button method.
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function cancel_button( $button, $ms_relationship ) {
+		
+		$view = null;
+		$data = array();
+		$data['ms_relationship'] = $ms_relationship;
 
-		if( $ms_relationship->gateway_id ) {
-			$gateway = MS_Model_Gateway::factory( $ms_relationship->gateway_id );
-			$button = $gateway->cancel_button( $button, $ms_relationship );
+		switch( $ms_relationship->gateway_id ) {
+			case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
+				$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Standard_Cancel' );
+				$data['gateway'] = $ms_relationship->get_gateway();
+				break;
+			case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+			case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
+			case MS_Model_Gateway::GATEWAY_STRIPE:
+			case MS_Model_Gateway::GATEWAY_FREE:
+			case MS_Model_Gateway::GATEWAY_MANUAL:
+			default:
+				break;
+		}
+		$view = apply_filters( 'ms_view_gateway_cancel_button', $view );
+		
+		if( ! empty( $view ) ) {
+			$view->data = apply_filters( 'ms_view_gateway_cancel_button_data', $data );
+			$button = $view->to_html();
 		}
 
 		return apply_filters( 'ms_controller_gateway_cancel_button', $button );
