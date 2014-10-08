@@ -3,34 +3,34 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
 /**
- * Membership List Table 
+ * Membership List Table
  *
  *
  * @since 4.0.0
  *
  */
 class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
-		
+
 	protected $id = 'billing';
-	
+
 	public function __construct(){
 		parent::__construct( array(
 				'singular'  => 'billing',
@@ -38,7 +38,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				'ajax'      => false
 		) );
 	}
-	
+
 	public function get_columns() {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$columns = apply_filters( 'membership_helper_list_table_membership_columns', array(
@@ -55,23 +55,23 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
 			'gateway_id' => __( 'Gateway', MS_TEXT_DOMAIN ),
 		) );
-		
+
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 			unset( $columns['discount'] );
 			unset( $columns['amount'] );
 		}
-		
+
 		return apply_filters( 'ms_helper_list_table_billing_get_columns', $columns );
 	}
-	
+
 	function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="invoice_id[]" value="%1$s" />', $item->id );
 	}
-	
+
 	public function get_hidden_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
 	}
-	
+
 	public function get_sortable_columns() {
 		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array(
 				'invoice' => array( 'ID', false ),
@@ -84,17 +84,17 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				'gateway_id' => array( 'gateway_id', false ),
 		) );
 	}
-	
+
 	public function prepare_items() {
-	
+
 		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
 
 		$args = $this->get_query_args();
-		
+
 		$total_items =  MS_Model_Invoice::get_invoice_count( $args );
-		
+
 		$this->items = apply_filters( 'membership_helper_list_table_invoice_items', MS_Model_Invoice::get_invoices( $args ) );
-		
+
 		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
 		$this->set_pagination_args( array(
 					'total_items' => $total_items,
@@ -102,16 +102,16 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				)
 			);
 	}
-	
+
 	private function get_query_args() {
 		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
 		$current_page = $this->get_pagenum();
-		
+
 		$args = array(
 				'posts_per_page' => $per_page,
 				'offset' => ( $current_page - 1 ) * $per_page,
 		);
-		
+
 		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
 			$args['orderby'] = $_REQUEST['orderby'];
 			$args['order'] = $_REQUEST['order'];
@@ -158,16 +158,16 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		return $args;
 	}
 	function column_invoice( $item ) {
-	
+
 		$actions = array(
 				'edit' => sprintf( '<a href="?page=%s&action=%s&invoice_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
 				'view' => sprintf( '<a href="%s">%s</a>', get_permalink(  $item->id ),  __( 'View', MS_TEXT_DOMAIN ) ),
 		);
-	
+
 		echo sprintf( '%1$s %2$s', $item->id, $this->row_actions( $actions ) );
-	
+
 	}
-	
+
 	public function column_default( $item, $column_name ) {
 		$html = '';
 		switch( $column_name ) {
@@ -184,23 +184,35 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		}
 		return $html;
 	}
-	
+
 	public function get_bulk_actions() {
 		return apply_filters( 'membership_helper_list_table_invoice_bulk_actions', array(
 			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 		) );
 	}
-	
-	public function get_views(){
+
+	public function get_views() {
 		$all_status = MS_Model_Invoice::get_status();
 		$views = array();
-		$views['all'] = sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) );
-		foreach( $all_status as $status => $desc ) {
+
+		$views['all'] = array(
+			'url' => remove_query_arg( array( 'status' ) ),
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+		);
+
+		foreach ( $all_status as $status => $desc ) {
 			$args = $this->get_query_args();
 			$args['meta_query']['status']['value'] = $status;
-			$views[ $status ] =	sprintf( '<a href="%s">%s<span class="count"> (%s)</span></a>', add_query_arg( array ( 'status' => $status ) ), $desc, $total_items =  MS_Model_Invoice::get_invoice_count( $args ) );
+			$count = MS_Model_Invoice::get_invoice_count( $args );
+
+			$views[ $status ] =	array(
+				'url' => add_query_arg( array( 'status' => $status ) ),
+				'label' => $desc,
+				'count' => $count,
+			);
 		}
-		return apply_filters( "ms_helper_list_table_billing_views", $views );
+
+		return apply_filters( 'ms_helper_list_table_billing_views', $views );
 	}
-	
+
 }

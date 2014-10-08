@@ -221,6 +221,9 @@ class MS_Helper_List_Table {
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
 			return;
 		}
+		if ( ! $this->need_pagination() ) {
+			return;
+		}
 
 		$input_id = $input_id . '-search-input';
 
@@ -266,6 +269,7 @@ class MS_Helper_List_Table {
 	 */
 	public function views() {
 		$views = $this->get_views();
+
 		/**
 		 * Filter the list of available list table views.
 		 *
@@ -282,11 +286,24 @@ class MS_Helper_List_Table {
 			return;
 		}
 
-		echo "<ul class='subsubsub'>\n";
-		foreach ( $views as $class => $view ) {
-			$views[ $class ] = "\t<li class='$class'>$view";
+		end( $views );
+		$last_class = key( $views );
+		reset( $views );
+
+		echo '<ul class="subsubsub">';
+		foreach ( $views as $class => $data ) {
+			$sep = ($last_class == $class ? '' : '|');
+			$count = (empty( $data['count'] ) ? '' : '(' . $data['count'] . ')');
+
+			printf(
+				'<li class="%1$s"><a href="%2$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
+				esc_attr( $class ),
+				@$data['url'],
+				@$data['label'],
+				$count,
+				esc_html( $sep )
+			);
 		}
-		echo implode( " |</li>\n", $views ) . "</li>\n";
 		echo '</ul>';
 	}
 
@@ -339,19 +356,29 @@ class MS_Helper_List_Table {
 
 		if ( ! $echo ) { ob_start(); }
 
-		echo "<select name='action$two'>\n";
-		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions' ) . "</option>\n";
+		printf( '<select name="action%s">', esc_attr( $two ) );
+		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions' ) );
 
 		foreach ( $this->_actions as $name => $title ) {
-			$class = 'edit' == $name ? ' class="hide-if-no-js"' : '';
+			$class = 'edit' == $name ? 'hide-if-no-js' : '';
 
-			echo "\t<option value='$name'$class>$title</option>\n";
+			printf(
+				'<option value="%s" class="%s">%s</option>',
+				esc_attr( $name ),
+				esc_attr( $class ),
+				esc_attr( $title )
+			);
 		}
 
-		echo "</select>\n";
+		echo '</select>';
 
-		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
-		echo "\n";
+		submit_button(
+			__( 'Apply' ),
+			'action',
+			false,
+			false,
+			array( 'id' => 'doaction' . esc_attr( $two ) )
+		);
 
 		if ( ! $echo ) { return ob_get_clean(); }
 	}
@@ -569,6 +596,18 @@ class MS_Helper_List_Table {
 	}
 
 	/**
+	 * Checks if pagination is needed for the current table.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return bool True if the table has more than 1 page.
+	 */
+	public function need_pagination() {
+		$total = (int) @$this->_pagination_args['total_pages'];
+		return $total >= 2;
+	}
+
+	/**
 	 * Display the pagination.
 	 *
 	 * @since 3.1.0
@@ -579,6 +618,9 @@ class MS_Helper_List_Table {
 	 */
 	protected function pagination( $which, $echo = true ) {
 		if ( empty( $this->_pagination_args ) ) {
+			return;
+		}
+		if ( ! $this->need_pagination() ) {
 			return;
 		}
 
@@ -618,7 +660,7 @@ class MS_Helper_List_Table {
 			'<a class="%s" title="%s" href="%s">%s</a>',
 			'prev-page' . $disable_first,
 			esc_attr__( 'Go to the previous page' ),
-			esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
+			esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
 			'&lsaquo;'
 		);
 

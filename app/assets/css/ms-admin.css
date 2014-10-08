@@ -148,7 +148,10 @@
 }
 .ms-wrap .tablenav input,
 .ms-wrap .tablenav select,
-.ms-wrap .tablenav .ms-field-input {
+.ms-wrap .tablenav .ms-field-input,
+.ms-wrap p.search-box input,
+.ms-wrap p.search-box select,
+.ms-wrap p.search-box .ms-field-input {
   margin-top: 0 !important;
   /* important: Some WordPress fields have a margin that needs to be cleared here */
   margin-bottom: 0 !important;

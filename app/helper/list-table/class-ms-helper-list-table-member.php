@@ -3,25 +3,25 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
 /**
- * Membership List Table 
+ * Membership List Table
  *
  *
  * @since 4.0.0
@@ -30,75 +30,86 @@
 class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
 	public function __construct(){
-		parent::__construct( array(
+		parent::__construct(
+			array(
 				'singular'  => 'member',
 				'plural'    => 'members',
-				'ajax'      => false
-		) );
+				'ajax'      => false,
+			)
+		);
 	}
-	
+
 	public function get_columns() {
 		$columns = array(
-			'cb'		 => '<input type="checkbox" />',
-			'username'	 => __('Username', MS_TEXT_DOMAIN ),
-			'email'		 => __('E-mail', MS_TEXT_DOMAIN ),
-			'active' 	 => __('Active', MS_TEXT_DOMAIN ),				
-			'membership' => __('Membership', MS_TEXT_DOMAIN ),
-			'start' => __('Membership Start', MS_TEXT_DOMAIN ),
-			'trial' => __('Trial Date', MS_TEXT_DOMAIN ),
-			'expire' => __('Membership Expire', MS_TEXT_DOMAIN ),
-			'gateway' => __('Gateway', MS_TEXT_DOMAIN ),
+			'cb'         => '<input type="checkbox" />',
+			'username'   => __( 'Username', MS_TEXT_DOMAIN ),
+			'email'      => __( 'E-mail', MS_TEXT_DOMAIN ),
+			'active'     => __( 'Active', MS_TEXT_DOMAIN ),
+			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
+			'start'      => __( 'Membership Start', MS_TEXT_DOMAIN ),
+			'trial'      => __( 'Trial Date', MS_TEXT_DOMAIN ),
+			'expire'     => __( 'Membership Expire', MS_TEXT_DOMAIN ),
+			'gateway'    => __( 'Gateway', MS_TEXT_DOMAIN ),
 		);
-		
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
 			unset( $columns['trial'] );
 		}
-		
+
 		return apply_filters( 'ms_helper_list_table_member_get_columns', $columns );
 	}
-	
+
 	public function get_hidden_columns() {
 		return array();
 	}
-	
-	public function get_sortable_columns() {
-		return apply_filters( 'ms_helper_list_table_member_get_sortable_columns', array(
-			'username' => array( 'login', false ),
-			'email' => array( 'email', false ),
-			'active' => array( 'active', false ),			
-// 			'membership' => array( 'membership_ids', false ),
-// 			'start' => array( 'start', false ),
-// 			'trial' => array( 'trial', false ),
-// 			'expire' => array( 'expire', false ),
-// 			'gateway' => array( 'gateway', false ),
-		) );
-	}
-	
-	public function prepare_items() {
 
-		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+	public function get_sortable_columns() {
+		return apply_filters(
+			'ms_helper_list_table_member_get_sortable_columns',
+			array(
+				'username' => array( 'login', false ),
+				'email' => array( 'email', false ),
+				'active' => array( 'active', false ),
+//				'membership' => array( 'membership_ids', false ),
+//				'start' => array( 'start', false ),
+//				'trial' => array( 'trial', false ),
+//				'expire' => array( 'expire', false ),
+//				'gateway' => array( 'gateway', false ),
+			)
+		);
+	}
+
+	public function prepare_items() {
+		$this->_column_headers = array(
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		);
 
 		$per_page = apply_filters( 'ms_helper_list_table_member_items_per_page', 10 );
 		$current_page = $this->get_pagenum();
-		
+
 		$args = array(
-				'number' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
+			'number' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
 		);
-		
-		if( ! empty( $_REQUEST['orderby'] ) && !empty( $_REQUEST['order'] ) ) {
+
+		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
 			$args['orderby'] = $_REQUEST['orderby'];
 			$args['order'] = $_REQUEST['order'];
 		}
+
 		/**
 		 * Prepare order by statement.
 		 */
-		if( ! empty( $args['orderby'] ) ) {
-			if( ! in_array( $args['orderby'], array( 'login', 'email' ) ) && property_exists( 'MS_Model_Member', $args['orderby'] ) ) {
-				
-				switch( $args['orderby'] ) {
+		if ( ! empty( $args['orderby'] ) ) {
+			if ( ! in_array( $args['orderby'], array( 'login', 'email' ) ) && property_exists( 'MS_Model_Member', $args['orderby'] ) ) {
+
+				switch ( $args['orderby'] ) {
 					case '':
 						$args['orderby'] = 'meta_value_num';
+						break;
+
 					default:
 						$args['meta_key'] = 'ms_'. $args['orderby'];
 						$args['orderby'] = 'meta_value';
@@ -106,26 +117,31 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				}
 			}
 		}
+
 		/**
 		 * Search string.
 		 */
-		if( ! empty( $_REQUEST['search_options'] ) ) {
+		if ( ! empty( $_REQUEST['search_options'] ) ) {
 			$search_options = $_REQUEST['search_options'];
 			$search_value = $_REQUEST['s'];
 			$membership = $_REQUEST['membership_filter'];
-			switch( $search_options ) {
+			switch ( $search_options ) {
 				case 'email':
 				case 'username':
-					$args['search'] =  '*' . $search_value . '*';
+					$args['search'] = '*' . $search_value . '*';
 					break;
+
 				case 'membership':
 					$members = array();
-					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership ) );
-					foreach( $ms_relationships as $ms_relationship ) {
+					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+						array( 'membership_id' => $membership )
+					);
+					foreach ( $ms_relationships as $ms_relationship ) {
 						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
 					}
 					$args['include'] = $members;
 					break;
+
 				default:
 					$args['meta_query'][ $search_options ] = array(
 							'key' => $search_options,
@@ -135,24 +151,26 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 					break;
 			}
 		}
+
 		/**
 		 * Views filters.
 		 */
-		if( ! empty( $_REQUEST['status'] ) ) {
-			switch( $_REQUEST['status'] ) {
+		if ( ! empty( $_REQUEST['status'] ) ) {
+			switch ( $_REQUEST['status'] ) {
 				case 'active':
-					$args['meta_query']['ms_active'] = array( 
-							'key' => 'ms_active',
-							'value' => true,
+					$args['meta_query']['ms_active'] = array(
+						'key' => 'ms_active',
+						'value' => true,
 					);
 					break;
+
 				case 'members':
 					$members = array();
 					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships();
-					foreach( $ms_relationships as $ms_relationship ) {
+					foreach ( $ms_relationships as $ms_relationship ) {
 						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
 					}
-					if( ! empty( $args['include'] ) ) {
+					if ( ! empty( $args['include'] ) ) {
 						$args['include'] = array_intersect( $members, $args['include'] );
 					}
 					else {
@@ -160,87 +178,128 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 					}
 					break;
 			}
-			
 		}
-		$total_items =  MS_Model_Member::get_members_count( $args );
-		
+		$total_items = MS_Model_Member::get_members_count( $args );
+
 		$this->items = MS_Model_Member::get_members( $args );
-				
-		$this->set_pagination_args( array(
+
+		$this->set_pagination_args(
+			array(
 				'total_items' => $total_items,
 				'per_page' => $per_page,
 			)
 		);
-		
+
 	}
-	
+
 	public function column_default( $item, $column_name ) {
 		$html = '';
-		switch( $column_name ) {
+		switch ( $column_name ) {
 			case 'email':
 				$html = $item->$column_name;
 				break;
+
 			case 'active':
-				$html = ( 1 == $item->active) ? __('Active', MS_TEXT_DOMAIN ) : __('Inactive', MS_TEXT_DOMAIN );
+				$html = ( 1 == $item->active) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Inactive', MS_TEXT_DOMAIN );
+				break;
+
 			default:
 				print_r( $item, true );
 		}
+
 		echo $html;
 	}
-	
-	function column_username( $item ) {
+
+	public function column_username( $item ) {
 		$actions = array(
-// 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-				'edit' => sprintf( '<a href="user-edit.php?user_id=%s">%s</a>', $item->id,  __('Edit', MS_TEXT_DOMAIN ) ),
-			);
-		
-		echo sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
+//			'edit' => sprintf(
+//				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+//				$_REQUEST['page'],
+//				'edit',
+//				$item->id,
+//				__('Edit', MS_TEXT_DOMAIN )
+//			),
+			'edit' => sprintf(
+				'<a href="user-edit.php?user_id=%s">%s</a>',
+				$item->id,
+				__( 'Edit', MS_TEXT_DOMAIN )
+			),
+		);
+
+		printf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
 	}
-	
-	function column_active( $item ) {
-		
+
+	public function column_active( $item ) {
 		$toggle = array(
-				'id' => 'ms-toggle-' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $item->active,
-				'class' => '',
-				'data_ms' => array(
-						'action' => MS_Controller_Member::AJAX_ACTION_TOGGLE_MEMBER,
-						'member_id' => $item->id,
-				),
+			'id'      => 'ms-toggle-' . $item->id,
+			'type'    => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value'   => $item->active,
+			'class'   => '',
+			'data_ms' => array(
+				'action'    => MS_Controller_Member::AJAX_ACTION_TOGGLE_MEMBER,
+				'member_id' => $item->id,
+			),
 		);
 		$html = MS_Helper_Html::html_element( $toggle, true );
-		
+
 		return $html;
 	}
+
 	/**
 	 * Create membership column.
-	 * 
+	 *
 	 * @param MS_Model_Member $item The member object.
 	 */
-	function column_membership( $item ) {
-		
-		if( MS_Model_Member::is_admin_user( $item->id ) ) {
+	public function column_membership( $item ) {
+		if ( MS_Model_Member::is_admin_user( $item->id ) ) {
 			return __( 'Admin User', MS_TEXT_DOMAIN );
 		}
+
 		$html = array();
-		foreach( $item->ms_relationships as $id => $membership_relationship ) {
-			$membership = $membership_relationship->get_membership(); 
+		foreach ( $item->ms_relationships as $id => $membership_relationship ) {
+			$membership = $membership_relationship->get_membership();
 			$html[] = "{$membership->name} ({$membership_relationship->status})";
 		}
-		$html = join('<br /> ', $html);
-		
-		$actions = array(
-				'add' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'add', $item->id, __('Add', MS_TEXT_DOMAIN ) ),
-				'move' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'move', $item->id, __('Move', MS_TEXT_DOMAIN ) ),
-				'cancel' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'cancel', $item->id, __('Cancel', MS_TEXT_DOMAIN ) ),
-				'drop' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'drop', $item->id, __('Drop', MS_TEXT_DOMAIN ) ),
-		);
-		
-		$multiple_membership = apply_filters( 'membership_addon_multiple_membership', MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) );
+		$html = join( '<br /> ', $html );
 
-		if( count( $item->ms_relationships ) > 0 ) {
-			if( ! $multiple_membership ) {
+		$actions = array(
+			'add' => sprintf(
+				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+				$_REQUEST['page'],
+				'add',
+				$item->id,
+				__( 'Add', MS_TEXT_DOMAIN )
+			),
+			'move' => sprintf(
+				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+				$_REQUEST['page'],
+				'move',
+				$item->id,
+				__( 'Move', MS_TEXT_DOMAIN )
+			),
+			'cancel' => sprintf(
+				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+				$_REQUEST['page'],
+				'cancel',
+				$item->id,
+				__( 'Cancel', MS_TEXT_DOMAIN )
+			),
+			'drop' => sprintf(
+				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+				$_REQUEST['page'],
+				'drop',
+				$item->id,
+				__( 'Drop', MS_TEXT_DOMAIN )
+			),
+		);
+
+		$multiple_membership = apply_filters(
+			'membership_addon_multiple_membership',
+			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+		);
+
+		if ( count( $item->ms_relationships ) > 0 ) {
+			if ( ! $multiple_membership ) {
 				unset( $actions['add'] );
 			}
 		}
@@ -249,102 +308,124 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			unset( $actions['cancel'] );
 			unset( $actions['drop'] );
 		}
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-	}
-	
-	function column_start( $item ) {
-		if( count( $item->ms_relationships ) > 0 ) {
-			$html = array();
-			foreach( $item->ms_relationships as $membership_relationship ) {
-				$period = sprintf( __( '%s days' ), $membership_relationship->get_current_period() );
-				$html[] = "$membership_relationship->start_date ($period)";
-			}
-			$html = join('<br /> ', $html);
-			
-			$actions = array(
-					'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-				);
-			
-			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-		}		
+
+		printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 
-	function column_trial( $item ) {
+	public function column_start( $item ) {
+		if ( count( $item->ms_relationships ) > 0 ) {
+			$html = array();
+			foreach ( $item->ms_relationships as $membership_relationship ) {
+				$period = sprintf( __( '%s days' ), $membership_relationship->get_current_period() );
+				$html[] = sprintf( '%s (%s)', $membership_relationship->start_date, $period );
+			}
+			$html = join( '<br /> ', $html );
+
+			$actions = array(
+				'edit' => sprintf(
+					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+					$_REQUEST['page'],
+					'edit_date',
+					$item->id,
+					__( 'Edit', MS_TEXT_DOMAIN )
+				),
+			);
+
+			printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		}
+	}
+
+	public function column_trial( $item ) {
 		$html = array();
-		foreach( $item->ms_relationships as $membership_relationship ) {
-			if( $membership_relationship->trial_expire_date )  {
+		foreach ( $item->ms_relationships as $membership_relationship ) {
+			if ( $membership_relationship->trial_expire_date )  {
 				$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_trial_period() );
-				$html[] = "$membership_relationship->trial_expire_date ($period)";
+				$html[] = sprintf( '%s (%s)', $membership_relationship->trial_expire_date, $period );
 			}
 			else {
-				$html[] = __('No trial', MS_TEXT_DOMAIN );
+				$html[] = __( 'No trial', MS_TEXT_DOMAIN );
 			}
 		}
-		$html = join('<br /> ', $html);
-		
+		$html = join( '<br /> ', $html );
+
 		$actions = array(
-// 				'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+//			'edit' => sprintf(
+//				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+//				$_REQUEST['page'],
+//				'edit_date',
+//				$item->id,
+//				__('Edit', MS_TEXT_DOMAIN )
+//			),
 		);
-		
-		echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+
+		printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
-	
-	function column_expire( $item ) {
-		if( count( $item->ms_relationships ) > 0 ) {
+
+	public function column_expire( $item ) {
+		if ( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach( $item->ms_relationships as $membership_relationship ) {
-				if( $membership_relationship->expire_date )  {
+			foreach ( $item->ms_relationships as $membership_relationship ) {
+				if ( $membership_relationship->expire_date )  {
 					$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_period() );
 					$html[] = "$membership_relationship->expire_date ($period)";
 				}
 				else {
-					$html[] = __('Permanent', MS_TEXT_DOMAIN );
+					$html[] = __( 'Permanent', MS_TEXT_DOMAIN );
 				}
 			}
-			$html = join('<br /> ', $html);
-			
+			$html = join( '<br /> ', $html );
+
 			$actions = array(
-					'edit' => sprintf( '<a href="?page=%s&action=%s&member_id=%s">%s</a>', $_REQUEST['page'], 'edit_date', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+				'edit' => sprintf(
+					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+					$_REQUEST['page'],
+					'edit_date',
+					$item->id,
+					__( 'Edit', MS_TEXT_DOMAIN )
+				),
 			);
-			
-			echo sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+
+			printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 		}
 	}
 
-	function column_gateway( $item ) {
-		if( count( $item->ms_relationships ) > 0 ) {
+	public function column_gateway( $item ) {
+		if ( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach( $item->ms_relationships as $membership_relationship ) {
+			foreach ( $item->ms_relationships as $membership_relationship ) {
 				$html[] = $membership_relationship->gateway_id;
 			}
-			$html = join('<br /> ', $html);
-			
+			$html = join( '<br /> ', $html );
+
 			echo $html;
 		}
 	}
-	
+
 	public function get_bulk_actions() {
-	  $actions = array(
-	    	'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
-	  		'Memberships' => array(
-  				'add' => __( 'Add membership', MS_TEXT_DOMAIN ),
-	  			'cancel' => __( 'Cancel membership', MS_TEXT_DOMAIN ),
-				'move' => __( 'Move membership', MS_TEXT_DOMAIN ),
-  				'drop' => __( 'Drop membership', MS_TEXT_DOMAIN ),
-	  		),
-	  	);
-	  return $actions;
+		$actions = array(
+			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
+			'Memberships' => array(
+				'add'     => __( 'Add membership', MS_TEXT_DOMAIN ),
+				'cancel'  => __( 'Cancel membership', MS_TEXT_DOMAIN ),
+				'move'    => __( 'Move membership', MS_TEXT_DOMAIN ),
+				'drop'    => __( 'Drop membership', MS_TEXT_DOMAIN ),
+			),
+		);
+		return $actions;
 	}
 
 	/**
 	 * Display the bulk actions dropdown.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @access public
+	 *
+	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
 	public function bulk_actions( $echo = true ) {
 		if ( empty( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
+
 			/**
 			 * Filter the list table Bulk Actions drop-down.
 			 *
@@ -364,93 +445,160 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		} else {
 			$two = '2';
 		}
-	
-		if ( empty( $this->_actions ) )
+
+		if ( empty( $this->_actions ) ) {
 			return;
-	
-		echo "<select name='action$two'>\n";
-		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions' ) . "</option>\n";
-	
+		}
+
+		if ( ! $echo ) { ob_start(); }
+
+		printf( '<select name="action%s">', esc_attr( $two ) );
+		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions' ) );
+
 		foreach ( $this->_actions as $name => $title ) {
-			if( is_array( $title ) ) {
-				echo "<optgroup label='$name'>";
-				foreach( $title as $value => $label ){
-					echo "<option value='$value'>$label</option>";
-				}				
-				echo "</optgroup>";
+			if ( is_array( $title ) ) {
+				printf( '<optgroup label="%s">', esc_attr( $name ) );
+				foreach ( $title as $value => $label ){
+					printf(
+						'<option value="%s">%s</option>',
+						esc_attr( $value ),
+						esc_attr( $label )
+					);
+				}
+				echo '</optgroup>';
 			}
 			else {
-				$class = 'edit' == $name ? ' class="hide-if-no-js"' : '';
-				
-				echo "\t<option value='$name'$class>$title</option>\n";
+				$class = 'edit' == $name ? 'hide-if-no-js' : '';
+
+				printf(
+					'<option value="%s" class="%s">%s</option>',
+					esc_attr( $name ),
+					esc_attr( $class ),
+					esc_attr( $title )
+				);
 			}
 		}
-	
-		echo "</select>\n";
-	
-		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
-			echo "\n";
-	}
-	
-	function column_cb($item) {
-        echo sprintf(
-            '<input type="checkbox" name="member_id[]" value="%s" />', $item->id
-        );    
-    }
-    
 
-	function search_box( $text, $input_id ) {
-		if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
-			return;
-		
-		$search_options = array(
-				'id' => 'search_options',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => ! empty( $_REQUEST['search_options'] ) ? $_REQUEST['search_options'] : 0,
-				'field_options' => array(
-						'username'	 => __('Username / E-mail', MS_TEXT_DOMAIN ),
-// 						'email' => __( 'Email', MS_TEXT_DOMAIN ),
-						'nickname' => __( 'Nickname', MS_TEXT_DOMAIN ),
-						'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
-						'last_name' => __( 'Last Name', MS_TEXT_DOMAIN ),
-						'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
-					),
+		echo '</select>';
+
+		submit_button(
+			__( 'Apply' ),
+			'action',
+			false,
+			false,
+			array( 'id' => 'doaction' . esc_attr( $two ) )
 		);
-		$membership_names = array(
-			'id' => 'membership_filter',
+
+		if ( ! $echo ) { return ob_get_clean(); }
+	}
+
+	public function column_cb( $item ) {
+		printf(
+			'<input type="checkbox" name="member_id[]" value="%s" />',
+			$item->id
+		);
+    }
+
+
+	public function search_box( $text, $input_id ) {
+		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
+			return;
+		}
+		if ( ! $this->need_pagination() ) {
+			return;
+		}
+
+		$search_options = array(
+			'id' => 'search_options',
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => ! empty( $_REQUEST['search_options'] ) ? $_REQUEST['search_options'] : 0,
+			'field_options' => array(
+					'username'   => __( 'Username / E-mail', MS_TEXT_DOMAIN ),
+//					'email'      => __( 'Email', MS_TEXT_DOMAIN ),
+					'nickname'   => __( 'Nickname', MS_TEXT_DOMAIN ),
+					'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
+					'last_name'  => __( 'Last Name', MS_TEXT_DOMAIN ),
+					'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
+				),
+		);
+
+		$membership_names = array(
+			'id'    => 'membership_filter',
+			'type'  => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'value' => ! empty( $_REQUEST['membership_filter'] ) ? $_REQUEST['membership_filter'] : 0,
 			'field_options' => MS_Model_Membership::get_membership_names(),
 		);
-		
+
 		$input_id = $input_id . '-search-input';
 
-		if ( ! empty( $_REQUEST['orderby'] ) )
-			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
-		if ( ! empty( $_REQUEST['order'] ) )
-			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
-		if ( ! empty( $_REQUEST['post_mime_type'] ) )
-			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
-		if ( ! empty( $_REQUEST['detached'] ) )
-			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+		if ( ! empty( $_REQUEST['orderby'] ) ) {
+			printf(
+				'<input type="hidden" name="orderby" value="%s" />',
+				esc_attr( $_REQUEST['orderby'] )
+			);
+		}
+		if ( ! empty( $_REQUEST['order'] ) ) {
+			printf(
+				'<input type="hidden" name="order" value="%s" />',
+				esc_attr( $_REQUEST['order'] )
+			);
+		}
+		if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
+			printf(
+				'<input type="hidden" name="post_mime_type" value="%s" />',
+				esc_attr( $_REQUEST['post_mime_type'] )
+			);
+		}
+		if ( ! empty( $_REQUEST['detached'] ) ) {
+			printf(
+				'<input type="hidden" name="detached" value="%s" />',
+				esc_attr( $_REQUEST['detached'] )
+			);
+		}
+
 		?>
-		<div id="member-search-box" class="search-box">
-			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
-			<div class="input-container">
-				<?php MS_Helper_Html::html_element( $search_options ); ?>
-				<?php MS_Helper_Html::html_element( $membership_names ); ?>
-				<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />
-				<?php submit_button( $text , 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
-			</div>
-		</div>
+		<p id="member-search-box" class="search-box">
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>">
+				<?php echo esc_html( $text ); ?>:
+			</label>
+			<?php MS_Helper_Html::html_element( $search_options ); ?>
+			<?php MS_Helper_Html::html_element( $membership_names ); ?>
+			<input type="search" id="member-search" name="s" value="<?php _admin_search_query(); ?>" />
+			<?php submit_button( $text , 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
+		</p>
 		<?php
 	}
 
-	public function get_views(){
-		return apply_filters( "ms_helper_list_table_member_views", array(
-				'all' => sprintf( '<a href="%s">%s</a>', remove_query_arg( array ( 'status' ) ), __( 'All', MS_TEXT_DOMAIN ) ),
-				'active' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => 'active' ) ), __( 'Active', MS_TEXT_DOMAIN ) ),
-				'members' => sprintf( '<a href="%s">%s</a>', add_query_arg( array ( 'status' => 'members' ) ), __( 'Members', MS_TEXT_DOMAIN ) ),
-		) );
+	public function get_views() {
+		$total = MS_Model_Member::get_members_count();
+		$active = MS_Model_Member::get_members_count(
+			array(
+				'meta_query' => array(
+					array( 'key' => 'ms_active', 'value' => '1' ),
+				)
+			)
+		);
+		$members = '?';
+
+		return apply_filters(
+			'ms_helper_list_table_member_views',
+			array(
+				'all' => array(
+					'url' => remove_query_arg( array( 'status' ) ),
+					'label' => __( 'All', MS_TEXT_DOMAIN ),
+					'count' => $total,
+				),
+				'active' => array(
+					'url' => add_query_arg( array( 'status' => 'active' ) ),
+					'label' => __( 'Active', MS_TEXT_DOMAIN ),
+					'count' => $active,
+				),
+				'members' => array(
+					'url' => add_query_arg( array( 'status' => 'members' ) ),
+					'label' => __( 'Members', MS_TEXT_DOMAIN ),
+					'count' => $members,
+				),
+			)
+		);
 	}
 }

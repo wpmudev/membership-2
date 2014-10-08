@@ -35,6 +35,8 @@
 class MS_Controller_Member extends MS_Controller {
 
 	const AJAX_ACTION_TOGGLE_MEMBER = 'toggle_member';
+	const AJAX_ACTION_GET_USERS = 'get_users';
+
 	/**
 	 * The model to use for loading/saving Member data.
 	 *
@@ -57,6 +59,7 @@ class MS_Controller_Member extends MS_Controller {
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_GET_USERS, 'ajax_action_get_users' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
@@ -79,6 +82,26 @@ class MS_Controller_Member extends MS_Controller {
 		}
 
 		echo $msg;
+		exit;
+	}
+
+	/**
+	 * Handle Ajax request to list all non-member-users.
+	 *
+	 * Response is wrapped in a JSONP callback.
+	 * Data is an array of objects with properties 'id' and 'text'.
+	 *
+	 * @since  1.0.0
+	 */
+	public function ajax_action_get_users() {
+		$callback_name = @$_REQUEST['callback'];
+		$data = array(
+			array( 'id' => 100, 'text' => 'John' ),
+			array( 'id' => 101, 'text' => 'Joannes' ),
+			array( 'id' => 102, 'text' => 'Johanna' ),
+		);
+
+		printf( '%s(%s)', $callback_name, json_encode( $data ) );
 		exit;
 	}
 
@@ -332,6 +355,9 @@ class MS_Controller_Member extends MS_Controller {
 		/* Members list */
 		else {
 			$data['ms_init'] = 'view_member_list';
+			$data['lang'] = array(
+				'select_user' => __( 'Select an User', MS_TEXT_DOMAIN ),
+			);
 		}
 
 		wp_localize_script( 'ms-admin', 'ms_data', $data );

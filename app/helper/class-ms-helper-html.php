@@ -207,9 +207,9 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $name ),
 					$multiple . $read_only . $data_placeholder . $data_ms
 				);
-				foreach( $field_options as $key => $option ) {
+				foreach ( $field_options as $key => $option ) {
 					$selected = '';
-					if( is_array( $value ) ) {
+					if ( is_array( $value ) ) {
 						$selected = selected( array_key_exists( $key, $value ), true, false );
 					}
 					else {
@@ -235,8 +235,8 @@ class MS_Helper_Html extends MS_Helper {
 					'<div class="ms-radio-wrapper wrapper-%1$s">',
 					esc_attr( $id )
 				);
-				foreach( $field_options as $key => $option ) {
-					if( is_array( $option ) ) {
+				foreach ( $field_options as $key => $option ) {
+					if ( is_array( $option ) ) {
 						$item_text = $option['text'];
 						$item_desc = $option['desc'];
 					}
@@ -246,7 +246,7 @@ class MS_Helper_Html extends MS_Helper {
 					}
 					$checked = checked( $value, $key, false );
 					$radio_desc = '';
-					if( ! empty( $item_desc ) ) {
+					if ( ! empty( $item_desc ) ) {
 						$radio_desc = sprintf( '<div class="ms-input-description"><p>%1$s</p></div>', $item_desc );
 					}
 					printf(
@@ -269,7 +269,7 @@ class MS_Helper_Html extends MS_Helper {
 				$checked = checked( $value, true, false );
 
 				$item_desc = '';
-				if( ! empty( $desc ) ) {
+				if ( ! empty( $desc ) ) {
 					$item_desc = sprintf( '<div class="ms-field-description"><p>%1$s</p></div>', $desc );
 				}
 
@@ -347,7 +347,7 @@ class MS_Helper_Html extends MS_Helper {
 				$link_url = ! empty( $url ) ? '<a href="' . esc_url( $url ) . '"></a>' : '';
 
 				$attr_input = '';
-				if( ! $read_only ) {
+				if ( ! $read_only ) {
 					$attr_input = sprintf(
 						'<input class="ms-field-input ms-hidden" type="hidden" id="%1$s" name="%2$s" value="%3$s" />',
 						esc_attr( $id ),
@@ -572,7 +572,7 @@ class MS_Helper_Html extends MS_Helper {
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
 		extract( $args );
 
-		if( ! is_array( $desc ) ) {
+		if ( ! is_array( $desc ) ) {
 			$desc = array( $desc );
 		}
 		?>
@@ -684,12 +684,17 @@ class MS_Helper_Html extends MS_Helper {
 	public static function html_submit( $field_args = array() ) {
 		$defaults = array(
 			'id'        => 'submit',
-			'value'     => __('Save Changes', MS_TEXT_DOMAIN ),
+			'value'     => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			'class'     => 'button button-primary',
 			);
 		extract( wp_parse_args( $field_args, $defaults ) );
 
-		echo "<input class='ms-field-input ms-submit $class' type='submit' id='$id' name='$id' value='$value'/>";
+		printf(
+			'<input class="ms-field-input ms-submit %1$s" type="submit" id="%2$s" name="%2$s" value="%3$s" />',
+			esc_attr( $class ),
+			esc_attr( $id ),
+			esc_attr( $value )
+			);
 	}
 
 	/**
@@ -712,7 +717,7 @@ class MS_Helper_Html extends MS_Helper {
 		extract( wp_parse_args( $args, $defaults ) );
 		$url = esc_url( $url );
 		$html = "<a id='$id' title='$title' class='ms-link $class' href='$url'>$value</a>";
-		if( $return ) {
+		if ( $return ) {
 			return $html;
 		}
 		else {
@@ -730,28 +735,33 @@ class MS_Helper_Html extends MS_Helper {
 	 * @return string Active tab.
 	 */
 	public static function html_admin_vertical_tabs( $tabs, $active_tab = null ) {
-
-		reset($tabs);
-		$first_key = key($tabs);
+		reset( $tabs );
+		$first_key = key( $tabs );
 
 		/** Setup navigation tabs. */
-		if( empty( $active_tab ) ) {
+		if ( empty( $active_tab ) ) {
 			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
 		}
 
-		if ( !array_key_exists( $active_tab, $tabs ) ) { $active_tab = $first_key; }
+		if ( ! array_key_exists( $active_tab, $tabs ) ) {
+			$active_tab = $first_key;
+		}
 
 		/** Render tabbed interface. */
 		?>
-			<div class='ms-tab-container'>
-				<ul id="sortable-units" class="ms-tabs" style="">
-					<?php foreach( $tabs as $tab_name => $tab ) { ?>
-						<li class="ms-tab <?php echo $tab_name == $active_tab ? 'active' : ''; ?> ">
-							<a class="ms-tab-link" href="<?php echo $tab['url']; ?>"><?php echo $tab['title']; ?></a>
-						</li>
-					<?php } ?>
-				</ul>
-			</div>
+		<div class="ms-tab-container">
+			<ul id="sortable-units" class="ms-tabs" style="">
+				<?php foreach ( $tabs as $tab_name => $tab ) {
+					$tab_class = $tab_name == $active_tab ? 'active' : '';
+					?>
+					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">
+						<a class="ms-tab-link" href="<?php echo esc_url( $tab['url'] ); ?>">
+							<?php echo esc_html( $tab['title'] ); ?>
+						</a>
+					</li>
+				<?php } ?>
+			</ul>
+		</div>
 		<?php
 
 		/** Return current active tab. */
@@ -803,12 +813,13 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $tag The tag will be wrapped inside this HTML tag.
 	 */
 	public static function content_tag( $item, $tag = 'li' ) {
+		$label = property_exists( $item, 'post_title' ) ? $item->post_title : $item->name;
 
-		if( ! empty( $item->id) && is_a( $item, 'WP_Post' ) ) {
+		if ( ! empty( $item->id ) && is_a( $item, 'WP_Post' ) ) {
 			printf(
 				'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
 				$tag,
-				esc_html( $item->name ),
+				esc_html( $label ),
 				get_edit_post_link( $item->id )
 			);
 		}
@@ -816,7 +827,7 @@ class MS_Helper_Html extends MS_Helper {
 			printf(
 				'<%1$s class="ms-content-tag"><span>%2$s</span></%1$s>',
 				$tag,
-				esc_html( $item->name )
+				esc_html( $label )
 			);
 		}
 	}
