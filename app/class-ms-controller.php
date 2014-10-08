@@ -221,7 +221,7 @@ class MS_Controller extends MS_Hooker {
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'ms-functions', 'jquery-chosen', 'jquery-validate' ), $version
+			array( 'jquery', 'jquery-chosen', 'jquery-validate' ), $version
 		);
 
 		wp_register_script(
@@ -233,11 +233,6 @@ class MS_Controller extends MS_Hooker {
 			'jquery-validate',
 			$plugin_url . 'app/assets/js/jquery.validate.js',
 			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-functions',
-			$plugin_url . 'app/assets/js/ms-functions.js',
-			array( 'jquery', 'jquery-chosen'), $version
 		);
 		wp_register_script(
 			'ms-tooltips',
@@ -254,7 +249,7 @@ class MS_Controller extends MS_Hooker {
 		wp_register_script(
 			'ms-view-settings-payment',
 			$plugin_url . 'app/assets/js/ms-view-settings-payment.js',
-			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-functions' ), $version
+			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-admin' ), $version
 		);
 		wp_register_script(
 			'ms-view-membership-overview',
@@ -287,16 +282,6 @@ class MS_Controller extends MS_Hooker {
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
-			'ms-view-member-date',
-			$plugin_url . 'app/assets/js/ms-view-member-date.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-view-members-list',
-			$plugin_url . 'app/assets/js/ms-view-member-list.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
 			'ms-view-coupon-edit',
 			$plugin_url . 'app/assets/js/ms-view-coupon-edit.js',
 			array( 'jquery' ), $version
@@ -326,7 +311,7 @@ class MS_Controller extends MS_Hooker {
 
 		wp_register_style(
 			'jquery-ui',
-			$plugin_url . 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css',
+			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
 			null, $version
 		);
 		wp_register_style(
@@ -341,7 +326,7 @@ class MS_Controller extends MS_Hooker {
 		);
 		wp_register_style(
 			'font-awesome',
-			$plugin_url . 'app/assets/css/font-awesome.min.css',
+			$plugin_url . 'app/assets/css/font-awesome.css',
 			null, $version
 		);
 		wp_register_style(
@@ -363,10 +348,6 @@ class MS_Controller extends MS_Hooker {
 			'ms-admin-bar',
 			$plugin_url . 'app/assets/css/ms-admin-bar.css',
 			null, $version
-		);
-		wp_register_style(
-			'jquery-style',
-			'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css'
 		);
 	}
 
@@ -422,7 +403,7 @@ class MS_Controller extends MS_Hooker {
 
 		wp_register_style(
 			'jquery-ui',
-			$plugin_url . 'app/assets/css/jquery-ui-smoothness/jquery-ui-1.10.4.custom.css',
+			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
 			null, $version
 		);
 		wp_register_style(

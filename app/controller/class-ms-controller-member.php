@@ -313,7 +313,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( 'jquery-style' );
+		wp_enqueue_style( 'jquery-ui' );
 	}
 
 	/**
@@ -322,17 +322,20 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function enqueue_scripts() {
-		/** Start and expire date edit */
-		if ( ! empty( $_GET['action'] ) && 'edit_date' == $_GET['action'] ) {
+		$data = array();
+
+		/* Start and expire date edit */
+		if ( 'edit_date' == @$_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_script( 'ms-view-member-date' );
+			$data['ms_init'] = 'view_member_date';
 		}
-		/** Members list */
+		/* Members list */
 		else {
-			wp_enqueue_script( 'ms-functions' );
-			wp_enqueue_script( 'ms-view-members-list' );
+			$data['ms_init'] = 'view_member_list';
 		}
 
+		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
 	}
 
 }

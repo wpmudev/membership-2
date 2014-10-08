@@ -43,13 +43,6 @@
 
 
 /** Member search */
-#member-search-box {
-	float:right;
-}
-
-#member-search-box .input-container {
-	position: relative;
-}
 
 #member-search-options
 {

@@ -347,9 +347,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function admin_enqueue_scripts() {
 		global $post_type;
-		if( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
+		if ( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
 			wp_enqueue_script( 'membership-metabox' );
-			wp_enqueue_script( 'ms-functions' );
+			wp_enqueue_script( 'ms-admin' );
 		}
 
 	}

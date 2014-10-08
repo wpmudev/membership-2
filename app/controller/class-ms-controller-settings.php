@@ -491,7 +491,6 @@ class MS_Controller_Settings extends MS_Controller {
 
 		wp_localize_script( 'ms-admin', 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
-		wp_enqueue_script( 'ms-functions' );
 
 		switch ( $this->get_active_tab() ) {
 			case 'payment':

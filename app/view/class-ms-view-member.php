@@ -3,20 +3,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -29,8 +29,9 @@
  *
  * @return object
  */
+/* // NOT USED??
 class MS_View_Member extends MS_View {
-		
+
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -45,17 +46,17 @@ class MS_View_Member extends MS_View {
 	 * @since 4.0.0
 	 *
 	 * @return object
-	 */
-	public function to_html() {		
+	 * /
+	public function to_html() {
 		ob_start();
 		?>
 		<div class='ms-wrap'>
-		<h2 class='ms-settings-title'><?php  _e( 'Membership Members', MS_TEXT_DOMAIN ) ; ?></h2>		
+		<h2 class='ms-settings-title'><?php  _e( 'Membership Members', MS_TEXT_DOMAIN ) ; ?></h2>
 
 		<?php
 			$this->render_members();
 		?>
-		
+
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -65,11 +66,12 @@ class MS_View_Member extends MS_View {
 	public function render_members() {
 		// $rule_list = new MS_Helper_List_Table_Member( $this->model );
 		// $rule_list->prepare_items();
-		
+
 		?>
 		MEMBERS GO HERE
 		<?php
 	}
-	
-		
+
+
 }
+*/

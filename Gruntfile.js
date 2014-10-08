@@ -2,19 +2,23 @@
 module.exports = function( grunt ) {
 	var paths = {
 		js_files_concat: {
-			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js'],
 			'app/assets/js/ms-admin.js': [
 				'app/assets/js/src/ms-admin.js',
+				'app/assets/js/src/ms-functions.js',
+				'app/assets/js/src/ms-view-member-date.js',
+				'app/assets/js/src/ms-view-member-list.js',
 				'app/assets/js/src/ms-view-membership-choose-type.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
 				'app/assets/js/src/ms-view-settings.js'
 			],
-			'app/assets/js/ms-functions.js': ['app/assets/js/src/ms-functions.js']
+			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js']
 		},
 
 		css_files_compile: {
-			'app/assets/css/ms-admin.css': 'app/assets/css/sass/ms-admin.scss',
-			'app/assets/css/select2.css':  'app/assets/css/sass/select2.scss'
+			'app/assets/css/ms-admin.css':          'app/assets/css/sass/ms-admin.scss',
+			'app/assets/css/select2.css':           'app/assets/css/sass/select2/select2.scss',
+			'app/assets/css/font-awesome.css':      'app/assets/css/sass/font-awesome/font-awesome.scss',
+			'app/assets/css/jquery-ui.custom.css':  'app/assets/css/sass/jquery-ui/jquery-ui-1.10.4.custom.scss'
 		},
 
 		plugin_dir: 'protected-content/'
