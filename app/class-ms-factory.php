@@ -25,34 +25,24 @@
 /**
  * Factory class for all Models.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @package Membership
  */
 class MS_Factory {
 	
-	protected static $instance;
-	
-	/**
-	 * Get factory singleton.
-	 * @return MS_Factory
-	 */
-	public static function get_factory() {
-		if( empty( self::$instance )  ){
-			self::$instance = new self();
-		}
-		return apply_filters( 'ms_factory_get_factory', self::$instance );
-	}
-	
 	/**
 	 * Create an MS Object.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
-	 * @param string $class
+	 * @param string $class The class to create object from.
+	 * @return object The created object.
 	 */
 	public static function create( $class ) {
+		
 		$class = trim( $class );
+		
 		if( class_exists( $class ) ) {
 			$obj = new $class();
 		}
@@ -64,14 +54,16 @@ class MS_Factory {
 	}
 	
 	/**
-	 * Load an MS Object.
+	 * Load a MS Object.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
-	 * @param string $class
-	 * @param int $model_id
+	 * @param string $class The class to load object from.
+	 * @param int $model_id Retrieve model object using ID. 
+	 * @return object The retrieved model.
 	 */
 	public static function load( $class, $model_id = 0 ) {
+		
 		$model = null;
 
 		if( class_exists( $class ) && $model = new $class() ) {
@@ -99,14 +91,14 @@ class MS_Factory {
 	}
 	
 	/**
-	 * Load an option object.
+	 * Load MS_Model_Option object.
 	 * 
-	 * Option objects are singletons.
+	 * MS_Model_Option objects are singletons.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
-	 * @param string $class The class name.
-	 * @return MS_Model_Option
+	 * @param string $class The class to load object from.
+	 * @return MS_Model_Option The retrieved object.
 	 */
 	protected static function load_from_wp_option( $class ) {
 	
@@ -147,16 +139,17 @@ class MS_Factory {
 	}
 	
 	/**
-	 * Load a transient object.
+	 * Load MS_Model_Transient object.
 	 *
-	 * Transient objects are singletons.
+	 * MS_Transient objects are singletons.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
 	 * @param string $class The class name.
-	 * @return $class Loaded Object
+	 * @return MS_Model_Transient The retrieved object.
 	 */
 	public static function load_from_wp_transient( $class ) {
+		
 		$model = new $class();
 		
 		if( empty( $model->instance )  ) {
@@ -194,15 +187,18 @@ class MS_Factory {
 	}
 	
 	/**
-	 * Loads post and postmeta into a object.
+	 * Load MS_Model_Custom_Post_Type Objects.
+	 * 
+	 * Load from post and postmeta.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @param string $class The class name.
-	 * @param int $model_id
-	 * @return $class Loaded Object
+	 * @param string $class The class name to create.
+	 * @param int $model_id The model id to retrieve.
+	 * @return MS_Model_Custom_Post_Type The retrieved object.
 	 */
 	protected static function load_from_wp_custom_post_type( $class, $model_id = 0 ) {
+		
 		$model = new $class();
 	
 		$model->before_load();
@@ -242,13 +238,15 @@ class MS_Factory {
 	}
 	
 	/**
-	 * Load user and user meta into a object.
+	 * Load MS_Model_Member Object.
+	 * 
+	 * Load from user and user meta.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $class The class name.
-	 * @param int $user_id
-	 * @return $class Loaded object
+	 * @param int $user_id The user/member ID.
+	 * @return MS_Model_Member The retrieved object.
 	 */
 	protected static function load_from_wp_user( $class, $user_id, $name = null ) {
 		$member = new $class();
@@ -289,51 +287,5 @@ class MS_Factory {
 		}
 		
 		return apply_filters( 'ms_factory_load_from_wp_user', $member, $class, $user_id );
-	}
-	
-	/**
-	 * Magic method
-	 * 
-	 * @since 4.0.0
-	 * 
-	 * @param string $method
-	 * @param array $args
-	 * @return 
-	 */
-	public function __call( $method, $args ) {
-		/** Magic method for all load_x() */
-		if( 0 === strpos( $method, 'load_' ) ) {
-			$parts = str_replace( 'load_', '', $method );
-			$parts = explode( '_', $parts );
-			$name = array();
-			foreach( $parts as $part ) {
-				$name[] = ucwords( $part );
-			}
-			$name = implode( '_', $name );
-			$class ="MS_Model_$name";
-
-			$class = apply_filters( 'ms_factory_load_class', $class );
-			$model = self::load( $class, implode( ',', $args ) );
-			return apply_filters( "ms_factory_$method" , $model );
-		}
-	}
-	
-	/**
-	 * Custom load membership.
-	 * 
-	 * @since 4.0.0
-	 * 
-	 * @param int $model_id
-	 * @return MS_Model_Membership
-	 */
-	public function load_membership( $model_id = 0 ) {
-		$class = apply_filters( 'ms_factory_load_membership_class', 'MS_Model_Membership' );
-		$model = self::load( $class, $model_id );
-	
-		if( empty( $model->rules ) ) {
-			$model->rules = MS_Model_Rule::rule_set_factory( $model->rules, $this->id );
-		}
-
-		return apply_filters( "ms_factory_load_membership", $model );
 	}
 }
