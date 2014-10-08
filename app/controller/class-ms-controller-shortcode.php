@@ -115,8 +115,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $data['member']->id, 'status' => 'valid' ) );
 		}
 
-		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $member->ms_relationships ) );
-
+		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $data['ms_relationships'] ) );
+		
 		$data['memberships'] = $memberships;
 
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
