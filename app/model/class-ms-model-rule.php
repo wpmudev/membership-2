@@ -50,6 +50,16 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	
 	/**
+	 * Rule value constants.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var int 
+	 */
+	const RULE_VALUE_NO_ACCESS = 0;
+	const RULE_VALUE_HAS_ACCESS = 1;
+	
+	/**
 	 * Filter type constants.
 	 * 
 	 * @since 1.0.0
@@ -334,7 +344,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @return MS_Model_Rule The rule model.
 	 * @throws Exception when rule type is not valid.
 	 */
-	public static function rule_factory( $rule_type, $membership_id) {
+	public static function rule_factory( $rule_type, $membership_id ) {
 		
 		if( self::is_valid_rule_type( $rule_type ) ) {
 			
@@ -348,30 +358,7 @@ class MS_Model_Rule extends MS_Model {
 			throw new Exception( "Rule factory - rule type not found: $rule_type"  );
 		}
 	}
-	
-	/**
-	 * Create all active rule type models.
-	 *
-	 * @todo move this method to MS_Factory.
-	 * 
-	 * @since 1.0.0
-	 * @param MS_Model_Rule[] $rules Optional. The rule array for reuse.
-	 * @param int $membership_id The Membership model this rule belongs to.
-	 * @return MS_Model_Rule[] The rule model set.
-	 */
-	public static function rule_set_factory( $rules = null, $membership_id ) {
 		
-		$rule_types = self::get_rule_type_classes();
-	
-		foreach( $rule_types as $type => $class ) {
-			if( empty( $rules[ $type ] ) ) {
-				$rules[ $type ] = self::rule_factory( $type, $membership_id );
-			}
-		}
-	
-		return apply_filters( 'ms_model_rule_rule_set_factory', $rules );
-	}
-	
 	/**
 	 * Validate rule type.
 	 *
@@ -772,8 +759,10 @@ class MS_Model_Rule extends MS_Model {
 					unset( $src_rule_value[ $id ] );
 				}
 			}
-			
-			/* first intersect to preserve only protected rules overrides and after that, merge preserving keys */
+			/*
+			 * Intersect to preserve only protected rules overrides;
+			 * Merge preserving keys;
+			 */
 			$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value) + $src_rule_value;
 		}
 		
@@ -787,19 +776,19 @@ class MS_Model_Rule extends MS_Model {
 	 * @param string $id The content id to set access to.
 	 * @param int $has_access The access status to set. 
 	 */
-	public function set_access( $id, $has_access ) {
+	public function set_access( $id, $access ) {
 		
-		if( is_bool( $has_access ) ) {
-			$has_access = $has_access ? 1 : 0;
+		if( is_bool( $access ) ) {
+			$access = $access ? self::RULE_VALUE_HAS_ACCESS : self::RULE_VALUE_NO_ACCESS;
 		}
 		
-		$this->rule_value[ $id ] = $has_access;
+		$this->rule_value[ $id ] = $access;
 		
-		if( $this->rule_value_invert && ! $has_access ) {
+		if( $this->rule_value_invert && $access == self::RULE_VALUE_NO_ACCESS ) {
 			unset( $this->rule_value[ $id ] );
 		}
 		
-		do_action( 'ms_model_rule_set_access', $id, $has_access, $this );
+		do_action( 'ms_model_rule_set_access', $id, $access, $this );
 	}
 	
 	/**
@@ -810,7 +799,7 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public function give_access( $id ) {
 		
-		$this->set_access( $id, true );
+		$this->set_access( $id, self::RULE_VALUE_HAS_ACCESS );
 		
 		do_action( 'ms_model_rule_give_access', $id, $this );
 	}
@@ -823,7 +812,7 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public function remove_access( $id ) {
 		
-		$this->set_access( $id, false );
+		$this->set_access( $id, self::RULE_VALUE_NO_ACCESS );
 		
 		do_action( 'ms_model_rule_remove_access', $id, $this );
 	}

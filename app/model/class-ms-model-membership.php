@@ -282,7 +282,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		parent::after_load();
 
 		/** validate rules using protected content rules */
-		if( ! $this->visitor_membership ) {
+		if( ! $this->visitor_membership && $this->is_valid() ) {
 			$this->merge_protected_content_rules();
 		}
 	}
@@ -678,13 +678,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
 			$rule = $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		}
+		/* 
+		 * Create a new rule model object.
+		 */
 		else {
-			$this->rules[ $rule_type ] = MS_Model_Rule::rule_factory( $rule_type, $this->id );
+			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
+
 			if( $this->visitor_membership ) {
-				$this->rules[ $rule_type ]->rule_value_invert = true;
-				$this->rules[ $rule_type ]->rule_value_default = false;
+				$rule->rule_value_invert = true;
+				$rule->rule_value_default = false;
 			}
-			$rule = $this->rules[ $rule_type ];
+			$this->rules[ $rule_type ] = $rule;
 		}
 
 		return apply_filters( 'ms_model_membership_get_rule', $rule, $rule_type, $this );
@@ -1042,8 +1046,23 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
 			try {
 				if( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
-					$rule = $this->get_rule( $rule_type );
-					$rule->merge_rule_values( $protect_rule );
+					
+					if( ! empty( $this->rules[ $rule_type ] ) ) {
+						$rule = $this->get_rule( $rule_type );
+						$rule->merge_rule_values( $protect_rule );
+					}
+					else {
+						$rule = clone $protect_rule;
+						$rule->rule_value_invert = false;
+						
+						$init_rule_value = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
+						if( self::TYPE_SIMPLE == $this->type ) {
+							$init_rule_value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
+						}
+						foreach( $rule->rule_value as $id => $val ) {
+							$rule->set_access( $id, $init_rule_value );
+						}
+					}
 					$this->set_rule( $rule_type, $rule );
 				}
 			}
