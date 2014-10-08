@@ -780,12 +780,22 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $tag The tag will be wrapped inside this HTML tag.
 	 */
 	public static function content_tag( $item, $tag = 'li' ) {
-		printf(
-			'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
-			$tag,
-			esc_html( $item->name ),
-			get_edit_post_link( $item->id )
-		);
+
+		if( ! empty( $item->id) && is_a( $item, 'WP_Post' ) ) {
+			printf(
+				'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
+				$tag,
+				esc_html( $item->name ),
+				get_edit_post_link( $item->id )
+			);
+		}
+		else {
+			printf(
+				'<%1$s class="ms-content-tag"><span>%2$s</span></%1$s>',
+				$tag,
+				esc_html( $item->name )
+			);
+		}
 	}
 
 	public static function bread_crumbs( $bread_crumbs ) {
