@@ -20,45 +20,90 @@
  *
 */
 
-
+/**
+ * Membership Menu Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Menu extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_MENU;
 	
 	/**
-	 * Verify access to the current asset.
-	 *
-	 * @since 1.0
-	 *
-	 * @param $id The item id to verify access.
+	 * Verify access to the current content.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		return false;
+		
+		return apply_filters( 'ms_model_rule_menu_has_access', false, $id, $this );
 	}
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
 	 */
-	public function protect_content( $menu_id = null ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content( $ms_relationship );
+		
 		$this->add_filter( 'wp_get_nav_menu_items', 'filter_menus', 10, 3 );
 	}
 	
+	/**
+	 * Set initial protection.
+	 *
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * filter_menus
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @param array $items The menu items.
+	 * @param object $menu The menu object. 
+	 * @param mixed $args The menu select args.
+	 */
 	function filter_menus( $items, $menu, $args ) {
+
 		if( ! empty( $items ) ) {
-			foreach($items as $key => $item) {
+			foreach( $items as $key => $item ) {
 				if( ! parent::has_access( $item->ID ) || ( ! empty( $item->menu_item_parent ) && ! parent::has_access( $item->menu_item_parent ) ) ) {
 					unset( $items[ $key ] );
 				}
-		
 			}
 		}
-		return $items;
-	}
 		
+		return apply_filters( 'ms_model_rule_menu_filter_menus', $items, $menu, $args, $this );
+	}
+
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The contents array.
+	 */
 	public function get_contents( $args = null ) {
+		
 		$contents = array();
 
 		if( ! empty( $args['protected_content'] ) ) {
@@ -95,9 +140,19 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		}
 		$ms = MS_Model_Membership::get_visitor_membership();
 		
-		return apply_filters( 'ms_model_rule_menu_get_content', $contents );
+		return apply_filters( 'ms_model_rule_menu_get_contents', $contents, $args, $this );
 	}
 	
+	/**
+	 * Get menu array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array {
+	 * 		@type string $menu_id The menu id.
+	 * 		@type string $name The menu name.
+	 * }
+	 */
 	public function get_menu_array() {
 		$contents = array( __( 'No menus found.', MS_TEXT_DOMAIN ) );
 		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
@@ -109,6 +164,6 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 			}
 		}
 		
-		return apply_filters( 'ms_model_rule_menu_get_menu_array', $contents );
+		return apply_filters( 'ms_model_rule_menu_get_menu_array', $contents, $this );
 	}
 }

@@ -109,7 +109,7 @@ class MS_Model_Rule_Bbpress extends MS_Model_Rule {
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		
-		parent::protect_content();
+		parent::protect_content( $ms_relationship );
 		
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 	}

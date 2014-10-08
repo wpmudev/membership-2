@@ -20,27 +20,47 @@
  *
 */
 
-
+/**
+ * Membership Shortcode Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_SHORTCODE;
 
+	/**
+	 * Protect content shortcode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string 
+	 */
 	const PROTECT_CONTENT_SHORTCODE = 'ms-protect-content';
 	
-	protected $membership_id = 0;
-	
 	/**
-	 * Verify access to the current asset.
+	 * Verify access to the current content.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
-	 * @param $id The item id to verify access.
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		return false;
+	
+		return apply_filters( 'ms_model_rule_shortcode_has_access', false, $id, $this );
 	}
 	
 	/**
@@ -48,10 +68,13 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * 
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
 	 * @param MS_Model_Membership_Relationship $ms_relationship The user membership details.
 	 */
 	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content( $ms_relationship );
 
 		$this->membership_id = $ms_relationship->membership_id;
 		
@@ -76,12 +99,14 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * Do protected shortcode [do_protected_shortcode].
 	 * 
 	 * This shortcode is executed to replace a protected shortcode.
-	 *  
+	 * 
+	 *  @since 1.0.0
 	 */
 	public function do_protected_shortcode() {
 
 		$content = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		
 		if( $msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ) ) {
 			$content = $msg;
 		}
@@ -89,22 +114,25 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$content = __( 'Shortcode content protected.', MS_TEXT_DOMAIN );
 		}
 		
-		return apply_filters( 'ms_model_shortcode_do_protected_shortcode_content', $content );
+		return apply_filters( 'ms_model_shortcode_do_protected_shortcode_content', $content, $this );
 	}
 	
 	/**
 	 * Do membership content protection shortcode.
 	 * 
+	 * self::PROTECT_CONTENT_SHORTCODE
+	 * 
 	 * Verify if content is protected comparing to membership_id.
 	 * 
-	 * @todo Setup message displayed in admin settings.
+	 * @since 1.0.0
 	 * 
-	 * @param array $atts
+	 * @param array $atts The shortcode attributes.
 	 * @param string $content The content inside the shorcode.
 	 * @param string $code The shortcode code.
-	 * @return string
+	 * @return string The shortcode output
 	 */
 	public function protect_content_shorcode( $atts, $content = null, $code = '' ) {
+		
 		$atts = apply_filters( 'ms_model_shortcode_protect_content_shorcode_atts', shortcode_atts( array(
 							'id' => '',
 							'access' => 1,
@@ -148,28 +176,34 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			}
 		}
 		
-		return apply_filters( 'ms_model_rule_shortcode_protect_content_shorcode_content', $content, $atts, $content, $code );
+		return apply_filters( 'ms_model_rule_shortcode_protect_content_shorcode_content', $content, $atts, $content, $code, $this );
 	}
 	
 	/**
 	 * Get the total content count.
-	 * For list table pagination.
-	 * @param string $args The default query post args.
-	 * @return number The total content count.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param $args The query post args. Not used.
+	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		return count( $this->get_contents() );
+		
+		$count = count( $this->get_contents() );
+		
+		return apply_filters( 'ms_model_rule_shortcode_get_content_count', $count, $this );
 	}
 	
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param $args The content filtering arguments.
-	 * @return array The content eligible to protect by this rule domain.
+	 * @since 1.0.0
+	 * @param $args The filter args
+	 * 				
+	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
+		
 		global $shortcode_tags;
 		
 		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
@@ -187,7 +221,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents[ $id ]->access = $this->get_rule_value( $id );
 		}
 		
-		/** If not visitor membership, just show protected content */
+		/* If not visitor membership, just show protected content */
 		if( ! $this->rule_value_invert ) {
 			$contents = array_intersect_key( $contents,  $this->rule_value );
 		}
@@ -201,6 +235,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
 			$contents = array_slice( $contents, $offset, $total );
 		}
-		return $contents;
+		
+		return apply_filters( 'ms_model_rule_shortcode_get_contents', $contents );
 	}
 }

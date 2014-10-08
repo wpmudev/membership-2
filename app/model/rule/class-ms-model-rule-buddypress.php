@@ -86,7 +86,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		
-		parent::protect_content();
+		parent::protect_content( $ms_relationship );
 		
 		$this->add_filter( 'bp_user_can_create_groups', 'protect_create_bp_group' );
 		$this->protect_friendship_request();
@@ -104,7 +104,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 			$this->add_filter( 'bp_get_send_message_button', 'hide_private_message_button' );
 		}
 
-		do_action( 'ms_model_rule_buddypress_protect_private_messaging', $wp_query, $this );
+		do_action( 'ms_model_rule_buddypress_protect_private_messaging', $this );
 	}
 	
 	/**

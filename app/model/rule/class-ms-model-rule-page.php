@@ -21,32 +21,45 @@
 */
 
 /**
- * Rule Page model to protect pages.
+ * Membership Page Rule class.
  *
- * Core rule model to protect pages. Membership Model composition.
+ * Persisted by Membership class.
  *
+ * @since 1.0.0
  *
- * @since 1.0
  * @package Membership
  * @subpackage Model
  */
 class MS_Model_Rule_Page extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_PAGE;
 	
-	protected $start_date;
+	/**
+	 * Membership relationship start date.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $start_date
+	 */
+	protected $start_date; 
 	
 	/**
 	 * Set initial protection.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param MS_Model_Membership_Relationship Optional. The membership relationship for dripped content.  
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		do_action( 'ms_model_rule_page_protect_content', $ms_relationship, $this );
+		
+		parent::protect_content( $ms_relationship );
 		
 		$this->start_date = $ms_relationship->start_date;
 		$this->add_filter( 'get_pages', 'protect_pages', 99 );
@@ -55,7 +68,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	/**
 	 * Filters protected pages.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
 	 * **Hooks Actions: **  
 	 *  
@@ -65,9 +78,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @return array Filtered array which doesn't include prohibited pages.
 	 */
 	public function protect_pages( $pages ) {
+		
 		$rule_value = apply_filters( 'ms_model_rule_page_protect_pages_rule_value', $this->rule_value );
-	
 		$membership = $this->get_membership();
+		
 		foreach( (array) $pages as $key => $page ) {
 			if( ! self::has_access( $page->ID ) ) {
 				unset( $pages[ $key ] );
@@ -81,16 +95,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 					unset( $pages[ $key ] );
 				}
 			}
-				
 		}
 
-		return apply_filters( 'ms_model_rule_page_protect_pages',  $pages );
+		return apply_filters( 'ms_model_rule_page_protect_pages',  $pages, $this );
 	}
 	
 	/**
 	 * Get the current page id.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
 	 * @return int The page id, or null if it is not a page.
 	 */
@@ -103,16 +116,16 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$page_id = $post->ID;
 		}
 		
-		return apply_filters( 'ms_model_rule_page_get_current_page_id',  $page_id );
+		return apply_filters( 'ms_model_rule_page_get_current_page_id',  $page_id, $this );
 	}
 	
 	/**
 	 * Verify access to the current page.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param int page_id Optional. The page_id to verify access. 
-	 * @return boolean
+	 * @param int $page_id Optional. The page_id to verify access. 
+	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $page_id = null ) {
 		
@@ -131,15 +144,16 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			}
 		}
 				
-		return apply_filters( 'ms_model_rule_page_has_access',  $has_access, $page_id );		
+		return apply_filters( 'ms_model_rule_page_has_access',  $has_access, $page_id, $this );		
 	}
 
 	/**
 	 * Verify if has dripped rules.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @return boolean
+	 * @param string $id The content id to verify.
+	 * @return boolean True if has dripped rules.
 	 */
 	public function has_dripped_rules( $page_id = null ) {
 
@@ -147,15 +161,17 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$page_id = $this->get_current_page_id();
 		}
 
-		return apply_filters( 'ms_model_rule_page_has_dripped_rules', parent::has_dripped_rules( $page_id ) );
+		return apply_filters( 'ms_model_rule_page_has_dripped_rules', parent::has_dripped_rules( $page_id ), $this );
 	}
 	
 	/**
 	 * Verify access to dripped content.
 	 * 
-	 * @since 1.0
+	 * The MS_Helper_Period::current_date may be simulating a date.
 	 * 
-	 * @param $start_date The start date of the member membership.
+	 * @since 1.0.0
+	 * @param string $start_date The start date of the member membership.
+	 * @param string $id The content id to verify dripped acccess. 
 	 */
 	public function has_dripped_access( $start_date, $page_id = null ) {
 	
@@ -167,21 +183,21 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 
 		$has_access = parent::has_dripped_access( $start_date, $page_id );
 	
-		return apply_filters( 'ms_model_rule_page_has_access', $has_access );
+		return apply_filters( 'ms_model_rule_page_has_dripped_access', $has_access, $this );
 	}
 	
 	/**
 	 * Get the total content count.
-	 * For list table pagination.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
-	 * @param string $args The default query post args.
-	 * @return number The total content count.
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
 		
+		$count = 0;		
 		$args = self::get_query_args( $args );
 		$query = new WP_Query( $args );
 		
@@ -191,20 +207,21 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	}
 	
 	/**
-	 * Prepare content to be shown in list table.
-	 * 
-	 * @since 1.0
-	 * 
-	 * @param string $args The default query post args.
-	 * @return array The content.
+	 * Get content to protect.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
 		
 		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
 		
+		$query = new WP_Query( $args );
 		$contents = array();
 		$pages = $query->get_posts();
+		
 		foreach( $pages as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
@@ -218,13 +235,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$contents[ $content->id ] = $content;
 		}
 		
-		return apply_filters( 'ms_model_rule_page_get_contents', $contents );
+		return apply_filters( 'ms_model_rule_page_get_contents', $contents, $this );
 	}
 
 	/**
 	 * Get the default query args.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $args The query post args. 
 	 * 					   @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -268,15 +285,14 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$args = wp_parse_args( $args, $defaults );
 		$args = $this->validate_query_args( $args );
 
-		return apply_filters( 'ms_model_rule_page_get_query_args', $args );
+		return apply_filters( 'ms_model_rule_page_get_query_args', $args, $this );
 	}
 	
 	/**
 	 * Get page content array.
 	 * 
-	 * Used to show content in html select.
+	 * @since 1.0.0
 	 * 
-	 * @since 1.0
 	 * @param array $array The query args. @see self::get_query_args()
 	 * @return array {
 	 * 		@type int $key The content ID.
@@ -284,18 +300,17 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * } 
 	 */
 	public function get_content_array( $args = null ) {
+		
 		$cont = array();
-
 		$args = self::get_query_args( $args );
-		
 		$query = new WP_Query($args);
-		
 		$contents = $query->get_posts();
+		
 		foreach( $contents as $content ) {
 			$cont[ $content->ID ] = $content->post_title;
 		}
 
-		return apply_filters( 'ms_model_rule_page_get_content_array', $cont );
+		return apply_filters( 'ms_model_rule_page_get_content_array', $cont, $this );
 	}
 	
 	/**
@@ -303,7 +318,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * 
 	 * Settings pages like protected, subscribe, welcome page, account page.
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
 	 * @return array The page ids.
 	 */
@@ -315,6 +330,6 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$exclude[] = $settings->get_special_page( $type );
 		}
 		
-		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude );
+		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude, $this );
 	}
 }

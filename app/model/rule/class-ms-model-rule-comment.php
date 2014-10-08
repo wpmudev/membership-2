@@ -97,7 +97,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		
-		parent::protect_content();
+		parent::protect_content( $ms_relationship );
 		
 		$this->add_filter( 'the_content', 'check_special_page' );
 		

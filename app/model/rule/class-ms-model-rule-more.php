@@ -20,48 +20,112 @@
  *
 */
 
-
+/**
+ * Membership More tag Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_More extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_MORE_TAG;
 	
+	/**
+	 * Comment content ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $content_id
+	 */
 	const CONTENT_ID = 'more_tag';
 	
+	/**
+	 * Protection message to display.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $protection_message
+	 */
 	protected $protection_message;
 	
 	/**
-	 * Verify access to the current asset.
-	 * 
-	 * @since 1.0
-	 * 
-	 * @param $id The item id to verify access.
+	 * Verify access to the current content.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		return false;
+	
+		return apply_filters( 'ms_model_rule_more_has_access', false, $id, $this );
 	}
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content( $ms_relationship );
+		
 		$this->protection_message = MS_Plugin::instance()->settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG );
 		
 		if( ! parent::has_access( self::CONTENT_ID ) ) {
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
-			$this->add_filter( 'the_content', 'replace_moretag_content', 1 );
-			$this->add_filter( 'the_content_feed', 'replace_moretag_content', 1 );
+			$this->add_filter( 'the_content', 'replace_more_tag_content', 1 );
+			$this->add_filter( 'the_content_feed', 'replace_more_tag_content', 1 );
 		}
 	}
 	
-	function show_moretag_protection( $more_tag_link, $more_tag ) {
+	/**
+	 * Show more tag protection message.
+	 *
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * the_content_more_link
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @param string $more_tag_link the more tag link before filter.
+	 * @param string $more_tag The more tag content before filter.
+	 * @return string The protection message.
+	 */
+	public function show_moretag_protection( $more_tag_link, $more_tag ) {
 
-		return stripslashes( $this->protection_message );
+		$msg = stripslashes( $this->protection_message );
+		
+		return apply_filters( 'ms_model_rule_more_show_moretag_protection', $msg, $more_tag_link, $more_tag, $this );
 	}
 	
-	function replace_moretag_content( $the_content ) {
+	/**
+	 * Replace more tag 
+	 *
+	 * **Hooks Actions/Filters: **
+	 *
+	 * * the_content
+	 * * the_content_feed
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $the_content The post content before filter. 
+	 * @return string The content replaced by more tag content.
+	 */
+	public function replace_more_tag_content( $the_content ) {
 
 		$more_starts_at = strpos( $the_content, '<span id="more-' );
 		if ( false !== $more_starts_at ) {
@@ -69,9 +133,17 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 			$the_content .= stripslashes( $this->protection_message );
 		}
 	
-		return $the_content;
+		return apply_filters( 'ms_model_rule_more_replace_more_tag_content', $the_content, $this );
 	}
 	
+	/**
+	 * Get content to protect.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The contents array.
+	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
 		
@@ -84,15 +156,27 @@ class MS_Model_Rule_More extends MS_Model_Rule {
 			$contents[] = $content;
 		}		
 		
-		return apply_filters( 'ms_model_rule_more_get_content', $contents );
+		return apply_filters( 'ms_model_rule_more_get_content', $contents, $this );
 	}
 	
+	/**
+	 * Get options array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args Optional. Not used.
+	 * @return array {
+	 * 		@type string $rule_value The rule value.
+	 * 		@type string $description The rule description.
+	 * }
+	 */
 	public function get_options_array( $args = null ) {
+		
 		$contents = array(
 			true => __( 'Yes', MS_TEXT_DOMAIN ),
 			false => __( 'No', MS_TEXT_DOMAIN ),
 		);
 		
-		return apply_filters( 'ms_model_rule_more_get_content_array', $contents );
+		return apply_filters( 'ms_model_rule_more_get_content_array', $contents, $this );
 	}
 }

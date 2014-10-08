@@ -86,7 +86,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @since 1.0.0
 	 * @var int $membership_id
 	 */
-	protected $membership_id;
+	protected $membership_id = 0;
 	
 	/**
 	 * Rule type.
@@ -513,6 +513,7 @@ class MS_Model_Rule extends MS_Model {
 	 * Verify if has dripped rules.
 	 * 
 	 * @since 1.0.0
+	 * 
 	 * @param string $id The content id to verify.
 	 * @return boolean True if has dripped rules.
 	 */
@@ -1014,6 +1015,6 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 		
-		do_action( 'ms_model_rule___set_after', $property, $value, $this );
+		do_action( 'ms_model_rule__set_after', $property, $value, $this );
 	}
 }

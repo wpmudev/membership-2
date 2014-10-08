@@ -41,26 +41,15 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_CATEGORY;
 	
 	/**
-	 * Membership relationship start date.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $start_date
-	 */
-	protected $start_date; 
-	
-	/**
 	 * Set initial protection.
 	 * 
 	 * @since 1.0.0
 	 * 
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used. 
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		
-		parent::protect_content();
-		
-		$this->start_date = $ms_relationship->start_date;
+		parent::protect_content( $ms_relationship );
 		
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 		$this->add_filter( 'get_terms', 'protect_categories', 99, 2 );

@@ -20,27 +20,50 @@
  *
 */
 
-
+/**
+ * Membership Custom Post Type Groups Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP;
 	
 	/**
 	 * Set initial protection.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used. 
 	 */
-	public function protect_content( $membership_relationship = false ) {
+	public function protect_content( $ms_relationship = false ) {
+		
+		parent::protect_content( $ms_relationship );
+		
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 	}
 	
 	/**
 	 * Adds filter for posts query to remove all protected custom post types.
 	 *
-	 * @since 4.0
-	 * @action pre_get_posts 
-	 *
-	 * @access public
+	 * **Hooks Actions/Filters: **
+	 * 
+	 * * pre_get_posts
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
@@ -57,11 +80,17 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				$wp_query->query_vars['post__in'] = array( 0 => 0 );
 			}
 		}
+		
+		do_action( 'ms_model_rule_custom_post_type_group_protect_posts', $wp_query, $this );
 	}
 	
 	/**
-	 * Verify access to the current post.
-	 * @return boolean
+	 * Verify access to the current content.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $post_id The content id to verify access.
+	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $post_id = null ) {
 		
@@ -91,15 +120,20 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			}
 		}
 
-		return $has_access;
+		return apply_filters( 'ms_model_rule_custom_post_type_group_has_access', $has_access, $post_id, $this );
 	}
 	
 	/**
-	 * Prepare content to be shown in list table.
-	 * @param string $args The default query post args.
+	 * Get content to protect.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $args Optional. Not used.
+	 * 
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {
+		
 		$cpts = self::get_custom_post_types();
 
 		$contents = array();
@@ -118,30 +152,44 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
-		return $contents;
+		
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_contents', $contents, $args, $this );
 	}
 	
 	/**
-	 * Get content array( id => title ).
-	 * Used to show content in html select.
+	 * Get content array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args Optional. Not used.
+	 * @return array {
+	 * 		@type string $rule_value The rule value.
+	 * 		@type string $description The rule description.
+	 * }
 	 */
 	public function get_content_array() {
+		
 		$cont = array();
 		$contents = $this->get_contents();
+		
 		foreach( $contents as $content ) {
 			$cont[ $content->id ] = $content->name;
 		}
 
-		return $cont;
+		return apply_filters( 'ms_model_rule_comment_get_content_array', $cont, $this );
 	}
 	
 	/**
 	 * Get post types that should not be protected.
+	 * 
 	 * Default WP post types, membership post types
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @return array The excluded post types.
 	 */
 	public static function get_excluded_content() {
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_excluded_content', array_merge( array(
+		$exclude = array_merge( array(
 				'post',
 				'page',
 				'attachment',
@@ -149,30 +197,45 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				'nav_menu_item',
 			),
 			self::get_ms_post_types() 
-		) );
+		);
+		
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_excluded_content', $exclude );
 	}
 	
+	/**
+	 * Get post types that are part of this plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array The plugin core post types.
+	 */
 	public static function get_ms_post_types() {
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', array(
+		$cpts = array(
 				MS_Model_Membership::$POST_TYPE,
 				MS_Model_Invoice::$POST_TYPE,
 				MS_Model_Communication::$POST_TYPE,
 				MS_Model_Coupon::$POST_TYPE,
 				MS_Model_Membership_Relationship::$POST_TYPE,
 				MS_Model_Event::$POST_TYPE,
-		) );
+		);
+		
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', $cpts );
 	}
 	
 	/**
 	 * Get custom post types.
 	 * 
-	 * Excludes membership plugin and default wp post types. 
+	 * Excludes membership plugin and default wp post types.
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @return array
 	 */
 	public static function get_custom_post_types() {
+		
 		$cpts = get_post_types();
 		$excluded = self::get_excluded_content();
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_custom_post_types', array_diff( $cpts, $excluded ) );
 		
+		return apply_filters( 'ms_model_rule_custom_post_type_group_get_custom_post_types', array_diff( $cpts, $excluded ) );
 	}
 }

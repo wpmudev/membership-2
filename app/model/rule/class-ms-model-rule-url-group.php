@@ -20,26 +20,61 @@
  *
 */
 
-
+/**
+ * Membership URL Group Rule class.
+ *
+ * Persisted by Membership class.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Rule type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $rule_type
+	 */
 	protected $rule_type = self::RULE_TYPE_URL_GROUP;
 	
+	/**
+	 * Has access to url group toggle.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean $access
+	 */
 	protected $access;
 	
+	/**
+	 * Strip query strings from url before testing.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean $strip_query_string
+	 */
 	protected $strip_query_string;
 	
+	/**
+	 * Is regular expression indicator.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean $is_regex
+	 */
 	protected $is_regex = true;
 	
 	/**
-	 * Verify access to the current url.
-     *
-	 * @since 4.0
+	 * Verify access to the current content.
 	 *
-	 * @access public
-	 * @return boolean
+	 * @since 1.0.0
+	 *
+	 * @param string $id The content id to verify access.
+	 * @return boolean True if has access, false otherwise.
 	 */
 	 public function has_access( $id = null ) {
 
@@ -72,11 +107,21 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 				}
 			}
 	 	}
-	 	return apply_filters( 'ms_model_rule_url_group_has_access', $has_access );
+	 	
+	 	return apply_filters( 'ms_model_rule_url_group_has_access', $has_access, $id, $this );
 	}
 	
+	/**
+	 * Verify if current url has protection rules.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return boolean True if has access, false otherwise.
+	 */
 	public function has_rule_for_current_url() {
+		
 		$has_rules = false;
+		
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			$url = MS_Helper_Utility::get_current_page_url();
 			if( $this->strip_query_string ) {
@@ -87,20 +132,23 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 				$has_rules = true;
 			}
 		}
-		return apply_filters( 'ms_model_rule_url_group_has_access', $has_rules );
+		
+		return apply_filters( 'ms_model_rule_url_group_has_access', $has_rules, $this );
 	}
 	
 	/**
 	 * Check url expression macth.
 	 * 
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $url The url to match.
 	 * @param string[] $check_list The url list to verify match.
-	 * @return boolean
+	 * @return boolean True if matches.
 	 */
 	public function check_url_expression_match( $url, $check_list ) {
+		
+		$match = false;
+		
 		if( is_array( $check_list ) && ! empty( $check_list ) ) {
 			
 			/**
@@ -111,7 +159,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 				foreach ( $check_list as $list_value ) {
 					$match_string = mb_stripos( $list_value, '\/' ) !== false ? stripcslashes( $list_value ) : $list_value;
 					if ( preg_match( "#^{$match_string}$#i", $url ) ) {
-						return true;
+						$match = true;
 					}
 				}
 			}
@@ -122,17 +170,19 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 				$check_list = array_map( 'strtolower', array_filter( array_map( 'trim', $check_list ) ) );
 				$check_list = array_merge( $check_list, array_map( 'untrailingslashit', $check_list ) );
 				if ( in_array( strtolower( $url ), $check_list ) ) {
-					return true;
+					$match = true;
 				} 
 			}
 		}
-		return false;
+		
+		return apply_filters( 'ms_model_rule_url_group_check_url_expression_match', $match, $url, $check_list, $this );
 	}
 	
    /**
 	* Count protection rules quantity.
 	*
 	* @since 1.0.0
+	* 
 	* @param bool $has_access_only Optional. Count rules for has_access status only.
 	* @return int $count The rule count result.
 	*/
@@ -142,17 +192,17 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		if( $this->access ) {
 			$count = count( $this->rule_value );
 		}
-		return apply_filters( 'ms_model_rule_url_group_count_rules', $count );
+		
+		return apply_filters( 'ms_model_rule_url_group_count_rules', $count, $this );
 	}
 	
 	/**
-	 * Get content eligible for protection.
-	 * 
-	 * 
-	 * @since 1.0
+	 * Get content to protect.
 	 *
-	 * @access public
-	 * @return object[] The content array.
+	 * @since 1.0.0
+	 * @param $args The filter args
+	 * 				
+	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
@@ -168,14 +218,14 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
+		
+		if( property_exists( $this, $property ) ) {
 			switch( $property ) {
 				case 'rule_value':
 					if( ! is_array( $value ) ) {
@@ -192,5 +242,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_rule_url_group__set_after', $property, $value, $this );
 	}
 }

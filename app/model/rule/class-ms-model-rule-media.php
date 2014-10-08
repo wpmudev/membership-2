@@ -21,7 +21,7 @@
 */
 
 /**
- * Membership Custom Post Type Groups Rule class.
+ * Membership Media Rule class.
  *
  * Persisted by Membership class.
  *
@@ -138,7 +138,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		
-		parent::protect_content();
+		parent::protect_content( $ms_relationship );
 		
 		$this->ms_relationship = $ms_relationship;
 		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
@@ -479,8 +479,6 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	
 	/**
 	 * Get content to protect.
-	 * 
-	 * To be overridden in children classes.
 	 * 
 	 * @since 1.0.0
 	 * @param $args The query post args
