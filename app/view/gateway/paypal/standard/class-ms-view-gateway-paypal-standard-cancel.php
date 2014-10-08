@@ -33,20 +33,6 @@ class MS_View_Gateway_Paypal_Standard_Cancel extends MS_View {
 			$ms_relationship = $this->data['ms_relationship'];
 			$membership = $ms_relationship->get_membership();
 			if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
-				if( ! empty( $gateway->cancel_button_url ) && strpos( $gateway->cancel_button_url, 'http' ) !== 0 ) {
-					$cancel_btn = array(
-							'id' => 'submit',
-							'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-							'value' => $gateway->pay_button_url,
-					);
-				}
-				else {
-					$cancel_btn = array(
-							'id' => 'submit',
-							'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
-							'value' =>  $gateway->cancel_button_url ? $gateway->cancel_button_url : 'https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif',
-					);
-				}
 	
 				if( MS_Model_Gateway::MODE_LIVE == $gateway->mode ) {
 					$cancel_url = 'https://www.paypal.com/cgi-bin/webscr';
