@@ -630,7 +630,7 @@ class MS_Helper_Html extends MS_Helper {
 
 		?>
 		<div class="ms-settings-footer">
-			<form method="post" >
+			<form method="post" action="">
 				<span class="ms-save-text-wrapper ms-init">
 					<?php foreach ( $fields as $field ) {
 						MS_Helper_Html::html_element( $field );

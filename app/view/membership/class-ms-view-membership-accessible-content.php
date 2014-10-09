@@ -62,7 +62,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 
 			$html = call_user_func( $render_callback );
 			$html = apply_filters( 'ms_view_membership_accessible_' . $callback_name, $html );
-			printf( $html );
+			echo $html;
 			?>
 		</div>
 		<?php

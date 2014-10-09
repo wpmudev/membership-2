@@ -53,155 +53,118 @@ class MS_View_Settings_Edit extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
-		ob_start();
-
-		/** Setup navigation tabs. */
+		// Setup navigation tabs.
 		$tabs = $this->data['tabs'];
 
-		/** Render tabbed interface. */
+		ob_start();
+		// Render tabbed interface.
 		?>
-		<div class='ms-wrap wrap'>
+		<div class="ms-wrap wrap">
 			<?php
-				MS_Helper_Html::settings_header( array(
+			MS_Helper_Html::settings_header(
+				array(
 					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
 					'title_icon_class' => 'fa fa-cog',
-				) );
+				)
+			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 
-			/** Call the appropriate form to render. */
-			$render_callback =  apply_filters( 'ms_view_settings_edit_render_callback',
-					array( $this, 'render_tab_' . str_replace('-', '_', $active_tab ) ),
-					$active_tab,
-					$this->data
+			// Call the appropriate form to render.
+			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
+			$render_callback = apply_filters(
+				'ms_view_settings_edit_render_callback',
+				array( $this, $callback_name ),
+				$active_tab,
+				$this->data
 			);
-			call_user_func( $render_callback );
-		?>
+
+			$html = call_user_func( $render_callback );
+			$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
+			echo $html;
+			?>
 		</div>
 		<?php
-		$html = ob_get_clean();
-		echo $html;
+		return ob_get_clean();
 	}
+
+	/* ====================================================================== *
+	 *                               GENERAL
+	 * ====================================================================== */
 
 	public function render_tab_general() {
-		$fields = $this->prepare_general_fields();
-		?>
-		<div class='ms-settings'>
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) ) ); ?>
-			<div class="ms-separator"></div>
-
-			<form action="" method="post">
-				<?php
-					MS_Helper_Html::settings_box(
-						array( $fields['plugin_enabled'] ),
-						__( 'Enable plugin', MS_TEXT_DOMAIN )
-					);
-				?>
-				<?php
-					MS_Helper_Html::settings_box(
-						array( $fields['hide_admin_bar'] ),
-						__( 'Hide admin bar', MS_TEXT_DOMAIN )
-					);
-				?>
-				<?php
-					MS_Helper_Html::settings_box(
-						array( $fields['initial_setup'] ),
-						__( 'Enable wizard', MS_TEXT_DOMAIN )
-					);
-				?>
-			</form>
-		</div>
-		<?php
-	}
-
-	public function prepare_general_fields() {
 		$settings = $this->data['settings'];
 		$fields = array(
-				'plugin_enabled' => array(
-						'id' => 'plugin_enabled',
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-						'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
-						'value' => $settings->plugin_enabled,
-						'data_ms' => array(
-								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-								'setting' => 'plugin_enabled',
-						),
+			'plugin_enabled' => array(
+				'id' => 'plugin_enabled',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
+				'value' => $settings->plugin_enabled,
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' => 'plugin_enabled',
 				),
-				'hide_admin_bar' => array(
-						'id' => 'hide_admin_bar',
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-						'title' => __( 'Hide admin bar for non administrator users.', MS_TEXT_DOMAIN ),
-						'value' => $settings->hide_admin_bar,
-						'data_ms' => array(
-								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-								'setting' => 'hide_admin_bar',
-						),
+			),
+
+			'hide_admin_bar' => array(
+				'id' => 'hide_admin_bar',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => __( 'Hide admin bar for non administrator users.', MS_TEXT_DOMAIN ),
+				'value' => $settings->hide_admin_bar,
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' => 'hide_admin_bar',
 				),
-				'initial_setup' => array(
-						'id' => 'initial_setup',
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-						'title' => __( 'Enable wizard.', MS_TEXT_DOMAIN ),
-						'value' => $settings->initial_setup,
-						'data_ms' => array(
-								'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-								'setting' => 'initial_setup',
-						),
+			),
+
+			'initial_setup' => array(
+				'id' => 'initial_setup',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => __( 'Enable wizard.', MS_TEXT_DOMAIN ),
+				'value' => $settings->initial_setup,
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' => 'initial_setup',
 				),
+			),
 		);
-		return apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
-	}
+		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
 
-	public function render_tab_pages() {
-		$fields = $this->prepare_pages_fields();
-
+		ob_start();
 		?>
-		<div class='ms-settings'>
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) ) ); ?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
+			); ?>
 			<div class="ms-separator"></div>
 
 			<form action="" method="post">
 				<?php
-					MS_Helper_Html::html_element( $fields['control']['action'] );
-					MS_Helper_Html::html_element( $fields['control']['nonce'] );
-					MS_Helper_Html::html_element( $fields['page_urls'] );
-					MS_Helper_Html::html_element( $fields['page_edit_urls'] );
+				MS_Helper_Html::settings_box(
+					array( $fields['plugin_enabled'] ),
+					__( 'Enable plugin', MS_TEXT_DOMAIN )
+				);
+
+				MS_Helper_Html::settings_box(
+					array( $fields['hide_admin_bar'] ),
+					__( 'Hide admin bar', MS_TEXT_DOMAIN )
+				);
+
+				MS_Helper_Html::settings_box(
+					array( $fields['initial_setup'] ),
+					__( 'Enable wizard', MS_TEXT_DOMAIN )
+				);
 				?>
-				<?php foreach( $fields['pages'] as $field ): ?>
-					<?php MS_Helper_Html::settings_box_header( );?>
-						<?php
-							MS_Helper_Html::html_element( $field );
-							MS_Helper_Html::html_submit( array(
-								'id' => "create_page_{$field['id']}",
-								'value' => __('Create new page', MS_TEXT_DOMAIN ),
-								'class' => 'button button-primary ms-create-page',
-							) );
-						?>
-						<div id="ms-settings-page-links-wrapper">
-							<?php
-								MS_Helper_Html::html_link( array(
-									'id' => "url_page_{$field['id']}",
-									'url' => get_permalink( $field['value'] ),
-									'value' => __( 'View', MS_TEXT_DOMAIN ),
-								) );
-							?>
-							<span> | </span>
-							<?php
-								MS_Helper_Html::html_link( array(
-									'id' => "edit_url_page_{$field['id']}",
-									'url' => get_edit_post_link( $field['value'] ),
-									'value' => __( 'Edit', MS_TEXT_DOMAIN ),
-								) );
-							?>
-						</div>
-					<?php MS_Helper_Html::settings_box_footer();?>
-				<?php endforeach;?>
 			</form>
-			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
+		return ob_get_clean();
 	}
 
-	public function prepare_pages_fields() {
+	/* ====================================================================== *
+	 *                               PAGES
+	 * ====================================================================== */
 
+	public function render_tab_pages() {
 		$settings = $this->data['settings'];
 		$pages['no_access'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS );
 		$pages['account'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
@@ -214,7 +177,8 @@ class MS_View_Settings_Edit extends MS_View {
 		$all_pages = $settings->get_pages();
 		$page_urls = array();
 		$page_edit_urls = array();
-		foreach( $all_pages as $id => $page ) {
+
+		foreach ( $all_pages as $id => $page ) {
 			$page_urls[ $id ] = get_permalink( $id );
 			$page_edit_urls[ $id ] = get_edit_post_link( $id );
 		}
@@ -222,237 +186,480 @@ class MS_View_Settings_Edit extends MS_View {
 		$fields = array(
 			'pages' => array(
 				'no_access' => array(
-						'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
-						'value' => $pages['no_access'],
-						'field_options' => $all_pages,
-						'class' => 'chosen-select ms-ajax-update',
-						'data_ms' => array(
-							'field' => 'page_no_access',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-						),
+					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
+					'value' => $pages['no_access'],
+					'field_options' => $all_pages,
+					'class' => 'chosen-select ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'page_no_access',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
+
 				'account' => array(
-						'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
-						'value' => $pages['account'],
-						'field_options' => $all_pages,
-						'class' => 'chosen-select ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'page_account',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
+					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
+					'value' => $pages['account'],
+					'field_options' => $all_pages,
+					'class' => 'chosen-select ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'page_account',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
+
 				'welcome' => array(
-						'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
-						'value' => $pages['welcome'],
-						'field_options' => $all_pages,
-						'class' => 'chosen-select ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'page_welcome',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
+					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
+					'value' => $pages['welcome'],
+					'field_options' => $all_pages,
+					'class' => 'chosen-select ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'page_welcome',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
+
 				'signup' => array(
-						'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
-						'value' => $pages['signup'],
-						'field_options' => $all_pages,
-						'class' => 'chosen-select ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'page_signup',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
+					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
+					'value' => $pages['signup'],
+					'field_options' => $all_pages,
+					'class' => 'chosen-select ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'page_signup',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
 			),
+
 			'control' => array(
 				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'create_special_page',
+					'id' => 'action',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 'create_special_page',
 				),
+
 				'nonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => wp_create_nonce( 'create_special_page' ),
+					'id' => '_wpnonce',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => wp_create_nonce( 'create_special_page' ),
 				),
 			),
+
 			'page_urls' => array(
-					'id' => 'page_urls',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'field_options' => $page_urls,
-					'class' => 'ms-hidden',
+				'id' => 'page_urls',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $page_urls,
+				'class' => 'ms-hidden',
 			),
+
 			'page_edit_urls' => array(
-					'id' => 'page_edit_urls',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'field_options' => $page_edit_urls,
-					'class' => 'ms-hidden',
+				'id' => 'page_edit_urls',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $page_edit_urls,
+				'class' => 'ms-hidden',
 			),
 
 		);
 
-		return apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
-	}
-	public function render_tab_payment() {
+		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
+
 		ob_start();
 		?>
-		<div class='ms-settings'>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) )
+			); ?>
+			<div class="ms-separator"></div>
+
+			<form action="" method="post">
+				<?php
+				MS_Helper_Html::html_element( $fields['control']['action'] );
+				MS_Helper_Html::html_element( $fields['control']['nonce'] );
+				MS_Helper_Html::html_element( $fields['page_urls'] );
+				MS_Helper_Html::html_element( $fields['page_edit_urls'] );
+				?>
+
+				<?php foreach ( $fields['pages'] as $field ) : ?>
+					<?php MS_Helper_Html::settings_box_header(); ?>
+						<?php
+						MS_Helper_Html::html_element( $field );
+						MS_Helper_Html::html_submit(
+							array(
+								'id' => 'create_page_' . $field['id'],
+								'value' => __( 'Create new page', MS_TEXT_DOMAIN ),
+								'class' => 'button button-primary ms-create-page',
+							)
+						);
+						?>
+						<div id="ms-settings-page-links-wrapper">
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'url_page_' . $field['id'],
+									'url' => get_permalink( $field['value'] ),
+									'value' => __( 'View', MS_TEXT_DOMAIN ),
+								)
+							);
+							?>
+							<span> | </span>
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'edit_url_page_' . $field['id'],
+									'url' => get_edit_post_link( $field['value'] ),
+									'value' => __( 'Edit', MS_TEXT_DOMAIN ),
+								)
+							);
+							?>
+						</div>
+					<?php MS_Helper_Html::settings_box_footer(); ?>
+				<?php endforeach; ?>
+			</form>
+			<?php MS_Helper_Html::settings_footer( null, false ); ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
+	 *                               PAYMENT
+	 * ====================================================================== */
+
+	public function render_tab_payment() {
+		$view = MS_Factory::create( 'MS_View_Settings_Payment' );
+
+		ob_start();
+		?>
+		<div class="ms-settings">
 			<div id="ms-payment-settings-wrapper">
-			<?php
-				$view = MS_Factory::create( 'MS_View_Settings_Payment' );
-				$view->render();
-			?>
+				<?php $view->render(); ?>
 			</div>
 			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
-		$html = ob_get_clean();
-		echo $html;
+		echo ob_get_clean();
 	}
 
+	/* ====================================================================== *
+	 *                               PROTECTION MESSAGE
+	 * ====================================================================== */
+
 	public function render_tab_messages_protection() {
-		$fields = $this->prepare_protection_messages_fields();
+		$settings = $this->data['settings'];
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_PROTECTION_MSG;
+		$nonce = wp_create_nonce( $action );
+
+		$fields = array(
+			'content' => array(
+				'id' => 'content',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+				'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
+				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
+				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				'class' => 'ms-textarea-medium ms-ajax-update',
+				'data_ms' => array(
+					'type' => 'content',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'shortcode' => array(
+				'id' => 'shortcode',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+				'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
+				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
+				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				'class' => 'ms-textarea-medium ms-ajax-update',
+				'data_ms' => array(
+					'type' => 'shortcode',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'more_tag' => array(
+				'id' => 'more_tag',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+				'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
+				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
+				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				'class' => 'ms-textarea-medium ms-ajax-update',
+				'data_ms' => array(
+					'type' => 'more_tag',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+		);
+
+		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
+
+		//$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
+		//$has_more = $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID );
+		//var_dump( $has_more );
+		//$has_more = $rule_more_tag->rule_value;
+		//var_dump( $has_more );
+		$has_more = true;  //TODO Fix this condition....
+
+		ob_start();
 		?>
-		<div class='ms-settings'>
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) ) ); ?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) )
+			); ?>
 			<div class="ms-separator"></div>
 
 			<form class="ms-form" action="" method="post">
 				<?php
-					MS_Helper_Html::settings_box(
-						array( $fields['content'] ),
-						__( 'Content protection message', MS_TEXT_DOMAIN )
-					);
-				?>
-				<?php
-					MS_Helper_Html::settings_box(
-						array( $fields['shortcode'] ),
-						__( 'Shortcode protection message', MS_TEXT_DOMAIN )
-					);
-				?>
-				<?php
+				MS_Helper_Html::settings_box(
+					array( $fields['content'] ),
+					__( 'Content protection message', MS_TEXT_DOMAIN )
+				);
+
+				MS_Helper_Html::settings_box(
+					array( $fields['shortcode'] ),
+					__( 'Shortcode protection message', MS_TEXT_DOMAIN )
+				);
+
+				if ( $has_more ) {
 					MS_Helper_Html::settings_box(
 						array( $fields['more_tag'] ),
 						__( 'More tag protection message', MS_TEXT_DOMAIN )
 					);
+				}
+
+				MS_Helper_Html::settings_footer( null, false );
 				?>
-				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</form>
 		</div>
 		<?php
+		return ob_get_clean();
 	}
 
-	public function prepare_protection_messages_fields() {
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_PROTECTION_MSG;
-		$nonce = wp_create_nonce( $action );
-		$settings = $this->data['settings'];
-
-		$fields = array(
-			'content' => array(
-					'id' => 'content',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
-					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
-					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium ms-ajax-update',
-					'data_ms' => array(
-							'type' => 'content',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-					),
-			),
-			'shortcode' => array(
-					'id' => 'shortcode',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-					'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
-					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
-					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium ms-ajax-update',
-					'data_ms' => array(
-							'type' => 'shortcode',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-					),
-
-			),
-			'more_tag' => array(
-					'id' => 'more_tag',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-					'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
-					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
-					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-					'class' => 'ms-textarea-medium ms-ajax-update',
-					'data_ms' => array(
-							'type' => 'more_tag',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-					),
-			),
-		);
-		return apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
-	}
+	/* ====================================================================== *
+	 *                               AUTOMATED MESSAGES
+	 * ====================================================================== */
 
 	public function render_tab_messages_automated() {
-		$fields = $this->prepare_messages_automated_fields();
 		$comm = $this->data['comm'];
+
+		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
+		$nonce = wp_create_nonce( $action );
+
+		$fields = array(
+			'comm_type' => array(
+				'id' => 'comm_type',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $comm->type,
+				'field_options' => MS_Model_Communication::get_communication_type_titles(),
+				'class' => '',
+			),
+
+			'type' => array(
+				'id' => 'type',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $comm->type,
+			),
+
+			'enabled' => array(
+				'id' => 'enabled',
+				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+				'title' => __( 'Enabled', MS_TEXT_DOMAIN ),
+				'value' => $comm->enabled,
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'enabled',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'period_unit' => array(
+				'id' => 'period_unit',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
+				'value' => $comm->period['period_unit'],
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'period_unit',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'period_type' => array(
+				'id' => 'period_type',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $comm->period['period_type'],
+				'field_options' => MS_Helper_Period::get_periods(),
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'period_type',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'subject' => array(
+				'id' => 'subject',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
+				'value' => $comm->subject,
+				'class' => 'ms-comm-subject ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'subject',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'message' => array(
+				'id' => 'message',
+				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+				'title' => __( 'Message', MS_TEXT_DOMAIN ),
+				'value' => $comm->description,
+				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'message',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'cc_enabled' => array(
+				'id' => 'cc_enabled',
+				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+				'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
+				'value' => $comm->cc_enabled,
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'cc_enabled',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'cc_email' => array(
+				'id' => 'cc_email',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $comm->cc_email,
+				'field_options' => MS_Model_Member::get_admin_user_emails(),
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'type' => $comm->type,
+					'field' => 'cc_email',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
+			),
+
+			'save_email' => array(
+				'id' => 'save_email',
+				'value' => __( 'Save Automated Email', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			),
+
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => 'save_comm',
+			),
+
+			'nonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( 'save_comm' ),
+			),
+
+			'load_action' => array(
+				'id' => 'load_action',
+				'name' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => 'load_action',
+			),
+
+			'load_nonce' => array(
+				'id' => '_wpnonce1',
+				'name' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( 'load_action' ),
+			),
+		);
+
+		$fields = apply_filters( 'ms_view_settings_prepare_messages_automated_fields', $fields );
+
+		ob_start();
 		?>
-		<div class='ms-settings'>
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) ) ); ?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) )
+			); ?>
 			<div class="ms-separator"></div>
 
 			<form id="ms-comm-type-form" action="" method="post">
-				<?php MS_Helper_Html::html_element( $fields['load_action'] );?>
-				<?php MS_Helper_Html::html_element( $fields['load_nonce'] );?>
-				<?php MS_Helper_Html::html_element( $fields['comm_type'] );?>
+				<?php MS_Helper_Html::html_element( $fields['load_action'] ); ?>
+				<?php MS_Helper_Html::html_element( $fields['load_nonce'] ); ?>
+				<?php MS_Helper_Html::html_element( $fields['comm_type'] ); ?>
 				<p><?php echo $comm->get_description(); ?></p>
 			</form>
+
 			<form action="" method="post">
-				<?php MS_Helper_Html::html_element( $fields['action'] );?>
-				<?php MS_Helper_Html::html_element( $fields['nonce'] );?>
-				<?php MS_Helper_Html::html_element( $fields['type'] );?>
+				<?php MS_Helper_Html::html_element( $fields['action'] ); ?>
+				<?php MS_Helper_Html::html_element( $fields['nonce'] ); ?>
+				<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
+
 				<table class="form-table">
 					<tbody>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_element( $fields['enabled'] );?>
+								<?php MS_Helper_Html::html_element( $fields['enabled'] ); ?>
 							</td>
 						</tr>
-						<?php if( $comm->period_enabled ) : ?>
+						<?php if ( $comm->period_enabled ) : ?>
 							<tr>
 								<td>
 									<div class="ms-period-wrapper">
-										<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
-										<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
+										<?php MS_Helper_Html::html_element( $fields['period_unit'] ); ?>
+										<?php MS_Helper_Html::html_element( $fields['period_type'] ); ?>
 									</div>
 								</td>
 							</tr>
 						<?php endif; ?>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_element( $fields['subject'] );?>
+								<?php MS_Helper_Html::html_element( $fields['subject'] ); ?>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div id="ms-comm-message-wrapper">
-								<?php MS_Helper_Html::html_element( $fields['message'] );?>
+								<?php MS_Helper_Html::html_element( $fields['message'] ); ?>
 								</div>
 								<div id="ms-comm-var-wrapper">
 									<table>
 										<tr>
 											<th>Variable values</th>
 										</tr>
-										<?php foreach( $comm->comm_vars as $var => $description ): ?>
+										<?php foreach ( $comm->comm_vars as $var => $description ) : ?>
 											<tr>
 												<td>
 													<?php MS_Helper_html::tooltip( $description ); ?>
@@ -466,14 +673,14 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_element( $fields['cc_enabled'] );?>
-								<?php MS_Helper_Html::html_element( $fields['cc_email'] );?>
+								<?php MS_Helper_Html::html_element( $fields['cc_enabled'] ); ?>
+								<?php MS_Helper_Html::html_element( $fields['cc_email'] ); ?>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<?php MS_Helper_Html::html_separator();?>
-								<?php MS_Helper_Html::html_element( $fields['save_email'] );?>
+								<?php MS_Helper_Html::html_separator(); ?>
+								<?php MS_Helper_Html::html_element( $fields['save_email'] ); ?>
 							</td>
 						</tr>
 					</tbody>
@@ -482,158 +689,67 @@ class MS_View_Settings_Edit extends MS_View {
 			</form>
 		</div>
 		<?php
+		return ob_get_clean();
 	}
-	public function prepare_messages_automated_fields() {
-		$comm = $this->data['comm'];
 
-		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
+	/* ====================================================================== *
+	 *                               MEDIA / DOWNLOADS
+	 * ====================================================================== */
+
+	public function render_tab_downloads() {
+		$upload_dir = wp_upload_dir();
+		$settings = $this->data['settings'];
+
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
-				'comm_type' => array(
-						'id' => 'comm_type',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $comm->type,
-						'field_options' => MS_Model_Communication::get_communication_type_titles(),
-						'class' => '',
+			'protection_type' => array(
+				'id' => 'protection_type',
+				'name' => 'downloads[protection_type]',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
+				'value' => $settings->downloads['protection_type'],
+				'field_options' => MS_Model_Rule_Media::get_protection_types(),
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'field' => 'protection_type',
+					'action' => $action,
+					'_wpnonce' => $nonce,
 				),
-				'type' => array(
-						'id' => 'type',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $comm->type,
+			),
+			'upload_url' => array(
+				'id' => 'mailchimp_api_test',
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Current upload location', MS_TEXT_DOMAIN ),
+				'value' => trailingslashit( $upload_dir['baseurl'] ),
+				'wrapper' => 'div',
+				'class' => '',
+			),
+			'masked_url' => array(
+				'id' => 'masked_url',
+				'name' => 'downloads[masked_url]',
+				'desc' => esc_html( trailingslashit( get_option( 'home' ) ) ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Masked download url', MS_TEXT_DOMAIN ),
+				'value' => $settings->downloads['masked_url'],
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'field' => 'masked_url',
+					'action' => $action,
+					'_wpnonce' => $nonce,
 				),
-				'enabled' => array(
-						'id' => 'enabled',
-						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-						'title' => __( 'Enabled', MS_TEXT_DOMAIN ),
-						'value' => $comm->enabled,
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'enabled',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-				),
-				'period_unit' => array(
-						'id' => 'period_unit',
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
-						'value' => $comm->period['period_unit'],
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'period_unit',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-				),
-				'period_type' => array(
-						'id' => 'period_type',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $comm->period['period_type'],
-						'field_options' => MS_Helper_Period::get_periods(),
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'period_type',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-
-				),
-				'subject' => array(
-						'id' => 'subject',
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
-						'value' => $comm->subject,
-						'class' => 'ms-comm-subject ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'subject',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-				),
-				'message' => array(
-						'id' => 'message',
-						'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-//						'title' => __( 'Message', MS_TEXT_DOMAIN ),
-						'value' => $comm->description,
-						'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'message',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-
-				),
-				'cc_enabled' => array(
-						'id' => 'cc_enabled',
-						'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-						'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
-						'value' => $comm->cc_enabled,
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'cc_enabled',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-
-				),
-				'cc_email' => array(
-						'id' => 'cc_email',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'value' => $comm->cc_email,
-						'field_options' => MS_Model_Member::get_admin_user_emails(),
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'type' => $comm->type,
-								'field' => 'cc_email',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-
-				),
-				'save_email' => array(
-						'id' => 'save_email',
-						'value' => __( 'Save Automated Email', MS_TEXT_DOMAIN ),
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				),
-				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'save_comm',
-				),
-				'nonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => wp_create_nonce( 'save_comm' ),
-				),
-				'load_action' => array(
-						'id' => 'load_action',
-						'name' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'load_action',
-				),
-				'load_nonce' => array(
-						'id' => '_wpnonce1',
-						'name' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => wp_create_nonce( 'load_action' ),
-				),
+			),
 		);
-		return apply_filters( 'ms_view_settings_prepare_messages_automated_fields', $fields );
-	}
 
-	public function render_tab_downloads() {
-		$fields = $this->prepare_downloads_fields();
+		$fields = apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
+
+		ob_start();
 		?>
-		<div class='ms-settings'>
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Media / Download Settings', MS_TEXT_DOMAIN ) ) ); ?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'Media / Download Settings', MS_TEXT_DOMAIN ) )
+			); ?>
 			<div class="ms-separator"></div>
 
 			<div>
@@ -644,55 +760,7 @@ class MS_View_Settings_Edit extends MS_View {
 			</div>
 		</div>
 		<?php
-	}
-
-	public function prepare_downloads_fields() {
-		$upload_dir = wp_upload_dir();
-
-		$settings = $this->data['settings'];
-
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
-		$nonce = wp_create_nonce( $action );
-
-		$fields = array(
-				'protection_type' => array(
-						'id' => 'protection_type',
-						'name' => 'downloads[protection_type]',
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-						'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
-						'value' => $settings->downloads['protection_type'],
-						'field_options' => MS_Model_Rule_Media::get_protection_types(),
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'protection_type',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-				),
-				'upload_url' => array(
-						'id' => 'mailchimp_api_test',
-						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-						'title' => __( 'Current upload location', MS_TEXT_DOMAIN ),
-						'value' => trailingslashit( $upload_dir['baseurl'] ),
-						'wrapper' => 'div',
-						'class' => '',
-				),
-				'masked_url' => array(
-						'id' => 'masked_url',
-						'name' => 'downloads[masked_url]',
-						'desc' => esc_html( trailingslashit( get_option( 'home' ) ) ),
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Masked download url', MS_TEXT_DOMAIN ),
-						'value' => $settings->downloads['masked_url'],
-						'class' => 'ms-ajax-update',
-						'data_ms' => array(
-								'field' => 'masked_url',
-								'action' => $action,
-								'_wpnonce' => $nonce,
-						),
-				),
-		);
-		return apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
+		return ob_get_clean();
 	}
 
 }
