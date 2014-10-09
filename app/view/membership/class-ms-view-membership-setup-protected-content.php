@@ -7,7 +7,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	public function to_html() {
 		$tabs = $this->data['tabs'];
 
-		if ( 1 == 0 ) { //TODO Fix condition. It should be "if (first-time-setup is true)"
+		if ( ! empty( $this->data['initial_setup'] ) ) {
 			$description = array(
 				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
 				__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),

@@ -360,6 +360,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
 		$data['protected_content'] = 1;
+		$data['initial_setup'] = MS_Factory::load( 'MS_Model_Settings' )->initial_setup;
 
 		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data );
