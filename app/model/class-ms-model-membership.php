@@ -913,14 +913,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *		@type MS_Model_Membership The membership model object.
 	 * }
 	 */
-	public static function get_signup_membership_list( $args, $exclude_ids = null, $only_names = false ) {
+	public static function get_signup_membership_list( $args = null, $exclude_ids = null, $only_names = false ) {
 
 		$not_in = array();
 		if( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
 		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
-		$args = array( 'post__not_in' => array_unique ( $not_in ) );
+		$args['post__not_in'] = array_unique ( $not_in );
 
 		/* Retrieve memberships user is not part of, using selected args */
 		$memberships = MS_Model_Membership::get_grouped_memberships( $args );
