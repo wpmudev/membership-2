@@ -131,6 +131,15 @@ class MS_Controller_Member extends MS_Controller {
 		$msg = 0;
 		if( $this->is_admin_user() ) {
 
+			$fields = array( 'user_id', 'action' );
+			if( $this->verify_nonce( 'add_member' ) && $this->validate_required( $fields ) ) {
+				$member = MS_Factory::load( 'MS_Model_Member', $_POST['user_id'] );
+				$member->is_member = true;
+				$member->save();
+				$msg = true;//TODO
+
+				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			}
 			/**
 			 * Execute list table single action.
 			 */
@@ -164,8 +173,9 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Show member list.
 	 *
-	 * Menu Members, show all users available.
-	 * @since 4.0.0
+	 * Menu Members, show all members available.
+	 * 
+	 * @since 1.0.0
 	 */
 	public function admin_member_list() {
 
@@ -177,7 +187,12 @@ class MS_Controller_Member extends MS_Controller {
 			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
 		}
 		else {
+			$data = array();
+			$data['usernames'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS );
+			$data['action'] ='add_member';
+			
 			$view = MS_Factory::create( 'MS_View_Member_List' );
+			$view->data = apply_filters( 'ms_view_member_list_data', $data ); 
 			$view->render();
 		}
 	}
