@@ -156,7 +156,7 @@ window.ms_functions = {
 	 */
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
-			me = jQuery( this ).parents( '.ms-tag-selector' ).first(),
+			me = jQuery( this ).parents( '.ms-tag-selector-wrapper' ).first(),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
 			list = el_dst.val() || [];
@@ -176,7 +176,7 @@ window.ms_functions = {
 	 */
 	tag_selector_refresh_source: function( el ) {
 		var i = 0, item = null,
-			me = jQuery( el ).parents( '.ms-tag-selector' ).first(),
+			me = jQuery( el ).parents( '.ms-tag-selector-wrapper' ).first(),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
@@ -215,10 +215,10 @@ jQuery( document ).ready( function() {
 		.select2( fn.chosen_options );
 
 	// Initialize the tag-select components.
-	jQuery( '.ms-tag-selector .ms-tag-data ' )
+	jQuery( '.ms-tag-selector-wrapper .ms-tag-data ' )
 		.on( 'select2-opening', function( ev ) { ev.preventDefault(); } )
 		.on( 'change', function( ev ) { fn.tag_selector_refresh_source( this ); } );
-	jQuery( '.ms-tag-selector .ms-tag-button' )
+	jQuery( '.ms-tag-selector-wrapper .ms-tag-button' )
 		.click( fn.tag_selector_add );
 
 	// Ajax-Submit data when ms-ajax-update fields are changed.

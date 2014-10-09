@@ -289,15 +289,15 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_ACCESSIBLE_CONTENT:
 					/* Parent membership can not edit rules */
 					if( $membership->can_have_children() ) {
-						
+
 						$args = array();
 						$child = $membership->get_last_descendant();
-						
+
 						if( $child->id != $membership->id ) {
-							$args['membership_id'] = $child->id;	
+							$args['membership_id'] = $child->id;
 						}
 						else {
-							if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {							
+							if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
 								$args['step'] = self::STEP_SETUP_CONTENT_TYPES;
 							}
 							elseif( MS_Model_Membership::TYPE_TIER == $membership->type ) {
@@ -359,7 +359,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
-		$data['protected_content'] = 1;
 		$data['initial_setup'] = MS_Factory::load( 'MS_Model_Settings' )->initial_setup;
 
 		$view = apply_filters( 'ms_view_membership_setup_protected_content', new MS_View_Membership_Setup_Protected_Content() ); ;
@@ -392,7 +391,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
-		$data['protected_content'] = 0;
 
 		$view = apply_filters( 'ms_view_membership_accessible_content', new MS_View_Membership_Accessible_Content() ); ;
 		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data );

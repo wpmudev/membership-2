@@ -3,20 +3,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -31,7 +31,7 @@
  * @subpackage Model
  */
 class MS_Model_Rule_Menu extends MS_Model_Rule {
-	
+
 	/**
 	 * Rule type.
 	 *
@@ -40,45 +40,45 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @var string $rule_type
 	 */
 	protected $rule_type = self::RULE_TYPE_MENU;
-	
+
 	/**
 	 * Verify access to the current content.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $id The content id to verify access.
 	 * @return boolean True if has access, false otherwise.
 	 */
 	public function has_access( $id = null ) {
-		
+
 		return apply_filters( 'ms_model_rule_menu_has_access', false, $id, $this );
 	}
-	
+
 	/**
 	 * Set initial protection.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship. 
+	 *
+	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		
+
 		parent::protect_content( $ms_relationship );
-		
+
 		$this->add_filter( 'wp_get_nav_menu_items', 'filter_menus', 10, 3 );
 	}
-	
+
 	/**
 	 * Set initial protection.
 	 *
 	 * **Hooks Actions/Filters: **
-	 * 
+	 *
 	 * * filter_menus
-	 * 
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param array $items The menu items.
-	 * @param object $menu The menu object. 
+	 * @param object $menu The menu object.
 	 * @param mixed $args The menu select args.
 	 */
 	function filter_menus( $items, $menu, $args ) {
@@ -90,7 +90,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 				}
 			}
 		}
-		
+
 		return apply_filters( 'ms_model_rule_menu_filter_menus', $items, $menu, $args, $this );
 	}
 
@@ -99,11 +99,11 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 * @param $args The query post args
-	 * 				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *              @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		
+
 		$contents = array();
 
 		if( ! empty( $args['protected_content'] ) ) {
@@ -129,7 +129,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 				}
 			}
 		}
-		
+
 		/** If not visitor membership, just show protected content */
 		if( ! $this->rule_value_invert ) {
 			$contents = array_intersect_key( $contents,  $this->rule_value );
@@ -139,18 +139,40 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 		$ms = MS_Model_Membership::get_visitor_membership();
-		
+
 		return apply_filters( 'ms_model_rule_menu_get_contents', $contents, $args, $this );
 	}
-	
+
+	/**
+	 * Get post content array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $array The query args. @see self::get_query_args()
+	 * @return array {
+	 *     @type int $key The content ID.
+	 *     @type string $value The content title.
+	 * }
+	 */
+	public function get_options_array( $args = array() ) {
+		$cont = array();
+		$contents = $this->get_contents( $args );
+
+		foreach ( $contents as $content ) {
+			$cont[ $content->id ] = $content->name;
+		}
+
+		return apply_filters( 'ms_model_rule_menu_get_content_array', $cont, $this );
+	}
+
 	/**
 	 * Get menu array.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return array {
-	 * 		@type string $menu_id The menu id.
-	 * 		@type string $name The menu name.
+	 *      @type string $menu_id The menu id.
+	 *      @type string $name The menu name.
 	 * }
 	 */
 	public function get_menu_array() {
@@ -163,7 +185,8 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 				$contents[ $nav->term_id ] = esc_html( $nav->name );
 			}
 		}
-		
+
 		return apply_filters( 'ms_model_rule_menu_get_menu_array', $contents, $this );
 	}
+
 }
