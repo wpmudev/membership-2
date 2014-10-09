@@ -14,9 +14,9 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 			?>
 			<div class="ms-membership-form-wrapper">
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
-				<p class="ms-alert-box <?php echo $this->data['member']->is_member() ? 'ms-alert-success' : ''; ?>">
+				<p class="ms-alert-box <?php echo $this->data['member']->has_membership() ? 'ms-alert-success' : ''; ?>">
 					<?php
-						if( $this->data['member']->is_member() ) {
+						if( $this->data['member']->has_membership() ) {
 	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
 	 						foreach( $this->data['member']->ms_relationships as $membership_relationship ){
 	 							$this->membership_box_html( $membership_relationship->get_membership(), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
@@ -28,7 +28,7 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 					?>
 				</p>
 				<?php
-					if( $this->data['member']->is_member() && ! empty( $this->data['memberships'] ) ) {
+					if( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) {
 						?>
 		 					<legend class="ms-upgrade-from"> 
 		 						<?php echo __( 'Upgrade to', MS_TEXT_DOMAIN ); ?>

@@ -107,7 +107,7 @@ class MS_Model_Plugin extends MS_Model {
 				$this->member->ms_relationships = array();
 			}
 			/* Visitor: assign a Visitor Membership = Protected Content */
-			if( ! $this->member->is_member() ){
+			if( ! $this->member->has_membership() ){
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 		}
@@ -143,7 +143,7 @@ class MS_Model_Plugin extends MS_Model {
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
-			if( ! $this->member->is_member( $ms_relationship->membership_id ) ) {
+			if( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
 				continue;
 			}
 			$membership = $ms_relationship->get_membership();
@@ -212,7 +212,7 @@ class MS_Model_Plugin extends MS_Model {
 			 * Verify status of the membership.
 			 * Only active, trial or canceled (until it expires) status memberships.
 			 */
-			if( ! $this->member->is_member( $ms_relationship->membership_id ) ) {
+			if( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
 				continue;
 			}
 			

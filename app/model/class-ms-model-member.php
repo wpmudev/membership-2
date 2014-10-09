@@ -26,6 +26,8 @@ class MS_Model_Member extends MS_Model {
 	
 	protected $is_admin = false;
 	
+	protected $is_member = false;
+	
 	/** Staus to activate or deactivate a user independently of the membership status. */
 	protected $active = true;
 	
@@ -326,8 +328,8 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id
 	 * @return bool
 	 */
-	public function is_member( $membership_id = 0 ) {
-		$is_member = false;
+	public function has_membership( $membership_id = 0 ) {
+		$has_membership = false;
 		/** Allowed membership status to have access */
 		$allowed_status = apply_filters( 'membership_model_member_allowed_status', array( 
 				MS_Model_Membership_Relationship::STATUS_ACTIVE,  
@@ -338,24 +340,24 @@ class MS_Model_Member extends MS_Model {
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		
 		if ( $this->is_admin && ! $simulate->is_simulating() ) {
-			$is_member = true;
+			$has_membership = true;
 		}
 		
 		if( ! empty( $membership_id ) ) {
 			if( array_key_exists( $membership_id,  $this->ms_relationships ) && 
 					in_array( $this->ms_relationships[ $membership_id ]->get_status(), $allowed_status ) ) {
-				$is_member = true;
+				$has_membership = true;
 			}
 		}
 		elseif ( ! empty ( $this->ms_relationships ) ) {
 			foreach( $this->ms_relationships as $membership_relationship ) {
 				if( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
-					$is_member = true;
+					$has_membership = true;
 				}
 			}
 		}
 		
-		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id, $membership_id );
+		return apply_filters( 'membership_model_member_has_membership', $has_membership, $this->id, $membership_id );
 	}
 
 	public function delete_all_membership_usermeta() {
