@@ -5,8 +5,21 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	protected $data;
 
 	public function to_html() {
-
 		$tabs = $this->data['tabs'];
+
+		if ( 1 == 0 ) { //TODO Fix condition. It should be "if (first-time-setup is true)"
+			$description = array(
+				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
+				__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
+			);
+		}
+		else {
+			$description = array(
+				__( 'Choose what content of your site is protected.', MS_TEXT_DOMAIN ),
+				__( 'Unprotected Content is available for everyone while Protected Content can be assigned to a Membership.', MS_TEXT_DOMAIN ),
+			);
+		}
+
 		ob_start();
 
 		/** Render tabbed interface. */
@@ -17,10 +30,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				array(
 					'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 					'title_icon_class' => 'fa fa-pencil-square',
-					'desc' => array(
-						__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
-						__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
-					),
+					'desc' => $description,
 				)
 			);
 
