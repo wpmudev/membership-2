@@ -20,8 +20,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			);
 		}
 
-		ob_start();
-
 		/** Render tabbed interface. */
 		?>
 		<div class="ms-wrap wrap">
@@ -47,8 +45,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			?>
 		</div>
 		<?php
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 
@@ -72,7 +68,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			$desc['cpt_group'] = __( 'You can choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN );
 		}
 
-		ob_start();
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header(
@@ -99,8 +94,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			array( $fields['step'] ),
 			$this->data['show_next_button']
 		);
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	public function get_tab_category_fields() {
@@ -226,7 +219,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the following Pages to members only.', MS_TEXT_DOMAIN );
 		}
-		ob_start();
+
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
@@ -248,8 +241,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			array( $fields['step'] ),
 			$this->data['show_next_button']
 		);
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	/* ====================================================================== *
@@ -280,7 +271,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the following Posts to members only. ', MS_TEXT_DOMAIN );
 		}
-		ob_start();
+
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
@@ -302,8 +293,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			array( $fields['step'] ),
 			$this->data['show_next_button']
 		);
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	/* ====================================================================== *
@@ -334,7 +323,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the following Custom Post Types to members only. ', MS_TEXT_DOMAIN );
 		}
-		ob_start();
+
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
@@ -356,8 +345,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			array( $fields['step'] ),
 			$this->data['show_next_button']
 		);
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	/* ====================================================================== *
@@ -387,7 +374,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the Comments, More Tag & Menus to members only. ', MS_TEXT_DOMAIN );
 		}
-		ob_start();
+
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
@@ -426,8 +413,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			array( $fields['step'] ),
 			$this->data['show_next_button']
 		);
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	/**
@@ -581,6 +566,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the following Shortcodes to members only. ', MS_TEXT_DOMAIN );
 		}
+
 		ob_start();
 		?>
 		<div class="ms-settings">
@@ -630,7 +616,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		else {
 			$desc = __( 'Protect the following URL Groups to members only. ', MS_TEXT_DOMAIN );
 		}
-		ob_start();
+
 		?>
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
@@ -664,8 +650,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<div id="url-test-results-wrapper"></div>
 		</div>
 		<?php
-		$html = ob_get_clean();
-		echo $html;
 	}
 
 	public function prepare_url_group_fields() {
