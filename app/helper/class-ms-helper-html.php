@@ -209,7 +209,7 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $id ),
 					esc_attr( $class ),
 					esc_attr( $name ),
-					$multiple . $read_only . $sttr_data_placeholder . $data_ms
+					$multiple . $read_only . $attr_data_placeholder . $data_ms
 				);
 				foreach ( $field_options as $key => $option ) {
 					$selected = '';

@@ -22,6 +22,8 @@
 
 
 class MS_View_Member_List extends MS_View {
+	
+	protected $data;
 
 	public function to_html() {
 		$member_list = new MS_Helper_List_Table_Member();
@@ -65,18 +67,26 @@ class MS_View_Member_List extends MS_View {
 	 * @since  1.0.0
 	 */
 	protected function render_add_member_form() {
-		$action = 'add_member';
+
+		$action = $this->data['action'];
 
 		$fields = array(
+// 			'list' => array(
+// 				'id' => 'new_member',
+// 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+// 				'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
+// 				'class' => 'manual-init ms-text-medium',
+// 			),
 			'list' => array(
-				'id' => 'new_member',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
-				'class' => 'manual-init ms-text-medium',
+					'id' => 'user_id',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
+					'field_options' => $this->data['usernames'],
+					'class' => 'manual-init ms-text-medium',
 			),
 			'add' => array(
 				'id' => 'add_member',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Add User to Members', MS_TEXT_DOMAIN ),
 			),
 			'action' => array(

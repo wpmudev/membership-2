@@ -170,8 +170,7 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 
 	public function auto_setup_settings( $membership ) {
-		MS_Helper_Debug::log("auto_setup_settings");
-
+		
 		$settings = $this->get_model();
 
 		/** Create menus/special pages */

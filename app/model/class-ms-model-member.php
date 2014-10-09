@@ -22,9 +22,15 @@
 
 class MS_Model_Member extends MS_Model {
 
+	const SEARCH_ONLY_MEMBERS = 'only members';
+	const SEARCH_NOT_MEMBERS = 'not_members';
+	const SEARCH_ALL_USERS = 'all_users';
+	
 	protected $ms_relationships = array();
 	
 	protected $is_admin = false;
+	
+	protected $is_member = false;
 	
 	/** Staus to activate or deactivate a user independently of the membership status. */
 	protected $active = true;
@@ -178,53 +184,102 @@ class MS_Model_Member extends MS_Model {
 	}
 	
 	public static function get_members_count( $args = null ) {
-		$defaults = array(
-				'fields' => 'ID'
-		);
-		$args = wp_parse_args( $args, $defaults );
+		
+		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
 		$wp_user_search = new WP_User_Query( $args );
 		
-		return $wp_user_search->get_total();		
+		return apply_filters( 'ms_model_member_get_members_count',  $wp_user_search->get_total() );		
 	}
+	
 	public static function get_members( $args = null ) {
-		$defaults = array(
-				'number' => 10,
-				'offset' => 0,
-				'fields' => 'ID'
-		);
-		$args = wp_parse_args( $args, $defaults );
 		
-		// Query the user IDs for this page
+		$members = array();
+		
+		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
 		$wp_user_search = new WP_User_Query( $args );
-		
 		$users = $wp_user_search->get_results();
 
-		$members = array();
 		foreach( $users as $user_id ) {
 			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 		}
 		
-		return $members;
+		return apply_filters( 'ms_model_member_get_members', $members );
 		
 	}
 	
-	public static function get_members_usernames( $args = null ) {
-		$defaults = array(
-				'fields' => array( 'ID', 'user_login' ),
-		);
-		$args = wp_parse_args( $args, $defaults );
+	/**
+	 * Get usernames.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @param string $search_option The search options (only members, not members, all users).
+	 * @return array {
+	 * 		@type int $id The user_id.
+	 * 		@type string $username The username.
+	 * }
+	 */
+	public static function get_usernames( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
 		
-		// Query the user IDs for this page
+		$members = array( 0 => __( 'Select an user', MS_TEXT_DOMAIN ) );
+		$args['fields'] = array( 'ID', 'user_login' );
+		
+		$args = self::get_query_args( $args, $search_option );
+
 		$wp_user_search = new WP_User_Query( $args );
-		
 		$users = $wp_user_search->get_results();
 
-		$members = array();
 		foreach( $users as $user ) {
 			$members[ $user->ID ] = $user->user_login;
 		}
 		
-		return $members;
+		return apply_filters( 'ms_model_member_get_members_usernames', $members );
+	}
+	
+	/**
+	 * Get WP_Query object arguments.
+	 *
+	 * Default search arguments for this model.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @param string $search_option The search options (only members, not members, all users).
+	 * @return array $args The parsed args.
+	 */
+	public static function get_query_args( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
+
+		$defaults = apply_filters( 'ms_model_member_get_query_args_defaults', array(
+				'order' => 'DESC',
+				'orderby' => 'ID',
+				'number' => 10,
+				'offset' => 0,
+				'fields' => 'ID'
+		) );
+
+		switch ( $search_option ) {
+			case self::SEARCH_ONLY_MEMBERS:
+				$args['meta_query']['is_member'] = array(
+						'key'     => 'ms_is_member',
+						'value'   => true,
+				);
+				break;
+			case self::SEARCH_NOT_MEMBERS:
+				$args['meta_query']['is_member'] = array(
+						'key'     => 'ms_is_member',
+						'compare'   => 'NOT EXISTS',
+				);
+				break;
+			case self::SEARCH_ALL_USERS:
+			default:
+				break;
+		}
+		
+		$args = wp_parse_args( $args, $defaults );
+
+		return apply_filters( 'ms_model_member_get_query_args', $args, $defaults );
 	}
 	
 	/**
@@ -326,8 +381,8 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id
 	 * @return bool
 	 */
-	public function is_member( $membership_id = 0 ) {
-		$is_member = false;
+	public function has_membership( $membership_id = 0 ) {
+		$has_membership = false;
 		/** Allowed membership status to have access */
 		$allowed_status = apply_filters( 'membership_model_member_allowed_status', array( 
 				MS_Model_Membership_Relationship::STATUS_ACTIVE,  
@@ -338,24 +393,24 @@ class MS_Model_Member extends MS_Model {
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		
 		if ( $this->is_admin && ! $simulate->is_simulating() ) {
-			$is_member = true;
+			$has_membership = true;
 		}
 		
 		if( ! empty( $membership_id ) ) {
 			if( array_key_exists( $membership_id,  $this->ms_relationships ) && 
 					in_array( $this->ms_relationships[ $membership_id ]->get_status(), $allowed_status ) ) {
-				$is_member = true;
+				$has_membership = true;
 			}
 		}
 		elseif ( ! empty ( $this->ms_relationships ) ) {
 			foreach( $this->ms_relationships as $membership_relationship ) {
 				if( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
-					$is_member = true;
+					$has_membership = true;
 				}
 			}
 		}
 		
-		return apply_filters( 'membership_model_member_is_member', $is_member, $this->id, $membership_id );
+		return apply_filters( 'membership_model_member_has_membership', $has_membership, $this->id, $membership_id );
 	}
 
 	public function delete_all_membership_usermeta() {

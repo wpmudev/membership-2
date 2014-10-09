@@ -47,7 +47,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					?>
 				</p>
 				<?php
-					if( $this->data['member']->is_member() && ! empty( $this->data['memberships'] ) ) {
+					if( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) {
 						?>
 		 					<legend class="ms-move-from"> 
 		 						<?php 
