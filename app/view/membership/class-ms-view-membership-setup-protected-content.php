@@ -7,7 +7,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	public function to_html() {
 		$tabs = $this->data['tabs'];
 
-		if ( 1 == 0 ) { //TODO Fix condition. It should be "if (first-time-setup is true)"
+		if ( ! empty( $this->data['initial_setup'] ) ) {
 			$description = array(
 				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
 				__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
@@ -57,7 +57,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$fields = $this->get_tab_category_fields();
 		$title = array();
 		$desc = array();
-		$cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->get_content_array();
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
@@ -74,20 +73,24 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				array( 'title' => implode( ' & ', $title ), 'desc' => $desc )
 			); ?>
 			<div class="ms-separator"></div>
+
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
-				<div class="ms-rule-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['category'] ); ?>
+				<div class="ms-half space">
+					<div class="inside">
+						<?php MS_Helper_Html::html_element( $fields['category'] ); ?>
+						<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
+					</div>
 				</div>
 			<?php endif; ?>
+
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) : ?>
-				<div class="ms-rule-wrapper">
-					<?php if ( count( $cpt ) ) {
-						MS_Helper_Html::html_element( $fields['cpt_group'] );
-					} else {
-						MS_Helper_Html::html_element( $fields['no_cpt_group'] );
-					} ?>
+				<div class="ms-half">
+					<div class="inside">
+						<?php MS_Helper_Html::html_element( $fields['cpt'] ); ?>
+					</div>
 				</div>
 			<?php endif; ?>
+
 		</div>
 		<?php
 		MS_Helper_Html::settings_footer(
@@ -98,93 +101,56 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 	public function get_tab_category_fields() {
 		$membership = $this->data['membership'];
-		$nonce = wp_create_nonce( $this->data['action'] );
 		$action = $this->data['action'];
+		$nonce = wp_create_nonce( $action );
+
+		$rule_cat = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
+		$rule_cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
 
 		$fields = array(
-				'category' => array(
-						'id' => 'category',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Protect Categories:', MS_TEXT_DOMAIN ),
-						'value' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY )->rule_value,
-						'multiple' => 'multiple',
-						'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY )->get_content_array(),
-						'data_placeholder' => __( 'Choose a category', MS_TEXT_DOMAIN ),
-						'class' => 'ms-chosen-rule chosen-select',
-						'data_ms' => array(
-							'membership_id' => $membership->id,
-							'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
-							'value' => 1,
-							'_wpnonce' => $nonce,
-							'action' => $action,
-						),
+			'category' => array(
+				'id' => 'category',
+				'type' => MS_Helper_Html::INPUT_TYPE_TAG_SELECT,
+				'title' => __( 'Protect Categories:', MS_TEXT_DOMAIN ),
+				'title_selected' => '<i class="ms-img ms-img-lock"></i> ' . __( 'Protected Categories', MS_TEXT_DOMAIN ),
+				'value' => $rule_cat->rule_value,
+				'field_options' => $rule_cat->get_content_array(),
+				'data_placeholder' => __( 'Choose a category', MS_TEXT_DOMAIN ),
+				'empty_text' => __( 'No Categories available', MS_TEXT_DOMAIN ),
+				'button_text' => __( 'Protect Category', MS_TEXT_DOMAIN ),
+				'data_ms' => array(
+					'membership_id' => $membership->id,
+					'rule_type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
+					'value' => 1,
+					'_wpnonce' => $nonce,
+					'action' => $action,
 				),
-				'category_rule_edit' => array(
-						'id' => 'category_rule_edit',
-						'type' => MS_Helper_Html::TYPE_HTML_LINK,
-						'value' => __( 'Manage Protected Categories', MS_TEXT_DOMAIN ),
-						'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CATEGORY ),
-				),
-				'cpt_group' => array(
-						'id' => 'cpt_group',
-						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-						'title' => __( 'Protect Custom Post Types (CPTs):', MS_TEXT_DOMAIN ),
-						'value' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->rule_value,
-						'data_placeholder' => __( 'Choose a CPT', MS_TEXT_DOMAIN ),
-						'multiple' => 'multiple',
-						'field_options' => $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->get_content_array(),
-						'class' => 'ms-chosen-rule chosen-select',
-						'data_ms' => array(
-								'membership_id' => $membership->id,
-								'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-								'value' => 1,
-								'_wpnonce' => $nonce,
-								'action' => $action,
-						),
-				),
-				'no_cpt_group' => array(
-						'id' => 'no_cpt_group',
-						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-						'title' => __( 'Protect Custom Post Types (CPTs):', MS_TEXT_DOMAIN ),
-						'value' => __( 'No Custom Post Types available', MS_TEXT_DOMAIN ),
-						'class' => 'ms-no-data ms-field-input',
-						'wrapper' => 'div',
-				),
+			),
 
-				/* TODO: These are not used? */
-				'cpt_group_rule_edit' => array(
-						'id' => 'cpt_group_rule_edit',
-						'type' => MS_Helper_Html::TYPE_HTML_LINK,
-						'value' => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
-						'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP ),
+			'cpt' => array(
+				'id' => 'cpt_group',
+				'type' => MS_Helper_Html::INPUT_TYPE_TAG_SELECT,
+				'title' => __( 'Protect Custom Post Types (CPTs):', MS_TEXT_DOMAIN ),
+				'title_selected' => '<i class="ms-img ms-img-lock"></i> ' . __( 'Protected Custom Post Types', MS_TEXT_DOMAIN ),
+				'value' => $rule_cpt->rule_value,
+				'field_options' => $rule_cpt->get_content_array(),
+				'data_placeholder' => __( 'Choose a CPT', MS_TEXT_DOMAIN ),
+				'empty_text' => __( 'No Custom Post Types available', MS_TEXT_DOMAIN ),
+				'button_text' => __( 'Protect CPT', MS_TEXT_DOMAIN ),
+				'data_ms' => array(
+					'membership_id' => $membership->id,
+					'rule_type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+					'value' => 1,
+					'_wpnonce' => $nonce,
+					'action' => $action,
 				),
-				'protect_category' => array(
-						'id' => 'protect_category',
-						'value' => __( 'Protect Category', MS_TEXT_DOMAIN ),
-						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-						'class' => '',
-				),
-				'protect_cpt_group' => array(
-						'id' => 'protect_cpt_group',
-						'value' => __( 'Protect CPT', MS_TEXT_DOMAIN ),
-						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-						'class' => '',
-				),
-				'action' => array(
-						'id' => 'action',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $action,
-				),
-				'step' => array(
-						'id' => 'step',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $this->data['step'],
-				),
-				'_wpnonce' => array(
-						'id' => '_wpnonce',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => $nonce,
-				),
+			),
+
+			'step' => array(
+				'id' => 'step',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['step'],
+			),
 		);
 
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_category_fields', $fields );
@@ -281,7 +247,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			<form action="" method="post">
 				<?php $rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' ); ?>
 				<?php $rule_list_table->display(); ?>
-				<?php if( empty( $this->data['protected_content'] ) ) : ?>
+				<?php if ( empty( $this->data['protected_content'] ) ) : ?>
 					<div class="ms-protection-edit-link">
 						<?php MS_Helper_Html::html_element( $edit_link ); ?>
 					</div>
@@ -627,7 +593,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				<?php MS_Helper_Html::settings_box( $fields ); ?>
 			</form>
 			<div class="clear"></div>
-			<?php if( empty( $this->data['protected_content'] ) ): ?>
+			<?php if ( empty( $this->data['protected_content'] ) ): ?>
 				<div class="ms-protection-edit-link">
 					<?php MS_Helper_Html::html_element( $edit_link ); ?>
 				</div>

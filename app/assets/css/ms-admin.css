@@ -292,7 +292,7 @@
 }
 .ms-wrap .ms-quarter.space,
 .ms-wrap .ms-half.space {
-  padding-right: 20px;
+  padding-right: 30px;
 }
 .ms-wrap .ms-quarter.right,
 .ms-wrap .ms-half.right {
@@ -555,6 +555,10 @@
 .ms-select2.select2-container {
   margin-right: .5em;
 }
+.ms-select2.select2-container a {
+  transition-duration: 0 !important;
+  /* Inside select2 there should be no default link transitions */
+}
 .ms-select2.select2-container .select2-choice,
 .ms-select2.select2-container .select2-choices {
   height: 28px;
@@ -602,6 +606,14 @@
 }
 .ms-select2 .select2-results .select2-match:empty {
   display: none;
+}
+.ms-select2 .select2-results .select2-disabled {
+  background: #DDD;
+  font-weight: 200;
+  opacity: .5;
+}
+.ms-select2 .select2-results .select2-disabled .select2-result-label {
+  cursor: default;
 }
 
 .select2-drop {
@@ -662,6 +674,30 @@
 }
 .ms-wrap .ms-radio-slider.ms-processing {
   cursor: wait;
+}
+
+/***
+ * TAG SELECT *
+ ***/
+.ms-wrap .ms-tag-selector .ms-tag-data {
+  display: block;
+}
+.ms-wrap .ms-tag-selector .ms-tag-data .select2-choices {
+  background: transparent;
+  border: 0;
+}
+.ms-wrap .ms-tag-selector .ms-tag-data .select2-search-choice {
+  margin-left: 0;
+  margin-right: 3px;
+}
+.ms-wrap .ms-tag-selector .ms-tag-data .select2-search-field {
+  display: none;
+}
+.ms-wrap .ms-tag-label {
+  margin: 10px 0 5px;
+}
+.ms-wrap .ms-tag-label .ms-img {
+  float: left;
 }
 
 /***

@@ -34,21 +34,25 @@
  */
 class MS_Helper_Html extends MS_Helper {
 
-	/** Constants for HTML elements. */
+	/* Constants for default HTML input elements. */
 	const INPUT_TYPE_HIDDEN = 'hidden';
 	const INPUT_TYPE_TEXT = 'text';
-	const INPUT_TYPE_DATEPICKER = 'datepicker';
+	const INPUT_TYPE_PASSWORD = 'password';
 	const INPUT_TYPE_TEXT_AREA = 'textarea';
 	const INPUT_TYPE_SELECT = 'select';
 	const INPUT_TYPE_RADIO = 'radio';
 	const INPUT_TYPE_SUBMIT = 'submit';
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
-	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
 	const INPUT_TYPE_IMAGE = 'image';
-	const INPUT_TYPE_PASSWORD = 'password';
-	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
 
+	/* Constants for advanced HTML input elements. */
+	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
+	const INPUT_TYPE_DATEPICKER = 'datepicker';
+	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
+	const INPUT_TYPE_TAG_SELECT = 'tag_select';
+
+	/* Constants for default HTML elements. */
 	const TYPE_HTML_LINK = 'html_link';
 	const TYPE_HTML_SEPARATOR = 'html_separator';
 	const TYPE_HTML_TEXT = 'html_text';
@@ -67,26 +71,30 @@ class MS_Helper_Html extends MS_Helper {
 	public static function html_element( $field_args, $return = false ) {
 		// Field arguments.
 		$defaults = array(
-			'id'        => '',
-			'name'		=> '',
-			'section'	=> '',
-			'title'     => '',
-			'desc'      => '',
-			'value'     => '',
-			'type'      => 'text',
-			'class'     => '',
-			'maxlength' => '',
-			'equalTo'	=> '',
+			'id'             => '',
+			'name'           => '',
+			'section'        => '',
+			'title'          => '',
+			'desc'           => '',
+			'value'          => '',
+			'type'           => 'text',
+			'class'          => '',
+			'maxlength'      => '',
+			'equalTo'        => '',
 			'field_options' => array(),
-			'multiple'	=> false,
-			'tooltip'   => '',
-			'alt'		=> '',
-			'read_only' => false,
-			'placeholder' => '',
+			'multiple'      => false,
+			'tooltip'       => '',
+			'alt'           => '',
+			'read_only'     => false,
+			'placeholder'   => '',
 			'data_placeholder' => '',
-			'data_ms' => '',
+			'data_ms'       => '',
 			'label_element' => 'label',
-			);
+			// Specific for type 'tag_select':
+			'title_selected'  => '',
+			'empty_text'  => '',
+			'button_text' => '',
+		);
 
 		$field_args = wp_parse_args( $field_args, $defaults );
 		extract( $field_args );
@@ -111,7 +119,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 		if ( '' !== $data_placeholder && false !== $data_placeholder ) {
 			$attr_data_placeholder = 'data-placeholder="' . esc_attr( $data_placeholder ) . '" ';
-	}
+		}
 
 		if ( ! empty( $data_ms ) ) {
 			if ( empty( $data_ms['_wpnonce'] ) && ! empty( $data_ms['action'] ) ) {
@@ -129,9 +137,8 @@ class MS_Helper_Html extends MS_Helper {
 
 
 		// Capture to output buffer
-		if ( $return ) {
-			ob_start();
-		}
+		if ( $return ) { ob_start(); }
+
 		switch ( $type ) {
 
 			case self::INPUT_TYPE_HIDDEN:
@@ -202,7 +209,7 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $id ),
 					esc_attr( $class ),
 					esc_attr( $name ),
-					$multiple . $read_only . $data_placeholder . $data_ms
+					$multiple . $read_only . $sttr_data_placeholder . $data_ms
 				);
 				foreach ( $field_options as $key => $option ) {
 					$selected = '';
@@ -368,12 +375,91 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_hint( $title, $tooltip_output );
 				break;
 
+			case self::INPUT_TYPE_TAG_SELECT:
+				echo '<div class="ms-tag-selector">';
+
+				self::html_element_label( $title, $label_element, '_src_' . $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
+				$options_selected = '';
+				$options_available = '<option value=""></option>';
+				if ( ! is_array( $value ) ) {
+					$value = array( $value );
+				}
+
+				if ( empty( $field_options) && empty( $value ) ) {
+					// No values available, display a note instead of the input elements.
+					printf(
+						'<div id="%1$s" class="ms-no-data ms-field-input %2$s">%3$s</div>',
+						esc_attr( $id ),
+						esc_attr( $class ),
+						$empty_text
+					);
+				} else {
+					// There are values to select or remove. Display the input elements.
+					foreach ( $field_options as $key => $option ) {
+						$is_selected = ( array_key_exists( $key, $value ) );
+						$attr_sel = selected( $is_selected, true, false );
+						$attr_show = ($is_selected ? 'disabled="disabled"' : '');
+
+						$options_selected .= sprintf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( $key ),
+							$attr_sel,
+							$option
+						);
+
+						$options_available .= sprintf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( $key ),
+							$attr_show,
+							$option
+						);
+					}
+
+					// First Select: The value selected here can be added to the tag-list.
+					printf(
+						'<select id="_src_%1$s" class="ms-field-input ms-tag-source %2$s" %4$s>%5$s</select>',
+						esc_attr( $id ),
+						esc_attr( $class ),
+						esc_attr( $name ),
+						$multiple . $read_only . $attr_data_placeholder,
+						$options_available
+					);
+
+					// Button: Add element from First Select to Second Select.
+					printf(
+						'<button id="_src_add_%1$s" class="ms-field-input ms-tag-button button %2$s" type="button">%3$s</button>',
+						esc_attr( $id ),
+						esc_attr( $class ),
+						$button_text
+					);
+
+					self::html_element_label( $title_selected, $label_element, $id, '', 'ms-tag-label' );
+
+					// Second Select: The actual tag-list
+					printf(
+						'<select id="%1$s" class="ms-field-input ms-select ms-tag-data %2$s" multiple="multiple" readonly="readonly" %4$s>%5$s</select>',
+						esc_attr( $id ),
+						esc_attr( $class ),
+						esc_attr( $name ),
+						$data_ms,
+						$options_selected
+					);
+				}
+
+				self::html_element_hint( $title, $tooltip_output );
+				echo '</div>';
+				break;
+
 			case self::TYPE_HTML_LINK:
 				self::html_link( $field_args );
 				break;
 
 			case self::TYPE_HTML_SEPARATOR:
-				self::html_separator();
+				if ( $value != 'vertical' ) { $value = 'horizontal'; }
+
+				self::html_separator( $value );
 				break;
 
 			case self::TYPE_HTML_TEXT:
@@ -384,7 +470,7 @@ class MS_Helper_Html extends MS_Helper {
 
 				printf(
 					'<%1$s class="%2$s">%3$s</%1$s>',
-					$wrapper,
+					esc_attr( $wrapper ),
 					esc_attr( $class ),
 					$value
 				);
@@ -395,9 +481,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 		// Return the output buffer
-		if ( $return ) {
-			return ob_get_clean();
-		}
+		if ( $return ) { return ob_get_clean(); }
 
 	}
 
@@ -406,14 +490,15 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @since  1.0.0
 	 */
-	private static function html_element_label( $title, $label_element, $id, $tooltip_output ) {
+	private static function html_element_label( $title, $label_element = 'label', $id = '', $tooltip_output = '', $class = '' ) {
 		if ( ! empty( $title ) ) {
 			printf(
-				'<%1$s for="%2$s" class="ms-field-label ms-field-input-label">%3$s %4$s</%1$s>',
+				'<%1$s for="%2$s" class="ms-field-label ms-field-input-label %5$s">%3$s %4$s</%1$s>',
 				$label_element,
 				esc_attr( $id ),
 				$title,
-				$tooltip_output
+				$tooltip_output,
+				esc_attr( $class )
 			);
 		}
 	}
@@ -439,7 +524,7 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	private static function html_element_hint( $title, $tooltip_output ) {
 		if ( empty( $title ) ) {
-			echo $tooltip_output;
+			printf( $tooltip_output );
 		}
 	}
 
@@ -472,12 +557,12 @@ class MS_Helper_Html extends MS_Helper {
 			<?php if ( ! empty( $title_icon_class ) ) : ?>
 				<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
 			<?php endif; ?>
-			<?php echo $title; ?>
+			<?php printf( $title ); ?>
 		</h2>
 		<div class="ms-settings-desc-wrapper">
 			<?php foreach ( $desc as $description ) : ?>
 				<div class="ms-settings-desc ms-description">
-					<?php echo $description; ?>
+					<?php printf( $description ); ?>
 				</div>
 			<?php endforeach; ?>
 		</div>
@@ -544,16 +629,14 @@ class MS_Helper_Html extends MS_Helper {
 		<div class="ms-settings-footer">
 			<form method="post" >
 				<span class="ms-save-text-wrapper ms-init">
-					<?php
-					foreach ( $fields as $field ) {
+					<?php foreach ( $fields as $field ) {
 						MS_Helper_Html::html_element( $field );
-					}
-					?>
+					} ?>
 					<span class="ms-saving-text">
 						<div class="loading-animation"></div>
-						<?php echo $saving_text; ?>
+						<?php printf( $saving_text ); ?>
 					</span>
-					<span class="ms-saved-text"><?php echo $saved_text; ?></span>
+					<span class="ms-saved-text"><?php printf( $saved_text ); ?></span>
 				</span>
 			</form>
 		</div>
@@ -562,8 +645,8 @@ class MS_Helper_Html extends MS_Helper {
 
 	public static function settings_tab_header( $args = null ) {
 		$defaults = array(
-				'title' => '',
-				'desc' => '',
+			'title' => '',
+			'desc' => '',
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
@@ -575,12 +658,12 @@ class MS_Helper_Html extends MS_Helper {
 		?>
 		<div class="ms-header">
 			<div class="ms-settings-tab-title">
-				<h3><?php echo $title; ?></h3>
+				<h3><?php printf( $title ); ?></h3>
 			</div>
 			<div class="ms-settings-description">
 				<?php foreach ( $desc as $description ): ?>
 					<div class="ms-description">
-						<?php echo $description; ?>
+						<?php printf( $description ); ?>
 					</div>
 				<?php endforeach; ?>
 			</div>
@@ -593,18 +676,20 @@ class MS_Helper_Html extends MS_Helper {
 	 * The fields-list will be used to render the box body.
 	 *
 	 * @since  1.0.0
+	 *
 	 * @param  array $fields_in List of fields to render
 	 * @param  string $title Box title
 	 * @param  string $description Description to display
 	 * @param  string $state Toggle-state of the box: static/open/closed
 	 */
 	public static function settings_box( $fields_in, $title = '', $description = '', $state = 'static' ) {
-		/** If its a fields array, great, if not, make a fields array */
+		// If its a fields array, great, if not, make a fields array.
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
 			$fields = array();
 			$fields[] = $fields_in;
 		}
+
 		self::settings_box_header( $title, $description, $state );
 		foreach ( $fields as $field ) {
 			MS_Helper_Html::html_element( $field );
@@ -642,11 +727,11 @@ class MS_Helper_Html extends MS_Helper {
 		<div class="ms-settings-box-wrapper">
 			<div class="ms-settings-box <?php echo esc_attr( $box_class ); ?>">
 				<div class="ms-header">
-					<?php echo $handle; ?>
+					<?php printf( $handle ); ?>
 					<?php if ( ! empty( $title ) ) : ?>
-						<h3><?php echo $title; ?></h3>
+						<h3><?php printf( $title ); ?></h3>
 					<?php endif; ?>
-					<span class="ms-settings-description ms-description"><?php echo $description; ?></span>
+					<span class="ms-settings-description ms-description"><?php printf( $description ); ?></span>
 				</div>
 				<div class="inside">
 		<?php
@@ -690,7 +775,7 @@ class MS_Helper_Html extends MS_Helper {
 			esc_attr( $class ),
 			esc_attr( $id ),
 			esc_attr( $value )
-			);
+		);
 	}
 
 	/**
@@ -704,21 +789,25 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function html_link( $args = array(), $return = false ) {
 		$defaults = array(
-			'id'        => '',
-			'title'		=> '',
-			'value'     => '',
-			'class'     => '',
-			'url'		=> '',
-			);
+			'id'    => '',
+			'title' => '',
+			'value' => '',
+			'class' => '',
+			'url'   => '',
+		);
+
 		extract( wp_parse_args( $args, $defaults ) );
-		$url = esc_url( $url );
-		$html = "<a id='$id' title='$title' class='ms-link $class' href='$url'>$value</a>";
-		if ( $return ) {
-			return $html;
-		}
-		else {
-			echo $html;
-		}
+
+		if ( $return ) { ob_start(); }
+		printf(
+			'<a id="%1$s" title="%2$s" class="ms-link %3$s" href="%4$s">%5$s</a>',
+			esc_attr( $id ),
+			esc_attr( $title ),
+			esc_attr( $class ),
+			esc_url( $url ),
+			$value
+		);
+		if ( $return ) { return ob_get_clean(); }
 	}
 
 	/**
@@ -747,7 +836,7 @@ class MS_Helper_Html extends MS_Helper {
 		?>
 		<div class="ms-tab-container">
 			<ul id="sortable-units" class="ms-tabs" style="">
-				<?php foreach ( $tabs as $tab_name => $tab ) {
+				<?php foreach ( $tabs as $tab_name => $tab ) :
 					$tab_class = $tab_name == $active_tab ? 'active' : '';
 					?>
 					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">
@@ -755,7 +844,7 @@ class MS_Helper_Html extends MS_Helper {
 							<?php echo esc_html( $tab['title'] ); ?>
 						</a>
 					</li>
-				<?php } ?>
+				<?php endforeach; ?>
 			</ul>
 		</div>
 		<?php
@@ -776,27 +865,35 @@ class MS_Helper_Html extends MS_Helper {
 			return;
 		}
 
-		if ( $return ) {
-			ob_start();
-		}
+		if ( $return ) { ob_start(); }
 		?>
 		<div class="ms-tooltip-wrapper">
 		<div class="ms-tooltip-info"><i class="fa fa-info-circle"></i></div>
 		<div class="ms-tooltip">
 			<div class="ms-tooltip-button">&times;</div>
 			<div class="ms-tooltip-content">
-			<?php echo $tip; ?>
+			<?php printf( $tip ); ?>
 			</div>
 		</div>
 		</div>
 		<?php
-		if ( $return ) {
-			return ob_get_clean();
-		}
+		if ( $return ) { return ob_get_clean(); }
 	}
 
-	public static function html_separator() {
-		echo '<div class="ms-separator"></div>';
+	/**
+	 * Echo HTML separator element.
+	 * Vertical separators will be on the right side of the parent element.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $type Either 'horizontal' or 'vertical'
+	 */
+	public static function html_separator( $type = 'horizontal' ) {
+		if ( 'v' === $type[0] ) {
+			echo '<div class="ms-divider"></div>';
+		} else {
+			echo '<div class="ms-separator"></div>';
+		}
 	}
 
 	/**
@@ -814,7 +911,7 @@ class MS_Helper_Html extends MS_Helper {
 		if ( ! empty( $item->id ) && is_a( $item, 'WP_Post' ) ) {
 			printf(
 				'<%1$s class="ms-content-tag"><a href="%3$s">%2$s</a></%1$s>',
-				$tag,
+				esc_attr( $tag ),
 				esc_html( $label ),
 				get_edit_post_link( $item->id )
 			);
@@ -822,7 +919,7 @@ class MS_Helper_Html extends MS_Helper {
 		else {
 			printf(
 				'<%1$s class="ms-content-tag"><span>%2$s</span></%1$s>',
-				$tag,
+				esc_attr( $tag ),
 				esc_html( $label )
 			);
 		}
@@ -831,12 +928,13 @@ class MS_Helper_Html extends MS_Helper {
 	public static function bread_crumbs( $bread_crumbs ) {
 		$crumbs = array();
 		$html = '';
+
 		if ( is_array( $bread_crumbs ) ) {
 			foreach ( $bread_crumbs as $key => $bread_crumb ) {
 				if ( ! empty( $bread_crumb['url'] ) ) {
 					$crumbs[] = sprintf(
 						'<span class="ms-bread-crumb-%s"><a href="%s">%s</a></span>',
-						$key,
+						esc_attr( $key ),
 						$bread_crumb['url'],
 						$bread_crumb['title']
 					);
@@ -844,24 +942,27 @@ class MS_Helper_Html extends MS_Helper {
 				elseif ( ! empty( $bread_crumb['title'] ) ) {
 					$crumbs[] = sprintf(
 						'<span class="ms-bread-crumb-%s">%s</span>',
-						$key,
+						esc_attr( $key ),
 						$bread_crumb['title']
 					);
 				}
 			}
+
 			if ( count( $crumbs ) > 0 ) {
 				$html = '<div class="ms-bread-crumb">';
 				$html .= implode( '<span class="ms-bread-crumb-sep"> &raquo; </span>', $crumbs );
 				$html .= '</div>';
 			}
 		}
-		echo apply_filters( 'ms_helper_html_bread_crumbs', $html );
+		$html = apply_filters( 'ms_helper_html_bread_crumbs', $html );
+
+		printf( $html );
 	}
 
 	public static function period_desc( $period, $class = '' ) {
 		$html = sprintf(
 			'<span class="ms-period-desc %s"> <span class="ms-period-unit">%s</span> <span class="ms-period-type">%s</span></span>',
-			$class,
+			esc_attr( $class ),
 			$period['period_unit'],
 			$period['period_type']
 		);

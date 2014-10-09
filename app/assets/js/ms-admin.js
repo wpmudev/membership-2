@@ -143,6 +143,49 @@ window.ms_functions = {
 			dp = me.parents( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
 
 		dp.datepicker( 'show' );
+	},
+
+	/**
+	 * Tag-Selector component:
+	 * Add new tag to the selected-tags list.
+	 */
+	tag_selector_add: function( ev ) {
+		var fn = window.ms_functions,
+			me = jQuery( this ).parents( '.ms-tag-selector' ).first(),
+			el_src = me.find( 'select.ms-tag-source' ),
+			el_dst = me.find( 'select.ms-tag-data' ),
+			list = el_dst.val() || [];
+
+		if ( ! el_src.val().length ) { return; }
+
+		list.push( el_src.val() );
+		el_dst.val( list ).trigger( 'change' );
+		el_src.val( '' ).trigger( 'change' );
+
+		fn.tag_selector_refresh_source( this );
+	},
+
+	/**
+	 * Tag-Selector component:
+	 * Disable or Enable options in the source list.
+	 */
+	tag_selector_refresh_source: function( el ) {
+		var i = 0, item = null,
+			me = jQuery( el ).parents( '.ms-tag-selector' ).first(),
+			el_src = me.find( 'select.ms-tag-source' ),
+			el_src_items = el_src.find( 'option' ),
+			el_dst = me.find( 'select.ms-tag-data' ),
+			list = el_dst.val() || [];
+
+		for ( i = 0; i < el_src_items.length; i += 1 ) {
+			item = jQuery( el_src_items[i] );
+			if ( -1 !== jQuery.inArray( item.val(), list ) ) {
+				item.prop( 'disabled', true );
+			} else {
+				item.prop( 'disabled', false );
+			}
+		}
+		el_src.trigger( 'change' );
 	}
 };
 
@@ -151,32 +194,35 @@ jQuery( document ).ready( function() {
 	var fn = window.ms_functions;
 
 	// Toggle radio-sliders on click.
-	jQuery( '.ms-radio-slider' ).click( function() {
-		fn.radio_slider_ajax_update( this );
-	});
+	jQuery( '.ms-radio-slider' )
+		.click( function() { fn.radio_slider_ajax_update( this ); } );
 
 	// Toggle accordeon boxes on click.
-	jQuery( '.ms-settings-box .handlediv' ).click( function() {
-		fn.toggle_box( this );
-	});
+	jQuery( '.ms-settings-box .handlediv' )
+		.click( function() { fn.toggle_box( this ); } );
 
 	// Toggle datepickers when user clicks on icon.
-	jQuery( '.ms-datepicker-wrapper .ms-icon' ).click( function() {
-		fn.toggle_datepicker( this );
-	});
+	jQuery( '.ms-datepicker-wrapper .ms-icon' )
+		.click( function() { fn.toggle_datepicker( this ); } );
 
-	// Initialize all select boxes
-	jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select' ).select2( fn.chosen_options );
+	// Initialize all select boxes.
+	jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select' )
+		.select2( fn.chosen_options );
+
+	// Initialize the tag-select components.
+	jQuery( '.ms-tag-selector .ms-tag-data ' )
+		.on( 'select2-opening', function( ev ) { ev.preventDefault(); } )
+		.on( 'change', function( ev ) { fn.tag_selector_refresh_source( this ); } );
+	jQuery( '.ms-tag-selector .ms-tag-button' )
+		.click( fn.tag_selector_add );
 
 	// Ajax-Submit data when ms-ajax-update fields are changed.
-	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' ).change( function() {
-		fn.ajax_update( this );
-	});
+	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' )
+		.change( function() { fn.ajax_update( this ); } );
 
 	// Select all text inside <code> tags on click.
-	jQuery( '.ms-wrap' ).on( 'click', 'code', function() {
-		fn.select_all( this );
-	});
+	jQuery( '.ms-wrap' )
+		.on( 'click', 'code', function() { fn.select_all( this ); } );
 });
 
 /*global window:false */
