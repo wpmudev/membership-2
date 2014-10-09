@@ -347,6 +347,8 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 
 			case self::INPUT_TYPE_RADIO_SLIDER:
+				echo '<div class="ms-radio-slider-wrapper">';
+
 				$turned = ( $value ) ? 'on' : '';
 				$link_url = ! empty( $url ) ? '<a href="' . esc_url( $url ) . '"></a>' : '';
 
@@ -373,10 +375,11 @@ class MS_Helper_Html extends MS_Helper {
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
+				echo '</div>';
 				break;
 
 			case self::INPUT_TYPE_TAG_SELECT:
-				echo '<div class="ms-tag-selector">';
+				echo '<div class="ms-tag-selector-wrapper">';
 
 				self::html_element_label( $title, $label_element, '_src_' . $id, $tooltip_output );
 				self::html_element_desc( $desc );
@@ -441,7 +444,7 @@ class MS_Helper_Html extends MS_Helper {
 					printf(
 						'<select id="%1$s" class="ms-field-input ms-select ms-tag-data %2$s" multiple="multiple" readonly="readonly" %4$s>%5$s</select>',
 						esc_attr( $id ),
-						esc_attr( $class ),
+						esc_attr( $class ) . ( ! empty( $data_ms ) ? ' ms-ajax-update' : ''),
 						esc_attr( $name ),
 						$data_ms,
 						$options_selected

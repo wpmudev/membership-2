@@ -107,10 +107,10 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 
 		$required = array( 'membership_id', 'rule_type' );
-		$isset = array( 'rule_ids', 'value' );
+		$isset = array( 'values', 'value' );
 		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
 			$rule_type = $_POST['rule_type'];
-			$msg = $this->save_rule_values( $rule_type, $_POST['rule_ids'], $_POST['value'] );
+			$msg = $this->save_rule_values( $rule_type, $_POST['values'], $_POST['value'] );
 		}
 
 		echo $msg;

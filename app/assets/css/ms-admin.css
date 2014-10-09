@@ -632,6 +632,9 @@
 /***
  * RADIO SLIDER *
  ***/
+.ms-wrap .ms-radio-slider-wrapper {
+  clear: both;
+}
 .ms-wrap .ms-radio-slider:focus {
   background: none;
   outline: none;
@@ -679,18 +682,18 @@
 /***
  * TAG SELECT *
  ***/
-.ms-wrap .ms-tag-selector .ms-tag-data {
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data {
   display: block;
 }
-.ms-wrap .ms-tag-selector .ms-tag-data .select2-choices {
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-choices {
   background: transparent;
   border: 0;
 }
-.ms-wrap .ms-tag-selector .ms-tag-data .select2-search-choice {
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-search-choice {
   margin-left: 0;
   margin-right: 3px;
 }
-.ms-wrap .ms-tag-selector .ms-tag-data .select2-search-field {
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-search-field {
   display: none;
 }
 .ms-wrap .ms-tag-label {

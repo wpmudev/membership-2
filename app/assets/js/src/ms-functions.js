@@ -20,7 +20,7 @@ window.ms_functions = {
 	},
 
 	ajax_update: function( obj ) {
-		var data,
+		var data, val,
 			fn = window.ms_functions;
 
 		if( ! jQuery( obj ).hasClass( fn.processing_class ) ) {
@@ -38,7 +38,12 @@ window.ms_functions = {
 				}
 			}
 			else {
-				data.value = jQuery( obj ).val();
+				val = jQuery( obj ).val();
+				if ( val instanceof Array || val instanceof Object || null === val ) {
+					data.values = val;
+				} else {
+					data.value = val;
+				}
 			}
 
 			jQuery.post(
@@ -46,7 +51,7 @@ window.ms_functions = {
 				data,
 				function( response ) {
 					jQuery( fn.save_obj_selector ).removeClass( fn.processing_class );
-					jQuery( obj ).trigger( 'ms-ajax-updated', data );
+					jQuery( obj ).trigger( 'ms-ajax-updated', data, response );
 				}
 			);
 		}

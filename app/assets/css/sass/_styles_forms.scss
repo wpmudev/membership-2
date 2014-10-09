@@ -280,6 +280,10 @@
  ***/
 
 .ms-wrap {
+	.ms-radio-slider-wrapper {
+		clear: both;
+	}
+
 	.ms-radio-slider:focus {
 		background:none;
 		outline:none;
@@ -339,7 +343,7 @@
  ***/
 
 .ms-wrap {
-	.ms-tag-selector {
+	.ms-tag-selector-wrapper {
 		.ms-tag-data {
 			display: block;
 
