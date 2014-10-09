@@ -638,11 +638,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 			<div>
 				<form action="" method="post">
-					<?php
-						MS_Helper_Html::settings_box(
-							$fields
-						);
-					?>
+					<?php MS_Helper_Html::settings_box( $fields ); ?>
 					<?php MS_Helper_Html::settings_footer( null, false ); ?>
 				</form>
 			</div>

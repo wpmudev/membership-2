@@ -590,6 +590,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		);
 
 		$html = ob_get_clean();
+		//TODO: Did this filter exist in the old version, or what purpose does it have? Can we remove it?
 		echo apply_filters( 'ms_view_membership_protected_content_render_tab_shortcode', $html );
 	}
 
@@ -642,7 +643,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 						'class' => 'widefat',
-					)
+					),
 				),
 				__( 'Test URL group', MS_TEXT_DOMAIN )
 			);

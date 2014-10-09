@@ -54,18 +54,18 @@ class MS_Helper_Html extends MS_Helper {
 	const TYPE_HTML_TEXT = 'html_text';
 
 	/**
-	 * Method for creating FORM elements/fields.
+	 * Method for creating HTML elements/fields.
 	 *
 	 * Pass in array with field arguments. See $defaults for argmuments.
 	 * Use constants to specify field type. e.g. MS_Helper_Html::INPUT_TYPE_TEXT
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
-	 * @return void But does output HTML.
+	 * @return void|string If $return param is false the HTML will be echo'ed,
+	 *           otherwise returned as string
 	 */
-	public static function html_element( $field_args, $return = false, $input_args = array() ) {
-
-		/** Field arguments */
+	public static function html_element( $field_args, $return = false ) {
+		// Field arguments.
 		$defaults = array(
 			'id'        => '',
 			'name'		=> '',
@@ -85,7 +85,9 @@ class MS_Helper_Html extends MS_Helper {
 			'placeholder' => '',
 			'data_placeholder' => '',
 			'data_ms' => '',
+			'label_element' => 'label',
 			);
+
 		$field_args = wp_parse_args( $field_args, $defaults );
 		extract( $field_args );
 
@@ -99,11 +101,6 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 		/* Input arguments */
-		$input_defaults = array(
-			'label_element' => 'label',
-		);
-		extract( wp_parse_args( $input_args, $input_defaults ) );
-
 		$tooltip_output = MS_Helper_Html::tooltip( $tooltip, true );
 
 		$attr_placeholder = '';
@@ -599,10 +596,9 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  array $fields_in List of fields to render
 	 * @param  string $title Box title
 	 * @param  string $description Description to display
-	 * @param  array $args Optional arguments used to render the fields
 	 * @param  string $state Toggle-state of the box: static/open/closed
 	 */
-	public static function settings_box( $fields_in, $title = '', $description = '', $args = array(), $state = 'static' ) {
+	public static function settings_box( $fields_in, $title = '', $description = '', $state = 'static' ) {
 		/** If its a fields array, great, if not, make a fields array */
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
@@ -611,7 +607,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 		self::settings_box_header( $title, $description, $state );
 		foreach ( $fields as $field ) {
-			MS_Helper_Html::html_element( $field, false, $args );
+			MS_Helper_Html::html_element( $field );
 		}
 		self::settings_box_footer();
 	}
