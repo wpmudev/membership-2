@@ -103,7 +103,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 		else {
 			/* Deactivated status invalidates all memberships*/
-			if( false == $this->member->active ) {
+			if( false == $this->member->is_member ) {
 				$this->member->ms_relationships = array();
 			}
 			/* Visitor: assign a Visitor Membership = Protected Content */

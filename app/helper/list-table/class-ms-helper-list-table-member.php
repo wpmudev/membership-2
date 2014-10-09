@@ -21,14 +21,20 @@
 */
 
 /**
- * Membership List Table
+ * Members List Table.
  *
- *
- * @since 4.0.0
- *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage Helper
  */
 class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct(){
 		parent::__construct(
 			array(
@@ -39,17 +45,24 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		);
 	}
 
+	/**
+	 * Get list table columns.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @return array {
+	 *		Returns array of $id => $title.
+	 *
+	 *		@type string $id The list table column id.
+	 *		@type string $title The list table column title.
+	 * }
+	 */
 	public function get_columns() {
 		$columns = array(
 			'cb'         => '<input type="checkbox" />',
 			'username'   => __( 'Username', MS_TEXT_DOMAIN ),
 			'email'      => __( 'E-mail', MS_TEXT_DOMAIN ),
-			'active'     => __( 'Active', MS_TEXT_DOMAIN ),
 			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
-			'start'      => __( 'Membership Start', MS_TEXT_DOMAIN ),
-			'trial'      => __( 'Trial Date', MS_TEXT_DOMAIN ),
-			'expire'     => __( 'Membership Expire', MS_TEXT_DOMAIN ),
-			'gateway'    => __( 'Gateway', MS_TEXT_DOMAIN ),
 		);
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
@@ -59,27 +72,52 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		return apply_filters( 'ms_helper_list_table_member_get_columns', $columns );
 	}
 
+	/**
+	 * Get list table hidden columns.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array {
+	 *		Returns array of $id => $title.
+	 *
+	 *		@type string $id The list table column id.
+	 *		@type string $title The list table column title.
+	 * }
+	 */
 	public function get_hidden_columns() {
-		return array();
+		
+		return apply_filters( 'ms_helper_list_table_member_get_hidden_columns', array() );
 	}
 
+	/**
+	 * Get list table sortable columns.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array {
+	 *		Returns array of $id => $title.
+	 *
+	 *		@type string $id The list table column id.
+	 *		@type array $orderby The field id to use order.
+	 * }
+	 */
 	public function get_sortable_columns() {
 		return apply_filters(
 			'ms_helper_list_table_member_get_sortable_columns',
 			array(
-				'username' => array( 'login', false ),
-				'email' => array( 'email', false ),
-				'active' => array( 'active', false ),
-//				'membership' => array( 'membership_ids', false ),
-//				'start' => array( 'start', false ),
-//				'trial' => array( 'trial', false ),
-//				'expire' => array( 'expire', false ),
-//				'gateway' => array( 'gateway', false ),
+				'username' => 'login',
+				'email' => 'email',
 			)
 		);
 	}
 
+	/**
+	 * Prepare list items.
+	 *
+	 * @since 1.0.0
+	 */
 	public function prepare_items() {
+		
 		$this->_column_headers = array(
 			$this->get_columns(),
 			$this->get_hidden_columns(),
@@ -128,7 +166,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			switch ( $search_options ) {
 				case 'email':
 				case 'username':
-					$args['search'] = '*' . $search_value . '*';
+					$args['search'] = sprintf( '*%s*', $search_value );
 					break;
 
 				case 'membership':
@@ -138,6 +176,10 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 					);
 					foreach ( $ms_relationships as $ms_relationship ) {
 						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
+					}
+					/* Workaround to invalidate query */
+					if( empty( $members ) ) {
+						$members[0] = 0;
 					}
 					$args['include'] = $members;
 					break;
@@ -152,33 +194,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			}
 		}
 
-		/**
-		 * Views filters.
-		 */
-		if ( ! empty( $_REQUEST['status'] ) ) {
-			switch ( $_REQUEST['status'] ) {
-				case 'active':
-					$args['meta_query']['ms_active'] = array(
-						'key' => 'ms_active',
-						'value' => true,
-					);
-					break;
-
-				case 'members':
-					$members = array();
-					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships();
-					foreach ( $ms_relationships as $ms_relationship ) {
-						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
-					}
-					if ( ! empty( $args['include'] ) ) {
-						$args['include'] = array_intersect( $members, $args['include'] );
-					}
-					else {
-						$args['include'] = $members;
-					}
-					break;
-			}
-		}
 		$total_items = MS_Model_Member::get_members_count( $args );
 
 		$this->items = MS_Model_Member::get_members( $args );
@@ -189,36 +204,58 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'per_page' => $per_page,
 			)
 		);
-
+		
+		do_action( 'ms_helper_list_table_member_prepare_items', $this );
 	}
 
+	/**
+	 * Default column handler.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param mixed $item The table item to display.
+	 * @param string $column_name The column to display.
+	 */
 	public function column_default( $item, $column_name ) {
+		
 		$html = '';
+		
 		switch ( $column_name ) {
-			case 'email':
-				$html = $item->$column_name;
-				break;
-
-			case 'active':
-				$html = ( 1 == $item->active) ? __( 'Active', MS_TEXT_DOMAIN ) : __( 'Inactive', MS_TEXT_DOMAIN );
-				break;
 
 			default:
-				print_r( $item, true );
+				$html = $item->$column_name;
+				break;
 		}
 
-		echo $html;
+		echo apply_filters( 'ms_helper_list_table_member_column_default', $html, $item, $column_name, $this );
 	}
 
+	/**
+	 * Display checkbox column.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $item The table item to display.
+	 */
+	public function column_cb( $item ) {
+		$html = sprintf(
+			'<input type="checkbox" name="member_id[]" value="%s" />',
+			$item->id
+		);
+		
+		echo apply_filters( 'ms_helper_list_table_member_column_cb', $html, $item, $this );
+	}
+	
+	/**
+	 * Display Username column.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $item The table item to display.
+	 */
 	public function column_username( $item ) {
+		
 		$actions = array(
-//			'edit' => sprintf(
-//				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-//				$_REQUEST['page'],
-//				'edit',
-//				$item->id,
-//				__('Edit', MS_TEXT_DOMAIN )
-//			),
 			'edit' => sprintf(
 				'<a href="user-edit.php?user_id=%s">%s</a>',
 				$item->id,
@@ -226,182 +263,97 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			),
 		);
 
-		printf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
-	}
-
-	public function column_active( $item ) {
-		$toggle = array(
-			'id'      => 'ms-toggle-' . $item->id,
-			'type'    => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'value'   => $item->active,
-			'class'   => '',
-			'data_ms' => array(
-				'action'    => MS_Controller_Member::AJAX_ACTION_TOGGLE_MEMBER,
-				'member_id' => $item->id,
-			),
-		);
-		$html = MS_Helper_Html::html_element( $toggle, true );
-
-		return $html;
+		$html = sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
+		
+		echo apply_filters( 'ms_helper_list_table_member_column_username', $html, $item, $this );
 	}
 
 	/**
 	 * Create membership column.
 	 *
+	 * @since 1.0.0
+	 * 
+	 * @todo implement ajax updating.
+	 * 
 	 * @param MS_Model_Member $item The member object.
 	 */
 	public function column_membership( $item ) {
+		
 		if ( MS_Model_Member::is_admin_user( $item->id ) ) {
-			return __( 'Admin User', MS_TEXT_DOMAIN );
-		}
-
-		$html = array();
-		foreach ( $item->ms_relationships as $id => $membership_relationship ) {
-			$membership = $membership_relationship->get_membership();
-			$html[] = "{$membership->name} ({$membership_relationship->status})";
-		}
-		$html = join( '<br /> ', $html );
-
-		$actions = array(
-			'add' => sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				$_REQUEST['page'],
-				'add',
-				$item->id,
-				__( 'Add', MS_TEXT_DOMAIN )
-			),
-			'move' => sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				$_REQUEST['page'],
-				'move',
-				$item->id,
-				__( 'Move', MS_TEXT_DOMAIN )
-			),
-			'cancel' => sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				$_REQUEST['page'],
-				'cancel',
-				$item->id,
-				__( 'Cancel', MS_TEXT_DOMAIN )
-			),
-			'drop' => sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				$_REQUEST['page'],
-				'drop',
-				$item->id,
-				__( 'Drop', MS_TEXT_DOMAIN )
-			),
-		);
-
-		$multiple_membership = apply_filters(
-			'membership_addon_multiple_membership',
-			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-		);
-
-		if ( count( $item->ms_relationships ) > 0 ) {
-			if ( ! $multiple_membership ) {
-				unset( $actions['add'] );
-			}
+			$html = __( 'Admin User', MS_TEXT_DOMAIN );
 		}
 		else {
-			unset( $actions['move'] );
-			unset( $actions['cancel'] );
-			unset( $actions['drop'] );
-		}
-
-		printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-	}
-
-	public function column_start( $item ) {
-		if ( count( $item->ms_relationships ) > 0 ) {
 			$html = array();
-			foreach ( $item->ms_relationships as $membership_relationship ) {
-				$period = sprintf( __( '%s days' ), $membership_relationship->get_current_period() );
-				$html[] = sprintf( '%s (%s)', $membership_relationship->start_date, $period );
+			foreach ( $item->ms_relationships as $id => $membership_relationship ) {
+				$membership = $membership_relationship->get_membership();
+				$html[] = "{$membership->name} ({$membership_relationship->status})";
 			}
 			$html = join( '<br /> ', $html );
-
+	
 			$actions = array(
-				'edit' => sprintf(
+				'add' => sprintf(
 					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
 					$_REQUEST['page'],
-					'edit_date',
+					'add',
 					$item->id,
-					__( 'Edit', MS_TEXT_DOMAIN )
+					__( 'Add', MS_TEXT_DOMAIN )
+				),
+				'move' => sprintf(
+					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+					$_REQUEST['page'],
+					'move',
+					$item->id,
+					__( 'Move', MS_TEXT_DOMAIN )
+				),
+				'cancel' => sprintf(
+					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+					$_REQUEST['page'],
+					'cancel',
+					$item->id,
+					__( 'Cancel', MS_TEXT_DOMAIN )
+				),
+				'drop' => sprintf(
+					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
+					$_REQUEST['page'],
+					'drop',
+					$item->id,
+					__( 'Drop', MS_TEXT_DOMAIN )
 				),
 			);
-
-			printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-		}
-	}
-
-	public function column_trial( $item ) {
-		$html = array();
-		foreach ( $item->ms_relationships as $membership_relationship ) {
-			if ( $membership_relationship->trial_expire_date )  {
-				$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_trial_period() );
-				$html[] = sprintf( '%s (%s)', $membership_relationship->trial_expire_date, $period );
+	
+			$multiple_membership = apply_filters(
+				'membership_addon_multiple_membership',
+				MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+			);
+	
+			if ( count( $item->ms_relationships ) > 0 ) {
+				if ( ! $multiple_membership ) {
+					unset( $actions['add'] );
+				}
 			}
 			else {
-				$html[] = __( 'No trial', MS_TEXT_DOMAIN );
+				unset( $actions['move'] );
+				unset( $actions['cancel'] );
+				unset( $actions['drop'] );
 			}
+			$html = sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 		}
-		$html = join( '<br /> ', $html );
-
-		$actions = array(
-//			'edit' => sprintf(
-//				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-//				$_REQUEST['page'],
-//				'edit_date',
-//				$item->id,
-//				__('Edit', MS_TEXT_DOMAIN )
-//			),
-		);
-
-		printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		
+		echo apply_filters( 'ms_helper_list_table_member_column_membership', $html, $item, $this );
 	}
 
-	public function column_expire( $item ) {
-		if ( count( $item->ms_relationships ) > 0 ) {
-			$html = array();
-			foreach ( $item->ms_relationships as $membership_relationship ) {
-				if ( $membership_relationship->expire_date )  {
-					$period = sprintf( __( '%s days' ), $membership_relationship->get_remaining_period() );
-					$html[] = "$membership_relationship->expire_date ($period)";
-				}
-				else {
-					$html[] = __( 'Permanent', MS_TEXT_DOMAIN );
-				}
-			}
-			$html = join( '<br /> ', $html );
-
-			$actions = array(
-				'edit' => sprintf(
-					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-					$_REQUEST['page'],
-					'edit_date',
-					$item->id,
-					__( 'Edit', MS_TEXT_DOMAIN )
-				),
-			);
-
-			printf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
-		}
-	}
-
-	public function column_gateway( $item ) {
-		if ( count( $item->ms_relationships ) > 0 ) {
-			$html = array();
-			foreach ( $item->ms_relationships as $membership_relationship ) {
-				$html[] = $membership_relationship->gateway_id;
-			}
-			$html = join( '<br /> ', $html );
-
-			echo $html;
-		}
-	}
-
+	/**
+	 * Bulk actions options.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param array {
+	 * 		@type string $action The action name.
+	 * 		@type mixed $desciption The action description.
+	 * }
+	 */
 	public function get_bulk_actions() {
+		
 		$actions = array(
 			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
 			'Memberships' => array(
@@ -411,33 +363,21 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'drop'    => __( 'Drop membership', MS_TEXT_DOMAIN ),
 			),
 		);
-		return $actions;
+		
+		return apply_filters( 'ms_helper_list_table_member_get_bulk_actions', $actions, $this );
 	}
 
 	/**
 	 * Display the bulk actions dropdown.
 	 *
 	 * @since 1.0.0
-	 * @access public
 	 *
-	 * @param  bool $echo Output or return the HTML code? Default is output.
+	 * @param bool $echo Output or return the HTML code? Default is output.
 	 */
 	public function bulk_actions( $echo = true ) {
 		if ( empty( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
 
-			/**
-			 * Filter the list table Bulk Actions drop-down.
-			 *
-			 * The dynamic portion of the hook name, $this->screen->id, refers
-			 * to the ID of the current screen, usually a string.
-			 *
-			 * This filter can currently only be used to remove bulk actions.
-			 *
-			 * @since 3.5.0
-			 *
-			 * @param array $actions An array of the available bulk actions.
-			*/
 			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions );
 			$this->_actions = MS_Helper_Utility::array_intersect_assoc_deep( $this->_actions, $no_new_actions );
 
@@ -492,15 +432,16 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		if ( ! $echo ) { return ob_get_clean(); }
 	}
 
-	public function column_cb( $item ) {
-		printf(
-			'<input type="checkbox" name="member_id[]" value="%s" />',
-			$item->id
-		);
-    }
-
-
+	/**
+	 * Display search box.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $text The search button text
+	 * @param string $input_id The search input id
+	 */
 	public function search_box( $text, $input_id ) {
+		
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
 			return;
 		}
@@ -514,7 +455,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'value' => ! empty( $_REQUEST['search_options'] ) ? $_REQUEST['search_options'] : 0,
 			'field_options' => array(
 					'username'   => __( 'Username / E-mail', MS_TEXT_DOMAIN ),
-//					'email'      => __( 'Email', MS_TEXT_DOMAIN ),
 					'nickname'   => __( 'Nickname', MS_TEXT_DOMAIN ),
 					'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
 					'last_name'  => __( 'Last Name', MS_TEXT_DOMAIN ),
@@ -567,38 +507,53 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			<?php submit_button( $text , 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php
+		
+		do_action( 'ms_helper_list_table_member_search_box', $text, $input_id, $this );
 	}
 
+	/**
+	 * Get list table views.
+	 * 
+	 * @see MS_Helper_List_Table::get_views()
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return array {
+	 * 		@type string $url The view url.
+	 * 		@type string label The view label.
+	 * 		@type int count The view count. 
+	 * }
+	 * 
+	 */
 	public function get_views() {
-		$total = MS_Model_Member::get_members_count();
-		$active = MS_Model_Member::get_members_count(
-			array(
-				'meta_query' => array(
-					array( 'key' => 'ms_active', 'value' => '1' ),
-				)
-			)
-		);
-		$members = '?';
 
-		return apply_filters(
-			'ms_helper_list_table_member_views',
-			array(
-				'all' => array(
-					'url' => remove_query_arg( array( 'status' ) ),
+		$total = MS_Model_Member::get_members_count();
+		$memberships = MS_Model_Membership::get_signup_membership_list();
+		
+		$list_views = array(
+			'all' => array(
+					'url' => admin_url( sprintf(
+							'admin.php?page=%s',
+							MS_Controller_Plugin::MENU_SLUG . '-members'
+					) ),
 					'label' => __( 'All', MS_TEXT_DOMAIN ),
 					'count' => $total,
-				),
-				'active' => array(
-					'url' => add_query_arg( array( 'status' => 'active' ) ),
-					'label' => __( 'Active', MS_TEXT_DOMAIN ),
-					'count' => $active,
-				),
-				'members' => array(
-					'url' => add_query_arg( array( 'status' => 'members' ) ),
-					'label' => __( 'Members', MS_TEXT_DOMAIN ),
-					'count' => $members,
-				),
-			)
+			),
 		);
+		
+		foreach( $memberships as $id => $membership ) {
+			$list_views[ $id ] = array(
+				'url' => admin_url( sprintf(
+						'admin.php?page=%s&search_options=membership&membership_filter=%s&s=%s',
+						MS_Controller_Plugin::MENU_SLUG . '-members',
+						$membership->id,
+						$membership->name
+				) ),
+				'label' => $membership->name,
+				'count' => $membership->get_members_count(),
+			);
+		}
+
+		return apply_filters( 'ms_helper_list_table_member_views', $list_views );
 	}
 }
