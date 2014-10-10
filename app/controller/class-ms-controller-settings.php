@@ -332,7 +332,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		if( 'messages-automated' == $this->get_active_tab() ) {
 			$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-			if( ! empty( $_GET['comm_type'] ) ) {
+			if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
 				$type = $_GET['comm_type'];
 			}
 			$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );

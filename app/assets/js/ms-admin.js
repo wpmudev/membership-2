@@ -9,7 +9,7 @@
 window.ms_init = window.ms_init || {};
 
 jQuery(function() {
-	var callback = ms_data.ms_init;
+	var callback = ( typeof ms_data === 'undefined' ) ? null: ms_data.ms_init;
 	if ( undefined !== callback && undefined !== window.ms_init[callback] ) {
 		window.ms_init[callback]();
 	}

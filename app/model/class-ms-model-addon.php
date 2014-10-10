@@ -37,6 +37,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_PRIVATE_MEMBERSHIPS = 'private_memberships';
 	const ADDON_PRO_RATE = 'pro_rate';
 	const ADDON_SHORTCODE = 'shortcode';
+	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	
 	protected $id =  'addon_options';
 	
@@ -55,6 +56,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_MEDIA,
 				self::ADDON_SHORTCODE,
 				self::ADDON_URL_GROUPS,
+				self::ADDON_AUTO_MSGS_PLUS,
 		) );
 	}
 
@@ -103,55 +105,61 @@ class MS_Model_Addon extends MS_Model_Option {
 // 					'id' => self::ADDON_MULTI_MEMBERSHIPS,
 // 					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ), 	
 // 					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
-// 					'active' => $this->is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
+// 					'active' => self::is_enabled( self::ADDON_MULTI_MEMBERSHIPS ), 	
 // 				),
 				self::ADDON_TRIAL => (object) array(
 						'id' => self::ADDON_TRIAL,
 						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
 						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
-						'active' => $this->is_enabled( self::ADDON_TRIAL ),
+						'active' => self::is_enabled( self::ADDON_TRIAL ),
 				),
 				self::ADDON_COUPON => (object) array(
 						'id' => self::ADDON_COUPON,
 						'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
 						'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
-						'active' => $this->is_enabled( self::ADDON_COUPON ),
+						'active' => self::is_enabled( self::ADDON_COUPON ),
 				),
 // 				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
 // 						'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
 // 						'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
 // 						'description' => __( 'Enable private membership levels.', MS_TEXT_DOMAIN ),
-// 						'active' => $this->is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
+// 						'active' => self::is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
 // 				),
 				self::ADDON_POST_BY_POST => (object) array(
 					'id' => self::ADDON_POST_BY_POST,
 					'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
 					'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_POST_BY_POST ),
+					'active' => self::is_enabled( self::ADDON_POST_BY_POST ),
 				),
 				self::ADDON_CPT_POST_BY_POST => (object) array(
 					'id' => self::ADDON_CPT_POST_BY_POST,
 					'name' => __( 'Custom Post Type Protection - Post by Post ', MS_TEXT_DOMAIN ),
 					'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_CPT_POST_BY_POST ),
+					'active' => self::is_enabled( self::ADDON_CPT_POST_BY_POST ),
 				),
 				self::ADDON_MEDIA => (object) array(
 					'id' => self::ADDON_MEDIA,
 					'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable protected post and page media protection.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_MEDIA ),
+					'active' => self::is_enabled( self::ADDON_MEDIA ),
 				),
 				self::ADDON_SHORTCODE => (object) array(
 					'id' => self::ADDON_SHORTCODE,
 					'name' => __( 'Shortcode Protection', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable shortcode protection.', MS_TEXT_DOMAIN ),
-					'active' => $this->is_enabled( self::ADDON_SHORTCODE ),
+					'active' => self::is_enabled( self::ADDON_SHORTCODE ),
 				),
 				self::ADDON_URL_GROUPS => (object) array(
 						'id' => self::ADDON_URL_GROUPS,
 						'name' => __( 'Url Groups Protection', MS_TEXT_DOMAIN ),
 						'description' => __( 'Enable Url Groups protection. This protection will override all other rules. Use it carefully.', MS_TEXT_DOMAIN ),
-						'active' => $this->is_enabled( self::ADDON_URL_GROUPS ),
+						'active' => self::is_enabled( self::ADDON_URL_GROUPS ),
+				),
+				self::ADDON_AUTO_MSGS_PLUS => (object) array(
+						'id' => self::ADDON_AUTO_MSGS_PLUS,
+						'name' => __( 'Additional Automated Messages', MS_TEXT_DOMAIN ),
+						'description' => __( 'Enable additional automated emails.', MS_TEXT_DOMAIN ),
+						'active' => self::is_enabled( self::ADDON_AUTO_MSGS_PLUS ),
 				),
 			)
 		);

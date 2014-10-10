@@ -1089,7 +1089,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		
 		switch( $this->get_status() ) {
 			case self::STATUS_TRIAL:
-				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
 					
 					/* Send trial end communication. */
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
@@ -1150,36 +1150,37 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				}
 					
 				/* Configure communication messages.*/
-				
-				/* Before finishes communication. */
-				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
-				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				if( $days == $remaining_days ) {
-					$comm->add_to_queue( $this->id );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $this );
-				}
-				/* After finishes communication. */
-				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
-				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				if( $remaining_days < 0 && $days == abs( $remaining_days ) ) {
-					$comm->add_to_queue( $this->id );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
-				}
-				/* Before payment due. */
-				$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_PAYMENT_DUE ];
-				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
-				if( MS_Model_Invoice::STATUS_BILLED == $invoice->status && $days == $invoice_days ) {
-					$comm->add_to_queue( $this->id );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE, $this );
-				}
-				/* After payment due event */
-				$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
-				$days = MS_Helper_Period::get_period_in_days( $comm->period );
-				$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
-				if( MS_Model_Invoice::STATUS_BILLED == $invoice->status && $days == $invoice_days ) {
-					$comm->add_to_queue( $this->id );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
+				if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
+					/* Before finishes communication. */
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
+					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					if( $days == $remaining_days ) {
+						$comm->add_to_queue( $this->id );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_BEFORE_FINISHES, $this );
+					}
+					/* After finishes communication. */
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
+					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					if( $remaining_days < 0 && $days == abs( $remaining_days ) ) {
+						$comm->add_to_queue( $this->id );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_AFTER_FINISHES, $this );
+					}
+					/* Before payment due. */
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_PAYMENT_DUE ];
+					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
+					if( MS_Model_Invoice::STATUS_BILLED == $invoice->status && $days == $invoice_days ) {
+						$comm->add_to_queue( $this->id );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE, $this );
+					}
+					/* After payment due event */
+					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
+					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$invoice_days = MS_Helper_Period::subtract_dates( $invoice->due_date, MS_Helper_Period::current_date() );
+					if( MS_Model_Invoice::STATUS_BILLED == $invoice->status && $days == $invoice_days ) {
+						$comm->add_to_queue( $this->id );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
+					}
 				}
 				
 				/* Check for card expiration */
