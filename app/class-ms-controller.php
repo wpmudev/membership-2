@@ -478,7 +478,7 @@ class MS_Controller extends MS_Hooker {
 		if ( strlen( $this->_resp_code ) > 0 ) {
 			return ':' . $this->_resp_code;
 		}
-		return 'xx';
+		return '';
 	}
 
 	/**

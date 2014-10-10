@@ -374,7 +374,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_COMMENT,
-					'rule_ids' => MS_Model_Rule_Comment::CONTENT_ID,
+					'values' => MS_Model_Rule_Comment::CONTENT_ID,
 					'action' => $action,
 					'_wpnonce' => $nonce,
 				),
@@ -398,7 +398,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,
-					'rule_ids' => MS_Model_Rule_More::CONTENT_ID,
+					'values' => MS_Model_Rule_More::CONTENT_ID,
 					'action' => $action,
 					'_wpnonce' => $nonce,
 				),
