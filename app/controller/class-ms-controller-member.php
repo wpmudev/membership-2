@@ -95,12 +95,9 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function ajax_action_get_users() {
 		$callback_name = @$_REQUEST['callback'];
-		$data = array(
-			array( 'id' => 100, 'text' => 'John' ),
-			array( 'id' => 101, 'text' => 'Joannes' ),
-			array( 'id' => 102, 'text' => 'Johanna' ),
-		);
 
+		$data = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS, false );
+		
 		printf( '%s(%s)', $callback_name, json_encode( $data ) );
 		exit;
 	}
@@ -127,13 +124,13 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function members_admin_page_process() {
 		$this->print_admin_message();
-
+		
 		$msg = 0;
 		if( $this->is_admin_user() ) {
 
-			$fields = array( 'user_id', 'action' );
+			$fields = array( 'new_member', 'action' );
 			if( $this->verify_nonce( 'add_member' ) && $this->validate_required( $fields ) ) {
-				$member = MS_Factory::load( 'MS_Model_Member', $_POST['user_id'] );
+				$member = MS_Factory::load( 'MS_Model_Member', $_POST['new_member'] );
 				$member->is_member = true;
 				$member->save();
 				$msg = true;//TODO

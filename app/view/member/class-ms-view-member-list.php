@@ -71,18 +71,11 @@ class MS_View_Member_List extends MS_View {
 		$action = $this->data['action'];
 
 		$fields = array(
-// 			'list' => array(
-// 				'id' => 'new_member',
-// 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-// 				'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
-// 				'class' => 'manual-init ms-text-medium',
-// 			),
 			'list' => array(
-					'id' => 'user_id',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
-					'field_options' => $this->data['usernames'],
-					'class' => 'manual-init ms-text-medium',
+				'id' => 'new_member',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
+				'class' => 'manual-init ms-text-medium',
 			),
 			'add' => array(
 				'id' => 'add_member',
