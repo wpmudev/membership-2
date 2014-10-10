@@ -9,9 +9,9 @@ window.ms_functions = {
 	data: [],
 	save_obj_selector: '.ms-save-text-wrapper',
 	processing_class: 'ms-processing',
-	init_class: 'ms-init',
 	radio_slider_on_class: 'on',
 	value: 0,
+	msg_timeout: null,
 	chosen_options: {
 		minimumResultsForSearch: 6,
 		dropdownAutoWidth: true,
@@ -21,24 +21,19 @@ window.ms_functions = {
 
 	ajax_update: function( obj ) {
 		var data, val,
+			field = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! jQuery( obj ).hasClass( fn.processing_class ) ) {
-			jQuery( fn.save_obj_selector ).addClass( fn.processing_class );
-			jQuery( fn.save_obj_selector ).removeClass( fn.init_class );
+		if( ! field.hasClass( fn.processing_class ) ) {
+			fn.ajax_show_indicator();
 
-			data = jQuery( obj ).data( 'ms' );
+			data = field.data( 'ms' );
 
-			if( jQuery( obj ).is( ':checkbox' ) ) {
-				if( jQuery( obj ).attr( 'checked' ) ) {
-					data.value = true;
-				}
-				else {
-					data.value = false;
-				}
+			if( field.is( ':checkbox' ) ) {
+				data.value = field.prop( 'checked' );
 			}
 			else {
-				val = jQuery( obj ).val();
+				val = field.val();
 				if ( val instanceof Array || val instanceof Object || null === val ) {
 					data.values = val;
 				} else {
@@ -50,46 +45,120 @@ window.ms_functions = {
 				window.ajaxurl,
 				data,
 				function( response ) {
+					if ( fn.ajax_error( response ) ) {
+						// Reset the input control to previous value...
+					}
+
 					jQuery( fn.save_obj_selector ).removeClass( fn.processing_class );
-					jQuery( obj ).trigger( 'ms-ajax-updated', data, response );
+					field.trigger( 'ms-ajax-updated', data, response );
 				}
 			);
 		}
 	},
 
 	radio_slider_ajax_update: function( obj ) {
-		var value, data,
+		var data,
+			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! jQuery( obj ).hasClass( fn.processing_class ) ) {
-			jQuery( obj ).addClass( fn.processing_class );
-			jQuery( fn.save_obj_selector ).addClass( fn.processing_class );
-			jQuery( fn.save_obj_selector ).removeClass( fn.init_class );
-			if( jQuery( obj ).hasClass( fn.radio_slider_on_class ) ) {
-				jQuery( obj ).removeClass( fn.radio_slider_on_class );
-				value = 0;
-			}
-			else {
-				jQuery( obj ).addClass( fn.radio_slider_on_class );
-				value = 1;
-			}
+		if( ! slider.hasClass( fn.processing_class ) ) {
+			fn.ajax_show_indicator();
 
-			data = jQuery( obj ).children( '.ms-toggle' ).data( 'ms' );
+			slider.addClass( fn.processing_class );
+			slider.toggleClass( fn.radio_slider_on_class );
+
+			data = slider.children( '.ms-toggle' ).data( 'ms' );
+
 			if( null != data ) {
-				data.value = value;
+				data.value = slider.hasClass( fn.radio_slider_on_class );
+
 				jQuery.post(
 					window.ajaxurl,
 					data,
 					function( response ) {
+						if ( fn.ajax_error( response ) ) {
+							slider.togglesClass( fn.radio_slider_on_class );
+						}
+
 						jQuery( fn.save_obj_selector ).removeClass( fn.processing_class );
-						jQuery( obj ).removeClass( fn.processing_class );
-						jQuery( obj ).children( 'input' ).val( jQuery( obj ).hasClass( fn.radio_slider_on_class ) );
-						jQuery( obj ).trigger( 'ms-radio-slider-updated', data );
+						slider.removeClass( fn.processing_class );
+						slider.children( 'input' ).val( slider.hasClass( fn.radio_slider_on_class ) );
+						slider.trigger( 'ms-radio-slider-updated', data );
 					}
 				);
 			}
 		}
 	},
+
+	/**
+	 * Receives the ajax response string and checks if the response starts with
+	 * an error code.
+	 * An error code is a negative number at the start of the response.
+	 *
+	 * Returns true when an error code is found.
+	 * When no numeric code is found the function returns false (no error)
+	 */
+	ajax_error: function( response ) {
+		var code = 0,
+			parts = [],
+			msg = '',
+			fn = window.ms_functions;
+
+		if ( isNaN( response ) ) {
+			parts = response.split( ':', 2 );
+			if ( ! isNaN( parts[0] ) ) { code = parts[0]; }
+			if ( undefined !== parts[1] ) { msg = parts[1]; }
+		} else {
+			code = response;
+		}
+
+		if ( code < 0 ) {
+			// Negative number as response code is an error-indicator.
+			jQuery( fn.save_obj_selector ).removeClass( 'okay' ).addClass( 'error' );
+			jQuery( fn.save_obj_selector ).find( '.err-code' ).text( msg );
+
+			// Automatically hide success message after a longer timeout.
+			fn.ajax_hide_message( 8000 );
+			return true;
+		} else {
+			// No response code or positive number is interpreted as success.
+			jQuery( fn.save_obj_selector ).removeClass( 'error' ).addClass( 'okay' );
+			jQuery( fn.save_obj_selector ).find( '.err-code' ).text( '' );
+
+			// Automatically hide success message after short timeout.
+			fn.ajax_hide_message( 4000 );
+			return false;
+		}
+	},
+
+	/**
+	 * Displays the ajax progress message and cancels the hide-timeout if required.
+	 */
+	ajax_show_indicator: function() {
+		var fn = window.ms_functions;
+
+		if ( null !== fn.msg_timeout ) {
+			window.clearTimeout( fn.msg_timeout );
+			fn.msg_timeout = null;
+		}
+
+		jQuery( fn.save_obj_selector ).addClass( fn.processing_class );
+	},
+
+	/**
+	 * Hides the ajax response message after a short timeout
+	 */
+	ajax_hide_message: function( timeout ) {
+		var fn = window.ms_functions;
+
+		if ( isNaN( timeout ) ) { timeout = 4000; }
+		if ( timeout < 0 ) { timeout = 0; }
+
+		fn.msg_timeout = window.setTimeout( function() {
+			jQuery( fn.save_obj_selector ).removeClass( 'error okay' );
+		}, timeout );
+	},
+
 
 	/**
 	 * Select the whole content inside the specified element.

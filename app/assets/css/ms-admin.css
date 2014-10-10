@@ -718,31 +718,40 @@
  */
 /* Ajax confirmation message */
 .ms-wrap .ms-save-text-wrapper {
+  display: inline-block;
+  position: relative;
   font-size: .9em;
   font-weight: 500;
 }
-.ms-wrap .ms-save-text-wrapper.ms-init span {
+.ms-wrap .ms-save-text-wrapper .ms-error-text,
+.ms-wrap .ms-save-text-wrapper .loading-animation {
   display: none;
 }
-.ms-wrap .ms-save-text-wrapper span {
-  display: inline-block;
+.ms-wrap .ms-save-text-wrapper .ms-saving-text,
+.ms-wrap .ms-save-text-wrapper .ms-saved-text {
+  display: none;
   width: 155px;
 }
-.ms-wrap .ms-save-text-wrapper .ms-saving-text {
-  display: none;
+.ms-wrap .ms-save-text-wrapper .err-code {
+  display: block;
 }
-.ms-wrap .ms-save-text-wrapper.ms-processing .ms-saving-text, .ms-wrap .ms-save-text-wrapper.ms-processing .loading-animation {
+.ms-wrap .ms-save-text-wrapper.ms-processing .ms-saving-text,
+.ms-wrap .ms-save-text-wrapper.ms-processing .loading-animation {
   display: inline-block;
 }
-.ms-wrap .ms-save-text-wrapper.ms-processing .ms-saved-text {
-  display: none;
+.ms-wrap .ms-save-text-wrapper.okay .ms-saved-text {
+  display: inline-block;
+}
+.ms-wrap .ms-save-text-wrapper.error .ms-error-text {
+  display: inline-block;
 }
 .ms-wrap .ms-saved-text {
-  display: inline;
   color: #6DB724;
 }
+.ms-wrap .ms-error-text {
+  color: #D73D24;
+}
 .ms-wrap .loading-animation {
-  display: none;
   float: left;
   width: 20px;
   height: 20px;

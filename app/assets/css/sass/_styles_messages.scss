@@ -6,39 +6,56 @@
 /* Ajax confirmation message */
 .ms-wrap {
 	.ms-save-text-wrapper {
+		display: inline-block;
+		position: relative;
+
 		font-size: .9em;
 		font-weight: 500;
 
-		&.ms-init span {
+		.ms-error-text,
+		.loading-animation {
 			display: none;
 		}
 
-		span {
-			display: inline-block;
+		.ms-saving-text,
+		.ms-saved-text {
+			display: none;
 			width: 155px;
 		}
 
-		.ms-saving-text {
-			display: none;
+		.err-code {
+			display: block;
 		}
 
-		&.ms-processing .ms-saving-text,
-		&.ms-processing .loading-animation {
-			display: inline-block;
+		&.ms-processing {
+			.ms-saving-text,
+			.loading-animation {
+				display: inline-block;
+			}
 		}
 
-		&.ms-processing .ms-saved-text {
-			display: none;
+		&.okay {
+			.ms-saved-text {
+				display: inline-block;
+			}
+		}
+
+		&.error {
+			.ms-error-text {
+				display: inline-block;
+			}
 		}
 	}
 
 	.ms-saved-text {
-		display: inline;
 		color: #6DB724;
 	}
 
+	.ms-error-text {
+		color: #D73D24;
+	}
+
 	.loading-animation {
-		display: none;
 		float: left;
 		width: 20px;
 		height: 20px;

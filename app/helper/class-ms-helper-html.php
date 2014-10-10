@@ -622,7 +622,8 @@ class MS_Helper_Html extends MS_Helper {
 
 		$args = array(
 			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
-			'saved_text' => __( 'All Changes Saved', MS_TEXT_DOMAIN ),
+			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
+			'error_text' => __( 'Could not save changes.', MS_TEXT_DOMAIN ),
 			'fields' => $fields,
 		);
 		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
@@ -631,7 +632,7 @@ class MS_Helper_Html extends MS_Helper {
 		?>
 		<div class="ms-settings-footer">
 			<form method="post" action="">
-				<span class="ms-save-text-wrapper ms-init">
+				<span class="ms-save-text-wrapper">
 					<?php foreach ( $fields as $field ) {
 						MS_Helper_Html::html_element( $field );
 					} ?>
@@ -640,6 +641,7 @@ class MS_Helper_Html extends MS_Helper {
 						<?php printf( $saving_text ); ?>
 					</span>
 					<span class="ms-saved-text"><?php printf( $saved_text ); ?></span>
+					<span class="ms-error-text"><?php printf( $error_text ); ?><span class="err-code"></span></span>
 				</span>
 			</form>
 		</div>
