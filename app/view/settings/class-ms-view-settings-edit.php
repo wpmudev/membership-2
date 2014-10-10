@@ -326,7 +326,6 @@ class MS_View_Settings_Edit extends MS_View {
 					<?php MS_Helper_Html::settings_box_footer(); ?>
 				<?php endforeach; ?>
 			</form>
-			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
 		return ob_get_clean();
@@ -345,7 +344,6 @@ class MS_View_Settings_Edit extends MS_View {
 			<div id="ms-payment-settings-wrapper">
 				<?php $view->render(); ?>
 			</div>
-			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
 		echo ob_get_clean();
@@ -406,12 +404,9 @@ class MS_View_Settings_Edit extends MS_View {
 
 		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
 
-		//$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
-		//$has_more = $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID );
-		//var_dump( $has_more );
-		//$has_more = $rule_more_tag->rule_value;
-		//var_dump( $has_more );
-		$has_more = true;  //TODO Fix this condition....
+		$membership = $this->data['membership'];
+		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
+		$has_more = $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID );
 
 		ob_start();
 		?>
@@ -439,8 +434,6 @@ class MS_View_Settings_Edit extends MS_View {
 						__( 'More tag protection message', MS_TEXT_DOMAIN )
 					);
 				}
-
-				MS_Helper_Html::settings_footer( null, false );
 				?>
 			</form>
 		</div>
@@ -685,7 +678,6 @@ class MS_View_Settings_Edit extends MS_View {
 						</tr>
 					</tbody>
 				</table>
-				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</form>
 		</div>
 		<?php
@@ -755,7 +747,6 @@ class MS_View_Settings_Edit extends MS_View {
 			<div>
 				<form action="" method="post">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
-					<?php MS_Helper_Html::settings_footer( null, false ); ?>
 				</form>
 			</div>
 		</div>

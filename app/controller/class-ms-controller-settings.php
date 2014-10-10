@@ -170,7 +170,7 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 
 	public function auto_setup_settings( $membership ) {
-		
+
 		$settings = $this->get_model();
 
 		/** Create menus/special pages */
@@ -328,6 +328,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
+		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 
 		if( 'messages-automated' == $this->get_active_tab() ) {
 			$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
@@ -340,7 +341,6 @@ class MS_Controller_Settings extends MS_Controller {
 		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
 		$view->model = $this->get_model();
 		$view->render();
-
 	}
 
 	/**
