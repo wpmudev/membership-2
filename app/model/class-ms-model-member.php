@@ -406,7 +406,7 @@ class MS_Model_Member extends MS_Model {
 	 * 		@type string $username The username.
 	 * }
 	 */
-	public static function get_usernames( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
+	public static function get_usernames( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS, $return_array = true ) {
 		
 		$members = array( 0 => __( 'Select an user', MS_TEXT_DOMAIN ) );
 		$args['fields'] = array( 'ID', 'user_login' );
@@ -416,10 +416,21 @@ class MS_Model_Member extends MS_Model {
 		$wp_user_search = new WP_User_Query( $args );
 		$users = $wp_user_search->get_results();
 
-		foreach( $users as $user ) {
-			$members[ $user->ID ] = $user->user_login;
+		if( ! $return_array ) {
+			$members = array();
+			foreach( $users as $user ) {
+				$members[] = array( 
+					'id' => $user->ID,
+					'text' => $user->user_login,
+				);
+			}
 		}
-		
+		else {
+			foreach( $users as $user ) {
+				$members[ $user->ID ] = $user->user_login;
+			}
+		}
+				
 		return apply_filters( 'ms_model_member_get_members_usernames', $members );
 	}
 	
