@@ -73,11 +73,21 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
+		$this->_resp_reset();
 
 		$required = array( 'membership_id', 'rule', 'item' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->is_admin_user() ) {
-			$msg = $this->rule_list_do_action( 'toggle_access',  $_POST['rule'], array( $_POST['item'] ) );
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule-01' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'toggle-rule-02' ); }
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'toggle-rule-03' ); }
+
+		if ( $this->_resp_ok() ) {
+			$msg = $this->rule_list_do_action(
+				'toggle_access',
+				$_POST['rule'],
+				array( $_POST['item'] )
+			);
 		}
+		$msg .= $this->_resp_code();
 
 		echo $msg;
 		exit;
@@ -94,10 +104,21 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	public function ajax_action_toggle_rule_default() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['rule'] ) ) {
+		$this->_resp_reset();
+
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule-default-01' ); }
+		if ( $this->_resp_ok() && empty( $_POST['membership_id'] ) ) { $this->_resp_err( 'toggle-rule-default-02' ); }
+		if ( $this->_resp_ok() && empty( $_POST['rule'] ) ) { $this->_resp_err( 'toggle-rule-default-03' ); }
+
+		if ( $this->_resp_ok() ) {
 			$this->active_tab = $_POST['rule'];
-			$msg = $this->rule_list_do_action( self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, $_POST['rule'], array( $_POST['rule'] ) );
+			$msg = $this->rule_list_do_action(
+				self::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
+				$_POST['rule'],
+				array( $_POST['rule'] )
+			);
 		}
+		$msg .= $this->_resp_code();
 
 		echo $msg;
 		exit;
@@ -105,13 +126,24 @@ class MS_Controller_Rule extends MS_Controller {
 
 	public function ajax_action_update_rule() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$this->_resp_reset();
 
 		$required = array( 'membership_id', 'rule_type' );
 		$isset = array( 'values', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) ) {
+
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-rule-01' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-rule-02' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-rule-03' ); }
+
+		if ( $this->_resp_ok() ) {
 			$rule_type = $_POST['rule_type'];
-			$msg = $this->save_rule_values( $rule_type, $_POST['values'], $_POST['value'] );
+			$msg = $this->save_rule_values(
+				$rule_type,
+				$_POST['values'],
+				$_POST['value']
+			);
 		}
+		$msg .= $this->_resp_code();
 
 		echo $msg;
 		exit;
@@ -119,24 +151,24 @@ class MS_Controller_Rule extends MS_Controller {
 
 	private function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
 		$membership = $this->get_membership();
 
-		if( $membership->is_valid() ) {
+		if ( $membership->is_valid() ) {
 			$rule = $membership->get_rule( $rule_type );
 			$rule->reset_rule_values();
-			if( ! is_array( $rule_ids ) ) {
+			if ( ! is_array( $rule_ids ) ) {
 				$rule_ids = array( $rule_ids );
 			}
-			foreach( $rule_ids as $id ) {
-				if( ! empty( $id ) ) {
-					if( is_array( $rule_values ) ) {
+			foreach ( $rule_ids as $id ) {
+				if ( ! empty( $id ) ) {
+					if ( is_array( $rule_values ) ) {
 						$rule_value = $rule_values[ $id ];
 					}
-					else{
+					else {
 						$rule_value = $rule_values;
 					}
 					$rule->set_access( $id, $rule_value );
@@ -150,27 +182,33 @@ class MS_Controller_Rule extends MS_Controller {
 	}
 
 	public function ajax_action_update_dripped() {
-// 		MS_Helper_Debug::log( $_POST );
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$this->_resp_reset();
 
 		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
-			$membership = $this->get_membership();
-			if( $membership->is_valid() ) {
-				$rule_type = $_POST['rule_type'];
-				$dripped_type = $_POST['dripped_type'];
-				$id = $_POST['id'];
-				$field = $_POST['field'];
-				$value = $_POST['value'];
-				$rule = $membership->get_rule( $rule_type );
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-dripped-01' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $fields ) ) { $this->_resp_err( 'update-dripped-02' ); }
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-dripped-03' ); }
 
-				$rule->set_dripped_value( $dripped_type, $id, $field, $value );
-// 				MS_Helper_Debug::log( $rule->dripped );
-				$membership->set_rule( $rule_type, $rule );
-				$membership->save();
-				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-			}
+		if ( $this->_resp_ok() ) {
+			$membership = $this->get_membership();
+			if ( ! $membership->is_valid() ) { $this->_resp_err( 'update-dripped-04' ); }
 		}
+
+		if ( $this->_resp_ok() ) {
+			$rule_type = $_POST['rule_type'];
+			$dripped_type = $_POST['dripped_type'];
+			$id = $_POST['id'];
+			$field = $_POST['field'];
+			$value = $_POST['value'];
+			$rule = $membership->get_rule( $rule_type );
+
+			$rule->set_dripped_value( $dripped_type, $id, $field, $value );
+			$membership->set_rule( $rule_type, $rule );
+			$membership->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		}
+		$msg .= $this->_resp_code();
 
 		echo $msg;
 		exit;
@@ -178,24 +216,34 @@ class MS_Controller_Rule extends MS_Controller {
 
 	public function ajax_action_update_field() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$this->_resp_reset();
+
 		$required = array( 'membership_id', 'rule_type', 'field' );
 		$isset = array( 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required ) && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-field-01' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-field-02' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-field-03' ); }
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-field-04' ); }
+
+		if ( $this->_resp_ok() ) {
 			$membership = $this->get_membership();
-			if( $membership->is_valid() ) {
-
-				$rule_type = $_POST['rule_type'];
-				$value = $_POST['value'];
-				$field = $_POST['field'];
-
-				$rule = $membership->get_rule( $rule_type );
-				$rule->$field = $value;
-				$membership->set_rule( $rule_type, $rule );
-
-				$membership->save();
-				$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-			}
+			if ( ! $membership->is_valid() ) { $this->_resp_err( 'update-field-05' ); }
 		}
+
+		if ( $this->_resp_ok() ) {
+			$rule_type = $_POST['rule_type'];
+			$value = $_POST['value'];
+			$field = $_POST['field'];
+
+			$rule = $membership->get_rule( $rule_type );
+			$rule->$field = $value;
+			$membership->set_rule( $rule_type, $rule );
+
+			$membership->save();
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+		}
+		$msg .= $this->_resp_code();
 
 		echo $msg;
 		exit;
@@ -215,14 +263,14 @@ class MS_Controller_Rule extends MS_Controller {
 		/**
 		 * Rule single action
 		 */
-		if( $this->verify_nonce( null, 'GET' ) ) {
+		if ( $this->verify_nonce( null, 'GET' ) ) {
 			$msg = $this->rule_list_do_action( $_GET['action'], $rule_type, array( $_GET['item'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) );
 		}
 		/**
 		 * Rule bulk actions
 		 */
-		elseif( $this->verify_nonce( 'bulk-rules', 'POST' ) && ! empty( $_POST['action'] ) ) {
+		elseif ( $this->verify_nonce( 'bulk-rules', 'POST' ) && ! empty( $_POST['action'] ) ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->rule_list_do_action( $action, $rule_type, $_POST['item'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -248,20 +296,19 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function rule_list_do_action( $action, $rule_type, $items ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
 		$membership = $this->get_membership();
-		if( empty( $membership ) || ! MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
+		if ( empty( $membership ) || ! MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
 			return $msg;
 		}
 
-
 		$rule = $membership->get_rule( $rule_type );
-		if( ! empty( $rule ) ) {
-			foreach( $items as $item ) {
-				switch( $action ) {
+		if ( ! empty( $rule ) ) {
+			foreach ( $items as $item ) {
+				switch ( $action ) {
 					case 'give_access':
 						$rule->give_access( $item );
 						break;
@@ -276,7 +323,6 @@ class MS_Controller_Rule extends MS_Controller {
 						break;
 				}
 			}
-//			MS_Helper_Debug::log($rule);
 			$membership->set_rule( $rule_type, $rule );
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
@@ -294,20 +340,20 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function save_url_group( $fields ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
 		$membership = $this->get_membership();
-		if( empty( $membership ) ) {
+		if ( empty( $membership ) ) {
 			return $msg;
 		}
 
-		if( is_array( $fields ) ) {
+		if ( is_array( $fields ) ) {
 			$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
 			$rule = $membership->get_rule( $rule_type );
 
-			foreach( $fields as $field => $value ) {
+			foreach ( $fields as $field => $value ) {
 				$rule->$field = $value;
 			}
 			$membership->set_rule( $rule_type, $rule );
@@ -327,15 +373,15 @@ class MS_Controller_Rule extends MS_Controller {
 	 */
 	private function get_membership() {
 		$membership_id = 0;
-		if( ! empty( $_GET['membership_id'] ) ) {
+		if ( ! empty( $_GET['membership_id'] ) ) {
 			$membership_id = $_GET['membership_id'];
 		}
-		elseif( ! empty( $_POST['membership_id'] ) ) {
+		elseif ( ! empty( $_POST['membership_id'] ) ) {
 			$membership_id = $_POST['membership_id'];
 		}
 
 		$membership = null;
-		if( ! empty( $membership_id ) ) {
+		if ( ! empty( $membership_id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 

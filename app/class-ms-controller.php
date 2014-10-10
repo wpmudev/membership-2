@@ -48,6 +48,22 @@ class MS_Controller extends MS_Hooker {
 	protected $capability = 'manage_options';
 
 	/**
+	 * Ajax response flag.
+	 *
+	 * @see _resp_ok()
+	 * @var bool
+	 */
+	private $_resp_valid = true;
+
+	/**
+	 * Ajax response error-code.
+	 *
+	 * @see _resp_code()
+	 * @var string
+	 */
+	private $_resp_code = '';
+
+	/**
 	 * Parent constuctor of all controllers.
 	 *
 	 * @since 4.0.0
@@ -421,5 +437,59 @@ class MS_Controller extends MS_Hooker {
 			$plugin_url . 'app/assets/css/select2.css',
 			null, $version
 		);
+	}
+
+	/**
+	 * Reset the response flags.
+	 * The _resp_ functions are mainly used by Ajax handlers to simplify error
+	 * tracking.
+	 *
+	 * Implemented in file ms-class-controller-rule.php
+	 *
+	 * @since  1.0.0
+	 */
+	protected function _resp_reset() {
+		$this->_resp_valid = true;
+		$this->_resp_code = '';
+	}
+
+	/**
+	 * Returns current state of the response-valid flag.
+	 * The flag can only be set to true via _resp_reset()
+	 * And set to false by _resp_err()
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function _resp_ok() {
+		return (true === $this->_resp_valid);
+	}
+
+	/**
+	 * Returns the error code.
+	 * The error code can be defined via _resp_err()
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string
+	 */
+	protected function _resp_code() {
+		if ( strlen( $this->_resp_code ) > 0 ) {
+			return ':' . $this->_resp_code;
+		}
+		return 'xx';
+	}
+
+	/**
+	 * Flag the current response as invalid and optionally define an error code.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $code Optional error code
+	 */
+	protected function _resp_err( $code = '' ) {
+		$this->_resp_valid = false;
+		$this->_resp_code = (string) $code;
 	}
 }
