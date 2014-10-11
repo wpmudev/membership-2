@@ -113,6 +113,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Settings controller */
 		$this->controllers['settings'] = apply_filters( 'ms_controller_settings', new MS_Controller_Settings() );
 
+		/** Settings controller */
+		$this->controllers['page'] = apply_filters( 'ms_controller_page', new MS_Controller_Page() );
+		
 		/** Communication controller */
 		$this->controllers['communication'] = apply_filters( 'ms_controller_communication', new MS_Controller_Communication() );
 
@@ -139,6 +142,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Rewrite rules for gateway payment return url.
 	 *
 	 * @since 4.0.0
+	 * 
+	 * @todo move to add_rewrite_rules method.
 	 *
 	 * @param object $wp_rewrite WP_Rewrite object.
 	 * @return object WP_Rewrite object.
@@ -147,17 +152,17 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		$new_rules = array();
 
-		/** Media / download rewrite rules */
+		/* Media / download rewrite rules */
 		if( ! empty( MS_Plugin::instance()->settings->downloads['masked_url'] ) ) {
 			$new_rules[trailingslashit( MS_Plugin::instance()->settings->downloads['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
 		}
 
-		/** Gateway rewrite rules */
+		/* Gateway rewrite rules */
 		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index( 1 );
 
-		$new_rules = apply_filters('ms_rewrite_rules', $new_rules);
+		$new_rules = apply_filters( 'ms_rewrite_rules', $new_rules );
 
-		$wp_rewrite->rules = array_merge($new_rules, $wp_rewrite->rules);
+		$wp_rewrite->rules = array_merge( $new_rules, $wp_rewrite->rules );
 
 		return $wp_rewrite;
 	}
@@ -168,21 +173,23 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since 4.0.0
 	 *
+	 * @todo move to proper controller (encapsulation)
+	 * 
 	 * @param mixed[] $vars
 	 * @return mixed[]
 	 */
 	function add_query_vars( $vars ) {
 
-		/** Media / download */
+		/* Media / download */
 		if ( ! in_array( 'protectedfile', $vars ) ) {
 			$vars[] = 'protectedfile';
 		}
 
-		/** Gateway */
+		/* Gateway */
 		if ( ! in_array( 'paymentgateway', $vars ) ) {
 			$vars[] = 'paymentgateway';
 		}
-
+		
 		return $vars;
 	}
 
