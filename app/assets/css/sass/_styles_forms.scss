@@ -387,3 +387,17 @@
 		}
 	}
 }
+
+/***
+ * WP EDITOR *
+ ***/
+
+.ms-wrap {
+	#wp-content-editor-tools {
+		background-color: transparent;
+	}
+
+	.wp-switch-editor {
+		box-sizing: content-box;
+	}
+}

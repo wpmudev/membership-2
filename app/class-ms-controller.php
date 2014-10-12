@@ -237,12 +237,17 @@ class MS_Controller extends MS_Hooker {
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-chosen', 'jquery-validate' ), $version
+			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
 		);
 
 		wp_register_script(
 			'jquery-chosen',
 			$plugin_url . 'app/assets/js/select2.js',
+			array( 'jquery' ), $version
+		);
+		wp_register_script(
+			'jquery-plugins',
+			$plugin_url . 'app/assets/js/jquery.plugins.js',
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
@@ -262,11 +267,6 @@ class MS_Controller extends MS_Hooker {
 		);
 
 		// View specific
-		wp_register_script(
-			'ms-view-settings-payment',
-			$plugin_url . 'app/assets/js/ms-view-settings-payment.js',
-			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'ms-admin' ), $version
-		);
 		wp_register_script(
 			'ms-view-membership-overview',
 			$plugin_url . 'app/assets/js/ms-view-membership-overview.js',

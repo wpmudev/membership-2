@@ -348,8 +348,10 @@
   padding-top: 20px;
 }
 .ms-wrap .ms-settings-box .handlediv {
-  float: right;
-  width: 27px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
   height: 30px;
   cursor: pointer;
 }
@@ -713,6 +715,16 @@
   content: ' \00bb';
 }
 
+/***
+ * WP EDITOR *
+ ***/
+.ms-wrap #wp-content-editor-tools {
+  background-color: transparent;
+}
+.ms-wrap .wp-switch-editor {
+  box-sizing: content-box;
+}
+
 /**
  * Confirmation messages
  */
@@ -758,6 +770,15 @@
   margin-right: 4px;
   overflow: hidden;
   background: transparent url("../images/spinner.gif") top left no-repeat;
+}
+.ms-wrap .inside .ms-save-text-wrapper {
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  margin: 6px 6px 0 0;
+}
+.ms-wrap .inside .ms-save-text-wrapper .loading-animation {
+  margin-top: 4px;
 }
 
 /**

@@ -7,11 +7,9 @@
 
 window.ms_functions = {
 	data: [],
-	save_obj_selector: '.ms-save-text-wrapper',
 	processing_class: 'ms-processing',
 	radio_slider_on_class: 'on',
 	value: 0,
-	msg_timeout: null,
 	chosen_options: {
 		minimumResultsForSearch: 6,
 		dropdownAutoWidth: true,
@@ -20,12 +18,12 @@ window.ms_functions = {
 	},
 
 	ajax_update: function( obj ) {
-		var data, val,
+		var data, val, info_field,
 			field = jQuery( obj ),
 			fn = window.ms_functions;
 
 		if( ! field.hasClass( fn.processing_class ) ) {
-			fn.ajax_show_indicator();
+			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
 
@@ -41,15 +39,20 @@ window.ms_functions = {
 				}
 			}
 
+			// Allow fields to pre-process the data before sending it.
+			if ( 'function' === typeof field.data( 'before_ajax' ) ) {
+				data = field.data( 'before_ajax' )( data, field );
+			}
+
 			jQuery.post(
 				window.ajaxurl,
 				data,
 				function( response ) {
-					if ( fn.ajax_error( response ) ) {
+					if ( fn.ajax_error( response, info_field ) ) {
 						// Reset the input control to previous value...
 					}
 
-					jQuery( fn.save_obj_selector ).removeClass( fn.processing_class );
+					info_field.removeClass( fn.processing_class );
 					field.trigger( 'ms-ajax-updated', data, response );
 				}
 			);
@@ -57,12 +60,12 @@ window.ms_functions = {
 	},
 
 	radio_slider_ajax_update: function( obj ) {
-		var data,
+		var data, info_field,
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
 		if( ! slider.hasClass( fn.processing_class ) ) {
-			fn.ajax_show_indicator();
+			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( fn.processing_class );
 			slider.toggleClass( fn.radio_slider_on_class );
@@ -72,15 +75,21 @@ window.ms_functions = {
 			if( null != data ) {
 				data.value = slider.hasClass( fn.radio_slider_on_class );
 
+				// Allow fields to pre-process the data before sending it.
+				if ( 'function' === typeof slider.data( 'before_ajax' ) ) {
+					data = slider.data( 'before_ajax' )( data, slider );
+				}
+
 				jQuery.post(
 					window.ajaxurl,
 					data,
 					function( response ) {
-						if ( fn.ajax_error( response ) ) {
+						if ( fn.ajax_error( response, info_field ) ) {
 							slider.togglesClass( fn.radio_slider_on_class );
 						}
 
-						jQuery( fn.save_obj_selector ).removeClass( fn.processing_class );
+						info_field.removeClass( fn.processing_class );
+
 						slider.removeClass( fn.processing_class );
 						slider.children( 'input' ).val( slider.hasClass( fn.radio_slider_on_class ) );
 						slider.trigger( 'ms-radio-slider-updated', data );
@@ -98,7 +107,7 @@ window.ms_functions = {
 	 * Returns true when an error code is found.
 	 * When no numeric code is found the function returns false (no error)
 	 */
-	ajax_error: function( response ) {
+	ajax_error: function( response, info_field ) {
 		var code = 0,
 			parts = [],
 			msg = '',
@@ -114,19 +123,19 @@ window.ms_functions = {
 
 		if ( code < 0 ) {
 			// Negative number as response code is an error-indicator.
-			jQuery( fn.save_obj_selector ).removeClass( 'okay' ).addClass( 'error' );
-			jQuery( fn.save_obj_selector ).find( '.err-code' ).text( msg );
+			info_field.removeClass( 'okay' ).addClass( 'error' );
+			info_field.find( '.err-code' ).text( msg );
 
 			// Automatically hide success message after a longer timeout.
-			fn.ajax_hide_message( 8000 );
+			fn.ajax_hide_message( 8000, info_field );
 			return true;
 		} else {
 			// No response code or positive number is interpreted as success.
-			jQuery( fn.save_obj_selector ).removeClass( 'error' ).addClass( 'okay' );
-			jQuery( fn.save_obj_selector ).find( '.err-code' ).text( '' );
+			info_field.removeClass( 'error' ).addClass( 'okay' );
+			info_field.find( '.err-code' ).text( '' );
 
 			// Automatically hide success message after short timeout.
-			fn.ajax_hide_message( 4000 );
+			fn.ajax_hide_message( 4000, info_field );
 			return false;
 		}
 	},
@@ -134,29 +143,38 @@ window.ms_functions = {
 	/**
 	 * Displays the ajax progress message and cancels the hide-timeout if required.
 	 */
-	ajax_show_indicator: function() {
-		var fn = window.ms_functions;
+	ajax_show_indicator: function( field ) {
+		var info_field,
+			fn = window.ms_functions;
 
-		if ( null !== fn.msg_timeout ) {
-			window.clearTimeout( fn.msg_timeout );
-			fn.msg_timeout = null;
+		info_field = field.nearest( '.ms-save-text-wrapper' );
+
+		if ( null !== info_field.data( 'msg_timeout' ) ) {
+			window.clearTimeout( info_field.data( 'msg_timeout' ) );
+			info_field.data( 'msg_timeout', null );
 		}
 
-		jQuery( fn.save_obj_selector ).addClass( fn.processing_class );
+		info_field.addClass( fn.processing_class );
+		info_field.removeClass( 'error okay' );
+		return info_field;
 	},
 
 	/**
 	 * Hides the ajax response message after a short timeout
 	 */
-	ajax_hide_message: function( timeout ) {
-		var fn = window.ms_functions;
+	ajax_hide_message: function( timeout, info_field ) {
+		var tmr_id,
+			fn = window.ms_functions;
 
 		if ( isNaN( timeout ) ) { timeout = 4000; }
 		if ( timeout < 0 ) { timeout = 0; }
 
-		fn.msg_timeout = window.setTimeout( function() {
-			jQuery( fn.save_obj_selector ).removeClass( 'error okay' );
+		tmr_id = window.setTimeout( function() {
+			var field = info_field;
+			field.removeClass( 'error okay' );
 		}, timeout );
+
+		info_field.data( 'msg_timeout', tmr_id );
 	},
 
 
@@ -183,7 +201,7 @@ window.ms_functions = {
 	 */
 	toggle_box: function( el ) {
 		var me = jQuery( el ),
-			box = me.parents( '.ms-settings-box' ).first();
+			box = me.closest( '.ms-settings-box' );
 
 		if ( box.hasClass( 'static' ) ) { return false; }
 		if ( box.hasClass( 'closed' ) ) {
@@ -198,7 +216,7 @@ window.ms_functions = {
 	 */
 	toggle_datepicker: function( el ) {
 		var me = jQuery( el ),
-			dp = me.parents( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
+			dp = me.closest( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
 
 		dp.datepicker( 'show' );
 	},
@@ -209,7 +227,7 @@ window.ms_functions = {
 	 */
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
-			me = jQuery( this ).parents( '.ms-tag-selector-wrapper' ).first(),
+			me = jQuery( this ).closest( '.ms-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
 			list = el_dst.val() || [];
@@ -229,7 +247,7 @@ window.ms_functions = {
 	 */
 	tag_selector_refresh_source: function( el ) {
 		var i = 0, item = null,
-			me = jQuery( el ).parents( '.ms-tag-selector-wrapper' ).first(),
+			me = jQuery( el ).closest( '.ms-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
@@ -244,6 +262,13 @@ window.ms_functions = {
 			}
 		}
 		el_src.trigger( 'change' );
+	},
+
+	/**
+	 * Reload the current page.
+	 */
+	reload: function() {
+		window.location.reload();
 	}
 };
 
@@ -277,6 +302,8 @@ jQuery( document ).ready( function() {
 	// Ajax-Submit data when ms-ajax-update fields are changed.
 	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' )
 		.change( function() { fn.ajax_update( this ); } );
+	jQuery( 'button.ms-ajax-update' )
+		.click( function() { fn.ajax_update( this ); } );
 
 	// Select all text inside <code> tags on click.
 	jQuery( '.ms-wrap' )

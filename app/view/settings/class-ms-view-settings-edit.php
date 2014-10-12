@@ -360,44 +360,65 @@ class MS_View_Settings_Edit extends MS_View {
 
 		$fields = array(
 			'content' => array(
-				'id' => 'content',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-				'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
-				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
-				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-				'class' => 'ms-textarea-medium ms-ajax-update',
-				'data_ms' => array(
-					'type' => 'content',
-					'action' => $action,
-					'_wpnonce' => $nonce,
+				'editor' => array(
+					'id' => 'content',
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
+					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				),
+				'save' => array(
+					'id' => 'save_content',
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Save', MS_TEXT_DOMAIN ),
+					'class' => 'button-primary ms-ajax-update',
+					'data_ms' => array(
+						'type' => 'content',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
 			),
 
 			'shortcode' => array(
-				'id' => 'shortcode',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-				'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
-				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
-				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-				'class' => 'ms-textarea-medium ms-ajax-update',
-				'data_ms' => array(
-					'type' => 'shortcode',
-					'action' => $action,
-					'_wpnonce' => $nonce,
+				'editor' => array(
+					'id' => 'shortcode',
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'title' => __( 'Message displayed when not having access to a protected shortcode content.', MS_TEXT_DOMAIN ),
+					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ),
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				),
+				'save' => array(
+					'id' => 'save_content',
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Save', MS_TEXT_DOMAIN ),
+					'class' => 'button-primary ms-ajax-update',
+					'data_ms' => array(
+						'type' => 'shortcode',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
 			),
 
 			'more_tag' => array(
-				'id' => 'more_tag',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-				'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
-				'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
-				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-				'class' => 'ms-textarea-medium ms-ajax-update',
-				'data_ms' => array(
-					'type' => 'more_tag',
-					'action' => $action,
-					'_wpnonce' => $nonce,
+				'editor' => array(
+					'id' => 'more_tag',
+					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+					'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
+					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
+					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
+				),
+				'save' => array(
+					'id' => 'save_content',
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Save', MS_TEXT_DOMAIN ),
+					'class' => 'button-primary ms-ajax-update',
+					'data_ms' => array(
+						'type' => 'more_tag',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+					),
 				),
 			),
 		);
@@ -419,19 +440,25 @@ class MS_View_Settings_Edit extends MS_View {
 			<form class="ms-form" action="" method="post">
 				<?php
 				MS_Helper_Html::settings_box(
-					array( $fields['content'] ),
-					__( 'Content protection message', MS_TEXT_DOMAIN )
+					$fields['content'],
+					__( 'Content protection message', MS_TEXT_DOMAIN ),
+					'',
+					'open'
 				);
 
 				MS_Helper_Html::settings_box(
-					array( $fields['shortcode'] ),
-					__( 'Shortcode protection message', MS_TEXT_DOMAIN )
+					$fields['shortcode'],
+					__( 'Shortcode protection message', MS_TEXT_DOMAIN ),
+					'',
+					'open'
 				);
 
 				if ( $has_more ) {
 					MS_Helper_Html::settings_box(
-						array( $fields['more_tag'] ),
-						__( 'More tag protection message', MS_TEXT_DOMAIN )
+						$fields['more_tag'],
+						__( 'More tag protection message', MS_TEXT_DOMAIN ),
+						'',
+						'open'
 					);
 				}
 				?>

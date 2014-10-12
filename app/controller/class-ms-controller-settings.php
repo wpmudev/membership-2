@@ -465,7 +465,6 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 4.0.0
 	 */
 	public function enqueue_styles() {
-
 		if ( 'messages-automated' == $this->active_tab ) {
 			wp_enqueue_style( 'ms-view-settings-render-messages-automated' );
 		}
@@ -484,18 +483,24 @@ class MS_Controller_Settings extends MS_Controller {
 		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
 
 		$data = array(
-			'ms_init' => 'view_settings',
+			'ms_init' => array(),
 			'initial_url' => $initial_url,
 		);
 
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
-		wp_enqueue_script( 'ms-admin' );
+		$data['ms_init'][] = 'view_settings';
 
 		switch ( $this->get_active_tab() ) {
 			case 'payment':
 				add_thickbox();
-				wp_enqueue_script( 'ms-view-settings-payment' );
+				$data['ms_init'][] = 'view_settings_payment';
+				break;
+
+			case 'messages-protection':
+				$data['ms_init'][] = 'view_settings_protection';
 				break;
 		}
+
+		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
 	}
 }

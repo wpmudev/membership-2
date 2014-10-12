@@ -627,22 +627,18 @@ class MS_Helper_Html extends MS_Helper {
 			'fields' => $fields,
 		);
 		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
-		extract( $args );
+		$fields = $args['fields'];
+		unset( $args['fields'] );
 
 		?>
 		<div class="ms-settings-footer">
 			<form method="post" action="">
-				<span class="ms-save-text-wrapper">
-					<?php foreach ( $fields as $field ) {
-						MS_Helper_Html::html_element( $field );
-					} ?>
-					<span class="ms-saving-text">
-						<div class="loading-animation"></div>
-						<?php printf( $saving_text ); ?>
-					</span>
-					<span class="ms-saved-text"><?php printf( $saved_text ); ?></span>
-					<span class="ms-error-text"><?php printf( $error_text ); ?><span class="err-code"></span></span>
-				</span>
+				<?php
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				self::save_text( $args );
+				?>
 			</form>
 		</div>
 		<?php
@@ -699,6 +695,7 @@ class MS_Helper_Html extends MS_Helper {
 		foreach ( $fields as $field ) {
 			MS_Helper_Html::html_element( $field );
 		}
+		self::save_text();
 		self::settings_box_footer();
 	}
 
@@ -899,6 +896,33 @@ class MS_Helper_Html extends MS_Helper {
 		} else {
 			echo '<div class="ms-separator"></div>';
 		}
+	}
+
+	/**
+	 * Echo HTML structure for save-text and animation.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $texts Optionally override the default save-texts.
+	 */
+	public static function save_text( $texts = array() ) {
+		$defaults = array(
+			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
+			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
+			'error_text' => __( 'Could not save changes.', MS_TEXT_DOMAIN ),
+		);
+		extract( wp_parse_args( $texts, $defaults ) );
+
+		printf(
+			'<span class="ms-save-text-wrapper">
+				<span class="ms-saving-text"><div class="loading-animation"></div> %1$s</span>
+				<span class="ms-saved-text">%2$s</span>
+				<span class="ms-error-text">%3$s<span class="err-code"></span></span>
+			</span>',
+			$saving_text,
+			$saved_text,
+			$error_text
+		);
 	}
 
 	/**

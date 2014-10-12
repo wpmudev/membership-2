@@ -64,4 +64,17 @@
 		overflow: hidden;
 		background: transparent url('../images/spinner.gif') top left no-repeat;
 	}
+
+	.inside {
+		.ms-save-text-wrapper {
+			display: inline-block;
+			height: 28px;
+			line-height: 28px;
+			margin: 6px 6px 0 0;
+
+			.loading-animation {
+				margin-top: 4px;
+			}
+		}
+	}
 }

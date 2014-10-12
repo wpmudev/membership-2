@@ -9,7 +9,13 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-member-list.js',
 				'app/assets/js/src/ms-view-membership-choose-type.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
-				'app/assets/js/src/ms-view-settings.js'
+				'app/assets/js/src/ms-view-settings.js',
+				'app/assets/js/src/ms-view-settings-mailchimp.js',
+				'app/assets/js/src/ms-view-settings-payment.js',
+				'app/assets/js/src/ms-view-settings-protection.js'
+			],
+			'app/assets/js/jquery.plugins.js': [
+				'app/assets/js/vendor/jquery.nearest.js'
 			],
 			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js']
 		},
