@@ -268,7 +268,7 @@ class MS_Controller_Settings extends MS_Controller {
 	public function admin_settings_manager() {
 		$this->print_admin_message();
 		$this->get_active_tab();
-// 		MS_Helper_Debug::log($_POST);
+
 		$msg = 0;
 		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
 
@@ -330,13 +330,19 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['settings'] = $this->get_model();
 		$data['membership'] = MS_Model_Membership::get_visitor_membership();
 
-		if( 'messages-automated' == $this->get_active_tab() ) {
-			$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-			if( ! empty( $_GET['comm_type'] ) ) {
-				$type = $_GET['comm_type'];
-			}
-			$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
-			$data['comm'] = $comm;
+		switch( $this->get_active_tab() ) {
+			case 'messages-automated':
+				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
+					$type = $_GET['comm_type'];
+				}
+				$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
+				$data['comm'] = $comm;
+				break;
+			case 'pages':
+				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
+				$data['page_types'] = MS_Model_Pages::get_ms_page_types();
+				break;
 		}
 		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
 		$view->model = $this->get_model();

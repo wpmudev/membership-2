@@ -165,165 +165,76 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_pages() {
-		$settings = $this->data['settings'];
-		$pages['no_access'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS );
-		$pages['account'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
-		$pages['welcome'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME );
-		$pages['signup'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
 
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
+		$action = MS_Controller_Page::AJAX_ACTION_UPDATE_PAGE;
 		$nonce = wp_create_nonce( $action );
 
-		$all_pages = $settings->get_pages();
-		$page_urls = array();
-		$page_edit_urls = array();
+		$ms_pages = $this->data['ms_pages'];
+		
+		$fields = array();
+		foreach( $ms_pages as $ms_page ) {
+			$fields['pages'][ $ms_page->type ] = array(
+					'id' => $ms_page->type,
+					'page_id' => $ms_page->id,
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
+					'value' => $ms_page->slug,
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+							'page_type' => $ms_page->type,
+							'field' => 'slug',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
+			);
+			$fields['edit'][ $ms_page->type ] = array(
+					'id' => 'edit_slug_' . $ms_page->type,
+					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
+			);
 
-		foreach ( $all_pages as $id => $page ) {
-			$page_urls[ $id ] = get_permalink( $id );
-			$page_edit_urls[ $id ] = get_edit_post_link( $id );
 		}
-
-		$fields = array(
-			'pages' => array(
-				'no_access' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select protected content page', MS_TEXT_DOMAIN ),
-					'value' => $pages['no_access'],
-					'field_options' => $all_pages,
-					'class' => 'chosen-select ms-ajax-update',
-					'data_ms' => array(
-						'field' => 'page_no_access',
-						'action' => $action,
-						'_wpnonce' => $nonce,
-					),
-				),
-
-				'account' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_ACCOUNT,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select account page', MS_TEXT_DOMAIN ),
-					'value' => $pages['account'],
-					'field_options' => $all_pages,
-					'class' => 'chosen-select ms-ajax-update',
-					'data_ms' => array(
-						'field' => 'page_account',
-						'action' => $action,
-						'_wpnonce' => $nonce,
-					),
-				),
-
-				'welcome' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_WELCOME,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select registration completed page', MS_TEXT_DOMAIN ),
-					'value' => $pages['welcome'],
-					'field_options' => $all_pages,
-					'class' => 'chosen-select ms-ajax-update',
-					'data_ms' => array(
-						'field' => 'page_welcome',
-						'action' => $action,
-						'_wpnonce' => $nonce,
-					),
-				),
-
-				'signup' => array(
-					'id' => MS_Model_Settings::SPECIAL_PAGE_SIGNUP,
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Select signup page', MS_TEXT_DOMAIN ),
-					'value' => $pages['signup'],
-					'field_options' => $all_pages,
-					'class' => 'chosen-select ms-ajax-update',
-					'data_ms' => array(
-						'field' => 'page_signup',
-						'action' => $action,
-						'_wpnonce' => $nonce,
-					),
-				),
-			),
-
-			'control' => array(
-				'action' => array(
-					'id' => 'action',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => 'create_special_page',
-				),
-
-				'nonce' => array(
-					'id' => '_wpnonce',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => wp_create_nonce( 'create_special_page' ),
-				),
-			),
-
-			'page_urls' => array(
-				'id' => 'page_urls',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'field_options' => $page_urls,
-				'class' => 'ms-hidden',
-			),
-
-			'page_edit_urls' => array(
-				'id' => 'page_edit_urls',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'field_options' => $page_edit_urls,
-				'class' => 'ms-hidden',
-			),
-
-		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
 
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) )
-			); ?>
+			<?php 
+				MS_Helper_Html::settings_tab_header( array( 
+					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) 
+				) ); 
+			?>
 			<div class="ms-separator"></div>
 
 			<form action="" method="post">
-				<?php
-				MS_Helper_Html::html_element( $fields['control']['action'] );
-				MS_Helper_Html::html_element( $fields['control']['nonce'] );
-				MS_Helper_Html::html_element( $fields['page_urls'] );
-				MS_Helper_Html::html_element( $fields['page_edit_urls'] );
-				?>
 
-				<?php foreach ( $fields['pages'] as $field ) : ?>
-					<?php MS_Helper_Html::settings_box_header(); ?>
-						<?php
+				<?php foreach ( $fields['pages'] as $page_type => $field ) : ?>
+					<?php
 						MS_Helper_Html::html_element( $field );
-						MS_Helper_Html::html_submit(
+						MS_Helper_Html::html_element( $fields['edit'][ $page_type ] );
+					?>
+					<div id="ms-settings-page-links-wrapper">
+						<?php
+						MS_Helper_Html::html_link(
 							array(
-								'id' => 'create_page_' . $field['id'],
-								'value' => __( 'Create new page', MS_TEXT_DOMAIN ),
-								'class' => 'button button-primary ms-create-page',
+								'id' => 'url_page_' . $field['page_id'],
+								'url' => get_permalink( $field['page_id'] ),
+								'value' => __( 'View', MS_TEXT_DOMAIN ),
 							)
 						);
 						?>
-						<div id="ms-settings-page-links-wrapper">
-							<?php
-							MS_Helper_Html::html_link(
-								array(
-									'id' => 'url_page_' . $field['id'],
-									'url' => get_permalink( $field['value'] ),
-									'value' => __( 'View', MS_TEXT_DOMAIN ),
-								)
-							);
-							?>
-							<span> | </span>
-							<?php
-							MS_Helper_Html::html_link(
-								array(
-									'id' => 'edit_url_page_' . $field['id'],
-									'url' => get_edit_post_link( $field['value'] ),
-									'value' => __( 'Edit', MS_TEXT_DOMAIN ),
-								)
-							);
-							?>
-						</div>
-					<?php MS_Helper_Html::settings_box_footer(); ?>
+						<span> | </span>
+						<?php
+						MS_Helper_Html::html_link(
+							array(
+								'id' => 'edit_url_page_' . $field['page_id'],
+								'url' => get_edit_post_link( $field['page_id'] ),
+								'value' => __( 'Edit', MS_TEXT_DOMAIN ),
+							)
+						);
+						?>
+					</div>
 				<?php endforeach; ?>
 			</form>
 		</div>

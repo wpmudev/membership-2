@@ -266,7 +266,11 @@ class MS_Plugin {
 		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
 
 		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
-
+		
+		add_action( 'init', array( &$this, 'add_rewrite_rules' ), 1 );
+		
+		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
+		
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
@@ -368,7 +372,19 @@ class MS_Plugin {
 				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
 		) );
 	}
-
+	
+	public function add_rewrite_rules() {
+		add_rewrite_rule(
+			'^ms-page/(.+)/?$',
+			'index.php?ms_page=$matches[1]',
+			'top'
+		);
+	}
+	
+	public function add_rewrite_tags() {
+		add_rewrite_tag( '%ms_page%', '(.+)' );
+	}
+	
 	/**
 	 * Class autoloading callback function.
 	 *

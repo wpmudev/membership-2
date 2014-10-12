@@ -266,21 +266,38 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_communication_types() {
 		
-		$types = array(
-			self::COMM_TYPE_REGISTRATION,
-			self::COMM_TYPE_INVOICE,
-			self::COMM_TYPE_BEFORE_FINISHES,
-			self::COMM_TYPE_FINISHED,
-			self::COMM_TYPE_AFTER_FINISHES,
-			self::COMM_TYPE_CANCELLED,
-			self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
-			self::COMM_TYPE_INFO_UPDATE,
-			self::COMM_TYPE_CREDIT_CARD_EXPIRE,
-			self::COMM_TYPE_FAILED_PAYMENT,
-			self::COMM_TYPE_BEFORE_PAYMENT_DUE,
-			self::COMM_TYPE_AFTER_PAYMENT_DUE,
-		);
+		static $types;
 		
+		if( empty( $types ) ) {
+			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
+				$types = array(
+						self::COMM_TYPE_REGISTRATION,
+						self::COMM_TYPE_INVOICE,
+						self::COMM_TYPE_BEFORE_FINISHES,
+						self::COMM_TYPE_FINISHED,
+						self::COMM_TYPE_AFTER_FINISHES,
+						self::COMM_TYPE_CANCELLED,
+						self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
+						self::COMM_TYPE_INFO_UPDATE,
+						self::COMM_TYPE_CREDIT_CARD_EXPIRE,
+						self::COMM_TYPE_FAILED_PAYMENT,
+						self::COMM_TYPE_BEFORE_PAYMENT_DUE,
+						self::COMM_TYPE_AFTER_PAYMENT_DUE,
+				);
+			}
+			else {
+				$types = array(
+						self::COMM_TYPE_REGISTRATION,
+						self::COMM_TYPE_INVOICE,
+						self::COMM_TYPE_FINISHED,
+						self::COMM_TYPE_CANCELLED,
+						self::COMM_TYPE_INFO_UPDATE,
+						self::COMM_TYPE_CREDIT_CARD_EXPIRE,
+						self::COMM_TYPE_FAILED_PAYMENT,
+				);				
+			}
+		}
+
 		return apply_filters( 'ms_model_communication_get_communication_types', $types );
 	}
 	
@@ -296,22 +313,26 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_communication_type_classes() {
 		
-		$types = array(
-			self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
-			self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
-			self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
-			self::COMM_TYPE_FINISHED => 'MS_Model_Communication_Finished',
-			self::COMM_TYPE_AFTER_FINISHES => 'MS_Model_Communication_After_Finishes',
-			self::COMM_TYPE_CANCELLED => 'MS_Model_Communication_Cancelled',
-			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => 'MS_Model_Communication_Before_Trial_Finishes',
-			self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
-			self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
-			self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
-			self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
-			self::COMM_TYPE_AFTER_PAYMENT_DUE => 'MS_Model_Communication_After_Payment_Due',
-		);
+		static $type_classes;
 		
-		return apply_filters( 'ms_model_comunication_get_communication_type_classes', $types );
+		if( empty( $type_classes ) ) {
+			$type_classes = array(
+				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
+				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
+				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
+				self::COMM_TYPE_FINISHED => 'MS_Model_Communication_Finished',
+				self::COMM_TYPE_AFTER_FINISHES => 'MS_Model_Communication_After_Finishes',
+				self::COMM_TYPE_CANCELLED => 'MS_Model_Communication_Cancelled',
+				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => 'MS_Model_Communication_Before_Trial_Finishes',
+				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
+				self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
+				self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
+				self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
+				self::COMM_TYPE_AFTER_PAYMENT_DUE => 'MS_Model_Communication_After_Payment_Due',
+			);
+		}
+		
+		return apply_filters( 'ms_model_comunication_get_communication_type_classes', $type_classes );
 	}
 	
 	/**
@@ -326,22 +347,32 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_communication_type_titles() {
 		
-		$types = array(
-			self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_INVOICE => __( 'Invoice/Receipt', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_CANCELLED => __( 'Membership cancelled', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Before Trial finishes', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_INFO_UPDATE => __( 'Billing details updated', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'After payment due', MS_TEXT_DOMAIN ),
-		);
+		static $type_titles;
 		
-		return apply_filters( 'ms_model_communication_get_communication_type_titles', $types );
+		if( empty( $type_titles ) ) {
+			$type_titles = array(
+				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INVOICE => __( 'Invoice/Receipt', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_CANCELLED => __( 'Membership cancelled', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Before Trial finishes', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INFO_UPDATE => __( 'Billing details updated', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'After payment due', MS_TEXT_DOMAIN ),
+			);
+			
+			foreach( $type_titles as $type => $title ) {
+				if( ! self::is_valid_communication_type( $type) ) {
+					unset( $type_titles[ $type ] );
+				}
+			}
+		}
+		
+		return apply_filters( 'ms_model_communication_get_communication_type_titles', $type_titles );
 	}
 	
 	/**
@@ -422,7 +453,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 		$model = MS_Factory::create( $class );
 		$model->reset_to_default();
-			
+
 		return apply_filters( 'ms_model_communication_communication_factory', $model, $type, $class );
 	}
 	
