@@ -324,12 +324,12 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	private function get_excluded_content() {
 		
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$special_page_types = MS_Model_Pages::get_ms_page_types();
+		$ms_page_types = MS_Model_Pages::get_ms_page_types();
 		$exclude = null;
-		foreach ( $special_page_types as $type ) {
-			$exclude[] = $ms_pages->get_ms_page( $type )->id;
+		foreach ( $ms_page_types as $type => $title ) {
+			$exclude[] = $ms_pages->get_ms_page_id( $type );
 		}
-		
+
 		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude, $this );
 	}
 }

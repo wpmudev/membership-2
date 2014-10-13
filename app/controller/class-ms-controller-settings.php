@@ -337,7 +337,7 @@ class MS_Controller_Settings extends MS_Controller {
 				$data['comm'] = $comm;
 				break;
 			case 'pages':
-				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
+				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages( true );
 				$data['page_types'] = MS_Model_Pages::get_ms_page_types();
 				break;
 		}

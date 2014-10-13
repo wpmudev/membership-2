@@ -68,12 +68,12 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_is_valid_ms_page_type', $valid );
 	}
 	
-	public function get_ms_pages() {
+	public function get_ms_pages( $create_if_not_exists = false ) {
 		
 		$page_types = self::get_ms_page_types();
 		
 		foreach( $page_types as $page_type => $title ) {
-			$this->get_ms_page( $page_type );
+			$this->get_ms_page( $page_type, $create_if_not_exists );
 		}
 		
 		return apply_filters( 'ms_model_page_get_ms_page', $this->pages, $this );
@@ -84,10 +84,13 @@ class MS_Model_Pages extends MS_Model_Option {
 		$ms_page = null;
 		
 		if ( self::is_valid_ms_page_type( $page_type ) ) {
+
 			if(  ! empty( $this->pages[ $page_type ] ) ) {
+
 				$ms_page = $this->pages[ $page_type ];
 			}
 			elseif( $create_if_not_exists ) {
+
 				$page_types = self::get_ms_page_types();
 				$ms_page = MS_Factory::create( 'MS_Model_Page' );
 				$ms_page->type = $page_type;
@@ -101,6 +104,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			}
 		}
 		else {
+
 			MS_Helper_Debug::log( 'ms_model_pages_get_page error: invalid page type: ' . $page_type );
 			$ms_page = MS_Factory::create( 'MS_Model_Page' );
 		}
@@ -129,8 +133,8 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( ! empty( $page_id ) ) {
 			if ( ! empty( $page_type ) ) {
 				
-				$ms_page = $this->get_ms_page( $page_type );
-				if( $page_id == $ms_page->id ) { 
+				$ms_page_id = $this->get_ms_page_id( $page_type );
+				if( $page_id == $ms_page_id ) { 
 					$is_ms_page = $page_type;
 				}
 			}
@@ -139,8 +143,8 @@ class MS_Model_Pages extends MS_Model_Option {
 
 				foreach ( $page_types as $page_type => $title ) {
 					
-					$ms_page = $this->get_ms_page( $page_type );
-					if ( $page_id == $ms_page->id ) {
+					$ms_page_id = $this->get_ms_page_id( $page_type );
+					if ( $page_id == $ms_page_id ) {
 						$is_ms_page = $page_type;
 						break;
 					}

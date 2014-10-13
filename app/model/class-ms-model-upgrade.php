@@ -125,6 +125,10 @@ class MS_Model_Upgrade extends MS_Model {
 		$settings->instance = $settings;
 		$settings->save();
 		
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_pages->pages = array();
+		$ms_pages->save();
+		
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
 		$addon->addons = array();
 		$addon->save();

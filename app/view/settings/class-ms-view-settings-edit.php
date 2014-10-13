@@ -178,7 +178,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'page_id' => $ms_page->id,
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
-					'value' => $ms_page->slug,
+					'value' => sprintf( '/%1$s/', $ms_page->slug ),
 					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 							'page_type' => $ms_page->type,
@@ -220,7 +220,7 @@ class MS_View_Settings_Edit extends MS_View {
 							array(
 								'id' => 'url_page_' . $field['page_id'],
 								'url' => get_permalink( $field['page_id'] ),
-								'value' => __( 'View', MS_TEXT_DOMAIN ),
+								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
 							)
 						);
 						?>
@@ -230,7 +230,7 @@ class MS_View_Settings_Edit extends MS_View {
 							array(
 								'id' => 'edit_url_page_' . $field['page_id'],
 								'url' => get_edit_post_link( $field['page_id'] ),
-								'value' => __( 'Edit', MS_TEXT_DOMAIN ),
+								'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
 							)
 						);
 						?>
