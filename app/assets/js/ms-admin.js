@@ -17,7 +17,7 @@ jQuery(function() {
 		}
 	}
 
-	if ( undefined === ms_data.ms_init ) { return; }
+	if ( typeof ms_data === 'undefined' || undefined === ms_data.ms_init ) { return; }
 
 	if ( ms_data.ms_init instanceof Array ) {
 		for ( i = 0; i < ms_data.ms_init.length; i += 1 ) {
