@@ -90,6 +90,11 @@ class MS_Controller_Page extends MS_Controller {
 			
 			$ms_pages->set_ms_page( $page_type, $ms_page );
 			$ms_pages->save();
+			
+			/* If slug is changed, need to flush rewrite rules.*/
+			if( 'slug' == $field ) {
+				flush_rewrite_rules();
+			}
 		}
 		$msg .= $this->_resp_code();
 

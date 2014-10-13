@@ -267,9 +267,15 @@ class MS_Plugin {
 
 		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
 		
+		/**
+		 * Hooks init to add rewrite rules and tags (both work in conjunction).
+		 */
 		add_action( 'init', array( &$this, 'add_rewrite_rules' ), 1 );
 		
 		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
+		
+		/* Plugin acctivation Hook */
+		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
 		
 		/**
 		 * Hooks init to create the primary plugin controller.
@@ -398,7 +404,6 @@ class MS_Plugin {
 		/* Media / download */
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if ( MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED != $settings->downloads['protection_type'] && ! empty( $settings->downloads['masked_url'] ) ) {
-			MS_Helper_Debug::log( sprintf( '^%1$s/(.*)/?$', $settings->downloads['masked_url'] ) );
 			add_rewrite_rule(
 				sprintf( '^%1$s(.*)/?$', $settings->downloads['masked_url'] ),
 				'index.php?protectedfile=$matches[1]',
@@ -427,6 +432,18 @@ class MS_Plugin {
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
 		
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
+	}
+	
+	/**
+	 * Actions executed in plugin activation.
+	 *
+	 * @since 1.0.0
+	 */
+	public function plugin_activation() {
+
+		flush_rewrite_rules();
+		
+		do_action( 'ms_plugin_activation ', $this );
 	}
 	
 	/**

@@ -211,7 +211,7 @@ class MS_Controller_Settings extends MS_Controller {
 						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
 				),
 				'pages' => array(
-						'title' =>	__( 'Pages', MS_TEXT_DOMAIN ),
+						'title' =>	__( 'Membership Site Pages', MS_TEXT_DOMAIN ),
 				),
 				'payment' => array(
 						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
@@ -220,7 +220,7 @@ class MS_Controller_Settings extends MS_Controller {
 						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
 				),
 				'messages-automated' => array(
-						'title' =>	__( 'Automated Messages', MS_TEXT_DOMAIN ),
+						'title' =>	__( 'Automated Email Responses', MS_TEXT_DOMAIN ),
 				),
 				'downloads' => array(
 						'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
@@ -233,7 +233,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : MS_Controller_Plugin::MENU_SLUG . '-settings';
 		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = "admin.php?page={$page}&tab={$key}";
+			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%1$s&tab=%2$s', $page, $key );
 		}
 
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
