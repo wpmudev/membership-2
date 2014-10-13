@@ -25,7 +25,6 @@ class MS_View_Frontend_Welcome extends MS_View {
 	protected function prepare_fields() {
 		$ms_relationship = $this->data['ms_relationship'];
 		$membership = $ms_relationship->get_membership();
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		
 		$fields = array(
 			'welcome_title' => array(
@@ -38,7 +37,7 @@ class MS_View_Frontend_Welcome extends MS_View {
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'value' => sprintf( '%s<br/><a href="%s">%s</a>',
 							__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN ),
-							$settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT, false, true ),
+							MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT, false, true ),
 							__( 'Visit your account page for more information.', MS_TEXT_DOMAIN )
 					)
 			),

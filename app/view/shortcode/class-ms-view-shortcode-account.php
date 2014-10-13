@@ -10,7 +10,7 @@ class MS_View_Shortcode_Account extends MS_View {
 	
 	public function to_html() {
 		$this->prepare_fields();
-		$signup_url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
+		$signup_url = MS_Factory::load( 'MS_Model_Pages')->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 		ob_start();
 		?>
 		<div class="ms-account-wrapper">

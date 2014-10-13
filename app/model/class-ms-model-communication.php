@@ -788,7 +788,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					break;
 				case self::COMM_VAR_MS_ACCOUNT_PAGE_URL:
 					$comm_vars[ $key ] = sprintf( '<a href="%s">%s</a>', 
-						MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT ), 
+						MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ), 
 						__( 'account page', MS_TEXT_DOMAIN )
 					);
 					break;

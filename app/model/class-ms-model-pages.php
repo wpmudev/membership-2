@@ -96,6 +96,8 @@ class MS_Model_Pages extends MS_Model_Option {
 				$ms_page->create_wp_page();
 				$this->pages[ $page_type ] = $ms_page;
 				$this->save();
+				
+				flush_rewrite_rules();
 			}
 		}
 		else {
@@ -117,6 +119,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	
 	public function is_ms_page( $page_id = null, $page_type = null ) {
 	
+		global $wp_query;
 		$is_ms_page = false;
 	
 		if ( empty( $page_id ) && is_page() ) {
@@ -144,7 +147,30 @@ class MS_Model_Pages extends MS_Model_Option {
 				}
 			}
 		}
-	
+		elseif( isset( $wp_query->query_vars['ms_page'] ) ) {
+			$slug = $wp_query->query_vars['ms_page'];
+			
+			if ( ! empty( $page_type ) ) {
+			
+				$ms_page = $this->get_ms_page( $page_type );
+				if( $slug == $ms_page->slug ) {
+					$is_ms_page = $page_type;
+				}
+			}
+			else {
+				$page_types = self::get_ms_page_types();
+			
+				foreach ( $page_types as $page_type => $title ) {
+						
+					$ms_page = $this->get_ms_page( $page_type );
+					if ( $slug == $ms_page->slug ) {
+						$is_ms_page = $page_type;
+						break;
+					}
+				}
+			}
+		}
+		
 		return apply_filters( 'ms_model_page_is_ms_page', $is_ms_page, $this );
 	}
 	
@@ -184,5 +210,48 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 				
 		return apply_filters( 'ms_model_page_get_ms_page_url', $url, $this );
+	}
+	
+	public function create_menu( $type ) {
+		
+		if ( self::is_valid_ms_page_type( $type ) ) {
+			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+			foreach ( $navs as $nav ) {
+				$args['meta_query'] = array(
+						array(
+								'key' => '_menu_item_object_id',
+								'value' => $this->get_ms_page( $type, true )->id,
+						),
+						array(
+								'key' => '_menu_item_object',
+								'value' => 'page',
+						),
+						array(
+								'key' => '_menu_item_type',
+								'value' => 'post_type',
+						),
+				);
+				/** Search for existing menu item and create it if not found*/
+				$items = wp_get_nav_menu_items( $nav, $args );
+				if ( empty( $items ) ) {
+					$page = get_post( $this->get_ms_page( $type )->id );
+	
+					$menu_item = apply_filters(
+							'ms_model_settings_create_menu_item',
+							array(
+									'menu-item-object-id' => $page->ID,
+									'menu-item-object' => 'page',
+									'menu-item-parent-id' => 0,
+									'menu-item-position' => 0,
+									'menu-item-type' => 'post_type',
+									'menu-item-title' => $page->post_title,
+									'menu-item-url' => get_permalink( $page->ID ),
+									'menu-item-status' => 'publish',
+							)
+					);
+					wp_update_nav_menu_item( $nav->term_id, 0, $menu_item );
+				}
+			}
+		}
 	}
 }

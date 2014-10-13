@@ -134,6 +134,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages');
 		$has_access = false;
 		/*
 		 * Search permissions through all memberships joined.
@@ -162,11 +163,11 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		if( ! $has_access ) {
-			$no_access_page_url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, false, true );
+			$no_access_page_url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, false, true );
 			$current_page_url = MS_Helper_Utility::get_current_page_url();
 
 			/* Don't (re) redirect the protection page. */
-			if( ! $settings->is_special_page( null, MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS ) ) {
+			if( ! $ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
 				$no_access_page_url = add_query_arg( array( 'redirect_to' =>  $current_page_url ), $no_access_page_url );
 				
 				$no_access_page_url = apply_filters( 'ms_model_plugin_protected_content_page', $no_access_page_url );

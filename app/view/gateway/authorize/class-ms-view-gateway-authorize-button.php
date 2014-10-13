@@ -7,11 +7,11 @@ class MS_View_Gateway_Authorize_Button extends MS_View {
 	protected $data;
 	
 	public function to_html() {
+		
 		$fields = $this->prepare_fields();
 		/** force ssl url */
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$action_url = apply_filters( 'ms_view_gateway_authorize_button_form_action_url',
-				$settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_SIGNUP, true )
+				MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER, true )
 		);
 		ob_start();
 		?>

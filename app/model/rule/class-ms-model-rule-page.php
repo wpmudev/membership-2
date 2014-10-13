@@ -129,7 +129,6 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 */
 	public function has_access( $page_id = null ) {
 		
-		$settings = MS_Plugin::instance()->settings;
 		$has_access = false;
 		if( empty( $page_id ) ) {
 			$page_id = $this->get_current_page_id();
@@ -139,7 +138,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$has_access = parent::has_access( $page_id );
 			
 			/** Membership special pages has access */
-			if( $settings->is_special_page( $page_id ) ) {
+			if( MS_Factory::load( 'MS_Model_Pages')->is_ms_page( $page_id ) ) {
 				$has_access = true;
 			}
 		}
@@ -323,11 +322,12 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @return array The page ids.
 	 */
 	private function get_excluded_content() {
-		$settings = MS_Plugin::instance()->settings;
-		$special_page_types = MS_Model_Settings::get_special_page_types();
+		
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$special_page_types = MS_Model_Pages::get_ms_page_types();
 		$exclude = null;
 		foreach ( $special_page_types as $type ) {
-			$exclude[] = $settings->get_special_page( $type );
+			$exclude[] = $ms_pages->get_ms_page( $type )->id;
 		}
 		
 		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude, $this );

@@ -8,8 +8,8 @@ class MS_View_Gateway_Button extends MS_View {
 	
 	public function to_html() {
 		$this->prepare_fields();
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$action_url = apply_filters( 'ms_view_gateway_button_form_action_url', get_permalink( $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) ) );
+
+		$action_url = apply_filters( 'ms_view_gateway_button_form_action_url', MS_Factory::load( 'MS_Model_Pages')->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER ) );
 		ob_start();
 		?>
 			<tr>

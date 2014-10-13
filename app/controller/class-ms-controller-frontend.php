@@ -106,11 +106,11 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$is_special_page = $settings->is_special_page();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		switch( $is_special_page ) {
-			case MS_Model_Settings::SPECIAL_PAGE_SIGNUP:
+		switch( $ms_pages->is_ms_page() ) {
+			case MS_Model_Pages::MS_PAGE_REGISTER:
+			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 				if( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
 					$this->membership_cancel();
 				}
@@ -118,13 +118,13 @@ class MS_Controller_Frontend extends MS_Controller {
 					$this->signup_process();
 				}
 				break;
-			case MS_Model_Settings::SPECIAL_PAGE_ACCOUNT:
+			case MS_Model_Pages::MS_PAGE_ACCOUNT:
 				$this->user_account_mgr();
 				break;
-			case MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS:
+			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
 				$this->add_filter( 'the_content', 'protected_page', 1 );
 				break;
-			case MS_Model_Settings::SPECIAL_PAGE_WELCOME:
+			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
 				$this->add_filter( 'the_content', 'welcome_page', 1 );
 				break;
 			default:
@@ -386,7 +386,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$member->cancel_membership( $membership_id );
 			$member->save();
 
-			$url = MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
+			$url = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -544,7 +544,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param string $url
 	 */
 	public function signup_location( $url ) {
-		$url = get_permalink( MS_Plugin::instance()->settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP ) );
+		$url = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
 		return apply_filters( 'ms_controller_frontend_signup_location', $url );
 	}
@@ -579,7 +579,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function login_redirect( $redirect_to, $request, $user ) {
 		if( ! empty( $user->ID ) && ! MS_Model_Member::is_admin_user( $user->ID ) && ( empty( $redirect_to ) || admin_url() == $redirect_to ) ) {
-			$redirect_to = MS_Plugin::instance()->settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+			$redirect_to = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		}
 		return $redirect_to;
 	}
@@ -594,12 +594,12 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function enqueue_scripts() {
 		do_action( 'ms_controller_frontend_enqueue_scripts', $this->get_signup_step(), $this->get_action() );
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$is_special_page = $settings->is_special_page();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$is_ms_page = $ms_pages->is_ms_page();
 		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action() &&
-			$settings->is_special_page( null, MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+			$ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
-		if ( $is_special_page ) {
+		if ( $is_ms_page ) {
 			wp_enqueue_style( 'membership-admin' );
 		}
 
