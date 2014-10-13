@@ -1324,6 +1324,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$membership = $this->load_membership();
 
 			if( is_array( $fields ) ) {
+				$msg = 0;
 				foreach( $fields as $field => $value ) {
 					try {
 						$membership->$field = $value;

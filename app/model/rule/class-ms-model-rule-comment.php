@@ -184,7 +184,7 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 */
 	public function check_special_page( $content ) {
 		
-		if ( MS_Plugin::instance()->settings->is_special_page() ) {
+		if ( MS_Factory::load( 'MS_Model_Pages')->is_ms_page() ) {
 			add_filter( 'comments_open', '__return_false', 100 );
 		}
 		

@@ -172,19 +172,20 @@ class MS_Controller_Settings extends MS_Controller {
 	public function auto_setup_settings( $membership ) {
 
 		$settings = $this->get_model();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		/** Create menus/special pages */
-		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_NO_ACCESS, true );
-		$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT, true );
+		$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
+		$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
 
-		$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_ACCOUNT );
+		$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		/** Create additional menus */
 		if( ! $membership->private ) {
-			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_WELCOME, true );
-			$settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP, true );
+			$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
+			$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
 
-			$settings->create_menu( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
+			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
 		$settings->plugin_enabled = true;
 		$settings->save();
@@ -284,11 +285,6 @@ class MS_Controller_Settings extends MS_Controller {
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
 					}
 					break;
-				case 'pages':
-					/** Create special page */
-					$msg = $this->special_pages_do_action( $_POST['action'], $_POST );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) ) ;
-					break;
 				case 'messages-automated':
 					$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 					if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
@@ -304,6 +300,7 @@ class MS_Controller_Settings extends MS_Controller {
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 					}
 					break;
+				case 'pages':
 				case 'payment':
 				case 'messages-protection':
 				case 'downloads':
@@ -385,52 +382,6 @@ class MS_Controller_Settings extends MS_Controller {
 
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		return $msg;
-	}
-
-	/**
-	 * Handle Special pages tab actions.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $action The action to execute.
-	 * @param mixed[] $fields The data to process.
-	 */
-	public function special_pages_do_action( $action, $fields = null ) {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-
-		do_action( 'ms_controller_settings_special_pages_do_action', $action, $fields );
-
-		$settings = $this->get_model();
-		switch( $action ) {
-			case 'submit_pages':
-				$special_pages_types = MS_Model_Settings::get_special_page_types();
-				$pages = $settings->pages;
-				foreach( $special_pages_types as $type ) {
-					if( ! empty( $fields[ $type ] ) ) {
-						$pages[ $type ] = $fields[ $type ];
-					}
-				}
-				$settings->pages = $pages;
-				$settings->save();
-				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-				break;
-			case 'create_special_page':
-				$special_pages_types = MS_Model_Settings::get_special_page_types();
-				foreach( $special_pages_types as $type ) {
-					$submit = "create_page_{$type}";
-					if( ! empty( $fields[ $submit ] ) ) {
-						$settings->create_special_page( $type, false );
-						$settings->save();
-						$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-					}
-				}
-				break;
-		}
-
 		return $msg;
 	}
 

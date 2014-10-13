@@ -387,7 +387,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 1.0
 	 */
 	public function process_purchase() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
 		if( $this->validate_required( $fields ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) &&
@@ -402,7 +403,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 				/** If invoice is successfully paid, redirect to welcome page */
 				if( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
-					$url = $settings->get_special_page_url( MS_Model_Settings::SPECIAL_PAGE_WELCOME, false, true );
+					$url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false, true );
 					$url = add_query_arg( array( 'ms_relationship_id' => $ms_relationship->id ), $url );
 					wp_safe_redirect( $url );
 					exit;
@@ -438,7 +439,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		/** Hack to show signup page in case of errors*/
 		global $wp_query;
-		$wp_query->query_vars['page_id'] = $settings->get_special_page( MS_Model_Settings::SPECIAL_PAGE_SIGNUP );
+		$wp_query->query_vars['page_id'] = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER )->id;
 		$wp_query->query_vars['post_type'] = 'page';
 	}
 

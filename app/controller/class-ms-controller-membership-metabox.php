@@ -151,7 +151,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$settings = MS_Plugin::instance()->settings;
 		$data = array();
 
-		if( 'page' == $post->post_type && MS_Plugin::instance()->settings->is_special_page( $post->ID ) ) {
+		if( 'page' == $post->post_type && MS_Factory::load( 'MS_Model_Pages')->is_ms_page( $post->ID ) ) {
 			$view->special_page = true;
 		}
 		else {
