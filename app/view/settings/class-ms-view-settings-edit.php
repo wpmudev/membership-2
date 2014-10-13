@@ -204,7 +204,8 @@ class MS_View_Settings_Edit extends MS_View {
 		<div class="ms-settings">
 			<?php 
 				MS_Helper_Html::settings_tab_header( array( 
-					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ) 
+					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
 				) ); 
 			?>
 			<div class="ms-separator"></div>
@@ -240,6 +241,7 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php endforeach; ?>
 			</form>
 		</div>
+		<?php MS_Helper_Html::save_text(); ?>
 		<?php
 		return ob_get_clean();
 	}
