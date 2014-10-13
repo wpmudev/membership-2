@@ -366,7 +366,7 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		/* Members list */
 		else {
-			$data['ms_init'] = 'view_member_list';
+			$data['ms_init'][] = 'view_member_list';
 			$data['lang'] = array(
 				'select_user' => __( 'Select an User', MS_TEXT_DOMAIN ),
 			);
