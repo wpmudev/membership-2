@@ -17,6 +17,7 @@ jQuery(function() {
 		}
 	}
 
+	if ( undefined === ms_data ) { return; }
 	if ( undefined === ms_data.ms_init ) { return; }
 
 	if ( ms_data.ms_init instanceof Array ) {
@@ -24,7 +25,7 @@ jQuery(function() {
 			initialize( ms_data.ms_init[i] );
 		}
 	} else {
-		initialize( ms_data.ms_init[i] );
+		initialize( ms_data.ms_init );
 	}
 });
 
