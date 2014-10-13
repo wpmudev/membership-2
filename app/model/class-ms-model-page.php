@@ -56,6 +56,29 @@ class MS_Model_Page extends MS_Model {
 		$this->id = $id;
 	}
 	
+	public function set_page_status( $status ) {
+		if( ! empty( $this->id ) ) {
+			$page = array();
+			$page['ID'] = $this->id;
+			$page['post_status'] = $status;
+			wp_update_post( $page );
+		}	
+	}
+	
+	public function get_page() {
+		
+		$page = null;
+		
+		if ( ! empty( $this->id ) ) {
+			$page = get_post( $this->id );
+			if ( empty( $page->ID ) || 'trash' == $page->post_status ) {
+				$page = null;
+			}
+		}
+		
+		return apply_filters( 'ms_model_page_get_page', $page, $this );
+	}
+	
 	/**
 	 * Set specific property.
 	 *

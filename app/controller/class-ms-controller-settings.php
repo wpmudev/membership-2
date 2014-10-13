@@ -175,15 +175,19 @@ class MS_Controller_Settings extends MS_Controller {
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		/** Create menus/special pages */
-		$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
-		$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
-
+		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
+		
+		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
+		$ms_page->set_page_status( 'publish' );
+		
 		$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		/** Create additional menus */
 		if( ! $membership->private ) {
-			$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
-			$ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
+			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
+			
+			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
+			$ms_page->set_page_status( 'publish' );
 
 			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
