@@ -197,11 +197,14 @@ class MS_View_Membership_Overview extends MS_View {
 		$membership = $this->data['membership'];
 		$visitor_membership = MS_Model_Membership::get_visitor_membership();
 		$rule_types = MS_Model_Rule::get_rule_types();
+
+		echo '<div class="ms-group">';
 		foreach ( $rule_types as $rule_type ) {
 			if ( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
 				$this->content_box_tags( $membership->get_rule( $rule_type ) );
 			}
 		}
+		echo '</div>';
 	}
 
 	/**
@@ -213,18 +216,28 @@ class MS_View_Membership_Overview extends MS_View {
 	 * @param  array $contents List of content items to display.
 	 */
 	protected function content_box_tags( $rule ) {
+		static $row_items = 0;
+
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
 		$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 
 		$membership_id = $this->data['membership']->id;
 
-		if( ! empty( $this->data['child_membership'] ) && $this->data['child_membership']->is_valid() ) {
+		if ( ! empty( $this->data['child_membership'] ) && $this->data['child_membership']->is_valid() ) {
 			$membership_id = $this->data['child_membership']->id;
+		}
+
+		$row_items += 1;
+		$new_row = ($row_items % 4 === 0);
+		$show_sep = (($row_items - 1) % 4 === 0);
+
+		if ( $show_sep && $row_items > 1 ) {
+			MS_Helper_Html::html_separator();
 		}
 		?>
 		<div class="ms-quarter ms-min-height">
-			<div class="ms-divider"></div>
+			<?php if ( ! $new_row ) { MS_Helper_Html::html_separator( 'vertical' ); } ?>
 			<div class="ms-bold">
 				<?php printf( '%s (%s):', $title, $rule->count_rules() ); ?>
 			</div>
@@ -264,6 +277,9 @@ class MS_View_Membership_Overview extends MS_View {
 			</div>
 		</div>
 		<?php
+		if ( $new_row ) {
+			echo '</div><div class="ms-group">';
+		}
 	}
 
 	/**
