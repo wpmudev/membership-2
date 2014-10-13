@@ -29,7 +29,11 @@
 		}
 	}
 
+	.ms-part-4, /* same as .ms-quarter */
+	.ms-part-3, /* same as .ms-third */
+	.ms-part-2, /* same as .ms-half */
 	.ms-quarter,
+	.ms-third,
 	.ms-half {
 		position: relative;
 		float: left;
@@ -46,6 +50,12 @@
 		}
 	}
 
+	.ms-part-3,
+	.ms-third {
+		width: 33.33333%;
+	}
+
+	.ms-part-4,
 	.ms-quarter {
 		width: 25%;
 	}

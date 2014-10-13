@@ -209,7 +209,7 @@ class MS_View_Membership_Overview extends MS_View {
 			<?php
 			foreach ( $rule_types as $rule_type ) {
 				if ( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
-					$this->content_box_tags( $membership->get_rule( $rule_type ) );
+					$this->content_box_tags( $membership->get_rule( $rule_type ), 4 );
 				}
 			}
 			?>
@@ -226,7 +226,7 @@ class MS_View_Membership_Overview extends MS_View {
 	 *
 	 * @param  array $contents List of content items to display.
 	 */
-	protected function content_box_tags( $rule ) {
+	protected function content_box_tags( $rule, $items_per_row = 3 ) {
 		static $row_items = 0;
 
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
@@ -240,14 +240,14 @@ class MS_View_Membership_Overview extends MS_View {
 		}
 
 		$row_items += 1;
-		$new_row = ($row_items % 4 === 0);
-		$show_sep = (($row_items - 1) % 4 === 0);
+		$new_row = ($row_items % $items_per_row === 0);
+		$show_sep = (($row_items - 1) % $items_per_row === 0);
 
 		if ( $show_sep && $row_items > 1 ) {
 			MS_Helper_Html::html_separator();
 		}
 		?>
-		<div class="ms-quarter ms-min-height">
+		<div class="ms-part-<?php echo esc_attr( $items_per_row ); ?> ms-min-height">
 			<?php if ( ! $new_row ) { MS_Helper_Html::html_separator( 'vertical' ); } ?>
 			<div class="ms-bold">
 				<?php printf( '%s (%s):', $title, $rule->count_rules() ); ?>

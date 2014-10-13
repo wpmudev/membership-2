@@ -89,6 +89,10 @@
 .ms-wrap .ms-description.ms-indented-description {
   padding-left: 20px;
 }
+.ms-wrap .ms-description .ms-bold,
+.ms-wrap .ms-description .ms-italic {
+  color: #4F616E;
+}
 .ms-wrap .ms-settings-description {
   margin-bottom: 15px;
   display: block;
@@ -282,7 +286,11 @@
 .ms-wrap .ms-wrapper-center.wide {
   max-width: 1200px;
 }
+.ms-wrap .ms-part-4,
+.ms-wrap .ms-part-3,
+.ms-wrap .ms-part-2,
 .ms-wrap .ms-quarter,
+.ms-wrap .ms-third,
 .ms-wrap .ms-half {
   position: relative;
   float: left;
@@ -290,14 +298,27 @@
   margin: 0;
   padding: 0;
 }
+.ms-wrap .ms-part-4.space,
+.ms-wrap .ms-part-3.space,
+.ms-wrap .ms-part-2.space,
 .ms-wrap .ms-quarter.space,
+.ms-wrap .ms-third.space,
 .ms-wrap .ms-half.space {
   padding-right: 30px;
 }
+.ms-wrap .ms-part-4.right,
+.ms-wrap .ms-part-3.right,
+.ms-wrap .ms-part-2.right,
 .ms-wrap .ms-quarter.right,
+.ms-wrap .ms-third.right,
 .ms-wrap .ms-half.right {
   float: right;
 }
+.ms-wrap .ms-part-3,
+.ms-wrap .ms-third {
+  width: 33.33333%;
+}
+.ms-wrap .ms-part-4,
 .ms-wrap .ms-quarter {
   width: 25%;
 }
