@@ -79,7 +79,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page', $this->pages, $this );
 	}
 	
-	public function get_ms_page( $page_type ) {
+	public function get_ms_page( $page_type, $create_if_not_exists = false ) {
 		
 		$ms_page = null;
 		
@@ -87,7 +87,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			if(  ! empty( $this->pages[ $page_type ] ) ) {
 				$ms_page = $this->pages[ $page_type ];
 			}
-			else {
+			elseif( $create_if_not_exists ) {
 				$page_types = self::get_ms_page_types();
 				$ms_page = MS_Factory::create( 'MS_Model_Page' );
 				$ms_page->type = $page_type;
@@ -182,11 +182,13 @@ class MS_Model_Pages extends MS_Model_Option {
 	
 	}
 	
-	public function get_ms_page_id( $page_type ) {
+	public function get_ms_page_id( $page_type, $create_if_not_exists = false ) {
 		
-		$page_id = $this->get_ms_page( $page_type )->id;
+		$page_id = 0;
+		$ms_page = $this->get_ms_page( $page_type, $create_if_not_exists );
 		
-		if ( ! empty( $page_id ) ) {
+		if ( ! empty( $ms_page->id ) ) {
+			$page_id = $ms_page->id;
 			$page = get_post( $page_id );
 			if ( empty( $page->ID ) || 'trash' == $page->post_status ) {
 				$page_id = 0;
@@ -196,10 +198,10 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page', $page_id, $this );
 	}
 	
-	public function get_ms_page_url( $page_type, $ssl = false ) {
+	public function get_ms_page_url( $page_type, $ssl = false, $create_if_not_exists = false ) {
 		
 		$url = null;
-		$page_id = $this->get_ms_page_id( $page_type );
+		$page_id = $this->get_ms_page_id( $page_type, $create_if_not_exists );
 		
 		if( ! empty( $page_id ) ) {
 			$url = get_permalink( $page_id );
