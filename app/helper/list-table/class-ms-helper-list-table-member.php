@@ -298,20 +298,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 					$item->id,
 					__( 'Add', MS_TEXT_DOMAIN )
 				),
-				'move' => sprintf(
-					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-					$_REQUEST['page'],
-					'move',
-					$item->id,
-					__( 'Move', MS_TEXT_DOMAIN )
-				),
-				'cancel' => sprintf(
-					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-					$_REQUEST['page'],
-					'cancel',
-					$item->id,
-					__( 'Cancel', MS_TEXT_DOMAIN )
-				),
 				'drop' => sprintf(
 					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
 					$_REQUEST['page'],
