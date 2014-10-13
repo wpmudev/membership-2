@@ -177,6 +177,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => $ms_page->type,
 					'page_id' => $ms_page->id,
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'read_only' => true,
 					'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
 					'value' => sprintf( '/%1$s/', $ms_page->slug ),
 					'class' => 'ms-ajax-update',
@@ -191,6 +192,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => 'edit_slug_' . $ms_page->type,
 					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 					'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
+					'class' => 'ms-edit-url',
 			);
 
 		}

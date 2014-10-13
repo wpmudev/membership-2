@@ -162,7 +162,7 @@ class MS_Helper_Html extends MS_Helper {
 					esc_attr( $id ),
 					esc_attr( $name ),
 					esc_attr( $value ),
-					$max_attr . $attr_placeholder . $data_ms
+					$read_only . $max_attr . $attr_placeholder . $data_ms
 				);
 
 				self::html_element_hint( $title, $tooltip_output );

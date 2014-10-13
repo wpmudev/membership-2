@@ -571,17 +571,21 @@ window.ms_init.view_settings = function init () {
 		window.location = ms_data.initial_url;
 	});
 
-	jQuery( '.chosen-select.ms-ajax-update' ).on( 'ms-ajax-updated', function( event, data ) {
-		var page_id = jQuery( this ).val(), page_url = null, page_edit_url = null;
-
-		page_url = jQuery( '#page_urls option[value="' + page_id + '"]' ).text();
-		page_url = ( page_url ) ? page_url : '#';
-		jQuery( '#url_' + data.field ).attr( 'href', page_url );
-
-		page_edit_url = jQuery( '#page_edit_urls option[value="' + page_id + '"]' ).text();
-		page_edit_url = ( page_edit_url ) ? page_edit_url : '#';
-
-		jQuery( '#edit_url_' + data.field ).attr( 'href', page_edit_url );
+	jQuery( '.ms-edit-url' ).click( function() {
+		var text_id = jQuery( this ).prop( 'id' );
+		
+		text_id = '#'+ text_id.replace( 'edit_slug_', '' );
+		
+		jQuery( text_id ).prop( 'readonly', false );
+		jQuery( text_id ).focus();
+		
+		jQuery( text_id ).change( function() {
+			jQuery( this ).prop( 'readonly', true );
+		});
+		
+		jQuery( text_id ).focusout( function() {
+			jQuery( this ).prop( 'readonly', true );
+		});
 	});
 };
 
