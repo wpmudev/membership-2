@@ -27,7 +27,7 @@
  *
  * Responsible for flow control, navigation and invoking other controllers.
  *
- * @since 4.0.0
+ * @since 1.0.0
  * @package Membership
  * @subpackage Controller
  */
@@ -38,7 +38,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Instance of MS_Model_Plugin.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var $model
 	 */
@@ -47,7 +47,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Pointer array for other controllers.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var $controllers
 	 */
@@ -56,7 +56,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Pointer array for all Admin pages.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var $admin_pages
 	 */
@@ -65,17 +65,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Constructs the primary Plugin controller.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
 
 		/** Instantiate Plugin model - protection implementation */
 		$this->model = apply_filters( 'ms_model_plugin', new MS_Model_Plugin() );
-
-		/** Rewrite rules */
-		$this->add_action( 'generate_rewrite_rules', 'add_rewrites', 1 );
-		$this->add_filter( 'query_vars', 'add_query_vars' );
 
 		/** Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
@@ -135,68 +131,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['frontend'] = apply_filters( 'ms_controller_frontend', new MS_Controller_Frontend() );
 
 		$this->add_filter( 'single_template', 'custom_template' );
-		flush_rewrite_rules(); //TODO No need to execute every time.
-	}
-
-	/**
-	 * Rewrite rules for gateway payment return url.
-	 *
-	 * @since 4.0.0
-	 * 
-	 * @todo move to add_rewrite_rules method.
-	 *
-	 * @param object $wp_rewrite WP_Rewrite object.
-	 * @return object WP_Rewrite object.
-	 */
-	public function add_rewrites( $wp_rewrite ) {
-
-		$new_rules = array();
-
-		/* Media / download rewrite rules */
-		if( ! empty( MS_Plugin::instance()->settings->downloads['masked_url'] ) ) {
-			$new_rules[trailingslashit( MS_Plugin::instance()->settings->downloads['masked_url'] ) . '(.*)'] = 'index.php?protectedfile=' . $wp_rewrite->preg_index( 1 );
-		}
-
-		/* Gateway rewrite rules */
-		$new_rules['ms-payment-return/(.+)'] = 'index.php?paymentgateway=' . $wp_rewrite->preg_index( 1 );
-
-		$new_rules = apply_filters( 'ms_rewrite_rules', $new_rules );
-
-		$wp_rewrite->rules = array_merge( $new_rules, $wp_rewrite->rules );
-
-		return $wp_rewrite;
-	}
-
-	/**
-	 * Add custom query vars.
-	 *
-	 *
-	 * @since 4.0.0
-	 *
-	 * @todo move to proper controller (encapsulation)
-	 * 
-	 * @param mixed[] $vars
-	 * @return mixed[]
-	 */
-	function add_query_vars( $vars ) {
-
-		/* Media / download */
-		if ( ! in_array( 'protectedfile', $vars ) ) {
-			$vars[] = 'protectedfile';
-		}
-
-		/* Gateway */
-		if ( ! in_array( 'paymentgateway', $vars ) ) {
-			$vars[] = 'paymentgateway';
-		}
-		
-		return $vars;
 	}
 
 	/**
 	 * Adds Dashboard navigation menus.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -323,7 +263,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds CSS for Membership settings pages.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_plugin_admin_styles() {
 		wp_enqueue_style( 'ms-admin-styles' );
@@ -336,7 +276,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds CSS for Membership pages used in the front end.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -347,7 +287,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Register JavasSript for Membership settings pages.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -359,7 +299,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds JavasSript for Membership pages used in the front end.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */

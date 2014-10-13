@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Protected Content
-Version: 1.0
+Version: 1.0.0
 Plugin URI: http://premium.wpmudev.org/project/protected-content
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
@@ -14,9 +14,9 @@ Text Domain: wpmudev_protected_content
 /**
  * @copyright Incsub (http://incsub.com/)
  *
- * Authors: Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf
+ * Authors: Fabio Jun Onishi, Philipp Stracker, Victor Ivanov, Jack Kitterhing, Rheinard Korf
  * Lead Developer: Fabio Jun Onishi
- * Contributors: Philipp Stracker, Joji Mori, Patrick Cohen
+ * Contributors: Joji Mori, Patrick Cohen
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  *
@@ -44,21 +44,21 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 /**
  * Plugin text domain.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 define('MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
 
 /**
  * Plugin name dir constant.
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 
 /**
  * Plugin version
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
 
@@ -68,7 +68,7 @@ define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
  * Overrides plugin class paths to adhere to naming conventions
  * where object names are separated by underscores or for special cases.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
@@ -124,7 +124,7 @@ add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
  *
  * Overrides file class paths.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @param  array $overrides Array passed in by filter.
  * @return array(class=>path) Classes with new file paths.
@@ -144,7 +144,7 @@ add_filter( 'ms_class_file_override', 'ms_class_file_override' );
  * Control of plugin is passed to the MVC implementation found
  * inside the /app/ folder.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @return object Plugin instance.
  */
@@ -153,7 +153,7 @@ class MS_Plugin {
 	/**
 	 * Singletone instance of the plugin.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @access private
 	 * @var MS_Plugin
@@ -163,7 +163,7 @@ class MS_Plugin {
 	/**
 	 * The plugin name.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var name
 	 */
@@ -172,7 +172,7 @@ class MS_Plugin {
 	/**
 	 * The plugin version.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var version
 	 */
@@ -181,7 +181,7 @@ class MS_Plugin {
 	/**
 	 * The plugin file.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var file
 	 */
@@ -190,7 +190,7 @@ class MS_Plugin {
 	/**
 	 * The plugin path.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var dir
 	 */
@@ -199,7 +199,7 @@ class MS_Plugin {
 	/**
 	 * The plugin URL.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var url
 	 */
@@ -208,7 +208,7 @@ class MS_Plugin {
 	/**
 	 * The plugin settings.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var settings
 	 */
@@ -217,7 +217,7 @@ class MS_Plugin {
 	/**
 	 * The plugin add-on settings.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 * @var addon
 	 */
@@ -228,14 +228,14 @@ class MS_Plugin {
 	 *
 	 * Set properties, registers hooks and loads the plugin.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	function __construct() {
 
 		/**
 		 * Actions to execute before the plugin construction starts.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_construct_start', $this );
@@ -252,7 +252,7 @@ class MS_Plugin {
 		 *
 		 * @uses load_plugin_textdomain()
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this ) );
@@ -279,7 +279,7 @@ class MS_Plugin {
 		/**
 		 * Creates and Filters the Settings Model.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		$this->settings = MS_Factory::load( 'MS_Model_Settings' );
@@ -287,7 +287,7 @@ class MS_Plugin {
 		/**
 		 * Creates and Filters the Addon Model.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
@@ -306,7 +306,7 @@ class MS_Plugin {
 		/**
 		 * Actions to execute when the Plugin object has successfully constructed.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_construct_end', $this );
@@ -316,7 +316,7 @@ class MS_Plugin {
 	/**
 	 * Loads primary plugin controllers.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function ms_plugin_constructing() {
@@ -326,7 +326,7 @@ class MS_Plugin {
 		 * Main entry point controller for plugin.
 		 *
 		 * @uses MS_Controller_Plugin
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		$this->controller = MS_Factory::create( 'MS_Controller_Plugin' );
@@ -335,7 +335,7 @@ class MS_Plugin {
 	/**
 	 * Register plugin custom post types.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function register_custom_post_types() {
@@ -358,7 +358,7 @@ class MS_Plugin {
 	/**
 	 * Register plugin custom post status.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function register_post_status() {
@@ -373,16 +373,60 @@ class MS_Plugin {
 		) );
 	}
 	
-	public function add_rewrite_rules() {
+	/**
+	 * Add rewrite rules.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	 public function add_rewrite_rules() {
+	 	
+	 	/* Membership site pages.*/
 		add_rewrite_rule(
 			'^ms-page/(.+)/?$',
 			'index.php?ms_page=$matches[1]',
 			'top'
 		);
-	}
+		
+	 	/* Gateway return - IPN.*/
+		add_rewrite_rule(
+			'^ms-payment-return/(.+)/?$',
+			'index.php?paymentgateway=$matches[1]',
+			'top'
+		);
+		
+		/* Media / download */
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		if ( MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED != $settings->downloads['protection_type'] && ! empty( $settings->downloads['masked_url'] ) ) {
+			MS_Helper_Debug::log( sprintf( '^%1$s/(.*)/?$', $settings->downloads['masked_url'] ) );
+			add_rewrite_rule(
+				sprintf( '^%1$s(.*)/?$', $settings->downloads['masked_url'] ),
+				'index.php?protectedfile=$matches[1]',
+				'top'
+			);
+		}
+		
+		do_action( 'ms_plugin_add_rewrite_rules', $this );
+	 }
 	
+	/**
+	 * Add rewrite tags.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
 	public function add_rewrite_tags() {
+		
+		/* Membership site pages.*/
 		add_rewrite_tag( '%ms_page%', '(.+)' );
+		
+		/* Gateway return - IPN.*/
+		add_rewrite_tag( '%paymentgateway%', '(.+)' );
+		
+		/* Media / download */
+		add_rewrite_tag( '%protectedfile%', '(.+)' );
+		
+		do_action( 'ms_plugin_add_rewrite_tags', $this );
 	}
 	
 	/**
@@ -392,7 +436,7 @@ class MS_Plugin {
 	 * Avoids creating include functions for each file in the MVC structure.
 	 * **MS_** namespace ONLY will be based on folder structure in /app/
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access private
 	 *
 	 * @param  string $class Uses PHP autoloader function.
@@ -403,7 +447,7 @@ class MS_Plugin {
 		/**
 		 * Actions to execute before the autoloader loads a class.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_class_loader_pre_processing', $this );
@@ -414,7 +458,7 @@ class MS_Plugin {
 		/**
 		 * Adds and Filters class path overrides.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
 		$path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
@@ -424,7 +468,7 @@ class MS_Plugin {
 		 *
 		 * This prevents autoloading from interfering with other plugins in their own namespaces.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 */
 		foreach ( $namespaces as $namespace ) {
 			switch ( $namespace ) {
@@ -442,7 +486,7 @@ class MS_Plugin {
 							/**
 							 * Overrides the filename and path.
 							 *
-							 * @since 1.0
+							 * @since 1.0.0
 							 * @param object $this The MS_Plugin object.
 							 */
 							$filename = apply_filters( 'ms_class_file_override', $filename, $this );
@@ -459,7 +503,7 @@ class MS_Plugin {
 						/**
 						 * Overrides the filename and path.
 						 *
-						 * @since 1.0
+						 * @since 1.0.0
 						 * @param object $this The MS_Plugin object.
 						 */
 						$filename = apply_filters( 'ms_class_file_override', $filename, $this );
@@ -474,7 +518,7 @@ class MS_Plugin {
 					/**
 					 * Actions to add additional namespaces to this autoloading function.
 					 *
-					 * @since 1.0
+					 * @since 1.0.0
 					 * @param object $this The MS_Plugin object.
 					 */
 					do_action( 'ms_plugin_class_loader_namespace', $namespace, $this );
@@ -488,7 +532,7 @@ class MS_Plugin {
 	/**
 	 * Add link to settings page in plugins page.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param array $links Wordpress default array of links.
 	 * @return array Array of links with settings page links added.
@@ -505,7 +549,7 @@ class MS_Plugin {
 			/**
 			 * Filter the plugin settings link.
 			 *
-			 * @since 1.0
+			 * @since 1.0.0
 			 * @param object $this The MS_Plugin object.
 			 */
 			$settings_link = apply_filters( 'ms_plugin_settings_link', sprintf( '<a href="%s">%s</a>', $url, $text ), $this );
@@ -518,7 +562,7 @@ class MS_Plugin {
 	/**
 	 * Returns singletone instance of the plugin.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @static
 	 * @access public
@@ -536,7 +580,7 @@ class MS_Plugin {
 	/**
 	 * Returns plugin enabled status.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @access public
 	 *
 	 * @static
@@ -550,7 +594,7 @@ class MS_Plugin {
 	/**
 	 * Returns property associated with the plugin.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property.
@@ -568,6 +612,6 @@ class MS_Plugin {
  *
  * This is the primary entry point for the Membership plugin.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 MS_Plugin::instance();
