@@ -745,6 +745,9 @@
 .ms-wrap .wp-switch-editor {
   box-sizing: content-box;
 }
+.ms-wrap .wp-editor-tools {
+  padding-top: 20px;
+}
 
 /**
  * Confirmation messages

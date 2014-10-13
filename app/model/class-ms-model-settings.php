@@ -108,7 +108,7 @@ class MS_Model_Settings extends MS_Model_Option {
 
 	public function set_protection_message( $type, $msg ) {
 		if ( self::is_valid_protection_msg_type( $type ) ) {
-			$this->protection_messages[ $type ] = wp_kses_post( $msg );
+			$this->protection_messages[ $type ] = stripslashes( wp_kses_post( $msg ) );
 		}
 	}
 
