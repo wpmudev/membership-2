@@ -27,12 +27,6 @@ class MS_Model_Settings extends MS_Model_Option {
 
 	public static $instance;
 
-	const SPECIAL_PAGE_NO_ACCESS = 'no_access';
-	const SPECIAL_PAGE_ACCOUNT = 'account';
-	const SPECIAL_PAGE_WELCOME = 'welcome';
-	const SPECIAL_PAGE_SIGNUP = 'signup';
-	const SPECIAL_PAGE_MENU = 'menu';
-
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';
 	const PROTECTION_MSG_MORE_TAG = 'more_tag';
@@ -75,7 +69,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $protection_messages = array();
 
 	protected $downloads = array(
-		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED,
+		'protection_enabled' => false,
+		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
 		'masked_url' => 'downloads',
 	);
 
@@ -209,17 +204,9 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 		else {
 			switch ( $property ) {
-				case 'page_no_access':
-					$this->pages[ self::SPECIAL_PAGE_NO_ACCESS ] = $this->validate_min( $value, 0 );
-					break;
-				case 'page_account':
-					$this->pages[ self::SPECIAL_PAGE_ACCOUNT ] = $this->validate_min( $value, 0 );
-					break;
-				case 'page_welcome':
-					$this->pages[ self::SPECIAL_PAGE_WELCOME ] = $this->validate_min( $value, 0 );
-					break;
-				case 'page_signup':
-					$this->pages[ self::SPECIAL_PAGE_SIGNUP ] = $this->validate_min( $value, 0 );
+				case 'protection_enabled':
+					$this->downloads['protection_enabled'] = $this->validate_bool( $value );
+					MS_Helper_Debug::log( $this->downloads);
 					break;
 				case 'protection_type':
 					if ( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {

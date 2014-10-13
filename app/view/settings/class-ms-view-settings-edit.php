@@ -631,16 +631,26 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_downloads() {
-		$upload_dir = wp_upload_dir();
 		$settings = $this->data['settings'];
 
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
+			'protection_enabled' => array(
+					'id' => 'protection_enabled',
+					'title' => __( 'Media / Downloads protection', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value' => $settings->downloads['protection_enabled'],
+					'class' => '',
+					'data_ms' => array(
+							'field' => 'protection_enabled',
+							'action' => $action,
+							'_wpnonce' => $nonce,
+					),
+			),
 			'protection_type' => array(
 				'id' => 'protection_type',
-				'name' => 'downloads[protection_type]',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
 				'value' => $settings->downloads['protection_type'],
@@ -652,20 +662,11 @@ class MS_View_Settings_Edit extends MS_View {
 					'_wpnonce' => $nonce,
 				),
 			),
-			'upload_url' => array(
-				'id' => 'mailchimp_api_test',
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Current upload location', MS_TEXT_DOMAIN ),
-				'value' => trailingslashit( $upload_dir['baseurl'] ),
-				'wrapper' => 'div',
-				'class' => '',
-			),
 			'masked_url' => array(
 				'id' => 'masked_url',
-				'name' => 'downloads[masked_url]',
 				'desc' => esc_html( trailingslashit( get_option( 'home' ) ) ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Masked download url', MS_TEXT_DOMAIN ),
+				'title' => __( 'Masked download URL:', MS_TEXT_DOMAIN ),
 				'value' => $settings->downloads['masked_url'],
 				'class' => 'ms-ajax-update',
 				'data_ms' => array(
@@ -676,6 +677,10 @@ class MS_View_Settings_Edit extends MS_View {
 			),
 		);
 
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA_PLUS ) ) {
+			unset( $fields['protection_type'] );
+		}
+		
 		$fields = apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
 
 		ob_start();

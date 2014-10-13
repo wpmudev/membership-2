@@ -48,7 +48,6 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 *
 	 * @var string $protection_type
 	 */
-	const PROTECTION_TYPE_DISABLED = 'protection_type_disabled';
 	const PROTECTION_TYPE_BASIC = 'protection_type_basic';
 	const PROTECTION_TYPE_COMPLETE = 'protection_type_complete';
 	const PROTECTION_TYPE_HYBRID = 'protection_type_hybrid';
@@ -100,7 +99,6 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	public static function get_protection_types() {
 		
 		$protection_types = array(
-				self::PROTECTION_TYPE_DISABLED => __( 'Disable protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_BASIC => __( 'Basic protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ),
 				self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
@@ -167,7 +165,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 		
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 		
-		if( self::PROTECTION_TYPE_DISABLED == $download_settings['protection_type'] ) {
+		if( empty( $download_settings['protection_enabled'] ) ) {
 			return $the_content;
 		}
 		
@@ -317,7 +315,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 		
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 
-		if( self::PROTECTION_TYPE_DISABLED == $download_settings['protection_type'] ) {
+		if( empty( $download_settings['protection_enabled'] ) ) {
 			return;
 		}
 		

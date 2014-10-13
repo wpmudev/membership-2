@@ -34,6 +34,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_COUPON = 'coupon';
 	const ADDON_TRIAL = 'trial';
 	const ADDON_MEDIA = 'media';
+	const ADDON_MEDIA_PLUS = 'media_plus';
 	const ADDON_PRIVATE_MEMBERSHIPS = 'private_memberships';
 	const ADDON_PRO_RATE = 'pro_rate';
 	const ADDON_SHORTCODE = 'shortcode';
@@ -54,6 +55,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_POST_BY_POST,
 				self::ADDON_CPT_POST_BY_POST,
 				self::ADDON_MEDIA,
+				self::ADDON_MEDIA_PLUS,
 				self::ADDON_SHORTCODE,
 				self::ADDON_URL_GROUPS,
 				self::ADDON_AUTO_MSGS_PLUS,
@@ -142,6 +144,12 @@ class MS_Model_Addon extends MS_Model_Option {
 					'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
 					'description' => __( 'Enable protected post and page media protection.', MS_TEXT_DOMAIN ),
 					'active' => self::is_enabled( self::ADDON_MEDIA ),
+				),
+				self::ADDON_MEDIA_PLUS => (object) array(
+					'id' => self::ADDON_MEDIA_PLUS,
+					'name' => __( 'Media Protection - additional protection methods', MS_TEXT_DOMAIN ),
+					'description' => __( 'Enable additional protection method (Basic, Complete, Hybrid).', MS_TEXT_DOMAIN ),
+					'active' => self::is_enabled( self::ADDON_MEDIA_PLUS ),
 				),
 				self::ADDON_SHORTCODE => (object) array(
 					'id' => self::ADDON_SHORTCODE,

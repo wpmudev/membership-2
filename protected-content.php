@@ -403,7 +403,7 @@ class MS_Plugin {
 		
 		/* Media / download */
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		if ( MS_Model_Rule_Media::PROTECTION_TYPE_DISABLED != $settings->downloads['protection_type'] && ! empty( $settings->downloads['masked_url'] ) ) {
+		if ( ! empty( $settings->downloads['protection_enabled'] ) && ! empty( $settings->downloads['masked_url'] ) ) {
 			add_rewrite_rule(
 				sprintf( '^%1$s(.*)/?$', $settings->downloads['masked_url'] ),
 				'index.php?protectedfile=$matches[1]',
