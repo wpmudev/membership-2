@@ -256,11 +256,6 @@ class MS_Controller extends MS_Hooker {
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
-			'ms-tooltips',
-			$plugin_url . 'app/assets/js/ms-tooltip.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
 			'ms-controller-admin-bar',
 			$plugin_url . 'app/assets/js/ms-controller-admin-bar.js',
 			array( 'jquery' ), $version
@@ -333,11 +328,6 @@ class MS_Controller extends MS_Hooker {
 		wp_register_style(
 			'membership-admin',
 			$plugin_url . 'app/assets/css/ms-settings.css',
-			null, $version
-		);
-		wp_register_style(
-			'membership-tooltip',
-			$plugin_url . 'app/assets/css/ms-tooltip.css',
 			null, $version
 		);
 		wp_register_style(

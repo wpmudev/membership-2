@@ -1,0 +1,60 @@
+/**
+ * Tooltip elements
+ */
+
+/* The "Info" icon */
+.ms-tooltip-wrapper {
+	display:inline;
+	position: relative;
+	z-index: 100;
+
+	.ms-tooltip-info {
+		display: inline;
+		min-width: 20px;
+
+		border-radius: 20px;
+		font-weight: normal;
+		font-size: 15px;
+		color: #0094dc;
+		cursor: pointer;
+	}
+}
+
+/* The actual tooltip */
+.ms-tooltip {
+	display: none;
+	position: absolute;
+	width: 325px;
+	left: 10px;
+
+	border: 1px solid #ffffff;
+	border-radius: 5px;
+	background: #fafafa;
+	color: #555555;
+	font: 12px/16px verdana;
+	box-shadow: rgba(0, 0, 0, 0.12) -3px 0px 10px 1px;
+
+	/** Add left arrow. */
+	&:before {
+		position: absolute;
+		content: ' ';
+		left: -8px;
+		top: 10px;
+
+		border: 10px solid transparent;
+		border-right: 10px solid #fafafa; /* bottom, add background color here */
+	}
+
+	.ms-tooltip-button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+
+		font: 16px/12px bold "Helvetica";
+		cursor: pointer;
+	}
+
+	.ms-tooltip-content {
+		padding: 20px;
+	}
+}

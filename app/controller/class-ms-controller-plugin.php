@@ -268,7 +268,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function enqueue_plugin_admin_styles() {
 		wp_enqueue_style( 'ms-admin-styles' );
 		wp_enqueue_style( 'membership-admin' );
-		wp_enqueue_style( 'membership-tooltip' );
 		wp_enqueue_style( 'font-awesome' );
 		wp_enqueue_style( 'jquery-chosen' );
 	}
@@ -292,7 +291,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
-		wp_enqueue_script( 'ms-tooltips' );
 		wp_enqueue_script( 'jquery-chosen' );
 	}
 

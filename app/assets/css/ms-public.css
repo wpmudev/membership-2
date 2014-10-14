@@ -121,7 +121,7 @@
 #wpadminbar #wp-toolbar .membership-view-site-as div.ab-item,
 #wpadminbar #wp-toolbar .membership-view-site-as select,
 #wpadminbar #wp-toolbar .membership-view-site-as small {
-  display: inline-block;
+  display: inline;
   max-height: 32px;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period small,
