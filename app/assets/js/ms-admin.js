@@ -573,16 +573,16 @@ window.ms_init.view_settings = function init () {
 
 	jQuery( '.ms-edit-url' ).click( function() {
 		var text_id = jQuery( this ).prop( 'id' );
-		
-		text_id = '#'+ text_id.replace( 'edit_slug_', '' );
-		
+
+		text_id = '#' + text_id.replace( 'edit_slug_', '' );
+
 		jQuery( text_id ).prop( 'readonly', false );
 		jQuery( text_id ).focus();
-		
+
 		jQuery( text_id ).change( function() {
 			jQuery( this ).prop( 'readonly', true );
 		});
-		
+
 		jQuery( text_id ).focusout( function() {
 			jQuery( this ).prop( 'readonly', true );
 		});
