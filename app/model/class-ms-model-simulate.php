@@ -335,6 +335,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 			}
 		}
 		
-		return apply_filters( 'ms_model_membership_get_register_post_type_args', $args );
+		do_action( 'ms_model_simulate__set_after', $property, $value, $this );
 	}
 }
