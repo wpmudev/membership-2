@@ -23,6 +23,8 @@
 /**
  * Plugin Pages model.
  *
+ * Main MS Pages class, composition of MS_Model_Page objects.
+ * 
  * @since 1.0.0
  * 
  * @package Membership
@@ -30,16 +32,47 @@
  */
 class MS_Model_Pages extends MS_Model_Option {
 
+	/**
+	 * Singleton instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @staticvar MS_Model_Settings
+	 */
 	public static $instance;
 	
+	/**
+	 * Plugin pages constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const MS_PAGE_MEMBERSHIPS = 'memberships';
 	const MS_PAGE_PROTECTED_CONTENT = 'protected-content';
 	const MS_PAGE_ACCOUNT = 'account';
 	const MS_PAGE_REGISTER = 'register';
 	const MS_PAGE_REG_COMPLETE = 'registration-complete';
 	
+	/**
+	 * Plugin pages composition.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var MS_Model_Page[]
+	 */
 	protected $pages;
 	
+	/**
+	 * Get MS Page types
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array{
+	 * 		@type string $page_type The ms page type.
+	 * 		@type string $title The page type title.
+	 * }
+	 */
 	public static function get_ms_page_types() {
 		
 		static $page_types;
@@ -57,6 +90,14 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page_types', $page_types );
 	}
 	
+	/**
+	 * Validate ms page type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $type The page type to validate.
+	 * @return boolean True if valid.
+	 */
 	public static function is_valid_ms_page_type( $type ) {
 		
 		$valid = false;
@@ -68,6 +109,14 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_is_valid_ms_page_type', $valid );
 	}
 	
+	/**
+	 * Get MS Pages.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
+	 * @return MS_Model_Page[] The page model objects.
+	 */
 	public function get_ms_pages( $create_if_not_exists = false ) {
 		
 		$page_types = self::get_ms_page_types();
@@ -79,6 +128,15 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page', $this->pages, $this );
 	}
 	
+	/**
+	 * Get specific MS Page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type to retrieve the page.
+	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
+	 * @return MS_Model_Page The page model object.
+	 */
 	public function get_ms_page( $page_type, $create_if_not_exists = false ) {
 		
 		$ms_page = null;
@@ -113,6 +171,14 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page', $ms_page, $this );
 	}
 	
+	/**
+	 * Set specific MS Page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type to set.
+	 * @param MS_Model_Page The page model object to set.
+	 */
 	public function set_ms_page( $page_type, $ms_page ) {
 		
 		if ( self::is_valid_ms_page_type( $page_type ) ) {
@@ -122,6 +188,16 @@ class MS_Model_Pages extends MS_Model_Option {
 		do_action( 'ms_model_pages_set_ms_page', $page_type, $ms_page, $this );
 	}
 	
+	/**
+	 * Verify if is a MS Page.
+	 * 
+	 * Verify if current page, or passed page_id is a plugin special page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $page_id Optional. The page id to verify. Default to current page. 
+	 * @param string $page_type Optional. The page type to verify. If null, test it against all ms pages.
+	 */
 	public function is_ms_page( $page_id = null, $page_type = null ) {
 	
 		global $wp_query;
@@ -157,8 +233,8 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			if ( ! empty( $page_type ) ) {
 			
-				$ms_page = $this->get_ms_page( $page_type );
-				if( $slug == $ms_page->slug ) {
+				$ms_page_slug = $this->get_ms_page_slug( $page_type );
+				if( $slug == $ms_page_slug ) {
 					$is_ms_page = $page_type;
 				}
 			}
@@ -167,8 +243,8 @@ class MS_Model_Pages extends MS_Model_Option {
 			
 				foreach ( $page_types as $page_type => $title ) {
 						
-					$ms_page = $this->get_ms_page( $page_type );
-					if ( $slug == $ms_page->slug ) {
+					$ms_page_slug = $this->get_ms_page_slug( $page_type );
+					if ( $slug == $ms_page_slug ) {
 						$is_ms_page = $page_type;
 						break;
 					}
@@ -179,6 +255,14 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_is_ms_page', $is_ms_page, $this );
 	}
 	
+	/**
+	 * Get MS Page slug.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type.
+	 * @return string The page slug.
+	 */
 	public function get_ms_page_slug( $page_type ) {
 	
 		$slug = $this->get_ms_page( $page_type )->slug;
@@ -187,6 +271,14 @@ class MS_Model_Pages extends MS_Model_Option {
 	
 	}
 	
+	/**
+	 * Get MS Page ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type.
+	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
+	 */
 	public function get_ms_page_id( $page_type, $create_if_not_exists = false ) {
 		
 		$ms_page = $this->get_ms_page( $page_type, $create_if_not_exists );
@@ -194,6 +286,16 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page', $ms_page->id, $this );
 	}
 	
+	/**
+	 * Get MS Page URL.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type.
+	 * @param boolean $ssl If wanted a SSL url.
+	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
+	 * @return string The MS Page URL.
+	 */
 	public function get_ms_page_url( $page_type, $ssl = false, $create_if_not_exists = false ) {
 		
 		$url = null;
@@ -210,15 +312,22 @@ class MS_Model_Pages extends MS_Model_Option {
 		return apply_filters( 'ms_model_page_get_ms_page_url', $url, $this );
 	}
 	
-	public function create_menu( $type ) {
+	/**
+	 * Create MS Pages in Menus.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $page_type The page type to create menu.
+	 */
+	public function create_menu( $page_type ) {
 		
-		if ( self::is_valid_ms_page_type( $type ) ) {
+		if ( self::is_valid_ms_page_type( $page_type ) ) {
 			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
 			foreach ( $navs as $nav ) {
 				$args['meta_query'] = array(
 						array(
 								'key' => '_menu_item_object_id',
-								'value' => $this->get_ms_page( $type, true )->id,
+								'value' => $this->get_ms_page( $page_type, true )->id,
 						),
 						array(
 								'key' => '_menu_item_object',
@@ -229,10 +338,10 @@ class MS_Model_Pages extends MS_Model_Option {
 								'value' => 'post_type',
 						),
 				);
-				/** Search for existing menu item and create it if not found*/
+				/* Search for existing menu item and create it if not found*/
 				$items = wp_get_nav_menu_items( $nav, $args );
 				if ( empty( $items ) ) {
-					$page = get_post( $this->get_ms_page( $type )->id );
+					$page = get_post( $this->get_ms_page( $page_type )->id );
 	
 					$menu_item = apply_filters(
 							'ms_model_settings_create_menu_item',

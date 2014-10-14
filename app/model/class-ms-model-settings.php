@@ -33,11 +33,10 @@
 class MS_Model_Settings extends MS_Model_Option {
 
 	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
+	 * Singleton instance.
 	 *
 	 * @since 1.0.0
+	 * 
 	 * @staticvar MS_Model_Settings
 	 */
 	public static $instance;
@@ -46,7 +45,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Protection Message Type constants.
 	 *
 	 * @since 1.0.0
-	 * @var string $POST_TYPE
+	 * 
+	 * @var string
 	 */
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';

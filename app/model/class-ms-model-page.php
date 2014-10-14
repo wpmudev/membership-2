@@ -30,14 +30,51 @@
  */
 class MS_Model_Page extends MS_Model {
 
+	/**
+	 * ID of the model object.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var int 
+	 */
 	protected $id;
 	
+	/**
+	 * Title of the model object.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string
+	 */
 	protected $title;
 	
+	/**
+	 * MS Page Type.
+	 * 
+	 * @see MS_Model_Pages constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	protected $type;
 	
+	/**
+	 * MS Page slug.
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	protected $slug;
 	
+	/**
+	 * Create WP page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param boolean $virtual Optional. Default true. Create with virtual status.
+	 */
 	public function create_wp_page( $virtual = true ) {
 		
 		$page_details = apply_filters(
@@ -54,17 +91,36 @@ class MS_Model_Page extends MS_Model {
 		);
 		$id = wp_insert_post( $page_details );
 		$this->id = $id;
+		
+		do_action( 'ms_model_page_create_wp_page', $virtual, $this );
 	}
 	
+	/**
+	 * Set WP page status.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $status The WP status to set.
+	 */
 	public function set_page_status( $status ) {
+		
 		if( ! empty( $this->id ) ) {
 			$page = array();
 			$page['ID'] = $this->id;
 			$page['post_status'] = $status;
 			wp_update_post( $page );
-		}	
+		}
+		
+		do_action( 'ms_model_page_set_page_status', $status, $this );
 	}
 	
+	/**
+	 * Get WP page object.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return null|WP_Post The WP page.
+	 */
 	public function get_page() {
 		
 		$page = null;
@@ -102,5 +158,7 @@ class MS_Model_Page extends MS_Model {
 					break;
 			}
 		}
+		
+		do_action( 'ms_model_page__set_after', $property, $value, $this );
 	}
 }
