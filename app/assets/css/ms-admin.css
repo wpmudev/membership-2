@@ -998,12 +998,42 @@
   margin-top: 15px;
 }
 
-.ms-title {
-  color: #222;
-  font-size: 1.1em;
-  font-style: normal;
-  font-weight: bold;
-  margin: 10px 0;
-  color: #F00;
-  background: #FEE;
+/**
+ * Admin-Bar module.
+ */
+#wpadminbar .ab-top-menu > .ms-test-memberships > a.ab-item,
+#wpadminbar .ab-top-menu > .ms-exit-memberships > a.ab-item {
+  position: relative;
+  display: block;
+  background-color: transparent;
+  color: #F0F0F0;
+}
+#wpadminbar .ab-top-menu > .ms-test-memberships > a.ab-item:after,
+#wpadminbar .ab-top-menu > .ms-exit-memberships > a.ab-item:after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  bottom: 3px;
+  right: 3px;
+  margin: 0;
+  z-index: -1;
+  background-color: #0A6C9C;
+}
+#wpadminbar .ab-top-menu > .ms-test-memberships:hover > a.ab-item,
+#wpadminbar .ab-top-menu > .ms-exit-memberships:hover > a.ab-item {
+  color: #FFF;
+}
+#wpadminbar .ab-top-menu > .ms-test-memberships:hover > a.ab-item:after,
+#wpadminbar .ab-top-menu > .ms-exit-memberships:hover > a.ab-item:after {
+  background-color: #0094DC;
+}
+#wpadminbar .ab-top-menu > .ms-exit-memberships {
+  position: absolute;
+  right: 10px;
+}
+#wpadminbar .ab-top-menu > .membership-view-site-as small {
+  font-size: 12px;
+  padding: 0 0 0 15px;
+  color: #aaa;
 }

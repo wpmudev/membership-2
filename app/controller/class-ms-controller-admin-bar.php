@@ -220,62 +220,120 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 
-		$select_options = array();
+		$select_groups = array();
+		$parents = array();
+		$current = null;
 
-		$html = '<form id="view-site-as" method="GET">';
+		foreach ( $memberships as $membership ) {
+			$item_parent = $membership->get_parent();
+			if ( $item_parent && ! isset( $parents[ $item_parent->id ] ) ) {
+				$parents[ $item_parent->id ] = $item_parent;
+			}
 
-		if ( !empty( $memberships ) ) {
-			foreach ( $memberships as $membership ) {
-				// Create nonce fields
-				$nonce = wp_create_nonce( "ms_simulate-{$membership->id}" );
-				// Create options for <select>
-				$selected = selected( $simulate->membership_id, $membership->id, false );
-				$select_options[] = "<option value=\"{$membership->id}\" {$selected} nonce=\"{$nonce}\">{$membership->name}</option>";
+			// Create nonce fields
+			$nonce = wp_create_nonce( 'ms_simulate-' . $membership->id );
+
+			// Create options for <select>
+			if ( ! is_array( $select_groups[ $membership->parent_id ] ) ) {
+				$select_groups[ $membership->parent_id ] = array();
+			}
+			$select_groups[ $membership->parent_id ][ $membership->id ] = array(
+				'id' => $membership->id,
+				'selected' => ($simulate->membership_id == $membership->id),
+				'nonce' => $nonce,
+				'label' => $membership->name,
+			);
+
+			if ( $simulate->membership_id == $membership->id ) {
+				$current = $membership;
 			}
 		}
 
-		$html .= '<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">';
-		foreach( $select_options as $option ) {
-			$html .= $option;
+		// Remove parents from the available members-list.
+		foreach ( $parents as $parent_id => $data ) {
+			unset( $select_groups[0][ $parent_id ] );
 		}
-		$html .= '</select>';
 
 		$action_field = array(
-			'name'      => 'action',
-			'value'		=> 'ms_simulate',
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name'   => 'action',
+			'value'  => 'ms_simulate',
+			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 		$membership_field = array(
-			'id'		=> 'ab-membership-id',
-			'name'      => 'membership_id',
-			'value'		=> $simulate->membership_id,
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id'     => 'ab-membership-id',
+			'name'   => 'membership_id',
+			'value'  => $simulate->membership_id,
+			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 		$nonce_field = array(
-			'id'		=> '_wpnonce',
-			'name'      => '_wpnonce',
-			'value'		=> '',
-			'type'    	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id'     => '_wpnonce',
+			'name'   => '_wpnonce',
+			'value'  => '',
+			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 
 		ob_start();
-		MS_Helper_Html::html_element( $action_field );
-		MS_Helper_Html::html_element( $membership_field );
-		MS_Helper_Html::html_element( $nonce_field );
-		$html .= ob_get_clean();
+		?>
+		<form id="view-site-as" method="GET">
+			<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">
+			<?php foreach ( $select_groups as $parent_id => $group ) {
+				if ( $parent_id ) {
+					printf(
+						'<optgroup label="%1$s">',
+						esc_attr( $parents[ $parent_id ]->name )
+					);
+				}
+				foreach ( $group as $option ) {
+					printf(
+						'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
+						esc_attr( $option['id'] ),
+						esc_attr( $option['nonce'] ),
+						selected( $option['selected'], true, false ),
+						esc_html( $option['label'] )
+					);
+				}
+			} ?>
+			</select>
+			<?php
+			MS_Helper_Html::html_element( $action_field );
+			MS_Helper_Html::html_element( $membership_field );
+			MS_Helper_Html::html_element( $nonce_field );
 
-		$html .= '</form>';
+			// Display information on the currently selected membership.
+			if ( $current ) {
+				if ( $current->parent_id ) {
+					$group = $parents[ $current->parent_id ]->name;
+					$desc = $parents[ $current->parent_id ]->get_type_description();
+				} else {
+					$group = '';
+					$desc = $current->get_type_description();
+				}
+				printf(
+					'<span class="ms-simulate-info">%1$s <small>%2$s</small></span>',
+					esc_html( $desc ),
+					esc_html( $group )
+				);
+			}
+			?>
+		</form>
+		<?php
 
-		$wp_admin_bar->add_node( apply_filters( 'ms_controller_admin_bar_add_view_site_as_node', array(
-				'id'     => 'membership-simulate',
-				'title'  => $title,
-				'meta'   => array(
-						'html'	 => $html,
+		$html = ob_get_clean();
+
+		$wp_admin_bar->add_node(
+			apply_filters(
+				'ms_controller_admin_bar_add_view_site_as_node',
+				array(
+					'id'     => 'membership-simulate',
+					'title'  => $title,
+					'meta'   => array(
+						'html'  => $html,
 						'class' => apply_filters( 'ms_controller_admin_bar_view_site_as_class', 'membership-view-site-as' ),
 						'title' => __( 'Select a membership to view your site as', MS_TEXT_DOMAIN ),
-				),
-		) ) );
-
+					),
+				)
+			)
+		);
 	}
 
 	/**

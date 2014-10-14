@@ -1,0 +1,50 @@
+/**
+ * Admin-Bar module.
+ */
+
+#wpadminbar {
+	.ab-top-menu > .ms-test-memberships,
+	.ab-top-menu > .ms-exit-memberships {
+		& > a.ab-item {
+			position: relative;
+			display: block;
+
+			background-color: transparent;
+			color: #F0F0F0;
+
+			&:after {
+				content: '';
+				position: absolute;
+				left: 3px;
+				top: 3px;
+				bottom: 3px;
+				right: 3px;
+				margin: 0;
+				z-index: -1;
+
+				background-color: #0A6C9C;
+			}
+		}
+
+		&:hover > a.ab-item {
+			color: #FFF;
+
+			&:after {
+				background-color: #0094DC;
+			}
+		}
+	}
+
+	.ab-top-menu > .ms-exit-memberships {
+		position: absolute;
+		right: 10px;
+	}
+
+	.ab-top-menu > .membership-view-site-as {
+		small {
+			font-size: 12px;
+			padding: 0 0 0 15px;
+			color: #aaa;
+		}
+	}
+}
