@@ -68,7 +68,9 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+
+		// Add custom buttons to the MCE editor (insert variable).
+		$this->add_action( 'admin_head', 'add_mce_buttons' );
 	}
 
 	/**
@@ -176,16 +178,16 @@ class MS_Controller_Settings extends MS_Controller {
 
 		/** Create menus/special pages */
 		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
-		
+
 		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
 		$ms_page->set_page_status( 'publish' );
-		
+
 		$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		/** Create additional menus */
 		if( ! $membership->private ) {
 			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
-			
+
 			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
 			$ms_page->set_page_status( 'publish' );
 
@@ -421,17 +423,6 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 
 	/**
-	 * Load Membership admin styles.
-	 *
-	 * @since 4.0.0
-	 */
-	public function enqueue_styles() {
-		if ( 'messages-automated' == $this->active_tab ) {
-			wp_enqueue_style( 'ms-view-settings-render-messages-automated' );
-		}
-	}
-
-	/**
 	 * Load Membership admin scripts.
 	 *
 	 * @since 4.0.0
@@ -459,9 +450,72 @@ class MS_Controller_Settings extends MS_Controller {
 			case 'messages-protection':
 				$data['ms_init'][] = 'view_settings_protection';
 				break;
+
+			case 'messages-automated':
+				$data['ms_init'][] = 'view_settings_automated_msg';
+				break;
 		}
 
 		wp_localize_script( 'ms-admin', 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Prepare WordPress to add our custom TinyMCE button to the WYSIWYG editor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @see class-ms-view-settings-edit.php (function render_tab_messages_automated)
+	 * @see ms-view-settings-automated-msg.js
+	 */
+	public function add_mce_buttons() {
+		// Check user permissions.
+		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
+			return;
+		}
+
+		// Check if WYSIWYG is enabled.
+		if ( 'true' != get_user_option( 'rich_editing' ) ) {
+			return;
+		}
+
+		// Check the current tab.
+		switch ( $this->get_active_tab() ) {
+			case 'messages-automated':
+				$this->add_filter( 'mce_external_plugins', 'add_variables_plugin' );
+				$this->add_filter( 'mce_buttons', 'register_variables_button' );
+				break;
+		}
+	}
+
+	/**
+	 * Associate a javascript file with the new TinyMCE button.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array $plugin_array List of default TinyMCE plugin scripts.
+	 * @return array Updated list of TinyMCE plugin scripts.
+	 */
+	public function add_variables_plugin( $plugin_array ) {
+		$plugin_url = MS_Plugin::instance()->url;
+
+		// This is a dummy reference (ms-admin.js is always loaded)!
+		// Actually this line would not be needed, but WordPress will not show
+		// our button when this is missing...
+		$plugin_array['ms_variable'] = $plugin_url . 'app/assets/js/ms-admin.js';
+		return $plugin_array;
+	}
+
+	/**
+	 * Register new "Insert variables" button in the editor.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $buttons List of default TinyMCE buttons.
+	 * @return array Updated list of TinyMCE buttons.
+	 */
+	public function register_variables_button( $buttons ) {
+		array_push( $buttons, 'ms_variable' );
+		return $buttons;
 	}
 }

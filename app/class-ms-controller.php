@@ -346,11 +346,6 @@ class MS_Controller extends MS_Hooker {
 			null, $version
 		);
 		wp_register_style(
-			'ms-view-settings-render-messages-automated',
-			$plugin_url . 'app/assets/css/ms-view-settings-render-messages-automated.css',
-			null, $version
-		);
-		wp_register_style(
 			'ms-admin-bar',
 			$plugin_url . 'app/assets/css/ms-admin-bar.css',
 			null, $version

@@ -170,7 +170,7 @@ class MS_View_Settings_Edit extends MS_View {
 		$nonce = wp_create_nonce( $action );
 
 		$ms_pages = $this->data['ms_pages'];
-		
+
 		$fields = array();
 		foreach( $ms_pages as $ms_page ) {
 			$fields['pages'][ $ms_page->type ] = array(
@@ -202,11 +202,11 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php 
-				MS_Helper_Html::settings_tab_header( array( 
+			<?php
+				MS_Helper_Html::settings_tab_header( array(
 					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
-				) ); 
+				) );
 			?>
 			<div class="ms-separator"></div>
 
@@ -589,21 +589,6 @@ class MS_View_Settings_Edit extends MS_View {
 								<div id="ms-comm-message-wrapper">
 								<?php MS_Helper_Html::html_element( $fields['message'] ); ?>
 								</div>
-								<div id="ms-comm-var-wrapper">
-									<table>
-										<tr>
-											<th>Variable values</th>
-										</tr>
-										<?php foreach ( $comm->comm_vars as $var => $description ) : ?>
-											<tr>
-												<td>
-													<?php MS_Helper_html::tooltip( $description ); ?>
-													<?php echo $var; ?>
-												</td>
-											</tr>
-										<?php endforeach; ?>
-									</table>
-								</div>
 							</td>
 						</tr>
 						<tr>
@@ -623,6 +608,21 @@ class MS_View_Settings_Edit extends MS_View {
 			</form>
 		</div>
 		<?php
+		/**
+		 * Print JS details for the custom TinyMCE "Insert Variable" button
+		 *
+		 * @see class-ms-controller-settings.php (function add_mce_buttons)
+		 * @see ms-view-settings-automated-msg.js
+		 */
+		$var_button = array(
+			'title' => __( 'Insert Variable', MS_TEXT_DOMAIN ),
+			'items' => $comm->comm_vars,
+		);
+		printf(
+			'<script>window.ms_data.var_button = %1$s;</script>',
+			json_encode( $var_button )
+		);
+
 		return ob_get_clean();
 	}
 
@@ -680,7 +680,7 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA_PLUS ) ) {
 			unset( $fields['protection_type'] );
 		}
-		
+
 		$fields = apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
 
 		ob_start();
