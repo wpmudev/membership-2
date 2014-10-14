@@ -24,8 +24,6 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
 		}
 
-$invoice->discount = 2;
-$invoice->pro_rate = 14;
 		if ( $invoice->discount ) {
 			$inv_discount = sprintf(
 				'%s -%s',
