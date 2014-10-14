@@ -72,9 +72,6 @@ class MS_View_Admin_Bar extends MS_View {
 	 */
 	public function prepare_fields() {
 
-		$action = $this->data['action'];
-		$nonce = wp_create_nonce( $action );
-		
 		$fields = array(
 			'simulate_type' => array(
 					'id' => 'simulate_type',
