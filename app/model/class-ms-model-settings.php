@@ -20,61 +20,186 @@
  *
 */
 
-
+/**
+ * Settings model. 
+ *
+ * Singleton. Persisted by parent class MS_Model_Option.
+ *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Settings extends MS_Model_Option {
 
-	protected static $CLASS_NAME = __CLASS__;
-
+	/**
+	 * Model custom post type.
+	 *
+	 * Both static and class property are used to handle php 5.2 limitations.
+	 *
+	 * @since 1.0.0
+	 * @staticvar MS_Model_Settings
+	 */
 	public static $instance;
 
+	/**
+	 * Protection Message Type constants.
+	 *
+	 * @since 1.0.0
+	 * @var string $POST_TYPE
+	 */
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';
 	const PROTECTION_MSG_MORE_TAG = 'more_tag';
 
+	/**
+	 * ID of the model object.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var int
+	 */
 	protected $id = 'ms_plugin_settings';
 
+	/**
+	 * Model name.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string 
+	 */
 	protected $name = 'Plugin settings';
 
-	/** Current db version */
+	/**
+	 * Current db version.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string 
+	 */
 	protected $version;
 
+	/**
+	 * Plugin enabled status indicator.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var boolean 
+	 */
 	protected $plugin_enabled = false;
 
+	/**
+	 * Initial setup status indicator.
+	 *
+	 * Wizard mode.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @var boolean 
+	 */
 	protected $initial_setup = true;
 
+	/**
+	 * Wizard step tracker.
+	 *
+	 * Indicate which step of the wizard.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @var boolean 
+	 */
 	protected $wizard_step;
 
+	/**
+	 * Hide Protected Content Menu pointer indicator.
+	 *
+	 * Wizard mode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
 	protected $hide_wizard_pointer;
 
-	protected $pages = array();
-
+	/**
+	 * Hide Toolbar for non admin users indicator.
+	 *
+	 * Wizard mode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
 	protected $hide_admin_bar = true;
 
+	/**
+	 * The currency used in the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	protected $currency = 'USD';
 
-	protected $tax;
-
+	/**
+	 * The name used in the invoices.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	protected $invoice_sender_name;
 
+	/**
+	 * Global payments already set indicator.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
 	protected $is_global_payments_set = false;
 
-	/** For extensions settings.*/
+	/**
+	 * Settings data for extensions/integrations.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
 	protected $custom;
 
 	/**
-	 * Shortcode protection message.
+	 * Protection Messages.
 	 *
-	 * @var $protection_messages
+	 * @since 1.0.0
+	 *
+	 * @var array
 	 */
 	protected $protection_messages = array();
 
+	/**
+	 * Media / Downloads settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
 	protected $downloads = array(
 		'protection_enabled' => false,
 		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
 		'masked_url' => 'downloads',
 	);
 
+	/**
+	 * Get setting.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $field The setting to retrieve.
+	 * @return mixed The setting value.
+	 */
 	public static function get_setting( $field ) {
+		
 		$value = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
@@ -85,8 +210,13 @@ class MS_Model_Settings extends MS_Model_Option {
 		return apply_filters( 'ms_model_settings_get_setting', $value, $field );
 	}
 
-
-
+	/**
+	 * Get protection message types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[] The available protection message types.
+	 */
 	public static function get_protection_msg_types() {
 		$types = array(
 				self::PROTECTION_MSG_CONTENT,
@@ -96,17 +226,46 @@ class MS_Model_Settings extends MS_Model_Option {
 		return apply_filters( 'ms_model_settings_get_protection_msg_types', $types );
 	}
 
+	/**
+	 * Validate protection message type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $type The protection message type to validate.
+	 * @return boolean True if valid.
+	 */
 	public static function is_valid_protection_msg_type( $type ) {
+		
 		$types = self::get_protection_msg_types();
+		
 		return apply_filters( 'ms_model_settings_is_valid_protection_msg_type', in_array( $type, $types ) );
 	}
 
+	/**
+	 * Set protection message type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $type The protection message type.
+	 * @param string $msg The protection message.
+	 */
 	public function set_protection_message( $type, $msg ) {
+		
 		if ( self::is_valid_protection_msg_type( $type ) ) {
 			$this->protection_messages[ $type ] = stripslashes( wp_kses_post( $msg ) );
 		}
+
+		do_action( 'ms_model_settings_set_protection_message', $type, $msg, $this );
 	}
 
+	/**
+	 * Get protection message type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $type The protection message type.
+	 * @return string $msg The protection message.
+	 */
 	public function get_protection_message( $type ) {
 		$msg = '';
 		if ( self::is_valid_protection_msg_type( $type ) ) {
@@ -118,21 +277,54 @@ class MS_Model_Settings extends MS_Model_Option {
 			}
 		}
 
-		return apply_filters( 'ms_model_settings_get_protection_message', $msg, $type );
+		return apply_filters( 'ms_model_settings_get_protection_message', $msg, $type, $this );
 	}
 
+	/**
+	 * Set custom setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $group The custom setting group.
+	 * @param string $field The custom setting field.
+	 * @param mixed $value The custom setting value.
+	 */
 	public function set_custom_setting( $group, $field, $value ) {
-		$this->custom[ $group ][ $field ] = apply_filters( 'ms_model_settings_set_custom_setting', $value, $group, $field );
+		
+		$this->custom[ $group ][ $field ] = apply_filters( 'ms_model_settings_set_custom_setting', $value, $group, $field, $this );
+		
 	}
 
+	/**
+	 * Get custom setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $group The custom setting group.
+	 * @param string $field The custom setting field.
+	 * @return mixed $value The custom setting value.
+	 */
 	public function get_custom_setting( $group, $field ) {
+		
 		$value = '';
+		
 		if ( ! empty( $this->custom[ $group ][ $field ] ) ) {
 			$value = $this->custom[ $group ][ $field ];
 		}
-		return apply_filters( 'ms_model_settings_get_custom_setting', $value, $group, $field );
+		
+		return apply_filters( 'ms_model_settings_get_custom_setting', $value, $group, $field, $this );
 	}
 
+	/**
+	 * Get available currencies.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array {
+	 * 		@type string $currency The currency.
+	 * 		@type string $title The currency title.
+	 * }
+	 */
 	public static function get_currencies() {
 		static $Currencies = null;
 
@@ -175,9 +367,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
@@ -223,15 +414,17 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Returns a specific property.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param  string $property The name of a property.
 	 * @return mixed $value The value of a property.
 	 */
 	public function __get( $property ) {
+		
+		$value = null;
+		
 		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
+			$value = $this->$property;
 		}
 		else {
 			switch ( $property ) {
@@ -244,8 +437,10 @@ class MS_Model_Settings extends MS_Model_Option {
 						case 'EUR': $symbol = '€'; break;
 						case 'JPY': $symbol = '¥'; break;
 					}
-					return $symbol;
+					$value = $symbol;
 			}
 		}
+		
+		return apply_filters( 'ms_model_settings__get', $value, $property, $this );
 	}
 }
