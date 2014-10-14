@@ -48,7 +48,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @access private
 	 * @var $active_tab
 	 */
-	private $active_tab;
+	private $active_tab = null;
 
 	/**
 	 * Prepare Membership settings manager.
@@ -252,18 +252,21 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0
 	 */
 	public function get_active_tab() {
-		$tabs = $this->get_tabs();
+		if ( null === $this->active_tab ) {
+			$tabs = $this->get_tabs();
 
-		reset( $tabs );
-		$first_key = key( $tabs );
+			reset( $tabs );
+			$first_key = key( $tabs );
 
-		/** Setup navigation tabs. */
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
-		if ( ! array_key_exists( $active_tab, $tabs ) ) {
-			$active_tab = $first_key;
-			wp_safe_redirect( add_query_arg( array( 'tab' => $active_tab ) ) );
+			/** Setup navigation tabs. */
+			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+			if ( ! array_key_exists( $active_tab, $tabs ) ) {
+				wp_safe_redirect( add_query_arg( array( 'tab' => $first_key ) ) );
+				die();
+			}
+			$this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 		}
-		return $this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
+		return $this->active_tab;
 	}
 
 	/**
