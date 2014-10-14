@@ -7,9 +7,9 @@ get_header(); ?>
 			<article>
 				<?php
 					global $post;
-					echo do_shortcode( "[" . MS_Helper_Shortcode::SCODE_MS_INVOICE . " post_id='$post->ID' ]" );
+					echo do_shortcode( '[' . MS_Helper_Shortcode::SCODE_MS_INVOICE . ' post_id="' . $post->ID .'"]' );
 				?>
-			</article>	
+			</article>
 		</div><!-- #content -->
 	</div><!-- #primary -->
 </div><!-- #main-content -->
