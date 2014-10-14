@@ -9,8 +9,14 @@ window.ms_init = window.ms_init || {};
 jQuery(function() {
 	var i;
 
+	window.ms_init._done = window.ms_init._done || {};
+
 	function initialize( callback ) {
 		if ( undefined !== callback && undefined !== window.ms_init[callback] ) {
+			// Prevent multiple calls to init functions...
+			if ( true === window.ms_init._done[callback] ) { return false; }
+
+			window.ms_init._done[callback] = true;
 			window.ms_init[callback]();
 		}
 	}
@@ -25,4 +31,7 @@ jQuery(function() {
 	} else {
 		initialize( ms_data.ms_init );
 	}
+
+	// Prevent multiple calls to init functions...
+	ms_data.ms_init = [];
 });

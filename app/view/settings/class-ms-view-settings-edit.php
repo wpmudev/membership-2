@@ -392,14 +392,20 @@ class MS_View_Settings_Edit extends MS_View {
 
 		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
 		$nonce = wp_create_nonce( $action );
+		$comm_titles = MS_Model_Communication::get_communication_type_titles();
 
 		$fields = array(
 			'comm_type' => array(
 				'id' => 'comm_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $comm->type,
-				'field_options' => MS_Model_Communication::get_communication_type_titles(),
-				'class' => '',
+				'field_options' => $comm_titles,
+			),
+
+			'switch_comm_type' => array(
+				'id' => 'switch_comm_type',
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'value' => __( 'Load Email', MS_TEXT_DOMAIN ),
 			),
 
 			'type' => array(
@@ -410,16 +416,8 @@ class MS_View_Settings_Edit extends MS_View {
 
 			'enabled' => array(
 				'id' => 'enabled',
-				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-				'title' => __( 'Enabled', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $comm->enabled,
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'enabled',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'period_unit' => array(
@@ -427,13 +425,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
 				'value' => $comm->period['period_unit'],
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'period_unit',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'period_type' => array(
@@ -441,13 +432,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $comm->period['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'period_type',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'subject' => array(
@@ -455,28 +439,14 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
 				'value' => $comm->subject,
-				'class' => 'ms-comm-subject ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'subject',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
+				'class' => 'ms-comm-subject widefat',
 			),
 
 			'message' => array(
 				'id' => 'message',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-				'title' => __( 'Message', MS_TEXT_DOMAIN ),
 				'value' => $comm->description,
 				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'message',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'cc_enabled' => array(
@@ -484,13 +454,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
 				'value' => $comm->cc_enabled,
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'cc_enabled',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'cc_email' => array(
@@ -498,18 +461,11 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $comm->cc_email,
 				'field_options' => MS_Model_Member::get_admin_user_emails(),
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'type' => $comm->type,
-					'field' => 'cc_email',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
 			),
 
 			'save_email' => array(
 				'id' => 'save_email',
-				'value' => __( 'Save Automated Email', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			),
 
@@ -554,57 +510,41 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php MS_Helper_Html::html_element( $fields['load_action'] ); ?>
 				<?php MS_Helper_Html::html_element( $fields['load_nonce'] ); ?>
 				<?php MS_Helper_Html::html_element( $fields['comm_type'] ); ?>
-				<p><?php echo $comm->get_description(); ?></p>
+				<?php MS_Helper_Html::html_element( $fields['switch_comm_type'] ); ?>
 			</form>
 
-			<form action="" method="post">
-				<?php MS_Helper_Html::html_element( $fields['action'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['nonce'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
+			<div class="ms-separator"></div>
 
-				<table class="form-table">
-					<tbody>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_element( $fields['enabled'] ); ?>
-							</td>
-						</tr>
-						<?php if ( $comm->period_enabled ) : ?>
-							<tr>
-								<td>
-									<div class="ms-period-wrapper">
-										<?php MS_Helper_Html::html_element( $fields['period_unit'] ); ?>
-										<?php MS_Helper_Html::html_element( $fields['period_type'] ); ?>
-									</div>
-								</td>
-							</tr>
-						<?php endif; ?>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_element( $fields['subject'] ); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div id="ms-comm-message-wrapper">
-								<?php MS_Helper_Html::html_element( $fields['message'] ); ?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_element( $fields['cc_enabled'] ); ?>
-								<?php MS_Helper_Html::html_element( $fields['cc_email'] ); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<?php MS_Helper_Html::html_separator(); ?>
-								<?php MS_Helper_Html::html_element( $fields['save_email'] ); ?>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+			<form action="" method="post" class="ms-editor-form">
+				<?php
+				MS_Helper_Html::html_element( $fields['action'] );
+				MS_Helper_Html::html_element( $fields['nonce'] );
+				MS_Helper_Html::html_element( $fields['type'] );
+
+				printf(
+					'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
+					esc_html( $comm_titles[ $comm->type ] ),
+					__( 'Message', MS_TEXT_DOMAIN ),
+					MS_Helper_Html::html_element( $fields['enabled'], true ),
+					$comm->get_description()
+				);
+
+				if ( $comm->period_enabled ) {
+					echo '<div class="ms-period-wrapper">';
+					MS_Helper_Html::html_element( $fields['period_unit'] );
+					MS_Helper_Html::html_element( $fields['period_type'] );
+					echo '</div>';
+				}
+
+				MS_Helper_Html::html_element( $fields['subject'] );
+				MS_Helper_Html::html_element( $fields['message'] );
+
+				MS_Helper_Html::html_element( $fields['cc_enabled'] );
+				echo ' &nbsp; ';
+				MS_Helper_Html::html_element( $fields['cc_email'] );
+				MS_Helper_Html::html_separator();
+				MS_Helper_Html::html_element( $fields['save_email'] );
+				?>
 			</form>
 		</div>
 		<?php
@@ -619,8 +559,11 @@ class MS_View_Settings_Edit extends MS_View {
 			'items' => $comm->comm_vars,
 		);
 		printf(
-			'<script>window.ms_data.var_button = %1$s;</script>',
-			json_encode( $var_button )
+			'<script>window.ms_data.var_button = %1$s;window.ms_data.lang_confirm = %2$s</script>',
+			json_encode( $var_button ),
+			json_encode(
+				__( 'You have made changes that are not saved yet. Do you want to discard those changes?', MS_TEXT_DOMAIN )
+			)
 		);
 
 		return ob_get_clean();

@@ -413,6 +413,13 @@
 	.ms-radio-slider.ms-processing {
 		cursor: wait;
 	}
+
+	h3 .ms-radio-slider-wrapper {
+		display: inline-block;
+		position: relative;
+		top: 8px;
+		margin: -8px 0 0 40px;
+	}
 }
 
 /***
